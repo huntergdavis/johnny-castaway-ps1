@@ -18,9 +18,8 @@ The easiest way to build for PS1 is using the provided Docker environment:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/jc_reborn.git
-cd jc_reborn
-git checkout ps1
+git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
+cd Johnny-Castaway-PS1
 
 # 2. Build Docker image (first time only, ~5 minutes)
 docker build -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 --platform linux/amd64 .

@@ -143,7 +143,7 @@ When modifying the engine:
 5. Memory-constrained ports should test against the 4MB budget limit (set via `JC_MEM_BUDGET_MB`)
 6. **Add tests for new features**: Unit tests for algorithms, integration tests for workflows
 
-### PS1 Development (ps1 branch)
+### PS1 Development
 
 **Critical PS1-specific rules**:
 1. **NEVER call `CdInit()`** - BIOS already initializes CD-ROM; calling it causes crashes
