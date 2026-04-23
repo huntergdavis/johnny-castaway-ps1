@@ -16,11 +16,19 @@ wave animation, holiday overlay, input, SPU).
   <code>FISHING 1</code> on PS1, captured from DuckStation: daytime cast · raft variant · night variant.
 </p>
 
+## Download and play
+
+- [jcreborn.bin](https://github.com/huntergdavis/Johnny-Castaway-PS1/raw/v0.3.8-ps1/jcreborn.bin) · [jcreborn.cue](https://github.com/huntergdavis/Johnny-Castaway-PS1/raw/v0.3.8-ps1/jcreborn.cue) — latest release (`v0.3.8-ps1`)
+
+Load `jcreborn.cue` in DuckStation (or any PS1 emulator). Ignore the
+auto-generated "Source code" zips on the tag page — the direct-download
+links above are the actual game ISO.
+
 ## Status
 
 | | |
 |---|---|
-| Current release | **`v0.3.6-ps1`** |
+| Current release | **`v0.3.8-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **1 / 63** |
 | Per-scene ledger | [docs/ps1/scene-status.md](docs/ps1/scene-status.md) |

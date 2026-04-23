@@ -119,12 +119,22 @@ TAG_TREE_SHA=$(printf '100644 blob %s\tjcreborn.bin\n100644 blob %s\tjcreborn.cu
 # Record the main-branch release commit as the tag commit's parent so
 # provenance is preserved (git log --all, tag -> commit -> parent chain).
 MAIN_RELEASE_SHA=$(git rev-parse HEAD)
+REPO_SLUG="$(git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|')"
+RAW_BASE="https://github.com/${REPO_SLUG:-huntergdavis/Johnny-Castaway-PS1}/raw/$TAG_NAME"
 TAG_COMMIT_MSG="$TAG_NAME: $RELEASE_MSG
+
+Direct downloads (no zip):
+  $RAW_BASE/jcreborn.bin
+  $RAW_BASE/jcreborn.cue
 
 Tree = jcreborn.bin + jcreborn.cue only.
 Full source at parent commit $MAIN_RELEASE_SHA."
 TAG_COMMIT_SHA=$(printf '%s' "$TAG_COMMIT_MSG" | git commit-tree "$TAG_TREE_SHA" -p "$MAIN_RELEASE_SHA")
-git tag -a "$TAG_NAME" -m "$RELEASE_MSG" "$TAG_COMMIT_SHA"
+git tag -a "$TAG_NAME" -m "$RELEASE_MSG
+
+Direct downloads:
+  $RAW_BASE/jcreborn.bin
+  $RAW_BASE/jcreborn.cue" "$TAG_COMMIT_SHA"
 echo "Created tag: $TAG_NAME -> $TAG_COMMIT_SHA (tree has 2 files)"
 
 # Step 6: Push to GitHub
