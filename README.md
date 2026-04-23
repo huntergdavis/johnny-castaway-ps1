@@ -7,13 +7,13 @@ packs + captured SFX and owns only the narrow surface it must (background,
 wave animation, holiday overlay, input, SPU).
 
 <p align="center">
-  <img src="docs/readme/fishing1-reference-arrival.png" width="31%" alt="FISHING 1: Johnny arriving on the island">
-  <img src="docs/readme/fishing1-reference-cast.png" width="31%" alt="FISHING 1: Johnny casting his fishing line">
-  <img src="docs/readme/fishing1-reference-catch.png" width="31%" alt="FISHING 1: Johnny reeling in a catch">
+  <img src="docs/readme/fishing1-ps1-cast.png" width="31%" alt="FISHING 1 on PS1: daytime cast">
+  <img src="docs/readme/fishing1-ps1-raft.png" width="31%" alt="FISHING 1 on PS1: raft-stage variant">
+  <img src="docs/readme/fishing1-ps1-night.png" width="31%" alt="FISHING 1 on PS1: night variant">
 </p>
 
 <p align="center">
-  <code>FISHING 1</code> on PS1 hardware (via DuckStation), captured from the validated scene-playback pipeline.
+  <code>FISHING 1</code> on PS1, captured from DuckStation: daytime cast · raft variant · night variant.
 </p>
 
 ## Status
