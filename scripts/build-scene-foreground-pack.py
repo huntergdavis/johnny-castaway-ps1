@@ -367,6 +367,32 @@ def main():
     union_max_y = None
     prev_rgb = None
 
+    # Pre-load sound events so we can mark frames near them as
+    # "do-not-coalesce". The runtime fires events when an entry with
+    # source_frame >= event.source_frame + SOUND_EVENT_DELAY_FRAMES loads,
+    # and assumes that "N host frames ahead" ≈ N vblanks ahead. If
+    # adjacent host frames near an event get coalesced, the gap between
+    # their pack entries becomes much larger than 1 vblank and the SPU
+    # key-on lands noticeably off-cue. Protecting a window of frames
+    # around each event preserves dense coverage so the fire threshold
+    # lands at the intended vblank.
+    _raw_sound_events = load_sound_events(
+        Path(args.sound_events) if args.sound_events else None
+    )
+    _first_frame_stem = frame_paths[0].stem
+    try:
+        _first_abs_frame = int(_first_frame_stem.split("_")[-1])
+    except ValueError:
+        _first_abs_frame = 0
+    SOUND_EVENT_COALESCE_GUARD = 4  # covers delay=3 + 1 frame of margin
+    protected_source_indices: set[int] = set()
+    for ev_frame, _ev_sample in _raw_sound_events:
+        positional = ev_frame - _first_abs_frame
+        if positional < 0:
+            continue
+        for offset in range(-1, SOUND_EVENT_COALESCE_GUARD + 1):
+            protected_source_indices.add(positional + offset)
+
     full_frames_dir: Path | None = Path(args.full_frames_dir) if args.full_frames_dir else None
     full_frame_paths: list[Path] = []
     if full_frames_dir is not None:
@@ -469,7 +495,14 @@ def main():
                 prev["height"] == row["height"] and
                 prev_payload == payload
             )
-            if same_frame:
+            # Never coalesce a frame that sits inside the sound-event guard
+            # window — the pack needs per-vblank granularity there so the
+            # runtime's "N host frames ahead" fire threshold lands correctly.
+            in_sound_guard = (
+                source_index in protected_source_indices
+                or prev["source_frame"] in protected_source_indices
+            )
+            if same_frame and not in_sound_guard:
                 prev["hold_ticks"] += row["hold_ticks"]
                 prev["hold_frames"] += 1
                 prev_rgb = rgb
@@ -490,14 +523,8 @@ def main():
         row["deadline_ticks"] = cumulative_ticks
         row["hold_vblanks"] = row["deadline_ticks"] if (header_flags & 0x0004) else row["hold_frames"]
 
-    sound_events = load_sound_events(
-        Path(args.sound_events) if args.sound_events else None
-    )
-    first_frame_name = frame_paths[0].stem
-    try:
-        first_abs_frame = int(first_frame_name.split("_")[-1])
-    except ValueError:
-        first_abs_frame = 0
+    sound_events = list(_raw_sound_events)
+    first_abs_frame = _first_abs_frame
     if first_abs_frame:
         sound_events = [(ev[0] - first_abs_frame, ev[1]) for ev in sound_events if ev[0] >= first_abs_frame]
     pack_source_frames = {row["source_frame"] for row in rows}

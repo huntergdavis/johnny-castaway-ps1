@@ -39,6 +39,7 @@ void adsCaptureCurrentFrame(void);
  * call adsPilotTickBackgroundWaves once per frame in the main loop. */
 void adsPilotPreloadBackgrndBmp(void);
 void adsPilotEnableWaveBackdrop(void);
+void adsPilotSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
 void adsPilotTickBackgroundWaves(void);
 void adsPilotStampHoliday(void);
 

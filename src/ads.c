@@ -2295,13 +2295,20 @@ void adsCaptureCurrentFrame(void)
  * zero-initialized. */
 void adsPilotPreloadBackgrndBmp(void)
 {
-    /* Release any prior BMP data in slot 0 BEFORE ttmInitSlot zeros the
+    /* Release any prior BMP data in ALL slots BEFORE ttmInitSlot zeros the
      * slot metadata — otherwise re-entry (screensaver loop replaying a
      * scene) silently leaks the previous sprite array because
-     * grLoadBmp's internal release check sees numSprites[0] == 0 after
-     * the memset and skips its normal release step. */
-    if (ttmBackgroundSlot.numSprites[0])
-        grReleaseBmp(&ttmBackgroundSlot, 0);
+     * grLoadBmp's internal release check sees numSprites[slot] == 0 after
+     * the memset and skips its normal release step.
+     * Slot 0 = BACKGRND, slot 1 = MRAFT (released same call), slot 2 =
+     * HOLIDAY (kept live across the scene for adsPilotStampHoliday). */
+    {
+        int slot;
+        for (slot = 0; slot < MAX_BMP_SLOTS; slot++) {
+            if (ttmBackgroundSlot.numSprites[slot])
+                grReleaseBmp(&ttmBackgroundSlot, (uint8)slot);
+        }
+    }
     ttmInitSlot(&ttmBackgroundSlot);
     grLoadBmp(&ttmBackgroundSlot, 0, "BACKGRND.BMP");
 }
@@ -2375,29 +2382,55 @@ void adsPilotEnableWaveBackdrop(void)
     for (int i = 0; i < 4; i++)
         islandAnimate(&ttmBackgroundThread);
 
-    /* Rect-based clean backup: back up only the rectangles that sprites will
-     * actually draw into each frame. For fishing1 ELSE-branch (ISLETEMP.SCR
-     * scene base, islandState at origin, foreground pack in absolute coords),
-     * the dynamic region is the union of:
-     *   - Foreground pack entries' bbox: x=12..516, y=204..350 (from JSON
-     *     union_bbox — Johnny fishing + starfish throw target)
-     *   - Shoreline wave sprites: x=129..608, y=303..356 (high/low tide)
-     * Combined bounding rect: (12, 204, 596, 152) ≈ 181 KB. Saves ~433 KB
-     * vs full-tile clean copies (614 KB).
-     *
-     * NOTE / future generalization: for scenes with `storyPrepareSceneBaseByAds`
-     * randomizing islandState.xPos/yPos and/or LEFT_ISLAND=1, the rect would
-     * shift by (islandState.xPos + (LEFT_ISLAND ? 272 : 0), islandState.yPos).
-     * ISLETEMP path here uses islandState == {0}, so absolute coords are fine. */
+    /* Clean-rect save is deferred to adsPilotSaveCleanBgRectsForPack — the
+     * caller invokes it after the foreground pack header is loaded so the
+     * rect can be sized to the pack's union bbox (varies per scene;
+     * fishing3's catch arc rises to y=143, fishing1's cast arc only to
+     * y=195, etc.). */
+}
+
+/* Union the foreground pack's bbox with the shoreline wave-sprite region
+ * (x=129..608, y=303..356 for high/low tide) and save as the rect-mode
+ * clean backup. Call this after adsPilotEnableWaveBackdrop has seeded the
+ * initial wave positions into the tiles AND after foregroundPilotRuntimeStart
+ * has loaded the pack header so fgX/fgY/fgW/fgH are known. */
+void adsPilotSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH)
+{
+    const sint16 kWaveMinX = 129;
+    const sint16 kWaveMinY = 303;
+    const sint16 kWaveEndX = 608;
+    const sint16 kWaveEndY = 356;
+
+    sint16 minX = fgX;
+    sint16 minY = fgY;
+    sint16 endX = (sint16)(fgX + fgW);
+    sint16 endY = (sint16)(fgY + fgH);
+
+    if (fgW == 0 || fgH == 0) {
+        /* Degenerate / unknown pack bbox — fall back to the wave region
+         * alone. Outer bbox is widened below to include the waves. */
+        minX = kWaveMinX;
+        minY = kWaveMinY;
+        endX = kWaveEndX;
+        endY = kWaveEndY;
+    }
+
+    if (kWaveMinX < minX) minX = kWaveMinX;
+    if (kWaveMinY < minY) minY = kWaveMinY;
+    if (kWaveEndX > endX) endX = kWaveEndX;
+    if (kWaveEndY > endY) endY = kWaveEndY;
+
+    if (minX < 0) minX = 0;
+    if (minY < 0) minY = 0;
+    if (endX > 640) endX = 640;
+    if (endY > 480) endY = 480;
+
     {
-        /* y_min=190 covers the cast-arc pack rows whose bbox rises above
-         * Johnny's head (sf=56 starts at y=195). Without that the cast-arc
-         * line pixels painted into bg tiles on that frame never get
-         * restored on subsequent frames, leaving a ghost stroke visible
-         * against dark backgrounds (e.g. night mode). */
         sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
-        xs[0] = 12;  ys[0] = 190;
-        ws[0] = 596; hs[0] = 166;
+        xs[0] = minX;
+        ys[0] = minY;
+        ws[0] = (uint16)(endX - minX);
+        hs[0] = (uint16)(endY - minY);
         grSaveCleanBgRects(xs, ys, ws, hs, 1);
     }
 }

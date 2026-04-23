@@ -1817,11 +1817,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 {
     uint16 adsTag = 0;
     const char *adsName = fgAdsNameForScene(sceneName, &adsTag);
+    int usedWaveBackdrop = 0;
 
     /* Pre-load BACKGRND.BMP into the background slot NOW, before any scene
      * setup allocates bg tiles (614 KB) or ttmSlots. At this moment the
-     * heap is freshest and the ~93 KB PSB has room to stream (which
-     * internally peaks at ~2×). ttmBackgroundSlot is a static and already
+     * heap is freshest and the ~93 KB PSB load (which internally peaks at
+     * ~2×) has room to stream. ttmBackgroundSlot is a static and already
      * zero-initialized, so this is safe to call first. */
     adsPilotPreloadBackgrndBmp();
 
@@ -1843,17 +1844,28 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grLoadScreen("OCEAN00.SCR");
             grLoadScreen("ISLETEMP.SCR");
         }
-        /* Seed initial wave positions, configure the background thread, and
-         * capture a rect-based clean backup of only the dynamic regions
-         * (wave strip + foreground pack bbox ~181 KB, vs 614 KB for a full
-         * 4-tile clean copy). BACKGRND.BMP was already pre-loaded at the
-         * top of this function when the heap was freshest. */
+        /* Seed initial wave positions and configure the background thread.
+         * Rect-mode clean backup is deferred until after the pack header
+         * loads below, so we can size it to the pack's union bbox. */
         adsPilotEnableWaveBackdrop();
+        usedWaveBackdrop = 1;
     }
     grSetPresentDuringScreenLoad(1);
 
     if (!foregroundPilotRuntimeStart(sceneName))
         return;
+
+    /* Now that the pack header is loaded, size the rect-mode clean backup
+     * to cover the pack's union bbox (fishing1 cast arc reaches y=195,
+     * fishing3 catch arc rises to y=143 and extends right to x=637).
+     * Only the wave-backdrop path uses rect-mode; the storyPrepareSceneBaseByAds
+     * branch set up full-tile clean copies via grSaveCleanBgTiles. */
+    if (usedWaveBackdrop) {
+        adsPilotSaveCleanBgRectsForPack((sint16)gFgRuntime.header.unionX,
+                                         (sint16)gFgRuntime.header.unionY,
+                                         gFgRuntime.header.unionWidth,
+                                         gFgRuntime.header.unionHeight);
+    }
 
     while (foregroundPilotRuntimeActive()) {
         grBeginFrame();
