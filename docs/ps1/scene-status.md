@@ -9,7 +9,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 1 / 63 (next: fishing2)
+## Progress: 2 / 63 (next: fishing3)
 
 Releases cut every 10 ✅/✅ scenes: v0.3.6-ps1 (fishing1), next would be
 v0.3.7-ps1 at 11 ✅/✅, v0.3.8-ps1 at 21, etc.
@@ -34,8 +34,8 @@ v0.3.7-ps1 at 11 ✅/✅, v0.3.8-ps1 at 21, etc.
 | BUILDING | 6 | building6 | ⏳ | ⏳ | — | — |  |
 | BUILDING | 7 | building7 | ⏳ | ⏳ | — | — |  |
 | FISHING | 1 | fishing1 | ✅ | ✅ | night · low-tide · holiday · raft-stage | v0.3.6-ps1 | reference scene; template for remaining |
-| FISHING | 2 | fishing2 | ⏳ | ⏳ | — | — | **NEXT** |
-| FISHING | 3 | fishing3 | ⏳ | ⏳ | — | — |  |
+| FISHING | 2 | fishing2 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-04-23 |  |
+| FISHING | 3 | fishing3 | ⏳ | ⏳ | — | — | **NEXT** |
 | FISHING | 4 | fishing4 | ⏳ | ⏳ | — | — |  |
 | FISHING | 5 | fishing5 | ⏳ | ⏳ | — | — |  |
 | FISHING | 6 | fishing6 | ⏳ | ⏳ | — | — | blocked in regtest |

@@ -29,6 +29,7 @@
                 <file name="FISHING1.FG1" type="data" source="../../generated/ps1/foreground/FISHING1.FG1"/>
                 <file name="FISHING2.FG1" type="data" source="../../generated/ps1/foreground/FISHING2.FG1"/>
                 <file name="FISH24.RAW" type="data" source="../../generated/ps1/foreground/FISH24.RAW"/>
+                <file name="FISH22.RAW" type="data" source="../../generated/ps1/foreground/FISH22.RAW"/>
             </dir>
 
             <!-- Original Sierra resource files (for metadata parsing) -->

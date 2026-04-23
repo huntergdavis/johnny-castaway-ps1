@@ -9,6 +9,7 @@ SCENE_NAME="${3:-FISHING 1}"
 PACK_BASENAME="${4:-$(printf '%s' "$SCENE_SLUG" | tr '[:lower:]' '[:upper:]' | tr -cd 'A-Z0-9')}"
 RAW_FRAME_INDEX="${5:-24}"
 RAW_BASENAME="${6:-FISH}"
+START_FRAME="${7:-0}"
 
 if [ -z "$OUTPUT_DIR" ]; then
   OUTPUT_DIR="$PROJECT_ROOT/host-results/${SCENE_SLUG}-foreground-pilot"
@@ -30,7 +31,7 @@ mkdir -p "$OUTPUT_DIR"
   --scene "$SCENE_NAME" \
   --mode story-single \
   --seed 1 \
-  --start-frame 0 \
+  --start-frame "$START_FRAME" \
   --interval 1 \
   --until-exit \
   --no-stamp \
@@ -47,7 +48,7 @@ mkdir -p "$OUTPUT_DIR"
   --scene "$SCENE_NAME" \
   --mode story-single \
   --seed 1 \
-  --start-frame 0 \
+  --start-frame "$START_FRAME" \
   --interval 1 \
   --until-exit \
   --no-stamp \

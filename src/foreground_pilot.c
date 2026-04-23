@@ -317,7 +317,7 @@ static const char *fgRawFramePathForScene(const char *sceneName)
     if (fgSceneEquals(sceneName, "fishing1"))
         return "\\FG\\FISH24.RAW;1";
     if (fgSceneEquals(sceneName, "fishing2"))
-        return "\\FG\\FISH24.RAW;1";
+        return "\\FG\\FISH22.RAW;1";
     return NULL;
 }
 

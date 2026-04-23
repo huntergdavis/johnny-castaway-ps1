@@ -129,7 +129,7 @@ static int screensaverLoopDisabled = 0;
 
 /* Scenes that have reached the "fully validated" bar in
  * docs/ps1/scene-status.md. Expand as scenes are signed off. */
-static const char *kProvenScenes[] = { "fishing1" };
+static const char *kProvenScenes[] = { "fishing1", "fishing2" };
 #define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;
@@ -147,7 +147,7 @@ static int hostForcedRaftStage = -1;
 static int hostForcedNight = -1;
 static int hostForcedHoliday = -1;
 static int screensaverLoopDisabled = 0;
-static const char *kProvenScenes[] = { "fishing1" };
+static const char *kProvenScenes[] = { "fishing1", "fishing2" };
 #define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;

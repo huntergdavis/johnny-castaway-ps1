@@ -493,6 +493,13 @@ def main():
     sound_events = load_sound_events(
         Path(args.sound_events) if args.sound_events else None
     )
+    first_frame_name = frame_paths[0].stem
+    try:
+        first_abs_frame = int(first_frame_name.split("_")[-1])
+    except ValueError:
+        first_abs_frame = 0
+    if first_abs_frame:
+        sound_events = [(ev[0] - first_abs_frame, ev[1]) for ev in sound_events if ev[0] >= first_abs_frame]
     pack_source_frames = {row["source_frame"] for row in rows}
     sound_events = [ev for ev in sound_events if ev[0] in pack_source_frames]
     if len(sound_events) > 0xFFFF:
