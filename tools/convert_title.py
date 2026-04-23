@@ -10,7 +10,7 @@ import os
 def main():
     scr_path = "jc_resources/extracted/scr/INTRO.SCR"
     pal_path = "jc_resources/extracted/pal/JOHNCAST.PAL"
-    out_path = "TITLE.RAW"
+    out_path = "generated/ps1/foreground/TITLE.RAW"
 
     # Read palette (256 RGB triplets)
     with open(pal_path, "rb") as f:

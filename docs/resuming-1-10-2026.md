@@ -61,10 +61,11 @@ jc_reborn/
 │   ├── build-ps1.sh           # Build PS1 executable
 │   ├── make-cd-image.sh       # Create CD image (jcreborn.bin/cue)
 │   └── rebuild-and-let-run.sh # Full rebuild + launch emulator
-├── graphics_ps1.c       # PS1 graphics implementation
-├── cdrom_ps1.c          # PS1 CD-ROM loading
-├── ttm.c                # TTM bytecode interpreter
-└── jc_reborn.c          # Main entry point
+└── src/                 # All C source (moved from repo root 2026-04-23)
+    ├── graphics_ps1.c   # PS1 graphics implementation
+    ├── cdrom_ps1.c      # PS1 CD-ROM loading
+    ├── ttm.c            # TTM bytecode interpreter
+    └── jc_reborn.c      # Main entry point
 ```
 
 ## Build & Run Commands

@@ -45,28 +45,29 @@ detect_sdl
 mkdir -p "$BUILD_DIR"
 
 SOURCES=(
-    jc_reborn.c
-    utils.c
-    uncompress.c
-    resource.c
-    dump.c
-    story.c
-    walk.c
-    calcpath.c
-    ads.c
-    foreground_pilot.c
-    ttm.c
-    island.c
-    bench.c
-    graphics.c
-    sound.c
-    events.c
-    config.c
+    src/jc_reborn.c
+    src/utils.c
+    src/uncompress.c
+    src/resource.c
+    src/dump.c
+    src/story.c
+    src/walk.c
+    src/calcpath.c
+    src/ads.c
+    src/foreground_pilot.c
+    src/ttm.c
+    src/island.c
+    src/bench.c
+    src/graphics.c
+    src/sound.c
+    src/events.c
+    src/config.c
 )
 
 pushd "$PROJECT_ROOT" >/dev/null
 "$CC" \
     -Wall -Wpedantic -std=c99 -O2 \
+    -Isrc -I. \
     $SDL_CFLAGS \
     $CFLAGS \
     "${SOURCES[@]}" \

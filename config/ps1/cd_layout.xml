@@ -22,7 +22,7 @@
             <file name="JCREBORN.EXE" type="data" source="../../build-ps1/jcreborn.exe"/>
 
             <!-- Title screen - raw 15-bit pixels for early loading -->
-            <file name="TITLE.RAW" type="data" source="../../TITLE.RAW"/>
+            <file name="TITLE.RAW" type="data" source="../../generated/ps1/foreground/TITLE.RAW"/>
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
 
             <dir name="FG">
