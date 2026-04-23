@@ -118,6 +118,38 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$CURRENT_BRANCH"
 git push origin "$TAG_NAME"
 
+# Step 7: Create a GitHub Release with ONLY jcreborn.bin + jcreborn.cue
+# as downloadable assets. Requires the `gh` CLI to be authenticated
+# (`gh auth login` once per machine). GitHub will still auto-attach
+# "Source code (zip|tar.gz)" — that behaviour is baked into the
+# platform and cannot be disabled — but the ISO files become the
+# primary download and the notes point at them.
+echo ""
+echo -e "${YELLOW}=== Step 7: Creating GitHub Release with ISO attached ===${NC}"
+GH_BIN="$(command -v gh 2>/dev/null || echo "$HOME/bin/gh")"
+if [ ! -x "$GH_BIN" ]; then
+    echo -e "${YELLOW}gh CLI not found — skipping GitHub Release creation.${NC}"
+    echo -e "${YELLOW}Install it from https://cli.github.com/ and run \`gh auth login\`,${NC}"
+    echo -e "${YELLOW}then rerun:  \`$GH_BIN release create $TAG_NAME release/jcreborn.bin release/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"\`${NC}"
+else
+    if ! "$GH_BIN" auth status >/dev/null 2>&1; then
+        echo -e "${YELLOW}gh is installed but not authenticated. Run \`gh auth login\` and then:${NC}"
+        echo -e "${YELLOW}  $GH_BIN release create $TAG_NAME release/jcreborn.bin release/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
+    else
+        NOTES="$RELEASE_MSG
+
+Download **jcreborn.bin** + **jcreborn.cue** below and load \`jcreborn.cue\` in
+a PS1 emulator (DuckStation recommended). The source-code archives that
+GitHub auto-attaches are the full repo snapshot at this tag and are not
+needed to play the release."
+        "$GH_BIN" release create "$TAG_NAME" \
+            "$PROJECT_DIR/release/jcreborn.bin" \
+            "$PROJECT_DIR/release/jcreborn.cue" \
+            --title "$TAG_NAME" \
+            --notes "$NOTES"
+    fi
+fi
+
 echo ""
 echo -e "${GREEN}======================================"
 echo "Release complete!"
