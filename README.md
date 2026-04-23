@@ -18,11 +18,14 @@ wave animation, holiday overlay, input, SPU).
 
 ## Download and play
 
-- [jcreborn.bin](https://github.com/huntergdavis/Johnny-Castaway-PS1/raw/v0.3.8-ps1/jcreborn.bin) · [jcreborn.cue](https://github.com/huntergdavis/Johnny-Castaway-PS1/raw/v0.3.8-ps1/jcreborn.cue) — latest release (`v0.3.8-ps1`)
+Latest release → [**Releases page**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest)
 
-Load `jcreborn.cue` in DuckStation (or any PS1 emulator). Ignore the
-auto-generated "Source code" zips on the tag page — the direct-download
-links above are the actual game ISO.
+Or grab the files directly (auto-updates to the latest release):
+
+- [**jcreborn.bin**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest/download/jcreborn.bin) — PS1 CD image
+- [**jcreborn.cue**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest/download/jcreborn.cue) — cuesheet
+
+Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 emulator).
 
 ## Status
 
