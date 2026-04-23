@@ -277,6 +277,8 @@ static const char *fgOverlayPackPathForScene(const char *sceneName)
         return "FG\\FISHING1.FG1";
     if (fgSceneEquals(sceneName, "fishing2"))
         return "FG\\FISHING2.FG1";
+    if (fgSceneEquals(sceneName, "fishing3"))
+        return "FG\\FISHING3.FG1";
     return NULL;
 }
 
@@ -286,6 +288,8 @@ static const char *fgDirectPackPathForScene(const char *sceneName)
         return "FG\\FISHING1D.FG1";
     if (fgSceneEquals(sceneName, "fishing2"))
         return "FG\\FISHING2D.FG1";
+    if (fgSceneEquals(sceneName, "fishing3"))
+        return "FG\\FISHING3D.FG1";
     return NULL;
 }
 
@@ -318,6 +322,8 @@ static const char *fgRawFramePathForScene(const char *sceneName)
         return "\\FG\\FISH24.RAW;1";
     if (fgSceneEquals(sceneName, "fishing2"))
         return "\\FG\\FISH22.RAW;1";
+    if (fgSceneEquals(sceneName, "fishing3"))
+        return "\\FG\\FISH30.RAW;1";
     return NULL;
 }
 
@@ -331,6 +337,11 @@ static const char *fgAdsNameForScene(const char *sceneName, uint16 *adsTagOut)
     if (fgSceneEquals(sceneName, "fishing2")) {
         if (adsTagOut != NULL)
             *adsTagOut = 2;
+        return "FISHING";
+    }
+    if (fgSceneEquals(sceneName, "fishing3")) {
+        if (adsTagOut != NULL)
+            *adsTagOut = 3;
         return "FISHING";
     }
     return NULL;
@@ -1268,9 +1279,27 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 {
     const char *path = fgOverlayPackPathForScene(gFgRuntime.sceneName);
     const struct TFgPilotEntry *entry = fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
+    int entryIsEmpty;
 
     if (entry == NULL)
         return 0;
+
+    /* An empty entry (w=0, h=0, no payload) is a capture artifact from a
+     * host frame where the ledger was blank (mid-refresh). Hold the previous
+     * frame's visible state rather than wiping, so the viewer doesn't see a
+     * one-frame flash. Advance the sound-event cursor + hold timing, but
+     * keep currentEntry + currentFrameData pointing at the prior frame. */
+    entryIsEmpty = (entry->dataSize == 0 && entry->width == 0 && entry->height == 0);
+
+    if (entryIsEmpty && gFgRuntime.currentFrameData != NULL) {
+        gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
+                                                       entry,
+                                                       gFgRuntime.presentedVBlanks);
+        fgFireSoundEventsUpTo(entry->sourceFrame);
+        fgTelemetryUpdate();
+        return 1;
+    }
+
     gFgRuntime.currentEntry = *entry;
 
     if (gFgRuntime.currentFrameData != NULL) {

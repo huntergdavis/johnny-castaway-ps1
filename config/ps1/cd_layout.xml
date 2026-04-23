@@ -30,6 +30,8 @@
                 <file name="FISHING2.FG1" type="data" source="../../generated/ps1/foreground/FISHING2.FG1"/>
                 <file name="FISH24.RAW" type="data" source="../../generated/ps1/foreground/FISH24.RAW"/>
                 <file name="FISH22.RAW" type="data" source="../../generated/ps1/foreground/FISH22.RAW"/>
+                <file name="FISHING3.FG1" type="data" source="../../generated/ps1/foreground/FISHING3.FG1"/>
+                <file name="FISH30.RAW" type="data" source="../../generated/ps1/foreground/FISH30.RAW"/>
             </dir>
 
             <!-- Original Sierra resource files (for metadata parsing) -->
