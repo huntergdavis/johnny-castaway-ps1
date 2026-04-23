@@ -144,6 +144,34 @@ CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$CURRENT_BRANCH"
 git push origin "$TAG_NAME"
 
+# Step 7: Publish a GitHub Release with jcreborn.bin + jcreborn.cue as
+# direct-download assets. Skipped if gh is missing or unauthenticated —
+# the tag is already pushed and the raw URLs in the tag message still
+# work as direct downloads, this step just adds the polished Release UI.
+echo ""
+echo -e "${YELLOW}=== Step 7: Publishing GitHub Release ===${NC}"
+GH_BIN="$(command -v gh 2>/dev/null || echo "$HOME/bin/gh")"
+if [ -x "$GH_BIN" ] && "$GH_BIN" auth status >/dev/null 2>&1; then
+    RELEASE_NOTES="$RELEASE_MSG
+
+**Direct downloads**
+- [jcreborn.bin]($RAW_BASE/jcreborn.bin)
+- [jcreborn.cue]($RAW_BASE/jcreborn.cue)
+
+Load \`jcreborn.cue\` in DuckStation (or any PS1 emulator). The
+auto-generated \"Source code\" zips below contain the same two files
+(the tag tree is minimal); use the direct links above to skip the zip."
+    "$GH_BIN" release create "$TAG_NAME" \
+        "$RELEASE_DIR/jcreborn.bin" \
+        "$RELEASE_DIR/jcreborn.cue" \
+        --title "$TAG_NAME" \
+        --notes "$RELEASE_NOTES"
+else
+    echo -e "${YELLOW}gh not available or not authed — skipping GitHub Release.${NC}"
+    echo -e "${YELLOW}Tag + raw URLs already work; to add a Release later:${NC}"
+    echo -e "${YELLOW}  gh release create $TAG_NAME $RELEASE_DIR/jcreborn.bin $RELEASE_DIR/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
+fi
+
 echo ""
 echo -e "${GREEN}======================================"
 echo "Release complete!"
