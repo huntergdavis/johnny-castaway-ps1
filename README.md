@@ -33,7 +33,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 |---|---|
 | Current release | **`v0.3.8-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **1 / 63** |
+| Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [docs/ps1/scene-status.md](docs/ps1/scene-status.md) |
 | Narrative status | [docs/ps1/current-status.md](docs/ps1/current-status.md) |
 | Primary acceptance gate | human visual + audible signoff |
@@ -58,7 +58,7 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Single scene validated end-to-end (fishing1) is the anchor for the
+Two scenes (fishing1, fishing2) validated end-to-end anchor the
 scene-by-scene bring-up loop.
 
 ## Quick start
