@@ -105,11 +105,27 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 
-# Step 5: Create tag
+# Step 5: Create tag pointing at a minimal orphan commit whose TREE
+# contains only jcreborn.bin + jcreborn.cue. Pure git — no GitHub CLI
+# required. GitHub's auto-generated "Source code (zip|tar.gz)" download
+# for the tag is built from the tag-commit's tree, so with this approach
+# downloading the release = downloading just the two ISO files.
 echo ""
-echo -e "${YELLOW}=== Step 5: Creating git tag ===${NC}"
-git tag -a "$TAG_NAME" -m "$RELEASE_MSG"
-echo "Created tag: $TAG_NAME"
+echo -e "${YELLOW}=== Step 5: Creating minimal-tree release tag ===${NC}"
+BIN_BLOB=$(git hash-object -w "$RELEASE_DIR/jcreborn.bin")
+CUE_BLOB=$(git hash-object -w "$RELEASE_DIR/jcreborn.cue")
+TAG_TREE_SHA=$(printf '100644 blob %s\tjcreborn.bin\n100644 blob %s\tjcreborn.cue\n' \
+    "$BIN_BLOB" "$CUE_BLOB" | git mktree)
+# Record the main-branch release commit as the tag commit's parent so
+# provenance is preserved (git log --all, tag -> commit -> parent chain).
+MAIN_RELEASE_SHA=$(git rev-parse HEAD)
+TAG_COMMIT_MSG="$TAG_NAME: $RELEASE_MSG
+
+Tree = jcreborn.bin + jcreborn.cue only.
+Full source at parent commit $MAIN_RELEASE_SHA."
+TAG_COMMIT_SHA=$(printf '%s' "$TAG_COMMIT_MSG" | git commit-tree "$TAG_TREE_SHA" -p "$MAIN_RELEASE_SHA")
+git tag -a "$TAG_NAME" -m "$RELEASE_MSG" "$TAG_COMMIT_SHA"
+echo "Created tag: $TAG_NAME -> $TAG_COMMIT_SHA (tree has 2 files)"
 
 # Step 6: Push to GitHub
 echo ""
@@ -117,38 +133,6 @@ echo -e "${YELLOW}=== Step 6: Pushing to GitHub ===${NC}"
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$CURRENT_BRANCH"
 git push origin "$TAG_NAME"
-
-# Step 7: Create a GitHub Release with ONLY jcreborn.bin + jcreborn.cue
-# as downloadable assets. Requires the `gh` CLI to be authenticated
-# (`gh auth login` once per machine). GitHub will still auto-attach
-# "Source code (zip|tar.gz)" — that behaviour is baked into the
-# platform and cannot be disabled — but the ISO files become the
-# primary download and the notes point at them.
-echo ""
-echo -e "${YELLOW}=== Step 7: Creating GitHub Release with ISO attached ===${NC}"
-GH_BIN="$(command -v gh 2>/dev/null || echo "$HOME/bin/gh")"
-if [ ! -x "$GH_BIN" ]; then
-    echo -e "${YELLOW}gh CLI not found — skipping GitHub Release creation.${NC}"
-    echo -e "${YELLOW}Install it from https://cli.github.com/ and run \`gh auth login\`,${NC}"
-    echo -e "${YELLOW}then rerun:  \`$GH_BIN release create $TAG_NAME release/jcreborn.bin release/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"\`${NC}"
-else
-    if ! "$GH_BIN" auth status >/dev/null 2>&1; then
-        echo -e "${YELLOW}gh is installed but not authenticated. Run \`gh auth login\` and then:${NC}"
-        echo -e "${YELLOW}  $GH_BIN release create $TAG_NAME release/jcreborn.bin release/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
-    else
-        NOTES="$RELEASE_MSG
-
-Download **jcreborn.bin** + **jcreborn.cue** below and load \`jcreborn.cue\` in
-a PS1 emulator (DuckStation recommended). The source-code archives that
-GitHub auto-attaches are the full repo snapshot at this tag and are not
-needed to play the release."
-        "$GH_BIN" release create "$TAG_NAME" \
-            "$PROJECT_DIR/release/jcreborn.bin" \
-            "$PROJECT_DIR/release/jcreborn.cue" \
-            --title "$TAG_NAME" \
-            --notes "$NOTES"
-    fi
-fi
 
 echo ""
 echo -e "${GREEN}======================================"
