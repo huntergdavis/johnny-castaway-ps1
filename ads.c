@@ -2295,6 +2295,13 @@ void adsCaptureCurrentFrame(void)
  * zero-initialized. */
 void adsPilotPreloadBackgrndBmp(void)
 {
+    /* Release any prior BMP data in slot 0 BEFORE ttmInitSlot zeros the
+     * slot metadata — otherwise re-entry (screensaver loop replaying a
+     * scene) silently leaks the previous sprite array because
+     * grLoadBmp's internal release check sees numSprites[0] == 0 after
+     * the memset and skips its normal release step. */
+    if (ttmBackgroundSlot.numSprites[0])
+        grReleaseBmp(&ttmBackgroundSlot, 0);
     ttmInitSlot(&ttmBackgroundSlot);
     grLoadBmp(&ttmBackgroundSlot, 0, "BACKGRND.BMP");
 }

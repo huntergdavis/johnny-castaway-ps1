@@ -120,6 +120,17 @@ static int hostForcedLowTide = -1;
 static int hostForcedRaftStage = -1;
 static int hostForcedNight = -1;     /* -1=unset, 0|1 forces islandState.night */
 static int hostForcedHoliday = -1;   /* -1=unset, 0..4 forces islandState.holiday */
+
+/* Screensaver loop: fgpilot mode replays the scene forever with randomized
+ * variant params per iteration, unless the `noloop` boot token is set.
+ * Variant fields that were explicitly forced via BOOTMODE (night, lowtide,
+ * raft-stage, holiday) stay forced across iterations. */
+static int screensaverLoopDisabled = 0;
+
+/* Scenes that have reached the "fully validated" bar in
+ * docs/ps1/scene-status.md. Expand as scenes are signed off. */
+static const char *kProvenScenes[] = { "fishing1" };
+#define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;
 static int hostForcedSceneOffsetY = 0;
@@ -135,11 +146,37 @@ static int hostForcedLowTide = -1;
 static int hostForcedRaftStage = -1;
 static int hostForcedNight = -1;
 static int hostForcedHoliday = -1;
+static int screensaverLoopDisabled = 0;
+static const char *kProvenScenes[] = { "fishing1" };
+#define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;
 static int hostForcedSceneOffsetY = 0;
 static int hostCapturePreludeFrame = 0;
 #endif
+
+/* Pick the scene to play on this screensaver-loop iteration. If the user
+ * explicitly named a scene on the fgpilot command line, we replay THAT
+ * scene every iteration with random variants; if no scene was named we
+ * free-select from the kProvenScenes array (so `fgpilot` alone cycles
+ * through every validated scene). */
+static const char *fgLoopNextScene(const char *explicitScene)
+{
+    if (explicitScene && explicitScene[0] != '\0')
+        return explicitScene;
+    return kProvenScenes[rand() % NUM_PROVEN_SCENES];
+}
+
+/* Set islandState variant fields for one iteration. Fields explicitly
+ * forced via BOOTMODE (hostForced* >= 0) stay forced; unforced fields
+ * get a fresh random value each call. */
+static void fgLoopApplyVariant(void)
+{
+    islandState.night   = (hostForcedNight     >= 0) ? hostForcedNight     : (rand() & 1);
+    islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
+    islandState.holiday = (hostForcedHoliday   >= 0) ? hostForcedHoliday   : (rand() % 5);
+    islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
+}
 
 #ifdef PS1_BUILD
 #define PS1_BOOT_OVERRIDE_FILE "BOOTMODE.TXT"
@@ -338,6 +375,8 @@ static void ps1ApplyBootOverride(char *buffer)
             hostForcedSceneOffsetY = atoi(tokens[i + 2]);
             hostForcedSceneOffsetValid = 1;
             i += 2;
+        } else if (!strcmp(tokens[i], "noloop")) {
+            screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "capture-prelude-frame")) {
             hostCapturePreludeFrame = 1;
         }
@@ -554,6 +593,7 @@ static void usage()
         printf("         capture-overlay - embed a machine-readable debug overlay in captures\n");
         printf("         capture-overlay-mask - draw overlay background only for paired baseline captures\n");
         printf("         capture-foreground-only - capture composited non-background layers over magenta key\n");
+        printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
         printf("         capture-sound-events FILE - append {frame,sample} JSONL for every PLAY_SAMPLE opcode\n");
         printf("         capture-scene-label TEXT - annotate metadata with the scene label\n");
         printf("         seed N          - force deterministic RNG seed for host runs\n");
@@ -726,6 +766,9 @@ static void parseArgs(int argc, char **argv)
             }
             else if (!strcmp(argv[i], "capture-foreground-only")) {
                 grCaptureForegroundOnly = 1;
+            }
+            else if (!strcmp(argv[i], "noloop")) {
+                screensaverLoopDisabled = 1;
             }
             else if (!strcmp(argv[i], "capture-sound-events")) {
                 if (i + 1 < argc) {
@@ -997,7 +1040,18 @@ int main(int argc, char **argv)
         adsPlay(args[0], atoi(args[1]));
     }
     else if (argForegroundPilot) {
-        foregroundPilotPlay();
+        /* Screensaver loop: replay indefinitely with randomized variants
+         * until the user quits or `noloop` was set. hostForced* fields
+         * (applied above) stay forced; fgLoopApplyVariant re-randomizes
+         * only the unforced ones on each iteration. */
+        const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
+                                    ? ps1BootForegroundOverlayScene
+                                    : ((numArgs >= 1) ? args[0] : NULL);
+        do {
+            fgLoopApplyVariant();
+            foregroundPilotSetScene(fgLoopNextScene(explicitScene));
+            foregroundPilotPlay();
+        } while (!screensaverLoopDisabled);
     }
     else {
         storyPlay();
@@ -1112,7 +1166,14 @@ int main(int argc, char **argv)
         printf("Initializing graphics...\n");
         graphicsInit();
         printf("Graphics initialized\n");
-        foregroundPilotPlay();
+        /* Host fgpilot path: same screensaver loop as PS1. See comment
+         * on the PS1 branch above. */
+        const char *explicitScene = (numArgs >= 1) ? args[0] : NULL;
+        do {
+            fgLoopApplyVariant();
+            foregroundPilotSetScene(fgLoopNextScene(explicitScene));
+            foregroundPilotPlay();
+        } while (!screensaverLoopDisabled);
         graphicsEnd();
         printf("Shutdown complete\n");
     }
