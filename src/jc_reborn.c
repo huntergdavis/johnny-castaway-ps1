@@ -217,6 +217,7 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlay = 0;
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
+    foregroundPilotSetHeapProbe(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
     ps1BootDirectSceneIndex = -1;
@@ -377,6 +378,8 @@ static void ps1ApplyBootOverride(char *buffer)
             i += 2;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
+        } else if (!strcmp(tokens[i], "heap-probe")) {
+            foregroundPilotSetHeapProbe(1);
         } else if (!strcmp(tokens[i], "capture-prelude-frame")) {
             hostCapturePreludeFrame = 1;
         }

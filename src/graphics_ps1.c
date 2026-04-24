@@ -333,6 +333,12 @@ static void grCaptureEmitFrameMetadataLine(void)
 static uint16 nextVRAMX = 640;  /* Start to the right of framebuffer */
 static uint16 nextVRAMY = 4;    /* Below CLUTs */
 
+static void grResetVramCursor(void)
+{
+    nextVRAMX = 640;
+    nextVRAMY = 4;
+}
+
 /* VRAM scratch allocator for per-frame GPU sprite textures.
  * Scratch area: (640,4) to (1023,511) — right of framebuffer, below CLUT.
  * Reset each frame by grBeginFrame(). */
@@ -2559,6 +2565,12 @@ void grInitEmptyBackground()
         grFreeLayer(grBackgroundSfc);
     }
 
+    /* Reset VRAM allocation cursor before grNewEmptyBackground bumps it.
+     * Without this the screensaver loop walks the cursor past the PS1 VRAM
+     * width (1024 px) after ~2 iterations, and the 3rd scene's background
+     * surface lands at an invalid VRAM coordinate. */
+    grResetVramCursor();
+
     grBackgroundSfc = grNewEmptyBackground();
 
     /* Create empty RAM tiles for sprite compositing (needed by grCompositeToBackground)
@@ -2630,6 +2642,7 @@ struct TGrCleanRect {
     sint16 x, y;
     uint16 width, height;
     uint16 *pixels;
+    uint32 capacityBytes;
 };
 
 static struct TGrCleanRect gGrCleanRects[GR_MAX_CLEAN_RECTS];
@@ -2709,16 +2722,47 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
     grMarkRectDirty(r->x, r->y, r->x + (int)r->width, r->y + (int)r->height);
 }
 
-void grFreeCleanBgRects(void)
+static void grResetCleanBgRects(int releasePixels)
 {
     int i;
-    for (i = 0; i < gGrCleanRectCount; i++) {
-        if (gGrCleanRects[i].pixels) {
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        if (releasePixels && gGrCleanRects[i].pixels) {
             free(gGrCleanRects[i].pixels);
             gGrCleanRects[i].pixels = NULL;
+            gGrCleanRects[i].capacityBytes = 0;
         }
+        gGrCleanRects[i].x = 0;
+        gGrCleanRects[i].y = 0;
+        gGrCleanRects[i].width = 0;
+        gGrCleanRects[i].height = 0;
     }
     gGrCleanRectCount = 0;
+}
+
+void grFreeCleanBgRects(void)
+{
+    grResetCleanBgRects(1);
+}
+
+void grDeactivateCleanBgRects(void)
+{
+    grResetCleanBgRects(0);
+}
+
+int grCleanBgRectsCount(void)
+{
+    return gGrCleanRectCount;
+}
+
+unsigned long grCleanBgRectsBytes(void)
+{
+    unsigned long total = 0;
+    int i;
+    for (i = 0; i < gGrCleanRectCount; i++)
+        total += (unsigned long)gGrCleanRects[i].width *
+                 (unsigned long)gGrCleanRects[i].height *
+                 (unsigned long)sizeof(uint16);
+    return total;
 }
 
 /* Set up rect-based clean backup. Drops any existing rects first (also any
@@ -2728,26 +2772,50 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
                        const uint16 *wArr, const uint16 *hArr, int n)
 {
     int i;
-    grFreeCleanBgRects();
+    uint32 requiredBytes[GR_MAX_CLEAN_RECTS];
+    int allocatedThisCall[GR_MAX_CLEAN_RECTS];
+
+    grDeactivateCleanBgRects();
     grFreeCleanBgTiles();  /* mutually exclusive: rect-mode replaces tile-mode */
 
+    if (xArr == NULL || yArr == NULL || wArr == NULL || hArr == NULL || n <= 0)
+        return 0;
     if (n > GR_MAX_CLEAN_RECTS) n = GR_MAX_CLEAN_RECTS;
+
+    for (i = 0; i < GR_MAX_CLEAN_RECTS; i++) {
+        requiredBytes[i] = 0;
+        allocatedThisCall[i] = 0;
+    }
+
+    /* Atomic allocation phase: all requested rect buffers must exist before
+     * any rect becomes active. Otherwise a partial clean-restore set can both
+     * leak and leave stale pixels from a prior foreground frame. */
     for (i = 0; i < n; i++) {
-        size_t size = (size_t)wArr[i] * (size_t)hArr[i] * sizeof(uint16);
+        requiredBytes[i] = (uint32)wArr[i] * (uint32)hArr[i] * (uint32)sizeof(uint16);
+        if (requiredBytes[i] == 0)
+            goto fail;
+        if (gGrCleanRects[i].capacityBytes < requiredBytes[i]) {
+            if (gGrCleanRects[i].pixels != NULL) {
+                free(gGrCleanRects[i].pixels);
+                gGrCleanRects[i].pixels = NULL;
+                gGrCleanRects[i].capacityBytes = 0;
+            }
+            gGrCleanRects[i].pixels = (uint16 *)malloc(requiredBytes[i]);
+            if (gGrCleanRects[i].pixels == NULL)
+                goto fail;
+            gGrCleanRects[i].capacityBytes = requiredBytes[i];
+            allocatedThisCall[i] = 1;
+        }
+    }
+
+    for (i = 0; i < n; i++) {
         gGrCleanRects[i].x = xArr[i];
         gGrCleanRects[i].y = yArr[i];
         gGrCleanRects[i].width = wArr[i];
         gGrCleanRects[i].height = hArr[i];
-        gGrCleanRects[i].pixels = (size > 0) ? (uint16 *)malloc(size) : NULL;
-        if (gGrCleanRects[i].pixels != NULL) {
-            grCleanRectCopyOut(&gGrCleanRects[i]);
-            gGrCleanRectCount++;
-        } else {
-            /* alloc failed — skip this rect but keep going */
-            gGrCleanRects[i].width = 0;
-            gGrCleanRects[i].height = 0;
-        }
+        grCleanRectCopyOut(&gGrCleanRects[i]);
     }
+    gGrCleanRectCount = n;
 
     /* Force a full first-frame upload. */
     grMarkAllTilesDirty();
@@ -2756,6 +2824,17 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         prevDirtyMaxY[t] = 239;
     }
     return gGrCleanRectCount;
+
+fail:
+    for (i = 0; i < n; i++) {
+        if (allocatedThisCall[i] && gGrCleanRects[i].pixels != NULL) {
+            free(gGrCleanRects[i].pixels);
+            gGrCleanRects[i].pixels = NULL;
+            gGrCleanRects[i].capacityBytes = 0;
+        }
+    }
+    grDeactivateCleanBgRects();
+    return 0;
 }
 
 /* Per-frame: restore each clean rect from its saved buffer into bg tiles.

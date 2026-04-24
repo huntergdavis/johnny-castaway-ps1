@@ -17,6 +17,7 @@
 #include "sound_ps1.h"
 #include "story.h"
 #include "ttm.h"
+#include "utils.h"
 
 extern uint16 ps1AdsDbgActiveThreads;
 extern uint16 ps1AdsDbgReplayCount;
@@ -104,7 +105,13 @@ struct TFgPilotRuntime {
     struct TFgPilotHeader header;
     struct TFgPilotEntryTable entryTable;
     struct TFgPilotEntry currentEntry;
-    uint8 *currentFrameData;
+    uint8 *currentFrameData;        /* Points inside frameBuffer (not separately alloc'd). */
+    uint8 *frameBuffer;             /* Pre-allocated max-frame-size buffer; one per scene. */
+    uint32 frameBufferSize;         /* Capacity of frameBuffer. */
+    uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
+    uint32 streamScratchSize;       /* Capacity of streamScratch. */
+    CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
+    uint8 packCdFileValid;
     struct TFgPilotSoundEvent *soundEvents;
     uint16 soundEventCount;
     uint16 soundEventCursor;
@@ -136,6 +143,7 @@ static uint8 gFgAdsMatchEver = 0;
 static uint8 gFgStartAttemptEver = 0;
 static uint8 gFgStartedEver = 0;
 static uint8 gFgComposedEver = 0;
+static uint8 gFgHeapProbeEnabled = 0;
 static struct TTtmSlot gFgOccluderSlot;
 static uint8 gFgOccluderSlotLoaded = 0;
 static struct TFgOccluderFrame *gFgOccluderFrames = NULL;
@@ -1180,12 +1188,79 @@ static void fgPlayTestCard(void)
     }
 }
 
+/* Scene-local streaming buffers: allocated once per scene and reused for every
+ * frame in that scene. They are intentionally released at scene boundaries so
+ * the next backdrop load starts with maximum contiguous heap. */
+static uint8 *gFgFrameBuffer = NULL;
+static uint32 gFgFrameBufferSize = 0;
+static uint8 *gFgStreamScratch = NULL;
+static uint32 gFgStreamScratchSize = 0;
+
+static void fgReleaseStreamBuffers(void)
+{
+    if (gFgFrameBuffer != NULL) {
+        free(gFgFrameBuffer);
+        gFgFrameBuffer = NULL;
+    }
+    gFgFrameBufferSize = 0;
+    if (gFgStreamScratch != NULL) {
+        free(gFgStreamScratch);
+        gFgStreamScratch = NULL;
+    }
+    gFgStreamScratchSize = 0;
+}
+
+static unsigned long fgProbeLargestAlloc(void)
+{
+    unsigned long lo = 0;
+    unsigned long hi = 512ul * 1024ul;
+
+    while ((hi - lo) > 1024ul) {
+        unsigned long mid = ((lo + hi + 1023ul) / 2048ul) * 1024ul;
+        void *p;
+        if (mid <= lo)
+            mid = lo + 1024ul;
+        p = malloc((size_t)mid);
+        if (p != NULL) {
+            free(p);
+            lo = mid;
+        } else {
+            hi = mid - 1024ul;
+        }
+    }
+
+    return lo;
+}
+
+static void fgHeapProbe(const char *phase, const char *sceneName)
+{
+    unsigned long largest;
+
+    if (!gFgHeapProbeEnabled)
+        return;
+
+    largest = fgProbeLargestAlloc();
+    printf("FGHEAP phase=%s scene=%s largest=%lu fg=%lu scratch=%lu rects=%d rect_bytes=%lu\n",
+           phase != NULL ? phase : "?",
+           sceneName != NULL ? sceneName : "?",
+           largest,
+           (unsigned long)gFgFrameBufferSize,
+           (unsigned long)gFgStreamScratchSize,
+           grCleanBgRectsCount(),
+           grCleanBgRectsBytes());
+}
+
 static void fgRuntimeReset(void)
 {
-    if (gFgRuntime.currentFrameData != NULL) {
-        free(gFgRuntime.currentFrameData);
-        gFgRuntime.currentFrameData = NULL;
-    }
+    /* currentFrameData now points inside gFgFrameBuffer — don't free it
+     * separately. The persistent buffers (gFgFrameBuffer / gFgStreamScratch)
+     * survive the reset on purpose; only per-scene state is cleared. */
+    gFgRuntime.currentFrameData = NULL;
+    gFgRuntime.frameBuffer = NULL;
+    gFgRuntime.frameBufferSize = 0;
+    gFgRuntime.streamScratch = NULL;
+    gFgRuntime.streamScratchSize = 0;
+    gFgRuntime.packCdFileValid = 0;
     fgFreeEntryTable(&gFgRuntime.entryTable);
     if (gFgRuntime.soundEvents != NULL) {
         free(gFgRuntime.soundEvents);
@@ -1277,7 +1352,6 @@ static void fgComposeBackdropOccluders(uint16 sourceFrame)
 
 static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 {
-    const char *path = fgOverlayPackPathForScene(gFgRuntime.sceneName);
     const struct TFgPilotEntry *entry = fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
     int entryIsEmpty;
 
@@ -1301,20 +1375,32 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     }
 
     gFgRuntime.currentEntry = *entry;
+    gFgRuntime.currentFrameData = NULL;
 
-    if (gFgRuntime.currentFrameData != NULL) {
-        free(gFgRuntime.currentFrameData);
-        gFgRuntime.currentFrameData = NULL;
-    }
-
+    /* Stream the frame payload into the pre-allocated frameBuffer. Avoids
+     * the per-frame malloc+free churn of ps1_streamRead — important for
+     * screensaver-loop scenes with big per-frame payloads (fishing3's
+     * 89 KB squid-emerge frame was failing its second-iteration contiguous
+     * alloc after the heap fragmented). frameBuffer and streamScratch are
+     * allocated once at foregroundPilotRuntimeStart. */
     if (gFgRuntime.currentEntry.dataSize > 0 &&
         gFgRuntime.currentEntry.width > 0 &&
         gFgRuntime.currentEntry.height > 0) {
-        gFgRuntime.currentFrameData = ps1_streamRead(path,
-                                                     gFgRuntime.currentEntry.dataOffset,
-                                                     gFgRuntime.currentEntry.dataSize);
-        if (gFgRuntime.currentFrameData == NULL)
+        if (gFgRuntime.frameBuffer == NULL ||
+            gFgRuntime.currentEntry.dataSize > gFgRuntime.frameBufferSize ||
+            !gFgRuntime.packCdFileValid ||
+            gFgRuntime.streamScratch == NULL) {
             return 0;
+        }
+        if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
+                                            gFgRuntime.currentEntry.dataOffset,
+                                            gFgRuntime.currentEntry.dataSize,
+                                            gFgRuntime.frameBuffer,
+                                            gFgRuntime.streamScratch,
+                                            gFgRuntime.streamScratchSize)) {
+            return 0;
+        }
+        gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
     }
 
     gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
@@ -1322,6 +1408,58 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                                    gFgRuntime.presentedVBlanks);
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
+    return 1;
+}
+
+static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
+                                      uint16 *outW, uint16 *outH)
+{
+    int haveBounds = 0;
+    int minX = 0;
+    int minY = 0;
+    int maxX = 0;
+    int maxY = 0;
+    uint16 i;
+
+    if (outX == NULL || outY == NULL || outW == NULL || outH == NULL)
+        return 0;
+
+    for (i = 0; i < gFgRuntime.entryTable.count; i++) {
+        const struct TFgPilotEntry *entry = &gFgRuntime.entryTable.entries[i];
+        int x;
+        int y;
+        int endX;
+        int endY;
+
+        if (entry->width == 0 || entry->height == 0 || entry->dataSize == 0)
+            continue;
+
+        x = fgEntryDrawX(&gFgRuntime.header, entry);
+        y = fgEntryDrawY(&gFgRuntime.header, entry);
+        endX = x + (int)entry->width;
+        endY = y + (int)entry->height;
+
+        if (!haveBounds) {
+            minX = x;
+            minY = y;
+            maxX = endX;
+            maxY = endY;
+            haveBounds = 1;
+        } else {
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (endX > maxX) maxX = endX;
+            if (endY > maxY) maxY = endY;
+        }
+    }
+
+    if (!haveBounds || maxX <= minX || maxY <= minY)
+        return 0;
+
+    *outX = (sint16)minX;
+    *outY = (sint16)minY;
+    *outW = (uint16)(maxX - minX);
+    *outH = (uint16)(maxY - minY);
     return 1;
 }
 
@@ -1346,6 +1484,8 @@ int foregroundPilotRuntimeStart(const char *sceneName)
     {
         const char *path = fgOverlayPackPathForScene(sceneName);
         if (path != NULL) {
+        uint32 maxDataSize = 0;
+        uint16 i;
         if (!fgLoadHeader(path, &gFgRuntime.header))
             return 0;
         if (!fgLoadEntryTable(path, &gFgRuntime.header, &gFgRuntime.entryTable)) {
@@ -1358,6 +1498,47 @@ int foregroundPilotRuntimeStart(const char *sceneName)
             fgRuntimeReset();
             return 0;
         }
+        /* Allocate one streaming buffer pair for this scene and reuse it for
+         * every frame. This removes per-frame malloc churn without carrying
+         * the buffers across the next backdrop load. */
+        for (i = 0; i < gFgRuntime.entryTable.count; i++) {
+            if (gFgRuntime.entryTable.entries[i].dataSize > maxDataSize)
+                maxDataSize = gFgRuntime.entryTable.entries[i].dataSize;
+        }
+        if (maxDataSize > gFgFrameBufferSize) {
+            if (gFgFrameBuffer != NULL)
+                free(gFgFrameBuffer);
+            gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
+            if (gFgFrameBuffer == NULL) {
+                gFgFrameBufferSize = 0;
+                fgRuntimeReset();
+                return 0;
+            }
+            gFgFrameBufferSize = maxDataSize;
+        }
+        {
+            uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
+            if (requiredScratch > gFgStreamScratchSize) {
+                if (gFgStreamScratch != NULL)
+                    free(gFgStreamScratch);
+                gFgStreamScratch = (uint8 *)malloc(requiredScratch);
+                if (gFgStreamScratch == NULL) {
+                    gFgStreamScratchSize = 0;
+                    fgRuntimeReset();
+                    return 0;
+                }
+                gFgStreamScratchSize = requiredScratch;
+            }
+        }
+        gFgRuntime.frameBuffer = gFgFrameBuffer;
+        gFgRuntime.frameBufferSize = gFgFrameBufferSize;
+        gFgRuntime.streamScratch = gFgStreamScratch;
+        gFgRuntime.streamScratchSize = gFgStreamScratchSize;
+        if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
+            fgRuntimeReset();
+            return 0;
+        }
+        gFgRuntime.packCdFileValid = 1;
         gFgRuntime.soundEventCursor = 0;
         gFgRuntime.active = 1;
         gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
@@ -1818,6 +1999,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     uint16 adsTag = 0;
     const char *adsName = fgAdsNameForScene(sceneName, &adsTag);
     int usedWaveBackdrop = 0;
+    sint16 fgBoundsX = 0;
+    sint16 fgBoundsY = 0;
+    uint16 fgBoundsW = 0;
+    uint16 fgBoundsH = 0;
+
+    fgHeapProbe("before_scene", sceneName);
+    /* Clean-rect snapshots are tied to the current backdrop contents. Carrying
+     * their large buffers into the next backdrop load starves the second scene
+     * start on PS1, so release them before any new SCR/BMP loads. */
+    grFreeCleanBgRects();
+    fgReleaseStreamBuffers();
 
     /* Pre-load BACKGRND.BMP into the background slot NOW, before any scene
      * setup allocates bg tiles (614 KB) or ttmSlots. At this moment the
@@ -1844,6 +2036,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             grLoadScreen("OCEAN00.SCR");
             grLoadScreen("ISLETEMP.SCR");
         }
+        /* grLoadScreen ends with an unconditional grSaveCleanBgTiles()
+         * that allocates ~614 KB of clean-tile buffers. In the wave
+         * backdrop path we'll switch to rect-mode below, which discards
+         * those buffers — so free them now, BEFORE foregroundPilotRuntimeStart
+         * streams a 90+ KB first frame into the heap. Without this the
+         * 614 KB buffer stays resident during the frame alloc, fragments
+         * the heap, and the 270 KB contiguous clean-rect buffer later can't
+         * be allocated by iteration 3. */
+        grFreeCleanBgTiles();
         /* Seed initial wave positions and configure the background thread.
          * Rect-mode clean backup is deferred until after the pack header
          * loads below, so we can size it to the pack's union bbox. */
@@ -1852,19 +2053,40 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     grSetPresentDuringScreenLoad(1);
 
-    if (!foregroundPilotRuntimeStart(sceneName))
+    if (!foregroundPilotRuntimeStart(sceneName)) {
+        /* Early-return path still needs to release per-scene allocations
+         * so the loop can try the next iteration on a clean heap. */
+        fgResetBackdropOccluders();
+        fgRuntimeReset();
+        fgReleaseStreamBuffers();
+        grFreeCleanBgRects();
+        adsPilotReleaseBackdrop(0);
+        fgHeapProbe("start_failed_cleanup", sceneName);
         return;
+    }
+    fgHeapProbe("after_pack_start", sceneName);
 
     /* Now that the pack header is loaded, size the rect-mode clean backup
-     * to cover the pack's union bbox (fishing1 cast arc reaches y=195,
-     * fishing3 catch arc rises to y=143 and extends right to x=637).
+     * to cover the actual runtime draw bbox. The pack header union is captured
+     * in host/global coordinates, while FG1 entries may be scene-relative.
+     * Fishing3 exposes the difference: some squid frames draw above the header
+     * union after the current island offset is applied.
      * Only the wave-backdrop path uses rect-mode; the storyPrepareSceneBaseByAds
      * branch set up full-tile clean copies via grSaveCleanBgTiles. */
     if (usedWaveBackdrop) {
-        adsPilotSaveCleanBgRectsForPack((sint16)gFgRuntime.header.unionX,
-                                         (sint16)gFgRuntime.header.unionY,
-                                         gFgRuntime.header.unionWidth,
-                                         gFgRuntime.header.unionHeight);
+        if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
+                                        &fgBoundsW, &fgBoundsH) ||
+            !adsPilotSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
+                                             fgBoundsW, fgBoundsH)) {
+            fgResetBackdropOccluders();
+            fgRuntimeReset();
+            fgReleaseStreamBuffers();
+            grFreeCleanBgRects();
+            adsPilotReleaseBackdrop(0);
+            fgHeapProbe("clean_rect_failed_cleanup", sceneName);
+            return;
+        }
+        fgHeapProbe("after_clean_rect_save", sceneName);
     }
 
     while (foregroundPilotRuntimeActive()) {
@@ -1876,6 +2098,24 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
 
     fgResetBackdropOccluders();
+
+    /* End-of-scene heap cleanup — the screensaver loop replays scenes
+     * indefinitely, so every per-scene allocation needs to come back to
+     * the heap before the next scene starts. Without this the fragmented
+     * state accumulates and a later scene's large contiguous alloc
+     * (clean-rect buffer ~270 KB, frame payload ~90 KB, BACKGRND PSB
+     * ~93 KB) fails silently after 2-3 iterations. */
+    fgRuntimeReset();
+    fgReleaseStreamBuffers();
+    grFreeCleanBgRects();
+    /* Release variant-dependent BMP slots (MRAFT slot 1 is already
+     * released mid-call by adsPilotEnableWaveBackdrop; slot 2 is HOLIDAY
+     * which may or may not be loaded). Leave slot 0 (BACKGRND) alone —
+     * adsPilotPreloadBackgrndBmp's fast-path will keep it across the
+     * next iteration, saving a 93 KB PSB realloc and stabilizing the
+     * heap for the screensaver loop. */
+    adsPilotReleaseBackdrop(1);
+    fgHeapProbe("after_scene_cleanup", sceneName);
 }
 
 static void fgPlayAdsIntro(void)
@@ -1945,6 +2185,11 @@ void foregroundPilotSetScene(const char *sceneName)
     gForegroundPilotScene[i] = '\0';
     gForegroundPilotRequestedMode = fgSceneModeForName(gForegroundPilotScene);
     gFgConfiguredEver = 1;
+}
+
+void foregroundPilotSetHeapProbe(int enabled)
+{
+    gFgHeapProbeEnabled = enabled ? 1 : 0;
 }
 
 int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)
@@ -2080,6 +2325,11 @@ void foregroundPilotSetScene(const char *sceneName)
     strncpy(gForegroundPilotScene, sceneName, sizeof(gForegroundPilotScene) - 1);
     gForegroundPilotScene[sizeof(gForegroundPilotScene) - 1] = '\0';
     gForegroundPilotRequestedMode = 1;
+}
+
+void foregroundPilotSetHeapProbe(int enabled)
+{
+    (void)enabled;
 }
 
 int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)

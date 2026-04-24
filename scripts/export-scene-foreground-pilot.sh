@@ -10,6 +10,7 @@ PACK_BASENAME="${4:-$(printf '%s' "$SCENE_SLUG" | tr '[:lower:]' '[:upper:]' | t
 RAW_FRAME_INDEX="${5:-24}"
 RAW_BASENAME="${6:-FISH}"
 START_FRAME="${7:-0}"
+TIMELINE_SPEED="${8:-1.0}"
 
 if [ -z "$OUTPUT_DIR" ]; then
   OUTPUT_DIR="$PROJECT_ROOT/host-results/${SCENE_SLUG}-foreground-pilot"
@@ -69,6 +70,7 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --frames-dir "$HOST_CAPTURE_DIR/frames" \
   --frame-meta-dir "$HOST_CAPTURE_DIR/frame-meta" \
   --sound-events "$HOST_CAPTURE_DIR/sound-events.jsonl" \
+  --timeline-speed "$TIMELINE_SPEED" \
   --output-pack "$PACK_PATH" \
   --output-json "$PACK_JSON"
 

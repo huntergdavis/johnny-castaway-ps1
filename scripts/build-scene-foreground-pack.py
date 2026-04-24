@@ -317,6 +317,12 @@ def main():
     parser.add_argument("--delta-from-previous", action="store_true")
     parser.add_argument("--frame-meta-dir")
     parser.add_argument(
+        "--timeline-speed",
+        type=float,
+        default=1.0,
+        help="Scale host-tick deadlines by this factor. 2.0 plays the captured timeline twice as fast.",
+    )
+    parser.add_argument(
         "--sound-events",
         help="JSONL of captured sound events (one {\"frame\": N, \"sample\": M} per line).",
     )
@@ -352,6 +358,8 @@ def main():
         raise SystemExit(f"no frame images found in {frames_dir}")
     if args.frame_step <= 0:
         raise SystemExit("--frame-step must be > 0")
+    if args.timeline_speed <= 0:
+        raise SystemExit("--timeline-speed must be > 0")
 
     selected_indices = list(range(0, len(frame_paths), args.frame_step))
     if selected_indices[-1] != (len(frame_paths) - 1):
@@ -367,15 +375,14 @@ def main():
     union_max_y = None
     prev_rgb = None
 
-    # Pre-load sound events so we can mark frames near them as
-    # "do-not-coalesce". The runtime fires events when an entry with
-    # source_frame >= event.source_frame + SOUND_EVENT_DELAY_FRAMES loads,
-    # and assumes that "N host frames ahead" ≈ N vblanks ahead. If
-    # adjacent host frames near an event get coalesced, the gap between
-    # their pack entries becomes much larger than 1 vblank and the SPU
-    # key-on lands noticeably off-cue. Protecting a window of frames
-    # around each event preserves dense coverage so the fire threshold
-    # lands at the intended vblank.
+    # Pre-load sound events so we can mark the fire-threshold frame for
+    # each event as "do-not-coalesce". The runtime fires a sound event
+    # when an entry with source_frame >= event.source_frame + DELAY loads.
+    # We need that specific frame to exist as its own pack entry; frames
+    # before it can freely coalesce (deadline timing is preserved by the
+    # summed hold_ticks). Guarding only the trigger frame keeps the pack
+    # small — a wider guard forced duplicate heavy payloads and broke the
+    # PS1 heap after a few loops.
     _raw_sound_events = load_sound_events(
         Path(args.sound_events) if args.sound_events else None
     )
@@ -384,14 +391,13 @@ def main():
         _first_abs_frame = int(_first_frame_stem.split("_")[-1])
     except ValueError:
         _first_abs_frame = 0
-    SOUND_EVENT_COALESCE_GUARD = 4  # covers delay=3 + 1 frame of margin
+    SOUND_EVENT_DELAY_FRAMES = 3  # must match FG_SOUND_EVENT_DELAY_FRAMES in foreground_pilot.c
     protected_source_indices: set[int] = set()
     for ev_frame, _ev_sample in _raw_sound_events:
-        positional = ev_frame - _first_abs_frame
+        positional = ev_frame - _first_abs_frame + SOUND_EVENT_DELAY_FRAMES
         if positional < 0:
             continue
-        for offset in range(-1, SOUND_EVENT_COALESCE_GUARD + 1):
-            protected_source_indices.add(positional + offset)
+        protected_source_indices.add(positional)
 
     full_frames_dir: Path | None = Path(args.full_frames_dir) if args.full_frames_dir else None
     full_frame_paths: list[Path] = []
@@ -520,7 +526,11 @@ def main():
     cumulative_ticks = 0
     for row in rows:
         cumulative_ticks += row["hold_ticks"]
-        row["deadline_ticks"] = cumulative_ticks
+        if args.timeline_speed == 1.0:
+            row["deadline_ticks"] = cumulative_ticks
+        else:
+            row["source_deadline_ticks"] = cumulative_ticks
+            row["deadline_ticks"] = max(1, int((cumulative_ticks / args.timeline_speed) + 0.5))
         row["hold_vblanks"] = row["deadline_ticks"] if (header_flags & 0x0004) else row["hold_frames"]
 
     sound_events = list(_raw_sound_events)
@@ -597,10 +607,12 @@ def main():
         "fg_palette_size": len(fg_palette) if fg_palette else None,
         "output_pack": str(output_pack),
         "frame_step": args.frame_step,
+        "timeline_speed": args.timeline_speed,
         "delta_from_previous": args.delta_from_previous,
         "pack_frame_count": len(rows),
         "source_frame_count": len(frame_paths),
         "present_tick_count": sum(row["hold_ticks"] for row in rows),
+        "scaled_present_tick_count": rows[-1]["deadline_ticks"] if rows else 0,
         "present_frame_count": sum(row["hold_vblanks"] for row in rows),
         "union_bbox": None if union_min_x is None else {
             "x": union_min_x,

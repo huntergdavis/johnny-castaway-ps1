@@ -195,6 +195,9 @@ int  grSaveCleanBgRects(const sint16 *x, const sint16 *y,
                         const uint16 *w, const uint16 *h, int n);
 void grRestoreBgFromRects(void);
 void grFreeCleanBgRects(void);
+void grDeactivateCleanBgRects(void);
+int  grCleanBgRectsCount(void);
+unsigned long grCleanBgRectsBytes(void);
 void grRestoreBgTiles(void);
 void grRestoreBackgroundRectForFrame(int x, int y, int width, int height);
 void grRestoreAndCompositeDirect16BackgroundRectForFrame(int x, int y, int width, int height,
