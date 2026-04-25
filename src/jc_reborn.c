@@ -57,12 +57,18 @@ int fclose(FILE *stream);
 #include <psxgte.h>
 #include <psxcd.h>
 #include <psxapi.h>
+#include <psxpad.h>
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "sound_ps1.h"
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
+#include "pause_menu.h"
 #include "config/ps1/bootmode_embedded.h"
+
+/* Shared with events_ps1.c — populated by InitPAD(). Padtest path
+ * reads it directly. */
+extern uint8 pad_buff[2][34];
 #else
 #include "graphics.h"
 #include "events.h"
@@ -288,6 +294,15 @@ static void ps1ApplyBootOverride(char *buffer)
     char *cursor = buffer;
     int tokenBase = 0;
 
+    /* JCBOOT diag: print the entire buffer so we can confirm which
+     * boot string the runtime actually received. */
+    printf("JCBOOT applyBootOverride buffer=[%s] len_bytes_first=%d %d %d %d %d %d %d %d\n",
+           buffer ? buffer : "(null)",
+           buffer ? buffer[0] : -1, buffer ? buffer[1] : -1,
+           buffer ? buffer[2] : -1, buffer ? buffer[3] : -1,
+           buffer ? buffer[4] : -1, buffer ? buffer[5] : -1,
+           buffer ? buffer[6] : -1, buffer ? buffer[7] : -1);
+
     while (*cursor && tokenCount < (int)(sizeof(tokens) / sizeof(tokens[0]))) {
         while (*cursor && ps1IsSpace(*cursor)) {
             cursor++;
@@ -392,6 +407,75 @@ static void ps1ApplyBootOverride(char *buffer)
             ps1PerfSetEnabled(1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
+        } else if (!strcmp(tokens[i], "padtest")) {
+            /* Minimal pad-input sanity test. Runs an infinite loop that
+             * paints the background red on Start, green on Cross, blue on
+             * any other button, and black when nothing's pressed. Logs
+             * every button-bit change to TTY. Bypasses scene runtime,
+             * pause menu, ps1_perf, and everything else.
+             *
+             * This is the option-2 cheap test from the pad-debug planning:
+             * if Start works HERE in a clean PSn00bSDK environment, the
+             * issue is environment-specific to the scene runtime. If
+             * Start STILL doesn't work, the BIOS pad system is broken
+             * for our specific PSn00bSDK + DuckStation combination and
+             * we need direct SPI polling. */
+            DISPENV padDisp;
+            DRAWENV padDraw;
+            uint16 padPrevBtn = 0xFFFF;
+            uint32 padFrame = 0;
+
+            ResetGraph(0);
+            SetVideoMode(MODE_NTSC);
+            SetDefDispEnv(&padDisp, 0, 0, 320, 240);
+            SetDefDrawEnv(&padDraw, 0, 0, 320, 240);
+            padDraw.isbg = 1;
+            setRGB0(&padDraw, 0, 0, 0);
+            PutDispEnv(&padDisp);
+            PutDrawEnv(&padDraw);
+            SetDispMask(1);
+
+            InitPAD(pad_buff[0], 34, pad_buff[1], 34);
+            StartPAD();
+            ChangeClearPAD(0);
+
+            printf("PADTEST init done. Watching pad_buff[0] forever.\n");
+            printf("PADTEST PAD_START=0x%04x PAD_CROSS=0x%04x\n",
+                   PAD_START, PAD_CROSS);
+
+            for (;;) {
+                PADTYPE *pad = (PADTYPE*)pad_buff[0];
+                uint16 cur = pad->btn;
+                uint16 inv = (uint16)~cur;
+                uint8 r = 0, g = 0, b = 0;
+
+                if (inv & PAD_START)      { r = 255; }       /* red */
+                else if (inv & PAD_CROSS) { g = 255; }       /* green */
+                else if (inv != 0)        { b = 255; }       /* blue (any) */
+
+                if (cur != padPrevBtn) {
+                    printf("PADTEST frame=%lu btn %04x -> %04x inv=%04x stat=%02x type=%02x\n",
+                           (unsigned long)padFrame, padPrevBtn, cur, inv,
+                           pad->stat, pad->type);
+                    padPrevBtn = cur;
+                }
+
+                /* Repaint background each frame so color reflects state. */
+                setRGB0(&padDraw, r, g, b);
+                PutDrawEnv(&padDraw);
+
+                if ((padFrame % 60) == 0) {
+                    uint8 *raw = pad_buff[0];
+                    printf("PADTEST tick frame=%lu raw0=%02x %02x %02x %02x %02x %02x %02x %02x\n",
+                           (unsigned long)padFrame,
+                           raw[0], raw[1], raw[2], raw[3],
+                           raw[4], raw[5], raw[6], raw[7]);
+                }
+
+                VSync(0);
+                padFrame++;
+            }
+            /* unreachable */
         }
     }
 
@@ -954,6 +1038,7 @@ int main(int argc, char **argv)
 
     graphicsInit();
     ps1PrintfProbe("graphics-init", NULL);
+    pauseMenuInit();
     soundInit();
     ps1PrintfProbe("sound-init", NULL);
 
