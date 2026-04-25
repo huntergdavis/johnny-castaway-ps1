@@ -301,10 +301,12 @@ static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
     if (fgSceneEquals(sceneName, "fishing1")) {
         return islandState.lowTide ? "FG\\FISH1LOW.FG2" : "FG\\FISHING1.FG2";
     }
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return "FG\\FISHING2.FG2";
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return "FG\\FISHING3.FG2";
+    if (fgSceneEquals(sceneName, "fishing2")) {
+        return islandState.lowTide ? "FG\\FISH2LOW.FG2" : "FG\\FISHING2.FG2";
+    }
+    if (fgSceneEquals(sceneName, "fishing3")) {
+        return islandState.lowTide ? "FG\\FISH3LOW.FG2" : "FG\\FISHING3.FG2";
+    }
     return NULL;
 }
 

@@ -26,11 +26,14 @@
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
 
             <dir name="FG">
-                <file name="FISHING1.FG1" type="data" source="../../generated/ps1/foreground/FISHING1.FG1"/>
-                <file name="FISHING2.FG1" type="data" source="../../generated/ps1/foreground/FISHING2.FG1"/>
+                <file name="FISHING1.FG2" type="data" source="../../generated/ps1/foreground/FISHING1.FG2"/>
+                <file name="FISH1LOW.FG2" type="data" source="../../generated/ps1/foreground/FISH1LOW.FG2"/>
+                <file name="FISHING2.FG2" type="data" source="../../generated/ps1/foreground/FISHING2.FG2"/>
+                <file name="FISH2LOW.FG2" type="data" source="../../generated/ps1/foreground/FISH2LOW.FG2"/>
                 <file name="FISH24.RAW" type="data" source="../../generated/ps1/foreground/FISH24.RAW"/>
                 <file name="FISH22.RAW" type="data" source="../../generated/ps1/foreground/FISH22.RAW"/>
-                <file name="FISHING3.FG1" type="data" source="../../generated/ps1/foreground/FISHING3.FG1"/>
+                <file name="FISHING3.FG2" type="data" source="../../generated/ps1/foreground/FISHING3.FG2"/>
+                <file name="FISH3LOW.FG2" type="data" source="../../generated/ps1/foreground/FISH3LOW.FG2"/>
                 <file name="FISH30.RAW" type="data" source="../../generated/ps1/foreground/FISH30.RAW"/>
             </dir>
 
