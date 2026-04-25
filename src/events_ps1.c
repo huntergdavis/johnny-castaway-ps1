@@ -140,10 +140,54 @@ void eventsInit()
     printf("JCPAD bits: PAD_START=%04x PAD_CROSS=%04x PAD_SELECT=%04x PAD_TRIANGLE=%04x\n",
            (unsigned)PAD_START, (unsigned)PAD_CROSS, (unsigned)PAD_SELECT, (unsigned)PAD_TRIANGLE);
 
-    /* SPI_Init installs the timer-2 + SIO0 ack IRQ handlers and starts
-     * polling at the default 250 Hz. The callback is invoked each time
-     * a poll completes (alternating ports each tick). */
-    SPI_Init(eventsSpiPollCallback);
+    /* JCSPI: snapshot driver state IMMEDIATELY before SPI_Init for a
+     * baseline. After SPI_Init, snapshot again so we can prove the
+     * registers we want set are actually set. */
+    {
+        SPI_DbgState pre, post;
+        SPI_DbgSnapshot(&pre);
+        printf("JCSPI PRE  irq_mask=%08lx irq_stat=%08lx sio_ctrl=%08lx sio_mode=%08lx sio_baud=%08lx "
+               "tmr_ctrl=%08lx tmr_reload=%08lx default_cb=%08lx\n",
+               (unsigned long)pre.irq_mask, (unsigned long)pre.irq_stat,
+               (unsigned long)pre.sio_ctrl, (unsigned long)pre.sio_mode, (unsigned long)pre.sio_baud,
+               (unsigned long)pre.timer_ctrl, (unsigned long)pre.timer_reload,
+               (unsigned long)pre.default_cb);
+
+        /* SPI_Init installs the timer-2 + SIO0 ack IRQ handlers and starts
+         * polling at the default 250 Hz. The callback is invoked each time
+         * a poll completes (alternating ports each tick). */
+        SPI_Init(eventsSpiPollCallback);
+
+        SPI_DbgSnapshot(&post);
+        printf("JCSPI POST irq_mask=%08lx irq_stat=%08lx sio_ctrl=%08lx sio_mode=%08lx sio_baud=%08lx "
+               "tmr_ctrl=%08lx tmr_reload=%08lx tmr_value=%08lx default_cb=%08lx\n",
+               (unsigned long)post.irq_mask, (unsigned long)post.irq_stat,
+               (unsigned long)post.sio_ctrl, (unsigned long)post.sio_mode, (unsigned long)post.sio_baud,
+               (unsigned long)post.timer_ctrl, (unsigned long)post.timer_reload,
+               (unsigned long)post.timer_value, (unsigned long)post.default_cb);
+
+        /* JCSPI T1: report whether IRQ_MASK has bits 6 (timer 2) and 7
+         * (SIO0/controller) set. PSn00bSDK's InterruptCallback should
+         * unmask these. If not set, the IRQ never fires. */
+        printf("JCSPI T1 irq_mask bit6(tmr2)=%d bit7(sio0)=%d\n",
+               (post.irq_mask & 0x40) ? 1 : 0,
+               (post.irq_mask & 0x80) ? 1 : 0);
+
+        /* JCSPI T9: report computed reload value sanity. F_CPU=33868800,
+         * /8=4233600, /250=16934 (0x4226). If reload != 0x4226 the
+         * write didn't land or F_CPU was wrong. */
+        printf("JCSPI T9 timer_reload expected=0x4226 actual=0x%04lx %s\n",
+               (unsigned long)(post.timer_reload & 0xFFFF),
+               ((post.timer_reload & 0xFFFF) == 0x4226) ? "OK" : "MISMATCH");
+
+        /* JCSPI T7: report whether the default callback pointer made it
+         * into the driver context. If 0, SPI_Init didn't actually wire
+         * our callback. */
+        printf("JCSPI T7 default_cb=%08lx expected=%08lx %s\n",
+               (unsigned long)post.default_cb,
+               (unsigned long)(uint32_t)eventsSpiPollCallback,
+               (post.default_cb == (uint32_t)eventsSpiPollCallback) ? "OK" : "MISMATCH");
+    }
     printf("JCPAD SPI_Init called — driver polling at 250 Hz (125 Hz per port)\n");
 }
 
@@ -220,8 +264,10 @@ void eventsWaitTick(uint16 delay)
                    (unsigned long)padDiagCalls, inv0);
         }
 
-        /* Periodic snapshot — once per second (60 calls). */
-        if ((padDiagCalls % 60) == 0) {
+        /* Periodic snapshot — once per ~30 scene frames so SPI counters
+         * (which tick at 250 Hz independent of scene rate) advance enough
+         * between prints to be informative. */
+        if ((padDiagCalls % 30) == 0) {
             printf("JCPAD #%lu p0[stat=%02x type=%02x btn=%04x inv=%04x] p1[stat=%02x btn=%04x] "
                    "raw0=%02x %02x %02x %02x %02x %02x %02x %02x  "
                    "changed0=%d changed1=%d statchg0=%d anypress=%d startseen=%d "
@@ -233,7 +279,45 @@ void eventsWaitTick(uint16 delay)
                    padDiagBtnEverChanged0, padDiagBtnEverChanged1, padDiagStatEverChanged0,
                    padDiagAnyPressedEverSeen, padDiagStartEverSeen,
                    padDiagMinBtn0, padDiagMaxBtn0);
-            (void)raw1;  /* keep raw1 var alive — helpful if we want to log it later */
+            (void)raw1;
+
+            /* JCSPI: live driver + register snapshot. Disambiguates
+             * the "callback never fired" cases. */
+            SPI_DbgState s;
+            SPI_DbgSnapshot(&s);
+            printf("JCSPI #%lu cnt[poll=%lu ack=%lu cb=%lu rxlen=%lu] "
+                   "irq[mask=%08lx stat=%08lx] "
+                   "sio[ctrl=%04lx mode=%04lx baud=%04lx stat=%04lx] "
+                   "tmr[ctrl=%04lx reload=%04lx value=%04lx] "
+                   "ctx[port=%lu txlen=%lu rxlen=%lu cb=%08lx] "
+                   "tx=%02x %02x %02x %02x rx=%02x %02x %02x %02x %02x\n",
+                   (unsigned long)padDiagCalls,
+                   (unsigned long)s.poll_count, (unsigned long)s.ack_count,
+                   (unsigned long)s.cb_count, (unsigned long)s.last_rxlen,
+                   (unsigned long)s.irq_mask, (unsigned long)s.irq_stat,
+                   (unsigned long)s.sio_ctrl, (unsigned long)s.sio_mode,
+                   (unsigned long)s.sio_baud, (unsigned long)s.sio_stat,
+                   (unsigned long)s.timer_ctrl, (unsigned long)s.timer_reload,
+                   (unsigned long)s.timer_value,
+                   (unsigned long)s.ctx_port, (unsigned long)s.ctx_tx_len,
+                   (unsigned long)s.ctx_rx_len, (unsigned long)s.default_cb,
+                   s.tx0, s.tx1, s.tx2, s.tx3,
+                   s.rx0, s.rx1, s.rx2, s.rx3, s.rx4);
+
+            /* JCSPI verdict: classify which theory the data points to. */
+            const char *verdict = "?";
+            if (s.poll_count == 0 && s.ack_count == 0 && s.cb_count == 0) {
+                verdict = "T1/T8: timer-2 IRQ never fires (mask/InterruptCallback issue)";
+            } else if (s.poll_count > 0 && s.ack_count == 0) {
+                verdict = "T2/T3: timer fires, SIO0 /ACK never asserts (port disconnected or DuckStation SIO bug)";
+            } else if (s.poll_count > 0 && s.ack_count > 0 && s.cb_count == 0) {
+                verdict = "T7: IRQs fire but our callback isn't being invoked — handler wiring lost";
+            } else if (s.cb_count > 0 && s.last_rxlen < 5) {
+                verdict = "T10/T11: callback fires but rx_len < 5 — SPI sequence aborts before pad response";
+            } else if (s.cb_count > 0 && s.last_rxlen >= 5) {
+                verdict = "T-WORK: SPI working — rx data flowing, but no btn change → check pad_buff translation";
+            }
+            printf("JCSPI VERDICT: %s\n", verdict);
         }
     }
 

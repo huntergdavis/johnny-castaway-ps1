@@ -57,11 +57,45 @@ typedef struct _SPI_Request {
 	struct _SPI_Request	*next;
 } SPI_Request;
 
+/* JCSPI: diagnostic state snapshot. Filled by SPI_DbgSnapshot. */
+typedef struct _SPI_DbgState {
+	uint32_t	poll_count;
+	uint32_t	ack_count;
+	uint32_t	cb_count;
+	uint32_t	last_rxlen;
+	uint32_t	irq_mask;
+	uint32_t	irq_stat;
+	uint32_t	sio_ctrl;
+	uint32_t	sio_mode;
+	uint32_t	sio_baud;
+	uint32_t	sio_stat;
+	uint32_t	timer_ctrl;
+	uint32_t	timer_reload;
+	uint32_t	timer_value;
+	uint32_t	ctx_port;
+	uint32_t	ctx_tx_len;
+	uint32_t	ctx_rx_len;
+	uint32_t	default_cb;
+	uint8_t		tx0, tx1, tx2, tx3;
+	uint8_t		rx0, rx1, rx2, rx3, rx4;
+} SPI_DbgState;
+
+extern volatile uint32_t spi_dbg_poll_count;
+extern volatile uint32_t spi_dbg_ack_count;
+extern volatile uint32_t spi_dbg_cb_count;
+extern volatile uint32_t spi_dbg_last_rxlen;
+
 /* Public API */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Snapshot driver counters + IRQ/SIO/Timer registers. Safe from
+ * the main loop, NOT from an IRQ handler.
+ */
+void SPI_DbgSnapshot(SPI_DbgState *out);
 
 /**
  * @brief Allocates a new request object and adds it to the request queue. The

@@ -27,6 +27,15 @@ static volatile SPI_Context  _context;
 static volatile SPI_Request  *_current_req;
 static volatile SPI_Callback _default_cb;
 
+/* JCSPI: instrumentation counters. Live in this TU so the IRQ handlers
+ * can bump them without crossing a function-call boundary. Read by the
+ * main loop (events_ps1.c) via SPI_DbgSnapshot(). All volatile so the
+ * compiler doesn't cache reads in the snapshotter. */
+volatile uint32_t spi_dbg_poll_count = 0;   /* timer 2 IRQ enters */
+volatile uint32_t spi_dbg_ack_count  = 0;   /* SIO0 /ACK IRQ enters */
+volatile uint32_t spi_dbg_cb_count   = 0;   /* user callback invoked */
+volatile uint32_t spi_dbg_last_rxlen = 0;   /* rx_len at last poll IRQ */
+
 /* Request queue management */
 
 static void _spi_create_poll_req(void) {
@@ -68,13 +77,18 @@ static void _spi_next_req(void) {
 /* Interrupt handlers */
 
 static void _spi_poll_irq_handler(void) {
+	spi_dbg_poll_count++;
+	spi_dbg_last_rxlen = _context.rx_len;
+
 	// Fetch the last response byte, which wasn't followed by a pulse on /ACK,
 	// from the RX FIFO.
 	if (SIO_STAT(0) & 0x0002)
 		_context.rx_buff[_context.rx_len - 1] = (uint8_t) SIO_DATA(0);
 
-	if (_context.callback)
+	if (_context.callback) {
+		spi_dbg_cb_count++;
 		_context.callback(_context.port, _context.rx_buff, _context.rx_len);
+	}
 
 	// If the request queue is empty, create a pad polling request.
 	if (_current_req)
@@ -100,6 +114,8 @@ static void _spi_poll_irq_handler(void) {
 }
 
 static void _spi_ack_irq_handler(void) {
+	spi_dbg_ack_count++;
+
 	// Wait until /ACK is pulled up by the controller before sending the next
 	// byte. According to nocash docs, this has to be done before resetting the
 	// IRQ.
@@ -129,6 +145,57 @@ static void _spi_ack_irq_handler(void) {
 		SIO_DATA(0) = (uint32_t) _context.tx_buff[_context.rx_len];
 	else
 		SIO_DATA(0) = 0x00;
+}
+
+/* JCSPI: snapshot helper. Copies all relevant state into the caller's
+ * struct. Designed to be called from the main loop, NOT from an IRQ
+ * handler — reads volatile registers and the static SPI context. */
+void SPI_DbgSnapshot(SPI_DbgState *out) {
+	if (!out) return;
+
+	/* Counters (T1, T2, T6, T13). */
+	out->poll_count  = spi_dbg_poll_count;
+	out->ack_count   = spi_dbg_ack_count;
+	out->cb_count    = spi_dbg_cb_count;
+	out->last_rxlen  = spi_dbg_last_rxlen;
+
+	/* IRQ state (T1, T6, T8). IRQ_MASK = 0x1F801074, IRQ_STAT = 0x1F801070.
+	 * If bits 6 (timer 2) and 7 (controller/memcard) aren't set in
+	 * IRQ_MASK, the IRQs never reach the CPU. */
+	out->irq_mask    = (uint32_t)IRQ_MASK;
+	out->irq_stat    = (uint32_t)IRQ_STAT;
+
+	/* SIO state (T4, T11). After SPI_Init we expect:
+	 *   SIO_MODE = 0x000d, SIO_BAUD = 0x0088, SIO_CTRL bit 12 set
+	 *   while polling. If MODE/BAUD revert to 0, someone else is
+	 *   resetting the port. */
+	out->sio_ctrl    = (uint32_t)SIO_CTRL(0);
+	out->sio_mode    = (uint32_t)SIO_MODE(0);
+	out->sio_baud    = (uint32_t)SIO_BAUD(0);
+	out->sio_stat    = (uint32_t)SIO_STAT(0);
+
+	/* Timer 2 state (T5, T9). TIMER_CTRL(2) we set to 0x0258,
+	 * TIMER_RELOAD(2) we set to (F_CPU / 8) / 250 = 16934. If reload
+	 * read-back differs from expected, the write didn't land. */
+	out->timer_ctrl  = (uint32_t)TIMER_CTRL(2);
+	out->timer_reload= (uint32_t)TIMER_RELOAD(2);
+	out->timer_value = (uint32_t)TIMER_VALUE(2);
+
+	/* Internal context (T7, T10, T12). port should toggle every poll;
+	 * tx_buff[0..3] should be 01 42 00 00 for a digital pad request. */
+	out->ctx_port    = _context.port;
+	out->ctx_tx_len  = _context.tx_len;
+	out->ctx_rx_len  = _context.rx_len;
+	out->default_cb  = (uint32_t)_default_cb;
+	out->tx0         = _context.tx_buff[0];
+	out->tx1         = _context.tx_buff[1];
+	out->tx2         = _context.tx_buff[2];
+	out->tx3         = _context.tx_buff[3];
+	out->rx0         = _context.rx_buff[0];
+	out->rx1         = _context.rx_buff[1];
+	out->rx2         = _context.rx_buff[2];
+	out->rx3         = _context.rx_buff[3];
+	out->rx4         = _context.rx_buff[4];
 }
 
 /* Public API */
