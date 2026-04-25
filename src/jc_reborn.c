@@ -61,6 +61,7 @@ int fclose(FILE *stream);
 #include "graphics_ps1.h"
 #include "events_ps1.h"
 #include "sound_ps1.h"
+#include "memcard.h"
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
 #include "pause_menu.h"
@@ -1116,6 +1117,13 @@ int main(int argc, char **argv)
     pauseMenuInit();
     soundInit();
     ps1PrintfProbe("sound-init", NULL);
+
+    /* Restore settings from memcard. memcard.c uses our own SPI driver
+     * (no BIOS card driver = no scene-rate regression). */
+    if (memcardLoadSettings() && soundMuted) {
+        soundMuted = 0;
+        soundMuteToggle();  /* flip to muted */
+    }
 
     if (numPalResources > 0 && palResources[0]) {
         grLoadPalette(palResources[0]);

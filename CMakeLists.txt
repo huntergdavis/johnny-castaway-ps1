@@ -45,6 +45,8 @@ set(SOURCES
     # Replaces the BIOS pad driver, which never auto-polls in our
     # PSn00bSDK 0.24 + DuckStation environment (verified empirically).
     src/spi.c
+    # Memcard persistence for pause-menu settings.
+    src/memcard.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )

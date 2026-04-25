@@ -32,6 +32,7 @@
 #include "resource.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
+#include "memcard.h"
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
@@ -328,6 +329,7 @@ enum {
     MENU_SOUND,
     MENU_DAYNIGHT,
     MENU_HOLIDAY,
+    MENU_SAVE,
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
     MENU_PERF_TOGGLE,
@@ -616,6 +618,7 @@ static void drawSceneInfo(void)
     pmPrintf(" Build:  %s", __DATE__);
     pmPrintf(" Perf:   %s", perfLevelLabel());
     pmPrintf(" Sound:  %s", soundMuted ? "MUTED" : "ON");
+    pmPrintf(" Save:   %s", memcardLastStatus ? memcardLastStatus : "(none)");
     drawSeparator();
     pmPrintf(" START = BACK");
 }
@@ -712,6 +715,9 @@ static const char *perfLevelLabel(void)
 /* Externs from jc_reborn.c: -1 = auto/random, else forced. */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
+extern int ps1SoftHour;
+extern int ps1SoftMonth;
+extern int ps1SoftDay;
 
 static const char *daynightLabel(void)
 {
@@ -766,6 +772,8 @@ static void drawMainMenu(void)
              menuCursor == MENU_DAYNIGHT ? ">" : " ", daynightLabel());
     pmPrintf(" %s Holiday: %s\n",
              menuCursor == MENU_HOLIDAY ? ">" : " ", holidayLabel());
+    pmPrintf(" %s Save Settings to Memcard\n",
+             menuCursor == MENU_SAVE ? ">" : " ");
     pmPrintf(" %s Reset Screensaver Loop\n",
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
@@ -818,6 +826,10 @@ static int handleMainInput(uint16 pressed)
             cycleHoliday();
             break;
 
+        case MENU_SAVE:
+            memcardSaveSettings();
+            break;
+
         case MENU_RESET_LOOP:
             pauseMenuRequestResetLoop = 1;
             return 0;  /* close menu so the foreground pilot loop sees it */
@@ -837,6 +849,12 @@ static int handleMainInput(uint16 pressed)
             break;
 
         case MENU_SET_TIME:
+            /* Sync edit fields from current soft-time state so the
+             * sub-screen reflects what was loaded from memcard (or
+             * what's been previously set). */
+            editMonth = ps1SoftMonth;
+            editDay   = ps1SoftDay;
+            editHour  = ps1SoftHour;
             menuState = PAUSE_MENU_SET_TIME;
             editField = 0;
             prevButtons = 0xFFFF;
