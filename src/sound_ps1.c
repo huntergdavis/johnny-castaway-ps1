@@ -215,31 +215,53 @@ void soundStop(int nb)
 }
 
 /*
- * Toggle sound mute on/off. Zeros the SPU master volume registers
- * directly — SpuSetCommonMasterVolume goes through PSn00bSDK's deferred
- * SPU API which doesn't seem to take effect immediately in DuckStation
- * HLE. Direct register writes are honored. Restores on unmute.
+ * Toggle sound mute on/off. PSn00bSDK's SpuSetCommonMasterVolume isn't
+ * honored by DuckStation HLE; even direct master-vol register writes
+ * weren't enough. So we go scorched-earth: zero every per-voice volume
+ * register, the CD-mix volume registers, and the master volume — and
+ * disable the SPU master enable in SPU_CTRL. Restore on unmute.
  *
  * Hardware regs (KSEG1, uncached):
- *   SPU_MAIN_VOL_L = 0xBF801D80 (16-bit)
- *   SPU_MAIN_VOL_R = 0xBF801D82
- * Master volume is signed 15-bit; 0x3FFF = max.
+ *   SPU voice 0..23: base 0xBF801C00, stride 0x10
+ *     +0: vol L, +2: vol R, +4: pitch, +6: addr, +8: ADSR1, +A: ADSR2
+ *   SPU_MAIN_VOL_L  = 0xBF801D80
+ *   SPU_MAIN_VOL_R  = 0xBF801D82
+ *   SPU_CD_VOL_L    = 0xBF801DB0
+ *   SPU_CD_VOL_R    = 0xBF801DB2
+ *   SPU_CTRL        = 0xBF801DAA  (bit 15 = SPU master enable)
  */
 void soundMuteToggle(void)
 {
     volatile uint16_t *masterL = (volatile uint16_t *)0xBF801D80;
     volatile uint16_t *masterR = (volatile uint16_t *)0xBF801D82;
+    volatile uint16_t *cdL     = (volatile uint16_t *)0xBF801DB0;
+    volatile uint16_t *cdR     = (volatile uint16_t *)0xBF801DB2;
+    volatile uint16_t *spuCtrl = (volatile uint16_t *)0xBF801DAA;
 
     soundMuted = !soundMuted;
     if (soundMuted) {
-        SpuSetKey(0, 0xFFFFFF);          /* stop all voices */
+        SpuSetKey(0, 0xFFFFFF);
+        for (int v = 0; v < 24; v++) {
+            volatile uint16_t *volL = (volatile uint16_t *)(0xBF801C00 + v * 0x10 + 0);
+            volatile uint16_t *volR = (volatile uint16_t *)(0xBF801C00 + v * 0x10 + 2);
+            *volL = 0;
+            *volR = 0;
+        }
         *masterL = 0;
         *masterR = 0;
-        SpuSetCommonMasterVolume(0, 0);  /* belt-and-braces */
+        *cdL = 0;
+        *cdR = 0;
+        /* Clear SPU master enable bit (15) — disables all SPU output. */
+        *spuCtrl = (uint16_t)(*spuCtrl & ~0x8000u);
     } else {
+        *spuCtrl = (uint16_t)(*spuCtrl | 0x8000u);
         *masterL = 0x3FFF;
         *masterR = 0x3FFF;
-        SpuSetCommonMasterVolume(0x3FFF, 0x3FFF);
+        *cdL = 0x4000;
+        *cdR = 0x4000;
+        /* Voice volumes are reset by soundPlay on next playback;
+         * we don't restore them here. Background loops that need to
+         * resume must be re-keyed by their owner. */
     }
 }
 
