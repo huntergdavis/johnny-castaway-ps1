@@ -148,6 +148,21 @@ void grMarkAllTilesDirty(void)
     }
 }
 
+/* Force the next grDrawBackground call to upload all 4 tiles in full.
+ * Sets BOTH currDirty and prevDirty because grRestoreBgTiles resets
+ * currDirty at the start of every frame. prevDirty survives that
+ * reset and feeds into grDrawBackground's union(prev, curr) upload
+ * range. Mirrors the pattern in grFadeOut / grFreeCleanBgTiles. */
+void grForceFullRedrawNextFrame(void)
+{
+    for (int i = 0; i < 4; i++) {
+        currDirtyMinY[i] = 0;
+        currDirtyMaxY[i] = 239;
+        prevDirtyMinY[i] = 0;
+        prevDirtyMaxY[i] = 239;
+    }
+}
+
 /* Mark dirty region from a screen-space rectangle (x0,y0)-(x1,y1) exclusive */
 static void grMarkRectDirty(int x0, int y0, int x1, int y1)
 {

@@ -156,9 +156,15 @@ void graphicsEnd();
 void grRefreshDisplay();
 void grToggleFullScreen();
 /* Force every bgTile row to be re-uploaded on the next grDrawBackground.
- * Used by pause_menu.c on resume so the menu's full-screen clear is
- * fully painted over by the scene's bgTile pixels. */
+ * Sets currDirty only — caller is responsible for prevDirty if they
+ * need the upload to survive grRestoreBgTiles. */
 void grMarkAllTilesDirty(void);
+
+/* Force the next grDrawBackground call to upload all 4 tiles in full.
+ * Sets BOTH currDirty AND prevDirty so the upload survives
+ * grRestoreBgTiles' currDirty reset at frame start. Used by
+ * pause_menu.c on resume to fully repaint VRAM. */
+void grForceFullRedrawNextFrame(void);
 void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
                      struct TTtmThread *ttmThreads,
                      struct TTtmThread *ttmHolidayThreads);
