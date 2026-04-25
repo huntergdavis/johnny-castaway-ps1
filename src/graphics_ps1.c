@@ -1634,6 +1634,41 @@ static uint16 grReadPackedSpanU16(const uint8 *p)
     return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
 }
 
+static inline void grCompositePacked4OpaqueRun(uint16 *dst,
+                                               const uint8 *packedPixels,
+                                               int srcPixel,
+                                               int count,
+                                               const uint16 *palette)
+{
+    int out = 0;
+
+    if (count <= 0)
+        return;
+
+    /* FG2 PAL4 spans contain only visible pixels; index 0 never appears
+     * inside a span. The packer splits around no-diff pixels up front. */
+    if (srcPixel & 1) {
+        uint8 packed = packedPixels[srcPixel >> 1];
+        dst[out++] = palette[packed & 0x0F];
+        srcPixel++;
+        count--;
+    }
+
+    while (count >= 2) {
+        uint8 packed = packedPixels[srcPixel >> 1];
+        dst[out] = palette[packed >> 4];
+        dst[out + 1] = palette[packed & 0x0F];
+        out += 2;
+        srcPixel += 2;
+        count -= 2;
+    }
+
+    if (count) {
+        uint8 packed = packedPixels[srcPixel >> 1];
+        dst[out] = palette[packed >> 4];
+    }
+}
+
 static void grCompositePacked4SpanToBackground(const uint8 *packedPixels,
                                                uint16 pixelCount,
                                                const uint16 *palette,
@@ -1642,6 +1677,11 @@ static void grCompositePacked4SpanToBackground(const uint8 *packedPixels,
 {
     int start = 0;
     int end = (int)pixelCount;
+    int destStartX;
+    int destEndX;
+    int tileLocalY;
+    PS1Surface *tileLeft;
+    PS1Surface *tileRight;
 
     if (packedPixels == NULL || palette == NULL || pixelCount == 0)
         return;
@@ -1656,27 +1696,36 @@ static void grCompositePacked4SpanToBackground(const uint8 *packedPixels,
 
     grMarkRectDirty(destX + start, destY, destX + end, destY + 1);
 
-    for (int i = start; i < end; i++) {
-        int x = destX + i;
-        PS1Surface *tile;
-        int localY;
-        int localX;
-        uint8 packed = packedPixels[i >> 1];
-        uint8 index = (i & 1) ? (uint8)(packed & 0x0F) : (uint8)(packed >> 4);
+    destStartX = destX + start;
+    destEndX = destX + end;
+    if (destY < 240) {
+        tileLocalY = destY;
+        tileLeft = bgTile0;
+        tileRight = bgTile1;
+    } else {
+        tileLocalY = destY - 240;
+        tileLeft = bgTile3;
+        tileRight = bgTile4;
+    }
 
-        if (index == 0)
-            continue;
+    if (tileLeft != NULL && tileLeft->pixels != NULL && destStartX < 320) {
+        int lx0 = destStartX;
+        int lx1 = (destEndX < 320) ? destEndX : 320;
+        int srcStart = start + (lx0 - destStartX);
+        int count = lx1 - lx0;
+        uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
 
-        if (destY < 240) {
-            localY = destY;
-            tile = (x < 320) ? bgTile0 : bgTile1;
-        } else {
-            localY = destY - 240;
-            tile = (x < 320) ? bgTile3 : bgTile4;
-        }
-        localX = (x < 320) ? x : (x - 320);
-        if (tile != NULL && tile->pixels != NULL)
-            tile->pixels[(localY * (int)tile->width) + localX] = palette[index];
+        grCompositePacked4OpaqueRun(dst, packedPixels, srcStart, count, palette);
+    }
+
+    if (tileRight != NULL && tileRight->pixels != NULL && destEndX > 320) {
+        int rx0 = (destStartX > 320) ? destStartX : 320;
+        int rx1 = destEndX;
+        int srcStart = start + (rx0 - destStartX);
+        int count = rx1 - rx0;
+        uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + (rx0 - 320);
+
+        grCompositePacked4OpaqueRun(dst, packedPixels, srcStart, count, palette);
     }
 }
 
