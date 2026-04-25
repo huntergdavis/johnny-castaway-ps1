@@ -821,6 +821,9 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
+    uint32 perfStartTick = 0;
+    uint32 perfFileLba = 0xffffffffUL;
+    int perfTrack = 0;
 
     enum { PS1_CD_READ_CHUNK_SECTORS = 256 };
 
@@ -834,6 +837,11 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
+    if (ps1PerfEnabled) {
+        perfStartTick = ps1PerfTick();
+        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
+        perfTrack = 1;
+    }
 
     /* Allocate buffer for the sectors we need */
     sectorBuffer = (uint8_t*)malloc(bufferSize);
@@ -854,6 +862,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
+            if (perfTrack)
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 0);
             free(sectorBuffer);
             return NULL;
         }
@@ -861,6 +873,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         for (volatile int i = 0; i < 100000; i++);
 
         if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
+            if (perfTrack)
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 0);
             free(sectorBuffer);
             return NULL;
         }
@@ -871,6 +887,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         } while (syncResult > 0 && --timeout > 0);
 
         if (timeout <= 0 || syncResult < 0) {
+            if (perfTrack)
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 0);
             free(sectorBuffer);
             return NULL;  /* Read error */
         }
@@ -889,6 +909,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     offsetInBuffer = offset % CD_SECTOR_SIZE;
     memcpy(result, sectorBuffer + offsetInBuffer, size);
 
+    if (perfTrack)
+        ps1PerfMarkCdReadDetailed(size, numSectors,
+                                  ps1PerfElapsedVBlanks(perfStartTick),
+                                  1, perfFileLba, offset, 0);
     free(sectorBuffer);
     return result;
 }
@@ -936,6 +960,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     int timeout;
     uint32_t sectorsRead;
     uint32 perfStartTick = 0;
+    uint32 perfFileLba = 0xffffffffUL;
     int perfTrack = 0;
 
     enum { PS1_CD_READ_CHUNK_SECTORS = 256 };
@@ -952,6 +977,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
 
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
+        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
         perfTrack = 1;
     }
 
@@ -967,13 +993,17 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
-                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 1);
             return 0;
         }
 
         if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
             if (perfTrack)
-                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 1);
             return 0;
         }
 
@@ -984,7 +1014,9 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
 
         if (timeout <= 0 || syncResult < 0) {
             if (perfTrack)
-                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
+                ps1PerfMarkCdReadDetailed(size, numSectors,
+                                          ps1PerfElapsedVBlanks(perfStartTick),
+                                          0, perfFileLba, offset, 1);
             return 0;
         }
 
@@ -998,7 +1030,9 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         memcpy(dstBuffer, sectorBuffer + offsetInBuffer, size);
     }
     if (perfTrack)
-        ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 1);
+        ps1PerfMarkCdReadDetailed(size, numSectors,
+                                  ps1PerfElapsedVBlanks(perfStartTick),
+                                  1, perfFileLba, offset, 1);
     return 1;
 }
 

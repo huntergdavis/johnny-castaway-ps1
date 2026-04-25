@@ -404,7 +404,11 @@ static void ps1ApplyBootOverride(char *buffer)
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
-            ps1PerfSetEnabled(1);
+            ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
+        } else if (!strcmp(tokens[i], "perf-detail")) {
+            ps1PerfSetLevel(PS1_PERF_LEVEL_DETAIL);
+        } else if (!strcmp(tokens[i], "perf-debug")) {
+            ps1PerfSetLevel(PS1_PERF_LEVEL_DEBUG);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
         } else if (!strcmp(tokens[i], "padtest")) {
