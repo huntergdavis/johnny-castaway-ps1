@@ -1,9 +1,9 @@
 plan_id: ps1_branch_cleanup_master_plan
-plan_version: 6
+plan_version: 7
 review_passes: 5
 status: partially_executed_docs_phase_landed
 created_on: 2026-04-22
-last_execution_pass: 2026-04-22
+last_execution_pass: 2026-04-24
 
 execution_log:
   - pass_date: 2026-04-22
@@ -60,13 +60,21 @@ execution_log:
       - "Disk freed: ~130 GB from the working tree. Git history still holds deleted blobs — a future `git gc --aggressive` or history rewrite could reclaim more if needed."
       - "The 13 retired scripts in docs/ps1/archaeology/retired-scripts/ stay tracked (user kept them — small and potentially valuable). Main tree's scripts/ still has untracked copies; left alone per user direction."
       - "Primary reference scene (FISHING 1) and its supporting assets are untouched: generated/ps1/foreground/FISHING1.FG1, host-results/ is gitignored, sound_ps1.c / foreground_pilot.c unchanged."
+  - pass_date: 2026-04-24
+    agent_session_commit: pending
+    phases_completed:
+      - phase_02c_refresh_docs_for_fg2_only_current_state
+    notes:
+      - "Active docs now describe FG2 high/low full-render base-diff packs as the current methodology."
+      - "Primary validation ledger is 2 / 63: FISHING 1 and FISHING 2 validated; FISHING 3 is loop-stable and tide-correct on FG2 but not promoted."
+      - "FG1 support, direct/fallback routes, and stale .FG1 artifacts are documented as next-round cleanup targets, not active workflow."
 repo_root: "."
 branch: ps1
 head_commit_at_plan_creation: 12641bfc
-current_reviewed_head_commit: f2737253
-baseline_release_tag: v0.3.6-ps1
-baseline_release_tag_object: 48a53dfd
-baseline_release_commit: f2737253
+current_reviewed_head_commit: 99b30780
+baseline_release_tag: v0.3.9-ps1
+baseline_release_tag_object: 0d9f6c08
+baseline_release_commit: 111efa9f
 baseline_release_tag_note: dereferenced_commit_for_annotated_tag
 previous_visual_only_release:
   tag: v0.3.5-ps1
@@ -75,10 +83,11 @@ previous_visual_only_release:
   note: superseded_by_full_sfx_release
 intent: >
   Professionalize the PS1 branch by rewriting stale references, preserving the
-  proven FISHING 1 fgpilot workflow as the current source of truth, now with
-  the full visual-plus-SFX baseline reflected accurately, archiving historical
-  research and validation artifacts, and retiring obsolete binary-library-
-  driven cleanup paths after safe archival.
+  proven FG2 scene-playback workflow as the current source of truth, now with
+  the full visual-plus-SFX baseline reflected accurately for FISHING 1 and
+  FISHING 2, archiving historical research and validation artifacts, and
+  retiring obsolete binary-library and FG1-driven cleanup paths after safe
+  archival.
 
 rules_of_engagement:
   non_destructive_first: true
@@ -117,6 +126,10 @@ working_tree_snapshot:
   note: >
     Future cleanup work must start by respecting the existing dirty tree. This
     plan is not permission to reset, overwrite, or discard current work.
+  current_note_2026_04_24: >
+    FG1 entries above are preserved as the original cleanup-plan snapshot.
+    The active render surface is now FG2 high/low scene playback; FG1 files are
+    legacy cleanup targets unless explicitly needed for archaeology.
 
 current_truth:
   validated_reference_scene:
@@ -124,11 +137,9 @@ current_truth:
     state: fully_working_on_ps1
     validation_date: 2026-04-22
     validation_scope: >
-      Proven today for FISHING 1 and its validated state variants. This is the
-      branch's first fully working PS1 reference scene: pixel-perfect visually
-      and now complete with synchronized SFX playback. This is the branch's
-      reference scene and reference methodology, but not a claim that every PS1
-      scene is already promoted to the same end-to-end status.
+      FISHING 1 remains the reference scene for the current PS1 scene-playback
+      methodology: pixel-perfect visually and complete with synchronized SFX
+      playback across validated state variants.
     release_marker:
       tag: v0.3.6-ps1
       annotated_tag_object: 48a53dfd
@@ -140,7 +151,7 @@ current_truth:
     audio_milestone_commits:
       - 355227fa
       - f2737253
-    current_main_command: "./scripts/rebuild-and-let-run.sh fgpilot fishing1"
+    current_main_command: "./scripts/rebuild-and-let-run.sh noclean fgpilot fishing1"
     current_variant_tokens:
       - "lowtide 0|1"
       - "raft-stage 0..5"
@@ -154,48 +165,68 @@ current_truth:
       - holiday
       - raft_stage
     canonical_assets:
-      - generated/ps1/foreground/FISHING1.FG1
-      - generated/ps1/foreground/FISHING1D.FG1
-      - generated/ps1/foreground/FISHING1.FOC
+      - generated/ps1/foreground/FISHING1.FG2
+      - generated/ps1/foreground/FISH1LOW.FG2
       - generated/ps1/foreground/FISH24.RAW
       - host-results/fishing1-foreground-pilot/foreground-analysis.json
       - host-results/fishing1-foreground-pilot/foreground-pack.json
-      - host-results/fishing1-foreground-pilot/foreground-pack-direct.json
       - host-results/fishing1-foreground-pilot/foreground-draw-pack.json
-      - host-results/fishing1-foreground-pilot/host-capture
-      - host-results/fishing1-foreground-pilot/host-capture/sound-events.jsonl
-      - host-results/fishing1-foreground-pilot/host-capture-full
+      - host-results/fishing1-foreground-pilot/host-capture-high
+      - host-results/fishing1-foreground-pilot/host-capture-low
+      - host-results/fishing1-foreground-pilot/host-capture-high/sound-events.jsonl
+      - host-results/fishing1-foreground-pilot/host-capture-low/sound-events.jsonl
+    legacy_cleanup_assets:
+      - generated/ps1/foreground/FISHING1.FG1
+      - generated/ps1/foreground/FISHING1D.FG1
+      - generated/ps1/foreground/FISHING1.FOC
+      - host-results/fishing1-foreground-pilot/foreground-pack-direct.json
     canonical_metrics:
-      source_frame_count: 156
-      packed_frame_count: 95
-      fg1_pack_size_bytes: 1815850
-      direct_fg1_pack_size_bytes: 1683870
-      draw_pack_size_bytes: 8118
-      sound_event_count: 9
-      host_capture_bundle_size: 376M
+      fg2_corpus_pack_count: 126
+      fg2_corpus_size_bytes: 359395125
+      fg2_corpus_size_mib: 342.7
+      fishing1_high_fg2_size_bytes: 829851
+      fishing1_low_fg2_size_bytes: 426082
+      fishing2_high_fg2_size_bytes: 1595559
+      fishing2_low_fg2_size_bytes: 784126
+      fishing3_high_fg2_size_bytes: 1831749
+      fishing3_low_fg2_size_bytes: 906053
+      establishing_raw_size_bytes: 614400
+
+  validated_scene_ledger:
+    total_scenes: 63
+    validated_count: 2
+    validated_scenes:
+      - FISHING 1
+      - FISHING 2
+    next_scene: FISHING 3
+    next_scene_state: loop_stable_and_tide_correct_on_fg2_not_yet_promoted
+    current_release_marker:
+      tag: v0.3.9-ps1
+      annotated_tag_object: 0d9f6c08
+      commit: 111efa9f
+      note: fishing3_overnight_loop_stability_release
 
   primary_render_methodology:
     internal_code_name: fgpilot
     external_description: primary_ps1_hybrid_scene_playback_path
     status: proven_primary_method
     summary: >
-      PS1 scene work now uses host-captured foreground playback packs for
-      transient scene content and a runtime island/ocean scene base for PS1
-      background behavior, with host-captured sound events now replayed through
-      the PS1 SFX path. This is no longer a theory, test, or experiment. It is
-      the current rendering methodology that produced the fully working FISHING
-      1 baseline.
+      PS1 scene work now uses host-captured high/low FG2 foreground playback
+      packs for transient scene content and a runtime island/ocean scene base
+      for PS1 background behavior, with host-captured sound events replayed
+      through the PS1 SFX path. This is no longer a theory, test, or experiment.
+      It is the current rendering methodology that produced the fully working
+      FISHING 1 and FISHING 2 baselines.
     host_side_pipeline:
       - "Capture authoritative desktop frames, metadata, and sound events with scripts/capture-host-scene.sh"
-      - "Export the FISHING 1 pilot bundle with scripts/export-scene-foreground-pilot.sh"
-      - "Build PS1 foreground packs with scripts/build-scene-foreground-pack.py, including sound-event payloads"
-      - "Build draw-event pack with scripts/build-foreground-draw-pack.py"
+      - "Export high-tide and low-tide scene bundles with scripts/export-scene-foreground-pilot.sh"
+      - "Build PS1 FG2 foreground packs with scripts/build-scene-foreground-pack.py --pack-format fg2 --base-diff, including sound-event payloads"
     ps1_side_pipeline:
       - "Boot fgpilot scene path"
       - "Preload BACKGRND.BMP before heavy bg-tile allocation"
       - "Load scene base via OCEAN00.SCR / ISLETEMP.SCR / NIGHT.SCR"
       - "Animate shoreline waves in the runtime backdrop path"
-      - "Replay scene-relative foreground frames from FG1"
+      - "Select high/low FG2 by tide state and replay scene-relative foreground spans"
       - "Replay captured SFX events through PS1 sound playback"
       - "Restamp holiday overlay after foreground composition"
       - "Use rect-based clean background backups for the dynamic area only"
@@ -203,12 +234,13 @@ current_truth:
       - "Keep `fgpilot` as an internal code term if needed, but document it as the main PS1 render path."
       - "Do not frame the active path as `fg test`, `pilot-only`, `theory`, `proposed`, or `temporary`."
       - "Do not present binary-library archaeology as the default way to move the branch forward."
+      - "Do not add new FG1 artifacts, CD routes, or docs except as explicit legacy cleanup references."
       - "Use scene-by-scene human validation as the acceptance gate."
       - "Treat full dynamic ADS recreation as optional legacy context, not the current reference path."
     scope_boundary:
       - "Document fgpilot as the current PS1 scene-work methodology."
-      - "Do not imply that every scene is already finished merely because FISHING 1 is finished."
-      - "Use FISHING 1 as the reference implementation for how future scenes should be brought up."
+      - "Do not imply that every scene is already finished merely because FISHING 1 and FISHING 2 are finished."
+      - "Use FISHING 1 and FISHING 2 as the reference implementation for how future scenes should be brought up."
 
   platform_positioning:
     desktop_host_role: authoritative_renderer_and_capture_source
@@ -1057,6 +1089,15 @@ validation_reset_plan:
       validated_reference_scene_list:
         - FISHING 1
       active_reference_scene_count_statement: "1 / 63 complete"
+    current_as_of_2026_04_24:
+      total_scenes: 63
+      validated_reference_scenes: 2
+      validated_reference_scene_list:
+        - FISHING 1
+        - FISHING 2
+      active_reference_scene_count_statement: "2 / 63 complete"
+      next_scene: FISHING 3
+      next_scene_state: loop_stable_and_tide_correct_on_fg2_not_yet_promoted
     principles:
       - "A scene counts as done only after signoff in the current scene-playback methodology, including audio where the scene now supports it."
       - "Legacy restore/regtest/automation statuses do not roll forward as current completion credit."
@@ -1797,9 +1838,11 @@ search_sweeps_for_future_session:
 
 definition_of_done:
   - "A new contributor can identify the current PS1 method from docs/ps1 without reading research logs."
-  - "FISHING 1 is explicitly documented as the first fully working PS1 reference scene, including SFX."
+  - "FISHING 1 and FISHING 2 are explicitly documented as fully working PS1 scenes, including SFX."
   - "`fgpilot` is documented as the proven current render path, not as a side experiment."
-  - "Primary validation status is reset to a clean 1 / 63 model with only FISHING 1 complete."
+  - "Primary validation status is reset to a clean 2 / 63 model with only FISHING 1 and FISHING 2 complete."
+  - "FISHING 3 is documented as loop-stable and tide-correct on FG2, but not yet promoted."
+  - "FG1 is documented only as legacy cleanup surface; active docs do not instruct new FG1 generation or routing."
   - "Primary docs cite the source of every reused historical count, milestone, and methodology-pivot claim."
   - "Historical status numbers remain searchable, but each is route-qualified and definition-qualified."
   - "Binary-library and similar heavy regression tooling are archived or clearly secondary."

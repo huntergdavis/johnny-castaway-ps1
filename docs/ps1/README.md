@@ -9,9 +9,10 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.3.6-ps1` (commit `f2737253`) |
+| Release | `v0.3.9-ps1` (commit `111efa9f`) |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **1 / 63** |
+| Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
+| Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
 "Fully validated" means human visual + audible signoff on the scene-playback
@@ -45,8 +46,8 @@ DuckStation pointed at the cue. Boots into `FISHING 1` via `BOOTMODE.TXT`
 ### Bring up a new scene
 See [development-workflow.md](development-workflow.md) for the full
 capture → pack → validate loop. High level:
-1. `./scripts/export-scene-foreground-pilot.sh` — host capture → FG1 pack + sound-event JSONL.
-2. Add the pack entry to `config/ps1/cd_layout.xml`.
+1. `./scripts/export-scene-foreground-pilot.sh` — host high/low capture → FG2 packs + sound-event JSONL + establishing RAW.
+2. Add the FG2 pack entries to `config/ps1/cd_layout.xml`.
 3. Add scene routing in `foreground_pilot.c`.
 4. Rebuild ISO, launch via `rebuild-and-let-run.sh`, iterate to pixel-perfect.
 5. Tick the row in `scene-status.md`.
@@ -77,12 +78,12 @@ holiday overlay, SPU playback, input).
 - `sound_ps1.c` — SPU playback (VAG preload at boot + round-robin voices)
 - `events_ps1.c` — PSX controller input
 - `cdrom_ps1.c` — CD-ROM file I/O
-- `foreground_pilot.c` — FG1 pack loader, frame-advance, SFX event firing
+- `foreground_pilot.c` — FG2 pack loader, frame-advance, SFX event firing
 
 **Offline pipeline (`scripts/`):**
 - `capture-host-scene.sh` — desktop capture (frames + metadata + sound events)
 - `export-scene-foreground-pilot.sh` — wraps capture + pack build for a scene
-- `build-scene-foreground-pack.py` — FG1 v2 pack compiler (visuals + SFX)
+- `build-scene-foreground-pack.py` — FG2 span compiler (visuals + SFX)
 - `wav2vag.py` — WAV → PS1 SPU ADPCM VAG encoder
 - `make-cd-image.sh` / `build-ps1.sh` / `rebuild-and-let-run.sh` — build + launch
 
@@ -115,6 +116,11 @@ holiday overlay, SPU playback, input).
 - [research/README.md](research/README.md) — design logs and prior status snapshots
 - [audio-optimization-spec.md](audio-optimization-spec.md)
 - [ps1-branch-cleanup-plan.yaml](ps1-branch-cleanup-plan.yaml) — in-flight cleanup contract
+
+**Legacy cleanup target:** FG1 pack support and direct/fallback FG1 routing still
+exist in code and old artifacts, but they are no longer part of the active
+scene-playback methodology. Remove those paths in the next cleanup round after
+FG2 routing is generalized.
 
 ## External references
 

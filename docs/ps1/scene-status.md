@@ -11,8 +11,9 @@ plus synced SFX, across every applicable variant.
 
 ## Progress: 2 / 63 (next: fishing3)
 
-Releases cut every 10 ✅/✅ scenes: v0.3.6-ps1 (fishing1), next would be
-v0.3.7-ps1 at 11 ✅/✅, v0.3.8-ps1 at 21, etc.
+Milestone scene releases should be cut every 10 ✅/✅ scenes under this
+bar. Smaller stability releases may happen between milestones; the
+current public release is `v0.3.9-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -35,7 +36,7 @@ v0.3.7-ps1 at 11 ✅/✅, v0.3.8-ps1 at 21, etc.
 | BUILDING | 7 | building7 | ⏳ | ⏳ | — | — |  |
 | FISHING | 1 | fishing1 | ✅ | ✅ | night · low-tide · holiday · raft-stage | v0.3.6-ps1 | reference scene; template for remaining |
 | FISHING | 2 | fishing2 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-04-23 |  |
-| FISHING | 3 | fishing3 | ⏳ | ⏳ | — | — | **NEXT** |
+| FISHING | 3 | fishing3 | ⏳ | ⏳ | night · low-tide · holiday · raft-stage | — | **NEXT**; loop-stable and tide-correct on FG2, not yet signed off |
 | FISHING | 4 | fishing4 | ⏳ | ⏳ | — | — |  |
 | FISHING | 5 | fishing5 | ⏳ | ⏳ | — | — |  |
 | FISHING | 6 | fishing6 | ⏳ | ⏳ | — | — | blocked in regtest |
@@ -84,15 +85,18 @@ v0.3.7-ps1 at 11 ✅/✅, v0.3.8-ps1 at 21, etc.
 
 For each iteration:
 
-1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> <raw_frame_idx> <raw_basename>`
-   to produce the `.FG1` overlay/direct packs and the sound-event JSONL.
-2. Confirm the `<SCENE>.FG1` entry exists in `config/ps1/cd_layout.xml`.
+1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> <raw_frame_idx> <raw_basename> 0 1.0 <LOW_PACK_BASENAME>`
+   to produce the high-tide and low-tide `.FG2` packs, establishing `.RAW`, and sound-event JSONL.
+2. Confirm both `<SCENE>.FG2` and low-tide `<LOW_PACK_BASENAME>.FG2` entries exist in `config/ps1/cd_layout.xml`.
 3. Confirm the scene's routing entries exist in `foreground_pilot.c`
-   (`fgOverlayPackPathForScene`, `fgDirectPackPathForScene`, `fgRawFramePathForScene`,
-   `fgAdsNameForScene`).
+   (`fgCompactOverlayPackPathForScene`, `fgRawFramePathForScene`, `fgAdsNameForScene`).
 4. `./scripts/make-cd-image.sh` then launch via `rebuild-and-let-run.sh noclean`.
 5. User verifies; iterate on bugs.
 6. Update this table, commit. Every 10 ✅/✅ rows → `./scripts/release.sh "<milestone message>"`.
+
+FG1 packs and direct/fallback FG1 runtime routes are no longer active
+methodology. They are retained only as legacy cleanup targets for the
+next round.
 
 ## Variant definitions
 

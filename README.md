@@ -31,7 +31,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.3.8-ps1`** |
+| Current release | **`v0.3.9-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [docs/ps1/scene-status.md](docs/ps1/scene-status.md) |
@@ -50,16 +50,18 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
 - **Desktop host** runs the real game logic (TTM/ADS interpreter) and
   captures every visible foreground draw plus every `PLAY_SAMPLE` opcode
   to a per-frame JSON bundle.
-- A **pack compiler** turns that capture into a PS1-native v2 foreground
-  pack (`.FG1`): packed visuals + per-frame sound-event table.
+- A **pack compiler** turns that capture into PS1-native FG2 packs:
+  high-tide and low-tide full-render base-diff spans plus a per-frame
+  sound-event table.
 - On **PS1**, the runtime (`foreground_pilot.c`) loads the pack, stamps
   captured frames in step with a narrow runtime that handles background,
   wave animation, holiday overlay, and SPU playback. SFX fire on cue via
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Two scenes (fishing1, fishing2) validated end-to-end anchor the
-scene-by-scene bring-up loop.
+Two scenes (`fishing1`, `fishing2`) validated end-to-end anchor the
+scene-by-scene bring-up loop. `fishing3` is in bring-up and loop-stable,
+but not yet promoted to the pixel-perfect bar.
 
 ## Quick start
 
@@ -185,7 +187,7 @@ background / waves / overlays.
 
 This project began as a branch of [jno6809/jc_reborn](https://github.com/jno6809/jc_reborn)
 focused on a PlayStation 1 port. It has diverged far enough (hybrid
-scene-playback pipeline, per-scene captures, FGP v2 pack format, PS1
+scene-playback pipeline, per-scene captures, FG2 pack format, PS1
 SPU playback path, scene-by-scene validation ledger) that it now lives
 in its own repository. The original `jc_reborn` decoded the Johnny
 Castaway engine — without that foundation this port wouldn't exist.

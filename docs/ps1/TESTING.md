@@ -19,7 +19,8 @@ Builds the PS1 executable + CD image inside Docker and launches
 DuckStation with the cue. `BOOTMODE.TXT` controls which scene and which
 variant boots. A scene reaches `✅ / ✅` in `scene-status.md` when a
 human has confirmed visuals + SFX are correct across every applicable
-variant for that scene. Release cadence: every 10 such scenes.
+variant for that scene. Milestone release cadence: every 10 such scenes;
+smaller stability releases may happen between scene milestones.
 
 ### Variant tokens
 
@@ -86,7 +87,10 @@ current development:
 
 | Mode | Example | Description |
 |---|---|---|
-| `fgpilot <slug> [tokens...]` | `fgpilot fishing1 night 1` | **Primary.** Hybrid scene playback from the FG1 pack, with variant tokens. |
+| `fgpilot <slug> [tokens...]` | `fgpilot fishing1 night 1` | **Primary.** Hybrid scene playback from high/low FG2 packs, with variant tokens. |
+
+FG1 packs are legacy cleanup targets. They should not be used to certify
+or bring up scenes under the current bar.
 
 Secondary / legacy routes (retained for diagnostics):
 

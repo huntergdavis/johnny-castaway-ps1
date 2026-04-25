@@ -27,25 +27,32 @@ One iteration = one scene promoted from `⏳` to `✅ / ✅` in
     '<ADS TAG>'          \  # e.g. 'FISHING 2'
     <PACK_BASENAME>      \  # e.g. FISHING2
     <raw_frame_idx>      \  # which capture frame to snapshot as the establishing .RAW
-    <RAW_BASENAME>          # e.g. FISH
+    <RAW_BASENAME>       \  # e.g. FISH2
+    0                    \  # start frame
+    1.0                  \  # timeline speed
+    <LOW_PACK_BASENAME>     # e.g. FISH2LOW
 ```
 
 Produces:
-- `host-results/<slug>-foreground-pilot/host-capture/frames/*.bmp`
-- `host-results/<slug>-foreground-pilot/host-capture/frame-meta/*.json`
-- `host-results/<slug>-foreground-pilot/host-capture/sound-events.jsonl`
-- `generated/ps1/foreground/<PACK_BASENAME>.FG1` (overlay pack, FGP v2)
-- `generated/ps1/foreground/<PACK_BASENAME>D.FG1` (delta pack, FGP v2)
+- `host-results/<slug>-foreground-pilot/host-capture-high/frames/*.bmp`
+- `host-results/<slug>-foreground-pilot/host-capture-high/frame-meta/*.json`
+- `host-results/<slug>-foreground-pilot/host-capture-high/sound-events.jsonl`
+- `host-results/<slug>-foreground-pilot/host-capture-low/frames/*.bmp`
+- `host-results/<slug>-foreground-pilot/host-capture-low/frame-meta/*.json`
+- `host-results/<slug>-foreground-pilot/host-capture-low/sound-events.jsonl`
+- `generated/ps1/foreground/<PACK_BASENAME>.FG2` (high-tide full-render base-diff FG2 pack)
+- `generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2` (low-tide full-render base-diff FG2 pack)
 - `generated/ps1/foreground/<RAW_BASENAME><idx>.RAW` (establishing frame)
 
-The `host-results/` tree is gitignored; only the `generated/ps1/foreground/*.FG1`
-and `.RAW` files are committed.
+The `host-results/` tree is gitignored; only the routed `.FG2` and `.RAW`
+files needed by the PS1 CD are committed. FG1 outputs are legacy artifacts
+and should not be added for new scene work.
 
 ### 2. Pick the establishing frame
 
-The `.RAW` is a pre-rendered background stamped before the FG1 replay
-starts, so the user sees a coherent scene instantly. Inspect
-`host-capture/frames/frame_NNNNN.bmp` and pick the first frame where
+The `.RAW` is a pre-rendered background stamped before the foreground-pack
+replay starts, so the user sees a coherent scene instantly. Inspect
+`host-capture-high/frames/frame_NNNNN.bmp` and pick the first frame where
 static content is laid down but animation has not begun. Re-run step 1
 with the new `raw_frame_idx` if needed.
 
@@ -53,14 +60,13 @@ with the new `raw_frame_idx` if needed.
 
 `config/ps1/cd_layout.xml` — add:
 ```xml
-<file name="<PACK_BASENAME>.FG1"  type="data" source="../../generated/ps1/foreground/<PACK_BASENAME>.FG1"/>
-<file name="<PACK_BASENAME>D.FG1" type="data" source="../../generated/ps1/foreground/<PACK_BASENAME>D.FG1"/>
+<file name="<PACK_BASENAME>.FG2"  type="data" source="../../generated/ps1/foreground/<PACK_BASENAME>.FG2"/>
+<file name="<LOW_PACK_BASENAME>.FG2" type="data" source="../../generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2"/>
 <file name="<RAW_BASENAME><idx>.RAW" type="data" source="../../generated/ps1/foreground/<RAW_BASENAME><idx>.RAW"/>
 ```
 
-`foreground_pilot.c` — add the scene to the routing functions:
-- `fgOverlayPackPathForScene(sceneName)` → `\\FG\\<PACK_BASENAME>.FG1;1`
-- `fgDirectPackPathForScene(sceneName)` → `\\FG\\<PACK_BASENAME>D.FG1;1`
+`foreground_pilot.c` — add the scene to the active routing functions:
+- `fgCompactOverlayPackPathForScene(sceneName)` → high/low `.FG2` selected by `islandState.lowTide`
 - `fgRawFramePathForScene(sceneName)` → `\\FG\\<RAW_BASENAME><idx>.RAW;1`
 - `fgAdsNameForScene(sceneName, &adsTagOut)` → sets the ADS filename + tag
 
@@ -155,6 +161,18 @@ targeted questions. They are **not** the primary acceptance gate;
 refer to [TESTING.md](TESTING.md) for when each is still useful and
 [ps1-branch-cleanup-plan.yaml](ps1-branch-cleanup-plan.yaml) for
 pending archival decisions.
+
+## Existing all-scene pack corpus
+
+`./scripts/batch-capture-all-scenes.sh` has generated high-tide and
+low-tide FG2 packs for all 63 scenes in `generated/ps1/foreground/`
+(126 packs total). The corpus exists so new scenes can be routed and
+validated one at a time; the CD image should include only the packs
+currently needed by routed scene-playback entries.
+
+Legacy `--pack-format fg1`, `fgOverlayPackPathForScene`, and
+`fgDirectPackPathForScene` paths still exist in code as cleanup targets.
+Do not expand those paths while bringing up new scenes.
 
 ## See also
 

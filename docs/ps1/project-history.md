@@ -2,14 +2,23 @@
 
 The development journey, challenges, and lessons learned from porting Johnny Reborn to PlayStation 1.
 
+This is a historical narrative, not the live progress ledger. Current
+status lives in [current-status.md](current-status.md) and the per-scene
+ledger lives in [scene-status.md](scene-status.md).
+
 ## Project Overview
 
-Started from the optimized `4mb2025` branch (350KB memory usage). The port now boots and runs on DuckStation, cycling through 25 verified scenes with a complete software compositing pipeline, CD-ROM I/O, and an offline scene-restore system.
+Started from the optimized `4mb2025` branch (350KB memory usage). The
+port now boots and runs on DuckStation through a hybrid PS1
+scene-playback methodology: host-captured high/low FG2 foreground packs,
+captured SFX events, and a narrow PS1 runtime for background, waves,
+holiday overlays, input, and SPU playback.
 
-**Timeline**: Initial session (2025-10-18), ongoing development through 2026-03
+**Timeline**: Initial session (2025-10-18), ongoing development through 2026-04
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
-**Binary Size**: 120KB PS-EXE
+**Current release**: `v0.3.9-ps1`
+**Current validation bar**: 2 / 63 scenes (`FISHING 1`, `FISHING 2`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 
@@ -120,7 +129,7 @@ The PlayStation 1 is a perfect target for Johnny Reborn:
 - Compositing ~15-25% faster
 - Per-frame data movement reduced by 80-95%
 
-### Phase 7: Scene Restore System (2026-03, current)
+### Phase 7: Scene Restore System (2026-03, historical)
 
 **Goals**: Replace replay-based scene continuity with deterministic offline contracts
 
@@ -154,6 +163,40 @@ scene analyzer -> restore specs -> cluster contracts -> pack compiler -> header 
 - plan-restore-rollout.py
 - extract-dirty-region-templates.py
 - decode-ps1-bars.py
+
+### Phase 8: Hybrid Scene Playback and SFX (2026-04)
+
+**Goals**: Establish one fully working PS1 scene under the real acceptance
+bar: pixel-perfect visuals plus synced sound effects across variants.
+
+**Achievements**:
+- `FISHING 1` became the first full reference scene.
+- Captured `PLAY_SAMPLE` events from the host path and replayed them via
+  `sound_ps1.c`.
+- Preloaded VAG SFX into SPU RAM and used round-robin voices for playback.
+- Reframed validation around human visual + audible signoff, not legacy
+  broad harness counts.
+
+**Key Insight**: The PS1 port does not need to recreate the complete
+desktop scene graph at runtime. The winning method is an authored
+foreground playback pack plus a narrow PS1 runtime surface.
+
+### Phase 9: FG2 Full-Diff Packs and Tide Routing (2026-04, current)
+
+**Goals**: Replace FG1 as the active pack path, prevent missed sprites,
+support high/low tide variants correctly, and generate a corpus for all
+63 scenes without routing everything into the CD at once.
+
+**Achievements**:
+- High-tide and low-tide FG2 packs generated for all 63 scenes.
+- `FISHING 1` and `FISHING 2` are validated under the current bar.
+- `FISHING 3` is loop-stable and tide-correct on FG2, but not yet
+  promoted to the validated ledger.
+- FG1 support, direct/fallback routing, and stale `.FG1` artifacts are
+  now cleanup targets, not active methodology.
+
+**Key Insight**: Full-render base-diff FG2 capture avoids the sprite
+classification gaps that range-based foreground extraction could miss.
 
 ## Challenges & Solutions
 
@@ -278,7 +321,7 @@ scene analyzer -> restore specs -> cluster contracts -> pack compiler -> header 
 
 ## Statistics
 
-### Code Metrics (as of 2026-03-21)
+### Historical Code Metrics (as of 2026-03-21)
 ```
 PS1 Graphics:              3,359 lines (graphics_ps1.c)
 PS1 CD-ROM I/O:            2,280 lines (cdrom_ps1.c)
@@ -292,13 +335,15 @@ PS1-specific code:         ~7,000 lines
 Core Engine (reused):      4,000+ lines (24 files, mostly unchanged)
 ```
 
-### Binary Metrics
+### Historical Binary Metrics
 ```
 PS-EXE size:     120 KB
 Text segment:    ~107 KB
 Data segment:    ~10 KB
 BSS:             ~57 KB
 ```
+
+Current operator-facing size notes are in [current-status.md](current-status.md).
 
 ## Lessons for Future Ports
 
@@ -355,14 +400,17 @@ BSS:             ~57 KB
 ## Future Work
 
 ### Immediate (Scene Coverage)
-- [ ] Fix ACTIVITY.ADS tag 4 stale frame, promote to verified
-- [ ] Unblock BUILDING.ADS and FISHING.ADS entry paths
-- [ ] Expand verified scenes from 25 to 63 via cluster contract promotion
+- [ ] Promote `FISHING 3` after pixel-perfect visual + audible signoff.
+- [ ] Route and validate remaining FG2 scene packs one scene at a time.
+- [ ] Remove FG1 generation, direct/fallback routing, and stale `.FG1`
+      artifacts in the next cleanup round.
 
 ### Short-term (Completeness)
-- [ ] Build automated validation harness (batch scene verification)
-- [ ] Complete audio implementation (WAV to VAG, SPU playback)
-- [ ] PSB/BMP hot path reconciliation
+- [ ] Keep the all-scene FG2 corpus available without routing all packs
+      into the CD image at once.
+- [ ] Continue overnight loop-stability checks for newly promoted scenes.
+- [ ] Keep legacy regtest/binary-library material searchable as archaeology,
+      not as the active acceptance gate.
 
 ### Long-term (Polish)
 - [ ] Real hardware testing
@@ -372,7 +420,11 @@ BSS:             ~57 KB
 
 ## Conclusion
 
-The PS1 port boots and runs on DuckStation with 25 of 63 scenes verified correct. The offline scene-restore pipeline solved the hardest architectural problem -- eliminating replay continuity on a platform where CD latency and 2MB RAM make runtime replay impractical. The remaining work is expanding scene coverage (authored specs exist for all 63 scenes) and completing audio.
+The PS1 port boots and runs on DuckStation with a proven FG2
+scene-playback methodology. `FISHING 1` and `FISHING 2` are validated
+under the current pixel-perfect + synced-SFX bar; `FISHING 3` is the next
+scene in bring-up. The older restore-pilot and harness eras remain
+valuable history, but the active path is now scene-by-scene FG2 validation.
 
 **Key Takeaway**: Moving work from runtime to build time -- scene analysis, resource declarations, dirty-region contracts -- turned an intractable runtime problem into a straightforward offline pipeline.
 

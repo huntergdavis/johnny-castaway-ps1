@@ -1,15 +1,16 @@
 # PS1 Port — Current Status
 
-**Last updated:** 2026-04-22 (release `v0.3.6-ps1`, commit `f2737253`).
+**Last updated:** 2026-04-24 (release `v0.3.9-ps1`, commit `111efa9f`).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
-animations. `FISHING 1` is the first and (for now) only scene that has
-been validated under the project's current acceptance bar: pixel-perfect
-visuals plus synced SFX, across every applicable variant (night /
-low-tide / holiday / raft-stage), signed off by human visual + audible
-review.
+animations. `FISHING 1` and `FISHING 2` have been validated under the
+project's current acceptance bar: pixel-perfect visuals plus synced SFX,
+across every applicable variant (night / low-tide / holiday /
+raft-stage), signed off by human visual + audible review. `FISHING 3`
+is in bring-up: loop-stable and tide-correct on FG2, but not yet
+promoted to the validated ledger.
 
 | Component | Status |
 |---|---|
@@ -18,24 +19,28 @@ review.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c`) | Complete |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 1/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 2/63 scenes fully validated |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay |
 | Telemetry / debug overlay | Complete |
 
-## Scenes: 1 / 63 fully validated
+## Scenes: 2 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Milestone release:
+Milestone releases:
+- `v0.3.9-ps1` (commit `111efa9f`) — fishing3 overnight loop-stability
+  release; confirms the current runtime can run long sessions without
+  the previous scene-to-scene leak.
 - `v0.3.6-ps1` (commit `f2737253`) — fishing1 pixel-perfect with full SFX
   across all variants.
 - Prior visual-only release `v0.3.5-ps1` (commit `9448d49f`) —
   superseded by the full-SFX release above.
 
-Release cadence from here: cut every 10 scenes that reach the same
-validated bar.
+Milestone release cadence from here: cut every 10 scenes that reach the
+same validated bar. Smaller stability releases may happen between scene
+milestones.
 
 ## Primary render methodology: hybrid scene playback (fgpilot)
 
@@ -54,7 +59,7 @@ documentation is migrating to the name **PS1 scene playback**. See
 ### Pipeline
 
 ```
-desktop host ──► capture-host-scene.sh ──► frames + frame-meta JSONs + sound-events.jsonl
+desktop host ──► capture-host-scene.sh ──► high/low frames + frame-meta JSONs + sound-events.jsonl
                                   │
                                   ▼
             export-scene-foreground-pilot.sh
@@ -62,8 +67,8 @@ desktop host ──► capture-host-scene.sh ──► frames + frame-meta JSONs
                                   ▼
             build-scene-foreground-pack.py
                                   │
-                                  ▼   (FGP v2: visuals + sound-event table)
-               generated/ps1/foreground/*.FG1 ──► CD image ──► PS1
+                                  ▼   (FG2: pal4/indexed8 spans + sound-event table)
+               generated/ps1/foreground/*.FG2 ──► CD image ──► PS1
                                                                 │
                                                                 ▼
                                               foreground_pilot.c (replay)
@@ -80,12 +85,17 @@ preserved as secondary / historical tooling — useful for targeted
 questions, not for certifying a scene as done. See
 [TESTING.md](TESTING.md).
 
+FG1 packs are no longer part of the active methodology. Legacy FG1
+compiler/runtime entrypoints and stale `.FG1` artifacts may still exist
+in the tree, but they are cleanup targets for the next round after FG2
+routing is generalized.
+
 ## Audio
 
 SPU is initialised at boot; all 23 VAG sound effects are preloaded into
 SPU RAM; `soundPlay(nb)` drives a round-robin over 8 voices. Captured
 `0xC051 PLAY_SAMPLE` events from the host TTM interpreter ship in the
-FG1 pack (v2) and are fired from `foreground_pilot.c` during replay,
+foreground pack and are fired from `foreground_pilot.c` during replay,
 with a 3-frame delay constant to align key-on with the visible frame.
 
 The VAG encoder (`scripts/wav2vag.py`) and the SPU upload/playback path
@@ -109,24 +119,29 @@ searchability — **do not cite them as current progress**:
 | 57 / 63 | 2026-04-04 | Scenes rendering with island content | `docs/ps1/TESTING.md` (older) |
 | 60 / 63 | 2026-04-04..07 | Bringup in the headless regtest surface | `docs/ps1/TESTING.md` (older), `config/ps1/regtest-scenes.txt` |
 | **1 / 63** | **2026-04-22** | **Human-signed reference scene under the full visual + SFX bar** | **this doc, `scene-status.md`** |
+| **2 / 63** | **2026-04-24** | **Current scene ledger after `FISHING 2` promotion; `FISHING 3` remains bring-up** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current
-scene ledger starts clean from 1 / 63 because that is the only surface
-that matches the present proven baseline.
+scene ledger starts clean from the human-signed scene-playback bar
+because that is the only surface that matches the present proven
+baseline.
 
 ## Build size
 
 | | |
 |---|---|
-| PS-EXE (`jcreborn.exe`) | ~158 KB |
-| CD image (`jcreborn.bin`) | ~46 MB |
+| PS-EXE (`jcreborn.exe`) | ~196 KB |
+| CD image (`jcreborn.bin`) | ~47 MB with routed fishing FG2 packs |
+| Generated FG2 corpus | 126 high/low packs for 63 scenes, ~343 MB |
 
 ## Known limitations
 
 - `printf()` during the PS1 game loop is unsafe — use the telemetry
   overlay (`ps1_debug.c`) for runtime visibility.
-- Scene coverage beyond FISHING 1 is pending scene-by-scene bring-up
+- FG1 support remains in code for now, but is a legacy cleanup target;
+  do not add new FG1 docs, routes, or artifacts.
+- Scene coverage beyond FISHING 1 and FISHING 2 is pending scene-by-scene bring-up
   via the loop in [development-workflow.md](development-workflow.md).
 
 ## See also
