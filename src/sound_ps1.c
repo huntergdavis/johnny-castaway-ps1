@@ -215,14 +215,31 @@ void soundStop(int nb)
 }
 
 /*
- * Toggle sound mute on/off. Keys-off all voices when muting.
+ * Toggle sound mute on/off. Zeros the SPU master volume registers
+ * directly — SpuSetCommonMasterVolume goes through PSn00bSDK's deferred
+ * SPU API which doesn't seem to take effect immediately in DuckStation
+ * HLE. Direct register writes are honored. Restores on unmute.
+ *
+ * Hardware regs (KSEG1, uncached):
+ *   SPU_MAIN_VOL_L = 0xBF801D80 (16-bit)
+ *   SPU_MAIN_VOL_R = 0xBF801D82
+ * Master volume is signed 15-bit; 0x3FFF = max.
  */
 void soundMuteToggle(void)
 {
+    volatile uint16_t *masterL = (volatile uint16_t *)0xBF801D80;
+    volatile uint16_t *masterR = (volatile uint16_t *)0xBF801D82;
+
     soundMuted = !soundMuted;
     if (soundMuted) {
-        /* Silence all active voices immediately */
-        SpuSetKey(0, 0xFFFFFF);
+        SpuSetKey(0, 0xFFFFFF);          /* stop all voices */
+        *masterL = 0;
+        *masterR = 0;
+        SpuSetCommonMasterVolume(0, 0);  /* belt-and-braces */
+    } else {
+        *masterL = 0x3FFF;
+        *masterR = 0x3FFF;
+        SpuSetCommonMasterVolume(0x3FFF, 0x3FFF);
     }
 }
 

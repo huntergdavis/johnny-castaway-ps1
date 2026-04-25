@@ -604,7 +604,7 @@ static void fgReleaseStreamBuffers(void)
     gFgStreamScratchSize = 0;
 }
 
-static unsigned long fgProbeLargestAlloc(void)
+unsigned long fgProbeLargestAlloc(void)
 {
     unsigned long lo = 0;
     unsigned long hi = 512ul * 1024ul;
