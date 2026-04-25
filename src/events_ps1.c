@@ -29,8 +29,9 @@
 /* Global variables */
 int evHotKeysEnabled = 0;
 
-/* Controller data buffers */
-static uint8 pad_buff[2][34];
+/* Controller data buffers — non-static so pause_menu.c can read the
+ * same shared pad state via `extern uint8 pad_buff[2][34];`. */
+uint8 pad_buff[2][34];
 
 /* Game state variables (matching original events.c) */
 static int quit = 0;
