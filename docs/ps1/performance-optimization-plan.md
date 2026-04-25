@@ -485,12 +485,18 @@ Red-team risks:
 Goal: stop restoring and uploading full scene-sized clean rects when the actual
 FG2 spans touch a much smaller row/X set.
 
+Status: first restore-only slice implemented on the perf branch. Dirty tracking
+now carries per-tile X extents for RAM clean-background restore while the upload
+path still uses the proven full-row batching. Fishing1 improved from
+`loop_vb=1426` to `1366` and `restore_bytes=16035840` to `9580428`; next work
+is X-aware upload batching.
+
 | ID | Task | Rationale |
 |---|---|---|
-| `P2-01` | Replace per-tile `minY/maxY` dirty state with per-row `minX/maxX` state. | Preserve horizontal precision from FG2 spans. |
-| `P2-02` | Keep `curr` and `prev` row extents per tile. | Restore previous pixels and upload union of previous/current changes. |
-| `P2-03` | Change `grMarkRectDirty` to update row X extents, not just row bands. | Existing callers get better precision automatically. |
-| `P2-04` | Add a clean-rect restore function that copies only previous row X extents. | Avoid 200-350 KB per-frame clean copies. |
+| `P2-01` | Partial: add per-tile `minX/maxX` alongside `minY/maxY`. | Preserve useful horizontal precision from FG2 spans without changing upload yet. |
+| `P2-02` | Partial: keep `curr` and `prev` X/Y extents per tile. | Restore previous pixels using narrower RAM copies; upload still uses row bands. |
+| `P2-03` | Done: change `grMarkRectDirty` to update X extents, not just row bands. | Existing callers get better restore precision automatically. |
+| `P2-04` | Done: clean-rect restore copies only previous X extents. | Avoid full-width RAM clean copies for narrow dirty bands. |
 | `P2-05` | Batch row extents into a bounded list of `LoadImage` rectangles. | Avoid one `LoadImage` per row. |
 | `P2-06` | Use 8- or 16-pixel X bucket rounding for better batching. | Trade tiny extra upload for far fewer rectangles. |
 | `P2-07` | Add a deterministic merge policy when rect count exceeds a cap. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
