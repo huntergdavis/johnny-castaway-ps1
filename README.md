@@ -16,6 +16,14 @@ wave animation, holiday overlay, input, SPU).
   <code>FISHING 1</code> on PS1, captured from DuckStation: daytime cast · raft variant · night variant.
 </p>
 
+<p align="center">
+  <img src="docs/readme/pause-menu.png" width="62%" alt="Pause menu overlay running on PS1">
+</p>
+
+<p align="center">
+  Press <strong>START</strong> mid-scene for the pause menu — sound mute, day/night and holiday overrides, perf log toggle, debug info, set time/date, save to memory card.
+</p>
+
 ## Download and play
 
 Latest release → [**Releases page**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest)

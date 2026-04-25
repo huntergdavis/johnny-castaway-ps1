@@ -108,6 +108,10 @@ holiday overlay, SPU playback, input).
 **Current truth**
 - [scene-status.md](scene-status.md) — per-scene ledger under the reference bar
 - [current-status.md](current-status.md) — detailed progress + history of earlier validation models
+- [milestones-2026-04-25.md](milestones-2026-04-25.md) — TTY printf, perf module + Docker regtest, pause menu, holiday-expansion design, SPI driver, memcard
+- [pause-menu-design.md](pause-menu-design.md) — locked pause-menu design
+- [holidays-expansion-design.md](holidays-expansion-design.md) — 35-holiday plan
+- [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
 

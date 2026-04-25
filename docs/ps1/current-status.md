@@ -1,6 +1,7 @@
 # PS1 Port — Current Status
 
-**Last updated:** 2026-04-24 (release `v0.3.9-ps1`, commit `111efa9f`).
+**Last updated:** 2026-04-25 (release `v0.3.9-ps1`, commit `111efa9f`;
+plus the 2026-04-25 batch — see [milestones-2026-04-25.md](milestones-2026-04-25.md)).
 
 ## Overall
 
@@ -17,11 +18,15 @@ promoted to the validated ledger.
 | Build system (Docker + CMake + mkpsxiso) | Complete |
 | CD-ROM I/O (`cdrom_ps1.c`) | Complete |
 | Graphics layer (`graphics_ps1.c`) | Complete |
-| Input layer (`events_ps1.c`) | Complete |
+| Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
 | Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 2/63 scenes fully validated |
-| Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay |
+| Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
 | Telemetry / debug overlay | Complete |
+| Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF`/`JCPERF2` TTY lines (OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel`) |
+| Pause menu (`pause_menu.c`) | Complete — Start opens overlay; custom 8x8 font (FntFlush is empirically broken in scene-runtime context); POLY_F4 dim + panel quads |
+| User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
+| TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
 ## Scenes: 2 / 63 fully validated
 
@@ -137,10 +142,22 @@ baseline.
 
 ## Known limitations
 
-- PS1 `printf()` works through DuckStation TTY/file logging for gated
-  probes (`printf-test` / `logtest`). It is not a per-frame instrumentation
-  surface; use the telemetry overlay or fixed counters for hot-path runtime
-  visibility.
+- PS1 `printf()` is now reliable through DuckStation TTY logging
+  (verified 2026-04-25). It still must not be called from per-frame
+  hot paths because text I/O alters timing; use the telemetry overlay,
+  the `ps1_perf` module, or one-shot snapshots like `JCPAUSE`/`JCPERF`
+  for runtime visibility.
+- `FntFlush` (PSn00bSDK font path) is empirically broken in the scene
+  runtime context — primitives accumulate but produce no visible
+  pixels. The pause menu uses a custom embedded 8x8 ASCII font
+  instead; do not regress to `FntFlush` for new on-screen text.
+- BIOS pad system (`InitPAD` / `StartPAD`) is unusable in our
+  PSn00bSDK 0.24 + DuckStation environment. All pad input goes through
+  `src/spi.c` (timer-2 + SIO0 IRQ-driven, 250 Hz). Note the
+  DuckStation-specific quirk: poll TX must be `tx_len=5`, not the
+  spicyjpeg reference's `tx_len=4`, or button bytes are dropped.
+- `SpuSetCommonMasterVolume` is not honored by DuckStation HLE; sound
+  mute writes the SPU master-volume registers directly.
 - FG1/FOC and per-scene RAW paths are retired; do not add new docs,
   routes, generated artifacts, or CD entries for them.
 - Scene coverage beyond FISHING 1 and FISHING 2 is pending scene-by-scene bring-up
@@ -148,7 +165,12 @@ baseline.
 
 ## See also
 
+- [milestones-2026-04-25.md](milestones-2026-04-25.md) — TTY,
+  perf module, pause menu, holiday expansion, SPI driver, memcard
 - [scene-status.md](scene-status.md) — per-scene ledger
+- [pause-menu-design.md](pause-menu-design.md) — locked design
+- [holidays-expansion-design.md](holidays-expansion-design.md) — 35-holiday plan
+- [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
 - [development-workflow.md](development-workflow.md) — bring-up loop
 - [TESTING.md](TESTING.md) — validation strategy
 - [hardware-specs.md](hardware-specs.md)
