@@ -88,6 +88,7 @@ struct TFgPilotRuntime {
     struct TFgPilotHeader header;
     struct TFgPilotEntryTable entryTable;
     struct TFgPilotEntry currentEntry;
+    uint8 frameRendered;
     uint8 *currentFrameData;        /* Points inside frameBuffer (not separately alloc'd). */
     uint8 *frameBuffer;             /* Pre-allocated max-frame-size buffer; one per scene. */
     uint32 frameBufferSize;         /* Capacity of frameBuffer. */
@@ -896,6 +897,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     entryIsEmpty = (entry->dataSize == 0 && entry->width == 0 && entry->height == 0);
 
     if (entryIsEmpty && gFgRuntime.currentFrameData != NULL) {
+        gFgRuntime.frameRendered = 1;
         gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
                                                        entry,
                                                        gFgRuntime.presentedVBlanks);
@@ -906,6 +908,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 
     gFgRuntime.currentEntry = *entry;
     gFgRuntime.currentFrameData = NULL;
+    gFgRuntime.frameRendered = 0;
 
     /* Stream the frame payload into the pre-allocated frameBuffer. Avoids
      * the per-frame malloc+free churn of ps1_streamRead — important for
@@ -939,6 +942,26 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
+}
+
+static int fgRuntimeCanHoldDisplayedFrame(void)
+{
+    return gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           fgRuntimeUsesBaseDiffBackdrop() &&
+           gFgRuntime.frameRendered;
+}
+
+static void fgRuntimeMarkFrameRendered(void)
+{
+    if (gFgRuntime.active && gFgRuntime.mode == FG_RUNTIME_SCENE_PACK)
+        gFgRuntime.frameRendered = 1;
+}
+
+static void fgRuntimeWaitHeldVBlank(void)
+{
+    VSync(0);
+    eventsWaitTick(0);
 }
 
 static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
@@ -1362,11 +1385,16 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     fgHeapProbe("after_clean_rect_save", sceneName);
 
     while (foregroundPilotRuntimeActive()) {
-        grBeginFrame();
-        grRestoreBgFromRects();
-        if (!fgRuntimeUsesBaseDiffBackdrop())
-            fgBackdropTickBackgroundWaves();
-        grUpdateDisplay(NULL, NULL, NULL);
+        if (fgRuntimeCanHoldDisplayedFrame()) {
+            fgRuntimeWaitHeldVBlank();
+        } else {
+            grBeginFrame();
+            grRestoreBgFromRects();
+            if (!fgRuntimeUsesBaseDiffBackdrop())
+                fgBackdropTickBackgroundWaves();
+            grUpdateDisplay(NULL, NULL, NULL);
+            fgRuntimeMarkFrameRendered();
+        }
         foregroundPilotRuntimeAdvance();
     }
 
