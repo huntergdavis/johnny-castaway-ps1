@@ -800,6 +800,17 @@ for case in cases:
     )
     for failure in gate.get("failures", []):
         print(f"  failure: {failure}")
+    comparisons = case.get("baseline_comparison", [])
+    if comparisons:
+        parts = []
+        for item in comparisons:
+            field = item.get("field")
+            baseline = item.get("baseline")
+            current = item.get("current")
+            delta = item.get("delta")
+            sign = "+" if isinstance(delta, int) and delta > 0 else ""
+            parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
+        print("  vs baseline: " + "; ".join(parts))
     for suggestion in derived.get("suggestions", [])[:4]:
         print(f"  next: {suggestion}")
 print(f"Summary JSON: {out_path}")
