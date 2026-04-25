@@ -158,17 +158,49 @@ static const char *fgLoopNextScene(const char *explicitScene)
     return kProvenScenes[rand() % NUM_PROVEN_SCENES];
 }
 
+static int fgLoopSceneUsesVarPos(const char *sceneName)
+{
+    return sceneName != NULL &&
+           (!strcmp(sceneName, "fishing1") ||
+            !strcmp(sceneName, "fishing2") ||
+            !strcmp(sceneName, "fishing3"));
+}
+
+static void fgLoopRandomVarPos(int *outX, int *outY)
+{
+    if (rand() % 2) {
+        *outX = -222 + (rand() % 109);
+        *outY = -44  + (rand() % 128);
+    } else if (rand() % 2) {
+        *outX = -114 + (rand() % 134);
+        *outY = -14  + (rand() % 99);
+    } else {
+        *outX = -114 + (rand() % 119);
+        *outY = -73  + (rand() % 60);
+    }
+}
+
 /* Set islandState variant fields for one iteration. Fields explicitly
  * forced via BOOTMODE (hostForced* >= 0) stay forced; unforced fields
- * get a fresh random value each call. */
-static void fgLoopApplyVariant(void)
+ * get a fresh random value each call. Position policy is scene-specific:
+ * current validated fgpilot scenes are VARPOS_OK in story_data.h, so their
+ * FG2 scene-relative overlays must follow the original random island offset. */
+static void fgLoopApplyVariant(const char *sceneName)
 {
     islandState.night   = (hostForcedNight     >= 0) ? hostForcedNight     : (rand() & 1);
     islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
     islandState.holiday = (hostForcedHoliday   >= 0) ? hostForcedHoliday   : (rand() % 5);
     islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
-    islandState.xPos    = hostForcedIslandPosValid ? hostForcedIslandX : 3;
-    islandState.yPos    = hostForcedIslandPosValid ? hostForcedIslandY : 9;
+
+    if (hostForcedIslandPosValid) {
+        islandState.xPos = hostForcedIslandX;
+        islandState.yPos = hostForcedIslandY;
+    } else if (fgLoopSceneUsesVarPos(sceneName)) {
+        fgLoopRandomVarPos(&islandState.xPos, &islandState.yPos);
+    } else {
+        islandState.xPos = 0;
+        islandState.yPos = 0;
+    }
 }
 
 #ifdef PS1_BUILD
@@ -914,8 +946,9 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
     do {
-        fgLoopApplyVariant();
-        foregroundPilotSetScene(fgLoopNextScene(explicitScene));
+        const char *loopScene = fgLoopNextScene(explicitScene);
+        fgLoopApplyVariant(loopScene);
+        foregroundPilotSetScene(loopScene);
         foregroundPilotPlay();
     } while (!screensaverLoopDisabled);
 
@@ -1033,8 +1066,9 @@ int main(int argc, char **argv)
          * on the PS1 branch above. */
         const char *explicitScene = (numArgs >= 1) ? args[0] : NULL;
         do {
-            fgLoopApplyVariant();
-            foregroundPilotSetScene(fgLoopNextScene(explicitScene));
+            const char *loopScene = fgLoopNextScene(explicitScene);
+            fgLoopApplyVariant(loopScene);
+            foregroundPilotSetScene(loopScene);
             foregroundPilotPlay();
         } while (!screensaverLoopDisabled);
         graphicsEnd();

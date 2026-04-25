@@ -755,15 +755,13 @@ static void fgBackdropEnableWaveBackdrop(void)
         grReleaseBmp(&gFgBackdropSlot, 1);
     }
 
-    if (islandState.night || islandState.lowTide) {
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 288, 279,  0, 0);
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 442, 148, 13, 0);
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 365, 122, 12, 0);
-        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 396, 279, 14, 0);
-        if (islandState.lowTide) {
-            grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 249, 303,  1, 0);
-            grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
-        }
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 288, 279,  0, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 442, 148, 13, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 365, 122, 12, 0);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 396, 279, 14, 0);
+    if (islandState.lowTide) {
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 249, 303,  1, 0);
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
     }
 
     if (islandState.holiday >= 1 && islandState.holiday <= 4)
@@ -1324,8 +1322,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * The FG2 backdrop helper draws the island sprites on top. */
         grLoadScreen("NIGHT.SCR");
     } else {
+        /* OCEAN00.SCR has no island baked in. The island must be drawn through
+         * the movable BACKGRND.BMP path so scene-relative FG2 packs can follow
+         * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
-        grLoadScreen("ISLETEMP.SCR");
     }
     /* grLoadScreen saves full clean-tile copies. FG2 uses a smaller
      * rect-mode backup instead, so free the full copies before the pack
