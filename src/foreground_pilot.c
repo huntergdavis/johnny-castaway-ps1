@@ -123,7 +123,7 @@ static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
 static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
-#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (48UL * 1024UL)
+#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (32UL * 1024UL)
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;

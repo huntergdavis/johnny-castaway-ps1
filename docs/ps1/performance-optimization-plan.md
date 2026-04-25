@@ -18,16 +18,16 @@ pixel-perfect FG2 methodology.
 ## Executive Summary
 
 Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, a 48 KB FG2 stream window, and dirty
-clean-rect row restore are merged to `main`. The boot parameters still exist
-for diagnostics, but the default FG2 playback policy is now
+Held-entry no-work, one-entry staging, a 32 KB FG2 stream window, and dirty
+clean-rect row restore are active on the perf branch. The boot parameters still
+exist for diagnostics, but the default FG2 playback policy is now
 `stage1_window`.
 
-Latest default-path fishing1 high-tide run, with no explicit prefetch boot
-tokens, reported `policy=stage1_window`, `buf=56336`, `hits=150`,
-`due_misses=5`, `hidden_reads=14`, `blocking_reads=19`, `blocking_vb=174`,
-`hidden_vb=45`, `loop_vb=1450`, `target_vb=1077`, `trip=0`, `fallback=0`,
-`frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
+Latest default-path fishing1 high-tide run, with the 32 KB stream window,
+reported `policy=stage1_window`, `buf=39952`, `hits=150`, `due_misses=5`,
+`blocking_vb=148`, `prefetch.overrun_vb=104`, `loop_vb=1426`,
+`target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
+and `cd_fail=0`.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -59,7 +59,7 @@ Top likely wins, in order:
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
 | 1 | Detail-tier attribution pass on the post-prefetch default path | High | `loop_vb` is still `1450` vs `1077`; the next edit needs to know how much is CD blocking, present serialization, upload, restore, compose, or event wait. |
-| 2 | Finish CD stall hiding beyond the default 48 KB window | High | Default prefetch reduced misses sharply, but the latest run still has `blocking_vb=174`, `blocking_reads=19`, and prefetch `overrun_vb=108`. |
+| 2 | Finish CD stall hiding beyond the default 32 KB window | High | The first sweep lowered fishing1 `blocking_vb` from `168` to `148`, but the latest run still has prefetch `overrun_vb=104` and `due_misses=5`. |
 | 3 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `14.7 MB` and uploads `15.7 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
@@ -536,16 +536,16 @@ read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
 Status: first wave implemented, visually signed off, and merged to `main` in
-`1b457163`. Stage1 entry prefetch and a 48 KB stream window are now default.
-The old `prefetch-stage1` and `prefetch-window48` tokens are no longer required
-for the normal path; `no-prefetch`, `no-stage1`, and window-size tokens remain
-diagnostic controls.
+`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a 32 KB
+stream window after the first window-size sweep. The old `prefetch-stage1` token
+is no longer required for the normal path; `no-prefetch`, `no-stage1`, and
+window-size tokens remain diagnostic controls.
 
 Current post-merge target: keep squeezing CD latency without changing pixels.
-The default fishing1 high-tide run shows most entries hit prefetch/window data,
-but still reports `blocking_vb=174`, `blocking_reads=19`, `due_misses=5`,
-`used_vb=153`, and prefetch `overrun_vb=108`. The next CD experiments should
-focus on hiding refill work better, not simply increasing buffer size blindly.
+The 32 KB fishing1 high-tide run shows most entries hit prefetch/window data,
+but still reports `blocking_vb=148`, `due_misses=5`, and prefetch
+`overrun_vb=104`. The next CD experiments should focus on hiding refill work
+better, not simply increasing buffer size blindly.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -802,9 +802,9 @@ into one commit.
 | 8 | Baseline | Run Summary vs Detail fishing1. | Quantify detail-probe overhead. |
 | 9 | Baseline | Save a machine-readable metrics comparison script. | Same-field before/after diffs. |
 | 10 | Baseline | Add a benchmark manifest for required variants. | Repeatable scene matrix. |
-| 11 | CD | Test 40 KB stream window. | Lower `blocking_vb` than 48 KB or smaller heap. |
-| 12 | CD | Test 56 KB stream window. | Better hit rate without extra overrun. |
-| 13 | CD | Test 64 KB stream window again under default policy. | Lower `due_misses` with stable heap. |
+| 11 | CD | Done: test 32/24/16/64 KB stream-window sweep. | 32 KB is the best clean first step: `loop_vb=1426`, `blocking_vb=148`; 24 KB raises blocking, 16/64 KB did not complete cleanly. |
+| 12 | CD | Test 40 KB stream window. | Check whether the knee is between 32 KB and the original 48 KB. |
+| 13 | CD | Test 56 KB stream window. | Better hit rate without extra overrun. |
 | 14 | CD | Test 80 KB stream window for fishing3 only. | Determine memory/perf knee. |
 | 15 | CD | Align stream window start to pack entry sector. | Lower `unaligned_start` and `overread_bytes`. |
 | 16 | CD | Align stream window end to sector boundary only once. | Lower scratch-copy churn. |
