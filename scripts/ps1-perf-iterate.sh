@@ -576,6 +576,44 @@ with Path(log_path).open("a", encoding="utf-8") as fh:
 PY
 }
 
+case_summary_passed() {
+    local summary_file="$1"
+    python3 - "$summary_file" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+if not path.is_file():
+    raise SystemExit(1)
+
+summary = json.loads(path.read_text(encoding="utf-8"))
+sections = summary.get("sections", {})
+required_sections = (
+    "scene",
+    "timing",
+    "setup",
+    "frame",
+    "cd",
+    "prefetch",
+    "render",
+    "gfx",
+    "heap",
+    "correctness",
+)
+if not all(name in sections for name in required_sections):
+    raise SystemExit(1)
+if not summary.get("gate", {}).get("pass"):
+    raise SystemExit(1)
+raise SystemExit(0)
+PY
+}
+
+duckstation_exited_successfully() {
+    local log_file="$1"
+    [ -f "$log_file" ] && grep -q "Exiting with success" "$log_file"
+}
+
 run_headless_regtest() {
     local cue_file="$1"
     local out_dir="$2"
@@ -709,6 +747,11 @@ for i in "${!CASE_LABELS[@]}"; do
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
+        if case_summary_passed "$summary_file" && duckstation_exited_successfully "$log_file"; then
+            append_experiment_log "$summary_file" "$regtest_exit" "regtest_passed_after_wrapper_exit" "wrapper_exit_${regtest_exit}_after_duckstation_success"
+            echo "WARN: regtest wrapper exited $regtest_exit after DuckStation success; accepting parsed JCPERF2 case metrics." >&2
+            continue
+        fi
         append_experiment_log "$summary_file" "$regtest_exit" "regtest_failed" "regtest_exit_$regtest_exit"
         echo "ERROR: regtest exited $regtest_exit for case $label" >&2
         echo "See: $log_file" >&2
