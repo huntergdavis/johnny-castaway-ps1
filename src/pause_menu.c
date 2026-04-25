@@ -31,15 +31,12 @@
 #include "resource.h"
 
 /* ---------------------------------------------------------------------------
- *  External telemetry / debug state from ads.c, story.c, graphics_ps1.c
+ *  External telemetry / debug state.
+ *  ads.c and story.c were retired in the legacy-runtime cleanup
+ *  (commit 7d5221e3), so the old `ps1AdsCurrent*` / `ps1StoryDbg*`
+ *  symbols no longer exist. P3 will swap Scene Info for a richer
+ *  Debug Info screen that reads from ps1_perf.h.
  * ------------------------------------------------------------------------- */
-extern char   ps1AdsCurrentName[16];
-extern uint16 ps1AdsCurrentTag;
-extern uint16 ps1AdsDbgActiveThreads;
-extern uint16 ps1AdsDbgRecordedSpritesFrame;
-
-extern uint16 ps1StoryDbgPhase;
-extern uint16 ps1StoryDbgSeq;
 
 /* Font stream from ps1_debug.c -- reused for pause menu text. */
 extern int fontID;
@@ -181,22 +178,13 @@ static int bgDimmed = 0;
 
 static void dimBackground(void)
 {
-    if (bgDimmed) return;
-
-    PS1Surface *tiles[] = { bgTile0, bgTile1, bgTile3, bgTile4 };
-    for (int t = 0; t < 4; t++) {
-        if (!tiles[t] || !tiles[t]->pixels) continue;
-        uint32 count = (uint32)tiles[t]->width * tiles[t]->height;
-        uint16 *px = tiles[t]->pixels;
-        for (uint32 i = 0; i < count; i++) {
-            uint16 c = px[i];
-            if (c == 0) continue;
-            uint16 r = (c & 0x001F) >> 1;
-            uint16 g = ((c >> 5) & 0x1F) >> 1;
-            uint16 b = ((c >> 10) & 0x1F) >> 1;
-            px[i] = (b << 10) | (g << 5) | r;
-        }
-    }
+    /* P1: no-op. The original implementation modified bgTile pixels
+     * in place without marking them dirty, so the dim was invisible AND
+     * accumulated across pause cycles AND corrupted bg state outside
+     * the rect-restore region after resume. P2 replaces with a
+     * POLY_F4 semi-transparent quad over the framebuffer (bgTile
+     * pixels untouched). For now the menu text draws on top of the
+     * live last-rendered scene with no dim. */
     bgDimmed = 1;
 }
 
@@ -218,13 +206,12 @@ static void drawSceneInfo(void)
     FntPrint(fontID, "     SCENE INFO\n");
     drawSeparator();
     FntPrint(fontID, "\n");
-    FntPrint(fontID, " ADS: %s tag %d\n", ps1AdsCurrentName, (int)ps1AdsCurrentTag);
-    FntPrint(fontID, " Threads: %d active\n", (int)ps1AdsDbgActiveThreads);
     FntPrint(fontID, " Memory: %dKB / %dKB\n",
              (int)(used / 1024), (int)(budget / 1024));
-    FntPrint(fontID, " Sprites: %d drawn\n", (int)ps1AdsDbgRecordedSpritesFrame);
-    FntPrint(fontID, " Story phase: %d  seq: %d\n",
-             (int)ps1StoryDbgPhase, (int)ps1StoryDbgSeq);
+    FntPrint(fontID, "\n");
+    FntPrint(fontID, " (Debug Info screen in P3 will\n");
+    FntPrint(fontID, "  show live perf counters via\n");
+    FntPrint(fontID, "  ps1_perf module.)\n");
     FntPrint(fontID, "\n");
     FntPrint(fontID, " (START to go back)\n");
 }
@@ -495,8 +482,9 @@ int pauseMenuUpdate(void)
     uint16 cur = 0;
     {
         PADTYPE *pad = (PADTYPE *)pad_buff[0];
-        if (pad->stat == 0)
-            cur = ~(pad->btn);
+        /* Don't gate on pad->stat — DualShock analog reports non-zero
+         * stat values in some modes and pad->btn is still valid. */
+        cur = ~(pad->btn);
     }
     uint16 pressed = pmNewPress(cur);
     prevButtons = cur;
