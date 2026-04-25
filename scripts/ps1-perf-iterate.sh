@@ -583,11 +583,19 @@ run_headless_regtest() {
     local bios_dir=""
     local cue_dir
     local cue_name
+    local case_slug
+    local container_name
+    local cid_file
 
     cue_file="$(realpath "$cue_file")"
     cue_dir="$(dirname "$cue_file")"
     cue_name="$(basename "$cue_file")"
+    case_slug="$(basename "$(dirname "$out_dir")")"
+    container_name="$(printf 'jc-ps1-perf-%s-%s-%s' "$RUN_ID" "$case_slug" "$$" | tr -c 'A-Za-z0-9_.-' '-')"
+    cid_file="$out_dir/container.cid"
     mkdir -p "$out_dir/frames"
+    rm -f "$cid_file"
+    "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
 
     if bios_dir="$(find_bios_dir)"; then
         :
@@ -604,11 +612,14 @@ run_headless_regtest() {
         echo "log_level=$LOG_LEVEL"
         echo "bios_dir=${bios_dir:-<not-found>}"
         echo "renderer=Software"
+        echo "container_name=$container_name"
     } > "$out_dir/headless-run.txt"
 
     local docker_args=(
         "${DOCKER_CMD[@]}" run --rm
         --platform linux/amd64
+        --name "$container_name"
+        --cidfile "$cid_file"
         -v "${cue_dir}:/game:ro"
         -v "$(realpath "$out_dir"):/output"
     )
@@ -652,6 +663,12 @@ run_headless_regtest() {
     done
 
     wait "$pid"
+    local run_status=$?
+    if [ "$run_status" -ne 0 ]; then
+        "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
+    fi
+    rm -f "$cid_file"
+    return "$run_status"
 }
 
 SUMMARY_PATHS=()
