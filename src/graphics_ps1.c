@@ -92,8 +92,12 @@ static uint16 *bgTile4Clean = NULL;
  * -1 means clean (no rows modified). */
 static int currDirtyMinY[4] = {-1, -1, -1, -1};
 static int currDirtyMaxY[4] = {-1, -1, -1, -1};
+static int currDirtyMinX[4] = {-1, -1, -1, -1};
+static int currDirtyMaxX[4] = {-1, -1, -1, -1};
 static int prevDirtyMinY[4] = {-1, -1, -1, -1};
 static int prevDirtyMaxY[4] = {-1, -1, -1, -1};
+static int prevDirtyMinX[4] = {-1, -1, -1, -1};
+static int prevDirtyMaxX[4] = {-1, -1, -1, -1};
 
 /* Byte-pair palette lookup tables (256 entries × 4 bytes = 1KB each).
  * Each entry packs two resolved 16-bit colors for a packed byte:
@@ -113,15 +117,33 @@ void grSetPresentDuringScreenLoad(int enabled)
     grPresentDuringScreenLoad = enabled ? 1 : 0;
 }
 
-static inline void markTileDirty(int idx, int minY, int maxY)
+static inline void markTileDirtyRect(int idx, int minX, int maxX, int minY, int maxY)
 {
+    if (idx < 0 || idx >= 4)
+        return;
+    if (minX < 0) minX = 0;
+    if (maxX > 319) maxX = 319;
+    if (minY < 0) minY = 0;
+    if (maxY > 239) maxY = 239;
+    if (minX > maxX || minY > maxY)
+        return;
+
     if (currDirtyMinY[idx] < 0) {
+        currDirtyMinX[idx] = minX;
+        currDirtyMaxX[idx] = maxX;
         currDirtyMinY[idx] = minY;
         currDirtyMaxY[idx] = maxY;
     } else {
+        if (minX < currDirtyMinX[idx]) currDirtyMinX[idx] = minX;
+        if (maxX > currDirtyMaxX[idx]) currDirtyMaxX[idx] = maxX;
         if (minY < currDirtyMinY[idx]) currDirtyMinY[idx] = minY;
         if (maxY > currDirtyMaxY[idx]) currDirtyMaxY[idx] = maxY;
     }
+}
+
+static inline void markTileDirty(int idx, int minY, int maxY)
+{
+    markTileDirtyRect(idx, 0, 319, minY, maxY);
 }
 
 static inline void grMarkSingleColumnDirty(int tileBaseX, int y0, int y1Exclusive)
@@ -146,6 +168,8 @@ static inline void grMarkSingleColumnDirty(int tileBaseX, int y0, int y1Exclusiv
 void grMarkAllTilesDirty(void)
 {
     for (int i = 0; i < 4; i++) {
+        currDirtyMinX[i] = 0;
+        currDirtyMaxX[i] = 319;
         currDirtyMinY[i] = 0;
         currDirtyMaxY[i] = 239;
     }
@@ -179,16 +203,30 @@ static void grMarkRectDirty(int x0, int y0, int x1, int y1)
     if (y0 < 240) {
         int ty0 = y0;
         int ty1 = (y1 < 240) ? y1 - 1 : 239;
-        if (x0 < 320) markTileDirty(0, ty0, ty1);
-        if (x1 > 320) markTileDirty(1, ty0, ty1);
+        if (x0 < 320) {
+            int tx1 = (x1 < 320) ? x1 - 1 : 319;
+            markTileDirtyRect(0, x0, tx1, ty0, ty1);
+        }
+        if (x1 > 320) {
+            int tx0 = (x0 > 320) ? x0 - 320 : 0;
+            int tx1 = x1 - 321;
+            markTileDirtyRect(1, tx0, tx1, ty0, ty1);
+        }
     }
     /* Bottom row tiles (screen y 240-479) */
     if (y1 > 240) {
         int ty0 = (y0 > 240) ? y0 - 240 : 0;
         int ty1 = y1 - 240 - 1;
         if (ty1 > 239) ty1 = 239;
-        if (x0 < 320) markTileDirty(2, ty0, ty1);
-        if (x1 > 320) markTileDirty(3, ty0, ty1);
+        if (x0 < 320) {
+            int tx1 = (x1 < 320) ? x1 - 1 : 319;
+            markTileDirtyRect(2, x0, tx1, ty0, ty1);
+        }
+        if (x1 > 320) {
+            int tx0 = (x0 > 320) ? x0 - 320 : 0;
+            int tx1 = x1 - 321;
+            markTileDirtyRect(3, tx0, tx1, ty0, ty1);
+        }
     }
 }
 
@@ -2442,6 +2480,8 @@ void grSaveCleanBgTiles(void)
      * Set prevDirty too since the framebuffer may not match the new background. */
     grMarkAllTilesDirty();
     for (int i = 0; i < 4; i++) {
+        prevDirtyMinX[i] = 0;
+        prevDirtyMaxX[i] = 319;
         prevDirtyMinY[i] = 0;
         prevDirtyMaxY[i] = 239;
     }
@@ -2531,23 +2571,31 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
                 tileLocalY <= prevDirtyMaxY[leftIdx]) {
                 int lx0 = xStart;
                 int lx1 = (xEnd < 320) ? xEnd : 320;
-                uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
-                size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
-                memcpy(dst, srcRow + (lx0 - r->x), bytes);
-                if (perfTrack)
-                    copiedBytes += (uint32)bytes;
+                if (lx0 < prevDirtyMinX[leftIdx]) lx0 = prevDirtyMinX[leftIdx];
+                if (lx1 > prevDirtyMaxX[leftIdx] + 1) lx1 = prevDirtyMaxX[leftIdx] + 1;
+                if (lx0 < lx1) {
+                    uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
+                    size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+                    memcpy(dst, srcRow + (lx0 - r->x), bytes);
+                    if (perfTrack)
+                        copiedBytes += (uint32)bytes;
+                }
             }
             if (tileRight && tileRight->pixels && xEnd > 320 &&
                 prevDirtyMinY[rightIdx] >= 0 &&
                 tileLocalY >= prevDirtyMinY[rightIdx] &&
                 tileLocalY <= prevDirtyMaxY[rightIdx]) {
-                int rx0 = (xStart > 320) ? xStart : 320;
-                int rx1 = xEnd;
-                uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + (rx0 - 320);
-                size_t bytes = (size_t)(rx1 - rx0) * sizeof(uint16);
-                memcpy(dst, srcRow + (rx0 - r->x), bytes);
-                if (perfTrack)
-                    copiedBytes += (uint32)bytes;
+                int rx0 = (xStart > 320) ? (xStart - 320) : 0;
+                int rx1 = xEnd - 320;
+                if (rx0 < prevDirtyMinX[rightIdx]) rx0 = prevDirtyMinX[rightIdx];
+                if (rx1 > prevDirtyMaxX[rightIdx] + 1) rx1 = prevDirtyMaxX[rightIdx] + 1;
+                if (rx0 < rx1) {
+                    uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + rx0;
+                    size_t bytes = (size_t)(rx1 - rx0) * sizeof(uint16);
+                    memcpy(dst, srcRow + ((rx0 + 320) - r->x), bytes);
+                    if (perfTrack)
+                        copiedBytes += (uint32)bytes;
+                }
             }
         }
     }
@@ -2653,6 +2701,8 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     /* Force a full first-frame upload. */
     grMarkAllTilesDirty();
     for (int t = 0; t < 4; t++) {
+        prevDirtyMinX[t] = 0;
+        prevDirtyMaxX[t] = 319;
         prevDirtyMinY[t] = 0;
         prevDirtyMaxY[t] = 239;
     }
@@ -2677,6 +2727,8 @@ void grRestoreBgFromRects(void)
     int i;
     /* Clear currDirty at start of new frame, mirroring grRestoreBgTiles. */
     for (int t = 0; t < 4; t++) {
+        currDirtyMinX[t] = -1;
+        currDirtyMaxX[t] = -1;
         currDirtyMinY[t] = -1;
         currDirtyMaxY[t] = -1;
     }
@@ -2700,6 +2752,8 @@ void grFreeCleanBgTiles(void)
     /* No clean copies → force full upload on next frame */
     grMarkAllTilesDirty();
     for (int i = 0; i < 4; i++) {
+        prevDirtyMinX[i] = 0;
+        prevDirtyMaxX[i] = 319;
         prevDirtyMinY[i] = 0;
         prevDirtyMaxY[i] = 239;
     }
@@ -2730,6 +2784,8 @@ void grRestoreBgTiles(void)
 
     /* Clear currDirty for new frame's compositing */
     for (int i = 0; i < 4; i++) {
+        currDirtyMinX[i] = -1;
+        currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
     }
@@ -2739,15 +2795,34 @@ void grRestoreBgTiles(void)
 
         int minY = prevDirtyMinY[i];
         int maxY = prevDirtyMaxY[i];
+        int minX = prevDirtyMinX[i];
+        int maxX = prevDirtyMaxX[i];
         if (minY < 0) continue;  /* tile was clean last frame */
+        if (minX < 0) minX = 0;
+        if (maxX < minX || maxX >= (int)tiles[i]->width) {
+            minX = 0;
+            maxX = (int)tiles[i]->width - 1;
+        }
 
-        uint32 w = tiles[i]->width;
-        uint16 *dst = tiles[i]->pixels + minY * w;
-        const uint16 *src = clean[i] + minY * w;
-        uint32 copyBytes = (uint32)(maxY - minY + 1) * w * sizeof(uint16);
-        memcpy(dst, src, copyBytes);
-        if (perfTrack)
-            restoredBytes += copyBytes;
+        {
+            uint32 w = tiles[i]->width;
+            int copyWidth = maxX - minX + 1;
+            uint32 copyBytes = (uint32)(maxY - minY + 1) *
+                               (uint32)copyWidth * sizeof(uint16);
+            if (copyWidth == (int)w) {
+                uint16 *dst = tiles[i]->pixels + minY * w;
+                const uint16 *src = clean[i] + minY * w;
+                memcpy(dst, src, copyBytes);
+            } else {
+                for (int row = minY; row <= maxY; row++) {
+                    uint16 *dst = tiles[i]->pixels + (row * (int)w) + minX;
+                    const uint16 *src = clean[i] + (row * (int)w) + minX;
+                    memcpy(dst, src, (size_t)copyWidth * sizeof(uint16));
+                }
+            }
+            if (perfTrack)
+                restoredBytes += copyBytes;
+        }
     }
 
     if (perfTrack)
@@ -2757,6 +2832,8 @@ void grRestoreBgTiles(void)
 void grRestoreBackgroundRectForFrame(int x, int y, int width, int height)
 {
     for (int i = 0; i < 4; i++) {
+        currDirtyMinX[i] = -1;
+        currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
     }
@@ -2774,6 +2851,8 @@ void grRestoreAndCompositeDirect16BackgroundRectForFrame(int x, int y, int width
     int rectEndY;
 
     for (int i = 0; i < 4; i++) {
+        currDirtyMinX[i] = -1;
+        currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
     }
@@ -3274,6 +3353,8 @@ void grDrawBackground(void)
 
     /* Advance dirty state: this frame's compositing becomes next frame's restore set */
     for (int i = 0; i < 4; i++) {
+        prevDirtyMinX[i] = currDirtyMinX[i];
+        prevDirtyMaxX[i] = currDirtyMaxX[i];
         prevDirtyMinY[i] = currDirtyMinY[i];
         prevDirtyMaxY[i] = currDirtyMaxY[i];
     }
@@ -3287,6 +3368,8 @@ void grFadeOut()
     /* Force full dirty for fade — modifies all pixels */
     grMarkAllTilesDirty();
     for (int i = 0; i < 4; i++) {
+        prevDirtyMinX[i] = 0;
+        prevDirtyMaxX[i] = 319;
         prevDirtyMinY[i] = 0;
         prevDirtyMaxY[i] = 239;
     }
