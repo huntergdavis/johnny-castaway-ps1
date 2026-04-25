@@ -84,6 +84,9 @@ static int pauseMutedSound = 0;
 static uint32 pauseOt[PAUSE_OT_LEN];
 static uint8  pausePrimBuf[24576];
 
+/* Cached heap-free probe value, refreshed once per pause-show. */
+static unsigned long pmCachedHeapKB = 0;
+
 /* ---------------------------------------------------------------------------
  *  Embedded 8x8 ASCII font — chars 0x20..0x7F (96 chars).
  *  Each char is 8 bytes; each byte is one row, MSB = leftmost pixel.
@@ -394,14 +397,10 @@ void pauseMenuShow(void)
     prevButtons = 0xFFFF;  /* Treat all buttons as "held" so the initial
                               press that opened the menu is not re-acted. */
 
-    /* P6: mute SPU on pause-show. Track that WE caused the mute so
-     * we can undo it on hide (unless the user manually toggled it). */
-    if (!soundMuted) {
-        soundMuteToggle();
-        pauseMutedSound = 1;
-    } else {
-        pauseMutedSound = 0;
-    }
+    /* Sound stays in whatever state the user left it — defaults ON.
+     * The Sound menu item lets the user mute/unmute manually. (When
+     * memory-card support lands, we'll persist the user's choice.) */
+    pauseMutedSound = 0;
 
     /* P6: one-shot JCPAUSE snapshot for log-mining. */
     printf("JCPAUSE show frame=%lu scene=%s mode=%s perfLevel=%u soundMuted=%d\n",
@@ -420,13 +419,7 @@ void pauseMenuShow(void)
 void pauseMenuHide(void)
 {
     menuVisible = 0;
-
-    /* P6: undo our auto-mute. If user toggled sound while paused,
-     * pauseMutedSound was cleared and we leave their choice alone. */
-    if (pauseMutedSound) {
-        soundMuteToggle();
-        pauseMutedSound = 0;
-    }
+    /* Sound stays in user's chosen state — no auto-restore. */
 }
 
 int pauseMenuIsVisible(void)
@@ -602,11 +595,6 @@ static void drawSeparator(void)
 /* ---------------------------------------------------------------------------
  *  Sub-screen: Debug Info
  * ------------------------------------------------------------------------- */
-/* Heap probe is expensive (binary search of malloc's) and re-running
- * it every pause-loop frame fragments the heap and causes the scene
- * background to flicker. Cache the value, refresh once per pause-show. */
-static unsigned long pmCachedHeapKB = 0;
-
 static void drawSceneInfo(void)
 {
     const char *scene = foregroundPilotRuntimeSceneName();
