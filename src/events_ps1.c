@@ -255,9 +255,8 @@ void eventsWaitTick(uint16 delay)
         if (buttons & PAD_START) {
             printf("JCPAD START PATH ENTERED call #%lu\n", (unsigned long)padDiagCalls);
             pauseMenuShow();
-            while (pauseMenuUpdate()) {
-                VSync(0);
-            }
+            /* pauseMenuUpdate() VSyncs internally — don't double-pace. */
+            while (pauseMenuUpdate()) { }
             /* Debounce: hold the loop until Start is released so we
              * don't immediately reopen the menu the next time
              * eventsWaitTick fires. */
