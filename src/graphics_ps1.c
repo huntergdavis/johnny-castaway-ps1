@@ -1981,6 +1981,196 @@ void grCompositeDirect16ToBackground(const uint16 *srcPixels, uint16 srcWidth, u
     }
 }
 
+static uint16 grReadPackedSpanU16(const uint8 *p)
+{
+    return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
+}
+
+static void grCompositePacked4SpanToBackground(const uint8 *packedPixels,
+                                               uint16 pixelCount,
+                                               const uint16 *palette,
+                                               int destX,
+                                               int destY)
+{
+    int start = 0;
+    int end = (int)pixelCount;
+
+    if (packedPixels == NULL || palette == NULL || pixelCount == 0)
+        return;
+    if (destY < 0 || destY >= 480)
+        return;
+    if (destX < 0)
+        start = -destX;
+    if (destX + end > 640)
+        end = 640 - destX;
+    if (start >= end)
+        return;
+
+    grMarkRectDirty(destX + start, destY, destX + end, destY + 1);
+
+    for (int i = start; i < end; i++) {
+        int x = destX + i;
+        PS1Surface *tile;
+        int localY;
+        int localX;
+        uint8 packed = packedPixels[i >> 1];
+        uint8 index = (i & 1) ? (uint8)(packed & 0x0F) : (uint8)(packed >> 4);
+
+        if (index == 0)
+            continue;
+
+        if (destY < 240) {
+            localY = destY;
+            tile = (x < 320) ? bgTile0 : bgTile1;
+        } else {
+            localY = destY - 240;
+            tile = (x < 320) ? bgTile3 : bgTile4;
+        }
+        localX = (x < 320) ? x : (x - 320);
+        if (tile != NULL && tile->pixels != NULL)
+            tile->pixels[(localY * (int)tile->width) + localX] = palette[index];
+    }
+}
+
+void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                         const uint16 *palette,
+                                         sint16 screenX, sint16 screenY)
+{
+    uint32 offset = 0;
+    uint16 rowCount;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    rowCount = grReadPackedSpanU16(spanData);
+    offset = 2;
+
+    for (uint16 row = 0; row < rowCount; row++) {
+        uint16 relY;
+        uint16 spanCount;
+
+        if (offset + 4u > spanDataSize)
+            return;
+        relY = grReadPackedSpanU16(spanData + offset);
+        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+        offset += 4u;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+            uint32 packedBytes;
+
+            if (offset + 4u > spanDataSize)
+                return;
+            relX = grReadPackedSpanU16(spanData + offset);
+            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+
+            packedBytes = ((uint32)pixelCount + 1u) >> 1;
+            if (offset + packedBytes > spanDataSize)
+                return;
+
+            grCompositePacked4SpanToBackground(spanData + offset,
+                                               pixelCount,
+                                               palette,
+                                               (int)screenX + (int)relX,
+                                               (int)screenY + (int)relY);
+            offset += packedBytes;
+        }
+    }
+}
+
+static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
+                                                uint16 pixelCount,
+                                                const uint16 *palette,
+                                                int destX,
+                                                int destY)
+{
+    int start = 0;
+    int end = (int)pixelCount;
+
+    if (indexedPixels == NULL || palette == NULL || pixelCount == 0)
+        return;
+    if (destY < 0 || destY >= 480)
+        return;
+    if (destX < 0)
+        start = -destX;
+    if (destX + end > 640)
+        end = 640 - destX;
+    if (start >= end)
+        return;
+
+    grMarkRectDirty(destX + start, destY, destX + end, destY + 1);
+
+    for (int i = start; i < end; i++) {
+        int x = destX + i;
+        PS1Surface *tile;
+        int localY;
+        int localX;
+        uint8 index = indexedPixels[i];
+
+        if (index == 0)
+            continue;
+
+        if (destY < 240) {
+            localY = destY;
+            tile = (x < 320) ? bgTile0 : bgTile1;
+        } else {
+            localY = destY - 240;
+            tile = (x < 320) ? bgTile3 : bgTile4;
+        }
+        localX = (x < 320) ? x : (x - 320);
+        if (tile != NULL && tile->pixels != NULL)
+            tile->pixels[(localY * (int)tile->width) + localX] = palette[index];
+    }
+}
+
+void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                          const uint16 *palette,
+                                          sint16 screenX, sint16 screenY)
+{
+    uint32 offset = 0;
+    uint16 rowCount;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    rowCount = grReadPackedSpanU16(spanData);
+    offset = 2;
+
+    for (uint16 row = 0; row < rowCount; row++) {
+        uint16 relY;
+        uint16 spanCount;
+
+        if (offset + 4u > spanDataSize)
+            return;
+        relY = grReadPackedSpanU16(spanData + offset);
+        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+        offset += 4u;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (offset + 4u > spanDataSize)
+                return;
+            relX = grReadPackedSpanU16(spanData + offset);
+            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+
+            if (offset + (uint32)pixelCount > spanDataSize)
+                return;
+
+            grCompositeIndexed8SpanToBackground(spanData + offset,
+                                                pixelCount,
+                                                palette,
+                                                (int)screenX + (int)relX,
+                                                (int)screenY + (int)relY);
+            offset += (uint32)pixelCount;
+        }
+    }
+}
+
 /*
  * Set clipping rectangle
  */

@@ -82,6 +82,203 @@ def encode_crop(img: Image.Image, bbox, key_rgb: tuple[int, int, int]) -> bytes:
     return bytes(out)
 
 
+def image_to_ps1_values(img: Image.Image) -> tuple[list[int], int, int]:
+    rgb = img.convert("RGB")
+    pixels = rgb.load()
+    width, height = rgb.size
+    values: list[int] = []
+
+    for y in range(height):
+        for x in range(width):
+            values.append(rgb888_to_ps1(pixels[x, y]))
+    return values, width, height
+
+
+def encode_base_diff_crop(base_values: list[int], img: Image.Image) -> tuple[dict | None, bytes]:
+    cur_values, width, height = image_to_ps1_values(img)
+    if len(base_values) != len(cur_values):
+        raise SystemExit(
+            f"base-diff size mismatch: base has {len(base_values)} pixels, "
+            f"frame has {len(cur_values)} pixels"
+        )
+
+    min_x = width
+    min_y = height
+    max_x = -1
+    max_y = -1
+
+    for y in range(height):
+        row_base = y * width
+        for x in range(width):
+            i = row_base + x
+            if cur_values[i] != base_values[i]:
+                if x < min_x:
+                    min_x = x
+                if y < min_y:
+                    min_y = y
+                if x > max_x:
+                    max_x = x
+                if y > max_y:
+                    max_y = y
+
+    if max_x < min_x or max_y < min_y:
+        return None, b""
+
+    bbox = {
+        "x": min_x,
+        "y": min_y,
+        "width": max_x - min_x + 1,
+        "height": max_y - min_y + 1,
+    }
+    out = bytearray(bbox["width"] * bbox["height"] * 2)
+    out_i = 0
+    for y in range(bbox["y"], bbox["y"] + bbox["height"]):
+        row_base = y * width
+        for x in range(bbox["x"], bbox["x"] + bbox["width"]):
+            i = row_base + x
+            value = cur_values[i] if cur_values[i] != base_values[i] else 0
+            out[out_i:out_i + 2] = struct.pack("<H", value)
+            out_i += 2
+    return bbox, bytes(out)
+
+
+def iter_u16_payload(payload: bytes):
+    for offset in range(0, len(payload), 2):
+        yield struct.unpack_from("<H", payload, offset)[0]
+
+
+def collect_visible_colors(data_chunks: list[bytes]) -> list[int]:
+    colors: set[int] = set()
+    for chunk in data_chunks:
+        for value in iter_u16_payload(chunk):
+            if value != 0:
+                colors.add(value)
+    return sorted(colors)
+
+
+def build_fg2_palette(data_chunks: list[bytes]) -> tuple[list[int], str]:
+    colors = collect_visible_colors(data_chunks)
+    if len(colors) > 15:
+        if len(colors) > 255:
+            raise SystemExit(
+                f"FG2 indexed8 supports at most 255 visible colors per scene; found {len(colors)}"
+            )
+        palette = [0] + colors
+        while len(palette) < 256:
+            palette.append(0)
+        return palette, "indexed8"
+
+    palette = [0] + colors
+    while len(palette) < 16:
+        palette.append(0)
+    return palette, "pal4"
+
+
+def encode_pal4_span_payload(payload: bytes, width: int, height: int,
+                             palette_index: dict[int, int]) -> bytes:
+    if not payload or width <= 0 or height <= 0:
+        return b""
+    expected = width * height * 2
+    if len(payload) != expected:
+        raise SystemExit(
+            f"payload size mismatch for FG2 row spans: got {len(payload)}, expected {expected}"
+        )
+
+    rows: list[tuple[int, list[tuple[int, bytes, int]]]] = []
+    values = list(iter_u16_payload(payload))
+    for y in range(height):
+        row_base = y * width
+        x = 0
+        row_spans: list[tuple[int, bytes, int]] = []
+        while x < width:
+            while x < width and values[row_base + x] == 0:
+                x += 1
+            if x >= width:
+                break
+
+            start_x = x
+            indices: list[int] = []
+            while x < width and values[row_base + x] != 0:
+                value = values[row_base + x]
+                try:
+                    indices.append(palette_index[value])
+                except KeyError as exc:
+                    raise SystemExit(f"FG2 palette missing color 0x{value:04x}") from exc
+                x += 1
+
+            packed = bytearray((len(indices) + 1) // 2)
+            for i, index in enumerate(indices):
+                if index <= 0 or index > 15:
+                    raise SystemExit(f"FG2 palette index out of range: {index}")
+                if (i & 1) == 0:
+                    packed[i >> 1] = (index & 0x0F) << 4
+                else:
+                    packed[i >> 1] |= index & 0x0F
+            row_spans.append((start_x, bytes(packed), len(indices)))
+
+        if row_spans:
+            rows.append((y, row_spans))
+
+    out = bytearray()
+    out += struct.pack("<H", len(rows))
+    for y, spans in rows:
+        out += struct.pack("<HH", y, len(spans))
+        for x, packed, pixel_count in spans:
+            out += struct.pack("<HH", x, pixel_count)
+            out += packed
+    return bytes(out)
+
+
+def encode_indexed8_span_payload(payload: bytes, width: int, height: int,
+                                 palette_index: dict[int, int]) -> bytes:
+    if not payload or width <= 0 or height <= 0:
+        return b""
+    expected = width * height * 2
+    if len(payload) != expected:
+        raise SystemExit(
+            f"payload size mismatch for FG2 row spans: got {len(payload)}, expected {expected}"
+        )
+
+    rows: list[tuple[int, list[tuple[int, bytes, int]]]] = []
+    values = list(iter_u16_payload(payload))
+    for y in range(height):
+        row_base = y * width
+        x = 0
+        row_spans: list[tuple[int, bytes, int]] = []
+        while x < width:
+            while x < width and values[row_base + x] == 0:
+                x += 1
+            if x >= width:
+                break
+
+            start_x = x
+            indices: list[int] = []
+            while x < width and values[row_base + x] != 0:
+                value = values[row_base + x]
+                try:
+                    index = palette_index[value]
+                except KeyError as exc:
+                    raise SystemExit(f"FG2 palette missing color 0x{value:04x}") from exc
+                if index <= 0 or index > 255:
+                    raise SystemExit(f"FG2 palette index out of range: {index}")
+                indices.append(index)
+                x += 1
+
+            row_spans.append((start_x, bytes(indices), len(indices)))
+
+        if row_spans:
+            rows.append((y, row_spans))
+
+    out = bytearray()
+    out += struct.pack("<H", len(rows))
+    for y, spans in rows:
+        out += struct.pack("<HH", y, len(spans))
+        for x, indexed, pixel_count in spans:
+            out += struct.pack("<HH", x, pixel_count)
+            out += indexed
+    return bytes(out)
+
+
 def encode_diff_crop(prev_img: Image.Image | None, cur_img: Image.Image,
                      key_rgb: tuple[int, int, int]) -> tuple[dict | None, bytes]:
     prev_pixels = prev_img.load() if prev_img is not None else None
@@ -314,6 +511,12 @@ def main():
     parser.add_argument("--scene-label", default="")
     parser.add_argument("--key-rgb", default="ff00ff", type=parse_rgb)
     parser.add_argument("--frame-step", type=int, default=1)
+    parser.add_argument(
+        "--pack-format",
+        choices=("fg1", "fg2"),
+        default="fg1",
+        help="On-disc pack format: fg1=raw 16-bit crops, fg2=visible row spans.",
+    )
     parser.add_argument("--delta-from-previous", action="store_true")
     parser.add_argument("--frame-meta-dir")
     parser.add_argument(
@@ -325,6 +528,11 @@ def main():
     parser.add_argument(
         "--sound-events",
         help="JSONL of captured sound events (one {\"frame\": N, \"sample\": M} per line).",
+    )
+    parser.add_argument(
+        "--base-diff",
+        action="store_true",
+        help="Pack all pixels that differ from --scene-base-frame after PS1 15-bit color quantization.",
     )
     parser.add_argument(
         "--full-frames-dir",
@@ -360,6 +568,10 @@ def main():
         raise SystemExit("--frame-step must be > 0")
     if args.timeline_speed <= 0:
         raise SystemExit("--timeline-speed must be > 0")
+    if args.pack_format == "fg2" and args.delta_from_previous:
+        raise SystemExit("FG2 does not support --delta-from-previous; build the direct pack as FG1")
+    if args.base_diff and args.delta_from_previous:
+        raise SystemExit("--base-diff cannot be combined with --delta-from-previous")
 
     selected_indices = list(range(0, len(frame_paths), args.frame_step))
     if selected_indices[-1] != (len(frame_paths) - 1):
@@ -375,14 +587,6 @@ def main():
     union_max_y = None
     prev_rgb = None
 
-    # Pre-load sound events so we can mark the fire-threshold frame for
-    # each event as "do-not-coalesce". The runtime fires a sound event
-    # when an entry with source_frame >= event.source_frame + DELAY loads.
-    # We need that specific frame to exist as its own pack entry; frames
-    # before it can freely coalesce (deadline timing is preserved by the
-    # summed hold_ticks). Guarding only the trigger frame keeps the pack
-    # small — a wider guard forced duplicate heavy payloads and broke the
-    # PS1 heap after a few loops.
     _raw_sound_events = load_sound_events(
         Path(args.sound_events) if args.sound_events else None
     )
@@ -391,14 +595,6 @@ def main():
         _first_abs_frame = int(_first_frame_stem.split("_")[-1])
     except ValueError:
         _first_abs_frame = 0
-    SOUND_EVENT_DELAY_FRAMES = 3  # must match FG_SOUND_EVENT_DELAY_FRAMES in foreground_pilot.c
-    protected_source_indices: set[int] = set()
-    for ev_frame, _ev_sample in _raw_sound_events:
-        positional = ev_frame - _first_abs_frame + SOUND_EVENT_DELAY_FRAMES
-        if positional < 0:
-            continue
-        protected_source_indices.add(positional)
-
     full_frames_dir: Path | None = Path(args.full_frames_dir) if args.full_frames_dir else None
     full_frame_paths: list[Path] = []
     if full_frames_dir is not None:
@@ -415,8 +611,17 @@ def main():
             )
 
     scene_base_img: Image.Image | None = None
+    scene_base_ps1_values: list[int] | None = None
     fg_palette: set[tuple[int, int, int]] = set()
-    if full_frame_paths:
+    if args.base_diff:
+        base_index = args.scene_base_frame
+        if base_index < 0 or base_index >= len(frame_paths):
+            raise SystemExit(
+                f"--scene-base-frame {base_index} out of range (0..{len(frame_paths) - 1})"
+            )
+        with Image.open(frame_paths[base_index]) as raw:
+            scene_base_ps1_values, _, _ = image_to_ps1_values(raw)
+    elif full_frame_paths:
         base_index = args.scene_base_frame
         if base_index < 0 or base_index >= len(full_frame_paths):
             raise SystemExit(
@@ -453,7 +658,11 @@ def main():
                 args.augment_bounds,
             )
 
-        if args.delta_from_previous:
+        if args.base_diff:
+            if scene_base_ps1_values is None:
+                raise SystemExit("--base-diff missing scene base data")
+            bbox, payload = encode_base_diff_crop(scene_base_ps1_values, rgb)
+        elif args.delta_from_previous:
             bbox, payload = encode_diff_crop(prev_rgb, rgb, args.key_rgb)
         else:
             bbox = find_bbox(rgb, args.key_rgb)
@@ -501,14 +710,7 @@ def main():
                 prev["height"] == row["height"] and
                 prev_payload == payload
             )
-            # Never coalesce a frame that sits inside the sound-event guard
-            # window — the pack needs per-vblank granularity there so the
-            # runtime's "N host frames ahead" fire threshold lands correctly.
-            in_sound_guard = (
-                source_index in protected_source_indices
-                or prev["source_frame"] in protected_source_indices
-            )
-            if same_frame and not in_sound_guard:
+            if same_frame:
                 prev["hold_ticks"] += row["hold_ticks"]
                 prev["hold_frames"] += 1
                 prev_rgb = rgb
@@ -522,6 +724,8 @@ def main():
     if args.frame_meta_dir:
         header_flags |= 0x0004
         header_flags |= 0x0008
+    if args.base_diff:
+        header_flags |= 0x0010
 
     cumulative_ticks = 0
     for row in rows:
@@ -537,16 +741,43 @@ def main():
     first_abs_frame = _first_abs_frame
     if first_abs_frame:
         sound_events = [(ev[0] - first_abs_frame, ev[1]) for ev in sound_events if ev[0] >= first_abs_frame]
-    pack_source_frames = {row["source_frame"] for row in rows}
-    sound_events = [ev for ev in sound_events if ev[0] in pack_source_frames]
+    max_source_frame = selected_indices[-1]
+    sound_events = [ev for ev in sound_events if ev[0] <= max_source_frame]
     if len(sound_events) > 0xFFFF:
         sound_events = sound_events[:0xFFFF]
 
+    palette_values: list[int] | None = None
+    fg2_encoding: str | None = None
+    if args.pack_format == "fg2":
+        palette_values, fg2_encoding = build_fg2_palette(data_chunks)
+        palette_index = {value: index for index, value in enumerate(palette_values) if index > 0}
+        encoded_chunks: list[bytes] = []
+        for row, chunk in zip(rows, data_chunks):
+            if fg2_encoding == "indexed8":
+                encoded = encode_indexed8_span_payload(
+                    chunk,
+                    int(row["width"]),
+                    int(row["height"]),
+                    palette_index,
+                )
+            else:
+                encoded = encode_pal4_span_payload(
+                    chunk,
+                    int(row["width"]),
+                    int(row["height"]),
+                    palette_index,
+                )
+            row["data_size_raw16"] = row["data_size"]
+            row["data_size"] = len(encoded)
+            encoded_chunks.append(encoded)
+        data_chunks = encoded_chunks
+
     HEADER_SIZE = 40
+    PALETTE_SIZE = (len(palette_values) * 2) if palette_values is not None else 0
     ENTRY_SIZE = 20
     EVENT_SIZE = 4
 
-    table_offset = HEADER_SIZE
+    table_offset = HEADER_SIZE + PALETTE_SIZE
     data_offset = table_offset + (len(rows) * ENTRY_SIZE)
     next_offset = data_offset
     for row, chunk in zip(rows, data_chunks):
@@ -557,8 +788,8 @@ def main():
 
     header = struct.pack(
         "<4sHHHHHHHHHHIIIHH",
-        b"FGP1",
-        2,
+        b"FGP2" if args.pack_format == "fg2" else b"FGP1",
+        (2 if fg2_encoding == "indexed8" else 1) if args.pack_format == "fg2" else 2,
         len(rows),
         1,
         header_flags,
@@ -572,7 +803,7 @@ def main():
         data_offset,
         sound_events_offset,
         len(sound_events),
-        0,
+        0 if palette_values is None else sum(1 for value in palette_values if value != 0),
     )
 
     output_pack = Path(args.output_pack)
@@ -580,6 +811,9 @@ def main():
 
     with output_pack.open("wb") as f:
         f.write(header)
+        if palette_values is not None:
+            for value in palette_values:
+                f.write(struct.pack("<H", value))
         for row in rows:
             f.write(struct.pack(
                 "<HhhHHHII",
@@ -601,11 +835,21 @@ def main():
         "scene_label": args.scene_label,
         "frames_dir": str(frames_dir),
         "full_frames_dir": str(full_frames_dir) if full_frames_dir else None,
-        "scene_base_frame": args.scene_base_frame if full_frame_paths else None,
+        "scene_base_frame": args.scene_base_frame if (full_frame_paths or args.base_diff) else None,
         "augment_bounds": list(args.augment_bounds) if args.augment_bounds else None,
         "augment_frame_range": list(args.augment_frame_range) if args.augment_frame_range else None,
         "fg_palette_size": len(fg_palette) if fg_palette else None,
         "output_pack": str(output_pack),
+        "pack_format": args.pack_format,
+        "pack_magic": "FGP2" if args.pack_format == "fg2" else "FGP1",
+        "fg2_encoding": fg2_encoding,
+        "base_diff": args.base_diff,
+        "fg2_palette": None if palette_values is None else [
+            f"0x{value:04x}" for value in palette_values
+        ],
+        "fg2_visible_color_count": None if palette_values is None else sum(
+            1 for value in palette_values if value != 0
+        ),
         "frame_step": args.frame_step,
         "timeline_speed": args.timeline_speed,
         "delta_from_previous": args.delta_from_previous,

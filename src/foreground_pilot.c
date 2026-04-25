@@ -112,6 +112,8 @@ struct TFgPilotRuntime {
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
     CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
     uint8 packCdFileValid;
+    uint8 packFormat;
+    uint16 palette[256];
     struct TFgPilotSoundEvent *soundEvents;
     uint16 soundEventCount;
     uint16 soundEventCursor;
@@ -136,6 +138,10 @@ static const uint16 kFgPilotHeaderFlagDeltaBlack = 0x0001;
 static const uint16 kFgPilotHeaderFlagHostTicks = 0x0002;
 static const uint16 kFgPilotHeaderFlagHostDeadlines = 0x0004;
 static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
+static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
+static const uint8 kFgPilotPackFormatRaw16 = 1;
+static const uint8 kFgPilotPackFormatPal4Spans = 2;
+static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -287,6 +293,18 @@ static const char *fgOverlayPackPathForScene(const char *sceneName)
         return "FG\\FISHING2.FG1";
     if (fgSceneEquals(sceneName, "fishing3"))
         return "FG\\FISHING3.FG1";
+    return NULL;
+}
+
+static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
+{
+    if (fgSceneEquals(sceneName, "fishing1")) {
+        return islandState.lowTide ? "FG\\FISH1LOW.FG2" : "FG\\FISHING1.FG2";
+    }
+    if (fgSceneEquals(sceneName, "fishing2"))
+        return "FG\\FISHING2.FG2";
+    if (fgSceneEquals(sceneName, "fishing3"))
+        return "FG\\FISHING3.FG2";
     return NULL;
 }
 
@@ -570,6 +588,12 @@ static int fgHeaderUsesDeltaBlack(const struct TFgPilotHeader *header)
     return (header != NULL && (header->reserved0 & kFgPilotHeaderFlagDeltaBlack) != 0) ? 1 : 0;
 }
 
+static int fgRuntimeUsesBaseDiffBackdrop(void)
+{
+    return (gFgRuntime.active &&
+            (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) ? 1 : 0;
+}
+
 static uint8 fgSceneModeForName(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "testcard"))
@@ -639,6 +663,27 @@ static uint32 fgReadU32(const uint8 *p)
            ((uint32)p[3] << 24);
 }
 
+static int fgHeaderIsRaw16(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP1", 4) == 0 &&
+            header->version == 2) ? 1 : 0;
+}
+
+static int fgHeaderIsPal4Spans(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP2", 4) == 0 &&
+            header->version == 1) ? 1 : 0;
+}
+
+static int fgHeaderIsIndexed8Spans(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP2", 4) == 0 &&
+            header->version == 2) ? 1 : 0;
+}
+
 static int fgLoadHeader(const char *path, struct TFgPilotHeader *out)
 {
     uint8 *data;
@@ -668,13 +713,45 @@ static int fgLoadHeader(const char *path, struct TFgPilotHeader *out)
     out->reserved1 = fgReadU16(data + 38);
     free(data);
 
-    if (memcmp(out->magic, "FGP1", 4) != 0)
-        return 0;
-    if (out->version != 2)
+    if (!fgHeaderIsRaw16(out) && !fgHeaderIsPal4Spans(out) && !fgHeaderIsIndexed8Spans(out))
         return 0;
     if (out->frameCount == 0)
         return 0;
 
+    return 1;
+}
+
+static int fgLoadPalette(const char *path, const struct TFgPilotHeader *header,
+                         uint16 *outPalette)
+{
+    uint8 *data;
+    uint16 i;
+    uint16 entryCount = 0;
+    uint32 paletteBytes = 0;
+
+    if (outPalette == NULL)
+        return 0;
+
+    for (i = 0; i < 256; i++)
+        outPalette[i] = 0;
+
+    if (fgHeaderIsPal4Spans(header)) {
+        entryCount = 16;
+        paletteBytes = 32;
+    } else if (fgHeaderIsIndexed8Spans(header)) {
+        entryCount = 256;
+        paletteBytes = 512;
+    } else {
+        return 1;
+    }
+
+    data = ps1_streamRead(path, 40, paletteBytes);
+    if (!data)
+        return 0;
+
+    for (i = 0; i < entryCount; i++)
+        outPalette[i] = fgReadU16(data + ((uint32)i * 2u));
+    free(data);
     return 1;
 }
 
@@ -1482,12 +1559,24 @@ int foregroundPilotRuntimeStart(const char *sceneName)
     }
 
     {
-        const char *path = fgOverlayPackPathForScene(sceneName);
+        const char *path = fgCompactOverlayPackPathForScene(sceneName);
+        if (path == NULL)
+            path = fgOverlayPackPathForScene(sceneName);
         if (path != NULL) {
         uint32 maxDataSize = 0;
         uint16 i;
         if (!fgLoadHeader(path, &gFgRuntime.header))
             return 0;
+        if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
+            gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
+        else if (fgHeaderIsPal4Spans(&gFgRuntime.header))
+            gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
+        else
+            gFgRuntime.packFormat = kFgPilotPackFormatRaw16;
+        if (!fgLoadPalette(path, &gFgRuntime.header, gFgRuntime.palette)) {
+            fgRuntimeReset();
+            return 0;
+        }
         if (!fgLoadEntryTable(path, &gFgRuntime.header, &gFgRuntime.entryTable)) {
             fgRuntimeReset();
             return 0;
@@ -1591,11 +1680,25 @@ void foregroundPilotRuntimeCompose(void)
     }
 
     if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && gFgRuntime.currentFrameData != NULL) {
-        fgBlit16ToBackgroundRect(fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                 fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                 gFgRuntime.currentEntry.width,
-                                 gFgRuntime.currentEntry.height,
-                                 (const uint16 *)gFgRuntime.currentFrameData);
+        if (gFgRuntime.packFormat == kFgPilotPackFormatPal4Spans) {
+            grCompositePacked4SpansToBackground(gFgRuntime.currentFrameData,
+                                                gFgRuntime.currentEntry.dataSize,
+                                                gFgRuntime.palette,
+                                                (sint16)fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
+                                                (sint16)fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry));
+        } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
+            grCompositeIndexed8SpansToBackground(gFgRuntime.currentFrameData,
+                                                 gFgRuntime.currentEntry.dataSize,
+                                                 gFgRuntime.palette,
+                                                 (sint16)fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
+                                                 (sint16)fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry));
+        } else {
+            fgBlit16ToBackgroundRect(fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
+                                     fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry),
+                                     gFgRuntime.currentEntry.width,
+                                     gFgRuntime.currentEntry.height,
+                                     (const uint16 *)gFgRuntime.currentFrameData);
+        }
         fgComposeBackdropOccluders(gFgRuntime.currentEntry.sourceFrame);
         /* Stamp holiday overlay on top of the pack so Johnny walks behind
          * the holiday decoration, matching islandInitHoliday's z-order. */
@@ -2091,8 +2194,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     while (foregroundPilotRuntimeActive()) {
         grBeginFrame();
-        grRestoreBgFromRects();       /* rect-based clean restore (option B) */
-        adsPilotTickBackgroundWaves();
+        if (usedWaveBackdrop)
+            grRestoreBgFromRects();   /* rect-based clean restore (option B) */
+        else
+            grRestoreBgTiles();
+        if (!fgRuntimeUsesBaseDiffBackdrop())
+            adsPilotTickBackgroundWaves();
         grUpdateDisplay(NULL, NULL, NULL);
         foregroundPilotRuntimeAdvance();
     }

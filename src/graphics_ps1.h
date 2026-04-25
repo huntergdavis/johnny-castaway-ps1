@@ -171,6 +171,12 @@ void grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY)
 void grCompositeToBackgroundFlip(PS1Surface *sprite, sint16 screenX, sint16 screenY);
 void grCompositeDirect16ToBackground(const uint16 *srcPixels, uint16 srcWidth, uint16 srcHeight,
                                      sint16 screenX, sint16 screenY);
+void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                         const uint16 *palette,
+                                         sint16 screenX, sint16 screenY);
+void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                          const uint16 *palette,
+                                          sint16 screenX, sint16 screenY);
 
 void grSetClipZone(PS1Surface *sfc, sint16 x1, sint16 y1, sint16 x2, sint16 y2);
 void grCopyZoneToBg(PS1Surface *sfc, uint16 arg0, uint16 arg1, uint16 arg2, uint16 arg3);

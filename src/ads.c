@@ -76,6 +76,8 @@ extern int grCaptureSequenceComplete(void);
 #define OP_ADD_SCENE   0
 #define OP_STOP_SCENE  1
 #define OP_NOP         2
+#define MAX_ADS_PLAY_COUNTS 64
+#define MAX_ADS_PENDING_STOPS 16
 
 
 struct TAdsChunk {           // TODO should not be here
@@ -89,6 +91,17 @@ struct TAdsRandOp {          // TODO should not be here
     uint16 tag;
     uint16 numPlays;
     uint16 weight;
+};
+
+struct TAdsPlayCount {
+    uint16 slot;
+    uint16 tag;
+    uint16 count;
+};
+
+struct TAdsPendingStop {
+    uint16 slot;
+    uint16 tag;
 };
 
 
@@ -114,6 +127,10 @@ static int    adsTagCapacity = 0;
 
 static struct TAdsRandOp adsRandOps[MAX_RANDOM_OPS];
 static int    adsNumRandOps    = 0;
+static struct TAdsPlayCount adsPlayCounts[MAX_ADS_PLAY_COUNTS];
+static int    numAdsPlayCounts = 0;
+static struct TAdsPendingStop adsPendingStops[MAX_ADS_PENDING_STOPS];
+static int    numAdsPendingStops = 0;
 
 static int    numThreads       = 0;
 static int    adsStopRequested = 0;
@@ -931,6 +948,64 @@ static void adsReleaseAds()
     free(adsTags);
 }
 
+static uint16 adsGetScenePlayCount(uint16 ttmSlotNo, uint16 ttmTag)
+{
+    for (int i = 0; i < numAdsPlayCounts; i++) {
+        if (adsPlayCounts[i].slot == ttmSlotNo && adsPlayCounts[i].tag == ttmTag)
+            return adsPlayCounts[i].count;
+    }
+
+    return 0;
+}
+
+
+static void adsNoteSceneStarted(uint16 ttmSlotNo, uint16 ttmTag)
+{
+    for (int i = 0; i < numAdsPlayCounts; i++) {
+        if (adsPlayCounts[i].slot == ttmSlotNo && adsPlayCounts[i].tag == ttmTag) {
+            if (adsPlayCounts[i].count < 0xFFFF)
+                adsPlayCounts[i].count++;
+            return;
+        }
+    }
+
+    if (numAdsPlayCounts < MAX_ADS_PLAY_COUNTS) {
+        adsPlayCounts[numAdsPlayCounts].slot = ttmSlotNo;
+        adsPlayCounts[numAdsPlayCounts].tag = ttmTag;
+        adsPlayCounts[numAdsPlayCounts].count = 1;
+        numAdsPlayCounts++;
+    }
+}
+
+
+static int adsConsumePendingStop(uint16 ttmSlotNo, uint16 ttmTag)
+{
+    for (int i = 0; i < numAdsPendingStops; i++) {
+        if (adsPendingStops[i].slot == ttmSlotNo && adsPendingStops[i].tag == ttmTag) {
+            numAdsPendingStops--;
+            adsPendingStops[i] = adsPendingStops[numAdsPendingStops];
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+
+static void adsRecordPendingStop(uint16 ttmSlotNo, uint16 ttmTag)
+{
+    for (int i = 0; i < numAdsPendingStops; i++) {
+        if (adsPendingStops[i].slot == ttmSlotNo && adsPendingStops[i].tag == ttmTag)
+            return;
+    }
+
+    if (numAdsPendingStops < MAX_ADS_PENDING_STOPS) {
+        adsPendingStops[numAdsPendingStops].slot = ttmSlotNo;
+        adsPendingStops[numAdsPendingStops].tag = ttmTag;
+        numAdsPendingStops++;
+    }
+}
+
 
 static uint32 adsFindTag(uint16 reqdTag)
 {
@@ -959,6 +1034,11 @@ static void adsAddScene(uint16 ttmSlotNo, uint16 ttmTag, uint16 arg3)
 {
     if (!adsIsValidTtmSlot(ttmSlotNo))
         return;
+
+    if (adsConsumePendingStop(ttmSlotNo, ttmTag)) {
+        debugMsg("(%d,%d) consumed pending STOP_SCENE - didn't add scene\n", ttmSlotNo, ttmTag);
+        return;
+    }
 
     /* On PS1, STOP_SCENE may mark a thread terminated earlier in the same ADS
      * chunk. Do not reap here or ADD_SCENE can immediately recycle that slot
@@ -1028,6 +1108,8 @@ static void adsAddScene(uint16 ttmSlotNo, uint16 ttmTag, uint16 arg3)
     } else
         ttmThread->ip = 0;
 
+    adsNoteSceneStarted(ttmSlotNo, ttmTag);
+
     if (((short)arg3) < 0) {
         ttmThread->sceneTimer = -((short)arg3);
     }
@@ -1072,9 +1154,10 @@ static void adsStopScene(int sceneNo)
 }
 
 
-static void adsStopSceneByTtmTag(uint16 ttmSlotNo, uint16 ttmTag)
+static void adsStopSceneByTtmTagEx(uint16 ttmSlotNo, uint16 ttmTag, int recordPending)
 {
     struct TTtmThread *ttmThread;
+    int found = 0;
 
     for (int i=0; i < MAX_TTM_THREADS; i++) {
 
@@ -1083,6 +1166,7 @@ static void adsStopSceneByTtmTag(uint16 ttmSlotNo, uint16 ttmTag)
         if (ttmThread->isRunning) {
 
             if (ttmThread->sceneSlot == ttmSlotNo && ttmThread->sceneTag == ttmTag) {
+                found = 1;
 #ifdef PS1_BUILD
                 /* Defer cleanup to the main ADS loop so STOP_SCENE does not
                  * zero another live thread while we are still parsing the
@@ -1099,6 +1183,15 @@ static void adsStopSceneByTtmTag(uint16 ttmSlotNo, uint16 ttmTag)
             }
         }
     }
+
+    if (!found && recordPending)
+        adsRecordPendingStop(ttmSlotNo, ttmTag);
+}
+
+
+static void adsStopSceneByTtmTag(uint16 ttmSlotNo, uint16 ttmTag)
+{
+    adsStopSceneByTtmTagEx(ttmSlotNo, ttmTag, 1);
 }
 
 
@@ -1199,7 +1292,7 @@ static void adsRandomEnd()
 
            case OP_STOP_SCENE:
                debugMsg("RANDOM: chose STOP_SCENE %d %d", op->slot, op->tag);
-               adsStopSceneByTtmTag(op->slot, op->tag);
+               adsStopSceneByTtmTagEx(op->slot, op->tag, 0);
                break;
 
            default:
@@ -1262,6 +1355,7 @@ void adsInit()    // Init slots and threads for TTM scripts  // TODO : rename
     ttmHolidayThread.isRunning    = 0;
     numThreads = 0;
     adsStopRequested = 0;
+    numAdsPendingStops = 0;
 }
 
 
@@ -1494,7 +1588,9 @@ static void adsPlayChunk(uint8 *data, uint32 dataSize, uint32 offset)
             case 0x4000:
                 if (!adsPeekWordArgs(data, dataSize, &offset, args, 3))
                     return;
-                debugMsg("UNKNOWN_6");    // only in BUILDING.ADS tag 7
+                debugMsg("IF_PLAY_COUNT_LT %d %d %d", args[0], args[1], args[2]);
+                if (adsGetScenePlayCount(args[0], args[1]) >= args[2])
+                    inSkipBlock = 1;
                 break;
 
             case 0xf010:
@@ -1695,6 +1791,8 @@ void adsPlay(char *adsName, uint16 adsTag)
     adsLoad(data, dataSize, adsResource->numTags, adsTag, &offset);
 
     adsStopRequested = 0;
+    numAdsPlayCounts = 0;
+    numAdsPendingStops = 0;
     grUpdateDelay = 0;
 
     // Play the first ADS chunk of the sequence
