@@ -31,7 +31,9 @@ enum {
 
 enum {
     PS1_PERF_PREFETCH_NONE = 0,
-    PS1_PERF_PREFETCH_STAGE1 = 1
+    PS1_PERF_PREFETCH_STAGE1 = 1,
+    PS1_PERF_PREFETCH_WINDOW = 2,
+    PS1_PERF_PREFETCH_STAGE1_WINDOW = 3
 };
 
 extern volatile uint8 ps1PerfEnabled;
@@ -75,6 +77,7 @@ void ps1PerfMarkPrefetchDuplicate(void);
 void ps1PerfBeginPrefetchRead(uint16 slackVBlanks);
 void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok);
 void ps1PerfMarkPrefetchHit(void);
+void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit);
 void ps1PerfMarkRestore(uint32 bytes);
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes);
 void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks);
@@ -145,6 +148,7 @@ static inline void ps1PerfMarkPrefetchDuplicate(void) {}
 static inline void ps1PerfBeginPrefetchRead(uint16 slackVBlanks) { (void)slackVBlanks; }
 static inline void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok) { (void)elapsedVBlanks; (void)bytes; (void)ok; }
 static inline void ps1PerfMarkPrefetchHit(void) {}
+static inline void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit) { (void)countsAsDueHit; }
 static inline void ps1PerfMarkRestore(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes) { (void)rows; (void)spans; (void)pixels; (void)payloadBytes; }
 static inline void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)bytes; (void)elapsedVBlanks; }

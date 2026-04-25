@@ -95,6 +95,11 @@ struct TFgPilotRuntime {
     uint32 frameBufferSize;         /* Capacity of frameBuffer. */
     uint8 *prefetchFrameBuffer;     /* Second max-frame buffer used by stage1 prefetch. */
     uint32 prefetchFrameBufferSize; /* Capacity of prefetchFrameBuffer. */
+    uint8 *streamWindowBuffer;      /* Optional larger FG2 window cache. */
+    uint32 streamWindowSize;        /* Capacity of streamWindowBuffer. */
+    uint32 streamWindowStart;       /* File offset of first byte in streamWindowBuffer. */
+    uint32 streamWindowBytes;       /* Valid byte count in streamWindowBuffer. */
+    uint8 streamWindowValid;
     uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
     CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
@@ -127,6 +132,7 @@ static uint8 gFgStartedEver = 0;
 static uint8 gFgComposedEver = 0;
 static uint8 gFgHeapProbeEnabled = 0;
 static uint8 gFgPrefetchStage1Enabled = 0;
+static uint32 gFgPrefetchWindowBytes = 0;
 static struct TTtmSlot gFgBackdropSlot;
 static struct TTtmThread gFgBackdropThread;
 
@@ -567,6 +573,8 @@ static uint8 *gFgFrameBuffer = NULL;
 static uint32 gFgFrameBufferSize = 0;
 static uint8 *gFgPrefetchFrameBuffer = NULL;
 static uint32 gFgPrefetchFrameBufferSize = 0;
+static uint8 *gFgStreamWindowBuffer = NULL;
+static uint32 gFgStreamWindowBufferSize = 0;
 static uint8 *gFgStreamScratch = NULL;
 static uint32 gFgStreamScratchSize = 0;
 
@@ -582,6 +590,11 @@ static void fgReleaseStreamBuffers(void)
         gFgPrefetchFrameBuffer = NULL;
     }
     gFgPrefetchFrameBufferSize = 0;
+    if (gFgStreamWindowBuffer != NULL) {
+        free(gFgStreamWindowBuffer);
+        gFgStreamWindowBuffer = NULL;
+    }
+    gFgStreamWindowBufferSize = 0;
     if (gFgStreamScratch != NULL) {
         free(gFgStreamScratch);
         gFgStreamScratch = NULL;
@@ -619,12 +632,13 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
         return;
 
     largest = fgProbeLargestAlloc();
-    printf("FGHEAP phase=%s scene=%s largest=%lu fg=%lu prefetch=%lu scratch=%lu rects=%d rect_bytes=%lu\n",
+    printf("FGHEAP phase=%s scene=%s largest=%lu fg=%lu prefetch=%lu window=%lu scratch=%lu rects=%d rect_bytes=%lu\n",
            phase != NULL ? phase : "?",
            sceneName != NULL ? sceneName : "?",
            largest,
            (unsigned long)gFgFrameBufferSize,
            (unsigned long)gFgPrefetchFrameBufferSize,
+           (unsigned long)gFgStreamWindowBufferSize,
            (unsigned long)gFgStreamScratchSize,
            grCleanBgRectsCount(),
            grCleanBgRectsBytes());
@@ -640,6 +654,11 @@ static void fgRuntimeReset(void)
     gFgRuntime.frameBufferSize = 0;
     gFgRuntime.prefetchFrameBuffer = NULL;
     gFgRuntime.prefetchFrameBufferSize = 0;
+    gFgRuntime.streamWindowBuffer = NULL;
+    gFgRuntime.streamWindowSize = 0;
+    gFgRuntime.streamWindowStart = 0;
+    gFgRuntime.streamWindowBytes = 0;
+    gFgRuntime.streamWindowValid = 0;
     gFgRuntime.streamScratch = NULL;
     gFgRuntime.streamScratchSize = 0;
     gFgRuntime.packCdFileValid = 0;
@@ -921,6 +940,160 @@ static int fgRuntimeCanStageNextFrame(void)
            gFgRuntime.prefetchFrameBuffer != NULL;
 }
 
+static int fgRuntimeCanWindowCache(void)
+{
+    return gFgPrefetchWindowBytes > 0 &&
+           gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           fgRuntimeUsesBaseDiffBackdrop() &&
+           gFgRuntime.packCdFileValid &&
+           gFgRuntime.streamWindowBuffer != NULL &&
+           gFgRuntime.streamWindowSize > 0;
+}
+
+static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
+{
+    return (entry != NULL &&
+            entry->dataSize > 0 &&
+            entry->width > 0 &&
+            entry->height > 0) ? 1 : 0;
+}
+
+static uint32 fgSectorAlignDown(uint32 offset)
+{
+    return offset & ~2047UL;
+}
+
+static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
+{
+    uint32 windowStart;
+    uint32 offsetInWindow;
+
+    if (!fgRuntimeCanWindowCache() || !fgEntryHasPayload(entry))
+        return 0;
+
+    windowStart = fgSectorAlignDown(entry->dataOffset);
+    offsetInWindow = entry->dataOffset - windowStart;
+    return (offsetInWindow + entry->dataSize <= gFgRuntime.streamWindowSize) ? 1 : 0;
+}
+
+static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
+{
+    uint32 entryEnd;
+    uint32 windowEnd;
+
+    if (!fgRuntimeCanWindowCache() ||
+        !gFgRuntime.streamWindowValid ||
+        !fgEntryHasPayload(entry))
+        return 0;
+
+    entryEnd = entry->dataOffset + entry->dataSize;
+    windowEnd = gFgRuntime.streamWindowStart + gFgRuntime.streamWindowBytes;
+    return (entry->dataOffset >= gFgRuntime.streamWindowStart &&
+            entryEnd <= windowEnd) ? 1 : 0;
+}
+
+static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
+                                        uint8 *dst,
+                                        uint8 countsAsDueHit)
+{
+    uint32 offsetInWindow;
+
+    if (dst == NULL || !fgRuntimeWindowContainsEntry(entry))
+        return 0;
+
+    offsetInWindow = entry->dataOffset - gFgRuntime.streamWindowStart;
+    memcpy(dst, gFgRuntime.streamWindowBuffer + offsetInWindow, entry->dataSize);
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchWindowHit(countsAsDueHit);
+    return 1;
+}
+
+static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
+                                       uint16 slackVBlanks,
+                                       uint8 countAsPrefetch,
+                                       uint16 *outElapsedVBlanks)
+{
+    uint32 windowStart;
+    uint32 readBytes;
+    uint32 readEnd;
+    uint32 stageTick;
+    uint16 elapsedVBlanks;
+    int ok;
+
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = 0;
+
+    if (!fgRuntimeEntryFitsWindow(entry))
+        return 0;
+
+    windowStart = fgSectorAlignDown(entry->dataOffset);
+    readBytes = gFgRuntime.streamWindowSize;
+    if (windowStart >= (uint32)gFgRuntime.packCdFile.size)
+        return 0;
+    readEnd = windowStart + readBytes;
+    if (readEnd > (uint32)gFgRuntime.packCdFile.size)
+        readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
+    if (readBytes == 0)
+        return 0;
+
+    stageTick = fgReadTickCounter();
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfBeginPrefetchRead(slackVBlanks);
+    ok = ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
+                                       windowStart,
+                                       readBytes,
+                                       gFgRuntime.streamWindowBuffer);
+    elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(stageTick);
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfEndPrefetchRead(elapsedVBlanks, readBytes, ok);
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = elapsedVBlanks;
+
+    if (!ok) {
+        gFgRuntime.streamWindowValid = 0;
+        return 0;
+    }
+
+    gFgRuntime.streamWindowStart = windowStart;
+    gFgRuntime.streamWindowBytes = readBytes;
+    gFgRuntime.streamWindowValid = 1;
+    return 1;
+}
+
+static void fgRuntimeSetStagedFrame(uint16 frameIndex,
+                                    const struct TFgPilotEntry *entry)
+{
+    gFgRuntime.stagedEntry = *entry;
+    gFgRuntime.stagedFrameIndex = frameIndex;
+    gFgRuntime.stagedFrameValid = 1;
+}
+
+static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(uint16 *outFrameIndex)
+{
+    uint16 frameIndex;
+
+    if (!gFgRuntime.active)
+        return NULL;
+
+    frameIndex = gFgRuntime.stagedFrameValid
+        ? (uint16)(gFgRuntime.stagedFrameIndex + 1)
+        : (uint16)(gFgRuntime.frameIndex + 1);
+
+    while (frameIndex < gFgRuntime.header.frameCount) {
+        const struct TFgPilotEntry *entry =
+            fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
+        if (fgEntryHasPayload(entry)) {
+            if (outFrameIndex != NULL)
+                *outFrameIndex = frameIndex;
+            return entry;
+        }
+        frameIndex++;
+    }
+
+    return NULL;
+}
+
 static int fgRuntimeConsumeStagedFrame(uint16 frameIndex)
 {
     uint8 *freeBuffer;
@@ -968,7 +1141,6 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
     uint16 nextFrameIndex;
     uint16 slackVBlanks;
     const struct TFgPilotEntry *entry;
-    int entryIsEmpty;
     int ok;
     uint32 stageTick = 0;
     uint16 elapsedVBlanks = 0;
@@ -996,8 +1168,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
-    entryIsEmpty = (entry->dataSize == 0 && entry->width == 0 && entry->height == 0);
-    if (entryIsEmpty || entry->dataSize == 0 || entry->width == 0 || entry->height == 0)
+    if (!fgEntryHasPayload(entry))
         return 0;
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
@@ -1013,6 +1184,27 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         if (ps1PerfEnabled)
             ps1PerfMarkTripwire();
         gFgRuntime.active = 0;
+        return 1;
+    }
+
+    if (fgRuntimeEntryFitsWindow(entry)) {
+        if (!fgRuntimeWindowContainsEntry(entry)) {
+            if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkTripwire();
+                gFgRuntime.active = 0;
+                return 1;
+            }
+            if (outElapsedVBlanks != NULL)
+                *outElapsedVBlanks = elapsedVBlanks;
+        }
+        if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0)) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
+            gFgRuntime.active = 0;
+            return 1;
+        }
+        fgRuntimeSetStagedFrame(nextFrameIndex, entry);
         return 1;
     }
 
@@ -1040,9 +1232,48 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
-    gFgRuntime.stagedEntry = *entry;
-    gFgRuntime.stagedFrameIndex = nextFrameIndex;
-    gFgRuntime.stagedFrameValid = 1;
+    fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+    return 1;
+}
+
+static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
+{
+    uint16 targetFrameIndex = 0;
+    uint16 slackVBlanks;
+    const struct TFgPilotEntry *entry;
+
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = 0;
+
+    if (!fgRuntimeCanWindowCache())
+        return 0;
+
+    entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
+    (void)targetFrameIndex;
+    if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
+        return 0;
+
+    if (fgRuntimeWindowContainsEntry(entry)) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchDuplicate();
+        return 0;
+    }
+
+    slackVBlanks = fgRuntimeHeldSlackBeforeWait();
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, slackVBlanks > 0 ? 1 : 0);
+    if (slackVBlanks == 0) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchSkipNoSlack();
+        return 0;
+    }
+
+    if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, outElapsedVBlanks)) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkTripwire();
+        gFgRuntime.active = 0;
+        return 1;
+    }
     return 1;
 }
 
@@ -1103,17 +1334,33 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                 ps1PerfMarkTripwire();
             return 0;
         }
-        if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
-                                            gFgRuntime.currentEntry.dataOffset,
-                                            gFgRuntime.currentEntry.dataSize,
-                                            gFgRuntime.frameBuffer,
-                                            gFgRuntime.streamScratch,
-                                            gFgRuntime.streamScratchSize)) {
-            if (ps1PerfEnabled)
-                ps1PerfMarkTripwire();
-            return 0;
+        if (fgRuntimeCopyEntryFromWindow(&gFgRuntime.currentEntry,
+                                         gFgRuntime.frameBuffer,
+                                         1)) {
+            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
+        } else if (fgRuntimeEntryFitsWindow(&gFgRuntime.currentEntry)) {
+            if (!fgRuntimeFillWindowForEntry(&gFgRuntime.currentEntry, 0, 0, NULL) ||
+                !fgRuntimeCopyEntryFromWindow(&gFgRuntime.currentEntry,
+                                              gFgRuntime.frameBuffer,
+                                              0)) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkTripwire();
+                return 0;
+            }
+            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
+        } else {
+            if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
+                                                gFgRuntime.currentEntry.dataOffset,
+                                                gFgRuntime.currentEntry.dataSize,
+                                                gFgRuntime.frameBuffer,
+                                                gFgRuntime.streamScratch,
+                                                gFgRuntime.streamScratchSize)) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkTripwire();
+                return 0;
+            }
+            gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
         }
-        gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
     }
 
     gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
@@ -1281,6 +1528,23 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgPrefetchFrameBufferSize = maxDataSize;
                 }
             }
+            if (gFgPrefetchWindowBytes > 0 &&
+                (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) {
+                uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
+                if (windowBytes > gFgStreamWindowBufferSize) {
+                    if (gFgStreamWindowBuffer != NULL)
+                        free(gFgStreamWindowBuffer);
+                    gFgStreamWindowBuffer = (uint8 *)malloc(windowBytes);
+                    if (gFgStreamWindowBuffer == NULL) {
+                        if (ps1PerfEnabled)
+                            ps1PerfMarkAllocFail(windowBytes);
+                        gFgStreamWindowBufferSize = 0;
+                        fgRuntimeReset();
+                        return 0;
+                    }
+                    gFgStreamWindowBufferSize = windowBytes;
+                }
+            }
             {
                 uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
                 if (requiredScratch > gFgStreamScratchSize) {
@@ -1303,6 +1567,11 @@ int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.frameBufferSize = gFgFrameBufferSize;
             gFgRuntime.prefetchFrameBuffer = gFgPrefetchFrameBuffer;
             gFgRuntime.prefetchFrameBufferSize = gFgPrefetchFrameBufferSize;
+            gFgRuntime.streamWindowBuffer = gFgStreamWindowBuffer;
+            gFgRuntime.streamWindowSize = gFgStreamWindowBufferSize;
+            gFgRuntime.streamWindowStart = 0;
+            gFgRuntime.streamWindowBytes = 0;
+            gFgRuntime.streamWindowValid = 0;
             gFgRuntime.streamScratch = gFgStreamScratch;
             gFgRuntime.streamScratchSize = gFgStreamScratchSize;
             if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
@@ -1325,10 +1594,20 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                                    gFgRuntime.packFormat,
                                    gFgFrameBufferSize,
                                    gFgStreamScratchSize);
-                if (gFgPrefetchStage1Enabled &&
-                    (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0)
+                if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
+                    gFgPrefetchStage1Enabled &&
+                    gFgPrefetchWindowBytes > 0)
+                    ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_STAGE1_WINDOW,
+                                             gFgPrefetchFrameBufferSize +
+                                             gFgStreamWindowBufferSize);
+                else if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
+                         gFgPrefetchStage1Enabled)
                     ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_STAGE1,
                                              gFgPrefetchFrameBufferSize);
+                else if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
+                         gFgPrefetchWindowBytes > 0)
+                    ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_WINDOW,
+                                             gFgStreamWindowBufferSize);
                 else
                     ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_NONE, 0);
             }
@@ -1660,9 +1939,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     while (foregroundPilotRuntimeActive()) {
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
+            int didPrefetch;
             if (ps1PerfEnabled)
                 ps1PerfMarkHeldLoop();
-            if (fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks)) {
+            didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
+            if (!didPrefetch)
+                didPrefetch = fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks);
+            if (didPrefetch) {
                 if (prefetchElapsedVBlanks == 0)
                     fgRuntimeWaitHeldVBlank();
                 else
@@ -1784,6 +2067,11 @@ void foregroundPilotSetPrefetchStage1(int enabled)
     gFgPrefetchStage1Enabled = enabled ? 1 : 0;
 }
 
+void foregroundPilotSetPrefetchWindow(unsigned long bytes)
+{
+    gFgPrefetchWindowBytes = (uint32)bytes;
+}
+
 int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)
 {
     (void)adsName;
@@ -1884,6 +2172,11 @@ void foregroundPilotSetHeapProbe(int enabled)
 void foregroundPilotSetPrefetchStage1(int enabled)
 {
     (void)enabled;
+}
+
+void foregroundPilotSetPrefetchWindow(unsigned long bytes)
+{
+    (void)bytes;
 }
 
 int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)

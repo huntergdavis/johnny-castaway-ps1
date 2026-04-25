@@ -132,6 +132,7 @@ struct TPs1PerfCounters {
     uint32 prefetchIneligible;
     uint32 prefetchHits;
     uint32 prefetchStageHits;
+    uint32 prefetchWindowHits;
     uint32 prefetchMisses;
     uint32 prefetchDueMisses;
     uint32 prefetchSlackVBlanks;
@@ -239,6 +240,10 @@ static const char *ps1PerfFormatName(void)
 
 static const char *ps1PerfPrefetchPolicyName(void)
 {
+    if (gPs1Perf.prefetchPolicy == PS1_PERF_PREFETCH_STAGE1_WINDOW)
+        return "stage1_window";
+    if (gPs1Perf.prefetchPolicy == PS1_PERF_PREFETCH_WINDOW)
+        return "window";
     if (gPs1Perf.prefetchPolicy == PS1_PERF_PREFETCH_STAGE1)
         return "stage1";
     return "none";
@@ -655,6 +660,15 @@ void ps1PerfMarkPrefetchHit(void)
     gPs1Perf.prefetchStageHits++;
 }
 
+void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.prefetchWindowHits++;
+    if (countsAsDueHit)
+        gPs1Perf.prefetchHits++;
+}
+
 void ps1PerfMarkRestore(uint32 bytes)
 {
     if (!ps1PerfEnabled)
@@ -963,7 +977,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.cdSector9Plus
     );
     printf(
-        "JCPERF2 prefetch policy=%s buf=%lu attempts=%lu eligible=%lu ineligible=%lu hits=%lu misses=%lu due_misses=%lu stage_hits=%lu window_hits=0 group_hits=0 partial_hits=0 hidden_reads=%lu blocking_reads=%lu slack_vb=%lu used_vb=%lu overrun_vb=%lu lead_min=%u lead_max=%u skipped_no_slack=%lu skipped_busy=0 duplicate=%lu wasted_bytes=%lu\n",
+        "JCPERF2 prefetch policy=%s buf=%lu attempts=%lu eligible=%lu ineligible=%lu hits=%lu misses=%lu due_misses=%lu stage_hits=%lu window_hits=%lu group_hits=0 partial_hits=0 hidden_reads=%lu blocking_reads=%lu slack_vb=%lu used_vb=%lu overrun_vb=%lu lead_min=%u lead_max=%u skipped_no_slack=%lu skipped_busy=0 duplicate=%lu wasted_bytes=%lu\n",
         ps1PerfPrefetchPolicyName(),
         (unsigned long)gPs1Perf.prefetchBytes,
         (unsigned long)gPs1Perf.prefetchAttempts,
@@ -973,6 +987,7 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.prefetchMisses,
         (unsigned long)gPs1Perf.prefetchDueMisses,
         (unsigned long)gPs1Perf.prefetchStageHits,
+        (unsigned long)gPs1Perf.prefetchWindowHits,
         (unsigned long)gPs1Perf.cdHiddenReads,
         (unsigned long)gPs1Perf.cdBlockingReads,
         (unsigned long)gPs1Perf.prefetchSlackVBlanks,
