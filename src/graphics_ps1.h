@@ -155,6 +155,10 @@ void graphicsInit();
 void graphicsEnd();
 void grRefreshDisplay();
 void grToggleFullScreen();
+/* Force every bgTile row to be re-uploaded on the next grDrawBackground.
+ * Used by pause_menu.c on resume so the menu's full-screen clear is
+ * fully painted over by the scene's bgTile pixels. */
+void grMarkAllTilesDirty(void);
 void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
                      struct TTtmThread *ttmThreads,
                      struct TTtmThread *ttmHolidayThreads);
