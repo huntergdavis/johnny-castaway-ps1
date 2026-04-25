@@ -195,21 +195,27 @@ static uint16 eventsDelayTicksToTargetVBlanks(uint16 delay)
  * PADTYPE-format byte layout that consumers (pause_menu.c, padtest path)
  * expect at pad_buff[port].
  *
- * Raw SPI response for a digital pad poll (TX = 01 42 00 00):
- *   buff[0] = 0xFF              (response to 0x01 address byte; ignored)
- *   buff[1] = 0x41              (digital ID: type=4, len=1)
- *   buff[2] = 0x5A              (always 0x5A, ignored)
- *   buff[3] = btn low byte
- *   buff[4] = btn high byte
+ * The SPI ack handler discards the open-bus byte that comes back in
+ * response to the 0x01 address byte (`if (!rx_len) SIO_DATA(0);`), so
+ * the rx_buff layout for a digital pad is:
+ *
+ *   buff[0] = 0x41   (digital ID: type=4, len=1)
+ *   buff[1] = 0x5A   (always 0x5A marker, ignored)
+ *   buff[2] = btn low byte (active low)
+ *   buff[3] = btn high byte (active low)
+ *
+ * For DualShock / analog response, additional bytes follow at buff[4..].
  *
  * PADTYPE layout in our pad_buff[port]:
  *   pad_buff[port][0] = stat    (0x00 connected, 0xFF disconnected)
- *   pad_buff[port][1] = byte 1  (low nibble = len, high nibble = type)
+ *   pad_buff[port][1] = type:len byte (matches buff[0])
  *   pad_buff[port][2] = btn lo
  *   pad_buff[port][3] = btn hi
  *   pad_buff[port][4..]         (analog axes for DualShock; zero for digital)
  *
- * We treat any rx_len < 5 as "no controller" → write stat=0xFF, btn=0xFFFF.
+ * Gate: a complete digital pad response fills exactly 4 rx bytes (after
+ * the addr-response discard). Anything less means the port has no
+ * responding device — write the disconnected pattern.
  */
 static void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len)
 {
@@ -218,7 +224,7 @@ static void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, s
 
     uint8 *dst = pad_buff[port];
 
-    if (rx_len < 5) {
+    if (rx_len < 4) {
         /* Disconnected / partial response. Mark as no controller. */
         dst[0] = 0xFF;
         dst[1] = 0x00;
@@ -229,17 +235,17 @@ static void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, s
 
     /* Connected. Translate raw SPI bytes → PADTYPE bytes. */
     dst[0] = 0x00;             /* stat: connected */
-    dst[1] = buff[1];          /* type:len byte (e.g. 0x41 for digital) */
-    dst[2] = buff[3];          /* btn low */
-    dst[3] = buff[4];          /* btn high */
+    dst[1] = buff[0];          /* type:len byte (e.g. 0x41 for digital) */
+    dst[2] = buff[2];          /* btn low */
+    dst[3] = buff[3];          /* btn high */
 
     /* Copy remaining bytes verbatim (analog axes etc., DualShock).
      * Cap at 30 bytes after the 4-byte header — pad_buff is 34 total. */
-    if (rx_len > 5) {
-        size_t extra = rx_len - 5;
+    if (rx_len > 4) {
+        size_t extra = rx_len - 4;
         if (extra > 30) extra = 30;
         for (size_t i = 0; i < extra; i++)
-            dst[4 + i] = buff[5 + i];
+            dst[4 + i] = buff[4 + i];
     }
 }
 
@@ -564,9 +570,9 @@ void eventsWaitTick(uint16 delay)
                 verdict = "T2/T3/T17: timer fires, SIO0 /ACK never asserts (port disconnected, SIO bug, or DMA stall)";
             } else if (s.poll_count > 0 && s.ack_count > 0 && s.cb_count == 0) {
                 verdict = "T7/T19/T21: IRQs fire but callback not invoked — handler wiring/GP issue";
-            } else if (s.cb_count > 0 && s.last_rxlen < 5) {
-                verdict = "T10/T11/T18: callback fires but rx_len < 5 — SPI sequence aborts early";
-            } else if (s.cb_count > 0 && s.last_rxlen >= 5) {
+            } else if (s.cb_count > 0 && s.last_rxlen < 4) {
+                verdict = "T10/T11/T18: callback fires but rx_len < 4 — SPI sequence aborts early";
+            } else if (s.cb_count > 0 && s.last_rxlen >= 4) {
                 verdict = "T-WORK: SPI working — rx data flowing, but no btn change → check pad_buff translation";
             }
             printf("JCSPI VERDICT: %s\n", verdict);
