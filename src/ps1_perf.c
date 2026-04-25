@@ -124,8 +124,24 @@ struct TPs1PerfCounters {
     uint32 cdSector5To8;
     uint32 cdSector9Plus;
 
+    uint8 prefetchPolicy;
+    uint8 cdPrefetchActive;
+    uint16 cdPrefetchSlackVBlanks;
+    uint32 prefetchAttempts;
+    uint32 prefetchEligible;
+    uint32 prefetchIneligible;
+    uint32 prefetchHits;
+    uint32 prefetchStageHits;
     uint32 prefetchMisses;
     uint32 prefetchDueMisses;
+    uint32 prefetchSlackVBlanks;
+    uint32 prefetchUsedVBlanks;
+    uint32 prefetchOverrunVBlanks;
+    uint16 prefetchLeadMin;
+    uint16 prefetchLeadMax;
+    uint32 prefetchSkippedNoSlack;
+    uint32 prefetchDuplicate;
+    uint32 prefetchWastedBytes;
 
     uint32 restoreCalls;
     uint32 restoreBytes;
@@ -219,6 +235,13 @@ static const char *ps1PerfFormatName(void)
     if (gPs1Perf.packFormat == 3)
         return "fgp2_indexed8";
     return "unknown";
+}
+
+static const char *ps1PerfPrefetchPolicyName(void)
+{
+    if (gPs1Perf.prefetchPolicy == PS1_PERF_PREFETCH_STAGE1)
+        return "stage1";
+    return "none";
 }
 
 void ps1PerfSetLevel(int level)
@@ -537,11 +560,99 @@ void ps1PerfMarkCdReadDetailed(uint32 bytes, uint32 sectors,
         gPs1Perf.cdLoopReads++;
         gPs1Perf.cdLoopBytes += bytes;
         gPs1Perf.cdLoopVBlanks += elapsedVBlanks;
-        gPs1Perf.cdBlockingReads++;
-        gPs1Perf.cdBlockingVBlanks += elapsedVBlanks;
-        gPs1Perf.prefetchMisses++;
-        gPs1Perf.prefetchDueMisses++;
+        if (gPs1Perf.cdPrefetchActive) {
+            uint16 hiddenVBlanks = elapsedVBlanks;
+            uint16 blockingVBlanks = 0;
+
+            if (hiddenVBlanks > gPs1Perf.cdPrefetchSlackVBlanks) {
+                blockingVBlanks = (uint16)(hiddenVBlanks - gPs1Perf.cdPrefetchSlackVBlanks);
+                hiddenVBlanks = gPs1Perf.cdPrefetchSlackVBlanks;
+            }
+
+            gPs1Perf.cdHiddenReads++;
+            gPs1Perf.cdHiddenVBlanks += hiddenVBlanks;
+            if (blockingVBlanks > 0) {
+                gPs1Perf.cdBlockingReads++;
+                gPs1Perf.cdBlockingVBlanks += blockingVBlanks;
+            }
+        } else {
+            gPs1Perf.cdBlockingReads++;
+            gPs1Perf.cdBlockingVBlanks += elapsedVBlanks;
+            gPs1Perf.prefetchMisses++;
+            gPs1Perf.prefetchDueMisses++;
+        }
     }
+}
+
+void ps1PerfSetPrefetchPolicy(uint8 policy, uint32 bufferBytes)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.prefetchPolicy = policy;
+    gPs1Perf.prefetchBytes = bufferBytes;
+    if (bufferBytes > gPs1Perf.peakPrefetchBytes)
+        gPs1Perf.peakPrefetchBytes = bufferBytes;
+}
+
+void ps1PerfMarkPrefetchAttempt(uint16 leadVBlanks, uint16 slackVBlanks,
+                                uint8 eligible)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.prefetchAttempts++;
+    gPs1Perf.prefetchSlackVBlanks += slackVBlanks;
+    if (eligible)
+        gPs1Perf.prefetchEligible++;
+    else
+        gPs1Perf.prefetchIneligible++;
+
+    if (leadVBlanks > 0) {
+        if (gPs1Perf.prefetchLeadMin == 0 || leadVBlanks < gPs1Perf.prefetchLeadMin)
+            gPs1Perf.prefetchLeadMin = leadVBlanks;
+        if (leadVBlanks > gPs1Perf.prefetchLeadMax)
+            gPs1Perf.prefetchLeadMax = leadVBlanks;
+    }
+}
+
+void ps1PerfMarkPrefetchSkipNoSlack(void)
+{
+    if (ps1PerfEnabled)
+        gPs1Perf.prefetchSkippedNoSlack++;
+}
+
+void ps1PerfMarkPrefetchDuplicate(void)
+{
+    if (ps1PerfEnabled)
+        gPs1Perf.prefetchDuplicate++;
+}
+
+void ps1PerfBeginPrefetchRead(uint16 slackVBlanks)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.cdPrefetchActive = 1;
+    gPs1Perf.cdPrefetchSlackVBlanks = slackVBlanks;
+}
+
+void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.prefetchUsedVBlanks += elapsedVBlanks;
+    if (elapsedVBlanks > gPs1Perf.cdPrefetchSlackVBlanks)
+        gPs1Perf.prefetchOverrunVBlanks += (uint16)(elapsedVBlanks - gPs1Perf.cdPrefetchSlackVBlanks);
+    if (!ok)
+        gPs1Perf.prefetchWastedBytes += bytes;
+    gPs1Perf.cdPrefetchActive = 0;
+    gPs1Perf.cdPrefetchSlackVBlanks = 0;
+}
+
+void ps1PerfMarkPrefetchHit(void)
+{
+    if (!ps1PerfEnabled)
+        return;
+    gPs1Perf.prefetchHits++;
+    gPs1Perf.prefetchStageHits++;
 }
 
 void ps1PerfMarkRestore(uint32 bytes)
@@ -852,11 +963,26 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.cdSector9Plus
     );
     printf(
-        "JCPERF2 prefetch policy=none buf=0 attempts=0 eligible=0 ineligible=0 hits=0 misses=%lu due_misses=%lu stage_hits=0 window_hits=0 group_hits=0 partial_hits=0 hidden_reads=%lu blocking_reads=%lu slack_vb=0 used_vb=0 overrun_vb=0 lead_min=0 lead_max=0 skipped_no_slack=0 skipped_busy=0 duplicate=0 wasted_bytes=0\n",
+        "JCPERF2 prefetch policy=%s buf=%lu attempts=%lu eligible=%lu ineligible=%lu hits=%lu misses=%lu due_misses=%lu stage_hits=%lu window_hits=0 group_hits=0 partial_hits=0 hidden_reads=%lu blocking_reads=%lu slack_vb=%lu used_vb=%lu overrun_vb=%lu lead_min=%u lead_max=%u skipped_no_slack=%lu skipped_busy=0 duplicate=%lu wasted_bytes=%lu\n",
+        ps1PerfPrefetchPolicyName(),
+        (unsigned long)gPs1Perf.prefetchBytes,
+        (unsigned long)gPs1Perf.prefetchAttempts,
+        (unsigned long)gPs1Perf.prefetchEligible,
+        (unsigned long)gPs1Perf.prefetchIneligible,
+        (unsigned long)gPs1Perf.prefetchHits,
         (unsigned long)gPs1Perf.prefetchMisses,
         (unsigned long)gPs1Perf.prefetchDueMisses,
+        (unsigned long)gPs1Perf.prefetchStageHits,
         (unsigned long)gPs1Perf.cdHiddenReads,
-        (unsigned long)gPs1Perf.cdBlockingReads
+        (unsigned long)gPs1Perf.cdBlockingReads,
+        (unsigned long)gPs1Perf.prefetchSlackVBlanks,
+        (unsigned long)gPs1Perf.prefetchUsedVBlanks,
+        (unsigned long)gPs1Perf.prefetchOverrunVBlanks,
+        (unsigned int)gPs1Perf.prefetchLeadMin,
+        (unsigned int)gPs1Perf.prefetchLeadMax,
+        (unsigned long)gPs1Perf.prefetchSkippedNoSlack,
+        (unsigned long)gPs1Perf.prefetchDuplicate,
+        (unsigned long)gPs1Perf.prefetchWastedBytes
     );
     printf(
         "JCPERF2 async async_start=0 async_poll=0 async_done=0 async_timeout=0 async_cancel=0 async_blocking_vb=0\n"

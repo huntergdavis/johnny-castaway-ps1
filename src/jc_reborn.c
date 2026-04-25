@@ -238,6 +238,7 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
     foregroundPilotSetHeapProbe(0);
+    foregroundPilotSetPrefetchStage1(0);
     ps1PerfSetEnabled(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
@@ -388,6 +389,8 @@ static void ps1ApplyBootOverride(char *buffer)
             screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+        } else if (!strcmp(tokens[i], "prefetch-stage1") || !strcmp(tokens[i], "stage1")) {
+            foregroundPilotSetPrefetchStage1(1);
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -580,6 +583,7 @@ static void usage()
         printf("         capture-overlay-mask - draw overlay background only for paired baseline captures\n");
         printf("         capture-foreground-only - capture composited non-background layers over magenta key\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
+        printf("         prefetch-stage1 - stage next FG2 entry during held VBlanks\n");
         printf("         capture-sound-events FILE - append {frame,sample} JSONL for every PLAY_SAMPLE opcode\n");
         printf("         capture-scene-label TEXT - annotate metadata with the scene label\n");
         printf("         seed N          - force deterministic RNG seed for host runs\n");
@@ -670,6 +674,9 @@ static void parseArgs(int argc, char **argv)
                 argForegroundPilot = 1;
                 argPlayAll = 0;
                 numExpectedArgs = 1;
+            }
+            else if (!strcmp(argv[i], "prefetch-stage1") || !strcmp(argv[i], "stage1")) {
+                foregroundPilotSetPrefetchStage1(1);
             }
             else if (!strcmp(argv[i], "window")) {
                 grWindowed = 1;
