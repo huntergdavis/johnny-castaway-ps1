@@ -1,18 +1,16 @@
 #!/bin/bash
 # Batch-capture every scene in config/ps1/regtest-scenes.txt, producing
-# high-tide and low-tide full-render base-diff FG2 packs plus an establishing
-# .RAW in generated/ps1/foreground/. Skips scenes whose two FG2 packs already
-# exist.
+# high-tide and low-tide full-render base-diff FG2 packs in
+# generated/ps1/foreground/. Skips scenes whose two FG2 packs already exist.
 #
 # Naming convention, matching fishing3:
 #   SCENE_SLUG      = lowercase ADS + tag  (activity1, building7, mary3, ...)
 #   SCENE_NAME      = "ADS N"              (pass-through to host binary)
 #   PACK_BASENAME   = uppercase SCENE_SLUG (ACTIVITY1, BUILDING7, MARY3, ...)
-#   RAW_BASENAME    = first 4 letters of ADS uppercase + tag
+#   LOW_BASENAME    = first 4 letters of ADS uppercase + tag
 #                      (ACTV1, BUIL7, MARY3, JOHN1, VIST6, WALK1, ...)
-#   LOW_PACK_NAME   = RAW_BASENAME + LOW, shortened to RAW_BASENAME + L
+#   LOW_PACK_NAME   = LOW_BASENAME + LOW, shortened to LOW_BASENAME + L
 #                      if needed to keep the basename 8.3-safe
-#   RAW_FRAME_INDEX = 0
 #   START_FRAME     = 0
 #   TIMELINE_SPEED  = 1.0
 #
@@ -33,7 +31,7 @@ mkdir -p "$LOG_DIR"
 
 "$SCRIPT_DIR/build-host.sh" >> "$STATUS_FILE" 2>&1
 
-# ADS name → 4-letter abbreviation used for the establishing-frame RAW file.
+# ADS name -> 4-letter abbreviation used for the low-tide pack name.
 ads_abbrev() {
   case "$1" in
     ACTIVITY) echo "ACTV" ;;
@@ -78,10 +76,10 @@ while IFS= read -r raw_line; do
   slug_lower="$(echo "${ads}${tag}" | tr '[:upper:]' '[:lower:]')"
   scene_name="${ads} ${tag}"
   pack_basename="$(echo "${ads}${tag}" | tr '[:lower:]' '[:upper:]')"
-  raw_basename="$(ads_abbrev "$ads")${tag}"
-  low_pack_basename="${raw_basename}LOW"
+  low_basename="$(ads_abbrev "$ads")${tag}"
+  low_pack_basename="${low_basename}LOW"
   if [ "${#low_pack_basename}" -gt 8 ]; then
-    low_pack_basename="${raw_basename}L"
+    low_pack_basename="${low_basename}L"
   fi
 
   pack_path="$GEN_DIR/${pack_basename}.FG2"
@@ -93,11 +91,11 @@ while IFS= read -r raw_line; do
     continue
   fi
 
-  log_status "START $slug_lower  name='$scene_name'  high=$pack_basename  low=$low_pack_basename  raw=${raw_basename}0"
+  log_status "START $slug_lower  name='$scene_name'  high=$pack_basename  low=$low_pack_basename"
   capture_log="$LOG_DIR/${slug_lower}.log"
 
   if "$SCRIPT_DIR/export-scene-foreground-pilot.sh" \
-      "" "$slug_lower" "$scene_name" "$pack_basename" 0 "$raw_basename" 0 1.0 "$low_pack_basename" \
+      "" "$slug_lower" "$scene_name" "$pack_basename" 0 1.0 "$low_pack_basename" \
       > "$capture_log" 2>&1; then
     if [ -s "$pack_path" ] && [ -s "$low_pack_path" ]; then
       high_size="$(stat -c%s "$pack_path" 2>/dev/null || echo ?)"

@@ -50,7 +50,6 @@ int fclose(FILE *stream);
 #include "mytypes.h"
 #include "utils.h"
 #include "resource.h"
-#include "dump.h"
 
 /* Platform-specific headers */
 #ifdef PS1_BUILD
@@ -70,11 +69,15 @@ int fclose(FILE *stream);
 #include "sound.h"
 #endif
 
+#include "island.h"
+#include "foreground_pilot.h"
+
+#ifndef PS1_BUILD
+#include "dump.h"
 #include "ttm.h"
 #include "ads.h"
-#include "island.h"
 #include "story.h"
-#include "foreground_pilot.h"
+#endif
 
 /* Root counters are exposed by PSn00bSDK on PS1 builds. */
 #ifdef PS1_BUILD
@@ -98,12 +101,14 @@ static void ps1SeedRandom(void)
 #endif
 
 
+#ifndef PS1_BUILD
 static int  argDump     = 0;
 static int  argBench    = 0;
 static int  argTtm      = 0;
 static int  argAds      = 0;
 static int  argPlayAll  = 0;
 static int  argIsland   = 0;
+#endif
 static int  argForegroundPilot = 0;
 
 static char *args[3];
@@ -113,6 +118,8 @@ static int  numArgs  = 0;
 static int hostForcedSeed = -1;
 static int hostForcedStoryDay = -1;
 static int hostBootDirectSceneIndex = -1;
+#endif
+
 static int hostForcedIslandPosValid = 0;
 static int hostForcedIslandX = 0;
 static int hostForcedIslandY = 0;
@@ -131,24 +138,8 @@ static int screensaverLoopDisabled = 0;
  * docs/ps1/scene-status.md. Expand as scenes are signed off. */
 static const char *kProvenScenes[] = { "fishing1", "fishing2" };
 #define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
-static int hostForcedSceneOffsetValid = 0;
-static int hostForcedSceneOffsetX = 0;
-static int hostForcedSceneOffsetY = 0;
-static int hostCapturePreludeFrame = 0;
-#else
-static int hostForcedSeed = -1;
-static int hostForcedStoryDay = -1;
-static int hostBootDirectSceneIndex = -1;
-static int hostForcedIslandPosValid = 0;
-static int hostForcedIslandX = 0;
-static int hostForcedIslandY = 0;
-static int hostForcedLowTide = -1;
-static int hostForcedRaftStage = -1;
-static int hostForcedNight = -1;
-static int hostForcedHoliday = -1;
-static int screensaverLoopDisabled = 0;
-static const char *kProvenScenes[] = { "fishing1", "fishing2" };
-#define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
+
+#ifndef PS1_BUILD
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;
 static int hostForcedSceneOffsetY = 0;
@@ -176,13 +167,14 @@ static void fgLoopApplyVariant(void)
     islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
     islandState.holiday = (hostForcedHoliday   >= 0) ? hostForcedHoliday   : (rand() % 5);
     islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
+    islandState.xPos    = hostForcedIslandPosValid ? hostForcedIslandX : 3;
+    islandState.yPos    = hostForcedIslandPosValid ? hostForcedIslandY : 9;
 }
 
 #ifdef PS1_BUILD
 #define PS1_BOOT_OVERRIDE_FILE "BOOTMODE.TXT"
 
 static int ps1BootForcedSeed = -1;  /* -1 = use hardware RNG */
-static int ps1BootDirectSceneIndex = -1;  /* -1 = not set; >=0 = play scene directly and exit */
 static char ps1BootArgStorage[3][32];
 static char ps1BootForegroundOverlayScene[32];
 static char ps1BootCaptureMetaDirStorage[32];
@@ -196,12 +188,6 @@ static int ps1IsSpace(char c)
 
 static void ps1ResetBootArgs(void)
 {
-    argDump = 0;
-    argBench = 0;
-    argTtm = 0;
-    argAds = 0;
-    argPlayAll = 1;
-    argIsland = 0;
     argForegroundPilot = 0;
     numArgs = 0;
 
@@ -220,8 +206,6 @@ static void ps1ResetBootArgs(void)
     foregroundPilotSetHeapProbe(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
-    ps1BootDirectSceneIndex = -1;
-    hostForcedStoryDay = -1;
     hostForcedIslandPosValid = 0;
     hostForcedIslandX = 0;
     hostForcedIslandY = 0;
@@ -229,10 +213,6 @@ static void ps1ResetBootArgs(void)
     hostForcedRaftStage = -1;
     hostForcedNight = -1;
     hostForcedHoliday = -1;
-    hostForcedSceneOffsetValid = 0;
-    hostForcedSceneOffsetX = 0;
-    hostForcedSceneOffsetY = 0;
-    hostCapturePreludeFrame = 0;
 }
 
 static int ps1CopyBootArg(int index, const char *src)
@@ -349,9 +329,6 @@ static void ps1ApplyBootOverride(char *buffer)
                 tokens[i + 1]
             ));
             i++;
-        } else if (!strcmp(tokens[i], "story-day") && (i + 1) < tokenCount) {
-            hostForcedStoryDay = atoi(tokens[i + 1]);
-            i++;
         } else if (!strcmp(tokens[i], "island-pos") && (i + 2) < tokenCount) {
             hostForcedIslandX = atoi(tokens[i + 1]);
             hostForcedIslandY = atoi(tokens[i + 2]);
@@ -371,46 +348,14 @@ static void ps1ApplyBootOverride(char *buffer)
             if (hostForcedHoliday < 0) hostForcedHoliday = 0;
             if (hostForcedHoliday > 4) hostForcedHoliday = 4;
             i++;
-        } else if (!strcmp(tokens[i], "scene-offset") && (i + 2) < tokenCount) {
-            hostForcedSceneOffsetX = atoi(tokens[i + 1]);
-            hostForcedSceneOffsetY = atoi(tokens[i + 2]);
-            hostForcedSceneOffsetValid = 1;
-            i += 2;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
-        } else if (!strcmp(tokens[i], "capture-prelude-frame")) {
-            hostCapturePreludeFrame = 1;
         }
-    }
-
-    if (!strcmp(tokens[0], "story")) {
-        if (tokenCount >= 3 && !strcmp(tokens[1], "single")) {
-            /* "story single N" plays one scene via normal story loop (keeps running) */
-            storySetBootSingleSceneIndex(atoi(tokens[2]));
-            return;
-        }
-        if (tokenCount >= 3 && !strcmp(tokens[1], "direct")) {
-            /* "story direct N" plays one scene directly and exits when ADS finishes */
-            ps1BootDirectSceneIndex = atoi(tokens[2]);
-            return;
-        }
-        if (tokenCount >= 3 &&
-            (!strcmp(tokens[1], "scene") || !strcmp(tokens[1], "index"))) {
-            storySetBootSceneIndex(atoi(tokens[2]));
-            return;
-        }
-        if (tokenCount >= 4 && !strcmp(tokens[1], "ads")) {
-            storySetBootScene(tokens[2], (uint16)atoi(tokens[3]));
-            return;
-        }
-        storySetBootScene(NULL, 0);
-        return;
     }
 
     if (!strcmp(tokens[0], "island")) {
-        argIsland = 1;
         tokenBase = 1;
     }
 
@@ -418,39 +363,10 @@ static void ps1ApplyBootOverride(char *buffer)
         return;
     }
 
-    if (!strcmp(tokens[tokenBase], "bench")) {
-        argBench = 1;
-        argPlayAll = 0;
-        return;
-    }
-
-    if (!strcmp(tokens[tokenBase], "ttm") && (tokenBase + 1) < tokenCount) {
-        if (ps1CopyBootArg(0, tokens[tokenBase + 1])) {
+    if (!strcmp(tokens[tokenBase], "fgpilot")) {
+        if ((tokenBase + 1) < tokenCount && ps1CopyBootArg(0, tokens[tokenBase + 1]))
             numArgs = 1;
-            if ((tokenBase + 2) < tokenCount && ps1CopyBootArg(1, tokens[tokenBase + 2]))
-                numArgs = 2;
-            argTtm = 1;
-            argPlayAll = 0;
-        }
-        return;
-    }
-
-    if (!strcmp(tokens[tokenBase], "ads") && (tokenBase + 2) < tokenCount) {
-        if (ps1CopyBootArg(0, tokens[tokenBase + 1]) &&
-            ps1CopyBootArg(1, tokens[tokenBase + 2])) {
-            numArgs = 2;
-            argAds = 1;
-            argPlayAll = 0;
-        }
-        return;
-    }
-
-    if (!strcmp(tokens[tokenBase], "fgpilot") && (tokenBase + 1) < tokenCount) {
-        if (ps1CopyBootArg(0, tokens[tokenBase + 1])) {
-            numArgs = 1;
-            argForegroundPilot = 1;
-            argPlayAll = 0;
-        }
+        argForegroundPilot = 1;
         return;
     }
 }
@@ -568,6 +484,7 @@ static void loadTitleScreenEarly(void)
 
 #endif
 
+#ifndef PS1_BUILD
 static void usage()
 {
         printf("\n");
@@ -882,6 +799,7 @@ static void parseArgs(int argc, char **argv)
     if (argDump + argBench + argTtm + argAds + argForegroundPilot == 0)
         argPlayAll = 1;
 }
+#endif
 
 
 int main(int argc, char **argv)
@@ -901,18 +819,11 @@ int main(int argc, char **argv)
 
     /* Load boot override BEFORE seeding RNG so "seed N" can override. */
     ps1LoadBootOverride();
-
-    /* Keep the early PS1 display init for scripted story boots, but only
-     * show the actual title artwork for normal interactive boots. */
-    if (ps1BootDirectSceneIndex < 0 &&
-        !argBench &&
-        !argTtm &&
-        !argAds) {
-        if (storyHasBootOverridePending())
-            initTitleDisplayEarly();
-        else
-            loadTitleScreenEarly();
+    if (!argForegroundPilot) {
+        argForegroundPilot = 1;
     }
+
+    loadTitleScreenEarly();
 
     /* Parse resource files from CD - needed for background and sprites */
     parseResourceFiles("RESOURCE.MAP");
@@ -969,22 +880,6 @@ int main(int argc, char **argv)
     initLRUCache();
 
 #ifdef PS1_BUILD
-    storySetForcedCurrentDay(hostForcedStoryDay);
-    storySetIslandOverrides(
-        hostForcedIslandPosValid,
-        hostForcedIslandX,
-        hostForcedIslandY,
-        hostForcedLowTide >= 0,
-        hostForcedLowTide,
-        hostForcedRaftStage >= 0,
-        hostForcedRaftStage
-    );
-    storySetSceneOffsetOverride(
-        hostForcedSceneOffsetValid,
-        hostForcedSceneOffsetX,
-        hostForcedSceneOffsetY
-    );
-    storySetCapturePreludeFrame(hostCapturePreludeFrame);
     if (ps1BootForegroundOverlayScene[0] != '\0')
         foregroundPilotSetScene(ps1BootForegroundOverlayScene);
     else if (argForegroundPilot && numArgs >= 1)
@@ -1012,59 +907,24 @@ int main(int argc, char **argv)
         islandState.yPos = hostForcedIslandY;
     }
 
-    if (ps1BootDirectSceneIndex >= 0) {
-        storyPlayBootSceneDirect(ps1BootDirectSceneIndex);
-    }
-    else if (argPlayAll) {
-        storyPlay();
-    }
-    else if (argBench) {
-        adsPlayBench();
-    }
-    else if (argTtm && numArgs >= 1) {
-        adsInit();
-        if (argIsland)
-            adsInitIsland();
-        else
-            adsNoIsland();
-        adsPlaySingleTtm(args[0], (numArgs >= 2) ? (uint16)atoi(args[1]) : 0);
-    }
-    else if (argAds && numArgs >= 2) {
-        adsInit();
-
-#ifdef PS1_BUILD
-        ps1_pilotPrearmPackForAds(args[0]);
-#endif
-        if (argIsland)
-            adsInitIsland();
-        else
-            adsNoIsland();
-
-        adsPlay(args[0], atoi(args[1]));
-    }
-    else if (argForegroundPilot) {
-        /* Screensaver loop: replay indefinitely with randomized variants
-         * until the user quits or `noloop` was set. hostForced* fields
-         * (applied above) stay forced; fgLoopApplyVariant re-randomizes
-         * only the unforced ones on each iteration. */
-        const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
-                                    ? ps1BootForegroundOverlayScene
-                                    : ((numArgs >= 1) ? args[0] : NULL);
-        do {
-            fgLoopApplyVariant();
-            foregroundPilotSetScene(fgLoopNextScene(explicitScene));
-            foregroundPilotPlay();
-        } while (!screensaverLoopDisabled);
-    }
-    else {
-        storyPlay();
-    }
+    /* PS1 is now FG2-scene-playback only. Host ADS/TTM/story engines stay
+     * available for capture tooling, but they are no longer linked into the
+     * console executable. */
+    const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
+                                ? ps1BootForegroundOverlayScene
+                                : ((numArgs >= 1) ? args[0] : NULL);
+    do {
+        fgLoopApplyVariant();
+        foregroundPilotSetScene(fgLoopNextScene(explicitScene));
+        foregroundPilotPlay();
+    } while (!screensaverLoopDisabled);
 
     soundEnd();
     graphicsEnd();
     return 0;
 #endif
 
+#ifndef PS1_BUILD
     if (hostBootDirectSceneIndex >= 0) {
         printf("Initializing graphics...\n");
         graphicsInit();
@@ -1180,6 +1040,7 @@ int main(int argc, char **argv)
         graphicsEnd();
         printf("Shutdown complete\n");
     }
+#endif
 
     return 0;
 }

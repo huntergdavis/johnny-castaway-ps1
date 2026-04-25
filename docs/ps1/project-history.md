@@ -192,8 +192,9 @@ support high/low tide variants correctly, and generate a corpus for all
 - `FISHING 1` and `FISHING 2` are validated under the current bar.
 - `FISHING 3` is loop-stable and tide-correct on FG2, but not yet
   promoted to the validated ledger.
-- FG1 support, direct/fallback routing, and stale `.FG1` artifacts are
-  now cleanup targets, not active methodology.
+- FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
+  and per-scene establishing RAWs were removed from the active PS1
+  runtime/generation path.
 
 **Key Insight**: Full-render base-diff FG2 capture avoids the sprite
 classification gaps that range-based foreground extraction could miss.
@@ -402,8 +403,8 @@ Current operator-facing size notes are in [current-status.md](current-status.md)
 ### Immediate (Scene Coverage)
 - [ ] Promote `FISHING 3` after pixel-perfect visual + audible signoff.
 - [ ] Route and validate remaining FG2 scene packs one scene at a time.
-- [ ] Remove FG1 generation, direct/fallback routing, and stale `.FG1`
-      artifacts in the next cleanup round.
+- [x] Remove FG1 generation, direct/fallback routing, stale `.FG1`/`.FOC`
+      artifacts, and per-scene establishing RAWs from the active path.
 
 ### Short-term (Completeness)
 - [ ] Keep the all-scene FG2 corpus available without routing all packs

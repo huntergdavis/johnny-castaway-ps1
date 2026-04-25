@@ -38,6 +38,7 @@ extern int fclose(FILE *stream);
 extern int fseek(FILE *stream, long offset, int whence);
 extern long ftell(FILE *stream);
 extern int fflush(FILE *stream);
+extern int printf(const char *format, ...);
 extern void *malloc(size_t size);
 extern void *calloc(size_t nmemb, size_t size);
 extern void free(void *ptr);
@@ -134,6 +135,7 @@ static size_t memoryBudget = 600 * 1024;  /* PS1: Use most available RAM (~700KB
 static size_t memoryBudget = 256 * 1024;  /* PC: Conservative for responsiveness */
 #endif
 
+#ifndef PS1_BUILD
 /* Load resource data from extracted file if available, otherwise decompress */
 static uint8 *loadOrUncompress(FILE *compressedFile,
                                 const char *resourceName,
@@ -468,6 +470,7 @@ static struct TTtmResource *parseTtmResource(FILE *f)
 
     return ttmResource;
 }
+#endif /* !PS1_BUILD */
 
 
 static void parseMapFile(char *fileName)
@@ -563,15 +566,10 @@ static void parseResourceFile(char * filename)
 
         /* Resource type debug removed - printf hangs on PS1 */
 
-        /* Parse all resource types */
+        /* PS1 FG2 runtime only needs BMP/SCR/PAL metadata. ADS/TTM metadata
+         * belongs to the retired interpreter path and is skipped at startup. */
         if (!strcmp(resType, ".ADS")) {
-            adsResources[numAdsResources] = ps1_parseAdsResource(f, resName);
-            if (adsResources[numAdsResources] != NULL) {
-                adsResources[numAdsResources]->resourceType = RESOURCE_TYPE_ADS;
-                adsResources[numAdsResources]->resourceIndex = (uint16)numAdsResources;
-                hashInsert(adsHashTable, RESOURCE_HASH_SIZE, adsResources[numAdsResources]->resName, (uint16)numAdsResources);
-                numAdsResources++;
-            }
+            continue;
         }
         else if (!strcmp(resType, ".BMP")) {
             bmpResources[numBmpResources] = ps1_parseBmpResource(f, resName);
@@ -598,13 +596,7 @@ static void parseResourceFile(char * filename)
             }
         }
         else if (!strcmp(resType, ".TTM")) {
-            ttmResources[numTtmResources] = ps1_parseTtmResource(f, resName);
-            if (ttmResources[numTtmResources] != NULL) {
-                ttmResources[numTtmResources]->resourceType = RESOURCE_TYPE_TTM;
-                ttmResources[numTtmResources]->resourceIndex = (uint16)numTtmResources;
-                hashInsert(ttmHashTable, RESOURCE_HASH_SIZE, ttmResources[numTtmResources]->resName, (uint16)numTtmResources);
-                numTtmResources++;
-            }
+            continue;
         }
     }
 

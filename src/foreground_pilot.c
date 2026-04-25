@@ -8,23 +8,32 @@
 #include <psxapi.h>
 
 #include "mytypes.h"
-#include "ads.h"
 #include "events_ps1.h"
 #include "graphics_ps1.h"
 #include "cdrom_ps1.h"
 #include "island.h"
-#include "ps1_restore_pilots.h"
 #include "sound_ps1.h"
-#include "story.h"
-#include "ttm.h"
 #include "utils.h"
 
-extern uint16 ps1AdsDbgActiveThreads;
-extern uint16 ps1AdsDbgReplayCount;
-extern uint16 ps1AdsDbgRunningThreads;
-extern uint16 ps1AdsDbgReplayDrawFrame;
-extern uint16 ps1AdsDbgMergeCarryFrame;
-extern uint16 ps1AdsDbgNoDrawThreadsFrame;
+uint16 ps1AdsDbgActiveThreads = 0;
+uint16 ps1AdsDbgMini = 0;
+uint16 ps1AdsDbgRunningThreads = 0;
+uint16 ps1AdsDbgTerminatedThreads = 0;
+uint16 ps1AdsDbgSceneSlot = 0;
+uint16 ps1AdsDbgSceneTag = 0;
+uint16 ps1AdsDbgReplayCount = 0;
+uint16 ps1AdsDbgReplayTryFrame = 0;
+uint16 ps1AdsDbgReplayDrawFrame = 0;
+uint16 ps1AdsDbgMergeCarryFrame = 0;
+uint16 ps1AdsDbgNoDrawThreadsFrame = 0;
+uint16 ps1AdsDbgPlayedThreadsFrame = 0;
+uint16 ps1AdsDbgRecordedSpritesFrame = 0;
+uint16 ps1AdsDbgLastStopThread = 0;
+uint16 ps1AdsDbgLastStopSceneSig = 0;
+uint16 ps1AdsDbgLastReapThread = 0;
+uint16 ps1AdsDbgLastReapSceneSig = 0;
+uint16 ps1AdsDbgLastAddThread = 0;
+uint16 ps1AdsDbgLastAddSceneSig = 0;
 
 struct TFgPilotHeader {
     char magic[4];
@@ -66,32 +75,6 @@ struct TFgPilotEntryTable {
     uint16 count;
 };
 
-struct TFgOccluderHeader {
-    char magic[4];
-    uint16 version;
-    uint16 frameCount;
-    uint16 nameCount;
-    uint16 drawCount;
-    uint32 frameTableOffset;
-    uint32 nameTableOffset;
-    uint32 drawTableOffset;
-};
-
-struct TFgOccluderFrame {
-    uint16 firstDraw;
-    uint16 drawCount;
-};
-
-struct TFgOccluderDraw {
-    uint8 nameIndex;
-    uint8 imageNo;
-    uint16 spriteNo;
-    sint16 x;
-    sint16 y;
-    uint8 flipped;
-    uint8 reserved0;
-};
-
 struct TFgPilotRuntime {
     uint8 active;
     uint8 mode;
@@ -119,27 +102,13 @@ struct TFgPilotRuntime {
     uint16 soundEventCursor;
 };
 
-struct TFgPilotTiming {
-    uint32 loadEntryTicks;
-    uint32 loadDataTicks;
-    uint32 beginFrameTicks;
-    uint32 restoreTicks;
-    uint32 blitTicks;
-    uint32 presentTicks;
-    uint32 totalTicks;
-    uint16 framesPlayed;
-    uint16 presentsRequested;
-};
-
 static char gForegroundPilotScene[16] = "";
 static unsigned char gForegroundPilotRequestedMode = 0;
 static const uint16 kFgPilotProbeHoldFrames = 1800;
-static const uint16 kFgPilotHeaderFlagDeltaBlack = 0x0001;
 static const uint16 kFgPilotHeaderFlagHostTicks = 0x0002;
 static const uint16 kFgPilotHeaderFlagHostDeadlines = 0x0004;
 static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
 static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
-static const uint8 kFgPilotPackFormatRaw16 = 1;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 static struct TFgPilotRuntime gFgRuntime = {0};
@@ -150,24 +119,8 @@ static uint8 gFgStartAttemptEver = 0;
 static uint8 gFgStartedEver = 0;
 static uint8 gFgComposedEver = 0;
 static uint8 gFgHeapProbeEnabled = 0;
-static struct TTtmSlot gFgOccluderSlot;
-static uint8 gFgOccluderSlotLoaded = 0;
-static struct TFgOccluderFrame *gFgOccluderFrames = NULL;
-static struct TFgOccluderDraw *gFgOccluderDraws = NULL;
-static char *gFgOccluderNames = NULL;
-static uint16 gFgOccluderFrameCount = 0;
-static uint16 gFgOccluderNameCount = 0;
-static uint16 gFgOccluderDrawCount = 0;
-
-static void fgResetTelemetryFlags(void)
-{
-    gFgConfiguredEver = 0;
-    gFgSetClearedEver = 0;
-    gFgAdsMatchEver = 0;
-    gFgStartAttemptEver = 0;
-    gFgStartedEver = 0;
-    gFgComposedEver = 0;
-}
+static struct TTtmSlot gFgBackdropSlot;
+static struct TTtmThread gFgBackdropThread;
 
 enum {
     FG_RUNTIME_NONE = 0,
@@ -176,13 +129,14 @@ enum {
 };
 
 static int fgSceneEquals(const char *a, const char *b);
-static int fgSceneCopyWithoutSuffix(const char *sceneName, const char *suffix,
-                                    char *out, size_t outSize);
 static uint16 fgReadU16(const uint8 *p);
 static sint16 fgReadS16(const uint8 *p);
-static void fgResetBackdropOccluders(void);
-static void fgConfigureBackdropOccluders(const char *sceneName);
-static void fgComposeBackdropOccluders(uint16 sourceFrame);
+static void fgBackdropPreloadBackgrndBmp(void);
+static void fgBackdropEnableWaveBackdrop(void);
+static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
+static void fgBackdropTickBackgroundWaves(void);
+static void fgBackdropStampHoliday(void);
+static void fgBackdropRelease(int keepBackgrnd);
 
 static int fgEntryDrawX(const struct TFgPilotHeader *header, const struct TFgPilotEntry *entry)
 {
@@ -193,7 +147,7 @@ static int fgEntryDrawX(const struct TFgPilotHeader *header, const struct TFgPil
 
     x = entry->x;
     if (header != NULL && (header->reserved0 & kFgPilotHeaderFlagSceneRelative) != 0)
-        x += ttmDx;
+        x += islandState.xPos;
     return x;
 }
 
@@ -206,7 +160,7 @@ static int fgEntryDrawY(const struct TFgPilotHeader *header, const struct TFgPil
 
     y = entry->y;
     if (header != NULL && (header->reserved0 & kFgPilotHeaderFlagSceneRelative) != 0)
-        y += ttmDy;
+        y += islandState.yPos;
     return y;
 }
 
@@ -247,12 +201,6 @@ static uint32 fgReadTickCounter(void)
     return (uint32)VSync(-1);
 }
 
-static uint32 fgElapsedTicks(uint32 startTick)
-{
-    uint32 endTick = fgReadTickCounter();
-    return (endTick >= startTick) ? (endTick - startTick) : 0;
-}
-
 static uint16 fgElapsedVBlanksSince(uint32 *lastTick)
 {
     uint32 nowTick;
@@ -265,35 +213,6 @@ static uint16 fgElapsedVBlanksSince(uint32 *lastTick)
     elapsed = (nowTick >= *lastTick) ? (nowTick - *lastTick) : 0;
     *lastTick = nowTick;
     return (uint16)(elapsed > 0 ? elapsed : 0);
-}
-
-static void fgPrintTimingSummary(const struct TFgPilotTiming *timing)
-{
-    if (timing == NULL || timing->framesPlayed == 0)
-        return;
-
-    printf("FG timing: frames=%u presents=%u total=%u\n",
-           (unsigned int)timing->framesPlayed,
-           (unsigned int)timing->presentsRequested,
-           (unsigned int)timing->totalTicks);
-    printf("FG timing: entry=%u data=%u begin=%u restore=%u blit=%u present=%u\n",
-           (unsigned int)timing->loadEntryTicks,
-           (unsigned int)timing->loadDataTicks,
-           (unsigned int)timing->beginFrameTicks,
-           (unsigned int)timing->restoreTicks,
-           (unsigned int)timing->blitTicks,
-           (unsigned int)timing->presentTicks);
-}
-
-static const char *fgOverlayPackPathForScene(const char *sceneName)
-{
-    if (fgSceneEquals(sceneName, "fishing1"))
-        return "FG\\FISHING1.FG1";
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return "FG\\FISHING2.FG1";
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return "FG\\FISHING3.FG1";
-    return NULL;
 }
 
 static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
@@ -310,286 +229,6 @@ static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
     return NULL;
 }
 
-static const char *fgDirectPackPathForScene(const char *sceneName)
-{
-    if (fgSceneEquals(sceneName, "fishing1"))
-        return "FG\\FISHING1D.FG1";
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return "FG\\FISHING2D.FG1";
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return "FG\\FISHING3D.FG1";
-    return NULL;
-}
-
-static int fgOccluderPathForScene(const char *sceneName, char *outPath, size_t outSize)
-{
-    const char *overlayPath = fgOverlayPackPathForScene(sceneName);
-    const char *dot;
-    size_t prefixLen;
-
-    if (outPath == NULL || outSize == 0)
-        return 0;
-    outPath[0] = '\0';
-
-    if (overlayPath == NULL)
-        return 0;
-
-    dot = strrchr(overlayPath, '.');
-    prefixLen = dot != NULL ? (size_t)(dot - overlayPath) : strlen(overlayPath);
-    if (prefixLen + 5 > outSize)
-        return 0;
-
-    memcpy(outPath, overlayPath, prefixLen);
-    memcpy(outPath + prefixLen, ".FOC", 5);
-    return 1;
-}
-
-static const char *fgRawFramePathForScene(const char *sceneName)
-{
-    if (fgSceneEquals(sceneName, "fishing1"))
-        return "\\FG\\FISH24.RAW;1";
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return "\\FG\\FISH22.RAW;1";
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return "\\FG\\FISH30.RAW;1";
-    return NULL;
-}
-
-static const char *fgAdsNameForScene(const char *sceneName, uint16 *adsTagOut)
-{
-    if (fgSceneEquals(sceneName, "fishing1")) {
-        if (adsTagOut != NULL)
-            *adsTagOut = 1;
-        return "FISHING";
-    }
-    if (fgSceneEquals(sceneName, "fishing2")) {
-        if (adsTagOut != NULL)
-            *adsTagOut = 2;
-        return "FISHING";
-    }
-    if (fgSceneEquals(sceneName, "fishing3")) {
-        if (adsTagOut != NULL)
-            *adsTagOut = 3;
-        return "FISHING";
-    }
-    return NULL;
-}
-
-static const struct TPs1RestorePilot *fgRestorePilotForScene(const char *sceneName)
-{
-    uint16 adsTag = 0;
-    const char *adsName = fgAdsNameForScene(sceneName, &adsTag);
-    uint16 i;
-    uint16 j;
-
-    if (adsName == NULL)
-        return NULL;
-
-    for (i = 0; i < PS1_RESTORE_PILOT_COUNT; i++) {
-        const struct TPs1RestorePilot *pilot = &gPs1RestorePilots[i];
-        if (pilot->adsName == NULL || strcmp(pilot->adsName, adsName) != 0)
-            continue;
-        for (j = 0; j < pilot->adsTagCount; j++) {
-            if (pilot->adsTags[j] == adsTag)
-                return pilot;
-        }
-    }
-
-    return NULL;
-}
-
-static int fgBytesContainString(const uint8 *data, uint32 dataSize, const char *needle)
-{
-    uint32 i;
-    size_t needleLen;
-
-    if (data == NULL || needle == NULL)
-        return 0;
-
-    needleLen = strlen(needle);
-    if (needleLen == 0 || dataSize < needleLen)
-        return 0;
-
-    for (i = 0; i + (uint32)needleLen <= dataSize; i++) {
-        if (memcmp(data + i, needle, needleLen) == 0)
-            return 1;
-    }
-
-    return 0;
-}
-
-static int fgScenePreludeUsesBmp(const char *sceneName, const char *bmpName)
-{
-    const struct TPs1RestorePilot *pilot = fgRestorePilotForScene(sceneName);
-    uint16 i;
-
-    if (pilot == NULL || bmpName == NULL)
-        return 0;
-
-    for (i = 0; i < pilot->sceneTtmCount; i++) {
-        struct TTtmSlot slot;
-        int found = 0;
-
-        memset(&slot, 0, sizeof(slot));
-        ttmInitSlot(&slot);
-        ttmLoadTtm(&slot, (char *)pilot->sceneTtms[i]);
-        if (slot.data != NULL)
-            found = fgBytesContainString(slot.data, slot.dataSize, bmpName);
-        ttmResetSlot(&slot);
-
-        if (found)
-            return 1;
-    }
-
-    return 0;
-}
-
-
-static int fgTtmUsesBmpSprite(const uint8 *data, uint32 dataSize,
-                              const char *bmpName, uint16 wantedSpriteNo)
-{
-    uint32 offset = 0;
-    uint8 selectedSlot = 0;
-    char slotBmpNames[MAX_BMP_SLOTS][20];
-    uint8 slotBmpValid[MAX_BMP_SLOTS];
-
-    memset(slotBmpNames, 0, sizeof(slotBmpNames));
-    memset(slotBmpValid, 0, sizeof(slotBmpValid));
-
-    while (offset + 1 < dataSize) {
-        uint16 opcode = fgReadU16(data + offset);
-        uint8 numArgs = (uint8)(opcode & 0x000f);
-        uint16 args[10];
-        char strArg[20];
-        uint32 i;
-
-        offset += 2;
-        memset(args, 0, sizeof(args));
-        memset(strArg, 0, sizeof(strArg));
-
-        if (numArgs == 0x0f) {
-            uint32 strLen = 0;
-            while (offset < dataSize && data[offset] != 0) {
-                if (strLen + 1 < sizeof(strArg))
-                    strArg[strLen++] = (char)data[offset];
-                offset++;
-            }
-            if (offset >= dataSize)
-                break;
-            offset++;
-            if ((strLen & 1u) == 0u && offset < dataSize)
-                offset++;
-        } else {
-            if (numArgs > 10 || offset + ((uint32)numArgs * 2u) > dataSize)
-                break;
-            for (i = 0; i < numArgs; i++) {
-                args[i] = fgReadU16(data + offset);
-                offset += 2;
-            }
-        }
-
-        switch (opcode) {
-            case 0x1051:
-                selectedSlot = (args[0] < MAX_BMP_SLOTS) ? (uint8)args[0] : (MAX_BMP_SLOTS - 1);
-                break;
-
-            case 0xF02F:
-                if (selectedSlot < MAX_BMP_SLOTS) {
-                    strncpy(slotBmpNames[selectedSlot], strArg, sizeof(slotBmpNames[selectedSlot]) - 1);
-                    slotBmpNames[selectedSlot][sizeof(slotBmpNames[selectedSlot]) - 1] = '\0';
-                    slotBmpValid[selectedSlot] = 1;
-                }
-                break;
-
-            case 0xA504:
-            case 0xA524:
-                if (numArgs >= 4 &&
-                    args[3] < MAX_BMP_SLOTS &&
-                    slotBmpValid[args[3]] &&
-                    strcmp(slotBmpNames[args[3]], bmpName) == 0 &&
-                    args[2] == wantedSpriteNo) {
-                    return 1;
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    return 0;
-}
-
-
-static int fgScenePreludeUsesBmpSprite(const char *sceneName,
-                                       const char *bmpName,
-                                       uint16 wantedSpriteNo)
-{
-    const struct TPs1RestorePilot *pilot = fgRestorePilotForScene(sceneName);
-    uint16 i;
-
-    if (pilot == NULL || bmpName == NULL)
-        return 0;
-
-    for (i = 0; i < pilot->sceneTtmCount; i++) {
-        struct TTtmSlot slot;
-        int found = 0;
-
-        memset(&slot, 0, sizeof(slot));
-        ttmInitSlot(&slot);
-        ttmLoadTtm(&slot, (char *)pilot->sceneTtms[i]);
-        if (slot.data != NULL)
-            found = fgTtmUsesBmpSprite(slot.data, slot.dataSize, bmpName, wantedSpriteNo);
-        ttmResetSlot(&slot);
-
-        if (found)
-            return 1;
-    }
-
-    return 0;
-}
-
-static void fgBuildStaticScenePrelude(const char *sceneName)
-{
-    const struct TPs1RestorePilot *pilot = fgRestorePilotForScene(sceneName);
-    uint16 i;
-
-    if (pilot == NULL)
-        return;
-
-    ttmSetStaticBaseBuildMode(1);
-    for (i = 0; i < pilot->sceneTtmCount; i++) {
-        struct TTtmSlot slot;
-        struct TTtmThread thread;
-
-        memset(&slot, 0, sizeof(slot));
-        memset(&thread, 0, sizeof(thread));
-        ttmInitSlot(&slot);
-        ttmLoadTtm(&slot, (char *)pilot->sceneTtms[i]);
-        if (slot.data == NULL) {
-            ttmResetSlot(&slot);
-            continue;
-        }
-
-        thread.ttmSlot = &slot;
-        thread.ttmLayer = grBackgroundSfc;
-        thread.isRunning = 1;
-        thread.delay = 4;
-        thread.fgColor = 0x0f;
-        thread.bgColor = 0x0f;
-        grCurrentThread = &thread;
-        ttmPlay(&thread);
-        grCurrentThread = NULL;
-        ttmResetSlot(&slot);
-    }
-    ttmSetStaticBaseBuildMode(0);
-}
-
-static int fgHeaderUsesDeltaBlack(const struct TFgPilotHeader *header)
-{
-    return (header != NULL && (header->reserved0 & kFgPilotHeaderFlagDeltaBlack) != 0) ? 1 : 0;
-}
-
 static int fgRuntimeUsesBaseDiffBackdrop(void)
 {
     return (gFgRuntime.active &&
@@ -600,51 +239,9 @@ static uint8 fgSceneModeForName(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "testcard"))
         return FG_RUNTIME_TESTCARD;
-    if (fgOverlayPackPathForScene(sceneName) != NULL)
+    if (fgCompactOverlayPackPathForScene(sceneName) != NULL)
         return FG_RUNTIME_SCENE_PACK;
     return FG_RUNTIME_NONE;
-}
-
-static int fgSceneCopyWithoutSuffix(const char *sceneName, const char *suffix,
-                                    char *out, size_t outSize)
-{
-    size_t sceneLen;
-    size_t suffixLen;
-
-    if (sceneName == NULL || suffix == NULL || out == NULL || outSize == 0)
-        return 0;
-
-    sceneLen = strlen(sceneName);
-    suffixLen = strlen(suffix);
-    if (sceneLen <= suffixLen || sceneLen - suffixLen + 1 > outSize)
-        return 0;
-    if (strcmp(sceneName + sceneLen - suffixLen, suffix) != 0)
-        return 0;
-
-    memcpy(out, sceneName, sceneLen - suffixLen);
-    out[sceneLen - suffixLen] = '\0';
-    return 1;
-}
-
-static int fgSceneCopyWithoutPrefix(const char *sceneName, const char *prefix,
-                                    char *out, size_t outSize)
-{
-    size_t sceneLen;
-    size_t prefixLen;
-
-    if (sceneName == NULL || prefix == NULL || out == NULL || outSize == 0)
-        return 0;
-
-    sceneLen = strlen(sceneName);
-    prefixLen = strlen(prefix);
-    if (sceneLen <= prefixLen || sceneLen - prefixLen + 1 > outSize)
-        return 0;
-    if (strncmp(sceneName, prefix, prefixLen) != 0)
-        return 0;
-
-    memcpy(out, sceneName + prefixLen, sceneLen - prefixLen);
-    out[sceneLen - prefixLen] = '\0';
-    return 1;
 }
 
 static uint16 fgReadU16(const uint8 *p)
@@ -663,13 +260,6 @@ static uint32 fgReadU32(const uint8 *p)
            ((uint32)p[1] << 8) |
            ((uint32)p[2] << 16) |
            ((uint32)p[3] << 24);
-}
-
-static int fgHeaderIsRaw16(const struct TFgPilotHeader *header)
-{
-    return (header != NULL &&
-            memcmp(header->magic, "FGP1", 4) == 0 &&
-            header->version == 2) ? 1 : 0;
 }
 
 static int fgHeaderIsPal4Spans(const struct TFgPilotHeader *header)
@@ -715,7 +305,7 @@ static int fgLoadHeader(const char *path, struct TFgPilotHeader *out)
     out->reserved1 = fgReadU16(data + 38);
     free(data);
 
-    if (!fgHeaderIsRaw16(out) && !fgHeaderIsPal4Spans(out) && !fgHeaderIsIndexed8Spans(out))
+    if (!fgHeaderIsPal4Spans(out) && !fgHeaderIsIndexed8Spans(out))
         return 0;
     if (out->frameCount == 0)
         return 0;
@@ -754,33 +344,6 @@ static int fgLoadPalette(const char *path, const struct TFgPilotHeader *header,
     for (i = 0; i < entryCount; i++)
         outPalette[i] = fgReadU16(data + ((uint32)i * 2u));
     free(data);
-    return 1;
-}
-
-static int fgLoadEntry(const char *path, const struct TFgPilotHeader *header,
-                       uint16 frameIndex, struct TFgPilotEntry *out)
-{
-    uint8 *data;
-    uint32 offset;
-
-    if (!path || !header || !out || frameIndex >= header->frameCount)
-        return 0;
-
-    offset = header->tableOffset + ((uint32)frameIndex * 20u);
-    data = ps1_streamRead(path, offset, 20);
-    if (!data)
-        return 0;
-
-    out->sourceFrame = fgReadU16(data + 0);
-    out->x = fgReadS16(data + 2);
-    out->y = fgReadS16(data + 4);
-    out->width = fgReadU16(data + 6);
-    out->height = fgReadU16(data + 8);
-    out->reserved0 = fgReadU16(data + 10);
-    out->dataOffset = fgReadU32(data + 12);
-    out->dataSize = fgReadU32(data + 16);
-    free(data);
-
     return 1;
 }
 
@@ -848,27 +411,6 @@ static int fgSceneEquals(const char *a, const char *b)
     return a && b && strcmp(a, b) == 0;
 }
 
-static int fgAdsNameEquals(const char *adsName, const char *baseName)
-{
-    size_t adsLen;
-    size_t baseLen;
-
-    if (!adsName || !baseName)
-        return 0;
-    if (strcmp(adsName, baseName) == 0)
-        return 1;
-
-    adsLen = strlen(adsName);
-    baseLen = strlen(baseName);
-    if (adsLen == baseLen + 4 &&
-        memcmp(adsName, baseName, baseLen) == 0 &&
-        strcmp(adsName + baseLen, ".ADS") == 0) {
-        return 1;
-    }
-
-    return 0;
-}
-
 static void fgTelemetryUpdate(void)
 {
     if (!gFgRuntime.active) {
@@ -891,8 +433,6 @@ static void fgTelemetryUpdate(void)
 
 static void fgInitVisiblePipeline(void)
 {
-    adsInit();
-    adsNoIsland();
     grUpdateDelay = 0;
 }
 
@@ -909,18 +449,6 @@ static void fgBlit16ToBackgroundRect(int dstX, int dstY,
     if (srcPixels == NULL || width == 0 || height == 0)
         return;
     grCompositeDirect16ToBackground(srcPixels, width, height, (sint16)dstX, (sint16)dstY);
-}
-
-static int fgEntriesShareBounds(const struct TFgPilotEntry *a,
-                                const struct TFgPilotEntry *b)
-{
-    if (a == NULL || b == NULL)
-        return 0;
-
-    return a->x == b->x &&
-           a->y == b->y &&
-           a->width == b->width &&
-           a->height == b->height;
 }
 
 static void fgPresentCurrentBackground(uint16 holdFrames)
@@ -966,42 +494,6 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
     return buffer;
 }
 
-static void fgInitDisplayDirect(void)
-{
-    DISPENV disp;
-    DRAWENV draw;
-
-    ResetGraph(0);
-    SetVideoMode(MODE_NTSC);
-
-    SetDefDispEnv(&disp, 0, 0, 640, 480);
-    SetDefDrawEnv(&draw, 0, 0, 640, 480);
-    disp.isinter = 1;
-    draw.isbg = 0;
-
-    PutDispEnv(&disp);
-    PutDrawEnv(&draw);
-    SetDispMask(1);
-}
-
-static void fgInitDisplayDirect240p(void)
-{
-    DISPENV disp;
-    DRAWENV draw;
-
-    ResetGraph(0);
-    SetVideoMode(MODE_NTSC);
-
-    SetDefDispEnv(&disp, 0, 0, 640, 240);
-    SetDefDrawEnv(&draw, 0, 0, 640, 240);
-    disp.isinter = 0;
-    draw.isbg = 0;
-
-    PutDispEnv(&disp);
-    PutDrawEnv(&draw);
-    SetDispMask(1);
-}
-
 static void fgShowRawFrame(const char *cdPath, uint16 holdFrames)
 {
     uint32 rawSize = 0;
@@ -1026,213 +518,6 @@ static void fgShowRawFrame(const char *cdPath, uint16 holdFrames)
     fgBlit16ToBackgroundRect(0, 0, 640, 480, (const uint16 *)screenBuffer);
     free(screenBuffer);
     fgPresentCurrentBackground(holdFrames);
-}
-
-static void fgClearRectDirect(int x, int y, uint16 width, uint16 height)
-{
-    static uint16 *blackStrip = NULL;
-    const int stripHeight = 60;
-    RECT rect;
-    uint16 remainingHeight;
-    int clearWidth;
-    uint16 clearHeight;
-    int clearY;
-
-    if (blackStrip == NULL) {
-        blackStrip = (uint16 *)calloc((size_t)640 * (size_t)stripHeight, sizeof(uint16));
-        if (blackStrip == NULL)
-            return;
-    }
-
-    if (width == 0 || height == 0)
-        return;
-    if (x < 0) {
-        width = (uint16)(width + x);
-        x = 0;
-    }
-    if (y < 0) {
-        height = (uint16)(height + y);
-        y = 0;
-    }
-    if (x >= 640 || y >= 480 || width == 0 || height == 0)
-        return;
-
-    clearWidth = width;
-    clearHeight = height;
-    clearY = y;
-
-    if (x + clearWidth > 640)
-        clearWidth = (640 - x);
-    if (clearY + clearHeight > 480)
-        clearHeight = (uint16)(480 - clearY);
-    if (clearWidth == 0 || clearHeight == 0)
-        return;
-
-    remainingHeight = clearHeight;
-    while (remainingHeight > 0) {
-        uint16 chunkHeight = remainingHeight;
-        if (chunkHeight > (uint16)stripHeight)
-            chunkHeight = (uint16)stripHeight;
-
-        setRECT(&rect, x, clearY, clearWidth, chunkHeight);
-        LoadImage(&rect, (uint32 *)blackStrip);
-        clearY = (uint16)(clearY + chunkHeight);
-        remainingHeight = (uint16)(remainingHeight - chunkHeight);
-    }
-}
-
-static void fgClearScreenDirect(void)
-{
-    fgClearRectDirect(0, 0, 640, 480);
-}
-
-static void fgUploadDirect(int x, int y, uint16 width, uint16 height, const uint8 *frameData)
-{
-    RECT rect;
-    const uint16 *srcPixels = (const uint16 *)frameData;
-    int srcStride = width;
-
-    if (frameData == NULL || width == 0 || height == 0)
-        return;
-
-    if (x < 0) {
-        int trim = -x;
-        if (trim >= width)
-            return;
-        srcPixels += trim;
-        width = (uint16)(width - trim);
-        x = 0;
-    }
-    if (y < 0) {
-        int trim = -y;
-        if (trim >= height)
-            return;
-        srcPixels += (uint32)trim * (uint32)srcStride;
-        height = (uint16)(height - trim);
-        y = 0;
-    }
-    if (x >= 640 || y >= 480)
-        return;
-    if (x + (int)width > 640)
-        width = (uint16)(640 - x);
-    if (y + (int)height > 480)
-        height = (uint16)(480 - y);
-    if (width == 0 || height == 0)
-        return;
-
-    setRECT(&rect, x, y, width, height);
-    LoadImage(&rect, (uint32 *)srcPixels);
-}
-
-static void fgUploadDirectHalfY(uint16 x, uint16 y, uint16 width, uint16 height, const uint8 *frameData)
-{
-    static uint16 *scaledBuffer = NULL;
-    static uint32 scaledCapacityPixels = 0;
-    const uint16 *srcPixels = (const uint16 *)frameData;
-    uint16 scaledHeight;
-    uint32 requiredPixels;
-    uint32 dstIndex = 0;
-    RECT rect;
-    uint16 srcY;
-
-    if (frameData == NULL || width == 0 || height == 0)
-        return;
-
-    if (x >= 640 || y >= 480)
-        return;
-    if (x + width > 640)
-        width = (uint16)(640 - x);
-    if (y + height > 480)
-        height = (uint16)(480 - y);
-    if (width == 0 || height == 0)
-        return;
-
-    scaledHeight = (uint16)((height + 1u) / 2u);
-    if (((uint16)(y / 2u)) + scaledHeight > 240)
-        scaledHeight = (uint16)(240 - (y / 2u));
-    if (scaledHeight == 0)
-        return;
-
-    requiredPixels = (uint32)width * (uint32)scaledHeight;
-    if (requiredPixels > scaledCapacityPixels) {
-        uint16 *newBuffer = (uint16 *)realloc(scaledBuffer, requiredPixels * sizeof(uint16));
-        if (newBuffer == NULL)
-            return;
-        scaledBuffer = newBuffer;
-        scaledCapacityPixels = requiredPixels;
-    }
-
-    for (srcY = 0; srcY < height && dstIndex < requiredPixels; srcY = (uint16)(srcY + 2u)) {
-        memcpy(&scaledBuffer[dstIndex],
-               &srcPixels[(uint32)srcY * (uint32)width],
-               (size_t)width * sizeof(uint16));
-        dstIndex += width;
-    }
-
-    setRECT(&rect, x, (uint16)(y / 2u), width, scaledHeight);
-    LoadImage(&rect, (uint32 *)scaledBuffer);
-}
-
-static void fgWaitPresentedFrame(void)
-{
-    VSync(0);
-    eventsWaitTick(grUpdateDelay);
-}
-
-static void fgDrawEntry(const struct TFgPilotEntry *entry, uint8 *frameData,
-                        const struct TFgPilotEntry *prevEntry, int clearPrev)
-{
-    if (clearPrev && prevEntry != NULL)
-        fgClearRectDirect(prevEntry->x, prevEntry->y, prevEntry->width, prevEntry->height);
-
-    if (entry != NULL)
-        fgUploadDirect(entry->x, entry->y, entry->width, entry->height, frameData);
-
-    DrawSync(0);
-    fgWaitPresentedFrame();
-}
-
-static void fgHoldEntry(const struct TFgPilotEntry *entry, uint8 *frameData, uint16 frames,
-                        const struct TFgPilotEntry *prevEntry, int clearPrev)
-{
-    uint16 i;
-
-    if (frames == 0)
-        return;
-
-    fgDrawEntry(entry, frameData, prevEntry, clearPrev);
-    for (i = 1; i < frames; i++)
-        fgWaitPresentedFrame();
-}
-
-static void fgDrawEntryHalfY(const struct TFgPilotEntry *entry, uint8 *frameData,
-                             const struct TFgPilotEntry *prevEntry, int clearPrev)
-{
-    if (clearPrev && prevEntry != NULL) {
-        fgClearRectDirect(prevEntry->x,
-                          (uint16)(prevEntry->y / 2u),
-                          prevEntry->width,
-                          (uint16)((prevEntry->height + 1u) / 2u));
-    }
-
-    if (entry != NULL)
-        fgUploadDirectHalfY(entry->x, entry->y, entry->width, entry->height, frameData);
-
-    DrawSync(0);
-    fgWaitPresentedFrame();
-}
-
-static void fgHoldEntryHalfY(const struct TFgPilotEntry *entry, uint8 *frameData, uint16 frames,
-                             const struct TFgPilotEntry *prevEntry, int clearPrev)
-{
-    uint16 i;
-
-    if (frames == 0)
-        return;
-
-    fgDrawEntryHalfY(entry, frameData, prevEntry, clearPrev);
-    for (i = 1; i < frames; i++)
-        fgWaitPresentedFrame();
 }
 
 static void fgPlayTestCard(void)
@@ -1413,20 +698,188 @@ static void fgFireSoundEventsUpTo(uint16 sourceFrame)
     }
 }
 
-static void fgResetBackdropOccluders(void)
+static void fgBackdropRelease(int keepBackgrnd)
 {
-    (void)gFgOccluderSlot;
-    (void)gFgOccluderSlotLoaded;
+    int slot;
+    int firstSlot = keepBackgrnd ? 1 : 0;
+
+    gFgBackdropThread.isRunning = 0;
+    if (!keepBackgrnd)
+        islandClearWaveCache();
+
+    for (slot = firstSlot; slot < MAX_BMP_SLOTS; slot++) {
+        if (gFgBackdropSlot.numSprites[slot])
+            grReleaseBmp(&gFgBackdropSlot, (uint8)slot);
+    }
+
+    if (!keepBackgrnd)
+        memset(&gFgBackdropSlot, 0, sizeof(gFgBackdropSlot));
 }
 
-static void fgConfigureBackdropOccluders(const char *sceneName)
+static void fgBackdropPreloadBackgrndBmp(void)
 {
-    (void)sceneName;
+    if (gFgBackdropSlot.numSprites[0] > 0 &&
+        gFgBackdropSlot.loadedBmpNames[0] != NULL &&
+        strcmp(gFgBackdropSlot.loadedBmpNames[0], "BACKGRND.BMP") == 0) {
+        fgBackdropRelease(1);
+        return;
+    }
+
+    fgBackdropRelease(0);
+    grLoadBmp(&gFgBackdropSlot, 0, "BACKGRND.BMP");
 }
 
-static void fgComposeBackdropOccluders(uint16 sourceFrame)
+static void fgBackdropEnableWaveBackdrop(void)
 {
-    (void)sourceFrame;
+    gFgBackdropThread.ttmSlot   = &gFgBackdropSlot;
+    gFgBackdropThread.ttmLayer  = grBackgroundSfc;
+    gFgBackdropThread.isRunning = 3;
+    gFgBackdropThread.delay     = 2;
+    gFgBackdropThread.timer     = 0;
+
+    if (gFgBackdropSlot.numSprites[0] == 0) {
+        gFgBackdropThread.isRunning = 0;
+        grSaveCleanBgTiles();
+        return;
+    }
+
+    grDx = islandState.xPos;
+    grDy = islandState.yPos;
+
+    if (islandState.raft >= 1 && islandState.raft <= 5) {
+        int xRaft = islandState.lowTide ? 529 : 512;
+        int yRaft = islandState.lowTide ? 281 : 266;
+        grLoadBmp(&gFgBackdropSlot, 1, "MRAFT.BMP");
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
+                     xRaft, yRaft, (uint16)(islandState.raft - 1), 1);
+        grReleaseBmp(&gFgBackdropSlot, 1);
+    }
+
+    if (islandState.night || islandState.lowTide) {
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 288, 279,  0, 0);
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 442, 148, 13, 0);
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 365, 122, 12, 0);
+        grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 396, 279, 14, 0);
+        if (islandState.lowTide) {
+            grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 249, 303,  1, 0);
+            grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
+        }
+    }
+
+    if (islandState.holiday >= 1 && islandState.holiday <= 4)
+        grLoadBmp(&gFgBackdropSlot, 2, "HOLIDAY.BMP");
+
+    for (int i = 0; i < 4; i++)
+        islandAnimate(&gFgBackdropThread);
+}
+
+static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH)
+{
+    const sint16 kWaveMinX = 129;
+    const sint16 kWaveMinY = 303;
+    const sint16 kWaveEndX = 608;
+    const sint16 kWaveEndY = 356;
+    const sint16 kUpperSplitY = 190;
+
+    sint16 fgEndX = (sint16)(fgX + fgW);
+    sint16 fgEndY = (sint16)(fgY + fgH);
+
+    if (fgW == 0 || fgH == 0) {
+        sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
+        xs[0] = kWaveMinX;
+        ys[0] = kWaveMinY;
+        ws[0] = (uint16)(kWaveEndX - kWaveMinX);
+        hs[0] = (uint16)(kWaveEndY - kWaveMinY);
+        return grSaveCleanBgRects(xs, ys, ws, hs, 1) == 1;
+    }
+
+    sint16 lowerMinX = fgX;
+    sint16 lowerMinY = fgY >= kUpperSplitY ? fgY : kUpperSplitY;
+    sint16 lowerEndX = fgEndX;
+    sint16 lowerEndY = fgEndY;
+
+    if (kWaveMinX < lowerMinX) lowerMinX = kWaveMinX;
+    if (kWaveMinY < lowerMinY) lowerMinY = kWaveMinY;
+    if (kWaveEndX > lowerEndX) lowerEndX = kWaveEndX;
+    if (kWaveEndY > lowerEndY) lowerEndY = kWaveEndY;
+
+    if (lowerMinX < 0) lowerMinX = 0;
+    if (lowerMinY < 0) lowerMinY = 0;
+    if (lowerEndX > 640) lowerEndX = 640;
+    if (lowerEndY > 480) lowerEndY = 480;
+
+    if (fgY < kUpperSplitY) {
+        sint16 upperMinX = fgX;
+        sint16 upperMinY = fgY;
+        sint16 upperEndX = fgEndX;
+        sint16 upperEndY = kUpperSplitY;
+        sint16 xs[2]; sint16 ys[2]; uint16 ws[2]; uint16 hs[2];
+
+        if (upperMinX < 0) upperMinX = 0;
+        if (upperMinY < 0) upperMinY = 0;
+        if (upperEndX > 640) upperEndX = 640;
+        if (upperEndY > 480) upperEndY = 480;
+
+        if (upperEndX <= upperMinX || upperEndY <= upperMinY ||
+            lowerEndX <= lowerMinX || lowerEndY <= lowerMinY)
+            return 0;
+
+        xs[0] = lowerMinX;
+        ys[0] = lowerMinY;
+        ws[0] = (uint16)(lowerEndX - lowerMinX);
+        hs[0] = (uint16)(lowerEndY - lowerMinY);
+        xs[1] = upperMinX;
+        ys[1] = upperMinY;
+        ws[1] = (uint16)(upperEndX - upperMinX);
+        hs[1] = (uint16)(upperEndY - upperMinY);
+        return grSaveCleanBgRects(xs, ys, ws, hs, 2) == 2;
+    } else {
+        sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
+        if (lowerEndX <= lowerMinX || lowerEndY <= lowerMinY)
+            return 0;
+        xs[0] = lowerMinX;
+        ys[0] = lowerMinY;
+        ws[0] = (uint16)(lowerEndX - lowerMinX);
+        hs[0] = (uint16)(lowerEndY - lowerMinY);
+        return grSaveCleanBgRects(xs, ys, ws, hs, 1) == 1;
+    }
+}
+
+static void fgBackdropTickBackgroundWaves(void)
+{
+    if (!gFgBackdropThread.isRunning)
+        return;
+
+    if (gFgBackdropThread.timer == 0) {
+        gFgBackdropThread.timer = gFgBackdropThread.delay;
+        islandAnimate(&gFgBackdropThread);
+    } else {
+        islandRedrawWave(&gFgBackdropThread);
+        gFgBackdropThread.timer--;
+    }
+}
+
+static void fgBackdropStampHoliday(void)
+{
+    int hx = 0;
+    int hy = 0;
+    uint16 hSpriteNo = 0;
+
+    if (islandState.holiday < 1 || islandState.holiday > 4)
+        return;
+    if (gFgBackdropSlot.numSprites[2] == 0)
+        return;
+
+    switch (islandState.holiday) {
+        case 1: hx = 410; hy = 298; hSpriteNo = 0; break;
+        case 2: hx = 333; hy = 286; hSpriteNo = 1; break;
+        case 3: hx = 404; hy = 267; hSpriteNo = 2; break;
+        case 4: hx = 361; hy = 155; hSpriteNo = 3; break;
+    }
+
+    grDx = islandState.xPos;
+    grDy = islandState.yPos;
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, hx, hy, hSpriteNo, 2);
 }
 
 static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
@@ -1562,88 +1015,84 @@ int foregroundPilotRuntimeStart(const char *sceneName)
 
     {
         const char *path = fgCompactOverlayPackPathForScene(sceneName);
-        if (path == NULL)
-            path = fgOverlayPackPathForScene(sceneName);
         if (path != NULL) {
-        uint32 maxDataSize = 0;
-        uint16 i;
-        if (!fgLoadHeader(path, &gFgRuntime.header))
-            return 0;
-        if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
-            gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
-        else if (fgHeaderIsPal4Spans(&gFgRuntime.header))
-            gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
-        else
-            gFgRuntime.packFormat = kFgPilotPackFormatRaw16;
-        if (!fgLoadPalette(path, &gFgRuntime.header, gFgRuntime.palette)) {
-            fgRuntimeReset();
-            return 0;
-        }
-        if (!fgLoadEntryTable(path, &gFgRuntime.header, &gFgRuntime.entryTable)) {
-            fgRuntimeReset();
-            return 0;
-        }
-        if (!fgLoadSoundEvents(path, &gFgRuntime.header,
-                               &gFgRuntime.soundEvents,
-                               &gFgRuntime.soundEventCount)) {
-            fgRuntimeReset();
-            return 0;
-        }
-        /* Allocate one streaming buffer pair for this scene and reuse it for
-         * every frame. This removes per-frame malloc churn without carrying
-         * the buffers across the next backdrop load. */
-        for (i = 0; i < gFgRuntime.entryTable.count; i++) {
-            if (gFgRuntime.entryTable.entries[i].dataSize > maxDataSize)
-                maxDataSize = gFgRuntime.entryTable.entries[i].dataSize;
-        }
-        if (maxDataSize > gFgFrameBufferSize) {
-            if (gFgFrameBuffer != NULL)
-                free(gFgFrameBuffer);
-            gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
-            if (gFgFrameBuffer == NULL) {
-                gFgFrameBufferSize = 0;
+            uint32 maxDataSize = 0;
+            uint16 i;
+            if (!fgLoadHeader(path, &gFgRuntime.header))
+                return 0;
+            if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
+                gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
+            else
+                gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
+            if (!fgLoadPalette(path, &gFgRuntime.header, gFgRuntime.palette)) {
                 fgRuntimeReset();
                 return 0;
             }
-            gFgFrameBufferSize = maxDataSize;
-        }
-        {
-            uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
-            if (requiredScratch > gFgStreamScratchSize) {
-                if (gFgStreamScratch != NULL)
-                    free(gFgStreamScratch);
-                gFgStreamScratch = (uint8 *)malloc(requiredScratch);
-                if (gFgStreamScratch == NULL) {
-                    gFgStreamScratchSize = 0;
+            if (!fgLoadEntryTable(path, &gFgRuntime.header, &gFgRuntime.entryTable)) {
+                fgRuntimeReset();
+                return 0;
+            }
+            if (!fgLoadSoundEvents(path, &gFgRuntime.header,
+                                   &gFgRuntime.soundEvents,
+                                   &gFgRuntime.soundEventCount)) {
+                fgRuntimeReset();
+                return 0;
+            }
+            /* Allocate one streaming buffer pair for this scene and reuse it for
+             * every frame. This removes per-frame malloc churn without carrying
+             * the buffers across the next backdrop load. */
+            for (i = 0; i < gFgRuntime.entryTable.count; i++) {
+                if (gFgRuntime.entryTable.entries[i].dataSize > maxDataSize)
+                    maxDataSize = gFgRuntime.entryTable.entries[i].dataSize;
+            }
+            if (maxDataSize > gFgFrameBufferSize) {
+                if (gFgFrameBuffer != NULL)
+                    free(gFgFrameBuffer);
+                gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
+                if (gFgFrameBuffer == NULL) {
+                    gFgFrameBufferSize = 0;
                     fgRuntimeReset();
                     return 0;
                 }
-                gFgStreamScratchSize = requiredScratch;
+                gFgFrameBufferSize = maxDataSize;
             }
-        }
-        gFgRuntime.frameBuffer = gFgFrameBuffer;
-        gFgRuntime.frameBufferSize = gFgFrameBufferSize;
-        gFgRuntime.streamScratch = gFgStreamScratch;
-        gFgRuntime.streamScratchSize = gFgStreamScratchSize;
-        if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
-            fgRuntimeReset();
-            return 0;
-        }
-        gFgRuntime.packCdFileValid = 1;
-        gFgRuntime.soundEventCursor = 0;
-        gFgRuntime.active = 1;
-        gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
-        strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
-        gFgRuntime.displayVBlanks = 1;
-        gFgRuntime.holdFrames = 150;
-        gFgRuntime.sceneClockTick = fgReadTickCounter();
-        if (!fgRuntimeLoadSceneFrame(0)) {
-            fgRuntimeReset();
-            return 0;
-        }
-        gFgStartedEver = 1;
-        fgTelemetryUpdate();
-        return 1;
+            {
+                uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
+                if (requiredScratch > gFgStreamScratchSize) {
+                    if (gFgStreamScratch != NULL)
+                        free(gFgStreamScratch);
+                    gFgStreamScratch = (uint8 *)malloc(requiredScratch);
+                    if (gFgStreamScratch == NULL) {
+                        gFgStreamScratchSize = 0;
+                        fgRuntimeReset();
+                        return 0;
+                    }
+                    gFgStreamScratchSize = requiredScratch;
+                }
+            }
+            gFgRuntime.frameBuffer = gFgFrameBuffer;
+            gFgRuntime.frameBufferSize = gFgFrameBufferSize;
+            gFgRuntime.streamScratch = gFgStreamScratch;
+            gFgRuntime.streamScratchSize = gFgStreamScratchSize;
+            if (!ps1_streamResolveFile(path, &gFgRuntime.packCdFile)) {
+                fgRuntimeReset();
+                return 0;
+            }
+            gFgRuntime.packCdFileValid = 1;
+            gFgRuntime.soundEventCursor = 0;
+            gFgRuntime.active = 1;
+            gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
+            strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
+            gFgRuntime.displayVBlanks = 1;
+            gFgRuntime.holdFrames = 150;
+            gFgRuntime.sceneClockTick = fgReadTickCounter();
+            if (!fgRuntimeLoadSceneFrame(0)) {
+                fgRuntimeReset();
+                return 0;
+            }
+            gFgStartedEver = 1;
+            fgTelemetryUpdate();
+            return 1;
         }
     }
 
@@ -1694,17 +1143,10 @@ void foregroundPilotRuntimeCompose(void)
                                                  gFgRuntime.palette,
                                                  (sint16)fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
                                                  (sint16)fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry));
-        } else {
-            fgBlit16ToBackgroundRect(fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                     fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                     gFgRuntime.currentEntry.width,
-                                     gFgRuntime.currentEntry.height,
-                                     (const uint16 *)gFgRuntime.currentFrameData);
         }
-        fgComposeBackdropOccluders(gFgRuntime.currentEntry.sourceFrame);
         /* Stamp holiday overlay on top of the pack so Johnny walks behind
          * the holiday decoration, matching islandInitHoliday's z-order. */
-        adsPilotStampHoliday();
+        fgBackdropStampHoliday();
     }
 }
 
@@ -1832,248 +1274,6 @@ void foregroundPilotRuntimeEnd(void)
     fgRuntimeReset();
 }
 
-static void fgPlayOverlayPackScene(const char *sceneName)
-{
-    const char *path = fgOverlayPackPathForScene(sceneName);
-    CdlFILE cdfile;
-    struct TFgPilotHeader header;
-    struct TFgPilotEntryTable entryTable;
-    struct TFgPilotTiming timing;
-    uint32 playStartTick;
-    uint32 sceneClockTick;
-    uint8 *frameBuffer = NULL;
-    uint8 *streamScratch = NULL;
-    uint32 maxFrameDataSize = 0;
-    uint32 maxStreamScratchSize = 0;
-    uint16 presentedVBlanks = 0;
-    const struct TFgPilotEntry *prevEntry = NULL;
-    int haveLastEntry = 0;
-
-    memset(&timing, 0, sizeof(timing));
-
-    playStartTick = fgReadTickCounter();
-    sceneClockTick = playStartTick;
-    if (path == NULL)
-        return;
-
-    if (!fgLoadHeader(path, &header)) {
-        printf("FG pilot: failed to load header %s\n", path);
-        return;
-    }
-    if (!fgLoadEntryTable(path, &header, &entryTable)) {
-        printf("FG pilot: failed to load entry table %s\n", path);
-        return;
-    }
-    if (!ps1_streamResolveFile(path, &cdfile)) {
-        printf("FG pilot: failed to resolve file %s\n", path);
-        fgFreeEntryTable(&entryTable);
-        return;
-    }
-    for (uint16 i = 0; i < entryTable.count; i++) {
-        if (entryTable.entries[i].dataSize > maxFrameDataSize)
-            maxFrameDataSize = entryTable.entries[i].dataSize;
-    }
-    maxStreamScratchSize = ((maxFrameDataSize + 2047u) / 2048u) * 2048u + 2048u;
-    if (maxFrameDataSize > 0) {
-        frameBuffer = (uint8 *)malloc(maxFrameDataSize);
-        if (frameBuffer == NULL) {
-            printf("FG pilot: failed to alloc frame buffer %u\n", (unsigned int)maxFrameDataSize);
-            fgFreeEntryTable(&entryTable);
-            return;
-        }
-        streamScratch = (uint8 *)malloc(maxStreamScratchSize);
-        if (streamScratch == NULL) {
-            printf("FG pilot: failed to alloc stream scratch %u\n", (unsigned int)maxStreamScratchSize);
-            fgFreeEntryTable(&entryTable);
-            free(frameBuffer);
-            return;
-        }
-    }
-
-    fgInitVisiblePipeline();
-    fgInitBlackBackground();
-    fgPresentCurrentBackground(15);
-
-    if (entryTable.entries == NULL || entryTable.count == 0) {
-        fgFreeEntryTable(&entryTable);
-        if (streamScratch != NULL)
-            free(streamScratch);
-        if (frameBuffer != NULL)
-            free(frameBuffer);
-        return;
-    }
-
-    for (uint16 frameIndex = 0; frameIndex < entryTable.count; frameIndex++) {
-        const struct TFgPilotEntry *entry = &entryTable.entries[frameIndex];
-        const uint8 *frameData;
-        uint16 holdVBlanks;
-        int entryX;
-        int entryY;
-        int prevX = 0;
-        int prevY = 0;
-
-        frameData = NULL;
-        if (entry->dataSize > 0 && entry->width > 0 && entry->height > 0) {
-            uint32 tickStart = fgReadTickCounter();
-            if (frameBuffer == NULL ||
-                !ps1_streamReadIntoFileBuffered(&cdfile, entry->dataOffset, entry->dataSize,
-                                               frameBuffer, streamScratch, maxStreamScratchSize)) {
-                printf("FG pilot: failed to stream frame %u\n", (unsigned int)frameIndex);
-                break;
-            }
-            frameData = frameBuffer;
-            timing.loadDataTicks += fgElapsedTicks(tickStart);
-        }
-
-        holdVBlanks = fgEntryHoldVBlanks(&header, entry, presentedVBlanks);
-        entryX = fgEntryDrawX(&header, entry);
-        entryY = fgEntryDrawY(&header, entry);
-        if (prevEntry != NULL) {
-            prevX = fgEntryDrawX(&header, prevEntry);
-            prevY = fgEntryDrawY(&header, prevEntry);
-        }
-
-        {
-            uint32 tickStart = fgReadTickCounter();
-            grBeginFrame();
-            timing.beginFrameTicks += fgElapsedTicks(tickStart);
-        }
-
-        {
-            uint32 tickStart = fgReadTickCounter();
-            if (prevEntry != NULL && frameData != NULL &&
-                fgEntriesShareBounds(prevEntry, entry)) {
-                grRestoreAndCompositeDirect16BackgroundRectForFrame(entryX, entryY,
-                                                                    entry->width, entry->height,
-                                                                    (const uint16 *)frameData);
-            } else if (prevEntry != NULL) {
-                grRestoreBackgroundRectForFrame(prevX, prevY,
-                                                prevEntry->width, prevEntry->height);
-            } else {
-                grRestoreBgTiles();
-            }
-            timing.restoreTicks += fgElapsedTicks(tickStart);
-        }
-
-        if (frameData != NULL &&
-            !(prevEntry != NULL && fgEntriesShareBounds(prevEntry, entry))) {
-            uint32 tickStart = fgReadTickCounter();
-            fgBlit16ToBackgroundRect(entryX, entryY, entry->width, entry->height,
-                                     (const uint16 *)frameData);
-            timing.blitTicks += fgElapsedTicks(tickStart);
-        }
-
-        {
-            uint32 tickStart = fgReadTickCounter();
-            fgPresentCurrentBackground(holdVBlanks);
-            timing.presentTicks += fgElapsedTicks(tickStart);
-        }
-        timing.framesPlayed++;
-        timing.presentsRequested = (uint16)(timing.presentsRequested + holdVBlanks);
-        presentedVBlanks = (uint16)(presentedVBlanks + fgElapsedVBlanksSince(&sceneClockTick));
-
-        if (frameData != NULL)
-            haveLastEntry = 1;
-        prevEntry = entry;
-    }
-
-    if (haveLastEntry) {
-        uint32 tickStart = fgReadTickCounter();
-        fgPresentCurrentBackground(150);
-        timing.presentTicks += fgElapsedTicks(tickStart);
-    } else {
-        uint32 tickStart = fgReadTickCounter();
-        fgPresentCurrentBackground(150);
-        timing.presentTicks += fgElapsedTicks(tickStart);
-    }
-    timing.totalTicks = fgElapsedTicks(playStartTick);
-    fgPrintTimingSummary(&timing);
-
-    fgFreeEntryTable(&entryTable);
-    if (streamScratch != NULL)
-        free(streamScratch);
-    if (frameBuffer != NULL)
-        free(frameBuffer);
-}
-
-static void fgPlayOverlayPackSceneProgressive240(const char *sceneName)
-{
-    const char *path = fgOverlayPackPathForScene(sceneName);
-    struct TFgPilotHeader header;
-    struct TFgPilotEntry lastEntry;
-    struct TFgPilotEntry prevEntry;
-    uint8 *lastFrameData = NULL;
-    uint16 presentedVBlanks = 0;
-    int haveLastEntry = 0;
-    int havePrevEntry = 0;
-    if (path == NULL)
-        return;
-
-    if (!fgLoadHeader(path, &header)) {
-        printf("FG pilot: failed to load header %s\n", path);
-        return;
-    }
-
-    fgInitDisplayDirect240p();
-    fgClearRectDirect(0, 0, 640, 240);
-    fgHoldEntryHalfY(NULL, NULL, 15, NULL, 0);
-
-    for (uint16 frameIndex = 0; frameIndex < header.frameCount; frameIndex++) {
-        struct TFgPilotEntry entry;
-        uint8 *frameData;
-        uint16 holdVBlanks;
-
-        if (!fgLoadEntry(path, &header, frameIndex, &entry)) {
-            printf("FG pilot: failed to load entry %u\n", (unsigned int)frameIndex);
-            break;
-        }
-
-        frameData = NULL;
-        if (entry.dataSize > 0 && entry.width > 0 && entry.height > 0) {
-            frameData = ps1_streamRead(path, entry.dataOffset, entry.dataSize);
-            if (!frameData) {
-                printf("FG pilot: failed to stream frame %u\n", (unsigned int)frameIndex);
-                break;
-            }
-        }
-
-        holdVBlanks = fgEntryHoldVBlanks(&header, &entry, presentedVBlanks);
-
-        fgHoldEntryHalfY(&entry, frameData, holdVBlanks,
-                         havePrevEntry ? &prevEntry : NULL, 1);
-        presentedVBlanks = (uint16)(presentedVBlanks + holdVBlanks);
-
-        if (lastFrameData != NULL) {
-            free(lastFrameData);
-            lastFrameData = NULL;
-        }
-        if (frameData != NULL) {
-            lastFrameData = frameData;
-            lastEntry = entry;
-            haveLastEntry = 1;
-        }
-        prevEntry = entry;
-        havePrevEntry = 1;
-    }
-
-    if (haveLastEntry) {
-        fgHoldEntryHalfY(&lastEntry, lastFrameData, 150, &lastEntry, 0);
-    } else {
-        fgHoldEntryHalfY(NULL, NULL, 150, NULL, 0);
-    }
-
-    if (lastFrameData != NULL)
-        free(lastFrameData);
-}
-
-static void fgPlayRawScene(const char *sceneName)
-{
-    const char *path = fgRawFramePathForScene(sceneName);
-    if (path == NULL)
-        return;
-    fgShowRawFrame(path, kFgPilotProbeHoldFrames);
-}
-
 static void fgPlayTitleCopy(void)
 {
     fgShowRawFrame("\\TITLE.RAW;1", kFgPilotProbeHoldFrames);
@@ -2101,9 +1301,6 @@ static void fgPlayOceanTest(void)
 
 static void fgPlayOceanRuntimeScene(const char *sceneName)
 {
-    uint16 adsTag = 0;
-    const char *adsName = fgAdsNameForScene(sceneName, &adsTag);
-    int usedWaveBackdrop = 0;
     sint16 fgBoundsX = 0;
     sint16 fgBoundsY = 0;
     uint16 fgBoundsW = 0;
@@ -2116,97 +1313,62 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     grFreeCleanBgRects();
     fgReleaseStreamBuffers();
 
-    /* Pre-load BACKGRND.BMP into the background slot NOW, before any scene
-     * setup allocates bg tiles (614 KB) or ttmSlots. At this moment the
-     * heap is freshest and the ~93 KB PSB load (which internally peaks at
-     * ~2×) has room to stream. ttmBackgroundSlot is a static and already
-     * zero-initialized, so this is safe to call first. */
-    adsPilotPreloadBackgrndBmp();
+    /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
+     * this moment the heap is freshest and the ~93 KB PSB stream has room. */
+    fgBackdropPreloadBackgrndBmp();
 
-    fgResetBackdropOccluders();
     fgInitVisiblePipeline();
     grSetPresentDuringScreenLoad(0);
-    if (adsName != NULL && storyPrepareSceneBaseByAds(adsName, adsTag)) {
-        adsInitIsland();
-        fgBuildStaticScenePrelude(sceneName);
-        fgConfigureBackdropOccluders(sceneName);
-        grSaveCleanBgTiles();
+    if (islandState.night) {
+        /* NIGHT.SCR is the full night-ocean backdrop, no island baked in.
+         * The FG2 backdrop helper draws the island sprites on top. */
+        grLoadScreen("NIGHT.SCR");
     } else {
-        if (islandState.night) {
-            /* NIGHT.SCR is the full night-ocean backdrop, no island baked
-             * in. adsPilotEnableWaveBackdrop will draw the island sprites
-             * on top. */
-            grLoadScreen("NIGHT.SCR");
-        } else {
-            grLoadScreen("OCEAN00.SCR");
-            grLoadScreen("ISLETEMP.SCR");
-        }
-        /* grLoadScreen ends with an unconditional grSaveCleanBgTiles()
-         * that allocates ~614 KB of clean-tile buffers. In the wave
-         * backdrop path we'll switch to rect-mode below, which discards
-         * those buffers — so free them now, BEFORE foregroundPilotRuntimeStart
-         * streams a 90+ KB first frame into the heap. Without this the
-         * 614 KB buffer stays resident during the frame alloc, fragments
-         * the heap, and the 270 KB contiguous clean-rect buffer later can't
-         * be allocated by iteration 3. */
-        grFreeCleanBgTiles();
-        /* Seed initial wave positions and configure the background thread.
-         * Rect-mode clean backup is deferred until after the pack header
-         * loads below, so we can size it to the pack's union bbox. */
-        adsPilotEnableWaveBackdrop();
-        usedWaveBackdrop = 1;
+        grLoadScreen("OCEAN00.SCR");
+        grLoadScreen("ISLETEMP.SCR");
     }
+    /* grLoadScreen saves full clean-tile copies. FG2 uses a smaller
+     * rect-mode backup instead, so free the full copies before the pack
+     * allocates its streaming buffer. */
+    grFreeCleanBgTiles();
+    fgBackdropEnableWaveBackdrop();
     grSetPresentDuringScreenLoad(1);
 
     if (!foregroundPilotRuntimeStart(sceneName)) {
-        /* Early-return path still needs to release per-scene allocations
-         * so the loop can try the next iteration on a clean heap. */
-        fgResetBackdropOccluders();
         fgRuntimeReset();
         fgReleaseStreamBuffers();
         grFreeCleanBgRects();
-        adsPilotReleaseBackdrop(0);
+        fgBackdropRelease(0);
         fgHeapProbe("start_failed_cleanup", sceneName);
         return;
     }
     fgHeapProbe("after_pack_start", sceneName);
 
     /* Now that the pack header is loaded, size the rect-mode clean backup
-     * to cover the actual runtime draw bbox. The pack header union is captured
-     * in host/global coordinates, while FG1 entries may be scene-relative.
+     * to cover the actual runtime draw bbox. Pack entries may be scene-relative.
      * Fishing3 exposes the difference: some squid frames draw above the header
-     * union after the current island offset is applied.
-     * Only the wave-backdrop path uses rect-mode; the storyPrepareSceneBaseByAds
-     * branch set up full-tile clean copies via grSaveCleanBgTiles. */
-    if (usedWaveBackdrop) {
-        if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
-                                        &fgBoundsW, &fgBoundsH) ||
-            !adsPilotSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
-                                             fgBoundsW, fgBoundsH)) {
-            fgResetBackdropOccluders();
-            fgRuntimeReset();
-            fgReleaseStreamBuffers();
-            grFreeCleanBgRects();
-            adsPilotReleaseBackdrop(0);
-            fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-            return;
-        }
-        fgHeapProbe("after_clean_rect_save", sceneName);
+     * union after the current island offset is applied. */
+    if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
+                                    &fgBoundsW, &fgBoundsH) ||
+        !fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
+                                           fgBoundsW, fgBoundsH)) {
+        fgRuntimeReset();
+        fgReleaseStreamBuffers();
+        grFreeCleanBgRects();
+        fgBackdropRelease(0);
+        fgHeapProbe("clean_rect_failed_cleanup", sceneName);
+        return;
     }
+    fgHeapProbe("after_clean_rect_save", sceneName);
 
     while (foregroundPilotRuntimeActive()) {
         grBeginFrame();
-        if (usedWaveBackdrop)
-            grRestoreBgFromRects();   /* rect-based clean restore (option B) */
-        else
-            grRestoreBgTiles();
+        grRestoreBgFromRects();
         if (!fgRuntimeUsesBaseDiffBackdrop())
-            adsPilotTickBackgroundWaves();
+            fgBackdropTickBackgroundWaves();
         grUpdateDisplay(NULL, NULL, NULL);
         foregroundPilotRuntimeAdvance();
     }
-
-    fgResetBackdropOccluders();
 
     /* End-of-scene heap cleanup — the screensaver loop replays scenes
      * indefinitely, so every per-scene allocation needs to come back to
@@ -2217,28 +1379,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     fgRuntimeReset();
     fgReleaseStreamBuffers();
     grFreeCleanBgRects();
-    /* Release variant-dependent BMP slots (MRAFT slot 1 is already
-     * released mid-call by adsPilotEnableWaveBackdrop; slot 2 is HOLIDAY
-     * which may or may not be loaded). Leave slot 0 (BACKGRND) alone —
-     * adsPilotPreloadBackgrndBmp's fast-path will keep it across the
-     * next iteration, saving a 93 KB PSB realloc and stabilizing the
-     * heap for the screensaver loop. */
-    adsPilotReleaseBackdrop(1);
+    /* Keep BACKGRND.BMP in slot 0 across scenes; release only
+     * variant-dependent overlay slots to avoid needless PSB churn. */
+    fgBackdropRelease(1);
     fgHeapProbe("after_scene_cleanup", sceneName);
-}
-
-static void fgPlayAdsIntro(void)
-{
-    adsInit();
-    adsNoIsland();
-    adsPlayIntro();
-}
-
-static void fgPlayAdsScene(const char *adsName, uint16 adsTag)
-{
-    adsInit();
-    adsNoIsland();
-    adsPlay(adsName, adsTag);
 }
 
 static void fgShowSolidColor(uint8 r, uint8 g, uint8 b, uint16 holdFrames)
@@ -2303,21 +1447,8 @@ void foregroundPilotSetHeapProbe(int enabled)
 
 int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)
 {
-    uint16 mappedTag = 0;
-    const char *mappedAdsName;
-
-    if (!foregroundPilotRequested() || adsName == NULL)
-        return 0;
-
-    mappedAdsName = fgAdsNameForScene(gForegroundPilotScene, &mappedTag);
-    if ((gForegroundPilotRequestedMode == FG_RUNTIME_SCENE_PACK ||
-         gForegroundPilotRequestedMode == FG_RUNTIME_TESTCARD) &&
-        mappedAdsName != NULL &&
-        fgAdsNameEquals(adsName, mappedAdsName) && adsTag == mappedTag) {
-        gFgAdsMatchEver = 1;
-        return 1;
-    }
-
+    (void)adsName;
+    (void)adsTag;
     return 0;
 }
 
@@ -2346,31 +1477,13 @@ int foregroundPilotRuntimeStartIfRequested(void)
 
 void foregroundPilotPlay(void)
 {
-    char mappedScene[sizeof(gForegroundPilotScene)];
-    uint16 mappedAdsTag = 0;
-    const char *mappedAdsName;
-
     if (fgSceneEquals(gForegroundPilotScene, "testcard")) {
         fgPlayTestCard();
         return;
     }
 
-    if (fgOverlayPackPathForScene(gForegroundPilotScene) != NULL) {
+    if (fgCompactOverlayPackPathForScene(gForegroundPilotScene) != NULL) {
         fgPlayOceanRuntimeScene(gForegroundPilotScene);
-        return;
-    }
-
-    if (fgSceneCopyWithoutSuffix(gForegroundPilotScene, "p",
-                                 mappedScene, sizeof(mappedScene)) &&
-        fgOverlayPackPathForScene(mappedScene) != NULL) {
-        fgPlayOverlayPackSceneProgressive240(mappedScene);
-        return;
-    }
-
-    if (fgSceneCopyWithoutSuffix(gForegroundPilotScene, "raw",
-                                 mappedScene, sizeof(mappedScene)) &&
-        fgRawFramePathForScene(mappedScene) != NULL) {
-        fgPlayRawScene(mappedScene);
         return;
     }
 
@@ -2386,18 +1499,6 @@ void foregroundPilotPlay(void)
 
     if (fgSceneEquals(gForegroundPilotScene, "oceantest")) {
         fgPlayOceanTest();
-        return;
-    }
-
-    if (fgSceneEquals(gForegroundPilotScene, "adsintro")) {
-        fgPlayAdsIntro();
-        return;
-    }
-
-    if (fgSceneCopyWithoutPrefix(gForegroundPilotScene, "ads",
-                                 mappedScene, sizeof(mappedScene)) &&
-        (mappedAdsName = fgAdsNameForScene(mappedScene, &mappedAdsTag)) != NULL) {
-        fgPlayAdsScene(mappedAdsName, mappedAdsTag);
         return;
     }
 

@@ -46,7 +46,7 @@ DuckStation pointed at the cue. Boots into `FISHING 1` via `BOOTMODE.TXT`
 ### Bring up a new scene
 See [development-workflow.md](development-workflow.md) for the full
 capture → pack → validate loop. High level:
-1. `./scripts/export-scene-foreground-pilot.sh` — host high/low capture → FG2 packs + sound-event JSONL + establishing RAW.
+1. `./scripts/export-scene-foreground-pilot.sh` — host high/low capture → base-diff FG2 packs + sound-event JSONL.
 2. Add the FG2 pack entries to `config/ps1/cd_layout.xml`.
 3. Add scene routing in `foreground_pilot.c`.
 4. Rebuild ISO, launch via `rebuild-and-let-run.sh`, iterate to pixel-perfect.
@@ -68,10 +68,16 @@ holiday overlay, SPU playback, input).
 
 ### Architecture
 
-**Unchanged from the desktop engine:**
+**Desktop host capture still uses:**
 - Core engine (`ttm.c`, `ads.c`, `story.c`)
 - Game logic (`walk.c`, `calcpath.c`, `island.c`)
 - Utilities (`utils.c`, `config.c`, `bench.c`)
+
+**Linked into the PS1 executable:**
+- Minimal boot + scene loop (`jc_reborn.c`)
+- Resource metadata + LRU support (`resource.c`, `utils.c`, `uncompress.c`)
+- Background/island helpers (`island.c`)
+- Scene-playback runtime (`foreground_pilot.c`)
 
 **PS1-specific:**
 - `graphics_ps1.c` — PSn00bSDK GPU + software compositing
@@ -117,10 +123,9 @@ holiday overlay, SPU playback, input).
 - [audio-optimization-spec.md](audio-optimization-spec.md)
 - [ps1-branch-cleanup-plan.yaml](ps1-branch-cleanup-plan.yaml) — in-flight cleanup contract
 
-**Legacy cleanup target:** FG1 pack support and direct/fallback FG1 routing still
-exist in code and old artifacts, but they are no longer part of the active
-scene-playback methodology. Remove those paths in the next cleanup round after
-FG2 routing is generalized.
+**Retired paths:** FG1/FOC packs, per-scene establishing RAWs, and
+ADS/TTM console runtime routes are historical only. Do not add new active
+generation, routing, CD entries, or docs for those paths.
 
 ## External references
 

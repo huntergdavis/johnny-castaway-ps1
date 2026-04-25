@@ -85,10 +85,10 @@ preserved as secondary / historical tooling — useful for targeted
 questions, not for certifying a scene as done. See
 [TESTING.md](TESTING.md).
 
-FG1 packs are no longer part of the active methodology. Legacy FG1
-compiler/runtime entrypoints and stale `.FG1` artifacts may still exist
-in the tree, but they are cleanup targets for the next round after FG2
-routing is generalized.
+FG1 packs, FOC draw packs, per-scene establishing RAWs, and ADS/TTM
+console runtime routes are no longer part of the active methodology.
+The PS1 executable now links only the scene-playback runtime plus the
+minimal background/audio/input/CD layers it needs.
 
 ## Audio
 
@@ -131,16 +131,16 @@ baseline.
 
 | | |
 |---|---|
-| PS-EXE (`jcreborn.exe`) | ~196 KB |
-| CD image (`jcreborn.bin`) | ~47 MB with routed fishing FG2 packs |
+| PS-EXE (`jcreborn.exe`) | ~84 KB after removing legacy ADS/TTM/FG1 runtime links |
+| CD image (`jcreborn.bin`) | 9.9 MB with routed fishing FG2 packs, `TITLE.RAW`, minimal SCR/PSB/SND assets, and `RESOURCE.MAP` / `RESOURCE.001` retained for active metadata + palette lookup |
 | Generated FG2 corpus | 126 high/low packs for 63 scenes, ~343 MB |
 
 ## Known limitations
 
 - `printf()` during the PS1 game loop is unsafe — use the telemetry
   overlay (`ps1_debug.c`) for runtime visibility.
-- FG1 support remains in code for now, but is a legacy cleanup target;
-  do not add new FG1 docs, routes, or artifacts.
+- FG1/FOC and per-scene RAW paths are retired; do not add new docs,
+  routes, generated artifacts, or CD entries for them.
 - Scene coverage beyond FISHING 1 and FISHING 2 is pending scene-by-scene bring-up
   via the loop in [development-workflow.md](development-workflow.md).
 

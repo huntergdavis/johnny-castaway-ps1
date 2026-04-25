@@ -40,12 +40,12 @@ Goal: someone watching a friend play it should say "wait, I want to try" within 
 
 ## 3. Architectural decision
 
-Every other fgpilot scene (`fishing1`, `fishing2`, `fishing3`, etc.) plays back a captured `.FG1` pack of pre-rendered foreground frames. **Sandbox cannot work that way** — there's no canonical frame stream because gameplay branches with input.
+Every other fgpilot scene (`fishing1`, `fishing2`, `fishing3`, etc.) plays back a captured `.FG2` pack of pre-rendered foreground frames. **Sandbox cannot work that way** — there's no canonical frame stream because gameplay branches with input.
 
 So sandbox is a **runtime-driven scene**: it lives entirely in C code on the PS1, with the same surface as the ocean runtime (background SCR + wave tick + clean-rect restore + present), but the per-frame foreground sprite is computed live from a state machine, not streamed.
 
 Key implications:
-- No `.FG1` pack for sandbox
+- No `.FG2` pack for sandbox
 - No host-side capture step
 - No CD asset additions (every BMP is already on disc)
 - Reuses `adsPilotPreloadBackgrndBmp`, `adsPilotEnableWaveBackdrop`, `adsPilotTickBackgroundWaves`, `grSaveCleanBgRects`, `grRestoreBgFromRects`, `adsPilotStampHoliday`, `adsPilotReleaseBackdrop`
@@ -593,7 +593,7 @@ Treated as a hard requirement. Implementation rules:
 
 1. **No DuckStation-specific shortcuts.** Only PSn00bSDK APIs. No emulator-only behavior.
 2. **VRAM addressing strict.** Existing infra handled; sandbox introduces no new VRAM math.
-3. **CD timing tolerance.** Sandbox doesn't stream from CD per-frame (no .FG1), so it's safer than fishing scenes here. BMPs load once at scene start.
+3. **CD timing tolerance.** Sandbox doesn't stream from CD per-frame (no .FG2), so it's safer than fishing scenes here. BMPs load once at scene start.
 4. **No interrupt blocking.** Long animations advance frame-by-frame, never block main loop.
 5. **Memory ceiling 2 MB strict.** v3 budget is 1.3 MB; comfortable.
 6. **Controller protocol.** PSn00bSDK pad polling works identically on real hardware. Use only standard digital + analog reads.

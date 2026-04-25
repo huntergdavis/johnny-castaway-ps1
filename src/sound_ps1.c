@@ -26,9 +26,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Forward declare FILE to avoid utils.h compilation errors with -ffreestanding */
-typedef struct _FILE FILE;
-
 #include "mytypes.h"     /* Defines uint8, uint16, uint32, etc. */
 #include "sound_ps1.h"
 #include "config.h"

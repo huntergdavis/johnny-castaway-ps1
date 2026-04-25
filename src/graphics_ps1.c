@@ -37,19 +37,6 @@
 #include "psb_format.h"
 #include "psb_registry.h"
 
-#define MAX_CAPTURED_DRAWS 255
-
-struct TPs1CapturedSpriteDraw {
-    sint16 x;
-    sint16 y;
-    uint16 width;
-    uint16 height;
-    uint16 spriteNo;
-    uint16 imageNo;
-    uint8 flipped;
-    const char *bmpName;
-};
-
 /* Primitive buffer for GPU commands */
 #define PRIMITIVE_BUFFER_SIZE 32768
 uint8 *primitiveBuffer[2];  /* Malloc'd, not static array! */
@@ -114,7 +101,6 @@ static uint32 palLutPsb[256];
 static int grPresentDuringScreenLoad = 1;
 
 static void grDrawRectColor15(sint16 x, sint16 y, uint16 width, uint16 height, uint16 bgColor);
-static void grCaptureEmitFrameMetadataLine(void);
 static void grRestoreRectFromCleanBg(int x, int y, int width, int height);
 static void grCommitRectToCleanBg(int x, int y, int width, int height);
 
@@ -229,9 +215,6 @@ int grCaptureEndFrame = -1;
 int grCaptureOverlay = 0;
 int grCaptureOverlayMaskOnly = 0;
 char *grCaptureSoundEventsPath = NULL;
-static int grCurrentFrame = 0;
-static struct TPs1CapturedSpriteDraw grCapturedDraws[MAX_CAPTURED_DRAWS];
-static int grCapturedDrawCount = 0;
 
 /* Flag to track if GPU was already initialized (e.g., by loadTitleScreenEarly) */
 int grGpuAlreadyInitialized = 0;
@@ -311,18 +294,6 @@ void grPs1SetLastBmpTelemetry(uint16 slot, uint16 frames, uint16 status)
     gStatLastBmpStatus = status;
 }
 
-static const char *grCaptureSceneLabel = "";
-
-static void grCaptureResetFrameDraws(void)
-{
-    grCapturedDrawCount = 0;
-}
-
-static void grCaptureEmitFrameMetadataLine(void)
-{
-    return;
-}
-
 /* VRAM allocation tracking
  * VRAM Layout for 640x480 interlaced:
  * (0,0)-(639,479): Framebuffer (single buffer for 640x480)
@@ -339,54 +310,6 @@ static void grResetVramCursor(void)
     nextVRAMY = 4;
 }
 
-/* VRAM scratch allocator for per-frame GPU sprite textures.
- * Scratch area: (640,4) to (1023,511) — right of framebuffer, below CLUT.
- * Reset each frame by grBeginFrame(). */
-static uint16 scratchX = 640;
-static uint16 scratchY = 4;
-static uint16 scratchRowH = 0;
-
-static void grResetScratch(void)
-{
-    scratchX = 640;
-    scratchY = 4;
-    scratchRowH = 0;
-}
-
-/* Allocate a VRAM rectangle for a 4-bit texture.
- * vramW = width in VRAM pixels (= sprite pixel width / 4, rounded up).
- * Returns 0 on success (outX/outY set), -1 if VRAM scratch is full. */
-static int grAllocScratch(uint16 vramW, uint16 h, uint16 *outX, uint16 *outY)
-{
-    /* Ensure sprite fits within current texture page (64 VRAM pixels wide) */
-    uint16 pageEnd = ((scratchX / 64) + 1) * 64;
-    if (scratchX + vramW > pageEnd)
-        scratchX = pageEnd;
-
-    /* Horizontal overflow → advance to next row */
-    if (scratchX + vramW > 1024) {
-        scratchY += scratchRowH;
-        scratchX = 640;
-        scratchRowH = 0;
-    }
-
-    /* Ensure V coordinate won't overflow uint8 within the 256-line bank */
-    if ((scratchY & 0xFF) + h > 255) {
-        scratchY = ((scratchY >> 8) + 1) << 8;
-        scratchX = 640;
-        scratchRowH = 0;
-    }
-
-    /* Vertical bounds check */
-    if (scratchY + h > 512)
-        return -1;
-
-    *outX = scratchX;
-    *outY = scratchY;
-    scratchX += vramW;
-    if (h > scratchRowH) scratchRowH = h;
-    return 0;
-}
 
 /*
  * Initialize PS1 graphics subsystem
@@ -532,8 +455,6 @@ void graphicsInit()
 
     /* Initialize event system */
     eventsInit();
-    grCaptureResetFrameDraws();
-
     if (debugMode)
         printf("GPU: Graphics initialization complete!\n");
 }
@@ -630,23 +551,8 @@ void grToggleFullScreen()
     grWindowed = !grWindowed;  /* Keep variable for compatibility */
 }
 
-/* Batched swap buffer for nibble-swapped sprite data during GPU upload.
- * Each sprite's swapped data is placed at a running offset so multiple
- * LoadImage calls can be queued WITHOUT per-sprite DrawSync.
- * 32KB supports ~10-15 sprites per frame.  Overflow falls back to software.
- * Must be 4-byte aligned for DMA (LoadImage reads uint32 words). */
-#define GPU_SWAP_BUF_SIZE 32768
-static uint32 gpuSwapBuf32[GPU_SWAP_BUF_SIZE / 4];
-static uint32 gpuSwapOffset = 0;  /* Running byte offset into swap buffer */
-
-/* Set to 1 by grBeginFrame(); cleared after DrawOTag in grUpdateDisplay.
- * Prevents DrawOTag on a stale/uninitialized OT when grBeginFrame was
- * not called (e.g. intro screens). */
-static int gpuFrameReady = 0;
-
 /*
- * Per-frame initialisation: clear OT, reset primitive buffer and VRAM scratch.
- * Must be called before any sprite draws in a frame.
+ * Per-frame initialisation for the remaining primitive-buffer path.
  */
 void grBeginFrame(void)
 {
@@ -656,119 +562,6 @@ void grBeginFrame(void)
     ClearOTagR(ot[0], OT_LENGTH);
     nextPrimitive[0] = primitiveBuffer[0];
     primitiveIndex[0] = 0;
-}
-
-/*
- * Upload an indexed sprite to VRAM scratch space and emit GPU primitives.
- * - Nibble-swaps Sierra format (HIGH=even) → PS1 format (LOW=pixel0)
- * - Allocates temporary VRAM rectangle via scratch allocator
- * - Emits DR_TPAGE + SPRT (normal) or POLY_FT4 (flip) into ot[0]
- * Returns 0 on success, -1 on failure (caller should fall back to software).
- */
-static int grUploadAndDrawGpuSprite(const uint8 *indexedPixels, uint16 w, uint16 h,
-                                     sint16 screenX, sint16 screenY, int flip,
-                                     int psbNibbles)
-{
-    if (!gpuFrameReady) return -1;
-    if (w > 256 || w == 0 || h == 0) return -1;
-
-    uint32 indexedSize = ((uint32)w * (uint32)h + 1) / 2;
-    /* Round up to 4-byte alignment for DMA */
-    uint32 alignedSize = (indexedSize + 3) & ~3u;
-
-    /* Check swap buffer has room for this sprite */
-    if (gpuSwapOffset + alignedSize > GPU_SWAP_BUF_SIZE) return -1;
-
-    /* VRAM width for 4-bit texture (1 VRAM pixel = 4 texture pixels) */
-    uint16 vramW = (w + 3) / 4;
-
-    uint16 vramX, vramY;
-    if (grAllocScratch(vramW, h, &vramX, &vramY) < 0) return -1;
-
-    uint8 *dst = (uint8 *)gpuSwapBuf32 + gpuSwapOffset;
-    if (psbNibbles) {
-        /* PSB format: already in PS1 nibble order — direct copy, no swap */
-        memcpy(dst, indexedPixels, indexedSize);
-    } else {
-        /* Sierra format: nibble-swap into swap buffer.
-         * Sierra: HIGH nibble = even pixel.  PS1: LOW nibble = pixel 0.
-         * Process 4 bytes at a time via uint32 bitwise operations. */
-        uint32 i = 0;
-        const uint32 *src32 = (const uint32 *)indexedPixels;
-        uint32 *dst32 = (uint32 *)dst;
-        uint32 count32 = indexedSize >> 2;
-        for (uint32 j = 0; j < count32; j++) {
-            uint32 w = src32[j];
-            dst32[j] = ((w & 0x0F0F0F0Fu) << 4) | ((w >> 4) & 0x0F0F0F0Fu);
-        }
-        i = count32 << 2;
-        /* Handle remaining bytes */
-        for (; i < indexedSize; i++) {
-            uint8 b = indexedPixels[i];
-            dst[i] = ((b & 0x0F) << 4) | ((b >> 4) & 0x0F);
-        }
-    }
-
-    /* Upload to VRAM scratch — NO DrawSync here, all uploads batched */
-    RECT r;
-    setRECT(&r, vramX, vramY, vramW, h);
-    LoadImage(&r, (uint32 *)dst);
-
-    /* Advance offset for next sprite */
-    gpuSwapOffset += alignedSize;
-
-    /* Texture page and UV coordinates */
-    uint16 tpX = (vramX / 64) * 64;
-    uint16 tpY = (vramY / 256) * 256;
-    uint8 u0 = ((vramX % 64) * 4) & 0xFF;
-    uint8 v0 = (vramY % 256) & 0xFF;
-
-    if (!flip) {
-        /* Non-flip: SPRT + DR_TPAGE */
-        uint32 needed = sizeof(DR_TPAGE) + sizeof(SPRT);
-        if (primitiveIndex[0] + needed > PRIMITIVE_BUFFER_SIZE) return -1;
-
-        SPRT *sp = (SPRT *)nextPrimitive[0];
-        nextPrimitive[0] += sizeof(SPRT);
-        primitiveIndex[0] += sizeof(SPRT);
-        setSprt(sp);
-        setXY0(sp, screenX, screenY);
-        setWH(sp, w, h);
-        setUV0(sp, u0, v0);
-        setClut(sp, 640, 0);
-        setRGB0(sp, 128, 128, 128);
-        addPrim(&ot[0][0], sp);
-
-        DR_TPAGE *tp = (DR_TPAGE *)nextPrimitive[0];
-        nextPrimitive[0] += sizeof(DR_TPAGE);
-        primitiveIndex[0] += sizeof(DR_TPAGE);
-        setDrawTPage(tp, 0, 0, getTPage(0, 0, tpX, tpY));
-        addPrim(&ot[0][0], tp);
-    } else {
-        /* Flip: POLY_FT4 (has built-in tpage field) */
-        uint32 needed = sizeof(POLY_FT4);
-        if (primitiveIndex[0] + needed > PRIMITIVE_BUFFER_SIZE) return -1;
-
-        POLY_FT4 *poly = (POLY_FT4 *)nextPrimitive[0];
-        nextPrimitive[0] += sizeof(POLY_FT4);
-        primitiveIndex[0] += sizeof(POLY_FT4);
-        setPolyFT4(poly);
-        setXY4(poly,
-               screenX, screenY,
-               screenX + w, screenY,
-               screenX, screenY + h,
-               screenX + w, screenY + h);
-        poly->tpage = getTPage(0, 0, tpX, tpY);
-        /* Reversed U for horizontal flip */
-        uint8 u1 = u0 + (uint8)w;
-        uint8 v1 = v0 + (uint8)h;
-        setUV4(poly, u1, v0, u0, v0, u1, v1, u0, v1);
-        setClut(poly, 640, 0);
-        setRGB0(poly, 128, 128, 128);
-        addPrim(&ot[0][0], poly);
-    }
-
-    return 0;
 }
 
 /*
@@ -804,8 +597,6 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
      * Now we just need to upload and display.
      */
 
-    grCaptureEmitFrameMetadataLine();
-
     /* Wait for VSync BEFORE uploading to framebuffer.
      * This ensures we write during vertical blank when display isn't scanning. */
     VSync(0);
@@ -819,8 +610,6 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
     /* Handle frame timing */
     eventsWaitTick(grUpdateDelay);
 
-    grCurrentFrame++;
-    grCaptureResetFrameDraws();
 }
 
 /*
@@ -880,230 +669,7 @@ void grFreeLayer(PS1Surface *sfc)
  */
 void grLoadBmp(struct TTtmSlot *ttmSlot, uint16 slotNo, char *strArg)
 {
-    /*
-     * PS1 FIX: Always use RAM-based rendering path.
-     *
-     * The VRAM/OT path adds primitives to global ot[db], but the main game loop
-     * uses a local gameOT for DrawOTag. This causes sprites to never be drawn!
-     *
-     * RAM-based sprites use grCompositeToBackground() which writes directly to
-     * background tile buffers, correctly rendering with the main loop.
-     */
     grLoadBmpRAM(ttmSlot, slotNo, strArg);
-    return;
-
-    /* === DISABLED: VRAM/OT path (kept for reference) ===
-     *
-     * CRITICAL PATTERN: LoadImage MUST be called with a simple uint16* buffer,
-     * NOT through a struct member like surface->pixels. Creating the PS1Surface
-     * AFTER LoadImage works; creating it BEFORE and using surface->pixels
-     * as the LoadImage source breaks OT primitive rendering.
-     *
-     * Additionally, sprite dimensions must be capped at 64x64 to prevent
-     * OT rendering issues with large textures.
-     */
-    #define MAX_SPRITE_DIM 64  /* Keep at 64 - larger causes VRAM/UV issues */
-
-    if (ttmSlot->numSprites[slotNo])
-        grReleaseBmp(ttmSlot, slotNo);
-
-    struct TBmpResource *bmpResource = findBmpResource(strArg);
-    if (!bmpResource) return;
-
-    /* On-demand loading: decompress BMP if not already loaded */
-    if (!bmpResource->uncompressedData) {
-        ps1_loadBmpData(bmpResource);
-    }
-    if (!bmpResource->uncompressedData) return;  /* Still NULL = load failed */
-    if (bmpResource->numImages < 1) return;
-
-    /* Reset VRAM tracking to ensure sprites start at clean position
-     * This prevents cumulative drift from previous allocations */
-    nextVRAMX = 640;  /* Start of texture area */
-    nextVRAMY = 4;    /* Below CLUTs */
-
-    /* Detect if ANY frame needs multi-tile (height > 64) */
-    int needsMultiTile = 0;
-    for (int i = 0; i < bmpResource->numImages && i < MAX_SPRITES_PER_BMP; i++) {
-        if (bmpResource->heights[i] > MAX_SPRITE_DIM) {
-            needsMultiTile = 1;
-            break;
-        }
-    }
-
-    /* For multi-tile sprites, use RAM-based rendering to bypass LoadImage limit */
-    if (needsMultiTile) {
-        grLoadBmpRAM(ttmSlot, slotNo, strArg);
-        return;
-    }
-
-    /* Load sprite frames from BMP for animation support */
-    int numToLoad = bmpResource->numImages;
-    if (numToLoad > 42) {
-        numToLoad = 42;  /* Max 42 frames (6 pages/row × 7 rows) */
-    }
-    /* For multi-tile BMPs, limit to 3 frames (DrawSync limit) */
-    if (needsMultiTile && numToLoad > 3) {
-        numToLoad = 3;
-    }
-
-    uint8 *srcPtr = bmpResource->uncompressedData;
-
-    /* DEBUG: Track multi-tile loading progress */
-    static int debugMultiTileFrame = -1;
-
-    for (int frameIdx = 0; frameIdx < numToLoad; frameIdx++) {
-        if (needsMultiTile) {
-            debugMultiTileFrame = frameIdx;
-        }
-        uint16 width = bmpResource->widths[frameIdx];
-        uint16 height = bmpResource->heights[frameIdx];
-        uint16 safeW = (width > MAX_SPRITE_DIM) ? MAX_SPRITE_DIM : width;
-        uint16 safeH = (height > MAX_SPRITE_DIM) ? MAX_SPRITE_DIM : height;
-
-        /* Step 1: Allocate and copy pixel data to a SIMPLE buffer */
-        uint32 copySize = (safeW * safeH) / 2;  /* 4-bit = 0.5 bytes/pixel */
-        uint16 *copyBuf = (uint16*)safe_malloc(copySize);
-
-        /* Copy with proper row stride when capping dimensions
-         * IMPORTANT: PS1 4-bit textures expect LOW nibble = pixel 0, HIGH nibble = pixel 1
-         * Sierra BMP format is HIGH nibble = pixel 0, LOW nibble = pixel 1
-         * We must swap nibbles during copy! */
-        uint8 *dst = (uint8*)copyBuf;
-        uint8 *src = srcPtr;
-        uint32 srcRowBytes = width / 2;   /* 4-bit = 2 pixels per byte */
-        uint32 dstRowBytes = safeW / 2;
-
-        for (uint16 y = 0; y < safeH; y++) {
-            for (uint32 x = 0; x < dstRowBytes; x++) {
-                uint8 srcByte = src[x];
-                /* Swap nibbles: high->low, low->high */
-                dst[x] = ((srcByte & 0x0F) << 4) | ((srcByte >> 4) & 0x0F);
-            }
-            dst += dstRowBytes;
-            src += srcRowBytes;
-        }
-
-        /* Advance by packed 4-bit frame bytes.
-         * Row stride must round up per row for odd widths. */
-        srcPtr += (((uint32)width + 1U) / 2U) * (uint32)height;
-
-        /* Step 2: LoadImage to VRAM BEFORE creating PS1Surface */
-        /* For 4-bit textures, texture page is 64 VRAM pixels (256 texture pixels) wide.
-         * UV coordinates are 8-bit (0-255). Check if sprite would cause UV wrap. */
-        uint16 vramW = safeW / 4;  /* 4-bit: VRAM width = texture pixels / 4 */
-
-        /* Calculate UV offset that would result from current VRAM position */
-        uint16 uOffset = ((nextVRAMX % 64) * 4);  /* UV offset in texture pixels */
-
-        /* AGGRESSIVE: Always align to page boundary - ensures U=0 for every sprite */
-        if (uOffset != 0) {
-            /* Not at page start - align to next texture page */
-            uint16 nextPage = ((nextVRAMX / 64) + 1) * 64;
-            nextVRAMX = nextPage;
-            if (nextVRAMX >= 1024) {
-                nextVRAMX = 640;
-                nextVRAMY += MAX_SPRITE_DIM;
-            }
-        }
-
-        /* Check if we've exhausted VRAM - stop loading more frames */
-        if (nextVRAMY + safeH > 512) {
-            break;  /* Out of VRAM space */
-        }
-
-        uint16 vramX = nextVRAMX;
-        uint16 vramY = nextVRAMY;
-        RECT rect;
-        setRECT(&rect, vramX, vramY, vramW, safeH);
-        LoadImage(&rect, (uint32*)copyBuf);
-        DrawSync(0);
-
-        /* Step 3: NOW create PS1Surface AFTER LoadImage completed */
-        PS1Surface *surface = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
-        surface->width = safeW;
-        surface->height = safeH;
-        surface->x = vramX;
-        surface->y = vramY;
-        surface->pixels = copyBuf;
-        surface->indexedPixels = NULL;
-        surface->indexedOwned = 0;
-        surface->psbNibbles = 0;
-        surface->clutX = 640;
-        surface->clutY = 0;
-        /* Multi-tile fields */
-        surface->fullWidth = width;
-        surface->fullHeight = height;
-        surface->tileOffsetX = 0;
-        surface->tileOffsetY = 0;
-        surface->nextTile = NULL;
-
-        /* Multi-tile: Load bottom portion for tall sprites (>64px)
-         * NOTE: No DrawSync after LoadImage - too many DrawSync calls breaks rendering */
-        if (height > MAX_SPRITE_DIM && frameIdx < 3) {
-            uint16 bottomH = height - MAX_SPRITE_DIM;
-            if (bottomH > MAX_SPRITE_DIM) bottomH = MAX_SPRITE_DIM;
-            uint16 bottomVramY = vramY + MAX_SPRITE_DIM;
-
-            /* Allocate buffer for bottom tile */
-            uint32 bottomCopySize = (safeW * bottomH) / 2;
-            uint16 *bottomBuf = (uint16*)safe_malloc(bottomCopySize);
-
-            /* src already points to row 64 after main tile copy loop */
-            uint8 *bottomSrc = src;
-            uint8 *bottomDst = (uint8*)bottomBuf;
-
-            /* Copy rows 64-77 (feet) with nibble swap */
-            for (uint16 by = 0; by < bottomH; by++) {
-                for (uint32 bx = 0; bx < dstRowBytes; bx++) {
-                    uint8 srcByte = bottomSrc[bx];
-                    bottomDst[bx] = ((srcByte & 0x0F) << 4) | ((srcByte >> 4) & 0x0F);
-                }
-                bottomDst += dstRowBytes;
-                bottomSrc += srcRowBytes;
-            }
-
-            /* LoadImage bottom tile - skip DrawSync to test if that's the issue */
-            RECT bottomRect;
-            setRECT(&bottomRect, vramX, bottomVramY, vramW, bottomH);
-            LoadImage(&bottomRect, (uint32*)bottomBuf);
-            /* DrawSync(0) removed for testing */
-
-            /* Create PS1Surface for bottom tile */
-            PS1Surface *bottomTile = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
-            bottomTile->width = safeW;
-            bottomTile->height = bottomH;
-            bottomTile->x = vramX;  /* Same X as main tile */
-            bottomTile->y = bottomVramY;  /* Y=68 */
-            bottomTile->pixels = bottomBuf;
-            bottomTile->indexedPixels = NULL;
-            bottomTile->indexedOwned = 0;
-            bottomTile->psbNibbles = 0;
-            bottomTile->clutX = 640;
-            bottomTile->clutY = 0;
-            bottomTile->fullWidth = width;
-            bottomTile->fullHeight = height;
-            bottomTile->tileOffsetX = 0;
-            bottomTile->tileOffsetY = MAX_SPRITE_DIM;
-            bottomTile->nextTile = NULL;
-
-            /* Link: main tile -> bottom tile */
-            surface->nextTile = bottomTile;
-        }
-
-        /* Store in slot */
-        ttmSlot->sprites[slotNo][frameIdx] = surface;
-
-        /* Update VRAM tracking for next sprite */
-        nextVRAMX += vramW;
-        if (nextVRAMX >= 1024) {
-            nextVRAMX = 640;
-            nextVRAMY += MAX_SPRITE_DIM;
-        }
-    }
-
-    ttmSlot->numSprites[slotNo] = numToLoad;
-    ttmSlot->loadedBmpNames[slotNo] = bmpResource->resName;
 }
 
 /*
@@ -3651,69 +3217,6 @@ void grFadeOut()
     }
 }
 
-/*
- * Helper: Create a single background tile
- * src = source image data (4-bit packed)
- * srcWidth = total width of source image
- * srcStartX = x offset in source to start copying from
- * tileWidth = width of this tile (256 or 128)
- * vramX, vramY = where to place in VRAM
- */
-static PS1Surface *createBgTile(uint8 *src, uint16 srcWidth,
-                                 uint16 srcStartX, uint16 tileWidth,
-                                 uint16 vramX, uint16 vramY)
-{
-    PS1Surface *tile = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
-    tile->width = tileWidth;
-    tile->height = BG_TILE_HEIGHT;
-    tile->x = vramX;
-    tile->y = vramY;
-    tile->indexedPixels = NULL;
-    tile->indexedOwned = 0;
-    tile->psbNibbles = 0;
-    tile->nextTile = NULL;
-
-    /* Allocate pixel buffer for 15-bit direct color */
-    uint32 pixelDataSize = tileWidth * BG_TILE_HEIGHT * 2;
-    tile->pixels = (uint16*)safe_malloc(pixelDataSize);
-
-    uint16 *dst = tile->pixels;
-
-    /* Process 2 pixels per byte using palette LUT.
-     * Row base increment avoids per-pixel multiply. */
-    uint32 srcRowBase = (uint32)srcStartX;
-    for (uint16 y = 0; y < BG_TILE_HEIGHT; y++) {
-        uint32 srcOff = (uint32)y * (uint32)srcWidth + srcRowBase;
-        uint16 *dstRow = dst + (uint32)y * tileWidth;
-        uint16 x = 0;
-        /* Handle odd start pixel */
-        if (srcStartX & 1) {
-            uint8 packed = src[srcOff >> 1];
-            dstRow[0] = ttmPalette[packed & 0x0F];
-            x = 1;
-            srcOff++;
-        }
-        /* Process 2 pixels per byte */
-        for (; x + 1 < tileWidth; x += 2, srcOff += 2) {
-            uint32 pair = palLutSierra[src[srcOff >> 1]];
-            dstRow[x]     = (uint16)pair;
-            dstRow[x + 1] = (uint16)(pair >> 16);
-        }
-        /* Handle trailing pixel */
-        if (x < tileWidth) {
-            uint8 packed = src[srcOff >> 1];
-            dstRow[x] = ttmPalette[(packed >> 4) & 0x0F];
-        }
-    }
-
-    /* Upload tile to VRAM */
-    RECT rect;
-    setRECT(&rect, tile->x, tile->y, tileWidth, BG_TILE_HEIGHT);
-    LoadImage(&rect, (uint32*)tile->pixels);
-
-    return tile;
-}
-
 /* Helper to free a tile */
 static void freeBgTile(PS1Surface **tile)
 {
@@ -4072,7 +3575,7 @@ int grCaptureSequenceComplete(void)
 
 void grCaptureSetSceneLabel(const char *sceneLabel)
 {
-    grCaptureSceneLabel = sceneLabel ? sceneLabel : "";
+    (void)sceneLabel;
 }
 
 void grCaptureSoundEvent(int sampleNo)

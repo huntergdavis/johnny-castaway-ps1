@@ -30,16 +30,8 @@ set(SOURCES
     src/utils.c
     src/uncompress.c
     src/resource.c
-    src/dump.c
-    src/story.c
-    src/walk.c
-    src/calcpath.c
-    src/ads.c
     src/foreground_pilot.c
-    src/ttm.c
     src/island.c
-    src/bench.c
-    src/config.c
     # PS1-specific implementations
     src/graphics_ps1.c
     src/sound_ps1.c

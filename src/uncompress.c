@@ -24,6 +24,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef PS1_BUILD
+#ifndef _FILE_DEFINED
+#define _FILE_DEFINED
+typedef struct _FILE FILE;
+#endif
+extern int fgetc(FILE *stream);
+#endif
+
 #include "mytypes.h"
 #include "utils.h"
 
@@ -234,4 +242,3 @@ uint8 *uncompress(FILE *f, uint8 compressionMethod, uint32 inSize, uint32 outSiz
             break;
     }
 }
-

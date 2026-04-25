@@ -1741,11 +1741,6 @@ struct TPalResource* ps1_parsePalResource(PS1File *f, const char *resName)
     return palResource;
 }
 
-/* Counter for SCR decompression - prioritize INTRO.SCR for title screen */
-static int scrDecompressCount = 0;
-#define MAX_SCR_DECOMPRESS 2  /* Allow INTRO.SCR + one more for testing */
-static int introScrLoaded = 0;  /* Track if we've loaded INTRO.SCR */
-
 struct TScrResource* ps1_parseScrResource(PS1File *f, const char *resName)
 {
     struct TScrResource *scrResource;

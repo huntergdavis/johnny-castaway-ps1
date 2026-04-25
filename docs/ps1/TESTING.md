@@ -31,7 +31,6 @@ smaller stability releases may happen between scene milestones.
 | `holiday <N>` | 0..4 | Holiday overlay variant |
 | `raft-stage <N>` | 0..5 | Cumulative raft-build state |
 | `island-pos <x> <y>` | — | Force island position |
-| `story-day <N>` | 1..11 | Force story day |
 
 ## Secondary (historical): headless regtest harness
 
@@ -89,16 +88,16 @@ current development:
 |---|---|---|
 | `fgpilot <slug> [tokens...]` | `fgpilot fishing1 night 1` | **Primary.** Hybrid scene playback from high/low FG2 packs, with variant tokens. |
 
-FG1 packs are legacy cleanup targets. They should not be used to certify
-or bring up scenes under the current bar.
+FG1/FOC packs and per-scene establishing RAWs are retired. They should
+not be used to certify or bring up scenes under the current bar.
 
-Secondary / legacy routes (retained for diagnostics):
+Historical routes removed from the active PS1 executable:
 
 | Mode | Example | Description |
 |---|---|---|
-| `story scene N` | `story scene 38` | Play scene via story loop (printf crash risk) |
-| `story direct N` | `story direct 25` | Play scene directly, bypass story loop |
-| `island ads X.ADS N` | `island ads BUILDING.ADS 1` | Play ADS tag directly with island background |
+| `story scene N` | `story scene 38` | Host-only / historical story-loop route |
+| `story direct N` | `story direct 25` | Host-only / historical direct scene route |
+| `island ads X.ADS N` | `island ads BUILDING.ADS 1` | Host-only / historical ADS route |
 
 ## Known runtime pitfalls
 

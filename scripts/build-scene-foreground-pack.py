@@ -15,71 +15,12 @@ def parse_rgb(value: str) -> tuple[int, int, int]:
     return tuple(int(raw[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def find_bbox(img: Image.Image, key_rgb: tuple[int, int, int]):
-    pixels = img.load()
-    width, height = img.size
-    min_x = width
-    min_y = height
-    max_x = -1
-    max_y = -1
-
-    for y in range(height):
-        for x in range(width):
-            if pixels[x, y][:3] != key_rgb:
-                if x < min_x:
-                    min_x = x
-                if y < min_y:
-                    min_y = y
-                if x > max_x:
-                    max_x = x
-                if y > max_y:
-                    max_y = y
-
-    if max_x < min_x or max_y < min_y:
-        return None
-
-    return {
-        "x": min_x,
-        "y": min_y,
-        "width": max_x - min_x + 1,
-        "height": max_y - min_y + 1,
-    }
-
-
 def rgb888_to_ps1(rgb: tuple[int, int, int]) -> int:
     r, g, b = rgb
     value = (r >> 3) | ((g >> 3) << 5) | ((b >> 3) << 10)
     if value == 0:
         value = 0x8000
     return value
-
-
-def encode_crop(img: Image.Image, bbox, key_rgb: tuple[int, int, int]) -> bytes:
-    if bbox is None:
-        return b""
-
-    crop = img.crop((
-        bbox["x"],
-        bbox["y"],
-        bbox["x"] + bbox["width"],
-        bbox["y"] + bbox["height"],
-    )).convert("RGB")
-    pixels = crop.load()
-    width, height = crop.size
-    out = bytearray(width * height * 2)
-    i = 0
-
-    for y in range(height):
-        for x in range(width):
-            rgb = pixels[x, y]
-            if rgb == key_rgb:
-                value = 0
-            else:
-                value = rgb888_to_ps1(rgb)
-            out[i:i + 2] = struct.pack("<H", value)
-            i += 2
-
-    return bytes(out)
 
 
 def image_to_ps1_values(img: Image.Image) -> tuple[list[int], int, int]:
@@ -279,64 +220,6 @@ def encode_indexed8_span_payload(payload: bytes, width: int, height: int,
     return bytes(out)
 
 
-def encode_diff_crop(prev_img: Image.Image | None, cur_img: Image.Image,
-                     key_rgb: tuple[int, int, int]) -> tuple[dict | None, bytes]:
-    prev_pixels = prev_img.load() if prev_img is not None else None
-    cur_pixels = cur_img.load()
-    width, height = cur_img.size
-    min_x = width
-    min_y = height
-    max_x = -1
-    max_y = -1
-
-    for y in range(height):
-        for x in range(width):
-            prev_rgb = (0, 0, 0) if prev_pixels is None else prev_pixels[x, y][:3]
-            cur_rgb = cur_pixels[x, y][:3]
-            if prev_rgb == key_rgb:
-                prev_rgb = (0, 0, 0)
-            if cur_rgb == key_rgb:
-                cur_rgb = (0, 0, 0)
-            if prev_rgb != cur_rgb:
-                if x < min_x:
-                    min_x = x
-                if y < min_y:
-                    min_y = y
-                if x > max_x:
-                    max_x = x
-                if y > max_y:
-                    max_y = y
-
-    if max_x < min_x or max_y < min_y:
-        return None, b""
-
-    bbox = {
-        "x": min_x,
-        "y": min_y,
-        "width": max_x - min_x + 1,
-        "height": max_y - min_y + 1,
-    }
-    crop = cur_img.crop((
-        bbox["x"],
-        bbox["y"],
-        bbox["x"] + bbox["width"],
-        bbox["y"] + bbox["height"],
-    )).convert("RGB")
-    pixels = crop.load()
-    crop_w, crop_h = crop.size
-    out = bytearray(crop_w * crop_h * 2)
-    i = 0
-
-    for y in range(crop_h):
-        for x in range(crop_w):
-            rgb = pixels[x, y]
-            value = rgb888_to_ps1((0, 0, 0) if rgb == key_rgb else rgb)
-            out[i:i + 2] = struct.pack("<H", value)
-            i += 2
-
-    return bbox, bytes(out)
-
-
 def load_frame_delays(frame_meta_dir: Path | None) -> dict[str, int]:
     if frame_meta_dir is None:
         return {}
@@ -409,102 +292,10 @@ def load_frame_offsets(frame_meta_dir: Path | None) -> dict[str, tuple[int, int]
     return offsets
 
 
-def collect_fg_palette(frames_dir: Path, key_rgb: tuple[int, int, int]) -> set[tuple[int, int, int]]:
-    """Union of all non-key colors across the foreground-only frames.
-
-    Used as a sanity filter when augmenting a fg-only mask from a full-render
-    capture: a pixel is considered real foreground only if its full-render color
-    is one of the colors that actually appears as sprite output anywhere in the
-    scene. Water / sky colors do not appear in fg-only output, so they never
-    sneak into the augmented mask.
-    """
-    palette: set[tuple[int, int, int]] = set()
-    for path in sorted(frames_dir.iterdir()):
-        if not path.is_file() or path.suffix.lower() not in {".bmp", ".png"}:
-            continue
-        with Image.open(path) as raw:
-            rgb = raw.convert("RGB")
-        colors = rgb.getcolors(maxcolors=1 << 24) or []
-        for _, col in colors:
-            if col != key_rgb:
-                palette.add(col)
-    return palette
-
-
-def augment_with_scene_base(
-    fg_img: Image.Image,
-    full_img: Image.Image | None,
-    base_img: Image.Image | None,
-    fg_palette: set[tuple[int, int, int]],
-    key_rgb: tuple[int, int, int],
-    augment_bounds: tuple[int, int, int, int] | None,
-) -> Image.Image:
-    """Return an RGB image = fg_img with missing-foreground pixels filled in.
-
-    For every pixel that is currently chroma-key in ``fg_img`` we look at the
-    corresponding full-render pixel. If the full-render pixel is in
-    ``fg_palette`` (i.e. it is actually a sprite color observed elsewhere in
-    the scene), and it differs from the pristine scene-base pixel, we treat it
-    as real foreground and copy it over. ``augment_bounds`` is an optional
-    ``(x_min, y_min, x_max, y_max)`` inclusive box restricting where augmentation
-    may fire; water-crest animation pixels off to the right of Johnny live
-    outside this box and get rejected that way.
-    """
-    if full_img is None or base_img is None:
-        return fg_img.copy()
-
-    width, height = fg_img.size
-    if full_img.size != (width, height) or base_img.size != (width, height):
-        return fg_img.copy()
-
-    out = fg_img.copy()
-    out_pixels = out.load()
-    fg_pixels = fg_img.load()
-    full_pixels = full_img.load()
-    base_pixels = base_img.load()
-
-    if augment_bounds is None:
-        x_min, y_min, x_max, y_max = 0, 0, width - 1, height - 1
-    else:
-        x_min, y_min, x_max, y_max = augment_bounds
-        x_min = max(0, x_min)
-        y_min = max(0, y_min)
-        x_max = min(width - 1, x_max)
-        y_max = min(height - 1, y_max)
-
-    for y in range(y_min, y_max + 1):
-        for x in range(x_min, x_max + 1):
-            if fg_pixels[x, y] != key_rgb:
-                continue
-            pfull = full_pixels[x, y]
-            if pfull not in fg_palette:
-                continue
-            if pfull == base_pixels[x, y]:
-                continue
-            out_pixels[x, y] = pfull
-    return out
-
-
-def parse_augment_bounds(value: str) -> tuple[int, int, int, int]:
-    parts = [p.strip() for p in value.split(",")]
-    if len(parts) != 4:
-        raise argparse.ArgumentTypeError("expected x_min,y_min,x_max,y_max")
-    return tuple(int(p) for p in parts)  # type: ignore[return-value]
-
-
-def parse_frame_range(value: str) -> tuple[int, int]:
-    parts = [p.strip() for p in value.split(":")]
-    if len(parts) != 2:
-        raise argparse.ArgumentTypeError("expected start:end (inclusive)")
-    start = int(parts[0])
-    end = int(parts[1])
-    if end < start:
-        raise argparse.ArgumentTypeError("end must be >= start")
-    return (start, end)
-
-
 def main():
-    parser = argparse.ArgumentParser(description="Build a PS1 foreground playback pack.")
+    parser = argparse.ArgumentParser(
+        description="Build a PS1 FG2 full-render base-diff playback pack."
+    )
     parser.add_argument("--frames-dir", required=True)
     parser.add_argument("--output-pack", required=True)
     parser.add_argument("--output-json")
@@ -513,11 +304,10 @@ def main():
     parser.add_argument("--frame-step", type=int, default=1)
     parser.add_argument(
         "--pack-format",
-        choices=("fg1", "fg2"),
-        default="fg1",
-        help="On-disc pack format: fg1=raw 16-bit crops, fg2=visible row spans.",
+        choices=("fg2",),
+        default="fg2",
+        help="On-disc pack format. FG2 is the only active PS1 scene-pack format.",
     )
-    parser.add_argument("--delta-from-previous", action="store_true")
     parser.add_argument("--frame-meta-dir")
     parser.add_argument(
         "--timeline-speed",
@@ -535,25 +325,10 @@ def main():
         help="Pack all pixels that differ from --scene-base-frame after PS1 15-bit color quantization.",
     )
     parser.add_argument(
-        "--full-frames-dir",
-        help="Directory of full-render (non foreground-only) frames, same seed / frame indices.",
-    )
-    parser.add_argument(
         "--scene-base-frame",
         type=int,
         default=0,
-        help="Index in the full-frames-dir to treat as the pristine scene base (default 0).",
-    )
-    parser.add_argument(
-        "--augment-bounds",
-        type=parse_augment_bounds,
-        help="Optional x_min,y_min,x_max,y_max box restricting scene-base augmentation.",
-    )
-    parser.add_argument(
-        "--augment-frame-range",
-        type=parse_frame_range,
-        help="Inclusive start:end frame-index range (into frames-dir) to augment. "
-             "Frames outside the range are left as pure foreground-only captures.",
+        help="Index in frames-dir to treat as the pristine scene base (default 0).",
     )
     args = parser.parse_args()
 
@@ -568,10 +343,8 @@ def main():
         raise SystemExit("--frame-step must be > 0")
     if args.timeline_speed <= 0:
         raise SystemExit("--timeline-speed must be > 0")
-    if args.pack_format == "fg2" and args.delta_from_previous:
-        raise SystemExit("FG2 does not support --delta-from-previous; build the direct pack as FG1")
-    if args.base_diff and args.delta_from_previous:
-        raise SystemExit("--base-diff cannot be combined with --delta-from-previous")
+    if not args.base_diff:
+        raise SystemExit("FG2 scene packs must use --base-diff")
 
     selected_indices = list(range(0, len(frame_paths), args.frame_step))
     if selected_indices[-1] != (len(frame_paths) - 1):
@@ -585,7 +358,6 @@ def main():
     union_min_y = None
     union_max_x = None
     union_max_y = None
-    prev_rgb = None
 
     _raw_sound_events = load_sound_events(
         Path(args.sound_events) if args.sound_events else None
@@ -595,78 +367,24 @@ def main():
         _first_abs_frame = int(_first_frame_stem.split("_")[-1])
     except ValueError:
         _first_abs_frame = 0
-    full_frames_dir: Path | None = Path(args.full_frames_dir) if args.full_frames_dir else None
-    full_frame_paths: list[Path] = []
-    if full_frames_dir is not None:
-        if not full_frames_dir.is_dir():
-            raise SystemExit(f"--full-frames-dir not found: {full_frames_dir}")
-        full_frame_paths = sorted(
-            path for path in full_frames_dir.iterdir()
-            if path.is_file() and path.suffix.lower() in {".bmp", ".png"}
-        )
-        if len(full_frame_paths) != len(frame_paths):
-            raise SystemExit(
-                f"full-frames-dir frame count ({len(full_frame_paths)}) does not match "
-                f"frames-dir ({len(frame_paths)}); captures must use the same seed/range."
-            )
 
-    scene_base_img: Image.Image | None = None
     scene_base_ps1_values: list[int] | None = None
-    fg_palette: set[tuple[int, int, int]] = set()
-    if args.base_diff:
-        base_index = args.scene_base_frame
-        if base_index < 0 or base_index >= len(frame_paths):
-            raise SystemExit(
-                f"--scene-base-frame {base_index} out of range (0..{len(frame_paths) - 1})"
-            )
-        with Image.open(frame_paths[base_index]) as raw:
-            scene_base_ps1_values, _, _ = image_to_ps1_values(raw)
-    elif full_frame_paths:
-        base_index = args.scene_base_frame
-        if base_index < 0 or base_index >= len(full_frame_paths):
-            raise SystemExit(
-                f"--scene-base-frame {base_index} out of range (0..{len(full_frame_paths) - 1})"
-            )
-        with Image.open(full_frame_paths[base_index]) as raw:
-            scene_base_img = raw.convert("RGB")
-        fg_palette = collect_fg_palette(frames_dir, args.key_rgb)
+    base_index = args.scene_base_frame
+    if base_index < 0 or base_index >= len(frame_paths):
+        raise SystemExit(
+            f"--scene-base-frame {base_index} out of range (0..{len(frame_paths) - 1})"
+        )
+    with Image.open(frame_paths[base_index]) as raw:
+        scene_base_ps1_values, _, _ = image_to_ps1_values(raw)
 
     for source_index in selected_indices:
         frame_path = frame_paths[source_index]
         with Image.open(frame_path) as raw:
             rgb = raw.convert("RGB")
 
-        in_augment_range = True
-        if args.augment_frame_range is not None:
-            lo, hi = args.augment_frame_range
-            in_augment_range = (lo <= source_index <= hi)
-
-        full_rgb: Image.Image | None = None
-        if (full_frame_paths and scene_base_img is not None
-                and not args.delta_from_previous and in_augment_range):
-            with Image.open(full_frame_paths[source_index]) as raw_full:
-                full_rgb = raw_full.convert("RGB")
-
-        if (full_rgb is not None and scene_base_img is not None
-                and not args.delta_from_previous and in_augment_range):
-            rgb = augment_with_scene_base(
-                rgb,
-                full_rgb,
-                scene_base_img,
-                fg_palette,
-                args.key_rgb,
-                args.augment_bounds,
-            )
-
-        if args.base_diff:
-            if scene_base_ps1_values is None:
-                raise SystemExit("--base-diff missing scene base data")
-            bbox, payload = encode_base_diff_crop(scene_base_ps1_values, rgb)
-        elif args.delta_from_previous:
-            bbox, payload = encode_diff_crop(prev_rgb, rgb, args.key_rgb)
-        else:
-            bbox = find_bbox(rgb, args.key_rgb)
-            payload = encode_crop(rgb, bbox, args.key_rgb)
+        if scene_base_ps1_values is None:
+            raise SystemExit("--base-diff missing scene base data")
+        bbox, payload = encode_base_diff_crop(scene_base_ps1_values, rgb)
 
         if bbox is not None:
             x2 = bbox["x"] + bbox["width"] - 1
@@ -713,14 +431,12 @@ def main():
             if same_frame:
                 prev["hold_ticks"] += row["hold_ticks"]
                 prev["hold_frames"] += 1
-                prev_rgb = rgb
                 continue
 
         rows.append(row)
         data_chunks.append(payload)
-        prev_rgb = rgb
 
-    header_flags = 1 if args.delta_from_previous else 0
+    header_flags = 0
     if args.frame_meta_dir:
         header_flags |= 0x0004
         header_flags |= 0x0008
@@ -748,29 +464,28 @@ def main():
 
     palette_values: list[int] | None = None
     fg2_encoding: str | None = None
-    if args.pack_format == "fg2":
-        palette_values, fg2_encoding = build_fg2_palette(data_chunks)
-        palette_index = {value: index for index, value in enumerate(palette_values) if index > 0}
-        encoded_chunks: list[bytes] = []
-        for row, chunk in zip(rows, data_chunks):
-            if fg2_encoding == "indexed8":
-                encoded = encode_indexed8_span_payload(
-                    chunk,
-                    int(row["width"]),
-                    int(row["height"]),
-                    palette_index,
-                )
-            else:
-                encoded = encode_pal4_span_payload(
-                    chunk,
-                    int(row["width"]),
-                    int(row["height"]),
-                    palette_index,
-                )
-            row["data_size_raw16"] = row["data_size"]
-            row["data_size"] = len(encoded)
-            encoded_chunks.append(encoded)
-        data_chunks = encoded_chunks
+    palette_values, fg2_encoding = build_fg2_palette(data_chunks)
+    palette_index = {value: index for index, value in enumerate(palette_values) if index > 0}
+    encoded_chunks: list[bytes] = []
+    for row, chunk in zip(rows, data_chunks):
+        if fg2_encoding == "indexed8":
+            encoded = encode_indexed8_span_payload(
+                chunk,
+                int(row["width"]),
+                int(row["height"]),
+                palette_index,
+            )
+        else:
+            encoded = encode_pal4_span_payload(
+                chunk,
+                int(row["width"]),
+                int(row["height"]),
+                palette_index,
+            )
+        row["data_size_raw16"] = row["data_size"]
+        row["data_size"] = len(encoded)
+        encoded_chunks.append(encoded)
+    data_chunks = encoded_chunks
 
     HEADER_SIZE = 40
     PALETTE_SIZE = (len(palette_values) * 2) if palette_values is not None else 0
@@ -788,8 +503,8 @@ def main():
 
     header = struct.pack(
         "<4sHHHHHHHHHHIIIHH",
-        b"FGP2" if args.pack_format == "fg2" else b"FGP1",
-        (2 if fg2_encoding == "indexed8" else 1) if args.pack_format == "fg2" else 2,
+        b"FGP2",
+        2 if fg2_encoding == "indexed8" else 1,
         len(rows),
         1,
         header_flags,
@@ -834,14 +549,10 @@ def main():
     summary = {
         "scene_label": args.scene_label,
         "frames_dir": str(frames_dir),
-        "full_frames_dir": str(full_frames_dir) if full_frames_dir else None,
-        "scene_base_frame": args.scene_base_frame if (full_frame_paths or args.base_diff) else None,
-        "augment_bounds": list(args.augment_bounds) if args.augment_bounds else None,
-        "augment_frame_range": list(args.augment_frame_range) if args.augment_frame_range else None,
-        "fg_palette_size": len(fg_palette) if fg_palette else None,
+        "scene_base_frame": args.scene_base_frame,
         "output_pack": str(output_pack),
         "pack_format": args.pack_format,
-        "pack_magic": "FGP2" if args.pack_format == "fg2" else "FGP1",
+        "pack_magic": "FGP2",
         "fg2_encoding": fg2_encoding,
         "base_diff": args.base_diff,
         "fg2_palette": None if palette_values is None else [
@@ -852,7 +563,6 @@ def main():
         ),
         "frame_step": args.frame_step,
         "timeline_speed": args.timeline_speed,
-        "delta_from_previous": args.delta_from_previous,
         "pack_frame_count": len(rows),
         "source_frame_count": len(frame_paths),
         "present_tick_count": sum(row["hold_ticks"] for row in rows),

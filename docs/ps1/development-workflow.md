@@ -26,8 +26,6 @@ One iteration = one scene promoted from `⏳` to `✅ / ✅` in
     <slug>               \  # e.g. fishing2
     '<ADS TAG>'          \  # e.g. 'FISHING 2'
     <PACK_BASENAME>      \  # e.g. FISHING2
-    <raw_frame_idx>      \  # which capture frame to snapshot as the establishing .RAW
-    <RAW_BASENAME>       \  # e.g. FISH2
     0                    \  # start frame
     1.0                  \  # timeline speed
     <LOW_PACK_BASENAME>     # e.g. FISH2LOW
@@ -42,35 +40,27 @@ Produces:
 - `host-results/<slug>-foreground-pilot/host-capture-low/sound-events.jsonl`
 - `generated/ps1/foreground/<PACK_BASENAME>.FG2` (high-tide full-render base-diff FG2 pack)
 - `generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2` (low-tide full-render base-diff FG2 pack)
-- `generated/ps1/foreground/<RAW_BASENAME><idx>.RAW` (establishing frame)
 
-The `host-results/` tree is gitignored; only the routed `.FG2` and `.RAW`
-files needed by the PS1 CD are committed. FG1 outputs are legacy artifacts
-and should not be added for new scene work.
+The `host-results/` tree is gitignored; only routed `.FG2` files needed
+by the PS1 CD are committed. FG1/FOC outputs and per-scene establishing
+`.RAW` files are retired and should not be regenerated or committed.
 
-### 2. Pick the establishing frame
-
-The `.RAW` is a pre-rendered background stamped before the foreground-pack
-replay starts, so the user sees a coherent scene instantly. Inspect
-`host-capture-high/frames/frame_NNNNN.bmp` and pick the first frame where
-static content is laid down but animation has not begun. Re-run step 1
-with the new `raw_frame_idx` if needed.
-
-### 3. Wire the scene in
+### 2. Wire the scene in
 
 `config/ps1/cd_layout.xml` — add:
 ```xml
 <file name="<PACK_BASENAME>.FG2"  type="data" source="../../generated/ps1/foreground/<PACK_BASENAME>.FG2"/>
 <file name="<LOW_PACK_BASENAME>.FG2" type="data" source="../../generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2"/>
-<file name="<RAW_BASENAME><idx>.RAW" type="data" source="../../generated/ps1/foreground/<RAW_BASENAME><idx>.RAW"/>
 ```
 
 `foreground_pilot.c` — add the scene to the active routing functions:
 - `fgCompactOverlayPackPathForScene(sceneName)` → high/low `.FG2` selected by `islandState.lowTide`
-- `fgRawFramePathForScene(sceneName)` → `\\FG\\<RAW_BASENAME><idx>.RAW;1`
-- `fgAdsNameForScene(sceneName, &adsTagOut)` → sets the ADS filename + tag
 
-### 4. Build + launch
+`jc_reborn.c` — add the slug to `kProvenScenes` only after full human
+visual + audible signoff. Pending scenes can still be launched
+explicitly with `fgpilot <slug>` once `foreground_pilot.c` routes them.
+
+### 3. Build + launch
 
 ```bash
 ./scripts/rebuild-and-let-run.sh noclean
@@ -81,7 +71,7 @@ launches DuckStation with the cue. BIOS plays first (boot script no
 longer passes `-fastboot`, so you get the chime for volume calibration).
 The game then boots straight into the scene named in `BOOTMODE.TXT`.
 
-### 5. Validate variants
+### 4. Validate variants
 
 Edit `config/ps1/BOOTMODE.TXT` (or pass tokens on the `rebuild-and-let-run`
 line) to exercise each applicable variant:
@@ -99,7 +89,7 @@ Strike through any variant that does not apply to the scene (see
 [scene-status.md](scene-status.md) legend). Sign off each by human
 visual + audible review.
 
-### 6. Tick the row and commit
+### 5. Tick the row and commit
 
 In `docs/ps1/scene-status.md`:
 - Update the scene's row: `⏳` → `✅` for visuals and SFX.
@@ -112,7 +102,7 @@ Commit with a scene-scoped message:
 <slug>: pixel-perfect playback with synced SFX
 ```
 
-### 7. Release cadence
+### 6. Release cadence
 
 Every **10** scenes reaching `✅ / ✅` under this bar:
 ```bash
@@ -171,8 +161,9 @@ validated one at a time; the CD image should include only the packs
 currently needed by routed scene-playback entries.
 
 Legacy `--pack-format fg1`, `fgOverlayPackPathForScene`, and
-`fgDirectPackPathForScene` paths still exist in code as cleanup targets.
-Do not expand those paths while bringing up new scenes.
+`fgDirectPackPathForScene` paths have been removed from the active PS1
+runtime/generation path. Do not restore them while bringing up new
+scenes; old details live in the archaeology and research docs.
 
 ## See also
 

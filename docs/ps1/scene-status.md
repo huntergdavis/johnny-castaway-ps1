@@ -85,18 +85,18 @@ current public release is `v0.3.9-ps1`.
 
 For each iteration:
 
-1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> <raw_frame_idx> <raw_basename> 0 1.0 <LOW_PACK_BASENAME>`
-   to produce the high-tide and low-tide `.FG2` packs, establishing `.RAW`, and sound-event JSONL.
+1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> 0 1.0 <LOW_PACK_BASENAME>`
+   to produce the high-tide and low-tide base-diff `.FG2` packs and sound-event JSONL.
 2. Confirm both `<SCENE>.FG2` and low-tide `<LOW_PACK_BASENAME>.FG2` entries exist in `config/ps1/cd_layout.xml`.
 3. Confirm the scene's routing entries exist in `foreground_pilot.c`
-   (`fgCompactOverlayPackPathForScene`, `fgRawFramePathForScene`, `fgAdsNameForScene`).
+   (`fgCompactOverlayPackPathForScene`).
 4. `./scripts/make-cd-image.sh` then launch via `rebuild-and-let-run.sh noclean`.
 5. User verifies; iterate on bugs.
 6. Update this table, commit. Every 10 ✅/✅ rows → `./scripts/release.sh "<milestone message>"`.
 
-FG1 packs and direct/fallback FG1 runtime routes are no longer active
-methodology. They are retained only as legacy cleanup targets for the
-next round.
+FG1 packs, FOC packs, per-scene establishing RAWs, and direct/fallback
+FG1 runtime routes are retired. They are historical archaeology only, not
+valid scene bring-up inputs.
 
 ## Variant definitions
 

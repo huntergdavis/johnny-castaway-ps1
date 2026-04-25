@@ -7,29 +7,38 @@ OUTPUT_DIR="${1:-}"
 SCENE_SLUG="${2:-fishing1}"
 SCENE_NAME="${3:-FISHING 1}"
 PACK_BASENAME="${4:-$(printf '%s' "$SCENE_SLUG" | tr '[:lower:]' '[:upper:]' | tr -cd 'A-Z0-9')}"
-RAW_FRAME_INDEX="${5:-24}"
-RAW_BASENAME="${6:-FISH}"
-START_FRAME="${7:-0}"
-TIMELINE_SPEED="${8:-1.0}"
+if [ "$#" -ge 9 ]; then
+  # Backwards compatibility for the retired raw-frame positional slots:
+  #   5 = raw frame index, 6 = raw basename.
+  START_FRAME="${7:-0}"
+  TIMELINE_SPEED="${8:-1.0}"
+  LOWTIDE_PACK_BASENAME="${9}"
+else
+  START_FRAME="${5:-0}"
+  TIMELINE_SPEED="${6:-1.0}"
+  LOWTIDE_PACK_BASENAME="${7:-}"
+fi
 
 if [ -z "$OUTPUT_DIR" ]; then
   OUTPUT_DIR="$PROJECT_ROOT/host-results/${SCENE_SLUG}-foreground-pilot"
 fi
 
-HOST_CAPTURE_DIR="$OUTPUT_DIR/host-capture"
 HOST_CAPTURE_HIGH_DIR="$OUTPUT_DIR/host-capture-high"
 HOST_CAPTURE_LOW_DIR="$OUTPUT_DIR/host-capture-low"
 PACK_PATH="$PROJECT_ROOT/generated/ps1/foreground/${PACK_BASENAME}.FG2"
 PACK_JSON="$OUTPUT_DIR/foreground-pack.json"
-LOWTIDE_PACK_BASENAME="${9:-${RAW_BASENAME}LOW}"
+if [ -z "$LOWTIDE_PACK_BASENAME" ]; then
+  LOWTIDE_PACK_BASENAME="${PACK_BASENAME}LOW"
+  if [ "${#LOWTIDE_PACK_BASENAME}" -gt 8 ]; then
+    LOWTIDE_PACK_BASENAME="${PACK_BASENAME:0:7}L"
+  fi
+fi
 if [ "${#LOWTIDE_PACK_BASENAME}" -gt 8 ]; then
-  LOWTIDE_PACK_BASENAME="${RAW_BASENAME}L"
+  echo "low-tide pack basename must fit 8.3 naming: $LOWTIDE_PACK_BASENAME" >&2
+  exit 1
 fi
 LOWTIDE_PACK_PATH="$PROJECT_ROOT/generated/ps1/foreground/${LOWTIDE_PACK_BASENAME}.FG2"
 LOWTIDE_PACK_JSON="$OUTPUT_DIR/foreground-pack-lowtide.json"
-RAW_FRAME_NAME="$(printf 'frame_%05d.bmp' "$RAW_FRAME_INDEX")"
-RAW_FRAME_SOURCE="$HOST_CAPTURE_HIGH_DIR/frames/$RAW_FRAME_NAME"
-RAW_FRAME_PATH="$PROJECT_ROOT/generated/ps1/foreground/${RAW_BASENAME}${RAW_FRAME_INDEX}.RAW"
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR"
 
@@ -79,10 +88,6 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --output-pack "$LOWTIDE_PACK_PATH" \
   --output-json "$LOWTIDE_PACK_JSON"
 
-python3 "$SCRIPT_DIR/build-ps1-rawframe.py" \
-  --input "$RAW_FRAME_SOURCE" \
-  --output "$RAW_FRAME_PATH"
-
 if [ ! -s "$PACK_PATH" ]; then
   echo "foreground pack was not generated: $PACK_PATH" >&2
   exit 1
@@ -93,13 +98,7 @@ if [ ! -s "$LOWTIDE_PACK_PATH" ]; then
   exit 1
 fi
 
-if [ ! -s "$RAW_FRAME_PATH" ]; then
-  echo "foreground raw frame was not generated: $RAW_FRAME_PATH" >&2
-  exit 1
-fi
-
 echo "$PACK_JSON"
 echo "$LOWTIDE_PACK_JSON"
 echo "$PACK_PATH"
 echo "$LOWTIDE_PACK_PATH"
-echo "$RAW_FRAME_PATH"

@@ -40,6 +40,7 @@ extern int vprintf(const char *format, __gnuc_va_list arg);
 extern int fprintf(FILE *stream, const char *format, ...);
 extern int vfprintf(FILE *stream, const char *format, __gnuc_va_list arg);
 extern FILE *fopen(const char *pathname, const char *mode);
+extern int fgetc(FILE *stream);
 extern void *malloc(size_t size);
 extern void exit(int status) __attribute__((noreturn));
 #define stderr ((FILE*)2)
@@ -266,4 +267,3 @@ char *getMonthAndDay()
     return result;
 #endif
 }
-
