@@ -125,6 +125,8 @@ static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (32UL * 1024UL)
+/* Below 3 VBlanks, window refills are more likely to become visible delay. */
+#define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -1138,6 +1140,11 @@ static int fgRuntimeConsumeStagedFrame(uint16 frameIndex)
     return 1;
 }
 
+static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
+{
+    return (slackVBlanks >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0;
+}
+
 static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 {
     uint16 nextFrameIndex;
@@ -1174,9 +1181,9 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 0;
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
-    if (ps1PerfEnabled)
-        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, slackVBlanks > 0 ? 1 : 0);
     if (slackVBlanks == 0) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
         if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
         return 0;
@@ -1191,6 +1198,14 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 
     if (fgRuntimeEntryFitsWindow(entry)) {
         if (!fgRuntimeWindowContainsEntry(entry)) {
+            int eligible = fgRuntimeWindowSlackEligible(slackVBlanks);
+            if (ps1PerfEnabled)
+                ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, eligible);
+            if (!eligible) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkPrefetchSkipNoSlack();
+                return 0;
+            }
             if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
                 if (ps1PerfEnabled)
                     ps1PerfMarkTripwire();
@@ -1199,6 +1214,8 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
             }
             if (outElapsedVBlanks != NULL)
                 *outElapsedVBlanks = elapsedVBlanks;
+        } else if (ps1PerfEnabled) {
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
         }
         if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0)) {
             if (ps1PerfEnabled)
@@ -1210,6 +1227,8 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
     stageTick = fgReadTickCounter();
     if (ps1PerfEnabled) {
         ps1PerfBeginPrefetchRead(slackVBlanks);
@@ -1262,13 +1281,24 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     }
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
-    if (ps1PerfEnabled)
-        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, slackVBlanks > 0 ? 1 : 0);
     if (slackVBlanks == 0) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
         if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
         return 0;
     }
+
+    if (!fgRuntimeWindowSlackEligible(slackVBlanks)) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchSkipNoSlack();
+        return 0;
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
 
     if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, outElapsedVBlanks)) {
         if (ps1PerfEnabled)

@@ -547,11 +547,13 @@ stream window after the first window-size sweep. The old `prefetch-stage1` token
 is no longer required for the normal path; `no-prefetch`, `no-stage1`, and
 window-size tokens remain diagnostic controls.
 
-Current post-merge target: keep squeezing CD latency without changing pixels.
-The 32 KB fishing1 high-tide run shows most entries hit prefetch/window data,
-but still reports `blocking_vb=148`, `due_misses=5`, and prefetch
-`overrun_vb=104`. The next CD experiments should focus on hiding refill work
-better, not simply increasing buffer size blindly.
+Current perf-branch target: keep squeezing CD latency without changing pixels.
+After x-aware restore, PAL4 span compositing, duplicate probe removal, and the
+`3` VBlank refill slack guard, fishing1 high-tide reports `loop_vb=1325`,
+`blocking_vb=106`, `due_misses=4`, and prefetch `overrun_vb=67`. A `6`
+VBlank guard reduced prefetch overrun further but lost overall by increasing
+due-frame blocking, so the next CD experiments should reduce read cost or
+improve grouping rather than blindly raising the threshold.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -569,6 +571,7 @@ better, not simply increasing buffer size blindly.
 | `P4-12` | Align FG2 data chunks or pack-window boundaries as an optional pack mode. | Helps only after runtime windowing proves physical sector layout is limiting. |
 | `P4-13` | Keep all prefetch buffers scene-persistent and bounded. | Preserve the fishing3 memory-leak fix and avoid fragmentation. |
 | `P4-14` | Avoid cross-file prefetch as a first pass. | Current measured stall is inside one FG2 file, not between scene files. |
+| `P4-15` | Done: require at least `3` held VBlanks before starting a stream-window refill. | Avoids short-slack reads that become visible delay; `6` VBlanks was too strict and raised due misses. |
 
 Prefetch variants to test in order:
 
@@ -815,9 +818,9 @@ into one commit.
 | 15 | CD | Align stream window start to pack entry sector. | Lower `unaligned_start` and `overread_bytes`. |
 | 16 | CD | Align stream window end to sector boundary only once. | Lower scratch-copy churn. |
 | 17 | CD | Increase prefetch lead from next entry to next two entries. | Lower `due_misses`. |
-| 18 | CD | Prefetch on long holds only. | Lower prefetch `overrun_vb`. |
+| 18 | CD | Done: prefetch on holds with at least `3` VBlanks of slack; `6` VBlanks failed. | `prefetch_overrun_vb 94 -> 67` and `loop_vb 1335 -> 1325` without increasing `blocking_vb`. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
-| 20 | CD | Stop duplicate prefetch attempts earlier. | Lower `duplicate`. |
+| 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
 | 22 | CD | Remove redundant `CdSearchFile` inside active loop. | Lower `setloc` or search logs. |
 | 23 | CD | Coalesce adjacent due-frame misses into one direct read. | Lower `reads`. |
