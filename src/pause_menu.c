@@ -22,6 +22,7 @@
 #include <psxpad.h>
 #include <psxapi.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 
 #include "mytypes.h"
@@ -77,11 +78,220 @@ int pauseMenuRequestResetLoop = 0;
  * while paused, this gets cleared so we don't fight them on hide. */
 static int pauseMutedSound = 0;
 
-/* OT + primitive scratch for the dim/panel POLY_F4 quads. Tiny —
- * just a tpage + 2 quads = 60 bytes, OT length 4 is plenty. */
-#define PAUSE_OT_LEN 4
+/* OT + primitive scratch. Sized for ~30 lines × ~32 chars ≈ 960
+ * SPRTs × 20 bytes each = 19200 bytes. Round up to 24 KB. */
+#define PAUSE_OT_LEN 8
 static uint32 pauseOt[PAUSE_OT_LEN];
-static uint8  pausePrimBuf[128];
+static uint8  pausePrimBuf[24576];
+
+/* ---------------------------------------------------------------------------
+ *  Embedded 8x8 ASCII font — chars 0x20..0x7F (96 chars).
+ *  Each char is 8 bytes; each byte is one row, MSB = leftmost pixel.
+ *  1 = foreground, 0 = transparent. Covers space, digits, A-Z, a-z,
+ *  and basic punctuation. Unsupported chars draw blank.
+ *  Source data is 1-bit-per-pixel; we expand to 4-bit-indexed at upload.
+ * ------------------------------------------------------------------------- */
+#define PM_FONT_FIRST 0x20
+#define PM_FONT_COUNT 96
+#define PM_GLYPH_W 8
+#define PM_GLYPH_H 8
+
+/* The font itself. Hand-rolled minimum for menu legibility. */
+static const uint8 pmFontBits[PM_FONT_COUNT][8] = {
+    /* 20 ' ' */ {0,0,0,0,0,0,0,0},
+    /* 21 ! */ {0x18,0x18,0x18,0x18,0x18,0x00,0x18,0x00},
+    /* 22 " */ {0x66,0x66,0x66,0x00,0x00,0x00,0x00,0x00},
+    /* 23 # */ {0x6C,0x6C,0xFE,0x6C,0xFE,0x6C,0x6C,0x00},
+    /* 24 $ */ {0,0,0,0,0,0,0,0},
+    /* 25 % */ {0,0,0,0,0,0,0,0},
+    /* 26 & */ {0,0,0,0,0,0,0,0},
+    /* 27 ' */ {0x18,0x18,0x18,0x00,0x00,0x00,0x00,0x00},
+    /* 28 ( */ {0x0C,0x18,0x30,0x30,0x30,0x18,0x0C,0x00},
+    /* 29 ) */ {0x30,0x18,0x0C,0x0C,0x0C,0x18,0x30,0x00},
+    /* 2A * */ {0x00,0x66,0x3C,0xFF,0x3C,0x66,0x00,0x00},
+    /* 2B + */ {0x00,0x18,0x18,0x7E,0x18,0x18,0x00,0x00},
+    /* 2C , */ {0x00,0x00,0x00,0x00,0x00,0x18,0x18,0x30},
+    /* 2D - */ {0x00,0x00,0x00,0x7E,0x00,0x00,0x00,0x00},
+    /* 2E . */ {0x00,0x00,0x00,0x00,0x00,0x18,0x18,0x00},
+    /* 2F / */ {0x06,0x0C,0x18,0x30,0x60,0xC0,0x80,0x00},
+    /* 30 0 */ {0x3C,0x66,0x6E,0x76,0x66,0x66,0x3C,0x00},
+    /* 31 1 */ {0x18,0x38,0x18,0x18,0x18,0x18,0x7E,0x00},
+    /* 32 2 */ {0x3C,0x66,0x06,0x1C,0x30,0x60,0x7E,0x00},
+    /* 33 3 */ {0x3C,0x66,0x06,0x1C,0x06,0x66,0x3C,0x00},
+    /* 34 4 */ {0x0C,0x1C,0x3C,0x6C,0x7E,0x0C,0x0C,0x00},
+    /* 35 5 */ {0x7E,0x60,0x7C,0x06,0x06,0x66,0x3C,0x00},
+    /* 36 6 */ {0x1C,0x30,0x60,0x7C,0x66,0x66,0x3C,0x00},
+    /* 37 7 */ {0x7E,0x06,0x0C,0x18,0x18,0x18,0x18,0x00},
+    /* 38 8 */ {0x3C,0x66,0x66,0x3C,0x66,0x66,0x3C,0x00},
+    /* 39 9 */ {0x3C,0x66,0x66,0x3E,0x06,0x0C,0x38,0x00},
+    /* 3A : */ {0x00,0x18,0x18,0x00,0x00,0x18,0x18,0x00},
+    /* 3B ; */ {0x00,0x18,0x18,0x00,0x00,0x18,0x18,0x30},
+    /* 3C < */ {0x0C,0x18,0x30,0x60,0x30,0x18,0x0C,0x00},
+    /* 3D = */ {0x00,0x00,0x7E,0x00,0x7E,0x00,0x00,0x00},
+    /* 3E > */ {0x60,0x30,0x18,0x0C,0x18,0x30,0x60,0x00},
+    /* 3F ? */ {0x3C,0x66,0x06,0x0C,0x18,0x00,0x18,0x00},
+    /* 40 @ */ {0,0,0,0,0,0,0,0},
+    /* 41 A */ {0x18,0x3C,0x66,0x66,0x7E,0x66,0x66,0x00},
+    /* 42 B */ {0x7C,0x66,0x66,0x7C,0x66,0x66,0x7C,0x00},
+    /* 43 C */ {0x3C,0x66,0x60,0x60,0x60,0x66,0x3C,0x00},
+    /* 44 D */ {0x78,0x6C,0x66,0x66,0x66,0x6C,0x78,0x00},
+    /* 45 E */ {0x7E,0x60,0x60,0x78,0x60,0x60,0x7E,0x00},
+    /* 46 F */ {0x7E,0x60,0x60,0x78,0x60,0x60,0x60,0x00},
+    /* 47 G */ {0x3C,0x66,0x60,0x6E,0x66,0x66,0x3C,0x00},
+    /* 48 H */ {0x66,0x66,0x66,0x7E,0x66,0x66,0x66,0x00},
+    /* 49 I */ {0x3C,0x18,0x18,0x18,0x18,0x18,0x3C,0x00},
+    /* 4A J */ {0x1E,0x06,0x06,0x06,0x66,0x66,0x3C,0x00},
+    /* 4B K */ {0x66,0x6C,0x78,0x70,0x78,0x6C,0x66,0x00},
+    /* 4C L */ {0x60,0x60,0x60,0x60,0x60,0x60,0x7E,0x00},
+    /* 4D M */ {0xC6,0xEE,0xFE,0xD6,0xC6,0xC6,0xC6,0x00},
+    /* 4E N */ {0x66,0x76,0x7E,0x7E,0x6E,0x66,0x66,0x00},
+    /* 4F O */ {0x3C,0x66,0x66,0x66,0x66,0x66,0x3C,0x00},
+    /* 50 P */ {0x7C,0x66,0x66,0x7C,0x60,0x60,0x60,0x00},
+    /* 51 Q */ {0x3C,0x66,0x66,0x66,0x6A,0x6C,0x36,0x00},
+    /* 52 R */ {0x7C,0x66,0x66,0x7C,0x6C,0x66,0x66,0x00},
+    /* 53 S */ {0x3C,0x66,0x60,0x3C,0x06,0x66,0x3C,0x00},
+    /* 54 T */ {0x7E,0x18,0x18,0x18,0x18,0x18,0x18,0x00},
+    /* 55 U */ {0x66,0x66,0x66,0x66,0x66,0x66,0x3C,0x00},
+    /* 56 V */ {0x66,0x66,0x66,0x66,0x66,0x3C,0x18,0x00},
+    /* 57 W */ {0xC6,0xC6,0xC6,0xD6,0xFE,0xEE,0xC6,0x00},
+    /* 58 X */ {0x66,0x66,0x3C,0x18,0x3C,0x66,0x66,0x00},
+    /* 59 Y */ {0x66,0x66,0x66,0x3C,0x18,0x18,0x18,0x00},
+    /* 5A Z */ {0x7E,0x06,0x0C,0x18,0x30,0x60,0x7E,0x00},
+    /* 5B [ */ {0x3C,0x30,0x30,0x30,0x30,0x30,0x3C,0x00},
+    /* 5C \ */ {0xC0,0x60,0x30,0x18,0x0C,0x06,0x02,0x00},
+    /* 5D ] */ {0x3C,0x0C,0x0C,0x0C,0x0C,0x0C,0x3C,0x00},
+    /* 5E ^ */ {0x18,0x3C,0x66,0x00,0x00,0x00,0x00,0x00},
+    /* 5F _ */ {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF},
+    /* 60 ` */ {0x30,0x18,0x0C,0x00,0x00,0x00,0x00,0x00},
+    /* 61 a */ {0x00,0x00,0x3C,0x06,0x3E,0x66,0x3E,0x00},
+    /* 62 b */ {0x60,0x60,0x7C,0x66,0x66,0x66,0x7C,0x00},
+    /* 63 c */ {0x00,0x00,0x3C,0x66,0x60,0x66,0x3C,0x00},
+    /* 64 d */ {0x06,0x06,0x3E,0x66,0x66,0x66,0x3E,0x00},
+    /* 65 e */ {0x00,0x00,0x3C,0x66,0x7E,0x60,0x3C,0x00},
+    /* 66 f */ {0x1C,0x30,0x7C,0x30,0x30,0x30,0x30,0x00},
+    /* 67 g */ {0x00,0x00,0x3E,0x66,0x66,0x3E,0x06,0x3C},
+    /* 68 h */ {0x60,0x60,0x7C,0x66,0x66,0x66,0x66,0x00},
+    /* 69 i */ {0x18,0x00,0x38,0x18,0x18,0x18,0x3C,0x00},
+    /* 6A j */ {0x06,0x00,0x06,0x06,0x06,0x66,0x66,0x3C},
+    /* 6B k */ {0x60,0x60,0x66,0x6C,0x78,0x6C,0x66,0x00},
+    /* 6C l */ {0x38,0x18,0x18,0x18,0x18,0x18,0x3C,0x00},
+    /* 6D m */ {0x00,0x00,0xCC,0xFE,0xD6,0xC6,0xC6,0x00},
+    /* 6E n */ {0x00,0x00,0x7C,0x66,0x66,0x66,0x66,0x00},
+    /* 6F o */ {0x00,0x00,0x3C,0x66,0x66,0x66,0x3C,0x00},
+    /* 70 p */ {0x00,0x00,0x7C,0x66,0x66,0x7C,0x60,0x60},
+    /* 71 q */ {0x00,0x00,0x3E,0x66,0x66,0x3E,0x06,0x06},
+    /* 72 r */ {0x00,0x00,0x7C,0x66,0x60,0x60,0x60,0x00},
+    /* 73 s */ {0x00,0x00,0x3E,0x60,0x3C,0x06,0x7C,0x00},
+    /* 74 t */ {0x18,0x18,0x7E,0x18,0x18,0x18,0x0E,0x00},
+    /* 75 u */ {0x00,0x00,0x66,0x66,0x66,0x66,0x3E,0x00},
+    /* 76 v */ {0x00,0x00,0x66,0x66,0x66,0x3C,0x18,0x00},
+    /* 77 w */ {0x00,0x00,0xC6,0xC6,0xD6,0xFE,0x6C,0x00},
+    /* 78 x */ {0x00,0x00,0x66,0x3C,0x18,0x3C,0x66,0x00},
+    /* 79 y */ {0x00,0x00,0x66,0x66,0x66,0x3E,0x06,0x3C},
+    /* 7A z */ {0x00,0x00,0x7E,0x0C,0x18,0x30,0x7E,0x00},
+    /* 7B { */ {0x0E,0x18,0x18,0x70,0x18,0x18,0x0E,0x00},
+    /* 7C | */ {0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x00},
+    /* 7D } */ {0x70,0x18,0x18,0x0E,0x18,0x18,0x70,0x00},
+    /* 7E ~ */ {0x76,0xDC,0x00,0x00,0x00,0x00,0x00,0x00},
+    /* 7F del */ {0,0,0,0,0,0,0,0},
+};
+
+/* VRAM placement of our font + CLUT.
+ *   font texture: (640, 256), 4-bit packed, 16 cols × 6 rows of glyphs
+ *     = 128 pixels wide × 48 pixels tall = 64 VRAM pixels × 48
+ *   CLUT: (704, 256), 16 entries × 16-bit = 16 VRAM pixels × 1
+ */
+#define PM_FONT_VRAM_X 640
+#define PM_FONT_VRAM_Y 256
+#define PM_CLUT_VRAM_X 704
+#define PM_CLUT_VRAM_Y 256
+
+/* Has the font been uploaded yet this run? */
+static int pmFontUploaded = 0;
+
+/* Per-frame globals so the drawXxx functions can issue text without
+ * threading the buffer pointer through every call. Set by
+ * pauseMenuUpdate before invoking the screen's draw helper. */
+static uint8  *pmFramePrimNext = NULL;
+static uint32 *pmFrameOtSlot   = NULL;
+
+/* Upload the font texture + CLUT to VRAM. Idempotent. */
+static void pmUploadFont(void)
+{
+    /* 4-bit-packed font data: each row of 8 source pixels (1 bit each)
+     * expands to 8 destination texels (4 bits each), packed two per byte
+     * → 4 bytes per row. 96 chars × 8 rows × 4 bytes = 3072 bytes total.
+     * Layout: 16 chars per source row, 6 source rows. */
+    static uint16 fontVram[16 * 4 * (PM_FONT_COUNT / 16) * PM_GLYPH_H];
+    /* Each row in VRAM = 16 chars × 4 nibbles per char, each nibble is
+     * 4 bits, packed: 16*8 nibbles per row = 128 nibbles = 64 16-bit
+     * halfwords (each halfword holds 4 nibbles).
+     *
+     * Scratch math: each source row (one row of one char) produces 4
+     * destination bytes = 2 halfwords. With 16 chars per row: 32
+     * halfwords per VRAM row of pixel data. We have 6*8 = 48 VRAM rows.
+     * Total halfwords: 32 * 48 = 1536.
+     */
+    /* Resize the static array correctly: 16 chars * 8 cols (wide) /
+     * 4 nibbles per halfword = 32 halfwords per VRAM row, 48 rows. */
+    uint16 *dst = fontVram;
+    for (int gy = 0; gy < (PM_FONT_COUNT / 16); gy++) {  /* 6 glyph rows */
+        for (int py = 0; py < PM_GLYPH_H; py++) {        /* 8 pixel rows in glyph */
+            for (int gx = 0; gx < 16; gx++) {            /* 16 glyph columns */
+                uint8 row = pmFontBits[gy * 16 + gx][py];
+                /* Pack 8 bits → 8 4-bit nibbles → 2 halfwords.
+                 * Bit MSB = leftmost pixel = LOW nibble of first halfword
+                 * (PS1 GPU interprets 4-bit packed pixels with
+                 *  nibble 0 = leftmost).
+                 *
+                 * Actually PS1 GPU layout for 4-bit textures:
+                 *   byte b: lo nibble = pixel at +0, hi nibble = pixel at +1
+                 * So for 8 pixels in a row, we need 4 bytes:
+                 *   byte 0 = (px0 & 0xF) | ((px1 & 0xF) << 4)
+                 * For our 1-bit source: pixel is 0 or 1 (palette index).
+                 */
+                uint16 hw0 = 0, hw1 = 0;
+                for (int b = 0; b < 8; b++) {
+                    uint8 px = (row >> (7 - b)) & 1;
+                    if (b < 4)
+                        hw0 |= ((uint16)px) << (b * 4);
+                    else
+                        hw1 |= ((uint16)px) << ((b - 4) * 4);
+                }
+                dst[(gy * PM_GLYPH_H + py) * 32 + gx * 2 + 0] = hw0;
+                dst[(gy * PM_GLYPH_H + py) * 32 + gx * 2 + 1] = hw1;
+            }
+        }
+    }
+
+    /* Build CLUT: 16 entries.
+     *   entry 0: 0x0000 = transparent (mask bit clear; PS1 treats this
+     *            as "not drawn" for textured semi-trans-aware sprites
+     *            with mask-on-source convention)
+     *   entry 1: 0xFFFF = white with mask bit set (visible)
+     *   2..15:   unused (set to white too for any glitches that
+     *            reference them) */
+    static uint16 clutData[16];
+    clutData[0] = 0x0000;
+    for (int i = 1; i < 16; i++)
+        clutData[i] = 0xFFFF;
+
+    /* Upload texture: 32 halfwords wide × 48 rows = (32, 48) RECT in VRAM. */
+    RECT texRect;
+    setRECT(&texRect, PM_FONT_VRAM_X, PM_FONT_VRAM_Y, 32, 48);
+    LoadImage(&texRect, (uint32*)fontVram);
+    DrawSync(0);
+
+    /* Upload CLUT: 16 halfwords × 1 row. */
+    RECT clutRect;
+    setRECT(&clutRect, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y, 16, 1);
+    LoadImage(&clutRect, (uint32*)clutData);
+    DrawSync(0);
+
+    pmFontUploaded = 1;
+    printf("JCPAUSE pmUploadFont done — font @ (%d,%d) clut @ (%d,%d)\n",
+           PM_FONT_VRAM_X, PM_FONT_VRAM_Y, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y);
+}
 
 /* Time/date editing fields. */
 static int editField  = 0;   /* 0=month,1=day,2=year,3=hour,4=min */
@@ -149,17 +359,16 @@ void pauseMenuInit(void)
     /* Reload BIOS font into VRAM -- graphicsInit may have overwritten it. */
     FntLoad(960, 0);
 
-    /* We keep the fontID from ps1_debug.c if still valid; otherwise open a
-     * new stream. FntOpen returns a small integer stream id. */
+    /* Match OLD (working) commit b4476f3d: only open a stream if none
+     * exists. ps1DebugInit already opened one as fontID=0; reuse that. */
     if (fontID < 0) {
-        fontID = FntOpen(80, 100, 480, 280, 0, 1024);
+        fontID = FntOpen(0, 0, 640, 480, 0, 1024);
     }
+    printf("JCPAUSE pauseMenuInit fontID=%d\n", fontID);
 
     menuVisible = 0;
     menuCursor  = 0;
     menuState   = PAUSE_MENU_MAIN;
-
-    /* We piggyback on the events_ps1 pad buffers (extern pad_buff). */
 }
 
 void pauseMenuShow(void)
@@ -226,30 +435,111 @@ void pauseMenuSetState(enum PauseMenuState state)
  *  Drawing helpers -- all use FntPrint into the existing fontID stream
  * ------------------------------------------------------------------------- */
 
-/* P2: build POLY_F4 dim+panel quads each pause frame.
+/* MANUAL SPRT TEXT RENDERER.
+ *
+ * Bypasses PSn00bSDK's broken FntFlush by building SPRT primitives
+ * ourselves, pointing at the BIOS font texture that FntLoad(960, 0)
+ * uploaded to VRAM. The BIOS font is 16 chars wide × 16 chars tall,
+ * 8x8 each (256 chars total), stored 4-bit packed.
+ *
+ * ASCII char N → texture coords (u, v):
+ *   col = N % 16, row = N / 16
+ *   u = col * 8, v = row * 8
+ *
+ * TPage covers a 256-texel-wide × 256-line region. The BIOS font at
+ * (960, 0) sits at tpageX = 960/64 = 15, tpageY = 0/256 = 0.
+ * BIOS font CLUT is conventionally at (x, y+128) → (960, 128).
+ */
+static int pmTextX = 60;
+static int pmTextY = 100;
+
+static void pmTextStart(int x, int y)
+{
+    pmTextX = x;
+    pmTextY = y;
+}
+
+static void pmTextDrawChar(uint8 **nextp, uint32 *otSlot, char c)
+{
+    if (c == '\n') {
+        pmTextX = 60;
+        pmTextY += 10;
+        return;
+    }
+    unsigned char uc = (unsigned char)c;
+    if (uc < PM_FONT_FIRST || uc >= PM_FONT_FIRST + PM_FONT_COUNT) {
+        pmTextX += PM_GLYPH_W;
+        return;
+    }
+    int idx = uc - PM_FONT_FIRST;
+    int col = idx % 16;
+    int row = idx / 16;
+
+    SPRT *sprt = (SPRT*)(*nextp);
+    *nextp += sizeof(SPRT);
+    setSprt(sprt);
+    setXY0(sprt, pmTextX, pmTextY);
+    setWH(sprt, PM_GLYPH_W, PM_GLYPH_H);
+    /* UV is in TPage-local pixel coords. Our font sits at (0, 0) within
+     * its TPage. */
+    setUV0(sprt, col * PM_GLYPH_W, row * PM_GLYPH_H);
+    setClut(sprt, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y);
+    setRGB0(sprt, 128, 128, 128);
+    addPrim(otSlot, sprt);
+    pmTextX += PM_GLYPH_W;
+}
+
+static void pmTextDrawStr(uint8 **nextp, uint32 *otSlot, const char *s)
+{
+    while (*s) {
+        pmTextDrawChar(nextp, otSlot, *s);
+        s++;
+    }
+}
+
+/* printf-style helper that uses the per-frame globals. Newline at end
+ * advances pmTextY by 10 and resets pmTextX to the column the line
+ * started in (set by the caller before this call). */
+static int pmPrintfX = 80;
+static void pmPrintf(const char *fmt, ...)
+{
+    char buf[80];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, ap);
+    va_end(ap);
+    /* Strip trailing newlines — pmPrintf advances Y itself. */
+    int len = (int)strlen(buf);
+    while (len > 0 && (buf[len-1] == '\n' || buf[len-1] == '\r'))
+        buf[--len] = '\0';
+    /* Reset X to line start. */
+    pmTextX = pmPrintfX;
+    pmTextDrawStr(&pmFramePrimNext, pmFrameOtSlot, buf);
+    pmTextY += 10;
+}
+
+/* Build + render dim + panel POLY_F4 quads.
  *
  * Order in OT (back→front):
  *   priority N   : dim quad — full screen, semi-trans 50% black
  *   priority N-1 : panel quad — centered, opaque dark blue
  * Text from FntFlush draws on top via its own primitive list.
- *
- * The bgTile RAM is never modified — on resume we just stop drawing
- * the quads and the next scene frame's grDrawBackground re-uploads
- * the bg as if pause never happened (well, we still need
- * grForceFullRedrawNextFrame on exit because our quads modified
- * VRAM directly during pause). */
+ */
 static void drawPauseQuads(void)
 {
     ClearOTagR(pauseOt, PAUSE_OT_LEN);
     uint8 *next = pausePrimBuf;
 
-    /* TPAGE: set abr=0 (50% blend) for any subsequent semi-trans prim. */
+    /* TPAGE: point at font texture location (960, 0) with abr=0 (50%
+     * blend) so when FntFlush's font sprites are processed AFTER our
+     * DrawOTag, the GPU's tpage register is already pointing at the
+     * font texture. (Our flat POLY_F4 quads don't read any texture, so
+     * the value here doesn't affect them.) */
     DR_TPAGE *tp = (DR_TPAGE*)next;
     next += sizeof(DR_TPAGE);
-    setDrawTPage(tp, 0, 1, getTPage(0, 0, 0, 0));
+    setDrawTPage(tp, 0, 1, getTPage(0, 0, 960, 0));
     addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
 
-    /* Dim quad — full 640x480, semi-trans black → halves what's behind. */
     POLY_F4 *dim = (POLY_F4*)next;
     next += sizeof(POLY_F4);
     setPolyF4(dim);
@@ -261,7 +551,6 @@ static void drawPauseQuads(void)
                 640, 480);
     addPrim(&pauseOt[PAUSE_OT_LEN - 2], dim);
 
-    /* Panel quad — centered at (60,80)–(580,400), opaque dark blue. */
     POLY_F4 *panel = (POLY_F4*)next;
     next += sizeof(POLY_F4);
     setPolyF4(panel);
@@ -279,7 +568,7 @@ static void drawPauseQuads(void)
 
 static void drawSeparator(void)
 {
-    FntPrint(fontID, "----------------------------\n");
+    pmPrintf("----------------------------\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -295,21 +584,21 @@ static void drawSceneInfo(void)
     uint16 fCnt = foregroundPilotRuntimeFrameCount();
     uint32 uptimeSec = ps1FrameCount / 60;
 
-    FntPrint(fontID, "       DEBUG INFO\n");
+    pmPrintf("       DEBUG INFO\n");
     drawSeparator();
-    FntPrint(fontID, " Scene:  %s\n", scene ? scene : "?");
-    FntPrint(fontID, " Mode:   %s\n", mode  ? mode  : "?");
-    FntPrint(fontID, " Frame:  %u / %u\n",
+    pmPrintf(" Scene:  %s\n", scene ? scene : "?");
+    pmPrintf(" Mode:   %s\n", mode  ? mode  : "?");
+    pmPrintf(" Frame:  %u / %u\n",
              (unsigned)fIdx, (unsigned)fCnt);
-    FntPrint(fontID, " Mem:    %u KB / %u KB\n",
+    pmPrintf(" Mem:    %u KB / %u KB\n",
              (unsigned)(used / 1024), (unsigned)(budget / 1024));
-    FntPrint(fontID, " Uptime: %lu:%02lu\n",
+    pmPrintf(" Uptime: %lu:%02lu\n",
              (unsigned long)(uptimeSec / 60), (unsigned long)(uptimeSec % 60));
-    FntPrint(fontID, " Build:  %s\n", __DATE__);
-    FntPrint(fontID, " Perf:   %s\n", perfLevelLabel());
-    FntPrint(fontID, " Sound:  %s\n", soundMuted ? "MUTED" : "ON");
+    pmPrintf(" Build:  %s\n", __DATE__);
+    pmPrintf(" Perf:   %s\n", perfLevelLabel());
+    pmPrintf(" Sound:  %s\n", soundMuted ? "MUTED" : "ON");
     drawSeparator();
-    FntPrint(fontID, "  START = back\n");
+    pmPrintf("  START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -317,18 +606,18 @@ static void drawSceneInfo(void)
  * ------------------------------------------------------------------------- */
 static void drawControls(void)
 {
-    FntPrint(fontID, "\n");
+    pmPrintf("\n");
     drawSeparator();
-    FntPrint(fontID, "     CONTROLS\n");
+    pmPrintf("     CONTROLS\n");
     drawSeparator();
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " START      Pause / Resume\n");
-    FntPrint(fontID, " X          Next Scene\n");
-    FntPrint(fontID, " CIRCLE     Max Speed\n");
-    FntPrint(fontID, " TRIANGLE   Frame Advance\n");
-    FntPrint(fontID, " SELECT     Quit\n");
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " (START to go back)\n");
+    pmPrintf("\n");
+    pmPrintf(" START      Pause / Resume\n");
+    pmPrintf(" X          Next Scene\n");
+    pmPrintf(" CIRCLE     Max Speed\n");
+    pmPrintf(" TRIANGLE   Frame Advance\n");
+    pmPrintf(" SELECT     Quit\n");
+    pmPrintf("\n");
+    pmPrintf(" (START to go back)\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -338,51 +627,51 @@ static void drawSetTime(void)
 {
     const char *fieldNames[] = {"Month","Day","Year","Hour","Min"};
 
-    FntPrint(fontID, "\n");
+    pmPrintf("\n");
     drawSeparator();
-    FntPrint(fontID, "   SET TIME AND DATE\n");
+    pmPrintf("   SET TIME AND DATE\n");
     drawSeparator();
-    FntPrint(fontID, "\n");
+    pmPrintf("\n");
 
     /* Month */
-    FntPrint(fontID, " %s Month: %s%02d%s\n",
+    pmPrintf(" %s Month: %s%02d%s\n",
              editField == 0 ? ">" : " ",
              editField == 0 ? "[" : " ",
              editMonth,
              editField == 0 ? "]" : " ");
 
     /* Day */
-    FntPrint(fontID, " %s Day:   %s%02d%s\n",
+    pmPrintf(" %s Day:   %s%02d%s\n",
              editField == 1 ? ">" : " ",
              editField == 1 ? "[" : " ",
              editDay,
              editField == 1 ? "]" : " ");
 
     /* Year */
-    FntPrint(fontID, " %s Year:  %s%04d%s\n",
+    pmPrintf(" %s Year:  %s%04d%s\n",
              editField == 2 ? ">" : " ",
              editField == 2 ? "[" : " ",
              editYear,
              editField == 2 ? "]" : " ");
 
     /* Hour */
-    FntPrint(fontID, " %s Hour:  %s%02d%s\n",
+    pmPrintf(" %s Hour:  %s%02d%s\n",
              editField == 3 ? ">" : " ",
              editField == 3 ? "[" : " ",
              editHour,
              editField == 3 ? "]" : " ");
 
     /* Minute */
-    FntPrint(fontID, " %s Min:   %s%02d%s\n",
+    pmPrintf(" %s Min:   %s%02d%s\n",
              editField == 4 ? ">" : " ",
              editField == 4 ? "[" : " ",
              editMinute,
              editField == 4 ? "]" : " ");
 
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " UP/DOWN select field\n");
-    FntPrint(fontID, " LEFT/RIGHT adjust value\n");
-    FntPrint(fontID, " X to confirm, START back\n");
+    pmPrintf("\n");
+    pmPrintf(" UP/DOWN select field\n");
+    pmPrintf(" LEFT/RIGHT adjust value\n");
+    pmPrintf(" X to confirm, START back\n");
 
     (void)fieldNames;
 }
@@ -405,28 +694,28 @@ static void drawMainMenu(void)
 {
     const char *soundLabel = soundMuted ? "MUTED" : "ON";
 
-    FntPrint(fontID, " JOHNNY CASTAWAY  - PAUSED -\n");
+    pmPrintf(" JOHNNY CASTAWAY  - PAUSED -\n");
     drawSeparator();
 
-    FntPrint(fontID, " %s Resume\n",
+    pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
-    FntPrint(fontID, " %s Sound: %s\n",
+    pmPrintf(" %s Sound: %s\n",
              menuCursor == MENU_SOUND ? ">" : " ", soundLabel);
-    FntPrint(fontID, " %s Reset Screensaver Loop\n",
+    pmPrintf(" %s Reset Screensaver Loop\n",
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
-    FntPrint(fontID, " %s Next Scene\n",
+    pmPrintf(" %s Next Scene\n",
              menuCursor == MENU_NEXT_SCENE ? ">" : " ");
-    FntPrint(fontID, " %s Perf Counters: %s\n",
+    pmPrintf(" %s Perf Counters: %s\n",
              menuCursor == MENU_PERF_TOGGLE ? ">" : " ", perfLevelLabel());
-    FntPrint(fontID, " %s Debug Info\n",
+    pmPrintf(" %s Debug Info\n",
              menuCursor == MENU_DEBUG_INFO ? ">" : " ");
-    FntPrint(fontID, " %s Set Time/Date\n",
+    pmPrintf(" %s Set Time/Date\n",
              menuCursor == MENU_SET_TIME ? ">" : " ");
-    FntPrint(fontID, " %s Controls\n",
+    pmPrintf(" %s Controls\n",
              menuCursor == MENU_CONTROLS ? ">" : " ");
 
     drawSeparator();
-    FntPrint(fontID, "  X = select   START = resume\n");
+    pmPrintf("  X = select   START = resume\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -578,14 +867,38 @@ int pauseMenuUpdate(void)
 {
     if (!menuVisible) return 0;
 
-    /* P2: re-upload bg every pause frame so the dim quad doesn't
-     * compound over time (each pass would otherwise re-halve VRAM). */
-    grForceFullRedrawNextFrame();
-    grDrawBackground();
-    DrawSync(0);
+    /* Reload BIOS font to VRAM (960, 0) every pause frame —
+     * scene-runtime LoadImage uploads might have clobbered it. */
+    FntLoad(960, 0);
 
-    /* P2: draw the translucent dim + opaque panel quads on top of bg. */
-    drawPauseQuads();
+    /* Black bg via isbg=1 to wipe scene state. */
+    {
+        DRAWENV pdraw;
+        SetDefDrawEnv(&pdraw, 0, 0, 640, 480);
+        setRGB0(&pdraw, 0, 0, 0);
+        pdraw.isbg = 1;
+        PutDrawEnv(&pdraw);
+    }
+
+    /* Upload our font on first frame. */
+    if (!pmFontUploaded)
+        pmUploadFont();
+
+    /* Build OT: TPage pointing at our font, then SPRTs from drawXxx. */
+    ClearOTagR(pauseOt, PAUSE_OT_LEN);
+    uint8 *next = pausePrimBuf;
+
+    DR_TPAGE *tp = (DR_TPAGE*)next;
+    next += sizeof(DR_TPAGE);
+    setDrawTPage(tp, 0, 1, getTPage(0, 0, PM_FONT_VRAM_X, PM_FONT_VRAM_Y));
+    addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
+
+    /* Globals consumed by pmPrintf inside drawMainMenu / drawSceneInfo /
+     * drawControls / drawSetTime. */
+    pmFramePrimNext = next;
+    pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 2];
+    pmPrintfX       = 80;
+    pmTextStart(80, 80);
 
     /* Read pad through the game's shared pad buffer (events_ps1.c owns
      * InitPAD, so we just peek at its buffer via the extern). */
@@ -626,7 +939,8 @@ int pauseMenuUpdate(void)
         return 0;
     }
 
-    /* Draw the appropriate screen. */
+    /* Draw the appropriate screen — pmPrintf adds SPRT primitives to
+     * pauseOt via the pmFrame* globals. */
     switch (menuState) {
     case PAUSE_MENU_MAIN:       drawMainMenu();  break;
     case PAUSE_MENU_SCENE_INFO: drawSceneInfo(); break;
@@ -634,10 +948,19 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;
     }
 
-    /* Flush the font stream to GPU -- renders text primitives this frame. */
-    FntFlush(fontID);
+    /* Submit the OT to GPU. */
+    DrawOTag(&pauseOt[PAUSE_OT_LEN - 1]);
 
-    /* VSync to pace at 60 fps while paused. */
+    /* JCPAUSE per-frame diag. */
+    {
+        static uint32 pauseFrameDbg = 0;
+        if ((pauseFrameDbg++ % 60) == 0) {
+            printf("JCPAUSE flush #%lu fontID=%d state=%d cursor=%d\n",
+                   (unsigned long)pauseFrameDbg, fontID, (int)menuState, menuCursor);
+        }
+    }
+
+    /* VSync to pace at 60 Hz while paused. */
     VSync(0);
 
     return 1;
