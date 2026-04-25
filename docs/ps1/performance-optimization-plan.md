@@ -8,11 +8,26 @@ Measured runtime baseline: `821a5745 ps1: add scene-level perf logging`
 
 Metrics foundation checkpoint: `c0e6d95e ps1: add gated JCPERF2 metrics`
 
+Prefetch/default-path checkpoint: `1b457163 ps1: enable FG2 prefetch by default`
+merged to `main` on 2026-04-25.
+
 Scope: active PS1 scene playback runtime only. The target is faster playback
 without frame dropping, skipped art, timing lies, or regression away from the
 pixel-perfect FG2 methodology.
 
 ## Executive Summary
+
+Post-merge status: the first performance wave is now the normal runtime path.
+Held-entry no-work, one-entry staging, a 48 KB FG2 stream window, and dirty
+clean-rect row restore are merged to `main`. The boot parameters still exist
+for diagnostics, but the default FG2 playback policy is now
+`stage1_window`.
+
+Latest default-path fishing1 high-tide run, with no explicit prefetch boot
+tokens, reported `policy=stage1_window`, `buf=56336`, `hits=150`,
+`due_misses=5`, `hidden_reads=14`, `blocking_reads=19`, `blocking_vb=174`,
+`hidden_vb=45`, `loop_vb=1450`, `target_vb=1077`, `trip=0`, `fallback=0`,
+`frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -43,11 +58,11 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | FG2 stream window plus held-time prefetch | Very high | Measured `562` CD VBlanks for 136 small reads; this is about 95% of the inner overrun. |
-| 2 | Render subphase counters | High | Need to split the remaining `~6.6` non-CD VBlanks per rendered entry before editing restore/compose/upload. |
-| 3 | FG2-specific present pipeline | High | Current `grUpdateDisplay()` waits for VSync before compose/upload, which serializes work after the frame is already due. |
-| 4 | Row/X-aware dirty restore and upload | Medium to high | Current sample restores ~205 KB and uploads ~227 KB per rendered entry, but `upload_vb=9` says byte volume is not the sole visible stall. |
-| 5 | Specialized PAL4 FG2 compositor | Medium | Current fishing1 sample averages only ~2.4K visible pixels per rendered entry, so this is behind CD and pipeline work for fishing. |
+| 1 | Detail-tier attribution pass on the post-prefetch default path | High | `loop_vb` is still `1450` vs `1077`; the next edit needs to know how much is CD blocking, present serialization, upload, restore, compose, or event wait. |
+| 2 | Finish CD stall hiding beyond the default 48 KB window | High | Default prefetch reduced misses sharply, but the latest run still has `blocking_vb=174`, `blocking_reads=19`, and prefetch `overrun_vb=108`. |
+| 3 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `14.7 MB` and uploads `15.7 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
+| 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
+| 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
 Non-goals:
 
@@ -520,18 +535,30 @@ Goal: reduce synchronous CD operations without reintroducing the fragile
 read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
+Status: first wave implemented, visually signed off, and merged to `main` in
+`1b457163`. Stage1 entry prefetch and a 48 KB stream window are now default.
+The old `prefetch-stage1` and `prefetch-window48` tokens are no longer required
+for the normal path; `no-prefetch`, `no-stage1`, and window-size tokens remain
+diagnostic controls.
+
+Current post-merge target: keep squeezing CD latency without changing pixels.
+The default fishing1 high-tide run shows most entries hit prefetch/window data,
+but still reports `blocking_vb=174`, `blocking_reads=19`, `due_misses=5`,
+`used_vb=153`, and prefetch `overrun_vb=108`. The next CD experiments should
+focus on hiding refill work better, not simply increasing buffer size blindly.
+
 | ID | Task | Rationale |
 |---|---|---|
-| `P4-01` | Add a next-entry prefetch state machine to the held-frame path. | Current blocking read happens after hold time expires; start it while the previous frame is still being held. |
-| `P4-02` | Stage exactly one next FG2 entry into a second scene-persistent buffer. | Lowest-risk prefetch: preserves current entry identity and avoids window complexity. |
-| `P4-03` | Swap staged next-entry data into `currentFrameData` when `foregroundPilotRuntimeAdvance()` reaches that entry. | Due-frame path becomes a RAM pointer swap instead of a CD read. |
-| `P4-04` | Add a synchronous one-entry prefetch experiment during held waits before attempting async CD reads. | Proves frame identity and memory behavior with minimal controller-state risk. |
-| `P4-05` | Add a scene-local stream window over the current FG2 file. | Entries are sequential; one 32-64 KB read can cover many small fishing frames. |
-| `P4-06` | Serve entries directly from the stream window when fully resident. | Avoid per-entry `CdControl`, `CdRead`, sector scratch copy, and `CdReadSync`. |
-| `P4-07` | Refill the stream window only during held VBlanks when enough hold budget remains. | Hides CD latency instead of shifting it to the due frame. |
+| `P4-01` | Done: add a next-entry prefetch state machine to the held-frame path. | Current blocking read happens after hold time expires; start it while the previous frame is still being held. |
+| `P4-02` | Done: stage exactly one next FG2 entry into a second scene-persistent buffer. | Lowest-risk prefetch: preserves current entry identity and avoids window complexity. |
+| `P4-03` | Done: swap staged next-entry data into `currentFrameData` when `foregroundPilotRuntimeAdvance()` reaches that entry. | Due-frame path becomes a RAM pointer swap instead of a CD read. |
+| `P4-04` | Done: add a synchronous one-entry prefetch experiment during held waits before attempting async CD reads. | Proves frame identity and memory behavior with minimal controller-state risk. |
+| `P4-05` | Done: add a scene-local stream window over the current FG2 file. | Entries are sequential; one 32-64 KB read can cover many small fishing frames. |
+| `P4-06` | Done: serve entries directly from the stream window when fully resident. | Avoid per-entry `CdControl`, `CdRead`, sector scratch copy, and `CdReadSync`. |
+| `P4-07` | Done: refill the stream window only during held VBlanks when enough hold budget remains. | Hides CD latency instead of shifting it to the due frame. |
 | `P4-08` | Use the original blocking direct read when a frame is due and not resident. | Preserves correctness under short holds, large frames, or missed prefetch; this is timing pressure, not a lower-fidelity fallback. |
-| `P4-09` | Add deterministic scene-class policy: one-entry staging for small scenes, stream window for sequential small entries, direct read for huge outliers. | Fishing and Mary/Suzy likely need different memory/latency tradeoffs, but the chosen path must be deterministic for a given scene class. |
-| `P4-10` | Track prefetch hit/miss and hidden/blocking VBlank counters in `JCPERF2`. | Confirm whether CD VBlanks were hidden, not merely moved. |
+| `P4-09` | Next: add deterministic scene-class policy: one-entry staging for small scenes, stream window for sequential small entries, direct read for huge outliers. | Fishing and Mary/Suzy likely need different memory/latency tradeoffs, but the chosen path must be deterministic for a given scene class. |
+| `P4-10` | Done: track prefetch hit/miss and hidden/blocking VBlank counters in `JCPERF2`. | Confirm whether CD VBlanks were hidden, not merely moved. |
 | `P4-11` | Test true async CD prefetch only after synchronous staging/windowing is correct. | Prior naive read-ahead failed; isolate correctness before adding concurrency. |
 | `P4-12` | Align FG2 data chunks or pack-window boundaries as an optional pack mode. | Helps only after runtime windowing proves physical sector layout is limiting. |
 | `P4-13` | Keep all prefetch buffers scene-persistent and bounded. | Preserve the fishing3 memory-leak fix and avoid fragmentation. |
@@ -757,16 +784,125 @@ Metrics needed before each experiment:
 | Scene startup/resource persistence | Setup timing, CD base for setup reads, heap counters. |
 | Build/binary cleanup | Binary size, top-level timing, render subphases, correctness guard. |
 
+## Next 100 Testable Optimization Ideas
+
+This backlog is intentionally granular. Each row should be a small experiment
+with one primary metric and one correctness gate. Do not batch unrelated rows
+into one commit.
+
+| # | Area | Experiment | Primary signal |
+|---:|---|---|---|
+| 1 | Baseline | Capture default fishing1 high-tide Summary after `1b457163`. | Stable `loop_vb`, `blocking_vb`, correctness zeroes. |
+| 2 | Baseline | Capture default fishing1 low-tide Summary. | Compare tide-dependent pack size and CD behavior. |
+| 3 | Baseline | Capture default fishing2 Summary. | Longer-scene prefetch hit rate. |
+| 4 | Baseline | Capture default fishing3 Summary. | Memory-stable larger payload behavior. |
+| 5 | Baseline | Capture fishing1 high-tide Detail once. | Populate render subphase split. |
+| 6 | Baseline | Capture fishing3 Detail once. | Attribute larger-scene non-CD cost. |
+| 7 | Baseline | Run Off vs Summary fishing1. | Quantify perf-log overhead. |
+| 8 | Baseline | Run Summary vs Detail fishing1. | Quantify detail-probe overhead. |
+| 9 | Baseline | Save a machine-readable metrics comparison script. | Same-field before/after diffs. |
+| 10 | Baseline | Add a benchmark manifest for required variants. | Repeatable scene matrix. |
+| 11 | CD | Test 40 KB stream window. | Lower `blocking_vb` than 48 KB or smaller heap. |
+| 12 | CD | Test 56 KB stream window. | Better hit rate without extra overrun. |
+| 13 | CD | Test 64 KB stream window again under default policy. | Lower `due_misses` with stable heap. |
+| 14 | CD | Test 80 KB stream window for fishing3 only. | Determine memory/perf knee. |
+| 15 | CD | Align stream window start to pack entry sector. | Lower `unaligned_start` and `overread_bytes`. |
+| 16 | CD | Align stream window end to sector boundary only once. | Lower scratch-copy churn. |
+| 17 | CD | Increase prefetch lead from next entry to next two entries. | Lower `due_misses`. |
+| 18 | CD | Prefetch on long holds only. | Lower prefetch `overrun_vb`. |
+| 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
+| 20 | CD | Stop duplicate prefetch attempts earlier. | Lower `duplicate`. |
+| 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
+| 22 | CD | Remove redundant `CdSearchFile` inside active loop. | Lower `setloc` or search logs. |
+| 23 | CD | Coalesce adjacent due-frame misses into one direct read. | Lower `reads`. |
+| 24 | CD | Read through current window even on partial overlap. | Increase `partial_hits`. |
+| 25 | CD | Use one staged-entry buffer plus window pointer handoff. | Lower copies and misses. |
+| 26 | CD | Avoid copying window-resident entries into frame buffer. | Lower `scratch_bytes` or CPU cost. |
+| 27 | CD | Track and reuse previous window if frame offset stays inside. | Increase `window_hits`. |
+| 28 | CD | Add scene-class window policy table generated from pack stats. | Deterministic buffer choice. |
+| 29 | CD | Try synchronous dual-window ping-pong during long holds. | Lower refill `blocking_vb`. |
+| 30 | CD | Prototype async read only for window refill, not due frames. | Increase `async_done`, keep `timeout=0`. |
+| 31 | Pack | Emit per-frame payload sector span in FG2 metadata. | Remove runtime offset math. |
+| 32 | Pack | Emit per-frame row extents. | Lower dirty extent computation. |
+| 33 | Pack | Emit previous/current dirty union extents. | Lower restore planning work. |
+| 34 | Pack | Emit per-tile span command streams. | Lower `tile_splits`. |
+| 35 | Pack | Emit span rows sorted by tile. | Fewer tile-boundary branches. |
+| 36 | Pack | Add optional sector-aligned prefetch groups. | Lower `reads` and `unaligned_*`. |
+| 37 | Pack | Add no-payload held-entry records. | Avoid empty entry reads. |
+| 38 | Pack | Pack sound-event table into startup metadata only. | No per-frame sound scan. |
+| 39 | Pack | Add payload checksum only for debug builds. | Faster frame identity debugging. |
+| 40 | Pack | Emit frame max X/Y bounds after scene-relative offset. | Faster clipping. |
+| 41 | Pack | Quantize dirty extents to upload buckets at pack time. | Lower runtime batching. |
+| 42 | Pack | Add pack-stat JSON for every generated FG2. | Better route decisions. |
+| 43 | Pack | Flag huge frames before routing to CD. | Avoid blind large-scene regressions. |
+| 44 | Pack | Re-evaluate base frames for full-screen outliers. | Lower pack bytes and payload. |
+| 45 | Pack | Prototype `FGP3` sidecar metadata without changing pixels. | Runtime speed with easy rollback. |
+| 46 | Dirty | Replace row-band dirty state with row X extents. | Lower `dirty_rounded_bytes`. |
+| 47 | Dirty | Track previous row extents separately. | No stale pixels after motion. |
+| 48 | Dirty | Restore previous extents, upload current/previous union. | Lower `restore_bytes`. |
+| 49 | Dirty | Round X extents to 8-pixel buckets. | Balance bytes vs rect count. |
+| 50 | Dirty | Round X extents to 16-pixel buckets. | Lower `upload_rects`. |
+| 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects`. |
+| 52 | Dirty | Cap rects by deterministic widening, not fallback. | `cap_hits` allowed, `full_fallbacks=0`. |
+| 53 | Dirty | Split dense frames into planned wide bands. | Stable worst-case upload time. |
+| 54 | Dirty | Avoid marking unchanged clean rows dirty. | Lower `dirty_rows`. |
+| 55 | Dirty | Cache clean-rect row source pointers. | Lower restore CPU. |
+| 56 | Dirty | Use word copies for aligned restore spans. | Lower `restore_vb`. |
+| 57 | Dirty | Use halfword edge handlers around word restore. | Preserve exact pixels. |
+| 58 | Dirty | Track max dirty frame index in Summary. | Faster targeted debugging. |
+| 59 | Dirty | Detail-test restore before upload batching. | Separate RAM vs VRAM wins. |
+| 60 | Dirty | Detail-test upload batching before restore narrowing. | Separate VRAM command cost. |
+| 61 | Dirty | Add stale-guard debug checksum for dirty bounds only. | Catch under-restore. |
+| 62 | Dirty | Remove old full-rect dirty fallback after validation. | Lower branch/code size. |
+| 63 | Compose | Use PAL4 byte-to-two-pixel LUT. | Lower `compose_vb`. |
+| 64 | Compose | Prebuild LUT per scene palette at pack start. | No per-frame palette setup. |
+| 65 | Compose | Remove transparent checks for FG2 spans. | Lower branch count. |
+| 66 | Compose | Split spans at tile boundaries once. | Lower per-pixel tile tests. |
+| 67 | Compose | Add even-X/even-count fast path. | More 32-bit stores. |
+| 68 | Compose | Add odd-left edge handler. | Preserve edge pixels. |
+| 69 | Compose | Add odd-right edge handler. | Preserve edge pixels. |
+| 70 | Compose | Use row-local destination pointer increments. | Less address math. |
+| 71 | Compose | Precompute tile base pointer per row band. | Less tile lookup work. |
+| 72 | Compose | Specialized high-tide fishing compositor path. | Test if scene-class specialization pays. |
+| 73 | Compose | Specialized low-tide fishing compositor path. | Test smaller visible-pixel class. |
+| 74 | Compose | Indexed8 direct palette fast path. | Prepare Mary/Suzy classes. |
+| 75 | Compose | Measure direct16 pack option on one dense scene. | Trade pack size for CPU. |
+| 76 | Compose | Batch spans by contiguous destination rows. | Better cache locality. |
+| 77 | Compose | Add clipped-span counters. | Find capture/offset waste. |
+| 78 | Compose | Remove generic sprite compositor branch from FG2 path. | Lower hot-path code/branches. |
+| 79 | Present | Detail-split `grUpdateDisplay()` wait vs upload. | Identify present serialization. |
+| 80 | Present | Upload before wait when safe. | Lower `present_wait_vb`. |
+| 81 | Present | Wait only when next frame deadline requires it. | Lower idle VBlanks. |
+| 82 | Present | Skip OT clear in pure software FG2 frames. | Lower per-entry CPU. |
+| 83 | Present | Keep controller polling in held wait path only. | Avoid input regressions. |
+| 84 | Present | Separate frame counter from rendered-entry counter. | Correct pause/input accounting. |
+| 85 | Present | Avoid double display updates on empty entries. | Lower `render` or `empty` cost. |
+| 86 | Present | Measure `LoadImage` rectangle count vs bytes. | Choose batching strategy. |
+| 87 | Present | Try two-phase upload for very wide dirty rows. | Lower worst-case upload spikes. |
+| 88 | Setup | Keep holiday art persistent when heap allows. | Lower `setup_reads`. |
+| 89 | Setup | Keep raft art persistent across same raft stage. | Lower `backdrop_vb`. |
+| 90 | Setup | Preload next scene metadata only, not payload. | Faster transition with low heap. |
+| 91 | Setup | Remove unused active CD assets from layout. | Smaller ISO/search surface. |
+| 92 | Setup | Replace `RESOURCE.001` dependence for active FG2 route. | Lower setup reads. |
+| 93 | Setup | Sort CD layout by active startup order. | Lower setup seek gaps. |
+| 94 | Setup | Add scene transition setup metrics matrix. | Find non-playback delays. |
+| 95 | Binary | Compile-gate unused debug strings in release. | Lower `exe_bytes`. |
+| 96 | Binary | Move hot compositor to its own translation unit. | Test file-specific `-O2/-O3`. |
+| 97 | Binary | Generate a map-size diff after each perf commit. | Catch bloat. |
+| 98 | Binary | Remove retired FG1/TTM/ADS runtime hooks from PS1 release. | Lower code size. |
+| 99 | Binary | Replace runtime fallback branches with debug tripwires. | Lower branch surface. |
+| 100 | Validation | Automate metric acceptance checks for `trip=0` and speed deltas. | Prevent silent regressions. |
+
 ## Recommended Next Experiments
 
 | Order | Experiment | Commit only if |
 |---:|---|---|
 | 1 | Implement the `JCPERF2` metrics foundation. | Done in `c0e6d95e`; isolated fishing1 Summary run emitted valid scene-end records. |
-| 2 | Capture the baseline matrix with `JCPERF2`. | fishing1, low/night/holiday fishing1, fishing2, and fishing3 have comparable records. |
-| 3 | Implement one-entry synchronous staging during held VBlanks. | Fishing1 remains perfect and `blocking_vb`, `due_misses`, and playback ratio improve. |
-| 4 | Add a 32 KB current-FG2 stream window. | `reads` drops below entry count with no stale frame data. |
-| 5 | Add a 64 KB window or dual-window experiment if 32 KB is limited by refill frequency. | Better hit rate without heap instability. |
-| 6 | Add row/X dirty state and upload batching behind a debug flag. | Byte counters and render subphase time drop with no stale pixels. |
+| 2 | Done: implement held-entry no-work plus stage1/window prefetch and make it default. | Merged in `1b457163`; default run reports `policy=stage1_window`, clean correctness counters, and visual signoff. |
+| 3 | Capture the post-merge baseline matrix with `JCPERF2` Summary and selected Detail runs. | fishing1 high/low, fishing2, and fishing3 have comparable records under the new default path. |
+| 4 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
+| 5 | Add row/X dirty state and upload batching behind an experiment flag. | Byte counters and render subphase time drop with no stale pixels and no runtime full fallback. |
+| 6 | Test FG2-specific present/update sequencing. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity. |
 | 7 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
 
 ## Red-Team Conclusions
