@@ -40,6 +40,39 @@ uint8 pad_buff[2][34];
 static uint16 delayResidue = 0;
 static uint32 lastFrameTick = 0;
 
+/* JCSPI T14: read MIPS COP0 STATUS register (SR). Bit 0 = IEc (current
+ * interrupt enable). If 0, CPU-level IRQs are gated and nothing fires. */
+static uint32 cop0_read_sr(void)
+{
+    uint32 v;
+    __asm__ volatile("mfc0 %0, $12" : "=r"(v));
+    return v;
+}
+
+/* JCSPI T22: read COP0 CAUSE register. Bits 6:2 = ExcCode, bits 15:8
+ * = pending IRQ bits. Non-zero ExcCode means an exception happened. */
+static uint32 cop0_read_cause(void)
+{
+    uint32 v;
+    __asm__ volatile("mfc0 %0, $13" : "=r"(v));
+    return v;
+}
+
+/* JCSPI T22: read COP0 EPC register. PC at the time of the last
+ * exception. Useful for diagnosing where a fault landed. */
+static uint32 cop0_read_epc(void)
+{
+    uint32 v;
+    __asm__ volatile("mfc0 %0, $14" : "=r"(v));
+    return v;
+}
+
+/* JCSPI T15: VBlank baseline counter. ps1_perf-style hook is too
+ * heavy; we just count VBlank ticks via VSync(-1) reads in the main
+ * loop. If VBlank rate >> SPI poll rate, IRQ subsystem favors VBlank
+ * over timer 2 (could be priority issue). */
+static uint32 vbl_seen_at_last_snapshot = 0;
+
 static uint16 eventsDelayTicksToTargetVBlanks(uint16 delay)
 {
     uint32 scaled;
@@ -140,6 +173,15 @@ void eventsInit()
     printf("JCPAD bits: PAD_START=%04x PAD_CROSS=%04x PAD_SELECT=%04x PAD_TRIANGLE=%04x\n",
            (unsigned)PAD_START, (unsigned)PAD_CROSS, (unsigned)PAD_SELECT, (unsigned)PAD_TRIANGLE);
 
+    /* JCSPI T14/T22: COP0 SR/CAUSE/EPC at boot. SR bit 0 = IEc must be 1
+     * for IRQs to fire. CAUSE bits 6:2 = last exception code (should be 0). */
+    printf("JCSPI T14 cop0 sr=%08lx cause=%08lx epc=%08lx (sr.IEc=%d sr.IM=%02lx cause.ExcCode=%lu)\n",
+           (unsigned long)cop0_read_sr(), (unsigned long)cop0_read_cause(),
+           (unsigned long)cop0_read_epc(),
+           (int)(cop0_read_sr() & 1),
+           (unsigned long)((cop0_read_sr() >> 8) & 0xFF),
+           (unsigned long)((cop0_read_cause() >> 2) & 0x1F));
+
     /* JCSPI: snapshot driver state IMMEDIATELY before SPI_Init for a
      * baseline. After SPI_Init, snapshot again so we can prove the
      * registers we want set are actually set. */
@@ -187,6 +229,29 @@ void eventsInit()
                (unsigned long)post.default_cb,
                (unsigned long)(uint32_t)eventsSpiPollCallback,
                (post.default_cb == (uint32_t)eventsSpiPollCallback) ? "OK" : "MISMATCH");
+
+        /* JCSPI T16: cached/uncached check on _context. PS1 KSEG0 is
+         * 0x80000000-0x9FFFFFFF (cached), KSEG1 is 0xA0000000-0xBFFFFFFF
+         * (uncached/io), KUSEG is 0x00000000-0x7FFFFFFF (cached, user).
+         * Driver expects KSEG0 (cached) for normal RAM. */
+        const char *seg = "KUSEG";
+        if ((post.ctx_addr & 0xE0000000) == 0x80000000) seg = "KSEG0(cached)";
+        else if ((post.ctx_addr & 0xE0000000) == 0xA0000000) seg = "KSEG1(uncached)";
+        printf("JCSPI T16 ctx_addr=%08lx tx_buff=%08lx rx_buff=%08lx seg=%s\n",
+               (unsigned long)post.ctx_addr, (unsigned long)post.tx_buff_addr,
+               (unsigned long)post.rx_buff_addr, seg);
+
+        /* JCSPI T19: handler addresses we wrote. */
+        printf("JCSPI T19 poll_handler=%08lx ack_handler=%08lx\n",
+               (unsigned long)post.poll_handler, (unsigned long)post.ack_handler);
+
+        /* JCSPI T17: DMA control register state. DMA_DPCR at 0x1F8010F0
+         * controls per-channel enable/priority. DMA_DICR at 0x1F8010F4
+         * is the IRQ enable/status. SIO0 doesn't use DMA but bus
+         * contention from active GPU/SPU DMA could stall SIO. */
+        printf("JCSPI T17 DMA dpcr=%08lx dicr=%08lx\n",
+               (unsigned long)*(volatile uint32_t*)0xBF8010F0,
+               (unsigned long)*(volatile uint32_t*)0xBF8010F4);
     }
     printf("JCPAD SPI_Init called — driver polling at 250 Hz (125 Hz per port)\n");
 }
@@ -285,7 +350,12 @@ void eventsWaitTick(uint16 delay)
              * the "callback never fired" cases. */
             SPI_DbgState s;
             SPI_DbgSnapshot(&s);
+            uint32 cur_vbl = (uint32)VSync(-1);
+            uint32 vbl_delta = cur_vbl - vbl_seen_at_last_snapshot;
+            vbl_seen_at_last_snapshot = cur_vbl;
+
             printf("JCSPI #%lu cnt[poll=%lu ack=%lu cb=%lu rxlen=%lu] "
+                   "vbl_delta=%lu vbl_total=%lu "
                    "irq[mask=%08lx stat=%08lx] "
                    "sio[ctrl=%04lx mode=%04lx baud=%04lx stat=%04lx] "
                    "tmr[ctrl=%04lx reload=%04lx value=%04lx] "
@@ -294,6 +364,7 @@ void eventsWaitTick(uint16 delay)
                    (unsigned long)padDiagCalls,
                    (unsigned long)s.poll_count, (unsigned long)s.ack_count,
                    (unsigned long)s.cb_count, (unsigned long)s.last_rxlen,
+                   (unsigned long)vbl_delta, (unsigned long)cur_vbl,
                    (unsigned long)s.irq_mask, (unsigned long)s.irq_stat,
                    (unsigned long)s.sio_ctrl, (unsigned long)s.sio_mode,
                    (unsigned long)s.sio_baud, (unsigned long)s.sio_stat,
@@ -304,16 +375,55 @@ void eventsWaitTick(uint16 delay)
                    s.tx0, s.tx1, s.tx2, s.tx3,
                    s.rx0, s.rx1, s.rx2, s.rx3, s.rx4);
 
+            /* JCSPI T18/T21: snapshot taken AT IRQ ENTRY. */
+            printf("JCSPI #%lu @irq[sio_ctrl=%04lx sio_stat=%04lx irq_stat=%08lx gp=%08lx sp=%08lx]\n",
+                   (unsigned long)padDiagCalls,
+                   (unsigned long)s.at_irq_sio_ctrl, (unsigned long)s.at_irq_sio_stat,
+                   (unsigned long)s.at_irq_irq_stat,
+                   (unsigned long)s.at_irq_gp, (unsigned long)s.at_irq_sp);
+
+            /* JCSPI T14/T22: live COP0 readback. SR.IEc must be 1, no
+             * pending exception. */
+            printf("JCSPI #%lu cop0[sr=%08lx cause=%08lx epc=%08lx IEc=%d ExcCode=%lu]\n",
+                   (unsigned long)padDiagCalls,
+                   (unsigned long)cop0_read_sr(),
+                   (unsigned long)cop0_read_cause(),
+                   (unsigned long)cop0_read_epc(),
+                   (int)(cop0_read_sr() & 1),
+                   (unsigned long)((cop0_read_cause() >> 2) & 0x1F));
+
+            /* JCSPI: rx history — last 4 snapshots of raw response. */
+            printf("JCSPI #%lu rx_hist (count=%lu):\n",
+                   (unsigned long)padDiagCalls, (unsigned long)s.rx_hist_count);
+            for (int slot = 0; slot < SPI_DBG_RX_HIST_SLOTS; slot++) {
+                printf("  slot[%d] port=%lu rxlen=%lu  %02x %02x %02x %02x %02x %02x %02x %02x\n",
+                       slot, (unsigned long)s.rx_hist_port[slot],
+                       (unsigned long)s.rx_hist_rxlen[slot],
+                       s.rx_hist[slot][0], s.rx_hist[slot][1], s.rx_hist[slot][2], s.rx_hist[slot][3],
+                       s.rx_hist[slot][4], s.rx_hist[slot][5], s.rx_hist[slot][6], s.rx_hist[slot][7]);
+            }
+
+            /* JCSPI: pad_buff[0] full 34-byte hex dump (memory frame). */
+            {
+                uint8 *p = pad_buff[0];
+                printf("JCSPI #%lu pad_buff[0]:\n  ", (unsigned long)padDiagCalls);
+                for (int i = 0; i < 34; i++) {
+                    printf("%02x ", p[i]);
+                    if ((i & 0x0F) == 0x0F) printf("\n  ");
+                }
+                printf("\n");
+            }
+
             /* JCSPI verdict: classify which theory the data points to. */
             const char *verdict = "?";
             if (s.poll_count == 0 && s.ack_count == 0 && s.cb_count == 0) {
-                verdict = "T1/T8: timer-2 IRQ never fires (mask/InterruptCallback issue)";
+                verdict = "T1/T8/T14/T20: timer-2 IRQ never fires (mask/InterruptCallback/COP0/init-order)";
             } else if (s.poll_count > 0 && s.ack_count == 0) {
-                verdict = "T2/T3: timer fires, SIO0 /ACK never asserts (port disconnected or DuckStation SIO bug)";
+                verdict = "T2/T3/T17: timer fires, SIO0 /ACK never asserts (port disconnected, SIO bug, or DMA stall)";
             } else if (s.poll_count > 0 && s.ack_count > 0 && s.cb_count == 0) {
-                verdict = "T7: IRQs fire but our callback isn't being invoked — handler wiring lost";
+                verdict = "T7/T19/T21: IRQs fire but callback not invoked — handler wiring/GP issue";
             } else if (s.cb_count > 0 && s.last_rxlen < 5) {
-                verdict = "T10/T11: callback fires but rx_len < 5 — SPI sequence aborts before pad response";
+                verdict = "T10/T11/T18: callback fires but rx_len < 5 — SPI sequence aborts early";
             } else if (s.cb_count > 0 && s.last_rxlen >= 5) {
                 verdict = "T-WORK: SPI working — rx data flowing, but no btn change → check pad_buff translation";
             }

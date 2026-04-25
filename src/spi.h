@@ -58,26 +58,51 @@ typedef struct _SPI_Request {
 } SPI_Request;
 
 /* JCSPI: diagnostic state snapshot. Filled by SPI_DbgSnapshot. */
+#define SPI_DBG_RX_HIST_SLOTS 4
+
 typedef struct _SPI_DbgState {
+	/* Counters / last_rxlen */
 	uint32_t	poll_count;
 	uint32_t	ack_count;
 	uint32_t	cb_count;
 	uint32_t	last_rxlen;
+	/* Live IRQ control */
 	uint32_t	irq_mask;
 	uint32_t	irq_stat;
+	/* Live SIO0 registers */
 	uint32_t	sio_ctrl;
 	uint32_t	sio_mode;
 	uint32_t	sio_baud;
 	uint32_t	sio_stat;
+	/* Live Timer-2 */
 	uint32_t	timer_ctrl;
 	uint32_t	timer_reload;
 	uint32_t	timer_value;
+	/* Driver context */
 	uint32_t	ctx_port;
 	uint32_t	ctx_tx_len;
 	uint32_t	ctx_rx_len;
 	uint32_t	default_cb;
 	uint8_t		tx0, tx1, tx2, tx3;
 	uint8_t		rx0, rx1, rx2, rx3, rx4;
+	/* T18/T21: snapshot at IRQ entry */
+	uint32_t	at_irq_sio_ctrl;
+	uint32_t	at_irq_sio_stat;
+	uint32_t	at_irq_irq_stat;
+	uint32_t	at_irq_gp;
+	uint32_t	at_irq_sp;
+	/* T19: installed handler addresses */
+	uint32_t	poll_handler;
+	uint32_t	ack_handler;
+	/* T16: context address (KSEG0 vs KSEG1 vs KUSEG check) */
+	uint32_t	ctx_addr;
+	uint32_t	tx_buff_addr;
+	uint32_t	rx_buff_addr;
+	/* Rolling rx history — last 4 captures in chronological order */
+	uint32_t	rx_hist_count;
+	uint32_t	rx_hist_rxlen[SPI_DBG_RX_HIST_SLOTS];
+	uint32_t	rx_hist_port[SPI_DBG_RX_HIST_SLOTS];
+	uint8_t		rx_hist[SPI_DBG_RX_HIST_SLOTS][8];
 } SPI_DbgState;
 
 extern volatile uint32_t spi_dbg_poll_count;

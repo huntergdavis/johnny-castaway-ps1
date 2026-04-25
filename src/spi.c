@@ -36,6 +36,33 @@ volatile uint32_t spi_dbg_ack_count  = 0;   /* SIO0 /ACK IRQ enters */
 volatile uint32_t spi_dbg_cb_count   = 0;   /* user callback invoked */
 volatile uint32_t spi_dbg_last_rxlen = 0;   /* rx_len at last poll IRQ */
 
+/* JCSPI T18: register snapshot taken at the TOP of the poll IRQ handler
+ * (before any of our writes). Tells us what the hardware looks like at
+ * the moment a poll cycle begins. */
+volatile uint32_t spi_dbg_at_irq_sio_ctrl = 0;
+volatile uint32_t spi_dbg_at_irq_sio_stat = 0;
+volatile uint32_t spi_dbg_at_irq_irq_stat = 0;
+
+/* JCSPI T21: GP register at IRQ entry. If $gp is wrong, we can't
+ * access globals. Captured by the IRQ handler before any global access. */
+volatile uint32_t spi_dbg_at_irq_gp = 0;
+volatile uint32_t spi_dbg_at_irq_sp = 0;
+
+/* JCSPI: rolling rx_buff history. Each time the callback fires, we
+ * snapshot the first 8 bytes of rx_buff into the next slot. Lets us
+ * see WHAT the controller is actually replying with even if our
+ * pad_buff translation is wrong. */
+#define SPI_DBG_RX_HIST_SLOTS 4
+volatile uint8_t  spi_dbg_rx_hist[SPI_DBG_RX_HIST_SLOTS][8];
+volatile uint32_t spi_dbg_rx_hist_rxlen[SPI_DBG_RX_HIST_SLOTS];
+volatile uint32_t spi_dbg_rx_hist_port[SPI_DBG_RX_HIST_SLOTS];
+volatile uint32_t spi_dbg_rx_hist_idx = 0;
+
+/* JCSPI: handler addresses we INTENDED to install. If these don't
+ * match what the BIOS has in its event table, something stomped them. */
+volatile uint32_t spi_dbg_poll_handler_addr = 0;
+volatile uint32_t spi_dbg_ack_handler_addr  = 0;
+
 /* Request queue management */
 
 static void _spi_create_poll_req(void) {
@@ -77,6 +104,22 @@ static void _spi_next_req(void) {
 /* Interrupt handlers */
 
 static void _spi_poll_irq_handler(void) {
+	/* JCSPI T21: capture $gp/$sp first thing — before touching globals.
+	 * If $gp is wrong we won't even reach the spi_dbg_*++ writes (or
+	 * they'll write to garbage memory). Capturing into a register first
+	 * via `move` lets us at least see the values if globals end up
+	 * accessible. */
+	uint32_t gp_val, sp_val;
+	__asm__ volatile("move %0, $gp" : "=r"(gp_val));
+	__asm__ volatile("move %0, $sp" : "=r"(sp_val));
+	spi_dbg_at_irq_gp = gp_val;
+	spi_dbg_at_irq_sp = sp_val;
+
+	/* JCSPI T18: snapshot SIO/IRQ_STAT BEFORE we touch anything. */
+	spi_dbg_at_irq_sio_ctrl = (uint32_t)SIO_CTRL(0);
+	spi_dbg_at_irq_sio_stat = (uint32_t)SIO_STAT(0);
+	spi_dbg_at_irq_irq_stat = (uint32_t)IRQ_STAT;
+
 	spi_dbg_poll_count++;
 	spi_dbg_last_rxlen = _context.rx_len;
 
@@ -84,6 +127,16 @@ static void _spi_poll_irq_handler(void) {
 	// from the RX FIFO.
 	if (SIO_STAT(0) & 0x0002)
 		_context.rx_buff[_context.rx_len - 1] = (uint8_t) SIO_DATA(0);
+
+	/* JCSPI: snapshot rx history slot for this completed poll cycle. */
+	{
+		uint32_t slot = spi_dbg_rx_hist_idx & (SPI_DBG_RX_HIST_SLOTS - 1);
+		for (int i = 0; i < 8; i++)
+			spi_dbg_rx_hist[slot][i] = _context.rx_buff[i];
+		spi_dbg_rx_hist_rxlen[slot] = _context.rx_len;
+		spi_dbg_rx_hist_port[slot]  = _context.port;
+		spi_dbg_rx_hist_idx++;
+	}
 
 	if (_context.callback) {
 		spi_dbg_cb_count++;
@@ -196,6 +249,32 @@ void SPI_DbgSnapshot(SPI_DbgState *out) {
 	out->rx2         = _context.rx_buff[2];
 	out->rx3         = _context.rx_buff[3];
 	out->rx4         = _context.rx_buff[4];
+
+	/* T18/T21: state captured at IRQ entry. */
+	out->at_irq_sio_ctrl = spi_dbg_at_irq_sio_ctrl;
+	out->at_irq_sio_stat = spi_dbg_at_irq_sio_stat;
+	out->at_irq_irq_stat = spi_dbg_at_irq_irq_stat;
+	out->at_irq_gp       = spi_dbg_at_irq_gp;
+	out->at_irq_sp       = spi_dbg_at_irq_sp;
+
+	/* T19: handler addresses we intended to install. */
+	out->poll_handler    = spi_dbg_poll_handler_addr;
+	out->ack_handler     = spi_dbg_ack_handler_addr;
+
+	/* T16: address of _context (high nibble reveals KSEG0/KSEG1/KUSEG). */
+	out->ctx_addr        = (uint32_t)&_context;
+	out->tx_buff_addr    = (uint32_t)_context.tx_buff;
+	out->rx_buff_addr    = (uint32_t)_context.rx_buff;
+
+	/* Rolling rx history. Copy the most recent 4 slots in
+	 * chronological order. */
+	out->rx_hist_count = spi_dbg_rx_hist_idx;
+	for (int s = 0; s < SPI_DBG_RX_HIST_SLOTS; s++) {
+		out->rx_hist_rxlen[s] = spi_dbg_rx_hist_rxlen[s];
+		out->rx_hist_port[s]  = spi_dbg_rx_hist_port[s];
+		for (int i = 0; i < 8; i++)
+			out->rx_hist[s][i] = spi_dbg_rx_hist[s][i];
+	}
 }
 
 /* Public API */
@@ -233,6 +312,13 @@ void SPI_SetPollRate(uint32_t value) {
 }
 
 void SPI_Init(SPI_Callback callback) {
+	/* JCSPI T19: record the addresses we INTENDED to install so the
+	 * snapshot can compare against whatever the BIOS event table
+	 * actually has. If the BIOS chained someone else's handler ahead
+	 * of ours, these addresses won't run. */
+	spi_dbg_poll_handler_addr = (uint32_t)&_spi_poll_irq_handler;
+	spi_dbg_ack_handler_addr  = (uint32_t)&_spi_ack_irq_handler;
+
 	// Disable the BIOS timer handler (which for some stupid reason is enabled
 	// by default, even though it does nothing) and set up custom interrupt
 	// handlers.
