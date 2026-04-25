@@ -25,6 +25,7 @@ BOOTMODE_FILE="$PROJECT_ROOT/config/ps1/BOOTMODE.TXT"
 EMBEDDED_BOOTMODE_HEADER="$PROJECT_ROOT/config/ps1/bootmode_embedded.h"
 
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
+EXPERIMENT_LOG="${PS1_PERF_EXPERIMENT_LOG:-$OUTPUT_ROOT/experiments.jsonl}"
 FRAMES="${PS1_PERF_FRAMES:-7200}"
 INTERVAL="${PS1_PERF_INTERVAL:-999999}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-${REGTEST_TIMEOUT:-180}}"
@@ -73,6 +74,8 @@ Options:
   --timeout N              Wall-clock timeout per case (default: REGTEST_TIMEOUT or 180).
   --log LEVEL              DuckStation log level (default: Warning).
   --output DIR             Output root (default: scratch/ps1-perf-iterate).
+  --experiment-log FILE    Append one JSONL record per attempted case
+                           (default: <output>/experiments.jsonl).
   --clean                  Clean PS1 build before each case.
   --baseline FILE          Compare against a prior summary JSON.
   --write-baseline FILE    Also copy this run summary to FILE.
@@ -97,6 +100,7 @@ Outputs:
   <output>/<timestamp>/summary.json
   <output>/<timestamp>/<case>/headless-regtest.log
   <output>/<timestamp>/<case>/perf-summary.json
+  <output>/experiments.jsonl
 USAGE
 }
 
@@ -210,6 +214,8 @@ while [ $# -gt 0 ]; do
             LOG_LEVEL="$2"; shift 2 ;;
         --output)
             OUTPUT_ROOT="$2"; shift 2 ;;
+        --experiment-log)
+            EXPERIMENT_LOG="$2"; shift 2 ;;
         --clean)
             BUILD_MODE="clean"; shift ;;
         --baseline)
@@ -270,6 +276,15 @@ check_env
 RUN_ID="$(date +%Y%m%d-%H%M%S)"
 RUN_ROOT="$OUTPUT_ROOT/$RUN_ID"
 mkdir -p "$RUN_ROOT"
+mkdir -p "$(dirname "$EXPERIMENT_LOG")"
+GIT_COMMIT="$(git rev-parse --short HEAD 2>/dev/null || printf 'unknown')"
+GIT_BRANCH="$(git branch --show-current 2>/dev/null || printf 'unknown')"
+if git diff --quiet --ignore-submodules -- 2>/dev/null &&
+   git diff --cached --quiet --ignore-submodules -- 2>/dev/null; then
+    GIT_DIRTY=0
+else
+    GIT_DIRTY=1
+fi
 
 BOOTMODE_BACKUP="$(mktemp /tmp/ps1-perf-bootmode-XXXXXX.txt)"
 BOOTMODE_WAS_PRESENT=0
@@ -333,8 +348,10 @@ from pathlib import Path
 
 label, boot, case_dir, log_file = sys.argv[1:5]
 log_path = Path(log_file)
+ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
 def parse_value(value):
+    value = ansi_re.sub("", value)
     if value.startswith("0x"):
         try:
             return int(value, 16)
@@ -350,7 +367,7 @@ legacy = []
 tty_lines = []
 if log_path.is_file():
     for raw in log_path.read_text(encoding="utf-8", errors="ignore").splitlines():
-        line = raw
+        line = ansi_re.sub("", raw)
         if "TTY:" in line:
             line = line.split("TTY:", 1)[1].strip()
             tty_lines.append(line)
@@ -453,6 +470,112 @@ print()
 PY
 }
 
+append_experiment_log() {
+    local summary_file="$1"
+    local regtest_exit="$2"
+    local attempt_status="$3"
+    local failure_reason="$4"
+
+    python3 - "$EXPERIMENT_LOG" "$summary_file" "$RUN_ID" "$GIT_COMMIT" "$GIT_BRANCH" \
+        "$GIT_DIRTY" "$FRAMES" "$INTERVAL" "$TIMEOUT" "$LOG_LEVEL" "$BUILD_MODE" \
+        "$PERF_TOKEN" "$BASELINE_FILE" "$WRITE_BASELINE" "$regtest_exit" \
+        "$attempt_status" "$failure_reason" <<'PY'
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+(
+    log_path,
+    summary_path,
+    run_id,
+    git_commit,
+    git_branch,
+    git_dirty,
+    frames,
+    interval,
+    timeout,
+    log_level,
+    build_mode,
+    perf_token,
+    baseline_file,
+    write_baseline,
+    regtest_exit,
+    attempt_status,
+    failure_reason,
+) = sys.argv[1:18]
+
+summary_file = Path(summary_path)
+summary = {}
+if summary_file.is_file():
+    summary = json.loads(summary_file.read_text(encoding="utf-8"))
+
+sections = summary.get("sections", {})
+timing = sections.get("timing", {})
+cd = sections.get("cd", {})
+prefetch = sections.get("prefetch", {})
+gfx = sections.get("gfx", {})
+correctness = sections.get("correctness", {})
+gate = summary.get("gate", {})
+
+record = {
+    "schema": "ps1-perf-experiment-log/v1",
+    "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+    "run_id": run_id,
+    "label": summary.get("label"),
+    "boot": summary.get("boot"),
+    "attempt_status": attempt_status,
+    "failure_reason": failure_reason or None,
+    "regtest_exit": int(regtest_exit),
+    "gate_pass": gate.get("pass"),
+    "gate_failures": gate.get("failures", []),
+    "git": {
+        "branch": git_branch,
+        "commit": git_commit,
+        "dirty": bool(int(git_dirty)),
+    },
+    "config": {
+        "frames": int(frames),
+        "interval": int(interval),
+        "timeout": int(timeout),
+        "log_level": log_level,
+        "build_mode": build_mode,
+        "perf_token": perf_token,
+        "baseline_file": baseline_file or None,
+        "write_baseline": write_baseline or None,
+    },
+    "paths": {
+        "case_dir": summary.get("case_dir"),
+        "summary_file": str(summary_file.resolve()),
+        "log_file": summary.get("log_file"),
+    },
+    "metrics": {
+        "loop_vb": timing.get("loop_vb"),
+        "target_vb": timing.get("target_vb"),
+        "overrun_vb": timing.get("overrun_vb"),
+        "blocking_vb": cd.get("blocking_vb"),
+        "loop_reads": cd.get("loop_reads"),
+        "prefetch_policy": prefetch.get("policy"),
+        "prefetch_hits": prefetch.get("hits"),
+        "prefetch_due_misses": prefetch.get("due_misses"),
+        "prefetch_overrun_vb": prefetch.get("overrun_vb"),
+        "upload_bytes": gfx.get("upload_bytes"),
+        "restore_bytes": gfx.get("restore_bytes"),
+        "full_fallbacks": gfx.get("full_fallbacks"),
+        "trip": correctness.get("trip"),
+        "fallback": correctness.get("fallback"),
+        "frame_mismatch": correctness.get("frame_mismatch"),
+        "sound_late": correctness.get("sound_late"),
+        "cd_fail": correctness.get("cd_fail"),
+    },
+}
+
+Path(log_path).parent.mkdir(parents=True, exist_ok=True)
+with Path(log_path).open("a", encoding="utf-8") as fh:
+    fh.write(json.dumps(record, sort_keys=True) + "\n")
+PY
+}
+
 run_headless_regtest() {
     local cue_file="$1"
     local out_dir="$2"
@@ -505,11 +628,30 @@ run_headless_regtest() {
         -- "/game/${cue_name}"
     )
 
+    local cmd=()
     if command -v timeout >/dev/null 2>&1; then
-        timeout "${TIMEOUT}s" "${docker_args[@]}" "${regtest_args[@]}" > "$log_file" 2>&1
+        cmd=(timeout "${TIMEOUT}s" "${docker_args[@]}" "${regtest_args[@]}")
     else
-        "${docker_args[@]}" "${regtest_args[@]}" > "$log_file" 2>&1
+        cmd=("${docker_args[@]}" "${regtest_args[@]}")
     fi
+
+    "${cmd[@]}" > "$log_file" 2>&1 &
+    local pid=$!
+    local start_time
+    start_time="$(date +%s)"
+
+    while kill -0 "$pid" >/dev/null 2>&1; do
+        sleep 15
+        if kill -0 "$pid" >/dev/null 2>&1; then
+            local now elapsed size
+            now="$(date +%s)"
+            elapsed=$((now - start_time))
+            size="$(wc -c < "$log_file" 2>/dev/null || printf '0')"
+            echo "  headless still running: ${elapsed}s elapsed, ${size} log bytes"
+        fi
+    done
+
+    wait "$pid"
 }
 
 SUMMARY_PATHS=()
@@ -550,10 +692,13 @@ for i in "${!CASE_LABELS[@]}"; do
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
+        append_experiment_log "$summary_file" "$regtest_exit" "regtest_failed" "regtest_exit_$regtest_exit"
         echo "ERROR: regtest exited $regtest_exit for case $label" >&2
         echo "See: $log_file" >&2
         exit 1
     fi
+
+    append_experiment_log "$summary_file" "$regtest_exit" "regtest_passed" ""
 done
 
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
