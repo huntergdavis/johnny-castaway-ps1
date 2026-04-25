@@ -1,8 +1,9 @@
-# Castaway Sandbox — Direct-Control Johnny Mode
+# Castaway Freeplay — Direct-Control Johnny Mode
 
-**Status**: design locked, implementation not started
-**Slug**: `sandbox` (boot via `fgpilot sandbox`; later via pause menu)
-**Audience**: PS1 hardware target (DuckStation for primary testing, real hardware compatibility is a hard requirement)
+**Status**: design locked, implementation ready to begin
+**Slug**: `freeplay` (boot via `fgpilot freeplay`; later via pause menu)
+**Audience**: PS1 hardware target (DuckStation for primary testing, real PS1 hardware compatibility is a hard requirement)
+**Implementation branch**: `freeplay-mode` (to be created at start of work)
 
 ---
 
@@ -29,7 +30,7 @@ Goal: someone watching a friend play it should say "wait, I want to try" within 
 - Real PS1 hardware compatibility
 
 ### Non-goals
-- Capture, export, or recording — sandbox is play-only
+- Capture, export, or recording — freeplay is play-only
 - Diagonal movement (4-way is forever)
 - Save / persistence across sessions (state resets when scene exits)
 - NPC dialog or quest system
@@ -40,21 +41,28 @@ Goal: someone watching a friend play it should say "wait, I want to try" within 
 
 ## 3. Architectural decision
 
-Every other fgpilot scene (`fishing1`, `fishing2`, `fishing3`, etc.) plays back a captured `.FG2` pack of pre-rendered foreground frames. **Sandbox cannot work that way** — there's no canonical frame stream because gameplay branches with input.
+Every other fgpilot scene (`fishing1`, `fishing2`, `fishing3`, etc.) plays back a captured `.FG2` pack of pre-rendered foreground frames. **Freeplay cannot work that way** — there's no canonical frame stream because gameplay branches with input.
 
-So sandbox is a **runtime-driven scene**: it lives entirely in C code on the PS1, with the same surface as the ocean runtime (background SCR + wave tick + clean-rect restore + present), but the per-frame foreground sprite is computed live from a state machine, not streamed.
+So freeplay is a **runtime-driven scene**: it lives entirely in C code on the PS1, with the same surface as the ocean runtime (background SCR + wave tick + clean-rect restore + present), but the per-frame foreground sprite is computed live from a state machine, not streamed.
 
 Key implications:
-- No `.FG2` pack for sandbox
+- No `.FG2` pack for freeplay
 - No host-side capture step
 - No CD asset additions (every BMP is already on disc)
-- Reuses `adsPilotPreloadBackgrndBmp`, `adsPilotEnableWaveBackdrop`, `adsPilotTickBackgroundWaves`, `grSaveCleanBgRects`, `grRestoreBgFromRects`, `adsPilotStampHoliday`, `adsPilotReleaseBackdrop`
+- Reuses the post-cleanup PS1 backdrop API now living in `foreground_pilot.c`:
+  - `fgBackdropPreloadBackgrndBmp()`
+  - `fgBackdropEnableWaveBackdrop()`
+  - `fgBackdropSaveCleanBgRectsForPack()`
+  - `fgBackdropTickBackgroundWaves()`
+  - `fgBackdropStampHoliday()`
+  - `fgBackdropRelease(int keepBackgrnd)`
+  - `grSaveCleanBgRects()`, `grRestoreBgFromRects()`
 
 ---
 
 ## 4. Control surface
 
-PS1 has D-pad + 4 face buttons + L1 / L2 / R1 / R2 + Select + Start. Both pads are polled; either can drive sandbox.
+PS1 has D-pad + 4 face buttons + L1 / L2 / R1 / R2 + Select + Start. Both pads are polled; either can drive freeplay.
 
 ### Tier A — always active
 
@@ -62,7 +70,7 @@ PS1 has D-pad + 4 face buttons + L1 / L2 / R1 / R2 + Select + Start. Both pads a
 |---|---|
 | D-pad / left analog | Walk 4-way. Analog has ~32-unit dead-zone. |
 | Cross (✕) | **Context verb** — does the right thing for Johnny's current zone |
-| Start (tap) | Exit sandbox → return to screensaver random rotation |
+| Start (tap) | Exit freeplay → return to screensaver random rotation |
 | Select | Toggle help overlay (3-sec auto-fade or until pressed again) |
 
 ### Tier B — self-expression (no modifier)
@@ -121,7 +129,7 @@ Order is deliberately mundane → escalating, so first impressions feel chill an
 | 4 | **Angry** | `GJANGRY.BMP` | first emote | 90 vb |
 | 5 | **Bonk head** | `JOHNWALK.BMP` (specific frame) or dedicated | slapstick | 75 vb |
 | 6 | **Drunk toggle** | `DRUNKJON.BMP` | silly state | sticky toggle |
-| 7 | **Mexican walk** | `MEXCWALK.BMP` | charm | 5 sec auto-revert |
+| 7 | **Snazzy strut** | `MEXCWALK.BMP` (sprite filename retained from original Sierra assets; gag name decoupled from any nationality) | charm | 5 sec auto-revert |
 | 8 | **Run away** | `GJRUNAWA.BMP` | action peak | 3-sec dash |
 
 Cycle wraps. Re-pressing during lockout queues the next gag. Drunk is a flag, not a mode — it modifies all subsequent walking.
@@ -169,7 +177,7 @@ L1 + button shortcuts skip directly to Mary / King Kong / coconut / etc. without
 
 ## 8. Persistent island state
 
-The "live life" layer. Once placed, things stay until the player exits sandbox. State resets on each fresh entry into sandbox.
+The "live life" layer. Once placed, things stay until the player exits freeplay. State resets on each fresh entry into freeplay.
 
 | Object | Trigger | Limit | Restore handling |
 |---|---|---|---|
@@ -178,12 +186,12 @@ The "live life" layer. Once placed, things stay until the player exits sandbox. 
 | Raft stage | R1 + ← cycles 0–5 | Always at canonical raft position | Stamped at canonical position when stage changes. Re-snapshot on change. |
 | Coconut on ground | knocked from tree | Up to 5 piled | Stamped at impact position. Pile of 5 → 6th triggers explosion easter egg. |
 | Day / night | R1 + ↑ | Either | Affects palette of all rendering. Re-snapshot full clean baseline on toggle. |
-| Holiday overlay | R1 + → | One of 5 (none + 4) | Loads `HOLIDAY.BMP` on first toggle to "on"; stamped per-frame via `adsPilotStampHoliday` |
+| Holiday overlay | R1 + → | One of 5 (none + 4) | Loads `HOLIDAY.BMP` on first toggle to "on"; stamped per-frame via `fgBackdropStampHoliday` |
 | Friday-friendship counter | Auto-incremented on each Native Canoe summon | 0–3 sticky during session | Influences Native Canoe summon behavior |
 
 ### Re-snapshot pattern (key implementation detail)
 
-The sandbox owns its own array of clean rects (`gSandboxOwnedRects[]`, up to 8 entries). When persistent state changes, sandbox rebuilds the list and calls `grSaveCleanBgRects(...)` with the full set. The bg tiles must already have the new state painted before the snapshot. This is the same pattern used by ocean-runtime for the wave + Johnny rect.
+The freeplay scene owns its own array of clean rects (`gFreeplayOwnedRects[]`, up to 8 entries). When persistent state changes, freeplay rebuilds the list and calls `grSaveCleanBgRects(...)` with the full set. The bg tiles must already have the new state painted before the snapshot. This is the same pattern used by ocean-runtime for the wave + Johnny rect.
 
 ### Day / night re-stamping
 
@@ -219,7 +227,7 @@ The island has a heartbeat. These tick continuously regardless of input:
 - Brief "MEANWHILE…" panel flash, then on-screen banner reads "CASTAWAY COVE CARNIVAL"
 - Lasts ~12 seconds, **input locked** (cinematic)
 - Layered SFX: boat whistle + roar + gulls + plane drone (cap simultaneous voices at 8)
-- After: everyone exits in their normal patterns. Johnny does one celebratory Mexican-walk for 3 sec
+- After: everyone exits in their normal patterns. Johnny does one celebratory snazzy-strut for 3 sec
 - Achievement-style flash: "★ SECRET FOUND ★"
 
 ### Other secrets
@@ -232,7 +240,7 @@ The island has a heartbeat. These tick continuously regardless of input:
 | Friday's friend | Native Canoe summoned 3 times in a session | On 3rd, Friday lands and walks alongside Johnny mirroring his actions for 30 sec | No |
 | The Tornado | Hold L1+R1+L2+R2 for 2 sec | All summons fire in rapid succession, 1 sec each | Yes (~10 sec) |
 | Holiday speedrun | Cycle through all 4 holidays in <2 sec via R1+→ spam | Brief montage flash with all 4 overlays superimposed | No |
-| Mexican walk forever | Press Square exactly when Mexican walk's timer expires (frame-perfect) | Mexican walk extends 5 more sec, repeatable | No |
+| Strut forever | Press Square exactly when Snazzy strut's timer expires (frame-perfect) | Strut extends 5 more sec, repeatable | No |
 | Drunken master | Drunk-toggled ON, then bonk head 5 times | Johnny falls over backward, lays on beach with X-eyes for 5 sec, recovery animation | Yes (~6 sec) |
 
 ---
@@ -293,7 +301,7 @@ IDLE  → WALK (input dx/dy nonzero)
 IDLE/WALK → FISH      (Cross at shore zone)
 IDLE/WALK → DIVE      (Cross in shallow water)
 IDLE/WALK → BUILD     (Cross on beach center, multi-press)
-IDLE/WALK → BONK | EAT | ANGRY | HOT | IDEA | MEXWALK | RUNAWAY | SCOUT
+IDLE/WALK → BONK | EAT | ANGRY | HOT | IDEA | STRUT | RUNAWAY | SCOUT
                        (Square cycle / Cross default zone)
 FISH  → IDLE/WALK    (Cross again, or after auto-bite ends)
 DIVE  → IDLE          (after duration)
@@ -305,7 +313,7 @@ SLEEP → IDLE          (any input)
 
 **Special states**:
 - **DRUNK** is a flag, not a mode — modifies WALK rendering using `DRUNKJON.BMP`
-- **CINEMATIC LOCK** — set by `cinematicLockUntilFrame`. While set, input layer reads pad as usual but `sandboxApplyInput` returns early; D-pad and all buttons including Start are ignored. Auto-clears when `gFrameCount >= cinematicLockUntilFrame`. Used by Big One, Konami Carnival, Sleep-walker, Drunken master, Tornado.
+- **CINEMATIC LOCK** — set by `cinematicLockUntilFrame`. While set, input layer reads pad as usual but `freeplayApplyInput` returns early; D-pad and all buttons including Start are ignored. Auto-clears when `gFrameCount >= cinematicLockUntilFrame`. Used by Big One, Konami Carnival, Sleep-walker, Drunken master, Tornado.
 
 Distinction: **summons do NOT lock input** — Johnny remains controllable while seagulls / Mary / KingKong play out. **Cinematics DO lock input** — the player is meant to watch.
 
@@ -349,11 +357,11 @@ Each frame in this order. Do not reorder without good reason.
 
 1. `grBeginFrame()`
 2. `grRestoreBgFromRects()` — restores baseline (already includes painted persistent objects)
-3. `adsPilotTickBackgroundWaves()` — wave overlay
+3. `fgBackdropTickBackgroundWaves()` — wave overlay
 4. **Animated persistent objects** (fire flicker, in-progress castle build) — these are NOT in baseline because they animate
 5. **Summons** in spawn-time order (back-to-front roughly)
 6. **Johnny** — last among foreground, so he overlaps summons that are spatially behind him; in tree z-region (Phase 5) render Johnny then re-stamp trunk
-7. **Holiday overlay** if active (`adsPilotStampHoliday`)
+7. **Holiday overlay** if active (`fgBackdropStampHoliday`)
 8. **Help overlay** if Select active (top-most)
 9. **Achievement / SECRET FOUND text** if active (top-most, alpha)
 10. `grUpdateDisplay(NULL, NULL, NULL)`
@@ -366,14 +374,14 @@ Each frame in this order. Do not reorder without good reason.
 |---|---|---|
 | `BACKGRND.BMP` slot 0 | ~93 KB | Sticky across screensaver loops |
 | `HOLIDAY.BMP` variant slot | ~30 KB | Lazy-load on first holiday-toggle |
-| `JOHNWALK.BMP` in sandbox slot 1 | ~100 KB | Always loaded |
-| Currently-active gag BMP, sandbox slot 2 | ≤ 50 KB | LRU; one at a time |
-| Currently-active summon BMP, sandbox slot 3 | ≤ 80 KB | LRU; one at a time. KingKong is largest. |
-| Persistent-state BMPs (FIRE, COCONUTS, MRAFT, GJCASTLE) sandbox slot 4 | ≤ 60 KB | Concat where possible, swap as needed |
+| `JOHNWALK.BMP` in freeplay slot 1 | ~100 KB | Always loaded |
+| Currently-active gag BMP, freeplay slot 2 | ≤ 50 KB | LRU; one at a time |
+| Currently-active summon BMP, freeplay slot 3 | ≤ 80 KB | LRU; one at a time. KingKong is largest. |
+| Persistent-state BMPs (FIRE, COCONUTS, MRAFT, GJCASTLE) freeplay slot 4 | ≤ 60 KB | Concat where possible, swap as needed |
 | `LITEBULB` stamped into Johnny render path | ≤ 5 KB | tiny |
 | bg tiles (4) | 614 KB | |
 | Clean rects | ~280 KB | Slightly larger than fishing3 due to summon corridors |
-| Sandbox state struct + arrays | < 4 KB | |
+| Freeplay state struct + arrays | < 4 KB | |
 | **Total** | **~1.3 MB** | comfortably under 2 MB ceiling |
 
 If memory pressure surfaces: drop a couple of summons from the catalog, or aggressively LRU more slots.
@@ -384,74 +392,74 @@ If memory pressure surfaces: drop a couple of summons from the catalog, or aggre
 
 ### New files
 
-**`src/scene_sandbox.h`** (~80 lines)
+**`src/scene_freeplay.h`** (~80 lines)
 ```c
-#ifndef SCENE_SANDBOX_H
-#define SCENE_SANDBOX_H
-void sandboxRun(void);
-int  sandboxExitRequested(void);
-void sandboxClearExitRequest(void);
+#ifndef SCENE_FREEPLAY_H
+#define SCENE_FREEPLAY_H
+void freeplayRun(void);
+int  freeplayExitRequested(void);
+void freeplayClearExitRequest(void);
 #endif
 ```
 
-**`src/scene_sandbox.c`** (~1000–1200 lines, structured)
+**`src/scene_freeplay.c`** (~1000–1200 lines, structured)
 - §0 — Header / license
-- §1 — Includes, constants, sprite-index references (from `sandbox_sprite_indices.h`)
+- §1 — Includes, constants, sprite-index references (from `freeplay_sprite_indices.h`)
 - §2 — Type definitions:
-  - `enum TSandboxJohnnyMode` (IDLE, WALK, FISH, DIVE, BUILD, BONK, EAT, ANGRY, HOT, IDEA, MEXWALK, RUNAWAY, SCOUT, SLEEP)
-  - `enum TSandboxSummonKind` (SEAGULL, LILIPUTS, BIPLANE, CANOE, BOAT, KINGKONG, MARY, PIRATE, FLOCK, MEANWHILE)
-  - `struct TSandboxJohnny` { x, y, facing, mode, modeTimer, frameTimer, frameIdx, drunkFlag, walkStepCount, idleSec }
-  - `struct TSandboxSummon` { kind, x, y, frameIdx, frameTimer, lifetimeFramesRemaining, customData }
-  - `struct TSandboxPersistentObject` { kind, x, y, frameIdx, stage }
-  - `struct TSandboxState` { johnny, summons[8], persistents[16], dayNight, lowTide, holiday, raftStage, fridayCount, secretsFound bitset, comboBuffer, helpOverlayUntilFrame, ambientNextEventFrame, cinematicLockUntilFrame, gSandboxExitRequested }
-  - `struct TSandboxInput` { dx, dy, pressedThisFrame bitmask, heldBitmask, heldFrames per button }
+  - `enum TFreeplayJohnnyMode` (IDLE, WALK, FISH, DIVE, BUILD, BONK, EAT, ANGRY, HOT, IDEA, STRUT, RUNAWAY, SCOUT, SLEEP)
+  - `enum TFreeplaySummonKind` (SEAGULL, LILIPUTS, BIPLANE, CANOE, BOAT, KINGKONG, MARY, PIRATE, FLOCK, MEANWHILE)
+  - `struct TFreeplayJohnny` { x, y, facing, mode, modeTimer, frameTimer, frameIdx, drunkFlag, walkStepCount, idleSec }
+  - `struct TFreeplaySummon` { kind, x, y, frameIdx, frameTimer, lifetimeFramesRemaining, customData }
+  - `struct TFreeplayPersistentObject` { kind, x, y, frameIdx, stage }
+  - `struct TFreeplayState` { johnny, summons[8], persistents[16], dayNight, lowTide, holiday, raftStage, fridayCount, secretsFound bitset, comboBuffer, helpOverlayUntilFrame, ambientNextEventFrame, cinematicLockUntilFrame, gFreeplayExitRequested }
+  - `struct TFreeplayInput` { dx, dy, pressedThisFrame bitmask, heldBitmask, heldFrames per button }
 - §3 — Sprite registry (table + lazy-load helpers)
-- §4 — Input layer (`sandboxReadInput`, `sandboxDetectKonami`, combo detection)
+- §4 — Input layer (`freeplayReadInput`, `freeplayDetectKonami`, combo detection)
 - §5 — Action handlers (one function per action, ~30 of them)
 - §6 — Mode tick (frame stepping per mode)
 - §7 — Summon tick + persistent-object tick
 - §8 — Ambient life ticker
 - §9 — Render layer (Johnny, summons, persistents, overlays)
 - §10 — Help overlay (uses pause_menu fnt utilities if compatible, else minimal `FntPrint`)
-- §11 — Top-level `sandboxRun()` (mirrors `fgPlayOceanRuntimeScene` setup, runs main loop, tears down)
+- §11 — Top-level `freeplayRun()` (mirrors `fgPlayOceanRuntimeScene` setup, runs main loop, tears down)
 - §12 — Exported API
 
-**`src/sandbox_sprite_indices.h`** (~50 lines, generated from Phase 0.1 audit)
-Constants: `SANDBOX_JOHNWALK_IDLE=8`, `SANDBOX_JOHNWALK_WALK_RIGHT_BASE=0`, etc.
+**`src/freeplay_sprite_indices.h`** (~50 lines, generated from Phase 0.1 audit)
+Constants: `FREEPLAY_JOHNWALK_IDLE=8`, `FREEPLAY_JOHNWALK_WALK_RIGHT_BASE=0`, etc.
 
 ### Edits
 
-**`src/foreground_pilot.c`** — add sandbox dispatch (~5 lines)
-Top of `foregroundPilotPlay()`:
+**`src/foreground_pilot.c`** — add freeplay dispatch (~5 lines)
+Top of `foregroundPilotPlay()`, alongside the existing dispatch chain (`testcard`, `fgCompactOverlayPackPathForScene`, `titlecopy`, `isletest`, `oceantest`, `solidred`):
 ```c
-if (fgSceneEquals(gForegroundPilotScene, "sandbox")) {
-    sandboxRun();
+if (fgSceneEquals(gForegroundPilotScene, "freeplay")) {
+    freeplayRun();
     return;
 }
 ```
-Plus `#include "scene_sandbox.h"` near other includes.
+Plus `#include "scene_freeplay.h"` near other includes.
 
 **`src/jc_reborn.c`** — exit fall-back (~5 lines, both PS1 and host branches)
 Inside the screensaver `do { foregroundPilotPlay(); … }`:
 ```c
-if (sandboxExitRequested()) {
-    sandboxClearExitRequest();
+if (freeplayExitRequested()) {
+    freeplayClearExitRequest();
     explicitScene = NULL;  /* fall back to random kProvenScenes rotation */
 }
 ```
-**Do NOT** add `"sandbox"` to `kProvenScenes`.
+**Do NOT** add `"freeplay"` to `kProvenScenes`.
 
-**`CMakeLists.txt`** — add `src/scene_sandbox.c` to source list.
+**`CMakeLists.txt`** — add `src/scene_freeplay.c` to source list.
 
-**`scripts/build-host.sh`** — add `src/scene_sandbox.c` to `SOURCES=()`.
+**`scripts/build-host.sh`** — add `src/scene_freeplay.c` to `SOURCES=()`.
 
 ### No changes
-- `config/ps1/cd_layout.xml` — every BMP we need is already on disc
-- `config/ps1/regtest-scenes.txt` — sandbox isn't regtest-able
+- `config/ps1/cd_layout.xml` — every BMP we need is already on disc (verified after the recent CD-layout cleanup commit `7d5221e3`)
+- `config/ps1/regtest-scenes.txt` — freeplay isn't regtest-able
 - `scripts/*.py` — no capture pipeline involvement
 
 ### Optional
-- `docs/ps1/scene-status.md` — add a "Modes" section listing sandbox separately from numbered scenes
+- `docs/ps1/scene-status.md` — add a "Modes" section listing freeplay separately from numbered scenes
 
 ---
 
@@ -470,29 +478,39 @@ Phase 6   ½ day    Pause-menu integration (ship last)
 Total    ~10 days
 ```
 
-Each phase commits independently. Halt-able at any phase boundary.
+### Branch and commit strategy
 
-### Phase 0 — Prerequisites (no code)
+- All work on a new branch **`freeplay-mode`**, branched from current `main`
+- One commit per phase (and additional sub-milestone commits within longer phases when there's a coherent atomic unit) so any phase can be rolled back independently while later phases carry their own fixes forward
+- Branch is merged to `main` only after all phases are validated and the user signs off
+- Commits target meaningful checkpoints, not arbitrary save points — each commit must compile + boot cleanly to a `freeplay`-bootable state (or, for Phase 0, a research-only doc commit)
+- The agent runs all phases overnight if greenlit; commits are pushed to the branch as each phase completes
+
+### Phase 0 — Prerequisites (no code, single commit)
 
 **0.1 Sprite-index audit**
-Dump every relevant BMP as PNG strips. Output: `docs/ps1/sandbox/sprite-indices.md` with index → pose mapping per BMP. Becomes source-of-truth for `src/sandbox_sprite_indices.h`.
+Dump every relevant BMP as PNG strips. Output: `docs/ps1/freeplay/sprite-indices.md` with index → pose mapping per BMP. Becomes source-of-truth for `src/freeplay_sprite_indices.h`.
 
 **0.2 SFX inventory**
-Audit sample IDs in `soundPlay()`. Throwaway test scene plays each ID with on-screen label. Output: `docs/ps1/sandbox/sfx-inventory.md` mapping ID → human description.
+Audit sample IDs in `soundPlay()`. Throwaway test scene plays each ID with on-screen label. Output: `docs/ps1/freeplay/sfx-inventory.md` mapping ID → human description.
 
 **0.3 Pad-init verification**
-Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. If present, sandbox just polls.
+Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, freeplay bootstraps it. If present, freeplay just polls. Decision documented at the top of `scene_freeplay.c`.
+
+Commit: `freeplay: phase 0 — sprite/SFX/pad-init audit`
 
 ### Phase 1a — Skeleton (½ day, single commit)
 
-- New files `scene_sandbox.c/h` with stubs
+- New files `scene_freeplay.c/h` with stubs
 - `foreground_pilot.c` dispatch wired
 - `jc_reborn.c` exit-fall-back wired (predicate returns false in MVP)
 - Walking with idle pose, walkable-rect clamping
 - Start exits cleanly back to screensaver
-- Cmake + build-host.sh updated
+- CMake + build-host.sh updated
 
-**Acceptance**: `fgpilot sandbox` boots, Johnny appears at center-island, D-pad walks him, walk animation cycles, Start returns to fishing scenes cleanly.
+**Acceptance**: `fgpilot freeplay` boots, Johnny appears at center-island, D-pad walks him, walk animation cycles, Start returns to fishing scenes cleanly.
+
+Commit: `freeplay: phase 1a — skeleton (walk + exit)`
 
 ### Phase 1b — First verb + first gag + help (½ day, single commit)
 
@@ -500,9 +518,11 @@ Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. 
 - Square fires bonk-head one-shot with lockout
 - Select toggles a single-page help overlay
 
-**Acceptance**: walking + fish-at-shore + bonk + help overlay. Re-entering sandbox via boot resets state cleanly.
+**Acceptance**: walking + fish-at-shore + bonk + help overlay. Re-entering freeplay via boot resets state cleanly.
 
-### Phase 2 — Gag rotation + simple summons (1.5 days)
+Commit: `freeplay: phase 1b — first verb (fish) + first gag (bonk) + help`
+
+### Phase 2 — Gag rotation + simple summons (1.5 days, 1 commit)
 
 - All 8 self-gags fire on Square-cycle in mundane→escalate order
 - Circle re-fires last gag
@@ -510,7 +530,9 @@ Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. 
 
 **Acceptance**: each gag visually correct, summons spawn and complete cleanly without affecting Johnny.
 
-### Phase 3 — Full summons + env toggles + ambient (2 days)
+Commit: `freeplay: phase 2 — gag rotation + simple summons`
+
+### Phase 3 — Full summons + env toggles + ambient (2 days, 1–2 commits)
 
 - All 10 summons via Triangle cycle
 - L1+button shortcuts to specific summons
@@ -520,7 +542,9 @@ Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. 
 
 **Acceptance**: full repertoire usable, day/night re-snapshots cleanly without artifacts.
 
-### Phase 4 — Persistent state + Friday + auto-reactions (2 days)
+Commit: `freeplay: phase 3 — full summons + env toggles + ambient`
+
+### Phase 4 — Persistent state + Friday + auto-reactions (2 days, 1–2 commits)
 
 - Sandcastle placement on beach center, multi-castle support, sub-rect re-snapshot
 - Lit fire (R1+Cross), animated FIRE1-5
@@ -531,7 +555,9 @@ Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. 
 
 **Acceptance**: build 3 castles, walk away, walk back — they're still there. Light fire, etc. Friday escalates correctly across 3 canoe summons.
 
-### Phase 5 — Konami + easter eggs + SFX + tree z-order + polish (2 days)
+Commit: `freeplay: phase 4 — persistent state + auto-events + Friday`
+
+### Phase 5 — Konami + easter eggs + SFX + tree z-order + polish (2 days, 1–2 commits)
 
 - Konami code → Carnival cinematic
 - "The Big One" combo
@@ -542,13 +568,17 @@ Grep for `InitPAD` / `StartPAD` / `PadStart`. If absent, sandbox bootstraps it. 
 
 **Acceptance**: Konami triggers Carnival, "Big One" triggers cinematic, tree z-order works, SFX play on cue. Loop forever (10+ min) without leak / crash / freeze.
 
-### Phase 6 — Pause-menu integration (½ day, ship last)
+Commit: `freeplay: phase 5 — secrets + SFX + polish`
 
-- Adds "Sandbox Mode" entry to `pause_menu.c`
-- Selecting it sets `ps1BootForegroundOverlayScene = "sandbox"` (or equivalent), unpauses
+### Phase 6 — Pause-menu integration (½ day, ship last, 1 commit)
+
+- Adds "Freeplay Mode" entry to `pause_menu.c`
+- Selecting it sets `ps1BootForegroundOverlayScene = "freeplay"` (or equivalent), unpauses
 - Current scene's main loop checks `sceneSwitchRequested()` predicate (already plumbed in 1a, returns true now)
 
-**Acceptance**: in fishing1 scene, pause → "Sandbox Mode" → enters sandbox cleanly. Exit sandbox returns to screensaver.
+**Acceptance**: in fishing1 scene, pause → "Freeplay Mode" → enters freeplay cleanly. Exit freeplay returns to screensaver.
+
+Commit: `freeplay: phase 6 — pause-menu integration`
 
 ---
 
@@ -558,7 +588,7 @@ See acceptance criteria attached to each phase in §18. Cross-phase smoke tests:
 
 - After every phase: re-run fishing1/2/3 scenes via screensaver to confirm no regression
 - After every phase: 5-minute idle screensaver loop — sanity check for memory drift
-- After Phase 5: 30-minute sandbox session pressing every button — fuzzy soak test
+- After Phase 5: 30-minute freeplay session pressing every button — fuzzy soak test
 
 ---
 
@@ -569,7 +599,7 @@ See acceptance criteria attached to each phase in §18. Cross-phase smoke tests:
 | 1 | JOHNWALK frame mapping wrong | Medium | Phase 0.1 audit |
 | 2 | Pad init not done elsewhere | Medium | Phase 0.3 verify |
 | 3 | SFX samples don't match what we need | Low | Phase 0.2 inventory; silent fallback |
-| 4 | Persistent objects + clean rect snapshot ordering | Medium | Sandbox-owned rect list, careful re-snapshot pattern |
+| 4 | Persistent objects + clean rect snapshot ordering | Medium | Freeplay-owned rect list, careful re-snapshot pattern |
 | 5 | Day/night toggle + persistent objects | Medium | Re-stamp ALL persistents on toggle, then re-snapshot |
 | 6 | Multi-summon overlap z-order | Low | Spawn-time ordering; document |
 | 7 | Tree z-order requires re-stamp | Low | Phase 5 only; defer |
@@ -592,10 +622,10 @@ See acceptance criteria attached to each phase in §18. Cross-phase smoke tests:
 Treated as a hard requirement. Implementation rules:
 
 1. **No DuckStation-specific shortcuts.** Only PSn00bSDK APIs. No emulator-only behavior.
-2. **VRAM addressing strict.** Existing infra handled; sandbox introduces no new VRAM math.
-3. **CD timing tolerance.** Sandbox doesn't stream from CD per-frame (no .FG2), so it's safer than fishing scenes here. BMPs load once at scene start.
+2. **VRAM addressing strict.** Existing infra handled; freeplay introduces no new VRAM math.
+3. **CD timing tolerance.** Freeplay doesn't stream from CD per-frame (no .FG2), so it's safer than fishing scenes here. BMPs load once at scene start.
 4. **No interrupt blocking.** Long animations advance frame-by-frame, never block main loop.
-5. **Memory ceiling 2 MB strict.** v3 budget is 1.3 MB; comfortable.
+5. **Memory ceiling 2 MB strict.** Budget is 1.3 MB; comfortable.
 6. **Controller protocol.** PSn00bSDK pad polling works identically on real hardware. Use only standard digital + analog reads.
 7. **SPU voice limit (24).** Cap simultaneous SFX at 8; queue overflow.
 
@@ -603,47 +633,46 @@ Treated as a hard requirement. Implementation rules:
 
 ## 22. Pause-menu integration (Phase 6)
 
-Sandbox is intended to be summonable from the pause menu in normal screensaver scenes.
+Freeplay is intended to be summonable from the pause menu in normal screensaver scenes.
 
 **Flow** (during normal scenes like fishing1):
 1. User presses pause button (likely Start — verify in Phase 0.3)
-2. Pause menu shows; user selects "Sandbox Mode"
-3. Pause menu sets a scene-switch flag (e.g., `gPauseRequestedSceneSwitch = "sandbox"`), unpauses
+2. Pause menu shows; user selects "Freeplay Mode"
+3. Pause menu sets a scene-switch flag (e.g., `gPauseRequestedSceneSwitch = "freeplay"`), unpauses
 4. Current scene's main loop checks `sceneSwitchRequested()` — exits cleanly
-5. Screensaver outer loop calls `foregroundPilotPlay()` again, dispatches to sandbox
+5. Screensaver outer loop calls `foregroundPilotPlay()` again, dispatches to freeplay
 
-**Sandbox-internal exit**:
-1. Inside sandbox, Start (tap) exits to screensaver random rotation
-2. Long-press Start (>1 sec) ALSO opens pause menu inside sandbox (Phase 6 stretch)
+**Freeplay-internal exit**:
+1. Inside freeplay, Start (tap) exits to screensaver random rotation
+2. Long-press Start (>1 sec) ALSO opens pause menu inside freeplay (Phase 6 stretch)
 
 **Conflict resolution**:
 - Normal scenes: Start = pause menu (already wired)
-- Sandbox: Start (tap) = exit; Start (hold) = pause menu (Phase 6)
-- Pause menu's "Sandbox Mode" entry available from any scene
+- Freeplay: Start (tap) = exit; Start (hold) = pause menu (Phase 6)
+- Pause menu's "Freeplay Mode" entry available from any scene
 
 **Implementation impact on earlier phases**:
 - Phase 1a's main loop should already check `sceneSwitchRequested()` — returns false during Phases 1–5, returns true once Phase 6 wires it
 - Phase 6 itself adds ~30 lines to `pause_menu.c`
-- No structural changes to `scene_sandbox.c`
+- No structural changes to `scene_freeplay.c`
 
 ---
 
 ## 23. Open implementation notes
 
 ### Naming
-- Slug: `sandbox`. Final decision pending — alternates: `playmode`, `freeplay`, `island`, `live`.
-- BMP slot constants: define `SANDBOX_BMP_SLOT_JOHNWALK=1`, `_GAG=2`, `_SUMMON=3`, `_PERSIST=4` to keep slot management clear.
+- Slug: `freeplay`. Final.
+- BMP slot constants: define `FREEPLAY_BMP_SLOT_JOHNWALK=1`, `_GAG=2`, `_SUMMON=3`, `_PERSIST=4` to keep slot management clear.
 
 ### Random seeding
 - Use existing PS1 RNG (`rand()` seeded from VBlank counter at scene start) for ambient-event timing.
 - Konami input matching is exact; no randomness.
 
 ### Frame counter
-- Sandbox maintains its own `gFrameCount` incremented each iteration. Used for cinematic lock, ambient cadence, animation timers, idle detection.
+- Freeplay maintains its own `gFrameCount` incremented each iteration. Used for cinematic lock, ambient cadence, animation timers, idle detection.
 
 ### Capture-ledger interaction
-- `grDrawSprite` may push entries to `grCaptureBlitForegroundLedger`. Sandbox shouldn't appear in any host capture (it's PS1-only and play-only).
-- Add a `sandboxCaptureFiltered` flag set during sandbox runs; modify capture ledger to skip when set. Or simply don't run captures while sandbox is active.
+- Freeplay is PS1-only and play-only. The host capture pipeline is not relevant here. No capture-related code is touched by this scene.
 
 ### Fail-soft behavior
 - Action handler checks BMP load result; if fail, advances to next gag in cycle and tries again. After 3 fails, fall back to bonk-head (always loaded with JOHNWALK).
@@ -656,18 +685,20 @@ Sandbox is intended to be summonable from the pause menu in normal screensaver s
 
 ## 24. Final greenlight checklist
 
-To start implementation, confirm:
+**Confirmed by user (2026-04-25)**:
 
-- [ ] Slug: `sandbox` ✓ or alternate name
-- [ ] Phase 0 + Phase 1a in single commit, or pause after Phase 0 to confirm audits
-- [ ] No additional scope from MVP
+- [x] Slug: `freeplay`
+- [x] Phase split, all phases in single overnight run
+- [x] Branch: new branch `freeplay-mode`, merge to main only after sign-off
+- [x] One commit per phase (or per natural sub-milestone) for rollback granularity
+- [x] No additional scope from MVP
+- [x] Replace any nationality-tied gag name (Mexican walk → **Snazzy strut**)
 
-Phase 0 is read-only investigation (no code changes). Phase 1a is ~½ day of work after Phase 0. Total to first playable Johnny: ~1.5 days.
+Implementation ready to start. The first concrete task is Phase 0's read-only investigations, after which Phase 1a is straightforward.
 
 ---
 
-*This document represents the locked plan. Modifications should bump the section number and append a changelog entry.*
-
 ## Changelog
 
-- **2026-04-24**: Initial design locked at v3.1 — phase-split MVP, discovery-joy ordering, cinematic-lock semantics, pause-menu integration target, real-hardware constraints.
+- **2026-04-24**: Initial design locked at v3.1 — phase-split MVP, discovery-joy ordering, cinematic-lock semantics, pause-menu integration target, real-hardware constraints. (Then-titled `sandbox`.)
+- **2026-04-25**: Renamed `sandbox` → `freeplay` throughout. Renamed "Mexican walk" → "Snazzy strut" (gag name decoupled from any nationality; sprite filename `MEXCWALK.BMP` retained as it's an asset name from the original Sierra game). API references updated to current post-cleanup names (`fgBackdropPreloadBackgrndBmp`, etc., now in `foreground_pilot.c`). Pack format references updated `.FG1` → `.FG2`. Added explicit branch `freeplay-mode` + commit-per-phase strategy. Greenlit for overnight run.
