@@ -74,7 +74,13 @@ static void _spi_create_poll_req(void) {
 	req->motor_l  = 0x00;
 	req->motor_r  = 0x00;
 
-	_context.tx_len   = 4;
+	/* tx_len = 5 sends the full PS1 polling sequence "01 42 00 00 00"
+	 * from the TX buffer, instead of 4 + an implicit 0x00 fallback.
+	 * Test: see if DuckStation's controller emulation latches button
+	 * state differently when the 5th clock byte comes from the actual
+	 * TX buffer rather than the driver's fallback. spicyjpeg's example
+	 * uses tx_len=4 for compactness; the protocol allows either. */
+	_context.tx_len   = 5;
 	_context.rx_len   = 0;
 	_context.port    ^= 1;
 	_context.callback = _default_cb;
