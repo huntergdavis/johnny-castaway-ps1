@@ -18,6 +18,10 @@ const char *foregroundPilotRuntimeModeName(void);
 const char *foregroundPilotRuntimeSceneName(void);
 unsigned short foregroundPilotRuntimeFrameIndex(void);
 unsigned short foregroundPilotRuntimeFrameCount(void);
+/* Binary-search heap probe — returns size in bytes of the largest
+ * contiguous malloc that succeeds right now. Used by the pause menu's
+ * Debug Info to show real free RAM. */
+unsigned long fgProbeLargestAlloc(void);
 unsigned short foregroundPilotRuntimeSourceFrame(void);
 unsigned short foregroundPilotRuntimeDisplayVBlanks(void);
 int foregroundPilotRuntimeHasFrameData(void);

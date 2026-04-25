@@ -96,6 +96,14 @@ static uint8  pausePrimBuf[24576];
 #define PM_GLYPH_W 8
 #define PM_GLYPH_H 8
 
+/* On-screen render scale — 2 = pixel-doubled (16x16 chars).
+ * GPU samples each texel multiple times when SPRT WH > UV WH,
+ * so this is free pixel-doubling, no extra source data. */
+#define PM_SCALE 2
+#define PM_DRAW_W (PM_GLYPH_W * PM_SCALE)
+#define PM_DRAW_H (PM_GLYPH_H * PM_SCALE)
+#define PM_LINE_STEP (PM_DRAW_H + 4)
+
 /* The font itself. Hand-rolled minimum for menu legibility. */
 static const uint8 pmFontBits[PM_FONT_COUNT][8] = {
     /* 20 ' ' */ {0,0,0,0,0,0,0,0},
@@ -197,14 +205,15 @@ static const uint8 pmFontBits[PM_FONT_COUNT][8] = {
 };
 
 /* VRAM placement of our font + CLUT.
- *   font texture: (640, 256), 4-bit packed, 16 cols × 6 rows of glyphs
- *     = 128 pixels wide × 48 pixels tall = 64 VRAM pixels × 48
- *   CLUT: (704, 256), 16 entries × 16-bit = 16 VRAM pixels × 1
+ *   font texture: (640, 256), 4-bit packed, 16 cols × 6 rows of 16x16
+ *     pre-doubled glyphs = 256 pixels wide × 96 pixels tall
+ *     = 128 VRAM pixels × 96 lines, ending at (768, 352)
+ *   CLUT: (640, 360), 16 entries × 1 line, well past texture
  */
 #define PM_FONT_VRAM_X 640
 #define PM_FONT_VRAM_Y 256
-#define PM_CLUT_VRAM_X 704
-#define PM_CLUT_VRAM_Y 256
+#define PM_CLUT_VRAM_X 640
+#define PM_CLUT_VRAM_Y 360
 
 /* Has the font been uploaded yet this run? */
 static int pmFontUploaded = 0;
@@ -215,51 +224,54 @@ static int pmFontUploaded = 0;
 static uint8  *pmFramePrimNext = NULL;
 static uint32 *pmFrameOtSlot   = NULL;
 
-/* Upload the font texture + CLUT to VRAM. Idempotent. */
+/* Upload the font texture + CLUT to VRAM. Idempotent.
+ *
+ * We PRE-SCALE the 8x8 source glyphs to 16x16 destination texels at
+ * upload time (each source pixel becomes a 2x2 block). This way the
+ * runtime SPRTs are 16x16 with a 16x16 UV step — PS1 GPU samples 1:1
+ * so we get real pixel-doubled text. (Trying to scale via WH > UV at
+ * runtime made each SPRT sample 2x2 chars instead of one char,
+ * producing garble.)
+ *
+ * Output texture layout in VRAM:
+ *   16 chars per row × 16 px wide each = 256 pixels = 128 VRAM pixels wide
+ *   6 char rows × 16 px tall = 96 lines tall
+ * → occupies (640, 256) to (768, 352) in VRAM (4-bit packed).
+ */
 static void pmUploadFont(void)
 {
-    /* 4-bit-packed font data: each row of 8 source pixels (1 bit each)
-     * expands to 8 destination texels (4 bits each), packed two per byte
-     * → 4 bytes per row. 96 chars × 8 rows × 4 bytes = 3072 bytes total.
-     * Layout: 16 chars per source row, 6 source rows. */
-    static uint16 fontVram[16 * 4 * (PM_FONT_COUNT / 16) * PM_GLYPH_H];
-    /* Each row in VRAM = 16 chars × 4 nibbles per char, each nibble is
-     * 4 bits, packed: 16*8 nibbles per row = 128 nibbles = 64 16-bit
-     * halfwords (each halfword holds 4 nibbles).
-     *
-     * Scratch math: each source row (one row of one char) produces 4
-     * destination bytes = 2 halfwords. With 16 chars per row: 32
-     * halfwords per VRAM row of pixel data. We have 6*8 = 48 VRAM rows.
-     * Total halfwords: 32 * 48 = 1536.
-     */
-    /* Resize the static array correctly: 16 chars * 8 cols (wide) /
-     * 4 nibbles per halfword = 32 halfwords per VRAM row, 48 rows. */
-    uint16 *dst = fontVram;
+    /* Halfwords per VRAM row: 16 chars × (16 dest texels / 4 nibbles per hw)
+     * = 16 × 4 = 64. Rows: 6 char rows × 16 dest lines = 96 lines.
+     * Total: 64 × 96 = 6144 halfwords = 12288 bytes. */
+    static uint16 fontVram[64 * 96];
+
     for (int gy = 0; gy < (PM_FONT_COUNT / 16); gy++) {  /* 6 glyph rows */
-        for (int py = 0; py < PM_GLYPH_H; py++) {        /* 8 pixel rows in glyph */
+        for (int sy = 0; sy < PM_GLYPH_H; sy++) {        /* 8 source rows in glyph */
             for (int gx = 0; gx < 16; gx++) {            /* 16 glyph columns */
-                uint8 row = pmFontBits[gy * 16 + gx][py];
-                /* Pack 8 bits → 8 4-bit nibbles → 2 halfwords.
-                 * Bit MSB = leftmost pixel = LOW nibble of first halfword
-                 * (PS1 GPU interprets 4-bit packed pixels with
-                 *  nibble 0 = leftmost).
-                 *
-                 * Actually PS1 GPU layout for 4-bit textures:
-                 *   byte b: lo nibble = pixel at +0, hi nibble = pixel at +1
-                 * So for 8 pixels in a row, we need 4 bytes:
-                 *   byte 0 = (px0 & 0xF) | ((px1 & 0xF) << 4)
-                 * For our 1-bit source: pixel is 0 or 1 (palette index).
-                 */
-                uint16 hw0 = 0, hw1 = 0;
+                uint8 srcRow = pmFontBits[gy * 16 + gx][sy];
+                /* Build the destination 16-pixel row by doubling each
+                 * source bit. 16 dest texels (4-bit each) = 4 halfwords. */
+                uint16 hw[4] = {0, 0, 0, 0};
                 for (int b = 0; b < 8; b++) {
-                    uint8 px = (row >> (7 - b)) & 1;
-                    if (b < 4)
-                        hw0 |= ((uint16)px) << (b * 4);
-                    else
-                        hw1 |= ((uint16)px) << ((b - 4) * 4);
+                    uint8 px = (srcRow >> (7 - b)) & 1;
+                    int dx0 = b * 2;       /* dest texels 2*b and 2*b+1 */
+                    int dx1 = b * 2 + 1;
+                    /* Each halfword packs 4 nibbles (4-bit indexed). */
+                    hw[dx0 / 4] |= ((uint16)px) << ((dx0 % 4) * 4);
+                    hw[dx1 / 4] |= ((uint16)px) << ((dx1 % 4) * 4);
                 }
-                dst[(gy * PM_GLYPH_H + py) * 32 + gx * 2 + 0] = hw0;
-                dst[(gy * PM_GLYPH_H + py) * 32 + gx * 2 + 1] = hw1;
+                /* Write the same halfword pattern into BOTH dest rows
+                 * (vertical 2x: source row sy → dest rows 2*sy, 2*sy+1). */
+                for (int rep = 0; rep < 2; rep++) {
+                    int dy = sy * 2 + rep;
+                    int vramRow = gy * 16 + dy;  /* 0..95 */
+                    int rowBase = vramRow * 64;   /* halfwords per VRAM row */
+                    int colBase = gx * 4;         /* 4 hw per glyph */
+                    fontVram[rowBase + colBase + 0] = hw[0];
+                    fontVram[rowBase + colBase + 1] = hw[1];
+                    fontVram[rowBase + colBase + 2] = hw[2];
+                    fontVram[rowBase + colBase + 3] = hw[3];
+                }
             }
         }
     }
@@ -276,9 +288,9 @@ static void pmUploadFont(void)
     for (int i = 1; i < 16; i++)
         clutData[i] = 0xFFFF;
 
-    /* Upload texture: 32 halfwords wide × 48 rows = (32, 48) RECT in VRAM. */
+    /* Upload texture: 64 halfwords wide × 96 rows. */
     RECT texRect;
-    setRECT(&texRect, PM_FONT_VRAM_X, PM_FONT_VRAM_Y, 32, 48);
+    setRECT(&texRect, PM_FONT_VRAM_X, PM_FONT_VRAM_Y, 64, 96);
     LoadImage(&texRect, (uint32*)fontVram);
     DrawSync(0);
 
@@ -316,7 +328,6 @@ enum {
     MENU_PERF_TOGGLE,
     MENU_DEBUG_INFO,
     MENU_SET_TIME,
-    MENU_CONTROLS,
     MENU_COUNT
 };
 
@@ -399,6 +410,11 @@ void pauseMenuShow(void)
            foregroundPilotRuntimeModeName(),
            (unsigned)ps1PerfLevel,
            soundMuted);
+
+    /* Refresh the heap-free cache once per pause-show. fgProbeLargestAlloc
+     * does ~9 malloc/free cycles which fragments the heap if called every
+     * pause-loop iteration; caching avoids that. */
+    pmCachedHeapKB = fgProbeLargestAlloc() / 1024UL;
 }
 
 void pauseMenuHide(void)
@@ -452,6 +468,7 @@ void pauseMenuSetState(enum PauseMenuState state)
  */
 static int pmTextX = 60;
 static int pmTextY = 100;
+static int pmPrintfX = 80;
 
 static void pmTextStart(int x, int y)
 {
@@ -462,8 +479,8 @@ static void pmTextStart(int x, int y)
 static void pmTextDrawChar(uint8 **nextp, uint32 *otSlot, char c)
 {
     if (c == '\n') {
-        pmTextX = 60;
-        pmTextY += 10;
+        pmTextX = pmPrintfX;
+        pmTextY += PM_LINE_STEP;
         return;
     }
     unsigned char uc = (unsigned char)c;
@@ -479,14 +496,14 @@ static void pmTextDrawChar(uint8 **nextp, uint32 *otSlot, char c)
     *nextp += sizeof(SPRT);
     setSprt(sprt);
     setXY0(sprt, pmTextX, pmTextY);
-    setWH(sprt, PM_GLYPH_W, PM_GLYPH_H);
-    /* UV is in TPage-local pixel coords. Our font sits at (0, 0) within
-     * its TPage. */
-    setUV0(sprt, col * PM_GLYPH_W, row * PM_GLYPH_H);
+    /* SPRT samples 1:1; on-screen size == texel size. Both 16x16 since
+     * we pre-doubled the font at upload time. */
+    setWH(sprt, PM_DRAW_W, PM_DRAW_H);
+    setUV0(sprt, col * PM_DRAW_W, row * PM_DRAW_H);
     setClut(sprt, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y);
     setRGB0(sprt, 128, 128, 128);
     addPrim(otSlot, sprt);
-    pmTextX += PM_GLYPH_W;
+    pmTextX += PM_DRAW_W;
 }
 
 static void pmTextDrawStr(uint8 **nextp, uint32 *otSlot, const char *s)
@@ -498,9 +515,8 @@ static void pmTextDrawStr(uint8 **nextp, uint32 *otSlot, const char *s)
 }
 
 /* printf-style helper that uses the per-frame globals. Newline at end
- * advances pmTextY by 10 and resets pmTextX to the column the line
- * started in (set by the caller before this call). */
-static int pmPrintfX = 80;
+ * advances pmTextY by PM_LINE_STEP and resets pmTextX to the column
+ * the line started in (set by the caller before this call). */
 static void pmPrintf(const char *fmt, ...)
 {
     char buf[80];
@@ -515,33 +531,28 @@ static void pmPrintf(const char *fmt, ...)
     /* Reset X to line start. */
     pmTextX = pmPrintfX;
     pmTextDrawStr(&pmFramePrimNext, pmFrameOtSlot, buf);
-    pmTextY += 10;
+    pmTextY += PM_LINE_STEP;
 }
 
-/* Build + render dim + panel POLY_F4 quads.
- *
- * Order in OT (back→front):
- *   priority N   : dim quad — full screen, semi-trans 50% black
- *   priority N-1 : panel quad — centered, opaque dark blue
- * Text from FntFlush draws on top via its own primitive list.
+/* Panel geometry — rounded-rect look via 3 overlapping rectangles
+ * with 8x8 corner cutouts that show the dim layer through. */
+#define PM_PANEL_X0 60
+#define PM_PANEL_Y0 60
+#define PM_PANEL_X1 580
+#define PM_PANEL_Y1 420
+#define PM_CORNER 12
+
+/* Build dim + 3 panel quads. Caller threads the buffer pointer +
+ * separate OT slots so the chain order matches GPU draw order:
+ *   slot N-2: dim   (drawn after TPAGE at N-1)
+ *   slot N-3: panel quads
+ *   slot N-4: text
  */
-static void drawPauseQuads(void)
+static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
 {
-    ClearOTagR(pauseOt, PAUSE_OT_LEN);
-    uint8 *next = pausePrimBuf;
-
-    /* TPAGE: point at font texture location (960, 0) with abr=0 (50%
-     * blend) so when FntFlush's font sprites are processed AFTER our
-     * DrawOTag, the GPU's tpage register is already pointing at the
-     * font texture. (Our flat POLY_F4 quads don't read any texture, so
-     * the value here doesn't affect them.) */
-    DR_TPAGE *tp = (DR_TPAGE*)next;
-    next += sizeof(DR_TPAGE);
-    setDrawTPage(tp, 0, 1, getTPage(0, 0, 960, 0));
-    addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
-
-    POLY_F4 *dim = (POLY_F4*)next;
-    next += sizeof(POLY_F4);
+    /* Dim — full screen, semi-trans 50% black. Halves what's behind. */
+    POLY_F4 *dim = (POLY_F4*)*nextp;
+    *nextp += sizeof(POLY_F4);
     setPolyF4(dim);
     setSemiTrans(dim, 1);
     setRGB0(dim, 0, 0, 0);
@@ -549,21 +560,38 @@ static void drawPauseQuads(void)
                 640,   0,
                   0, 480,
                 640, 480);
-    addPrim(&pauseOt[PAUSE_OT_LEN - 2], dim);
+    addPrim(otDim, dim);
 
-    POLY_F4 *panel = (POLY_F4*)next;
-    next += sizeof(POLY_F4);
-    setPolyF4(panel);
-    setRGB0(panel, 0x10, 0x18, 0x40);
-    setXY4(panel,  60,  80,
-                  580,  80,
-                   60, 400,
-                  580, 400);
-    addPrim(&pauseOt[PAUSE_OT_LEN - 3], panel);
+    /* Panel: 3 rectangles. Middle full width, top/bottom narrower so
+     * the corners stay as dim background — fakes rounded corners. */
+    int x0 = PM_PANEL_X0, y0 = PM_PANEL_Y0;
+    int x1 = PM_PANEL_X1, y1 = PM_PANEL_Y1;
+    int c  = PM_CORNER;
+    uint8 r = 0x40, g = 0x10, b = 0x60;  /* dark purple */
 
-    DrawSync(0);
-    DrawOTag(&pauseOt[PAUSE_OT_LEN - 1]);
-    DrawSync(0);
+    /* Middle (full width, no corners). */
+    POLY_F4 *p1 = (POLY_F4*)*nextp;
+    *nextp += sizeof(POLY_F4);
+    setPolyF4(p1);
+    setRGB0(p1, r, g, b);
+    setXY4(p1, x0, y0 + c, x1, y0 + c, x0, y1 - c, x1, y1 - c);
+    addPrim(otPanel, p1);
+
+    /* Top edge (narrower). */
+    POLY_F4 *p2 = (POLY_F4*)*nextp;
+    *nextp += sizeof(POLY_F4);
+    setPolyF4(p2);
+    setRGB0(p2, r, g, b);
+    setXY4(p2, x0 + c, y0, x1 - c, y0, x0 + c, y0 + c, x1 - c, y0 + c);
+    addPrim(otPanel, p2);
+
+    /* Bottom edge (narrower). */
+    POLY_F4 *p3 = (POLY_F4*)*nextp;
+    *nextp += sizeof(POLY_F4);
+    setPolyF4(p3);
+    setRGB0(p3, r, g, b);
+    setXY4(p3, x0 + c, y1 - c, x1 - c, y1 - c, x0 + c, y1, x1 - c, y1);
+    addPrim(otPanel, p3);
 }
 
 static void drawSeparator(void)
@@ -574,31 +602,32 @@ static void drawSeparator(void)
 /* ---------------------------------------------------------------------------
  *  Sub-screen: Debug Info
  * ------------------------------------------------------------------------- */
+/* Heap probe is expensive (binary search of malloc's) and re-running
+ * it every pause-loop frame fragments the heap and causes the scene
+ * background to flicker. Cache the value, refresh once per pause-show. */
+static unsigned long pmCachedHeapKB = 0;
+
 static void drawSceneInfo(void)
 {
-    size_t used   = getTotalMemoryUsed();
-    size_t budget = getMemoryBudget();
     const char *scene = foregroundPilotRuntimeSceneName();
     const char *mode  = foregroundPilotRuntimeModeName();
     uint16 fIdx = foregroundPilotRuntimeFrameIndex();
     uint16 fCnt = foregroundPilotRuntimeFrameCount();
     uint32 uptimeSec = ps1FrameCount / 60;
 
-    pmPrintf("       DEBUG INFO\n");
+    pmPrintf("    DEBUG INFO");
     drawSeparator();
-    pmPrintf(" Scene:  %s\n", scene ? scene : "?");
-    pmPrintf(" Mode:   %s\n", mode  ? mode  : "?");
-    pmPrintf(" Frame:  %u / %u\n",
-             (unsigned)fIdx, (unsigned)fCnt);
-    pmPrintf(" Mem:    %u KB / %u KB\n",
-             (unsigned)(used / 1024), (unsigned)(budget / 1024));
-    pmPrintf(" Uptime: %lu:%02lu\n",
+    pmPrintf(" Scene:  %s",   scene && *scene ? scene : "(none)");
+    pmPrintf(" Mode:   %s",   mode  ? mode  : "?");
+    pmPrintf(" Frame:  %u/%u", (unsigned)fIdx, (unsigned)fCnt);
+    pmPrintf(" Heap:   %lu KB free", pmCachedHeapKB);
+    pmPrintf(" Uptime: %lu:%02lu",
              (unsigned long)(uptimeSec / 60), (unsigned long)(uptimeSec % 60));
-    pmPrintf(" Build:  %s\n", __DATE__);
-    pmPrintf(" Perf:   %s\n", perfLevelLabel());
-    pmPrintf(" Sound:  %s\n", soundMuted ? "MUTED" : "ON");
+    pmPrintf(" Build:  %s", __DATE__);
+    pmPrintf(" Perf:   %s", perfLevelLabel());
+    pmPrintf(" Sound:  %s", soundMuted ? "MUTED" : "ON");
     drawSeparator();
-    pmPrintf("  START = back\n");
+    pmPrintf(" START = BACK");
 }
 
 /* ---------------------------------------------------------------------------
@@ -705,14 +734,12 @@ static void drawMainMenu(void)
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
              menuCursor == MENU_NEXT_SCENE ? ">" : " ");
-    pmPrintf(" %s Perf Counters: %s\n",
+    pmPrintf(" %s TTY Perf Log: %s\n",
              menuCursor == MENU_PERF_TOGGLE ? ">" : " ", perfLevelLabel());
     pmPrintf(" %s Debug Info\n",
              menuCursor == MENU_DEBUG_INFO ? ">" : " ");
     pmPrintf(" %s Set Time/Date\n",
              menuCursor == MENU_SET_TIME ? ">" : " ");
-    pmPrintf(" %s Controls\n",
-             menuCursor == MENU_CONTROLS ? ">" : " ");
 
     drawSeparator();
     pmPrintf("  X = select   START = resume\n");
@@ -768,11 +795,6 @@ static int handleMainInput(uint16 pressed)
         case MENU_SET_TIME:
             menuState = PAUSE_MENU_SET_TIME;
             editField = 0;
-            prevButtons = 0xFFFF;
-            break;
-
-        case MENU_CONTROLS:
-            menuState = PAUSE_MENU_CONTROLS;
             prevButtons = 0xFFFF;
             break;
 
@@ -842,6 +864,8 @@ static int handleSetTimeInput(uint16 pressed)
         extern int ps1SoftHour;
         extern int ps1SoftMonth;
         extern int ps1SoftDay;
+        extern int ps1SoftTimeEnabled;
+        ps1SoftTimeEnabled = 1;  /* future scene picks honor user-set date */
 
         ps1SoftHour  = editHour;
         ps1SoftMonth = editMonth;
@@ -867,24 +891,23 @@ int pauseMenuUpdate(void)
 {
     if (!menuVisible) return 0;
 
-    /* Reload BIOS font to VRAM (960, 0) every pause frame —
-     * scene-runtime LoadImage uploads might have clobbered it. */
-    FntLoad(960, 0);
-
-    /* Black bg via isbg=1 to wipe scene state. */
-    {
-        DRAWENV pdraw;
-        SetDefDrawEnv(&pdraw, 0, 0, 640, 480);
-        setRGB0(&pdraw, 0, 0, 0);
-        pdraw.isbg = 1;
-        PutDrawEnv(&pdraw);
-    }
+    /* Re-upload scene bg every pause frame so the dim quad doesn't
+     * compound (each frame's semi-trans 50% would otherwise re-halve
+     * VRAM). */
+    grForceFullRedrawNextFrame();
+    grDrawBackground();
+    DrawSync(0);
 
     /* Upload our font on first frame. */
     if (!pmFontUploaded)
         pmUploadFont();
 
-    /* Build OT: TPage pointing at our font, then SPRTs from drawXxx. */
+    /* Build OT, slots high-to-low = drawn first-to-last:
+     *   N-1: TPAGE (font tpage with abr=0 for 50% blend)
+     *   N-2: dim quad (semi-trans full-screen black)
+     *   N-3: panel quads (3, with corner cutouts for rounded look)
+     *   N-4: text SPRTs
+     */
     ClearOTagR(pauseOt, PAUSE_OT_LEN);
     uint8 *next = pausePrimBuf;
 
@@ -893,12 +916,15 @@ int pauseMenuUpdate(void)
     setDrawTPage(tp, 0, 1, getTPage(0, 0, PM_FONT_VRAM_X, PM_FONT_VRAM_Y));
     addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
 
-    /* Globals consumed by pmPrintf inside drawMainMenu / drawSceneInfo /
-     * drawControls / drawSetTime. */
+    pmBuildPanelQuads(&next,
+                      &pauseOt[PAUSE_OT_LEN - 2],
+                      &pauseOt[PAUSE_OT_LEN - 3]);
+
+    /* Globals consumed by pmPrintf for text. */
     pmFramePrimNext = next;
-    pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 2];
-    pmPrintfX       = 80;
-    pmTextStart(80, 80);
+    pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 4];
+    pmPrintfX       = PM_PANEL_X0 + 24;
+    pmTextStart(pmPrintfX, PM_PANEL_Y0 + 24);
 
     /* Read pad through the game's shared pad buffer (events_ps1.c owns
      * InitPAD, so we just peek at its buffer via the extern). */

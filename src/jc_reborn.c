@@ -194,10 +194,23 @@ static void fgLoopRandomVarPos(int *outX, int *outY)
  * FG2 scene-relative overlays must follow the original random island offset. */
 static void fgLoopApplyVariant(const char *sceneName)
 {
+    extern int ps1SoftTimeEnabled;
+    extern int ps1SoftHour;
+    extern int ps1SoftMonth;
+    extern int ps1SoftDay;
+    extern int ps1HolidayFromDate(int month, int day);
+
     islandState.night   = (hostForcedNight     >= 0) ? hostForcedNight     : (rand() & 1);
     islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
     islandState.holiday = (hostForcedHoliday   >= 0) ? hostForcedHoliday   : (rand() % 5);
     islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
+
+    /* If user set time/date via pause menu, derive night + holiday from
+     * those values. Overrides hostForced* and randomization above. */
+    if (ps1SoftTimeEnabled) {
+        islandState.night   = (ps1SoftHour < 6 || ps1SoftHour >= 20) ? 1 : 0;
+        islandState.holiday = ps1HolidayFromDate(ps1SoftMonth, ps1SoftDay);
+    }
 
     if (hostForcedIslandPosValid) {
         islandState.xPos = hostForcedIslandX;
