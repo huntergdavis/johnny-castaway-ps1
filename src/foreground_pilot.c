@@ -123,6 +123,7 @@ static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
 static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
+#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (48UL * 1024UL)
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -131,8 +132,8 @@ static uint8 gFgStartAttemptEver = 0;
 static uint8 gFgStartedEver = 0;
 static uint8 gFgComposedEver = 0;
 static uint8 gFgHeapProbeEnabled = 0;
-static uint8 gFgPrefetchStage1Enabled = 0;
-static uint32 gFgPrefetchWindowBytes = 0;
+static uint8 gFgPrefetchStage1Enabled = 1;
+static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 static struct TTtmSlot gFgBackdropSlot;
 static struct TTtmThread gFgBackdropThread;
 
@@ -2062,6 +2063,12 @@ void foregroundPilotSetHeapProbe(int enabled)
     gFgHeapProbeEnabled = enabled ? 1 : 0;
 }
 
+void foregroundPilotResetPrefetchDefaults(void)
+{
+    gFgPrefetchStage1Enabled = 1;
+    gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
+}
+
 void foregroundPilotSetPrefetchStage1(int enabled)
 {
     gFgPrefetchStage1Enabled = enabled ? 1 : 0;
@@ -2167,6 +2174,10 @@ void foregroundPilotSetScene(const char *sceneName)
 void foregroundPilotSetHeapProbe(int enabled)
 {
     (void)enabled;
+}
+
+void foregroundPilotResetPrefetchDefaults(void)
+{
 }
 
 void foregroundPilotSetPrefetchStage1(int enabled)

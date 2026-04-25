@@ -5,6 +5,7 @@ int foregroundPilotRequested(void);
 const char *foregroundPilotSceneName(void);
 void foregroundPilotSetScene(const char *sceneName);
 void foregroundPilotSetHeapProbe(int enabled);
+void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);
 void foregroundPilotPlay(void);
