@@ -326,6 +326,8 @@ static uint16 prevButtons = 0;
 enum {
     MENU_RESUME,
     MENU_SOUND,
+    MENU_DAYNIGHT,
+    MENU_HOLIDAY,
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
     MENU_PERF_TOGGLE,
@@ -707,6 +709,48 @@ static const char *perfLevelLabel(void)
     }
 }
 
+/* Externs from jc_reborn.c: -1 = auto/random, else forced. */
+extern int hostForcedNight;
+extern int hostForcedHoliday;
+
+static const char *daynightLabel(void)
+{
+    switch (hostForcedNight) {
+    case -1: return "AUTO";
+    case 0:  return "DAY";
+    case 1:  return "NIGHT";
+    default: return "?";
+    }
+}
+
+static const char *holidayLabel(void)
+{
+    switch (hostForcedHoliday) {
+    case -1: return "AUTO";
+    case 0:  return "NONE";
+    case 1:  return "HALLOWEEN";
+    case 2:  return "ST PATRICK";
+    case 3:  return "CHRISTMAS";
+    case 4:  return "NEW YEAR";
+    default: return "?";
+    }
+}
+
+static void cycleDaynight(void)
+{
+    /* AUTO(-1) -> DAY(0) -> NIGHT(1) -> AUTO */
+    hostForcedNight = hostForcedNight + 1;
+    if (hostForcedNight > 1) hostForcedNight = -1;
+}
+
+static void cycleHoliday(void)
+{
+    /* AUTO(-1) -> NONE(0) -> HALLOWEEN(1) -> ST PATRICK(2) ->
+     * CHRISTMAS(3) -> NEW YEAR(4) -> AUTO */
+    hostForcedHoliday = hostForcedHoliday + 1;
+    if (hostForcedHoliday > 4) hostForcedHoliday = -1;
+}
+
 static void drawMainMenu(void)
 {
     const char *soundLabel = soundMuted ? "MUTED" : "ON";
@@ -718,6 +762,10 @@ static void drawMainMenu(void)
              menuCursor == MENU_RESUME ? ">" : " ");
     pmPrintf(" %s Sound: %s\n",
              menuCursor == MENU_SOUND ? ">" : " ", soundLabel);
+    pmPrintf(" %s Day/Night: %s\n",
+             menuCursor == MENU_DAYNIGHT ? ">" : " ", daynightLabel());
+    pmPrintf(" %s Holiday: %s\n",
+             menuCursor == MENU_HOLIDAY ? ">" : " ", holidayLabel());
     pmPrintf(" %s Reset Screensaver Loop\n",
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
@@ -760,6 +808,14 @@ static int handleMainInput(uint16 pressed)
             soundMuteToggle();
             /* User chose mute state — don't auto-undo on hide. */
             pauseMutedSound = 0;
+            break;
+
+        case MENU_DAYNIGHT:
+            cycleDaynight();
+            break;
+
+        case MENU_HOLIDAY:
+            cycleHoliday();
             break;
 
         case MENU_RESET_LOOP:
