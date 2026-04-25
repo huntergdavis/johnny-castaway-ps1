@@ -2502,8 +2502,8 @@ static void grCleanRectCopyOut(struct TGrCleanRect *r)
     }
 }
 
-/* Copy a flat rectangle buffer back into the 4 bg tiles. Marks rows dirty
- * so grDrawBackground's union-dirty upload picks them up. */
+/* Copy only the previous frame's dirty rows from a clean-rect backup. Upload
+ * is already driven by prevDirty in grDrawBackground, matching tile-mode. */
 static void grCleanRectCopyIn(const struct TGrCleanRect *r)
 {
     int sy;
@@ -2521,9 +2521,14 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
             const uint16 *srcRow = r->pixels + (uint32)sy * (uint32)r->width;
             int xStart = r->x;
             int xEnd   = r->x + (int)r->width;
+            int leftIdx = (destY < 240) ? 0 : 2;
+            int rightIdx = leftIdx + 1;
             if (xStart < 0) xStart = 0;
             if (xEnd > 640) xEnd = 640;
-            if (tileLeft && tileLeft->pixels && xStart < 320) {
+            if (tileLeft && tileLeft->pixels && xStart < 320 &&
+                prevDirtyMinY[leftIdx] >= 0 &&
+                tileLocalY >= prevDirtyMinY[leftIdx] &&
+                tileLocalY <= prevDirtyMaxY[leftIdx]) {
                 int lx0 = xStart;
                 int lx1 = (xEnd < 320) ? xEnd : 320;
                 uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
@@ -2532,7 +2537,10 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
                 if (perfTrack)
                     copiedBytes += (uint32)bytes;
             }
-            if (tileRight && tileRight->pixels && xEnd > 320) {
+            if (tileRight && tileRight->pixels && xEnd > 320 &&
+                prevDirtyMinY[rightIdx] >= 0 &&
+                tileLocalY >= prevDirtyMinY[rightIdx] &&
+                tileLocalY <= prevDirtyMaxY[rightIdx]) {
                 int rx0 = (xStart > 320) ? xStart : 320;
                 int rx1 = xEnd;
                 uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + (rx0 - 320);
@@ -2543,7 +2551,6 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
             }
         }
     }
-    grMarkRectDirty(r->x, r->y, r->x + (int)r->width, r->y + (int)r->height);
     if (perfTrack)
         ps1PerfMarkRestore(copiedBytes);
 }

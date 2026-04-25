@@ -268,6 +268,7 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
     foregroundPilotSetHeapProbe(0);
+    foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
@@ -427,6 +428,22 @@ static void ps1ApplyBootOverride(char *buffer)
             screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+        } else if (!strcmp(tokens[i], "prefetch-off") || !strcmp(tokens[i], "no-prefetch")) {
+            foregroundPilotSetPrefetchStage1(0);
+            foregroundPilotSetPrefetchWindow(0);
+        } else if (!strcmp(tokens[i], "prefetch-stage1") || !strcmp(tokens[i], "stage1")) {
+            foregroundPilotSetPrefetchStage1(1);
+        } else if (!strcmp(tokens[i], "prefetch-stage1-off") || !strcmp(tokens[i], "no-stage1")) {
+            foregroundPilotSetPrefetchStage1(0);
+        } else if (!strcmp(tokens[i], "prefetch-window32") || !strcmp(tokens[i], "window32")) {
+            foregroundPilotSetPrefetchWindow(32UL * 1024UL);
+        } else if (!strcmp(tokens[i], "prefetch-window48") || !strcmp(tokens[i], "window48")) {
+            foregroundPilotSetPrefetchWindow(48UL * 1024UL);
+        } else if (!strcmp(tokens[i], "prefetch-window64") || !strcmp(tokens[i], "window64")) {
+            foregroundPilotSetPrefetchWindow(64UL * 1024UL);
+        } else if (!strcmp(tokens[i], "prefetch-window") && (i + 1) < tokenCount) {
+            foregroundPilotSetPrefetchWindow((unsigned long)atoi(tokens[i + 1]));
+            i++;
         } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_SUMMARY);
         } else if (!strcmp(tokens[i], "perf-detail")) {
@@ -688,6 +705,9 @@ static void usage()
         printf("         capture-overlay-mask - draw overlay background only for paired baseline captures\n");
         printf("         capture-foreground-only - capture composited non-background layers over magenta key\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
+        printf("         FG2 prefetch defaults to stage1 + 48KB stream window\n");
+        printf("         prefetch-window32|48|64 or prefetch-window BYTES - override FG2 stream window size\n");
+        printf("         no-prefetch      - disable FG2 prefetch for diagnostics\n");
         printf("         capture-sound-events FILE - append {frame,sample} JSONL for every PLAY_SAMPLE opcode\n");
         printf("         capture-scene-label TEXT - annotate metadata with the scene label\n");
         printf("         seed N          - force deterministic RNG seed for host runs\n");
@@ -778,6 +798,33 @@ static void parseArgs(int argc, char **argv)
                 argForegroundPilot = 1;
                 argPlayAll = 0;
                 numExpectedArgs = 1;
+            }
+            else if (!strcmp(argv[i], "prefetch-off") || !strcmp(argv[i], "no-prefetch")) {
+                foregroundPilotSetPrefetchStage1(0);
+                foregroundPilotSetPrefetchWindow(0);
+            }
+            else if (!strcmp(argv[i], "prefetch-stage1") || !strcmp(argv[i], "stage1")) {
+                foregroundPilotSetPrefetchStage1(1);
+            }
+            else if (!strcmp(argv[i], "prefetch-stage1-off") || !strcmp(argv[i], "no-stage1")) {
+                foregroundPilotSetPrefetchStage1(0);
+            }
+            else if (!strcmp(argv[i], "prefetch-window32") || !strcmp(argv[i], "window32")) {
+                foregroundPilotSetPrefetchWindow(32UL * 1024UL);
+            }
+            else if (!strcmp(argv[i], "prefetch-window48") || !strcmp(argv[i], "window48")) {
+                foregroundPilotSetPrefetchWindow(48UL * 1024UL);
+            }
+            else if (!strcmp(argv[i], "prefetch-window64") || !strcmp(argv[i], "window64")) {
+                foregroundPilotSetPrefetchWindow(64UL * 1024UL);
+            }
+            else if (!strcmp(argv[i], "prefetch-window")) {
+                if (i + 1 < argc) {
+                    foregroundPilotSetPrefetchWindow((unsigned long)atoi(argv[++i]));
+                } else {
+                    fprintf(stderr, "Error: prefetch-window requires a byte count\n");
+                    usage();
+                }
             }
             else if (!strcmp(argv[i], "window")) {
                 grWindowed = 1;

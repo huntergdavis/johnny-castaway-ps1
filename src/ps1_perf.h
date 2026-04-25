@@ -29,6 +29,13 @@ enum {
     PS1_PERF_RENDER_ADVANCE = 6
 };
 
+enum {
+    PS1_PERF_PREFETCH_NONE = 0,
+    PS1_PERF_PREFETCH_STAGE1 = 1,
+    PS1_PERF_PREFETCH_WINDOW = 2,
+    PS1_PERF_PREFETCH_STAGE1_WINDOW = 3
+};
+
 extern volatile uint8 ps1PerfEnabled;
 extern volatile uint8 ps1PerfLevel;
 
@@ -62,6 +69,15 @@ void ps1PerfMarkCdReadDetailed(uint32 bytes, uint32 sectors,
                                uint16 elapsedVBlanks, int ok,
                                uint32 fileLba, uint32 fileOffset,
                                uint8 includeLegacy);
+void ps1PerfSetPrefetchPolicy(uint8 policy, uint32 bufferBytes);
+void ps1PerfMarkPrefetchAttempt(uint16 leadVBlanks, uint16 slackVBlanks,
+                                uint8 eligible);
+void ps1PerfMarkPrefetchSkipNoSlack(void);
+void ps1PerfMarkPrefetchDuplicate(void);
+void ps1PerfBeginPrefetchRead(uint16 slackVBlanks);
+void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok);
+void ps1PerfMarkPrefetchHit(void);
+void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit);
 void ps1PerfMarkRestore(uint32 bytes);
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes);
 void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks);
@@ -122,6 +138,17 @@ static inline void ps1PerfMarkCdReadDetailed(uint32 bytes, uint32 sectors,
     (void)bytes; (void)sectors; (void)elapsedVBlanks; (void)ok;
     (void)fileLba; (void)fileOffset; (void)includeLegacy;
 }
+static inline void ps1PerfSetPrefetchPolicy(uint8 policy, uint32 bufferBytes) { (void)policy; (void)bufferBytes; }
+static inline void ps1PerfMarkPrefetchAttempt(uint16 leadVBlanks, uint16 slackVBlanks,
+                                              uint8 eligible) {
+    (void)leadVBlanks; (void)slackVBlanks; (void)eligible;
+}
+static inline void ps1PerfMarkPrefetchSkipNoSlack(void) {}
+static inline void ps1PerfMarkPrefetchDuplicate(void) {}
+static inline void ps1PerfBeginPrefetchRead(uint16 slackVBlanks) { (void)slackVBlanks; }
+static inline void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok) { (void)elapsedVBlanks; (void)bytes; (void)ok; }
+static inline void ps1PerfMarkPrefetchHit(void) {}
+static inline void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit) { (void)countsAsDueHit; }
 static inline void ps1PerfMarkRestore(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes) { (void)rows; (void)spans; (void)pixels; (void)payloadBytes; }
 static inline void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)bytes; (void)elapsedVBlanks; }
