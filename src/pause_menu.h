@@ -55,4 +55,9 @@ int  pauseMenuUpdate(void);
  * Cleared by the ADS/story loop after it acts on it. */
 extern int pauseMenuRequestNextScene;
 
+/* Flag: set to 1 by the menu when "Reset Loop" is chosen.
+ * Foreground pilot's runtime loop checks this and exits early so
+ * jc_reborn's outer loop can restart from the first scene. */
+extern int pauseMenuRequestResetLoop;
+
 #endif /* PAUSE_MENU_H */

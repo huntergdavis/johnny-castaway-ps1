@@ -49,6 +49,9 @@ static DISPENV disp[2];
 DRAWENV draw[2];
 int db = 0;  /* Double buffer index */
 
+/* Per-scene-frame counter, used by pause_menu.c for uptime display. */
+uint32 ps1FrameCount = 0;
+
 /* Ordering tables for GPU command queueing */
 #define OT_LENGTH 8
 unsigned long ot[2][OT_LENGTH];
@@ -615,6 +618,8 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
      * - ttmPlay drew sprites to bgTile via grCompositeToBackground
      * Now we just need to upload and display.
      */
+
+    ps1FrameCount++;
 
     /* Wait for VSync BEFORE uploading to framebuffer.
      * This ensures we write during vertical blank when display isn't scanning. */

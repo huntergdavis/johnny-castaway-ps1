@@ -1078,6 +1078,20 @@ int main(int argc, char **argv)
         foregroundPilotPlay();
         ps1PerfEndScene(loopScene);
         ps1PrintfProbe("scene-end", loopScene);
+
+        /* Consume pause-menu requests. NextScene = let the next loop
+         * iteration pick a fresh scene (already happens). ResetLoop =
+         * force re-randomization by clearing any explicit scene state
+         * and falling through to fgLoopNextScene's random branch. */
+        if (pauseMenuRequestNextScene) {
+            pauseMenuRequestNextScene = 0;
+            printf("JCPAUSE consume next-scene\n");
+        }
+        if (pauseMenuRequestResetLoop) {
+            pauseMenuRequestResetLoop = 0;
+            explicitScene = NULL;  /* drop pinned scene → next iter random */
+            printf("JCPAUSE consume reset-loop\n");
+        }
     } while (!screensaverLoopDisabled);
 
     soundEnd();
