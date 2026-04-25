@@ -127,7 +127,7 @@ static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (24UL * 1024UL)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
-#define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 4
+#define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 5
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
