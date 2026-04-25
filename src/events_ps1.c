@@ -37,6 +37,21 @@ int evHotKeysEnabled = 0;
  * same shared pad state via `extern uint8 pad_buff[2][34];`. */
 uint8 pad_buff[2][34];
 
+/* JCSPI persistent btn tracker — watches every SPI poll (250 Hz)
+ * and remembers extreme values + change count across the whole run.
+ * If btn_lo ever drops below 0xFF the user pressed something; if it
+ * stays 0xFF for thousands of polls the bytes never carry button
+ * state regardless of human input timing. */
+volatile uint8  spi_btn_min_lo = 0xFF;
+volatile uint8  spi_btn_min_hi = 0xFF;
+volatile uint8  spi_btn_max_lo = 0;
+volatile uint8  spi_btn_max_hi = 0;
+volatile uint32 spi_btn_change_count = 0;
+volatile uint8  spi_btn_last_lo = 0xFF;
+volatile uint8  spi_btn_last_hi = 0xFF;
+volatile uint32 spi_btn_p0_polls = 0;
+volatile uint32 spi_btn_p0_nonff = 0;
+
 static uint16 delayResidue = 0;
 static uint32 lastFrameTick = 0;
 
@@ -239,6 +254,23 @@ static void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, s
     dst[2] = buff[2];          /* btn low */
     dst[3] = buff[3];          /* btn high */
 
+    /* JCSPI persistent btn tracker — runs at full SPI rate (250 Hz)
+     * so we don't miss button presses between scene-frame samples. */
+    if (port == 0) {
+        spi_btn_p0_polls++;
+        if (buff[2] != 0xFF || buff[3] != 0xFF)
+            spi_btn_p0_nonff++;
+        if (buff[2] < spi_btn_min_lo) spi_btn_min_lo = buff[2];
+        if (buff[2] > spi_btn_max_lo) spi_btn_max_lo = buff[2];
+        if (buff[3] < spi_btn_min_hi) spi_btn_min_hi = buff[3];
+        if (buff[3] > spi_btn_max_hi) spi_btn_max_hi = buff[3];
+        if (buff[2] != spi_btn_last_lo || buff[3] != spi_btn_last_hi) {
+            spi_btn_change_count++;
+            spi_btn_last_lo = buff[2];
+            spi_btn_last_hi = buff[3];
+        }
+    }
+
     /* Copy remaining bytes verbatim (analog axes etc., DualShock).
      * Cap at 30 bytes after the 4-byte header — pad_buff is 34 total. */
     if (rx_len > 4) {
@@ -272,6 +304,29 @@ void eventsInit()
     __asm__ volatile("move %0, $sp" : "=r"(main_sp_baseline));
     printf("JCSPI T21 baseline main_gp=%08lx main_sp=%08lx\n",
            (unsigned long)main_gp_baseline, (unsigned long)main_sp_baseline);
+
+    /* JCSPI T-NEW: PADTYPE layout probe. type/len are bit-fields in
+     * PSn00bSDK 0.24, so we can't take their address. Instead, write
+     * known sentinels into pad_buff[0][0..7] and read back through
+     * the PADTYPE struct. This tells us exactly which bytes pad->stat
+     * and pad->btn map to. If pad->btn != 0xDDCC (little-endian read
+     * of bytes 2,3) we have an offset mismatch and our SPI callback
+     * is writing btn into the wrong slot. */
+    {
+        pad_buff[0][0] = 0xAA;
+        pad_buff[0][1] = 0xBB;
+        pad_buff[0][2] = 0xCC;
+        pad_buff[0][3] = 0xDD;
+        pad_buff[0][4] = 0xEE;
+        pad_buff[0][5] = 0xFF;
+        pad_buff[0][6] = 0x11;
+        pad_buff[0][7] = 0x22;
+        PADTYPE *p = (PADTYPE*)pad_buff[0];
+        printf("JCSPI PADTYPE probe sizeof=%lu sentinels[0..7]=AA BB CC DD EE FF 11 22 → stat=%02x btn=%04x\n",
+               (unsigned long)sizeof(PADTYPE),
+               (unsigned)p->stat, (unsigned)p->btn);
+        printf("JCSPI PADTYPE expected: stat=AA btn=DDCC (if btn at off 2 little-endian) — mismatch means LAYOUT BUG\n");
+    }
 
     /* Initialize pad_buff to a safe disconnected-controller state so any
      * reads that happen before the first SPI poll fires give 0xFFFF (no
@@ -561,6 +616,20 @@ void eventsWaitTick(uint16 delay)
                        (unsigned long)main_gp_baseline, (unsigned long)s.at_irq_gp,
                        (unsigned long)main_sp_baseline, (unsigned long)s.at_irq_sp);
             }
+
+            /* JCSPI persistent btn tracker — full-rate (250 Hz) view of
+             * btn bytes from port 0 polls across the WHOLE run. If
+             * spi_btn_p0_nonff stays 0 across many thousands of polls,
+             * the controller really never sent non-FF btn bytes. If
+             * spi_btn_p0_nonff > 0, button data IS reaching the SPI
+             * driver — investigate downstream of the callback. */
+            printf("JCSPI BTNTRK p0_polls=%lu p0_nonff=%lu changes=%lu min[lo=%02x hi=%02x] max[lo=%02x hi=%02x] last[lo=%02x hi=%02x]\n",
+                   (unsigned long)spi_btn_p0_polls,
+                   (unsigned long)spi_btn_p0_nonff,
+                   (unsigned long)spi_btn_change_count,
+                   spi_btn_min_lo, spi_btn_min_hi,
+                   spi_btn_max_lo, spi_btn_max_hi,
+                   spi_btn_last_lo, spi_btn_last_hi);
 
             /* JCSPI verdict: classify which theory the data points to. */
             const char *verdict = "?";
