@@ -232,7 +232,9 @@ static uint16 eventsDelayTicksToTargetVBlanks(uint16 delay)
  * the addr-response discard). Anything less means the port has no
  * responding device — write the disconnected pattern.
  */
-static void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len)
+/* Non-static so memcard.c can re-arm SPI_Init with this callback after
+ * temporarily handing SIO0 to the BIOS card driver for a save/load. */
+void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len)
 {
     if (port > 1)
         return;

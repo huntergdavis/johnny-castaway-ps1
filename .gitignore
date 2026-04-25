@@ -70,3 +70,4 @@ regtest-results/
 # Python caches
 __pycache__/
 *.pyc
+host-results
