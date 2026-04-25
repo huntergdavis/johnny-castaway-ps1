@@ -527,6 +527,10 @@ int pauseMenuUpdate(void)
          * frame's grDrawBackground LoadImage isn't overwritten by a
          * GPU bg-clear every frame. */
         PutDrawEnv(&draw[db]);
+        /* Force a full bgTile re-upload so the dirty-rect optimization
+         * doesn't leave our pause-blue clear visible in regions that
+         * the scene didn't touch this frame. */
+        grMarkAllTilesDirty();
         return 0;
     }
 

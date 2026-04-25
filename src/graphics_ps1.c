@@ -140,7 +140,7 @@ static inline void grMarkSingleColumnDirty(int tileBaseX, int y0, int y1Exclusiv
     }
 }
 
-static void grMarkAllTilesDirty(void)
+void grMarkAllTilesDirty(void)
 {
     for (int i = 0; i < 4; i++) {
         currDirtyMinY[i] = 0;
