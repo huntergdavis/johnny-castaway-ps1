@@ -51,6 +51,11 @@ Current accepted baseline for this log:
 | Partial tail reads | Proved harmful in isolation because fewer bytes did not compensate for more transactions; retry only as part of pack/group layout work. |
 | Same-iteration stage-copy fallthrough | Structural failure before metrics; retry only with explicit state that prevents repeated FG2 lookup/read churn. |
 
+## Harness Notes
+
+- `regtest_exit=137` means the waited process was killed by `SIGKILL`, but it is not always a PS1/emulator failure. If `JCPERF2` is complete, the case gate is clean, and DuckStation logs `Exiting with success`, the perf harness treats it as a post-success wrapper failure and continues to aggregate the run.
+- `regtest_exit=137` with missing `JCPERF2` remains a hard failure. Those runs are still recorded as structural failures because they do not prove correctness or speed.
+
 ## Promotion Rule
 
 An experiment is promotable only when the headless perf gate passes, correctness
