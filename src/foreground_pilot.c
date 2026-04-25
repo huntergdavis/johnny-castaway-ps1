@@ -1279,6 +1279,22 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     return 1;
 }
 
+static int fgRuntimeWindowPrefetchWouldRead(void)
+{
+    uint16 targetFrameIndex = 0;
+    const struct TFgPilotEntry *entry;
+
+    if (!fgRuntimeCanWindowCache())
+        return 0;
+
+    entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
+    (void)targetFrameIndex;
+    if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
+        return 0;
+
+    return fgRuntimeWindowContainsEntry(entry) ? 0 : 1;
+}
+
 static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 {
     const struct TFgPilotEntry *entry = fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
@@ -1971,8 +1987,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             int didPrefetch;
             if (ps1PerfEnabled)
                 ps1PerfMarkHeldLoop();
-            didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
-            if (!didPrefetch)
+            if (gFgRuntime.stagedFrameValid) {
+                didPrefetch = fgRuntimeWindowPrefetchWouldRead()
+                    ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
+                    : 0;
+            } else {
+                didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
+            }
+            if (!didPrefetch && !gFgRuntime.stagedFrameValid)
                 didPrefetch = fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks);
             if (didPrefetch) {
                 if (prefetchElapsedVBlanks == 0)
