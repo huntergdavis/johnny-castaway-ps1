@@ -696,6 +696,8 @@ static void fgFireSoundEventsUpTo(uint16 sourceFrame)
         if (ev->sourceFrame > threshold)
             break;
         soundPlay((int)ev->sampleId);
+        if (ps1PerfEnabled)
+            ps1PerfMarkSoundEvent();
         gFgRuntime.soundEventCursor++;
     }
 }
@@ -890,6 +892,9 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     if (entry == NULL)
         return 0;
 
+    if (ps1PerfEnabled)
+        ps1PerfSetCurrentFrame(frameIndex, entry->sourceFrame, entry->dataOffset);
+
     /* An empty entry (w=0, h=0, no payload) is a capture artifact from a
      * host frame where the ledger was blank (mid-refresh). Hold the previous
      * frame's visible state rather than wiping, so the viewer doesn't see a
@@ -903,7 +908,8 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                                        entry,
                                                        gFgRuntime.presentedVBlanks);
         if (ps1PerfEnabled)
-            ps1PerfMarkEntry(0, gFgRuntime.displayVBlanks);
+            ps1PerfMarkEntry(0, gFgRuntime.displayVBlanks, 1,
+                             entry->sourceFrame, entry->dataOffset);
         fgFireSoundEventsUpTo(entry->sourceFrame);
         fgTelemetryUpdate();
         return 1;
@@ -926,6 +932,8 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
             gFgRuntime.currentEntry.dataSize > gFgRuntime.frameBufferSize ||
             !gFgRuntime.packCdFileValid ||
             gFgRuntime.streamScratch == NULL) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
             return 0;
         }
         if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
@@ -934,6 +942,8 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                             gFgRuntime.frameBuffer,
                                             gFgRuntime.streamScratch,
                                             gFgRuntime.streamScratchSize)) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkTripwire();
             return 0;
         }
         gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
@@ -943,7 +953,11 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
                                                    &gFgRuntime.currentEntry,
                                                    gFgRuntime.presentedVBlanks);
     if (ps1PerfEnabled)
-        ps1PerfMarkEntry(gFgRuntime.currentEntry.dataSize, gFgRuntime.displayVBlanks);
+        ps1PerfMarkEntry(gFgRuntime.currentEntry.dataSize,
+                         gFgRuntime.displayVBlanks,
+                         entryIsEmpty ? 1 : 0,
+                         gFgRuntime.currentEntry.sourceFrame,
+                         gFgRuntime.currentEntry.dataOffset);
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
@@ -1076,6 +1090,8 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                     free(gFgFrameBuffer);
                 gFgFrameBuffer = (uint8 *)malloc(maxDataSize);
                 if (gFgFrameBuffer == NULL) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkAllocFail(maxDataSize);
                     gFgFrameBufferSize = 0;
                     fgRuntimeReset();
                     return 0;
@@ -1089,6 +1105,8 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                         free(gFgStreamScratch);
                     gFgStreamScratch = (uint8 *)malloc(requiredScratch);
                     if (gFgStreamScratch == NULL) {
+                        if (ps1PerfEnabled)
+                            ps1PerfMarkAllocFail(requiredScratch);
                         gFgStreamScratchSize = 0;
                         fgRuntimeReset();
                         return 0;
@@ -1096,6 +1114,8 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgStreamScratchSize = requiredScratch;
                 }
             }
+            if (ps1PerfEnabled)
+                ps1PerfMarkBufferSizes(gFgFrameBufferSize, gFgStreamScratchSize);
             gFgRuntime.frameBuffer = gFgFrameBuffer;
             gFgRuntime.frameBufferSize = gFgFrameBufferSize;
             gFgRuntime.streamScratch = gFgStreamScratch;
@@ -1105,6 +1125,22 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                 return 0;
             }
             gFgRuntime.packCdFileValid = 1;
+            if (ps1PerfEnabled) {
+                uint32 packBytes = gFgRuntime.packCdFile.size;
+                uint32 packSectors = (packBytes + 2047u) / 2048u;
+                uint32 packLba = (uint32)CdPosToInt((CdlLOC *)&gFgRuntime.packCdFile.pos);
+                ps1PerfSetPackInfo(path,
+                                   packBytes,
+                                   packLba,
+                                   packSectors,
+                                   gFgRuntime.header.frameCount,
+                                   gFgRuntime.entryTable.count,
+                                   gFgRuntime.soundEventCount,
+                                   gFgRuntime.header.reserved0,
+                                   gFgRuntime.packFormat,
+                                   gFgFrameBufferSize,
+                                   gFgStreamScratchSize);
+            }
             gFgRuntime.soundEventCursor = 0;
             gFgRuntime.active = 1;
             gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
@@ -1112,9 +1148,19 @@ int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.displayVBlanks = 1;
             gFgRuntime.holdFrames = 150;
             gFgRuntime.sceneClockTick = fgReadTickCounter();
-            if (!fgRuntimeLoadSceneFrame(0)) {
-                fgRuntimeReset();
-                return 0;
+            {
+                uint32 perfFirstFrameTick = 0;
+                if (ps1PerfEnabled)
+                    perfFirstFrameTick = ps1PerfTick();
+                if (!fgRuntimeLoadSceneFrame(0)) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkTripwire();
+                    fgRuntimeReset();
+                    return 0;
+                }
+                if (ps1PerfEnabled)
+                    ps1PerfMarkSetupPhase(PS1_PERF_SETUP_FIRST_FRAME,
+                                          ps1PerfElapsedVBlanks(perfFirstFrameTick));
             }
             gFgStartedEver = 1;
             fgTelemetryUpdate();
@@ -1333,6 +1379,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     sint16 fgBoundsY = 0;
     uint16 fgBoundsW = 0;
     uint16 fgBoundsH = 0;
+    uint32 perfPhaseTick = 0;
+    int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
     fgHeapProbe("before_scene", sceneName);
     /* Clean-rect snapshots are tied to the current backdrop contents. Carrying
@@ -1343,10 +1391,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
      * this moment the heap is freshest and the ~93 KB PSB stream has room. */
+    if (ps1PerfEnabled)
+        perfPhaseTick = ps1PerfTick();
     fgBackdropPreloadBackgrndBmp();
+    if (ps1PerfEnabled)
+        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
+                              ps1PerfElapsedVBlanks(perfPhaseTick));
 
     fgInitVisiblePipeline();
     grSetPresentDuringScreenLoad(0);
+    if (ps1PerfEnabled)
+        perfPhaseTick = ps1PerfTick();
     if (islandState.night) {
         /* NIGHT.SCR is the full night-ocean backdrop, no island baked in.
          * The FG2 backdrop helper draws the island sprites on top. */
@@ -1357,13 +1412,23 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
     }
+    if (ps1PerfEnabled)
+        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_SCREEN,
+                              ps1PerfElapsedVBlanks(perfPhaseTick));
     /* grLoadScreen saves full clean-tile copies. FG2 uses a smaller
      * rect-mode backup instead, so free the full copies before the pack
      * allocates its streaming buffer. */
     grFreeCleanBgTiles();
+    if (ps1PerfEnabled)
+        perfPhaseTick = ps1PerfTick();
     fgBackdropEnableWaveBackdrop();
+    if (ps1PerfEnabled)
+        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
+                              ps1PerfElapsedVBlanks(perfPhaseTick));
     grSetPresentDuringScreenLoad(1);
 
+    if (ps1PerfEnabled)
+        perfPhaseTick = ps1PerfTick();
     if (!foregroundPilotRuntimeStart(sceneName)) {
         fgRuntimeReset();
         fgReleaseStreamBuffers();
@@ -1372,12 +1437,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         fgHeapProbe("start_failed_cleanup", sceneName);
         return;
     }
+    if (ps1PerfEnabled)
+        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
+                              ps1PerfElapsedVBlanks(perfPhaseTick));
     fgHeapProbe("after_pack_start", sceneName);
 
     /* Now that the pack header is loaded, size the rect-mode clean backup
      * to cover the actual runtime draw bbox. Pack entries may be scene-relative.
      * Fishing3 exposes the difference: some squid frames draw above the header
      * union after the current island offset is applied. */
+    if (ps1PerfEnabled)
+        perfPhaseTick = ps1PerfTick();
     if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
                                     &fgBoundsW, &fgBoundsH) ||
         !fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
@@ -1389,24 +1459,50 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         fgHeapProbe("clean_rect_failed_cleanup", sceneName);
         return;
     }
+    if (ps1PerfEnabled)
+        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_CLEAN_RECT,
+                              ps1PerfElapsedVBlanks(perfPhaseTick));
     fgHeapProbe("after_clean_rect_save", sceneName);
 
+    if (ps1PerfEnabled)
+        ps1PerfMarkLoopStart();
     while (foregroundPilotRuntimeActive()) {
         if (fgRuntimeCanHoldDisplayedFrame()) {
             if (ps1PerfEnabled)
                 ps1PerfMarkHeldLoop();
             fgRuntimeWaitHeldVBlank();
         } else {
+            uint32 perfRenderTick = 0;
+            uint32 perfDetailTick = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkRenderedLoop();
+            if (perfDetail)
+                perfRenderTick = ps1PerfTick();
             grBeginFrame();
+            if (perfDetail)
+                perfDetailTick = ps1PerfTick();
             grRestoreBgFromRects();
+            if (perfDetail)
+                ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
+                                       ps1PerfElapsedVBlanks(perfDetailTick));
             if (!fgRuntimeUsesBaseDiffBackdrop())
                 fgBackdropTickBackgroundWaves();
             grUpdateDisplay(NULL, NULL, NULL);
+            if (perfDetail)
+                ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
             fgRuntimeMarkFrameRendered();
         }
+        if (perfDetail)
+            perfPhaseTick = ps1PerfTick();
         foregroundPilotRuntimeAdvance();
+        if (perfDetail)
+            ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
+                                   ps1PerfElapsedVBlanks(perfPhaseTick));
+    }
+    if (ps1PerfEnabled) {
+        ps1PerfMarkLoopEnd();
+        ps1PerfMarkSoundCursor(gFgRuntime.soundEventCursor);
+        ps1PerfMarkCleanupStart();
     }
 
     /* End-of-scene heap cleanup — the screensaver loop replays scenes

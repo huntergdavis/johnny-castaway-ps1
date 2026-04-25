@@ -591,6 +591,9 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
                      struct TTtmThread *ttmThreads,
                      struct TTtmThread *ttmHolidayThread)
 {
+    int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
+    uint32 perfTick = 0;
+
     /* PS1 uses RAM-based compositing - sprites are drawn to bgTile buffers
      * via grCompositeToBackground(). By this point:
      * - grRestoreBgTiles was called before ttmPlay (at frame start)
@@ -600,16 +603,36 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
 
     /* Wait for VSync BEFORE uploading to framebuffer.
      * This ensures we write during vertical blank when display isn't scanning. */
+    if (perfDetail)
+        perfTick = ps1PerfTick();
     VSync(0);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_PRESENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
 
+    if (perfDetail)
+        perfTick = ps1PerfTick();
     if (foregroundPilotRuntimeActive())
         foregroundPilotRuntimeCompose();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_COMPOSE,
+                               ps1PerfElapsedVBlanks(perfTick));
 
     /* Upload background tiles (with sprites composited in software) to framebuffer */
+    if (perfDetail)
+        perfTick = ps1PerfTick();
     grDrawBackground();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_UPLOAD,
+                               ps1PerfElapsedVBlanks(perfTick));
 
     /* Handle frame timing */
+    if (perfDetail)
+        perfTick = ps1PerfTick();
     eventsWaitTick(grUpdateDelay);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_EVENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
 
 }
 
@@ -3148,6 +3171,7 @@ void grDrawBackground(void)
     int dirtyCount = 0;
     int singleIndex = -1;
     uint16 uploadRects = 0;
+    uint16 uploadRows = 0;
     uint32 uploadBytes = 0;
     uint32 perfStartTick = 0;
 
@@ -3178,6 +3202,7 @@ void grDrawBackground(void)
 
         minYs[i] = minY;
         maxYs[i] = maxY;
+        uploadRows = (uint16)(uploadRows + (uint16)(maxY - minY + 1));
         dirtyCount++;
         singleIndex = i;
     }
@@ -3217,6 +3242,8 @@ void grDrawBackground(void)
 
     if (ps1PerfEnabled && dirtyCount > 0)
         ps1PerfMarkUpload(uploadRects, uploadBytes, ps1PerfElapsedVBlanks(perfStartTick));
+    if (ps1PerfEnabled && dirtyCount > 0)
+        ps1PerfMarkDirtyRect(uploadRows, uploadBytes);
 
     /* Advance dirty state: this frame's compositing becomes next frame's restore set */
     for (int i = 0; i < 4; i++) {
