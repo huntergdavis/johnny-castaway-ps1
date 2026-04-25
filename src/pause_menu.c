@@ -529,8 +529,10 @@ int pauseMenuUpdate(void)
         PutDrawEnv(&draw[db]);
         /* Force a full bgTile re-upload so the dirty-rect optimization
          * doesn't leave our pause-blue clear visible in regions that
-         * the scene didn't touch this frame. */
-        grMarkAllTilesDirty();
+         * the scene didn't touch this frame. Use the prevDirty-setting
+         * variant because grRestoreBgTiles wipes currDirty at frame
+         * start — only prevDirty survives into grDrawBackground. */
+        grForceFullRedrawNextFrame();
         return 0;
     }
 
