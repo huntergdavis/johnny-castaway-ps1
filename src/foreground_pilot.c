@@ -12,6 +12,7 @@
 #include "graphics_ps1.h"
 #include "cdrom_ps1.h"
 #include "island.h"
+#include "pause_menu.h"
 #include "sound_ps1.h"
 #include "utils.h"
 #include "ps1_perf.h"
@@ -1762,6 +1763,27 @@ unsigned short foregroundPilotRuntimeFrameIndex(void)
     return gFgRuntime.active ? gFgRuntime.frameIndex : 0;
 }
 
+unsigned short foregroundPilotRuntimeFrameCount(void)
+{
+    return gFgRuntime.active ? gFgRuntime.header.frameCount : 0;
+}
+
+const char *foregroundPilotRuntimeSceneName(void)
+{
+    return gFgRuntime.active ? gFgRuntime.sceneName : "";
+}
+
+const char *foregroundPilotRuntimeModeName(void)
+{
+    if (!gFgRuntime.active) return "INACTIVE";
+    switch ((int)gFgRuntime.mode) {
+    case 0: return "NONE";
+    case 1: return "TESTCARD";
+    case 2: return "SCENE_PACK";
+    default: return "?";
+    }
+}
+
 unsigned short foregroundPilotRuntimeSourceFrame(void)
 {
     return (gFgRuntime.active && gFgRuntime.currentFrameData != NULL)
@@ -1938,6 +1960,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
     while (foregroundPilotRuntimeActive()) {
+        /* Pause-menu request: break out so jc_reborn's outer loop can
+         * advance to next scene or restart the loop. The flag is
+         * cleared by the consumer in jc_reborn.c. */
+        if (pauseMenuRequestNextScene || pauseMenuRequestResetLoop) {
+            break;
+        }
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             int didPrefetch;

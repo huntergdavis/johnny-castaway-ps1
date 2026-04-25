@@ -29,6 +29,8 @@
 #include "graphics_ps1.h"
 #include "sound_ps1.h"
 #include "resource.h"
+#include "foreground_pilot.h"
+#include "ps1_perf.h"
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
@@ -47,6 +49,13 @@ extern int fontID;
 extern DRAWENV draw[2];
 extern int db;
 
+/* Sound mute helpers from sound_ps1.c. */
+extern int soundMuted;
+void soundMuteToggle(void);
+
+/* Frame counter from graphics_ps1.c (incremented per scene frame). */
+extern uint32 ps1FrameCount;
+
 /* Controller pad buffer from events_ps1.c. */
 
 /* ---------------------------------------------------------------------------
@@ -58,6 +67,21 @@ static enum PauseMenuState menuState = PAUSE_MENU_MAIN;
 
 /* "Next scene" request flag consumed by ads/story loop. */
 int pauseMenuRequestNextScene = 0;
+
+/* "Reset loop" flag — foreground pilot loop checks this and exits
+ * early so jc_reborn's outer loop can restart from scene 0. */
+int pauseMenuRequestResetLoop = 0;
+
+/* Did pauseMenuShow itself toggle the mute? If yes, pauseMenuHide
+ * undoes it. If the user manually toggled mute via the menu item
+ * while paused, this gets cleared so we don't fight them on hide. */
+static int pauseMutedSound = 0;
+
+/* OT + primitive scratch for the dim/panel POLY_F4 quads. Tiny —
+ * just a tpage + 2 quads = 60 bytes, OT length 4 is plenty. */
+#define PAUSE_OT_LEN 4
+static uint32 pauseOt[PAUSE_OT_LEN];
+static uint8  pausePrimBuf[128];
 
 /* Time/date editing fields. */
 static int editField  = 0;   /* 0=month,1=day,2=year,3=hour,4=min */
@@ -77,15 +101,17 @@ static uint16 prevButtons = 0;
 enum {
     MENU_RESUME,
     MENU_SOUND,
-    MENU_CAPTIONS,
-    MENU_SCENE_ORDER,
-    MENU_DIRECT_CONTROL,
+    MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
+    MENU_PERF_TOGGLE,
+    MENU_DEBUG_INFO,
     MENU_SET_TIME,
-    MENU_SCENE_INFO,
     MENU_CONTROLS,
     MENU_COUNT
 };
+
+/* Forward decls. */
+static const char *perfLevelLabel(void);
 
 /* Clamp helpers */
 static int clampInt(int v, int lo, int hi)
@@ -126,7 +152,7 @@ void pauseMenuInit(void)
     /* We keep the fontID from ps1_debug.c if still valid; otherwise open a
      * new stream. FntOpen returns a small integer stream id. */
     if (fontID < 0) {
-        fontID = FntOpen(0, 0, 640, 480, 0, 1024);
+        fontID = FntOpen(80, 100, 480, 280, 0, 1024);
     }
 
     menuVisible = 0;
@@ -147,11 +173,35 @@ void pauseMenuShow(void)
     menuState   = PAUSE_MENU_MAIN;
     prevButtons = 0xFFFF;  /* Treat all buttons as "held" so the initial
                               press that opened the menu is not re-acted. */
+
+    /* P6: mute SPU on pause-show. Track that WE caused the mute so
+     * we can undo it on hide (unless the user manually toggled it). */
+    if (!soundMuted) {
+        soundMuteToggle();
+        pauseMutedSound = 1;
+    } else {
+        pauseMutedSound = 0;
+    }
+
+    /* P6: one-shot JCPAUSE snapshot for log-mining. */
+    printf("JCPAUSE show frame=%lu scene=%s mode=%s perfLevel=%u soundMuted=%d\n",
+           (unsigned long)ps1FrameCount,
+           foregroundPilotRuntimeSceneName(),
+           foregroundPilotRuntimeModeName(),
+           (unsigned)ps1PerfLevel,
+           soundMuted);
 }
 
 void pauseMenuHide(void)
 {
     menuVisible = 0;
+
+    /* P6: undo our auto-mute. If user toggled sound while paused,
+     * pauseMutedSound was cleared and we leave their choice alone. */
+    if (pauseMutedSound) {
+        soundMuteToggle();
+        pauseMutedSound = 0;
+    }
 }
 
 int pauseMenuIsVisible(void)
@@ -176,22 +226,55 @@ void pauseMenuSetState(enum PauseMenuState state)
  *  Drawing helpers -- all use FntPrint into the existing fontID stream
  * ------------------------------------------------------------------------- */
 
-/* Dim the background by writing a dark semi-transparent overlay into bgTile
- * RAM buffers.  This is cheap: just halve every pixel once when the menu
- * first appears.  We track whether we already dimmed so repeated frames
- * don't keep halving. */
-static int bgDimmed = 0;
-
-static void dimBackground(void)
+/* P2: build POLY_F4 dim+panel quads each pause frame.
+ *
+ * Order in OT (back→front):
+ *   priority N   : dim quad — full screen, semi-trans 50% black
+ *   priority N-1 : panel quad — centered, opaque dark blue
+ * Text from FntFlush draws on top via its own primitive list.
+ *
+ * The bgTile RAM is never modified — on resume we just stop drawing
+ * the quads and the next scene frame's grDrawBackground re-uploads
+ * the bg as if pause never happened (well, we still need
+ * grForceFullRedrawNextFrame on exit because our quads modified
+ * VRAM directly during pause). */
+static void drawPauseQuads(void)
 {
-    /* P1: no-op. The original implementation modified bgTile pixels
-     * in place without marking them dirty, so the dim was invisible AND
-     * accumulated across pause cycles AND corrupted bg state outside
-     * the rect-restore region after resume. P2 replaces with a
-     * POLY_F4 semi-transparent quad over the framebuffer (bgTile
-     * pixels untouched). For now the menu text draws on top of the
-     * live last-rendered scene with no dim. */
-    bgDimmed = 1;
+    ClearOTagR(pauseOt, PAUSE_OT_LEN);
+    uint8 *next = pausePrimBuf;
+
+    /* TPAGE: set abr=0 (50% blend) for any subsequent semi-trans prim. */
+    DR_TPAGE *tp = (DR_TPAGE*)next;
+    next += sizeof(DR_TPAGE);
+    setDrawTPage(tp, 0, 1, getTPage(0, 0, 0, 0));
+    addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
+
+    /* Dim quad — full 640x480, semi-trans black → halves what's behind. */
+    POLY_F4 *dim = (POLY_F4*)next;
+    next += sizeof(POLY_F4);
+    setPolyF4(dim);
+    setSemiTrans(dim, 1);
+    setRGB0(dim, 0, 0, 0);
+    setXY4(dim,   0,   0,
+                640,   0,
+                  0, 480,
+                640, 480);
+    addPrim(&pauseOt[PAUSE_OT_LEN - 2], dim);
+
+    /* Panel quad — centered at (60,80)–(580,400), opaque dark blue. */
+    POLY_F4 *panel = (POLY_F4*)next;
+    next += sizeof(POLY_F4);
+    setPolyF4(panel);
+    setRGB0(panel, 0x10, 0x18, 0x40);
+    setXY4(panel,  60,  80,
+                  580,  80,
+                   60, 400,
+                  580, 400);
+    addPrim(&pauseOt[PAUSE_OT_LEN - 3], panel);
+
+    DrawSync(0);
+    DrawOTag(&pauseOt[PAUSE_OT_LEN - 1]);
+    DrawSync(0);
 }
 
 static void drawSeparator(void)
@@ -200,26 +283,33 @@ static void drawSeparator(void)
 }
 
 /* ---------------------------------------------------------------------------
- *  Sub-screen: Scene Info
+ *  Sub-screen: Debug Info
  * ------------------------------------------------------------------------- */
 static void drawSceneInfo(void)
 {
     size_t used   = getTotalMemoryUsed();
     size_t budget = getMemoryBudget();
+    const char *scene = foregroundPilotRuntimeSceneName();
+    const char *mode  = foregroundPilotRuntimeModeName();
+    uint16 fIdx = foregroundPilotRuntimeFrameIndex();
+    uint16 fCnt = foregroundPilotRuntimeFrameCount();
+    uint32 uptimeSec = ps1FrameCount / 60;
 
-    FntPrint(fontID, "\n");
+    FntPrint(fontID, "       DEBUG INFO\n");
     drawSeparator();
-    FntPrint(fontID, "     SCENE INFO\n");
+    FntPrint(fontID, " Scene:  %s\n", scene ? scene : "?");
+    FntPrint(fontID, " Mode:   %s\n", mode  ? mode  : "?");
+    FntPrint(fontID, " Frame:  %u / %u\n",
+             (unsigned)fIdx, (unsigned)fCnt);
+    FntPrint(fontID, " Mem:    %u KB / %u KB\n",
+             (unsigned)(used / 1024), (unsigned)(budget / 1024));
+    FntPrint(fontID, " Uptime: %lu:%02lu\n",
+             (unsigned long)(uptimeSec / 60), (unsigned long)(uptimeSec % 60));
+    FntPrint(fontID, " Build:  %s\n", __DATE__);
+    FntPrint(fontID, " Perf:   %s\n", perfLevelLabel());
+    FntPrint(fontID, " Sound:  %s\n", soundMuted ? "MUTED" : "ON");
     drawSeparator();
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " Memory: %dKB / %dKB\n",
-             (int)(used / 1024), (int)(budget / 1024));
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " (Debug Info screen in P3 will\n");
-    FntPrint(fontID, "  show live perf counters via\n");
-    FntPrint(fontID, "  ps1_perf module.)\n");
-    FntPrint(fontID, "\n");
-    FntPrint(fontID, " (START to go back)\n");
+    FntPrint(fontID, "  START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -300,38 +390,43 @@ static void drawSetTime(void)
 /* ---------------------------------------------------------------------------
  *  Main menu drawing
  * ------------------------------------------------------------------------- */
+static const char *perfLevelLabel(void)
+{
+    switch (ps1PerfLevel) {
+    case 0: return "OFF";
+    case 1: return "SUMMARY";
+    case 2: return "DETAIL";
+    case 3: return "DEBUG";
+    default: return "?";
+    }
+}
+
 static void drawMainMenu(void)
 {
-    const char *soundLabel   = soundDisabled ? "OFF" : "ON";
+    const char *soundLabel = soundMuted ? "MUTED" : "ON";
 
-    FntPrint(fontID, "\n");
+    FntPrint(fontID, " JOHNNY CASTAWAY  - PAUSED -\n");
     drawSeparator();
-    FntPrint(fontID, "    JOHNNY CASTAWAY\n");
-    FntPrint(fontID, "      - PAUSED -\n");
-    drawSeparator();
-    FntPrint(fontID, "\n");
 
-    /* Menu items -- cursor arrow on selected line */
     FntPrint(fontID, " %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
     FntPrint(fontID, " %s Sound: %s\n",
              menuCursor == MENU_SOUND ? ">" : " ", soundLabel);
-    FntPrint(fontID, " %s Captions: (soon)\n",
-             menuCursor == MENU_CAPTIONS ? ">" : " ");
-    FntPrint(fontID, " %s Scene Order: (soon)\n",
-             menuCursor == MENU_SCENE_ORDER ? ">" : " ");
-    FntPrint(fontID, " %s Direct Control: (soon)\n",
-             menuCursor == MENU_DIRECT_CONTROL ? ">" : " ");
+    FntPrint(fontID, " %s Reset Screensaver Loop\n",
+             menuCursor == MENU_RESET_LOOP ? ">" : " ");
     FntPrint(fontID, " %s Next Scene\n",
              menuCursor == MENU_NEXT_SCENE ? ">" : " ");
+    FntPrint(fontID, " %s Perf Counters: %s\n",
+             menuCursor == MENU_PERF_TOGGLE ? ">" : " ", perfLevelLabel());
+    FntPrint(fontID, " %s Debug Info\n",
+             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
     FntPrint(fontID, " %s Set Time/Date\n",
              menuCursor == MENU_SET_TIME ? ">" : " ");
-    FntPrint(fontID, " %s Scene Info\n",
-             menuCursor == MENU_SCENE_INFO ? ">" : " ");
     FntPrint(fontID, " %s Controls\n",
              menuCursor == MENU_CONTROLS ? ">" : " ");
 
     drawSeparator();
+    FntPrint(fontID, "  X = select   START = resume\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -357,21 +452,33 @@ static int handleMainInput(uint16 pressed)
             return 0;  /* close menu */
 
         case MENU_SOUND:
-            soundDisabled = !soundDisabled;
+            /* Toggle real SPU mute (silences active voices + blocks new). */
+            soundMuteToggle();
+            /* User chose mute state — don't auto-undo on hide. */
+            pauseMutedSound = 0;
             break;
+
+        case MENU_RESET_LOOP:
+            pauseMenuRequestResetLoop = 1;
+            return 0;  /* close menu so the foreground pilot loop sees it */
 
         case MENU_NEXT_SCENE:
             pauseMenuRequestNextScene = 1;
-            return 0;  /* close menu to let scene advance */
+            return 0;
+
+        case MENU_PERF_TOGGLE:
+            /* Cycle: OFF → SUMMARY → DETAIL → DEBUG → OFF. */
+            ps1PerfSetLevel((ps1PerfLevel + 1) & 0x3);
+            break;
+
+        case MENU_DEBUG_INFO:
+            menuState = PAUSE_MENU_SCENE_INFO;
+            prevButtons = 0xFFFF;
+            break;
 
         case MENU_SET_TIME:
             menuState = PAUSE_MENU_SET_TIME;
             editField = 0;
-            prevButtons = 0xFFFF;
-            break;
-
-        case MENU_SCENE_INFO:
-            menuState = PAUSE_MENU_SCENE_INFO;
             prevButtons = 0xFFFF;
             break;
 
@@ -380,10 +487,6 @@ static int handleMainInput(uint16 pressed)
             prevButtons = 0xFFFF;
             break;
 
-        /* Stubs for unimplemented features */
-        case MENU_CAPTIONS:
-        case MENU_SCENE_ORDER:
-        case MENU_DIRECT_CONTROL:
         default:
             break;
         }
@@ -475,22 +578,14 @@ int pauseMenuUpdate(void)
 {
     if (!menuVisible) return 0;
 
-    /* P1 visual: install a full-screen DRAWENV with isbg=1 so the GPU
-     * clears VRAM to a dark blue each frame the menu is up. This
-     * mirrors ps1_debug.c's known-working font-flush pattern (which
-     * doesn't show text without a clearing DRAWENV applied first).
-     *
-     * P2 will replace this with a translucent POLY_F4 quad over the
-     * live scene. For P1 we just want the menu to be unambiguously
-     * visible. The scene's render env is re-applied by grUpdateDisplay
-     * on resume so this temporary clobber is fine. */
-    {
-        DRAWENV pdraw;
-        SetDefDrawEnv(&pdraw, 0, 0, 640, 480);
-        setRGB0(&pdraw, 0, 0, 64);   /* dark blue */
-        pdraw.isbg = 1;
-        PutDrawEnv(&pdraw);
-    }
+    /* P2: re-upload bg every pause frame so the dim quad doesn't
+     * compound over time (each pass would otherwise re-halve VRAM). */
+    grForceFullRedrawNextFrame();
+    grDrawBackground();
+    DrawSync(0);
+
+    /* P2: draw the translucent dim + opaque panel quads on top of bg. */
+    drawPauseQuads();
 
     /* Read pad through the game's shared pad buffer (events_ps1.c owns
      * InitPAD, so we just peek at its buffer via the extern). */
@@ -521,17 +616,12 @@ int pauseMenuUpdate(void)
     }
 
     if (!keepOpen) {
-        menuVisible = 0;
-        bgDimmed = 0;
-        /* Restore scene's render env (isbg=0, no clear) so the next
-         * frame's grDrawBackground LoadImage isn't overwritten by a
-         * GPU bg-clear every frame. */
-        PutDrawEnv(&draw[db]);
-        /* Force a full bgTile re-upload so the dirty-rect optimization
-         * doesn't leave our pause-blue clear visible in regions that
-         * the scene didn't touch this frame. Use the prevDirty-setting
-         * variant because grRestoreBgTiles wipes currDirty at frame
-         * start — only prevDirty survives into grDrawBackground. */
+        pauseMenuHide();
+        /* Force a full bgTile re-upload on the first scene frame after
+         * resume — our dim/panel quads painted into VRAM and we need
+         * the scene to fully repaint over them. prevDirty survives
+         * grRestoreBgTiles' currDirty reset; setting both is the
+         * standard pattern (see grFadeOut/grFreeCleanBgTiles). */
         grForceFullRedrawNextFrame();
         return 0;
     }
