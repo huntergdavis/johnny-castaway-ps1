@@ -73,6 +73,107 @@ static uint32 cop0_read_epc(void)
  * over timer 2 (could be priority issue). */
 static uint32 vbl_seen_at_last_snapshot = 0;
 
+/* JCSPI T21: baseline main-loop $gp captured ONCE in eventsInit, before
+ * any IRQs hit. Later we compare against gp captured at IRQ entry — if
+ * they differ, the BIOS dispatch isn't restoring gp and our handler
+ * can't access globals. */
+static uint32 main_gp_baseline = 0;
+static uint32 main_sp_baseline = 0;
+
+/*
+ * Synchronous SIO0 hardware probe — IRQ-free.
+ *
+ * Bypasses our SPI driver entirely and manually drives SIO0 to confirm
+ * the bus + emulated controller respond at all. If even THIS times out,
+ * the issue is downstream of any IRQ wiring (DuckStation port config,
+ * SIO emulation, missing controller), and every IRQ-based theory is
+ * moot. If this returns valid bytes, hardware is alive and the IRQ
+ * path is the suspect.
+ *
+ * Sequence:
+ *   1. Reset SIO0, configure MODE/BAUD as SPI driver does.
+ *   2. /CS low for port 0 (no /ACK IRQ enable).
+ *   3. Drain any pending RX bytes.
+ *   4. Write 0x01 (address byte).
+ *   5. Spin-poll SIO_STAT bit 1 (RX FIFO not empty) up to ~5 ms.
+ *   6. Read SIO_DATA — for a connected digital pad this should be 0xFF
+ *      (open-bus initial response).
+ *   7. /CS high, reset.
+ *
+ * Run BEFORE SPI_Init so we don't fight the timer-2 IRQ mid-probe.
+ */
+static void jcspiSyncProbe(void)
+{
+    /* Bring includes for hwregs in via spi.h's transitive include. */
+    #define _SIO_CTRL ((volatile uint16_t *) 0xBF80104A)
+    #define _SIO_MODE ((volatile uint16_t *) 0xBF801048)
+    #define _SIO_BAUD ((volatile uint16_t *) 0xBF80104E)
+    #define _SIO_STAT ((volatile uint32_t *) 0xBF801044)
+    #define _SIO_DATA ((volatile uint32_t *) 0xBF801040)
+
+    /* Mask all IRQs while we drive the bus manually. */
+    EnterCriticalSection();
+
+    /* Reset and configure. */
+    *_SIO_CTRL = 0x0040;
+    for (volatile int i = 0; i < 200; i++) __asm__ volatile("");
+    *_SIO_MODE = 0x000d;
+    *_SIO_BAUD = 0x0088;
+
+    /* /CS low for port 0, TX+RX enabled, NO /ACK IRQ enable
+     * (we don't want SIO0 IRQ firing in masked context). */
+    *_SIO_CTRL = 0x0003;
+    for (volatile int i = 0; i < 1000; i++) __asm__ volatile("");
+
+    uint32_t stat_pre  = *_SIO_STAT;
+
+    /* Drain any open-bus byte from RX FIFO. */
+    if (stat_pre & 0x0002) (void)*_SIO_DATA;
+
+    /* Send the address byte 0x01 (controller addr). */
+    *_SIO_DATA = 0x01;
+    uint32_t stat_after_w = *_SIO_STAT;
+
+    /* Spin until RX FIFO has a byte, with timeout. */
+    int rx_wait = 0;
+    while (rx_wait < 50000 && !(*_SIO_STAT & 0x0002)) {
+        rx_wait++;
+    }
+    uint32_t stat_with_rx = *_SIO_STAT;
+    uint8_t byte0 = 0xEE;  /* sentinel for "never received" */
+    if (*_SIO_STAT & 0x0002)
+        byte0 = (uint8_t)*_SIO_DATA;
+
+    /* Try a second byte (0x42 = pad read command) so we can also
+     * see if the bus clocks a second transaction. */
+    *_SIO_DATA = 0x42;
+    int rx_wait2 = 0;
+    while (rx_wait2 < 50000 && !(*_SIO_STAT & 0x0002)) {
+        rx_wait2++;
+    }
+    uint8_t byte1 = 0xEE;
+    if (*_SIO_STAT & 0x0002)
+        byte1 = (uint8_t)*_SIO_DATA;
+
+    /* Reset SIO0 to a known state. SPI_Init will reconfigure. */
+    *_SIO_CTRL = 0x0040;
+
+    ExitCriticalSection();
+
+    printf("JCSPI SYNC stat_pre=%04lx stat_after_w=%04lx stat_with_rx=%04lx "
+           "byte0=%02x byte1=%02x rx_wait=%d rx_wait2=%d %s\n",
+           (unsigned long)stat_pre, (unsigned long)stat_after_w,
+           (unsigned long)stat_with_rx,
+           byte0, byte1, rx_wait, rx_wait2,
+           (rx_wait < 50000) ? "HW_OK" : "HW_TIMEOUT");
+
+    #undef _SIO_CTRL
+    #undef _SIO_MODE
+    #undef _SIO_BAUD
+    #undef _SIO_STAT
+    #undef _SIO_DATA
+}
+
 static uint16 eventsDelayTicksToTargetVBlanks(uint16 delay)
 {
     uint32 scaled;
@@ -157,6 +258,15 @@ void eventsInit()
     delayResidue = 0;
     lastFrameTick = (uint32)VSync(-1);
 
+    /* JCSPI T21 baseline: capture main-loop $gp / $sp BEFORE anything
+     * else. Compared later against $gp/$sp captured at IRQ entry. If
+     * the BIOS dispatch isn't restoring gp, IRQ-time gp will differ
+     * and globals (counters!) point to garbage. */
+    __asm__ volatile("move %0, $gp" : "=r"(main_gp_baseline));
+    __asm__ volatile("move %0, $sp" : "=r"(main_sp_baseline));
+    printf("JCSPI T21 baseline main_gp=%08lx main_sp=%08lx\n",
+           (unsigned long)main_gp_baseline, (unsigned long)main_sp_baseline);
+
     /* Initialize pad_buff to a safe disconnected-controller state so any
      * reads that happen before the first SPI poll fires give 0xFFFF (no
      * buttons) instead of stale memory. */
@@ -194,6 +304,12 @@ void eventsInit()
                (unsigned long)pre.sio_ctrl, (unsigned long)pre.sio_mode, (unsigned long)pre.sio_baud,
                (unsigned long)pre.timer_ctrl, (unsigned long)pre.timer_reload,
                (unsigned long)pre.default_cb);
+
+        /* JCSPI sync HW probe — IRQ-free SIO0 round-trip. Tests whether
+         * the SIO bus + DuckStation's emulated controller respond at all.
+         * If this prints HW_OK, hardware is alive and the issue is in
+         * IRQ wiring. If HW_TIMEOUT, the bus or port isn't reachable. */
+        jcspiSyncProbe();
 
         /* SPI_Init installs the timer-2 + SIO0 ack IRQ handlers and starts
          * polling at the default 250 Hz. The callback is invoked each time
@@ -412,6 +528,32 @@ void eventsWaitTick(uint16 delay)
                     if ((i & 0x0F) == 0x0F) printf("\n  ");
                 }
                 printf("\n");
+            }
+
+            /* JCSPI: pad_buff[1] full 34-byte hex dump. If port-flip
+             * works in the SPI driver (T11 variant) we'd see DIFFERENT
+             * content here vs pad_buff[0]. */
+            {
+                uint8 *p = pad_buff[1];
+                printf("JCSPI #%lu pad_buff[1]:\n  ", (unsigned long)padDiagCalls);
+                for (int i = 0; i < 34; i++) {
+                    printf("%02x ", p[i]);
+                    if ((i & 0x0F) == 0x0F) printf("\n  ");
+                }
+                printf("\n");
+            }
+
+            /* JCSPI T21: compare IRQ-time gp/sp against main-loop
+             * baseline. If gp differs, BIOS dispatch isn't restoring
+             * it and our IRQ globals are reading garbage. */
+            if (s.at_irq_gp != 0 || s.at_irq_sp != 0) {
+                printf("JCSPI T21 gp_match=%d sp_close=%d (main_gp=%08lx irq_gp=%08lx, "
+                       "main_sp=%08lx irq_sp=%08lx)\n",
+                       (s.at_irq_gp == main_gp_baseline) ? 1 : 0,
+                       /* IRQ stack typically differs by a few hundred bytes — flag if it's the same word as main */
+                       (s.at_irq_sp == main_sp_baseline) ? 1 : 0,
+                       (unsigned long)main_gp_baseline, (unsigned long)s.at_irq_gp,
+                       (unsigned long)main_sp_baseline, (unsigned long)s.at_irq_sp);
             }
 
             /* JCSPI verdict: classify which theory the data points to. */
