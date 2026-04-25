@@ -42,6 +42,9 @@ dump/
 .vscode/
 .idea/
 
+# Local agent state
+.claude/scheduled_tasks.lock
+
 # Zip archives
 *.zip
 
