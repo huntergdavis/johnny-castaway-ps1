@@ -23,9 +23,10 @@ clean-rect row restore are active on the perf branch. The boot parameters still
 exist for diagnostics, but the default FG2 playback policy is now
 `stage1_window`.
 
-Latest default-path fishing1 high-tide run, with the 24 KB stream window,
-reported `policy=stage1_window`, `buf=31760`, `hits=148`, `due_misses=7`,
-`blocking_vb=108`, `prefetch.overrun_vb=58`, `loop_vb=1322`,
+Latest default-path fishing1 high-tide run, with the 24 KB stream window and
+forward extension enabled, reported `policy=stage1_window`, `buf=31760`,
+`hits=148`, `due_misses=7`, `blocking_vb=84`,
+`prefetch.overrun_vb=37`, `loop_vb=1305`,
 `target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
 and `cd_fail=0`.
 
@@ -58,9 +59,9 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Detail-tier attribution pass on the post-prefetch default path | High | `loop_vb` is still `1450` vs `1077`; the next edit needs to know how much is CD blocking, present serialization, upload, restore, compose, or event wait. |
-| 2 | Finish CD stall hiding beyond the default 24 KB window | High | The post-slack sweep lowered fishing1 `loop_vb` to `1322`, but the latest run still has `blocking_vb=108`, prefetch `overrun_vb=58`, and `due_misses=7`. |
-| 3 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `14.7 MB` and uploads `15.7 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
+| 1 | Finish CD stall hiding beyond the default 24 KB window | High | Forward window extension lowered fishing1 `loop_vb` to `1305`, but the latest run still has `blocking_vb=84`, prefetch `overrun_vb=37`, and `due_misses=7`. |
+| 2 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `9.6 MB` and uploads `17.3 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
+| 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
