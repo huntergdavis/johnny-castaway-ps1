@@ -115,6 +115,9 @@ system = Path("src/core/system.cpp").read_text(encoding="utf-8")
 expected_regtest = [
     'si.SetFloatValue("Main", "EmulationSpeed", 1.0f);',
     'INFO_LOG("JC_REGTEST_PATCH: EmulationSpeed forced to 1.0");',
+    'si.SetBoolValue("BIOS", "TTYLogging", true);',
+    'si.SetBoolValue("SIO", "RedirectToTTY", true);',
+    'INFO_LOG("JC_REGTEST_PATCH: TTY logging enabled");',
     'INFO_LOG("JC_REGTEST_PATCH: Enabling VRAM write dump mode");',
     'si.SetBoolValue("Debug", "DumpCPUToVRAMCopies", true);',
     'si.SetBoolValue("TextureReplacements", "DumpVRAMWrites", true);',

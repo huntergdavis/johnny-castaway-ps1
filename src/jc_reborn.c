@@ -706,7 +706,7 @@ static void usage()
         printf("         capture-overlay-mask - draw overlay background only for paired baseline captures\n");
         printf("         capture-foreground-only - capture composited non-background layers over magenta key\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
-        printf("         FG2 prefetch defaults to stage1 + 48KB stream window\n");
+        printf("         FG2 prefetch defaults to stage1 + 32KB stream window\n");
         printf("         prefetch-window32|48|64 or prefetch-window BYTES - override FG2 stream window size\n");
         printf("         no-prefetch      - disable FG2 prefetch for diagnostics\n");
         printf("         capture-sound-events FILE - append {frame,sample} JSONL for every PLAY_SAMPLE opcode\n");

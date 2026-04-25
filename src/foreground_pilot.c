@@ -124,7 +124,10 @@ static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
 static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
-#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (48UL * 1024UL)
+#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (24UL * 1024UL)
+/* Below 3 VBlanks, window refills are more likely to become visible delay. */
+#define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
+#define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 5
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -1011,6 +1014,77 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
     return 1;
 }
 
+static int fgRuntimeTryExtendWindow(uint32 windowStart,
+                                    uint32 readBytes,
+                                    uint16 slackVBlanks,
+                                    uint8 countAsPrefetch,
+                                    uint16 *outElapsedVBlanks)
+{
+    uint32 currentStart;
+    uint32 currentEnd;
+    uint32 targetEnd;
+    uint32 preserveOffset;
+    uint32 preserveBytes;
+    uint32 appendBytes;
+    uint32 stageTick;
+    uint16 elapsedVBlanks;
+    int ok;
+
+    if (!gFgRuntime.streamWindowValid)
+        return 0;
+
+    currentStart = gFgRuntime.streamWindowStart;
+    currentEnd = currentStart + gFgRuntime.streamWindowBytes;
+    targetEnd = windowStart + readBytes;
+
+    if (windowStart < currentStart ||
+        windowStart >= currentEnd ||
+        targetEnd <= currentEnd)
+        return 0;
+
+    /* Append reads write whole sectors, so only extend fully aligned windows. */
+    if ((currentEnd & 2047UL) != 0 || (targetEnd & 2047UL) != 0)
+        return 0;
+
+    preserveOffset = windowStart - currentStart;
+    preserveBytes = currentEnd - windowStart;
+    appendBytes = targetEnd - currentEnd;
+    if (preserveBytes == 0 ||
+        appendBytes == 0 ||
+        preserveBytes >= gFgRuntime.streamWindowSize ||
+        preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
+        return 0;
+
+    stageTick = fgReadTickCounter();
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfBeginPrefetchRead(slackVBlanks);
+
+    if (preserveOffset > 0)
+        memmove(gFgRuntime.streamWindowBuffer,
+                gFgRuntime.streamWindowBuffer + preserveOffset,
+                preserveBytes);
+
+    ok = ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
+                                       currentEnd,
+                                       appendBytes,
+                                       gFgRuntime.streamWindowBuffer + preserveBytes);
+    elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(stageTick);
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfEndPrefetchRead(elapsedVBlanks, appendBytes, ok);
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = elapsedVBlanks;
+
+    if (!ok) {
+        gFgRuntime.streamWindowValid = 0;
+        return -1;
+    }
+
+    gFgRuntime.streamWindowStart = windowStart;
+    gFgRuntime.streamWindowBytes = readBytes;
+    gFgRuntime.streamWindowValid = 1;
+    return 1;
+}
+
 static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
                                        uint16 slackVBlanks,
                                        uint8 countAsPrefetch,
@@ -1038,6 +1112,14 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
     if (readBytes == 0)
         return 0;
+
+    ok = fgRuntimeTryExtendWindow(windowStart,
+                                  readBytes,
+                                  slackVBlanks,
+                                  countAsPrefetch,
+                                  outElapsedVBlanks);
+    if (ok != 0)
+        return (ok > 0) ? 1 : 0;
 
     stageTick = fgReadTickCounter();
     if (countAsPrefetch && ps1PerfEnabled)
@@ -1138,6 +1220,11 @@ static int fgRuntimeConsumeStagedFrame(uint16 frameIndex)
     return 1;
 }
 
+static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
+{
+    return (slackVBlanks >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0;
+}
+
 static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 {
     uint16 nextFrameIndex;
@@ -1174,9 +1261,9 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 0;
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
-    if (ps1PerfEnabled)
-        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, slackVBlanks > 0 ? 1 : 0);
     if (slackVBlanks == 0) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
         if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
         return 0;
@@ -1191,6 +1278,14 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 
     if (fgRuntimeEntryFitsWindow(entry)) {
         if (!fgRuntimeWindowContainsEntry(entry)) {
+            int eligible = fgRuntimeWindowSlackEligible(slackVBlanks);
+            if (ps1PerfEnabled)
+                ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, eligible);
+            if (!eligible) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkPrefetchSkipNoSlack();
+                return 0;
+            }
             if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
                 if (ps1PerfEnabled)
                     ps1PerfMarkTripwire();
@@ -1199,6 +1294,8 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
             }
             if (outElapsedVBlanks != NULL)
                 *outElapsedVBlanks = elapsedVBlanks;
+        } else if (ps1PerfEnabled) {
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
         }
         if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0)) {
             if (ps1PerfEnabled)
@@ -1210,6 +1307,8 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         return 1;
     }
 
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
     stageTick = fgReadTickCounter();
     if (ps1PerfEnabled) {
         ps1PerfBeginPrefetchRead(slackVBlanks);
@@ -1262,13 +1361,24 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     }
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
-    if (ps1PerfEnabled)
-        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, slackVBlanks > 0 ? 1 : 0);
     if (slackVBlanks == 0) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
         if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
         return 0;
     }
+
+    if (!fgRuntimeWindowSlackEligible(slackVBlanks)) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
+        if (ps1PerfEnabled)
+            ps1PerfMarkPrefetchSkipNoSlack();
+        return 0;
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
 
     if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, outElapsedVBlanks)) {
         if (ps1PerfEnabled)
@@ -1277,6 +1387,22 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
         return 1;
     }
     return 1;
+}
+
+static int fgRuntimeWindowPrefetchWouldRead(void)
+{
+    uint16 targetFrameIndex = 0;
+    const struct TFgPilotEntry *entry;
+
+    if (!fgRuntimeCanWindowCache())
+        return 0;
+
+    entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
+    (void)targetFrameIndex;
+    if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
+        return 0;
+
+    return fgRuntimeWindowContainsEntry(entry) ? 0 : 1;
 }
 
 static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
@@ -1971,8 +2097,23 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             int didPrefetch;
             if (ps1PerfEnabled)
                 ps1PerfMarkHeldLoop();
-            didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
-            if (!didPrefetch)
+            if (gFgRuntime.stagedFrameValid) {
+                didPrefetch = fgRuntimeWindowPrefetchWouldRead()
+                    ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
+                    : 0;
+            } else {
+                didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
+                if (didPrefetch &&
+                    prefetchElapsedVBlanks == 0 &&
+                    gFgRuntime.stagedFrameValid &&
+                    fgRuntimeHeldSlackBeforeWait() >= FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS &&
+                    fgRuntimeWindowPrefetchWouldRead()) {
+                    uint16 windowElapsedVBlanks = 0;
+                    if (fgRuntimeTryPrefetchWindow(&windowElapsedVBlanks))
+                        prefetchElapsedVBlanks = windowElapsedVBlanks;
+                }
+            }
+            if (!didPrefetch && !gFgRuntime.stagedFrameValid)
                 didPrefetch = fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks);
             if (didPrefetch) {
                 if (prefetchElapsedVBlanks == 0)
