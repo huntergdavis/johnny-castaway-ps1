@@ -18,6 +18,7 @@
 
 #include "mytypes.h"
 #include "cdrom_ps1.h"
+#include "ps1_perf.h"
 #include "utils.h"
 #include "ps1_debug.h"
 #include "resource.h"
@@ -934,6 +935,8 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
+    uint32 perfStartTick = 0;
+    int perfTrack = 0;
 
     enum { PS1_CD_READ_CHUNK_SECTORS = 256 };
 
@@ -947,6 +950,11 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     if (sectorBuffer == NULL || sectorBufferSize < (numSectors * CD_SECTOR_SIZE))
         return 0;
 
+    if (ps1PerfEnabled) {
+        perfStartTick = ps1PerfTick();
+        perfTrack = 1;
+    }
+
     sectorsRead = 0;
     while (sectorsRead < numSectors) {
         uint32_t chunkSectors = numSectors - sectorsRead;
@@ -958,10 +966,14 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
+            if (perfTrack)
+                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
             return 0;
         }
 
         if (CdRead(chunkSectors, (uint32_t*)chunkDst, CdlModeSpeed) == 0) {
+            if (perfTrack)
+                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
             return 0;
         }
 
@@ -971,6 +983,8 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
         } while (syncResult > 0 && --timeout > 0);
 
         if (timeout <= 0 || syncResult < 0) {
+            if (perfTrack)
+                ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 0);
             return 0;
         }
 
@@ -983,6 +997,8 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     } else {
         memcpy(dstBuffer, sectorBuffer + offsetInBuffer, size);
     }
+    if (perfTrack)
+        ps1PerfMarkCdRead(size, numSectors, ps1PerfElapsedVBlanks(perfStartTick), 1);
     return 1;
 }
 

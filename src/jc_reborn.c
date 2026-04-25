@@ -71,6 +71,7 @@ int fclose(FILE *stream);
 
 #include "island.h"
 #include "foreground_pilot.h"
+#include "ps1_perf.h"
 
 #ifndef PS1_BUILD
 #include "dump.h"
@@ -237,6 +238,7 @@ static void ps1ResetBootArgs(void)
     grCaptureOverlayMaskOnly = 0;
     grCaptureSetSceneLabel("");
     foregroundPilotSetHeapProbe(0);
+    ps1PerfSetEnabled(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
     ps1BootPrintfTest = 0;
@@ -386,6 +388,8 @@ static void ps1ApplyBootOverride(char *buffer)
             screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+        } else if (!strcmp(tokens[i], "perf-log") || !strcmp(tokens[i], "perf")) {
+            ps1PerfSetEnabled(1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
         }
@@ -980,8 +984,10 @@ int main(int argc, char **argv)
         const char *loopScene = fgLoopNextScene(explicitScene);
         fgLoopApplyVariant(loopScene);
         foregroundPilotSetScene(loopScene);
+        ps1PerfBeginScene(loopScene);
         ps1PrintfProbe("scene-start", loopScene);
         foregroundPilotPlay();
+        ps1PerfEndScene(loopScene);
         ps1PrintfProbe("scene-end", loopScene);
     } while (!screensaverLoopDisabled);
 

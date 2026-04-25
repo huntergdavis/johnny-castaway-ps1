@@ -31,6 +31,7 @@ set(SOURCES
     src/uncompress.c
     src/resource.c
     src/foreground_pilot.c
+    src/ps1_perf.c
     src/island.c
     # PS1-specific implementations
     src/graphics_ps1.c

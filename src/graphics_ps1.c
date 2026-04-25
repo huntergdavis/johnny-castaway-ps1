@@ -31,6 +31,7 @@
 #include "graphics_ps1.h"
 #include "ads.h"
 #include "foreground_pilot.h"
+#include "ps1_perf.h"
 #include "resource.h"
 #include "events_ps1.h"
 #include "cdrom_ps1.h"
@@ -1604,6 +1605,9 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
 {
     uint32 offset = 0;
     uint16 rowCount;
+    uint16 perfSpans = 0;
+    uint32 perfPixels = 0;
+    int perfTrack = ps1PerfEnabled;
 
     if (spanData == NULL || palette == NULL || spanDataSize < 2)
         return;
@@ -1631,6 +1635,10 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
             relX = grReadPackedSpanU16(spanData + offset);
             pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
             offset += 4u;
+            if (perfTrack) {
+                perfSpans++;
+                perfPixels += pixelCount;
+            }
 
             packedBytes = ((uint32)pixelCount + 1u) >> 1;
             if (offset + packedBytes > spanDataSize)
@@ -1644,6 +1652,8 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
             offset += packedBytes;
         }
     }
+    if (perfTrack)
+        ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
 static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
@@ -1697,6 +1707,9 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
 {
     uint32 offset = 0;
     uint16 rowCount;
+    uint16 perfSpans = 0;
+    uint32 perfPixels = 0;
+    int perfTrack = ps1PerfEnabled;
 
     if (spanData == NULL || palette == NULL || spanDataSize < 2)
         return;
@@ -1723,6 +1736,10 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
             relX = grReadPackedSpanU16(spanData + offset);
             pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
             offset += 4u;
+            if (perfTrack) {
+                perfSpans++;
+                perfPixels += pixelCount;
+            }
 
             if (offset + (uint32)pixelCount > spanDataSize)
                 return;
@@ -1735,6 +1752,8 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
             offset += (uint32)pixelCount;
         }
     }
+    if (perfTrack)
+        ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
 /*
@@ -2445,6 +2464,8 @@ static void grCleanRectCopyOut(struct TGrCleanRect *r)
 static void grCleanRectCopyIn(const struct TGrCleanRect *r)
 {
     int sy;
+    uint32 copiedBytes = 0;
+    int perfTrack = ps1PerfEnabled;
     if (r->pixels == NULL || r->width == 0 || r->height == 0) return;
     for (sy = 0; sy < (int)r->height; sy++) {
         int destY = r->y + sy;
@@ -2463,19 +2484,25 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
                 int lx0 = xStart;
                 int lx1 = (xEnd < 320) ? xEnd : 320;
                 uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
-                memcpy(dst, srcRow + (lx0 - r->x),
-                       (size_t)(lx1 - lx0) * sizeof(uint16));
+                size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+                memcpy(dst, srcRow + (lx0 - r->x), bytes);
+                if (perfTrack)
+                    copiedBytes += (uint32)bytes;
             }
             if (tileRight && tileRight->pixels && xEnd > 320) {
                 int rx0 = (xStart > 320) ? xStart : 320;
                 int rx1 = xEnd;
                 uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + (rx0 - 320);
-                memcpy(dst, srcRow + (rx0 - r->x),
-                       (size_t)(rx1 - rx0) * sizeof(uint16));
+                size_t bytes = (size_t)(rx1 - rx0) * sizeof(uint16);
+                memcpy(dst, srcRow + (rx0 - r->x), bytes);
+                if (perfTrack)
+                    copiedBytes += (uint32)bytes;
             }
         }
     }
     grMarkRectDirty(r->x, r->y, r->x + (int)r->width, r->y + (int)r->height);
+    if (perfTrack)
+        ps1PerfMarkRestore(copiedBytes);
 }
 
 static void grResetCleanBgRects(int releasePixels)
@@ -2648,6 +2675,8 @@ void grRestoreBgTiles(void)
 {
     PS1Surface *tiles[4] = { bgTile0, bgTile1, bgTile3, bgTile4 };
     const uint16 *clean[4] = { bgTile0Clean, bgTile1Clean, bgTile3Clean, bgTile4Clean };
+    uint32 restoredBytes = 0;
+    int perfTrack = ps1PerfEnabled;
 
     /* Clear currDirty for new frame's compositing */
     for (int i = 0; i < 4; i++) {
@@ -2667,8 +2696,12 @@ void grRestoreBgTiles(void)
         const uint16 *src = clean[i] + minY * w;
         uint32 copyBytes = (uint32)(maxY - minY + 1) * w * sizeof(uint16);
         memcpy(dst, src, copyBytes);
+        if (perfTrack)
+            restoredBytes += copyBytes;
     }
 
+    if (perfTrack)
+        ps1PerfMarkRestore(restoredBytes);
 }
 
 void grRestoreBackgroundRectForFrame(int x, int y, int width, int height)
@@ -3114,6 +3147,9 @@ void grDrawBackground(void)
     int maxYs[4];
     int dirtyCount = 0;
     int singleIndex = -1;
+    uint16 uploadRects = 0;
+    uint32 uploadBytes = 0;
+    uint32 perfStartTick = 0;
 
     for (int i = 0; i < 4; i++) {
         int minY = -1;
@@ -3146,6 +3182,9 @@ void grDrawBackground(void)
         singleIndex = i;
     }
 
+    if (ps1PerfEnabled && dirtyCount > 0)
+        perfStartTick = ps1PerfTick();
+
     if (dirtyCount == 1) {
         PS1Surface *tile = tiles[singleIndex];
         uint32 w = tile->width;
@@ -3153,6 +3192,8 @@ void grDrawBackground(void)
         int h = maxYs[singleIndex] - minY + 1;
 
         setRECT(&rects[0], screenX[singleIndex], screenY[singleIndex] + minY, w, h);
+        uploadRects = 1;
+        uploadBytes = (uint32)w * (uint32)h * sizeof(uint16);
         LoadImage(&rects[0], (uint32 *)(tile->pixels + minY * w));
         DrawSync(0);
     } else {
@@ -3165,12 +3206,17 @@ void grDrawBackground(void)
             uint32 w = tiles[i]->width;
 
             setRECT(&rects[i], screenX[i], screenY[i] + minY, w, h);
+            uploadRects++;
+            uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
             LoadImage(&rects[i], (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
         if (dirtyCount > 0)
             DrawSync(0);
     }
+
+    if (ps1PerfEnabled && dirtyCount > 0)
+        ps1PerfMarkUpload(uploadRects, uploadBytes, ps1PerfElapsedVBlanks(perfStartTick));
 
     /* Advance dirty state: this frame's compositing becomes next frame's restore set */
     for (int i = 0; i < 4; i++) {

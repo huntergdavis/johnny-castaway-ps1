@@ -14,6 +14,7 @@
 #include "island.h"
 #include "sound_ps1.h"
 #include "utils.h"
+#include "ps1_perf.h"
 
 uint16 ps1AdsDbgActiveThreads = 0;
 uint16 ps1AdsDbgMini = 0;
@@ -901,6 +902,8 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
         gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
                                                        entry,
                                                        gFgRuntime.presentedVBlanks);
+        if (ps1PerfEnabled)
+            ps1PerfMarkEntry(0, gFgRuntime.displayVBlanks);
         fgFireSoundEventsUpTo(entry->sourceFrame);
         fgTelemetryUpdate();
         return 1;
@@ -939,6 +942,8 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     gFgRuntime.displayVBlanks = fgEntryHoldVBlanks(&gFgRuntime.header,
                                                    &gFgRuntime.currentEntry,
                                                    gFgRuntime.presentedVBlanks);
+    if (ps1PerfEnabled)
+        ps1PerfMarkEntry(gFgRuntime.currentEntry.dataSize, gFgRuntime.displayVBlanks);
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
@@ -1181,6 +1186,8 @@ void foregroundPilotRuntimeAdvance(void)
     elapsedVBlanks = fgElapsedVBlanksSince(&gFgRuntime.sceneClockTick);
     if (elapsedVBlanks == 0)
         elapsedVBlanks = 1;
+    if (ps1PerfEnabled)
+        ps1PerfMarkAdvance(elapsedVBlanks, gFgRuntime.displayVBlanks);
 
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {
         if (gFgRuntime.holdFrames > elapsedVBlanks)
@@ -1386,8 +1393,12 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     while (foregroundPilotRuntimeActive()) {
         if (fgRuntimeCanHoldDisplayedFrame()) {
+            if (ps1PerfEnabled)
+                ps1PerfMarkHeldLoop();
             fgRuntimeWaitHeldVBlank();
         } else {
+            if (ps1PerfEnabled)
+                ps1PerfMarkRenderedLoop();
             grBeginFrame();
             grRestoreBgFromRects();
             if (!fgRuntimeUsesBaseDiffBackdrop())
