@@ -41,6 +41,12 @@
 /* Font stream from ps1_debug.c -- reused for pause menu text. */
 extern int fontID;
 
+/* Scene render env from graphics_ps1.c — needs to be re-applied on
+ * pause exit so the screen doesn't keep clearing to our pause-blue
+ * after the menu closes. */
+extern DRAWENV draw[2];
+extern int db;
+
 /* Controller pad buffer from events_ps1.c. */
 
 /* ---------------------------------------------------------------------------
@@ -469,12 +475,22 @@ int pauseMenuUpdate(void)
 {
     if (!menuVisible) return 0;
 
-    /* Dim background on first frame of pause. */
-    dimBackground();
-
-    /* Upload (dimmed) background so text draws on top of a visible scene. */
-    grDrawBackground();
-    DrawSync(0);
+    /* P1 visual: install a full-screen DRAWENV with isbg=1 so the GPU
+     * clears VRAM to a dark blue each frame the menu is up. This
+     * mirrors ps1_debug.c's known-working font-flush pattern (which
+     * doesn't show text without a clearing DRAWENV applied first).
+     *
+     * P2 will replace this with a translucent POLY_F4 quad over the
+     * live scene. For P1 we just want the menu to be unambiguously
+     * visible. The scene's render env is re-applied by grUpdateDisplay
+     * on resume so this temporary clobber is fine. */
+    {
+        DRAWENV pdraw;
+        SetDefDrawEnv(&pdraw, 0, 0, 640, 480);
+        setRGB0(&pdraw, 0, 0, 64);   /* dark blue */
+        pdraw.isbg = 1;
+        PutDrawEnv(&pdraw);
+    }
 
     /* Read pad through the game's shared pad buffer (events_ps1.c owns
      * InitPAD, so we just peek at its buffer via the extern). */
@@ -507,6 +523,10 @@ int pauseMenuUpdate(void)
     if (!keepOpen) {
         menuVisible = 0;
         bgDimmed = 0;
+        /* Restore scene's render env (isbg=0, no clear) so the next
+         * frame's grDrawBackground LoadImage isn't overwritten by a
+         * GPU bg-clear every frame. */
+        PutDrawEnv(&draw[db]);
         return 0;
     }
 
