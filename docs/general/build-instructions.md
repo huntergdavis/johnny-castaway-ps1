@@ -67,7 +67,8 @@ docker run --rm --platform linux/amd64 \
 
 **Important PS1 technical notes**:
 - Do NOT call `CdInit()` when booting from CD-ROM (causes crash)
-- printf() does not output to DuckStation TTY - use visual debugging (colored screens)
+- DuckStation TTY/file `printf()` works for gated probes; use visual
+  debugging or overlays for per-frame state
 - BSS size reduced from 166KB to 38KB by malloc'ing large buffers
 - See PS1 documentation in `docs/ps1/` for complete workflow
 

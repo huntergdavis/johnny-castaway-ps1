@@ -133,9 +133,17 @@ tag `vX.Y.Z-ps1`, and pushes.
 ## Debug + diagnostics
 
 - **Telemetry overlay**: `ps1_debug.c` provides a 5-panel on-screen
-  overlay. Use this instead of `printf()` — printing during the game
-  loop is unsafe on PS1.
-- **DuckStation console** output lands in DuckStation's own log.
+  overlay. Use this for frame-by-frame counters and hot-path diagnostics.
+- **PS1 `printf()` / TTY logging** works in DuckStation for gated probes.
+  Use `printf-test` or `logtest` in BOOTMODE to emit `JCLOG` breadcrumbs:
+  `./scripts/rebuild-and-let-run.sh fgpilot fishing1 printf-test noloop`.
+- **DuckStation log file** receives TTY output. The live-run script
+  temporarily enables `BIOS.TTYLogging`, `SIO.RedirectToTTY`, and file
+  logging, then restores the user's settings. It truncates
+  `duckstation.log` at 2 GiB by default; override with
+  `DUCKSTATION_LOG_MAX_BYTES`.
+- **Do not log per frame** from render, sound, capture, or perf paths.
+  Text I/O is too noisy for timing-sensitive screensaver playback.
 - **Per-scene capture diffs**: the host-capture frames + frame-meta
   JSONs are a useful ground truth when a replay mismatches. Point
   `compare-scene-reference.py` at them.

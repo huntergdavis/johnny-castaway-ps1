@@ -160,7 +160,9 @@ Total:           ~2.0 MB  (Johnny Reborn fits!)
 1. **VRAM constraints**: 1MB is tight for many sprites
 2. **CD latency**: 150ms+ seeks need caching
 3. **SPU RAM**: Must fit all sounds in 512KB
-4. **No printf()**: Use visual debugging instead
+4. **Gated printf only**: DuckStation TTY/file logging works, but per-frame
+   text output is too noisy for timing-sensitive playback; use visual
+   overlays for hot-path diagnostics
 5. **BSS size**: Keep < 50KB for stability
 
 ### Workarounds

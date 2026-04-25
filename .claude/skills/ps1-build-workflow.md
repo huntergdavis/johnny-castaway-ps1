@@ -122,9 +122,14 @@ The test script handles path resolution and background launching correctly.
 - The scripts handle timestamps correctly
 - If in doubt, run `./rebuild-and-test.sh` which rebuilds everything
 
-## Debugging Colors
+## Debugging Output
 
-The PS1 build uses visual debugging (colored screens) since printf() doesn't work in DuckStation TTY:
+The PS1 build has two active debug surfaces:
+
+- Gated `printf()` breadcrumbs through DuckStation TTY/file logging. Use
+  BOOTMODE tokens such as `printf-test` / `logtest`; do not add per-frame
+  log spam to render, sound, capture, or perf paths.
+- Visual debugging (colored screens / overlays) for hot-path state:
 
 - **RED** = Reached main()
 - **GREEN** = CD-ROM initialized

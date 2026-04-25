@@ -137,8 +137,10 @@ baseline.
 
 ## Known limitations
 
-- `printf()` during the PS1 game loop is unsafe — use the telemetry
-  overlay (`ps1_debug.c`) for runtime visibility.
+- PS1 `printf()` works through DuckStation TTY/file logging for gated
+  probes (`printf-test` / `logtest`). It is not a per-frame instrumentation
+  surface; use the telemetry overlay or fixed counters for hot-path runtime
+  visibility.
 - FG1/FOC and per-scene RAW paths are retired; do not add new docs,
   routes, generated artifacts, or CD entries for them.
 - Scene coverage beyond FISHING 1 and FISHING 2 is pending scene-by-scene bring-up

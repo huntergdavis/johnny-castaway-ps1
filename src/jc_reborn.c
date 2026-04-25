@@ -212,6 +212,7 @@ static char ps1BootForegroundOverlayScene[32];
 static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
 volatile uint16 ps1BootDbgCaptureMode = 0;
+static int ps1BootPrintfTest = 0;
 
 static int ps1IsSpace(char c)
 {
@@ -238,6 +239,7 @@ static void ps1ResetBootArgs(void)
     foregroundPilotSetHeapProbe(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
+    ps1BootPrintfTest = 0;
     hostForcedIslandPosValid = 0;
     hostForcedIslandX = 0;
     hostForcedIslandY = 0;
@@ -384,6 +386,8 @@ static void ps1ApplyBootOverride(char *buffer)
             screensaverLoopDisabled = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
+        } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
+            ps1BootPrintfTest = 1;
         }
     }
 
@@ -438,6 +442,28 @@ static void ps1LoadBootOverride(void)
         ps1ApplyBootOverride(buffer);
         return;
     }
+}
+
+static void ps1PrintfProbe(const char *phase, const char *sceneName)
+{
+    if (!ps1BootPrintfTest) {
+        return;
+    }
+
+    printf(
+        "JCLOG phase=%s scene=%s fgpilot=%d seed=%d lowtide=%d night=%d holiday=%d raft=%d pos=%d,%d loop=%d\n",
+        phase ? phase : "?",
+        sceneName ? sceneName : "?",
+        argForegroundPilot,
+        ps1BootForcedSeed,
+        islandState.lowTide,
+        islandState.night,
+        islandState.holiday,
+        islandState.raft,
+        islandState.xPos,
+        islandState.yPos,
+        screensaverLoopDisabled
+    );
 }
 
 /* Load and display title screen from raw file on CD */
@@ -847,18 +873,21 @@ int main(int argc, char **argv)
         while(1);
     }
 
-    debugMode = 0;  /* Disable debug output on PS1 - vprintf crashes */
+    debugMode = 0;  /* Keep PS1 debug chatter opt-in; use BOOTMODE probes for logs. */
 
     /* Load boot override BEFORE seeding RNG so "seed N" can override. */
     ps1LoadBootOverride();
     if (!argForegroundPilot) {
         argForegroundPilot = 1;
     }
+    ps1PrintfProbe("boot-override-loaded", NULL);
 
     loadTitleScreenEarly();
+    ps1PrintfProbe("title-loaded", NULL);
 
     /* Parse resource files from CD - needed for background and sprites */
     parseResourceFiles("RESOURCE.MAP");
+    ps1PrintfProbe("resources-loaded", NULL);
 
     /* Seed RNG — use forced seed if specified in BOOTMODE, else hardware RNG. */
     if (ps1BootForcedSeed >= 0) {
@@ -920,7 +949,9 @@ int main(int argc, char **argv)
         foregroundPilotSetScene(NULL);
 
     graphicsInit();
+    ps1PrintfProbe("graphics-init", NULL);
     soundInit();
+    ps1PrintfProbe("sound-init", NULL);
 
     if (numPalResources > 0 && palResources[0]) {
         grLoadPalette(palResources[0]);
@@ -949,7 +980,9 @@ int main(int argc, char **argv)
         const char *loopScene = fgLoopNextScene(explicitScene);
         fgLoopApplyVariant(loopScene);
         foregroundPilotSetScene(loopScene);
+        ps1PrintfProbe("scene-start", loopScene);
         foregroundPilotPlay();
+        ps1PrintfProbe("scene-end", loopScene);
     } while (!screensaverLoopDisabled);
 
     soundEnd();

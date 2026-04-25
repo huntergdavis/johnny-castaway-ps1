@@ -15,13 +15,14 @@
 
 /* Forward declarations from PSn00bSDK that ARE available */
 extern int printf(const char *format, ...);
-extern int vsprintf(char *str, const char *format, __gnuc_va_list arg);
+extern int vsnprintf(char *str, size_t size, const char *format, __gnuc_va_list arg);
 
-/* Implement vprintf using vsprintf + printf */
+/* Implement vprintf using bounded formatting, then route to PSn00bSDK printf. */
 int vprintf(const char *format, __gnuc_va_list arg) {
-    char buffer[1024];  /* Temporary buffer for formatting */
-    int result = vsprintf(buffer, format, arg);
+    char buffer[512];
+    int result = vsnprintf(buffer, sizeof(buffer), format, arg);
     if (result >= 0) {
+        buffer[sizeof(buffer) - 1] = '\0';
         printf("%s", buffer);
     }
     return result;

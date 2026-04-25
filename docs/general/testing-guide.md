@@ -147,7 +147,8 @@ When modifying the engine:
 
 **Critical PS1-specific rules**:
 1. **NEVER call `CdInit()`** - BIOS already initializes CD-ROM; calling it causes crashes
-2. **Use visual debugging** - printf() doesn't output to DuckStation TTY console
+2. **Use the right debug surface** - gated `printf()` reaches DuckStation
+   TTY/file logs, but visual overlays remain the correct hot-path tool
 3. **Minimize BSS** - Use malloc() for large buffers instead of static arrays
 4. **Test frequently in DuckStation** - Emulator behavior differs from other platforms
 5. **Memory profiling** - Use `test_memory` to validate PS1 memory constraints

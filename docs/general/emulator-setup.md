@@ -38,14 +38,18 @@ Or download manually from: https://github.com/stenzek/duckstation/releases
 
 3. **Enable TTY Output**
    - Settings → Console → TTY Output → Show
-   - This shows printf debug output!
+   - This shows guest `printf()` / TTY output.
+   - For the current Linux workflow, `scripts/rebuild-and-let-run.sh`
+     temporarily enables TTY/file logging and restores the user's settings.
+   - The log file is usually
+     `~/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log`.
 
 ## Loading Johnny Reborn
 
 1. File → Start Disc
 2. Navigate to: `/Users/hunterdavis/workspace/jc_reborn/`
 3. Select: `jcreborn.cue`
-4. Watch console output!
+4. Watch console output or `duckstation.log`!
 
 ## Expected Boot Sequence
 

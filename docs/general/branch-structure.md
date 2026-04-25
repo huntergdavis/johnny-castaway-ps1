@@ -15,7 +15,7 @@ This document describes the branch organization and various platform ports of Jo
 - Based on `4mb2025` memory-optimized branch
 - Built with PSn00bSDK 0.24 and mipsel-none-elf-gcc
 - Dockerized build environment for Linux/macOS
-- Visual debugging system (colored screens) since printf() doesn't work
+- Visual debugging system plus gated DuckStation TTY/file `printf()` probes
 - Memory: 350KB peak usage fits easily in PS1's 2MB RAM
 - Resolution: Native 640x480 interlaced (matches engine's design)
 - Testing: DuckStation emulator recommended
@@ -132,7 +132,8 @@ This high reuse ratio demonstrates the value of clean architecture.
 ### PS1
 **Critical rules**:
 - Do NOT call `CdInit()` when booting from CD-ROM (causes crash)
-- printf() does not output to DuckStation TTY - use visual debugging
+- DuckStation TTY/file `printf()` works for gated probes; avoid per-frame
+  text logging in render/audio paths
 - BSS size must be <50KB - use malloc for large buffers
 - Test frequently in DuckStation emulator
 

@@ -153,7 +153,8 @@ flatpak run org.duckstation.DuckStation
 2. **File → Start Disc**
 3. Select `jcreborn.cue` (not .bin!)
 4. Watch for colored screens (visual debug indicators)
-5. Check DuckStation TTY console for debug output (if enabled)
+5. Check DuckStation TTY output or `duckstation.log` for gated `printf()`
+   probes (for example, `printf-test` / `logtest`)
 
 ## Troubleshooting
 
@@ -199,7 +200,9 @@ sudo chown -R $USER:$USER .
 
 **Problem**: Black screen, no output
 - Check BIOS configuration in DuckStation
-- Enable TTY console output in settings
+- Enable TTY console/file output in settings, or use
+  `scripts/rebuild-and-let-run.sh`, which temporarily enables DuckStation
+  TTY/file logging for the run
 - Look for visual debug colored screens
 
 ## Build Verification

@@ -107,10 +107,13 @@ The PlayStation 1 is a perfect target for Johnny Reborn:
 - ADS files decompressed at startup (~16KB total)
 - findTtmResource/findAdsResource/findScrResource return NULL on PS1 instead of fatalError
 
-**Key Challenge**: printf() crashes in the game loop on PS1
-- Discovered that vprintf (used by debugMsg) also crashes
-- Solution: visual debugging via colored pixels (LoadImage)
-- debugMode=0 disables text output paths
+**Key Challenge**: early PS1 printf/vprintf tracing corrupted the runtime
+- Discovered that unbounded `vprintf` formatting and hot-path text logging
+  could destabilize long scene playback.
+- Interim solution: visual debugging via colored pixels (LoadImage) and
+  `debugMode=0` to disable noisy text paths.
+- 2026-04-25 update: bounded `vprintf` plus DuckStation TTY/file logging
+  restored gated `printf()` probes for setup/teardown diagnostics.
 
 ### Phase 6: Performance Optimization (2026-03)
 
@@ -226,11 +229,12 @@ classification gaps that range-based foreground extraction could miss.
 
 **Lesson Learned**: Caching essential for slow storage media; offline analysis can eliminate speculative loads
 
-### Challenge 5: Debugging Without printf()
-**Problem**: printf() and vprintf() crash in the PS1 game loop (only safe during early init)
-**Solution**: Visual debugging via colored pixels (LoadImage), 5-panel telemetry overlay, debugMode=0 to disable text paths
+### Challenge 5: Debugging Without Reliable printf()
+**Problem**: historical `printf()` / `vprintf()` tracing was not safe enough for PS1 scene playback.
+**Solution**: visual debugging via colored pixels (LoadImage), 5-panel telemetry overlay, and `debugMode=0` to disable noisy text paths.
+**2026-04-25 milestone**: PS1 `printf()` now reaches DuckStation's file log through TTY logging, using bounded formatting and gated BOOTMODE probes (`printf-test` / `logtest`).
 
-**Lesson Learned**: Creative debugging techniques for constrained environments. Visual indicators are more useful than text output on embedded targets.
+**Lesson Learned**: Creative debugging techniques remain essential for constrained environments. Text logs are now useful for breadcrumbs, while visual overlays remain the right tool for per-frame state.
 
 ### Challenge 6: Scene Continuity Without Replay
 **Problem**: Desktop engine relies on replaying prior scenes to establish state. Impractical on PS1 (CD latency, 2MB RAM).
@@ -363,7 +367,8 @@ Current operator-facing size notes are in [current-status.md](current-status.md)
    - Clear strategy prevents rework
 
 4. **Visual debugging for embedded**
-   - Colored screens work when printf() doesn't
+   - Colored screens and overlays remain reliable when logs are too noisy
+   - Gated `printf()` breadcrumbs now supplement, not replace, visual tools
    - Fast feedback loop
 
 5. **Keep core engine pure C**
@@ -394,7 +399,7 @@ Current operator-facing size notes are in [current-status.md](current-status.md)
 
 > "Docker solves the 'works on my machine' problem once and for all."
 
-> "Visual debugging with colored screens is surprisingly effective when printf() doesn't work."
+> "Visual debugging with colored screens is surprisingly effective even when printf is available."
 
 > "63% code reuse demonstrates the value of clean architecture."
 

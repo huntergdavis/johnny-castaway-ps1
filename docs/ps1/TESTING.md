@@ -61,7 +61,7 @@ regtest-results/<ads>-<tag>/
   frames/*.png              # captured screenshots
   telemetry.json            # debug-panel data
   result.json               # structured outcome
-  printf.log                # PS1 TTY output (if PCDrv enabled)
+  printf.log                # PS1 TTY output when TTY logging is enabled
 ```
 
 ## Secondary (historical): binary library
@@ -99,13 +99,38 @@ Historical routes removed from the active PS1 executable:
 | `story direct N` | `story direct 25` | Host-only / historical direct scene route |
 | `island ads X.ADS N` | `island ads BUILDING.ADS 1` | Host-only / historical ADS route |
 
+## PS1 printf / TTY logging
+
+PS1 `printf()` now works in DuckStation when TTY logging is enabled. The
+normal live-run path handles this automatically:
+
+```bash
+./scripts/rebuild-and-let-run.sh fgpilot fishing1 printf-test noloop
+```
+
+The `printf-test` / `logtest` BOOTMODE tokens emit bounded `JCLOG` phase
+breadcrumbs. Output appears in DuckStation's log file, typically:
+
+```text
+~/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log
+```
+
+Rules:
+
+- Use `printf()` for gated setup/teardown probes and rare failure
+  breadcrumbs.
+- Do not add per-frame `printf()` calls to scene playback, capture,
+  compositor, sound, or perf measurement paths.
+- Keep long-run logs bounded. `rebuild-and-let-run.sh` enables TTY logging
+  for the run and truncates the DuckStation log at 2 GiB by default; set
+  `DUCKSTATION_LOG_MAX_BYTES=0` to disable that guard.
+
 ## Known runtime pitfalls
 
-- **`printf()` is unsafe in the PS1 game loop.** PS1 `printf()` uses the
-  BIOS break instruction for TTY output and crashes the game when called
-  after init. Use the telemetry overlay (`ps1_debug.c`) instead.
-  Affected historical paths: `fprintf(stderr, …)` macros,
-  `grCaptureEmitFrameMetadataLine`, `fatalError`.
+- **Per-frame text logging is still unsafe for timing and log volume.**
+  `printf()` is available, but debug logging in hot render/audio paths can
+  alter timing and fill `duckstation.log`. Use the telemetry overlay or
+  fixed counters for frame-by-frame visibility.
 - **Cold-boot ADS scenes** (`FISHING 1`, `FISHING 2`, `FISHING 6`) have
   `ADD_SCENE` commands behind `IF_LASTPLAYED`. On cold boot these
   conditions are never satisfied, producing an empty scene. The

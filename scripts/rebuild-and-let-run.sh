@@ -15,15 +15,74 @@ SCRATCH_DIR="$PWD/scratch"
 mkdir -p "$SCRATCH_DIR"
 
 BOOTMODE_FILE="$PWD/config/ps1/BOOTMODE.TXT"
+DUCK_SETTINGS="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/settings.ini"
+DUCK_LOG_FILE="${DUCKSTATION_LOG_FILE:-$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log}"
+DUCK_LOG_MAX_BYTES="${DUCKSTATION_LOG_MAX_BYTES:-2147483648}"
+DUCK_SETTINGS_BACKUP=""
 BOOTMODE_BACKUP=""
 BOOT_OVERRIDE=""
+LOG_WATCHDOG_PID=""
 
 prepare_duckstation_test_settings() {
-    :
+    if [ ! -f "$DUCK_SETTINGS" ]; then
+        return
+    fi
+
+    DUCK_SETTINGS_BACKUP="$SCRATCH_DIR/duckstation-settings-$$.ini"
+    cp "$DUCK_SETTINGS" "$DUCK_SETTINGS_BACKUP"
+
+    python3 - "$DUCK_SETTINGS" <<'PY'
+import configparser
+import sys
+from pathlib import Path
+
+settings = Path(sys.argv[1])
+cp = configparser.ConfigParser()
+cp.optionxform = str
+cp.read(settings, encoding="utf-8")
+for section in ("BIOS", "SIO", "Logging"):
+    if section not in cp:
+        cp[section] = {}
+cp["BIOS"]["TTYLogging"] = "true"
+cp["SIO"]["RedirectToTTY"] = "true"
+cp["Logging"]["LogLevel"] = "Dev"
+cp["Logging"]["LogToFile"] = "true"
+cp["Logging"]["LogTimestamps"] = "true"
+cp["Logging"]["LogFileTimestamps"] = "true"
+with settings.open("w", encoding="utf-8") as f:
+    cp.write(f)
+PY
 }
 
 restore_duckstation_test_settings() {
-    :
+    if [ -n "$DUCK_SETTINGS_BACKUP" ] && [ -f "$DUCK_SETTINGS_BACKUP" ]; then
+        cp "$DUCK_SETTINGS_BACKUP" "$DUCK_SETTINGS"
+        rm -f "$DUCK_SETTINGS_BACKUP"
+    fi
+}
+
+stop_duckstation_log_watchdog() {
+    if [ -n "$LOG_WATCHDOG_PID" ]; then
+        kill "$LOG_WATCHDOG_PID" 2>/dev/null || true
+        wait "$LOG_WATCHDOG_PID" 2>/dev/null || true
+        LOG_WATCHDOG_PID=""
+    fi
+}
+
+cap_duckstation_log() {
+    if [ "${DUCK_LOG_MAX_BYTES:-0}" -le 0 ] 2>/dev/null; then
+        return
+    fi
+    if [ ! -f "$DUCK_LOG_FILE" ]; then
+        return
+    fi
+
+    local size
+    size=$(stat -c %s "$DUCK_LOG_FILE" 2>/dev/null || printf '0')
+    if [ "$size" -ge "$DUCK_LOG_MAX_BYTES" ] 2>/dev/null; then
+        echo "DuckStation log reached ${size} bytes; truncating $DUCK_LOG_FILE"
+        : > "$DUCK_LOG_FILE"
+    fi
 }
 
 if [ "${1:-}" = "noclean" ]; then
@@ -67,7 +126,7 @@ restore_boot_override() {
     fi
 }
 
-trap 'restore_duckstation_test_settings; restore_boot_override' EXIT
+trap 'stop_duckstation_log_watchdog; restore_duckstation_test_settings; restore_boot_override' EXIT
 
 # Step 1: Stage boot override and build executable
 stage_boot_override
@@ -146,9 +205,20 @@ take_duckstation_screenshot() {
 }
 
 # Launch DuckStation with fast boot
+cap_duckstation_log
 prepare_duckstation_test_settings
 flatpak run --filesystem="$(dirname "$CUE_FILE")" org.duckstation.DuckStation "$CUE_FILE" &
 DUCK_PID=$!
+
+if [ "${DUCK_LOG_MAX_BYTES:-0}" -gt 0 ] 2>/dev/null; then
+    (
+        while kill -0 "$DUCK_PID" 2>/dev/null; do
+            sleep 60
+            cap_duckstation_log
+        done
+    ) &
+    LOG_WATCHDOG_PID=$!
+fi
 
 echo "DuckStation PID: $DUCK_PID"
 echo "Waiting ${INITIAL_CAPTURE_WAIT} seconds for initial screenshot..."
@@ -211,6 +281,8 @@ if [ -n "${WATCHDOG_PID:-}" ]; then
     kill "$WATCHDOG_PID" 2>/dev/null || true
     wait "$WATCHDOG_PID" 2>/dev/null || true
 fi
+
+stop_duckstation_log_watchdog
 
 echo "DuckStation closed."
 exit 0
