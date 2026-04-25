@@ -54,6 +54,17 @@ extern void exit(int status) __attribute__((noreturn));
 
 int debugMode = 0;
 
+#ifdef PS1_BUILD
+/* User-overridable date/time values for the pause-menu Set Time / Date
+ * screen. Defaults match the hardcoded fixed values in getHour() /
+ * getMonthAndDay() / getDayOfYear(). These globals exist so pause_menu.c
+ * can link; wiring them into the get*() functions so edits actually take
+ * effect on the rendered scene state is a follow-up after Phase 1. */
+int ps1SoftHour  = 12;
+int ps1SoftMonth = 6;
+int ps1SoftDay   = 30;
+#endif
+
 void fatalError(char *message, ... )
 {
     va_list(args);

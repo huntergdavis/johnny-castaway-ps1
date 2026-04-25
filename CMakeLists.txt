@@ -39,6 +39,7 @@ set(SOURCES
     src/events_ps1.c
     src/cdrom_ps1.c
     src/ps1_debug.c
+    src/pause_menu.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )
