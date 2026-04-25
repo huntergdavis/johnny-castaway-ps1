@@ -132,8 +132,10 @@ static int hostForcedIslandX = 0;
 static int hostForcedIslandY = 0;
 static int hostForcedLowTide = -1;
 static int hostForcedRaftStage = -1;
-static int hostForcedNight = -1;     /* -1=unset, 0|1 forces islandState.night */
-static int hostForcedHoliday = -1;   /* -1=unset, 0..4 forces islandState.holiday */
+/* Non-static so the pause menu can flip these. -1 = auto (random per
+ * scene). Set via BOOTMODE tokens (legacy) or pause-menu cycling. */
+int hostForcedNight = -1;
+int hostForcedHoliday = -1;
 
 /* Screensaver loop: fgpilot mode replays the scene forever with randomized
  * variant params per iteration, unless the `noloop` boot token is set.
@@ -200,16 +202,25 @@ static void fgLoopApplyVariant(const char *sceneName)
     extern int ps1SoftDay;
     extern int ps1HolidayFromDate(int month, int day);
 
-    islandState.night   = (hostForcedNight     >= 0) ? hostForcedNight     : (rand() & 1);
     islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
-    islandState.holiday = (hostForcedHoliday   >= 0) ? hostForcedHoliday   : (rand() % 5);
     islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
 
-    /* If user set time/date via pause menu, derive night + holiday from
-     * those values. Overrides hostForced* and randomization above. */
-    if (ps1SoftTimeEnabled) {
-        islandState.night   = (ps1SoftHour < 6 || ps1SoftHour >= 20) ? 1 : 0;
+    /* Priority for night/holiday: explicit menu override (hostForced*)
+     * wins, then time-of-day override (ps1SoftTimeEnabled), then random. */
+    if (hostForcedNight >= 0) {
+        islandState.night = hostForcedNight;
+    } else if (ps1SoftTimeEnabled) {
+        islandState.night = (ps1SoftHour < 6 || ps1SoftHour >= 20) ? 1 : 0;
+    } else {
+        islandState.night = (rand() & 1);
+    }
+
+    if (hostForcedHoliday >= 0) {
+        islandState.holiday = hostForcedHoliday;
+    } else if (ps1SoftTimeEnabled) {
         islandState.holiday = ps1HolidayFromDate(ps1SoftMonth, ps1SoftDay);
+    } else {
+        islandState.holiday = (rand() % 5);
     }
 
     if (hostForcedIslandPosValid) {
