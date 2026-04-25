@@ -18,14 +18,14 @@ pixel-perfect FG2 methodology.
 ## Executive Summary
 
 Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, a 32 KB FG2 stream window, and dirty
+Held-entry no-work, one-entry staging, a 24 KB FG2 stream window, and dirty
 clean-rect row restore are active on the perf branch. The boot parameters still
 exist for diagnostics, but the default FG2 playback policy is now
 `stage1_window`.
 
-Latest default-path fishing1 high-tide run, with the 32 KB stream window,
-reported `policy=stage1_window`, `buf=39952`, `hits=150`, `due_misses=5`,
-`blocking_vb=148`, `prefetch.overrun_vb=104`, `loop_vb=1426`,
+Latest default-path fishing1 high-tide run, with the 24 KB stream window,
+reported `policy=stage1_window`, `buf=31760`, `hits=148`, `due_misses=7`,
+`blocking_vb=108`, `prefetch.overrun_vb=58`, `loop_vb=1322`,
 `target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
 and `cd_fail=0`.
 
@@ -59,7 +59,7 @@ Top likely wins, in order:
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
 | 1 | Detail-tier attribution pass on the post-prefetch default path | High | `loop_vb` is still `1450` vs `1077`; the next edit needs to know how much is CD blocking, present serialization, upload, restore, compose, or event wait. |
-| 2 | Finish CD stall hiding beyond the default 32 KB window | High | The first sweep lowered fishing1 `blocking_vb` from `168` to `148`, but the latest run still has prefetch `overrun_vb=104` and `due_misses=5`. |
+| 2 | Finish CD stall hiding beyond the default 24 KB window | High | The post-slack sweep lowered fishing1 `loop_vb` to `1322`, but the latest run still has `blocking_vb=108`, prefetch `overrun_vb=58`, and `due_misses=7`. |
 | 3 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `14.7 MB` and uploads `15.7 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
@@ -542,18 +542,19 @@ read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
 Status: first wave implemented, visually signed off, and merged to `main` in
-`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a 32 KB
-stream window after the first window-size sweep. The old `prefetch-stage1` token
+`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a 24 KB
+stream window after the post-slack window-size sweep. The old `prefetch-stage1` token
 is no longer required for the normal path; `no-prefetch`, `no-stage1`, and
 window-size tokens remain diagnostic controls.
 
 Current perf-branch target: keep squeezing CD latency without changing pixels.
-After x-aware restore, PAL4 span compositing, duplicate probe removal, and the
-`3` VBlank refill slack guard, fishing1 high-tide reports `loop_vb=1325`,
-`blocking_vb=106`, `due_misses=4`, and prefetch `overrun_vb=67`. A `6`
-VBlank guard reduced prefetch overrun further but lost overall by increasing
-due-frame blocking, so the next CD experiments should reduce read cost or
-improve grouping rather than blindly raising the threshold.
+After x-aware restore, PAL4 span compositing, duplicate probe removal, the
+`3` VBlank refill slack guard, and the 24 KB default window, fishing1 high-tide
+reports `loop_vb=1322`, `blocking_vb=108`, `due_misses=7`, and prefetch
+`overrun_vb=58`. A `6` VBlank guard and smaller `20 KB` window reduced
+prefetch overrun further but lost overall by increasing due-frame blocking, so
+the next CD experiments should reduce read cost or improve grouping rather than
+blindly shrinking/growing the window.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -572,6 +573,7 @@ improve grouping rather than blindly raising the threshold.
 | `P4-13` | Keep all prefetch buffers scene-persistent and bounded. | Preserve the fishing3 memory-leak fix and avoid fragmentation. |
 | `P4-14` | Avoid cross-file prefetch as a first pass. | Current measured stall is inside one FG2 file, not between scene files. |
 | `P4-15` | Done: require at least `3` held VBlanks before starting a stream-window refill. | Avoids short-slack reads that become visible delay; `6` VBlanks was too strict and raised due misses. |
+| `P4-16` | Done: change the default stream window from `32 KB` to `24 KB` after the post-slack sweep. | `24 KB` improved `loop_vb 1325 -> 1322` and `prefetch_overrun_vb 67 -> 58`; `20 KB` and `28 KB` lost. |
 
 Prefetch variants to test in order:
 
@@ -579,8 +581,8 @@ Prefetch variants to test in order:
 |---|---|---|
 | One-entry synchronous staging | During held VBlanks, read the next entry into a second buffer if it is not already staged. | `cd_vb` may remain nonzero but should move out of due-frame advancement; visible speed should improve if enough hold budget exists. |
 | One-entry async staging | Start `CdRead` during held time and poll completion over later held VBlanks. | Lower blocking time, but higher controller-state risk. |
-| 32 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | CD reads should drop far below entry count. |
-| 64 KB stream window | Same as 32 KB with fewer refills and more heap pressure. | Better hit rate if memory budget holds. |
+| 24 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after the post-slack sweep. |
+| 32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
 | Dual-window ping-pong | Render from one window while filling the next during holds. | Best latency hiding, but only after single-window correctness. |
 | Sector-aligned FGP3 chunks | Pack frames into prefetch-friendly sector groups. | Only useful if runtime windowing exposes sector-copy overhead. |
 
@@ -811,7 +813,7 @@ into one commit.
 | 8 | Baseline | Run Summary vs Detail fishing1. | Quantify detail-probe overhead. |
 | 9 | Baseline | Save a machine-readable metrics comparison script. | Same-field before/after diffs. |
 | 10 | Baseline | Add a benchmark manifest for required variants. | Repeatable scene matrix. |
-| 11 | CD | Done: test 32/24/16/64 KB stream-window sweep. | 32 KB is the best clean first step: `loop_vb=1426`, `blocking_vb=148`; 24 KB raises blocking, 16/64 KB did not complete cleanly. |
+| 11 | CD | Done: test stream-window sizes before and after the `3` VBlank slack guard. | Initial sweep made `32 KB` the first clean default; post-slack sweep promotes `24 KB` with `loop_vb=1322`, while `20 KB` and `28 KB` fail. |
 | 12 | CD | Test 40 KB stream window. | Check whether the knee is between 32 KB and the original 48 KB. |
 | 13 | CD | Test 56 KB stream window. | Better hit rate without extra overrun. |
 | 14 | CD | Test 80 KB stream window for fishing3 only. | Determine memory/perf knee. |
@@ -819,6 +821,7 @@ into one commit.
 | 16 | CD | Align stream window end to sector boundary only once. | Lower scratch-copy churn. |
 | 17 | CD | Increase prefetch lead from next entry to next two entries. | Lower `due_misses`. |
 | 18 | CD | Done: prefetch on holds with at least `3` VBlanks of slack; `6` VBlanks failed. | `prefetch_overrun_vb 94 -> 67` and `loop_vb 1335 -> 1325` without increasing `blocking_vb`. |
+| 18a | CD | Done: retune default stream window to `24 KB` after the slack guard. | `prefetch_overrun_vb 67 -> 58`, `loop_vb 1325 -> 1322`, with `blocking_vb 106 -> 108` inside the gate. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
