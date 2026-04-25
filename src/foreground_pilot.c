@@ -1013,6 +1013,77 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
     return 1;
 }
 
+static int fgRuntimeTryExtendWindow(uint32 windowStart,
+                                    uint32 readBytes,
+                                    uint16 slackVBlanks,
+                                    uint8 countAsPrefetch,
+                                    uint16 *outElapsedVBlanks)
+{
+    uint32 currentStart;
+    uint32 currentEnd;
+    uint32 targetEnd;
+    uint32 preserveOffset;
+    uint32 preserveBytes;
+    uint32 appendBytes;
+    uint32 stageTick;
+    uint16 elapsedVBlanks;
+    int ok;
+
+    if (!gFgRuntime.streamWindowValid)
+        return 0;
+
+    currentStart = gFgRuntime.streamWindowStart;
+    currentEnd = currentStart + gFgRuntime.streamWindowBytes;
+    targetEnd = windowStart + readBytes;
+
+    if (windowStart < currentStart ||
+        windowStart >= currentEnd ||
+        targetEnd <= currentEnd)
+        return 0;
+
+    /* Append reads write whole sectors, so only extend fully aligned windows. */
+    if ((currentEnd & 2047UL) != 0 || (targetEnd & 2047UL) != 0)
+        return 0;
+
+    preserveOffset = windowStart - currentStart;
+    preserveBytes = currentEnd - windowStart;
+    appendBytes = targetEnd - currentEnd;
+    if (preserveBytes == 0 ||
+        appendBytes == 0 ||
+        preserveBytes >= gFgRuntime.streamWindowSize ||
+        preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
+        return 0;
+
+    stageTick = fgReadTickCounter();
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfBeginPrefetchRead(slackVBlanks);
+
+    if (preserveOffset > 0)
+        memmove(gFgRuntime.streamWindowBuffer,
+                gFgRuntime.streamWindowBuffer + preserveOffset,
+                preserveBytes);
+
+    ok = ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
+                                       currentEnd,
+                                       appendBytes,
+                                       gFgRuntime.streamWindowBuffer + preserveBytes);
+    elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(stageTick);
+    if (countAsPrefetch && ps1PerfEnabled)
+        ps1PerfEndPrefetchRead(elapsedVBlanks, appendBytes, ok);
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = elapsedVBlanks;
+
+    if (!ok) {
+        gFgRuntime.streamWindowValid = 0;
+        return -1;
+    }
+
+    gFgRuntime.streamWindowStart = windowStart;
+    gFgRuntime.streamWindowBytes = readBytes;
+    gFgRuntime.streamWindowValid = 1;
+    return 1;
+}
+
 static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
                                        uint16 slackVBlanks,
                                        uint8 countAsPrefetch,
@@ -1040,6 +1111,14 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
     if (readBytes == 0)
         return 0;
+
+    ok = fgRuntimeTryExtendWindow(windowStart,
+                                  readBytes,
+                                  slackVBlanks,
+                                  countAsPrefetch,
+                                  outElapsedVBlanks);
+    if (ok != 0)
+        return (ok > 0) ? 1 : 0;
 
     stageTick = fgReadTickCounter();
     if (countAsPrefetch && ps1PerfEnabled)
