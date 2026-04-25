@@ -6,6 +6,8 @@ Original planning baseline: `f704312c ps1: keep fg2 overlays scene-relative to i
 
 Measured runtime baseline: `821a5745 ps1: add scene-level perf logging`
 
+Metrics foundation checkpoint: `c0e6d95e ps1: add gated JCPERF2 metrics`
+
 Scope: active PS1 scene playback runtime only. The target is faster playback
 without frame dropping, skipped art, timing lies, or regression away from the
 pixel-perfect FG2 methodology.
@@ -22,6 +24,14 @@ spent `562` VBlanks inside CD reads, almost the entire `593` VBlank inner
 playback overrun. The current active scene reads only 423 KB of FG2 payload,
 but it does that as 136 small blocking reads. That points to read amortization
 and held-time prefetch as the next major bite.
+
+The `JCPERF2` metrics foundation is now implemented and verified on an isolated
+`fgpilot fishing1 perf-log noloop` run. The validated low-tide sample emitted
+scene-end records with `loop_vb=1680`, `target_vb=1077`, `overrun_vb=603`,
+`render=137`, `held=205`, `blocking_vb=501`, `hidden_vb=0`,
+`due_misses=136`, `trip=0`, `fallback=0`, `full_fallbacks=0`, and `cd_fail=0`.
+That confirms the first optimization test should attack due-frame CD blocking,
+not timing-file compression.
 
 The second issue is render pipeline serialization. A new rendered entry costs
 about `10.7` VBlanks on average after subtracting held waits. CD accounts for
@@ -210,10 +220,16 @@ Goal: implement the advanced metrics layer once, before optimizing. The output
 must be stable, machine-readable, scene-bounded, and rich enough to compare all
 planned performance experiments without adding new log plumbing for each one.
 
-Current status: `821a5745` added first-pass `JCPERF` scene summaries for
-timing, CD reads, restore, compose, and upload. The next pass should extend
-that into a versioned `JCPERF2` schema instead of repeatedly editing ad-hoc log
-lines.
+Current status: implemented in `c0e6d95e`. `perf-log`, `perf-detail`, and
+`perf-debug` are parsed; legacy `JCPERF` lines are preserved; versioned
+`JCPERF2` scene-end records now cover scene identity, setup timing, loop timing,
+frame complexity, CD shape, baseline prefetch placeholders, render/gfx counters,
+buffer/allocation counters, and correctness tripwires.
+
+Known intentional gaps: prefetch and async fields remain zero until those
+experiments exist; heap free/min/largest are not wired in Summary; compositor
+specialty counters such as `tile_splits`, `lut_pairs`, and `slow_pixels` remain
+future experiment counters; `exe_bytes` stays a host-side build metric.
 
 Metrics rules:
 
@@ -242,7 +258,7 @@ Default optimization comparisons should use Summary tier. Detail tier exists so
 we can diagnose the unknown `~6.6` non-CD VBlanks per rendered entry without
 permanently baking that probe overhead into every benchmark.
 
-Proposed scene-end log schema:
+Implemented scene-end log schema:
 
 ```text
 JCPERF2 scene schema=2 scene=fishing1 pack=FG/FISH1LOW.FG2 pack_bytes=0 pack_padding=0 pack_lba=0 pack_sectors=0 fmt=fgp2_pal4 flags=base_diff,scene_relative frames=137 entries=137 sounds=9 lowtide=1 night=1 holiday=4 raft=2 pos=-217,55 seed=0
@@ -258,7 +274,9 @@ JCPERF2 heap start_free=0 end_free=0 min_free=0 largest_start=0 largest_end=0 fr
 JCPERF2 correctness trip=0 fallback=0 stale_guard=0 frame_mismatch=0 sound_events=0 sound_late=0 sound_cursor_end=0 last_frame=0 expected_frames=137 cd_fail=0
 ```
 
-The zero fields above are not known today; they define the next metrics pass.
+Zero fields now mean either "not applicable to this baseline policy" or
+"reserved for the experiment that owns this counter." The schema should remain
+stable while individual experiments populate their own fields.
 
 Timing classification definitions:
 
@@ -396,20 +414,20 @@ Required metrics inventory:
 | Correctness guard | `trip`, `fallback`, `frame_mismatch`, `stale_guard`, `sound_events`, `sound_late`, `sound_cursor_end`, `last_frame`, `expected_frames`, `cd_fail` | All experiments | Tripwire counters must stay zero except `cd_fail`, which indicates media/read failure rather than an acceptable alternate render path. |
 | Binary/build | `exe_bytes`, optional map hot symbols offline | Build flags, code cleanup | Tracks binary growth from metrics and optimization code. |
 
-Implementation order for the metrics pass:
+Implementation status for the metrics pass:
 
-| Step | Work | Acceptance |
-|---|---|---|
-| `M0-01` | Introduce `ps1PerfLevel` and `JCPERF2` scene-end schema alongside existing `JCPERF`. | Existing fishing1 numbers still appear; new lines parse as key/value pairs; no token remains Off. |
-| `M0-02` | Add Summary-tier setup/loop/timing counters and explicit `loop_vb` measurement. | Can separate scene setup from playback without deriving it manually. |
-| `M0-03` | Add Summary-tier CD blocking/hidden split and prefetch fields initialized to zero. | Baseline says `policy=none`, `hidden_vb=0`, `due_misses=entries_with_payload`. |
-| `M0-04` | Add Summary-tier CD shape precision: alignment, overread, sector buckets, sequential/seek direction, max read index. | Can tell whether runtime prefetch or pack layout is the right CD fix. |
-| `M0-05` | Add Summary-tier dirty/compositor complexity counters that piggyback existing loops. | Row/X and compositor experiments have before/after data without extra scans. |
-| `M0-06` | Add Summary-tier heap/buffer counters at scene start/end and allocation sites only. | Prefetch buffer experiments cannot hide fragmentation regressions. |
-| `M0-07` | Add Summary-tier deterministic tripwire counters. | Future speedups cannot silently enter fallback behavior; any nonzero non-CD tripwire fails the experiment. |
-| `M0-08` | Add Detail-tier render subphase timers around restore, compose, present wait, upload, event wait, and advance/load. | The current non-CD `~6.6` VBlank/render budget can be attributed when needed. |
-| `M0-09` | Run Off vs Summary fishing1 comparison. | Summary overhead is documented before using it for optimization decisions. |
-| `M0-10` | Run Summary baseline matrix: fishing1 default, fishing1 low/night/holiday, fishing2, fishing3. | Produces comparable `JCPERF2` records before the first optimization. |
+| Step | Status | Work | Acceptance |
+|---|---|---|---|
+| `M0-01` | Done | Introduce `ps1PerfLevel` and `JCPERF2` scene-end schema alongside existing `JCPERF`. | Existing fishing1 numbers still appear; new lines parse as key/value pairs; no token remains Off. |
+| `M0-02` | Done | Add Summary-tier setup/loop/timing counters and explicit `loop_vb` measurement. | Can separate scene setup from playback without deriving it manually. |
+| `M0-03` | Done | Add Summary-tier CD blocking/hidden split and prefetch fields initialized to zero. | Baseline says `policy=none`, `hidden_vb=0`, `due_misses=entries_with_payload`. |
+| `M0-04` | Done | Add Summary-tier CD shape precision: alignment, overread, sector buckets, sequential/seek direction, max read index. | Can tell whether runtime prefetch or pack layout is the right CD fix. |
+| `M0-05` | Done | Add Summary-tier dirty/compositor complexity counters that piggyback existing loops. | Row/X and compositor experiments have before/after data without extra scans. |
+| `M0-06` | Partial | Add Summary-tier heap/buffer counters at scene start/end and allocation sites only. | Buffer sizes and allocation failures are logged; free/min/largest remain reserved until a cheap heap probe is chosen. |
+| `M0-07` | Done | Add Summary-tier deterministic tripwire counters. | Future speedups cannot silently enter fallback behavior; any nonzero non-CD tripwire fails the experiment. |
+| `M0-08` | Done | Add Detail-tier render subphase timers around restore, compose, present wait, upload, event wait, and advance/load. | The current non-CD `~6.6` VBlank/render budget can be attributed when needed. |
+| `M0-09` | Pending | Run Off vs Summary fishing1 comparison. | Summary overhead is documented before using it for optimization decisions. |
+| `M0-10` | Pending | Run Summary baseline matrix: fishing1 default, fishing1 low/night/holiday, fishing2, fishing3. | Produces comparable `JCPERF2` records before the first optimization. |
 
 Metrics pass non-goals:
 
@@ -743,7 +761,7 @@ Metrics needed before each experiment:
 
 | Order | Experiment | Commit only if |
 |---:|---|---|
-| 1 | Implement the full `JCPERF2` metrics foundation. | Existing playback remains visually/audio identical and no per-frame logs are added. |
+| 1 | Implement the `JCPERF2` metrics foundation. | Done in `c0e6d95e`; isolated fishing1 Summary run emitted valid scene-end records. |
 | 2 | Capture the baseline matrix with `JCPERF2`. | fishing1, low/night/holiday fishing1, fishing2, and fishing3 have comparable records. |
 | 3 | Implement one-entry synchronous staging during held VBlanks. | Fishing1 remains perfect and `blocking_vb`, `due_misses`, and playback ratio improve. |
 | 4 | Add a 32 KB current-FG2 stream window. | `reads` drops below entry count with no stale frame data. |
