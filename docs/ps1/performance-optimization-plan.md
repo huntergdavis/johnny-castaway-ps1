@@ -625,6 +625,7 @@ and upload byte volume.
 | `P4-32` | Done: raise the staged-copy fallthrough guard from `5` to `6` VBlanks after per-tile row dirty marking. | `loop_vb 1248 -> 1243`, `prefetch_overrun_vb 15 -> 12`, and `blocking_vb` stayed `21`. |
 | `P4-33` | Failed: re-sweep `15 KB` and `14 KB` stream windows after the `6` VBlank fallthrough guard. | `15 KB` rounded to the current behavior; `14 KB` reduced `prefetch_overrun_vb 12 -> 9` but regressed `loop_vb 1243 -> 1244` and `blocking_vb 21 -> 36`. |
 | `P4-34` | Failed as no-op: hoist the PAL4 dirty visible-row check out of the per-span loop. | Key metrics stayed exactly flat at VBlank resolution; retry only with finer CPU counters or combined compositor branch cleanup. |
+| `P4-35` | Failed: call `markTileDirtyRect()` directly from PAL4 row dirty aggregation. | The direct path regressed `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 17`; generic `grMarkRectDirty()` stays faster in this build. |
 
 Prefetch variants to test in order:
 
@@ -889,6 +890,7 @@ into one commit.
 | 18m | CD | Done: raise the post-row-dirty staged-copy fallthrough guard to `6` VBlanks. | `loop_vb 1248 -> 1243`, `prefetch_overrun_vb 15 -> 12`, and `blocking_vb` stayed `21`. |
 | 18n | CD | Failed: re-sweep `15 KB` and `14 KB` windows after the fallthrough guard. | `15 KB` no-op; `14 KB` lowered overrun but starved coverage and raised blocking. |
 | 18o | Dirty/Compose | Failed as no-op: hoist the PAL4 dirty visible-row branch. | Metrics were unchanged; needs finer CPU counters or batching with adjacent branch cleanup. |
+| 18p | Dirty/Compose | Failed: call direct tile dirty marker from PAL4 row aggregation. | Slower than the generic wrapper despite equivalent dirty metrics. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
