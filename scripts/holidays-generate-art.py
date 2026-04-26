@@ -69,7 +69,8 @@ def main():
         for hid, name, reason in failed:
             print(f"  id {hid} {name!r}: {reason}")
     print(f"Output dir: {OUT_DIR.relative_to(REPO)}/")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
