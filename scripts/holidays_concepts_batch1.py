@@ -222,9 +222,9 @@ def mlk_v3(h):
     for x in range(8, 84, 6):
         sp.rect(x, 46, x + 3, 49, BLACK)
         sp.px(x + 1, 45, BLACK); sp.px(x + 2, 45, BLACK)
-    # Stars dotted on sky
-    compose_star(sp, 14, 8, 2, YELLOW)
-    compose_star(sp, 74, 6, 2, YELLOW)
+    # Stars dotted on sky — must use WHITE/ORANGE since the sky is YELLOW
+    compose_star(sp, 14, 8, 2, WHITE)
+    compose_star(sp, 74, 6, 2, ORANGE)
     return sp
 
 
