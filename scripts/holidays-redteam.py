@@ -735,11 +735,17 @@ def check_manifest_present(holidays, fails, warns):
         return
     expected_ids = {h["id"] for h in holidays
                     if h.get("existing_sprite") is None}
-    seen_ids = {e.get("id") for e in entries if isinstance(e, dict)}
-    if seen_ids != expected_ids:
+    seen_ids = [e.get("id") for e in entries if isinstance(e, dict)]
+    seen_set = set(seen_ids)
+    if seen_set != expected_ids:
         fails.append(
-            f"manifest.json ids {sorted(seen_ids)} != reviewable ids "
+            f"manifest.json ids {sorted(seen_set)} != reviewable ids "
             f"{sorted(expected_ids)}")
+    if len(seen_ids) != len(seen_set):
+        # Find duplicates.
+        from collections import Counter
+        dups = [hid for hid, n in Counter(seen_ids).items() if n > 1]
+        fails.append(f"manifest.json has duplicate id entries: {sorted(dups)}")
     for e in entries:
         if not (1 <= int(e.get("variant", 0)) <= 5):
             fails.append(
