@@ -447,6 +447,13 @@ def as_night(day_sprite: Sprite, *,
         new.ellipse(mx - 5, my - 5, mx + 5, my + 5, WHITE, outline=BLACK)
         # Crescent shadow — a partial DEEPBLUE arc on the right side
         new.ellipse(mx - 1, my - 4, mx + 6, my + 4, DEEPBLUE)
+        # Craters: 2-3 GRAY pixels on the lit (left) side of the moon for
+        # a touch of detail at PS1 viewing distance.
+        for dx, dy in [(-3, -1), (-1, 2), (-2, -3)]:
+            cx_, cy_ = mx + dx, my + dy
+            if (0 <= cx_ < day_sprite.w and 0 <= cy_ < day_sprite.h
+                    and new.image.getpixel((cx_, cy_)) == WHITE):
+                new.px(cx_, cy_, GRAY)
 
     return new
 
