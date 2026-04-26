@@ -31,7 +31,8 @@ dirty-row upload bands with an 11-row gap merge, setup priming of the first
 real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
-coalesced FG2 metadata-prefix startup reads, reported
+coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
+garbage collection, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
 `due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1227`,
 `overrun_vb=150`, `target_vb=1077`, `restore_bytes=3034562`,
@@ -39,7 +40,9 @@ coalesced FG2 metadata-prefix startup reads, reported
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
 `setup_read_vb=108`, and `scene_vb=1406`. This is the current baseline for the
-next experiment; the pre-pause best was `loop_vb=1297`.
+next experiment. The section-GC pass kept those counters flat while shrinking
+`jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
+same `137216` byte sector bucket. The pre-pause best was `loop_vb=1297`.
 
 Detail-tier attribution on this baseline shows the remaining active-loop gap is
 not primarily CD: `render_vb=175`, `present_wait_vb=157`, `restore_vb=18`,
@@ -732,6 +735,7 @@ rectangle pressure.
 | `P4-103` | Failed: resolve the FG2 pack once before startup reads. | Setup improved (`pack_start_vb 42 -> 30`, `scene_vb 1406 -> 1397`), but active playback regressed (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`) and speculative prep calls changed; setup code shape still affects the deterministic loop cadence. |
 | `P4-104` | Failed: trim stream-window reads to complete payload entries. | Bytes/sectors dropped (`1098982 -> 1094886`, `541 -> 539`) with `hits=155` and `due_misses=0`, but elapsed CD and active timing regressed (`loop_vb 1227 -> 1240`, `loop_read_vb 286 -> 298`, `blocking_vb 6 -> 13`); trailing overread is part of the current cadence unless group metadata predicts cost. |
 | `P4-105` | Failed: prepare staged frames before pure lookahead prefetch. | Prepared work dropped (`restore_calls/compose_calls 190 -> 186`, `restore_bytes 3034562 -> 2981102`) but active playback regressed (`loop_vb 1227 -> 1240`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`, `seek_back 5 -> 11`); render prep and CD lookahead need separate budgets, not a simple priority inversion. |
+| `P4-106` | Done: enable PS1 function/data sections plus linker garbage collection. | Two headless runs matched timing and work identity exactly while `jcreborn.elf` shrank `709828 -> 708656` bytes; this does not move VBlank metrics yet, but it makes later public-build/code-size cleanup measurable. |
 
 Prefetch variants to test in order:
 

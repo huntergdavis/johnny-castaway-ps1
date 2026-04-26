@@ -58,6 +58,16 @@ set(SOURCES
 # Note: GPREL = use GP-relative addressing for faster data access
 psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
 
+# Keep PS1 release builds tight: each function/data object gets its own
+# section so the linker can drop unused legacy support paths.
+target_compile_options(jcreborn PRIVATE
+    -ffunction-sections
+    -fdata-sections
+)
+target_link_options(jcreborn PRIVATE
+    -Wl,--gc-sections
+)
+
 # Include directories
 # - src/ for the main translation units' own headers
 # - project root so `#include "config/ps1/bootmode_embedded.h"` still resolves
