@@ -636,6 +636,7 @@ and upload byte volume.
 | `P4-42` | Failed as no-op: fast-return from zero-delay event waits after Start polling. | Key metrics matched baseline exactly; retry only with finer CPU counters or when cleaning up event/pause code shape. |
 | `P4-43` | Rejected after red-team review: skip the pre-upload present wait after a held-loop VBlank. | Headless timing improved (`loop_vb 1243 -> 1239`, `blocking_vb 21 -> 20`), but the safety proof is insufficient because frame load/compose can consume the earlier VBlank before `LoadImage`; retry only with an explicit scanline-safe present scheduler. |
 | `P4-44` | Done: skip `grBeginFrame()` OT reset on base-diff FG2 frames. | Reproduced `loop_vb 1243 -> 1242` and `blocking_vb 21 -> 20` with unchanged visual-work counters; keep OT reset for non-base-diff wave/legacy primitive paths. |
+| `P4-45` | Failed: re-test an `18 KB` stream window after the OT-clear cleanup. | `loop_vb 1242 -> 1251`, `blocking_vb 20 -> 42`, and `due_misses 1 -> 4`; keep `16 KB` as the current local window knee. The harness now fails baseline-label mismatches so parameter probes cannot silently skip comparisons. |
 
 Prefetch variants to test in order:
 
