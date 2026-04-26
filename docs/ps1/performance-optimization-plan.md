@@ -542,8 +542,8 @@ span like an arbitrary transparent sprite.
 |---|---|---|
 | `P3-01` | Split PAL4 span compositing by tile once per span, not once per pixel. | Remove thousands of repeated tile tests. |
 | `P3-02` | Remove transparent-index checks inside FG2 spans. | Pack compiler only emits nonzero contiguous spans. |
-| `P3-03` | Add a 256-entry PAL4 byte-to-two-pixels LUT per FG2 palette. | Convert two pixels per byte with one lookup. |
-| `P3-04` | Use aligned 32-bit stores for even destination X and even pixel count. | Halve store count on the common path. |
+| `P3-03` | Failed in runtime form: add a 256-entry PAL4 byte-to-two-pixels LUT per FG2 palette. | The runtime cache/table path regressed `loop_vb 1266 -> 1279`; revisit only as pack-time direct16 or cheaper scene specialization. |
+| `P3-04` | Failed with `P3-03`: use aligned 32-bit stores for even destination X and even pixel count. | The combined LUT/store path was slower than direct halfword writes on fishing1. |
 | `P3-05` | Keep odd-left and odd-right edge handlers simple. | Preserve exact pixels around unaligned spans. |
 | `P3-06` | Add an indexed8 fast path with direct palette lookup and no transparent checks. | Future scenes include indexed8 FG2 packs. |
 | `P3-07` | Consider pack-time direct16 row commands for high-cost scenes only. | Removes palette work at runtime but increases pack size. |
@@ -904,7 +904,7 @@ into one commit.
 | 64 | Compose | Prebuild LUT per scene palette at pack start. | No per-frame palette setup. |
 | 65 | Compose | Remove transparent checks for FG2 spans. | Lower branch count. |
 | 66 | Compose | Split spans at tile boundaries once. | Lower per-pixel tile tests. |
-| 67 | Compose | Add even-X/even-count fast path. | More 32-bit stores. |
+| 67 | Compose | Failed: runtime PAL4 pair LUT plus aligned 32-bit stores. | `loop_vb 1266 -> 1279`; retry only as pack-time direct16 or lower-overhead scene specialization. |
 | 68 | Compose | Add odd-left edge handler. | Preserve edge pixels. |
 | 69 | Compose | Add odd-right edge handler. | Preserve edge pixels. |
 | 70 | Compose | Use row-local destination pointer increments. | Less address math. |
