@@ -688,6 +688,37 @@ def check_invisible_compose_calls(fails, warns):
                         f"invisible — bg={bg}, line: {stripped[:70]}")
 
 
+def check_manifest_present(holidays, fails, warns):
+    """Resolver writes a manifest.json beside the staged PNGs. Verify
+    it covers every reviewable holiday with a sane variant id."""
+    p = REPO / "scratch" / "holidays-selected" / "manifest.json"
+    if not p.exists():
+        warns.append(
+            f"missing {p.relative_to(REPO)} (run holidays-resolve-picks.py)")
+        return
+    import json as _json
+    try:
+        data = _json.loads(p.read_text(encoding="utf-8"))
+    except Exception as e:
+        fails.append(f"manifest.json parse error: {e}")
+        return
+    entries = data.get("holidays") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        fails.append("manifest.json missing 'holidays' list")
+        return
+    expected_ids = {h["id"] for h in holidays
+                    if h.get("existing_sprite") is None}
+    seen_ids = {e.get("id") for e in entries if isinstance(e, dict)}
+    if seen_ids != expected_ids:
+        fails.append(
+            f"manifest.json ids {sorted(seen_ids)} != reviewable ids "
+            f"{sorted(expected_ids)}")
+    for e in entries:
+        if not (1 <= int(e.get("variant", 0)) <= 5):
+            fails.append(
+                f"manifest.json id={e.get('id')}: variant out of range")
+
+
 def check_contact_sheet_present(fails, warns):
     """Contact sheet PNG present and reasonable in size."""
     p = REPO / "scratch" / "holidays-contact-sheet.png"
@@ -733,6 +764,7 @@ def main():
         ("HTML save / modal",   lambda: check_save_button(fails, warns)),
         ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
         ("contact sheet PNG",   lambda: check_contact_sheet_present(fails, warns)),
+        ("manifest.json",       lambda: check_manifest_present(holidays, fails, warns)),
         ("invisible compose_*", lambda: check_invisible_compose_calls(fails, warns)),
         ("renderer dims = yaml", lambda: check_renderer_dims_match_yaml(holidays, fails, warns)),
     ]
