@@ -648,6 +648,7 @@ and upload byte volume.
 | `P4-52` | Failed hard: naive async stream-window refill. | Starting `CdRead` asynchronously and polling during held frames regressed `loop_vb 1242 -> 1267`, `blocking_vb 20 -> 71`, and `prefetch_overrun_vb 12 -> 64`; async needs first-class scheduling/metrics before another retry. |
 | `P4-53` | Failed: skip clean-rect restore scans that do not intersect previous dirty tile bounds. | `loop_vb` stayed flat at `1242`, but `blocking_vb 20 -> 23` and `prefetch_overrun_vb 12 -> 14`; the runtime intersection screen costs more than the one skipped restore call saves. |
 | `P4-54` | Failed as no-op: cache stream-read file-start LBA inside CD helpers. | Avoiding repeated `CdPosToInt(cdfile->pos)` calls left all key metrics exactly flat at `loop_vb=1242`, `blocking_vb=20`, and `prefetch_overrun_vb=12`; not worth promoting as a perf change. |
+| `P4-55` | Failed: split cross-tile PAL4 spans directly at runtime after the tile-local fast path. | Work identity stayed stable, but `loop_vb 1240 -> 1246`, `blocking_vb 20 -> 27`, and `prefetch_overrun_vb 11 -> 18`; boundary-span splitting should be pack-time if retried. |
 
 Prefetch variants to test in order:
 
