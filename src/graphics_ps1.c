@@ -37,6 +37,7 @@
 #include "cdrom_ps1.h"
 #include "psb_format.h"
 #include "psb_registry.h"
+#include "ps1_captions.h"
 
 /* Primitive buffer for GPU commands */
 #define PRIMITIVE_BUFFER_SIZE 32768
@@ -798,6 +799,11 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
     if (perfDetail)
         ps1PerfMarkRenderPhase(PS1_PERF_RENDER_UPLOAD,
                                ps1PerfElapsedVBlanks(perfTick));
+
+    /* Closed captions overlay — drawn AFTER the scene LoadImage so the
+     * dark band + text land on top of the frame the user sees this
+     * VSync. No-op when captions are off or no text is queued. */
+    captionsRender();
 
     /* Handle frame timing */
     if (perfDetail)
