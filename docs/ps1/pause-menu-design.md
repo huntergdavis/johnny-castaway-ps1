@@ -99,7 +99,7 @@ When `ps1PerfEnabled == 0`, the perf block shows zeros + the disabled hint. When
 | Scene name | `ps1PerfGetSceneName()` (NEW accessor) | + accessor |
 | Loop iteration | `gScreensaverIterCount` (NEW global in jc_reborn.c) | ~3 lines |
 | Variant flags | `islandState.{night,lowTide,raft,holiday}` | + extern decl |
-| Pilot mode | `foregroundPilotRuntimeMode()` (existing) | none |
+| Pilot mode | `foregroundPilotRuntimeModeName()` (existing) | none |
 | Pack name + frame index | `gFgRuntime.sceneName` + `frameIndex` / `header.frameCount` | + accessors |
 | Free RAM | `getTotalMemoryUsed()` / `getMemoryBudget()` | none |
 | Uptime | `gFrameCount / 60` (NEW global incremented in `grUpdateDisplay`) | ~3 lines |

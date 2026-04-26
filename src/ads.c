@@ -1679,27 +1679,6 @@ void adsPlay(char *adsName, uint16 adsTag)
     ps1AdsLastPlayLaunched = 0;
 #endif
 
-#ifdef PS1_BUILD
-    if (foregroundPilotShouldStartForAds(adsNameRef, adsTag) &&
-        !foregroundPilotRuntimeActive()) {
-        if (!foregroundPilotRuntimeStartRequested())
-            return;
-    }
-
-    if (adsNameRef != NULL && strcmp(adsNameRef, "FGPILOT") == 0) {
-        const char *pilotScene = (adsTag == 2 || adsTag == 3) ? "testcard" : "fishing1";
-        if (!foregroundPilotRuntimeStart(pilotScene))
-            return;
-        if (adsTag == 3) {
-            adsNameRef = "BUILDING";
-            adsTag = 1;
-        } else {
-            adsNameRef = "FISHING";
-            adsTag = 1;
-        }
-    }
-#endif
-
     struct TAdsResource *adsResource = findAdsResource((char *)adsNameRef);
 
 #ifdef PS1_BUILD
