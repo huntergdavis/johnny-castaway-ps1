@@ -651,6 +651,7 @@ blindly shrinking/growing the window.
 | `P4-90` | Failed: split immediate-next and pure-lookahead window refill guards. | Keeping immediate staging at `3` VBlanks but requiring `4` VBlanks for standalone lookahead refills regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; scalar slack splitting is exhausted without read-cost prediction or pack groups. |
 | `P4-91` | Failed: runtime read-size predictor for tight lookahead refills. | An `8 KB` tight-read cap improved nominal `loop_vb 1227 -> 1225`, but increased `blocking_vb` and `prefetch_overrun_vb` to `8`, raised loop CD read time, and changed scheduler cadence; `12 KB` regressed to `loop_vb=1233` and `blocking_vb=14`. |
 | `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); keep the accepted `8`-row gap. |
+| `P4-93` | Failed: compile hot playback translation units with `-O3`. | It reduced prepared restore/compose calls (`187 -> 182`) but regressed `loop_vb 1227 -> 1229`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; keep the SDK `-O2` default and prefer targeted hot functions/assembly. |
 
 Prefetch variants to test in order:
 
@@ -1097,6 +1098,12 @@ back `89600` extra upload bytes versus the accepted `8`-row baseline and leaves
 all VBlank timing flat. That says this local runtime threshold is past its
 useful knee; the next upload win should come from pack-emitted/upload-ready
 bands that lower command count without widening DMA volume.
+A hot translation-unit `-O3` pass also failed. The resulting code reduced
+speculative prepared-frame restore/compose calls by five, but worsened the
+actual timing and CD-pressure counters. That makes it a scheduler-shape loss,
+not a CPU win. Future compiler work should be narrow enough to keep code layout
+predictable: individual compositor helpers, CD copy loops, or hand-written
+assembly, with map-size tracking beside the perf summary.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
