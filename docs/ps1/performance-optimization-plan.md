@@ -709,6 +709,7 @@ rectangle pressure.
 | `P4-76` | Failed: stream-window prefetch while a prepared frame waits for its present VBlank. | It removed the prepared-present duplicate prep work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; do not spend prepared-wait slack on raw reads without a cost predictor or grouped-read metadata. |
 | `P4-77` | Failed: shrink the post-prepared-present stream window to `12 KB`. | `prefetch_overrun_vb 8 -> 1`, but coverage collapsed (`due_misses 0 -> 26`, `blocking_vb 8 -> 89`, `loop_vb 1234 -> 1245`); smaller raw windows are exhausted until pack groups or another stage slot preserve near-term entries. |
 | `P4-78` | Failed: add a second exact-payload stage slot at the `3` VBlank lower bound. | Coverage still degraded (`due_misses 0 -> 3`, `blocking_vb 8 -> 28`, `loop_vb 1234 -> 1238`, `prefetch_overrun_vb 8 -> 11`); the second slot needs grouped coverage, not isolated direct reads. |
+| `P4-79` | Failed: reuse a prepared current-frame RAM background through the normal upload path. | This removed duplicate prepared work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the extra prep work is currently timing/pacing, not removable without replacing that pacing. |
 
 Prefetch variants to test in order:
 
@@ -1167,6 +1168,9 @@ A constrained two-entry direct-stage queue also failed, which narrows the
 target further: the missing primitive is not another isolated frame buffer, it
 is a grouped read that keeps a useful covered frame range while avoiding full
 raw-window refill cost.
+Prepared-current RAM background reuse removed the duplicate restore/compose
+work but regressed the same one-VBlank CD shape. Treat the accepted extra prep
+work as deliberate pacing until a scheduler can replace that timing explicitly.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
