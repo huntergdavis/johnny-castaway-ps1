@@ -12,6 +12,7 @@
 #include "graphics_ps1.h"
 #include "cdrom_ps1.h"
 #include "island.h"
+#include "holidays.h"
 #include "pause_menu.h"
 #include "sound_ps1.h"
 #include "utils.h"
@@ -808,7 +809,7 @@ static void fgBackdropEnableWaveBackdrop(void)
         grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, 150, 328,  2, 0);
     }
 
-    if (islandState.holiday >= 1 && islandState.holiday <= 4)
+    if (holidayById(islandState.holiday))
         grLoadBmp(&gFgBackdropSlot, 2, "HOLIDAY.BMP");
 
     for (int i = 0; i < 4; i++)
@@ -903,25 +904,18 @@ static void fgBackdropTickBackgroundWaves(void)
 
 static void fgBackdropStampHoliday(void)
 {
-    int hx = 0;
-    int hy = 0;
-    uint16 hSpriteNo = 0;
+    const struct Holiday *holiday = holidayById(islandState.holiday);
 
-    if (islandState.holiday < 1 || islandState.holiday > 4)
+    if (!holiday)
         return;
     if (gFgBackdropSlot.numSprites[2] == 0)
         return;
 
-    switch (islandState.holiday) {
-        case 1: hx = 410; hy = 298; hSpriteNo = 0; break;
-        case 2: hx = 333; hy = 286; hSpriteNo = 1; break;
-        case 3: hx = 404; hy = 267; hSpriteNo = 2; break;
-        case 4: hx = 361; hy = 155; hSpriteNo = 3; break;
-    }
-
     grDx = islandState.xPos;
     grDy = islandState.yPos;
-    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot, hx, hy, hSpriteNo, 2);
+    grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
+                 holiday->island_x, holiday->island_y,
+                 (uint16)holiday->sprite_index, 2);
 }
 
 static uint16 fgRuntimeHeldSlackBeforeWait(void)

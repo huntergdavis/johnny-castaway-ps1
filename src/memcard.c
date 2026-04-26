@@ -28,6 +28,7 @@
 
 #include "mytypes.h"
 #include "memcard.h"
+#include "holidays.h"
 #include "spi.h"
 
 extern int soundMuted;
@@ -35,8 +36,10 @@ extern int hostForcedNight;
 extern int hostForcedHoliday;
 extern int ps1SoftTimeEnabled;
 extern int ps1SoftHour;
+extern int ps1SoftMinute;
 extern int ps1SoftMonth;
 extern int ps1SoftDay;
+extern int ps1SoftYear;
 extern void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
@@ -237,7 +240,10 @@ typedef struct {
     uint8  softHour;
     uint8  softMonth;
     uint8  softDay;
-    uint8  reserved[7];
+    uint8  softYearLo;
+    uint8  softYearHi;
+    uint8  softMinute;
+    uint8  reserved[4];
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -342,15 +348,29 @@ int memcardLoadSettings(void)
     soundMuted        = s->soundMuted ? 1 : 0;
     hostForcedNight   = s->dayNightOverride;
     hostForcedHoliday = s->holidayOverride;
+    if (hostForcedHoliday < -1 ||
+        (hostForcedHoliday > 0 && !holidayById(hostForcedHoliday)))
+        hostForcedHoliday = -1;
     ps1SoftTimeEnabled = s->softTimeEnabled ? 1 : 0;
     ps1SoftHour       = s->softHour;
+    ps1SoftMinute     = (s->softMinute <= 59) ? s->softMinute : 0;
     ps1SoftMonth      = s->softMonth;
     ps1SoftDay        = s->softDay;
+    ps1SoftYear       = (int)s->softYearLo | ((int)s->softYearHi << 8);
+    if (ps1SoftHour < 0 || ps1SoftHour > 23)
+        ps1SoftHour = 12;
+    if (ps1SoftMonth < 1 || ps1SoftMonth > 12)
+        ps1SoftMonth = 6;
+    if (ps1SoftDay < 1 || ps1SoftDay > 31)
+        ps1SoftDay = 30;
+    if (ps1SoftYear < 1583)
+        ps1SoftYear = 2026;
 
     memcardLastStatus = "loaded";
-    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:00 %02d/%02d\n",
+    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d\n",
            soundMuted, hostForcedNight, hostForcedHoliday,
-           ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMonth, ps1SoftDay);
+           ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMinute,
+           ps1SoftMonth, ps1SoftDay, ps1SoftYear);
     return 1;
 }
 
@@ -370,8 +390,11 @@ int memcardSaveSettings(void)
     s->holidayOverride  = (sint8)hostForcedHoliday;
     s->softTimeEnabled  = (uint8)(ps1SoftTimeEnabled ? 1 : 0);
     s->softHour         = (uint8)ps1SoftHour;
+    s->softMinute       = (uint8)ps1SoftMinute;
     s->softMonth        = (uint8)ps1SoftMonth;
     s->softDay          = (uint8)ps1SoftDay;
+    s->softYearLo       = (uint8)(ps1SoftYear & 0xFF);
+    s->softYearHi       = (uint8)((ps1SoftYear >> 8) & 0xFF);
 
     mcardSlowPoll();
 

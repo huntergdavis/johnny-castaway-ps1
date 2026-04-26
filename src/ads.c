@@ -57,6 +57,7 @@ extern int strcmp(const char *s1, const char *s2);
 #endif
 #include "ttm.h"
 #include "island.h"
+#include "holidays.h"
 #include "walk.h"
 #include "bench.h"
 #include "ads.h"
@@ -2484,13 +2485,10 @@ void adsPilotEnableWaveBackdrop(void)
         }
     }
 
-    /* Holiday overlay: HOLIDAY.BMP sprite 0-3 map to Halloween, St Patrick,
-     * Christmas, New Year. We preload it into slot 2 so adsPilotStampHoliday
-     * can restamp the sprite into the bg tiles each frame AFTER the
-     * foreground pack has composited Johnny -- this gives the original
-     * islandInitHoliday z-order (Johnny walks behind the tree/pumpkin/etc
-     * via post-character overlay layer) on our single-layer bg-tile path. */
-    if (islandState.holiday >= 1 && islandState.holiday <= 4) {
+    /* Holiday overlay. We preload it into slot 2 so adsPilotStampHoliday can
+     * restamp the sprite after Johnny and preserve the original overlay
+     * z-order on this single-layer bg-tile path. */
+    if (holidayById(islandState.holiday)) {
         grLoadBmp(&ttmBackgroundSlot, 2, "HOLIDAY.BMP");
     }
 
@@ -2621,24 +2619,18 @@ void adsPilotTickBackgroundWaves(void)
  * islandInitHoliday. */
 void adsPilotStampHoliday(void)
 {
-    int hx = 0, hy = 0;
-    uint16 hSpriteNo = 0;
+    const struct Holiday *holiday = holidayById(islandState.holiday);
 
-    if (islandState.holiday < 1 || islandState.holiday > 4)
+    if (!holiday)
         return;
     if (ttmBackgroundSlot.numSprites[2] == 0)
         return;
 
-    switch (islandState.holiday) {
-        case 1: hx = 410; hy = 298; hSpriteNo = 0; break;  /* Halloween */
-        case 2: hx = 333; hy = 286; hSpriteNo = 1; break;  /* St Patrick */
-        case 3: hx = 404; hy = 267; hSpriteNo = 2; break;  /* Christmas */
-        case 4: hx = 361; hy = 155; hSpriteNo = 3; break;  /* New Year */
-    }
     grDx = islandState.xPos;
     grDy = islandState.yPos;
     grDrawSprite(grBackgroundSfc, &ttmBackgroundSlot,
-                 hx, hy, hSpriteNo, 2);
+                 holiday->island_x, holiday->island_y,
+                 (uint16)holiday->sprite_index, 2);
 }
 
 #endif

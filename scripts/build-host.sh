@@ -47,6 +47,8 @@ mkdir -p "$BUILD_DIR"
 SOURCES=(
     src/jc_reborn.c
     src/utils.c
+    src/holidays.c
+    src/holidays_table.c
     src/uncompress.c
     src/resource.c
     src/dump.c

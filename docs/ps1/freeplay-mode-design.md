@@ -239,7 +239,7 @@ The island has a heartbeat. These tick continuously regardless of input:
 | Coconut stack-pocalypse | Knock 7th coconut after 6 piled | Tree shakes (1-px global jitter 2 frames), coconuts roll into a tower (cosmetic stamp), avalanche SFX. Tower stays for session. | No |
 | Friday's friend | Native Canoe summoned 3 times in a session | On 3rd, Friday lands and walks alongside Johnny mirroring his actions for 30 sec | No |
 | The Tornado | Hold L1+R1+L2+R2 for 2 sec | All summons fire in rapid succession, 1 sec each | Yes (~10 sec) |
-| Holiday speedrun | Cycle through all 4 holidays in <2 sec via R1+→ spam | Brief montage flash with all 4 overlays superimposed | No |
+| Holiday speedrun | Cycle through all holiday overlays in <2 sec via R1+-> spam | Brief montage flash with the overlays superimposed | No |
 | Strut forever | Press Square exactly when Snazzy strut's timer expires (frame-perfect) | Strut extends 5 more sec, repeatable | No |
 | Drunken master | Drunk-toggled ON, then bonk head 5 times | Johnny falls over backward, lays on beach with X-eyes for 5 sec, recovery animation | Yes (~6 sec) |
 

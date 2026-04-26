@@ -28,7 +28,7 @@ smaller stability releases may happen between scene milestones.
 |---|---|---|
 | `night <0\|1>` | 0 or 1 | Night/dusk palette |
 | `lowtide <0\|1>` | 0 or 1 | Tide state |
-| `holiday <N>` | 0..4 | Holiday overlay variant |
+| `holiday <N>` | 0..36 | Holiday overlay variant |
 | `raft-stage <N>` | 0..5 | Cumulative raft-build state |
 | `island-pos <x> <y>` | — | Force island position |
 

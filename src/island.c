@@ -39,6 +39,7 @@ extern int sprintf(char *str, const char *format, ...);
 #include "graphics.h"
 #endif
 #include "island.h"
+#include "holidays.h"
 
 
 struct TIslandState islandState = { 0, 0, 0, 0, 0, 0 };
@@ -248,8 +249,9 @@ void islandClearWaveCache(void)
 void islandInitHoliday(struct TTtmThread *ttmThread)
 {
     struct TTtmSlot *ttmSlot = ttmThread->ttmSlot;
+    const struct Holiday *holiday = holidayById(islandState.holiday);
 
-    if (islandState.holiday) {
+    if (holiday) {
 
         ttmThread->ttmLayer  = grNewLayer();
         ttmThread->isRunning = 3;
@@ -258,13 +260,9 @@ void islandInitHoliday(struct TTtmThread *ttmThread)
         grDy = islandState.yPos;
 
         grLoadBmp(ttmSlot, 0, "HOLIDAY.BMP");
-
-        switch (islandState.holiday) {
-            case 1: grDrawSprite(ttmThread->ttmLayer, ttmSlot, 410, 298, 0, 0); break;   // Halloween
-            case 2: grDrawSprite(ttmThread->ttmLayer, ttmSlot, 333, 286, 1, 0); break;   // St Patrick
-            case 3: grDrawSprite(ttmThread->ttmLayer, ttmSlot, 404, 267, 2, 0); break;   // Christmas
-            case 4: grDrawSprite(ttmThread->ttmLayer, ttmSlot, 361, 155, 3, 0); break;   // New year
-        }
+        grDrawSprite(ttmThread->ttmLayer, ttmSlot,
+                     holiday->island_x, holiday->island_y,
+                     (uint16)holiday->sprite_index, 0);
 
         grReleaseBmp(ttmSlot,0);
     }

@@ -60,7 +60,7 @@ static const PsbRegistryEntry psbRegistry[PSB_REGISTRY_COUNT] = {
     { "GJVIS5.BMP", 47220 },
     { "GJVIS52.BMP", 49040 },
     { "GJVIS6.BMP", 47840 },
-    { "HOLIDAY.BMP", 8956 },
+    { "HOLIDAY.BMP", 25724 },
     { "JATA.BMP", 3388 },
     { "JCHANGE.BMP", 7560 },
     { "JOHNWALK.BMP", 48924 },
