@@ -21,7 +21,7 @@ wave animation, holiday overlay, input, SPU).
 </p>
 
 <p align="center">
-  Press <strong>START</strong> mid-scene for the pause menu — Resume, Options (sound, day/night, tide, raft, holiday, captions, perf log), Save Settings to Memcard, Reset Loop, Next Scene, Debug Info, Set Time/Date.
+  Press <strong>START</strong> mid-scene for the pause menu — Resume, Options (sound, day/night, tide, raft, holiday, captions, perf log, plus Set Time/Date · Set Island Pos · Set RNG Seed editors), Save Settings to Memcard, Reset Current Scene, Next Scene, Debug Info.
 </p>
 
 <p align="center">

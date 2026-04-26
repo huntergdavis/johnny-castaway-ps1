@@ -354,14 +354,14 @@ enum {
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
     MENU_DEBUG_INFO,
-    MENU_SET_TIME,
-    MENU_SET_ISLAND_POS,
-    MENU_SET_SEED,
     MENU_COUNT
 };
 
-/* Options sub-screen items. The ones cycled by RIGHT/X (advance) and
- * LEFT (reverse). */
+/* Options sub-screen items.
+ *  - "Cycle" rows (Sound..Perf) flip values with LEFT / RIGHT / X.
+ *  - "Launcher" rows (Set Time/Date and below) open a dedicated edit
+ *    sub-screen on X. LEFT/RIGHT do nothing on launcher rows.
+ * The split is by index: anything < OPT_LAUNCHER_FIRST cycles. */
 enum {
     OPT_SOUND,
     OPT_DAYNIGHT,
@@ -370,6 +370,10 @@ enum {
     OPT_HOLIDAY,
     OPT_CAPTIONS,
     OPT_PERF,
+    OPT_LAUNCHER_FIRST,           /* sentinel — same value as the next */
+    OPT_SET_TIME = OPT_LAUNCHER_FIRST,
+    OPT_SET_ISLAND_POS,
+    OPT_SET_SEED,
     OPT_COUNT
 };
 
@@ -977,18 +981,12 @@ static void drawMainMenu(void)
              menuCursor == MENU_OPTIONS ? ">" : " ");
     pmPrintf(" %s Save Settings to Memcard\n",
              menuCursor == MENU_SAVE ? ">" : " ");
-    pmPrintf(" %s Reset Screensaver Loop\n",
+    pmPrintf(" %s Reset Current Scene\n",
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
              menuCursor == MENU_NEXT_SCENE ? ">" : " ");
     pmPrintf(" %s Debug Info\n",
              menuCursor == MENU_DEBUG_INFO ? ">" : " ");
-    pmPrintf(" %s Set Time/Date\n",
-             menuCursor == MENU_SET_TIME ? ">" : " ");
-    pmPrintf(" %s Set Island Pos\n",
-             menuCursor == MENU_SET_ISLAND_POS ? ">" : " ");
-    pmPrintf(" %s Set RNG Seed\n",
-             menuCursor == MENU_SET_SEED ? ">" : " ");
 
     drawSeparator();
     pmPrintf("  X = select   START = resume\n");
@@ -1032,8 +1030,20 @@ static void drawOptions(void)
              optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
 
     drawSeparator();
+    pmPrintf(" %s Set Time/Date...\n",
+             optionsCursor == OPT_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Set Island Pos...\n",
+             optionsCursor == OPT_SET_ISLAND_POS ? ">" : " ");
+    pmPrintf(" %s Set RNG Seed...\n",
+             optionsCursor == OPT_SET_SEED ? ">" : " ");
+
+    drawSeparator();
     pmPrintf(" UP/DOWN  select field\n");
-    pmPrintf(" LEFT/RIGHT or X cycle\n");
+    if (optionsCursor < OPT_LAUNCHER_FIRST) {
+        pmPrintf(" LEFT/RIGHT or X cycle\n");
+    } else {
+        pmPrintf(" X = open editor\n");
+    }
     pmPrintf(" START = back\n");
 }
 
@@ -1081,39 +1091,6 @@ static int handleMainInput(uint16 pressed)
             prevButtons = 0xFFFF;
             break;
 
-        case MENU_SET_TIME:
-            /* Sync edit fields from current soft-time state so the
-             * sub-screen reflects what was loaded from memcard (or
-             * what's been previously set). */
-            editMonth = ps1SoftMonth;
-            editDay   = ps1SoftDay;
-            editYear  = ps1SoftYear;
-            editHour  = ps1SoftHour;
-            editMinute = ps1SoftMinute;
-            menuState = PAUSE_MENU_SET_TIME;
-            editField = 0;
-            prevButtons = 0xFFFF;
-            break;
-
-        case MENU_SET_ISLAND_POS:
-            /* Sync edit fields from current host overrides. */
-            editIslandX     = hostForcedIslandX;
-            editIslandY     = hostForcedIslandY;
-            editIslandValid = hostForcedIslandPosValid;
-            editIslandField = 0;
-            menuState   = PAUSE_MENU_ISLAND_POS;
-            prevButtons = 0xFFFF;
-            break;
-
-        case MENU_SET_SEED:
-            /* Show the last applied seed if known; default to 1 if not. */
-            editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
-            editSeedFixed = 0;          /* enter in AUTO; user opts in */
-            editSeedField = 0;
-            menuState   = PAUSE_MENU_SET_SEED;
-            prevButtons = 0xFFFF;
-            break;
-
         default:
             break;
         }
@@ -1145,8 +1122,9 @@ static void optionsCycle(int dir)
     }
 }
 
-/* Options sub-screen input. UP/DOWN move cursor; LEFT/RIGHT or X cycle
- * the value at the cursor; START goes back to the main menu. */
+/* Options sub-screen input. UP/DOWN move cursor; on cycle rows
+ * LEFT/RIGHT or X cycle the value; on launcher rows X opens the
+ * editor sub-screen. START goes back to the main menu. */
 static int handleOptionsInput(uint16 pressed)
 {
     if (pressed & PAD_START) {
@@ -1165,10 +1143,46 @@ static int handleOptionsInput(uint16 pressed)
         if (optionsCursor >= OPT_COUNT) optionsCursor = 0;
     }
 
-    if (pressed & (PAD_RIGHT | PAD_CROSS)) {
-        optionsCycle(+1);
-    } else if (pressed & PAD_LEFT) {
-        optionsCycle(-1);
+    int isLauncher = (optionsCursor >= OPT_LAUNCHER_FIRST);
+
+    if (isLauncher) {
+        /* X opens the chosen editor; LEFT/RIGHT do nothing. */
+        if (pressed & PAD_CROSS) {
+            switch (optionsCursor) {
+            case OPT_SET_TIME:
+                editMonth  = ps1SoftMonth;
+                editDay    = ps1SoftDay;
+                editYear   = ps1SoftYear;
+                editHour   = ps1SoftHour;
+                editMinute = ps1SoftMinute;
+                editField  = 0;
+                menuState   = PAUSE_MENU_SET_TIME;
+                prevButtons = 0xFFFF;
+                break;
+            case OPT_SET_ISLAND_POS:
+                editIslandX     = hostForcedIslandX;
+                editIslandY     = hostForcedIslandY;
+                editIslandValid = hostForcedIslandPosValid;
+                editIslandField = 0;
+                menuState   = PAUSE_MENU_ISLAND_POS;
+                prevButtons = 0xFFFF;
+                break;
+            case OPT_SET_SEED:
+                editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
+                editSeedFixed = 0;
+                editSeedField = 0;
+                menuState   = PAUSE_MENU_SET_SEED;
+                prevButtons = 0xFFFF;
+                break;
+            }
+        }
+    } else {
+        /* Cycle row: LEFT / RIGHT / X all step the value. */
+        if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+            optionsCycle(+1);
+        } else if (pressed & PAD_LEFT) {
+            optionsCycle(-1);
+        }
     }
 
     return 1;
@@ -1190,8 +1204,8 @@ static int handleSubInput(uint16 pressed)
 static int handleSetTimeInput(uint16 pressed)
 {
     if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = 0;
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_TIME;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1240,9 +1254,9 @@ static int handleSetTimeInput(uint16 pressed)
         hostForcedHoliday = -1;  /* date picker drives holiday while in AUTO */
         /* getDayOfYear() in utils.c computes from ps1SoftMonth/ps1SoftDay */
 
-        /* Return to main menu after confirming. */
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = 0;
+        /* Return to Options sub-screen after confirming. */
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_TIME;
         prevButtons = 0xFFFF;
     }
 
@@ -1255,8 +1269,8 @@ static int handleSetTimeInput(uint16 pressed)
 static int handleIslandPosInput(uint16 pressed)
 {
     if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = MENU_SET_ISLAND_POS;
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_ISLAND_POS;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1294,8 +1308,8 @@ static int handleIslandPosInput(uint16 pressed)
         hostForcedIslandPosValid = editIslandValid;
         hostForcedIslandX        = editIslandX;
         hostForcedIslandY        = editIslandY;
-        menuState  = PAUSE_MENU_MAIN;
-        menuCursor = MENU_SET_ISLAND_POS;
+        menuState  = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_ISLAND_POS;
         prevButtons = 0xFFFF;
     }
 
@@ -1306,8 +1320,8 @@ static int handleIslandPosInput(uint16 pressed)
 static int handleSetSeedInput(uint16 pressed)
 {
     if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = MENU_SET_SEED;
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_SEED;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1349,8 +1363,8 @@ static int handleSetSeedInput(uint16 pressed)
         } else {
             ps1SeedRandom();   /* re-seed via root counters */
         }
-        menuState   = PAUSE_MENU_MAIN;
-        menuCursor  = MENU_SET_SEED;
+        menuState   = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_SEED;
         prevButtons = 0xFFFF;
     }
 
