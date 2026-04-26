@@ -152,9 +152,13 @@ class Sprite:
         self.draw.text((x, y), s, fill=color)
 
     def save(self, path: str) -> None:
-        """Save as a 4-bit indexed PNG."""
-        # PIL auto-detects bit depth from the palette range used.
-        self.image.save(path, optimize=False)
+        """Save as a 4-bit indexed PNG with palette index 0 marked
+        transparent. Browsers/Pillow display real transparency for the
+        TRANSPARENT pixels — useful in the HTML preview where the
+        sprite would otherwise show palette idx 0 as solid black.
+        Note: most renderers don't actually use TRANSPARENT (they fill
+        with SKY/SAND/etc.) so this is a no-op for the bulk of cells."""
+        self.image.save(path, optimize=False, transparency=TRANSPARENT)
 
 
 # ---------------------------------------------------------------------------
