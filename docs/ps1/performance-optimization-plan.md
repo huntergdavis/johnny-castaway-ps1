@@ -633,6 +633,7 @@ and upload byte volume.
 | `P4-39` | Failed as no-op: use a circular FG2 stream-window head to avoid most refill `memmove()` calls. | Correctness stayed clean, but `loop_vb=1243`, `blocking_vb=21`, `prefetch_overrun_vb=12`, `hits=154`, and `due_misses=1` matched baseline exactly; the next CD target needs cheaper/grouped reads, not RAM compaction. |
 | `P4-40` | Rejected: skip `Setloc` for sequential aligned CD reads. | The old gate passed (`loop_vb 1243 -> 1233`, `blocking_vb 21 -> 16`, `setloc 76 -> 9`), but the visual workload collapsed (`compose_calls 155 -> 4`, `upload_calls 156 -> 14`), so this is an invalid speedup and the gate needs work-identity checks. |
 | `P4-41` | Failed: shrink stream-window reads only under tight held-frame slack. | `loop_vb 1243 -> 1242` and `prefetch_overrun_vb 12 -> 6`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; reading less proves the overrun source but sacrifices coverage. |
+| `P4-42` | Failed as no-op: fast-return from zero-delay event waits after Start polling. | Key metrics matched baseline exactly; retry only with finer CPU counters or when cleaning up event/pause code shape. |
 
 Prefetch variants to test in order:
 
