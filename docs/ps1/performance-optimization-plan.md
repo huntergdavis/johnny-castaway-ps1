@@ -679,6 +679,7 @@ upload byte volume, and upload rectangle pressure.
 | `P4-64` | Done: prime the first real payload during setup when frame 0 is empty. | `loop_vb 1240 -> 1237`, `blocking_vb 20 -> 13`, and `due_misses 1 -> 0`; setup pays one extra read and `prefetch_overrun_vb` rises `11 -> 13`, so the remaining CD work should target refill overrun rather than due misses. |
 | `P4-65` | Done: direct-stage small payloads at the minimum accepted slack. | `loop_vb 1237 -> 1235`, `blocking_vb 13 -> 11`, and `prefetch_overrun_vb 13 -> 11` with `due_misses=0`; this validates a narrow 3-VBlank version of the old failed short-slack direct-stage idea. |
 | `P4-66` | Failed: extend direct-stage small payloads to 4 VBlanks of slack. | The retest regressed `loop_vb 1235 -> 1239`, `blocking_vb 11 -> 39`, `prefetch_overrun_vb 11 -> 12`, and `due_misses 0 -> 5`; direct staging at 4 VBlanks loses too much stream-window lookahead until grouped reads or a second stage slot exist. |
+| `P4-67` | Failed as no-op: shrink the post-direct-stage stream window to 15 KB. | The parameter probe matched the 16 KB default exactly at `loop_vb=1235`, `blocking_vb=11`, `prefetch_overrun_vb=11`, `due_misses=0`, and `loop_reads=68`; one-step window shrinkage is not a current lever. |
 
 Prefetch variants to test in order:
 
