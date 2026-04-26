@@ -231,6 +231,23 @@ int holidayNextId(int current)
     return -1;
 }
 
+/* Reverse cycle: AUTO(-1) -> last id -> ... -> first id -> NONE(0) -> AUTO. */
+int holidayPrevId(int current)
+{
+    if (current < 0) {
+        return (gHolidayCount > 0) ? gHolidays[gHolidayCount - 1].id : 0;
+    }
+    if (current == 0) return -1;
+
+    for (int i = 0; i < gHolidayCount; i++) {
+        if (gHolidays[i].id == current) {
+            if (i == 0) return 0;        /* first id steps back to NONE */
+            return gHolidays[i - 1].id;
+        }
+    }
+    return -1;
+}
+
 int holidaySpriteIndex(int id)
 {
     const struct Holiday *h = holidayById(id);

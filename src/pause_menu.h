@@ -23,8 +23,9 @@
 
 enum PauseMenuState {
     PAUSE_MENU_MAIN,
+    PAUSE_MENU_OPTIONS,
     PAUSE_MENU_SCENE_INFO,
-    PAUSE_MENU_CONTROLS,
+    PAUSE_MENU_CONTROLS,    /* legacy / no longer surfaced from main */
     PAUSE_MENU_SET_TIME,
 };
 

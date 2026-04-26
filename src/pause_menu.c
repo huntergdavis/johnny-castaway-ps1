@@ -323,21 +323,35 @@ static int editMinute = 0;
 static uint16 prevButtons = 0;
 
 /* ---------------------------------------------------------------------------
- *  Main menu item descriptors
+ *  Main menu item descriptors. Environment toggles (sound / day-night /
+ *  tide / raft / holiday / captions / perf log) live behind Options now.
  * ------------------------------------------------------------------------- */
 enum {
     MENU_RESUME,
-    MENU_SOUND,
-    MENU_DAYNIGHT,
-    MENU_HOLIDAY,
+    MENU_OPTIONS,
     MENU_SAVE,
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
-    MENU_PERF_TOGGLE,
     MENU_DEBUG_INFO,
     MENU_SET_TIME,
     MENU_COUNT
 };
+
+/* Options sub-screen items. The ones cycled by RIGHT/X (advance) and
+ * LEFT (reverse). */
+enum {
+    OPT_SOUND,
+    OPT_DAYNIGHT,
+    OPT_TIDE,
+    OPT_RAFT,
+    OPT_HOLIDAY,
+    OPT_PERF,
+    OPT_COUNT
+};
+
+/* Cursor for the Options sub-screen (separate from main-menu cursor so
+ * we resume Options on the same row when the user toggles back to it). */
+static int optionsCursor = 0;
 
 /* Forward decls. */
 static const char *perfLevelLabel(void);
@@ -396,11 +410,12 @@ void pauseMenuShow(void)
      * LoadImage uploads may have clobbered the (960,0) font area. */
     FntLoad(960, 0);
 
-    menuVisible = 1;
-    menuCursor  = 0;
-    menuState   = PAUSE_MENU_MAIN;
-    prevButtons = 0xFFFF;  /* Treat all buttons as "held" so the initial
-                              press that opened the menu is not re-acted. */
+    menuVisible    = 1;
+    menuCursor     = 0;
+    optionsCursor  = 0;
+    menuState      = PAUSE_MENU_MAIN;
+    prevButtons    = 0xFFFF;  /* Treat all buttons as "held" so the initial
+                                 press that opened the menu is not re-acted. */
 
     /* Sound stays in whatever state the user left it — defaults ON.
      * The Sound menu item lets the user mute/unmute manually. (When
@@ -724,6 +739,8 @@ static const char *perfLevelLabel(void)
 /* Externs from jc_reborn.c: -1 = auto/random, else forced. */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
+extern int hostForcedLowTide;
+extern int hostForcedRaftStage;
 extern int ps1SoftHour;
 extern int ps1SoftMinute;
 extern int ps1SoftMonth;
@@ -748,35 +765,116 @@ static const char *holidayLabel(void)
     return holidayShortName(hostForcedHoliday);
 }
 
-static void cycleDaynight(void)
+static void cycleDaynight(int dir)
 {
     /* AUTO(-1) -> DAY(0) -> NIGHT(1) -> AUTO */
-    hostForcedNight = hostForcedNight + 1;
-    if (hostForcedNight > 1) hostForcedNight = -1;
+    hostForcedNight += dir;
+    if (hostForcedNight > 1)  hostForcedNight = -1;
+    if (hostForcedNight < -1) hostForcedNight = 1;
 }
 
-static void cycleHoliday(void)
+static void cycleHoliday(int dir)
 {
-    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO */
-    hostForcedHoliday = holidayNextId(hostForcedHoliday);
+    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO.
+     * holidayPrevId / holidayNextId expose the inverse step. */
+    if (dir > 0)
+        hostForcedHoliday = holidayNextId(hostForcedHoliday);
+    else
+        hostForcedHoliday = holidayPrevId(hostForcedHoliday);
+}
+
+static const char *tideLabel(void)
+{
+    switch (hostForcedLowTide) {
+    case -1: return "AUTO";
+    case  0: return "HIGH";
+    case  1: return "LOW";
+    default: return "?";
+    }
+}
+
+static void cycleTide(int dir)
+{
+    /* AUTO(-1) -> HIGH(0) -> LOW(1) -> AUTO */
+    hostForcedLowTide += dir;
+    if (hostForcedLowTide > 1)  hostForcedLowTide = -1;
+    if (hostForcedLowTide < -1) hostForcedLowTide = 1;
+}
+
+static const char *raftLabel(void)
+{
+    switch (hostForcedRaftStage) {
+    case -1: return "AUTO";
+    case  0: return "NONE";
+    case  1: return "1";
+    case  2: return "2";
+    case  3: return "3";
+    case  4: return "4";
+    case  5: return "5";
+    default: return "?";
+    }
+}
+
+static void cycleRaft(int dir)
+{
+    /* AUTO(-1) -> NONE(0) -> 1..5 -> AUTO */
+    hostForcedRaftStage += dir;
+    if (hostForcedRaftStage > 5)  hostForcedRaftStage = -1;
+    if (hostForcedRaftStage < -1) hostForcedRaftStage = 5;
+}
+
+static void cyclePerf(int dir)
+{
+    /* OFF(0) <-> SUMMARY(1) <-> DETAIL(2) <-> DEBUG(3) wrapping */
+    int lvl = ((int)ps1PerfLevel + dir) & 0x3;
+    ps1PerfSetLevel((uint32)lvl);
 }
 
 static void drawMainMenu(void)
 {
-    const char *soundLabel = soundMuted ? "MUTED" : "ON";
-
     pmPrintf(" JOHNNY CASTAWAY  - PAUSED -\n");
     drawSeparator();
 
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
-    pmPrintf(" %s Sound: %s\n",
-             menuCursor == MENU_SOUND ? ">" : " ", soundLabel);
+    pmPrintf(" %s Options\n",
+             menuCursor == MENU_OPTIONS ? ">" : " ");
+    pmPrintf(" %s Save Settings to Memcard\n",
+             menuCursor == MENU_SAVE ? ">" : " ");
+    pmPrintf(" %s Reset Screensaver Loop\n",
+             menuCursor == MENU_RESET_LOOP ? ">" : " ");
+    pmPrintf(" %s Next Scene\n",
+             menuCursor == MENU_NEXT_SCENE ? ">" : " ");
+    pmPrintf(" %s Debug Info\n",
+             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
+    pmPrintf(" %s Set Time/Date\n",
+             menuCursor == MENU_SET_TIME ? ">" : " ");
+
+    drawSeparator();
+    pmPrintf("  X = select   START = resume\n");
+}
+
+/* ---------------------------------------------------------------------------
+ *  Sub-screen: Options (sound, day/night, tide, raft, holiday, perf log)
+ * ------------------------------------------------------------------------- */
+static void drawOptions(void)
+{
+    const char *soundLabel = soundMuted ? "MUTED" : "ON";
+
+    pmPrintf("       OPTIONS\n");
+    drawSeparator();
+
+    pmPrintf(" %s Sound:     %s\n",
+             optionsCursor == OPT_SOUND ? ">" : " ", soundLabel);
     pmPrintf(" %s Day/Night: %s\n",
-             menuCursor == MENU_DAYNIGHT ? ">" : " ", daynightLabel());
-    pmPrintf(" %s Holiday: %s\n",
-             menuCursor == MENU_HOLIDAY ? ">" : " ", holidayLabel());
-    if (menuCursor == MENU_HOLIDAY) {
+             optionsCursor == OPT_DAYNIGHT ? ">" : " ", daynightLabel());
+    pmPrintf(" %s Tide:      %s\n",
+             optionsCursor == OPT_TIDE ? ">" : " ", tideLabel());
+    pmPrintf(" %s Raft:      %s\n",
+             optionsCursor == OPT_RAFT ? ">" : " ", raftLabel());
+    pmPrintf(" %s Holiday:   %s\n",
+             optionsCursor == OPT_HOLIDAY ? ">" : " ", holidayLabel());
+    if (optionsCursor == OPT_HOLIDAY) {
         if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
             pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
             pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
@@ -788,21 +886,13 @@ static void drawMainMenu(void)
             pmPrintf("   Random each scene\n");
         }
     }
-    pmPrintf(" %s Save Settings to Memcard\n",
-             menuCursor == MENU_SAVE ? ">" : " ");
-    pmPrintf(" %s Reset Screensaver Loop\n",
-             menuCursor == MENU_RESET_LOOP ? ">" : " ");
-    pmPrintf(" %s Next Scene\n",
-             menuCursor == MENU_NEXT_SCENE ? ">" : " ");
-    pmPrintf(" %s TTY Perf Log: %s\n",
-             menuCursor == MENU_PERF_TOGGLE ? ">" : " ", perfLevelLabel());
-    pmPrintf(" %s Debug Info\n",
-             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
-    pmPrintf(" %s Set Time/Date\n",
-             menuCursor == MENU_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Perf Log:  %s\n",
+             optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
 
     drawSeparator();
-    pmPrintf("  X = select   START = resume\n");
+    pmPrintf(" UP/DOWN  select field\n");
+    pmPrintf(" LEFT/RIGHT or X cycle\n");
+    pmPrintf(" START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -827,19 +917,9 @@ static int handleMainInput(uint16 pressed)
         case MENU_RESUME:
             return 0;  /* close menu */
 
-        case MENU_SOUND:
-            /* Toggle real SPU mute (silences active voices + blocks new). */
-            soundMuteToggle();
-            /* User chose mute state — don't auto-undo on hide. */
-            pauseMutedSound = 0;
-            break;
-
-        case MENU_DAYNIGHT:
-            cycleDaynight();
-            break;
-
-        case MENU_HOLIDAY:
-            cycleHoliday();
+        case MENU_OPTIONS:
+            menuState = PAUSE_MENU_OPTIONS;
+            prevButtons = 0xFFFF;
             break;
 
         case MENU_SAVE:
@@ -853,11 +933,6 @@ static int handleMainInput(uint16 pressed)
         case MENU_NEXT_SCENE:
             pauseMenuRequestNextScene = 1;
             return 0;
-
-        case MENU_PERF_TOGGLE:
-            /* Cycle: OFF → SUMMARY → DETAIL → DEBUG → OFF. */
-            ps1PerfSetLevel((ps1PerfLevel + 1) & 0x3);
-            break;
 
         case MENU_DEBUG_INFO:
             menuState = PAUSE_MENU_SCENE_INFO;
@@ -888,6 +963,53 @@ static int handleMainInput(uint16 pressed)
         return 0;
 
     return 1;  /* keep menu open */
+}
+
+/* Apply a +1 / -1 cycle to the field at `optionsCursor`. */
+static void optionsCycle(int dir)
+{
+    switch (optionsCursor) {
+    case OPT_SOUND:
+        /* Sound only has 2 states; treat any cycle as toggle. */
+        soundMuteToggle();
+        pauseMutedSound = 0;  /* user-driven choice — don't auto-undo */
+        break;
+    case OPT_DAYNIGHT: cycleDaynight(dir); break;
+    case OPT_TIDE:     cycleTide(dir);     break;
+    case OPT_RAFT:     cycleRaft(dir);     break;
+    case OPT_HOLIDAY:  cycleHoliday(dir);  break;
+    case OPT_PERF:     cyclePerf(dir);     break;
+    default: break;
+    }
+}
+
+/* Options sub-screen input. UP/DOWN move cursor; LEFT/RIGHT or X cycle
+ * the value at the cursor; START goes back to the main menu. */
+static int handleOptionsInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_OPTIONS;   /* return cursor to where we came from */
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        optionsCursor--;
+        if (optionsCursor < 0) optionsCursor = OPT_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        optionsCursor++;
+        if (optionsCursor >= OPT_COUNT) optionsCursor = 0;
+    }
+
+    if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+        optionsCycle(+1);
+    } else if (pressed & PAD_LEFT) {
+        optionsCycle(-1);
+    }
+
+    return 1;
 }
 
 /* Returns 0 if user goes back to main. */
@@ -1029,6 +1151,9 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_MAIN:
         keepOpen = handleMainInput(pressed);
         break;
+    case PAUSE_MENU_OPTIONS:
+        keepOpen = handleOptionsInput(pressed);
+        break;
     case PAUSE_MENU_SET_TIME:
         keepOpen = handleSetTimeInput(pressed);
         break;
@@ -1053,6 +1178,7 @@ int pauseMenuUpdate(void)
      * pauseOt via the pmFrame* globals. */
     switch (menuState) {
     case PAUSE_MENU_MAIN:       drawMainMenu();  break;
+    case PAUSE_MENU_OPTIONS:    drawOptions();   break;
     case PAUSE_MENU_SCENE_INFO: drawSceneInfo(); break;
     case PAUSE_MENU_CONTROLS:   drawControls();  break;
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;

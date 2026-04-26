@@ -132,10 +132,10 @@ static int hostBootDirectSceneIndex = -1;
 static int hostForcedIslandPosValid = 0;
 static int hostForcedIslandX = 0;
 static int hostForcedIslandY = 0;
-static int hostForcedLowTide = -1;
-static int hostForcedRaftStage = -1;
 /* Non-static so the pause menu can flip these. -1 = auto (random per
  * scene). Set via BOOTMODE tokens (legacy) or pause-menu cycling. */
+int hostForcedLowTide = -1;
+int hostForcedRaftStage = -1;
 int hostForcedNight = -1;
 int hostForcedHoliday = -1;
 static int hostBootForcedNightValid = 0;
