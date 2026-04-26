@@ -619,6 +619,7 @@ and upload byte volume.
 | `P4-28` | Failed: lower staged-copy fallthrough from `5` to `4` VBlanks under the `16 KB`/`3` VBlank baseline. | `blocking_vb 35 -> 31` and `due_misses 6 -> 5`, but total `loop_vb 1254 -> 1264`; keep the `5` VBlank guard because playback speed is the primary gate. |
 | `P4-29` | Failed: use a `2` VBlank guard only for immediate next-frame window staging while keeping lookahead at `3` VBlanks. | `due_misses 6 -> 1` and `blocking_vb 35 -> 27`, but `loop_vb 1254 -> 1268` and `prefetch_overrun_vb 6 -> 22`; immediate short reads still need cheaper grouping. |
 | `P4-30` | Done via compositor/dirty pipeline: aggregate PAL4 dirty marks per tile row. | `loop_vb 1254 -> 1248`, `blocking_vb 35 -> 21`, and `due_misses 6 -> 1`; `prefetch_overrun_vb 6 -> 15` is the next CD smoothing target. |
+| `P4-31` | Failed: raise the post-row-dirty refill guard from `3` to `4` VBlanks. | `loop_vb 1248 -> 1244` and `prefetch_overrun_vb 15 -> 12`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; keep visible blocking as a hard gate. |
 
 Prefetch variants to test in order:
 
@@ -879,6 +880,7 @@ into one commit.
 | 18i | CD | Failed: lower staged-copy fallthrough from `5` to `4` VBlanks after the `16 KB`/`3` VBlank retune. | `blocking_vb 35 -> 31`, but `loop_vb 1254 -> 1264`; submetric wins are not enough. |
 | 18j | CD | Failed: split immediate and lookahead refill guards. | `due_misses 6 -> 1`, but `loop_vb 1254 -> 1268` and `prefetch_overrun_vb 6 -> 22`; short immediate reads are still too costly. |
 | 18k | CD/Dirty | Done: aggregate PAL4 dirty marking per tile row. | `loop_vb 1254 -> 1248`, `blocking_vb 35 -> 21`, and `due_misses 6 -> 1`; `prefetch_overrun_vb` rose to `15` and should be smoothed next. |
+| 18l | CD | Failed: raise the post-row-dirty refill guard to `4` VBlanks. | `loop_vb 1248 -> 1244`, but `blocking_vb 21 -> 36`; stricter gating starves due-frame residency. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
