@@ -59,6 +59,13 @@ scripts/holidays-build-all.sh                 run the whole pipeline end-to-end
                                               (codegen → tests → render → preview
                                               → contact-sheet → defaults → resolve
                                               → final-review → red-team) in ~3s
+scripts/holidays-redteam-meta.py              meta-tests for the red-team itself.
+                                              Injects 5 specific bugs (dim
+                                              mismatch, missing renderer, bad
+                                              palette idx, duplicate art, OOB
+                                              screen) and verifies the right
+                                              check fires for each; restores
+                                              state after.
 scripts/holidays_concepts.py                  master loader; merges all batch dicts
                                               into one RENDERERS = {id: (v1,v2,v3,v4)}
 scripts/holidays_concepts_reference.py        reference renderers (Valentine, Mardi
