@@ -775,6 +775,7 @@ rectangle pressure.
 | `P4-132` | Failed/no-op: add a second catch-up VBlank for very long holds. | Both `>=9` variants matched the accepted baseline exactly (`loop_vb=1222`, `target_vb=1073`, `blocking_vb=6`, `prefetch_overrun_vb=6`); fishing1 exposes no useful extra catch-up in that hold bucket under the current scheduler. |
 | `P4-133` | Failed: lower the initial FG2 metadata prefix read from `8 KB` to `4 KB`. | Fishing1 setup bytes fell (`282104 -> 278008`) and `setup_read_vb` dropped by one, but active playback regressed (`loop_vb 1222 -> 1224`, `blocking_vb 6 -> 11`, `prefetch_overrun_vb 6 -> 11`); startup read shape still acts as deterministic cadence ballast. |
 | `P4-134` | Failed: extend one-VBlank catch-up to short holds with staged/lookahead coverage. | Both `>=3` and `>=4` covered-catch variants kept `loop_vb=1222` but regressed pressure (`target_vb 1073 -> 1071`, `overrun_vb 149 -> 151`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`); coverage alone is not enough to prove spare cadence. |
+| `P4-135` | Failed/no-op: cache the no-holiday compose gate for fishing1. | Runtime timing and work identity matched exactly, but ELF size grew (`692704 -> 692924`); the holiday-stamp branch is not a measurable hot-path target in this form. |
 
 Prefetch variants to test in order:
 
