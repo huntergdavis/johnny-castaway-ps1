@@ -857,7 +857,7 @@ static void drawSetSeed(void)
  * ------------------------------------------------------------------------- */
 static void drawCredits(void)
 {
-    pmPrintf("        CREDITS\n");
+    pmPrintf(" CREDITS  (START to return)\n");
     drawSeparator();
     pmPrintf(" A labor of love by\n");
     pmPrintf(" Hunter Davis.\n");
@@ -872,7 +872,6 @@ static void drawCredits(void)
     pmPrintf(" Open source and free:\n");
     pmPrintf(" github.com/huntergdavis/\n");
     pmPrintf(" Johnny-Castaway-PS1\n");
-    pmPrintf(" START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
