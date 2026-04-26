@@ -2235,39 +2235,6 @@ void foregroundPilotSetPrefetchWindow(unsigned long bytes)
     gFgPrefetchWindowBytes = (uint32)bytes;
 }
 
-int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)
-{
-    (void)adsName;
-    (void)adsTag;
-    return 0;
-}
-
-int foregroundPilotRuntimeStartRequested(void)
-{
-    if (!foregroundPilotRequested())
-        return 0;
-
-#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
-    switch (gForegroundPilotRequestedMode) {
-        case FG_RUNTIME_TESTCARD:
-            return foregroundPilotRuntimeStart("testcard");
-        default:
-            return foregroundPilotRuntimeStart(gForegroundPilotScene);
-    }
-#else
-    return foregroundPilotRuntimeStart(gForegroundPilotScene);
-#endif
-}
-
-int foregroundPilotRuntimeStartIfRequested(void)
-{
-    if (!foregroundPilotRequested())
-        return 1;
-    if (foregroundPilotRuntimeActive())
-        return 1;
-    return foregroundPilotRuntimeStartRequested();
-}
-
 void foregroundPilotPlay(void)
 {
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
@@ -2351,23 +2318,6 @@ void foregroundPilotSetPrefetchStage1(int enabled)
 void foregroundPilotSetPrefetchWindow(unsigned long bytes)
 {
     (void)bytes;
-}
-
-int foregroundPilotShouldStartForAds(const char *adsName, unsigned short adsTag)
-{
-    (void)adsName;
-    (void)adsTag;
-    return 0;
-}
-
-int foregroundPilotRuntimeStartRequested(void)
-{
-    return 0;
-}
-
-int foregroundPilotRuntimeStartIfRequested(void)
-{
-    return foregroundPilotRequested() ? 0 : 1;
 }
 
 int foregroundPilotRuntimeMode(void)
