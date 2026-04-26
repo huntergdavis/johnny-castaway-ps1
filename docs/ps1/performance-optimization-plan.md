@@ -1043,9 +1043,15 @@ into one commit.
 ## Red-Team Conclusions
 
 The safest near-term speedup is not a more aggressive timing file. The measured
-runtime is still `1.16x` over the captured timing budget for fishing1 after the
-latest accepted pass. We need to keep removing or hiding work, not lie about
-the source timing.
+runtime is still `1.149x` over the captured timing budget for fishing1 after
+the latest accepted pass. We need to keep removing or hiding work, not lie
+about the source timing.
+
+The post-setup-prime `4` VBlank refill-guard retest proved the current slack
+constant family is locally exhausted. It can reduce `loop_vb` from `1237` to
+`1229`, but only by returning `due_misses` and raising `blocking_vb` from `13`
+to `19-20`; future CD work should preserve zero due misses through grouped or
+physically adjacent reads before tightening the guard again.
 
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run
