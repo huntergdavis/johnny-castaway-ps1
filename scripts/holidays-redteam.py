@@ -351,19 +351,22 @@ def check_render_determinism(holidays, fails, warns):
         h = holidays_by_id.get(hid)
         if not h:
             continue
-        slug = slugify(h["short_name"])
-        # Just check v1 to keep the run fast.
-        v1 = variants[0]
-        try:
-            sp_a = v1(h)
-            sp_b = v1(h)
-        except Exception as e:
-            warns.append(f"determinism check: id={hid} v1 render failed: {e}")
-            continue
-        if list(sp_a.image.getdata()) != list(sp_b.image.getdata()):
-            diffs += 1
-            fails.append(f"id={hid} v1 renders non-deterministically "
-                         f"(re-running produced different pixels)")
+        # Check v1 (hand-authored) and v5 (auto-generated) — covers
+        # both the hand-drawn renderers and the as_night procedural.
+        for vi in (1, 5):
+            if vi - 1 >= len(variants):
+                continue
+            fn = variants[vi - 1]
+            try:
+                sp_a = fn(h)
+                sp_b = fn(h)
+            except Exception as e:
+                warns.append(f"determinism check: id={hid} v{vi} render failed: {e}")
+                continue
+            if list(sp_a.image.getdata()) != list(sp_b.image.getdata()):
+                diffs += 1
+                fails.append(f"id={hid} v{vi} renders non-deterministically "
+                             f"(re-running produced different pixels)")
     if diffs:
         fails.append(f"determinism: {diffs} renderers produce nondeterministic output")
 
