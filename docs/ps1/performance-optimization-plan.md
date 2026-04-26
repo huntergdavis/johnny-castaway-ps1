@@ -25,13 +25,14 @@ diagnostics, but the default FG2 playback policy is now `stage1_window` with no
 JCPAD/JCSPI diagnostic sampling on the hot path.
 
 Latest accepted default-path fishing1 high-tide run, after the pause merge,
-pad/SPI diagnostic gating, the post-diagnostics window retunes, and the
-2 VBlank refill guard, reported `policy=stage1_window`, `buf=25616`,
-`hits=147`, `due_misses=8`, `blocking_vb=75`,
-`prefetch.overrun_vb=33`, `loop_vb=1296`, `overrun_vb=219`,
-`target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
-and `cd_fail=0`. This is the current baseline for the next experiment; the
-pre-pause best was `loop_vb=1297`.
+pad/SPI diagnostic gating, the post-diagnostics window retunes, the
+2 VBlank refill guard, and row-level X dirty restore, reported
+`policy=stage1_window`, `buf=25616`, `hits=154`, `due_misses=1`,
+`blocking_vb=36`, `prefetch.overrun_vb=26`, `loop_vb=1266`,
+`overrun_vb=189`, `target_vb=1077`, `restore_bytes=2510092`,
+`upload_bytes=17172480`, `trip=0`, `fallback=0`, `frame_mismatch=0`,
+`sound_late=0`, and `cd_fail=0`. This is the current baseline for the next
+experiment; the pre-pause best was `loop_vb=1297`.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -62,8 +63,8 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 18 KB window | High | The current accepted fishing1 run is `loop_vb=1296` and still has `blocking_vb=75`, prefetch `overrun_vb=33`, and `due_misses=8`. |
-| 2 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `9.6 MB` and uploads `17.3 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
+| 1 | Finish CD stall hiding beyond the default 18 KB window | High | The current accepted fishing1 run is `loop_vb=1266` and still has `blocking_vb=36`, prefetch `overrun_vb=26`, and `due_misses=1`. |
+| 2 | X-aware dirty upload | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, but still uploads `17.2 MB` across fishing1. Upload byte volume is now the clearer dirty target. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
@@ -227,8 +228,10 @@ Interpretation: row/X-aware restore and upload remains a major candidate after
 CD latency is hidden. A naive tile-level X-aware upload experiment that packed
 partial-width rectangles through one scratch buffer failed to reach scene-end
 metrics, likely because extra `DrawSync` points and unaligned transfer lengths
-overwhelmed the byte savings. The next viable upload attempt needs 16-pixel-
-aligned strip batching with one final sync, not per-partial immediate syncs.
+overwhelmed the byte savings. A later 16-pixel strip-batching variant also
+failed before `JCPERF2` because it still synchronized each partial strip. The
+next viable upload attempt needs a bounded scratch arena or equivalent design
+that batches partial-width strips behind one final sync.
 
 ## Guardrails
 
@@ -513,8 +516,8 @@ the original `loop_vb=1426` to `1266` and `restore_bytes=16035840` to
 | `P2-03` | Done: change `grMarkRectDirty` to update X extents, not just row bands. | Existing callers get better restore precision automatically. |
 | `P2-04` | Done: clean-rect restore copies only previous X extents. | Avoid full-width RAM clean copies for narrow dirty bands. |
 | `P2-04a` | Done: track previous/current X extents per tile row and restore exact previous row spans. | `restore_bytes 9520664 -> 2510092`, `loop_vb 1296 -> 1266`; upload remains unchanged and conservative. |
-| `P2-05` | Batch row extents into a bounded list of `LoadImage` rectangles. | Avoid one `LoadImage` per row. |
-| `P2-06` | Use 8- or 16-pixel X bucket rounding for better batching. | Trade tiny extra upload for far fewer rectangles. |
+| `P2-05` | Failed naive per-partial-sync batching; retry with a bounded multi-strip scratch arena. | Avoid one `LoadImage`/`DrawSync` per row or strip; byte savings must not create sync stalls. |
+| `P2-06` | Use 8- or 16-pixel X bucket rounding for better batching. | Trade tiny extra upload for far fewer rectangles; 16-pixel buckets alone are insufficient if every strip syncs. |
 | `P2-07` | Add a deterministic merge policy when rect count exceeds a cap. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
 | `P2-08` | Record bytes actually uploaded in telemetry. | Confirm real win. |
 
@@ -887,8 +890,8 @@ into one commit.
 | 47 | Dirty | Done: track previous row extents separately. | Correct previous-frame cleanup with `trip=0` and `frame_mismatch=0`. |
 | 48 | Dirty | Partial: restore previous extents exactly; upload remains current/previous row-band union. | Restore is now precise; upload batching is the remaining work. |
 | 49 | Dirty | Round X extents to 8-pixel buckets. | Balance bytes vs rect count. |
-| 50 | Dirty | Round X extents to 16-pixel buckets. | Lower `upload_rects`. |
-| 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects`. |
+| 50 | Dirty | Round X extents to 16-pixel buckets. | Retry only as part of a one-final-sync upload arena; bucket rounding alone did not save enough. |
+| 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects` without per-strip `DrawSync`. |
 | 52 | Dirty | Cap rects by deterministic widening, not fallback. | `cap_hits` allowed, `full_fallbacks=0`. |
 | 53 | Dirty | Split dense frames into planned wide bands. | Stable worst-case upload time. |
 | 54 | Dirty | Avoid marking unchanged clean rows dirty. | Lower `dirty_rows`. |
