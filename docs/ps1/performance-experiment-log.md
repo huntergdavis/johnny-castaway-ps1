@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `197f18c6 ps1: retune FG2 stream window to 20kb` |
-| Run ID | `20260425-172201` |
+| Commit | `8ef9aad0 ps1: lower FG2 prefetch slack guard` |
+| Run ID | `20260425-172725` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
 | Window | `20 KB default, 27664-byte runtime buffer` |
-| `loop_vb` | `1312` |
+| `loop_vb` | `1300` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `235` |
-| `blocking_vb` | `91` |
+| `overrun_vb` | `223` |
+| `blocking_vb` | `66` |
 | `loop_reads` | `41` |
-| `prefetch_hits` | `144` |
-| `prefetch_due_misses` | `11` |
-| `prefetch_overrun_vb` | `37` |
+| `prefetch_hits` | `151` |
+| `prefetch_due_misses` | `4` |
+| `prefetch_overrun_vb` | `45` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -88,6 +88,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `x-aware-upload-rect-scratch` | dirty `a70fed61` | Use the existing tile-level dirty X extents to upload only the dirty rectangle width per tile, packing partial-width rows through one bounded static scratch buffer. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/20260425-163323/summary.json --allow-regression 2 --require-improvement` | Failed structurally. The build booted and reached `JCPERF scene-start`, but the scene did not reach `JCPERF2` scene-end before the `4200`-frame headless window ended. DuckStation exited successfully; the log also emitted `psxgpu: transfer data length ... is not a multiple of 16, rounding` during the partial uploads. Artifact: `scratch/ps1-perf-iterate/20260425-170443/fishing1/perf-summary.json`. | Do not promote. Naive partial-width upload with per-partial scratch/`DrawSync` is too slow or unsafe to measure as-is. Retry only with 16-pixel-aligned batching, fewer syncs, or a per-row/strip plan that preserves one final `DrawSync`. |
 | 2026-04-25 | `pad-spi-diagnostics-gated-default-off` | `1337691d` | Pause support introduced always-on JCPAD/JCSPI diagnostic sampling and prints; normal screensaver playback should poll Start but leave deep controller diagnostics opt-in. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 20 --require-improvement` | Promoted after a strict-gate red-team pass documented the tradeoff. Baseline to current: `loop_vb 1369 -> 1317`, `overrun_vb 292 -> 240`, `blocking_vb 88 -> 93`, `prefetch_overrun_vb 35 -> 41`, `due_misses 8 -> 8`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-171354/summary.json`, `scratch/ps1-perf-iterate/20260425-171533/summary.json`. | Promote. A `52` VBlank loop win is material, and default runtime should not carry diagnostic-only controller/SPI probes; keep `pad-diag` / `pad-debug` for controller debugging. |
 | 2026-04-25 | `fg2-window-20kb-post-diagnostics` | `197f18c6` | After removing default pad/SPI diagnostic overhead, re-test the smaller `20 KB` stream window; shorter refill reads may now beat the `24 KB` coverage tradeoff. | `./scripts/ps1-perf-iterate.sh --case "fishing1::fgpilot fishing1 prefetch-window 20480" ...` then default `./scripts/ps1-perf-iterate.sh --scene fishing1 ...` | Promoted. Parameter and default-code runs matched. Baseline to current: `loop_vb 1317 -> 1312`, `overrun_vb 240 -> 235`, `blocking_vb 93 -> 91`, `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`, but total playback and CD stall both improved. Artifacts: `scratch/ps1-perf-iterate/20260425-172026/summary.json`, `scratch/ps1-perf-iterate/20260425-172201/summary.json`. | Promote as the new default. The smaller window is now a net win under the post-diagnostics baseline; continue watching due misses in longer scenes. |
+| 2026-04-25 | `fg2-prefetch-min-slack-2vb-post-20kb` | `8ef9aad0` | With a `20 KB` window, a `2` VBlank refill guard may recover due misses and blocking without the earlier short-slack overrun cost. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted after a strict `20%` pass failed only on `prefetch_overrun_vb` by `0.6` VBlank. Baseline to current: `loop_vb 1312 -> 1300`, `overrun_vb 235 -> 223`, `blocking_vb 91 -> 66`, `due_misses 11 -> 4`, `hits 144 -> 151`, `prefetch_overrun_vb 37 -> 45`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-172603/summary.json`, `scratch/ps1-perf-iterate/20260425-172725/summary.json`. | Promote. The overrun tradeoff is bounded and buys a material `12` VBlank loop win plus a `25` VBlank blocking reduction. |
 
 ## Retry Queue
 

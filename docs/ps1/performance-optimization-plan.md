@@ -25,10 +25,10 @@ diagnostics, but the default FG2 playback policy is now `stage1_window` with no
 JCPAD/JCSPI diagnostic sampling on the hot path.
 
 Latest accepted default-path fishing1 high-tide run, after the pause merge,
-pad/SPI diagnostic gating, and the post-diagnostics 20 KB window retune,
-reported `policy=stage1_window`, `buf=27664`, `hits=144`,
-`due_misses=11`, `blocking_vb=91`,
-`prefetch.overrun_vb=37`, `loop_vb=1312`, `overrun_vb=235`,
+pad/SPI diagnostic gating, the post-diagnostics 20 KB window retune, and the
+2 VBlank refill guard, reported `policy=stage1_window`, `buf=27664`,
+`hits=151`, `due_misses=4`, `blocking_vb=66`,
+`prefetch.overrun_vb=45`, `loop_vb=1300`, `overrun_vb=223`,
 `target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
 and `cd_fail=0`. This is the current baseline for the next experiment; the
 pre-pause best was `loop_vb=1297`.
@@ -62,7 +62,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 20 KB window | High | The current accepted fishing1 run is `loop_vb=1312` and still has `blocking_vb=91`, prefetch `overrun_vb=37`, and `due_misses=11`. |
+| 1 | Finish CD stall hiding beyond the default 20 KB window | High | The current accepted fishing1 run is `loop_vb=1300` and still has `blocking_vb=66`, prefetch `overrun_vb=45`, and `due_misses=4`. |
 | 2 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `9.6 MB` and uploads `17.3 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
@@ -563,12 +563,12 @@ stream window after the post-diagnostics window-size re-test. The old
 
 Current perf-branch target: keep squeezing CD latency without changing pixels.
 After x-aware restore, PAL4 span compositing, duplicate probe removal, the
-`3` VBlank refill slack guard, guarded fallthrough, pad/SPI diagnostic gating,
-and the 20 KB default window, fishing1 high-tide reports `loop_vb=1312`,
-`blocking_vb=91`, `due_misses=11`, and prefetch `overrun_vb=37`. The smaller
-window now wins because shorter refill reads beat the loss in future coverage
-under the current baseline; next CD experiments should target due misses and
-grouping rather than blindly shrinking the window again.
+`2` VBlank refill slack guard, guarded fallthrough, pad/SPI diagnostic gating,
+and the 20 KB default window, fishing1 high-tide reports `loop_vb=1300`,
+`blocking_vb=66`, `due_misses=4`, and prefetch `overrun_vb=45`. The smaller
+window plus looser guard now wins because shorter refill reads make earlier
+prefetch more valuable; next CD experiments should target the remaining due
+misses and grouping rather than blindly shrinking the window again.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -589,6 +589,7 @@ grouping rather than blindly shrinking the window again.
 | `P4-15` | Done: require at least `3` held VBlanks before starting a stream-window refill. | Avoids short-slack reads that become visible delay; `6` VBlanks was too strict and raised due misses. |
 | `P4-16` | Done: change the default stream window from `32 KB` to `24 KB` after the post-slack sweep. | `24 KB` improved `loop_vb 1325 -> 1322` and `prefetch_overrun_vb 67 -> 58`; `20 KB` and `28 KB` lost. |
 | `P4-17` | Done: retune the default stream window from `24 KB` to `20 KB` after pad/SPI diagnostics were gated off. | `20 KB` improved `loop_vb 1317 -> 1312`, `blocking_vb 93 -> 91`, and `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`. |
+| `P4-18` | Done: lower the stream-window refill guard from `3` to `2` VBlanks after the 20 KB retune. | `loop_vb 1312 -> 1300`, `blocking_vb 91 -> 66`, `due_misses 11 -> 4`, with bounded `prefetch_overrun_vb 37 -> 45`. |
 
 Prefetch variants to test in order:
 
@@ -839,6 +840,7 @@ into one commit.
 | 18 | CD | Done: prefetch on holds with at least `3` VBlanks of slack; `6` VBlanks failed. | `prefetch_overrun_vb 94 -> 67` and `loop_vb 1335 -> 1325` without increasing `blocking_vb`. |
 | 18a | CD | Done: retune default stream window to `24 KB` after the slack guard. | `prefetch_overrun_vb 67 -> 58`, `loop_vb 1325 -> 1322`, with `blocking_vb 106 -> 108` inside the gate. |
 | 18b | CD | Done: retune default stream window to `20 KB` after diagnostics gating. | `loop_vb 1317 -> 1312`, `blocking_vb 93 -> 91`, and `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`. |
+| 18c | CD | Done: lower the post-20 KB refill guard to `2` VBlanks. | `loop_vb 1312 -> 1300`, `blocking_vb 91 -> 66`, and `due_misses 11 -> 4`; `prefetch_overrun_vb` rose `37 -> 45`. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
