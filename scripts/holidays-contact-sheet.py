@@ -65,8 +65,9 @@ def main():
     cell_w = max(h["sprite"]["width"] for h in new_holidays) * ZOOM + PAD * 2
     cell_h = max(h["sprite"]["height"] for h in new_holidays) * ZOOM + PAD * 2
 
+    HEADER_H = 36  # title + sub-line
     sheet_w = ROW_LABEL_W + len(variants) * (cell_w + CELL_GAP) + PAD
-    sheet_h = COL_LABEL_H + len(new_holidays) * (cell_h + CELL_GAP) + PAD
+    sheet_h = HEADER_H + COL_LABEL_H + len(new_holidays) * (cell_h + CELL_GAP) + PAD
 
     sheet = Image.new("RGB", (sheet_w, sheet_h), BG)
     draw = ImageDraw.Draw(sheet)
@@ -75,14 +76,29 @@ def main():
     except Exception:
         font = None
 
+    # Title and pick-summary header
+    draw.text((PAD, 6), "Johnny Castaway — Holiday sprite contact sheet",
+              fill=ACCENT, font=font)
+    pick_count = sum(1 for h in new_holidays if str(h["id"]) in picks)
+    counts = {str(v): 0 for v in (1, 2, 3, 4, 5)}
+    for v in picks.values():
+        sv = str(v)
+        if sv in counts:
+            counts[sv] += 1
+    summary = (f"{len(new_holidays)} holidays × {len(variants)} variants  ·  "
+               f"{pick_count}/{len(new_holidays)} picked  ·  "
+               f"v1={counts['1']} v2={counts['2']} v3={counts['3']} "
+               f"v4={counts['4']} v5={counts['5']}")
+    draw.text((PAD, 22), summary, fill=MUTED, font=font)
+
     # Column headers
     for ci, (vi, label) in enumerate(variants):
         cx = ROW_LABEL_W + ci * (cell_w + CELL_GAP) + cell_w // 2
-        draw.text((cx - 30, 4), label, fill=ACCENT, font=font)
+        draw.text((cx - 30, HEADER_H + 4), label, fill=ACCENT, font=font)
 
     # Rows
     for ri, h in enumerate(new_holidays):
-        row_y = COL_LABEL_H + ri * (cell_h + CELL_GAP)
+        row_y = HEADER_H + COL_LABEL_H + ri * (cell_h + CELL_GAP)
         # Row label
         draw.text((PAD, row_y + 6), f"{h['id']:02d}", fill=MUTED, font=font)
         draw.text((PAD + 24, row_y + 6), h["name"][:24], fill=TEXT, font=font)
