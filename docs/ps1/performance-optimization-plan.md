@@ -635,6 +635,7 @@ and upload byte volume.
 | `P4-41` | Failed: shrink stream-window reads only under tight held-frame slack. | `loop_vb 1243 -> 1242` and `prefetch_overrun_vb 12 -> 6`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; reading less proves the overrun source but sacrifices coverage. |
 | `P4-42` | Failed as no-op: fast-return from zero-delay event waits after Start polling. | Key metrics matched baseline exactly; retry only with finer CPU counters or when cleaning up event/pause code shape. |
 | `P4-43` | Rejected after red-team review: skip the pre-upload present wait after a held-loop VBlank. | Headless timing improved (`loop_vb 1243 -> 1239`, `blocking_vb 21 -> 20`), but the safety proof is insufficient because frame load/compose can consume the earlier VBlank before `LoadImage`; retry only with an explicit scanline-safe present scheduler. |
+| `P4-44` | Done: skip `grBeginFrame()` OT reset on base-diff FG2 frames. | Reproduced `loop_vb 1243 -> 1242` and `blocking_vb 21 -> 20` with unchanged visual-work counters; keep OT reset for non-base-diff wave/legacy primitive paths. |
 
 Prefetch variants to test in order:
 
@@ -965,7 +966,7 @@ into one commit.
 | 79 | Present | Detail-split `grUpdateDisplay()` wait vs upload. | Identify present serialization. |
 | 80 | Present | Failed first attempt: compose FG2 RAM tiles before `VSync(0)`. | Correctness clean, but `loop_vb`, `blocking_vb`, and `due_misses` regressed; retry only with Detail-tier attribution or a broader render scheduler. |
 | 81 | Present | Wait only when next frame deadline requires it. | Lower idle VBlanks; first held-VBlank skip attempt was rejected as not scanline-safe despite a small headless speed win. |
-| 82 | Present | Skip OT clear in pure software FG2 frames. | Lower per-entry CPU. |
+| 82 | Present | Done: skip OT clear in pure software base-diff FG2 frames. | `loop_vb 1243 -> 1242`; non-base-diff wave/legacy primitive paths still reset OT state. |
 | 83 | Present | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | Total loop regressed by one VBlank despite slightly better CD submetrics; retry only with finer CPU/IRQ counters and input-latency validation. |
 | 84 | Present | Separate frame counter from rendered-entry counter. | Correct pause/input accounting. |
 | 85 | Present | Avoid double display updates on empty entries. | Lower `render` or `empty` cost. |

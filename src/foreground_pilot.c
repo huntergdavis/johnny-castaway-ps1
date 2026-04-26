@@ -2126,18 +2126,20 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         } else {
             uint32 perfRenderTick = 0;
             uint32 perfDetailTick = 0;
+            int usesBaseDiffBackdrop = fgRuntimeUsesBaseDiffBackdrop();
             if (ps1PerfEnabled)
                 ps1PerfMarkRenderedLoop();
             if (perfDetail)
                 perfRenderTick = ps1PerfTick();
-            grBeginFrame();
+            if (!usesBaseDiffBackdrop)
+                grBeginFrame();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
             grRestoreBgFromRects();
             if (perfDetail)
                 ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                        ps1PerfElapsedVBlanks(perfDetailTick));
-            if (!fgRuntimeUsesBaseDiffBackdrop())
+            if (!usesBaseDiffBackdrop)
                 fgBackdropTickBackgroundWaves();
             grUpdateDisplay(NULL, NULL, NULL);
             if (perfDetail)

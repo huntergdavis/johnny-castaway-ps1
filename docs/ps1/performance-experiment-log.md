@@ -32,16 +32,16 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `37085999 ps1: tighten fg2 fallthrough refill guard` |
-| Run ID | `20260425-191943` |
+| Commit | `this commit: ps1: skip base-diff fg2 OT clear` |
+| Run ID | `20260425-210131` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking` |
-| `loop_vb` | `1243` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip` |
+| `loop_vb` | `1242` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `166` |
-| `blocking_vb` | `21` |
+| `overrun_vb` | `165` |
+| `blocking_vb` | `20` |
 | `loop_reads` | `69` |
 | `prefetch_hits` | `154` |
 | `prefetch_due_misses` | `1` |
@@ -122,6 +122,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-slack-adaptive-window-8k-12k` | dirty experiment after `37085999` | Use smaller stream-window reads for tight held-frame slack (`8 KB` at 3 VBlanks, `12 KB` at 4 VBlanks) while keeping the accepted `16 KB` read for safer slack. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement` | Failed the blocking gate. It improved `loop_vb 1243 -> 1242` and `prefetch_overrun_vb 12 -> 6`, but starved coverage: `blocking_vb 21 -> 36`, `due_misses 1 -> 5`, and `hits 154 -> 150`. Artifact: `scratch/ps1-perf-iterate/20260425-204231/summary.json`. | Do not promote. The remaining refill overrun can be reduced by reading less, but the cost immediately reappears as visible due-frame blocking; solve coverage with grouped/cheaper reads rather than smaller opportunistic windows. |
 | 2026-04-25 | `events-zero-delay-fast-path` | dirty experiment after `37085999` | `eventsWaitTick(0)` is called throughout FG2 held-frame playback; return immediately after Start polling and one `VSync(-1)` anchor update instead of running zero-delay pacing math. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement` | Failed as a VBlank-level no-op. Timing and work identity matched baseline exactly: `loop_vb=1243`, `blocking_vb=21`, `prefetch_overrun_vb=12`, `render=156`, `compose_calls=155`. Artifact: `scratch/ps1-perf-iterate/20260425-204635/summary.json`. | Do not promote. It may remove sub-VBlank CPU work, but the current gate cannot prove it; retry only with finer CPU counters or as part of a broader event/pause cleanup. |
 | 2026-04-25 | `fg2-held-vblank-present-wait-skip` | dirty experiment after `37085999` | Skip `grUpdateDisplay()`'s pre-upload `VSync(0)` when the next rendered FG2 frame follows a held-loop VBlank and was loaded from staged/window data. | `./scripts/build-ps1.sh`, then strict and Detail runs with `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Rejected after red-team review despite headless PASS. Summary improved `loop_vb 1243 -> 1239`, `blocking_vb 21 -> 20`, and `prefetch_overrun_vb 12 -> 11` with stable work identity; Detail showed `present_wait_vb` collapsing to `35`, but compose/upload crossed VBlank boundaries more often. Artifacts: `scratch/ps1-perf-iterate/20260425-205427/summary.json`, `scratch/ps1-perf-iterate/20260425-205558/summary.json`. | Do not promote. The saved wait is not proven scanline-safe: the held-loop VBlank can be consumed before frame load/compose completes, so framebuffer `LoadImage` may occur outside the known VBlank window. Retry only with an explicit VBlank-safe present scheduler or visual validation harness. |
+| 2026-04-25 | `fg2-base-diff-skip-ot-clear` | `this commit` | Base-diff FG2 scene playback uses RAM composition plus framebuffer `LoadImage` uploads; it should not need the per-render `grBeginFrame()` ordering-table and primitive-buffer reset unless backdrop waves or legacy GPU primitives are active. | `./scripts/build-ps1.sh`, then two strict runs with `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Promoted. Reproduced twice with stable visual-work identity: `loop_vb 1243 -> 1242`, `overrun_vb 166 -> 165`, `blocking_vb 21 -> 20`, `prefetch_overrun_vb=12`, `render=156`, `restore_calls=156`, `compose_calls=155`, `upload_calls=156`, `restore_bytes=2510092`, `upload_bytes=17172480`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-210007/summary.json`, `scratch/ps1-perf-iterate/20260425-210131/summary.json`. | Promote. This is a safe one-VBlank cleanup because it only skips unused OT state reset for base-diff FG2 frames; non-base-diff/runtime wave paths still reset the primitive state. |
 
 ## Retry Queue
 
