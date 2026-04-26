@@ -1173,6 +1173,11 @@ raw-window refill cost.
 Prepared-current RAM background reuse removed the duplicate restore/compose
 work but regressed the same one-VBlank CD shape. Treat the accepted extra prep
 work as deliberate pacing until a scheduler can replace that timing explicitly.
+An opportunistic post-prefetch leftover-prepare pass was also rejected: even
+when a CD read appeared to leave the normal `4` VBlank prepare budget, doing
+render prep in that same held slice caused five due misses and many more
+backward seeks. The scheduler needs frame-level budgeting that preserves future
+coverage, not local leftover-slack accounting.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
