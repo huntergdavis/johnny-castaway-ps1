@@ -37,15 +37,16 @@ scripts/holidays_art_lib.py                   16-color CLUT, Sprite class, primi
                                               heart, sand, sky, etc.) and
                                               `as_night(sprite)` for the v5 recolor
 scripts/holidays-quality-audit.py             ad-hoc per-sprite histogram report
-scripts/holidays-redteam.py                   14 independent QA checks; exits non-zero
+scripts/holidays-redteam.py                   16 independent QA checks; exits non-zero
                                               on any FAIL — palette discipline, dim/
                                               mode/presence, sparsity, variant
                                               diversity (incl. v5-vs-v1 ≥10%),
                                               no cross-holiday duplicates,
                                               date-algorithm test invocation, 7-year
                                               collision sweep, generated-table row
-                                              count, HTML integrity, save/modal hooks,
-                                              final-review HTML present
+                                              count, art-spec.json round-trip,
+                                              HTML integrity, save/modal/load hooks,
+                                              final-review HTML, contact-sheet PNG
 scripts/holidays-contact-sheet.py             one-shot 3248×12802 PNG of every
                                               holiday × every variant, 4× zoom
 scripts/holidays-resolve-picks.py             reads picks JSON, copies the chosen
@@ -251,18 +252,26 @@ state.
 
 ## Red-team checks already passing
 
-Run as part of QA, all currently green:
+`scripts/holidays-redteam.py` runs 16 independent QA checks. All
+currently green; 3 informational warnings remain (real same-day
+holiday overlaps where the lower id wins via C iteration order).
 
-1. **Dim/mode/presence** — all generated PNGs match spec dimensions, indexed mode, present on disk.
-2. **Palette discipline** — only CLUT indices 0..15 used; no blanks; no pure-single-color sprites.
-3. **Date logic over 7 years** — 35/35 holidays fire across 2024-2030 with 0 same-day collisions.
-4. **Variant diversity** — every holiday's 3 variants are pixel-distinct.
-5. **Cross-holiday duplicates** — no two holidays share artwork.
-6. **Sparsity** — only 2 minimalist sprites use >85% single color (intentional negative-space designs).
-7. **PS1 build clean** — `./scripts/build-ps1.sh` exits 0 with `holidays.c`/`holidays_table.c` linked.
-8. **YAML schema sanity** — IDs 1..35 unique; short_names ≤12 chars; sizes within (32..160) × (32..96).
-9. **HTML integrity** — 35 holiday cards, 93 embedded base64 PNGs, 93 radio buttons, sticky controls, save button.
-10. **Cross-batch import sanity** — all 5 modules importable; expected function-count per file.
+1. **YAML schema** — IDs 1..35 unique; short_names ≤ 12 chars; sizes within (32..160) × (32..96).
+2. **Renderer imports** — all 5 modules importable; expected function-count per file.
+3. **Master loader** — `holidays_concepts.RENDERERS` has all 31 entries after merge + v5 auto-extension.
+4. **PNG presence + dims** — every reviewable holiday × every variant exists on disk; mode is `P`; dimensions match yaml exactly.
+5. **Palette discipline** — only CLUT indices 0..15 used; no out-of-range pixels.
+6. **Sparsity** — flag any sprite where one palette index covers > 85% of pixels (allowlist for intentional minimalists).
+7. **No duplicate art** — no two distinct PNGs are byte-identical (catches accidental copy-paste).
+8. **Variant diversity** — within one holiday, no two variants are byte-identical, AND v5 differs from v1 by ≥ 10 % of pixels (guards against `as_night` silently no-op'ing).
+9. **Date algorithms** — `holidays-test.py` sub-process must report 28/28 spot-tests passing.
+10. **Holiday collisions** — every yaml rule resolves to a real (month, day) for years 2024..2030; report any same-day overlaps.
+11. **table.c generated** — `src/holidays_table.c` exists with 35 `.id` rows.
+12. **art-spec.json** — codegen output covers exactly the reviewable ids and matches yaml sprite sizes.
+13. **HTML integrity** — `scratch/holidays-preview.html` exists with 35 holiday cards and ~155 embedded base64 PNGs.
+14. **HTML save / modal / load** — Download / Load / Clear / filter / variant-focus / zoom-modal hooks all present.
+15. **Final-review HTML** — `scratch/holidays-final-review.html` exists with card markup.
+16. **Contact-sheet PNG** — `scratch/holidays-contact-sheet.png` exists and is ≥ 50 KB (catches a render crash).
 
 ## Out of scope for this round
 
