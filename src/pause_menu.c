@@ -57,6 +57,14 @@ extern int db;
 extern int soundMuted;
 void soundMuteToggle(void);
 
+/* RNG seed state + helpers from jc_reborn.c. ps1SeedRandom uses the
+ * root-counter hash (PS1) or no-op stub (host); ps1SetSeed installs an
+ * exact srand() value. ps1LastSeedKnown becomes 1 once either has run. */
+extern unsigned int ps1LastSeedApplied;
+extern int          ps1LastSeedKnown;
+void ps1SeedRandom(void);
+void ps1SetSeed(unsigned int seed);
+
 /* Frame counter from graphics_ps1.c (incremented per scene frame). */
 extern uint32 ps1FrameCount;
 
@@ -326,6 +334,11 @@ static int editIslandY     = 0;
 static int editIslandValid = 0;
 static int editIslandField = 0;   /* 0=X, 1=Y, 2=mode (AUTO/MANUAL) */
 
+/* RNG-seed editing fields (Set RNG Seed sub-screen). */
+static unsigned int editSeedValue = 1;
+static int          editSeedFixed = 0;     /* 0 = AUTO, 1 = FIXED */
+static int          editSeedField = 0;     /* 0 = mode, 1 = value */
+
 /* Debounce: tracks which buttons were held last frame so we only act on
  * fresh presses (not auto-repeat while held). */
 static uint16 prevButtons = 0;
@@ -343,6 +356,7 @@ enum {
     MENU_DEBUG_INFO,
     MENU_SET_TIME,
     MENU_SET_ISLAND_POS,
+    MENU_SET_SEED,
     MENU_COUNT
 };
 
@@ -786,6 +800,50 @@ static void drawIslandPos(void)
 }
 
 /* ---------------------------------------------------------------------------
+ *  Sub-screen: Set RNG Seed
+ * ---------------------------------------------------------------------------
+ *  Two fields: Mode (AUTO / FIXED) and Value (unsigned 32-bit).
+ *  AUTO  = on confirm, re-seed via ps1SeedRandom() (root counters).
+ *  FIXED = on confirm, srand(value).
+ *  LEFT/RIGHT on the value field nudges by 1; L1/R1 by 100; L2/R2 by 10000.
+ *  X = confirm, START = back without applying.
+ * ------------------------------------------------------------------------- */
+static void drawSetSeed(void)
+{
+    pmPrintf("\n");
+    drawSeparator();
+    pmPrintf("    SET RNG SEED\n");
+    drawSeparator();
+    pmPrintf("\n");
+
+    pmPrintf(" %s Mode:   %s%s%s\n",
+             editSeedField == 0 ? ">" : " ",
+             editSeedField == 0 ? "[" : " ",
+             editSeedFixed ? "FIXED" : "AUTO",
+             editSeedField == 0 ? "]" : " ");
+
+    pmPrintf(" %s Value:  %s%10u%s\n",
+             editSeedField == 1 ? ">" : " ",
+             editSeedField == 1 ? "[" : " ",
+             editSeedValue,
+             editSeedField == 1 ? "]" : " ");
+
+    pmPrintf("\n");
+    if (ps1LastSeedKnown) {
+        pmPrintf(" Current seed: %u\n", ps1LastSeedApplied);
+    } else {
+        pmPrintf(" Current seed: (unknown)\n");
+    }
+
+    pmPrintf("\n");
+    pmPrintf(" UP/DOWN  select field\n");
+    pmPrintf(" LEFT/RIGHT  +/-1\n");
+    pmPrintf(" L1/R1       +/-100\n");
+    pmPrintf(" L2/R2       +/-10000\n");
+    pmPrintf(" X = confirm   START = back\n");
+}
+
+/* ---------------------------------------------------------------------------
  *  Main menu drawing
  * ------------------------------------------------------------------------- */
 static const char *perfLevelLabel(void)
@@ -929,6 +987,8 @@ static void drawMainMenu(void)
              menuCursor == MENU_SET_TIME ? ">" : " ");
     pmPrintf(" %s Set Island Pos\n",
              menuCursor == MENU_SET_ISLAND_POS ? ">" : " ");
+    pmPrintf(" %s Set RNG Seed\n",
+             menuCursor == MENU_SET_SEED ? ">" : " ");
 
     drawSeparator();
     pmPrintf("  X = select   START = resume\n");
@@ -1042,6 +1102,15 @@ static int handleMainInput(uint16 pressed)
             editIslandValid = hostForcedIslandPosValid;
             editIslandField = 0;
             menuState   = PAUSE_MENU_ISLAND_POS;
+            prevButtons = 0xFFFF;
+            break;
+
+        case MENU_SET_SEED:
+            /* Show the last applied seed if known; default to 1 if not. */
+            editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
+            editSeedFixed = 0;          /* enter in AUTO; user opts in */
+            editSeedField = 0;
+            menuState   = PAUSE_MENU_SET_SEED;
             prevButtons = 0xFFFF;
             break;
 
@@ -1233,6 +1302,61 @@ static int handleIslandPosInput(uint16 pressed)
     return 1;
 }
 
+/* Set RNG Seed input. */
+static int handleSetSeedInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_SET_SEED;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        editSeedField--;
+        if (editSeedField < 0) editSeedField = 1;
+    }
+    if (pressed & PAD_DOWN) {
+        editSeedField++;
+        if (editSeedField > 1) editSeedField = 0;
+    }
+
+    /* Determine step: +/-1, +/-100, or +/-10000 depending on
+     * which shoulder button is held alongside LEFT/RIGHT.
+     * (LEFT/RIGHT alone = 1; L1/R1 alone = 100; L2/R2 alone = 10000.) */
+    int step = 0;
+    int dir  = 0;
+    if (pressed & PAD_RIGHT)   { dir = +1; step = 1; }
+    if (pressed & PAD_LEFT)    { dir = -1; step = 1; }
+    if (pressed & PAD_R1)      { dir = +1; step = 100; }
+    if (pressed & PAD_L1)      { dir = -1; step = 100; }
+    if (pressed & PAD_R2)      { dir = +1; step = 10000; }
+    if (pressed & PAD_L2)      { dir = -1; step = 10000; }
+
+    if (dir != 0) {
+        if (editSeedField == 0) {
+            editSeedFixed = !editSeedFixed;
+        } else {
+            unsigned int delta = (unsigned int)step;
+            if (dir > 0) editSeedValue += delta;
+            else         editSeedValue -= delta;
+        }
+    }
+
+    if (pressed & PAD_CROSS) {
+        if (editSeedFixed) {
+            ps1SetSeed(editSeedValue);
+        } else {
+            ps1SeedRandom();   /* re-seed via root counters */
+        }
+        menuState   = PAUSE_MENU_MAIN;
+        menuCursor  = MENU_SET_SEED;
+        prevButtons = 0xFFFF;
+    }
+
+    return 1;
+}
+
 /* ---------------------------------------------------------------------------
  *  pauseMenuUpdate -- one frame of the overlay
  *
@@ -1306,6 +1430,9 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_ISLAND_POS:
         keepOpen = handleIslandPosInput(pressed);
         break;
+    case PAUSE_MENU_SET_SEED:
+        keepOpen = handleSetSeedInput(pressed);
+        break;
     case PAUSE_MENU_SCENE_INFO:
     case PAUSE_MENU_CONTROLS:
         keepOpen = handleSubInput(pressed);
@@ -1332,6 +1459,7 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_CONTROLS:   drawControls();  break;
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;
     case PAUSE_MENU_ISLAND_POS: drawIslandPos(); break;
+    case PAUSE_MENU_SET_SEED:   drawSetSeed();   break;
     }
 
     /* Submit the OT to GPU. */

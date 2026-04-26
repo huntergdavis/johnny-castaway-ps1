@@ -88,9 +88,16 @@ extern uint8 pad_buff[2][34];
 #include "story.h"
 #endif
 
-/* Root counters are exposed by PSn00bSDK on PS1 builds. */
+/* Root counters are exposed by PSn00bSDK on PS1 builds.
+ *
+ * Last seed actually fed to srand() — exposed so the pause-menu Set
+ * RNG Seed sub-screen can show what's currently in play. Value is the
+ * unsigned int that was passed; -1 if no seed has been applied yet. */
+unsigned int ps1LastSeedApplied = 0;
+int          ps1LastSeedKnown   = 0;
+
 #ifdef PS1_BUILD
-static void ps1SeedRandom(void)
+void ps1SeedRandom(void)
 {
     uint32 seed = 0x9e3779b9u;
 
@@ -106,7 +113,20 @@ static void ps1SeedRandom(void)
     if (seed == 0)
         seed = 1;
     srand(seed);
+    ps1LastSeedApplied = seed;
+    ps1LastSeedKnown   = 1;
 }
+
+void ps1SetSeed(unsigned int seed)
+{
+    srand(seed);
+    ps1LastSeedApplied = seed;
+    ps1LastSeedKnown   = 1;
+}
+#else
+/* Host build: provide stub linkage for pause_menu compilation parity. */
+void ps1SeedRandom(void) {}
+void ps1SetSeed(unsigned int seed) { srand(seed); ps1LastSeedApplied = seed; ps1LastSeedKnown = 1; }
 #endif
 
 
