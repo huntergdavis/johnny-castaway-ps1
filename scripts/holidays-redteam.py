@@ -402,6 +402,36 @@ def check_holiday_collisions(holidays, fails, warns):
                 seen[d] = h["id"]
 
 
+def check_art_spec(holidays, fails, warns):
+    """holidays-art-spec.json contains exactly the reviewable holidays
+    (existing_sprite is null) with id/sprite_size matching yaml."""
+    spec_path = REPO / "scripts" / "holidays-art-spec.json"
+    if not spec_path.exists():
+        warns.append(f"missing {spec_path.relative_to(REPO)} (run codegen)")
+        return
+    import json as _json
+    spec = _json.loads(spec_path.read_text(encoding="utf-8"))
+    if not isinstance(spec, list):
+        fails.append("art-spec.json is not a list")
+        return
+    spec_ids = {entry["id"] for entry in spec}
+    expected_ids = {h["id"] for h in holidays if h.get("existing_sprite") is None}
+    if spec_ids != expected_ids:
+        fails.append(
+            f"art-spec.json ids {sorted(spec_ids)} != reviewable yaml ids "
+            f"{sorted(expected_ids)}")
+    yaml_by_id = {h["id"]: h for h in holidays}
+    for e in spec:
+        h = yaml_by_id.get(e["id"])
+        if not h:
+            continue
+        if (e["sprite"]["width"] != h["sprite"]["width"] or
+                e["sprite"]["height"] != h["sprite"]["height"]):
+            fails.append(
+                f"art-spec id={e['id']} sprite size "
+                f"{e['sprite']} != yaml {h['sprite']}")
+
+
 def check_table_c_present(fails, warns):
     """Generated holidays_table.c exists and has 35 entries."""
     if not TABLE_C.exists():
@@ -479,6 +509,7 @@ def main():
         ("date algorithms",     lambda: check_date_algorithms(fails, warns)),
         ("holiday collisions",  lambda: check_holiday_collisions(holidays, fails, warns)),
         ("table.c generated",   lambda: check_table_c_present(fails, warns)),
+        ("art-spec.json",       lambda: check_art_spec(holidays, fails, warns)),
         ("HTML integrity",      lambda: check_html_integrity(holidays, fails, warns)),
         ("HTML save / modal",   lambda: check_save_button(fails, warns)),
         ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
