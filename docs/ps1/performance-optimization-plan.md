@@ -1053,6 +1053,12 @@ constant family is locally exhausted. It can reduce `loop_vb` from `1237` to
 to `19-20`; future CD work should preserve zero due misses through grouped or
 physically adjacent reads before tightening the guard again.
 
+The post-prime upload gap sweep also found a local knee: the accepted 2-row
+dirty-band gap merge is still the best fishing1 point. Raising it to `3` or
+`4` rows kept timing flat but only saved `2-3` upload rectangles while adding
+bytes, so the next upload path should move band metadata to pack generation or
+emit upload-ready layouts rather than tuning another runtime threshold.
+
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run
 where correctness counters are zero but the renderer performed far less work.
