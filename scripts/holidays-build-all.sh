@@ -3,19 +3,31 @@
 #
 #   1. Regenerate src/holidays_table.c + scripts/holidays-art-spec.json
 #      from holidays.yml.
-#   2. Smoke-test the pure-python date algorithm mirror (20/20 spot
+#   2. Smoke-test the pure-python date algorithm mirror (28/28 spot
 #      checks).
 #   3. Render every variant PNG to scratch/holidays-art/.
 #   4. Build the interactive HTML review page.
 #   5. Build the static contact-sheet PNG.
-#   6. Run the red-team QA pass — any FAIL aborts.
+#   6. Generate default-picks fallback.
+#   7. Resolve picks → scratch/holidays-selected/.
+#   8. Build the final-review HTML.
+#   9. Run the red-team QA pass (17 checks) — any FAIL aborts.
 #
-# Run after editing holidays.yml or any renderer file. Quick: ~3-5s.
+# Run after editing holidays.yml or any renderer file. ~2.5s.
+#
+# --clean        Wipe scratch/holidays-art/ before rendering so deleted
+#                renderers don't leave stale PNGs behind.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PY=${PYTHON:-python3}
+
+if [ "${1:-}" = "--clean" ]; then
+    echo "==> 0. wiping scratch/holidays-art/"
+    rm -rf scratch/holidays-art
+    rm -rf scratch/holidays-selected
+fi
 
 echo "==> 1. codegen"
 "$PY" scripts/holidays-codegen.py
