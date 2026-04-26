@@ -484,12 +484,13 @@ def check_final_review_present(fails, warns):
 
 
 def check_invisible_compose_calls(fails, warns):
-    """Static scan: warn if a renderer calls compose_star / compose_heart
-    with a color that matches `Sprite(.., fill=COLOR)`. Often that means
-    the icon disappears into the background. False positives exist (the
-    bg may be overwritten by a sand strip etc.), so this check produces
-    warnings rather than fails — the sparsity / variant-diversity checks
-    catch the visual consequence."""
+    """Static scan: warn if a renderer calls compose_star / compose_heart,
+    sp.line, or sp.ellipse with a color that matches the renderer's
+    `Sprite(.., fill=COLOR)` AND the call appears inside a comment or
+    block hinting at "rays", "stars", "heart", "behind" — i.e. it's
+    intended to be visible. False positives exist (sand strips, sky
+    re-fills, watermelon bite marks), so this check produces warnings
+    rather than fails."""
     import re
     files = [
         "holidays_concepts_reference.py",
@@ -498,6 +499,11 @@ def check_invisible_compose_calls(fails, warns):
         "holidays_concepts_batch3.py",
         "holidays_concepts_batch4.py",
     ]
+    suspicious_keywords = re.compile(
+        r"\b(ray|star|heart|fleur|burst|spark|highlight|accent|"
+        r"dot|crater|halo|petal|firework|confetti)\b",
+        re.IGNORECASE,
+    )
     for fname in files:
         path = REPO / "scripts" / fname
         if not path.exists():
@@ -509,13 +515,30 @@ def check_invisible_compose_calls(fails, warns):
             if not fm:
                 continue
             bg = fm.group(1)
-            for line in blk.splitlines():
-                if not re.search(r"compose_(star|heart)\(", line):
-                    continue
-                if re.search(r",\s*" + bg + r"\)", line):
+            blk_lines = blk.splitlines()
+            # compose_star / compose_heart matching bg are always
+            # suspicious (these primitives draw small icons).
+            for line in blk_lines:
+                if re.search(r"compose_(star|heart)\(", line) and \
+                        re.search(r",\s*" + bg + r"\)", line):
                     warns.append(
                         f"{fname}::{fn_name}: compose_* may be invisible — "
                         f"bg={bg}, line: {line.strip()[:70]}")
+            # sp.line / sp.ellipse only flagged when a nearby comment
+            # has a "visible accent" keyword (rays, stars, etc.). Avoids
+            # FP on sand-strip and sky-band loops.
+            for i, line in enumerate(blk_lines):
+                stripped = line.strip()
+                if not re.search(r"sp\.(line|ellipse)\(", stripped):
+                    continue
+                if not re.search(r",\s*" + bg + r"\)\s*$", stripped):
+                    continue
+                # Check the previous 2 lines for a visible-element comment.
+                ctx = "\n".join(blk_lines[max(0, i - 2):i])
+                if "#" in ctx and suspicious_keywords.search(ctx):
+                    warns.append(
+                        f"{fname}::{fn_name}: sp.{stripped[3:7]} may be "
+                        f"invisible — bg={bg}, line: {stripped[:70]}")
 
 
 def check_contact_sheet_present(fails, warns):

@@ -201,9 +201,9 @@ def mlk_v3(h):
     # Twin palms
     compose_palm_tree(sp, 6, 40, trunk_h=20, frond_r=6)
     compose_palm_tree(sp, 82, 40, trunk_h=20, frond_r=6)
-    # Sun rays (cream) behind podium
+    # Sun rays behind podium — bg is YELLOW, so use ORANGE for the rays
     for x in range(20, 70, 6):
-        sp.line(44, 4, x, 22, YELLOW)
+        sp.line(44, 4, x, 22, ORANGE)
     # Podium center
     px = 38
     sp.rect(px, 24, px + 12, 42, RED, outline=BLACK)
@@ -776,9 +776,9 @@ def mlk_v4(h):
     sp = Sprite(88, 56, fill=YELLOW)
     sp.rect(0, 0, 87, 39, YELLOW)
     compose_sand_strip(sp, 40)
-    # Sun rays shooting outward (big motion)
+    # Sun rays shooting outward (big motion) — bg is YELLOW; rays in ORANGE
     for x in range(8, 80, 4):
-        sp.line(44, 4, x, 16, YELLOW)
+        sp.line(44, 4, x, 16, ORANGE)
     # Tilted podium (knocked askew by passion)
     px = 38
     sp.rect(px, 26, px + 14, 42, RED, outline=BLACK)
