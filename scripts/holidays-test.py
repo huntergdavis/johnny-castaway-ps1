@@ -122,6 +122,23 @@ CHECKS = [
     ("DOW 2026-04-25", day_of_week(2026, 4, 25), 6),  # Saturday
     ("DOW 2000-01-01", day_of_week(2000, 1, 1),  6),  # Saturday
     ("DOW 1900-01-01", day_of_week(1900, 1, 1),  1),  # Monday
+    # --- Long-range and edge cases ---
+    # Easter 2200/2300/2400 — verify Meeus extrapolates correctly.
+    ("Easter 2200",       easter_sunday(2200), (4, 6)),
+    ("Easter 2300",       easter_sunday(2300), (4, 8)),
+    ("Easter 2400",       easter_sunday(2400), (4, 16)),
+    # 21st-century-boundary day-of-week (Jan 1 2100 fell on Friday=5)
+    ("DOW 2100-01-01",    day_of_week(2100, 1, 1), 5),
+    # 5-Monday-May edge: 2027 has Mondays 3,10,17,24,31. last-Monday=31.
+    ("Memorial 2027",     (5, nth_weekday_of_month(-1, 1, 5, 2027)),
+                          (5, 31)),
+    # Thanksgiving 2024 = Nov 28 (4th Thu)
+    ("Thanksgiving 2024", (11, nth_weekday_of_month(4, 4, 11, 2024)),
+                          (11, 28)),
+    # Easter at modern boundaries — 1818 was the earliest in the
+    # 19th-21st centuries (Mar 22), 1943 the latest (Apr 25).
+    ("Easter 1818 early", easter_sunday(1818), (3, 22)),
+    ("Easter 1943 late",  easter_sunday(1943), (4, 25)),
 ]
 
 
