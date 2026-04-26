@@ -23,14 +23,28 @@ cd "$(dirname "$0")/.."
 
 PY=${PYTHON:-python3}
 
-if [ "${1:-}" = "--clean" ]; then
-    echo "==> 0. wiping scratch/holidays-art/, pyc cache"
-    rm -rf scratch/holidays-art
-    rm -rf scratch/holidays-selected
-    # Stale pyc cache can mask source edits (mtime preservation after a
-    # restore makes Python skip recompilation). Wipe it on --clean.
-    find scripts -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-fi
+case "${1:-}" in
+    -h|--help)
+        sed -n '2,20p' "$0" | sed -e 's/^# \{0,1\}//'
+        exit 0
+        ;;
+    --clean)
+        echo "==> 0. wiping scratch/holidays-art/, pyc cache"
+        rm -rf scratch/holidays-art
+        rm -rf scratch/holidays-selected
+        # Stale pyc cache can mask source edits (mtime preservation
+        # after a restore makes Python skip recompilation). Wipe on
+        # --clean.
+        find scripts -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+        ;;
+    "")
+        ;;
+    *)
+        echo "unknown flag: $1" >&2
+        echo "run with --help for usage" >&2
+        exit 2
+        ;;
+esac
 
 echo "==> 1. codegen"
 "$PY" scripts/holidays-codegen.py
