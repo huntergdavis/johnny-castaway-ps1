@@ -28,11 +28,11 @@ Latest accepted default-path fishing1 high-tide run, after the pause merge,
 pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, and vertical
-dirty-row upload bands, reported `policy=stage1_window`,
+dirty-row upload bands with a 2-row gap merge, reported `policy=stage1_window`,
 `buf=23568`, `hits=154`,
 `due_misses=1`, `blocking_vb=20`, `prefetch.overrun_vb=11`, `loop_vb=1240`,
 `overrun_vb=163`, `target_vb=1077`, `restore_bytes=2510092`,
-`upload_bytes=16387840`, `dirty_rows=25606`, `upload_rects=518`, `trip=0`,
+`upload_bytes=16496000`, `dirty_rows=25775`, `upload_rects=427`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`. This is
 the current baseline for the next experiment; the pre-pause best was
 `loop_vb=1297`.
@@ -67,7 +67,7 @@ Top likely wins, in order:
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
 | 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1240` and still has `blocking_vb=20`, prefetch `overrun_vb=11`, and `due_misses=1`. |
-| 2 | X-aware dirty upload and rect-pressure control | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, and vertical bands lowered upload to `16.4 MB`; upload byte volume and `LoadImage` rect pressure are now the clearer dirty targets. |
+| 2 | X-aware dirty upload and rect-pressure control | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, and vertical bands plus gap merging lowered upload to `16.5 MB`; upload byte volume and `LoadImage` rect pressure are now the clearer dirty targets. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
@@ -242,9 +242,12 @@ contiguous scratch before `LoadImage`. A later direct vertical-band upload
 experiment avoided scratch packing, kept full tile width, and accepted a safe
 work-volume reduction: `upload_bytes 17172480 -> 16387840` and
 `dirty_rows 26832 -> 25606`, with `loop_vb`, `blocking_vb`, and
-`prefetch_overrun_vb` unchanged. The next upload-byte attempt should tune
-band merging/rect pressure or move decisions to pack-time/direct-layout work,
-not reintroduce runtime scratch packing.
+`prefetch_overrun_vb` unchanged. A 2-row gap merge then reduced command
+pressure (`upload_rects 518 -> 427`, `max_upload_rects 6 -> 5`) while keeping
+most of the byte win (`upload_bytes 16496000`), again with flat key timing.
+The next upload-byte attempt should move decisions to pack-time/direct-layout
+work or use scene-specific band statistics, not reintroduce runtime scratch
+packing.
 
 ## Guardrails
 
@@ -520,10 +523,11 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
-vertical dirty-row bands while keeping full tile width and no scratch packing.
+vertical dirty-row bands with a 2-row clean-gap merge, while keeping full tile
+width and no scratch packing.
 Fishing1 improved from the original `loop_vb=1426` to `1240`,
 `restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16387840`; next work is balancing upload byte savings against rectangle
+`16496000`; next work is balancing upload byte savings against rectangle
 pressure.
 
 | ID | Task | Rationale |
@@ -536,6 +540,7 @@ pressure.
 | `P2-04b` | Done: aggregate PAL4 dirty marking once per encoded row and per tile. | `loop_vb 1254 -> 1248` and `blocking_vb 35 -> 21` while `restore_bytes` and `upload_bytes` stayed unchanged. |
 | `P2-05` | Failed naive per-partial-sync, byte-minimal arena, and rect-capped tile-band runtime upload. | Runtime scratch packing loses to full-width direct tile uploads even when bytes fall. |
 | `P2-06` | Done: split full-width tile uploads into contiguous vertical dirty-row bands. | `upload_bytes 17172480 -> 16387840` with no VBlank-level timing regression, no cap hits, and no fallback. |
+| `P2-06a` | Done: merge 2-row clean gaps inside vertical upload bands. | `upload_rects 518 -> 427` and `max_upload_rects 6 -> 5` while keeping most of the byte win (`upload_bytes=16496000`) and flat key timing. |
 | `P2-07` | Keep deterministic merge/cap policy for any future upload-ready format. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
 | `P2-08` | Record bytes actually uploaded in telemetry. | Confirm real win. |
 
@@ -594,10 +599,11 @@ changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
 removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
-the tile-local PAL4 span fast path, and vertical dirty-row upload bands,
+the tile-local PAL4 span fast path, and vertical dirty-row upload bands with
+a 2-row gap merge,
 fishing1 high-tide reports
 `loop_vb=1240`, `blocking_vb=20`, `due_misses=1`, and prefetch
-`overrun_vb=11`, with `upload_bytes=16387840` and `upload_rects=518`.
+`overrun_vb=11`, with `upload_bytes=16496000` and `upload_rects=427`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
@@ -668,6 +674,7 @@ upload byte volume, and upload rectangle pressure.
 | `P4-60` | Failed: lower the stream-window refill guard from `3` to `2` VBlanks after the tile-local PAL4 fast path. | The retest regressed `loop_vb 1240 -> 1245`, `blocking_vb 20 -> 26`, and `prefetch_overrun_vb 11 -> 18`; keep `3` VBlanks as the current lower slack bound. |
 | `P4-61` | Failed as no-op: remove the held-loop prefetch-window would-read double-check. | Letting `fgRuntimeTryPrefetchWindow()` perform the single target/window/slack decision left all key metrics flat at `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; retry only inside broader prefetch scheduler cleanup. |
 | `P4-62` | Done: split dirty tile uploads into contiguous vertical dirty-row bands. | `upload_bytes 17172480 -> 16387840` and `dirty_rows 26832 -> 25606` with flat `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; next upload work should reduce `upload_rects 351 -> 518` pressure. |
+| `P4-63` | Done: merge 2-row clean gaps inside vertical upload bands. | `upload_rects 518 -> 427` with flat timing; `upload_bytes` gives back only `108160` bytes versus the accepted vertical-band split and remains `676480` below the old full-band upload baseline. |
 
 Prefetch variants to test in order:
 

@@ -3476,7 +3476,10 @@ void grClearScreen(PS1Surface *sfc)
  */
 void grDrawBackground(void)
 {
-    enum { GR_MAX_UPLOAD_RECTS = 16 };
+    enum {
+        GR_MAX_UPLOAD_RECTS = 16,
+        GR_UPLOAD_BAND_MERGE_GAP = 2
+    };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.
      * prevDirty = rows restored at frame start (framebuffer still has old content).
      * currDirty = rows composited this frame (framebuffer has clean/old content). */
@@ -3551,10 +3554,24 @@ void grDrawBackground(void)
                     break;
 
                 startY = y;
-                while (y + 1 <= maxYs[i] &&
-                       (prevDirtyRowMinX[i][y + 1] >= 0 ||
-                        currDirtyRowMinX[i][y + 1] >= 0)) {
-                    y++;
+                {
+                    int scanY = y + 1;
+                    int lastDirtyY = y;
+                    int cleanGap = 0;
+
+                    while (scanY <= maxYs[i]) {
+                        if (prevDirtyRowMinX[i][scanY] >= 0 ||
+                            currDirtyRowMinX[i][scanY] >= 0) {
+                            lastDirtyY = scanY;
+                            cleanGap = 0;
+                        } else {
+                            cleanGap++;
+                            if (cleanGap > GR_UPLOAD_BAND_MERGE_GAP)
+                                break;
+                        }
+                        scanY++;
+                    }
+                    y = lastDirtyY;
                 }
 
                 if (bandCount >= GR_MAX_UPLOAD_RECTS) {

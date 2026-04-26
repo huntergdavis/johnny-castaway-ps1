@@ -32,12 +32,12 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ae95004c ps1: upload vertical dirty bands` |
-| Run ID | `20260425-224947` |
+| Commit | `this commit: ps1: merge small upload band gaps` |
+| Run ID | `20260425-230004` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
 | `loop_vb` | `1240` |
 | `target_vb` | `1077` |
 | `overrun_vb` | `163` |
@@ -47,9 +47,9 @@ Current accepted baseline for the next experiment:
 | `prefetch_due_misses` | `1` |
 | `prefetch_overrun_vb` | `11` |
 | `restore_bytes` | `2510092` |
-| `upload_bytes` | `16387840` |
-| `dirty_rows` | `25606` |
-| `upload_rects` | `518` |
+| `upload_bytes` | `16496000` |
+| `dirty_rows` | `25775` |
+| `upload_rects` | `427` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -144,6 +144,8 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-window-2vb-post-tile-fast-path` | dirty experiment after `853b8310` | Lower the stream-window refill guard from `3` to `2` VBlanks after the tile-local PAL4 fast path, testing whether the lower compositor cost can tolerate earlier refill reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Work identity stayed stable, but timing regressed: `loop_vb 1240 -> 1245`, `overrun_vb 163 -> 168`, `blocking_vb 20 -> 26`, and `prefetch_overrun_vb 11 -> 18`. Artifact: `scratch/ps1-perf-iterate/20260425-224201/summary.json`. | Do not promote. The `3` VBlank refill guard remains the local lower bound; `2` VBlanks starts reads that spill into visible playback. |
 | 2026-04-25 | `fg2-prefetch-single-window-check` | dirty experiment after `853b8310` | Remove the held-loop `fgRuntimeWindowPrefetchWouldRead()` pre-check and let `fgRuntimeTryPrefetchWindow()` perform the single target/window/slack decision, avoiding duplicate table/window checks before real reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as a VBlank-level no-op. Work identity and timing matched baseline exactly: `loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`, `hits=154`, and `due_misses=1`. Artifact: `scratch/ps1-perf-iterate/20260425-224454/summary.json`. | Do not promote. The duplicate target/window checks are not measurable at current resolution; leave the existing helper split because it keeps duplicate metrics quiet and explicit. |
 | 2026-04-25 | `fg2-upload-vertical-dirty-bands` | `ae95004c` | Split each dirty tile upload into contiguous vertical dirty-row bands so clean Y gaps are not uploaded, while keeping full tile width and avoiding runtime scratch packing. | Strict run with `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`; verification run without `--require-improvement`. | Promoted as a safe work-volume reduction. Key timing stayed flat (`loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`), while `upload_bytes 17172480 -> 16387840`, `dirty_rows 26832 -> 25606`, `upload_rects 351 -> 518`, and `max_upload_rects 4 -> 6`; `cap_hits=0`, `full_fallbacks=0`, and work identity stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-224810/summary.json`, `scratch/ps1-perf-iterate/20260425-224947/summary.json`. | Promote. The VBlank timer did not move, but the runtime now uploads 784,640 fewer bytes per fishing1 loop with no correctness or timing regression. Next upload work should reduce the added rectangle pressure or move band decisions to pack time. |
+| 2026-04-25 | `fg2-upload-band-gap-merge-1row` | dirty experiment after `ae95004c` | Merge 1-row clean gaps inside vertical upload bands to reduce `LoadImage` rectangle pressure while preserving nearly all of the accepted byte savings. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as too small to promote. Timing was flat, but secondary movement was marginal: `upload_rects 518 -> 505`, `upload_bytes 16387840 -> 16396160`, `dirty_rows 25606 -> 25619`, `cap_hits=0`, and `full_fallbacks=0`. Artifact: `scratch/ps1-perf-iterate/20260425-225809/summary.json`. | Do not promote. The 1-row merge gives back bytes for only 13 fewer rects; the 2-row threshold is the better balance. |
+| 2026-04-25 | `fg2-upload-band-gap-merge-2rows` | `this commit` | Merge up to 2 clean rows inside vertical upload bands to recover much of the old full-band rectangle count without returning to full minY/maxY uploads. | Strict run with `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`; verification run without `--require-improvement`. | Promoted as a rect-pressure reduction with bounded byte give-back. Timing stayed flat (`loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`), while `upload_rects 518 -> 427`, `max_upload_rects 6 -> 5`, `upload_bytes 16387840 -> 16496000`, and `dirty_rows 25606 -> 25775`; `cap_hits=0`, `full_fallbacks=0`, and work identity stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-225618/summary.json`, `scratch/ps1-perf-iterate/20260425-230004/summary.json`. | Promote. It keeps 676,480 bytes of the original vertical-band upload reduction while recovering 91 upload rects, so the runtime has less command pressure and still avoids scratch packing. |
 
 ## Retry Queue
 
