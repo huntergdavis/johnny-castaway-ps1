@@ -1,0 +1,276 @@
+"""
+holidays_art_lib — shared building blocks for Johnny Castaway PS1 holiday art.
+
+The Johnny Castaway PS1 port has 4 hand-drawn holiday decorations baked into
+HOLIDAY.PSB. This library is the substrate for generating 31 NEW holiday
+sprites in a similar visual register: 4-bit indexed pixel art using a
+16-color shared CLUT, drawn at variable per-holiday dimensions.
+
+Public API
+----------
+
+  PALETTE         — 16-color shared CLUT (RGB tuples). Index 0 is transparent.
+  PALETTE_NAMES   — human-readable name per index (for debugging).
+  Sprite(w, h)    — wrapper around a PIL "P"-mode image, palette pre-applied.
+  draw_*          — low-level primitive drawing on a Sprite.
+  compose_*       — higher-level scene fragments (palm tree, Johnny, sand).
+  save_4bit_png(sprite, path) — write a 4-bit indexed PNG suitable for
+                                feeding into the existing transcode-bmp-ps1
+                                BMP/PSB pipeline.
+
+Style notes
+-----------
+
+The original 4 sprites (Halloween / St Patrick / Christmas / New Year) lean
+into:
+  * Heavy black or dark outlines around shapes (1px line)
+  * Saturated, slightly desaturated colors — not full-bright neon
+  * Compact compositions (~40-150 px wide) anchored to specific island
+    coordinates so they sit beside the palm tree
+  * Minimal but readable detail at PS1 viewing distance
+
+This library mirrors that aesthetic: the primitive set covers what most
+holidays need (palm tree, Johnny silhouette, simple props, sky tints).
+Variants are produced via deterministic per-holiday compose functions
+elsewhere; this file is just the toolkit.
+"""
+
+from __future__ import annotations
+
+from PIL import Image, ImageDraw
+
+# ---------------------------------------------------------------------------
+# Palette — chosen to cover the full design-doc palette hints across 35
+# holidays while staying within PS1's 16-color-per-sprite CLUT budget. We
+# share a single CLUT across all holidays for simplicity (alternative would
+# be per-frame CLUTs in PSB; deferred). Each holiday composes from this set.
+# ---------------------------------------------------------------------------
+
+PALETTE = [
+    (  0,   0,   0),  # 0  transparent (the loader treats index 0 as see-through)
+    (255, 255, 255),  # 1  white
+    (  0,   0,   0),  # 2  black (outlines)
+    (224, 192, 144),  # 3  light skin
+    (160, 110,  72),  # 4  dark skin / palm trunk
+    ( 56, 132,  64),  # 5  palm green / grass
+    ( 24,  72,  32),  # 6  dark green
+    ( 64, 128, 224),  # 7  sky blue / water
+    ( 16,  32, 104),  # 8  deep blue / night
+    (228, 200, 120),  # 9  sand / gold
+    (200,  56,  56),  # 10 red / cardinal
+    (240, 200,  64),  # 11 sunshine yellow
+    (224, 120,  64),  # 12 orange / pumpkin
+    (216, 144, 192),  # 13 pink
+    (160,  72, 168),  # 14 purple
+    (128, 128, 128),  # 15 gray
+]
+
+PALETTE_NAMES = [
+    "transparent", "white", "black", "skin", "darkskin/trunk", "green",
+    "darkgreen", "sky", "deepblue", "sand/gold", "red", "yellow",
+    "orange", "pink", "purple", "gray",
+]
+
+# Convenience indices
+TRANSPARENT = 0
+WHITE       = 1
+BLACK       = 2
+SKIN        = 3
+TRUNK       = 4
+GREEN       = 5
+DGREEN      = 6
+SKY         = 7
+DEEPBLUE    = 8
+SAND        = 9
+RED         = 10
+YELLOW      = 11
+ORANGE      = 12
+PINK        = 13
+PURPLE      = 14
+GRAY        = 15
+
+
+def _flat_palette() -> list[int]:
+    """PIL "P" mode wants a flat 768-byte palette — 256 entries × 3 channels.
+    We have 16 colors; the rest stay at zero."""
+    flat = []
+    for r, g, b in PALETTE:
+        flat.extend([r, g, b])
+    flat.extend([0] * (768 - len(flat)))
+    return flat
+
+
+PIL_PALETTE = _flat_palette()
+
+
+# ---------------------------------------------------------------------------
+# Sprite — thin wrapper around an indexed-mode PIL image
+# ---------------------------------------------------------------------------
+
+class Sprite:
+    """An indexed-mode PIL image whose pixel values are 0..15 palette indices."""
+
+    def __init__(self, w: int, h: int, fill: int = TRANSPARENT) -> None:
+        self.image = Image.new("P", (w, h), color=fill)
+        self.image.putpalette(PIL_PALETTE)
+        self.draw = ImageDraw.Draw(self.image)
+        self.w = w
+        self.h = h
+
+    def px(self, x: int, y: int, color: int) -> None:
+        """Set a single pixel by palette index. No-op if out of bounds."""
+        if 0 <= x < self.w and 0 <= y < self.h:
+            self.image.putpixel((x, y), color)
+
+    def rect(self, x0: int, y0: int, x1: int, y1: int, color: int,
+             outline: int | None = None) -> None:
+        """Inclusive rectangle, optionally with a 1px outline."""
+        self.draw.rectangle([x0, y0, x1, y1], fill=color, outline=outline)
+
+    def line(self, x0: int, y0: int, x1: int, y1: int, color: int) -> None:
+        self.draw.line([x0, y0, x1, y1], fill=color)
+
+    def ellipse(self, x0: int, y0: int, x1: int, y1: int, color: int,
+                outline: int | None = None) -> None:
+        self.draw.ellipse([x0, y0, x1, y1], fill=color, outline=outline)
+
+    def text(self, x: int, y: int, s: str, color: int = BLACK) -> None:
+        """Tiny text using PIL's default bitmap font (5px tall, ASCII only).
+        Useful for placeholder labels in early variants. Real holiday sprites
+        should use composed art, not text."""
+        self.draw.text((x, y), s, fill=color)
+
+    def save(self, path: str) -> None:
+        """Save as a 4-bit indexed PNG."""
+        # PIL auto-detects bit depth from the palette range used.
+        self.image.save(path, optimize=False)
+
+
+# ---------------------------------------------------------------------------
+# Primitive composition — common Johnny Castaway scene fragments. Each takes
+# a Sprite and an XY anchor and draws onto it. Designed to be combined.
+# ---------------------------------------------------------------------------
+
+def compose_sand_strip(sp: Sprite, y_top: int) -> None:
+    """Sand from y_top to bottom. Index 9 (sand)."""
+    sp.rect(0, y_top, sp.w - 1, sp.h - 1, SAND)
+
+
+def compose_sky(sp: Sprite, y_bot: int, color: int = SKY) -> None:
+    """Sky band from top to y_bot."""
+    sp.rect(0, 0, sp.w - 1, y_bot, color)
+
+
+def compose_palm_tree(sp: Sprite, anchor_x: int, base_y: int,
+                       trunk_h: int = 18, frond_r: int = 8) -> None:
+    """Stylized palm tree centered at (anchor_x, base_y). The base sits at
+    base_y; trunk goes upward trunk_h pixels; fronds spread frond_r pixels
+    around the top."""
+    top_y = base_y - trunk_h
+    # Trunk — slight curve achieved with 2-px offset alternating columns.
+    sp.line(anchor_x, base_y, anchor_x, top_y, TRUNK)
+    sp.line(anchor_x + 1, base_y - 1, anchor_x + 1, top_y, TRUNK)
+    # Fronds — a few line strokes radiating from the top.
+    for dx, dy in [(-frond_r, -2), (-frond_r // 2, -frond_r // 2),
+                   ( 0, -frond_r), ( frond_r // 2, -frond_r // 2),
+                   ( frond_r, -2), (-frond_r // 2, frond_r // 4),
+                   ( frond_r // 2, frond_r // 4)]:
+        sp.line(anchor_x, top_y, anchor_x + dx, top_y + dy, GREEN)
+        # Darker shadow line one pixel below for depth
+        sp.line(anchor_x, top_y + 1, anchor_x + dx, top_y + dy + 1, DGREEN)
+
+
+def compose_johnny_simple(sp: Sprite, x: int, base_y: int,
+                           hat_color: int | None = None,
+                           shirt_color: int = RED) -> None:
+    """Tiny Johnny silhouette — 6 px wide × 12 px tall stick figure.
+    Optional hat (index color) sits on top.
+
+    Layout:
+      ##    head (skin)
+      ##
+      :##:  shirt body (shirt_color)
+      ####
+      ####
+      :##:  legs (darkskin)
+    """
+    # Head
+    sp.rect(x + 1, base_y - 11, x + 4, base_y - 9, SKIN)
+    # Optional hat above the head
+    if hat_color is not None:
+        sp.rect(x + 0, base_y - 13, x + 5, base_y - 12, hat_color)
+        sp.rect(x + 1, base_y - 12, x + 4, base_y - 12, hat_color)
+    # Eyes
+    sp.px(x + 2, base_y - 10, BLACK)
+    sp.px(x + 3, base_y - 10, BLACK)
+    # Shirt body
+    sp.rect(x + 0, base_y - 8, x + 5, base_y - 4, shirt_color)
+    # Legs (skin/dark)
+    sp.rect(x + 1, base_y - 3, x + 2, base_y, TRUNK)
+    sp.rect(x + 3, base_y - 3, x + 4, base_y, TRUNK)
+
+
+def compose_speech_bubble(sp: Sprite, cx: int, cy: int, w: int = 14,
+                           h: int = 10, text: str = "") -> None:
+    """A tiny speech bubble centered at (cx, cy)."""
+    x0, y0 = cx - w // 2, cy - h // 2
+    x1, y1 = x0 + w, y0 + h
+    sp.ellipse(x0, y0, x1, y1, WHITE, outline=BLACK)
+    if text:
+        sp.text(x0 + 2, y0 + 1, text[:3], BLACK)
+
+
+def compose_outlined_rect(sp: Sprite, x0: int, y0: int, x1: int, y1: int,
+                           fill: int, outline: int = BLACK) -> None:
+    sp.rect(x0, y0, x1, y1, fill, outline=outline)
+
+
+def compose_star(sp: Sprite, cx: int, cy: int, r: int, color: int) -> None:
+    """5-point star approximated with a couple of intersecting lines.
+    Crude but recognizable at PS1 viewing distance."""
+    sp.line(cx - r, cy, cx + r, cy, color)
+    sp.line(cx, cy - r, cx, cy + r, color)
+    sp.line(cx - r * 3 // 4, cy - r * 3 // 4, cx + r * 3 // 4, cy + r * 3 // 4, color)
+    sp.line(cx - r * 3 // 4, cy + r * 3 // 4, cx + r * 3 // 4, cy - r * 3 // 4, color)
+    sp.px(cx, cy, color)
+
+
+def compose_heart(sp: Sprite, cx: int, cy: int, r: int, color: int) -> None:
+    """Tiny heart shape — two circles + downward triangle."""
+    sp.ellipse(cx - r, cy - r // 2, cx, cy + r // 2, color)
+    sp.ellipse(cx, cy - r // 2, cx + r, cy + r // 2, color)
+    for i in range(r):
+        x0 = cx - r + i
+        x1 = cx + r - i
+        sp.line(x0, cy + i, x1, cy + i, color)
+
+
+def compose_horizon(sp: Sprite, y: int) -> None:
+    """A 1-px horizon line — separates sky from water."""
+    sp.line(0, y, sp.w - 1, y, DEEPBLUE)
+
+
+# ---------------------------------------------------------------------------
+# Save helpers
+# ---------------------------------------------------------------------------
+
+def save_png(sprite: Sprite, path: str) -> None:
+    """Save the sprite as a 4-bit indexed PNG (16-color palette)."""
+    sprite.save(path)
+
+
+# ---------------------------------------------------------------------------
+# Self-test
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import os
+    out = "/tmp/holidays_art_lib_selftest.png"
+    sp = Sprite(64, 64, fill=SKY)
+    compose_sand_strip(sp, 48)
+    compose_palm_tree(sp, 16, 48, trunk_h=18, frond_r=8)
+    compose_johnny_simple(sp, 32, 48, hat_color=RED, shirt_color=YELLOW)
+    compose_star(sp, 56, 8, 3, YELLOW)
+    sp.save(out)
+    print(f"Self-test sprite saved to {out}")
+    print(f"Palette: {len(PALETTE)} colors, {len(PALETTE_NAMES)} names")
