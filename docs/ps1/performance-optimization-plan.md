@@ -758,6 +758,7 @@ rectangle pressure.
 | `P4-122` | Failed: fixed `16 KB` payload group alignment in the fishing1 FG2 pack. | It reduced read count (`loop_reads 68 -> 56`) and backward seeks (`5 -> 3`) but grew the pack by `92413` bytes and regressed active playback (`loop_vb 1227 -> 1241`, `blocking_vb 6 -> 22`, `prefetch_overrun_vb 6 -> 22`); pack grouping must be selective/cost-aware. |
 | `P4-123` | Failed: align the FG2 payload start to a CD sector with `904` bytes of padding. | It kept due misses at zero but regressed cadence (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); small global payload shifts are unsafe without preserving the measured offset phase. |
 | `P4-124` | Failed: use a pause-poll-only event path for FG2 held/prepared waits. | It reduced speculative prep (`restore_calls/compose_calls 188 -> 183`) but regressed cadence (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`); the zero-delay event tail remains scheduler ballast until FG2 owns the full present/event phase. |
+| `P4-125` | Failed: compile out the old visual debug screen while padding the PS-EXE container to preserve CD layout. | `FISHING1.FG2` stayed at LBA `390` and the EXE container stayed `131072` bytes, but active cadence still regressed (`loop_vb 1227 -> 1232`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`) while speculative prep dropped (`188 -> 183`); the earlier visual-debug miss was not merely a foreground-pack LBA shift. |
 
 Prefetch variants to test in order:
 
