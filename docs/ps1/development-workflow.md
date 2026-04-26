@@ -80,7 +80,7 @@ line) to exercise each applicable variant:
 fgpilot <slug>                          # default
 fgpilot <slug> night 1                  # dusk / night palette
 fgpilot <slug> lowtide 1                # tide state
-fgpilot <slug> holiday <N>              # holiday overlay 1..4
+fgpilot <slug> holiday <N>              # holiday overlay 1..36
 fgpilot <slug> raft-stage <N>           # raft build stage 0..5
 fgpilot <slug> island-pos <x> <y>       # forced island position
 ```

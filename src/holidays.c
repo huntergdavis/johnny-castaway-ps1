@@ -1,7 +1,7 @@
 /*
  * Holiday date-algorithm core. Pure C, no allocation, no PS1 deps.
  *
- * Goal: `holidayForDate(year, month, day)` returns a holiday id (1..35)
+ * Goal: `holidayForDate(year, month, day)` returns a holiday id
  * for any Gregorian date 1583..4099 without any year-specific data
  * tables — we don't ship calendars that go stale. Movable feasts
  * (Easter, Mardi Gras, Thanksgiving, etc.) are computed by algorithm.
@@ -140,7 +140,7 @@ void holidayAutumnalEquinox(int year, int *out_month, int *out_day)
  * For each row, evaluates the date rule and compares against the
  * passed date. First match wins; returns 0 if no match.
  *
- * Cost: one cheap arithmetic pass per holiday. With 35 holidays this
+ * Cost: one cheap arithmetic pass per holiday. With a few dozen holidays this
  * is negligible — called once per scene start. No need to memoize. */
 
 int holidayForDate(int year, int month, int day)
@@ -198,10 +198,59 @@ int holidayForDate(int year, int month, int day)
     return 0;
 }
 
-const char *holidayShortName(int id)
+const struct Holiday *holidayById(int id)
 {
     for (int i = 0; i < gHolidayCount; i++) {
-        if (gHolidays[i].id == id) return gHolidays[i].short_name;
+        if (gHolidays[i].id == id) return &gHolidays[i];
     }
-    return "?";
+    return 0;
+}
+
+int holidayMaxId(void)
+{
+    int maxId = 0;
+    for (int i = 0; i < gHolidayCount; i++) {
+        if (gHolidays[i].id > maxId) maxId = gHolidays[i].id;
+    }
+    return maxId;
+}
+
+int holidayNextId(int current)
+{
+    if (current < 0) return 0;
+    if (current == 0) {
+        return (gHolidayCount > 0) ? gHolidays[0].id : -1;
+    }
+
+    for (int i = 0; i < gHolidayCount; i++) {
+        if (gHolidays[i].id == current) {
+            if (i + 1 < gHolidayCount) return gHolidays[i + 1].id;
+            return -1;
+        }
+    }
+    return -1;
+}
+
+int holidaySpriteIndex(int id)
+{
+    const struct Holiday *h = holidayById(id);
+    return h ? h->sprite_index : -1;
+}
+
+const char *holidayTitle(int id)
+{
+    const struct Holiday *h = holidayById(id);
+    return h ? h->title : "?";
+}
+
+const char *holidayShortName(int id)
+{
+    const struct Holiday *h = holidayById(id);
+    return h ? h->short_name : "?";
+}
+
+const char *holidayDateLabel(int id)
+{
+    const struct Holiday *h = holidayById(id);
+    return h ? h->date_label : "?";
 }

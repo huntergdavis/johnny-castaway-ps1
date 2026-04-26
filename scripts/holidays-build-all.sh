@@ -1,48 +1,33 @@
 #!/usr/bin/env bash
-# Run the full holidays pipeline end-to-end. Fail-fast.
+# Build the simplified holiday emblem sheet.
 #
-#   1. Regenerate src/holidays_table.c + scripts/holidays-art-spec.json
-#      from holidays.yml.
-#   2. Smoke-test the pure-python date algorithm mirror (28/28 spot
-#      checks).
-#   3. Render every variant PNG to scratch/holidays-art/.
-#   4. Build the interactive HTML review page.
-#   5. Build the static contact-sheet PNG.
-#   6. Generate default-picks fallback.
-#   7. Resolve picks → scratch/holidays-selected/.
-#   8. Build the final-review HTML.
-#   9. Run the red-team QA pass (22 checks) — any FAIL aborts.
+# The old five-variant scene/concept-art pipeline was removed. This command now
+# renders one small transparent 32x32 emblem for each added holiday
+# and packs them into a single sprite sheet.
 #
-# Run after editing holidays.yml or any renderer file. ~2.5s.
+# Outputs:
+#   scratch/holidays-emblems/<id>-<short>.png
+#   scratch/holidays-emblems/holiday-emblems-sheet.png
+#   scratch/holidays-emblems/holiday-emblems-preview.png
+#   scratch/holidays-emblems/review.html
+#   scratch/holidays-emblems/manifest.json
 #
-# --clean        Wipe scratch/holidays-art/ before rendering so deleted
-#                renderers don't leave stale PNGs behind.
-# --with-meta    Also run scripts/holidays-redteam-meta.py at the end
-#                (~3 s extra; verifies the red-team itself catches
-#                the bugs it claims to catch).
+# --clean        Wipe scratch/holidays-emblems/ before rendering.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PY=${PYTHON:-python3}
 
-RUN_META=0
 case "${1:-}" in
     -h|--help)
-        sed -n '2,22p' "$0" | sed -e 's/^# \{0,1\}//'
+        sed -n '2,18p' "$0" | sed -e 's/^# \{0,1\}//'
         exit 0
         ;;
     --clean)
-        echo "==> 0. wiping scratch/holidays-art/, pyc cache"
-        rm -rf scratch/holidays-art
-        rm -rf scratch/holidays-selected
-        # Stale pyc cache can mask source edits (mtime preservation
-        # after a restore makes Python skip recompilation). Wipe on
-        # --clean.
+        echo "==> clean"
+        rm -rf scratch/holidays-emblems
         find scripts -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
-        ;;
-    --with-meta)
-        RUN_META=1
         ;;
     "")
         ;;
@@ -53,67 +38,22 @@ case "${1:-}" in
         ;;
 esac
 
-echo "==> 1. codegen"
+echo "==> rendering holiday emblems"
+"$PY" scripts/holidays-emblem-sheet.py
+
+echo
+echo "==> regenerating holiday table"
 "$PY" scripts/holidays-codegen.py
 
 echo
-echo "==> 2. date-algorithm spot tests"
-"$PY" scripts/holidays-test.py | tail -1
-
-echo
-echo "==> 3. render PNGs (31 holidays × 5 variants = 155 + 4 originals)"
-"$PY" scripts/holidays-generate-art.py | tail -3
-
-echo
-echo "==> 4. HTML preview"
-"$PY" scripts/holidays-preview.py | tail -3
-
-echo
-echo "==> 5. contact-sheet PNG"
-"$PY" scripts/holidays-contact-sheet.py | tail -1
-
-echo
-echo "==> 6. default-picks fallback (variant 1 for every holiday)"
-"$PY" scripts/holidays-default-picks.py | tail -1
-
-echo
-echo "==> 7. resolve picks → scratch/holidays-selected/"
-"$PY" scripts/holidays-resolve-picks.py | tail -2
-
-echo
-echo "==> 8. final-review HTML"
-"$PY" scripts/holidays-final-review.py | tail -1
-
-echo
-echo "==> 9. red-team QA pass"
-"$PY" scripts/holidays-redteam.py | tail -10
-
-if [ "$RUN_META" = "1" ]; then
-    echo
-    echo "==> 10. red-team meta-tests"
-    "$PY" scripts/holidays-redteam-meta.py | tail -12
-fi
+echo "==> packing HOLIDAY.BMP / HOLIDAY.PSB"
+"$PY" scripts/holidays-pack-psb.py --verify
 
 echo
 echo "==> done."
-echo "    HTML preview:     scratch/holidays-preview.html"
-echo "    Contact sheet:    scratch/holidays-contact-sheet.png"
-echo "    Final review:     scratch/holidays-final-review.html"
-echo "    Picks staged at:  scratch/holidays-selected/  (using defaults)"
-
-# Summarize the active picks distribution.
-PICKS=scratch/holidays-picks.json
-[ -f "$PICKS" ] || PICKS=scratch/holidays-picks-default.json
-if [ -f "$PICKS" ]; then
-    echo
-    echo "    Variant distribution (from $PICKS):"
-    "$PY" -c "
-import json, collections
-picks = json.load(open('$PICKS'))
-labels = {'1':'LITERAL', '2':'MINIMALIST', '3':'BUSY', '4':'PLAYFUL', '5':'NIGHT'}
-counts = collections.Counter(str(v) for v in picks.values())
-for k in ('1','2','3','4','5'):
-    print(f'      v{k} {labels[k]:11s}  {counts.get(k, 0):>2d}')
-print(f'      total                 {len(picks):>2d} / 31')
-"
-fi
+echo "    Sheet:    scratch/holidays-emblems/holiday-emblems-sheet.png"
+echo "    Preview:  scratch/holidays-emblems/holiday-emblems-preview.png"
+echo "    Review:   scratch/holidays-emblems/review.html"
+echo "    Manifest: scratch/holidays-emblems/manifest.json"
+echo "    BMP:      jc_resources/extracted/bmp/HOLIDAY.BMP"
+echo "    PSB:      jc_resources/transcoded/HOLIDAY.PSB"

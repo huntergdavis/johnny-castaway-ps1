@@ -156,7 +156,7 @@ current_truth:
       - "lowtide 0|1"
       - "raft-stage 0..5"
       - "night 0|1"
-      - "holiday 0..4"
+      - "holiday 0..36"
       - "island-pos <x> <y>"
       - "story-day <n>"
     proven_variant_families:

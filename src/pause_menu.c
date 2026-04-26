@@ -33,6 +33,7 @@
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 #include "memcard.h"
+#include "holidays.h"
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
@@ -690,6 +691,14 @@ static void drawSetTime(void)
              editMinute,
              editField == 4 ? "]" : " ");
 
+    {
+        int dateHoliday = holidayForDate(editYear, editMonth, editDay);
+        pmPrintf("   Holiday: %s\n",
+                 dateHoliday ? holidayShortName(dateHoliday) : "NONE");
+        if (dateHoliday)
+            pmPrintf("   %.28s\n", holidayTitle(dateHoliday));
+    }
+
     pmPrintf("\n");
     pmPrintf(" UP/DOWN select field\n");
     pmPrintf(" LEFT/RIGHT adjust value\n");
@@ -716,8 +725,11 @@ static const char *perfLevelLabel(void)
 extern int hostForcedNight;
 extern int hostForcedHoliday;
 extern int ps1SoftHour;
+extern int ps1SoftMinute;
 extern int ps1SoftMonth;
 extern int ps1SoftDay;
+extern int ps1SoftYear;
+extern int ps1SoftTimeEnabled;
 
 static const char *daynightLabel(void)
 {
@@ -731,15 +743,9 @@ static const char *daynightLabel(void)
 
 static const char *holidayLabel(void)
 {
-    switch (hostForcedHoliday) {
-    case -1: return "AUTO";
-    case 0:  return "NONE";
-    case 1:  return "HALLOWEEN";
-    case 2:  return "ST PATRICK";
-    case 3:  return "CHRISTMAS";
-    case 4:  return "NEW YEAR";
-    default: return "?";
-    }
+    if (hostForcedHoliday < 0) return "AUTO";
+    if (hostForcedHoliday == 0) return "NONE";
+    return holidayShortName(hostForcedHoliday);
 }
 
 static void cycleDaynight(void)
@@ -751,10 +757,8 @@ static void cycleDaynight(void)
 
 static void cycleHoliday(void)
 {
-    /* AUTO(-1) -> NONE(0) -> HALLOWEEN(1) -> ST PATRICK(2) ->
-     * CHRISTMAS(3) -> NEW YEAR(4) -> AUTO */
-    hostForcedHoliday = hostForcedHoliday + 1;
-    if (hostForcedHoliday > 4) hostForcedHoliday = -1;
+    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO */
+    hostForcedHoliday = holidayNextId(hostForcedHoliday);
 }
 
 static void drawMainMenu(void)
@@ -772,6 +776,18 @@ static void drawMainMenu(void)
              menuCursor == MENU_DAYNIGHT ? ">" : " ", daynightLabel());
     pmPrintf(" %s Holiday: %s\n",
              menuCursor == MENU_HOLIDAY ? ">" : " ", holidayLabel());
+    if (menuCursor == MENU_HOLIDAY) {
+        if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
+            pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
+            pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
+        } else if (hostForcedHoliday < 0 && ps1SoftTimeEnabled) {
+            int dateHoliday = holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
+            pmPrintf("   Date picker: %s\n",
+                     dateHoliday ? holidayShortName(dateHoliday) : "NONE");
+        } else if (hostForcedHoliday < 0) {
+            pmPrintf("   Random each scene\n");
+        }
+    }
     pmPrintf(" %s Save Settings to Memcard\n",
              menuCursor == MENU_SAVE ? ">" : " ");
     pmPrintf(" %s Reset Screensaver Loop\n",
@@ -854,7 +870,9 @@ static int handleMainInput(uint16 pressed)
              * what's been previously set). */
             editMonth = ps1SoftMonth;
             editDay   = ps1SoftDay;
+            editYear  = ps1SoftYear;
             editHour  = ps1SoftHour;
+            editMinute = ps1SoftMinute;
             menuState = PAUSE_MENU_SET_TIME;
             editField = 0;
             prevButtons = 0xFFFF;
@@ -919,19 +937,23 @@ static int handleSetTimeInput(uint16 pressed)
 
     /* X = confirm -- write values into the PS1 time stubs.
      * The game reads time via getHour()/getMonthAndDay()/getDayOfYear() in
-     * utils.c, which return hard-coded values on PS1.  We update those stubs
-     * through extern globals exposed specifically for the pause menu. */
+     * utils.c.  We update those stubs through extern globals exposed
+     * specifically for the pause menu. */
     if (pressed & PAD_CROSS) {
-        /* Export to the global overrides (defined in utils.c PS1 section). */
         extern int ps1SoftHour;
+        extern int ps1SoftMinute;
         extern int ps1SoftMonth;
         extern int ps1SoftDay;
+        extern int ps1SoftYear;
         extern int ps1SoftTimeEnabled;
         ps1SoftTimeEnabled = 1;  /* future scene picks honor user-set date */
 
         ps1SoftHour  = editHour;
+        ps1SoftMinute = editMinute;
         ps1SoftMonth = editMonth;
         ps1SoftDay   = editDay;
+        ps1SoftYear  = editYear;
+        hostForcedHoliday = -1;  /* date picker drives holiday while in AUTO */
         /* getDayOfYear() in utils.c computes from ps1SoftMonth/ps1SoftDay */
 
         /* Return to main menu after confirming. */

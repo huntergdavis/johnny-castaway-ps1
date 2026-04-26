@@ -59,6 +59,9 @@
         "width": 160,
         "height": 134
       },
+      "unique_region_ids": [
+        0
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0
@@ -153,6 +156,9 @@
         "width": 448,
         "height": 203
       },
+      "unique_region_ids": [
+        0
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0
@@ -513,6 +519,9 @@
         "width": 264,
         "height": 142
       },
+      "unique_region_ids": [
+        0
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0
@@ -653,6 +662,9 @@
         "width": 384,
         "height": 152
       },
+      "unique_region_ids": [
+        0
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0

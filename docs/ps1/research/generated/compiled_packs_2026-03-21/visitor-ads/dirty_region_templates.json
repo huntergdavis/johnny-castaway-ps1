@@ -53,6 +53,9 @@
         "width": 376,
         "height": 274
       },
+      "unique_region_ids": [
+        1
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0,
@@ -228,6 +231,10 @@
         "width": 640,
         "height": 315
       },
+      "unique_region_ids": [
+        0,
+        1
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0,
@@ -464,6 +471,10 @@
         "width": 640,
         "height": 252
       },
+      "unique_region_ids": [
+        0,
+        1
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0,
@@ -817,6 +828,11 @@
         "width": 640,
         "height": 307
       },
+      "unique_region_ids": [
+        0,
+        1,
+        2
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0,
@@ -1174,6 +1190,9 @@
         "width": 408,
         "height": 233
       },
+      "unique_region_ids": [
+        0
+      ],
       "clear_heavy": false,
       "unique_clear_region_ids": [
         0

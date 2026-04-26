@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate the C holiday table + the art-pipeline spec from holidays.yml.
+Generate the C holiday table from holidays.yml.
 
 Inputs:
   /home/hunter/workspace/jc_reborn/holidays.yml
@@ -11,16 +11,9 @@ Outputs:
       Linked alongside src/holidays.c which contains the date-algorithm
       core. Schema must match struct Holiday in src/holidays.h.
 
-  /home/hunter/workspace/jc_reborn/scripts/holidays-art-spec.json
-      JSON list of art tasks: one entry per holiday that needs new
-      AI-generated pixel art (existing_sprite is null). Consumed by
-      the next phase's holidays-art-agent.py.
-
 Run:
   python3 scripts/holidays-codegen.py
 """
-import json
-import re
 import sys
 from pathlib import Path
 
@@ -33,7 +26,6 @@ except ImportError:
 REPO = Path(__file__).resolve().parent.parent
 YAML_PATH = REPO / "holidays.yml"
 TABLE_OUT = REPO / "src" / "holidays_table.c"
-ART_SPEC_OUT = REPO / "scripts" / "holidays-art-spec.json"
 
 KIND_MAP = {
     "fixed":           "HOLIDAY_KIND_FIXED",
@@ -44,6 +36,22 @@ KIND_MAP = {
     "equinox_vernal":  "HOLIDAY_KIND_EQUINOX_VER",
     "equinox_autumnal":"HOLIDAY_KIND_EQUINOX_AUT",
     "election_day":    "HOLIDAY_KIND_ELECTION_DAY",
+}
+
+MONTH_ABBR = [
+    "", "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+]
+
+WEEKDAY_ABBR = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+
+NTH_LABEL = {
+    -1: "LAST",
+     1: "1ST",
+     2: "2ND",
+     3: "3RD",
+     4: "4TH",
+     5: "5TH",
 }
 
 
@@ -66,6 +74,52 @@ def cstring(s: str) -> str:
         return '""'
     s = s.replace("\\", "\\\\").replace('"', '\\"')
     return f'"{s}"'
+
+
+def date_label(rule: dict) -> str:
+    """Compact pause-menu label for the holiday's date rule."""
+    rule = normalize_kind(rule)
+    kind = rule.get("kind", "fixed")
+    month = int(rule.get("month", 0))
+    if kind == "fixed":
+        return f"{MONTH_ABBR[month]} {int(rule.get('day', 0))}"
+    if kind == "nth_weekday":
+        n = int(rule.get("n", 0))
+        weekday = int(rule.get("weekday", 0))
+        return f"{NTH_LABEL.get(n, '?')} {WEEKDAY_ABBR[weekday]} {MONTH_ABBR[month]}"
+    if kind == "easter_offset":
+        offset = int(rule.get("offset", 0))
+        if offset == 0:
+            return "EASTER"
+        return f"EASTER{offset:+d}"
+    if kind == "solstice_winter":
+        return "DEC 21"
+    if kind == "solstice_summer":
+        return "JUN 21"
+    if kind == "equinox_vernal":
+        return "MAR 20"
+    if kind == "equinox_autumnal":
+        return "SEP 22"
+    if kind == "election_day":
+        return "NOV 2-8"
+    return "?"
+
+
+def assign_sprite_indices(holidays):
+    """Match HOLIDAY.BMP frame order: original four first, new emblems in
+    YAML/review-sheet order."""
+    existing = [
+        int(h["existing_sprite"])
+        for h in holidays
+        if h.get("existing_sprite") is not None
+    ]
+    next_index = (max(existing) + 1) if existing else 0
+    for h in holidays:
+        if h.get("existing_sprite") is not None:
+            h["_sprite_index"] = int(h["existing_sprite"])
+        else:
+            h["_sprite_index"] = next_index
+            next_index += 1
 
 
 def emit_table(holidays):
@@ -95,7 +149,9 @@ def emit_table(holidays):
         existing_idx = int(existing) if existing is not None else -1
         lines.append("    {")
         lines.append(f"        .id            = {int(h['id'])},")
+        lines.append(f"        .title         = {cstring(h.get('name', '?'))},")
         lines.append(f"        .short_name    = {cstring(h.get('short_name', h.get('name', '?')))},")
+        lines.append(f"        .date_label    = {cstring(date_label(rule))},")
         lines.append(f"        .kind          = {kind},")
         lines.append(f"        .month         = {month},")
         lines.append(f"        .day           = {day},")
@@ -107,36 +163,13 @@ def emit_table(holidays):
         lines.append(f"        .island_x      = {ix},")
         lines.append(f"        .island_y      = {iy},")
         lines.append(f"        .existing_sprite_index = {existing_idx},")
+        lines.append(f"        .sprite_index  = {int(h.get('_sprite_index', existing_idx))},")
         lines.append("    },")
     lines.append("};")
     lines.append("")
     lines.append(f"const int gHolidayCount = {len(holidays)};")
     lines.append("")
     return "\n".join(lines)
-
-
-def emit_art_spec(holidays):
-    """List of holidays that need new AI-generated art."""
-    spec = []
-    for h in holidays:
-        if h.get("existing_sprite") is not None:
-            continue  # original 4 — sprite already exists
-        spec.append({
-            "id":          h["id"],
-            "name":        h.get("name"),
-            "short_name":  h.get("short_name"),
-            "description": h.get("description"),
-            "sprite": {
-                "width":  int(h.get("sprite", {}).get("width",  64)),
-                "height": int(h.get("sprite", {}).get("height", 64)),
-            },
-            "island_xy": [
-                int(h.get("sprite", {}).get("island_x", 320)),
-                int(h.get("sprite", {}).get("island_y", 240)),
-            ],
-            "palette":   h.get("palette", []),
-        })
-    return spec
 
 
 def validate(holidays):
@@ -190,7 +223,7 @@ def main():
     if not isinstance(holidays, list):
         sys.stderr.write("error: holidays.yml must be a YAML list\n")
         sys.exit(1)
-    holidays.sort(key=lambda h: int(h.get("id", 0)))
+    assign_sprite_indices(holidays)
 
     issues = validate(holidays)
     if issues:
@@ -202,10 +235,6 @@ def main():
     table_src = emit_table(holidays)
     TABLE_OUT.write_text(table_src, encoding="utf-8")
     print(f"wrote {TABLE_OUT.relative_to(REPO)}  ({len(holidays)} holidays)")
-
-    art_spec = emit_art_spec(holidays)
-    ART_SPEC_OUT.write_text(json.dumps(art_spec, indent=2) + "\n", encoding="utf-8")
-    print(f"wrote {ART_SPEC_OUT.relative_to(REPO)}  ({len(art_spec)} need art)")
 
 
 if __name__ == "__main__":

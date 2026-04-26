@@ -1,6 +1,10 @@
 # Holiday Expansion Design
 
-Design ideation for expanding Johnny Castaway PS1 from 4 holidays to 35 well-distributed, US-centric celebrations. Each entry includes date rule, a one-sentence visual concept, and a suggested palette.
+Historical design ideation for expanding Johnny Castaway PS1 from 4 holidays
+to 35 well-distributed, US-centric celebrations. The current art deliverable
+does not implement these as full scenes; it reduces each new holiday to one
+small transparent 32x32 emblem sprite. See `holidays-pipeline.md` and
+`holidays-style-guide.md` for the active art contract.
 
 ## January
 
@@ -57,6 +61,10 @@ Design ideation for expanding Johnny Castaway PS1 from 4 holidays to 35 well-dis
 12. **April Fool's Day** — Apr 1
     - Whoopee cushion under Johnny's hammock; the sun is wearing a clown nose; palm leaves are upside-down.
     - Yellow, red, blue.
+
+12a. **4/20 Day** — Apr 20
+    - Small green leaf and peace-sign medallion.
+    - Green, gold, white.
 
 13. **Easter** — movable Sunday (Mar/Apr)
     - Pastel eggs hidden in the sand, bunny ears on Johnny, basket woven from palm fronds.
@@ -175,7 +183,7 @@ Design ideation for expanding Johnny Castaway PS1 from 4 holidays to 35 well-dis
 | Jan | 3 |
 | Feb | 5 |
 | Mar | 3 |
-| Apr | 3 |
+| Apr | 4 |
 | May | 4 |
 | Jun | 3 |
 | Jul | 2 |
@@ -185,7 +193,7 @@ Design ideation for expanding Johnny Castaway PS1 from 4 holidays to 35 well-dis
 | Nov | 3 |
 | Dec | 1 |
 
-Total: **35 holidays**, average ~3 per month, no month with zero. Every month has at least one decoration event, so the screensaver always feels seasonally alive.
+Total: **36 holidays**, average ~3 per month, no month with zero. Every month has at least one decoration event, so the screensaver always feels seasonally alive.
 
 ## Implementation Notes (non-binding)
 

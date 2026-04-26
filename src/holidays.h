@@ -5,7 +5,7 @@
  * `scripts/holidays-codegen.py` into `src/holidays_table.c`. The
  * algorithm primitives (day-of-week, Nth weekday, Meeus Easter, etc.)
  * live in `src/holidays.c` and are hand-authored. Together they let
- * `holidayForDate(m,d,y)` return a stable holiday id 1..35 for any
+ * `holidayForDate(m,d,y)` return a stable holiday id for any
  * year from 1583 to 4099 — we don't ship date tables that go stale.
  */
 #ifndef HOLIDAYS_H
@@ -29,8 +29,10 @@ enum HolidayDateKind {
 
 /* One row per holiday, generated into gHolidays[] in holidays_table.c. */
 struct Holiday {
-    int          id;             /* 1..35 — stable forever */
+    int          id;             /* Stable holiday id; 0 is reserved for none */
+    const char  *title;          /* Display title for pause menu details */
     const char  *short_name;     /* 12-char max, used by pause menu cycling */
+    const char  *date_label;     /* Compact fixed/rule label for pause menu */
     int          kind;           /* HolidayDateKind */
     /* Date-rule fields. Interpretation depends on `kind`:
      *   FIXED         : month + day used
@@ -49,6 +51,7 @@ struct Holiday {
     short        island_x;
     short        island_y;
     short        existing_sprite_index; /* 0..3 for the original 4, -1 for new */
+    short        sprite_index;          /* HOLIDAY.BMP/PSB frame index */
 };
 
 extern const struct Holiday gHolidays[];
@@ -82,14 +85,18 @@ void holidaySummerSolstice(int year, int *out_month, int *out_day);
 void holidayVernalEquinox (int year, int *out_month, int *out_day);
 void holidayAutumnalEquinox(int year, int *out_month, int *out_day);
 
-/* Is `(year, month, day)` a known holiday? Returns the holiday id
- * (1..35), or 0 if no match. Iterates gHolidays[] applying each
- * row's date rule. */
+/* Is `(year, month, day)` a known holiday? Returns the holiday id, or 0
+ * if no match. Iterates gHolidays[] applying each row's date rule. */
 int holidayForDate(int year, int month, int day);
 
-/* Look up the short_name (≤12 chars, all-caps) for use in the pause
- * menu's Holiday cycling. Returns "?" for invalid id. */
+/* Table lookup helpers. Invalid ids return NULL / "?" / -1 as appropriate. */
+const struct Holiday *holidayById(int id);
+int holidayMaxId(void);
+int holidayNextId(int current);
+int holidaySpriteIndex(int id);
+const char *holidayTitle(int id);
 const char *holidayShortName(int id);
+const char *holidayDateLabel(int id);
 
 #ifdef __cplusplus
 }

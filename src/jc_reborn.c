@@ -77,6 +77,7 @@ extern uint8 pad_buff[2][34];
 #endif
 
 #include "island.h"
+#include "holidays.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 
@@ -137,6 +138,8 @@ static int hostForcedRaftStage = -1;
  * scene). Set via BOOTMODE tokens (legacy) or pause-menu cycling. */
 int hostForcedNight = -1;
 int hostForcedHoliday = -1;
+static int hostBootForcedNightValid = 0;
+static int hostBootForcedHolidayValid = 0;
 
 /* Screensaver loop: fgpilot mode replays the scene forever with randomized
  * variant params per iteration, unless the `noloop` boot token is set.
@@ -221,7 +224,8 @@ static void fgLoopApplyVariant(const char *sceneName)
     } else if (ps1SoftTimeEnabled) {
         islandState.holiday = ps1HolidayFromDate(ps1SoftMonth, ps1SoftDay);
     } else {
-        islandState.holiday = (rand() % 5);
+        int roll = rand() % (gHolidayCount + 1);
+        islandState.holiday = (roll == 0) ? 0 : gHolidays[roll - 1].id;
     }
 
     if (hostForcedIslandPosValid) {
@@ -281,6 +285,8 @@ static void ps1ResetBootArgs(void)
     hostForcedRaftStage = -1;
     hostForcedNight = -1;
     hostForcedHoliday = -1;
+    hostBootForcedNightValid = 0;
+    hostBootForcedHolidayValid = 0;
 }
 
 static int ps1CopyBootArg(int index, const char *src)
@@ -419,11 +425,13 @@ static void ps1ApplyBootOverride(char *buffer)
             i++;
         } else if (!strcmp(tokens[i], "night") && (i + 1) < tokenCount) {
             hostForcedNight = atoi(tokens[i + 1]) ? 1 : 0;
+            hostBootForcedNightValid = 1;
             i++;
         } else if (!strcmp(tokens[i], "holiday") && (i + 1) < tokenCount) {
             hostForcedHoliday = atoi(tokens[i + 1]);
             if (hostForcedHoliday < 0) hostForcedHoliday = 0;
-            if (hostForcedHoliday > 4) hostForcedHoliday = 4;
+            if (hostForcedHoliday > holidayMaxId()) hostForcedHoliday = holidayMaxId();
+            hostBootForcedHolidayValid = 1;
             i++;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
@@ -981,6 +989,7 @@ static void parseArgs(int argc, char **argv)
             else if (!strcmp(argv[i], "night")) {
                 if (i + 1 < argc) {
                     hostForcedNight = atoi(argv[++i]) ? 1 : 0;
+                    hostBootForcedNightValid = 1;
                 } else {
                     fprintf(stderr, "Error: night requires 0 or 1\n");
                     usage();
@@ -990,9 +999,12 @@ static void parseArgs(int argc, char **argv)
                 if (i + 1 < argc) {
                     hostForcedHoliday = atoi(argv[++i]);
                     if (hostForcedHoliday < 0) hostForcedHoliday = 0;
-                    if (hostForcedHoliday > 4) hostForcedHoliday = 4;
+                    if (hostForcedHoliday > holidayMaxId())
+                        hostForcedHoliday = holidayMaxId();
+                    hostBootForcedHolidayValid = 1;
                 } else {
-                    fprintf(stderr, "Error: holiday requires a value 0..4\n");
+                    fprintf(stderr, "Error: holiday requires a value 0..%d\n",
+                            holidayMaxId());
                     usage();
                 }
             }
@@ -1119,11 +1131,20 @@ int main(int argc, char **argv)
     ps1PrintfProbe("sound-init", NULL);
 
     /* Restore settings from memcard. memcard.c uses our own SPI driver
-     * (no BIOS card driver = no scene-rate regression). */
+     * (no BIOS card driver = no scene-rate regression). Explicit BOOTMODE
+     * parameters are launch-time intent and must win over saved defaults. */
+    int bootNightValid = hostBootForcedNightValid;
+    int bootHolidayValid = hostBootForcedHolidayValid;
+    int bootNight = hostForcedNight;
+    int bootHoliday = hostForcedHoliday;
     if (memcardLoadSettings() && soundMuted) {
         soundMuted = 0;
         soundMuteToggle();  /* flip to muted */
     }
+    if (bootNightValid)
+        hostForcedNight = bootNight;
+    if (bootHolidayValid)
+        hostForcedHoliday = bootHoliday;
 
     if (numPalResources > 0 && palResources[0]) {
         grLoadPalette(palResources[0]);

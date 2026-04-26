@@ -48,19 +48,20 @@ extern void exit(int status) __attribute__((noreturn));
 #include <string.h>
 
 #include "mytypes.h"
+#include "holidays.h"
 
 
 #define BUF_LEN 256
 
 int debugMode = 0;
 
-#ifdef PS1_BUILD
 /* User-overridable date/time. ps1SoftTimeEnabled gates whether scene
  * runtime uses these. The pause menu's Set Time/Date confirm path sets
  * the flag; fgLoopApplyVariant in jc_reborn.c reads the flag and
  * overrides islandState.night and .holiday accordingly. */
 int ps1SoftTimeEnabled = 0;
 int ps1SoftHour  = 12;
+int ps1SoftMinute = 0;
 int ps1SoftMonth = 6;
 int ps1SoftDay   = 30;
 int ps1SoftYear  = 2026;  /* For movable-feast computation */
@@ -79,7 +80,6 @@ int ps1HolidayFromDate(int month, int day)
     int year = ps1SoftYear ? ps1SoftYear : 2026;
     return holidayForDate(year, month, day);
 }
-#endif
 
 void fatalError(char *message, ... )
 {
@@ -245,11 +245,34 @@ void hexdump(uint8 *data, uint32 len)
 }
 
 
+#ifdef PS1_BUILD
+static int utilsIsLeapYear(int year)
+{
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+}
+
+static int utilsDayOfYearFromDate(int year, int month, int day)
+{
+    static const int beforeMonth[13] =
+        { 0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+    int yday;
+
+    if (month < 1 || month > 12) return 180;
+    if (day < 1 || day > 31) return 180;
+
+    yday = beforeMonth[month] + day - 1;
+    if (month > 2 && utilsIsLeapYear(year))
+        yday += 1;
+    return yday;
+}
+#endif
+
 int getDayOfYear()
 {
 #ifdef PS1_BUILD
-    /* PS1 doesn't have RTC - return fixed day for deterministic behavior */
-    return 180;  /* Mid-year */
+    if (ps1SoftTimeEnabled)
+        return utilsDayOfYearFromDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
+    return 180;  /* Mid-year default when no software clock is set. */
 #else
     struct timeval tv;
     struct tm *localTime;
@@ -264,7 +287,8 @@ int getDayOfYear()
 int getHour()
 {
 #ifdef PS1_BUILD
-    /* PS1 doesn't have RTC - return noon for consistent lighting */
+    if (ps1SoftTimeEnabled)
+        return ps1SoftHour;
     return 12;
 #else
     struct timeval tv;
@@ -280,8 +304,14 @@ int getHour()
 char *getMonthAndDay()
 {
 #ifdef PS1_BUILD
-    /* Return fixed date for PS1 */
     static char result[5] = "0630";  /* June 30 */
+    if (ps1SoftTimeEnabled) {
+        result[0] = (char)('0' + (ps1SoftMonth / 10));
+        result[1] = (char)('0' + (ps1SoftMonth % 10));
+        result[2] = (char)('0' + (ps1SoftDay / 10));
+        result[3] = (char)('0' + (ps1SoftDay % 10));
+        result[4] = '\0';
+    }
     return result;
 #else
     struct timeval tv;

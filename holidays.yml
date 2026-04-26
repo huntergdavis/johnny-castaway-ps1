@@ -1,7 +1,7 @@
 # Johnny Castaway PS1 - Holiday Definitions
 # Source of truth for the holiday-expansion pipeline.
 # IDs 1..4 match the original PS1 enum (preserve memcard saves);
-# IDs 5..35 are new holidays in calendar order starting from January.
+# IDs 5..36 are new holidays in calendar order starting from January.
 # See docs/ps1/holidays-expansion-design.md for visual concepts.
 
 - id: 4
@@ -26,16 +26,16 @@
 - id: 5
   name: "Elvis's Birthday"
   short_name: "ELVIS BDAY"
-  description: "Johnny in pompadour wig and rhinestone collar, tiny guitar leaned against the palm."
+  description: "Small guitar and music note."
   date_rule:
     kind: fixed
     month: 1
     day: 8
   sprite:
-    width: 56
-    height: 70
-    island_x: 388
-    island_y: 240
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#FFFFFF"
     - "#D4AF37"
@@ -45,17 +45,17 @@
 - id: 6
   name: "MLK Jr. Day"
   short_name: "MLK DAY"
-  description: "Johnny stands at attention beside a small podium with a paper banner reading I HAVE A DREAM."
+  description: "Tiny podium with speech paper and dove."
   date_rule:
     kind: nth_weekday
     month: 1
     n: 3
     weekday: 1
   sprite:
-    width: 88
-    height: 56
-    island_x: 320
-    island_y: 250
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#7B1F2A"
     - "#F5E8C8"
@@ -65,16 +65,16 @@
 - id: 7
   name: "Groundhog Day"
   short_name: "GROUNDHOG"
-  description: "A groundhog pops out of a sand-burrow casting a long shadow; Johnny squints at it skeptically."
+  description: "Groundhog head popping from a burrow."
   date_rule:
     kind: fixed
     month: 2
     day: 2
   sprite:
-    width: 64
-    height: 48
-    island_x: 280
-    island_y: 305
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#7A4A2A"
     - "#E08A3C"
@@ -84,16 +84,16 @@
 - id: 8
   name: "Valentine's Day"
   short_name: "VALENTINE"
-  description: "Heart carved into the palm trunk, rose in Johnny's teeth, pink heart-shaped clouds."
+  description: "Heart carved on trunk sliver with small floating hearts."
   date_rule:
     kind: fixed
     month: 2
     day: 14
   sprite:
-    width: 72
-    height: 80
-    island_x: 380
-    island_y: 175
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#FFB6D9"
     - "#E60026"
@@ -103,17 +103,17 @@
 - id: 9
   name: "Super Bowl Sunday"
   short_name: "SUPER BOWL"
-  description: "Johnny in face paint with foam finger; football tee'd up in the sand, tiny goalposts of driftwood."
+  description: "Football with laces."
   date_rule:
     kind: nth_weekday
     month: 2
     n: 2
     weekday: 0
   sprite:
-    width: 96
-    height: 56
-    island_x: 250
-    island_y: 320
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#1F7A3A"
     - "#FFFFFF"
@@ -123,17 +123,17 @@
 - id: 10
   name: "Presidents' Day"
   short_name: "PRESIDENTS"
-  description: "Johnny in tricorn hat saluting a tiny stars-and-stripes; cherry tree sapling next to the palm."
+  description: "Tricorn hat with star cockade."
   date_rule:
     kind: nth_weekday
     month: 2
     n: 3
     weekday: 1
   sprite:
-    width: 80
-    height: 64
-    island_x: 360
-    island_y: 220
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#1A2A5E"
     - "#C8102E"
@@ -143,15 +143,15 @@
 - id: 11
   name: "Mardi Gras"
   short_name: "MARDI GRAS"
-  description: "Johnny in feathered mask and beads; coconut maracas; jazz notes drifting on the breeze."
+  description: "Mardi Gras mask and beads."
   date_rule:
     kind: easter_offset
     offset: -47
   sprite:
-    width: 144
-    height: 72
-    island_x: 290
-    island_y: 200
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#6A1B9A"
     - "#1F8A3A"
@@ -161,16 +161,16 @@
 - id: 12
   name: "Pi Day"
   short_name: "PI DAY"
-  description: "A pie cooling on a rock, pi symbol drawn in the sand, Johnny in nerd glasses with a slide rule."
+  description: "Tiny chalkboard with pi and pie slice."
   date_rule:
     kind: fixed
     month: 3
     day: 14
   sprite:
-    width: 48
-    height: 40
-    island_x: 240
-    island_y: 340
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#F5E8C8"
     - "#7A4A2A"
@@ -199,15 +199,15 @@
 - id: 13
   name: "First Day of Spring"
   short_name: "SPRING"
-  description: "Cherry blossoms blooming on the palm, butterflies, Johnny stretching in the sun."
+  description: "Blossom branch with butterfly."
   date_rule:
     kind: equinox
     month: 3
   sprite:
-    width: 96
-    height: 80
-    island_x: 370
-    island_y: 170
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#FFC9D9"
     - "#B8E0A8"
@@ -217,34 +217,53 @@
 - id: 14
   name: "April Fool's Day"
   short_name: "APRIL FOOL"
-  description: "Whoopee cushion under Johnny's hammock; the sun is wearing a clown nose; palm leaves are upside-down."
+  description: "Whoopee cushion and clown nose."
   date_rule:
     kind: fixed
     month: 4
     day: 1
   sprite:
-    width: 80
-    height: 64
-    island_x: 410
-    island_y: 200
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#FFD93D"
     - "#E63946"
     - "#3A86FF"
   existing_sprite: null
 
+- id: 36
+  name: "4/20 Day"
+  short_name: "420 DAY"
+  description: "Green leaf and peace-sign medallion."
+  date_rule:
+    kind: fixed
+    month: 4
+    day: 20
+  sprite:
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
+  palette:
+    - "#1F7A3A"
+    - "#D4AF37"
+    - "#FFFFFF"
+  existing_sprite: null
+
 - id: 15
   name: "Easter"
   short_name: "EASTER"
-  description: "Pastel eggs hidden in the sand, bunny ears on Johnny, basket woven from palm fronds."
+  description: "Decorated Easter eggs."
   date_rule:
     kind: easter_offset
     offset: 0
   sprite:
-    width: 72
-    height: 64
-    island_x: 300
-    island_y: 310
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#C8B6FF"
     - "#B6FFC8"
@@ -254,16 +273,16 @@
 - id: 16
   name: "Earth Day"
   short_name: "EARTH DAY"
-  description: "Johnny planting a sapling, a globe-shaped buoy washed ashore, recycling bin made from a barrel."
+  description: "Globe with tiny leaf."
   date_rule:
     kind: fixed
     month: 4
     day: 22
   sprite:
-    width: 88
-    height: 72
-    island_x: 260
-    island_y: 280
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#1F5A2A"
     - "#1A6AA8"
@@ -273,16 +292,16 @@
 - id: 17
   name: "Star Wars Day"
   short_name: "STAR WARS"
-  description: "Johnny in brown Jedi robe wielding a glowing palm-frond lightsaber; tiny droid silhouette in the surf."
+  description: "Lightsaber prop with star sparkle."
   date_rule:
     kind: fixed
     month: 5
     day: 4
   sprite:
-    width: 72
-    height: 96
-    island_x: 380
-    island_y: 180
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#C8B594"
     - "#0A1A4A"
@@ -292,16 +311,16 @@
 - id: 18
   name: "Cinco de Mayo"
   short_name: "CINCO MAYO"
-  description: "Sombrero on Johnny, papel picado bunting between palms, maraca-coconut in hand."
+  description: "Sombrero and maraca."
   date_rule:
     kind: fixed
     month: 5
     day: 5
   sprite:
-    width: 128
-    height: 64
-    island_x: 270
-    island_y: 200
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#E63946"
     - "#1F7A3A"
@@ -311,17 +330,17 @@
 - id: 19
   name: "Mother's Day"
   short_name: "MOTHERS DAY"
-  description: "Bouquet of tropical flowers in a coconut vase; MOM drawn large in the sand with shells."
+  description: "Coconut vase bouquet."
   date_rule:
     kind: nth_weekday
     month: 5
     n: 2
     weekday: 0
   sprite:
-    width: 96
-    height: 56
-    island_x: 230
-    island_y: 340
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#FFB6D9"
     - "#C8B6FF"
@@ -331,17 +350,17 @@
 - id: 20
   name: "Memorial Day"
   short_name: "MEMORIAL"
-  description: "Small American flag at half-staff in the sand; Johnny removes his hat in salute."
+  description: "Half-mast American flag with poppies."
   date_rule:
     kind: nth_weekday
     month: 5
     n: -1
     weekday: 1
   sprite:
-    width: 56
-    height: 80
-    island_x: 350
-    island_y: 220
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#1A2A5E"
     - "#C8102E"
@@ -351,17 +370,17 @@
 - id: 21
   name: "Father's Day"
   short_name: "FATHERS DAY"
-  description: "#1 DAD sandcastle, Johnny in a Worlds Best Castaway tie, tiny grill smoking on a rock."
+  description: "Dad tie and small spatula."
   date_rule:
     kind: nth_weekday
     month: 6
     n: 3
     weekday: 0
   sprite:
-    width: 80
-    height: 56
-    island_x: 290
-    island_y: 330
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#4A6A8A"
     - "#3A3A3A"
@@ -371,15 +390,15 @@
 - id: 22
   name: "First Day of Summer"
   short_name: "SUMMER"
-  description: "Sun is huge and beaming; Johnny in shades, beach umbrella stuck in the sand, popsicle in hand."
+  description: "Smiling summer sun with shades."
   date_rule:
     kind: solstice
     month: 6
   sprite:
-    width: 112
-    height: 96
-    island_x: 360
-    island_y: 165
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#5AD0E8"
     - "#FFD93D"
@@ -389,17 +408,17 @@
 - id: 23
   name: "Pride Day"
   short_name: "PRIDE"
-  description: "Rainbow flag fashioned from palm fronds, Johnny with rainbow lei, prismatic surf foam."
+  description: "Rainbow pride flag with heart."
   date_rule:
     kind: nth_weekday
     month: 6
     n: -1
     weekday: 0
   sprite:
-    width: 112
-    height: 64
-    island_x: 250
-    island_y: 230
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#E63946"
     - "#1F7A3A"
@@ -409,16 +428,16 @@
 - id: 24
   name: "Independence Day"
   short_name: "JULY 4TH"
-  description: "Fireworks bursting over the ocean, Johnny in Uncle Sam hat, sparkler in hand, flag planted in sand."
+  description: "Firework burst and small flag."
   date_rule:
     kind: fixed
     month: 7
     day: 4
   sprite:
-    width: 144
-    height: 80
-    island_x: 320
-    island_y: 175
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#C8102E"
     - "#FFFFFF"
@@ -428,16 +447,16 @@
 - id: 25
   name: "Moon Landing Day"
   short_name: "MOON LAND"
-  description: "A toy rocket on the beach, footprints leading to the surf, the moon enormous and cratered overhead."
+  description: "Toy rocket and moon."
   date_rule:
     kind: fixed
     month: 7
     day: 20
   sprite:
-    width: 128
-    height: 80
-    island_x: 220
-    island_y: 175
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#7A8A9A"
     - "#1A1A4A"
@@ -447,16 +466,16 @@
 - id: 26
   name: "National Watermelon Day"
   short_name: "WATERMELON"
-  description: "Slice of watermelon as Johnny's hat; rinds scattered, seeds being spit at a crab."
+  description: "Watermelon slice with seeds."
   date_rule:
     kind: fixed
     month: 8
     day: 3
   sprite:
-    width: 56
-    height: 48
-    island_x: 410
-    island_y: 270
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#E63946"
     - "#3A8A3A"
@@ -466,16 +485,16 @@
 - id: 27
   name: "Left-Handers Day"
   short_name: "LEFT HAND"
-  description: "Johnny waves with his left hand; everything on the island is mirrored - palm leans left, sun on the left."
+  description: "Left hand holding pencil."
   date_rule:
     kind: fixed
     month: 8
     day: 13
   sprite:
-    width: 96
-    height: 64
-    island_x: 240
-    island_y: 220
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#A8E0C8"
     - "#FF7A6A"
@@ -485,16 +504,16 @@
 - id: 28
   name: "Hawaii Statehood Day"
   short_name: "HAWAII DAY"
-  description: "Hula skirt on Johnny, tiki torches lit, ukulele leaning on the message-bottle."
+  description: "Hibiscus flower."
   date_rule:
     kind: fixed
     month: 8
     day: 21
   sprite:
-    width: 80
-    height: 80
-    island_x: 380
-    island_y: 195
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#E83A8A"
     - "#3A8A4A"
@@ -504,17 +523,17 @@
 - id: 29
   name: "Labor Day"
   short_name: "LABOR DAY"
-  description: "Johnny in hardhat and tool-belt; a half-built tiki hut and a GONE FISHIN sign on the palm."
+  description: "Hard hat and tool."
   date_rule:
     kind: nth_weekday
     month: 9
     n: 1
     weekday: 1
   sprite:
-    width: 96
-    height: 80
-    island_x: 270
-    island_y: 200
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#F5C518"
     - "#3A5A8A"
@@ -524,16 +543,16 @@
 - id: 30
   name: "Talk Like a Pirate Day"
   short_name: "PIRATE DAY"
-  description: "Eyepatch and tricorn on Johnny, jolly roger flag from the palm, parrot perched on shoulder."
+  description: "Pirate tricorn and skull face."
   date_rule:
     kind: fixed
     month: 9
     day: 19
   sprite:
-    width: 88
-    height: 96
-    island_x: 350
-    island_y: 175
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#1A1A1A"
     - "#8A1A1A"
@@ -543,15 +562,15 @@
 - id: 31
   name: "First Day of Autumn"
   short_name: "AUTUMN"
-  description: "Palm leaves tinged orange and red, a few drifting down; Johnny in a flannel shirt over his rags."
+  description: "Autumn leaf and acorn."
   date_rule:
     kind: equinox
     month: 9
   sprite:
-    width: 112
-    height: 80
-    island_x: 320
-    island_y: 180
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#C8531A"
     - "#C89A2A"
@@ -561,17 +580,17 @@
 - id: 32
   name: "Columbus / Indigenous Peoples' Day"
   short_name: "COLUMBUS"
-  description: "A tiny galleon on the horizon; Johnny holds a hand-drawn map and looks confused."
+  description: "Compass rose on parchment map."
   date_rule:
     kind: nth_weekday
     month: 10
     n: 2
     weekday: 1
   sprite:
-    width: 96
-    height: 56
-    island_x: 230
-    island_y: 215
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#7A5A3A"
     - "#F0E0B8"
@@ -600,15 +619,15 @@
 - id: 33
   name: "Election Day"
   short_name: "ELECTION"
-  description: "I VOTED sticker on Johnny's chest, ballot box made from a crate, tiny donkey and elephant in surf."
+  description: "Ballot box with checked ballot."
   date_rule:
     kind: election_day
     month: 11
   sprite:
-    width: 80
-    height: 64
-    island_x: 300
-    island_y: 250
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#A82A3A"
     - "#E0E0E0"
@@ -618,16 +637,16 @@
 - id: 34
   name: "Veterans Day"
   short_name: "VETERANS"
-  description: "Johnny in dress-uniform cap saluting; a wreath of palm leaves leans against the trunk."
+  description: "Medal and wreath."
   date_rule:
     kind: fixed
     month: 11
     day: 11
   sprite:
-    width: 64
-    height: 80
-    island_x: 360
-    island_y: 200
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#5A6A3A"
     - "#C9A227"
@@ -637,17 +656,17 @@
 - id: 35
   name: "Thanksgiving"
   short_name: "THANKSGIVE"
-  description: "A small cooked turkey on a banana-leaf platter, pilgrim hat on Johnny, cornucopia spilling tropical fruit."
+  description: "Cornucopia with fruit."
   date_rule:
     kind: nth_weekday
     month: 11
     n: 4
     weekday: 4
   sprite:
-    width: 112
-    height: 72
-    island_x: 260
-    island_y: 295
+    width: 32
+    height: 32
+    island_x: 404
+    island_y: 284
   palette:
     - "#7A3A1A"
     - "#C99A2A"
