@@ -144,8 +144,12 @@ def main():
       .variant.picked { box-shadow: 0 0 0 2px var(--pick); background: rgba(77, 213, 153, 0.15); }
       .variant-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
       .variant.picked .variant-label { color: var(--pick); font-weight: 600; }
+      .variant.dim { opacity: 0.25; }
+      .variant.dim:hover { opacity: 0.85; }
       .variant-img { background: #000; padding: 4px; border-radius: 4px; image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; }
       .pick-radio { margin-top: 4px; cursor: pointer; }
+      .kbd { display: inline-block; background: #444; color: #ddd; padding: 1px 6px; border-radius: 3px; font: 11px/1 'SF Mono', Menlo, monospace; border: 1px solid #555; box-shadow: 0 1px 0 #222; margin: 0 1px; }
+      .legend-row { color: var(--muted); font-size: 11px; margin-top: 4px; }
       .controls { position: sticky; top: 0; background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--panel); margin-bottom: 16px; z-index: 10; }
       .controls-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
       .btn { background: var(--pick); color: #000; padding: 8px 14px; border: 0; border-radius: 4px; font: 600 13px sans-serif; cursor: pointer; transition: filter 0.15s; }
@@ -336,7 +340,103 @@ def main():
           applyFilter();
         });
       });
+
+      // Variant focus: dim variants except the chosen one (0 = all).
+      let focusVariant = 0;
+      function applyFocus() {
+        document.querySelectorAll('.variant').forEach(v => {
+          v.classList.remove('dim');
+          if (focusVariant !== 0 && v.dataset.variant &&
+              parseInt(v.dataset.variant, 10) !== focusVariant) {
+            v.classList.add('dim');
+          }
+        });
+      }
+      document.querySelectorAll('.variant-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          focusVariant = parseInt(btn.dataset.variant, 10);
+          document.querySelectorAll('.variant-btn').forEach(b =>
+            b.classList.toggle('active', b === btn));
+          applyFocus();
+        });
+      });
+
+      // Keyboard navigation. Track an "active card" — the topmost holiday
+      // whose top edge is within the viewport.
+      function activeCardId() {
+        const cards = [...document.querySelectorAll('.holiday[id^="h"]')]
+          .filter(c => !c.classList.contains('hidden'));
+        const sticky = 120;
+        for (const c of cards) {
+          const r = c.getBoundingClientRect();
+          if (r.bottom > sticky + 80) {
+            return c.id.slice(1);
+          }
+        }
+        return cards.length ? cards[0].id.slice(1) : null;
+      }
+      function scrollToHoliday(id) {
+        const c = document.getElementById('h' + id);
+        if (c) c.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+      function nextCard(dir) {
+        const cards = [...document.querySelectorAll('.holiday[id^="h"]')]
+          .filter(c => !c.classList.contains('hidden'));
+        const cur = activeCardId();
+        const idx = cards.findIndex(c => c.id === 'h' + cur);
+        if (idx < 0) { if (cards.length) scrollToHoliday(cards[0].id.slice(1)); return; }
+        const next = cards[(idx + dir + cards.length) % cards.length];
+        scrollToHoliday(next.id.slice(1));
+      }
+      function nextUnpicked() {
+        const cards = [...document.querySelectorAll('.holiday[id^="h"]')]
+          .filter(c => !c.classList.contains('hidden') && !c.classList.contains('has-pick'));
+        if (!cards.length) { return; }
+        const cur = activeCardId();
+        const idx = cards.findIndex(c => c.id === 'h' + cur);
+        const next = cards[(idx + 1) % cards.length] || cards[0];
+        scrollToHoliday(next.id.slice(1));
+      }
+      function setPick(id, vi) {
+        const r = document.querySelector(`#pick-${id}-${vi}`);
+        if (!r) return;
+        r.checked = true;
+        r.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      const focusOrder = [0, 1, 2, 3, 4, 5];
+      function cycleFocus() {
+        const idx = focusOrder.indexOf(focusVariant);
+        focusVariant = focusOrder[(idx + 1) % focusOrder.length];
+        document.querySelectorAll('.variant-btn').forEach(b =>
+          b.classList.toggle('active', parseInt(b.dataset.variant, 10) === focusVariant));
+        applyFocus();
+      }
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const k = e.key;
+        if (k === 'j' || k === 'ArrowDown') { e.preventDefault(); nextCard(+1); }
+        else if (k === 'k' || k === 'ArrowUp') { e.preventDefault(); nextCard(-1); }
+        else if (k === 'u') { e.preventDefault(); nextUnpicked(); }
+        else if (k === 'f') { e.preventDefault(); cycleFocus(); }
+        else if (k >= '1' && k <= '5') {
+          const id = activeCardId();
+          if (id) setPick(id, k);
+        } else if (k === '?') {
+          alert(
+            'Keyboard shortcuts:\\n' +
+            '  1-5  pick that variant for the holiday in view\\n' +
+            '  j / ArrowDown   next holiday\\n' +
+            '  k / ArrowUp     previous holiday\\n' +
+            '  u    jump to next unpicked\\n' +
+            '  f    cycle variant focus (dim others)\\n' +
+            '  ?    this help'
+          );
+        }
+      });
+
       applyPicks(loadPicks());
+      applyFocus();
     """.replace("${len(new_holidays)}", str(len(new_holidays)))
 
     full_html = f"""<!doctype html>
@@ -353,12 +453,28 @@ def main():
     <div class="controls-row">
       <button id="save-btn" class="btn">Download picks JSON</button>
       <button id="clear-btn" class="btn" style="background:#666;color:#fff;">Clear picks</button>
-      <span style="margin-left:8px;color:var(--muted);font-size:12px;">Filter:</span>
+      <span style="margin-left:8px;color:var(--muted);font-size:12px;">Card filter:</span>
       <button class="btn btn-ghost active filter-btn" data-filter="all">All</button>
       <button class="btn btn-ghost filter-btn" data-filter="unpicked">Unpicked</button>
       <button class="btn btn-ghost filter-btn" data-filter="picked">Picked</button>
       <button class="btn btn-ghost filter-btn" data-filter="originals">Originals</button>
       <span id="pick-stat" class="stat"></span>
+    </div>
+    <div class="controls-row" style="margin-top:6px;">
+      <span style="color:var(--muted);font-size:12px;">Variant focus:</span>
+      <button class="btn btn-ghost active variant-btn" data-variant="0">All</button>
+      <button class="btn btn-ghost variant-btn" data-variant="1">v1 LITERAL</button>
+      <button class="btn btn-ghost variant-btn" data-variant="2">v2 MINIMALIST</button>
+      <button class="btn btn-ghost variant-btn" data-variant="3">v3 BUSY</button>
+      <button class="btn btn-ghost variant-btn" data-variant="4">v4 PLAYFUL</button>
+      <button class="btn btn-ghost variant-btn" data-variant="5">v5 NIGHT</button>
+    </div>
+    <div class="legend-row">
+      Keys: <span class="kbd">1</span>–<span class="kbd">5</span> pick variant for the holiday in view ·
+      <span class="kbd">j</span>/<span class="kbd">k</span> next/prev holiday ·
+      <span class="kbd">f</span> cycle variant focus ·
+      <span class="kbd">u</span> jump to next unpicked ·
+      <span class="kbd">?</span> help
     </div>
   </div>
   <div id="zoom-modal" class="modal">

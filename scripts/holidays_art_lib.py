@@ -375,8 +375,26 @@ def as_night(day_sprite: Sprite, *,
             new.px(x - 1, y, WHITE); new.px(x + 1, y, WHITE)
             new.px(x, y - 1, WHITE); new.px(x, y + 1, WHITE)
 
-    # Moon
-    mx, my = moon_at or (day_sprite.w - 14, 8)
+    # Moon — pick the corner with the most DEEPBLUE pixels in a 14×14
+    # square so we don't paint over Johnny / a flag / etc. The default
+    # `moon_at` overrides the heuristic if the caller is opinionated.
+    if moon_at is None:
+        candidates = [
+            (day_sprite.w - 8, 8),     # upper right (favored)
+            (8, 8),                    # upper left
+            (day_sprite.w // 2, 8),    # upper center
+            (day_sprite.w - 8, day_sprite.h // 4),
+        ]
+        def open_score(cx, cy):
+            score = 0
+            for yy in range(max(0, cy - 6), min(day_sprite.h, cy + 7)):
+                for xx in range(max(0, cx - 6), min(day_sprite.w, cx + 7)):
+                    if new.image.getpixel((xx, yy)) == DEEPBLUE:
+                        score += 1
+            return score
+        mx, my = max(candidates, key=lambda c: open_score(*c))
+    else:
+        mx, my = moon_at
     if 0 <= mx < day_sprite.w and 0 <= my < day_sprite.h:
         new.ellipse(mx - 5, my - 5, mx + 5, my + 5, WHITE, outline=BLACK)
         # Crescent shadow — a partial DEEPBLUE arc on the right side
@@ -429,8 +447,26 @@ def _as_dawn(day_sprite: Sprite, src,
             if new.image.getpixel((x, y)) == PURPLE:
                 new.px(x, y, band_color)
 
-    # Sun in the upper-right (or wherever sun_at says).
-    sx, sy = sun_at or (day_sprite.w - 14, 10)
+    # Sun in the corner with the most "still-purple-or-band" space, so
+    # it doesn't land on top of Johnny or a tree.
+    if sun_at is None:
+        candidates = [
+            (day_sprite.w - 10, 10),
+            (10, 10),
+            (day_sprite.w // 2, 12),
+            (day_sprite.w - 14, day_sprite.h // 5),
+        ]
+        def open_score_dawn(cx, cy):
+            score = 0
+            for yy in range(max(0, cy - 8), min(day_sprite.h, cy + 9)):
+                for xx in range(max(0, cx - 8), min(day_sprite.w, cx + 9)):
+                    px = new.image.getpixel((xx, yy))
+                    if px in (PURPLE, ORANGE, YELLOW):
+                        score += 1
+            return score
+        sx, sy = max(candidates, key=lambda c: open_score_dawn(*c))
+    else:
+        sx, sy = sun_at
     if 0 <= sx < day_sprite.w and 0 <= sy < day_sprite.h:
         # Sun rays first (so disc paints over them at center)
         for dx, dy in [(-10, 0), (10, 0), (0, -10), (0, 10),
