@@ -229,6 +229,33 @@ def test_render_nondeterminism():
                 pyc.unlink()
 
 
+def test_originals_swapped():
+    """Swapping the original 4 IDs should fail 'originals pinned'."""
+    yaml_src = REPO / "holidays.yml"
+    yaml_backup = yaml_src.read_text()
+    try:
+        # Swap Halloween's existing_sprite from 0 to 99 — illegal value.
+        new_text = yaml_backup.replace(
+            "name: \"Halloween\"\n"
+            "  short_name: \"HALLOWEEN\"\n"
+            "  description:",
+            "name: \"Halloween\"\n"
+            "  short_name: \"HALLOWEEN\"\n"
+            "  description:", 1)
+        # Find Halloween's existing_sprite line and swap to 99.
+        # Halloween's id is 1; its existing_sprite is 0. Replace `existing_sprite: 0`
+        # for the FIRST occurrence (which is Halloween).
+        if "existing_sprite: 0" in new_text:
+            new_text = new_text.replace("existing_sprite: 0", "existing_sprite: 99", 1)
+        else:
+            return None
+        yaml_src.write_text(new_text)
+        rc, out = run_redteam()
+        return expect_fail("originals pinned", out)
+    finally:
+        yaml_src.write_text(yaml_backup)
+
+
 def test_clean_state_passes():
     """After all the above, clean state should pass."""
     rc, out = run_redteam()
@@ -251,6 +278,8 @@ def main():
          test_identical_date_rule),
         ("render_nondeterminism detected by 'render determinism'",
          test_render_nondeterminism),
+        ("originals_swapped detected by 'originals pinned'",
+         test_originals_swapped),
         ("clean state still passes",
          test_clean_state_passes),
     ]
