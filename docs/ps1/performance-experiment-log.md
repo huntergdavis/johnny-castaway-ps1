@@ -328,6 +328,7 @@ Current accepted baseline for the next experiment:
 
 - `regtest_exit=137` means the waited process was killed by `SIGKILL`, but it is not always a PS1/emulator failure. If `JCPERF2` is complete, the case gate is clean, and DuckStation logs `Exiting with success`, the perf harness treats it as a post-success wrapper failure and continues to aggregate the run.
 - `regtest_exit=137` with missing `JCPERF2` remains a hard failure. Those runs are still recorded as structural failures because they do not prove correctness or speed.
+- As of the harness log fix after the dirty-row `memset` miss, `scratch/ps1-perf-iterate/experiments.jsonl` is appended after baseline comparison, so `gate_pass` includes `--baseline` and `--require-improvement` failures. Older JSONL rows were regtest/case-gate only; use their run `summary.json` for final baseline-gate status.
 
 ## Promotion Rule
 

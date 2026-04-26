@@ -710,6 +710,9 @@ run_headless_regtest() {
 }
 
 SUMMARY_PATHS=()
+REGTEST_EXITS=()
+ATTEMPT_STATUSES=()
+FAILURE_REASONS=()
 
 for i in "${!CASE_LABELS[@]}"; do
     label="${CASE_LABELS[$i]}"
@@ -748,7 +751,9 @@ for i in "${!CASE_LABELS[@]}"; do
 
     if [ "$regtest_exit" -ne 0 ]; then
         if case_summary_passed "$summary_file" && duckstation_exited_successfully "$log_file"; then
-            append_experiment_log "$summary_file" "$regtest_exit" "regtest_passed_after_wrapper_exit" "wrapper_exit_${regtest_exit}_after_duckstation_success"
+            REGTEST_EXITS+=("$regtest_exit")
+            ATTEMPT_STATUSES+=("regtest_passed_after_wrapper_exit")
+            FAILURE_REASONS+=("wrapper_exit_${regtest_exit}_after_duckstation_success")
             echo "WARN: regtest wrapper exited $regtest_exit after DuckStation success; accepting parsed JCPERF2 case metrics." >&2
             continue
         fi
@@ -758,11 +763,15 @@ for i in "${!CASE_LABELS[@]}"; do
         exit 1
     fi
 
-    append_experiment_log "$summary_file" "$regtest_exit" "regtest_passed" ""
+    REGTEST_EXITS+=("$regtest_exit")
+    ATTEMPT_STATUSES+=("regtest_passed")
+    FAILURE_REASONS+=("")
 done
 
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
-python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
+set +e
+python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
+    "$WORK_IDENTITY_MIN_PERCENT" "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -838,6 +847,8 @@ payload = {
     "cases": cases,
 }
 out_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+for case, path in zip(cases, case_paths):
+    path.write_text(json.dumps(case, indent=2) + "\n", encoding="utf-8")
 
 print("")
 print("======================================")
@@ -878,6 +889,14 @@ print(f"Summary JSON: {out_path}")
 raise SystemExit(0 if not overall_failures else 1)
 PY
 GATE_EXIT=$?
+set -e
+
+for i in "${!SUMMARY_PATHS[@]}"; do
+    append_experiment_log "${SUMMARY_PATHS[$i]}" \
+        "${REGTEST_EXITS[$i]}" \
+        "${ATTEMPT_STATUSES[$i]}" \
+        "${FAILURE_REASONS[$i]}"
+done
 
 restore_boot_files
 trap - EXIT
