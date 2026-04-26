@@ -117,7 +117,6 @@ struct TFgPilotRuntime {
 };
 
 static char gForegroundPilotScene[16] = "";
-static unsigned char gForegroundPilotRequestedMode = 0;
 #ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 #define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
 #endif
@@ -257,17 +256,6 @@ static int fgRuntimeUsesBaseDiffBackdrop(void)
 {
     return (gFgRuntime.active &&
             (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) ? 1 : 0;
-}
-
-static uint8 fgSceneModeForName(const char *sceneName)
-{
-#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
-    if (fgSceneEquals(sceneName, "testcard"))
-        return FG_RUNTIME_TESTCARD;
-#endif
-    if (fgCompactOverlayPackPathForScene(sceneName) != NULL)
-        return FG_RUNTIME_SCENE_PACK;
-    return FG_RUNTIME_NONE;
 }
 
 static uint16 fgReadU16(const uint8 *p)
@@ -2167,14 +2155,12 @@ void foregroundPilotSetScene(const char *sceneName)
 
     if (!sceneName) {
         gForegroundPilotScene[0] = '\0';
-        gForegroundPilotRequestedMode = FG_RUNTIME_NONE;
         return;
     }
 
     for (i = 0; i + 1 < sizeof(gForegroundPilotScene) && sceneName[i] != '\0'; i++)
         gForegroundPilotScene[i] = sceneName[i];
     gForegroundPilotScene[i] = '\0';
-    gForegroundPilotRequestedMode = fgSceneModeForName(gForegroundPilotScene);
 }
 
 void foregroundPilotSetHeapProbe(int enabled)
@@ -2240,18 +2226,15 @@ void foregroundPilotPlay(void)
 #else
 
 static char gForegroundPilotScene[16] = "";
-static unsigned char gForegroundPilotRequestedMode = 0;
 
 void foregroundPilotSetScene(const char *sceneName)
 {
     if (!sceneName) {
         gForegroundPilotScene[0] = '\0';
-        gForegroundPilotRequestedMode = 0;
         return;
     }
     strncpy(gForegroundPilotScene, sceneName, sizeof(gForegroundPilotScene) - 1);
     gForegroundPilotScene[sizeof(gForegroundPilotScene) - 1] = '\0';
-    gForegroundPilotRequestedMode = 1;
 }
 
 void foregroundPilotSetHeapProbe(int enabled)
