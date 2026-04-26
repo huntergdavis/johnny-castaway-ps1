@@ -38,6 +38,7 @@ WRITE_BASELINE=""
 COMMIT_MESSAGE=""
 ROLLBACK_ON_FAIL=0
 ALLOW_REGRESSION_PERCENT="${PS1_PERF_ALLOW_REGRESSION_PERCENT:-2}"
+WORK_IDENTITY_MIN_PERCENT="${PS1_PERF_WORK_IDENTITY_MIN_PERCENT:-75}"
 REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
@@ -84,6 +85,8 @@ Options:
   --baseline FILE          Compare against a prior summary JSON.
   --write-baseline FILE    Also copy this run summary to FILE.
   --allow-regression PCT   Fail if key metrics regress by more than PCT (default: 2).
+  --work-identity-min PCT  Fail if baseline-sensitive render work counters fall below
+                           this percent of baseline (default: 75; set 0 to disable).
   --require-improvement    With --baseline, require at least one key speed metric to improve.
   --commit-on-pass MSG     git add -A and commit with MSG after all gates pass.
   --rollback-on-fail       On gate failure, restore tracked worktree files to HEAD.
@@ -99,6 +102,8 @@ Gate rules:
   - gfx full_fallbacks must be zero.
   - with --baseline, loop_vb, timing overrun_vb, blocking_vb, and prefetch
     overrun_vb must not regress beyond --allow-regression.
+  - with --baseline, render/restore/compose/upload call counts must not fall
+    below --work-identity-min unless explicitly disabled.
 
 Outputs:
   <output>/<timestamp>/summary.json
@@ -230,6 +235,8 @@ while [ $# -gt 0 ]; do
             WRITE_BASELINE="$2"; shift 2 ;;
         --allow-regression)
             ALLOW_REGRESSION_PERCENT="$2"; shift 2 ;;
+        --work-identity-min)
+            WORK_IDENTITY_MIN_PERCENT="$2"; shift 2 ;;
         --require-improvement)
             REQUIRE_IMPROVEMENT=1; shift ;;
         --commit-on-pass)
@@ -278,6 +285,10 @@ if ! [[ "$MAX_LOG_BYTES" =~ ^[0-9]+$ ]]; then
 fi
 if [ -n "$BASELINE_FILE" ] && [ ! -f "$BASELINE_FILE" ]; then
     echo "ERROR: baseline file not found: $BASELINE_FILE" >&2
+    exit 1
+fi
+if ! [[ "$WORK_IDENTITY_MIN_PERCENT" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+    echo "ERROR: --work-identity-min must be a non-negative number." >&2
     exit 1
 fi
 
@@ -788,7 +799,7 @@ done
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
 set +e
 python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
-    "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
+    "$REQUIRE_IMPROVEMENT" "$WORK_IDENTITY_MIN_PERCENT" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -798,7 +809,8 @@ out_path = Path(sys.argv[1])
 baseline_path = Path(sys.argv[2]) if sys.argv[2] else None
 allow_pct = float(sys.argv[3])
 require_improvement = bool(int(sys.argv[4]))
-case_paths = [Path(p) for p in sys.argv[5:]]
+work_identity_min_pct = float(sys.argv[5])
+case_paths = [Path(p) for p in sys.argv[6:]]
 
 cases = [json.loads(path.read_text(encoding="utf-8")) for path in case_paths]
 baseline_cases = {}
@@ -812,6 +824,13 @@ compare_fields = [
     ("timing", "overrun_vb"),
     ("cd", "blocking_vb"),
     ("prefetch", "overrun_vb"),
+]
+
+work_identity_fields = [
+    ("timing", "render"),
+    ("gfx", "restore_calls"),
+    ("gfx", "compose_calls"),
+    ("gfx", "upload_calls"),
 ]
 
 def field(case, section, key):
@@ -828,6 +847,7 @@ for case in cases:
     improved = False
     if base:
         comparisons = []
+        work_identity = []
         for section, key in compare_fields:
             current = field(case, section, key)
             previous = field(base, section, key)
@@ -848,7 +868,29 @@ for case in cases:
                 failures.append(
                     f"regression {section}.{key}: baseline={previous} current={current} allowed={limit:.2f}"
                 )
+        if work_identity_min_pct > 0:
+            for section, key in work_identity_fields:
+                current = field(case, section, key)
+                previous = field(base, section, key)
+                if current is None or previous is None or previous <= 0:
+                    continue
+                minimum = previous * (work_identity_min_pct / 100.0)
+                delta = current - previous
+                work_identity.append({
+                    "field": f"{section}.{key}",
+                    "baseline": previous,
+                    "current": current,
+                    "delta": delta,
+                    "minimum_percent": work_identity_min_pct,
+                    "minimum_allowed": minimum,
+                })
+                if current < minimum:
+                    failures.append(
+                        f"work identity {section}.{key}: baseline={previous} current={current} minimum={minimum:.2f}"
+                    )
         case["baseline_comparison"] = comparisons
+        if work_identity:
+            case["work_identity_comparison"] = work_identity
         if require_improvement and not improved:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
