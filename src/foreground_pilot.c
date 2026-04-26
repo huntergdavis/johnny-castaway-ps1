@@ -125,7 +125,12 @@ static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
 static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
-#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (24UL * 1024UL)
+enum {
+    FG_PACK_HEADER_SIZE = 40,
+    FG_PACK_ENTRY_SIZE = 20,
+    FG_PACK_METADATA_PREFIX_BYTES = 8192
+};
+#define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 5
@@ -282,31 +287,8 @@ static uint32 fgReadU32(const uint8 *p)
            ((uint32)p[3] << 24);
 }
 
-static int fgHeaderIsPal4Spans(const struct TFgPilotHeader *header)
+static void fgParseHeader(const uint8 *data, struct TFgPilotHeader *out)
 {
-    return (header != NULL &&
-            memcmp(header->magic, "FGP2", 4) == 0 &&
-            header->version == 1) ? 1 : 0;
-}
-
-static int fgHeaderIsIndexed8Spans(const struct TFgPilotHeader *header)
-{
-    return (header != NULL &&
-            memcmp(header->magic, "FGP2", 4) == 0 &&
-            header->version == 2) ? 1 : 0;
-}
-
-static int fgLoadHeader(const char *path, struct TFgPilotHeader *out)
-{
-    uint8 *data;
-
-    if (!path || !out)
-        return 0;
-
-    data = ps1_streamRead(path, 0, 40);
-    if (!data)
-        return 0;
-
     memcpy(out->magic, data, 4);
     out->version = fgReadU16(data + 4);
     out->frameCount = fgReadU16(data + 6);
@@ -323,47 +305,56 @@ static int fgLoadHeader(const char *path, struct TFgPilotHeader *out)
     out->soundEventsOffset = fgReadU32(data + 32);
     out->soundEventCount = fgReadU16(data + 36);
     out->reserved1 = fgReadU16(data + 38);
-    free(data);
-
-    if (!fgHeaderIsPal4Spans(out) && !fgHeaderIsIndexed8Spans(out))
-        return 0;
-    if (out->frameCount == 0)
-        return 0;
-
-    return 1;
 }
 
-static int fgLoadPalette(const char *path, const struct TFgPilotHeader *header,
-                         uint16 *outPalette)
+static int fgHeaderIsPal4Spans(const struct TFgPilotHeader *header)
 {
-    uint8 *data;
-    uint16 i;
-    uint16 entryCount = 0;
-    uint32 paletteBytes = 0;
+    return (header != NULL &&
+            memcmp(header->magic, "FGP2", 4) == 0 &&
+            header->version == 1) ? 1 : 0;
+}
 
-    if (outPalette == NULL)
+static int fgHeaderIsIndexed8Spans(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP2", 4) == 0 &&
+            header->version == 2) ? 1 : 0;
+}
+
+static uint32 fgPaletteByteCount(const struct TFgPilotHeader *header)
+{
+    if (fgHeaderIsPal4Spans(header))
+        return 32;
+    if (fgHeaderIsIndexed8Spans(header))
+        return 512;
+    return 0;
+}
+
+static int fgParseEntryTable(const uint8 *data, const struct TFgPilotHeader *header,
+                             struct TFgPilotEntryTable *out)
+{
+    if (!data || !header || !out || header->frameCount == 0)
         return 0;
 
-    for (i = 0; i < 256; i++)
-        outPalette[i] = 0;
+    memset(out, 0, sizeof(*out));
+    out->entries = (struct TFgPilotEntry *)malloc((size_t)header->frameCount * sizeof(struct TFgPilotEntry));
+    if (out->entries == NULL)
+        return 0;
 
-    if (fgHeaderIsPal4Spans(header)) {
-        entryCount = 16;
-        paletteBytes = 32;
-    } else if (fgHeaderIsIndexed8Spans(header)) {
-        entryCount = 256;
-        paletteBytes = 512;
-    } else {
-        return 1;
+    out->count = header->frameCount;
+    for (uint16 i = 0; i < header->frameCount; i++) {
+        const uint8 *src = data + ((uint32)i * FG_PACK_ENTRY_SIZE);
+        struct TFgPilotEntry *dst = &out->entries[i];
+        dst->sourceFrame = fgReadU16(src + 0);
+        dst->x = fgReadS16(src + 2);
+        dst->y = fgReadS16(src + 4);
+        dst->width = fgReadU16(src + 6);
+        dst->height = fgReadU16(src + 8);
+        dst->reserved0 = fgReadU16(src + 10);
+        dst->dataOffset = fgReadU32(src + 12);
+        dst->dataSize = fgReadU32(src + 16);
     }
 
-    data = ps1_streamRead(path, 40, paletteBytes);
-    if (!data)
-        return 0;
-
-    for (i = 0; i < entryCount; i++)
-        outPalette[i] = fgReadU16(data + ((uint32)i * 2u));
-    free(data);
     return 1;
 }
 
@@ -378,42 +369,77 @@ static void fgFreeEntryTable(struct TFgPilotEntryTable *table)
     table->count = 0;
 }
 
-static int fgLoadEntryTable(const char *path, const struct TFgPilotHeader *header,
-                            struct TFgPilotEntryTable *out)
+static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHeader,
+                                uint16 *outPalette, struct TFgPilotEntryTable *outTable)
 {
-    uint8 *data;
+    uint8 *metadata;
+    uint32 prefixBytes = FG_PACK_METADATA_PREFIX_BYTES;
+    uint32 paletteBytes;
     uint32 tableSize;
+    uint32 metadataBytes;
+    uint16 paletteEntries;
+    uint16 i;
 
-    if (!path || !header || !out || header->frameCount == 0)
+    if (!path || !outHeader || !outPalette || !outTable)
         return 0;
 
-    memset(out, 0, sizeof(*out));
-    tableSize = (uint32)header->frameCount * 20u;
-    data = ps1_streamRead(path, header->tableOffset, tableSize);
-    if (!data)
+    memset(outTable, 0, sizeof(*outTable));
+    for (i = 0; i < 256; i++)
+        outPalette[i] = 0;
+
+    metadata = ps1_streamRead(path, 0, prefixBytes);
+    if (!metadata)
         return 0;
 
-    out->entries = (struct TFgPilotEntry *)malloc((size_t)header->frameCount * sizeof(struct TFgPilotEntry));
-    if (out->entries == NULL) {
-        free(data);
+    fgParseHeader(metadata, outHeader);
+    if ((!fgHeaderIsPal4Spans(outHeader) && !fgHeaderIsIndexed8Spans(outHeader)) ||
+        outHeader->frameCount == 0) {
+        free(metadata);
         return 0;
     }
 
-    out->count = header->frameCount;
-    for (uint16 i = 0; i < header->frameCount; i++) {
-        const uint8 *src = data + ((uint32)i * 20u);
-        struct TFgPilotEntry *dst = &out->entries[i];
-        dst->sourceFrame = fgReadU16(src + 0);
-        dst->x = fgReadS16(src + 2);
-        dst->y = fgReadS16(src + 4);
-        dst->width = fgReadU16(src + 6);
-        dst->height = fgReadU16(src + 8);
-        dst->reserved0 = fgReadU16(src + 10);
-        dst->dataOffset = fgReadU32(src + 12);
-        dst->dataSize = fgReadU32(src + 16);
+    paletteBytes = fgPaletteByteCount(outHeader);
+    tableSize = (uint32)outHeader->frameCount * FG_PACK_ENTRY_SIZE;
+    metadataBytes = outHeader->tableOffset + tableSize;
+    if (metadataBytes < FG_PACK_HEADER_SIZE + paletteBytes ||
+        metadataBytes > outHeader->dataOffset) {
+        free(metadata);
+        return 0;
     }
 
-    free(data);
+    if (metadataBytes > prefixBytes) {
+        uint8 *expanded;
+        uint8 *tail;
+        uint32 tailBytes = metadataBytes - prefixBytes;
+
+        expanded = (uint8 *)malloc(metadataBytes);
+        if (!expanded) {
+            free(metadata);
+            return 0;
+        }
+        memcpy(expanded, metadata, prefixBytes);
+        free(metadata);
+
+        tail = ps1_streamRead(path, prefixBytes, tailBytes);
+        if (!tail) {
+            free(expanded);
+            return 0;
+        }
+        memcpy(expanded + prefixBytes, tail, tailBytes);
+        free(tail);
+        metadata = expanded;
+    }
+
+    paletteEntries = (uint16)(paletteBytes / 2u);
+    for (i = 0; i < paletteEntries; i++)
+        outPalette[i] = fgReadU16(metadata + FG_PACK_HEADER_SIZE + ((uint32)i * 2u));
+
+    if (!fgParseEntryTable(metadata + outHeader->tableOffset, outHeader, outTable)) {
+        free(metadata);
+        return 0;
+    }
+
+    free(metadata);
     return 1;
 }
 
@@ -1594,20 +1620,15 @@ int foregroundPilotRuntimeStart(const char *sceneName)
         if (path != NULL) {
             uint32 maxDataSize = 0;
             uint16 i;
-            if (!fgLoadHeader(path, &gFgRuntime.header))
+            if (!fgLoadMetadataPrefix(path,
+                                      &gFgRuntime.header,
+                                      gFgRuntime.palette,
+                                      &gFgRuntime.entryTable))
                 return 0;
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
-            if (!fgLoadPalette(path, &gFgRuntime.header, gFgRuntime.palette)) {
-                fgRuntimeReset();
-                return 0;
-            }
-            if (!fgLoadEntryTable(path, &gFgRuntime.header, &gFgRuntime.entryTable)) {
-                fgRuntimeReset();
-                return 0;
-            }
             if (!fgLoadSoundEvents(path, &gFgRuntime.header,
                                    &gFgRuntime.soundEvents,
                                    &gFgRuntime.soundEventCount)) {

@@ -30,14 +30,16 @@ per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
 dirty-row upload bands with an 11-row gap merge, setup priming of the first
 real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
-prep, plus leading-empty setup consume with a one-VBlank setup settle, reported
+prep, plus leading-empty setup consume with a one-VBlank setup settle and
+coalesced FG2 metadata-prefix startup reads, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
-`due_misses=0`, `blocking_vb=7`, `prefetch.overrun_vb=7`, `loop_vb=1227`,
-`overrun_vb=150`, `target_vb=1077`, `restore_bytes=2986378`,
+`due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1227`,
+`overrun_vb=150`, `target_vb=1077`, `restore_bytes=3034562`,
 `upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
-`fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`. This is
-the current baseline for the next experiment; the pre-pause best was
-`loop_vb=1297`.
+`fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
+The same run also reports `setup_reads=6`, `pack_start_vb=42`,
+`setup_read_vb=108`, and `scene_vb=1406`. This is the current baseline for the
+next experiment; the pre-pause best was `loop_vb=1297`.
 
 Detail-tier attribution on this baseline shows the remaining active-loop gap is
 not primarily CD: `render_vb=175`, `present_wait_vb=157`, `restore_vb=18`,
@@ -80,10 +82,10 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 24 KB window | High | Guarded fallthrough lowered fishing1 `loop_vb` to `1297`, but the latest run still has `blocking_vb=76`, prefetch `overrun_vb=31`, and `due_misses=7`. |
-| 2 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `9.6 MB` and uploads `17.3 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
-| 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
-| 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
+| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted 4 VBlank prepared-present pass is only a bridge; the next design must reduce duplicate prep while preserving lookahead. |
+| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=6` and `prefetch.overrun_vb=6`, but every saved read still compounds. |
+| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `3.03 MB` because the prepared-present bridge adds speculative restore work; vertical bands plus gap merging keep upload near `16.5 MB`, so upload volume and duplicate prep are now the clearer dirty targets. |
+| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `5` total backward seeks; grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
 Non-goals:
@@ -610,11 +612,12 @@ marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
 a post-leading-empty 11-row gap merge, setup priming of the first real payload,
 tight-slack direct staging, direct-stage scratch window seeding, and the
-4 VBlank held-slack prepared-present pass plus leading-empty setup consume,
+4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
+coalesced FG2 metadata-prefix startup reads,
 fishing1 high-tide reports
-`loop_vb=1227`, `blocking_vb=7`, `due_misses=0`, and prefetch
-`overrun_vb=7`, with `upload_bytes=16499200`, `restore_bytes=2986378`,
-and `upload_rects=401`.
+`loop_vb=1227`, `blocking_vb=6`, `due_misses=0`, and prefetch
+`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=3034562`,
+`upload_rects=401`, `setup_reads=6`, and `scene_vb=1406`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
@@ -724,6 +727,7 @@ rectangle pressure.
 | `P4-98` | Done: widen vertical dirty-upload band clean-gap merge from `8` to `10` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 412 -> 409`; byte cost is bounded (`upload_bytes 16424960 -> 16442880`) and correctness/fallback counters stayed clean. |
 | `P4-99` | Done: widen vertical dirty-upload band clean-gap merge from `10` to `11` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 409 -> 401`; byte cost is bounded (`upload_bytes 16442880 -> 16499200`) and correctness/fallback counters stayed clean. |
 | `P4-100` | Failed: add inline CD-read histogram metrics. | Summary-level and `perf-detail`-gated variants both regressed to `loop_vb=1231`, `blocking_vb=10`, and `prefetch_overrun_vb=10`; read-class metrics must be compile-time isolated or post-processed outside the speed baseline. |
+| `P4-101` | Done: coalesce FG2 metadata startup reads. | Active loop stayed flat while `setup_reads 8 -> 6`, `pack_start_vb 55 -> 42`, `scene_vb 1419 -> 1406`, `blocking_vb 7 -> 6`, and `prefetch_overrun_vb 7 -> 6`; tradeoff is `restore_calls/compose_calls 187 -> 190`. |
 
 Prefetch variants to test in order:
 
@@ -1072,9 +1076,9 @@ into one commit.
 ## Next 50 Targets From Current Timing
 
 Current measured bottlenecks are now narrow enough that the next wins should be
-small and cumulative: `157` Detail-tier present-wait VBlanks, `7` visible CD
-blocking VBlanks, `7` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `401` upload rects, and `2.99 MB` restore volume on
+small and cumulative: `157` Detail-tier present-wait VBlanks, `6` visible CD
+blocking VBlanks, `6` prefetch-overrun VBlanks, `68` active-loop reads,
+`16.5 MB` upload volume, `401` upload rects, and `3.03 MB` restore volume on
 fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |
@@ -1125,7 +1129,7 @@ fishing1 high tide.
 | 44 | Present/runtime | Separate upload completion wait from display VSync wait in metrics and code shape. | Identify hidden serialization in `grUpdateDisplay()`. |
 | 45 | Present/runtime | Avoid double update work on empty capture entries. | Lower `render`/held overhead on scenes with blank ledger frames. |
 | 46 | Setup/runtime | Persist same-raft and non-holiday overlays across scene loops where heap probes prove safe. | Lower setup time without active-loop risk. |
-| 47 | Setup/CD | Sort active FG2 and common setup assets by startup order in ISO layout. | Lower setup `seek_fwd/seek_back`, not active loop. |
+| 47 | Setup/CD | Done: coalesce FG2 header/palette/entry-table startup reads into one metadata-prefix read. | `setup_reads 8 -> 6`, `pack_start_vb 55 -> 42`, `scene_vb 1419 -> 1406`, and active-loop CD pressure `7 -> 6`; next setup work is ISO-order/layout. |
 | 48 | Binary/release | Compile-gate unused FG1/TTM/ADS paths in PS1 release builds. | Lower executable size and improve instruction cache locality. |
 | 49 | Binary/release | Move hot FG2 compositor and prefetch code into a tuned translation unit. | Test file-specific optimization flags without global risk. |
 | 50 | Harness | Auto-promote the accepted run to baseline only after a repeated deterministic pass. | Keep the optimization loop safe as wins get smaller. |
@@ -1287,6 +1291,14 @@ default `perf-log` speed run to `loop_vb=1231`, `blocking_vb=10`, and
 `prefetch.overrun_vb=10`. On this deterministic target, even extra diagnostic
 code shape can move the scheduler; future high-granularity CD metrics need a
 separate diagnostic binary or host-side post-processing, not baseline code.
+
+Coalescing FG2 startup metadata reads was accepted because it amortized small
+CD transactions without changing active-loop rendering logic. It reduces
+`setup_reads 8 -> 6`, `pack_start_vb 55 -> 42`, and `scene_vb 1419 -> 1406`,
+and it also nudges the remaining active-loop CD pressure down by one VBlank
+(`blocking_vb/prefetch.overrun_vb 7 -> 6`). The tradeoff is a small metadata
+overread and three additional speculative restore/compose calls, so the next
+scheduler change should watch `restore_calls` and `compose_calls` closely.
 
 The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
 `18 KB` parameter probe preserved zero due misses but regressed `loop_vb`,
