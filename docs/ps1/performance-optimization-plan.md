@@ -728,6 +728,7 @@ rectangle pressure.
 | `P4-99` | Done: widen vertical dirty-upload band clean-gap merge from `10` to `11` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 409 -> 401`; byte cost is bounded (`upload_bytes 16442880 -> 16499200`) and correctness/fallback counters stayed clean. |
 | `P4-100` | Failed: add inline CD-read histogram metrics. | Summary-level and `perf-detail`-gated variants both regressed to `loop_vb=1231`, `blocking_vb=10`, and `prefetch_overrun_vb=10`; read-class metrics must be compile-time isolated or post-processed outside the speed baseline. |
 | `P4-101` | Done: coalesce FG2 metadata startup reads. | Active loop stayed flat while `setup_reads 8 -> 6`, `pack_start_vb 55 -> 42`, `scene_vb 1419 -> 1406`, `blocking_vb 7 -> 6`, and `prefetch_overrun_vb 7 -> 6`; tradeoff is `restore_calls/compose_calls 187 -> 190`. |
+| `P4-102` | Failed: move FG2 sound events into the metadata prefix. | Setup improved (`setup_reads 6 -> 5`, `pack_start_vb 42 -> 26`, `scene_vb 1406 -> 1401`), but shifting all payload offsets by `36` bytes regressed active playback (`loop_vb 1227 -> 1238`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`); preserve payload/sector alignment before retrying setup coalescing. |
 
 Prefetch variants to test in order:
 
