@@ -3478,7 +3478,7 @@ void grDrawBackground(void)
 {
     enum {
         GR_MAX_UPLOAD_RECTS = 16,
-        GR_UPLOAD_BAND_MERGE_GAP = 8
+        GR_UPLOAD_BAND_MERGE_GAP = 10
     };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.
      * prevDirty = rows restored at frame start (framebuffer still has old content).
