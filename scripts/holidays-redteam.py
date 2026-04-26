@@ -483,6 +483,18 @@ def check_final_review_present(fails, warns):
         fails.append("final-review HTML lacks card markup")
 
 
+def check_contact_sheet_present(fails, warns):
+    """Contact sheet PNG present and reasonable in size."""
+    p = REPO / "scratch" / "holidays-contact-sheet.png"
+    if not p.exists():
+        warns.append(f"missing {p.relative_to(REPO)} (run holidays-contact-sheet.py)")
+        return
+    sz = p.stat().st_size
+    # Should be at least 100KB (compressed) for a real grid; complain if absurdly small.
+    if sz < 50_000:
+        fails.append(f"contact sheet PNG is suspiciously small ({sz} B)")
+
+
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
@@ -513,6 +525,7 @@ def main():
         ("HTML integrity",      lambda: check_html_integrity(holidays, fails, warns)),
         ("HTML save / modal",   lambda: check_save_button(fails, warns)),
         ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
+        ("contact sheet PNG",   lambda: check_contact_sheet_present(fails, warns)),
     ]
 
     print(f"red-team pass over {len(holidays)} holidays\n")
