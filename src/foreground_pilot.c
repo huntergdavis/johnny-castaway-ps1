@@ -1831,15 +1831,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
         if (path != NULL) {
             uint32 maxDataSize = 0;
             uint16 i;
-            /* Trigger closed-caption lookup. fgpilot scene names map to
-             * the original ADS name + tag — fishing1 → FISHING tag 1,
-             * etc. captionsOnAdsStart bails if captions are disabled. */
-            if (fgSceneEquals(sceneName, "fishing1"))
-                captionsOnAdsStart("FISHING", 1);
-            else if (fgSceneEquals(sceneName, "fishing2"))
-                captionsOnAdsStart("FISHING", 2);
-            else if (fgSceneEquals(sceneName, "fishing3"))
-                captionsOnAdsStart("FISHING", 3);
+            /* Trigger closed-caption lookup only when captions are active.
+             * Normal playback keeps captions off, so avoid scene-name checks
+             * and ADS caption lookup on the default path. */
+            if (ps1CaptionsEnabled) {
+                if (fgSceneEquals(sceneName, "fishing1"))
+                    captionsOnAdsStart("FISHING", 1);
+                else if (fgSceneEquals(sceneName, "fishing2"))
+                    captionsOnAdsStart("FISHING", 2);
+                else if (fgSceneEquals(sceneName, "fishing3"))
+                    captionsOnAdsStart("FISHING", 3);
+            }
             if (!fgLoadMetadataPrefix(path,
                                       &gFgRuntime.header,
                                       gFgRuntime.palette,
