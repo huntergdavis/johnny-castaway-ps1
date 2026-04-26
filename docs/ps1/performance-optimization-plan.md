@@ -599,6 +599,7 @@ volume and the last nonzero CD/prefetch costs.
 | `P4-21` | Done: retune the default stream window from `20 KB` to `18 KB` after the 2 VBlank guard. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8` are the next CD target. |
 | `P4-22` | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | CD submetrics improved slightly, but total `loop_vb` regressed `1296 -> 1297`; keep input timing at the known-good rate unless a dedicated IRQ/input harness proves a better tradeoff. |
 | `P4-23` | Done via dirty pipeline: restore exact per-row X extents before the next CD attempt. | `loop_vb 1296 -> 1266`, `blocking_vb 75 -> 36`, `due_misses 8 -> 1`; reduced RAM restore work created more usable held-frame slack for existing prefetch policy. |
+| `P4-24` | Failed: re-sweep `16/20/24/32 KB` stream windows after row-level restore. | All tested sizes regressed total loop (`1270`, `1276`, `1281`, `1285`) versus the accepted `18 KB` baseline (`1266`); keep `18 KB` until grouped/async refill changes the cost model. |
 
 Prefetch variants to test in order:
 
