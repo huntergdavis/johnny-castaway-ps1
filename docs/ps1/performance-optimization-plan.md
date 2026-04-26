@@ -639,6 +639,7 @@ and upload byte volume.
 | `P4-45` | Failed: re-test an `18 KB` stream window after the OT-clear cleanup. | `loop_vb 1242 -> 1251`, `blocking_vb 20 -> 42`, and `due_misses 1 -> 4`; keep `16 KB` as the current local window knee. The harness now fails baseline-label mismatches so parameter probes cannot silently skip comparisons. |
 | `P4-46` | Failed as no-op: call `foregroundPilotRuntimeCompose()` unconditionally from `grUpdateDisplay()`. | The compose function already guards inactive runtime state, but removing the outer active check left all key VBlank metrics unchanged at the current baseline. |
 | `P4-47` | Failed as no-op: guard holiday stamping at the compose call site for non-holiday scenes. | Fishing1 has `holiday=0`, but avoiding the no-op helper call did not move any VBlank-level metric. |
+| `P4-48` | Failed: replace restore-row `memcpy()` with a local aligned 32-bit copy helper. | `loop_vb` stayed flat, but `blocking_vb 20 -> 22` and `prefetch_overrun_vb 12 -> 14`; keep libc `memcpy` for restore rows. |
 
 Prefetch variants to test in order:
 
