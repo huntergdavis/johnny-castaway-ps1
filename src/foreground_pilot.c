@@ -128,6 +128,7 @@ static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
+#define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -1330,6 +1331,33 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 if (ps1PerfEnabled)
                     ps1PerfMarkPrefetchSkipNoSlack();
                 return 0;
+            }
+            if (slackVBlanks == FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS &&
+                entry->dataSize <= FG_PREFETCH_DIRECT_STAGE_MAX_BYTES) {
+                stageTick = fgReadTickCounter();
+                if (ps1PerfEnabled)
+                    ps1PerfBeginPrefetchRead(slackVBlanks);
+                ok = ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
+                                                    entry->dataOffset,
+                                                    entry->dataSize,
+                                                    gFgRuntime.prefetchFrameBuffer,
+                                                    gFgRuntime.streamScratch,
+                                                    gFgRuntime.streamScratchSize);
+                elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(stageTick);
+                if (ps1PerfEnabled)
+                    ps1PerfEndPrefetchRead(elapsedVBlanks, entry->dataSize, ok);
+                if (outElapsedVBlanks != NULL)
+                    *outElapsedVBlanks = elapsedVBlanks;
+
+                if (!ok) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkTripwire();
+                    gFgRuntime.active = 0;
+                    return 1;
+                }
+
+                fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+                return 1;
             }
             if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
                 if (ps1PerfEnabled)
