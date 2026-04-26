@@ -1,0 +1,591 @@
+[
+  {
+    "id": 5,
+    "name": "Elvis's Birthday",
+    "short_name": "ELVIS BDAY",
+    "description": "Johnny in pompadour wig and rhinestone collar, tiny guitar leaned against the palm.",
+    "sprite": {
+      "width": 56,
+      "height": 70
+    },
+    "island_xy": [
+      388,
+      240
+    ],
+    "palette": [
+      "#FFFFFF",
+      "#D4AF37",
+      "#FF1493"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "MLK Jr. Day",
+    "short_name": "MLK DAY",
+    "description": "Johnny stands at attention beside a small podium with a paper banner reading I HAVE A DREAM.",
+    "sprite": {
+      "width": 88,
+      "height": 56
+    },
+    "island_xy": [
+      320,
+      250
+    ],
+    "palette": [
+      "#7B1F2A",
+      "#F5E8C8",
+      "#C9A227"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Groundhog Day",
+    "short_name": "GROUNDHOG",
+    "description": "A groundhog pops out of a sand-burrow casting a long shadow; Johnny squints at it skeptically.",
+    "sprite": {
+      "width": 64,
+      "height": 48
+    },
+    "island_xy": [
+      280,
+      305
+    ],
+    "palette": [
+      "#7A4A2A",
+      "#E08A3C",
+      "#8A8A8A"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Valentine's Day",
+    "short_name": "VALENTINE",
+    "description": "Heart carved into the palm trunk, rose in Johnny's teeth, pink heart-shaped clouds.",
+    "sprite": {
+      "width": 72,
+      "height": 80
+    },
+    "island_xy": [
+      380,
+      175
+    ],
+    "palette": [
+      "#FFB6D9",
+      "#E60026",
+      "#FFFFFF"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Super Bowl Sunday",
+    "short_name": "SUPER BOWL",
+    "description": "Johnny in face paint with foam finger; football tee'd up in the sand, tiny goalposts of driftwood.",
+    "sprite": {
+      "width": 96,
+      "height": 56
+    },
+    "island_xy": [
+      250,
+      320
+    ],
+    "palette": [
+      "#1F7A3A",
+      "#FFFFFF",
+      "#6B3A1A"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Presidents' Day",
+    "short_name": "PRESIDENTS",
+    "description": "Johnny in tricorn hat saluting a tiny stars-and-stripes; cherry tree sapling next to the palm.",
+    "sprite": {
+      "width": 80,
+      "height": 64
+    },
+    "island_xy": [
+      360,
+      220
+    ],
+    "palette": [
+      "#1A2A5E",
+      "#C8102E",
+      "#F5E8C8"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Mardi Gras",
+    "short_name": "MARDI GRAS",
+    "description": "Johnny in feathered mask and beads; coconut maracas; jazz notes drifting on the breeze.",
+    "sprite": {
+      "width": 144,
+      "height": 72
+    },
+    "island_xy": [
+      290,
+      200
+    ],
+    "palette": [
+      "#6A1B9A",
+      "#1F8A3A",
+      "#D4AF37"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Pi Day",
+    "short_name": "PI DAY",
+    "description": "A pie cooling on a rock, pi symbol drawn in the sand, Johnny in nerd glasses with a slide rule.",
+    "sprite": {
+      "width": 48,
+      "height": 40
+    },
+    "island_xy": [
+      240,
+      340
+    ],
+    "palette": [
+      "#F5E8C8",
+      "#7A4A2A",
+      "#A9C9E0"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "First Day of Spring",
+    "short_name": "SPRING",
+    "description": "Cherry blossoms blooming on the palm, butterflies, Johnny stretching in the sun.",
+    "sprite": {
+      "width": 96,
+      "height": 80
+    },
+    "island_xy": [
+      370,
+      170
+    ],
+    "palette": [
+      "#FFC9D9",
+      "#B8E0A8",
+      "#9AD0E8"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "April Fool's Day",
+    "short_name": "APRIL FOOL",
+    "description": "Whoopee cushion under Johnny's hammock; the sun is wearing a clown nose; palm leaves are upside-down.",
+    "sprite": {
+      "width": 80,
+      "height": 64
+    },
+    "island_xy": [
+      410,
+      200
+    ],
+    "palette": [
+      "#FFD93D",
+      "#E63946",
+      "#3A86FF"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Easter",
+    "short_name": "EASTER",
+    "description": "Pastel eggs hidden in the sand, bunny ears on Johnny, basket woven from palm fronds.",
+    "sprite": {
+      "width": 72,
+      "height": 64
+    },
+    "island_xy": [
+      300,
+      310
+    ],
+    "palette": [
+      "#C8B6FF",
+      "#B6FFC8",
+      "#FFF6B6"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Earth Day",
+    "short_name": "EARTH DAY",
+    "description": "Johnny planting a sapling, a globe-shaped buoy washed ashore, recycling bin made from a barrel.",
+    "sprite": {
+      "width": 88,
+      "height": 72
+    },
+    "island_xy": [
+      260,
+      280
+    ],
+    "palette": [
+      "#1F5A2A",
+      "#1A6AA8",
+      "#6B4A2A"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Star Wars Day",
+    "short_name": "STAR WARS",
+    "description": "Johnny in brown Jedi robe wielding a glowing palm-frond lightsaber; tiny droid silhouette in the surf.",
+    "sprite": {
+      "width": 72,
+      "height": 96
+    },
+    "island_xy": [
+      380,
+      180
+    ],
+    "palette": [
+      "#C8B594",
+      "#0A1A4A",
+      "#3CFF6A"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Cinco de Mayo",
+    "short_name": "CINCO MAYO",
+    "description": "Sombrero on Johnny, papel picado bunting between palms, maraca-coconut in hand.",
+    "sprite": {
+      "width": 128,
+      "height": 64
+    },
+    "island_xy": [
+      270,
+      200
+    ],
+    "palette": [
+      "#E63946",
+      "#1F7A3A",
+      "#FFD93D"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Mother's Day",
+    "short_name": "MOTHERS DAY",
+    "description": "Bouquet of tropical flowers in a coconut vase; MOM drawn large in the sand with shells.",
+    "sprite": {
+      "width": 96,
+      "height": 56
+    },
+    "island_xy": [
+      230,
+      340
+    ],
+    "palette": [
+      "#FFB6D9",
+      "#C8B6FF",
+      "#A8C8A8"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Memorial Day",
+    "short_name": "MEMORIAL",
+    "description": "Small American flag at half-staff in the sand; Johnny removes his hat in salute.",
+    "sprite": {
+      "width": 56,
+      "height": 80
+    },
+    "island_xy": [
+      350,
+      220
+    ],
+    "palette": [
+      "#1A2A5E",
+      "#C8102E",
+      "#FFFFFF"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Father's Day",
+    "short_name": "FATHERS DAY",
+    "description": "#1 DAD sandcastle, Johnny in a Worlds Best Castaway tie, tiny grill smoking on a rock.",
+    "sprite": {
+      "width": 80,
+      "height": 56
+    },
+    "island_xy": [
+      290,
+      330
+    ],
+    "palette": [
+      "#4A6A8A",
+      "#3A3A3A",
+      "#C8A878"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "First Day of Summer",
+    "short_name": "SUMMER",
+    "description": "Sun is huge and beaming; Johnny in shades, beach umbrella stuck in the sand, popsicle in hand.",
+    "sprite": {
+      "width": 112,
+      "height": 96
+    },
+    "island_xy": [
+      360,
+      165
+    ],
+    "palette": [
+      "#5AD0E8",
+      "#FFD93D",
+      "#FFFFFF"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Pride Day",
+    "short_name": "PRIDE",
+    "description": "Rainbow flag fashioned from palm fronds, Johnny with rainbow lei, prismatic surf foam.",
+    "sprite": {
+      "width": 112,
+      "height": 64
+    },
+    "island_xy": [
+      250,
+      230
+    ],
+    "palette": [
+      "#E63946",
+      "#1F7A3A",
+      "#6A3AB8"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Independence Day",
+    "short_name": "JULY 4TH",
+    "description": "Fireworks bursting over the ocean, Johnny in Uncle Sam hat, sparkler in hand, flag planted in sand.",
+    "sprite": {
+      "width": 144,
+      "height": 80
+    },
+    "island_xy": [
+      320,
+      175
+    ],
+    "palette": [
+      "#C8102E",
+      "#FFFFFF",
+      "#1A2A5E"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Moon Landing Day",
+    "short_name": "MOON LAND",
+    "description": "A toy rocket on the beach, footprints leading to the surf, the moon enormous and cratered overhead.",
+    "sprite": {
+      "width": 128,
+      "height": 80
+    },
+    "island_xy": [
+      220,
+      175
+    ],
+    "palette": [
+      "#7A8A9A",
+      "#1A1A4A",
+      "#F0EAD6"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "National Watermelon Day",
+    "short_name": "WATERMELON",
+    "description": "Slice of watermelon as Johnny's hat; rinds scattered, seeds being spit at a crab.",
+    "sprite": {
+      "width": 56,
+      "height": 48
+    },
+    "island_xy": [
+      410,
+      270
+    ],
+    "palette": [
+      "#E63946",
+      "#3A8A3A",
+      "#1A1A1A"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Left-Handers Day",
+    "short_name": "LEFT HAND",
+    "description": "Johnny waves with his left hand; everything on the island is mirrored - palm leans left, sun on the left.",
+    "sprite": {
+      "width": 96,
+      "height": 64
+    },
+    "island_xy": [
+      240,
+      220
+    ],
+    "palette": [
+      "#A8E0C8",
+      "#FF7A6A",
+      "#FFF6E0"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Hawaii Statehood Day",
+    "short_name": "HAWAII DAY",
+    "description": "Hula skirt on Johnny, tiki torches lit, ukulele leaning on the message-bottle.",
+    "sprite": {
+      "width": 80,
+      "height": 80
+    },
+    "island_xy": [
+      380,
+      195
+    ],
+    "palette": [
+      "#E83A8A",
+      "#3A8A4A",
+      "#FF8A3A"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Labor Day",
+    "short_name": "LABOR DAY",
+    "description": "Johnny in hardhat and tool-belt; a half-built tiki hut and a GONE FISHIN sign on the palm.",
+    "sprite": {
+      "width": 96,
+      "height": 80
+    },
+    "island_xy": [
+      270,
+      200
+    ],
+    "palette": [
+      "#F5C518",
+      "#3A5A8A",
+      "#5A3A1A"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Talk Like a Pirate Day",
+    "short_name": "PIRATE DAY",
+    "description": "Eyepatch and tricorn on Johnny, jolly roger flag from the palm, parrot perched on shoulder.",
+    "sprite": {
+      "width": 88,
+      "height": 96
+    },
+    "island_xy": [
+      350,
+      175
+    ],
+    "palette": [
+      "#1A1A1A",
+      "#8A1A1A",
+      "#B89A4A"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "First Day of Autumn",
+    "short_name": "AUTUMN",
+    "description": "Palm leaves tinged orange and red, a few drifting down; Johnny in a flannel shirt over his rags.",
+    "sprite": {
+      "width": 112,
+      "height": 80
+    },
+    "island_xy": [
+      320,
+      180
+    ],
+    "palette": [
+      "#C8531A",
+      "#C89A2A",
+      "#8A3A1A"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Columbus / Indigenous Peoples' Day",
+    "short_name": "COLUMBUS",
+    "description": "A tiny galleon on the horizon; Johnny holds a hand-drawn map and looks confused.",
+    "sprite": {
+      "width": 96,
+      "height": 56
+    },
+    "island_xy": [
+      230,
+      215
+    ],
+    "palette": [
+      "#7A5A3A",
+      "#F0E0B8",
+      "#1A2A5E"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Election Day",
+    "short_name": "ELECTION",
+    "description": "I VOTED sticker on Johnny's chest, ballot box made from a crate, tiny donkey and elephant in surf.",
+    "sprite": {
+      "width": 80,
+      "height": 64
+    },
+    "island_xy": [
+      300,
+      250
+    ],
+    "palette": [
+      "#A82A3A",
+      "#E0E0E0",
+      "#2A3A6A"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Veterans Day",
+    "short_name": "VETERANS",
+    "description": "Johnny in dress-uniform cap saluting; a wreath of palm leaves leans against the trunk.",
+    "sprite": {
+      "width": 64,
+      "height": 80
+    },
+    "island_xy": [
+      360,
+      200
+    ],
+    "palette": [
+      "#5A6A3A",
+      "#C9A227",
+      "#7A1A1A"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Thanksgiving",
+    "short_name": "THANKSGIVE",
+    "description": "A small cooked turkey on a banana-leaf platter, pilgrim hat on Johnny, cornucopia spilling tropical fruit.",
+    "sprite": {
+      "width": 112,
+      "height": 72
+    },
+    "island_xy": [
+      260,
+      295
+    ],
+    "palette": [
+      "#7A3A1A",
+      "#C99A2A",
+      "#8A1A1A"
+    ]
+  }
+]

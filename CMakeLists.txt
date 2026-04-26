@@ -47,6 +47,9 @@ set(SOURCES
     src/spi.c
     # Memcard persistence for pause-menu settings.
     src/memcard.c
+    # Holiday table + date-algorithm core (35 holidays, codegen from holidays.yml).
+    src/holidays.c
+    src/holidays_table.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )

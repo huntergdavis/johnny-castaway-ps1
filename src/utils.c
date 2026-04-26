@@ -63,18 +63,21 @@ int ps1SoftTimeEnabled = 0;
 int ps1SoftHour  = 12;
 int ps1SoftMonth = 6;
 int ps1SoftDay   = 30;
+int ps1SoftYear  = 2026;  /* For movable-feast computation */
 
-/* Map (month, day) → islandState.holiday code:
- *   0 = none, 1 = Halloween (Oct 31), 2 = St Patrick (Mar 17),
- *   3 = Christmas (Dec 25), 4 = New Year (Jan 1).
- * Returns 0 for any non-holiday date. */
+/* Map (month, day) → islandState.holiday code via the new
+ * algorithm-driven holidays module. The legacy 4 IDs are preserved
+ * (1=Halloween, 2=StPatrick, 3=Christmas, 4=NewYear) so existing
+ * memcard saves with holidayOverride=1..4 keep their meaning.
+ *
+ * Year arg goes through ps1SoftYear (or a default 2026) since the
+ * original PC API was (month, day) only. Movable feasts need a year
+ * for accurate computation. */
+extern int ps1SoftYear;
 int ps1HolidayFromDate(int month, int day)
 {
-    if (month == 10 && day == 31) return 1;
-    if (month == 3  && day == 17) return 2;
-    if (month == 12 && day == 25) return 3;
-    if (month == 1  && day == 1)  return 4;
-    return 0;
+    int year = ps1SoftYear ? ps1SoftYear : 2026;
+    return holidayForDate(year, month, day);
 }
 #endif
 
