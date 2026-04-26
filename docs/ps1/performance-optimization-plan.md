@@ -641,6 +641,7 @@ and upload byte volume.
 | `P4-47` | Failed as no-op: guard holiday stamping at the compose call site for non-holiday scenes. | Fishing1 has `holiday=0`, but avoiding the no-op helper call did not move any VBlank-level metric. |
 | `P4-48` | Failed: replace restore-row `memcpy()` with a local aligned 32-bit copy helper. | `loop_vb` stayed flat, but `blocking_vb 20 -> 22` and `prefetch_overrun_vb 12 -> 14`; keep libc `memcpy` for restore rows. |
 | `P4-49` | Failed as no-op: cache the base-diff header flag in runtime state. | Replacing repeated `header.reserved0` masks with a cached byte left all key timing and work-identity metrics unchanged at `loop_vb=1242`; retry only with finer CPU counters or as cleanup. |
+| `P4-50` | Failed as no-op: exact-width upload for single dirty tile rows. | Fishing1 produced no measurable single-row upload bands; timing, `upload_bytes`, `upload_rects`, and `dirty_rows` all matched the accepted baseline exactly. |
 
 Prefetch variants to test in order:
 
