@@ -742,6 +742,7 @@ rectangle pressure.
 | `P4-106` | Done: enable PS1 function/data sections plus linker garbage collection. | Two headless runs matched timing and work identity exactly while `jcreborn.elf` shrank `709828 -> 708656` bytes; this does not move VBlank metrics yet, but it makes later public-build/code-size cleanup measurable. |
 | `P4-107` | Failed: gate foreground ADS-style telemetry writes behind `grPs1TelemetryEnabled`. | Timing stayed flat and correctness stayed clean, but the branch grew `jcreborn.elf` by `68` bytes and shifted speculative work (`restore_calls/compose_calls 190 -> 188`); remove legacy telemetry structurally later instead of adding hot-path conditionals. |
 | `P4-108` | Done: remove foreground ADS-style visual telemetry from the hot path. | Two headless runs kept timing and correctness flat while speculative prep dropped (`restore_calls/compose_calls 190 -> 188`, `restore_bytes 3034562 -> 2999408`) and `jcreborn.elf` shrank to `707916` bytes; use printf/perf logs for diagnostics, not legacy visual telemetry writes. |
+| `P4-109` | Failed: run future stream-window prefetch while a prepared frame waits for its presentation VBlank. | Duplicate speculative prep work disappeared (`restore_calls/compose_calls 188 -> 155`), but active timing regressed (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`); prepared-frame slack is not safe to spend opportunistically without grouped read-cost metadata. |
 
 Prefetch variants to test in order:
 
