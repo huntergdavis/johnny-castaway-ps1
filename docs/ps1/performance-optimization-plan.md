@@ -722,6 +722,7 @@ rectangle pressure.
 | `P4-86` | Failed: re-test prepared-current RAM reuse after leading-empty setup consume, including reuse-plus-immediate-prefetch. | Both variants removed duplicate work (`restore_calls 187 -> 155`, `compose_calls 187 -> 155`) but regressed active playback to `loop_vb=1231`, `blocking_vb=12`, and `prefetch_overrun_vb=12`; the removed work still acts as CD-phase pacing. |
 | `P4-87` | Failed: expand exact small-payload direct staging from exactly `3` to `3-4` VBlanks of slack. | `loop_vb 1227 -> 1228`, `blocking_vb 7 -> 16`, `prefetch_overrun_vb 7 -> 8`, and `due_misses 0 -> 2`; the accepted exact-read path must stay at the `3` VBlank knee. |
 | `P4-88` | Done: widen vertical dirty-upload band clean-gap merge from `2` to `8` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 424 -> 412`; byte cost is small (`upload_bytes 16381440 -> 16424960`) and correctness/fallback counters stayed clean. |
+| `P4-89` | Failed/no-op: re-sweep tight-slack direct-stage payload caps after the 8-row upload merge. | `6 KB` and `10 KB` matched baseline exactly; `4 KB` regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 11`, and `prefetch_overrun_vb 7 -> 11`. Keep `8 KB` until grouped reads or another stage model changes the coverage tradeoff. |
 
 Prefetch variants to test in order:
 
@@ -1089,9 +1090,9 @@ into one commit.
 ## Next 50 Targets From Current Timing
 
 Current measured bottlenecks are now narrow enough that the next wins should be
-small and cumulative: `157` Detail-tier present-wait VBlanks, `8` visible CD
-blocking VBlanks, `8` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `427` upload rects, and `3.05 MB` restore volume on
+small and cumulative: `157` Detail-tier present-wait VBlanks, `7` visible CD
+blocking VBlanks, `7` prefetch-overrun VBlanks, `68` active-loop reads,
+`16.4 MB` upload volume, `412` upload rects, and `2.99 MB` restore volume on
 fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |
@@ -1100,7 +1101,7 @@ fishing1 high tide.
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |
 | 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | Lower `prefetch.overrun_vb` without reintroducing due misses. |
-| 5 | CD/runtime | Sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the new baseline. | Find whether `8 KB` is the real knee or just fishing1-local. |
+| 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the post-gap8 baseline. | `8 KB` remains the local knee: `6 KB` and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
@@ -1150,7 +1151,7 @@ fishing1 high tide.
 ## Red-Team Conclusions
 
 The safest near-term speedup is not a more aggressive timing file. The measured
-runtime is still `1.146x` over the captured timing budget for fishing1 after
+runtime is still `1.139x` over the captured timing budget for fishing1 after
 the latest accepted pass. We need to keep removing or hiding work, not lie
 about the source timing.
 
@@ -1228,6 +1229,11 @@ the clean-row merge gap from `2` to `8` rows reduces `LoadImage` rectangles from
 `424` to `412`, with flat timing and a negligible upload-byte increase
 (`+43520` bytes across the scene). This is a micro-optimization, not a speed
 breakthrough, but it trims GPU command overhead without adding a fallback path.
+The post-gap8 direct-stage payload-cap sweep did not produce another win:
+`6 KB` and `10 KB` were exact no-ops, while `4 KB` regressed `loop_vb` to
+`1230` and raised blocking/refill-overrun to `11` VBlanks. Keep the accepted
+`8 KB` cap; future CD work needs grouped/layout-aware coverage, not another
+single payload-size threshold.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
