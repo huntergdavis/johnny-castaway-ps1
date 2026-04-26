@@ -28,7 +28,7 @@ Latest accepted default-path fishing1 exact no-holiday night variant
 pause merge, pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
-dirty-row upload bands with a 2-row gap byte trim, setup priming of the first
+dirty-row upload bands with a 1-row gap byte trim, setup priming of the first
 real payload, tight-slack direct staging for immediate payloads up to 8 KB,
 direct-stage scratch window seeding, and exact-4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
@@ -40,14 +40,14 @@ base-diff foreground pack enforcement, reported `policy=stage1_window`,
 `buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2701496`,
-`upload_bytes=16381440`, `dirty_rows=25596`, `upload_rects=424`, `trip=0`,
+`upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
 `setup_read_vb=109`, and `scene_vb=1400`. This is the current baseline for the
-next experiment. The exact-4 plus 2-row upload checkpoint is a work-reduction
+next experiment. The exact-4 plus 1-row upload checkpoint is a work-reduction
 promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
 and `prefetch.overrun_vb` flat while reducing `restore_calls/compose_calls`
-from `193` to `166` and reducing upload bytes by `117760`. The section-GC pass
+from `193` to `166` and reducing upload bytes by `217600`. The section-GC pass
 kept earlier counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
 same `137216` byte sector bucket. Removing the now-unused foreground visual
@@ -117,7 +117,7 @@ Top likely wins, in order:
 |---|---|---|---|
 | 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted prepared-present passes are only bridges; the next design must reduce duplicate prep while preserving lookahead. |
 | 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=5` and `prefetch.overrun_vb=5`, but every saved read still compounds. |
-| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.70 MB` after exact-4 prepared gating, and vertical bands plus a 2-row gap keep upload near `16.4 MB`; upload volume, rect pressure, and duplicate prep are still measurable dirty targets. |
+| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.70 MB` after exact-4 prepared gating, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume, rect pressure, and duplicate prep are still measurable dirty targets. |
 | 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `5` total backward seeks; grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
@@ -296,8 +296,10 @@ baseline is only `17,920` bytes across the loop.
 A final 11-row probe was the pre-pause local knee: timing stayed flat,
 `upload_rects` dropped to `401`, and the extra byte cost versus the 10-row
 baseline was `56,320` bytes across the loop. After the pause/menu merge, the
-current accepted point is a 2-row byte-trim gap: key timing remains flat while
-`upload_bytes` drops `16499200 -> 16381440` and rects rise `401 -> 424`.
+current accepted point is a 1-row byte-trim gap: key timing remains flat while
+`upload_bytes` drops `16499200 -> 16281600` and rects rise `401 -> 502`.
+The zero-gap point is still rejected, so the current safe boundary for this
+variant is between `1` and `0` clean rows.
 The next upload-byte attempt should move decisions to pack-time/direct-layout
 work or use scene-specific band statistics, not reintroduce runtime scratch
 packing.
@@ -576,11 +578,11 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
-vertical dirty-row bands with a post-pause 2-row clean-gap merge, while keeping
+vertical dirty-row bands with a post-pause 1-row clean-gap merge, while keeping
 full tile width and no scratch packing.
 Fishing1 improved from the original `loop_vb=1426` to `1240`,
 `restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16381440`; next work is balancing upload byte savings against rectangle
+`16281600`; next work is balancing upload byte savings against rectangle
 pressure and avoiding scheduler perturbation from extra rects.
 
 | ID | Task | Rationale |
@@ -645,14 +647,14 @@ removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
-a post-pause 2-row gap byte trim, setup priming of the first real payload,
+a post-pause 1-row gap byte trim, setup priming of the first real payload,
 tight-slack direct staging, direct-stage scratch window seeding, and the
 exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 the exact no-holiday fishing1 variant reports
 `loop_vb=1221`, `blocking_vb=5`, `due_misses=0`, and prefetch
-`overrun_vb=5`, with `upload_bytes=16381440`, `restore_bytes=2701496`,
-`upload_rects=424`, `setup_reads=6`, and `scene_vb=1400`.
+`overrun_vb=5`, with `upload_bytes=16281600`, `restore_bytes=2701496`,
+`upload_rects=502`, `setup_reads=6`, and `scene_vb=1400`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
@@ -810,6 +812,7 @@ from perturbing the deterministic cadence.
 | `P4-145` | Rejected: skip explicit `CdlSetloc` for sequential CD reads. | Setloc calls dropped (`74 -> 8`) and nominal loop improved (`1221 -> 1217`), but visual-work identity collapsed (`compose_calls 193 -> 6`, `upload_bytes 16499200 -> 1919360`) and visible CD pressure worsened (`blocking_vb 5 -> 8`). Source was reverted; retry only with a proven lower-level CD continuation API and stronger frame/work-identity gates. |
 | `P4-146` | Done: combine exact-4 prepared-present gating with a 4-row upload-band gap. | This is a work-reduction checkpoint, not a VBlank speed win: `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` stayed flat, while `restore_calls/compose_calls 193 -> 166`, `restore_bytes 3085148 -> 2701496`, `upload_bytes 16499200 -> 16387840`, and `dirty_rows 25780 -> 25606`; tradeoff is `overrun_vb 149 -> 150` and `upload_rects 401 -> 421`, within the accepted flat-timing gate. |
 | `P4-147` | Done: tighten the post-pause upload-band gap from `4` rows to `2` rows. | Two exact no-holiday runs kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16387840 -> 16381440` and `dirty_rows 25606 -> 25596`; tradeoff is `upload_rects 421 -> 424`, still far below the rejected zero-gap `515` rect pressure. |
+| `P4-148` | Done: narrow the post-pause upload-band gap from `2` rows to `1` row. | Two exact no-holiday runs again kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16381440 -> 16281600` and `dirty_rows 25596 -> 25440`; tradeoff is `upload_rects 424 -> 502`, close to but still below the rejected zero-gap failure at `515` rects. |
 
 Prefetch variants to test in order:
 
@@ -1373,11 +1376,12 @@ to `19-20`; future CD work should preserve zero due misses through grouped or
 physically adjacent reads before tightening the guard again.
 
 The post-leading-empty upload gap sweep moved the local runtime knee upward,
-but the post-pause accepted point moved back to a byte-saving 2-row dirty-band
+but the post-pause accepted point moved back to a byte-saving 1-row dirty-band
 gap. That checkpoint keeps key timing flat while reducing upload bytes and
-accepting more rects. The rejected 0-row and 12-row points remain too narrow
-and too wide respectively; the next larger upload win should move band metadata
-to pack generation or emit upload-ready layouts.
+accepting more rects. The rejected 0-row point shows the narrow-side boundary,
+and the rejected 12-row point shows the wide-side boundary; the next larger
+upload win should move band metadata to pack generation or emit upload-ready
+layouts.
 
 An inline CD-read histogram metrics pass was also rejected. The summary-level
 variant and the supposedly safer `perf-detail`-gated variant both regressed the
