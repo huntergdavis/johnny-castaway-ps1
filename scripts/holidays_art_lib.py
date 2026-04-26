@@ -222,7 +222,7 @@ def compose_johnny_simple(sp: Sprite, x: int, base_y: int,
     Optional hat (index color) sits on top.
 
     Layout:
-      ##    head (skin)
+      ##    head (skin) with eyes + smile
       ##
       :##:  shirt body (shirt_color)
       ####
@@ -231,13 +231,21 @@ def compose_johnny_simple(sp: Sprite, x: int, base_y: int,
     """
     # Head
     sp.rect(x + 1, base_y - 11, x + 4, base_y - 9, SKIN)
-    # Optional hat above the head
-    if hat_color is not None:
+    # Hair scruff: a couple of dark-brown pixels above the forehead so
+    # Johnny has a recognizable shaggy look even without a hat.
+    if hat_color is None:
+        sp.px(x + 1, base_y - 12, TRUNK)
+        sp.px(x + 2, base_y - 12, TRUNK)
+        sp.px(x + 3, base_y - 12, TRUNK)
+    else:
         sp.rect(x + 0, base_y - 13, x + 5, base_y - 12, hat_color)
         sp.rect(x + 1, base_y - 12, x + 4, base_y - 12, hat_color)
-    # Eyes
+    # Eyes (top row of the face)
     sp.px(x + 2, base_y - 10, BLACK)
     sp.px(x + 3, base_y - 10, BLACK)
+    # Tiny smile — a single black pixel under the eyes
+    sp.px(x + 2, base_y - 9, BLACK)
+    sp.px(x + 3, base_y - 9, BLACK)
     # Shirt body
     sp.rect(x + 0, base_y - 8, x + 5, base_y - 4, shirt_color)
     # Legs (skin/dark)
