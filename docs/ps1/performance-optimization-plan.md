@@ -591,6 +591,7 @@ misses and grouping rather than blindly shrinking the window again.
 | `P4-17` | Done: retune the default stream window from `24 KB` to `20 KB` after pad/SPI diagnostics were gated off. | `20 KB` improved `loop_vb 1317 -> 1312`, `blocking_vb 93 -> 91`, and `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`. |
 | `P4-18` | Done: lower the stream-window refill guard from `3` to `2` VBlanks after the 20 KB retune. | `loop_vb 1312 -> 1300`, `blocking_vb 91 -> 66`, `due_misses 11 -> 4`, with bounded `prefetch_overrun_vb 37 -> 45`. |
 | `P4-19` | Failed: lower the stream-window refill guard from `2` to `1` VBlank. | `due_misses 4 -> 2` did not compensate for `loop_vb 1300 -> 1312` and `prefetch_overrun_vb 45 -> 62`; keep the `2` VBlank default. |
+| `P4-20` | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the post-merge baseline. | Key metrics stayed identical; keep the stricter `5` VBlank default until another timing change makes this guard matter again. |
 
 Prefetch variants to test in order:
 
@@ -843,6 +844,7 @@ into one commit.
 | 18b | CD | Done: retune default stream window to `20 KB` after diagnostics gating. | `loop_vb 1317 -> 1312`, `blocking_vb 93 -> 91`, and `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`. |
 | 18c | CD | Done: lower the post-20 KB refill guard to `2` VBlanks. | `loop_vb 1312 -> 1300`, `blocking_vb 91 -> 66`, and `due_misses 11 -> 4`; `prefetch_overrun_vb` rose `37 -> 45`. |
 | 18d | CD | Failed: lower the post-20 KB refill guard to `1` VBlank. | `due_misses 4 -> 2`, but `loop_vb 1300 -> 1312` and `prefetch_overrun_vb 45 -> 62`; retry only after refill cost changes. |
+| 18e | CD | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the current baseline. | `loop_vb`, `blocking_vb`, `prefetch_overrun_vb`, `hits`, and `due_misses` all matched baseline exactly. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
