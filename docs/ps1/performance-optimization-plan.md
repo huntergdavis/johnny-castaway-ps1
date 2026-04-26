@@ -627,6 +627,7 @@ and upload byte volume.
 | `P4-34` | Failed as no-op: hoist the PAL4 dirty visible-row check out of the per-span loop. | Key metrics stayed exactly flat at VBlank resolution; retry only with finer CPU counters or combined compositor branch cleanup. |
 | `P4-35` | Failed: call `markTileDirtyRect()` directly from PAL4 row dirty aggregation. | The direct path regressed `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 17`; generic `grMarkRectDirty()` stays faster in this build. |
 | `P4-36` | Failed via present pipeline: compose FG2 RAM tiles before `VSync(0)`. | Correctness stayed clean, but `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 39`, `due_misses 1 -> 4`, and `prefetch_overrun_vb 12 -> 15`; render sequencing is coupled to the current prefetch cadence. |
+| `P4-37` | Failed: raise the staged-copy fallthrough guard from `6` to `7` VBlanks. | `blocking_vb` stayed `21`, but `loop_vb 1243 -> 1246` and `prefetch_overrun_vb 12 -> 13`; keep the local optimum at `6` VBlanks. |
 
 Prefetch variants to test in order:
 
@@ -892,6 +893,7 @@ into one commit.
 | 18n | CD | Failed: re-sweep `15 KB` and `14 KB` windows after the fallthrough guard. | `15 KB` no-op; `14 KB` lowered overrun but starved coverage and raised blocking. |
 | 18o | Dirty/Compose | Failed as no-op: hoist the PAL4 dirty visible-row branch. | Metrics were unchanged; needs finer CPU counters or batching with adjacent branch cleanup. |
 | 18p | Dirty/Compose | Failed: call direct tile dirty marker from PAL4 row aggregation. | Slower than the generic wrapper despite equivalent dirty metrics. |
+| 18q | CD | Failed: raise the post-row-dirty staged-copy fallthrough guard to `7` VBlanks. | Slower total loop with no blocking reduction; keep `6` until refill costs change. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
