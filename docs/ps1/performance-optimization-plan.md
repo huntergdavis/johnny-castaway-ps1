@@ -560,6 +560,7 @@ span like an arbitrary transparent sprite.
 | `P3-07` | Consider pack-time direct16 row commands for high-cost scenes only. | Removes palette work at runtime but increases pack size. |
 | `P3-08` | Keep the old compositor behind a debug token until the new path is validated. | Fast rollback. |
 | `P3-09` | Done: keep PAL4 dirty marking outside the per-span compositor and split it per tile row. | Removes redundant `grMarkRectDirty` calls without widening restore extents across the 320px tile boundary. |
+| `P3-10` | Failed: inline the PAL4 span compositor into the decoded row loop. | Work identity stayed stable, but `loop_vb 1243 -> 1249`, `blocking_vb 21 -> 23`, and `prefetch_overrun_vb 12 -> 14`; local helper inlining lost to code-shape effects. |
 
 Expected impact: active frames average only 2.4K-4.9K visible pixels, so this
 is likely behind held-frame and dirty-upload fixes for fishing. It becomes more
