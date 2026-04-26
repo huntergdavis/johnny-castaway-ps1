@@ -155,8 +155,8 @@ def mlk_v1(h):
     sp.ellipse(podium_x + 7, 20, podium_x + 9, 23, BLACK)
     # Johnny standing at attention to the right
     compose_johnny_simple(sp, 64, 48, hat_color=None, shirt_color=RED)
-    # Subtle ribbon/banner star above
-    compose_star(sp, 78, 8, 2, YELLOW)
+    # Subtle ribbon/banner star above — bg is YELLOW so use WHITE
+    compose_star(sp, 78, 8, 2, WHITE)
     return sp
 
 
@@ -815,9 +815,9 @@ def mlk_v4(h):
     sp.rect(8, 16, 10, 18, RED)
     sp.rect(76, 4, 78, 12, RED)
     sp.rect(76, 14, 78, 16, RED)
-    # Big star bursts in sky
-    compose_star(sp, 18, 26, 3, YELLOW)
-    compose_star(sp, 70, 28, 3, YELLOW)
+    # Big star bursts in sky — bg is YELLOW so use WHITE/ORANGE
+    compose_star(sp, 18, 26, 3, WHITE)
+    compose_star(sp, 70, 28, 3, ORANGE)
     return sp
 
 
