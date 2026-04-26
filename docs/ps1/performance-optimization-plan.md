@@ -626,6 +626,7 @@ and upload byte volume.
 | `P4-33` | Failed: re-sweep `15 KB` and `14 KB` stream windows after the `6` VBlank fallthrough guard. | `15 KB` rounded to the current behavior; `14 KB` reduced `prefetch_overrun_vb 12 -> 9` but regressed `loop_vb 1243 -> 1244` and `blocking_vb 21 -> 36`. |
 | `P4-34` | Failed as no-op: hoist the PAL4 dirty visible-row check out of the per-span loop. | Key metrics stayed exactly flat at VBlank resolution; retry only with finer CPU counters or combined compositor branch cleanup. |
 | `P4-35` | Failed: call `markTileDirtyRect()` directly from PAL4 row dirty aggregation. | The direct path regressed `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 17`; generic `grMarkRectDirty()` stays faster in this build. |
+| `P4-36` | Failed via present pipeline: compose FG2 RAM tiles before `VSync(0)`. | Correctness stayed clean, but `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 39`, `due_misses 1 -> 4`, and `prefetch_overrun_vb 12 -> 15`; render sequencing is coupled to the current prefetch cadence. |
 
 Prefetch variants to test in order:
 
@@ -953,7 +954,7 @@ into one commit.
 | 77 | Compose | Add clipped-span counters. | Find capture/offset waste. |
 | 78 | Compose | Remove generic sprite compositor branch from FG2 path. | Lower hot-path code/branches. |
 | 79 | Present | Detail-split `grUpdateDisplay()` wait vs upload. | Identify present serialization. |
-| 80 | Present | Upload before wait when safe. | Lower `present_wait_vb`. |
+| 80 | Present | Failed first attempt: compose FG2 RAM tiles before `VSync(0)`. | Correctness clean, but `loop_vb`, `blocking_vb`, and `due_misses` regressed; retry only with Detail-tier attribution or a broader render scheduler. |
 | 81 | Present | Wait only when next frame deadline requires it. | Lower idle VBlanks. |
 | 82 | Present | Skip OT clear in pure software FG2 frames. | Lower per-entry CPU. |
 | 83 | Present | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | Total loop regressed by one VBlank despite slightly better CD submetrics; retry only with finer CPU/IRQ counters and input-latency validation. |
@@ -985,7 +986,7 @@ into one commit.
 | 4 | Done: gate controller/SPI diagnostics off by default. | fishing1 improved `loop_vb 1369 -> 1317` with clean correctness; `pad-diag`/`pad-debug` preserve the deeper controller probe path. |
 | 5 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
 | 6 | Add X-aware upload batching on top of accepted row-level restore. | `upload_bytes`, `upload_rects`, or `upload_vb` fall with no stale pixels and no runtime full fallback. |
-| 7 | Test FG2-specific present/update sequencing. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity. |
+| 7 | Test FG2-specific present/update sequencing beyond the rejected compose-before-VSync attempt. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity or worsening CD prefetch coverage. |
 | 8 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
 
 ## Red-Team Conclusions
