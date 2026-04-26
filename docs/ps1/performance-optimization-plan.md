@@ -730,6 +730,7 @@ rectangle pressure.
 | `P4-101` | Done: coalesce FG2 metadata startup reads. | Active loop stayed flat while `setup_reads 8 -> 6`, `pack_start_vb 55 -> 42`, `scene_vb 1419 -> 1406`, `blocking_vb 7 -> 6`, and `prefetch_overrun_vb 7 -> 6`; tradeoff is `restore_calls/compose_calls 187 -> 190`. |
 | `P4-102` | Failed: move FG2 sound events into the metadata prefix. | Setup improved (`setup_reads 6 -> 5`, `pack_start_vb 42 -> 26`, `scene_vb 1406 -> 1401`), but shifting all payload offsets by `36` bytes regressed active playback (`loop_vb 1227 -> 1238`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`); preserve payload/sector alignment before retrying setup coalescing. |
 | `P4-103` | Failed: resolve the FG2 pack once before startup reads. | Setup improved (`pack_start_vb 42 -> 30`, `scene_vb 1406 -> 1397`), but active playback regressed (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`) and speculative prep calls changed; setup code shape still affects the deterministic loop cadence. |
+| `P4-104` | Failed: trim stream-window reads to complete payload entries. | Bytes/sectors dropped (`1098982 -> 1094886`, `541 -> 539`) with `hits=155` and `due_misses=0`, but elapsed CD and active timing regressed (`loop_vb 1227 -> 1240`, `loop_read_vb 286 -> 298`, `blocking_vb 6 -> 13`); trailing overread is part of the current cadence unless group metadata predicts cost. |
 
 Prefetch variants to test in order:
 
