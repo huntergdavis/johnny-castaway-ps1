@@ -629,6 +629,7 @@ and upload byte volume.
 | `P4-36` | Failed via present pipeline: compose FG2 RAM tiles before `VSync(0)`. | Correctness stayed clean, but `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 39`, `due_misses 1 -> 4`, and `prefetch_overrun_vb 12 -> 15`; render sequencing is coupled to the current prefetch cadence. |
 | `P4-37` | Failed: raise the staged-copy fallthrough guard from `6` to `7` VBlanks. | `blocking_vb` stayed `21`, but `loop_vb 1243 -> 1246` and `prefetch_overrun_vb 12 -> 13`; keep the local optimum at `6` VBlanks. |
 | `P4-38` | Failed: point due window hits directly at stream-window bytes instead of copying to `frameBuffer`. | Correctness stayed clean, but `loop_vb 1243 -> 1250`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 19`; the explicit copy remains faster in this code shape. |
+| `P4-39` | Failed as no-op: use a circular FG2 stream-window head to avoid most refill `memmove()` calls. | Correctness stayed clean, but `loop_vb=1243`, `blocking_vb=21`, `prefetch_overrun_vb=12`, `hits=154`, and `due_misses=1` matched baseline exactly; the next CD target needs cheaper/grouped reads, not RAM compaction. |
 
 Prefetch variants to test in order:
 
@@ -988,9 +989,10 @@ into one commit.
 | 3 | Capture the post-merge baseline matrix with `JCPERF2` Summary and selected Detail runs. | fishing1 high/low, fishing2, and fishing3 have comparable records under the new default path. |
 | 4 | Done: gate controller/SPI diagnostics off by default. | fishing1 improved `loop_vb 1369 -> 1317` with clean correctness; `pad-diag`/`pad-debug` preserve the deeper controller probe path. |
 | 5 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
-| 6 | Add X-aware upload batching on top of accepted row-level restore. | `upload_bytes`, `upload_rects`, or `upload_vb` fall with no stale pixels and no runtime full fallback. |
-| 7 | Test FG2-specific present/update sequencing beyond the rejected compose-before-VSync attempt. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity or worsening CD prefetch coverage. |
-| 8 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
+| 6 | Prototype pack-emitted FG2/FGP3 prefetch groups or sector-aligned group sidecar metadata. | `reads`, `due_misses`, and `blocking_vb` fall without growing `pack_bytes` enough to threaten the CD budget. |
+| 7 | Add X-aware upload batching on top of accepted row-level restore. | `upload_bytes`, `upload_rects`, or `upload_vb` fall with no stale pixels and no runtime full fallback. |
+| 8 | Test FG2-specific present/update sequencing beyond the rejected compose-before-VSync attempt. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity or worsening CD prefetch coverage. |
+| 9 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
 
 ## Red-Team Conclusions
 
