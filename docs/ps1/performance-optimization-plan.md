@@ -26,10 +26,11 @@ JCPAD/JCSPI diagnostic sampling on the hot path.
 
 Latest accepted default-path fishing1 high-tide run, after the pause merge,
 pad/SPI diagnostic gating, the post-diagnostics window retunes, the
-3 VBlank refill guard, row-level X dirty restore, and per-tile PAL4 row dirty
-marking, reported `policy=stage1_window`, `buf=23568`, `hits=154`,
-`due_misses=1`, `blocking_vb=21`, `prefetch.overrun_vb=15`, `loop_vb=1248`,
-`overrun_vb=171`, `target_vb=1077`, `restore_bytes=2510092`,
+3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
+and per-tile PAL4 row dirty marking, reported `policy=stage1_window`,
+`buf=23568`, `hits=154`,
+`due_misses=1`, `blocking_vb=21`, `prefetch.overrun_vb=12`, `loop_vb=1243`,
+`overrun_vb=166`, `target_vb=1077`, `restore_bytes=2510092`,
 `upload_bytes=17172480`, `trip=0`, `fallback=0`, `frame_mismatch=0`,
 `sound_late=0`, and `cd_fail=0`. This is the current baseline for the next
 experiment; the pre-pause best was `loop_vb=1297`.
@@ -63,7 +64,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1248` and still has `blocking_vb=21`, prefetch `overrun_vb=15`, and `due_misses=1`. |
+| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1243` and still has `blocking_vb=21`, prefetch `overrun_vb=12`, and `due_misses=1`. |
 | 2 | X-aware dirty upload | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, but still uploads `17.2 MB` across fishing1. Upload byte volume is now the clearer dirty target. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
@@ -512,7 +513,7 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path still uses the proven full-row batching.
-Fishing1 improved from the original `loop_vb=1426` to `1248` and
+Fishing1 improved from the original `loop_vb=1426` to `1243` and
 `restore_bytes=16035840` to `2510092`; next work is X-aware upload batching.
 
 | ID | Task | Rationale |
@@ -579,9 +580,10 @@ Status: first wave implemented, visually signed off, and merged to `main` in
 Current perf-branch target: keep squeezing CD latency and upload cost without
 changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
 removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
-restore, the `16 KB`/`3` VBlank post-restore retune, and per-tile row dirty
-marking, fishing1 high-tide reports `loop_vb=1248`, `blocking_vb=21`,
-`due_misses=1`, and prefetch `overrun_vb=15`. Row-level restore created enough
+restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
+marking, and the `6` VBlank fallthrough guard, fishing1 high-tide reports
+`loop_vb=1243`, `blocking_vb=21`, `due_misses=1`, and prefetch
+`overrun_vb=12`. Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
 Next experiments should target the remaining blocking, bounded refill overrun,
@@ -620,6 +622,7 @@ and upload byte volume.
 | `P4-29` | Failed: use a `2` VBlank guard only for immediate next-frame window staging while keeping lookahead at `3` VBlanks. | `due_misses 6 -> 1` and `blocking_vb 35 -> 27`, but `loop_vb 1254 -> 1268` and `prefetch_overrun_vb 6 -> 22`; immediate short reads still need cheaper grouping. |
 | `P4-30` | Done via compositor/dirty pipeline: aggregate PAL4 dirty marks per tile row. | `loop_vb 1254 -> 1248`, `blocking_vb 35 -> 21`, and `due_misses 6 -> 1`; `prefetch_overrun_vb 6 -> 15` is the next CD smoothing target. |
 | `P4-31` | Failed: raise the post-row-dirty refill guard from `3` to `4` VBlanks. | `loop_vb 1248 -> 1244` and `prefetch_overrun_vb 15 -> 12`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; keep visible blocking as a hard gate. |
+| `P4-32` | Done: raise the staged-copy fallthrough guard from `5` to `6` VBlanks after per-tile row dirty marking. | `loop_vb 1248 -> 1243`, `prefetch_overrun_vb 15 -> 12`, and `blocking_vb` stayed `21`. |
 
 Prefetch variants to test in order:
 
@@ -881,6 +884,7 @@ into one commit.
 | 18j | CD | Failed: split immediate and lookahead refill guards. | `due_misses 6 -> 1`, but `loop_vb 1254 -> 1268` and `prefetch_overrun_vb 6 -> 22`; short immediate reads are still too costly. |
 | 18k | CD/Dirty | Done: aggregate PAL4 dirty marking per tile row. | `loop_vb 1254 -> 1248`, `blocking_vb 35 -> 21`, and `due_misses 6 -> 1`; `prefetch_overrun_vb` rose to `15` and should be smoothed next. |
 | 18l | CD | Failed: raise the post-row-dirty refill guard to `4` VBlanks. | `loop_vb 1248 -> 1244`, but `blocking_vb 21 -> 36`; stricter gating starves due-frame residency. |
+| 18m | CD | Done: raise the post-row-dirty staged-copy fallthrough guard to `6` VBlanks. | `loop_vb 1248 -> 1243`, `prefetch_overrun_vb 15 -> 12`, and `blocking_vb` stayed `21`. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
