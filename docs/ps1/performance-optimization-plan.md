@@ -842,6 +842,7 @@ from perturbing the deterministic cadence.
 | `P4-173` | Failed/no-op: lower the direct-stage payload cap from `8 KB` to `7 KB`. | The exact no-caption fishing1 gate matched baseline across timing, CD, prefetch, gfx, pack LBA, and binary size (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=68`, `jcreborn.exe=149504`); source was reverted and direct-stage cap tuning remains exhausted. |
 | `P4-174` | Done: lower the local dirty-upload rectangle cap from `16` to `8`. | Fishing1's measured `max_upload_rects=6`, so the smaller cap preserves exact upload behavior (`upload_rects=502`, `cap_hits=0`) while trimming stack/binary pressure slightly (`jcreborn.elf 740568 -> 740556`, PS-EXE unchanged at `149504`). |
 | `P4-175` | Failed/no promotion: lower the local dirty-upload rectangle cap from `8` to `6`. | The exact fishing1 gate stayed flat and `cap_hits=0`, but there was no additional binary win over cap `8` and no headroom above fishing1's measured `max_upload_rects=6`; source was reverted to the safer cap `8` until broader scene validation proves a tighter cap. |
+| `P4-176` | Failed: narrow `grDrawBackground()` upload bookkeeping locals. | The ELF shrank (`740556 -> 740516`) with identical upload work, but the exact gate regressed cadence (`loop_vb 1221 -> 1225`, `blocking_vb 5 -> 12`, `prefetch_overrun_vb 5 -> 12`, `blocking_reads 4 -> 10`); source was reverted and this should only be retried with map/register review or upload-path translation-unit isolation. |
 
 Prefetch variants to test in order:
 
