@@ -93,6 +93,7 @@ int holidayForDate(int year, int month, int day);
 const struct Holiday *holidayById(int id);
 int holidayMaxId(void);
 int holidayNextId(int current);
+int holidayPrevId(int current);
 int holidaySpriteIndex(int id);
 const char *holidayTitle(int id);
 const char *holidayShortName(int id);

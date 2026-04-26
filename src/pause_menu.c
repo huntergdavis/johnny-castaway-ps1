@@ -34,6 +34,7 @@
 #include "ps1_perf.h"
 #include "memcard.h"
 #include "holidays.h"
+#include "ps1_captions.h"
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
@@ -55,6 +56,14 @@ extern int db;
 /* Sound mute helpers from sound_ps1.c. */
 extern int soundMuted;
 void soundMuteToggle(void);
+
+/* RNG seed state + helpers from jc_reborn.c. ps1SeedRandom uses the
+ * root-counter hash (PS1) or no-op stub (host); ps1SetSeed installs an
+ * exact srand() value. ps1LastSeedKnown becomes 1 once either has run. */
+extern unsigned int ps1LastSeedApplied;
+extern int          ps1LastSeedKnown;
+void ps1SeedRandom(void);
+void ps1SetSeed(unsigned int seed);
 
 /* Frame counter from graphics_ps1.c (incremented per scene frame). */
 extern uint32 ps1FrameCount;
@@ -319,26 +328,60 @@ static int editYear   = 2026;
 static int editHour   = 12;
 static int editMinute = 0;
 
+/* Island-position editing fields (Set Island Pos sub-screen).
+ * Mirror of the host overrides; copied in on entry, applied on confirm. */
+static int editIslandX     = 0;
+static int editIslandY     = 0;
+static int editIslandValid = 0;
+static int editIslandField = 0;   /* 0=X, 1=Y, 2=mode (AUTO/MANUAL) */
+
+/* RNG-seed editing fields (Set RNG Seed sub-screen). */
+static unsigned int editSeedValue = 1;
+static int          editSeedFixed = 0;     /* 0 = AUTO, 1 = FIXED */
+static int          editSeedField = 0;     /* 0 = mode, 1 = value */
+
 /* Debounce: tracks which buttons were held last frame so we only act on
  * fresh presses (not auto-repeat while held). */
 static uint16 prevButtons = 0;
 
 /* ---------------------------------------------------------------------------
- *  Main menu item descriptors
+ *  Main menu item descriptors. Environment toggles (sound / day-night /
+ *  tide / raft / holiday / captions / perf log) live behind Options now.
  * ------------------------------------------------------------------------- */
 enum {
     MENU_RESUME,
-    MENU_SOUND,
-    MENU_DAYNIGHT,
-    MENU_HOLIDAY,
+    MENU_OPTIONS,
     MENU_SAVE,
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
-    MENU_PERF_TOGGLE,
     MENU_DEBUG_INFO,
-    MENU_SET_TIME,
+    MENU_CREDITS,
     MENU_COUNT
 };
+
+/* Options sub-screen items.
+ *  - "Cycle" rows (Sound..Perf) flip values with LEFT / RIGHT / X.
+ *  - "Launcher" rows (Set Time/Date and below) open a dedicated edit
+ *    sub-screen on X. LEFT/RIGHT do nothing on launcher rows.
+ * The split is by index: anything < OPT_LAUNCHER_FIRST cycles. */
+enum {
+    OPT_SOUND,
+    OPT_DAYNIGHT,
+    OPT_TIDE,
+    OPT_RAFT,
+    OPT_HOLIDAY,
+    OPT_CAPTIONS,
+    OPT_PERF,
+    OPT_LAUNCHER_FIRST,           /* sentinel — same value as the next */
+    OPT_SET_TIME = OPT_LAUNCHER_FIRST,
+    OPT_SET_ISLAND_POS,
+    OPT_SET_SEED,
+    OPT_COUNT
+};
+
+/* Cursor for the Options sub-screen (separate from main-menu cursor so
+ * we resume Options on the same row when the user toggles back to it). */
+static int optionsCursor = 0;
 
 /* Forward decls. */
 static const char *perfLevelLabel(void);
@@ -374,6 +417,12 @@ static uint16 pmNewPress(uint16 cur)
 /* ---------------------------------------------------------------------------
  *  Public API
  * ------------------------------------------------------------------------- */
+void pauseMenuEnsureFontUploaded(void)
+{
+    if (!pmFontUploaded)
+        pmUploadFont();
+}
+
 void pauseMenuInit(void)
 {
     /* Reload BIOS font into VRAM -- graphicsInit may have overwritten it. */
@@ -398,12 +447,14 @@ void pauseMenuShow(void)
      * LoadImage uploads may have clobbered the (960,0) font area. */
     FntLoad(960, 0);
 
-    menuVisible = 1;
-    menuCursor  = 0;
-    menuState   = PAUSE_MENU_MAIN;
+    menuVisible           = 1;
+    menuCursor            = 0;
+    optionsCursor         = 0;
+    menuState             = PAUSE_MENU_MAIN;
     menuFramebufferPrimed = 0;
-    prevButtons = 0xFFFF;  /* Treat all buttons as "held" so the initial
-                              press that opened the menu is not re-acted. */
+    prevButtons           = 0xFFFF;  /* Treat all buttons as "held" so the
+                                        initial press that opened the menu
+                                        is not re-acted. */
 
     /* Sound stays in whatever state the user left it — defaults ON.
      * The Sound menu item lets the user mute/unmute manually. (When
@@ -714,6 +765,124 @@ static void drawSetTime(void)
 }
 
 /* ---------------------------------------------------------------------------
+ *  Sub-screen: Set Island Pos
+ * ---------------------------------------------------------------------------
+ *  Three fields: X offset, Y offset, and a Mode toggle (AUTO vs MANUAL).
+ *  AUTO = let the runtime pick (random varpos for fishing scenes,
+ *         (0, 0) otherwise).
+ *  MANUAL = use the X/Y values from this screen on every scene.
+ *  Range guards: X clamped to -250..+250, Y to -100..+200. Real
+ *  observed varpos from fgLoopRandomVarPos lives well inside that.
+ *  X confirms back to main; START goes back without applying.
+ * ------------------------------------------------------------------------- */
+static void drawIslandPos(void)
+{
+    pmPrintf("\n");
+    drawSeparator();
+    pmPrintf("    SET ISLAND POSITION\n");
+    drawSeparator();
+    pmPrintf("\n");
+
+    pmPrintf(" %s X offset:  %s%+4d%s\n",
+             editIslandField == 0 ? ">" : " ",
+             editIslandField == 0 ? "[" : " ",
+             editIslandX,
+             editIslandField == 0 ? "]" : " ");
+    pmPrintf(" %s Y offset:  %s%+4d%s\n",
+             editIslandField == 1 ? ">" : " ",
+             editIslandField == 1 ? "[" : " ",
+             editIslandY,
+             editIslandField == 1 ? "]" : " ");
+    pmPrintf(" %s Mode:      %s%s%s\n",
+             editIslandField == 2 ? ">" : " ",
+             editIslandField == 2 ? "[" : " ",
+             editIslandValid ? "MANUAL" : "AUTO",
+             editIslandField == 2 ? "]" : " ");
+
+    pmPrintf("\n");
+    pmPrintf(" UP/DOWN  select field\n");
+    pmPrintf(" LEFT/RIGHT adjust X/Y by 4\n");
+    pmPrintf("           toggle mode\n");
+    pmPrintf(" X = confirm   START = back\n");
+
+    if (!editIslandValid && (editIslandX != 0 || editIslandY != 0)) {
+        pmPrintf("\n");
+        pmPrintf(" (X/Y kept; AUTO ignores them)\n");
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ *  Sub-screen: Set RNG Seed
+ * ---------------------------------------------------------------------------
+ *  Two fields: Mode (AUTO / FIXED) and Value (unsigned 32-bit).
+ *  AUTO  = on confirm, re-seed via ps1SeedRandom() (root counters).
+ *  FIXED = on confirm, srand(value).
+ *  LEFT/RIGHT on the value field nudges by 1; L1/R1 by 100; L2/R2 by 10000.
+ *  X = confirm, START = back without applying.
+ * ------------------------------------------------------------------------- */
+static void drawSetSeed(void)
+{
+    pmPrintf("\n");
+    drawSeparator();
+    pmPrintf("    SET RNG SEED\n");
+    drawSeparator();
+    pmPrintf("\n");
+
+    pmPrintf(" %s Mode:   %s%s%s\n",
+             editSeedField == 0 ? ">" : " ",
+             editSeedField == 0 ? "[" : " ",
+             editSeedFixed ? "FIXED" : "AUTO",
+             editSeedField == 0 ? "]" : " ");
+
+    pmPrintf(" %s Value:  %s%10u%s\n",
+             editSeedField == 1 ? ">" : " ",
+             editSeedField == 1 ? "[" : " ",
+             editSeedValue,
+             editSeedField == 1 ? "]" : " ");
+
+    pmPrintf("\n");
+    if (ps1LastSeedKnown) {
+        pmPrintf(" Current seed: %u\n", ps1LastSeedApplied);
+    } else {
+        pmPrintf(" Current seed: (unknown)\n");
+    }
+
+    pmPrintf("\n");
+    pmPrintf(" UP/DOWN  select field\n");
+    pmPrintf(" LEFT/RIGHT  +/-1\n");
+    pmPrintf(" L1/R1       +/-100\n");
+    pmPrintf(" L2/R2       +/-10000\n");
+    pmPrintf(" X = confirm   START = back\n");
+}
+
+/* ---------------------------------------------------------------------------
+ *  Sub-screen: Credits
+ * ---------------------------------------------------------------------------
+ *  A labor-of-love attribution + open-source notice + the "if you paid
+ *  you were cheated" disclaimer + the upstream URL. START = back.
+ *  Lines are tuned to ~30 chars max so they fit the panel width.
+ * ------------------------------------------------------------------------- */
+static void drawCredits(void)
+{
+    pmPrintf(" CREDITS  (START to return)\n");
+    drawSeparator();
+    pmPrintf(" A labor of love by\n");
+    pmPrintf(" Hunter Davis.\n");
+    pmPrintf("\n");
+    pmPrintf(" Hunter does not own or have\n");
+    pmPrintf(" a license to the Johnny\n");
+    pmPrintf(" Castaway character. The\n");
+    pmPrintf(" original creator generously\n");
+    pmPrintf(" allows fan ports.\n");
+    pmPrintf("\n");
+    pmPrintf(" If you paid for this, you\n");
+    pmPrintf(" were cheated.\n");
+    pmPrintf(" Open source and free:\n");
+    pmPrintf(" github.com/huntergdavis/\n");
+    pmPrintf(" Johnny-Castaway-PS1\n");
+}
+
+/* ---------------------------------------------------------------------------
  *  Main menu drawing
  * ------------------------------------------------------------------------- */
 static const char *perfLevelLabel(void)
@@ -730,6 +899,11 @@ static const char *perfLevelLabel(void)
 /* Externs from jc_reborn.c: -1 = auto/random, else forced. */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
+extern int hostForcedLowTide;
+extern int hostForcedRaftStage;
+extern int hostForcedIslandPosValid;
+extern int hostForcedIslandX;
+extern int hostForcedIslandY;
 extern int ps1SoftHour;
 extern int ps1SoftMinute;
 extern int ps1SoftMonth;
@@ -754,35 +928,128 @@ static const char *holidayLabel(void)
     return holidayShortName(hostForcedHoliday);
 }
 
-static void cycleDaynight(void)
+static void cycleDaynight(int dir)
 {
     /* AUTO(-1) -> DAY(0) -> NIGHT(1) -> AUTO */
-    hostForcedNight = hostForcedNight + 1;
-    if (hostForcedNight > 1) hostForcedNight = -1;
+    hostForcedNight += dir;
+    if (hostForcedNight > 1)  hostForcedNight = -1;
+    if (hostForcedNight < -1) hostForcedNight = 1;
 }
 
-static void cycleHoliday(void)
+static void cycleHoliday(int dir)
 {
-    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO */
-    hostForcedHoliday = holidayNextId(hostForcedHoliday);
+    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO.
+     * holidayPrevId / holidayNextId expose the inverse step. */
+    if (dir > 0)
+        hostForcedHoliday = holidayNextId(hostForcedHoliday);
+    else
+        hostForcedHoliday = holidayPrevId(hostForcedHoliday);
+}
+
+static const char *tideLabel(void)
+{
+    switch (hostForcedLowTide) {
+    case -1: return "AUTO";
+    case  0: return "HIGH";
+    case  1: return "LOW";
+    default: return "?";
+    }
+}
+
+static void cycleTide(int dir)
+{
+    /* AUTO(-1) -> HIGH(0) -> LOW(1) -> AUTO */
+    hostForcedLowTide += dir;
+    if (hostForcedLowTide > 1)  hostForcedLowTide = -1;
+    if (hostForcedLowTide < -1) hostForcedLowTide = 1;
+}
+
+static const char *raftLabel(void)
+{
+    switch (hostForcedRaftStage) {
+    case -1: return "AUTO";
+    case  0: return "NONE";
+    case  1: return "1";
+    case  2: return "2";
+    case  3: return "3";
+    case  4: return "4";
+    case  5: return "5";
+    default: return "?";
+    }
+}
+
+static void cycleRaft(int dir)
+{
+    /* AUTO(-1) -> NONE(0) -> 1..5 -> AUTO */
+    hostForcedRaftStage += dir;
+    if (hostForcedRaftStage > 5)  hostForcedRaftStage = -1;
+    if (hostForcedRaftStage < -1) hostForcedRaftStage = 5;
+}
+
+static void cyclePerf(int dir)
+{
+    /* OFF(0) <-> SUMMARY(1) <-> DETAIL(2) <-> DEBUG(3) wrapping */
+    int lvl = ((int)ps1PerfLevel + dir) & 0x3;
+    ps1PerfSetLevel((uint32)lvl);
+}
+
+static const char *captionsLabel(void)
+{
+    return captionsGetEnabled() ? "ON" : "OFF";
+}
+
+static void cycleCaptions(int dir)
+{
+    /* Two states; either direction toggles. */
+    (void)dir;
+    captionsSetEnabled(!captionsGetEnabled());
 }
 
 static void drawMainMenu(void)
 {
-    const char *soundLabel = soundMuted ? "MUTED" : "ON";
-
     pmPrintf(" JOHNNY CASTAWAY  - PAUSED -\n");
     drawSeparator();
 
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
-    pmPrintf(" %s Sound: %s\n",
-             menuCursor == MENU_SOUND ? ">" : " ", soundLabel);
+    pmPrintf(" %s Options\n",
+             menuCursor == MENU_OPTIONS ? ">" : " ");
+    pmPrintf(" %s Save Settings to Memcard\n",
+             menuCursor == MENU_SAVE ? ">" : " ");
+    pmPrintf(" %s Reset Current Scene\n",
+             menuCursor == MENU_RESET_LOOP ? ">" : " ");
+    pmPrintf(" %s Next Scene\n",
+             menuCursor == MENU_NEXT_SCENE ? ">" : " ");
+    pmPrintf(" %s Debug Info\n",
+             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
+    pmPrintf(" %s Credits\n",
+             menuCursor == MENU_CREDITS ? ">" : " ");
+
+    drawSeparator();
+    pmPrintf("  X = select   START = resume\n");
+}
+
+/* ---------------------------------------------------------------------------
+ *  Sub-screen: Options (sound, day/night, tide, raft, holiday, perf log)
+ * ------------------------------------------------------------------------- */
+static void drawOptions(void)
+{
+    const char *soundLabel = soundMuted ? "MUTED" : "ON";
+
+    pmPrintf("       OPTIONS\n");
+    drawSeparator();
+
+    pmPrintf(" %s Sound:     %s\n",
+             optionsCursor == OPT_SOUND ? ">" : " ", soundLabel);
     pmPrintf(" %s Day/Night: %s\n",
-             menuCursor == MENU_DAYNIGHT ? ">" : " ", daynightLabel());
-    pmPrintf(" %s Holiday: %s\n",
-             menuCursor == MENU_HOLIDAY ? ">" : " ", holidayLabel());
-    if (menuCursor == MENU_HOLIDAY) {
+             optionsCursor == OPT_DAYNIGHT ? ">" : " ", daynightLabel());
+    pmPrintf(" %s Tide:      %s\n",
+             optionsCursor == OPT_TIDE ? ">" : " ", tideLabel());
+    pmPrintf(" %s Raft:      %s\n",
+             optionsCursor == OPT_RAFT ? ">" : " ", raftLabel());
+    pmPrintf(" %s Holiday:   %s\n",
+             optionsCursor == OPT_HOLIDAY ? ">" : " ", holidayLabel());
+    if (optionsCursor == OPT_HOLIDAY) {
         if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
             pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
             pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
@@ -794,21 +1061,27 @@ static void drawMainMenu(void)
             pmPrintf("   Random each scene\n");
         }
     }
-    pmPrintf(" %s Save Settings to Memcard\n",
-             menuCursor == MENU_SAVE ? ">" : " ");
-    pmPrintf(" %s Reset Screensaver Loop\n",
-             menuCursor == MENU_RESET_LOOP ? ">" : " ");
-    pmPrintf(" %s Next Scene\n",
-             menuCursor == MENU_NEXT_SCENE ? ">" : " ");
-    pmPrintf(" %s TTY Perf Log: %s\n",
-             menuCursor == MENU_PERF_TOGGLE ? ">" : " ", perfLevelLabel());
-    pmPrintf(" %s Debug Info\n",
-             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
-    pmPrintf(" %s Set Time/Date\n",
-             menuCursor == MENU_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Captions:  %s\n",
+             optionsCursor == OPT_CAPTIONS ? ">" : " ", captionsLabel());
+    pmPrintf(" %s Perf Log:  %s\n",
+             optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
 
     drawSeparator();
-    pmPrintf("  X = select   START = resume\n");
+    pmPrintf(" %s Set Time/Date...\n",
+             optionsCursor == OPT_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Set Island Pos...\n",
+             optionsCursor == OPT_SET_ISLAND_POS ? ">" : " ");
+    pmPrintf(" %s Set RNG Seed...\n",
+             optionsCursor == OPT_SET_SEED ? ">" : " ");
+
+    drawSeparator();
+    pmPrintf(" UP/DOWN  select field\n");
+    if (optionsCursor < OPT_LAUNCHER_FIRST) {
+        pmPrintf(" LEFT/RIGHT or X cycle\n");
+    } else {
+        pmPrintf(" X = open editor\n");
+    }
+    pmPrintf(" START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -833,19 +1106,9 @@ static int handleMainInput(uint16 pressed)
         case MENU_RESUME:
             return 0;  /* close menu */
 
-        case MENU_SOUND:
-            /* Toggle real SPU mute (silences active voices + blocks new). */
-            soundMuteToggle();
-            /* User chose mute state — don't auto-undo on hide. */
-            pauseMutedSound = 0;
-            break;
-
-        case MENU_DAYNIGHT:
-            cycleDaynight();
-            break;
-
-        case MENU_HOLIDAY:
-            cycleHoliday();
+        case MENU_OPTIONS:
+            menuState = PAUSE_MENU_OPTIONS;
+            prevButtons = 0xFFFF;
             break;
 
         case MENU_SAVE:
@@ -860,27 +1123,13 @@ static int handleMainInput(uint16 pressed)
             pauseMenuRequestNextScene = 1;
             return 0;
 
-        case MENU_PERF_TOGGLE:
-            /* Cycle: OFF → SUMMARY → DETAIL → DEBUG → OFF. */
-            ps1PerfSetLevel((ps1PerfLevel + 1) & 0x3);
-            break;
-
         case MENU_DEBUG_INFO:
             menuState = PAUSE_MENU_SCENE_INFO;
             prevButtons = 0xFFFF;
             break;
 
-        case MENU_SET_TIME:
-            /* Sync edit fields from current soft-time state so the
-             * sub-screen reflects what was loaded from memcard (or
-             * what's been previously set). */
-            editMonth = ps1SoftMonth;
-            editDay   = ps1SoftDay;
-            editYear  = ps1SoftYear;
-            editHour  = ps1SoftHour;
-            editMinute = ps1SoftMinute;
-            menuState = PAUSE_MENU_SET_TIME;
-            editField = 0;
+        case MENU_CREDITS:
+            menuState = PAUSE_MENU_CREDITS;
             prevButtons = 0xFFFF;
             break;
 
@@ -894,6 +1143,91 @@ static int handleMainInput(uint16 pressed)
         return 0;
 
     return 1;  /* keep menu open */
+}
+
+/* Apply a +1 / -1 cycle to the field at `optionsCursor`. */
+static void optionsCycle(int dir)
+{
+    switch (optionsCursor) {
+    case OPT_SOUND:
+        /* Sound only has 2 states; treat any cycle as toggle. */
+        soundMuteToggle();
+        pauseMutedSound = 0;  /* user-driven choice — don't auto-undo */
+        break;
+    case OPT_DAYNIGHT: cycleDaynight(dir); break;
+    case OPT_TIDE:     cycleTide(dir);     break;
+    case OPT_RAFT:     cycleRaft(dir);     break;
+    case OPT_HOLIDAY:  cycleHoliday(dir);  break;
+    case OPT_CAPTIONS: cycleCaptions(dir); break;
+    case OPT_PERF:     cyclePerf(dir);     break;
+    default: break;
+    }
+}
+
+/* Options sub-screen input. UP/DOWN move cursor; on cycle rows
+ * LEFT/RIGHT or X cycle the value; on launcher rows X opens the
+ * editor sub-screen. START goes back to the main menu. */
+static int handleOptionsInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_OPTIONS;   /* return cursor to where we came from */
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        optionsCursor--;
+        if (optionsCursor < 0) optionsCursor = OPT_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        optionsCursor++;
+        if (optionsCursor >= OPT_COUNT) optionsCursor = 0;
+    }
+
+    int isLauncher = (optionsCursor >= OPT_LAUNCHER_FIRST);
+
+    if (isLauncher) {
+        /* X opens the chosen editor; LEFT/RIGHT do nothing. */
+        if (pressed & PAD_CROSS) {
+            switch (optionsCursor) {
+            case OPT_SET_TIME:
+                editMonth  = ps1SoftMonth;
+                editDay    = ps1SoftDay;
+                editYear   = ps1SoftYear;
+                editHour   = ps1SoftHour;
+                editMinute = ps1SoftMinute;
+                editField  = 0;
+                menuState   = PAUSE_MENU_SET_TIME;
+                prevButtons = 0xFFFF;
+                break;
+            case OPT_SET_ISLAND_POS:
+                editIslandX     = hostForcedIslandX;
+                editIslandY     = hostForcedIslandY;
+                editIslandValid = hostForcedIslandPosValid;
+                editIslandField = 0;
+                menuState   = PAUSE_MENU_ISLAND_POS;
+                prevButtons = 0xFFFF;
+                break;
+            case OPT_SET_SEED:
+                editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
+                editSeedFixed = 0;
+                editSeedField = 0;
+                menuState   = PAUSE_MENU_SET_SEED;
+                prevButtons = 0xFFFF;
+                break;
+            }
+        }
+    } else {
+        /* Cycle row: LEFT / RIGHT / X all step the value. */
+        if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+            optionsCycle(+1);
+        } else if (pressed & PAD_LEFT) {
+            optionsCycle(-1);
+        }
+    }
+
+    return 1;
 }
 
 /* Returns 0 if user goes back to main. */
@@ -912,8 +1246,8 @@ static int handleSubInput(uint16 pressed)
 static int handleSetTimeInput(uint16 pressed)
 {
     if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = 0;
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_TIME;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -962,9 +1296,117 @@ static int handleSetTimeInput(uint16 pressed)
         hostForcedHoliday = -1;  /* date picker drives holiday while in AUTO */
         /* getDayOfYear() in utils.c computes from ps1SoftMonth/ps1SoftDay */
 
-        /* Return to main menu after confirming. */
-        menuState = PAUSE_MENU_MAIN;
-        menuCursor = 0;
+        /* Return to Options sub-screen after confirming. */
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_TIME;
+        prevButtons = 0xFFFF;
+    }
+
+    return 1;
+}
+
+/* Set Island Pos input. UP/DOWN selects field; LEFT/RIGHT adjusts;
+ * X confirms (write through to host overrides) and goes back; START
+ * goes back without applying changes. */
+static int handleIslandPosInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_ISLAND_POS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        editIslandField--;
+        if (editIslandField < 0) editIslandField = 2;
+    }
+    if (pressed & PAD_DOWN) {
+        editIslandField++;
+        if (editIslandField > 2) editIslandField = 0;
+    }
+
+    int delta = 0;
+    if (pressed & PAD_RIGHT) delta = +1;
+    if (pressed & PAD_LEFT)  delta = -1;
+    if (delta) {
+        switch (editIslandField) {
+        case 0:
+            editIslandX = clampInt(editIslandX + delta * 4, -250, 250);
+            /* Editing X implies the user wants MANUAL mode. */
+            editIslandValid = 1;
+            break;
+        case 1:
+            editIslandY = clampInt(editIslandY + delta * 4, -100, 200);
+            editIslandValid = 1;
+            break;
+        case 2:
+            editIslandValid = !editIslandValid;
+            break;
+        }
+    }
+
+    if (pressed & PAD_CROSS) {
+        hostForcedIslandPosValid = editIslandValid;
+        hostForcedIslandX        = editIslandX;
+        hostForcedIslandY        = editIslandY;
+        menuState  = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_ISLAND_POS;
+        prevButtons = 0xFFFF;
+    }
+
+    return 1;
+}
+
+/* Set RNG Seed input. */
+static int handleSetSeedInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_SEED;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        editSeedField--;
+        if (editSeedField < 0) editSeedField = 1;
+    }
+    if (pressed & PAD_DOWN) {
+        editSeedField++;
+        if (editSeedField > 1) editSeedField = 0;
+    }
+
+    /* Determine step: +/-1, +/-100, or +/-10000 depending on
+     * which shoulder button is held alongside LEFT/RIGHT.
+     * (LEFT/RIGHT alone = 1; L1/R1 alone = 100; L2/R2 alone = 10000.) */
+    int step = 0;
+    int dir  = 0;
+    if (pressed & PAD_RIGHT)   { dir = +1; step = 1; }
+    if (pressed & PAD_LEFT)    { dir = -1; step = 1; }
+    if (pressed & PAD_R1)      { dir = +1; step = 100; }
+    if (pressed & PAD_L1)      { dir = -1; step = 100; }
+    if (pressed & PAD_R2)      { dir = +1; step = 10000; }
+    if (pressed & PAD_L2)      { dir = -1; step = 10000; }
+
+    if (dir != 0) {
+        if (editSeedField == 0) {
+            editSeedFixed = !editSeedFixed;
+        } else {
+            unsigned int delta = (unsigned int)step;
+            if (dir > 0) editSeedValue += delta;
+            else         editSeedValue -= delta;
+        }
+    }
+
+    if (pressed & PAD_CROSS) {
+        if (editSeedFixed) {
+            ps1SetSeed(editSeedValue);
+        } else {
+            ps1SeedRandom();   /* re-seed via root counters */
+        }
+        menuState   = PAUSE_MENU_OPTIONS;
+        optionsCursor = OPT_SET_SEED;
         prevButtons = 0xFFFF;
     }
 
@@ -1047,11 +1489,21 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_MAIN:
         keepOpen = handleMainInput(pressed);
         break;
+    case PAUSE_MENU_OPTIONS:
+        keepOpen = handleOptionsInput(pressed);
+        break;
     case PAUSE_MENU_SET_TIME:
         keepOpen = handleSetTimeInput(pressed);
         break;
+    case PAUSE_MENU_ISLAND_POS:
+        keepOpen = handleIslandPosInput(pressed);
+        break;
+    case PAUSE_MENU_SET_SEED:
+        keepOpen = handleSetSeedInput(pressed);
+        break;
     case PAUSE_MENU_SCENE_INFO:
     case PAUSE_MENU_CONTROLS:
+    case PAUSE_MENU_CREDITS:
         keepOpen = handleSubInput(pressed);
         break;
     }
@@ -1071,9 +1523,13 @@ int pauseMenuUpdate(void)
      * pauseOt via the pmFrame* globals. */
     switch (menuState) {
     case PAUSE_MENU_MAIN:       drawMainMenu();  break;
+    case PAUSE_MENU_OPTIONS:    drawOptions();   break;
     case PAUSE_MENU_SCENE_INFO: drawSceneInfo(); break;
     case PAUSE_MENU_CONTROLS:   drawControls();  break;
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;
+    case PAUSE_MENU_ISLAND_POS: drawIslandPos(); break;
+    case PAUSE_MENU_SET_SEED:   drawSetSeed();   break;
+    case PAUSE_MENU_CREDITS:    drawCredits();   break;
     }
 
     /* Submit the OT to GPU. */

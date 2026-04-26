@@ -40,6 +40,8 @@ set(SOURCES
     src/cdrom_ps1.c
     src/ps1_debug.c
     src/pause_menu.c
+    # Closed captions — text + scene-to-ADS map + runtime hooks.
+    src/ps1_captions.c
     # SPI driver — direct controller polling, lifted from PSn00bSDK
     # examples/io/pads/ (MPL licensed, (C) 2021 spicyjpeg).
     # Replaces the BIOS pad driver, which never auto-polls in our
