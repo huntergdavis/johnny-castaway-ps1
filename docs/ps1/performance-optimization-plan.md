@@ -630,6 +630,7 @@ and upload byte volume.
 | `P4-37` | Failed: raise the staged-copy fallthrough guard from `6` to `7` VBlanks. | `blocking_vb` stayed `21`, but `loop_vb 1243 -> 1246` and `prefetch_overrun_vb 12 -> 13`; keep the local optimum at `6` VBlanks. |
 | `P4-38` | Failed: point due window hits directly at stream-window bytes instead of copying to `frameBuffer`. | Correctness stayed clean, but `loop_vb 1243 -> 1250`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 19`; the explicit copy remains faster in this code shape. |
 | `P4-39` | Failed as no-op: use a circular FG2 stream-window head to avoid most refill `memmove()` calls. | Correctness stayed clean, but `loop_vb=1243`, `blocking_vb=21`, `prefetch_overrun_vb=12`, `hits=154`, and `due_misses=1` matched baseline exactly; the next CD target needs cheaper/grouped reads, not RAM compaction. |
+| `P4-40` | Rejected: skip `Setloc` for sequential aligned CD reads. | The old gate passed (`loop_vb 1243 -> 1233`, `blocking_vb 21 -> 16`, `setloc 76 -> 9`), but the visual workload collapsed (`compose_calls 155 -> 4`, `upload_calls 156 -> 14`), so this is an invalid speedup and the gate needs work-identity checks. |
 
 Prefetch variants to test in order:
 
@@ -1000,6 +1001,13 @@ The safest near-term speedup is not a more aggressive timing file. The measured
 runtime is still `1.16x` over the captured timing budget for fishing1 after the
 latest accepted pass. We need to keep removing or hiding work, not lie about
 the source timing.
+
+Timing wins are only valid when work identity stays stable. The sequential
+`Setloc` skip experiment proved that the current Summary gate can accept a run
+where correctness counters are zero but the renderer performed far less work.
+Future acceptance must compare baseline-sensitive counters such as
+`compose_calls`, `upload_calls`, `restore_calls`, `upload_bytes`, and
+`restore_bytes` before promoting any low-level CD or render scheduling change.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
