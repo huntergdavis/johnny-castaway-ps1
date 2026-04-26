@@ -723,6 +723,7 @@ rectangle pressure.
 | `P4-87` | Failed: expand exact small-payload direct staging from exactly `3` to `3-4` VBlanks of slack. | `loop_vb 1227 -> 1228`, `blocking_vb 7 -> 16`, `prefetch_overrun_vb 7 -> 8`, and `due_misses 0 -> 2`; the accepted exact-read path must stay at the `3` VBlank knee. |
 | `P4-88` | Done: widen vertical dirty-upload band clean-gap merge from `2` to `8` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 424 -> 412`; byte cost is small (`upload_bytes 16381440 -> 16424960`) and correctness/fallback counters stayed clean. |
 | `P4-89` | Failed/no-op: re-sweep tight-slack direct-stage payload caps after the 8-row upload merge. | `6 KB` and `10 KB` matched baseline exactly; `4 KB` regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 11`, and `prefetch_overrun_vb 7 -> 11`. Keep `8 KB` until grouped reads or another stage model changes the coverage tradeoff. |
+| `P4-90` | Failed: split immediate-next and pure-lookahead window refill guards. | Keeping immediate staging at `3` VBlanks but requiring `4` VBlanks for standalone lookahead refills regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; scalar slack splitting is exhausted without read-cost prediction or pack groups. |
 
 Prefetch variants to test in order:
 
@@ -1100,7 +1101,7 @@ fishing1 high tide.
 | 1 | CD/pack | Add pack-emitted FG2 prefetch group metadata with aligned `offset/length` and covered frame range. | Lower `reads`, `blocking_vb`, and `prefetch.overrun_vb` without raising `pack_bytes` materially. |
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |
-| 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | Lower `prefetch.overrun_vb` without reintroducing due misses. |
+| 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | Lower `prefetch.overrun_vb` without reintroducing due misses; the failed `4` VBlank lookahead split confirms another scalar guard is not enough. |
 | 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the post-gap8 baseline. | `8 KB` remains the local knee: `6 KB` and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
@@ -1234,6 +1235,11 @@ The post-gap8 direct-stage payload-cap sweep did not produce another win:
 `1230` and raised blocking/refill-overrun to `11` VBlanks. Keep the accepted
 `8 KB` cap; future CD work needs grouped/layout-aware coverage, not another
 single payload-size threshold.
+Splitting the scalar refill guard by immediate-vs-lookahead also failed. The
+`4` VBlank lookahead-only guard preserved `due_misses=0`, but regressed
+`loop_vb` to `1230` and raised both `blocking_vb` and refill overrun to `10`.
+That narrows the next CD path: decisions need read-size/sector cost or
+pack-emitted groups, not more fixed slack thresholds.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
