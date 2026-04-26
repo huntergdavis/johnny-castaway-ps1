@@ -37,6 +37,7 @@ WRITE_BASELINE=""
 COMMIT_MESSAGE=""
 ROLLBACK_ON_FAIL=0
 ALLOW_REGRESSION_PERCENT="${PS1_PERF_ALLOW_REGRESSION_PERCENT:-2}"
+WORK_IDENTITY_MIN_PERCENT="${PS1_PERF_WORK_IDENTITY_MIN_PERCENT:-75}"
 REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
@@ -80,6 +81,8 @@ Options:
   --baseline FILE          Compare against a prior summary JSON.
   --write-baseline FILE    Also copy this run summary to FILE.
   --allow-regression PCT   Fail if key metrics regress by more than PCT (default: 2).
+  --work-identity-min PCT  With --baseline, fail if visual work-count counters
+                           drop below this percent of baseline (default: 75).
   --require-improvement    With --baseline, require at least one key speed metric to improve.
   --commit-on-pass MSG     git add -A and commit with MSG after all gates pass.
   --rollback-on-fail       On gate failure, restore tracked worktree files to HEAD.
@@ -224,6 +227,8 @@ while [ $# -gt 0 ]; do
             WRITE_BASELINE="$2"; shift 2 ;;
         --allow-regression)
             ALLOW_REGRESSION_PERCENT="$2"; shift 2 ;;
+        --work-identity-min)
+            WORK_IDENTITY_MIN_PERCENT="$2"; shift 2 ;;
         --require-improvement)
             REQUIRE_IMPROVEMENT=1; shift ;;
         --commit-on-pass)
@@ -762,7 +767,8 @@ for i in "${!CASE_LABELS[@]}"; do
 done
 
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
-python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
+python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
+    "$WORK_IDENTITY_MIN_PERCENT" "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -771,8 +777,9 @@ from pathlib import Path
 out_path = Path(sys.argv[1])
 baseline_path = Path(sys.argv[2]) if sys.argv[2] else None
 allow_pct = float(sys.argv[3])
-require_improvement = bool(int(sys.argv[4]))
-case_paths = [Path(p) for p in sys.argv[5:]]
+work_identity_min_pct = float(sys.argv[4])
+require_improvement = bool(int(sys.argv[5]))
+case_paths = [Path(p) for p in sys.argv[6:]]
 
 cases = [json.loads(path.read_text(encoding="utf-8")) for path in case_paths]
 baseline_cases = {}
@@ -786,6 +793,13 @@ compare_fields = [
     ("timing", "overrun_vb"),
     ("cd", "blocking_vb"),
     ("prefetch", "overrun_vb"),
+]
+
+work_identity_fields = [
+    ("timing", "render"),
+    ("gfx", "restore_calls"),
+    ("gfx", "compose_calls"),
+    ("gfx", "upload_calls"),
 ]
 
 def field(case, section, key):
@@ -822,7 +836,28 @@ for case in cases:
                 failures.append(
                     f"regression {section}.{key}: baseline={previous} current={current} allowed={limit:.2f}"
                 )
+        work_identity = []
+        for section, key in work_identity_fields:
+            current = field(case, section, key)
+            previous = field(base, section, key)
+            if current is None or previous is None or previous <= 0:
+                continue
+            minimum = previous * (work_identity_min_pct / 100.0)
+            delta = current - previous
+            work_identity.append({
+                "field": f"{section}.{key}",
+                "baseline": previous,
+                "current": current,
+                "delta": delta,
+                "minimum_percent": work_identity_min_pct,
+            })
+            if current < minimum:
+                failures.append(
+                    f"work identity drop {section}.{key}: baseline={previous} current={current} minimum={minimum:.2f}"
+                )
         case["baseline_comparison"] = comparisons
+        if work_identity:
+            case["work_identity_comparison"] = work_identity
         if require_improvement and not improved:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
@@ -871,6 +906,17 @@ for case in cases:
             sign = "+" if isinstance(delta, int) and delta > 0 else ""
             parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
         print("  vs baseline: " + "; ".join(parts))
+    work_identity = case.get("work_identity_comparison", [])
+    if work_identity:
+        parts = []
+        for item in work_identity:
+            field = item.get("field")
+            baseline = item.get("baseline")
+            current = item.get("current")
+            delta = item.get("delta")
+            sign = "+" if isinstance(delta, int) and delta > 0 else ""
+            parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
+        print("  work identity: " + "; ".join(parts))
     for suggestion in derived.get("suggestions", [])[:4]:
         print(f"  next: {suggestion}")
 print(f"Summary JSON: {out_path}")

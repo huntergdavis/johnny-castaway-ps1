@@ -1008,6 +1008,9 @@ where correctness counters are zero but the renderer performed far less work.
 Future acceptance must compare baseline-sensitive counters such as
 `compose_calls`, `upload_calls`, `restore_calls`, `upload_bytes`, and
 `restore_bytes` before promoting any low-level CD or render scheduling change.
+The headless harness now enforces a default `75%` minimum for `render`,
+`restore_calls`, `compose_calls`, and `upload_calls` when comparing against a
+baseline; override only for deliberate pack/render architecture changes.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
