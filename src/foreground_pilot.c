@@ -157,7 +157,6 @@ static sint16 fgReadS16(const uint8 *p);
 static void fgBackdropPreloadBackgrndBmp(void);
 static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
-static void fgBackdropTickBackgroundWaves(void);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 
@@ -250,12 +249,6 @@ static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
         return islandState.lowTide ? "FG\\FISH3LOW.FG2" : "FG\\FISHING3.FG2";
     }
     return NULL;
-}
-
-static int fgRuntimeUsesBaseDiffBackdrop(void)
-{
-    return (gFgRuntime.active &&
-            (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) ? 1 : 0;
 }
 
 static uint16 fgReadU16(const uint8 *p)
@@ -889,20 +882,6 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
     }
 }
 
-static void fgBackdropTickBackgroundWaves(void)
-{
-    if (!gFgBackdropThread.isRunning)
-        return;
-
-    if (gFgBackdropThread.timer == 0) {
-        gFgBackdropThread.timer = gFgBackdropThread.delay;
-        islandAnimate(&gFgBackdropThread);
-    } else {
-        islandRedrawWave(&gFgBackdropThread);
-        gFgBackdropThread.timer--;
-    }
-}
-
 static void fgBackdropStampHoliday(void)
 {
     const struct Holiday *holiday = holidayById(islandState.holiday);
@@ -934,7 +913,6 @@ static int fgRuntimeCanStageNextFrame(void)
     return gFgPrefetchStage1Enabled &&
            gFgRuntime.active &&
            gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           fgRuntimeUsesBaseDiffBackdrop() &&
            gFgRuntime.packCdFileValid &&
            gFgRuntime.streamScratch != NULL &&
            gFgRuntime.prefetchFrameBuffer != NULL;
@@ -945,7 +923,6 @@ static int fgRuntimeCanWindowCache(void)
     return gFgPrefetchWindowBytes > 0 &&
            gFgRuntime.active &&
            gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           fgRuntimeUsesBaseDiffBackdrop() &&
            gFgRuntime.packCdFileValid &&
            gFgRuntime.streamWindowBuffer != NULL &&
            gFgRuntime.streamWindowSize > 0;
@@ -1504,7 +1481,6 @@ static int fgRuntimeCanHoldDisplayedFrame(void)
 {
     return gFgRuntime.active &&
            gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           fgRuntimeUsesBaseDiffBackdrop() &&
            gFgRuntime.frameRendered;
 }
 
@@ -1518,6 +1494,118 @@ static void fgRuntimeWaitHeldVBlank(void)
 {
     VSync(0);
     eventsWaitTick(0);
+}
+
+static int fgRuntimeCanPrepareStagedFrame(void)
+{
+    return gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           gFgRuntime.frameRendered &&
+           gFgRuntime.stagedFrameValid &&
+           !gFgRuntime.preparedFrameValid &&
+           gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
+           fgRuntimeHeldSlackBeforeWait() >= FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS;
+}
+
+static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
+                                                 int perfDetail)
+{
+    uint32 prepTick;
+    uint32 perfTick = 0;
+    uint16 elapsedVBlanks;
+
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = 0;
+    if (!fgRuntimeCanPrepareStagedFrame())
+        return 0;
+
+    prepTick = fgReadTickCounter();
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    grRestoreBgFromRects();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    fgRuntimeComposeEntryToBackground(&gFgRuntime.stagedEntry,
+                                      gFgRuntime.prefetchFrameBuffer);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_COMPOSE,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(prepTick);
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = elapsedVBlanks;
+
+    gFgRuntime.preparedFrameValid = 1;
+    gFgRuntime.preparedFrameIndex = gFgRuntime.stagedFrameIndex;
+    return 1;
+}
+
+static int fgRuntimeCanPresentPreparedOnNextVBlank(void)
+{
+    return gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           gFgRuntime.frameRendered &&
+           gFgRuntime.stagedFrameValid &&
+           gFgRuntime.preparedFrameValid &&
+           gFgRuntime.preparedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
+           gFgRuntime.stagedFrameIndex == gFgRuntime.preparedFrameIndex &&
+           fgRuntimeHeldSlackBeforeWait() == 1;
+}
+
+static int fgRuntimePresentPreparedFrame(int perfDetail)
+{
+    uint32 perfRenderTick = 0;
+    uint32 perfTick = 0;
+    uint16 preparedFrameIndex;
+
+    if (!fgRuntimeCanPresentPreparedOnNextVBlank())
+        return 0;
+
+    preparedFrameIndex = gFgRuntime.preparedFrameIndex;
+    if (ps1PerfEnabled)
+        ps1PerfMarkRenderedLoop();
+    if (perfDetail)
+        perfRenderTick = ps1PerfTick();
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    VSync(0);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_PRESENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    foregroundPilotRuntimeAdvance();
+    if (!gFgRuntime.active || gFgRuntime.frameIndex != preparedFrameIndex) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkTripwire();
+        gFgRuntime.preparedFrameValid = 0;
+        return 1;
+    }
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    grDrawBackground();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_UPLOAD,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    eventsWaitTick(0);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_EVENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
+    gFgRuntime.preparedFrameValid = 0;
+    fgRuntimeMarkFrameRendered();
+    return 1;
 }
 
 static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
@@ -1605,6 +1693,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
+            if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) == 0) {
+                printf("FG pilot: pack '%s' is not base-diff\n", path);
+                fgRuntimeReset();
+                return 0;
+            }
             if (!fgLoadSoundEvents(path, &gFgRuntime.header,
                                    &gFgRuntime.soundEvents,
                                    &gFgRuntime.soundEventCount)) {
@@ -1631,8 +1724,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 }
                 gFgFrameBufferSize = maxDataSize;
             }
-            if (gFgPrefetchStage1Enabled &&
-                (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) {
+            if (gFgPrefetchStage1Enabled) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
                     if (gFgPrefetchFrameBuffer != NULL)
                         free(gFgPrefetchFrameBuffer);
@@ -1647,8 +1739,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgPrefetchFrameBufferSize = maxDataSize;
                 }
             }
-            if (gFgPrefetchWindowBytes > 0 &&
-                (gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0) {
+            if (gFgPrefetchWindowBytes > 0) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 if (windowBytes > gFgStreamWindowBufferSize) {
                     if (gFgStreamWindowBuffer != NULL)
@@ -1713,18 +1804,15 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                    gFgRuntime.packFormat,
                                    gFgFrameBufferSize,
                                    gFgStreamScratchSize);
-                if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
-                    gFgPrefetchStage1Enabled &&
+                if (gFgPrefetchStage1Enabled &&
                     gFgPrefetchWindowBytes > 0)
                     ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_STAGE1_WINDOW,
                                              gFgPrefetchFrameBufferSize +
                                              gFgStreamWindowBufferSize);
-                else if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
-                         gFgPrefetchStage1Enabled)
+                else if (gFgPrefetchStage1Enabled)
                     ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_STAGE1,
                                              gFgPrefetchFrameBufferSize);
-                else if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) != 0 &&
-                         gFgPrefetchWindowBytes > 0)
+                else if (gFgPrefetchWindowBytes > 0)
                     ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_WINDOW,
                                              gFgStreamWindowBufferSize);
                 else
@@ -2074,19 +2162,19 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         } else {
             uint32 perfRenderTick = 0;
             uint32 perfDetailTick = 0;
+            if (gFgRuntime.preparedFrameValid &&
+                gFgRuntime.preparedFrameIndex == gFgRuntime.frameIndex)
+                gFgRuntime.preparedFrameValid = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkRenderedLoop();
             if (perfDetail)
                 perfRenderTick = ps1PerfTick();
-            grBeginFrame();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
             grRestoreBgFromRects();
             if (perfDetail)
                 ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                        ps1PerfElapsedVBlanks(perfDetailTick));
-            if (!fgRuntimeUsesBaseDiffBackdrop())
-                fgBackdropTickBackgroundWaves();
             grUpdateDisplay(NULL, NULL, NULL);
             if (perfDetail)
                 ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
