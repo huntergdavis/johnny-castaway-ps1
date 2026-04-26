@@ -165,30 +165,38 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 
-static int fgEntryDrawX(const struct TFgPilotHeader *header, const struct TFgPilotEntry *entry)
+static int fgEntryDrawX(const struct TFgPilotEntry *entry)
 {
-    int x;
-
     if (entry == NULL)
         return 0;
 
-    x = entry->x;
-    if (header != NULL && (header->reserved0 & kFgPilotHeaderFlagSceneRelative) != 0)
-        x += islandState.xPos;
-    return x;
+    return entry->x;
 }
 
-static int fgEntryDrawY(const struct TFgPilotHeader *header, const struct TFgPilotEntry *entry)
+static int fgEntryDrawY(const struct TFgPilotEntry *entry)
 {
-    int y;
-
     if (entry == NULL)
         return 0;
 
-    y = entry->y;
-    if (header != NULL && (header->reserved0 & kFgPilotHeaderFlagSceneRelative) != 0)
-        y += islandState.yPos;
-    return y;
+    return entry->y;
+}
+
+static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
+                                        struct TFgPilotEntryTable *table)
+{
+    uint16 i;
+
+    if (header == NULL ||
+        table == NULL ||
+        table->entries == NULL ||
+        (header->reserved0 & kFgPilotHeaderFlagSceneRelative) == 0)
+        return;
+
+    for (i = 0; i < table->count; i++) {
+        table->entries[i].x = (sint16)(table->entries[i].x + islandState.xPos);
+        table->entries[i].y = (sint16)(table->entries[i].y + islandState.yPos);
+    }
+    header->reserved0 = (uint16)(header->reserved0 & ~kFgPilotHeaderFlagSceneRelative);
 }
 
 static uint16 fgConvertHostTicksToVBlanks(uint16 ticks)
@@ -1622,14 +1630,14 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
         grCompositePacked4SpansToBackground(frameData,
                                             entry->dataSize,
                                             gFgRuntime.palette,
-                                            (sint16)fgEntryDrawX(&gFgRuntime.header, entry),
-                                            (sint16)fgEntryDrawY(&gFgRuntime.header, entry));
+                                            (sint16)fgEntryDrawX(entry),
+                                            (sint16)fgEntryDrawY(entry));
     } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
         grCompositeIndexed8SpansToBackground(frameData,
                                              entry->dataSize,
                                              gFgRuntime.palette,
-                                             (sint16)fgEntryDrawX(&gFgRuntime.header, entry),
-                                             (sint16)fgEntryDrawY(&gFgRuntime.header, entry));
+                                             (sint16)fgEntryDrawX(entry),
+                                             (sint16)fgEntryDrawY(entry));
     }
 
     /* Stamp holiday overlay on top of the pack so Johnny walks behind
@@ -1778,8 +1786,8 @@ static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
         if (entry->width == 0 || entry->height == 0 || entry->dataSize == 0)
             continue;
 
-        x = fgEntryDrawX(&gFgRuntime.header, entry);
-        y = fgEntryDrawY(&gFgRuntime.header, entry);
+        x = fgEntryDrawX(entry);
+        y = fgEntryDrawY(entry);
         endX = x + (int)entry->width;
         endY = y + (int)entry->height;
 
@@ -1830,6 +1838,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
         const char *path = fgCompactOverlayPackPathForScene(sceneName);
         if (path != NULL) {
             uint32 maxDataSize = 0;
+            uint16 packFlags;
             uint16 i;
             /* Trigger closed-caption lookup only when captions are active.
              * Normal playback keeps captions off, so avoid scene-name checks
@@ -1847,6 +1856,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                       gFgRuntime.palette,
                                       &gFgRuntime.entryTable))
                 return 0;
+            packFlags = gFgRuntime.header.reserved0;
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else
@@ -1856,6 +1866,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 fgRuntimeReset();
                 return 0;
             }
+            fgApplySceneRelativeOffsets(&gFgRuntime.header,
+                                        &gFgRuntime.entryTable);
             if (!fgLoadSoundEvents(path, &gFgRuntime.header,
                                    &gFgRuntime.soundEvents,
                                    &gFgRuntime.soundEventCount)) {
@@ -1958,7 +1970,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                    gFgRuntime.header.frameCount,
                                    gFgRuntime.entryTable.count,
                                    gFgRuntime.soundEventCount,
-                                   gFgRuntime.header.reserved0,
+                                   packFlags,
                                    gFgRuntime.packFormat,
                                    gFgFrameBufferSize,
                                    gFgStreamScratchSize);

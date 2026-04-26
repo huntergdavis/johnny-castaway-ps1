@@ -36,7 +36,8 @@ coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
 garbage collection, foreground visual telemetry removal, legacy foreground
 diagnostic scene gating, long-hold host-deadline catch-up, unused foreground
 status accessor removal, dead foreground requested-mode state removal, and
-base-diff foreground pack enforcement, reported `policy=stage1_window`,
+base-diff foreground pack enforcement, and startup pre-application of
+scene-relative FG2 offsets, reported `policy=stage1_window`,
 `buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2510092`,
@@ -846,6 +847,7 @@ from perturbing the deterministic cadence.
 | `P4-177` | Failed: prepare staged frames at `3` VBlanks as well as the accepted exact-`4` point. | It improved nominal deadline accounting (`target_vb 1071 -> 1073`, `overrun_vb 150 -> 148`, `late 105 -> 100`) but did not reduce actual loop time and regressed visible CD pressure (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`); source was reverted and present-prep changes need an explicit render-prep/CD slack budget before retry. |
 | `P4-178` | Failed: read tight-slack direct-stage sectors straight into the stream window. | An `8 KB` aligned-window cap improved actual loop time (`1221 -> 1219`) but moved one more read into visible pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`, `blocking_reads 4 -> 5`, `loop_read_vb 284 -> 293`); a `6 KB` cap was an exact no-op. Source was reverted; retry only with grouped/predicted direct-stage windows that preserve the current blocking-read count. |
 | `P4-179` | Done: enforce work-identity floors in the headless perf harness. | The new default `75%` floor on `timing.render`, `gfx.restore_calls`, `gfx.compose_calls`, and `gfx.upload_calls` keeps the exact fishing1 baseline passing (`155 -> 155` for all four) while rejecting future false speedups that silently skip most visual work. |
+| `P4-180` | Done: pre-apply scene-relative FG2 offsets at startup. | Random island placement is preserved because offsets are applied after variant selection; the exact fishing1 gate stayed flat across timing/CD/work identity while `jcreborn.elf` shrank `740556 -> 740132` and pack flags still report `scene_relative=1`. |
 
 Prefetch variants to test in order:
 
