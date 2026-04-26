@@ -730,6 +730,7 @@ rectangle pressure.
 | `P4-94` | Failed: read tight-slack direct-stage sectors straight into the stream-window buffer. | It removed one local seed copy in theory but regressed `loop_vb 1227 -> 1231`, `loop_reads 68 -> 69`, and `seek_back 7 -> 9`; direct-stage seeding must preserve current window coverage shape. |
 | `P4-95` | Failed: skip the held-loop wait when no slack and no prepared frame are available. | The apparent overshoot cleanup regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 10`, `prefetch_overrun_vb 7 -> 10`, and added three restore/compose calls; the wait is currently part of CD/render pacing. |
 | `P4-96` | Failed: merge direct-stage scratch sectors into adjacent stream-window coverage. | Correctness stayed clean but timing regressed with the same `loop_vb=1231`, `blocking_vb=10`, `prefetch_overrun_vb=10`, and extra prep calls; direct-stage window-shape work needs per-read evidence first. |
+| `P4-97` | Failed: proactively slide/append the stream window while the next future payload is still resident. | Due misses stayed zero, but eager append work regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 13`, and `prefetch_overrun_vb 7 -> 13`; raw lookahead needs group/read-cost metadata. |
 
 Prefetch variants to test in order:
 
@@ -1281,6 +1282,11 @@ direct-window replacement miss, but the added window-shape work produced the
 same `loop_vb=1231`, `blocking_vb=10`, extra-prep cadence as the no-slack
 experiment. Do not keep pushing direct-stage seed shape without better
 per-read evidence.
+Proactive stream-window extension while the next future payload is already
+resident also failed. It preserved zero due misses, but moved more raw CD work
+into scarce held slack and raised `blocking_vb`/`prefetch.overrun_vb` to `13`.
+The runtime should not slide/append ahead of need until group metadata or a
+read-cost predictor proves the append fits the available slack.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
