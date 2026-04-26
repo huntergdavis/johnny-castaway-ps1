@@ -827,6 +827,7 @@ from perturbing the deterministic cadence.
 | `P4-158` | Failed/no promotion: gate default-off caption rendering with `captionsGetEnabled()`. | Runtime metrics stayed exactly flat against the post-main baseline, but the executable grew (`149504 -> 151552`) and ELF grew (`743944 -> 744080`); keep the direct renderer call until captions expose an inline active flag or a release profile can compile captions differently. |
 | `P4-159` | Done: compile-gate pause-menu JCPAUSE diagnostics out of the default build. | Runtime metrics stayed exactly flat against the post-main baseline while default-build diagnostic text/code was removed (`jcreborn.elf 743944 -> 743136`, PS-EXE unchanged at `149504`); keep `PAUSE_MENU_DIAG_LOGS` as the explicit opt-in for pause-menu log mining. |
 | `P4-160` | Done: compile-gate `graphics_ps1.c` debug-mode diagnostics out of the default build. | Runtime metrics stayed exactly flat against the pause-diagnostics baseline while default-build graphics diagnostic text/code was removed (`jcreborn.elf 743136 -> 740984`, PS-EXE unchanged at `149504`); keep `GRAPHICS_PS1_DIAG_LOGS` as the explicit opt-in for GPU log mining. |
+| `P4-161` | Done: compile-gate routine `sound_ps1.c` SPU startup diagnostics out of the default build. | Runtime metrics stayed exactly flat against the graphics-diagnostics baseline while routine sound setup text/code was removed (`jcreborn.elf 740984 -> 740664`, PS-EXE unchanged at `149504`); keep `SOUND_PS1_DIAG_LOGS` as the explicit opt-in for audio log mining. |
 
 Prefetch variants to test in order:
 
