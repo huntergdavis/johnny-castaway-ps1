@@ -701,6 +701,7 @@ rectangle pressure.
 | `P4-68` | Done: seed the stream window from accepted direct-stage reads. | `blocking_vb 11 -> 10`, `prefetch_overrun_vb 11 -> 10`, `read_vb 409 -> 405`, `loop_read_vb 289 -> 285`, `seq 65 -> 66`, and `seek_back 8 -> 7` with flat `loop_vb=1235` and `due_misses=0`; direct-stage sectors are now reused instead of thrown away. |
 | `P4-69` | Failed: staged next-VBlank present scheduler. | Detail showed `present_wait_vb=157`, but composing the staged next frame in the final held-loop slack regressed `loop_vb 1235 -> 1306`, `overrun_vb 158 -> 229`, `blocking_vb 10 -> 13`, and `prefetch_overrun_vb 10 -> 13`; present work must not consume the slack currently hiding CD reads. |
 | `P4-70` | Done: prepare staged frames during held slack only when at least `4` VBlanks remain. | Two strict runs matched: `loop_vb 1235 -> 1234`, `overrun_vb 158 -> 157`, `blocking_vb 10 -> 8`, `prefetch_overrun_vb 10 -> 8`, and `due_misses=0`; tradeoff is extra RAM prep work (`restore_calls 156 -> 192`, `compose_calls 155 -> 191`), so the next pass should reduce speculative prepare cost. |
+| `P4-71` | Failed: restrict prepared-present to exactly `4` held-slack VBlanks. | The equality guard reduced speculative work (`restore_calls 192 -> 168`, `compose_calls 191 -> 167`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the accepted `>=4` shape stays as baseline. |
 
 Prefetch variants to test in order:
 
@@ -1143,7 +1144,9 @@ Held-slack prepared-present is another small but useful bridge result. It saves
 one active-loop VBlank and two visible/refill CD VBlanks, but it does so by
 adding speculative RAM restore/compose work. Keep the win, but treat the next
 present-pipeline target as "same scheduling benefit with less duplicate prep,"
-not as solved present serialization.
+not as solved present serialization. A simple exact-4 slack guard was tried and
+rejected because it reduced prep calls but gave back one VBlank of loop,
+blocking, and refill-overrun time.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
