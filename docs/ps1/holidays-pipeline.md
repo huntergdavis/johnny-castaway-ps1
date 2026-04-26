@@ -37,7 +37,7 @@ scripts/holidays_art_lib.py                   16-color CLUT, Sprite class, primi
                                               heart, sand, sky, etc.) and
                                               `as_night(sprite)` for the v5 recolor
 scripts/holidays-quality-audit.py             ad-hoc per-sprite histogram report
-scripts/holidays-redteam.py                   16 independent QA checks; exits non-zero
+scripts/holidays-redteam.py                   18 independent QA checks; exits non-zero
                                               on any FAIL — palette discipline, dim/
                                               mode/presence, sparsity, variant
                                               diversity (incl. v5-vs-v1 ≥10%),
@@ -252,7 +252,7 @@ state.
 
 ## Red-team checks already passing
 
-`scripts/holidays-redteam.py` runs 16 independent QA checks. All
+`scripts/holidays-redteam.py` runs 18 independent QA checks. All
 currently green; 3 informational warnings remain (real same-day
 holiday overlaps where the lower id wins via C iteration order).
 
@@ -272,6 +272,8 @@ holiday overlaps where the lower id wins via C iteration order).
 14. **HTML save / modal / load** — Download / Load / Clear / filter / variant-focus / zoom-modal hooks all present.
 15. **Final-review HTML** — `scratch/holidays-final-review.html` exists with card markup.
 16. **Contact-sheet PNG** — `scratch/holidays-contact-sheet.png` exists and is ≥ 50 KB (catches a render crash).
+17. **Invisible compose_*** — static scan flags `compose_star`/`compose_heart`/`sp.line`/`sp.ellipse` calls where the color matches the sprite's `fill=` and a nearby comment hints at a "visible accent" (rays, stars, heart, burst, spark, dot, crater, halo, petal, firework, confetti).
+18. **Renderer dims = yaml** — each renderer's hardcoded `Sprite(W, H, ...)` literal must match yaml `sprite.width / sprite.height` for that holiday id.
 
 ## Out of scope for this round
 
