@@ -32,26 +32,26 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: compile-gate sound diagnostics` |
-| Run ID | `20260426-123523` |
+| Commit | `ps1: compile-gate boot diagnostics` |
+| Run ID | `20260426-124004` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, unused foreground ever diagnostics removed, unused ADS foreground start hook removed, obsolete FGPILOT ADS dispatch removed, unused foreground status accessors removed, dead foreground requested-mode state removed, base-diff foreground packs required, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, prepared-wait future prefetch, 3 VBlank refill guard, 6 VBlank fallthrough guard, exact-4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 1-row upload band gap byte trim, long-hold host-deadline catch-up, main pause-menu credits/captions merge accepted as new baseline, pause-menu diagnostics compile-gated, graphics diagnostics compile-gated, sound diagnostics compile-gated` |
-| `loop_vb` | `1222` |
-| `target_vb` | `1072` |
+| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, unused foreground ever diagnostics removed, unused ADS foreground start hook removed, obsolete FGPILOT ADS dispatch removed, unused foreground status accessors removed, dead foreground requested-mode state removed, base-diff foreground packs required, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, prepared-wait future prefetch, 3 VBlank refill guard, 6 VBlank fallthrough guard, exact-4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 1-row upload band gap byte trim, long-hold host-deadline catch-up, main pause-menu credits/captions merge accepted as new baseline, pause-menu diagnostics compile-gated, graphics diagnostics compile-gated, sound diagnostics compile-gated, boot diagnostics compile-gated` |
+| `loop_vb` | `1221` |
+| `target_vb` | `1071` |
 | `overrun_vb` | `150` |
-| `blocking_vb` | `6` |
+| `blocking_vb` | `5` |
 | `loop_reads` | `68` |
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
-| `prefetch_overrun_vb` | `6` |
+| `prefetch_overrun_vb` | `5` |
 | `restore_bytes` | `2510092` |
 | `upload_bytes` | `16281600` |
 | `dirty_rows` | `25440` |
 | `upload_rects` | `502` |
 | PS1 EXE size | `149504` |
-| PS1 ELF size | `740664` |
+| PS1 ELF size | `740496` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -256,6 +256,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `pause-menu-diagnostics-compile-gate` | `ps1: compile-gate pause diagnostics` | Pause-menu JCPAUSE printf diagnostics are useful for development but should not live in the default release/perf build. Compile-gate them behind `PAUSE_MENU_DIAG_LOGS` while preserving menu behavior. | Added a default-off compile-time diagnostics gate around the pause font upload, init, show, and per-frame diagnostic prints, then ran the exact no-holiday fishing1 gate against the post-main baseline. | Promoted as a code-size cleanup. Runtime stayed exactly flat (`loop_vb=1222`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `due_misses=0`) with clean correctness and unchanged `FISHING1.FG2` LBA `399`; `jcreborn.exe` stayed `149504`, while `jcreborn.elf` shrank `743944 -> 743136`. Artifact: `scratch/ps1-perf-iterate/20260426-122423/summary.json`. | Promote. This does not recover a VBlank, but it removes default-build diagnostic text/code from a public-facing path without changing scene cadence. |
 | 2026-04-26 | `graphics-diagnostics-compile-gate` | `ps1: compile-gate graphics diagnostics` | `debugMode` GPU startup, primitive-buffer, draw-tile, and odd-width screen logs are useful when explicitly enabled but should not live in the default release/perf graphics path. | Added a default-off `GRAPHICS_PS1_DIAG_LOGS` macro and routed `graphics_ps1.c` debug-only printf calls through it, then ran the exact no-holiday fishing1 gate against the pause-diagnostics baseline. | Promoted as a code-size cleanup. Runtime stayed exactly flat (`loop_vb=1222`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `due_misses=0`) with clean correctness and unchanged `FISHING1.FG2` LBA `399`; `jcreborn.exe` stayed `149504`, while `jcreborn.elf` shrank `743136 -> 740984`. Artifact: `scratch/ps1-perf-iterate/20260426-123047/summary.json`. | Promote. This keeps the default graphics path cleaner without changing deterministic playback; re-enable with `GRAPHICS_PS1_DIAG_LOGS=1` only for targeted GPU log mining. |
 | 2026-04-26 | `sound-diagnostics-compile-gate` | `ps1: compile-gate sound diagnostics` | SPU startup status logs are useful for targeted audio setup debugging, but the default release/perf build should not carry routine status printf text once sound is known working. | Added a default-off `SOUND_PS1_DIAG_LOGS` macro around `soundDisabled`, loaded-count, and no-VAG status prints, leaving the real SPU RAM overflow error print intact, then ran the exact no-holiday fishing1 gate against the graphics-diagnostics baseline. | Promoted as a code-size cleanup. Runtime stayed exactly flat (`loop_vb=1222`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `due_misses=0`) with clean correctness and unchanged `FISHING1.FG2` LBA `399`; `jcreborn.exe` stayed `149504`, while `jcreborn.elf` shrank `740984 -> 740664`. Artifact: `scratch/ps1-perf-iterate/20260426-123523/summary.json`. | Promote. This preserves audio behavior and keeps routine SPU setup chatter out of the default build; re-enable with `SOUND_PS1_DIAG_LOGS=1` for audio log mining. |
+| 2026-04-26 | `boot-diagnostics-compile-gate` | `ps1: compile-gate boot diagnostics` | The unconditional `JCBOOT applyBootOverride` buffer dump was a useful bring-up probe, but normal perf/release runs should not print or carry the large boot-argument diagnostic unless explicitly requested. | Added a default-off `JC_BOOT_DIAG_LOGS` macro around the boot override buffer dump, then ran the exact no-holiday fishing1 gate against the sound-diagnostics baseline. | Promoted. Runtime and correctness stayed clean with a small cadence/CD improvement: `loop_vb 1222 -> 1221`, `target_vb 1072 -> 1071`, `overrun_vb=150`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, `loop_read_vb 292 -> 284`, and `read_vb 400 -> 393`; `FISHING1.FG2` stayed at LBA `399`, `jcreborn.exe` stayed `149504`, and `jcreborn.elf` shrank `740664 -> 740496`. Artifact: `scratch/ps1-perf-iterate/20260426-124004/summary.json`. | Promote. This is a small deterministic win plus public-build cleanup; re-enable with `JC_BOOT_DIAG_LOGS=1` only when the boot string itself is under investigation. |
 
 ## Retry Queue
 

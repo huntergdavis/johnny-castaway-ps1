@@ -33,6 +33,9 @@ typedef struct _FILE FILE;
 #endif
 #define stderr ((FILE*)2)  /* PSn00bSDK doesn't define stderr */
 #define fprintf(stream, ...) printf(__VA_ARGS__)  /* Redirect to printf */
+#ifndef JC_BOOT_DIAG_LOGS
+#define JC_BOOT_DIAG_LOGS 0
+#endif
 /* Declare functions implemented in ps1_stubs.c */
 void exit(int status);
 int atoi(const char *str);
@@ -349,6 +352,7 @@ static void ps1ApplyBootOverride(char *buffer)
     char *cursor = buffer;
     int tokenBase = 0;
 
+#if JC_BOOT_DIAG_LOGS
     /* JCBOOT diag: print the entire buffer so we can confirm which
      * boot string the runtime actually received. */
     printf("JCBOOT applyBootOverride buffer=[%s] len_bytes_first=%d %d %d %d %d %d %d %d\n",
@@ -357,6 +361,7 @@ static void ps1ApplyBootOverride(char *buffer)
            buffer ? buffer[2] : -1, buffer ? buffer[3] : -1,
            buffer ? buffer[4] : -1, buffer ? buffer[5] : -1,
            buffer ? buffer[6] : -1, buffer ? buffer[7] : -1);
+#endif
 
     while (*cursor && tokenCount < (int)(sizeof(tokens) / sizeof(tokens[0]))) {
         while (*cursor && ps1IsSpace(*cursor)) {
