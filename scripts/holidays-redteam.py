@@ -87,7 +87,8 @@ def png_sha(path: Path) -> str:
 # ---------------------------------------------------------------------------
 
 def check_yaml_schema(holidays, fails, warns):
-    """IDs unique 1..35; required fields present; sprite within bounds."""
+    """IDs unique 1..35; required fields present; sprite within bounds;
+    island_xy + sprite size fits inside the 640×480 logical screen."""
     seen_ids = set()
     for h in holidays:
         hid = h.get("id")
@@ -108,6 +109,19 @@ def check_yaml_schema(holidays, fails, warns):
             fails.append(
                 f"YAML id={hid} sprite size out of bounds {w}×{hh} "
                 f"(need 32..160 × 32..96)")
+        # Anchor + size must fit within the 640×480 logical screen the
+        # PS1 runtime renders to (originals use anchors up to (410, 298)).
+        if h.get("existing_sprite") is None:
+            ix = sp.get("island_x", 0)
+            iy = sp.get("island_y", 0)
+            if ix + w > 640 or iy + hh > 480:
+                fails.append(
+                    f"YAML id={hid}: sprite {w}×{hh} at island_xy "
+                    f"({ix},{iy}) extends past 640×480 screen "
+                    f"(ends at ({ix + w}, {iy + hh}))")
+            if ix < 0 or iy < 0:
+                fails.append(
+                    f"YAML id={hid}: island_xy ({ix},{iy}) is negative")
     if seen_ids != set(range(1, 36)):
         missing = set(range(1, 36)) - seen_ids
         if missing:
