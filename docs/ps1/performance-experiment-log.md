@@ -32,12 +32,12 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `6fe14027 ps1: consume leading empty setup frame` |
-| Run ID | `20260426-023007` |
+| Commit | `ps1: merge wider dirty upload bands` |
+| Run ID | `20260426-025631` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
+| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 8-row upload band gap merge` |
 | `loop_vb` | `1227` |
 | `target_vb` | `1077` |
 | `overrun_vb` | `150` |
@@ -47,9 +47,9 @@ Current accepted baseline for the next experiment:
 | `prefetch_due_misses` | `0` |
 | `prefetch_overrun_vb` | `7` |
 | `restore_bytes` | `2986378` |
-| `upload_bytes` | `16381440` |
-| `dirty_rows` | `25596` |
-| `upload_rects` | `424` |
+| `upload_bytes` | `16424960` |
+| `dirty_rows` | `25664` |
+| `upload_rects` | `412` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -179,6 +179,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `fg2-window-15-17kb-post-leading-empty` | parameter probe after `6fe14027` | Re-test the closest raw stream-window neighbors after the leading-empty setup cadence change, checking whether the old `16 KB` knee moved. | `./scripts/ps1-perf-iterate.sh --case "fishing1-w15::fgpilot fishing1 prefetch-window 15360 perf-log noloop seed 1" --case "fishing1-w17::fgpilot fishing1 prefetch-window 17408 perf-log noloop seed 1" --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed/no promotion. `15 KB` matched the accepted timing exactly (`loop_vb=1227`, `blocking_vb=7`, `due_misses=0`) and offers no measurable win; `17 KB` regressed (`loop_vb=1238`, `blocking_vb=29`, `due_misses=2`, `hits=153`). Artifact: `scratch/ps1-perf-iterate/20260426-023933/summary.json`. | Keep the `16 KB` default. Raw window-size tuning remains exhausted; further CD wins need grouped/layout-aware reads or scheduler changes, not another nearby byte count. |
 | 2026-04-26 | `fg2-prepared-current-reuse-post-leading-empty` | dirty experiment after `ecb25581` | Re-test prepared-current RAM reuse on the new leading-empty baseline, then refine it by trying to spend the saved post-upload slot on immediate next-payload staging. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Both pure reuse and reuse-plus-immediate-prefetch produced the same regression: `loop_vb 1227 -> 1231`, `overrun_vb 150 -> 154`, `blocking_vb 7 -> 12`, and `prefetch_overrun_vb 7 -> 12`. The work reduction was real (`restore_calls 187 -> 155`, `compose_calls 187 -> 155`), but correctness was the only clean part. Artifacts: `scratch/ps1-perf-iterate/20260426-024326/summary.json`, `scratch/ps1-perf-iterate/20260426-024541/summary.json`. | Do not promote. Prepared-current reuse still needs an explicit frame scheduler that preserves CD phase; local reuse removes wasteful CPU but worsens the active-loop cadence. |
 | 2026-04-26 | `fg2-direct-stage-4vb-post-leading-empty` | dirty experiment after `563e1ef5` | Expand the exact small-payload direct-stage path from exactly `3` VBlanks of slack to `3-4` VBlanks, trying to replace some remaining spill-prone `16 KB` window reads with cheaper payload reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Timing regressed slightly and coverage degraded: `loop_vb 1227 -> 1228`, `overrun_vb 150 -> 151`, `blocking_vb 7 -> 16`, `prefetch_overrun_vb 7 -> 8`, `due_misses 0 -> 2`, and `hits 155 -> 153`; it only saved two speculative restore/compose calls. Artifact: `scratch/ps1-perf-iterate/20260426-024907/summary.json`. | Do not promote. Direct-stage exact reads must stay at the minimum `3` VBlank knee; widening the slack band loses forward window coverage faster than it saves read size. |
+| 2026-04-26 | `gfx-upload-band-merge-gap-8` | dirty experiment after `16c07860` | Sweep wider vertical dirty-upload band merge gaps (`3`, `4`, `6`, `8`) to reduce `LoadImage` command count while keeping the full-width tile-row upload path direct and scanline-safe. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2`. | Promoted as a command-pressure micro-optimization. Key timing stayed identical (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`, `due_misses=0`) while `upload_rects 424 -> 412`; the cost is a small upload widening (`upload_bytes 16381440 -> 16424960`, `dirty_rows 25596 -> 25664`). Artifacts: `scratch/ps1-perf-iterate/20260426-025141/summary.json`, `scratch/ps1-perf-iterate/20260426-025319/summary.json`, `scratch/ps1-perf-iterate/20260426-025456/summary.json`, `scratch/ps1-perf-iterate/20260426-025631/summary.json`. | Promote. This does not move VBlank-level timing on DuckStation, but it lowers GPU command pressure with negligible byte growth and no fallback/correctness change. This is the new baseline. |
 
 ## Retry Queue
 
@@ -231,7 +232,7 @@ Current accepted baseline for the next experiment:
 | PAL4 four-pixel loop unroll | Exact VBlank-level no-op; retry only if generated compositor code can combine unrolling with pack-known alignment/length classes. |
 | `2` VBlank stream-window refill guard after tile-local PAL4 fast path | Correctness clean but slower and more visibly blocking; keep `3` VBlanks unless grouped reads make short-slack refills cheaper. |
 | Single-call prefetch-window check | Exact VBlank-level no-op; retry only as part of a broader prefetch state-machine cleanup. |
-| Vertical dirty-row upload band merge/capping | The accepted 2-row merge is the current fishing1 knee; 3-row and 4-row thresholds only saved `2-3` rectangles while adding bytes. Retry as pack-emitted bands or upload-ready layouts, not more runtime gap tuning. |
+| Vertical dirty-row upload band merge/capping | The post-leading-empty baseline promoted an 8-row merge (`upload_rects 424 -> 412`) with flat timing and a small byte increase; retry wider thresholds only with a targeted sweep or move this to pack-emitted/upload-ready layouts. |
 | Inline PAL4 span compositor | Correctness and work identity were stable but total loop, blocking, and refill overrun regressed; retry only as generated scene-specialized code, not as a local helper-inline rewrite. |
 | Slack-adaptive `8/12/16 KB` stream windows | Lowered refill overrun and total loop slightly but regressed visible blocking; retry only after pack grouping preserves due-frame coverage. |
 | `12 KB` stream window after prepared-present | Cut refill overrun to `1` VBlank but produced `26` due misses and `blocking_vb=89`; do not retry smaller raw windows before grouped coverage exists. |
