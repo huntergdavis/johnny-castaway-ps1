@@ -52,17 +52,20 @@ byte bucket with flat timing; long-hold deadline catch-up then traded seven
 extra speculative restore/compose calls for `5` fewer loop VBlanks. The
 pre-pause best was `loop_vb=1297`.
 
-Detail-tier attribution on this baseline shows the remaining active-loop gap is
-not primarily CD: `render_vb=175`, `present_wait_vb=157`, `restore_vb=18`,
-`compose_vb=0`, `upload_vb=0`, and `advance_vb=1` in
-`scratch/ps1-perf-iterate/20260426-001214/summary.json`. A first staged
-next-VBlank present scheduler was rejected because it regressed total loop time
-to `1306`; the next present work needs separate render-prep and CD-prefetch
-slack budgets instead of stealing the held-frame prefetch cadence.
-A later 4 VBlank held-slack prepared-present pass was accepted as a small
-speedup (`loop_vb 1235 -> 1234`, `blocking_vb 10 -> 8`), but it did not prove
-out as the full present-wait fix because it adds duplicate RAM restore/compose
-work (`restore_calls 156 -> 192`, `compose_calls 155 -> 191`).
+Latest Detail-tier attribution on this baseline shows the remaining
+active-loop gap is not primarily due-frame CD: `render_vb=181`,
+`present_wait_vb=157`, `restore_vb=43`, `compose_vb=31`, `upload_vb=0`, and
+`advance_vb=1` in
+`scratch/ps1-perf-iterate/20260426-084540/summary.json`. The present wait is
+mostly the required frame cadence, while restore/compose crossings are real
+remaining overrun candidates. A first staged next-VBlank present scheduler was
+rejected because it regressed total loop time to `1306`; the next present work
+needs separate render-prep and CD-prefetch slack budgets instead of stealing
+the held-frame prefetch cadence. A later 4 VBlank held-slack prepared-present
+pass was accepted as a small speedup (`loop_vb 1235 -> 1234`,
+`blocking_vb 10 -> 8`), but it did not prove out as the full present-wait fix
+because it adds duplicate RAM restore/compose work (`restore_calls 156 -> 192`,
+`compose_calls 155 -> 191`).
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -771,6 +774,7 @@ rectangle pressure.
 | `P4-131` | Failed: raise prepared-present minimum slack from `4` to `5` after catch-up. | It reduced duplicate prep (`restore_calls/compose_calls 195 -> 182`) and nominal loop by one VBlank (`1222 -> 1221`) but regressed target/pressure (`target_vb 1073 -> 1069`, `overrun_vb 149 -> 152`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`); the duplicate prep still acts as scheduler ballast. |
 | `P4-132` | Failed/no-op: add a second catch-up VBlank for very long holds. | Both `>=9` variants matched the accepted baseline exactly (`loop_vb=1222`, `target_vb=1073`, `blocking_vb=6`, `prefetch_overrun_vb=6`); fishing1 exposes no useful extra catch-up in that hold bucket under the current scheduler. |
 | `P4-133` | Failed: lower the initial FG2 metadata prefix read from `8 KB` to `4 KB`. | Fishing1 setup bytes fell (`282104 -> 278008`) and `setup_read_vb` dropped by one, but active playback regressed (`loop_vb 1222 -> 1224`, `blocking_vb 6 -> 11`, `prefetch_overrun_vb 6 -> 11`); startup read shape still acts as deterministic cadence ballast. |
+| `P4-134` | Failed: extend one-VBlank catch-up to short holds with staged/lookahead coverage. | Both `>=3` and `>=4` covered-catch variants kept `loop_vb=1222` but regressed pressure (`target_vb 1073 -> 1071`, `overrun_vb 149 -> 151`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`); coverage alone is not enough to prove spare cadence. |
 
 Prefetch variants to test in order:
 
