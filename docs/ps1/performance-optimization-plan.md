@@ -739,6 +739,7 @@ rectangle pressure.
 | `P4-97` | Failed: proactively slide/append the stream window while the next future payload is still resident. | Due misses stayed zero, but eager append work regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 13`, and `prefetch_overrun_vb 7 -> 13`; raw lookahead needs group/read-cost metadata. |
 | `P4-98` | Done: widen vertical dirty-upload band clean-gap merge from `8` to `10` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 412 -> 409`; byte cost is bounded (`upload_bytes 16424960 -> 16442880`) and correctness/fallback counters stayed clean. |
 | `P4-99` | Done: widen vertical dirty-upload band clean-gap merge from `10` to `11` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 409 -> 401`; byte cost is bounded (`upload_bytes 16442880 -> 16499200`) and correctness/fallback counters stayed clean. |
+| `P4-100` | Failed: add inline CD-read histogram metrics. | Summary-level and `perf-detail`-gated variants both regressed to `loop_vb=1231`, `blocking_vb=10`, and `prefetch_overrun_vb=10`; read-class metrics must be compile-time isolated or post-processed outside the speed baseline. |
 
 Prefetch variants to test in order:
 
@@ -1121,7 +1122,7 @@ fishing1 high tide.
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
-| 9 | CD/metrics | Add per-read slack, sectors, and elapsed histograms to Summary output. | Identify exact read classes causing the remaining `8` overrun VBlanks. |
+| 9 | CD/metrics | Rework per-read slack, sectors, and elapsed histograms as a separate diagnostic build or host-side log post-process. | The inline `JCPERF2 cdhist` attempt regressed default timing even when detail-gated, so speed-baseline builds cannot carry the extra code shape. |
 | 10 | CD/pack | Reorder payload chunks inside FG2 to eliminate current `seek_back` points. | Lower `seek_back`, `setloc` cost, and hidden/visible read time. |
 | 11 | CD/pack | Duplicate tiny backward-referenced payloads when cheaper than seeking backward. | Lower `seek_back` while keeping pack growth bounded. |
 | 12 | CD/runtime | Treat huge payloads as direct-read outliers that do not perturb the stream-window policy. | Reduce missed coverage after large frames. |
@@ -1314,6 +1315,13 @@ The accepted 11-row dirty-band gap merge keeps timing flat and lowers
 `upload_rects 424 -> 401` for a small byte increase. The rejected 12-row point
 is still too wide; the next larger upload win should move band metadata to pack
 generation or emit upload-ready layouts.
+
+An inline CD-read histogram metrics pass was also rejected. The summary-level
+variant and the supposedly safer `perf-detail`-gated variant both regressed the
+default `perf-log` speed run to `loop_vb=1231`, `blocking_vb=10`, and
+`prefetch.overrun_vb=10`. On this deterministic target, even extra diagnostic
+code shape can move the scheduler; future high-granularity CD metrics need a
+separate diagnostic binary or host-side post-processing, not baseline code.
 
 The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
 `18 KB` parameter probe preserved zero due misses but regressed `loop_vb`,
