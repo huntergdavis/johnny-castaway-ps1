@@ -31,11 +31,11 @@ per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
 dirty-row upload bands with a 2-row gap merge, setup priming of the first
 real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
-prep, reported
+prep, plus leading-empty setup consume with a one-VBlank setup settle, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
-`due_misses=0`, `blocking_vb=8`, `prefetch.overrun_vb=8`, `loop_vb=1234`,
-`overrun_vb=157`, `target_vb=1077`, `restore_bytes=3050904`,
-`upload_bytes=16496000`, `dirty_rows=25775`, `upload_rects=427`, `trip=0`,
+`due_misses=0`, `blocking_vb=7`, `prefetch.overrun_vb=7`, `loop_vb=1227`,
+`overrun_vb=150`, `target_vb=1077`, `restore_bytes=2986378`,
+`upload_bytes=16381440`, `dirty_rows=25596`, `upload_rects=424`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`. This is
 the current baseline for the next experiment; the pre-pause best was
 `loop_vb=1297`.
@@ -713,6 +713,7 @@ rectangle pressure.
 | `P4-80` | Failed as unproven: targeted current dirty-row state clearing. | Key timing stayed exactly flat (`loop_vb=1234`, `blocking_vb=8`, `prefetch_overrun_vb=8`) and work identity shifted slightly (`restore_calls 192 -> 190`, `compose_calls 191 -> 189`); retry only with lower-level CPU counters or during a broader dirty-state refactor. |
 | `P4-81` | Failed: re-sweep `14/18/20 KB` stream windows after prepared-present. | All tested sizes regressed total loop versus the accepted `16 KB` default (`1236`, `1247`, `1249` vs `1234`), confirming raw window-size tuning is exhausted until grouped/pack-aware reads improve coverage per transaction. |
 | `P4-82` | Failed strict gate but promising: consume the leading empty capture artifact during setup. | `loop_vb 1234 -> 1228` and `overrun_vb 157 -> 151` with zero due misses, but `blocking_vb 8 -> 9`, `prefetch_overrun_vb 8 -> 9`, and render count dropped by one non-payload frame; retry with CD smoothing and explicit visual policy for empty artifacts. |
+| `P4-83` | Done: consume the leading empty capture artifact during setup with a one-VBlank setup settle. | Strict gates passed: `loop_vb 1234 -> 1227`, `overrun_vb 157 -> 150`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 8 -> 7`, and `due_misses=0`; render count drops by one non-payload frame and the settle cost is outside active playback. |
 
 Prefetch variants to test in order:
 
@@ -1192,11 +1193,12 @@ dirty pipeline refactor.
 A post-prepared-present window-size sweep rejected `14 KB`, `18 KB`, and
 `20 KB` windows. The current `16 KB` window remains the local knee: smaller
 windows starve near-term entries and larger windows spill too much held slack.
-Consuming the leading empty capture artifact during setup is the most promising
-recent reject: it saved `6` loop VBlanks, but raised blocking/refill overrun by
-one VBlank and intentionally changed render count by skipping a non-payload
-startup render. Treat it as a policy-plus-scheduler retry, not a default path
-yet.
+Consuming the leading empty capture artifact during setup was first rejected
+because it saved `6` loop VBlanks but raised blocking/refill overrun by one
+VBlank. The accepted retry adds a one-VBlank setup settle, dropping active
+playback to `loop_vb=1227`, `blocking_vb=7`, and `prefetch.overrun_vb=7` while
+keeping `due_misses=0`. The important lesson is that some CD cadence fixes can
+be paid before `loop_start` if they preserve the active-loop scheduler shape.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed

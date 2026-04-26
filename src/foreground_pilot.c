@@ -2011,6 +2011,29 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                     fgRuntimeReset();
                     return 0;
                 }
+                if (!fgEntryHasPayload(&gFgRuntime.currentEntry) &&
+                    gFgRuntime.stagedFrameValid &&
+                    gFgRuntime.stagedFrameIndex == 1) {
+                    /* Frame 0 is a non-payload capture artifact; consume it
+                     * before loop_start, then settle once so CD cadence stays
+                     * aligned with the active-loop prefetch schedule. */
+                    gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                                           gFgRuntime.displayVBlanks);
+                    gFgRuntime.frameIndex = 1;
+                    if (!fgRuntimeConsumeStagedFrame(gFgRuntime.frameIndex)) {
+                        if (ps1PerfEnabled)
+                            ps1PerfMarkTripwire();
+                        fgRuntimeReset();
+                        return 0;
+                    }
+                    if (fgRuntimePrimeNextFrameForSetup() < 0) {
+                        if (ps1PerfEnabled)
+                            ps1PerfMarkTripwire();
+                        fgRuntimeReset();
+                        return 0;
+                    }
+                    fgRuntimeWaitHeldVBlank();
+                }
                 if (ps1PerfEnabled)
                     ps1PerfMarkSetupPhase(PS1_PERF_SETUP_FIRST_FRAME,
                                           ps1PerfElapsedVBlanks(perfFirstFrameTick));

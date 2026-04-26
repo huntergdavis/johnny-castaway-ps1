@@ -32,24 +32,24 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `6c7b8fc0 ps1: prepare staged frames during held slack` |
-| Run ID | `20260426-003718` |
+| Commit | `ps1: consume leading empty setup frame` |
+| Run ID | `20260426-023007` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
-| `loop_vb` | `1234` |
+| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
+| `loop_vb` | `1227` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `157` |
-| `blocking_vb` | `8` |
+| `overrun_vb` | `150` |
+| `blocking_vb` | `7` |
 | `loop_reads` | `68` |
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
-| `prefetch_overrun_vb` | `8` |
-| `restore_bytes` | `3050904` |
-| `upload_bytes` | `16496000` |
-| `dirty_rows` | `25775` |
-| `upload_rects` | `427` |
+| `prefetch_overrun_vb` | `7` |
+| `restore_bytes` | `2986378` |
+| `upload_bytes` | `16381440` |
+| `dirty_rows` | `25596` |
+| `upload_rects` | `424` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -174,6 +174,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `gfx-targeted-curr-dirty-clear` | dirty experiment after `c80ccb42` | Clear only the currently dirty row ranges in `grClearCurrDirtyState()` instead of all `4 x 240` tile rows every restore/prep, aiming to reduce CPU work without changing restore/upload identity. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as unproven. Correctness stayed clean and key timing was exactly flat: `loop_vb=1234`, `overrun_vb=157`, `blocking_vb=8`, `prefetch_overrun_vb=8`, `due_misses=0`, and `hits=155`. Work identity shifted slightly (`restore_calls 192 -> 190`, `compose_calls 191 -> 189`) without a speed win. Artifact: `scratch/ps1-perf-iterate/20260426-020956/summary.json`. | Do not promote. This may be a sub-VBlank cleanup, but it is not measurable in the current acceptance loop and the small prepared-work identity shift is not worth carrying without a timing win. |
 | 2026-04-26 | `fg2-window-14-18-20kb-post-prepared-present` | parameter probe after `3aaae04c` | Sweep nearby stream-window sizes after the prepared-present scheduler changes, testing whether the current `16 KB` knee moved. | `./scripts/ps1-perf-iterate.sh --case "fishing1-w14::fgpilot fishing1 prefetch-window 14336 perf-log noloop seed 1" --case "fishing1-w18::fgpilot fishing1 prefetch-window 18432 perf-log noloop seed 1" --case "fishing1-w20::fgpilot fishing1 prefetch-window 20480 perf-log noloop seed 1" --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. All candidates were slower than the accepted `16 KB` baseline: `14 KB` hit `loop_vb=1236`, `blocking_vb=36`, `due_misses=8`; `18 KB` hit `loop_vb=1247`, `blocking_vb=33`, `due_misses=2`; `20 KB` hit `loop_vb=1249`, `blocking_vb=36`, `due_misses=2`. Artifact: `scratch/ps1-perf-iterate/20260426-021539/summary.json`. | Do not promote. Smaller windows starve near-term coverage and larger windows overrun slack; keep the `16 KB` default until grouped/pack-aware reads change the coverage-per-read shape. |
 | 2026-04-26 | `fg2-leading-empty-setup-consume` | dirty experiment after `174d48c6` | Treat fishing1's leading empty capture artifact as non-visual setup work: after setup primes frame 1, advance `presentedVBlanks`, consume the staged first real payload before active-loop start, and re-prime the next payload to preserve staging depth. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed strict gate but is promising. It saved `6` VBlanks (`loop_vb 1234 -> 1228`, `overrun_vb 157 -> 151`) with `due_misses=0`, `hits=155`, and clean correctness, but regressed `blocking_vb 8 -> 9` and `prefetch_overrun_vb 8 -> 9`; render work also dropped by one non-payload frame (`render 156 -> 155`). Artifacts: `scratch/ps1-perf-iterate/20260426-022436/summary.json`, `scratch/ps1-perf-iterate/20260426-022618/summary.json`. | Do not promote without a visual signoff and CD-smoothing companion. The saved work is a real nonvisual startup-frame win, but the current acceptance loop treats the extra blocking VBlank as a regression and the render-count change needs explicit policy approval. |
+| 2026-04-26 | `fg2-leading-empty-setup-consume-settle-vblank` | accepted after `616b6ab2` | Consume the leading empty capture artifact during setup, immediately re-prime the next payload, then spend one setup-only settle VBlank so the active-loop CD cadence does not inherit the earlier start. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Promoted. Strict gates passed: `loop_vb 1234 -> 1227`, `overrun_vb 157 -> 150`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 8 -> 7`, `due_misses=0`, `hits=155`, and correctness stayed clean. It intentionally removes one non-payload render (`render 156 -> 155`) and lowers upload/dirty work (`upload_bytes 16496000 -> 16381440`, `upload_rects 427 -> 424`). Artifact: `scratch/ps1-perf-iterate/20260426-023007/summary.json`. | Promote. The one-VBlank settle cost is paid in setup, outside the active playback loop, and the empty entry remains counted/presented logically while avoiding a visible no-payload render pass. This is the new baseline. |
 
 ## Retry Queue
 
