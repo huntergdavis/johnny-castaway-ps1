@@ -37,13 +37,27 @@ scripts/holidays_art_lib.py                   16-color CLUT, Sprite class, primi
                                               heart, sand, sky, etc.) and
                                               `as_night(sprite)` for the v5 recolor
 scripts/holidays-quality-audit.py             ad-hoc per-sprite histogram report
-scripts/holidays-redteam.py                   13 independent QA checks; exits non-zero
+scripts/holidays-redteam.py                   14 independent QA checks; exits non-zero
                                               on any FAIL — palette discipline, dim/
                                               mode/presence, sparsity, variant
-                                              diversity, no cross-holiday duplicates,
+                                              diversity (incl. v5-vs-v1 ≥10%),
+                                              no cross-holiday duplicates,
                                               date-algorithm test invocation, 7-year
                                               collision sweep, generated-table row
-                                              count, HTML integrity, save/modal hooks
+                                              count, HTML integrity, save/modal hooks,
+                                              final-review HTML present
+scripts/holidays-contact-sheet.py             one-shot 3248×12802 PNG of every
+                                              holiday × every variant, 4× zoom
+scripts/holidays-resolve-picks.py             reads picks JSON, copies the chosen
+                                              v{N} PNG to scratch/holidays-selected/
+                                              ready for Phase D PSB packaging
+scripts/holidays-final-review.py              second HTML page showing ONLY the
+                                              picked variants, sorted by
+                                              next-occurrence date
+scripts/holidays-build-all.sh                 run the whole pipeline end-to-end
+                                              (codegen → tests → render → preview
+                                              → contact-sheet → defaults → resolve
+                                              → final-review → red-team) in ~3s
 scripts/holidays_concepts.py                  master loader; merges all batch dicts
                                               into one RENDERERS = {id: (v1,v2,v3,v4)}
 scripts/holidays_concepts_reference.py        reference renderers (Valentine, Mardi
