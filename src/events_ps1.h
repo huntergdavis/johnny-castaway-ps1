@@ -24,8 +24,10 @@
 #include "mytypes.h"
 
 extern int evHotKeysEnabled;
+extern int evPadDiagnosticsEnabled;
 
 void eventsInit();
 void eventsWaitTick(uint16 delay);
+void eventsSetPadDiagnostics(int enabled);
 
 #endif /* EVENTS_PS1_H */

@@ -32,6 +32,7 @@
 
 /* Global variables */
 int evHotKeysEnabled = 0;
+int evPadDiagnosticsEnabled = 0;
 
 /* Controller data buffers — non-static so pause_menu.c can read the
  * same shared pad state via `extern uint8 pad_buff[2][34];`. */
@@ -94,6 +95,11 @@ static uint32 vbl_seen_at_last_snapshot = 0;
  * can't access globals. */
 static uint32 main_gp_baseline = 0;
 static uint32 main_sp_baseline = 0;
+
+void eventsSetPadDiagnostics(int enabled)
+{
+    evPadDiagnosticsEnabled = enabled ? 1 : 0;
+}
 
 /*
  * Synchronous SIO0 hardware probe — IRQ-free.
@@ -256,9 +262,9 @@ void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t r
     dst[2] = buff[2];          /* btn low */
     dst[3] = buff[3];          /* btn high */
 
-    /* JCSPI persistent btn tracker — runs at full SPI rate (250 Hz)
-     * so we don't miss button presses between scene-frame samples. */
-    if (port == 0) {
+    /* JCSPI persistent btn tracker is diagnostic-only. Pause reads pad_buff
+     * directly and does not need these volatile counters on every SPI IRQ. */
+    if (evPadDiagnosticsEnabled && port == 0) {
         spi_btn_p0_polls++;
         if (buff[2] != 0xFF || buff[3] != 0xFF)
             spi_btn_p0_nonff++;
@@ -298,23 +304,23 @@ void eventsInit()
     delayResidue = 0;
     lastFrameTick = (uint32)VSync(-1);
 
-    /* JCSPI T21 baseline: capture main-loop $gp / $sp BEFORE anything
-     * else. Compared later against $gp/$sp captured at IRQ entry. If
-     * the BIOS dispatch isn't restoring gp, IRQ-time gp will differ
-     * and globals (counters!) point to garbage. */
-    __asm__ volatile("move %0, $gp" : "=r"(main_gp_baseline));
-    __asm__ volatile("move %0, $sp" : "=r"(main_sp_baseline));
-    printf("JCSPI T21 baseline main_gp=%08lx main_sp=%08lx\n",
-           (unsigned long)main_gp_baseline, (unsigned long)main_sp_baseline);
+    if (evPadDiagnosticsEnabled) {
+        /* JCSPI T21 baseline: capture main-loop $gp / $sp BEFORE anything
+         * else. Compared later against $gp/$sp captured at IRQ entry. If
+         * the BIOS dispatch isn't restoring gp, IRQ-time gp will differ
+         * and globals (counters!) point to garbage. */
+        __asm__ volatile("move %0, $gp" : "=r"(main_gp_baseline));
+        __asm__ volatile("move %0, $sp" : "=r"(main_sp_baseline));
+        printf("JCSPI T21 baseline main_gp=%08lx main_sp=%08lx\n",
+               (unsigned long)main_gp_baseline, (unsigned long)main_sp_baseline);
 
-    /* JCSPI T-NEW: PADTYPE layout probe. type/len are bit-fields in
-     * PSn00bSDK 0.24, so we can't take their address. Instead, write
-     * known sentinels into pad_buff[0][0..7] and read back through
-     * the PADTYPE struct. This tells us exactly which bytes pad->stat
-     * and pad->btn map to. If pad->btn != 0xDDCC (little-endian read
-     * of bytes 2,3) we have an offset mismatch and our SPI callback
-     * is writing btn into the wrong slot. */
-    {
+        /* JCSPI T-NEW: PADTYPE layout probe. type/len are bit-fields in
+         * PSn00bSDK 0.24, so we can't take their address. Instead, write
+         * known sentinels into pad_buff[0][0..7] and read back through
+         * the PADTYPE struct. This tells us exactly which bytes pad->stat
+         * and pad->btn map to. If pad->btn != 0xDDCC (little-endian read
+         * of bytes 2,3) we have an offset mismatch and our SPI callback
+         * is writing btn into the wrong slot. */
         pad_buff[0][0] = 0xAA;
         pad_buff[0][1] = 0xBB;
         pad_buff[0][2] = 0xCC;
@@ -341,24 +347,26 @@ void eventsInit()
         for (int i = 4; i < 34; i++) pad_buff[p][i] = 0x00;
     }
 
-    printf("JCPAD eventsInit ENTER (SPI driver) pad_buff[0]=%p pad_buff[1]=%p\n",
-           (void*)pad_buff[0], (void*)pad_buff[1]);
-    printf("JCPAD bits: PAD_START=%04x PAD_CROSS=%04x PAD_SELECT=%04x PAD_TRIANGLE=%04x\n",
-           (unsigned)PAD_START, (unsigned)PAD_CROSS, (unsigned)PAD_SELECT, (unsigned)PAD_TRIANGLE);
+    if (evPadDiagnosticsEnabled) {
+        printf("JCPAD eventsInit ENTER (SPI driver) pad_buff[0]=%p pad_buff[1]=%p\n",
+               (void*)pad_buff[0], (void*)pad_buff[1]);
+        printf("JCPAD bits: PAD_START=%04x PAD_CROSS=%04x PAD_SELECT=%04x PAD_TRIANGLE=%04x\n",
+               (unsigned)PAD_START, (unsigned)PAD_CROSS, (unsigned)PAD_SELECT, (unsigned)PAD_TRIANGLE);
 
-    /* JCSPI T14/T22: COP0 SR/CAUSE/EPC at boot. SR bit 0 = IEc must be 1
-     * for IRQs to fire. CAUSE bits 6:2 = last exception code (should be 0). */
-    printf("JCSPI T14 cop0 sr=%08lx cause=%08lx epc=%08lx (sr.IEc=%d sr.IM=%02lx cause.ExcCode=%lu)\n",
-           (unsigned long)cop0_read_sr(), (unsigned long)cop0_read_cause(),
-           (unsigned long)cop0_read_epc(),
-           (int)(cop0_read_sr() & 1),
-           (unsigned long)((cop0_read_sr() >> 8) & 0xFF),
-           (unsigned long)((cop0_read_cause() >> 2) & 0x1F));
+        /* JCSPI T14/T22: COP0 SR/CAUSE/EPC at boot. SR bit 0 = IEc must be 1
+         * for IRQs to fire. CAUSE bits 6:2 = last exception code (should be 0). */
+        printf("JCSPI T14 cop0 sr=%08lx cause=%08lx epc=%08lx (sr.IEc=%d sr.IM=%02lx cause.ExcCode=%lu)\n",
+               (unsigned long)cop0_read_sr(), (unsigned long)cop0_read_cause(),
+               (unsigned long)cop0_read_epc(),
+               (int)(cop0_read_sr() & 1),
+               (unsigned long)((cop0_read_sr() >> 8) & 0xFF),
+               (unsigned long)((cop0_read_cause() >> 2) & 0x1F));
+    }
 
     /* JCSPI: snapshot driver state IMMEDIATELY before SPI_Init for a
      * baseline. After SPI_Init, snapshot again so we can prove the
      * registers we want set are actually set. */
-    {
+    if (evPadDiagnosticsEnabled) {
         SPI_DbgState pre, post;
         SPI_DbgSnapshot(&pre);
         printf("JCSPI PRE  irq_mask=%08lx irq_stat=%08lx sio_ctrl=%08lx sio_mode=%08lx sio_baud=%08lx "
@@ -431,8 +439,11 @@ void eventsInit()
         printf("JCSPI T17 DMA dpcr=%08lx dicr=%08lx\n",
                (unsigned long)*(volatile uint32_t*)0xBF8010F0,
                (unsigned long)*(volatile uint32_t*)0xBF8010F4);
+    } else {
+        SPI_Init(eventsSpiPollCallback);
     }
-    printf("JCPAD SPI_Init called — driver polling at 250 Hz (125 Hz per port)\n");
+    if (evPadDiagnosticsEnabled)
+        printf("JCPAD SPI_Init called — driver polling at 250 Hz (125 Hz per port)\n");
 }
 
 /* JCPAD diagnostic state — checked + printed by eventsWaitTick. */
@@ -440,7 +451,6 @@ static uint32 padDiagCalls = 0;
 static uint16 padDiagLastBtn0 = 0xFFFF;
 static uint16 padDiagLastBtn1 = 0xFFFF;
 static uint8  padDiagLastStat0 = 0xFF;
-static uint8  padDiagLastStat1 = 0xFF;
 static uint16 padDiagMinBtn0 = 0xFFFF;
 static uint16 padDiagMaxBtn0 = 0;
 static int    padDiagBtnEverChanged0 = 0;
@@ -460,10 +470,9 @@ static int    padDiagAnyPressedEverSeen = 0;
  */
 void eventsWaitTick(uint16 delay)
 {
-    /* JCPAD diagnostic — runs per-frame, prints once a second + on
-     * notable transitions. Goal: figure out why the Start handler
-     * never fires. */
-    {
+    /* JCPAD diagnostics are intentionally opt-in. Normal playback still
+     * polls Start below, but does not log or sample debug registers. */
+    if (evPadDiagnosticsEnabled) {
         PADTYPE *pad0 = (PADTYPE*)pad_buff[0];
         PADTYPE *pad1 = (PADTYPE*)pad_buff[1];
         uint8 *raw0 = pad_buff[0];
@@ -666,7 +675,8 @@ void eventsWaitTick(uint16 delay)
         uint16 buttons = ~(pad->btn);  /* active low — invert */
 
         if (buttons & PAD_START) {
-            printf("JCPAD START PATH ENTERED call #%lu\n", (unsigned long)padDiagCalls);
+            if (evPadDiagnosticsEnabled)
+                printf("JCPAD START PATH ENTERED call #%lu\n", (unsigned long)padDiagCalls);
             pauseMenuShow();
             /* pauseMenuUpdate() VSyncs internally — don't double-pace. */
             while (pauseMenuUpdate()) { }
@@ -680,7 +690,8 @@ void eventsWaitTick(uint16 delay)
              * during pause aren't counted against the next frame's
              * timing budget. */
             lastFrameTick = (uint32)VSync(-1);
-            printf("JCPAD START PATH EXITED\n");
+            if (evPadDiagnosticsEnabled)
+                printf("JCPAD START PATH EXITED\n");
         }
     }
 

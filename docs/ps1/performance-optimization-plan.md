@@ -18,17 +18,19 @@ pixel-perfect FG2 methodology.
 ## Executive Summary
 
 Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, a 24 KB FG2 stream window, and dirty
-clean-rect row restore are active on the perf branch. The boot parameters still
-exist for diagnostics, but the default FG2 playback policy is now
-`stage1_window`.
+Held-entry no-work, one-entry staging, a 24 KB FG2 stream window, guarded
+fallthrough prefetch, dirty clean-rect row restore, and opt-in pad/SPI
+diagnostics are active on the perf branch. The boot parameters still exist for
+diagnostics, but the default FG2 playback policy is now `stage1_window` with no
+JCPAD/JCSPI diagnostic sampling on the hot path.
 
-Latest default-path fishing1 high-tide run, with the 24 KB stream window,
-forward extension, and guarded stage-copy fallthrough enabled, reported
-`policy=stage1_window`, `buf=31760`, `hits=148`, `due_misses=7`,
-`blocking_vb=76`, `prefetch.overrun_vb=31`, `loop_vb=1297`,
+Latest accepted default-path fishing1 high-tide run after the pause merge and
+pad/SPI diagnostic gating reported `policy=stage1_window`, `buf=31760`,
+`hits=147`, `due_misses=8`, `blocking_vb=93`,
+`prefetch.overrun_vb=41`, `loop_vb=1317`, `overrun_vb=240`,
 `target_vb=1077`, `trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`,
-and `cd_fail=0`.
+and `cd_fail=0`. This is the current baseline for the next experiment; the
+pre-pause best was `loop_vb=1297`.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -59,7 +61,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 24 KB window | High | Guarded fallthrough lowered fishing1 `loop_vb` to `1297`, but the latest run still has `blocking_vb=76`, prefetch `overrun_vb=31`, and `due_misses=7`. |
+| 1 | Finish CD stall hiding beyond the default 24 KB window | High | The current accepted fishing1 run is `loop_vb=1317` and still has `blocking_vb=93`, prefetch `overrun_vb=41`, and `due_misses=8`. |
 | 2 | Row/X-aware dirty restore and upload | Medium to high | Latest default run still restores `9.6 MB` and uploads `17.3 MB` across fishing1. Byte volume is now a clearer target after CD reads were reduced. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
@@ -71,6 +73,7 @@ Non-goals:
 |---|---|
 | Frame dropping | Violates pixel-perfect playback. |
 | Timing compression before throughput work | The measured playback is `1.55x` over target; shorter timing files would expose the same throughput bottleneck. |
+| Default per-frame diagnostic logging or pad/SPI probes | `printf` and JCPAD/JCSPI debug sampling are useful tools, but they must be opt-in because screensaver playback is the product path. |
 | Reintroducing FG1, ADS, or TTM runtime paths | Those were retired from the active public path. |
 | Fixed island assumptions | The runtime must randomly place the island, so all optimizations must preserve scene-relative FG2 placement. |
 | Direct framebuffer or progressive-mode experiments as first moves | Prior history says these were unstable. Exhaust stable scene playback first. |
@@ -84,6 +87,7 @@ Active runtime files:
 | `src/foreground_pilot.c` | FG2 selection, header/table/palette loading, frame timing, per-frame CD read, sound-event firing, scene loop. |
 | `src/graphics_ps1.c` | RAM background tiles, clean-rect restore, PAL4/indexed8 FG2 span compositing, dirty-row upload, `LoadImage` calls. |
 | `src/cdrom_ps1.c` | Sector reads, `CdSearchFile`, buffered read-into APIs, pack/resource loading. |
+| `src/events_ps1.c` | VBlank pacing, pause input polling, and opt-in controller/SPI diagnostics via `pad-diag` / `pad-debug`. |
 | `scripts/build-scene-foreground-pack.py` | FG2 pack compiler, base-diff crop, palette selection, row-span encoding, sound events. |
 | `config/ps1/cd_layout.xml` | Routed FG2 files and active SCR/PSB/SND payloads. |
 
@@ -109,6 +113,11 @@ For base-diff FG2 packs, held VBlanks now wait without redraw. The current
 stall is that the next entry is loaded only after its previous hold budget is
 spent. That makes CD latency visible instead of hiding it under already-idle
 held VBlanks.
+
+Default playback diagnostics policy: keep `JCPERF2` Summary enabled only when
+requested by perf boot mode, and keep controller/SPI probes behind
+`pad-diag`/`pad-debug`. Pause polling stays live, but diagnostic counters,
+register snapshots, and transition prints must not run by default.
 
 ## Measured Pack Evidence
 
@@ -916,10 +925,11 @@ into one commit.
 | 1 | Implement the `JCPERF2` metrics foundation. | Done in `c0e6d95e`; isolated fishing1 Summary run emitted valid scene-end records. |
 | 2 | Done: implement held-entry no-work plus stage1/window prefetch and make it default. | Merged in `1b457163`; default run reports `policy=stage1_window`, clean correctness counters, and visual signoff. |
 | 3 | Capture the post-merge baseline matrix with `JCPERF2` Summary and selected Detail runs. | fishing1 high/low, fishing2, and fishing3 have comparable records under the new default path. |
-| 4 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
-| 5 | Add row/X dirty state and upload batching behind an experiment flag. | Byte counters and render subphase time drop with no stale pixels and no runtime full fallback. |
-| 6 | Test FG2-specific present/update sequencing. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity. |
-| 7 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
+| 4 | Done: gate controller/SPI diagnostics off by default. | fishing1 improved `loop_vb 1369 -> 1317` with clean correctness; `pad-diag`/`pad-debug` preserve the deeper controller probe path. |
+| 5 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
+| 6 | Add row/X dirty state and upload batching behind an experiment flag. | Byte counters and render subphase time drop with no stale pixels and no runtime full fallback. |
+| 7 | Test FG2-specific present/update sequencing. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity. |
+| 8 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
 
 ## Red-Team Conclusions
 
