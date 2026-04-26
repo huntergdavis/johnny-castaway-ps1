@@ -37,10 +37,19 @@ echo "==> 5. contact-sheet PNG"
 "$PY" scripts/holidays-contact-sheet.py | tail -1
 
 echo
-echo "==> 6. red-team QA pass"
+echo "==> 6. default-picks fallback (variant 1 for every holiday)"
+"$PY" scripts/holidays-default-picks.py | tail -1
+
+echo
+echo "==> 7. resolve picks → scratch/holidays-selected/"
+"$PY" scripts/holidays-resolve-picks.py | tail -2
+
+echo
+echo "==> 8. red-team QA pass"
 "$PY" scripts/holidays-redteam.py | tail -10
 
 echo
 echo "==> done."
-echo "    HTML preview: scratch/holidays-preview.html"
-echo "    Contact sheet: scratch/holidays-contact-sheet.png"
+echo "    HTML preview:    scratch/holidays-preview.html"
+echo "    Contact sheet:   scratch/holidays-contact-sheet.png"
+echo "    Picks staged at: scratch/holidays-selected/  (using defaults)"
