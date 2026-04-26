@@ -109,6 +109,8 @@ struct TFgPilotRuntime {
     uint8 stagedFrameValid;
     uint16 stagedFrameIndex;
     struct TFgPilotEntry stagedEntry;
+    uint8 preparedFrameValid;
+    uint16 preparedFrameIndex;
     uint16 palette[256];
     struct TFgPilotSoundEvent *soundEvents;
     uint16 soundEventCount;
@@ -129,6 +131,7 @@ static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
+#define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
 static uint8 gFgSetClearedEver = 0;
@@ -1626,10 +1629,149 @@ static void fgRuntimeMarkFrameRendered(void)
         gFgRuntime.frameRendered = 1;
 }
 
+static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
+                                              uint8 *frameData)
+{
+    if (entry == NULL || frameData == NULL)
+        return;
+
+    if (gFgRuntime.packFormat == kFgPilotPackFormatPal4Spans) {
+        grCompositePacked4SpansToBackground(frameData,
+                                            entry->dataSize,
+                                            gFgRuntime.palette,
+                                            (sint16)fgEntryDrawX(&gFgRuntime.header, entry),
+                                            (sint16)fgEntryDrawY(&gFgRuntime.header, entry));
+    } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
+        grCompositeIndexed8SpansToBackground(frameData,
+                                             entry->dataSize,
+                                             gFgRuntime.palette,
+                                             (sint16)fgEntryDrawX(&gFgRuntime.header, entry),
+                                             (sint16)fgEntryDrawY(&gFgRuntime.header, entry));
+    }
+
+    /* Stamp holiday overlay on top of the pack so Johnny walks behind
+     * the holiday decoration, matching islandInitHoliday's z-order. */
+    fgBackdropStampHoliday();
+}
+
 static void fgRuntimeWaitHeldVBlank(void)
 {
     VSync(0);
     eventsWaitTick(0);
+}
+
+static int fgRuntimeCanPrepareStagedFrame(void)
+{
+    return gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           fgRuntimeUsesBaseDiffBackdrop() &&
+           gFgRuntime.frameRendered &&
+           gFgRuntime.stagedFrameValid &&
+           !gFgRuntime.preparedFrameValid &&
+           gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
+           fgRuntimeHeldSlackBeforeWait() >= FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS;
+}
+
+static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
+                                                 int perfDetail)
+{
+    uint32 prepTick;
+    uint32 perfTick = 0;
+    uint16 elapsedVBlanks;
+
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = 0;
+    if (!fgRuntimeCanPrepareStagedFrame())
+        return 0;
+
+    prepTick = fgReadTickCounter();
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    grRestoreBgFromRects();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    fgRuntimeComposeEntryToBackground(&gFgRuntime.stagedEntry,
+                                      gFgRuntime.prefetchFrameBuffer);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_COMPOSE,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(prepTick);
+    if (outElapsedVBlanks != NULL)
+        *outElapsedVBlanks = elapsedVBlanks;
+
+    gFgRuntime.preparedFrameValid = 1;
+    gFgRuntime.preparedFrameIndex = gFgRuntime.stagedFrameIndex;
+    return 1;
+}
+
+static int fgRuntimeCanPresentPreparedOnNextVBlank(void)
+{
+    return gFgRuntime.active &&
+           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
+           fgRuntimeUsesBaseDiffBackdrop() &&
+           gFgRuntime.frameRendered &&
+           gFgRuntime.stagedFrameValid &&
+           gFgRuntime.preparedFrameValid &&
+           gFgRuntime.preparedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
+           gFgRuntime.stagedFrameIndex == gFgRuntime.preparedFrameIndex &&
+           fgRuntimeHeldSlackBeforeWait() == 1;
+}
+
+static int fgRuntimePresentPreparedFrame(int perfDetail)
+{
+    uint32 perfRenderTick = 0;
+    uint32 perfTick = 0;
+    uint16 preparedFrameIndex;
+
+    if (!fgRuntimeCanPresentPreparedOnNextVBlank())
+        return 0;
+
+    preparedFrameIndex = gFgRuntime.preparedFrameIndex;
+    if (ps1PerfEnabled)
+        ps1PerfMarkRenderedLoop();
+    if (perfDetail)
+        perfRenderTick = ps1PerfTick();
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    VSync(0);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_PRESENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    foregroundPilotRuntimeAdvance();
+    if (!gFgRuntime.active || gFgRuntime.frameIndex != preparedFrameIndex) {
+        if (ps1PerfEnabled)
+            ps1PerfMarkTripwire();
+        gFgRuntime.preparedFrameValid = 0;
+        return 1;
+    }
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    grDrawBackground();
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_UPLOAD,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        perfTick = ps1PerfTick();
+    eventsWaitTick(0);
+    if (perfDetail)
+        ps1PerfMarkRenderPhase(PS1_PERF_RENDER_EVENT_WAIT,
+                               ps1PerfElapsedVBlanks(perfTick));
+
+    if (perfDetail)
+        ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
+    gFgRuntime.preparedFrameValid = 0;
+    fgRuntimeMarkFrameRendered();
+    return 1;
 }
 
 static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
@@ -1913,24 +2055,9 @@ void foregroundPilotRuntimeCompose(void)
         return;
     }
 
-    if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && gFgRuntime.currentFrameData != NULL) {
-        if (gFgRuntime.packFormat == kFgPilotPackFormatPal4Spans) {
-            grCompositePacked4SpansToBackground(gFgRuntime.currentFrameData,
-                                                gFgRuntime.currentEntry.dataSize,
-                                                gFgRuntime.palette,
-                                                (sint16)fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                                (sint16)fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry));
-        } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
-            grCompositeIndexed8SpansToBackground(gFgRuntime.currentFrameData,
-                                                 gFgRuntime.currentEntry.dataSize,
-                                                 gFgRuntime.palette,
-                                                 (sint16)fgEntryDrawX(&gFgRuntime.header, &gFgRuntime.currentEntry),
-                                                 (sint16)fgEntryDrawY(&gFgRuntime.header, &gFgRuntime.currentEntry));
-        }
-        /* Stamp holiday overlay on top of the pack so Johnny walks behind
-         * the holiday decoration, matching islandInitHoliday's z-order. */
-        fgBackdropStampHoliday();
-    }
+    if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK)
+        fgRuntimeComposeEntryToBackground(&gFgRuntime.currentEntry,
+                                          gFgRuntime.currentFrameData);
 }
 
 void foregroundPilotRuntimeAdvance(void)
@@ -2199,6 +2326,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
     while (foregroundPilotRuntimeActive()) {
+        int advancedThisLoop = 0;
+
         /* Pause-menu request: break out so jc_reborn's outer loop can
          * advance to next scene or restart the loop. The flag is
          * cleared by the consumer in jc_reborn.c. */
@@ -2207,10 +2336,16 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         }
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
-            int didPrefetch;
+            uint16 prepareElapsedVBlanks = 0;
+            int didPrefetch = 0;
+            int didPrepare = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkHeldLoop();
-            if (gFgRuntime.stagedFrameValid) {
+            if (fgRuntimeCanPresentPreparedOnNextVBlank()) {
+                advancedThisLoop = fgRuntimePresentPreparedFrame(perfDetail);
+            } else if (gFgRuntime.preparedFrameValid) {
+                fgRuntimeWaitHeldVBlank();
+            } else if (gFgRuntime.stagedFrameValid) {
                 didPrefetch = fgRuntimeWindowPrefetchWouldRead()
                     ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
                     : 0;
@@ -2226,20 +2361,38 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                         prefetchElapsedVBlanks = windowElapsedVBlanks;
                 }
             }
-            if (!didPrefetch && !gFgRuntime.stagedFrameValid)
+            if (!advancedThisLoop &&
+                !didPrefetch &&
+                !gFgRuntime.stagedFrameValid)
                 didPrefetch = fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks);
-            if (didPrefetch) {
-                if (prefetchElapsedVBlanks == 0)
+            if (!advancedThisLoop &&
+                !didPrefetch &&
+                fgRuntimeCanPrepareStagedFrame()) {
+                didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,
+                                                                   perfDetail);
+            }
+            if (!advancedThisLoop) {
+                if (didPrepare) {
+                    if (prepareElapsedVBlanks == 0)
+                        fgRuntimeWaitHeldVBlank();
+                    else
+                        eventsWaitTick(0);
+                } else if (didPrefetch) {
+                    if (prefetchElapsedVBlanks == 0)
+                        fgRuntimeWaitHeldVBlank();
+                    else
+                        eventsWaitTick(0);
+                } else {
                     fgRuntimeWaitHeldVBlank();
-                else
-                    eventsWaitTick(0);
-            } else {
-                fgRuntimeWaitHeldVBlank();
+                }
             }
         } else {
             uint32 perfRenderTick = 0;
             uint32 perfDetailTick = 0;
             int usesBaseDiffBackdrop = fgRuntimeUsesBaseDiffBackdrop();
+            if (gFgRuntime.preparedFrameValid &&
+                gFgRuntime.preparedFrameIndex == gFgRuntime.frameIndex)
+                gFgRuntime.preparedFrameValid = 0;
             if (ps1PerfEnabled)
                 ps1PerfMarkRenderedLoop();
             if (perfDetail)
@@ -2259,12 +2412,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                 ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
             fgRuntimeMarkFrameRendered();
         }
-        if (perfDetail)
-            perfPhaseTick = ps1PerfTick();
-        foregroundPilotRuntimeAdvance();
-        if (perfDetail)
-            ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
-                                   ps1PerfElapsedVBlanks(perfPhaseTick));
+        if (!advancedThisLoop) {
+            if (perfDetail)
+                perfPhaseTick = ps1PerfTick();
+            foregroundPilotRuntimeAdvance();
+            if (perfDetail)
+                ps1PerfMarkRenderPhase(PS1_PERF_RENDER_ADVANCE,
+                                       ps1PerfElapsedVBlanks(perfPhaseTick));
+        }
     }
     if (ps1PerfEnabled) {
         ps1PerfMarkLoopEnd();
