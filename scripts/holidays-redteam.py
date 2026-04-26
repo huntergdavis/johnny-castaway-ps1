@@ -333,6 +333,26 @@ def check_date_algorithms(fails, warns):
         warns.append(f"holidays-test.py output unexpected: {text[-200:]}")
 
 
+def check_no_identical_date_rules(holidays, fails, warns):
+    """Two holidays with identical date_rule will ALWAYS collide every
+    year — that's a yaml authoring mistake (different from the
+    occasional same-day overlap from independent rules). Fail."""
+    import json as _json
+    seen: dict[str, dict] = {}
+    for h in holidays:
+        rule = h.get("date_rule") or {}
+        # Canonicalise to a sorted-key JSON string so dict order doesn't
+        # cause spurious diffs.
+        key = _json.dumps(rule, sort_keys=True)
+        if key in seen:
+            other = seen[key]
+            fails.append(
+                f"identical date_rule on id={other['id']} ({other['name']}) "
+                f"and id={h['id']} ({h['name']}): {key}")
+        else:
+            seen[key] = h
+
+
 def check_holiday_collisions(holidays, fails, warns):
     """All 35 holidays fire in 2024-2030; 0 same-day collisions per year."""
     try:
@@ -666,6 +686,7 @@ def main():
         ("no duplicate art",    lambda: check_no_duplicate_art(holidays, fails, warns)),
         ("variant diversity",   lambda: check_variant_diversity(holidays, fails, warns)),
         ("date algorithms",     lambda: check_date_algorithms(fails, warns)),
+        ("identical date rules", lambda: check_no_identical_date_rules(holidays, fails, warns)),
         ("holiday collisions",  lambda: check_holiday_collisions(holidays, fails, warns)),
         ("table.c generated",   lambda: check_table_c_present(fails, warns)),
         ("art-spec.json",       lambda: check_art_spec(holidays, fails, warns)),
