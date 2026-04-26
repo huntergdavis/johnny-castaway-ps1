@@ -643,6 +643,7 @@ and upload byte volume.
 | `P4-49` | Failed as no-op: cache the base-diff header flag in runtime state. | Replacing repeated `header.reserved0` masks with a cached byte left all key timing and work-identity metrics unchanged at `loop_vb=1242`; retry only with finer CPU counters or as cleanup. |
 | `P4-50` | Failed as no-op: exact-width upload for single dirty tile rows. | Fishing1 produced no measurable single-row upload bands; timing, `upload_bytes`, `upload_rects`, and `dirty_rows` all matched the accepted baseline exactly. |
 | `P4-51` | Failed: lower the staged-copy fallthrough guard from `6` to `5` VBlanks after the OT-clear skip. | The retest regressed `loop_vb 1242 -> 1245` and `prefetch_overrun_vb 12 -> 13`; keep `6` VBlanks as the local optimum. |
+| `P4-52` | Failed hard: naive async stream-window refill. | Starting `CdRead` asynchronously and polling during held frames regressed `loop_vb 1242 -> 1267`, `blocking_vb 20 -> 71`, and `prefetch_overrun_vb 12 -> 64`; async needs first-class scheduling/metrics before another retry. |
 
 Prefetch variants to test in order:
 
