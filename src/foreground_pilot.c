@@ -459,22 +459,6 @@ static int fgSceneEquals(const char *a, const char *b)
 
 static void fgTelemetryUpdate(void)
 {
-    if (!gFgRuntime.active) {
-        ps1AdsDbgActiveThreads = 0;
-        ps1AdsDbgReplayCount = 0;
-        ps1AdsDbgRunningThreads = 0;
-        ps1AdsDbgReplayDrawFrame = 0;
-        ps1AdsDbgMergeCarryFrame = 0;
-        ps1AdsDbgNoDrawThreadsFrame = 0;
-        return;
-    }
-
-    ps1AdsDbgActiveThreads = 55;
-    ps1AdsDbgReplayCount = (uint16)(gFgRuntime.header.frameCount & 0x3F);
-    ps1AdsDbgRunningThreads = (uint16)(gFgRuntime.frameIndex & 0x3F);
-    ps1AdsDbgReplayDrawFrame = (uint16)(gFgRuntime.currentEntry.sourceFrame & 0x3F);
-    ps1AdsDbgMergeCarryFrame = (uint16)(gFgRuntime.displayVBlanks & 0x3F);
-    ps1AdsDbgNoDrawThreadsFrame = (uint16)((gFgRuntime.currentFrameData != NULL) ? 1 : 0);
 }
 
 static void fgInitVisiblePipeline(void)

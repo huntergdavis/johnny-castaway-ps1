@@ -32,17 +32,21 @@ real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
-garbage collection, reported
+garbage collection and foreground visual telemetry removal, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
 `due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1227`,
-`overrun_vb=150`, `target_vb=1077`, `restore_bytes=3034562`,
+`overrun_vb=150`, `target_vb=1077`, `restore_bytes=2999408`,
 `upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
 `setup_read_vb=108`, and `scene_vb=1406`. This is the current baseline for the
 next experiment. The section-GC pass kept those counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
-same `137216` byte sector bucket. The pre-pause best was `loop_vb=1297`.
+same `137216` byte sector bucket. Removing the now-unused foreground visual
+telemetry body kept timing flat again, dropped speculative prep
+`restore_calls/compose_calls` from `190` to `188`, reduced `restore_bytes` from
+`3034562` to `2999408`, and shrank `jcreborn.elf` to `707916` bytes. The
+pre-pause best was `loop_vb=1297`.
 
 Detail-tier attribution on this baseline shows the remaining active-loop gap is
 not primarily CD: `render_vb=175`, `present_wait_vb=157`, `restore_vb=18`,
@@ -619,7 +623,7 @@ tight-slack direct staging, direct-stage scratch window seeding, and the
 coalesced FG2 metadata-prefix startup reads,
 fishing1 high-tide reports
 `loop_vb=1227`, `blocking_vb=6`, `due_misses=0`, and prefetch
-`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=3034562`,
+`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=2999408`,
 `upload_rects=401`, `setup_reads=6`, and `scene_vb=1406`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
@@ -737,6 +741,7 @@ rectangle pressure.
 | `P4-105` | Failed: prepare staged frames before pure lookahead prefetch. | Prepared work dropped (`restore_calls/compose_calls 190 -> 186`, `restore_bytes 3034562 -> 2981102`) but active playback regressed (`loop_vb 1227 -> 1240`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`, `seek_back 5 -> 11`); render prep and CD lookahead need separate budgets, not a simple priority inversion. |
 | `P4-106` | Done: enable PS1 function/data sections plus linker garbage collection. | Two headless runs matched timing and work identity exactly while `jcreborn.elf` shrank `709828 -> 708656` bytes; this does not move VBlank metrics yet, but it makes later public-build/code-size cleanup measurable. |
 | `P4-107` | Failed: gate foreground ADS-style telemetry writes behind `grPs1TelemetryEnabled`. | Timing stayed flat and correctness stayed clean, but the branch grew `jcreborn.elf` by `68` bytes and shifted speculative work (`restore_calls/compose_calls 190 -> 188`); remove legacy telemetry structurally later instead of adding hot-path conditionals. |
+| `P4-108` | Done: remove foreground ADS-style visual telemetry from the hot path. | Two headless runs kept timing and correctness flat while speculative prep dropped (`restore_calls/compose_calls 190 -> 188`, `restore_bytes 3034562 -> 2999408`) and `jcreborn.elf` shrank to `707916` bytes; use printf/perf logs for diagnostics, not legacy visual telemetry writes. |
 
 Prefetch variants to test in order:
 

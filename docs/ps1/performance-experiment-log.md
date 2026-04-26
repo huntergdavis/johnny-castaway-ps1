@@ -32,12 +32,12 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: enable PS1 linker section garbage collection` |
-| Run ID | `20260426-052049` |
+| Commit | `ps1: remove foreground visual telemetry hot path` |
+| Run ID | `20260426-052834` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 11-row upload band gap merge` |
+| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 11-row upload band gap merge` |
 | `loop_vb` | `1227` |
 | `target_vb` | `1077` |
 | `overrun_vb` | `150` |
@@ -46,7 +46,7 @@ Current accepted baseline for the next experiment:
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
 | `prefetch_overrun_vb` | `6` |
-| `restore_bytes` | `3034562` |
+| `restore_bytes` | `2999408` |
 | `upload_bytes` | `16499200` |
 | `dirty_rows` | `25780` |
 | `upload_rects` | `401` |
@@ -199,6 +199,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `fg2-prepare-before-lookahead` | dirty experiment after `327c27e6` | When a next frame is already staged during a held entry, prepare it for next-VBlank presentation before spending that held slice on pure lookahead prefetch. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed and source reverted. It reduced speculative prep work (`restore_calls/compose_calls 190 -> 186`, `restore_bytes 3034562 -> 2981102`) but regressed the active loop: `loop_vb 1227 -> 1240`, `overrun_vb 150 -> 163`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`, `loop_read_vb 286 -> 305`, `loop_reads 68 -> 69`, and `seek_back 5 -> 11`. Correctness stayed clean with `hits=155` and `due_misses=0`. Artifact: `scratch/ps1-perf-iterate/20260426-051156/summary.json`. | Do not promote. Preparing a staged frame before lookahead preserves due-frame coverage but steals CD phase from future reads; present work needs explicit separate budgets, not a simple priority inversion. |
 | 2026-04-26 | `ps1-section-gc` | dirty experiment after `029a5bc2` | Compile with function/data sections and link with `--gc-sections` so unused linked legacy paths stop contributing to executable pressure. | `./scripts/build-ps1.sh clean`, then two runs of `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2`. | Promoted as a binary-size hygiene improvement. Both runs matched timing and work identity exactly (`loop_vb=1227`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `render=155`, `restore_calls/compose_calls=190`, `upload_calls=155`) with correctness clean. ELF size dropped `709828 -> 708656` bytes; `jcreborn.exe` remains in the same `137216` byte sector bucket. Artifacts: `scratch/ps1-perf-iterate/20260426-051927/summary.json`, `scratch/ps1-perf-iterate/20260426-052049/summary.json`. | Promote. This is not a VBlank-level speed win, but it makes subsequent release/code-size cleanup measurable and safe under the headless gate. |
 | 2026-04-26 | `fg-telemetry-gate` | dirty experiment after `3c87e17b` | Gate foreground ADS-style telemetry writes behind the existing `grPs1TelemetryEnabled` flag so normal playback does not update legacy visual-debug globals on every advance. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed and source reverted. Timing stayed flat (`loop_vb=1227`, `blocking_vb=6`, `prefetch_overrun_vb=6`) but no key metric improved, ELF size grew `708656 -> 708724`, and speculative work identity shifted (`restore_calls/compose_calls 190 -> 188`). Correctness stayed clean. Artifact: `scratch/ps1-perf-iterate/20260426-052413/summary.json`. | Do not promote. The branch is larger than the unconditional stores under section-GC and still perturbs deterministic scheduler shape; remove telemetry more structurally during the public-code cleanup instead of gating it in the hot path. |
+| 2026-04-26 | `fg-telemetry-remove` | dirty experiment after `1f945620` | Remove foreground's legacy ADS-style visual telemetry body from the active PS1 hot path so section-GC can drop the now-unreferenced debug globals. | `./scripts/build-ps1.sh`, then two runs of `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2`. | Promoted as code-size/hot-path cleanup. Timing stayed flat (`loop_vb=1227`, `blocking_vb=6`, `prefetch_overrun_vb=6`) with correctness clean; speculative prep work dropped deterministically (`restore_calls/compose_calls 190 -> 188`, `restore_bytes 3034562 -> 2999408`) and loop CD read time moved `286 -> 285`. Current ELF size is `707916` bytes and `jcreborn.exe` remains `137216` bytes. Artifacts: `scratch/ps1-perf-iterate/20260426-052703/summary.json`, `scratch/ps1-perf-iterate/20260426-052834/summary.json`. | Promote. This deletes unused visual-debug writes rather than adding a branch, keeps pixels/sound clean, and makes printf/logging the intended diagnostic path. |
 
 ## Retry Queue
 
@@ -280,7 +281,6 @@ Current accepted baseline for the next experiment:
 | FG2 resolve-once startup reads | Setup improved, but active playback regressed and speculative prep cadence changed; retry only after adding an explicit setup/loop cadence barrier or decoupling prepared-present from startup timing. |
 | Trim stream-window reads to complete payloads | Reduced bytes/sectors while preserving hits and due misses, but increased elapsed loop CD time and visible blocking; retry only with per-read cost classes or emitted group metadata. |
 | Prepare staged frame before lookahead prefetch | Reduced restore/compose work but regressed CD blocking and seek-backs; retry only with separate render-prep and prefetch slack budgets that prove future read coverage is preserved. |
-| Foreground telemetry gate | The simple runtime branch grew the ELF and shifted scheduler identity; retry only as a compile-time removal/code-cleanup pass when legacy visual telemetry is deleted outright. |
 | `3` VBlank refill guard after row-level restore | Correctness clean and faster in total loop, but blocking and due misses regressed too far; retry only after grouped/pipelined prefetch coverage prevents starvation. |
 | `4` VBlank refill guard after setup-prime | Correctness clean and faster in total loop, but due misses returned and `blocking_vb` regressed from `13` to `19-20`; retry only after grouped or physically adjacent reads preserve zero due misses under the stricter guard. |
 | `18 KB` stream window after setup-prime | Due misses stayed zero, but `loop_vb`, `blocking_vb`, and `prefetch_overrun_vb` all regressed; keep the sector-rounded `16 KB` default until grouped/pipelined reads change the CD cost model. |
