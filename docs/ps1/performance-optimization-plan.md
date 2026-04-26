@@ -710,6 +710,7 @@ rectangle pressure.
 | `P4-77` | Failed: shrink the post-prepared-present stream window to `12 KB`. | `prefetch_overrun_vb 8 -> 1`, but coverage collapsed (`due_misses 0 -> 26`, `blocking_vb 8 -> 89`, `loop_vb 1234 -> 1245`); smaller raw windows are exhausted until pack groups or another stage slot preserve near-term entries. |
 | `P4-78` | Failed: add a second exact-payload stage slot at the `3` VBlank lower bound. | Coverage still degraded (`due_misses 0 -> 3`, `blocking_vb 8 -> 28`, `loop_vb 1234 -> 1238`, `prefetch_overrun_vb 8 -> 11`); the second slot needs grouped coverage, not isolated direct reads. |
 | `P4-79` | Failed: reuse a prepared current-frame RAM background through the normal upload path. | This removed duplicate prepared work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the extra prep work is currently timing/pacing, not removable without replacing that pacing. |
+| `P4-80` | Failed as unproven: targeted current dirty-row state clearing. | Key timing stayed exactly flat (`loop_vb=1234`, `blocking_vb=8`, `prefetch_overrun_vb=8`) and work identity shifted slightly (`restore_calls 192 -> 190`, `compose_calls 191 -> 189`); retry only with lower-level CPU counters or during a broader dirty-state refactor. |
 
 Prefetch variants to test in order:
 
@@ -1182,6 +1183,10 @@ A naive one-VBlank host-deadline offset was also rejected. It did not change
 `loop_vb`; it only lowered `target_vb` by one because the existing
 `presentedVBlanks` accumulator absorbed the offset. Present-latency work must
 change scheduler state, not only the deadline conversion.
+A targeted current dirty-row clear pass was also rejected as unproven. It
+matched the accepted timing exactly and slightly changed prepared-work identity,
+so dirty-state micro-cleanups should wait for finer CPU counters or a larger
+dirty pipeline refactor.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
