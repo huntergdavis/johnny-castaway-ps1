@@ -214,8 +214,11 @@ Estimated exact per-frame row extent upload from the current FG2 span data:
 | `FISH3LOW.FG2` | 26.0 KB | 57.3 KB | 160 |
 
 Interpretation: row/X-aware restore and upload remains a major candidate after
-CD latency is hidden. The challenge is batching row extents into a safe number
-of `LoadImage` rectangles.
+CD latency is hidden. A naive tile-level X-aware upload experiment that packed
+partial-width rectangles through one scratch buffer failed to reach scene-end
+metrics, likely because extra `DrawSync` points and unaligned transfer lengths
+overwhelmed the byte savings. The next viable upload attempt needs 16-pixel-
+aligned strip batching with one final sync, not per-partial immediate syncs.
 
 ## Guardrails
 
