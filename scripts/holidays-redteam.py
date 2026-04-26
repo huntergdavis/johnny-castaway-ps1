@@ -497,6 +497,67 @@ def check_final_review_present(fails, warns):
         fails.append("final-review HTML lacks card markup")
 
 
+def check_renderer_dims_match_yaml(holidays, fails, warns):
+    """Static scan: each renderer's hardcoded Sprite(W, H, ...) must
+    match holidays.yml's `sprite.width / sprite.height` for that
+    holiday id. Catches the case where someone changes yaml dims
+    without updating the renderer (or vice-versa) — caught earlier
+    than the PNG-presence dim check."""
+    import re
+    files = {
+        "holidays_concepts_reference.py": None,
+        "holidays_concepts_batch1.py": None,
+        "holidays_concepts_batch2.py": None,
+        "holidays_concepts_batch3.py": None,
+        "holidays_concepts_batch4.py": None,
+    }
+    by_id = {h["id"]: h for h in holidays}
+    # Map function name → expected (w, h) by walking the per-batch
+    # RENDERERS_* dict in each file. Build name → id from importing
+    # the modules (already done via master loader earlier; redo here
+    # so this check is self-contained).
+    for fname in files:
+        path = REPO / "scripts" / fname
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        # Find the RENDERERS_* dict literal — it maps id → (fn1, fn2, ...).
+        rd_match = re.search(
+            r"RENDERERS_\w+\s*=\s*\{(.*?)\n\}", text, re.DOTALL)
+        if not rd_match:
+            continue
+        rd_body = rd_match.group(1)
+        # Parse each `<id>: (fn1, fn2, fn3, fn4)` line.
+        for line in rd_body.splitlines():
+            m = re.match(r"\s*(\d+):\s*\(([^)]+)\)", line)
+            if not m:
+                continue
+            hid = int(m.group(1))
+            fns = [n.strip() for n in m.group(2).split(",") if n.strip()]
+            yaml_h = by_id.get(hid)
+            if not yaml_h:
+                continue
+            ew = yaml_h["sprite"]["width"]
+            eh = yaml_h["sprite"]["height"]
+            for fn_name in fns:
+                # Find that function's body in the file and pull the
+                # Sprite(w, h, ...) literal.
+                fn_match = re.search(
+                    r"def " + re.escape(fn_name) + r"\(h\):(.*?)(?=\ndef |\Z)",
+                    text, re.DOTALL)
+                if not fn_match:
+                    continue
+                body = fn_match.group(1)
+                sm = re.search(r"Sprite\((\d+),\s*(\d+),", body)
+                if not sm:
+                    continue
+                rw, rh = int(sm.group(1)), int(sm.group(2))
+                if (rw, rh) != (ew, eh):
+                    fails.append(
+                        f"{fname}::{fn_name} (id={hid}): renderer "
+                        f"Sprite({rw},{rh}) != yaml ({ew},{eh})")
+
+
 def check_invisible_compose_calls(fails, warns):
     """Static scan: warn if a renderer calls compose_star / compose_heart,
     sp.line, or sp.ellipse with a color that matches the renderer's
@@ -599,6 +660,7 @@ def main():
         ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
         ("contact sheet PNG",   lambda: check_contact_sheet_present(fails, warns)),
         ("invisible compose_*", lambda: check_invisible_compose_calls(fails, warns)),
+        ("renderer dims = yaml", lambda: check_renderer_dims_match_yaml(holidays, fails, warns)),
     ]
 
     print(f"red-team pass over {len(holidays)} holidays\n")
