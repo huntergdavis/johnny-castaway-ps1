@@ -269,13 +269,29 @@ def compose_outlined_rect(sp: Sprite, x0: int, y0: int, x1: int, y1: int,
 
 
 def compose_star(sp: Sprite, cx: int, cy: int, r: int, color: int) -> None:
-    """5-point star approximated with a couple of intersecting lines.
-    Crude but recognizable at PS1 viewing distance."""
-    sp.line(cx - r, cy, cx + r, cy, color)
-    sp.line(cx, cy - r, cx, cy + r, color)
-    sp.line(cx - r * 3 // 4, cy - r * 3 // 4, cx + r * 3 // 4, cy + r * 3 // 4, color)
-    sp.line(cx - r * 3 // 4, cy + r * 3 // 4, cx + r * 3 // 4, cy - r * 3 // 4, color)
-    sp.px(cx, cy, color)
+    """Star centered at (cx, cy) with outer radius r.
+
+    For r ≤ 2, draw a 4-point cross (anything more detailed pixelates
+    into mush). For r ≥ 3, draw a real 5-point star by filling the
+    pentagram polygon — the points line up so the top tip is straight
+    up, and the lower two tips spread outward, the recognizable
+    holiday-card shape.
+    """
+    if r <= 2:
+        sp.line(cx - r, cy, cx + r, cy, color)
+        sp.line(cx, cy - r, cx, cy + r, color)
+        sp.px(cx, cy, color)
+        return
+    # 5-point star polygon: alternate outer (radius r) and inner
+    # (radius r/2.5) vertices, starting at the top.
+    import math
+    pts: list[tuple[int, int]] = []
+    for i in range(10):
+        angle = -math.pi / 2 + i * math.pi / 5
+        rr = r if i % 2 == 0 else r / 2.5
+        pts.append((cx + int(round(rr * math.cos(angle))),
+                    cy + int(round(rr * math.sin(angle)))))
+    sp.draw.polygon(pts, fill=color)
 
 
 def compose_heart(sp: Sprite, cx: int, cy: int, r: int, color: int) -> None:
