@@ -815,15 +815,543 @@ def watermelon_v3(h):
 
 
 # ---------------------------------------------------------------------------
+# v4 PLAYFUL variants — exaggerated, comedic, character-forward
+# ---------------------------------------------------------------------------
+
+def memorial_v4(h):
+    """PLAYFUL — Johnny saluting SO HARD his hat flies off, single comedic
+    tear, oversized glistening flag, exaggerated reverence."""
+    sp = Sprite(56, 80, fill=SKY)
+    compose_sand_strip(sp, 56)
+    compose_horizon(sp, 56)
+    # Driftwood pole, slightly leaning from wind
+    pole_x = 14
+    sp.line(pole_x,     6, pole_x + 1,     56, TRUNK)
+    sp.line(pole_x + 1, 6, pole_x + 2, 56, TRUNK)
+    sp.px(pole_x, 5, YELLOW); sp.px(pole_x + 1, 5, YELLOW)
+    # Flag dramatically flapping with squiggly edge
+    fx, fy = pole_x + 2, 24
+    sp.rect(fx, fy, fx + 22, fy + 14, WHITE, outline=BLACK)
+    for sy in range(fy + 1, fy + 14, 2):
+        sp.line(fx + 1, sy, fx + 21, sy, RED)
+    sp.rect(fx + 1, fy + 1, fx + 9, fy + 6, DEEPBLUE)
+    # Stars on canton (tiny sparkles)
+    for sx, sy in [(fx + 2, fy + 2), (fx + 5, fy + 2), (fx + 8, fy + 2),
+                   (fx + 3, fy + 4), (fx + 6, fy + 4)]:
+        sp.px(sx, sy, WHITE)
+    # Wavy flag end
+    for y in (fy + 2, fy + 6, fy + 10):
+        sp.px(fx + 23, y, WHITE)
+        sp.px(fx + 24, y + 1, WHITE)
+    # Wind motion lines
+    sp.line(fx + 26, fy + 4, fx + 30, fy + 4, BLACK)
+    sp.line(fx + 26, fy + 8, fx + 30, fy + 8, BLACK)
+    # Glistening sparkle on flag
+    compose_star(sp, fx + 12, fy + 7, 1, YELLOW)
+    # Johnny saluting OVER-EARNESTLY on right
+    jx = 36
+    base_y = 56
+    # Body
+    sp.rect(jx, base_y - 8, jx + 5, base_y - 4, DEEPBLUE)
+    # Legs at attention
+    sp.rect(jx + 1, base_y - 3, jx + 2, base_y, TRUNK)
+    sp.rect(jx + 3, base_y - 3, jx + 4, base_y, TRUNK)
+    # Head — eyes shut tight in respect
+    sp.rect(jx + 1, base_y - 11, jx + 4, base_y - 9, SKIN)
+    sp.line(jx + 1, base_y - 10, jx + 2, base_y - 10, BLACK)
+    sp.line(jx + 3, base_y - 10, jx + 4, base_y - 10, BLACK)
+    # Single giant tear
+    sp.px(jx, base_y - 9, SKY)
+    sp.px(jx, base_y - 8, SKY)
+    sp.px(jx - 1, base_y - 8, SKY)
+    # Hat flying off above (motion arc)
+    sp.rect(jx, base_y - 18, jx + 5, base_y - 17, DEEPBLUE)
+    sp.line(jx + 1, base_y - 19, jx + 4, base_y - 19, DEEPBLUE)
+    # Motion arc dots
+    sp.px(jx + 5, base_y - 16, BLACK)
+    sp.px(jx + 4, base_y - 15, BLACK)
+    sp.px(jx + 3, base_y - 14, BLACK)
+    # Salute arm — RIGID and overdrawn
+    sp.line(jx + 5, base_y - 7, jx + 9, base_y - 11, SKIN)
+    sp.px(jx + 9, base_y - 12, SKIN)
+    # Arm motion line (saluting hard)
+    sp.line(jx + 6, base_y - 9, jx + 11, base_y - 13, BLACK)
+    # Crosses with TINY motion lines (placed reverently)
+    for cx in [4, 24, 48]:
+        cy = 64
+        sp.line(cx, cy, cx, cy + 6, WHITE)
+        sp.line(cx - 2, cy + 2, cx + 2, cy + 2, WHITE)
+    # Floating poppies with sparkle
+    for x, y in [(8, 70), (28, 72), (44, 70)]:
+        sp.px(x, y, RED); sp.px(x + 1, y, RED)
+        sp.px(x, y - 1, BLACK)
+    return sp
+
+
+def fathersday_v4(h):
+    """PLAYFUL — Grill ON FIRE, smoke clouds, Johnny panicking with comically
+    burnt apron, burger flying through air, dad-tie askew."""
+    sp = Sprite(80, 56, fill=SKY)
+    compose_sand_strip(sp, 38)
+    compose_horizon(sp, 38)
+    compose_palm_tree(sp, 70, 38, trunk_h=20, frond_r=8)
+    # GIANT flames erupting from grill
+    for x, y in [(34, 6), (38, 4), (42, 2), (46, 4), (50, 6),
+                 (32, 12), (40, 8), (48, 12)]:
+        sp.ellipse(x - 2, y, x + 2, y + 6, ORANGE, outline=RED)
+        sp.ellipse(x - 1, y + 1, x + 1, y + 4, YELLOW)
+    # Smoke clouds rising
+    for cx, cy in [(28, 16), (54, 18), (44, 14)]:
+        sp.ellipse(cx - 3, cy, cx + 3, cy + 4, GRAY, outline=BLACK)
+        sp.px(cx, cy + 5, GRAY)
+    # Grill (charred black overlay)
+    sp.rect(30, 26, 50, 36, BLACK, outline=BLACK)
+    sp.rect(31, 27, 49, 35, TRUNK)
+    for sy in range(28, 34, 2):
+        sp.line(32, sy, 48, sy, BLACK)
+    sp.line(32, 36, 32, 44, BLACK)
+    sp.line(48, 36, 48, 44, BLACK)
+    # Burger LAUNCHED into the air with motion arc
+    sp.ellipse(54, 16, 60, 19, TRUNK, outline=BLACK)
+    sp.line(55, 17, 59, 17, ORANGE)  # cheese
+    # Motion arc trail (curve dots)
+    for x, y in [(50, 18), (47, 20), (44, 24)]:
+        sp.px(x, y, WHITE); sp.px(x + 1, y, WHITE)
+    # Speed lines behind burger
+    sp.line(48, 14, 53, 16, BLACK)
+    sp.line(50, 12, 53, 14, BLACK)
+    # Johnny on left PANICKING
+    jx = 12
+    base_y = 44
+    # Body
+    sp.rect(jx, base_y - 8, jx + 5, base_y - 4, ORANGE)
+    sp.rect(jx + 1, base_y - 3, jx + 2, base_y, TRUNK)
+    sp.rect(jx + 3, base_y - 3, jx + 4, base_y, TRUNK)
+    # Burnt apron (gray streaks)
+    sp.px(jx, base_y - 7, BLACK); sp.px(jx + 5, base_y - 6, BLACK)
+    sp.px(jx + 2, base_y - 5, BLACK)
+    # Head — wide alarmed eyes
+    sp.rect(jx + 1, base_y - 11, jx + 4, base_y - 9, SKIN)
+    sp.ellipse(jx + 1, base_y - 11, jx + 2, base_y - 10, WHITE)
+    sp.ellipse(jx + 3, base_y - 11, jx + 4, base_y - 10, WHITE)
+    sp.px(jx + 1, base_y - 10, BLACK); sp.px(jx + 4, base_y - 10, BLACK)
+    # Wide open mouth screaming
+    sp.ellipse(jx + 1, base_y - 9, jx + 4, base_y - 8, BLACK)
+    # Soot smudge on cheek
+    sp.px(jx, base_y - 10, BLACK)
+    # Hair sticking up from shock
+    sp.px(jx + 1, base_y - 12, BLACK); sp.px(jx + 4, base_y - 12, BLACK)
+    sp.px(jx + 2, base_y - 13, BLACK); sp.px(jx + 3, base_y - 13, BLACK)
+    # Arms flailing with motion lines
+    sp.line(jx, base_y - 6, jx - 4, base_y - 8, SKIN)
+    sp.line(jx + 5, base_y - 6, jx + 9, base_y - 4, SKIN)
+    # Motion squiggles around arms
+    sp.line(jx - 6, base_y - 10, jx - 5, base_y - 8, BLACK)
+    sp.line(jx - 6, base_y - 6, jx - 4, base_y - 6, BLACK)
+    sp.line(jx + 11, base_y - 6, jx + 12, base_y - 4, BLACK)
+    # Tie askew on apron
+    sp.line(jx + 2, base_y - 4, jx, base_y - 2, ORANGE)
+    sp.rect(jx - 1, base_y - 2, jx + 1, base_y, ORANGE)
+    # Spatula thrown aside
+    sp.line(56, 30, 62, 28, GRAY)
+    sp.rect(61, 26, 64, 28, GRAY, outline=BLACK)
+    sp.line(56, 30, 58, 32, BLACK)  # falling motion
+    # Speech bubble "OH NO!"
+    sp.ellipse(20, 4, 40, 16, WHITE, outline=BLACK)
+    sp.text(22, 6, "!?!", BLACK)
+    sp.line(22, 14, 18, 18, BLACK)  # tail
+    return sp
+
+
+def summer_v4(h):
+    """PLAYFUL — Johnny MELTING in heat, sun has comedic face, thermometer
+    EXPLODING with cartoon mercury squirt, hammock literally on fire."""
+    sp = Sprite(112, 96, fill=SKY)
+    compose_sand_strip(sp, 70)
+    compose_horizon(sp, 70)
+    # Cartoon sun with face
+    sun_cx, sun_cy = 56, 18
+    sp.ellipse(sun_cx - 14, sun_cy - 14, sun_cx + 14, sun_cy + 14,
+               YELLOW, outline=ORANGE)
+    # Sun tongue out, sweating
+    sp.ellipse(sun_cx - 6, sun_cy - 4, sun_cx - 3, sun_cy - 1, WHITE, outline=BLACK)
+    sp.ellipse(sun_cx + 3, sun_cy - 4, sun_cx + 6, sun_cy - 1, WHITE, outline=BLACK)
+    sp.px(sun_cx - 4, sun_cy - 2, BLACK); sp.px(sun_cx + 4, sun_cy - 2, BLACK)
+    # Tongue
+    sp.ellipse(sun_cx - 3, sun_cy + 4, sun_cx + 3, sun_cy + 9, RED, outline=BLACK)
+    # Sun's own sweat drops
+    sp.px(sun_cx - 12, sun_cy + 4, SKY); sp.px(sun_cx - 13, sun_cy + 6, SKY)
+    sp.px(sun_cx + 12, sun_cy + 4, SKY); sp.px(sun_cx + 13, sun_cy + 6, SKY)
+    # WAVY sun rays (heat distortion)
+    for dx, dy in [(-22, 0), (22, 0), (0, -20), (-16, -16), (16, -16)]:
+        sp.line(sun_cx, sun_cy, sun_cx + dx, sun_cy + dy, YELLOW)
+        # extra wiggle
+        sp.px(sun_cx + dx // 2 + 1, sun_cy + dy // 2, YELLOW)
+    # Heat ripples everywhere
+    for y in [40, 50, 60]:
+        for x in range(20, 100, 8):
+            sp.line(x, y, x + 4, y - 1, ORANGE)
+            sp.line(x + 4, y - 1, x + 8, y, ORANGE)
+    # Two palms with DROOPING fronds (wilted)
+    sp.line(14, 70, 14, 36, TRUNK)
+    sp.line(15, 70, 15, 36, TRUNK)
+    for dx, dy in [(-8, 8), (-4, 10), (0, 12), (4, 10), (8, 8)]:
+        sp.line(14, 36, 14 + dx, 36 + dy, GREEN)  # drooping down
+    sp.line(98, 70, 98, 36, TRUNK)
+    sp.line(99, 70, 99, 36, TRUNK)
+    for dx, dy in [(-8, 8), (-4, 10), (0, 12), (4, 10), (8, 8)]:
+        sp.line(98, 36, 98 + dx, 36 + dy, GREEN)
+    # Hammock with literal flames
+    hy = 56
+    sp.line(16, hy - 2, 96, hy + 2, TRUNK)
+    sp.line(16, hy + 4, 96, hy + 10, TRUNK)
+    for x in range(20, 94):
+        t = (x - 56) / 38
+        ys = int(hy + 4 + (1 - t * t) * 6)
+        sp.line(x, hy + 1, x, ys, ORANGE)
+    # Flames popping up from hammock
+    for x, y in [(30, 50), (50, 48), (70, 50), (84, 52)]:
+        sp.ellipse(x - 2, y - 4, x + 2, y, ORANGE, outline=RED)
+        sp.ellipse(x - 1, y - 3, x + 1, y - 1, YELLOW)
+    # Johnny MELTING — body droopy
+    sp.ellipse(46, 56, 66, 64, RED)  # body sagging
+    sp.ellipse(48, 52, 56, 60, SKIN, outline=BLACK)
+    # Eyes wide with despair
+    sp.ellipse(50, 54, 51, 56, WHITE)
+    sp.ellipse(53, 54, 54, 56, WHITE)
+    sp.px(50, 55, BLACK); sp.px(53, 55, BLACK)
+    # Mouth — squiggly distress
+    sp.line(49, 58, 51, 57, BLACK)
+    sp.line(51, 57, 53, 58, BLACK)
+    sp.line(53, 58, 55, 57, BLACK)
+    # Sweat raining off Johnny
+    for x, y in [(44, 54), (42, 58), (58, 54), (60, 58), (52, 64), (46, 66)]:
+        sp.px(x, y, SKY); sp.px(x, y + 1, SKY)
+    # Thermometer EXPLODING
+    tx = 102
+    sp.rect(tx, 38, tx + 4, 78, WHITE, outline=BLACK)
+    sp.rect(tx + 1, 40, tx + 3, 76, RED)
+    sp.ellipse(tx - 1, 76, tx + 5, 82, RED, outline=BLACK)
+    # Mercury SQUIRTING out top in cartoon spray
+    for dx, dy in [(-4, -8), (-2, -12), (1, -14), (4, -12), (7, -10),
+                   (-6, -6), (8, -6), (-3, -16), (3, -16)]:
+        sp.px(tx + 2 + dx, 38 + dy, RED)
+        sp.px(tx + 2 + dx + 1, 38 + dy, RED)
+    # Cracks in glass
+    sp.line(tx, 50, tx + 4, 54, BLACK)
+    sp.line(tx + 1, 60, tx + 3, 64, BLACK)
+    # Big "ZZZZ" with X-ed out Z (passed out, not sleeping)
+    sp.text(72, 38, "X_X", BLACK)
+    # Speech bubble "HOT!"
+    sp.ellipse(20, 36, 40, 50, WHITE, outline=BLACK)
+    sp.text(22, 39, "HOT", BLACK)
+    return sp
+
+
+def pride_v4(h):
+    """PLAYFUL — Johnny dancing in rainbow tutu, multiple flags swirling,
+    hearts everywhere, comically jubilant, motion arcs."""
+    sp = Sprite(112, 64, fill=SKY)
+    compose_sand_strip(sp, 48)
+    compose_horizon(sp, 48)
+    # Bunting EVERYWHERE in zigzag layers
+    for layer, by in [(0, 2), (1, 8)]:
+        for i, x in enumerate(range(2, 112, 6)):
+            c = _PRIDE_STRIPES[(i + layer) % 6]
+            yoff = -1 if i % 2 == 0 else 1
+            sp.line(x, by + yoff, x + 3, by + 4, c)
+            sp.line(x + 3, by + 4, x + 6, by + yoff, c)
+    # Johnny center, mid-twirl, in rainbow tutu
+    jx = 56
+    base_y = 56
+    # Body
+    sp.rect(jx, base_y - 8, jx + 5, base_y - 4, RED)
+    # Tutu (rainbow stripe ring around hips)
+    for i, c in enumerate(_PRIDE_STRIPES):
+        sp.line(jx - 3 + i, base_y - 2, jx + 8 - i, base_y - 2, c)
+    sp.rect(jx - 4, base_y - 4, jx + 9, base_y - 2, TRANSPARENT, outline=BLACK)
+    # Spinning legs with motion ghost
+    sp.rect(jx + 1, base_y - 1, jx + 2, base_y + 2, TRUNK)
+    sp.rect(jx + 3, base_y - 1, jx + 4, base_y + 2, TRUNK)
+    sp.line(jx - 2, base_y, jx, base_y, BLACK)  # spin trail
+    sp.line(jx + 5, base_y, jx + 7, base_y, BLACK)
+    # Head — beaming smile
+    sp.rect(jx + 1, base_y - 11, jx + 4, base_y - 9, SKIN)
+    sp.px(jx + 1, base_y - 10, BLACK); sp.px(jx + 4, base_y - 10, BLACK)
+    # Big grin
+    sp.line(jx + 1, base_y - 9, jx + 4, base_y - 9, BLACK)
+    # Arms thrown UP with flags
+    sp.line(jx, base_y - 7, jx - 8, base_y - 16, SKIN)
+    sp.line(jx + 5, base_y - 7, jx + 13, base_y - 16, SKIN)
+    # Tiny flags in each hand
+    for fx in [jx - 12, jx + 13]:
+        for i, c in enumerate(_PRIDE_STRIPES):
+            sp.line(fx, base_y - 22 + i, fx + 4, base_y - 22 + i, c)
+        sp.line(fx + 5, base_y - 22, fx + 5, base_y - 16, TRUNK)
+    # Massive rainbow flag streaming behind palm
+    compose_palm_tree(sp, 16, 48, trunk_h=34, frond_r=10)
+    fx, fy, fw, fh = 18, 10, 26, 16
+    stripe_h = fh // 6
+    for i, c in enumerate(_PRIDE_STRIPES):
+        sp.rect(fx, fy + i * stripe_h, fx + fw, fy + (i + 1) * stripe_h - 1, c)
+    sp.rect(fx, fy, fx + fw, fy + fh, TRANSPARENT, outline=BLACK)
+    # Wavy flag end
+    for y in (fy + 2, fy + 6, fy + 10, fy + 14):
+        sp.px(fx + fw + 1, y, _PRIDE_STRIPES[(y - fy) // stripe_h % 6])
+        sp.px(fx + fw + 2, y + 1, _PRIDE_STRIPES[(y - fy) // stripe_h % 6])
+    # Hearts BURSTING all around
+    for cx, cy, c in [(38, 18, PINK), (74, 14, RED), (88, 22, PINK),
+                      (96, 32, RED), (50, 36, PINK), (4, 24, RED)]:
+        compose_heart(sp, cx, cy, 2, c)
+    # Sparkle stars
+    compose_star(sp, 100, 12, 2, YELLOW)
+    compose_star(sp, 70, 30, 2, YELLOW)
+    # Confetti rainbow shower
+    for x, y, c in [(28, 30, RED), (60, 28, ORANGE), (84, 30, YELLOW),
+                    (104, 28, GREEN), (32, 40, SKY), (96, 40, PURPLE)]:
+        sp.px(x, y, c); sp.px(x + 1, y, c)
+        sp.px(x, y + 1, c)
+    # "YAY!" speech bubble
+    sp.ellipse(76, 38, 100, 50, WHITE, outline=BLACK)
+    sp.text(80, 41, "YAY", BLACK)
+    return sp
+
+
+def july4th_v4(h):
+    """PLAYFUL — Johnny lit the giant firework wrong and is fleeing; sparks
+    chase him, flag salutes itself, comically smoking dud, fireworks make faces."""
+    sp = Sprite(144, 80, fill=DEEPBLUE)
+    compose_sand_strip(sp, 60)
+    sp.rect(0, 56, 143, 60, DEEPBLUE)
+    sp.line(0, 56, 143, 56, BLACK)
+    # Stars in night sky
+    for x, y in [(8, 4), (24, 10), (42, 4), (60, 8), (76, 4), (92, 10),
+                 (108, 4), (126, 8), (140, 4)]:
+        sp.px(x, y, WHITE)
+    # Firework with comedic FACE
+    cx, cy = 32, 22
+    for dx, dy in [(-12, 0), (12, 0), (0, -10), (0, 10),
+                   (-9, -9), (9, -9), (-9, 9), (9, 9)]:
+        sp.line(cx, cy, cx + dx, cy + dy, RED)
+    sp.ellipse(cx - 6, cy - 6, cx + 6, cy + 6, YELLOW, outline=WHITE)
+    # Face on firework
+    sp.px(cx - 3, cy - 2, BLACK); sp.px(cx + 3, cy - 2, BLACK)
+    sp.line(cx - 2, cy + 2, cx + 2, cy + 2, BLACK)
+    # Second firework
+    cx2, cy2 = 96, 16
+    for dx, dy in [(-10, 0), (10, 0), (0, -8), (0, 8),
+                   (-7, -7), (7, -7), (-7, 7), (7, 7)]:
+        sp.line(cx2, cy2, cx2 + dx, cy2 + dy, WHITE)
+    sp.ellipse(cx2 - 4, cy2 - 4, cx2 + 4, cy2 + 4, YELLOW)
+    sp.px(cx2 - 2, cy2 - 1, BLACK); sp.px(cx2 + 2, cy2 - 1, BLACK)
+    sp.ellipse(cx2 - 1, cy2 + 1, cx2 + 1, cy2 + 2, BLACK)  # surprised mouth
+    # SMOKING DUD on the sand (cartoonish)
+    dx_d = 70
+    sp.rect(dx_d, 64, dx_d + 8, 72, RED, outline=BLACK)
+    sp.rect(dx_d + 2, 60, dx_d + 6, 64, GRAY, outline=BLACK)
+    # Smoke wisps
+    for ox, oy in [(0, 56), (3, 52), (-2, 50), (5, 48), (1, 44)]:
+        sp.ellipse(dx_d + 4 + ox - 2, oy, dx_d + 4 + ox + 2, oy + 3, GRAY,
+                   outline=BLACK)
+    # Lit fuse with sparks
+    sp.line(dx_d + 4, 60, dx_d + 8, 56, BLACK)
+    sp.px(dx_d + 9, 55, YELLOW); sp.px(dx_d + 10, 56, ORANGE)
+    sp.px(dx_d + 11, 54, YELLOW); sp.px(dx_d + 12, 55, RED)
+    # Johnny fleeing right with motion blur
+    jx = 100
+    base_y = 76
+    # Body slanted forward (running)
+    sp.rect(jx, base_y - 8, jx + 5, base_y - 4, WHITE)
+    # Legs splayed (running)
+    sp.line(jx + 1, base_y - 4, jx - 1, base_y, TRUNK)
+    sp.line(jx + 4, base_y - 4, jx + 6, base_y, TRUNK)
+    # Head looking BACK (eyes on left side)
+    sp.rect(jx + 1, base_y - 11, jx + 4, base_y - 9, SKIN)
+    sp.px(jx + 1, base_y - 10, WHITE)
+    sp.px(jx + 1, base_y - 10, BLACK)
+    sp.px(jx + 2, base_y - 10, BLACK)
+    # Hat flying off
+    sp.rect(jx - 3, base_y - 16, jx + 2, base_y - 15, RED)
+    sp.line(jx - 2, base_y - 17, jx + 1, base_y - 17, RED)
+    # Wide-open mouth
+    sp.ellipse(jx + 1, base_y - 9, jx + 4, base_y - 8, BLACK)
+    # Arms flailing
+    sp.line(jx, base_y - 7, jx - 4, base_y - 5, SKIN)
+    sp.line(jx + 5, base_y - 7, jx + 9, base_y - 9, SKIN)
+    # Speed lines behind Johnny
+    for y in (base_y - 9, base_y - 5, base_y - 1):
+        sp.line(jx - 6, y, jx - 12, y, BLACK)
+        sp.line(jx - 8, y - 2, jx - 14, y - 2, BLACK)
+    # Sparks chasing
+    for x, y in [(86, 70), (90, 68), (84, 74), (80, 72)]:
+        sp.px(x, y, YELLOW); sp.px(x + 1, y, RED)
+    # Flag SALUTING itself (animated, with little arm)
+    pole_x = 130
+    sp.line(pole_x, 60, pole_x, 76, TRUNK)
+    sp.rect(pole_x + 1, 60, pole_x + 12, 68, WHITE, outline=BLACK)
+    for sy in range(61, 68, 2):
+        sp.line(pole_x + 1, sy, pole_x + 12, sy, RED)
+    sp.rect(pole_x + 1, 60, pole_x + 6, 64, DEEPBLUE)
+    sp.px(pole_x + 3, 62, WHITE); pole_y = 62
+    # Tiny arm coming off flag, saluting
+    sp.line(pole_x + 13, 64, pole_x + 16, 60, SKIN)
+    # Eyes on flag
+    sp.px(pole_x + 8, 62, BLACK); sp.px(pole_x + 10, 62, BLACK)
+    # Speech bubble from Johnny "AAH!"
+    sp.ellipse(108, 36, 138, 50, WHITE, outline=BLACK)
+    sp.text(112, 39, "AH!", BLACK)
+    sp.line(110, 50, 106, 56, BLACK)
+    return sp
+
+
+def moonland_v4(h):
+    """PLAYFUL — Tiny astronaut faceplanted in sand, legs kicking;
+    moon has a face (waving); palm gawking; sparkle stars."""
+    sp = Sprite(128, 80, fill=DEEPBLUE)
+    compose_sand_strip(sp, 56)
+    compose_horizon(sp, 56)
+    # Cartoon moon with face WAVING
+    moon_cx, moon_cy = 44, 28
+    sp.ellipse(moon_cx - 18, moon_cy - 18, moon_cx + 18, moon_cy + 18,
+               WHITE, outline=GRAY)
+    # Crater detail
+    sp.ellipse(moon_cx - 10, moon_cy - 8, moon_cx - 4, moon_cy - 2, GRAY)
+    sp.ellipse(moon_cx + 4, moon_cy + 6, moon_cx + 10, moon_cy + 12, GRAY)
+    # Face: smile and one open eye one wink
+    sp.ellipse(moon_cx + 4, moon_cy - 6, moon_cx + 7, moon_cy - 3, BLACK)
+    sp.line(moon_cx - 6, moon_cy - 4, moon_cx - 2, moon_cy - 4, BLACK)  # winking
+    # Big curved smile
+    sp.line(moon_cx - 5, moon_cy + 2, moon_cx + 5, moon_cy + 2, BLACK)
+    sp.line(moon_cx - 4, moon_cy + 3, moon_cx + 4, moon_cy + 3, BLACK)
+    # Tiny waving "arm" coming off moon
+    sp.line(moon_cx + 18, moon_cy, moon_cx + 22, moon_cy - 4, GRAY)
+    sp.px(moon_cx + 23, moon_cy - 5, GRAY); sp.px(moon_cx + 24, moon_cy - 4, GRAY)
+    sp.line(moon_cx + 22, moon_cy - 6, moon_cx + 24, moon_cy - 8, BLACK)  # motion
+    # Palm GAWKING (with eyes)
+    compose_palm_tree(sp, 70, 56, trunk_h=30, frond_r=10)
+    sp.ellipse(67, 26, 70, 29, WHITE, outline=BLACK)
+    sp.ellipse(72, 26, 75, 29, WHITE, outline=BLACK)
+    sp.px(68, 28, BLACK); sp.px(73, 28, BLACK)
+    # Astronaut FACEPLANTED (head down in sand, legs kicking up)
+    ax, ay = 100, 70
+    # Body sticking up out of sand (legs waving)
+    sp.rect(ax - 2, ay - 6, ax + 2, ay - 2, WHITE)  # body
+    sp.line(ax - 2, ay - 8, ax - 4, ay - 12, WHITE)  # leg 1
+    sp.line(ax - 2, ay - 9, ax - 5, ay - 13, WHITE)
+    sp.line(ax + 2, ay - 8, ax + 4, ay - 12, WHITE)  # leg 2
+    sp.line(ax + 2, ay - 9, ax + 5, ay - 13, WHITE)
+    # Boots
+    sp.px(ax - 4, ay - 13, BLACK); sp.px(ax - 5, ay - 13, BLACK)
+    sp.px(ax + 4, ay - 13, BLACK); sp.px(ax + 5, ay - 13, BLACK)
+    # Helmet half-buried (curved bit visible)
+    sp.ellipse(ax - 3, ay - 2, ax + 3, ay + 2, WHITE, outline=BLACK)
+    # Sand splash around head
+    for x, y in [(ax - 5, ay), (ax + 5, ay), (ax - 6, ay - 1), (ax + 6, ay - 1)]:
+        sp.px(x, y, SAND); sp.px(x, y + 1, SAND)
+    # Flag fallen over next to astronaut
+    sp.line(ax + 8, ay - 4, ax + 14, ay - 8, GRAY)
+    sp.rect(ax + 14, ay - 12, ax + 22, ay - 8, WHITE, outline=BLACK)
+    for sy in range(ay - 11, ay - 8, 2):
+        sp.line(ax + 14, sy, ax + 22, sy, RED)
+    sp.rect(ax + 14, ay - 12, ax + 17, ay - 10, DEEPBLUE)
+    # Stars sparkling
+    for x, y in [(8, 4), (88, 8), (110, 12), (16, 18), (76, 6),
+                 (118, 6), (54, 14)]:
+        sp.px(x, y, WHITE)
+    compose_star(sp, 24, 12, 2, YELLOW)
+    compose_star(sp, 110, 22, 2, WHITE)
+    # Speech bubble from astronaut
+    sp.ellipse(60, 50, 86, 64, WHITE, outline=BLACK)
+    sp.text(64, 53, "OOF", BLACK)
+    sp.line(76, 64, 95, 70, BLACK)
+    # Footprints leading up to faceplant
+    for fx in [78, 86, 94]:
+        sp.ellipse(fx, 72, fx + 4, 74, BLACK)
+    return sp
+
+
+def watermelon_v4(h):
+    """PLAYFUL — Johnny mid-bite with seeds spitting out, watermelon slice
+    with face, juice splatter, oversized smile, motion lines."""
+    sp = Sprite(56, 48, fill=SKY)
+    compose_sand_strip(sp, 32)
+    compose_horizon(sp, 32)
+    # Watermelon slice with FACE (about to be eaten)
+    cx = 18
+    sp.ellipse(cx - 12, 22, cx + 12, 42, DGREEN, outline=BLACK)
+    sp.ellipse(cx - 10, 24, cx + 10, 40, GREEN)
+    sp.ellipse(cx - 8, 26, cx + 8, 38, RED)
+    sp.line(cx - 12, 28, cx + 12, 28, BLACK)
+    sp.rect(cx - 12, 22, cx + 12, 28, RED, outline=BLACK)
+    # Face on melon (terrified)
+    sp.ellipse(cx - 5, 30, cx - 3, 32, WHITE)
+    sp.ellipse(cx + 1, 30, cx + 3, 32, WHITE)
+    sp.px(cx - 4, 31, BLACK); sp.px(cx + 2, 31, BLACK)
+    # Squiggly worried mouth
+    sp.line(cx - 3, 35, cx - 1, 34, BLACK)
+    sp.line(cx - 1, 34, cx + 1, 35, BLACK)
+    sp.line(cx + 1, 35, cx + 3, 34, BLACK)
+    # BIG bite mark out of top
+    sp.ellipse(cx - 2, 22, cx + 8, 30, SKY)
+    # Seeds inside flying out
+    for sx, sy in [(cx + 2, 26), (cx + 6, 24), (cx + 8, 22), (cx + 10, 20)]:
+        sp.px(sx, sy, BLACK); sp.px(sx + 1, sy, BLACK)
+    # Juice splatter dots
+    for x, y in [(cx + 4, 18), (cx + 10, 18), (cx + 12, 20), (cx + 14, 22)]:
+        sp.px(x, y, RED); sp.px(x + 1, y, RED)
+    # Johnny on the right with HUGE grin, juice on face
+    jx = 38
+    base_y = 44
+    # Body
+    sp.rect(jx, base_y - 8, jx + 5, base_y - 4, RED)
+    sp.rect(jx + 1, base_y - 3, jx + 2, base_y, TRUNK)
+    sp.rect(jx + 3, base_y - 3, jx + 4, base_y, TRUNK)
+    # Hat
+    sp.rect(jx, base_y - 13, jx + 5, base_y - 12, GREEN)
+    sp.rect(jx + 1, base_y - 12, jx + 4, base_y - 12, GREEN)
+    # Head
+    sp.rect(jx + 1, base_y - 11, jx + 4, base_y - 9, SKIN)
+    # Comically wide squinty-eyes (happy)
+    sp.line(jx + 1, base_y - 10, jx + 2, base_y - 10, BLACK)
+    sp.line(jx + 3, base_y - 10, jx + 4, base_y - 10, BLACK)
+    # MASSIVE grin (mouth full of melon)
+    sp.rect(jx, base_y - 9, jx + 5, base_y - 8, BLACK)
+    sp.rect(jx + 1, base_y - 9, jx + 4, base_y - 8, RED)  # melon in mouth
+    # Juice running down chin
+    sp.px(jx + 1, base_y - 7, RED); sp.px(jx + 2, base_y - 6, RED)
+    sp.px(jx + 3, base_y - 7, RED); sp.px(jx + 4, base_y - 6, RED)
+    # Cheeks puffed (red dots)
+    sp.px(jx, base_y - 9, PINK); sp.px(jx + 5, base_y - 9, PINK)
+    # Seeds being SPIT out
+    for sx, sy in [(jx - 2, base_y - 12), (jx - 4, base_y - 14), (jx - 6, base_y - 12)]:
+        sp.px(sx, sy, BLACK); sp.px(sx + 1, sy, BLACK)
+    # Spit motion lines from mouth
+    sp.line(jx - 1, base_y - 10, jx - 7, base_y - 12, BLACK)
+    # Both hands holding melon (skin lines)
+    sp.line(jx, base_y - 6, jx - 6, base_y - 8, SKIN)
+    sp.line(jx + 5, base_y - 6, jx + 8, base_y - 4, SKIN)
+    # Sweat drop of joy
+    sp.px(jx - 2, base_y - 11, SKY)
+    # Big "YUM!" speech bubble
+    sp.ellipse(36, 4, 54, 16, WHITE, outline=BLACK)
+    sp.text(38, 6, "YUM", BLACK)
+    sp.line(40, 14, 38, 18, BLACK)  # bubble tail
+    # Seeds scattered everywhere
+    for x, y in [(2, 44), (10, 46), (32, 47), (50, 46), (4, 38), (52, 42)]:
+        sp.px(x, y, BLACK)
+    return sp
+
+
+# ---------------------------------------------------------------------------
 # Batch 3 RENDERERS dict
 # ---------------------------------------------------------------------------
 
 RENDERERS_BATCH3 = {
-    20: (memorial_v1, memorial_v2, memorial_v3),
-    21: (fathersday_v1, fathersday_v2, fathersday_v3),
-    22: (summer_v1, summer_v2, summer_v3),
-    23: (pride_v1, pride_v2, pride_v3),
-    24: (july4th_v1, july4th_v2, july4th_v3),
-    25: (moonland_v1, moonland_v2, moonland_v3),
-    26: (watermelon_v1, watermelon_v2, watermelon_v3),
+    20: (memorial_v1, memorial_v2, memorial_v3, memorial_v4),
+    21: (fathersday_v1, fathersday_v2, fathersday_v3, fathersday_v4),
+    22: (summer_v1, summer_v2, summer_v3, summer_v4),
+    23: (pride_v1, pride_v2, pride_v3, pride_v4),
+    24: (july4th_v1, july4th_v2, july4th_v3, july4th_v4),
+    25: (moonland_v1, moonland_v2, moonland_v3, moonland_v4),
+    26: (watermelon_v1, watermelon_v2, watermelon_v3, watermelon_v4),
 }

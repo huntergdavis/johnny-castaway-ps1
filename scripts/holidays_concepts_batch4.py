@@ -833,17 +833,250 @@ def thanksgive_v3(h):
 
 
 # ---------------------------------------------------------------------------
-# Batch 4 RENDERERS dict
+# v4 PLAYFUL variants — exaggerated/comedic. Tilted, oversized, sweat drops,
+# motion lines, exclamation marks. Same dimensions as v1 of each holiday.
+# ---------------------------------------------------------------------------
+
+def lefthand_v4(h):
+    """PLAYFUL — Johnny vigorously writing left-handed, ink-splat everywhere."""
+    sp = Sprite(96, 64, fill=SKY)
+    compose_sand_strip(sp, 44)
+    # Backwards-L symbols flying around
+    for x, y in [(8, 8), (24, 4), (44, 12), (66, 6), (84, 14)]:
+        sp.line(x, y, x, y + 6, BLACK)
+        sp.line(x, y + 6, x - 4, y + 6, BLACK)
+    # Big triumphant Johnny center
+    compose_johnny_simple(sp, 44, 56, hat_color=YELLOW, shirt_color=BLACK)
+    # Pencil/quill in left hand (left side)
+    sp.line(38, 50, 30, 44, TRUNK)
+    sp.px(29, 43, BLACK)
+    # Ink splats around
+    for cx, cy in [(20, 38), (60, 32), (78, 50), (12, 50)]:
+        sp.ellipse(cx, cy, cx + 3, cy + 2, BLACK)
+        sp.px(cx + 5, cy, BLACK); sp.px(cx - 2, cy + 4, BLACK)
+    # Motion lines
+    for x in [26, 32, 56, 62]:
+        sp.line(x, 30, x + 4, 26, GRAY)
+    # Exclamation
+    sp.line(72, 8, 72, 18, RED); sp.px(72, 22, RED)
+    return sp
+
+
+def hawaii_v4(h):
+    """PLAYFUL — Johnny doing a goofy hula dance, surrounded by flying flowers."""
+    sp = Sprite(80, 80, fill=PINK)
+    compose_sand_strip(sp, 56)
+    compose_palm_tree(sp, 16, 56, trunk_h=32, frond_r=10)
+    compose_palm_tree(sp, 64, 56, trunk_h=32, frond_r=10)
+    # Tilted Johnny mid-hula
+    compose_johnny_simple(sp, 36, 64, hat_color=GREEN, shirt_color=YELLOW)
+    # Hibiscus flowers swirling around — bigger and tilted
+    for cx, cy in [(8, 16), (28, 8), (52, 12), (72, 20), (16, 30), (60, 32)]:
+        sp.ellipse(cx - 2, cy - 2, cx + 2, cy + 2, RED)
+        sp.px(cx, cy, YELLOW)
+    # Motion arcs
+    sp.line(26, 38, 22, 32, BLACK)
+    sp.line(46, 38, 50, 32, BLACK)
+    # Smile (eyes wide!)
+    sp.px(38, 56, BLACK)
+    return sp
+
+
+def labor_v4(h):
+    """PLAYFUL — Johnny so relaxed in hammock, ZZZ rising, hard hat fallen."""
+    sp = Sprite(96, 80, fill=SKY)
+    compose_sand_strip(sp, 56)
+    compose_palm_tree(sp, 14, 56, trunk_h=36, frond_r=10)
+    compose_palm_tree(sp, 84, 56, trunk_h=36, frond_r=10)
+    # Hammock between palms
+    sp.line(20, 40, 80, 40, TRUNK)
+    sp.line(20, 40, 28, 48, TRUNK)
+    sp.line(80, 40, 72, 48, TRUNK)
+    # Sleeping Johnny in hammock — horizontal
+    sp.rect(34, 41, 66, 47, RED)
+    sp.ellipse(60, 38, 66, 44, SKIN)  # head sticking out
+    sp.px(63, 40, BLACK)  # closed eye
+    # ZZZ rising
+    for i, (x, y) in enumerate([(70, 20), (76, 14), (84, 8)]):
+        sp.line(x, y, x + 4, y, BLACK)
+        sp.line(x + 4, y, x, y + 4, BLACK)
+        sp.line(x, y + 4, x + 4, y + 4, BLACK)
+    # Fallen hard hat below hammock
+    sp.ellipse(40, 60, 50, 64, YELLOW, outline=BLACK)
+    sp.line(42, 60, 48, 60, BLACK)
+    return sp
+
+
+def pirate_v4(h):
+    """PLAYFUL — Johnny shouting 'ARRR!', parrot wide-eyed, treasure exploding."""
+    sp = Sprite(88, 96, fill=DEEPBLUE)
+    compose_sand_strip(sp, 72)
+    compose_palm_tree(sp, 16, 72, trunk_h=42, frond_r=10)
+    # Big tricorn-hat Johnny center
+    compose_johnny_simple(sp, 40, 80, hat_color=BLACK, shirt_color=RED)
+    # Eye patch
+    sp.px(43, 70, BLACK); sp.px(44, 70, BLACK)
+    sp.line(42, 71, 45, 71, BLACK)
+    # Parrot on shoulder — exaggerated (wide eyes)
+    sp.ellipse(48, 64, 56, 70, GREEN, outline=BLACK)
+    sp.px(54, 66, RED); sp.px(54, 67, BLACK)  # wide eye
+    sp.px(57, 67, YELLOW)  # beak
+    # ARRR! speech bubble
+    compose_speech_bubble(sp, 72, 24, 28, 14, "ARR")
+    # Treasure chest exploding open
+    sp.rect(60, 80, 80, 90, TRUNK, outline=BLACK)
+    sp.line(60, 80, 80, 76, YELLOW)  # lid up
+    # Coins flying out
+    for cx, cy in [(70, 70), (76, 64), (66, 60), (82, 70)]:
+        sp.ellipse(cx, cy, cx + 3, cy + 3, YELLOW, outline=BLACK)
+    # Skull on flag
+    sp.rect(20, 24, 28, 32, BLACK)
+    sp.px(22, 26, WHITE); sp.px(25, 26, WHITE)
+    sp.px(23, 28, WHITE); sp.px(24, 28, WHITE)
+    return sp
+
+
+def autumn_v4(h):
+    """PLAYFUL — leaves blowing wildly, scarf flapping, Johnny clutching a pumpkin."""
+    sp = Sprite(112, 80, fill=ORANGE)
+    compose_sand_strip(sp, 56)
+    # Tilted palm with autumn fronds
+    compose_palm_tree(sp, 24, 56, trunk_h=38, frond_r=12)
+    # Manic Johnny with scarf flapping — center
+    compose_johnny_simple(sp, 56, 64, hat_color=RED, shirt_color=YELLOW)
+    sp.line(58, 56, 70, 50, RED)  # flapping scarf
+    sp.line(70, 50, 76, 56, RED)
+    # Pumpkin clutched
+    sp.ellipse(48, 64, 58, 72, ORANGE, outline=BLACK)
+    sp.line(53, 62, 53, 64, GREEN)
+    # Leaves blowing across
+    for cx, cy, c in [(8, 12, ORANGE), (20, 24, RED), (40, 8, YELLOW),
+                       (60, 16, ORANGE), (80, 10, RED), (96, 24, YELLOW),
+                       (12, 36, RED), (88, 38, ORANGE), (104, 18, YELLOW)]:
+        sp.ellipse(cx, cy, cx + 4, cy + 3, c, outline=BLACK)
+        sp.px(cx + 2, cy + 1, BLACK)  # vein
+    # Wind motion lines
+    for y in (20, 30, 40):
+        sp.line(0, y, 8, y + 1, GRAY)
+        sp.line(100, y, 108, y - 1, GRAY)
+    return sp
+
+
+def columbus_v4(h):
+    """PLAYFUL — silly seagulls flock around the ship, Johnny wide-eyed."""
+    sp = Sprite(96, 56, fill=SKY)
+    compose_horizon(sp, 38)
+    # Sand at bottom right (foreground shore)
+    compose_sand_strip(sp, 38)
+    # Tiny ship on horizon, but oversized for comedy
+    sp.rect(48, 28, 78, 38, TRUNK, outline=BLACK)
+    sp.line(56, 28, 56, 14, BLACK)  # mast
+    sp.rect(50, 14, 64, 28, WHITE)  # sail
+    sp.line(70, 28, 70, 18, BLACK)  # 2nd mast
+    sp.rect(64, 18, 76, 28, WHITE)  # 2nd sail
+    # Seagull flock — comedic mass
+    for cx, cy in [(10, 8), (18, 12), (26, 6), (34, 10), (42, 4),
+                    (60, 4), (72, 8), (84, 12), (12, 20), (88, 18)]:
+        sp.line(cx, cy, cx + 2, cy - 1, BLACK)
+        sp.line(cx + 2, cy - 1, cx + 4, cy, BLACK)
+    # Wide-eyed Johnny on the shore
+    compose_johnny_simple(sp, 6, 50, hat_color=None, shirt_color=RED)
+    # ?! over Johnny's head
+    sp.line(11, 38, 11, 42, BLACK); sp.px(11, 44, BLACK)
+    return sp
+
+
+def election_v4(h):
+    """PLAYFUL — Johnny stuffs many ballots dramatically, oversized ballot box."""
+    sp = Sprite(80, 64, fill=WHITE)
+    compose_sand_strip(sp, 44)
+    # Oversized ballot box center
+    sp.rect(20, 28, 60, 56, TRUNK, outline=BLACK)
+    sp.rect(28, 26, 52, 30, BLACK)  # slot
+    # Star on box
+    compose_star(sp, 40, 42, 4, YELLOW)
+    # Excited Johnny on left throwing ballots
+    compose_johnny_simple(sp, 6, 56, hat_color=BLUE if False else GRAY, shirt_color=RED)
+    # Ballots flying around in the air
+    for cx, cy in [(12, 16), (20, 8), (28, 12), (36, 6),
+                    (60, 14), (68, 8), (74, 18), (50, 4)]:
+        sp.rect(cx, cy, cx + 4, cy + 5, WHITE, outline=BLACK)
+        sp.line(cx + 1, cy + 2, cx + 3, cy + 2, BLACK)
+    # I VOTED sticker on Johnny
+    sp.ellipse(2, 50, 12, 56, RED, outline=BLACK)
+    return sp
+
+
+def veterans_v4(h):
+    """PLAYFUL — Johnny salutes so hard his hat flies off, poppy bouquet."""
+    sp = Sprite(64, 80, fill=SKY)
+    compose_sand_strip(sp, 56)
+    compose_palm_tree(sp, 12, 56, trunk_h=36, frond_r=8)
+    # Johnny saluting on right
+    compose_johnny_simple(sp, 36, 64, hat_color=None, shirt_color=DEEPBLUE)
+    # Hat flying off (above his head)
+    sp.rect(34, 38, 44, 42, GREEN, outline=BLACK)
+    # Salute hand
+    sp.px(40, 56, SKIN); sp.px(41, 55, SKIN)
+    # Flag pole
+    sp.line(54, 16, 54, 56, TRUNK)
+    # Big flag with stars
+    sp.rect(40, 16, 54, 30, RED)
+    sp.rect(40, 16, 47, 23, DEEPBLUE)
+    sp.px(42, 18, WHITE); sp.px(45, 20, WHITE); sp.px(43, 21, WHITE)
+    sp.line(40, 23, 54, 23, WHITE)
+    sp.line(40, 27, 54, 27, WHITE)
+    # Poppy at base
+    sp.ellipse(20, 70, 28, 76, RED, outline=BLACK)
+    sp.px(24, 73, BLACK)
+    # Motion lines from salute
+    for y in (50, 52, 54):
+        sp.line(46, y, 50, y - 1, GRAY)
+    return sp
+
+
+def thanksgive_v4(h):
+    """PLAYFUL — comedic huge turkey, Johnny rubbing belly, food coma."""
+    sp = Sprite(112, 72, fill=ORANGE)
+    compose_sand_strip(sp, 50)
+    compose_palm_tree(sp, 16, 50, trunk_h=34, frond_r=10)
+    # Big platter center with HUGE turkey
+    sp.ellipse(40, 44, 86, 60, TRUNK, outline=BLACK)
+    sp.ellipse(48, 32, 80, 48, TRUNK)  # turkey body
+    # Drumstick legs sticking up
+    sp.line(58, 32, 58, 22, BLACK); sp.px(58, 20, RED)
+    sp.line(70, 32, 70, 22, BLACK); sp.px(70, 20, RED)
+    # Steam swirls
+    for x in (52, 60, 68, 76):
+        sp.line(x, 28, x + 2, 18, GRAY)
+        sp.line(x + 2, 18, x, 12, GRAY)
+    # Stuffed Johnny on right, leaning back
+    compose_johnny_simple(sp, 92, 60, hat_color=ORANGE, shirt_color=YELLOW)
+    # Belly bump
+    sp.ellipse(89, 56, 99, 62, YELLOW, outline=BLACK)
+    # Z's
+    sp.line(96, 38, 100, 38, BLACK)
+    sp.line(100, 38, 96, 42, BLACK)
+    sp.line(96, 42, 100, 42, BLACK)
+    # Cornucopia spilling on left
+    sp.ellipse(2, 52, 18, 62, TRUNK, outline=BLACK)
+    sp.ellipse(8, 50, 12, 54, RED)
+    sp.ellipse(14, 56, 18, 60, YELLOW)
+    return sp
+
+
+# ---------------------------------------------------------------------------
+# Batch 4 RENDERERS dict (now with v4 PLAYFUL)
 # ---------------------------------------------------------------------------
 
 RENDERERS_BATCH4 = {
-    27: (lefthand_v1, lefthand_v2, lefthand_v3),
-    28: (hawaii_v1, hawaii_v2, hawaii_v3),
-    29: (labor_v1, labor_v2, labor_v3),
-    30: (pirate_v1, pirate_v2, pirate_v3),
-    31: (autumn_v1, autumn_v2, autumn_v3),
-    32: (columbus_v1, columbus_v2, columbus_v3),
-    33: (election_v1, election_v2, election_v3),
-    34: (veterans_v1, veterans_v2, veterans_v3),
-    35: (thanksgive_v1, thanksgive_v2, thanksgive_v3),
+    27: (lefthand_v1,  lefthand_v2,  lefthand_v3,  lefthand_v4),
+    28: (hawaii_v1,    hawaii_v2,    hawaii_v3,    hawaii_v4),
+    29: (labor_v1,     labor_v2,     labor_v3,     labor_v4),
+    30: (pirate_v1,    pirate_v2,    pirate_v3,    pirate_v4),
+    31: (autumn_v1,    autumn_v2,    autumn_v3,    autumn_v4),
+    32: (columbus_v1,  columbus_v2,  columbus_v3,  columbus_v4),
+    33: (election_v1,  election_v2,  election_v3,  election_v4),
+    34: (veterans_v1,  veterans_v2,  veterans_v3,  veterans_v4),
+    35: (thanksgive_v1,thanksgive_v2,thanksgive_v3,thanksgive_v4),
 }

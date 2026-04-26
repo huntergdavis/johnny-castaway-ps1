@@ -634,13 +634,418 @@ def mothersday_v3(h):
 
 
 # ---------------------------------------------------------------------------
+# v4 PLAYFUL variants — exaggerated, comedic, character-forward
+# ---------------------------------------------------------------------------
+
+def aprilfool_v4(h):
+    """PLAYFUL — Johnny mid-pratfall: feet in air, banana peel below,
+    everything tilted, exclamation marks, comically large clown sun."""
+    sp = Sprite(80, 64, fill=SKY)
+    compose_sand_strip(sp, 50)
+    # Comically OVERSIZED clown-nose sun, tilted
+    sp.ellipse(2, 2, 22, 22, YELLOW, outline=BLACK)
+    # Big silly sun face
+    sp.ellipse(8, 8, 11, 11, WHITE, outline=BLACK)
+    sp.ellipse(13, 8, 16, 11, WHITE, outline=BLACK)
+    sp.px(9, 9, BLACK); sp.px(14, 9, BLACK)  # pupils
+    # Big red clown nose protruding
+    sp.ellipse(9, 14, 17, 22, RED, outline=BLACK)
+    sp.ellipse(11, 16, 13, 18, WHITE)  # shine
+    # Sun grin
+    sp.line(7, 18, 18, 18, BLACK)
+    sp.line(8, 19, 17, 19, BLACK)
+    # Upside-down palm with comically HUGE droopy fronds
+    sp.line(50, 0, 50, 24, TRUNK)
+    sp.line(51, 0, 51, 24, TRUNK)
+    for dx, dy in [(-10, 4), (-6, 7), (0, 10), (6, 7), (10, 4)]:
+        sp.line(50, 24, 50 + dx, 24 + dy, GREEN)
+        sp.line(50, 25, 50 + dx, 25 + dy, DGREEN)
+    # Banana peel on sand
+    sp.line(38, 56, 46, 54, YELLOW)
+    sp.line(38, 57, 46, 55, YELLOW)
+    sp.px(46, 53, YELLOW); sp.px(47, 53, YELLOW)
+    sp.px(38, 58, YELLOW); sp.px(37, 58, YELLOW)
+    # Slip motion lines
+    sp.line(34, 50, 38, 52, BLACK)
+    sp.line(34, 52, 38, 54, BLACK)
+    # Johnny mid-pratfall (UPSIDE DOWN, feet up)
+    jx = 30
+    # Feet pointing up
+    sp.rect(jx + 1, 36, jx + 2, 39, TRUNK)
+    sp.rect(jx + 3, 36, jx + 4, 39, TRUNK)
+    # Body (red shirt, inverted)
+    sp.rect(jx, 40, jx + 5, 44, RED)
+    # Head down at bottom
+    sp.rect(jx + 1, 45, jx + 4, 47, SKIN)
+    # Eyes (X-mark dazed)
+    sp.px(jx + 1, 46, BLACK); sp.px(jx + 4, 46, BLACK)
+    # Open mouth shock
+    sp.ellipse(jx + 2, 47, jx + 3, 48, BLACK)
+    # Stars/dizzy circling above feet
+    for cx, cy in [(jx - 4, 32), (jx + 8, 32), (jx + 2, 28)]:
+        compose_star(sp, cx, cy, 1, YELLOW)
+    # Whoopee cushion already activated (puff cloud)
+    sp.ellipse(50, 54, 64, 62, RED, outline=BLACK)
+    sp.ellipse(56, 50, 60, 54, WHITE, outline=BLACK)
+    sp.text(58, 51, "P", BLACK)
+    # Big speech bubble with "OOPS!"
+    sp.ellipse(50, 26, 76, 42, WHITE, outline=BLACK)
+    sp.text(54, 30, "AH!", BLACK)
+    # Tail to bubble
+    sp.line(54, 38, 50, 44, BLACK)
+    sp.line(53, 38, 49, 44, BLACK)
+    # Confetti
+    for x, y, c in [(20, 16, RED), (32, 22, YELLOW), (60, 18, RED)]:
+        sp.px(x, y, c); sp.px(x + 1, y, c)
+    return sp
+
+
+def easter_v4(h):
+    """PLAYFUL — Bunny-Johnny chasing eggs that are bouncing and rolling
+    away with motion blurs; basket overturned; ears sproinging up."""
+    sp = Sprite(72, 64, fill=SKY)
+    compose_sand_strip(sp, 40)
+    # Palm leaning (excited)
+    compose_palm_tree(sp, 12, 40, trunk_h=24, frond_r=8)
+    # Johnny center, ears SPROINGING way up
+    jx = 28
+    compose_johnny_simple(sp, jx, 54, hat_color=None, shirt_color=PINK)
+    # Long sproingy bunny ears (squiggly/wavy)
+    sp.line(jx, 36, jx, 28, WHITE)
+    sp.line(jx, 28, jx + 1, 24, WHITE)
+    sp.line(jx + 1, 24, jx, 20, WHITE)  # zig
+    sp.line(jx, 20, jx + 1, 16, WHITE)  # zag
+    sp.line(jx + 5, 36, jx + 5, 30, WHITE)
+    sp.line(jx + 5, 30, jx + 4, 26, WHITE)
+    sp.line(jx + 4, 26, jx + 6, 22, WHITE)
+    sp.line(jx + 6, 22, jx + 4, 18, WHITE)
+    # Pink tips
+    sp.px(jx, 16, PINK); sp.px(jx + 4, 18, PINK)
+    # Wide cartoon eyes
+    sp.ellipse(jx + 1, 39, jx + 2, 41, WHITE)
+    sp.ellipse(jx + 3, 39, jx + 4, 41, WHITE)
+    sp.px(jx + 2, 40, BLACK); sp.px(jx + 4, 40, BLACK)
+    # Buck teeth
+    sp.px(jx + 2, 42, WHITE); sp.px(jx + 3, 42, WHITE)
+    # Outstretched arms reaching for eggs
+    sp.line(jx + 6, 46, jx + 12, 50, SKIN)
+    sp.px(jx + 13, 51, SKIN)
+    # Motion lines around feet (running)
+    sp.line(jx - 3, 53, jx - 5, 53, BLACK)
+    sp.line(jx - 3, 55, jx - 6, 55, BLACK)
+    # Eggs ROLLING and bouncing away with motion
+    for ex, ey, c in [(48, 52, YELLOW), (56, 48, PURPLE), (62, 54, PINK)]:
+        sp.ellipse(ex, ey, ex + 4, ey + 5, c, outline=BLACK)
+        # Motion trail (curve dots)
+        for dx in (-3, -5, -7):
+            sp.px(ex + dx, ey + 2, c)
+        # Bouncing arc indicator
+        sp.line(ex - 2, ey - 2, ex, ey, BLACK)
+    # Overturned basket (upside down)
+    sp.rect(2, 50, 14, 56, TRUNK, outline=BLACK)
+    for x in range(4, 14, 3):
+        sp.line(x, 50, x, 56, DGREEN)
+    sp.line(2, 56, 14, 56, BLACK)  # top now bottom
+    sp.line(8, 56, 11, 60, GREEN)  # handle now flopped
+    # Cracked egg on sand
+    sp.ellipse(18, 58, 22, 62, WHITE, outline=BLACK)
+    sp.line(18, 60, 22, 60, BLACK)
+    # Yolk peeking
+    sp.px(20, 60, YELLOW)
+    # Sweat drops flying
+    sp.px(jx - 2, 36, SKY); sp.px(jx + 7, 36, SKY)
+    # Speech bubble "!?"
+    sp.ellipse(50, 8, 66, 22, WHITE, outline=BLACK)
+    sp.text(54, 10, "!?", BLACK)
+    return sp
+
+
+def earthday_v4(h):
+    """PLAYFUL — Johnny hugging an oversized globe with comically wide grin;
+    sapling has googly eyes; sun winks; speech bubble of green hearts."""
+    sp = Sprite(88, 72, fill=SKY)
+    compose_horizon(sp, 36)
+    for y in range(36, 48):
+        sp.line(0, y, 87, y, DEEPBLUE)
+    compose_sand_strip(sp, 48)
+    # OVERSIZED globe being hugged
+    cx, cy, r = 30, 36, 16
+    sp.ellipse(cx - r, cy - r, cx + r, cy + r, SKY, outline=BLACK)
+    # Continents
+    sp.rect(cx - 10, cy - 8, cx - 4, cy - 2, GREEN)
+    sp.rect(cx + 2, cy - 4, cx + 10, cy + 4, GREEN)
+    sp.rect(cx - 6, cy + 4, cx + 2, cy + 12, GREEN)
+    sp.line(cx - r, cy, cx + r, cy, BLACK)
+    # Globe has CARTOON FACE
+    sp.ellipse(cx - 8, cy - 4, cx - 4, cy, WHITE, outline=BLACK)
+    sp.ellipse(cx + 4, cy - 4, cx + 8, cy, WHITE, outline=BLACK)
+    sp.px(cx - 6, cy - 2, BLACK); sp.px(cx + 6, cy - 2, BLACK)
+    # Big smile
+    sp.line(cx - 4, cy + 6, cx + 4, cy + 6, BLACK)
+    sp.line(cx - 3, cy + 7, cx + 3, cy + 7, BLACK)
+    # Johnny on right side hugging globe (arms wrapped around)
+    jx = 50
+    compose_johnny_simple(sp, jx, 64, hat_color=GREEN, shirt_color=DGREEN)
+    # Arms wrapping LEFT around globe (skin pixels)
+    sp.line(jx, 56, jx - 10, 50, SKIN)
+    sp.line(jx, 58, jx - 12, 52, SKIN)
+    # Hands meeting on far side of globe
+    sp.px(jx - 14, 50, SKIN); sp.px(jx - 14, 52, SKIN)
+    # Big heart-eyes on Johnny
+    compose_heart(sp, jx + 2, 53, 1, RED)
+    compose_heart(sp, jx + 5, 53, 1, RED)
+    # Wide grin
+    sp.line(jx + 2, 56, jx + 5, 56, BLACK)
+    # Sapling with googly eyes
+    sp.line(70, 60, 70, 66, TRUNK)
+    sp.ellipse(66, 54, 74, 60, GREEN, outline=DGREEN)
+    sp.ellipse(67, 56, 69, 58, WHITE)
+    sp.ellipse(71, 56, 73, 58, WHITE)
+    sp.px(68, 57, BLACK); sp.px(72, 57, BLACK)
+    # Smile on sapling
+    sp.line(69, 59, 71, 59, BLACK)
+    # Mound of dirt
+    sp.ellipse(66, 64, 76, 68, TRUNK, outline=BLACK)
+    # Sun WINKING
+    sp.ellipse(74, 4, 84, 14, YELLOW, outline=BLACK)
+    # Closed eye (line)
+    sp.line(76, 8, 78, 8, BLACK)
+    # Open eye
+    sp.px(81, 8, BLACK)
+    # Big smile
+    sp.line(76, 11, 82, 11, BLACK)
+    # Floating green hearts coming from Johnny
+    for cx, cy in [(58, 30), (66, 22), (74, 34)]:
+        compose_heart(sp, cx, cy, 2, GREEN)
+    # Sparkle stars around globe
+    compose_star(sp, 12, 20, 2, YELLOW)
+    compose_star(sp, 48, 18, 2, WHITE)
+    return sp
+
+
+def starwars_v4(h):
+    """PLAYFUL — Johnny wielding HUGE saber, comical Force-grimace, droid
+    stuck head-down in sand with feet kicking, blast effects everywhere."""
+    sp = Sprite(72, 96, fill=DEEPBLUE)
+    # Stars
+    for x, y in [(8, 6), (20, 14), (32, 4), (48, 12), (60, 8), (66, 22),
+                 (4, 28), (16, 34), (40, 40)]:
+        sp.px(x, y, WHITE)
+    compose_star(sp, 12, 18, 2, WHITE)
+    compose_star(sp, 56, 26, 2, YELLOW)
+    compose_horizon(sp, 60)
+    for y in range(60, 72):
+        sp.line(0, y, 71, y, DEEPBLUE)
+    compose_sand_strip(sp, 72)
+    # Johnny with EXTRA-LONG saber held two-handed
+    jx = 24
+    base_y = 92
+    # Robe
+    sp.rect(jx - 5, base_y - 18, jx + 9, base_y, TRUNK, outline=BLACK)
+    # Head
+    sp.rect(jx + 1, base_y - 23, jx + 5, base_y - 19, SKIN)
+    # Comically clenched eyes (lines)
+    sp.line(jx + 1, base_y - 21, jx + 3, base_y - 22, BLACK)
+    sp.line(jx + 4, base_y - 22, jx + 6, base_y - 21, BLACK)
+    # Open yelling mouth
+    sp.ellipse(jx + 2, base_y - 20, jx + 4, base_y - 18, BLACK)
+    # Hood
+    sp.line(jx, base_y - 24, jx + 6, base_y - 24, DGREEN)
+    sp.line(jx - 1, base_y - 23, jx - 1, base_y - 19, DGREEN)
+    sp.line(jx + 7, base_y - 23, jx + 7, base_y - 19, DGREEN)
+    # Sweat drop
+    sp.px(jx - 2, base_y - 22, SKY); sp.px(jx - 3, base_y - 23, SKY)
+    # Both arms gripping the GIANT saber, raised overhead
+    sp.line(jx - 3, base_y - 16, jx + 12, base_y - 30, TRUNK)
+    sp.line(jx + 9, base_y - 16, jx + 14, base_y - 28, TRUNK)
+    # Hilt
+    sp.rect(jx + 12, base_y - 32, jx + 16, base_y - 28, GRAY, outline=BLACK)
+    # MASSIVE blade going way up
+    for w in range(3):
+        sp.line(jx + 13 + w, base_y - 32, jx + 13 + w, 6, GREEN)
+    # White hot core
+    sp.line(jx + 14, base_y - 33, jx + 14, 4, WHITE)
+    # Glow burst at top
+    compose_star(sp, jx + 14, 4, 3, WHITE)
+    # Saber hum motion lines
+    sp.line(jx + 9, 30, jx + 11, 30, YELLOW)
+    sp.line(jx + 18, 30, jx + 20, 30, YELLOW)
+    sp.line(jx + 9, 50, jx + 11, 50, YELLOW)
+    sp.line(jx + 18, 50, jx + 20, 50, YELLOW)
+    # Droid STUCK HEAD-DOWN in sand, feet kicking
+    dx = 50
+    sp.rect(dx, 78, dx + 6, 84, WHITE, outline=BLACK)  # body now upside
+    sp.ellipse(dx, 84, dx + 6, 90, WHITE, outline=BLACK)  # head buried-ish
+    sp.px(dx + 3, 86, GREEN)
+    # Feet kicking up out of sand
+    sp.line(dx + 1, 76, dx + 1, 72, BLACK)
+    sp.line(dx + 5, 76, dx + 5, 72, BLACK)
+    # Motion lines on feet (struggling)
+    sp.line(dx - 1, 73, dx, 71, BLACK)
+    sp.line(dx + 6, 73, dx + 7, 71, BLACK)
+    # "BEEP BOOP" speech
+    sp.ellipse(dx + 8, 74, dx + 24, 84, WHITE, outline=BLACK)
+    sp.text(dx + 10, 76, "!?", BLACK)
+    # Lightning bolts (Force action)
+    for x, y in [(40, 56), (44, 64), (38, 68)]:
+        sp.line(x, y, x + 2, y + 2, YELLOW)
+        sp.line(x + 2, y + 2, x, y + 4, YELLOW)
+    return sp
+
+
+def cincomayo_v4(h):
+    """PLAYFUL — Johnny dancing wildly with sombrero flying off, maracas
+    blurred from shaking, palm vibrating, bunting flapping, BIG fiesta!"""
+    sp = Sprite(128, 64, fill=SKY)
+    compose_sand_strip(sp, 40)
+    # Vibrating palms (motion ghost lines)
+    compose_palm_tree(sp, 16, 40, trunk_h=28, frond_r=10)
+    sp.line(13, 24, 13, 36, GREEN)  # ghost
+    sp.line(19, 24, 19, 36, GREEN)
+    compose_palm_tree(sp, 112, 40, trunk_h=28, frond_r=10)
+    sp.line(109, 24, 109, 36, GREEN)
+    sp.line(115, 24, 115, 36, GREEN)
+    # Bunting wildly flapping (extra zig-zag)
+    for layer, by in [(0, 4), (1, 12)]:
+        for i, x in enumerate(range(8, 120, 6)):
+            c = [RED, GREEN, YELLOW, WHITE][(i + layer) % 4]
+            yoff = -2 if i % 2 == 0 else 0
+            sp.line(x, by + yoff, x + 3, by + 4, c)
+            sp.line(x + 3, by + 4, x + 6, by + yoff, c)
+    # Sombrero FLYING OFF Johnny (mid-air)
+    sp.rect(56, 14, 80, 16, RED)  # brim
+    sp.rect(60, 8, 76, 14, RED)  # crown
+    sp.line(60, 11, 76, 11, YELLOW)
+    sp.line(60, 13, 76, 13, GREEN)
+    # Pom-poms
+    sp.ellipse(54, 14, 58, 18, YELLOW)
+    sp.ellipse(78, 14, 82, 18, YELLOW)
+    # Motion arc trail of sombrero
+    for x, y in [(58, 28), (62, 32), (68, 34)]:
+        sp.px(x, y, WHITE)
+    sp.line(64, 22, 64, 26, BLACK)  # speed line
+    sp.line(72, 22, 72, 26, BLACK)
+    # Johnny dancing wildly center
+    jx = 60
+    compose_johnny_simple(sp, jx, 56, hat_color=None, shirt_color=GREEN)
+    # No hat — bare head with hair flying
+    sp.px(jx + 1, 41, BLACK); sp.px(jx + 4, 41, BLACK)
+    sp.px(jx, 40, BLACK); sp.px(jx + 5, 40, BLACK)  # wild hair
+    # Big open grin
+    sp.line(jx + 1, 47, jx + 4, 47, BLACK)
+    sp.px(jx + 2, 48, BLACK); sp.px(jx + 3, 48, BLACK)
+    # Arms thrown up and out with maracas
+    sp.line(jx, 50, jx - 8, 44, SKIN)
+    sp.line(jx + 5, 50, jx + 13, 44, SKIN)
+    # Maraca LEFT (with shake blur)
+    sp.ellipse(jx - 12, 40, jx - 8, 44, TRUNK, outline=BLACK)
+    sp.line(jx - 14, 40, jx - 12, 38, BLACK)  # shake
+    sp.line(jx - 14, 44, jx - 12, 46, BLACK)
+    # Ghost copy
+    sp.ellipse(jx - 14, 41, jx - 11, 44, GRAY)
+    # Maraca RIGHT
+    sp.ellipse(jx + 13, 40, jx + 17, 44, TRUNK, outline=BLACK)
+    sp.line(jx + 17, 40, jx + 19, 38, BLACK)
+    sp.line(jx + 17, 44, jx + 19, 46, BLACK)
+    sp.ellipse(jx + 16, 41, jx + 19, 44, GRAY)
+    # Dancing feet motion (multiple legs)
+    sp.line(jx - 2, 56, jx - 4, 56, BLACK)
+    sp.line(jx + 7, 56, jx + 9, 56, BLACK)
+    # Confetti EXPLOSION
+    for x, y, c in [(8, 28, RED), (24, 22, YELLOW), (32, 32, GREEN),
+                    (44, 26, RED), (88, 24, YELLOW), (100, 32, GREEN),
+                    (112, 26, RED), (120, 32, YELLOW), (40, 50, RED),
+                    (90, 50, GREEN), (4, 38, YELLOW)]:
+        sp.px(x, y, c); sp.px(x + 1, y, c)
+        sp.px(x, y + 1, c)
+    # Music notes flying everywhere
+    for cx, cy in [(40, 16), (96, 18), (28, 36), (104, 38)]:
+        sp.line(cx, cy, cx, cy + 4, BLACK)
+        sp.ellipse(cx - 2, cy + 3, cx, cy + 5, BLACK)
+    # "OLE!" speech bubble
+    sp.ellipse(28, 40, 50, 54, WHITE, outline=BLACK)
+    sp.text(32, 44, "OLE", BLACK)
+    return sp
+
+
+def mothersday_v4(h):
+    """PLAYFUL — Johnny presenting comically OVERSIZED bouquet, knees
+    buckling under weight, hearts bursting, vase tipping over."""
+    sp = Sprite(96, 56, fill=PINK)
+    compose_sand_strip(sp, 24)
+    # Tipping coconut vase (tilted)
+    sp.ellipse(2, 32, 22, 50, TRUNK, outline=BLACK)
+    sp.line(4, 34, 22, 30, BLACK)  # tilted rim
+    # Spilled water/petals
+    for x, y in [(0, 50), (24, 48), (26, 52)]:
+        sp.px(x, y, SKY); sp.px(x + 1, y, SKY)
+    # Petals on sand
+    for x, y in [(0, 48), (24, 50), (28, 50)]:
+        sp.px(x, y, PINK); sp.px(x + 1, y, PINK)
+    # Johnny center with knees BUCKLING under bouquet
+    jx = 38
+    # Compressed/squashed legs
+    sp.rect(jx + 1, 48, jx + 2, 51, TRUNK)
+    sp.rect(jx + 3, 48, jx + 4, 51, TRUNK)
+    # Bent knees motion line
+    sp.line(jx, 50, jx - 2, 52, BLACK)
+    sp.line(jx + 5, 50, jx + 7, 52, BLACK)
+    # Body
+    sp.rect(jx, 40, jx + 5, 47, PINK)
+    # Head — strained expression
+    sp.rect(jx + 1, 35, jx + 4, 39, SKIN)
+    sp.px(jx + 1, 36, BLACK); sp.px(jx + 4, 36, BLACK)  # squinted eyes
+    # Open mouth (gritting teeth from weight)
+    sp.line(jx + 1, 38, jx + 4, 38, BLACK)
+    sp.line(jx + 1, 39, jx + 4, 39, WHITE)
+    # Sweat drops everywhere
+    sp.px(jx - 2, 36, SKY); sp.px(jx - 3, 35, SKY)
+    sp.px(jx + 7, 36, SKY); sp.px(jx + 8, 35, SKY)
+    sp.px(jx + 2, 32, SKY); sp.px(jx + 4, 32, SKY)
+    # Arms straining UP holding huge bouquet
+    sp.line(jx, 40, jx - 4, 30, SKIN)
+    sp.line(jx + 5, 40, jx + 9, 30, SKIN)
+    # ENORMOUS bouquet (cluster of giant flowers)
+    flowers = [(jx + 2, 18, RED), (jx - 4, 22, YELLOW), (jx + 8, 22, PINK),
+               (jx - 2, 14, WHITE), (jx + 6, 14, PURPLE), (jx, 24, ORANGE),
+               (jx + 2, 8, RED)]
+    for cx, cy, c in flowers:
+        sp.ellipse(cx - 4, cy - 4, cx + 4, cy + 4, c, outline=BLACK)
+        sp.px(cx, cy, YELLOW)
+    # Stems dangling down
+    for cx, cy in [(jx + 2, 18), (jx - 4, 22), (jx + 8, 22), (jx, 24)]:
+        sp.line(cx, cy + 4, jx + 2, 28, GREEN)
+    # Hearts BURSTING out
+    for cx, cy in [(20, 12), (60, 8), (76, 14), (88, 8)]:
+        compose_heart(sp, cx, cy, 3, RED)
+    # Smaller hearts
+    for cx, cy in [(14, 24), (70, 24), (84, 28)]:
+        compose_heart(sp, cx, cy, 1, PINK)
+    # "MOM!" shouted in shells (bigger letters)
+    mx = 58
+    for x, y in [(mx, 32), (mx, 36), (mx + 1, 34),
+                 (mx + 2, 36), (mx + 3, 34),
+                 (mx + 4, 32), (mx + 4, 36)]:
+        sp.px(x, y, WHITE); sp.px(x + 1, y, WHITE)
+    ox = 70
+    for x, y in [(ox + 1, 32), (ox + 2, 32), (ox, 34), (ox, 36),
+                 (ox + 3, 34), (ox + 3, 36),
+                 (ox + 1, 38), (ox + 2, 38)]:
+        sp.px(x, y, WHITE); sp.px(x + 1, y, WHITE)
+    # Big exclamation
+    sp.rect(82, 34, 84, 40, RED)
+    sp.rect(82, 42, 84, 44, RED)
+    return sp
+
+
+# ---------------------------------------------------------------------------
 # Batch 2 RENDERERS dict
 # ---------------------------------------------------------------------------
 RENDERERS_BATCH2 = {
-    14: (aprilfool_v1, aprilfool_v2, aprilfool_v3),
-    15: (easter_v1,    easter_v2,    easter_v3),
-    16: (earthday_v1,  earthday_v2,  earthday_v3),
-    17: (starwars_v1,  starwars_v2,  starwars_v3),
-    18: (cincomayo_v1, cincomayo_v2, cincomayo_v3),
-    19: (mothersday_v1, mothersday_v2, mothersday_v3),
+    14: (aprilfool_v1, aprilfool_v2, aprilfool_v3, aprilfool_v4),
+    15: (easter_v1,    easter_v2,    easter_v3,    easter_v4),
+    16: (earthday_v1,  earthday_v2,  earthday_v3,  earthday_v4),
+    17: (starwars_v1,  starwars_v2,  starwars_v3,  starwars_v4),
+    18: (cincomayo_v1, cincomayo_v2, cincomayo_v3, cincomayo_v4),
+    19: (mothersday_v1, mothersday_v2, mothersday_v3, mothersday_v4),
 }

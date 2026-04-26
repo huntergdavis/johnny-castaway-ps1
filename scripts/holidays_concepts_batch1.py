@@ -698,15 +698,426 @@ def spring_v3(h):
 
 
 # ---------------------------------------------------------------------------
+# v4 PLAYFUL variants — exaggerated, comedic, character-forward
+# ---------------------------------------------------------------------------
+
+def elvis_v4(h):
+    """PLAYFUL — Elvis-Johnny mid hip-swivel: gigantic pompadour, sweat
+    drops, motion lines, microphone tossed, swooning crowd dots."""
+    sp = Sprite(56, 70, fill=PINK)
+    for y in range(0, 48):
+        sp.line(0, y, 55, y, PINK if y < 24 else ORANGE)
+    compose_sand_strip(sp, 48)
+    # Spotlights crisscrossing dramatically
+    for x in range(8, 50, 4):
+        sp.line(28, 0, x, 22, YELLOW)
+    # Stars exploding around stage
+    compose_star(sp, 6, 6, 3, YELLOW)
+    compose_star(sp, 50, 4, 3, WHITE)
+    compose_star(sp, 8, 22, 2, WHITE)
+    compose_star(sp, 48, 24, 2, YELLOW)
+    # Johnny mid-swivel, tilted
+    jx = 26
+    compose_johnny_simple(sp, jx, 60, hat_color=None, shirt_color=WHITE)
+    # GIGANTIC pompadour — towering black mass
+    sp.rect(jx - 4, 38, jx + 8, 44, BLACK)
+    sp.rect(jx - 2, 34, jx + 6, 40, BLACK)
+    sp.ellipse(jx - 5, 36, jx + 9, 42, BLACK)
+    # Curl flick sticking out the side
+    sp.px(jx + 9, 40, BLACK); sp.px(jx + 10, 41, BLACK)
+    sp.px(jx + 11, 42, BLACK)
+    # Sweat drops flying off
+    sp.px(jx - 6, 46, SKY); sp.px(jx - 7, 45, SKY)
+    sp.px(jx + 11, 46, SKY); sp.px(jx + 12, 45, SKY)
+    # Comically wide grin
+    sp.line(jx + 1, 51, jx + 4, 51, BLACK)
+    sp.px(jx, 52, BLACK); sp.px(jx + 5, 52, BLACK)
+    # Motion lines around legs (swiveling hips)
+    sp.line(jx - 3, 58, jx - 5, 58, BLACK)
+    sp.line(jx - 3, 60, jx - 6, 60, BLACK)
+    sp.line(jx + 7, 58, jx + 9, 58, BLACK)
+    sp.line(jx + 7, 60, jx + 10, 60, BLACK)
+    # Microphone tossed up to the side, with arc lines
+    sp.ellipse(40, 18, 44, 22, BLACK)
+    sp.line(42, 22, 42, 26, GRAY)
+    # Arc trail (dotted)
+    for x, y in [(38, 24), (36, 28), (34, 32), (33, 36)]:
+        sp.px(x, y, WHITE)
+    # Music notes BIGGER, exaggerated
+    for cx, cy in [(8, 14), (46, 38)]:
+        sp.line(cx, cy, cx, cy + 6, BLACK)
+        sp.ellipse(cx - 3, cy + 4, cx, cy + 7, BLACK)
+        sp.line(cx + 1, cy - 2, cx + 4, cy, BLACK)  # extra flag
+    # Swooning crowd hearts on near-side sand
+    for cx in (4, 14, 38, 50):
+        compose_heart(sp, cx, 65, 1, RED)
+    # Big comedic exclamation
+    sp.text(2, 32, "!?", BLACK)
+    return sp
+
+
+def mlk_v4(h):
+    """PLAYFUL — Johnny passionately speaking, mouth wide open, hands
+    flailing, banner streaming, oversized exclamation marks."""
+    sp = Sprite(88, 56, fill=YELLOW)
+    sp.rect(0, 0, 87, 39, YELLOW)
+    compose_sand_strip(sp, 40)
+    # Sun rays shooting outward (big motion)
+    for x in range(8, 80, 4):
+        sp.line(44, 4, x, 16, YELLOW)
+    # Tilted podium (knocked askew by passion)
+    px = 38
+    sp.rect(px, 26, px + 14, 42, RED, outline=BLACK)
+    sp.rect(px - 3, 22, px + 17, 28, RED, outline=BLACK)
+    sp.line(px - 2, 22, px + 16, 21, BLACK)  # tilt
+    # Banner streaming behind with motion squiggles
+    sp.rect(px + 2, 32, px + 12, 40, WHITE, outline=BLACK)
+    for ty in (34, 36, 38):
+        sp.line(px + 4, ty, px + 10, ty, BLACK)
+    # Streaming end of banner (motion strips)
+    sp.line(px + 14, 33, px + 22, 32, WHITE)
+    sp.line(px + 14, 36, px + 24, 36, WHITE)
+    sp.line(px + 14, 39, px + 22, 40, WHITE)
+    # Microphone with motion lines (gripped intensely)
+    sp.line(px + 7, 18, px + 7, 22, GRAY)
+    sp.ellipse(px + 6, 14, px + 9, 19, BLACK)
+    sp.px(px + 4, 14, BLACK); sp.px(px + 11, 14, BLACK)  # speed lines
+    sp.px(px + 4, 17, BLACK); sp.px(px + 11, 17, BLACK)
+    # Johnny popping up behind podium, head HUGE & expressive
+    sp.ellipse(px + 3, 12, px + 11, 22, SKIN, outline=BLACK)
+    # Eyes scrunched, eyebrows up
+    sp.line(px + 4, 14, px + 6, 13, BLACK)
+    sp.line(px + 8, 13, px + 10, 14, BLACK)
+    # Wide open mouth (yelling)
+    sp.ellipse(px + 5, 17, px + 9, 21, BLACK)
+    sp.line(px + 6, 19, px + 8, 19, RED)  # tongue
+    # Sweat drop flying
+    sp.px(px - 1, 14, SKY); sp.px(px - 2, 13, SKY)
+    # Hands waving above (tiny skin blobs with motion)
+    sp.px(px - 4, 18, SKIN); sp.px(px - 5, 16, SKIN); sp.px(px - 6, 18, SKIN)
+    sp.px(px + 16, 18, SKIN); sp.px(px + 17, 16, SKIN); sp.px(px + 18, 18, SKIN)
+    # Giant exclamation marks bursting around
+    sp.rect(8, 6, 10, 14, RED)
+    sp.rect(8, 16, 10, 18, RED)
+    sp.rect(76, 4, 78, 12, RED)
+    sp.rect(76, 14, 78, 16, RED)
+    # Big star bursts in sky
+    compose_star(sp, 18, 26, 3, YELLOW)
+    compose_star(sp, 70, 28, 3, YELLOW)
+    return sp
+
+
+def groundhog_v4(h):
+    """PLAYFUL — Groundhog with comically bugged-out eyes screaming at
+    its own shadow; Johnny doing a spit-take, sweat drops everywhere."""
+    sp = Sprite(64, 48, fill=ORANGE)
+    for y in range(0, 24):
+        sp.line(0, y, 63, y, ORANGE if y < 14 else YELLOW)
+    compose_sand_strip(sp, 24)
+    # Burrow with kicked-up sand bits
+    sp.ellipse(10, 22, 36, 34, TRUNK, outline=BLACK)
+    sp.ellipse(14, 24, 32, 32, BLACK)
+    # Sand chunks flying out
+    sp.px(8, 20, TRUNK); sp.px(7, 18, TRUNK)
+    sp.px(38, 20, TRUNK); sp.px(40, 18, TRUNK)
+    sp.px(38, 22, SAND); sp.px(8, 22, SAND)
+    # Groundhog mid-pop, BIG bug eyes
+    sp.ellipse(18, 14, 30, 26, TRUNK, outline=BLACK)
+    # Huge googly eyes
+    sp.ellipse(19, 17, 23, 21, WHITE, outline=BLACK)
+    sp.ellipse(25, 17, 29, 21, WHITE, outline=BLACK)
+    sp.px(21, 19, BLACK); sp.px(27, 19, BLACK)  # pupils askew
+    # Eyebrows raised in panic
+    sp.line(19, 16, 22, 15, BLACK)
+    sp.line(26, 15, 29, 16, BLACK)
+    # Buck teeth chattering, mouth open wide
+    sp.ellipse(22, 22, 26, 25, BLACK)
+    sp.px(23, 23, WHITE); sp.px(25, 23, WHITE)
+    # Ears straight up in alarm
+    sp.line(20, 13, 20, 11, TRUNK)
+    sp.line(28, 13, 28, 11, TRUNK)
+    # Sweat drops flying
+    sp.px(16, 14, SKY); sp.px(15, 12, SKY)
+    sp.px(32, 14, SKY); sp.px(33, 12, SKY)
+    # Long jagged shadow stretching ominously
+    sp.line(30, 30, 56, 30, GRAY)
+    sp.line(32, 31, 58, 31, GRAY)
+    sp.line(34, 32, 60, 32, GRAY)
+    sp.line(36, 33, 62, 33, GRAY)
+    # Shadow has an evil eye
+    sp.px(54, 31, RED)
+    # Johnny on right doing a spit-take
+    jx = 50
+    compose_johnny_simple(sp, jx, 42, hat_color=None, shirt_color=RED)
+    # Spit/water spraying from his mouth back at the groundhog
+    for x, y in [(48, 32), (46, 31), (44, 32), (42, 33), (40, 32)]:
+        sp.px(x, y, SKY); sp.px(x, y + 1, SKY)
+    # Wide eyes
+    sp.px(jx + 1, 32, BLACK); sp.px(jx + 4, 32, BLACK)
+    # Hands up in shock (motion blur lines)
+    sp.line(jx - 2, 36, jx - 4, 34, BLACK)
+    sp.line(jx + 7, 36, jx + 9, 34, BLACK)
+    # Question marks above
+    sp.text(2, 4, "?!", BLACK)
+    sp.text(40, 6, "!", BLACK)
+    return sp
+
+
+def superbowl_v4(h):
+    """PLAYFUL — Football mid-spiral with motion blur, Johnny celebrating
+    overhead, foam finger HUGE, confetti, comically tiny goalpost wobble."""
+    sp = Sprite(96, 56, fill=SKY)
+    sp.rect(0, 0, 95, 23, SKY)
+    sp.rect(0, 24, 95, 55, GREEN)
+    for y in (32, 40, 48):
+        sp.line(0, y, 95, y, WHITE)
+    # Wobbly goalposts (drawn at angles)
+    sp.line(8, 18, 6, 32, TRUNK)
+    sp.line(9, 18, 7, 32, TRUNK)
+    sp.line(4, 18, 12, 18, TRUNK)
+    sp.line(4, 14, 4, 18, TRUNK)
+    sp.line(12, 14, 12, 18, TRUNK)
+    # Wobble motion lines
+    sp.line(2, 22, 4, 22, BLACK); sp.line(2, 26, 4, 26, BLACK)
+    # Right goalpost also wobbly
+    sp.line(86, 18, 88, 32, TRUNK)
+    sp.line(87, 18, 89, 32, TRUNK)
+    sp.line(82, 18, 90, 18, TRUNK)
+    sp.line(82, 14, 82, 18, TRUNK)
+    sp.line(90, 14, 90, 18, TRUNK)
+    sp.line(92, 22, 94, 22, BLACK); sp.line(92, 26, 94, 26, BLACK)
+    # Football mid-spiral with motion arc
+    sp.ellipse(38, 14, 54, 22, TRUNK, outline=BLACK)
+    sp.line(42, 18, 50, 18, WHITE)
+    sp.px(44, 17, WHITE); sp.px(46, 17, WHITE); sp.px(48, 17, WHITE)
+    # Spiral motion arc (curved trail)
+    for x, y in [(34, 24), (30, 28), (28, 32), (28, 36)]:
+        sp.px(x, y, WHITE); sp.px(x + 1, y, WHITE)
+    # Speed lines behind ball
+    sp.line(20, 16, 36, 18, BLACK)
+    sp.line(20, 20, 36, 21, BLACK)
+    # Johnny center, jumping with arms up celebrating
+    jx = 50
+    base_y = 48
+    compose_johnny_simple(sp, jx, base_y, hat_color=None, shirt_color=GREEN)
+    # Raised arms
+    sp.px(jx - 1, base_y - 9, SKIN); sp.px(jx - 2, base_y - 11, SKIN)
+    sp.px(jx + 6, base_y - 9, SKIN); sp.px(jx + 7, base_y - 11, SKIN)
+    # Open mouth screaming
+    sp.ellipse(jx + 1, base_y - 9, jx + 4, base_y - 7, BLACK)
+    # Face paint zigzag
+    sp.line(jx, base_y - 10, jx + 5, base_y - 10, GREEN)
+    sp.line(jx + 1, base_y - 12, jx + 4, base_y - 12, GREEN)
+    # Motion lines under feet (jumping)
+    sp.line(jx, base_y + 2, jx + 5, base_y + 2, BLACK)
+    sp.line(jx - 2, base_y + 4, jx + 7, base_y + 4, BLACK)
+    # GIANT foam finger overhead
+    sp.rect(70, 8, 88, 24, RED, outline=BLACK)
+    sp.rect(76, 0, 84, 12, RED, outline=BLACK)  # extended finger super tall
+    # White "#1" on finger
+    sp.line(78, 4, 78, 8, WHITE)
+    sp.line(82, 4, 82, 8, WHITE)
+    # Confetti shower
+    for x, y, c in [(8, 4, RED), (24, 8, WHITE), (40, 6, GREEN),
+                    (60, 4, RED), (78, 6, WHITE), (88, 8, GREEN),
+                    (16, 12, RED), (44, 14, WHITE), (66, 16, GREEN)]:
+        sp.px(x, y, c); sp.px(x + 1, y, c)
+        sp.px(x, y + 1, c)
+    # Star bursts
+    compose_star(sp, 14, 28, 2, YELLOW)
+    compose_star(sp, 80, 30, 2, YELLOW)
+    return sp
+
+
+def presidents_v4(h):
+    """PLAYFUL — Tiny Johnny in absurdly oversized tricorn (covering most of
+    head) saluting comically, flag flapping wildly with motion, cherry tree
+    cartoonishly leaning."""
+    sp = Sprite(80, 64, fill=DEEPBLUE)
+    sp.rect(0, 0, 79, 39, DEEPBLUE)
+    compose_sand_strip(sp, 40)
+    # Stars galore in sky
+    for cx, cy in [(8, 6), (20, 10), (32, 4), (50, 12), (66, 6), (76, 14)]:
+        compose_star(sp, cx, cy, 2, WHITE)
+    # Cherry tree LEANING dramatically (axed?)
+    sp.line(18, 40, 26, 28, TRUNK)
+    sp.line(19, 40, 27, 28, TRUNK)
+    sp.ellipse(20, 22, 36, 32, GREEN, outline=DGREEN)
+    # Cherries flying off (motion!)
+    for cx, cy in [(28, 24), (30, 28), (38, 22), (40, 26), (44, 20)]:
+        sp.px(cx, cy, RED); sp.px(cx + 1, cy, RED)
+    # Motion lines from tree (it just got chopped at)
+    sp.line(15, 36, 17, 38, BLACK)
+    sp.line(13, 38, 16, 40, BLACK)
+    # Flag flapping wildly with squiggly edge
+    sp.line(50, 14, 50, 50, TRUNK)
+    sp.rect(51, 14, 68, 28, WHITE, outline=BLACK)
+    for y in (16, 18, 20, 22, 24, 26):
+        sp.line(58, y, 68, y, RED)
+    sp.rect(51, 14, 58, 22, DEEPBLUE)
+    for cx, cy in [(53, 16), (56, 16), (53, 19), (56, 19)]:
+        sp.px(cx, cy, WHITE)
+    # Wavy flag end (squiggle)
+    sp.px(69, 16, WHITE); sp.px(70, 17, WHITE); sp.px(71, 16, WHITE)
+    sp.px(69, 22, WHITE); sp.px(70, 23, WHITE); sp.px(71, 22, WHITE)
+    sp.px(69, 26, WHITE); sp.px(70, 27, WHITE); sp.px(71, 26, WHITE)
+    # Wind speed lines
+    sp.line(72, 18, 76, 18, BLACK)
+    sp.line(72, 22, 78, 22, BLACK)
+    sp.line(72, 26, 76, 26, BLACK)
+    # Johnny on right with ABSURDLY oversized tricorn
+    jx = 70
+    compose_johnny_simple(sp, jx, 56, hat_color=None, shirt_color=RED)
+    # Massive tricorn — wider and taller than head
+    sp.rect(jx - 6, 46, jx + 11, 47, DEEPBLUE)
+    sp.rect(jx - 4, 42, jx + 9, 46, DEEPBLUE)
+    sp.line(jx - 6, 46, jx - 4, 41, DEEPBLUE)  # left peak
+    sp.line(jx + 11, 46, jx + 9, 41, DEEPBLUE)  # right peak
+    sp.line(jx + 1, 41, jx + 3, 38, DEEPBLUE)  # center peak (tall)
+    sp.px(jx + 2, 38, YELLOW)  # cockade
+    # Eyes peeking out from under hat
+    sp.px(jx + 1, 49, BLACK); sp.px(jx + 4, 49, BLACK)
+    # Comically rigid salute (forearm horizontal)
+    sp.line(jx + 5, 50, jx + 9, 48, SKIN)
+    sp.px(jx + 9, 47, SKIN)
+    # Sweat drop (trying to keep hat on)
+    sp.px(jx - 2, 49, SKY); sp.px(jx - 3, 48, SKY)
+    # Floor pile of fallen wigs (white blobs)
+    sp.ellipse(2, 56, 12, 60, WHITE, outline=BLACK)
+    sp.px(6, 56, GRAY); sp.px(8, 56, GRAY)
+    return sp
+
+
+def piday_v4(h):
+    """PLAYFUL — pie LAUNCHED in air mid-throw, Johnny with steam-cloud
+    glasses askew, math symbols flying everywhere, crumb explosion."""
+    sp = Sprite(48, 40, fill=SKY)
+    sp.rect(0, 0, 47, 19, SKY)
+    compose_sand_strip(sp, 20)
+    # Pie airborne mid-throw, slightly tilted
+    sp.ellipse(18, 4, 30, 12, TRUNK, outline=BLACK)
+    sp.ellipse(20, 6, 28, 10, ORANGE)
+    sp.px(24, 7, RED)  # cherry
+    # Pie motion arc (dotted curve)
+    for x, y in [(8, 14), (12, 10), (16, 8)]:
+        sp.px(x, y, WHITE)
+    # Crumbs flying off
+    for x, y in [(32, 6), (34, 8), (16, 6), (14, 4), (30, 14)]:
+        sp.px(x, y, ORANGE)
+    # Speed lines behind pie
+    sp.line(8, 4, 16, 4, BLACK)
+    sp.line(6, 8, 14, 8, BLACK)
+    # Math symbols flying around (pi, +, =, etc.)
+    # Big π upper-left
+    sp.line(2, 14, 6, 14, BLACK)
+    sp.line(3, 14, 3, 18, BLACK)
+    sp.line(5, 14, 5, 18, BLACK)
+    # = sign
+    sp.line(36, 14, 40, 14, BLACK)
+    sp.line(36, 16, 40, 16, BLACK)
+    # +
+    sp.line(38, 4, 38, 8, BLACK)
+    sp.line(36, 6, 40, 6, BLACK)
+    # Johnny on right, dodging/crouched
+    jx = 36
+    compose_johnny_simple(sp, jx, 36, hat_color=None, shirt_color=PURPLE)
+    # Glasses ASKEW (one lens lower)
+    sp.rect(jx, 27, jx + 2, 29, BLACK)
+    sp.rect(jx + 3, 28, jx + 5, 30, BLACK)
+    sp.line(jx + 2, 28, jx + 3, 29, BLACK)
+    # Sweat drops flying
+    sp.px(jx - 2, 28, SKY); sp.px(jx - 3, 27, SKY)
+    sp.px(jx + 7, 28, SKY); sp.px(jx + 8, 27, SKY)
+    # Open mouth surprise
+    sp.ellipse(jx + 1, 30, jx + 4, 32, BLACK)
+    # Slide rule dropping with motion
+    sp.rect(33, 34, 36, 35, WHITE)
+    sp.line(33, 36, 36, 36, BLACK)  # falling line
+    # Pi etched in sand with WIGGLE energy
+    sp.line(8, 30, 18, 30, BLACK)
+    sp.line(10, 30, 10, 36, BLACK)
+    sp.line(15, 30, 15, 36, BLACK)
+    # Pie splat on sand (left)
+    sp.ellipse(2, 34, 8, 38, ORANGE, outline=BLACK)
+    sp.px(0, 36, ORANGE); sp.px(1, 38, ORANGE)
+    sp.px(9, 36, ORANGE); sp.px(10, 38, ORANGE)
+    # Big "?!" exclamation
+    sp.text(20, 22, "?!", BLACK)
+    return sp
+
+
+def spring_v4(h):
+    """PLAYFUL — Johnny SNEEZING (huge AAACHOO), pollen clouds, butterflies
+    fleeing in panic, blossoms blowing off the palm."""
+    sp = Sprite(96, 80, fill=PINK)
+    sp.rect(0, 0, 95, 55, SKY)
+    compose_sand_strip(sp, 56)
+    # Sun beaming (with face?)
+    sp.ellipse(76, 6, 90, 20, YELLOW, outline=ORANGE)
+    sp.px(80, 12, BLACK); sp.px(86, 12, BLACK)  # sun eyes
+    sp.line(81, 16, 85, 16, BLACK)  # smile
+    # Sun rays
+    for dx, dy in [(-6, 0), (8, 0), (0, -6), (0, 8)]:
+        sp.line(83, 13, 83 + dx, 13 + dy, YELLOW)
+    # Palm with blossoms BLOWING off
+    compose_palm_tree(sp, 24, 56, trunk_h=36, frond_r=12)
+    # Blossoms airborne (motion direction: rightward)
+    for cx, cy in [(36, 14), (44, 18), (52, 12), (60, 16),
+                   (68, 22), (76, 28)]:
+        sp.px(cx, cy, PINK); sp.px(cx + 1, cy, PINK)
+        sp.px(cx, cy + 1, WHITE)
+        # Motion trail
+        sp.px(cx - 2, cy, PINK)
+    # Bare-ish palm crown (some pink remaining)
+    for cx, cy in [(20, 18), (28, 14), (16, 22)]:
+        sp.px(cx, cy, PINK)
+    # Wind/sneeze gust lines
+    for y in [20, 26, 32]:
+        sp.line(38, y, 70, y, WHITE)
+    # Butterflies fleeing in panic (tilted, motion lines)
+    for cx, cy, c in [(56, 36, YELLOW), (72, 40, PURPLE), (84, 44, PINK)]:
+        sp.ellipse(cx - 3, cy - 2, cx, cy + 2, c)
+        sp.ellipse(cx, cy - 2, cx + 3, cy + 2, c)
+        sp.px(cx, cy, BLACK)
+        # Panic motion lines
+        sp.line(cx - 5, cy, cx - 7, cy, BLACK)
+    # Johnny center with HUGE sneeze cloud
+    jx = 44
+    compose_johnny_simple(sp, jx, 76, hat_color=None, shirt_color=GREEN)
+    # Giant sneeze cloud (white explosion)
+    sp.ellipse(40, 50, 64, 66, WHITE, outline=BLACK)
+    sp.ellipse(36, 54, 46, 62, WHITE, outline=BLACK)
+    sp.ellipse(58, 52, 70, 62, WHITE, outline=BLACK)
+    # "ACHOO!" inside cloud
+    sp.text(44, 56, "AH!", BLACK)
+    # Snot bits / pollen flying
+    for cx, cy in [(34, 50), (66, 48), (28, 58), (72, 58)]:
+        sp.px(cx, cy, YELLOW)
+        sp.px(cx + 1, cy, YELLOW)
+    # Hands clutched to face (skin pixels)
+    sp.px(jx - 2, 68, SKIN); sp.px(jx - 3, 70, SKIN)
+    sp.px(jx + 7, 68, SKIN); sp.px(jx + 8, 70, SKIN)
+    # Tulips comically squashed flat
+    for i, x in enumerate(range(60, 92, 6)):
+        c = [RED, YELLOW, PINK, PURPLE][i % 4]
+        sp.line(x, 60, x, 64, GREEN)
+        sp.line(x - 2, 64, x + 2, 64, c)  # squashed flower
+    # Pollen swirls in sky
+    for cx, cy in [(8, 10), (14, 22), (20, 8)]:
+        sp.px(cx, cy, YELLOW); sp.px(cx + 1, cy, YELLOW)
+    return sp
+
+
+# ---------------------------------------------------------------------------
 # Public registry — runner imports this dict and invokes per-id variants.
 # ---------------------------------------------------------------------------
 
 RENDERERS_BATCH1 = {
-    5:  (elvis_v1, elvis_v2, elvis_v3),
-    6:  (mlk_v1, mlk_v2, mlk_v3),
-    7:  (groundhog_v1, groundhog_v2, groundhog_v3),
-    9:  (superbowl_v1, superbowl_v2, superbowl_v3),
-    10: (presidents_v1, presidents_v2, presidents_v3),
-    12: (piday_v1, piday_v2, piday_v3),
-    13: (spring_v1, spring_v2, spring_v3),
+    5:  (elvis_v1, elvis_v2, elvis_v3, elvis_v4),
+    6:  (mlk_v1, mlk_v2, mlk_v3, mlk_v4),
+    7:  (groundhog_v1, groundhog_v2, groundhog_v3, groundhog_v4),
+    9:  (superbowl_v1, superbowl_v2, superbowl_v3, superbowl_v4),
+    10: (presidents_v1, presidents_v2, presidents_v3, presidents_v4),
+    12: (piday_v1, piday_v2, piday_v3, piday_v4),
+    13: (spring_v1, spring_v2, spring_v3, spring_v4),
 }
