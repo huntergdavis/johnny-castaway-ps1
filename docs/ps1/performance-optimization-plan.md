@@ -755,6 +755,7 @@ rectangle pressure.
 | `P4-119` | Failed: compile out the old visual debug screen/buffer/wait implementation by default. | It saved a full 4 KB executable bucket (`131072 -> 126976`) but regressed active cadence (`loop_vb 1227 -> 1232`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); startup/debug code-shape cleanup must wait for a stronger phase barrier or scheduler model. |
 | `P4-120` | Failed: lower held-slack prepared-present threshold from `4` to `3` VBlanks. | It increased speculative prep (`restore_calls/compose_calls 188 -> 193`) and regressed active cadence (`loop_vb 1227 -> 1231`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`); the accepted `4` VBlank bridge is still the local knee from both directions. |
 | `P4-121` | Failed: grow retained stream-window capacity to `24 KB` while keeping `16 KB` normal reads. | It improved total loop by one VBlank (`1227 -> 1226`) but regressed visible CD pressure (`blocking_vb 6 -> 16`), reintroduced due misses (`0 -> 3`), and increased read churn (`loop_reads 68 -> 80`); raw append growth needs pack/group scheduling before retry. |
+| `P4-122` | Failed: fixed `16 KB` payload group alignment in the fishing1 FG2 pack. | It reduced read count (`loop_reads 68 -> 56`) and backward seeks (`5 -> 3`) but grew the pack by `92413` bytes and regressed active playback (`loop_vb 1227 -> 1241`, `blocking_vb 6 -> 22`, `prefetch_overrun_vb 6 -> 22`); pack grouping must be selective/cost-aware. |
 
 Prefetch variants to test in order:
 
