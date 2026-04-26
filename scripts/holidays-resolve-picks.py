@@ -90,15 +90,12 @@ def main():
     holidays = yaml.safe_load(open(YAML_PATH, "r", encoding="utf-8"))
     reviewable = [h for h in holidays if h.get("existing_sprite") is None]
 
-    args.out.mkdir(parents=True, exist_ok=True)
-    # Clean the output dir so stale picks don't linger.
-    for old in args.out.glob("*.png"):
-        old.unlink()
-
+    # Validate the picks BEFORE touching the output dir, so a strict
+    # failure leaves the previously-good staged picks intact.
     missing_picks = []
     invalid_variants = []
     missing_pngs = []
-    resolved = 0
+    plan: list[tuple[Path, Path]] = []  # (src, dst) for actual copies
 
     for h in reviewable:
         hid = str(h["id"])
@@ -120,10 +117,27 @@ def main():
             missing_pngs.append((hid, h["name"], src.name))
             continue
         dst = args.out / f"{int(hid):02d}-{slug}.png"
-        shutil.copy2(src, dst)
-        resolved += 1
+        plan.append((src, dst))
 
-    print(f"resolved {resolved} picks → {show_path(args.out)}/")
+    has_issues = bool(missing_picks or invalid_variants or missing_pngs)
+    if args.strict and has_issues:
+        # Don't touch the output directory; leave any prior good staging
+        # intact so the user can rebuild from a known-good state.
+        print(f"resolved 0 picks (strict, validation failed)")
+        # Fall through to issue reporting below.
+        resolved = 0
+    else:
+        args.out.mkdir(parents=True, exist_ok=True)
+        # Clean the output dir so stale picks don't linger.
+        for old in args.out.glob("*.png"):
+            old.unlink()
+        resolved = 0
+        for src, dst in plan:
+            shutil.copy2(src, dst)
+            resolved += 1
+
+    if not (args.strict and has_issues):
+        print(f"resolved {resolved} picks → {show_path(args.out)}/")
     if missing_picks:
         print(f"\n{len(missing_picks)} reviewable holidays have NO pick:")
         for hid, name in missing_picks:
