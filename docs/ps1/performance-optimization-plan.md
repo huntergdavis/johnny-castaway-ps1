@@ -835,6 +835,7 @@ from perturbing the deterministic cadence.
 | `P4-166` | Failed: compile-gate the optional `printf-test` / `logtest` `JCLOG` probe body. | The size win was real (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738556`), but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and this becomes a layout-padding/CD-phase-control retry candidate. |
 | `P4-167` | Failed: compile-gate memory-card `JCMC` diagnostics out of the default build. | The size win crossed the same PS-EXE sector bucket (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738652`) and moved `FG\\FISHING1.FG2` from LBA `399` to `398`, but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and memcard logs remain layout/CD-phase ballast until foreground LBA and code phase can be controlled together. |
 | `P4-168` | Failed: remove unused-looking `ISLETEMP.SCR` from the active CD layout. | The FG2 pack LBA stayed fixed at `399`, but setup/CD-layout phase still regressed the exact gate (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `read_vb 393 -> 401`) and the emulator emitted invalid-read spam after `JCPERF2`; source was reverted and CD asset pruning needs a startup phase barrier plus exit sanity gate before promotion. |
+| `P4-169` | Failed: compile-gate automatic foreground heap probes out of default playback. | The source reverted after the exact gate regressed through the same layout/CD-phase shape as other one-sector shrink misses: `FG\\FISHING1.FG2 LBA 399 -> 398`, `loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`; keep the automatic FGHEAP probe code as ballast until foreground LBA/cold-section control exists or CD phase is explicit. |
 
 Prefetch variants to test in order:
 
@@ -1437,6 +1438,13 @@ baseline; override only for deliberate pack/render architecture changes.
 It also caps `headless-regtest.log` at `536870912` bytes by default via
 `PS1_PERF_MAX_LOG_BYTES` / `--max-log-bytes`; set the cap to `0` only for
 deliberate log-mining runs.
+
+The recent diagnostic-gating misses expose a second acceptance rule: code-size
+cleanup is not safe merely because correctness and work identity remain clean.
+If shrinking the executable moves foreground pack LBAs or code phase, the scene
+can regress by one visible CD VBlank. Treat default-off diagnostics as
+layout/cadence ballast until cold sections, explicit ISO padding, or a
+phase-independent CD scheduler makes removal deterministic.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
