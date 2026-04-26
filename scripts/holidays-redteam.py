@@ -251,22 +251,41 @@ def check_no_duplicate_art(holidays, fails, warns):
 
 
 def check_variant_diversity(holidays, fails, warns):
-    """Within one holiday, v1..v4 must be pixel-distinct (different histograms)."""
+    """Within one holiday, v1..v5 must be pixel-distinct AND v5 must
+    differ from v1 by a meaningful number of pixels (catches a silent
+    no-op in as_night)."""
     for h in holidays:
         if h.get("existing_sprite") is not None:
             continue
         hid = h["id"]
         slug = slugify(h["short_name"])
         sigs: dict[str, list[int]] = defaultdict(list)
+        pngs: dict[int, Path] = {}
         for vi in (1, 2, 3, 4, 5):
             p = ART_DIR / f"{hid:02d}-{slug}-v{vi}.png"
             if not p.exists():
                 continue
             sigs[png_sha(p)].append(vi)
+            pngs[vi] = p
         for sig, vis in sigs.items():
             if len(vis) > 1:
                 fails.append(
                     f"id={hid} variants {vis} are byte-identical (need diversity)")
+        # v5 must differ from v1 by at least 10% of pixels (the night
+        # recolor + stars + moon should always meet that bar). If it
+        # doesn't, something silently no-op'd.
+        if 1 in pngs and 5 in pngs:
+            with Image.open(pngs[1]) as im1, Image.open(pngs[5]) as im5:
+                if im1.size == im5.size:
+                    p1 = list(im1.getdata())
+                    p5 = list(im5.getdata())
+                    diff = sum(1 for a, b in zip(p1, p5) if a != b)
+                    frac = diff / max(1, len(p1))
+                    if frac < 0.10:
+                        fails.append(
+                            f"id={hid} v5 differs from v1 by only {frac:.1%} "
+                            f"(threshold 10%) — as_night may have silently "
+                            f"no-op'd")
 
 
 def check_date_algorithms(fails, warns):

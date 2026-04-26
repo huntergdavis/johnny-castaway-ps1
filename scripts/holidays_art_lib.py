@@ -297,8 +297,13 @@ def as_night(day_sprite: Sprite, *,
     PURPLE for twilight. Everything else passes through so foreground
     subjects (Johnny, props, palm fronds) still read.
 
+    For sprites whose v1 is ALREADY night (bg = DEEPBLUE), inverting the
+    palette would barely move the needle. Those route to a "dawn" mode
+    instead: bg → SKY, DEEPBLUE → SKY, with sun-yellow lent to a few
+    accents. Either way you get a meaningfully different alternate.
+
     Then we lay WHITE stars and a small moon over what used to be the
-    background band.
+    background band (or a sun, in dawn mode).
 
     moon_at:     (x, y) for a small WHITE moon disc with a BLACK outline.
                  Defaults to the upper-right corner.
@@ -308,20 +313,22 @@ def as_night(day_sprite: Sprite, *,
                  to TRUNK.
     """
     src = day_sprite.image
-    new = Sprite(day_sprite.w, day_sprite.h, fill=DEEPBLUE)
     # Detect background color: corner pixel is the safest bet, since the
-    # renderers all start with `Sprite(w, h, fill=BG)`. Skip TRANSPARENT
-    # since it's idx 0 and would make the recolor a no-op.
+    # renderers all start with `Sprite(w, h, fill=BG)`. Skip TRANSPARENT.
     bg_idx = src.getpixel((0, 0))
     if bg_idx == TRANSPARENT:
-        # Fall back to the most-common index in the top quarter of the
-        # image, which is overwhelmingly the sky band.
         from collections import Counter
         top_pixels = [src.getpixel((x, y))
                       for y in range(max(1, day_sprite.h // 4))
                       for x in range(day_sprite.w)]
         if top_pixels:
             bg_idx = Counter(top_pixels).most_common(1)[0][0]
+
+    is_already_night = bg_idx in (DEEPBLUE, BLACK)
+    if is_already_night:
+        return _as_dawn(day_sprite, src, moon_at, star_count, keep_sand)
+
+    new = Sprite(day_sprite.w, day_sprite.h, fill=DEEPBLUE)
     # Build the dynamic recolor map: detected background → DEEPBLUE,
     # plus the fixed mappings. The detected bg wins when both apply.
     recolor = dict(_NIGHT_RECOLOR_FIXED)
@@ -374,6 +381,79 @@ def as_night(day_sprite: Sprite, *,
         new.ellipse(mx - 5, my - 5, mx + 5, my + 5, WHITE, outline=BLACK)
         # Crescent shadow — a partial DEEPBLUE arc on the right side
         new.ellipse(mx - 1, my - 4, mx + 6, my + 4, DEEPBLUE)
+
+    return new
+
+
+def _as_dawn(day_sprite: Sprite, src,
+             sun_at: tuple[int, int] | None,
+             star_count: int,
+             keep_sand: bool) -> Sprite:
+    """Inverted recolor for v1s that are ALREADY night (bg=DEEPBLUE).
+    Maps the night sky to a dawn band (DEEPBLUE→PURPLE→ORANGE→YELLOW
+    gradient), darkens stars (WHITE→YELLOW so they read as the last
+    morning sparkles), and places a sun in the upper-right with a few
+    light rays."""
+    new = Sprite(day_sprite.w, day_sprite.h, fill=PURPLE)
+    src_pixels = list(src.getdata())
+    out = []
+    # Recolor: night-blacks/deep-blues become a dawn-purple base. White
+    # stars dim to yellow. Black stays black (silhouettes).
+    for p in src_pixels:
+        if p == DEEPBLUE:
+            out.append(PURPLE)
+        elif p == WHITE:
+            out.append(YELLOW)
+        elif p == BLACK:
+            # Most BLACK in night sprites is silhouette outlines. Keep it.
+            out.append(BLACK)
+        else:
+            out.append(p)
+    new.image.putdata(out)
+
+    # Paint a horizontal dawn gradient across what is still PURPLE: the
+    # top is purple, middle ORANGE, bottom YELLOW just above the horizon.
+    horizon = int(day_sprite.h * 0.65)
+    upper_third = day_sprite.h // 3
+    middle_third = day_sprite.h * 2 // 3
+    for y in range(day_sprite.h):
+        if y >= horizon:
+            continue
+        if y < upper_third:
+            band_color = PURPLE
+        elif y < middle_third:
+            band_color = ORANGE
+        else:
+            band_color = YELLOW
+        for x in range(day_sprite.w):
+            if new.image.getpixel((x, y)) == PURPLE:
+                new.px(x, y, band_color)
+
+    # Sun in the upper-right (or wherever sun_at says).
+    sx, sy = sun_at or (day_sprite.w - 14, 10)
+    if 0 <= sx < day_sprite.w and 0 <= sy < day_sprite.h:
+        # Sun rays first (so disc paints over them at center)
+        for dx, dy in [(-10, 0), (10, 0), (0, -10), (0, 10),
+                       (-7, -7), (7, -7), (-7, 7), (7, 7)]:
+            new.line(sx, sy, sx + dx, sy + dy, YELLOW)
+        new.ellipse(sx - 6, sy - 6, sx + 6, sy + 6, YELLOW, outline=ORANGE)
+        new.ellipse(sx - 3, sy - 3, sx + 3, sy + 3, WHITE)
+
+    # A few last-night stars near the top (maybe 4-6, clamped down).
+    if star_count == 0:
+        star_count = max(4, (day_sprite.w * day_sprite.h) // 320)
+    import random
+    rng = random.Random(day_sprite.w * 1013 + day_sprite.h * 7)
+    placed = 0
+    attempts = 0
+    while placed < star_count and attempts < star_count * 8:
+        attempts += 1
+        x = rng.randrange(day_sprite.w)
+        y = rng.randrange(max(1, day_sprite.h // 3))
+        idx = new.image.getpixel((x, y))
+        if idx == PURPLE:
+            new.px(x, y, WHITE)
+            placed += 1
 
     return new
 
