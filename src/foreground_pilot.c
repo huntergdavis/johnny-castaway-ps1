@@ -1225,6 +1225,51 @@ static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
     return (slackVBlanks >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0;
 }
 
+static int fgRuntimePrimeNextFrameForSetup(void)
+{
+    uint16 nextFrameIndex;
+    const struct TFgPilotEntry *entry;
+
+    if (!fgRuntimeCanStageNextFrame() || gFgRuntime.stagedFrameValid)
+        return 0;
+
+    if (gFgRuntime.frameIndex + 1 >= gFgRuntime.header.frameCount)
+        return 0;
+    nextFrameIndex = (uint16)(gFgRuntime.frameIndex + 1);
+    entry = fgGetEntryFromTable(&gFgRuntime.entryTable, nextFrameIndex);
+    if (entry == NULL)
+        return -1;
+
+    if (!fgEntryHasPayload(entry))
+        return 0;
+
+    if (entry->dataSize > gFgRuntime.prefetchFrameBufferSize)
+        return -1;
+
+    if (fgRuntimeEntryFitsWindow(entry)) {
+        if (!fgRuntimeWindowContainsEntry(entry) &&
+            !fgRuntimeFillWindowForEntry(entry, 0, 0, NULL)) {
+            return -1;
+        }
+        if (!fgRuntimeCopyEntryFromWindow(entry, gFgRuntime.prefetchFrameBuffer, 0))
+            return -1;
+        fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+        return 1;
+    }
+
+    if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
+                                        entry->dataOffset,
+                                        entry->dataSize,
+                                        gFgRuntime.prefetchFrameBuffer,
+                                        gFgRuntime.streamScratch,
+                                        gFgRuntime.streamScratchSize)) {
+        return -1;
+    }
+
+    fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+    return 1;
+}
+
 static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 {
     uint16 nextFrameIndex;
@@ -1751,6 +1796,12 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                 if (ps1PerfEnabled)
                     perfFirstFrameTick = ps1PerfTick();
                 if (!fgRuntimeLoadSceneFrame(0)) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkTripwire();
+                    fgRuntimeReset();
+                    return 0;
+                }
+                if (fgRuntimePrimeNextFrameForSetup() < 0) {
                     if (ps1PerfEnabled)
                         ps1PerfMarkTripwire();
                     fgRuntimeReset();
