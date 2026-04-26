@@ -32,21 +32,21 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `d0e00ab8 ps1: seed stream window from direct-stage reads` |
-| Run ID | `20260426-000857` |
+| Commit | `6c7b8fc0 ps1: prepare staged frames during held slack` |
+| Run ID | `20260426-003718` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
-| `loop_vb` | `1235` |
+| Window | `16 KB default, 23568-byte runtime buffer, setup-prime first payload, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 2-row upload band gap merge` |
+| `loop_vb` | `1234` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `158` |
-| `blocking_vb` | `10` |
+| `overrun_vb` | `157` |
+| `blocking_vb` | `8` |
 | `loop_reads` | `68` |
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
-| `prefetch_overrun_vb` | `10` |
-| `restore_bytes` | `2510092` |
+| `prefetch_overrun_vb` | `8` |
+| `restore_bytes` | `3050904` |
 | `upload_bytes` | `16496000` |
 | `dirty_rows` | `25775` |
 | `upload_rects` | `427` |
@@ -158,6 +158,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `fg2-window-15kb-post-direct-stage` | parameter probe after `a7847e05` | Re-test a slightly smaller `15 KB` stream window after tight-slack direct staging, checking whether less refill payload lowers overrun without losing the zero-due-miss baseline. | `./scripts/ps1-perf-iterate.sh --case "fishing1::fgpilot fishing1 prefetch-window 15360 perf-log noloop seed 1" --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as a no-op. Work identity, CD shape, and all key timing matched the `16 KB` default exactly: `loop_vb=1235`, `overrun_vb=158`, `blocking_vb=11`, `prefetch_overrun_vb=11`, `due_misses=0`, `hits=155`, and `loop_reads=68`. Artifact: `scratch/ps1-perf-iterate/20260426-000331/summary.json`. | Do not promote. The current post-direct-stage window-size knee is not improved by `15 KB`; further CD gains need grouped reads, layout changes, or better scheduling rather than one-step window shrinkage. |
 | 2026-04-26 | `fg2-direct-stage-seed-window` | `d0e00ab8` | After a tight-slack direct-stage read, copy the already-read aligned sectors from `streamScratch` into the FG2 stream window so the read can become the start of future window coverage instead of being thrown away and re-read later. | `./scripts/build-ps1.sh`, then two strict runs with `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Promoted. Both runs matched exactly: `loop_vb=1235`, `overrun_vb=158`, `blocking_vb 11 -> 10`, `prefetch_overrun_vb 11 -> 10`, `due_misses=0`, `hits=155`, `loop_reads=68`, `read_vb 409 -> 405`, `loop_read_vb 289 -> 285`, `bytes 1096030 -> 1093982`, `sectors 542 -> 541`, `seq 65 -> 66`, and `seek_back 8 -> 7`; work identity and correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260426-000736/summary.json`, `scratch/ps1-perf-iterate/20260426-000857/summary.json`. | Promote. This converts a small direct-stage read into reusable stream-window state, reducing one backward seek and one visible CD-blocking VBlank without increasing memory or changing pixel work. |
 | 2026-04-26 | `fg2-staged-next-vblank-present-scheduler` | dirty experiment after `ed7dee89` | Compose the staged next frame during the final held-frame slack, wait for the transition VBlank, then upload immediately, attempting to recover the measured `present_wait_vb` while remaining scanline-safe. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Correctness and visual-work identity stayed clean (`trip=0`, `fallback=0`, `frame_mismatch=0`, `sound_late=0`, `cd_fail=0`, `render=156`, `restore_calls=156`, `compose_calls=155`, `upload_calls=156`), but timing regressed: `loop_vb 1235 -> 1306`, `overrun_vb 158 -> 229`, `blocking_vb 10 -> 13`, and `prefetch_overrun_vb 10 -> 13`. Artifact: `scratch/ps1-perf-iterate/20260426-001856/summary.json`. | Do not promote. Pulling restore/compose/present work into the held loop disrupted the current prefetch cadence more than it saved; retry only with a scheduler that reserves CD slack separately from render preparation or with a true double-buffered RAM-present plan. |
+| 2026-04-26 | `fg2-held-slack-prepared-present` | `6c7b8fc0` | Pre-render the staged next frame into RAM only when held slack is at least `4` VBlanks, then upload the prepared RAM background on the transition VBlank. | `./scripts/build-ps1.sh`, threshold sweep at `2/3/4/5` VBlanks, then two strict acceptance runs with `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Promoted. The accepted `4` VBlank threshold reproduced exactly twice: `loop_vb 1235 -> 1234`, `overrun_vb 158 -> 157`, `blocking_vb 10 -> 8`, `prefetch_overrun_vb 10 -> 8`, `due_misses=0`, `hits=155`, and `loop_reads=68`. Correctness stayed clean. The tradeoff is extra RAM prep work: `restore_calls 156 -> 192`, `compose_calls 155 -> 191`, and `restore_bytes 2510092 -> 3050904`. Artifacts: `scratch/ps1-perf-iterate/20260426-003350/summary.json`, `scratch/ps1-perf-iterate/20260426-003718/summary.json`. | Promote as a small deterministic speedup. This does not yet reduce measured `present_wait_vb`; it reshapes held slack and CD/refill pressure. Next present work should reduce duplicate restore/compose preparation or make the prepared state upload-ready without extra work. |
 
 ## Retry Queue
 
@@ -188,6 +189,7 @@ Current accepted baseline for the next experiment:
 | FG2 compose-before-VSync sequencing | Correctness clean but slower and worse for CD blocking; retry only with Detail-tier render counters or after separating render scheduling from prefetch cadence. |
 | `7` VBlank staged-copy fallthrough guard after per-tile row dirty marking | Correctness clean but slower with no blocking improvement; retry only after the refill-cost knee moves. |
 | Staged next-VBlank present scheduler | Correctness and visual-work identity stayed clean, but total loop time regressed by `71` VBlanks; retry only after render preparation and CD prefetch have separate slack budgets. |
+| Prepared-present thresholds `2` and `5` | `2` VBlanks reduced loop time but failed the strict blocking/refill gate; `5` VBlanks added prep work without timing improvement. Retry only if prepared-frame selection becomes exact-use instead of extra speculative restore/compose work. |
 | Window-resident due-frame direct pointer | Correctness clean but slower than copying to `frameBuffer`; retry only if the stream-window/stage ownership model changes. |
 | Circular FG2 stream window | Correctness clean but no VBlank-level movement; retry only with finer CPU counters or after grouped-window metadata changes the refill path. |
 | Sequential aligned CD reads without explicit `Setloc` | Timing looked better but visual-work counters collapsed; do not retry unless a lower-level CD continuation API is proven correct with full frame hashes/work-identity gates. |
