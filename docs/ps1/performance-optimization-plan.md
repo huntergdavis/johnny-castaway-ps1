@@ -39,6 +39,14 @@ real payload, and tight-slack direct staging for immediate payloads up to
 the current baseline for the next experiment; the pre-pause best was
 `loop_vb=1297`.
 
+Detail-tier attribution on this baseline shows the remaining active-loop gap is
+not primarily CD: `render_vb=175`, `present_wait_vb=157`, `restore_vb=18`,
+`compose_vb=0`, `upload_vb=0`, and `advance_vb=1` in
+`scratch/ps1-perf-iterate/20260426-001214/summary.json`. A first staged
+next-VBlank present scheduler was rejected because it regressed total loop time
+to `1306`; the next present work needs separate render-prep and CD-prefetch
+slack budgets instead of stealing the held-frame prefetch cadence.
+
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
 VBlanks without redraw. The scene still ran about 55% too slow inside playback:
@@ -68,10 +76,10 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1235`; `due_misses=0`, but `blocking_vb=10` and prefetch `overrun_vb=10` still remain. |
-| 2 | X-aware dirty upload and rect-pressure control | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, and vertical bands plus gap merging lowered upload to `16.5 MB`; upload byte volume and `LoadImage` rect pressure are now the clearer dirty targets. |
-| 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
-| 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
+| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch; the next design must reserve render-prep time without sacrificing lookahead. |
+| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=10` and `prefetch.overrun_vb=10`, but every saved read still compounds. |
+| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores only `2.5 MB` after row-level restore, and vertical bands plus gap merging lowered upload to `16.5 MB`; upload byte volume and `LoadImage` rect pressure are now the clearer dirty targets. |
+| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `7` backward seeks; grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
 Non-goals:
@@ -682,6 +690,7 @@ upload byte volume, and upload rectangle pressure.
 | `P4-66` | Failed: extend direct-stage small payloads to 4 VBlanks of slack. | The retest regressed `loop_vb 1235 -> 1239`, `blocking_vb 11 -> 39`, `prefetch_overrun_vb 11 -> 12`, and `due_misses 0 -> 5`; direct staging at 4 VBlanks loses too much stream-window lookahead until grouped reads or a second stage slot exist. |
 | `P4-67` | Failed as no-op: shrink the post-direct-stage stream window to 15 KB. | The parameter probe matched the 16 KB default exactly at `loop_vb=1235`, `blocking_vb=11`, `prefetch_overrun_vb=11`, `due_misses=0`, and `loop_reads=68`; one-step window shrinkage is not a current lever. |
 | `P4-68` | Done: seed the stream window from accepted direct-stage reads. | `blocking_vb 11 -> 10`, `prefetch_overrun_vb 11 -> 10`, `read_vb 409 -> 405`, `loop_read_vb 289 -> 285`, `seq 65 -> 66`, and `seek_back 8 -> 7` with flat `loop_vb=1235` and `due_misses=0`; direct-stage sectors are now reused instead of thrown away. |
+| `P4-69` | Failed: staged next-VBlank present scheduler. | Detail showed `present_wait_vb=157`, but composing the staged next frame in the final held-loop slack regressed `loop_vb 1235 -> 1306`, `overrun_vb 158 -> 229`, `blocking_vb 10 -> 13`, and `prefetch_overrun_vb 10 -> 13`; present work must not consume the slack currently hiding CD reads. |
 
 Prefetch variants to test in order:
 
@@ -1049,9 +1058,10 @@ into one commit.
 ## Next 50 Targets From Current Timing
 
 Current measured bottlenecks are now narrow enough that the next wins should be
-small and cumulative: `10` visible CD blocking VBlanks, `10` prefetch-overrun
-VBlanks, `68` active-loop reads, `16.5 MB` upload volume, `427` upload rects,
-and `2.5 MB` restore volume on fishing1 high tide.
+small and cumulative: `157` Detail-tier present-wait VBlanks, `10` visible CD
+blocking VBlanks, `10` prefetch-overrun VBlanks, `68` active-loop reads,
+`16.5 MB` upload volume, `427` upload rects, and `2.5 MB` restore volume on
+fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |
 |---:|---|---|---|
@@ -1063,7 +1073,7 @@ and `2.5 MB` restore volume on fishing1 high tide.
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
-| 9 | CD/metrics | Add per-read slack, sectors, and elapsed histograms to Summary output. | Identify exact read classes causing the remaining `11` overrun VBlanks. |
+| 9 | CD/metrics | Add per-read slack, sectors, and elapsed histograms to Summary output. | Identify exact read classes causing the remaining `10` overrun VBlanks. |
 | 10 | CD/pack | Reorder payload chunks inside FG2 to eliminate current `seek_back` points. | Lower `seek_back`, `setloc` cost, and hidden/visible read time. |
 | 11 | CD/pack | Duplicate tiny backward-referenced payloads when cheaper than seeking backward. | Lower `seek_back` while keeping pack growth bounded. |
 | 12 | CD/runtime | Treat huge payloads as direct-read outliers that do not perturb the stream-window policy. | Reduce missed coverage after large frames. |
@@ -1095,8 +1105,8 @@ and `2.5 MB` restore volume on fishing1 high tide.
 | 38 | Compose/runtime | Add indexed8 FG2 direct palette fast path before validating non-fishing scenes. | Avoid future regressions on indexed8 captures. |
 | 39 | Compose/runtime | Specialize common PAL4 span length classes with generated helpers. | Lower compose cost without broad inlining regressions. |
 | 40 | Compose/metrics | Add span class counters: tile-local, cross-tile, clipped, odd-left, odd-right. | Pick compositor optimizations from measured distribution. |
-| 41 | Present/runtime | Run Detail-tier baseline after the latest accepted CD win. | Attribute remaining VBlanks across present wait, compose, upload, and event wait. |
-| 42 | Present/runtime | Design a scanline-safe present scheduler before retrying skipped pre-upload waits. | Recover the rejected 4 VBlank present win safely. |
+| 41 | Present/runtime | Done: run Detail-tier baseline after the latest accepted CD win. | `present_wait_vb=157`, `restore_vb=18`, `compose_vb=0`, `upload_vb=0`, and `advance_vb=1`; present serialization is the largest measured remaining bucket. |
+| 42 | Present/runtime | Redesign the staged present scheduler with separate render-prep and CD-prefetch slack budgets. | Recover present wait without repeating the `loop_vb 1235 -> 1306` regression from stealing held-loop prefetch time. |
 | 43 | Present/runtime | Separate upload completion wait from display VSync wait in metrics and code shape. | Identify hidden serialization in `grUpdateDisplay()`. |
 | 44 | Present/runtime | Avoid double update work on empty capture entries. | Lower `render`/held overhead on scenes with blank ledger frames. |
 | 45 | Setup/runtime | Persist same-raft and non-holiday overlays across scene loops where heap probes prove safe. | Lower setup time without active-loop risk. |
