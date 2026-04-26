@@ -708,6 +708,7 @@ rectangle pressure.
 | `P4-75` | Failed: lower tight-slack direct-stage cap from `8 KB` to `4 KB`. | Regressed `loop_vb 1234 -> 1237`, `blocking_vb 8 -> 13`, and `prefetch_overrun_vb 8 -> 13`; the accepted `8 KB` cap remains the local knee. |
 | `P4-76` | Failed: stream-window prefetch while a prepared frame waits for its present VBlank. | It removed the prepared-present duplicate prep work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; do not spend prepared-wait slack on raw reads without a cost predictor or grouped-read metadata. |
 | `P4-77` | Failed: shrink the post-prepared-present stream window to `12 KB`. | `prefetch_overrun_vb 8 -> 1`, but coverage collapsed (`due_misses 0 -> 26`, `blocking_vb 8 -> 89`, `loop_vb 1234 -> 1245`); smaller raw windows are exhausted until pack groups or another stage slot preserve near-term entries. |
+| `P4-78` | Failed: add a second exact-payload stage slot at the `3` VBlank lower bound. | Coverage still degraded (`due_misses 0 -> 3`, `blocking_vb 8 -> 28`, `loop_vb 1234 -> 1238`, `prefetch_overrun_vb 8 -> 11`); the second slot needs grouped coverage, not isolated direct reads. |
 
 Prefetch variants to test in order:
 
@@ -1162,6 +1163,10 @@ slack is not free CD budget unless the read is cost-predicted or pack-grouped.
 A `12 KB` post-prepared-present window probe made the same point from the other
 side: refill overrun nearly disappeared, but due-frame coverage collapsed. The
 next meaningful CD step should preserve coverage first, then shorten reads.
+A constrained two-entry direct-stage queue also failed, which narrows the
+target further: the missing primitive is not another isolated frame buffer, it
+is a grouped read that keeps a useful covered frame range while avoiding full
+raw-window refill cost.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
