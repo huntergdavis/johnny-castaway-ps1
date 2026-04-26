@@ -45,11 +45,16 @@ echo "==> 7. resolve picks → scratch/holidays-selected/"
 "$PY" scripts/holidays-resolve-picks.py | tail -2
 
 echo
-echo "==> 8. red-team QA pass"
+echo "==> 8. final-review HTML"
+"$PY" scripts/holidays-final-review.py | tail -1
+
+echo
+echo "==> 9. red-team QA pass"
 "$PY" scripts/holidays-redteam.py | tail -10
 
 echo
 echo "==> done."
-echo "    HTML preview:    scratch/holidays-preview.html"
-echo "    Contact sheet:   scratch/holidays-contact-sheet.png"
-echo "    Picks staged at: scratch/holidays-selected/  (using defaults)"
+echo "    HTML preview:     scratch/holidays-preview.html"
+echo "    Contact sheet:    scratch/holidays-contact-sheet.png"
+echo "    Final review:     scratch/holidays-final-review.html"
+echo "    Picks staged at:  scratch/holidays-selected/  (using defaults)"
