@@ -704,6 +704,8 @@ rectangle pressure.
 | `P4-71` | Failed: restrict prepared-present to exactly `4` held-slack VBlanks. | The equality guard reduced speculative work (`restore_calls 192 -> 168`, `compose_calls 191 -> 167`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the accepted `>=4` shape stays as baseline. |
 | `P4-72` | Failed: restrict prepared-present to `4` or `5` held-slack VBlanks. | The max-slack cap regressed the same timing (`loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`) and increased prep calls (`restore_calls 192 -> 206`); guard pruning needs better prepared-used metrics before another attempt. |
 | `P4-73` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-present. | Visible timing stayed flat and two prep calls were saved, but no key metric improved and total hidden CD read time increased (`read_vb 407 -> 416`); keep the `6` VBlank guard. |
+| `P4-74` | Failed: lower tight-slack direct-stage cap from `8 KB` to `6 KB`. | Exact no-op against the current fishing1 baseline; it does not change the active direct-stage decisions. |
+| `P4-75` | Failed: lower tight-slack direct-stage cap from `8 KB` to `4 KB`. | Regressed `loop_vb 1234 -> 1237`, `blocking_vb 8 -> 13`, and `prefetch_overrun_vb 8 -> 13`; the accepted `8 KB` cap remains the local knee. |
 
 Prefetch variants to test in order:
 
