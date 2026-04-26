@@ -3477,7 +3477,7 @@ void grClearScreen(PS1Surface *sfc)
 void grDrawBackground(void)
 {
     enum {
-        GR_MAX_UPLOAD_RECTS = 16,
+        GR_MAX_UPLOAD_RECTS = 8,
         GR_UPLOAD_BAND_MERGE_GAP = 1
     };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.

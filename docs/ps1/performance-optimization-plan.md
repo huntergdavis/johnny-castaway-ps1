@@ -840,6 +840,7 @@ from perturbing the deterministic cadence.
 | `P4-171` | Done: skip disabled foreground-pilot ADS caption scene lookup. | Guarding the fishing1/fishing2/fishing3 `captionsOnAdsStart()` lookup behind `ps1CaptionsEnabled` keeps the exact no-caption fishing1 cadence and work identity flat while avoiding default scene-start caption string checks; `jcreborn.exe` remains `149504` and `FG\\FISHING1.FG2` remains LBA `399`. |
 | `P4-172` | Failed/no promotion: reuse the window-prefetch candidate entry in guarded held-loop paths. | The refactor kept exact no-caption fishing1 timing and work identity flat, but it did not improve any tracked counter and grew the ELF (`740568 -> 741216` after tightening, `742828` in the first draft); source was reverted and this should wait for a broader prefetch state-machine rewrite or finer CPU counters. |
 | `P4-173` | Failed/no-op: lower the direct-stage payload cap from `8 KB` to `7 KB`. | The exact no-caption fishing1 gate matched baseline across timing, CD, prefetch, gfx, pack LBA, and binary size (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=68`, `jcreborn.exe=149504`); source was reverted and direct-stage cap tuning remains exhausted. |
+| `P4-174` | Done: lower the local dirty-upload rectangle cap from `16` to `8`. | Fishing1's measured `max_upload_rects=6`, so the smaller cap preserves exact upload behavior (`upload_rects=502`, `cap_hits=0`) while trimming stack/binary pressure slightly (`jcreborn.elf 740568 -> 740556`, PS-EXE unchanged at `149504`). |
 
 Prefetch variants to test in order:
 
