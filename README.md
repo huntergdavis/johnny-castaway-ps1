@@ -21,7 +21,7 @@ wave animation, holiday overlay, input, SPU).
 </p>
 
 <p align="center">
-  Press <strong>START</strong> mid-scene for the pause menu — sound mute, day/night and holiday overrides, perf log toggle, debug info, set time/date, save to memory card.
+  Press <strong>START</strong> mid-scene for the pause menu — Resume, Options (sound, day/night, tide, raft, holiday, captions, perf log), Save Settings to Memcard, Reset Loop, Next Scene, Debug Info, Set Time/Date.
 </p>
 
 <p align="center">
@@ -30,6 +30,14 @@ wave animation, holiday overlay, input, SPU).
 
 <p align="center">
   Thirty-two added holiday emblems packed into the PS1 holiday sprite sheet.
+</p>
+
+<p align="center">
+  <img src="docs/readme/fishing1-captions.png" width="62%" alt="FISHING 1 with closed captions enabled">
+</p>
+
+<p align="center">
+  Closed captions toggle from <strong>Pause → Options → Captions: ON</strong>. A dark band appears at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text — accessibility-first and tied to the original Sierra scene-by-scene caption corpus.
 </p>
 
 ## Download and play
@@ -177,6 +185,44 @@ background / waves / overlays.
 | Triangle | Advance frame (paused) |
 | Circle | Toggle max speed |
 | X / L1 / L2 / R1 / R2 | Reserved |
+
+## Closed captions
+
+Pause → **Options** → **Captions: ON** turns on closed captions. While
+playing, a dark semi-transparent band appears at the bottom of the
+frame for ~5 seconds at each scene start with descriptive subtitle
+text. Off by default; toggle is per-session unless saved to memcard.
+
+The text corpus comes from the [`closed_captions`](https://github.com/huntergdavis/jc_reborn/tree/closed_captions)
+branch of the upstream `jc_reborn` engine — three short lines per
+scene at ~30–35 chars/line, condensed for the PS1's display
+constraints. The PS1 port adds a runtime hook
+(`captionsOnAdsStart`) that fires when the foreground pilot starts
+each scene, plus a content-driven re-audit of the ADS-tag → caption
+map (the original sequential map had ~20 mismatches; see
+[`docs/ps1/caption-audit-2026-04-26.yaml`](docs/ps1/caption-audit-2026-04-26.yaml)).
+
+Implementation:
+
+- `src/ps1_captions.{c,h}` — caption text, scene-to-ADS map, runtime state, on-screen renderer.
+- `src/foreground_pilot.c` — fires `captionsOnAdsStart("FISHING", N)` (etc.) at scene start; bails when captions are disabled, so it's free when off.
+- `src/graphics_ps1.c` — `captionsRender()` draws the band + text inside `grUpdateDisplay` after the scene compose, before VSync.
+- Glyph atlas is shared with the pause menu (one font upload, no duplication).
+
+Confirmed-correct ADS+tag mappings (per visual sign-off):
+
+| ADS+tag | scene plays | caption |
+|---|---|---|
+| FISHING 1 | starfish | "Johnny goes fishing. He catches a starfish. He throws it back." |
+| FISHING 2 | life raft | "Johnny goes fishing. He catches a life raft. He drags it ashore." |
+| FISHING 3 | octopus  | "Johnny goes fishing. He catches five green fish. Then an angry octopus. The octopus chokes him." |
+
+Other 60 ADS+tag mappings are content-driven best-fit assignments
+from the audit; HIGH-confidence matches dominate (FISHING 1–3 above,
+all 6 JOHNNY, all 5 MARY, both MISCGAG, both SUZY, BUILDING 1–5).
+LOW-confidence slots — STAND idle variants and a few VISITOR / WALKSTUF
+edges — will be refined as more scenes are validated under the
+fishing1 bar.
 
 ## Documentation
 

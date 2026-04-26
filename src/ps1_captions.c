@@ -433,6 +433,11 @@ static const struct TCaption captions[] = {
         "Johnny climbs aboard\n"
         "and sails away."},
 
+    {"fishingraft",
+        "Johnny goes fishing.\n"
+        "He catches a life raft.\n"
+        "He drags it ashore."},
+
     {NULL, NULL}  /* sentinel */
 };
 
@@ -468,14 +473,14 @@ static const struct TCaptionSceneMap captionSceneMap[] = {
     {"buildingdone", "BUILDING",  6},
 
     /* FISHING.ADS scenes */
-    {"scene18", "FISHING",  1},
-    {"scene19", "FISHING",  2},
-    {"scene24", "FISHING",  3},
-    {"scene21", "FISHING",  4},
-    {"scene22", "FISHING",  5},
-    {"scene23", "FISHING",  6},
-    {"scene20", "FISHING",  7},
-    {"scene25", "FISHING",  8},
+    {"scene18",      "FISHING",  1},  /* confirmed: starfish */
+    {"fishingraft",  "FISHING",  2},  /* confirmed: life raft */
+    {"scene20",      "FISHING",  3},  /* confirmed: octopus */
+    {"scene21",      "FISHING",  4},  /* guess: shark drag */
+    {"scene22",      "FISHING",  5},  /* guess: shark eats */
+    {"scene23",      "FISHING",  6},  /* guess: big green fish */
+    {"scene24",      "FISHING",  7},  /* guess: crab */
+    {"scene19",      "FISHING",  8},  /* guess: boot kept */
 
     /* JOHNNY.ADS scenes */
     {"scene26", "JOHNNY",  1},
