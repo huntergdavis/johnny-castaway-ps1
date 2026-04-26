@@ -653,6 +653,7 @@ blindly shrinking/growing the window.
 | `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); keep the accepted `8`-row gap. |
 | `P4-93` | Failed: compile hot playback translation units with `-O3`. | It reduced prepared restore/compose calls (`187 -> 182`) but regressed `loop_vb 1227 -> 1229`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; keep the SDK `-O2` default and prefer targeted hot functions/assembly. |
 | `P4-94` | Failed: read tight-slack direct-stage sectors straight into the stream-window buffer. | It removed one local seed copy in theory but regressed `loop_vb 1227 -> 1231`, `loop_reads 68 -> 69`, and `seek_back 7 -> 9`; direct-stage seeding must preserve current window coverage shape. |
+| `P4-95` | Failed: skip the held-loop wait when no slack and no prepared frame are available. | The apparent overshoot cleanup regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 10`, `prefetch_overrun_vb 7 -> 10`, and added three restore/compose calls; the wait is currently part of CD/render pacing. |
 
 Prefetch variants to test in order:
 
@@ -1111,6 +1112,11 @@ active-loop read and two backward seeks, regressing loop time and refill
 pressure. The useful follow-up is not "read into a different buffer"; it is a
 merge-preserving direct-stage seed that appends to or preserves the existing
 window coverage.
+A no-slack held-loop wait skip also lost. The skipped wait looked locally
+redundant when no prepared frame was available, but it regressed `loop_vb` to
+`1231`, raised both CD pressure counters to `10`, and added three speculative
+restore/compose calls. Treat the held-wait shape as part of the current
+deterministic cadence until an explicit frame-deadline scheduler replaces it.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
