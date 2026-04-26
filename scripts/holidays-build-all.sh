@@ -11,21 +11,25 @@
 #   6. Generate default-picks fallback.
 #   7. Resolve picks → scratch/holidays-selected/.
 #   8. Build the final-review HTML.
-#   9. Run the red-team QA pass (20 checks) — any FAIL aborts.
+#   9. Run the red-team QA pass (21 checks) — any FAIL aborts.
 #
 # Run after editing holidays.yml or any renderer file. ~2.5s.
 #
 # --clean        Wipe scratch/holidays-art/ before rendering so deleted
 #                renderers don't leave stale PNGs behind.
+# --with-meta    Also run scripts/holidays-redteam-meta.py at the end
+#                (~3 s extra; verifies the red-team itself catches
+#                the bugs it claims to catch).
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 PY=${PYTHON:-python3}
 
+RUN_META=0
 case "${1:-}" in
     -h|--help)
-        sed -n '2,20p' "$0" | sed -e 's/^# \{0,1\}//'
+        sed -n '2,22p' "$0" | sed -e 's/^# \{0,1\}//'
         exit 0
         ;;
     --clean)
@@ -36,6 +40,9 @@ case "${1:-}" in
         # after a restore makes Python skip recompilation). Wipe on
         # --clean.
         find scripts -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+        ;;
+    --with-meta)
+        RUN_META=1
         ;;
     "")
         ;;
@@ -80,6 +87,12 @@ echo "==> 8. final-review HTML"
 echo
 echo "==> 9. red-team QA pass"
 "$PY" scripts/holidays-redteam.py | tail -10
+
+if [ "$RUN_META" = "1" ]; then
+    echo
+    echo "==> 10. red-team meta-tests"
+    "$PY" scripts/holidays-redteam-meta.py | tail -12
+fi
 
 echo
 echo "==> done."
