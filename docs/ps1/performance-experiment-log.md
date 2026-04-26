@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `63737abc ps1: skip base-diff fg2 OT clear` |
-| Run ID | `20260425-210131` |
+| Commit | `this commit: ps1: fast-path tile-local PAL4 spans` |
+| Run ID | `20260425-222321` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip` |
-| `loop_vb` | `1242` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path` |
+| `loop_vb` | `1240` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `165` |
+| `overrun_vb` | `163` |
 | `blocking_vb` | `20` |
 | `loop_reads` | `69` |
 | `prefetch_hits` | `154` |
 | `prefetch_due_misses` | `1` |
-| `prefetch_overrun_vb` | `12` |
+| `prefetch_overrun_vb` | `11` |
 | `restore_bytes` | `2510092` |
 | `upload_bytes` | `17172480` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
@@ -133,6 +133,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-async-window-refill-prototype` | dirty experiment after `63737abc` | Start stream-window refill reads asynchronously during held-frame prefetch and poll them on later held iterations, while preserving synchronous due-frame reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed hard. Work identity stayed stable, but timing regressed: `loop_vb 1242 -> 1267`, `overrun_vb 165 -> 190`, `blocking_vb 20 -> 71`, and `prefetch_overrun_vb 12 -> 64`. Artifact: `scratch/ps1-perf-iterate/20260425-220858/summary.json`. | Do not promote. Naive async refill converts hidden slack into worse controller/CD blocking in this runtime shape; retry only with dedicated async metrics, explicit CD-state ownership, and a scheduler that proves completion before due-frame pressure. |
 | 2026-04-25 | `fg2-clean-rect-intersection-skip` | dirty experiment after `63737abc` | Before scanning clean-rect restore backups, skip any clean rect whose bounds do not intersect the previous dirty tile bounds. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Total loop stayed flat, but CD/prefetch timing regressed: `loop_vb=1242`, `overrun_vb=165`, `blocking_vb 20 -> 23`, and `prefetch_overrun_vb 12 -> 14`; visual work changed only by `restore_calls 156 -> 155`. Artifact: `scratch/ps1-perf-iterate/20260425-221258/summary.json`. | Do not promote. The added intersection check costs more than the rare skipped restore scan saves on fishing1; future restore wins should remove restore work earlier in the pack/dirty plan rather than adding per-frame screening. |
 | 2026-04-25 | `cd-stream-file-lba-cache` | dirty experiment after `63737abc` | Cache each stream-read helper's file-start LBA locally instead of recomputing `CdPosToInt(cdfile->pos)` before every `CdIntToPos()` call. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as a VBlank-level no-op. Work identity and key timings matched baseline exactly: `loop_vb=1242`, `overrun_vb=165`, `blocking_vb=20`, `prefetch_overrun_vb=12`, `render=156`, `compose_calls=155`, and `upload_calls=156`. Artifact: `scratch/ps1-perf-iterate/20260425-221719/summary.json`. | Do not promote. The conversion cost is below the current JCPERF2 resolution and not on the observed bottleneck path; retry only with finer CPU counters or if CD helper cleanup is being done for code size/readability. |
+| 2026-04-25 | `fg2-pal4-tile-local-fast-path` | `this commit` | Most fishing1 PAL4 spans are visible and wholly inside one 320px tile; cache row tile pointers and call the opaque-run compositor directly for that common case while leaving cross-tile/clipped spans on the generic path. | `./scripts/build-ps1.sh`, then two strict runs with `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Promoted. Reproduced exactly: `loop_vb 1242 -> 1240`, `overrun_vb 165 -> 163`, `blocking_vb=20`, `prefetch_overrun_vb 12 -> 11`, and visual-work identity stayed stable (`render=156`, `restore_calls=156`, `compose_calls=155`, `upload_calls=156`). Artifacts: `scratch/ps1-perf-iterate/20260425-222158/summary.json`, `scratch/ps1-perf-iterate/20260425-222321/summary.json`. | Promote. This is a bounded compositor hot-path win: it avoids repeated tile/clipping setup for tile-local spans without changing dirty scope, CD reads, upload bytes, or fallback behavior. |
 
 ## Retry Queue
 

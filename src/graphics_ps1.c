@@ -1862,6 +1862,8 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         uint16 relY;
         uint16 spanCount;
         int rowScreenY;
+        uint16 *rowLeftPixels = NULL;
+        uint16 *rowRightPixels = NULL;
         /* Dirty rows are tracked per 320px tile; do not merge across the tile boundary. */
         int rowLeftDirtyStart = 320;
         int rowLeftDirtyEnd = -1;
@@ -1874,12 +1876,32 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         spanCount = grReadPackedSpanU16(spanData + offset + 2u);
         offset += 4u;
         rowScreenY = (int)screenY + (int)relY;
+        if (rowScreenY >= 0 && rowScreenY < 480) {
+            int tileLocalY;
+            PS1Surface *tileLeft;
+            PS1Surface *tileRight;
+
+            if (rowScreenY < 240) {
+                tileLocalY = rowScreenY;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = rowScreenY - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+            if (tileLeft != NULL && tileLeft->pixels != NULL)
+                rowLeftPixels = tileLeft->pixels + (tileLocalY * (int)tileLeft->width);
+            if (tileRight != NULL && tileRight->pixels != NULL)
+                rowRightPixels = tileRight->pixels + (tileLocalY * (int)tileRight->width);
+        }
 
         for (uint16 span = 0; span < spanCount; span++) {
             uint16 relX;
             uint16 pixelCount;
             uint32 packedBytes;
             int spanX;
+            int spanEndX;
             int dirtyStart;
             int dirtyEnd;
 
@@ -1898,8 +1920,9 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
                 return;
 
             spanX = (int)screenX + (int)relX;
+            spanEndX = spanX + (int)pixelCount;
             dirtyStart = spanX;
-            dirtyEnd = spanX + (int)pixelCount;
+            dirtyEnd = spanEndX;
             if (rowScreenY >= 0 && rowScreenY < 480) {
                 if (dirtyStart < 320 && dirtyEnd > 0) {
                     int leftStart = dirtyStart;
@@ -1931,11 +1954,25 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
                 }
             }
 
-            grCompositePacked4SpanToBackground(spanData + offset,
-                                               pixelCount,
-                                               palette,
-                                               spanX,
-                                               rowScreenY);
+            if (spanX >= 0 && spanEndX <= 320 && rowLeftPixels != NULL) {
+                grCompositePacked4OpaqueRun(rowLeftPixels + spanX,
+                                            spanData + offset,
+                                            0,
+                                            pixelCount,
+                                            palette);
+            } else if (spanX >= 320 && spanEndX <= 640 && rowRightPixels != NULL) {
+                grCompositePacked4OpaqueRun(rowRightPixels + (spanX - 320),
+                                            spanData + offset,
+                                            0,
+                                            pixelCount,
+                                            palette);
+            } else {
+                grCompositePacked4SpanToBackground(spanData + offset,
+                                                   pixelCount,
+                                                   palette,
+                                                   spanX,
+                                                   rowScreenY);
+            }
             offset += packedBytes;
         }
         if (rowLeftDirtyStart < rowLeftDirtyEnd)

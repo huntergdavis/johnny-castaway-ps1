@@ -561,6 +561,7 @@ span like an arbitrary transparent sprite.
 | `P3-08` | Keep the old compositor behind a debug token until the new path is validated. | Fast rollback. |
 | `P3-09` | Done: keep PAL4 dirty marking outside the per-span compositor and split it per tile row. | Removes redundant `grMarkRectDirty` calls without widening restore extents across the 320px tile boundary. |
 | `P3-10` | Failed: inline the PAL4 span compositor into the decoded row loop. | Work identity stayed stable, but `loop_vb 1243 -> 1249`, `blocking_vb 21 -> 23`, and `prefetch_overrun_vb 12 -> 14`; local helper inlining lost to code-shape effects. |
+| `P3-11` | Done: fast-path PAL4 spans wholly inside one 320px tile. | Reproduced `loop_vb 1242 -> 1240` with stable visual-work counters; this keeps the generic path for cross-tile/clipped spans but avoids repeated tile setup for the common tile-local case. |
 
 Expected impact: active frames average only 2.4K-4.9K visible pixels, so this
 is likely behind held-frame and dirty-upload fixes for fishing. It becomes more
@@ -582,9 +583,10 @@ Current perf-branch target: keep squeezing CD latency and upload cost without
 changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
 removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
-marking, and the `6` VBlank fallthrough guard, fishing1 high-tide reports
-`loop_vb=1243`, `blocking_vb=21`, `due_misses=1`, and prefetch
-`overrun_vb=12`. Row-level restore created enough
+marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip, and
+the tile-local PAL4 span fast path, fishing1 high-tide reports
+`loop_vb=1240`, `blocking_vb=20`, `due_misses=1`, and prefetch
+`overrun_vb=11`. Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
 Next experiments should target the remaining blocking, bounded refill overrun,
