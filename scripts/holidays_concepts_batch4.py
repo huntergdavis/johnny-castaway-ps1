@@ -996,7 +996,7 @@ def election_v4(h):
     # Star on box
     compose_star(sp, 40, 42, 4, YELLOW)
     # Excited Johnny on left throwing ballots
-    compose_johnny_simple(sp, 6, 56, hat_color=BLUE if False else GRAY, shirt_color=RED)
+    compose_johnny_simple(sp, 6, 56, hat_color=GRAY, shirt_color=RED)
     # Ballots flying around in the air
     for cx, cy in [(12, 16), (20, 8), (28, 12), (36, 6),
                     (60, 14), (68, 8), (74, 18), (50, 4)]:
