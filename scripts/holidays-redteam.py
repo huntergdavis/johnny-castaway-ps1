@@ -436,9 +436,21 @@ def check_save_button(fails, warns):
     if not HTML_PATH.exists():
         return
     text = HTML_PATH.read_text(encoding="utf-8")
-    for needle in ('id="save-btn"', 'id="zoom-modal"', 'filter-btn'):
+    for needle in ('id="save-btn"', 'id="load-input"', 'id="zoom-modal"',
+                   'filter-btn', 'variant-btn'):
         if needle not in text:
             fails.append(f"HTML missing required hook: {needle}")
+
+
+def check_final_review_present(fails, warns):
+    """Final-review HTML present (built by holidays-build-all.sh step 8)."""
+    p = REPO / "scratch" / "holidays-final-review.html"
+    if not p.exists():
+        warns.append(f"missing {p.relative_to(REPO)} (run holidays-final-review.py)")
+        return
+    text = p.read_text(encoding="utf-8")
+    if 'class="card"' not in text:
+        fails.append("final-review HTML lacks card markup")
 
 
 # ---------------------------------------------------------------------------
@@ -469,6 +481,7 @@ def main():
         ("table.c generated",   lambda: check_table_c_present(fails, warns)),
         ("HTML integrity",      lambda: check_html_integrity(holidays, fails, warns)),
         ("HTML save / modal",   lambda: check_save_button(fails, warns)),
+        ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
     ]
 
     print(f"red-team pass over {len(holidays)} holidays\n")
