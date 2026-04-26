@@ -1146,8 +1146,18 @@ blocking VBlanks, `5` prefetch-overrun VBlanks, `68` active-loop reads,
 `16.5 MB` upload volume, `401` upload rects, and `3.09 MB` restore volume on
 fishing1 high tide.
 
+A post-holiday/menu integration probe exposed a new regression target. With the
+exact pre-integration no-holiday fishing1 variant forced (`lowtide 0 night 1
+holiday 0 raft-stage 4 island-pos -154 54`), the row-dirty restore path
+restored and the no-holiday stamp path cached, active playback measured
+`loop_vb 1221 -> 1306` (`+85`, about `+7.0%`), `overrun_vb 149 -> 256`,
+`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. Treat this as a
+first-class optimization target: recover the lost slack without removing the
+new menu/holiday feature set.
+
 | Priority | Area | Target | Expected signal |
 |---:|---|---|---|
+| 0 | Integration/regression | Recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returns toward `loop_vb=1221`, `blocking_vb<=5`, `prefetch.overrun_vb<=5`, with holiday/menu functionality intact and correctness counters zero. |
 | 1 | CD/pack | Add pack-emitted FG2 prefetch group metadata with aligned `offset/length` and covered frame range. | Lower `reads`, `blocking_vb`, and `prefetch.overrun_vb` without raising `pack_bytes` materially. |
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |

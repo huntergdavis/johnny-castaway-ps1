@@ -67,6 +67,7 @@ extern uint32 ps1FrameCount;
 static int              menuVisible  = 0;
 static int              menuCursor   = 0;
 static enum PauseMenuState menuState = PAUSE_MENU_MAIN;
+static int              menuFramebufferPrimed = 0;
 
 /* "Next scene" request flag consumed by ads/story loop. */
 int pauseMenuRequestNextScene = 0;
@@ -388,6 +389,7 @@ void pauseMenuInit(void)
     menuVisible = 0;
     menuCursor  = 0;
     menuState   = PAUSE_MENU_MAIN;
+    menuFramebufferPrimed = 0;
 }
 
 void pauseMenuShow(void)
@@ -399,6 +401,7 @@ void pauseMenuShow(void)
     menuVisible = 1;
     menuCursor  = 0;
     menuState   = PAUSE_MENU_MAIN;
+    menuFramebufferPrimed = 0;
     prevButtons = 0xFFFF;  /* Treat all buttons as "held" so the initial
                               press that opened the menu is not re-acted. */
 
@@ -424,6 +427,7 @@ void pauseMenuShow(void)
 void pauseMenuHide(void)
 {
     menuVisible = 0;
+    menuFramebufferPrimed = 0;
     /* Sound stays in user's chosen state — no auto-restore. */
 }
 
@@ -548,17 +552,19 @@ static void pmPrintf(const char *fmt, ...)
  */
 static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
 {
-    /* Dim — full screen, semi-trans 50% black. Halves what's behind. */
-    POLY_F4 *dim = (POLY_F4*)*nextp;
-    *nextp += sizeof(POLY_F4);
-    setPolyF4(dim);
-    setSemiTrans(dim, 1);
-    setRGB0(dim, 0, 0, 0);
-    setXY4(dim,   0,   0,
-                640,   0,
-                  0, 480,
-                640, 480);
-    addPrim(otDim, dim);
+    if (otDim != NULL) {
+        /* Dim — full screen, semi-trans 50% black. Halves what's behind. */
+        POLY_F4 *dim = (POLY_F4*)*nextp;
+        *nextp += sizeof(POLY_F4);
+        setPolyF4(dim);
+        setSemiTrans(dim, 1);
+        setRGB0(dim, 0, 0, 0);
+        setXY4(dim,   0,   0,
+                    640,   0,
+                      0, 480,
+                    640, 480);
+        addPrim(otDim, dim);
+    }
 
     /* Panel: 3 rectangles. Middle full width, top/bottom narrower so
      * the corners stay as dim background — fakes rounded corners. */
@@ -973,14 +979,26 @@ static int handleSetTimeInput(uint16 pressed)
  * ------------------------------------------------------------------------- */
 int pauseMenuUpdate(void)
 {
+    int drawDim;
+
     if (!menuVisible) return 0;
 
-    /* Re-upload scene bg every pause frame so the dim quad doesn't
-     * compound (each frame's semi-trans 50% would otherwise re-halve
-     * VRAM). */
-    grForceFullRedrawNextFrame();
-    grDrawBackground();
-    DrawSync(0);
+    /* Match the scene renderer: wait first, then touch the single
+     * framebuffer. Waiting at the end caused the next pause iteration to
+     * erase the completed menu immediately after VBlank, making the display
+     * alternate between raw scene and menu. */
+    VSync(0);
+
+    drawDim = !menuFramebufferPrimed;
+
+    if (!menuFramebufferPrimed) {
+        /* Restore the raw scene once, then draw the semi-transparent dim
+         * once. Re-uploading the raw scene every pause frame fights the
+         * single framebuffer and produces visible scene/menu flicker. */
+        grForceFullRedrawNextFrame();
+        grDrawBackground();
+        DrawSync(0);
+    }
 
     /* Upload our font on first frame. */
     if (!pmFontUploaded)
@@ -1001,7 +1019,7 @@ int pauseMenuUpdate(void)
     addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
 
     pmBuildPanelQuads(&next,
-                      &pauseOt[PAUSE_OT_LEN - 2],
+                      drawDim ? &pauseOt[PAUSE_OT_LEN - 2] : NULL,
                       &pauseOt[PAUSE_OT_LEN - 3]);
 
     /* Globals consumed by pmPrintf for text. */
@@ -1060,6 +1078,8 @@ int pauseMenuUpdate(void)
 
     /* Submit the OT to GPU. */
     DrawOTag(&pauseOt[PAUSE_OT_LEN - 1]);
+    DrawSync(0);
+    menuFramebufferPrimed = 1;
 
     /* JCPAUSE per-frame diag. */
     {
@@ -1069,9 +1089,6 @@ int pauseMenuUpdate(void)
                    (unsigned long)pauseFrameDbg, fontID, (int)menuState, menuCursor);
         }
     }
-
-    /* VSync to pace at 60 Hz while paused. */
-    VSync(0);
 
     return 1;
 }

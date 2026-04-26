@@ -888,9 +888,20 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
 
 static void fgBackdropStampHoliday(void)
 {
-    const struct Holiday *holiday = holidayById(islandState.holiday);
+    static int cachedHolidayId = -2;
+    static const struct Holiday *cachedHoliday = NULL;
+    int holidayId = islandState.holiday;
+    const struct Holiday *holiday;
 
-    if (!holiday)
+    if (holidayId <= 0)
+        return;
+
+    if (cachedHolidayId != holidayId) {
+        cachedHoliday = holidayById(holidayId);
+        cachedHolidayId = holidayId;
+    }
+    holiday = cachedHoliday;
+    if (holiday == NULL)
         return;
     if (gFgBackdropSlot.numSprites[2] == 0)
         return;
