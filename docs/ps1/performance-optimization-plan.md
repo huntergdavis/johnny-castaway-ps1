@@ -1178,6 +1178,10 @@ when a CD read appeared to leave the normal `4` VBlank prepare budget, doing
 render prep in that same held slice caused five due misses and many more
 backward seeks. The scheduler needs frame-level budgeting that preserves future
 coverage, not local leftover-slack accounting.
+A naive one-VBlank host-deadline offset was also rejected. It did not change
+`loop_vb`; it only lowered `target_vb` by one because the existing
+`presentedVBlanks` accumulator absorbed the offset. Present-latency work must
+change scheduler state, not only the deadline conversion.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
