@@ -747,6 +747,7 @@ rectangle pressure.
 | `P4-111` | Failed: compile-gate the heavy JCPAD/JCSPI diagnostics block out of default playback. | `jcreborn.exe` shrank `137216 -> 133120` and ELF shrank `707916 -> 700304`, but timing regressed (`loop_vb 1227 -> 1232`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); code-size wins must still pass the deterministic cadence gate. |
 | `P4-112` | Failed: pointer-swap current/previous dirty-row tables instead of copying them. | It saved one total loop VBlank and shrank the binary (`jcreborn.exe 137216 -> 135168`), but failed the visible-pressure gate (`blocking_vb 6 -> 9`, `prefetch_overrun_vb 6 -> 9`); render-side micro-wins can still be unsafe if they shift CD cadence. |
 | `P4-113` | Failed/no-op: narrow clean-rect restore scanning to previous dirty Y ranges. | Timing and tracked work matched baseline exactly, but ELF size grew (`707916 -> 709856`); runtime row-scan pruning needs finer CPU counters or pack-emitted restore bands before another attempt. |
+| `P4-114` | Failed: use a `24 KB` stream window only for lookahead prefetches with at least `8` held VBlanks of slack. | It reduced active reads (`68 -> 56`) and loop CD read time (`285 -> 268`), but visible timing regressed (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 9`, `prefetch_overrun_vb 6 -> 9`); hidden CD efficiency is not enough unless the read-cost model preserves visible cadence. |
 
 Prefetch variants to test in order:
 
