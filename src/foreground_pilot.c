@@ -1650,7 +1650,7 @@ static int fgRuntimeCanPrepareStagedFrame(void)
            gFgRuntime.stagedFrameValid &&
            !gFgRuntime.preparedFrameValid &&
            gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
-           fgRuntimeHeldSlackBeforeWait() >= FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS;
+           fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS;
 }
 
 static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
