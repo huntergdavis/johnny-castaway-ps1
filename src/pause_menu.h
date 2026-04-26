@@ -27,6 +27,7 @@ enum PauseMenuState {
     PAUSE_MENU_SCENE_INFO,
     PAUSE_MENU_CONTROLS,    /* legacy / no longer surfaced from main */
     PAUSE_MENU_SET_TIME,
+    PAUSE_MENU_ISLAND_POS,
 };
 
 /* Initialize the pause menu system (call once during startup, after graphicsInit). */

@@ -319,6 +319,13 @@ static int editYear   = 2026;
 static int editHour   = 12;
 static int editMinute = 0;
 
+/* Island-position editing fields (Set Island Pos sub-screen).
+ * Mirror of the host overrides; copied in on entry, applied on confirm. */
+static int editIslandX     = 0;
+static int editIslandY     = 0;
+static int editIslandValid = 0;
+static int editIslandField = 0;   /* 0=X, 1=Y, 2=mode (AUTO/MANUAL) */
+
 /* Debounce: tracks which buttons were held last frame so we only act on
  * fresh presses (not auto-repeat while held). */
 static uint16 prevButtons = 0;
@@ -335,6 +342,7 @@ enum {
     MENU_NEXT_SCENE,
     MENU_DEBUG_INFO,
     MENU_SET_TIME,
+    MENU_SET_ISLAND_POS,
     MENU_COUNT
 };
 
@@ -731,6 +739,53 @@ static void drawSetTime(void)
 }
 
 /* ---------------------------------------------------------------------------
+ *  Sub-screen: Set Island Pos
+ * ---------------------------------------------------------------------------
+ *  Three fields: X offset, Y offset, and a Mode toggle (AUTO vs MANUAL).
+ *  AUTO = let the runtime pick (random varpos for fishing scenes,
+ *         (0, 0) otherwise).
+ *  MANUAL = use the X/Y values from this screen on every scene.
+ *  Range guards: X clamped to -250..+250, Y to -100..+200. Real
+ *  observed varpos from fgLoopRandomVarPos lives well inside that.
+ *  X confirms back to main; START goes back without applying.
+ * ------------------------------------------------------------------------- */
+static void drawIslandPos(void)
+{
+    pmPrintf("\n");
+    drawSeparator();
+    pmPrintf("    SET ISLAND POSITION\n");
+    drawSeparator();
+    pmPrintf("\n");
+
+    pmPrintf(" %s X offset:  %s%+4d%s\n",
+             editIslandField == 0 ? ">" : " ",
+             editIslandField == 0 ? "[" : " ",
+             editIslandX,
+             editIslandField == 0 ? "]" : " ");
+    pmPrintf(" %s Y offset:  %s%+4d%s\n",
+             editIslandField == 1 ? ">" : " ",
+             editIslandField == 1 ? "[" : " ",
+             editIslandY,
+             editIslandField == 1 ? "]" : " ");
+    pmPrintf(" %s Mode:      %s%s%s\n",
+             editIslandField == 2 ? ">" : " ",
+             editIslandField == 2 ? "[" : " ",
+             editIslandValid ? "MANUAL" : "AUTO",
+             editIslandField == 2 ? "]" : " ");
+
+    pmPrintf("\n");
+    pmPrintf(" UP/DOWN  select field\n");
+    pmPrintf(" LEFT/RIGHT adjust X/Y by 4\n");
+    pmPrintf("           toggle mode\n");
+    pmPrintf(" X = confirm   START = back\n");
+
+    if (!editIslandValid && (editIslandX != 0 || editIslandY != 0)) {
+        pmPrintf("\n");
+        pmPrintf(" (X/Y kept; AUTO ignores them)\n");
+    }
+}
+
+/* ---------------------------------------------------------------------------
  *  Main menu drawing
  * ------------------------------------------------------------------------- */
 static const char *perfLevelLabel(void)
@@ -749,6 +804,9 @@ extern int hostForcedNight;
 extern int hostForcedHoliday;
 extern int hostForcedLowTide;
 extern int hostForcedRaftStage;
+extern int hostForcedIslandPosValid;
+extern int hostForcedIslandX;
+extern int hostForcedIslandY;
 extern int ps1SoftHour;
 extern int ps1SoftMinute;
 extern int ps1SoftMonth;
@@ -869,6 +927,8 @@ static void drawMainMenu(void)
              menuCursor == MENU_DEBUG_INFO ? ">" : " ");
     pmPrintf(" %s Set Time/Date\n",
              menuCursor == MENU_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Set Island Pos\n",
+             menuCursor == MENU_SET_ISLAND_POS ? ">" : " ");
 
     drawSeparator();
     pmPrintf("  X = select   START = resume\n");
@@ -972,6 +1032,16 @@ static int handleMainInput(uint16 pressed)
             editMinute = ps1SoftMinute;
             menuState = PAUSE_MENU_SET_TIME;
             editField = 0;
+            prevButtons = 0xFFFF;
+            break;
+
+        case MENU_SET_ISLAND_POS:
+            /* Sync edit fields from current host overrides. */
+            editIslandX     = hostForcedIslandX;
+            editIslandY     = hostForcedIslandY;
+            editIslandValid = hostForcedIslandPosValid;
+            editIslandField = 0;
+            menuState   = PAUSE_MENU_ISLAND_POS;
             prevButtons = 0xFFFF;
             break;
 
@@ -1110,6 +1180,59 @@ static int handleSetTimeInput(uint16 pressed)
     return 1;
 }
 
+/* Set Island Pos input. UP/DOWN selects field; LEFT/RIGHT adjusts;
+ * X confirms (write through to host overrides) and goes back; START
+ * goes back without applying changes. */
+static int handleIslandPosInput(uint16 pressed)
+{
+    if (pressed & PAD_START) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_SET_ISLAND_POS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        editIslandField--;
+        if (editIslandField < 0) editIslandField = 2;
+    }
+    if (pressed & PAD_DOWN) {
+        editIslandField++;
+        if (editIslandField > 2) editIslandField = 0;
+    }
+
+    int delta = 0;
+    if (pressed & PAD_RIGHT) delta = +1;
+    if (pressed & PAD_LEFT)  delta = -1;
+    if (delta) {
+        switch (editIslandField) {
+        case 0:
+            editIslandX = clampInt(editIslandX + delta * 4, -250, 250);
+            /* Editing X implies the user wants MANUAL mode. */
+            editIslandValid = 1;
+            break;
+        case 1:
+            editIslandY = clampInt(editIslandY + delta * 4, -100, 200);
+            editIslandValid = 1;
+            break;
+        case 2:
+            editIslandValid = !editIslandValid;
+            break;
+        }
+    }
+
+    if (pressed & PAD_CROSS) {
+        hostForcedIslandPosValid = editIslandValid;
+        hostForcedIslandX        = editIslandX;
+        hostForcedIslandY        = editIslandY;
+        menuState  = PAUSE_MENU_MAIN;
+        menuCursor = MENU_SET_ISLAND_POS;
+        prevButtons = 0xFFFF;
+    }
+
+    return 1;
+}
+
 /* ---------------------------------------------------------------------------
  *  pauseMenuUpdate -- one frame of the overlay
  *
@@ -1180,6 +1303,9 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SET_TIME:
         keepOpen = handleSetTimeInput(pressed);
         break;
+    case PAUSE_MENU_ISLAND_POS:
+        keepOpen = handleIslandPosInput(pressed);
+        break;
     case PAUSE_MENU_SCENE_INFO:
     case PAUSE_MENU_CONTROLS:
         keepOpen = handleSubInput(pressed);
@@ -1205,6 +1331,7 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SCENE_INFO: drawSceneInfo(); break;
     case PAUSE_MENU_CONTROLS:   drawControls();  break;
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;
+    case PAUSE_MENU_ISLAND_POS: drawIslandPos(); break;
     }
 
     /* Submit the OT to GPU. */

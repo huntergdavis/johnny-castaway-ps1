@@ -129,11 +129,14 @@ static int hostForcedStoryDay = -1;
 static int hostBootDirectSceneIndex = -1;
 #endif
 
-static int hostForcedIslandPosValid = 0;
-static int hostForcedIslandX = 0;
-static int hostForcedIslandY = 0;
-/* Non-static so the pause menu can flip these. -1 = auto (random per
- * scene). Set via BOOTMODE tokens (legacy) or pause-menu cycling. */
+/* Non-static so the pause menu can flip these. hostForcedIslandPosValid
+ * is the gate (0 = AUTO/varpos-random, 1 = use the X/Y values).
+ * Set via BOOTMODE tokens (legacy) or pause-menu Set Island Pos. */
+int hostForcedIslandPosValid = 0;
+int hostForcedIslandX = 0;
+int hostForcedIslandY = 0;
+/* -1 = auto (random per scene). Set via BOOTMODE tokens (legacy) or
+ * pause-menu Options cycling. */
 int hostForcedLowTide = -1;
 int hostForcedRaftStage = -1;
 int hostForcedNight = -1;
