@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `this commit: gate pad/SPI diagnostics off by default` |
-| Run ID | `20260425-171533` |
+| Commit | `197f18c6 ps1: retune FG2 stream window to 20kb` |
+| Run ID | `20260425-172201` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `24 KB default, 31760-byte runtime buffer` |
-| `loop_vb` | `1317` |
+| Window | `20 KB default, 27664-byte runtime buffer` |
+| `loop_vb` | `1312` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `240` |
-| `blocking_vb` | `93` |
+| `overrun_vb` | `235` |
+| `blocking_vb` | `91` |
 | `loop_reads` | `41` |
-| `prefetch_hits` | `147` |
-| `prefetch_due_misses` | `8` |
-| `prefetch_overrun_vb` | `41` |
+| `prefetch_hits` | `144` |
+| `prefetch_due_misses` | `11` |
+| `prefetch_overrun_vb` | `37` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -86,7 +86,8 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-compose-before-vsync` | `407a0ab4` | Move FG2 RAM composition before the VBlank wait so CPU compose work can happen during previous-frame scanout, then upload after VBlank. | `./scripts/ps1-perf-iterate.sh --case "fishing1::fgpilot fishing1" --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/20260425-163323/summary.json --allow-regression 2 --require-improvement` | Failed. It reduced prefetch overrun but stole useful held-prefetch time: `loop_vb 1297 -> 1309`, `overrun_vb 220 -> 232`, `blocking_vb 76 -> 100`, `prefetch_overrun_vb 31 -> 14`, `due_misses 7 -> 14`. Artifact: `scratch/ps1-perf-iterate/20260425-164826/fishing1/perf-summary.json`. | Do not promote. In this runtime, the current post-VBlank compose preserves more prefetch opportunity than the attempted render overlap. |
 | 2026-04-25 | `fg2-tight-slack-20kb-window` | `9def720f` | Keep the normal `24 KB` window for most refills but use a `20 KB` window for the tightest allowed prefetches, reducing overrun without globally sacrificing future coverage. | `./scripts/ps1-perf-iterate.sh --case "fishing1::fgpilot fishing1" --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/20260425-163323/summary.json --allow-regression 2 --require-improvement` | Failed. One infrastructure-only run exited `255` before boot metrics; the real run regressed badly: `loop_vb 1297 -> 1363`, `overrun_vb 220 -> 286`, `blocking_vb 76 -> 100`, `prefetch_overrun_vb 31 -> 31`, `due_misses 7 -> 11`. Artifacts: `scratch/ps1-perf-iterate/20260425-165118/fishing1/headless-regtest.log`, `scratch/ps1-perf-iterate/20260425-165200/fishing1/perf-summary.json`. | Do not promote. Mixing window sizes destabilizes future coverage more than it helps tight-slack refill cost. |
 | 2026-04-25 | `x-aware-upload-rect-scratch` | dirty `a70fed61` | Use the existing tile-level dirty X extents to upload only the dirty rectangle width per tile, packing partial-width rows through one bounded static scratch buffer. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/20260425-163323/summary.json --allow-regression 2 --require-improvement` | Failed structurally. The build booted and reached `JCPERF scene-start`, but the scene did not reach `JCPERF2` scene-end before the `4200`-frame headless window ended. DuckStation exited successfully; the log also emitted `psxgpu: transfer data length ... is not a multiple of 16, rounding` during the partial uploads. Artifact: `scratch/ps1-perf-iterate/20260425-170443/fishing1/perf-summary.json`. | Do not promote. Naive partial-width upload with per-partial scratch/`DrawSync` is too slow or unsafe to measure as-is. Retry only with 16-pixel-aligned batching, fewer syncs, or a per-row/strip plan that preserves one final `DrawSync`. |
-| 2026-04-25 | `pad-spi-diagnostics-gated-default-off` | this commit | Pause support introduced always-on JCPAD/JCSPI diagnostic sampling and prints; normal screensaver playback should poll Start but leave deep controller diagnostics opt-in. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 20 --require-improvement` | Promoted after a strict-gate red-team pass documented the tradeoff. Baseline to current: `loop_vb 1369 -> 1317`, `overrun_vb 292 -> 240`, `blocking_vb 88 -> 93`, `prefetch_overrun_vb 35 -> 41`, `due_misses 8 -> 8`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-171354/summary.json`, `scratch/ps1-perf-iterate/20260425-171533/summary.json`. | Promote. A `52` VBlank loop win is material, and default runtime should not carry diagnostic-only controller/SPI probes; keep `pad-diag` / `pad-debug` for controller debugging. |
+| 2026-04-25 | `pad-spi-diagnostics-gated-default-off` | `1337691d` | Pause support introduced always-on JCPAD/JCSPI diagnostic sampling and prints; normal screensaver playback should poll Start but leave deep controller diagnostics opt-in. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 20 --require-improvement` | Promoted after a strict-gate red-team pass documented the tradeoff. Baseline to current: `loop_vb 1369 -> 1317`, `overrun_vb 292 -> 240`, `blocking_vb 88 -> 93`, `prefetch_overrun_vb 35 -> 41`, `due_misses 8 -> 8`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-171354/summary.json`, `scratch/ps1-perf-iterate/20260425-171533/summary.json`. | Promote. A `52` VBlank loop win is material, and default runtime should not carry diagnostic-only controller/SPI probes; keep `pad-diag` / `pad-debug` for controller debugging. |
+| 2026-04-25 | `fg2-window-20kb-post-diagnostics` | `197f18c6` | After removing default pad/SPI diagnostic overhead, re-test the smaller `20 KB` stream window; shorter refill reads may now beat the `24 KB` coverage tradeoff. | `./scripts/ps1-perf-iterate.sh --case "fishing1::fgpilot fishing1 prefetch-window 20480" ...` then default `./scripts/ps1-perf-iterate.sh --scene fishing1 ...` | Promoted. Parameter and default-code runs matched. Baseline to current: `loop_vb 1317 -> 1312`, `overrun_vb 240 -> 235`, `blocking_vb 93 -> 91`, `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`, but total playback and CD stall both improved. Artifacts: `scratch/ps1-perf-iterate/20260425-172026/summary.json`, `scratch/ps1-perf-iterate/20260425-172201/summary.json`. | Promote as the new default. The smaller window is now a net win under the post-diagnostics baseline; continue watching due misses in longer scenes. |
 
 ## Retry Queue
 
@@ -104,7 +105,7 @@ Current accepted baseline for the next experiment:
 | Holiday overlap restamping | Correctness clean but no measured fishing1 benefit; retry only after per-scene/holiday overlap stats show sparse contact. |
 | Skip FG2 `ClearOTagR` | Correctness clean but no VBlank-level movement; retry after adding a cheap CPU-work metric or if primitive-buffer cleanup becomes a code-size pass. |
 | X-aware upload via one scratch rectangle | Booted but failed to finish before `JCPERF2`; retry only with 16-pixel-aligned strip batching and no extra per-partial `DrawSync` calls. |
-| `20 KB`, `22 KB`, `23 KB`, `26 KB`, and `28 KB` post-slack windows | All lost to `24 KB` or tied without improvement; retry only after pack grouping or async refill changes the CD cost model. |
+| `22 KB`, `23 KB`, `26 KB`, and `28 KB` post-slack windows | All lost to the accepted smaller-window point or tied without improvement; retry only after pack grouping or async refill changes the CD cost model. |
 
 ## Harness Notes
 
