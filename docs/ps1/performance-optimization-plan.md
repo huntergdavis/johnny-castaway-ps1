@@ -575,6 +575,82 @@ blindly shrinking/growing the window.
 | `P4-14` | Avoid cross-file prefetch as a first pass. | Current measured stall is inside one FG2 file, not between scene files. |
 | `P4-15` | Done: require at least `3` held VBlanks before starting a stream-window refill. | Avoids short-slack reads that become visible delay; `6` VBlanks was too strict and raised due misses. |
 | `P4-16` | Done: change the default stream window from `32 KB` to `24 KB` after the post-slack sweep. | `24 KB` improved `loop_vb 1325 -> 1322` and `prefetch_overrun_vb 67 -> 58`; `20 KB` and `28 KB` lost. |
+| `P4-17` | Done: retune the default stream window from `24 KB` to `20 KB` after pad/SPI diagnostics were gated off. | `20 KB` improved `loop_vb 1317 -> 1312`, `blocking_vb 93 -> 91`, and `prefetch_overrun_vb 41 -> 37`; due misses rose `8 -> 11`. |
+| `P4-18` | Done: lower the stream-window refill guard from `3` to `2` VBlanks after the 20 KB retune. | `loop_vb 1312 -> 1300`, `blocking_vb 91 -> 66`, `due_misses 11 -> 4`, with bounded `prefetch_overrun_vb 37 -> 45`. |
+| `P4-19` | Failed: lower the stream-window refill guard from `2` to `1` VBlank. | `due_misses 4 -> 2` did not compensate for `loop_vb 1300 -> 1312` and `prefetch_overrun_vb 45 -> 62`; keep the `2` VBlank default. |
+| `P4-20` | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the post-merge baseline. | Key metrics stayed identical; keep the stricter `5` VBlank default until another timing change makes this guard matter again. |
+| `P4-21` | Done: retune the default stream window from `20 KB` to `18 KB` after the 2 VBlank guard. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8` are the next CD target. |
+| `P4-22` | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | CD submetrics improved slightly, but total `loop_vb` regressed `1296 -> 1297`; keep input timing at the known-good rate unless a dedicated IRQ/input harness proves a better tradeoff. |
+| `P4-23` | Done via dirty pipeline: restore exact per-row X extents before the next CD attempt. | `loop_vb 1296 -> 1266`, `blocking_vb 75 -> 36`, `due_misses 8 -> 1`; reduced RAM restore work created more usable held-frame slack for existing prefetch policy. |
+| `P4-24` | Failed: re-sweep `16/20/24/32 KB` stream windows after row-level restore under the `2` VBlank guard. | All tested sizes regressed total loop (`1270`, `1276`, `1281`, `1285`) versus the then-accepted `18 KB` baseline (`1266`); the `16 KB` point only became useful after the later `3` VBlank guard. |
+| `P4-25` | Failed as a no-op: targeted clearing for row-level dirty state. | Key metrics stayed identical at VBlank resolution; retry only with finer CPU counters or during a broader dirty-state refactor. |
+| `P4-26` | Failed gate: raise the post-row-restore refill guard from `2` to `3` VBlanks. | `loop_vb 1266 -> 1257` and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56` and `due_misses 1 -> 9`; this is a useful starvation signal, not an accepted default. |
+| `P4-27` | Done: pair the post-row-restore `16 KB` window with the `3` VBlank refill guard. | `loop_vb 1266 -> 1254`, `blocking_vb 36 -> 35`, and `prefetch_overrun_vb 26 -> 6`; extra `due_misses 1 -> 6` are bounded and now the next CD target. |
+| `P4-28` | Failed: lower staged-copy fallthrough from `5` to `4` VBlanks under the `16 KB`/`3` VBlank baseline. | `blocking_vb 35 -> 31` and `due_misses 6 -> 5`, but total `loop_vb 1254 -> 1264`; keep the `5` VBlank guard because playback speed is the primary gate. |
+| `P4-29` | Failed: use a `2` VBlank guard only for immediate next-frame window staging while keeping lookahead at `3` VBlanks. | `due_misses 6 -> 1` and `blocking_vb 35 -> 27`, but `loop_vb 1254 -> 1268` and `prefetch_overrun_vb 6 -> 22`; immediate short reads still need cheaper grouping. |
+| `P4-30` | Done via compositor/dirty pipeline: aggregate PAL4 dirty marks per tile row. | `loop_vb 1254 -> 1248`, `blocking_vb 35 -> 21`, and `due_misses 6 -> 1`; `prefetch_overrun_vb 6 -> 15` is the next CD smoothing target. |
+| `P4-31` | Failed: raise the post-row-dirty refill guard from `3` to `4` VBlanks. | `loop_vb 1248 -> 1244` and `prefetch_overrun_vb 15 -> 12`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; keep visible blocking as a hard gate. |
+| `P4-32` | Done: raise the staged-copy fallthrough guard from `5` to `6` VBlanks after per-tile row dirty marking. | `loop_vb 1248 -> 1243`, `prefetch_overrun_vb 15 -> 12`, and `blocking_vb` stayed `21`. |
+| `P4-33` | Failed: re-sweep `15 KB` and `14 KB` stream windows after the `6` VBlank fallthrough guard. | `15 KB` rounded to the current behavior; `14 KB` reduced `prefetch_overrun_vb 12 -> 9` but regressed `loop_vb 1243 -> 1244` and `blocking_vb 21 -> 36`. |
+| `P4-34` | Failed as no-op: hoist the PAL4 dirty visible-row check out of the per-span loop. | Key metrics stayed exactly flat at VBlank resolution; retry only with finer CPU counters or combined compositor branch cleanup. |
+| `P4-35` | Failed: call `markTileDirtyRect()` directly from PAL4 row dirty aggregation. | The direct path regressed `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 17`; generic `grMarkRectDirty()` stays faster in this build. |
+| `P4-36` | Failed via present pipeline: compose FG2 RAM tiles before `VSync(0)`. | Correctness stayed clean, but `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 39`, `due_misses 1 -> 4`, and `prefetch_overrun_vb 12 -> 15`; render sequencing is coupled to the current prefetch cadence. |
+| `P4-37` | Failed: raise the staged-copy fallthrough guard from `6` to `7` VBlanks. | `blocking_vb` stayed `21`, but `loop_vb 1243 -> 1246` and `prefetch_overrun_vb 12 -> 13`; keep the local optimum at `6` VBlanks. |
+| `P4-38` | Failed: point due window hits directly at stream-window bytes instead of copying to `frameBuffer`. | Correctness stayed clean, but `loop_vb 1243 -> 1250`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 19`; the explicit copy remains faster in this code shape. |
+| `P4-39` | Failed as no-op: use a circular FG2 stream-window head to avoid most refill `memmove()` calls. | Correctness stayed clean, but `loop_vb=1243`, `blocking_vb=21`, `prefetch_overrun_vb=12`, `hits=154`, and `due_misses=1` matched baseline exactly; the next CD target needs cheaper/grouped reads, not RAM compaction. |
+| `P4-40` | Rejected: skip `Setloc` for sequential aligned CD reads. | The old gate passed (`loop_vb 1243 -> 1233`, `blocking_vb 21 -> 16`, `setloc 76 -> 9`), but the visual workload collapsed (`compose_calls 155 -> 4`, `upload_calls 156 -> 14`), so this is an invalid speedup and the gate needs work-identity checks. |
+| `P4-41` | Failed: shrink stream-window reads only under tight held-frame slack. | `loop_vb 1243 -> 1242` and `prefetch_overrun_vb 12 -> 6`, but `blocking_vb 21 -> 36` and `due_misses 1 -> 5`; reading less proves the overrun source but sacrifices coverage. |
+| `P4-42` | Failed as no-op: fast-return from zero-delay event waits after Start polling. | Key metrics matched baseline exactly; retry only with finer CPU counters or when cleaning up event/pause code shape. |
+| `P4-43` | Rejected after red-team review: skip the pre-upload present wait after a held-loop VBlank. | Headless timing improved (`loop_vb 1243 -> 1239`, `blocking_vb 21 -> 20`), but the safety proof is insufficient because frame load/compose can consume the earlier VBlank before `LoadImage`; retry only with an explicit scanline-safe present scheduler. |
+| `P4-44` | Done: skip `grBeginFrame()` OT reset on base-diff FG2 frames. | Reproduced `loop_vb 1243 -> 1242` and `blocking_vb 21 -> 20` with unchanged visual-work counters; keep OT reset for non-base-diff wave/legacy primitive paths. |
+| `P4-45` | Failed: re-test an `18 KB` stream window after the OT-clear cleanup. | `loop_vb 1242 -> 1251`, `blocking_vb 20 -> 42`, and `due_misses 1 -> 4`; keep `16 KB` as the current local window knee. The harness now fails baseline-label mismatches so parameter probes cannot silently skip comparisons. |
+| `P4-46` | Failed as no-op: call `foregroundPilotRuntimeCompose()` unconditionally from `grUpdateDisplay()`. | The compose function already guards inactive runtime state, but removing the outer active check left all key VBlank metrics unchanged at the current baseline. |
+| `P4-47` | Failed as no-op: guard holiday stamping at the compose call site for non-holiday scenes. | Fishing1 has `holiday=0`, but avoiding the no-op helper call did not move any VBlank-level metric. |
+| `P4-48` | Failed: replace restore-row `memcpy()` with a local aligned 32-bit copy helper. | `loop_vb` stayed flat, but `blocking_vb 20 -> 22` and `prefetch_overrun_vb 12 -> 14`; keep libc `memcpy` for restore rows. |
+| `P4-49` | Failed as no-op: cache the base-diff header flag in runtime state. | Replacing repeated `header.reserved0` masks with a cached byte left all key timing and work-identity metrics unchanged at `loop_vb=1242`; retry only with finer CPU counters or as cleanup. |
+| `P4-50` | Failed as no-op: exact-width upload for single dirty tile rows. | Fishing1 produced no measurable single-row upload bands; timing, `upload_bytes`, `upload_rects`, and `dirty_rows` all matched the accepted baseline exactly. |
+| `P4-51` | Failed: lower the staged-copy fallthrough guard from `6` to `5` VBlanks after the OT-clear skip. | The retest regressed `loop_vb 1242 -> 1245` and `prefetch_overrun_vb 12 -> 13`; keep `6` VBlanks as the local optimum. |
+| `P4-52` | Failed hard: naive async stream-window refill. | Starting `CdRead` asynchronously and polling during held frames regressed `loop_vb 1242 -> 1267`, `blocking_vb 20 -> 71`, and `prefetch_overrun_vb 12 -> 64`; async needs first-class scheduling/metrics before another retry. |
+| `P4-53` | Failed: skip clean-rect restore scans that do not intersect previous dirty tile bounds. | `loop_vb` stayed flat at `1242`, but `blocking_vb 20 -> 23` and `prefetch_overrun_vb 12 -> 14`; the runtime intersection screen costs more than the one skipped restore call saves. |
+| `P4-54` | Failed as no-op: cache stream-read file-start LBA inside CD helpers. | Avoiding repeated `CdPosToInt(cdfile->pos)` calls left all key metrics exactly flat at `loop_vb=1242`, `blocking_vb=20`, and `prefetch_overrun_vb=12`; not worth promoting as a perf change. |
+| `P4-55` | Failed: split cross-tile PAL4 spans directly at runtime after the tile-local fast path. | Work identity stayed stable, but `loop_vb 1240 -> 1246`, `blocking_vb 20 -> 27`, and `prefetch_overrun_vb 11 -> 18`; boundary-span splitting should be pack-time if retried. |
+| `P4-56` | Failed as no-op: add a dedicated PAL4 zero-offset opaque-run helper. | The tile-local path already calls the helper with constant `srcPixel=0`; a separate helper left all key metrics flat at `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`. |
+| `P4-57` | Failed: lower the staged-copy fallthrough guard from `6` to `5` VBlanks after the tile-local PAL4 fast path. | The retest regressed `loop_vb 1240 -> 1244`, `blocking_vb 20 -> 22`, and `prefetch_overrun_vb 11 -> 15`; keep `6` VBlanks as the current slack knee. |
+| `P4-58` | Failed as no-op: coalesce consecutive full-width restore rows into one `memcpy()`. | Work identity and timing stayed exactly flat at `loop_vb=1240`, `restore_bytes=2510092`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; future restore wins need pack-emitted bands or less restore work. |
+| `P4-59` | Failed as no-op: unroll the PAL4 opaque run loop from two pixels to four pixels per iteration. | Work identity and timing stayed exactly flat at `loop_vb=1240`, `compose_calls=155`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; future compositor wins need generated or pack-specialized command streams. |
+| `P4-60` | Failed: lower the stream-window refill guard from `3` to `2` VBlanks after the tile-local PAL4 fast path. | The retest regressed `loop_vb 1240 -> 1245`, `blocking_vb 20 -> 26`, and `prefetch_overrun_vb 11 -> 18`; keep `3` VBlanks as the current lower slack bound. |
+| `P4-61` | Failed as no-op: remove the held-loop prefetch-window would-read double-check. | Letting `fgRuntimeTryPrefetchWindow()` perform the single target/window/slack decision left all key metrics flat at `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; retry only inside broader prefetch scheduler cleanup. |
+| `P4-62` | Done: split dirty tile uploads into contiguous vertical dirty-row bands. | `upload_bytes 17172480 -> 16387840` and `dirty_rows 26832 -> 25606` with flat `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; next upload work should reduce `upload_rects 351 -> 518` pressure. |
+| `P4-63` | Done: merge 2-row clean gaps inside vertical upload bands. | `upload_rects 518 -> 427` with flat timing; `upload_bytes` gives back only `108160` bytes versus the accepted vertical-band split and remains `676480` below the old full-band upload baseline. |
+| `P4-64` | Done: prime the first real payload during setup when frame 0 is empty. | `loop_vb 1240 -> 1237`, `blocking_vb 20 -> 13`, and `due_misses 1 -> 0`; setup pays one extra read and `prefetch_overrun_vb` rises `11 -> 13`, so the remaining CD work should target refill overrun rather than due misses. |
+| `P4-65` | Done: direct-stage small payloads at the minimum accepted slack. | `loop_vb 1237 -> 1235`, `blocking_vb 13 -> 11`, and `prefetch_overrun_vb 13 -> 11` with `due_misses=0`; this validates a narrow 3-VBlank version of the old failed short-slack direct-stage idea. |
+| `P4-66` | Failed: extend direct-stage small payloads to 4 VBlanks of slack. | The retest regressed `loop_vb 1235 -> 1239`, `blocking_vb 11 -> 39`, `prefetch_overrun_vb 11 -> 12`, and `due_misses 0 -> 5`; direct staging at 4 VBlanks loses too much stream-window lookahead until grouped reads or a second stage slot exist. |
+| `P4-67` | Failed as no-op: shrink the post-direct-stage stream window to 15 KB. | The parameter probe matched the 16 KB default exactly at `loop_vb=1235`, `blocking_vb=11`, `prefetch_overrun_vb=11`, `due_misses=0`, and `loop_reads=68`; one-step window shrinkage is not a current lever. |
+| `P4-68` | Done: seed the stream window from accepted direct-stage reads. | `blocking_vb 11 -> 10`, `prefetch_overrun_vb 11 -> 10`, `read_vb 409 -> 405`, `loop_read_vb 289 -> 285`, `seq 65 -> 66`, and `seek_back 8 -> 7` with flat `loop_vb=1235` and `due_misses=0`; direct-stage sectors are now reused instead of thrown away. |
+| `P4-69` | Failed: staged next-VBlank present scheduler. | Detail showed `present_wait_vb=157`, but composing the staged next frame in the final held-loop slack regressed `loop_vb 1235 -> 1306`, `overrun_vb 158 -> 229`, `blocking_vb 10 -> 13`, and `prefetch_overrun_vb 10 -> 13`; present work must not consume the slack currently hiding CD reads. |
+| `P4-70` | Done: prepare staged frames during held slack only when at least `4` VBlanks remain. | Two strict runs matched: `loop_vb 1235 -> 1234`, `overrun_vb 158 -> 157`, `blocking_vb 10 -> 8`, `prefetch_overrun_vb 10 -> 8`, and `due_misses=0`; tradeoff is extra RAM prep work (`restore_calls 156 -> 192`, `compose_calls 155 -> 191`), so the next pass should reduce speculative prepare cost. |
+| `P4-71` | Failed: restrict prepared-present to exactly `4` held-slack VBlanks. | The equality guard reduced speculative work (`restore_calls 192 -> 168`, `compose_calls 191 -> 167`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the accepted `>=4` shape stays as baseline. |
+| `P4-72` | Failed: restrict prepared-present to `4` or `5` held-slack VBlanks. | The max-slack cap regressed the same timing (`loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`) and increased prep calls (`restore_calls 192 -> 206`); guard pruning needs better prepared-used metrics before another attempt. |
+| `P4-73` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-present. | Visible timing stayed flat and two prep calls were saved, but no key metric improved and total hidden CD read time increased (`read_vb 407 -> 416`); keep the `6` VBlank guard. |
+| `P4-74` | Failed: lower tight-slack direct-stage cap from `8 KB` to `6 KB`. | Exact no-op against the current fishing1 baseline; it does not change the active direct-stage decisions. |
+| `P4-75` | Failed: lower tight-slack direct-stage cap from `8 KB` to `4 KB`. | Regressed `loop_vb 1234 -> 1237`, `blocking_vb 8 -> 13`, and `prefetch_overrun_vb 8 -> 13`; the accepted `8 KB` cap remains the local knee. |
+| `P4-76` | Failed: stream-window prefetch while a prepared frame waits for its present VBlank. | It removed the prepared-present duplicate prep work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; do not spend prepared-wait slack on raw reads without a cost predictor or grouped-read metadata. |
+| `P4-77` | Failed: shrink the post-prepared-present stream window to `12 KB`. | `prefetch_overrun_vb 8 -> 1`, but coverage collapsed (`due_misses 0 -> 26`, `blocking_vb 8 -> 89`, `loop_vb 1234 -> 1245`); smaller raw windows are exhausted until pack groups or another stage slot preserve near-term entries. |
+| `P4-78` | Failed: add a second exact-payload stage slot at the `3` VBlank lower bound. | Coverage still degraded (`due_misses 0 -> 3`, `blocking_vb 8 -> 28`, `loop_vb 1234 -> 1238`, `prefetch_overrun_vb 8 -> 11`); the second slot needs grouped coverage, not isolated direct reads. |
+| `P4-79` | Failed: reuse a prepared current-frame RAM background through the normal upload path. | This removed duplicate prepared work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the extra prep work is currently timing/pacing, not removable without replacing that pacing. |
+| `P4-80` | Failed as unproven: targeted current dirty-row state clearing. | Key timing stayed exactly flat (`loop_vb=1234`, `blocking_vb=8`, `prefetch_overrun_vb=8`) and work identity shifted slightly (`restore_calls 192 -> 190`, `compose_calls 191 -> 189`); retry only with lower-level CPU counters or during a broader dirty-state refactor. |
+| `P4-81` | Failed: re-sweep `14/18/20 KB` stream windows after prepared-present. | All tested sizes regressed total loop versus the accepted `16 KB` default (`1236`, `1247`, `1249` vs `1234`), confirming raw window-size tuning is exhausted until grouped/pack-aware reads improve coverage per transaction. |
+| `P4-82` | Failed strict gate but promising: consume the leading empty capture artifact during setup. | `loop_vb 1234 -> 1228` and `overrun_vb 157 -> 151` with zero due misses, but `blocking_vb 8 -> 9`, `prefetch_overrun_vb 8 -> 9`, and render count dropped by one non-payload frame; retry with CD smoothing and explicit visual policy for empty artifacts. |
+| `P4-83` | Done: consume the leading empty capture artifact during setup with a one-VBlank setup settle. | Strict gates passed: `loop_vb 1234 -> 1227`, `overrun_vb 157 -> 150`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 8 -> 7`, and `due_misses=0`; render count drops by one non-payload frame and the settle cost is outside active playback. |
+| `P4-84` | Failed: consume the leading empty capture artifact with two setup settle VBlanks. | The second setup settle regressed the active loop (`loop_vb 1227 -> 1235`, `blocking_vb 7 -> 13`, `prefetch_overrun_vb 7 -> 13`); one setup settle is the local cadence knee. |
+| `P4-85` | Failed/no-op: re-sweep adjacent `15 KB` and `17 KB` raw stream windows after leading-empty setup consume. | `15 KB` tied the accepted `16 KB` default exactly (`loop_vb=1227`, `blocking_vb=7`); `17 KB` regressed to `loop_vb=1238`, `blocking_vb=29`, and `due_misses=2`. |
+| `P4-86` | Failed: re-test prepared-current RAM reuse after leading-empty setup consume, including reuse-plus-immediate-prefetch. | Both variants removed duplicate work (`restore_calls 187 -> 155`, `compose_calls 187 -> 155`) but regressed active playback to `loop_vb=1231`, `blocking_vb=12`, and `prefetch_overrun_vb=12`; the removed work still acts as CD-phase pacing. |
+| `P4-87` | Failed: expand exact small-payload direct staging from exactly `3` to `3-4` VBlanks of slack. | `loop_vb 1227 -> 1228`, `blocking_vb 7 -> 16`, `prefetch_overrun_vb 7 -> 8`, and `due_misses 0 -> 2`; the accepted exact-read path must stay at the `3` VBlank knee. |
+| `P4-88` | Done: widen vertical dirty-upload band clean-gap merge from `2` to `8` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 424 -> 412`; byte cost is small (`upload_bytes 16381440 -> 16424960`) and correctness/fallback counters stayed clean. |
+| `P4-89` | Failed/no-op: re-sweep tight-slack direct-stage payload caps after the 8-row upload merge. | `6 KB` and `10 KB` matched baseline exactly; `4 KB` regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 11`, and `prefetch_overrun_vb 7 -> 11`. Keep `8 KB` until grouped reads or another stage model changes the coverage tradeoff. |
+| `P4-90` | Failed: split immediate-next and pure-lookahead window refill guards. | Keeping immediate staging at `3` VBlanks but requiring `4` VBlanks for standalone lookahead refills regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; scalar slack splitting is exhausted without read-cost prediction or pack groups. |
+| `P4-91` | Failed: runtime read-size predictor for tight lookahead refills. | An `8 KB` tight-read cap improved nominal `loop_vb 1227 -> 1225`, but increased `blocking_vb` and `prefetch_overrun_vb` to `8`, raised loop CD read time, and changed scheduler cadence; `12 KB` regressed to `loop_vb=1233` and `blocking_vb=14`. |
+| `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); keep the accepted `8`-row gap. |
 
 Prefetch variants to test in order:
 
@@ -921,8 +997,139 @@ into one commit.
 ## Red-Team Conclusions
 
 The safest near-term speedup is not a more aggressive timing file. The measured
-runtime is already `1.55x` over the captured timing budget. We need to remove
-or hide work, not lie about the source timing.
+runtime is still `1.139x` over the captured timing budget for fishing1 after
+the latest accepted pass. We need to keep removing or hiding work, not lie
+about the source timing.
+
+Direct-stage scratch window seeding is a small but important direction signal:
+the remaining CD wins are increasingly about preserving useful coverage across
+small reads. It reduced one backward seek and one visible blocking VBlank
+without changing total loop time, which supports the next larger group-metadata
+work rather than more isolated slack or window-size probes.
+
+Held-slack prepared-present is another small but useful bridge result. It saves
+one active-loop VBlank and two visible/refill CD VBlanks, but it does so by
+adding speculative RAM restore/compose work. Keep the win, but treat the next
+present-pipeline target as "same scheduling benefit with less duplicate prep,"
+not as solved present serialization. A simple exact-4 slack guard was tried and
+rejected because it reduced prep calls but gave back one VBlank of loop,
+blocking, and refill-overrun time. A `4`-or-`5` VBlank cap was also rejected
+because it increased prep calls and still regressed the same timing counters,
+and a `3` VBlank threshold kept total loop timing flat while regressing
+blocking/refill by one VBlank and adding more duplicate prep work, so the
+`>=4` guard remains the only accepted prepared-present shape.
+Trying to use prepared-frame wait time for stream-window prefetch reduced the
+duplicate prep work back to the non-prepared baseline, but it also regressed
+loop, blocking, and refill-overrun by one VBlank. That confirms prepared wait
+slack is not free CD budget unless the read is cost-predicted or pack-grouped.
+A `12 KB` post-prepared-present window probe made the same point from the other
+side: refill overrun nearly disappeared, but due-frame coverage collapsed. The
+next meaningful CD step should preserve coverage first, then shorten reads.
+A constrained two-entry direct-stage queue also failed, which narrows the
+target further: the missing primitive is not another isolated frame buffer, it
+is a grouped read that keeps a useful covered frame range while avoiding full
+raw-window refill cost.
+Prepared-current RAM background reuse removed the duplicate restore/compose
+work but regressed the same one-VBlank CD shape. Treat the accepted extra prep
+work as deliberate pacing until a scheduler can replace that timing explicitly.
+An opportunistic post-prefetch leftover-prepare pass was also rejected: even
+when a CD read appeared to leave the normal `4` VBlank prepare budget, doing
+render prep in that same held slice caused five due misses and many more
+backward seeks. The scheduler needs frame-level budgeting that preserves future
+coverage, not local leftover-slack accounting.
+A naive one-VBlank host-deadline offset was also rejected. It did not change
+`loop_vb`; it only lowered `target_vb` by one because the existing
+`presentedVBlanks` accumulator absorbed the offset. Present-latency work must
+change scheduler state, not only the deadline conversion.
+A targeted current dirty-row clear pass was also rejected as unproven. It
+matched the accepted timing exactly and slightly changed prepared-work identity,
+so dirty-state micro-cleanups should wait for finer CPU counters or a larger
+dirty pipeline refactor.
+A post-prepared-present window-size sweep rejected `14 KB`, `18 KB`, and
+`20 KB` windows. The current `16 KB` window remains the local knee: smaller
+windows starve near-term entries and larger windows spill too much held slack.
+Consuming the leading empty capture artifact during setup was first rejected
+because it saved `6` loop VBlanks but raised blocking/refill overrun by one
+VBlank. The accepted retry adds a one-VBlank setup settle, dropping active
+playback to `loop_vb=1227`, `blocking_vb=7`, and `prefetch.overrun_vb=7` while
+keeping `due_misses=0`. The important lesson is that some CD cadence fixes can
+be paid before `loop_start` if they preserve the active-loop scheduler shape.
+A two-VBlank setup settle retry was rejected immediately afterward: it regressed
+the active loop to `loop_vb=1235`, `blocking_vb=13`, and
+`prefetch.overrun_vb=13`. Treat the one-VBlank settle as the current local knee,
+not as evidence that more startup spacing is broadly useful.
+A narrow post-cadence window sweep also left the default unchanged: `15 KB`
+tied the accepted `16 KB` timing exactly, while `17 KB` reintroduced due misses
+and jumped to `blocking_vb=29`. Raw byte-count window tuning is exhausted again.
+Prepared-current RAM reuse was re-tested on the new baseline and still failed.
+It cut duplicate restore/compose calls from `187` to `155`, but worsened active
+playback to `loop_vb=1231` and `blocking_vb=12`; an immediate next-payload
+prefetch refinement did not change the outcome. This remains a scheduler problem,
+not a local reuse toggle.
+Widening exact direct-stage reads to `4` VBlanks of slack also failed. It turned
+some forward window coverage into exact reads, producing `due_misses=2` and
+raising `blocking_vb` to `16`. Keep exact direct staging limited to the minimum
+`3` VBlank slack point until pack grouping changes the coverage tradeoff.
+The dirty-upload merge-gap sweep found a small safe command-pressure win. Raising
+the clean-row merge gap from `2` to `8` rows reduces `LoadImage` rectangles from
+`424` to `412`, with flat timing and a negligible upload-byte increase
+(`+43520` bytes across the scene). This is a micro-optimization, not a speed
+breakthrough, but it trims GPU command overhead without adding a fallback path.
+The post-gap8 direct-stage payload-cap sweep did not produce another win:
+`6 KB` and `10 KB` were exact no-ops, while `4 KB` regressed `loop_vb` to
+`1230` and raised blocking/refill-overrun to `11` VBlanks. Keep the accepted
+`8 KB` cap; future CD work needs grouped/layout-aware coverage, not another
+single payload-size threshold.
+Splitting the scalar refill guard by immediate-vs-lookahead also failed. The
+`4` VBlank lookahead-only guard preserved `due_misses=0`, but regressed
+`loop_vb` to `1230` and raised both `blocking_vb` and refill overrun to `10`.
+That narrows the next CD path: decisions need read-size/sector cost or
+pack-emitted groups, not more fixed slack thresholds.
+The first runtime read-size predictor was not good enough either. Capping
+3-VBlank lookahead reads at `8 KB` made the scene appear two VBlanks faster,
+but increased visible CD pressure and shifted scheduler cadence; `12 KB`
+regressed outright. The predictor needs more information than byte count:
+sector class, seek direction, covered frame range, and per-read elapsed
+histograms are the next useful data.
+The next dirty-upload merge point did not clear the promotion bar. A `12`-row
+clean-gap merge lowers `LoadImage` rectangles from `412` to `399`, but gives
+back `89600` extra upload bytes versus the accepted `8`-row baseline and leaves
+all VBlank timing flat. That says this local runtime threshold is past its
+useful knee; the next upload win should come from pack-emitted/upload-ready
+bands that lower command count without widening DMA volume.
+
+The tight-slack direct-stage pass proves that some previously failed ideas are
+worth retrying after the baseline changes. The old direct-stage attempt failed
+at 1-2 VBlanks of slack; the accepted variant only fires at the proven
+3-VBlank lower bound and only for payloads up to 8 KB, cutting both
+`blocking_vb` and `prefetch.overrun_vb` while keeping `due_misses=0`.
+
+The post-setup-prime `4` VBlank refill-guard retest proved the current slack
+constant family is locally exhausted. It can reduce `loop_vb` from `1237` to
+`1229`, but only by returning `due_misses` and raising `blocking_vb` from `13`
+to `19-20`; future CD work should preserve zero due misses through grouped or
+physically adjacent reads before tightening the guard again.
+
+The post-leading-empty upload gap sweep moved the local runtime knee upward.
+The accepted 8-row dirty-band gap merge keeps timing flat and lowers
+`upload_rects 424 -> 412` for a small byte increase. Wider runtime thresholds
+should not be assumed safe without another sweep; the next larger upload win
+should still move band metadata to pack generation or emit upload-ready layouts.
+
+The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
+`18 KB` parameter probe preserved zero due misses but regressed `loop_vb`,
+`blocking_vb`, and `prefetch.overrun_vb`, so larger reads are still too slow
+unless a future grouped/pipelined layout makes them cheaper to hide.
+
+Timing wins are only valid when work identity stays stable. The sequential
+`Setloc` skip experiment proved that the current Summary gate can accept a run
+where correctness counters are zero but the renderer performed far less work.
+Future acceptance must compare baseline-sensitive counters such as
+`compose_calls`, `upload_calls`, `restore_calls`, `upload_bytes`, and
+`restore_bytes` before promoting any low-level CD or render scheduling change.
+The headless harness now enforces a default `75%` minimum for `render`,
+`restore_calls`, `compose_calls`, and `upload_calls` when comparing against a
+baseline; override only for deliberate pack/render architecture changes.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
