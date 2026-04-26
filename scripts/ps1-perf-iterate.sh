@@ -771,7 +771,7 @@ done
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
 set +e
 python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
-    "$WORK_IDENTITY_MIN_PERCENT" "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
+    "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
