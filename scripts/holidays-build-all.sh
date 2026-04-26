@@ -58,3 +58,20 @@ echo "    HTML preview:     scratch/holidays-preview.html"
 echo "    Contact sheet:    scratch/holidays-contact-sheet.png"
 echo "    Final review:     scratch/holidays-final-review.html"
 echo "    Picks staged at:  scratch/holidays-selected/  (using defaults)"
+
+# Summarize the active picks distribution.
+PICKS=scratch/holidays-picks.json
+[ -f "$PICKS" ] || PICKS=scratch/holidays-picks-default.json
+if [ -f "$PICKS" ]; then
+    echo
+    echo "    Variant distribution (from $PICKS):"
+    "$PY" -c "
+import json, collections
+picks = json.load(open('$PICKS'))
+labels = {'1':'LITERAL', '2':'MINIMALIST', '3':'BUSY', '4':'PLAYFUL', '5':'NIGHT'}
+counts = collections.Counter(str(v) for v in picks.values())
+for k in ('1','2','3','4','5'):
+    print(f'      v{k} {labels[k]:11s}  {counts.get(k, 0):>2d}')
+print(f'      total                 {len(picks):>2d} / 31')
+"
+fi
