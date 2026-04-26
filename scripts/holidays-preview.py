@@ -122,32 +122,44 @@ def main():
         --pick: #4dd599;
       }
       body { background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, -apple-system, sans-serif; margin: 0; padding: 24px; }
-      h1 { color: var(--accent); margin: 0 0 8px; }
-      .subtitle { color: var(--muted); margin: 0 0 24px; }
+      h1 { color: var(--accent); margin: 0 0 8px; font-size: 22px; }
+      .subtitle { color: var(--muted); margin: 0 0 12px; max-width: 800px; }
       .month-section { margin-top: 32px; }
-      .month-header { color: var(--accent); border-bottom: 1px solid var(--panel); padding-bottom: 4px; margin: 24px 0 12px; }
-      .holiday { background: var(--panel); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; display: grid; grid-template-columns: 240px 1fr; gap: 16px; align-items: start; }
+      .month-header { color: var(--accent); border-bottom: 1px solid var(--panel); padding-bottom: 4px; margin: 24px 0 12px; font-size: 18px; }
+      .holiday { background: var(--panel); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; transition: opacity 0.2s; }
+      .holiday.hidden { display: none; }
+      .holiday.has-pick { border-left: 3px solid var(--pick); }
       .holiday-meta { font-size: 13px; }
       .holiday-name { font-size: 16px; color: var(--text); font-weight: 600; }
       .holiday-id { color: var(--muted); font-size: 11px; }
       .holiday-date { color: var(--accent); margin: 4px 0; }
       .holiday-size { color: var(--muted); font-size: 11px; }
-      .holiday-desc { color: var(--text); margin-top: 8px; font-size: 12px; line-height: 1.4; }
+      .holiday-desc { color: var(--text); margin-top: 8px; font-size: 12px; line-height: 1.4; font-style: italic; opacity: 0.9; }
       .holiday-palette { display: flex; gap: 4px; margin-top: 6px; }
       .palette-swatch { width: 16px; height: 16px; border: 1px solid #444; border-radius: 2px; }
-      .variants { display: flex; gap: 16px; align-items: flex-start; }
-      .variant { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+      .variants { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+      .variant { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px; border-radius: 6px; transition: background 0.15s; }
+      .variant:hover { background: rgba(196, 124, 255, 0.1); }
+      .variant.picked { box-shadow: 0 0 0 2px var(--pick); background: rgba(77, 213, 153, 0.15); }
       .variant-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-      .variant-img { background: #000; padding: 4px; border-radius: 4px; image-rendering: pixelated; image-rendering: crisp-edges; }
-      .variant.picked { box-shadow: 0 0 0 2px var(--pick); border-radius: 6px; padding: 4px; }
-      .pick-label { color: var(--pick); font-size: 10px; text-transform: uppercase; }
-      .pick-radio { margin-top: 4px; }
+      .variant.picked .variant-label { color: var(--pick); font-weight: 600; }
+      .variant-img { background: #000; padding: 4px; border-radius: 4px; image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; }
+      .pick-radio { margin-top: 4px; cursor: pointer; }
       .controls { position: sticky; top: 0; background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--panel); margin-bottom: 16px; z-index: 10; }
-      .save-btn { background: var(--pick); color: #000; padding: 8px 16px; border: 0; border-radius: 4px; font: 600 13px sans-serif; cursor: pointer; }
-      .stat { color: var(--muted); margin-left: 16px; font-size: 12px; }
+      .controls-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .btn { background: var(--pick); color: #000; padding: 8px 14px; border: 0; border-radius: 4px; font: 600 13px sans-serif; cursor: pointer; transition: filter 0.15s; }
+      .btn:hover { filter: brightness(1.1); }
+      .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--panel); }
+      .btn-ghost.active { background: var(--accent); color: #000; border-color: var(--accent); }
+      .stat { color: var(--muted); margin-left: 8px; font-size: 13px; }
+      .stat-value { color: var(--pick); font-weight: 600; }
       .legend { color: var(--muted); font-size: 12px; }
-      a.dl-link { color: var(--accent); }
       .missing { color: #f55; padding: 8px 12px; background: #2a1a1a; border-radius: 4px; }
+      /* Modal for image zoom */
+      .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 100; cursor: zoom-out; }
+      .modal.show { display: flex; }
+      .modal img { max-width: 80vw; max-height: 80vh; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; padding: 8px; border-radius: 8px; }
+      .modal-caption { position: absolute; bottom: 24px; color: white; font-size: 14px; }
     """
 
     # Build the holiday cards
@@ -170,20 +182,22 @@ def main():
 
         slug = slugify(h["short_name"])
         variants_html = []
-        for vi in (1, 2, 3):
+        VARIANT_LABELS = ["LITERAL", "MINIMALIST", "BUSY", "PLAYFUL"]
+        for vi in (1, 2, 3, 4):
             png_path = ART_DIR / f"{h['id']:02d}-{slug}-v{vi}.png"
             data_uri = png_to_data_uri(png_path)
             if data_uri:
                 w = h["sprite"]["width"] * 4
                 hh = h["sprite"]["height"] * 4
-                variant_label = ["LITERAL", "MINIMALIST", "BUSY"][vi - 1]
+                variant_label = VARIANT_LABELS[vi - 1]
                 variants_html.append(f'''
                 <div class="variant" data-id="{h['id']}" data-variant="{vi}">
                   <span class="variant-label">v{vi} {variant_label}</span>
-                  <img class="variant-img" src="{data_uri}" width="{w}" height="{hh}" alt="v{vi}">
+                  <img class="variant-img" src="{data_uri}" width="{w}" height="{hh}" alt="v{vi}" title="Double-click to zoom">
                   <input class="pick-radio" type="radio" name="pick-{h['id']}" value="{vi}" id="pick-{h['id']}-{vi}">
                 </div>''')
-            else:
+            elif vi <= 3:
+                # Only flag missing for v1-v3 (v4 is being added incrementally)
                 variants_html.append(f'''
                 <div class="variant"><span class="missing">v{vi} missing<br><small>{html_escape(str(png_path.relative_to(REPO)))}</small></span></div>''')
 
@@ -222,7 +236,8 @@ def main():
         </div>''')
 
     js = """
-      // Highlight picked variants and persist to localStorage
+      // Highlight picked variants, persist to localStorage, support filter + modal zoom
+      const TOTAL_REVIEWABLE = ${len(new_holidays)};
       function pickKey() { return 'jc-holiday-picks-v1'; }
       function loadPicks() {
         try { return JSON.parse(localStorage.getItem(pickKey())) || {}; }
@@ -233,16 +248,38 @@ def main():
       }
       function applyPicks(picks) {
         document.querySelectorAll('.variant').forEach(v => v.classList.remove('picked'));
+        document.querySelectorAll('.holiday').forEach(c => c.classList.remove('has-pick'));
         Object.entries(picks).forEach(([id, vi]) => {
           const r = document.querySelector(`#pick-${id}-${vi}`);
           if (r) {
             r.checked = true;
             r.closest('.variant').classList.add('picked');
+            const card = document.getElementById('h' + id);
+            if (card) card.classList.add('has-pick');
           }
         });
-        document.getElementById('pick-stat').textContent =
-          `${Object.keys(picks).length} / ${document.querySelectorAll('.holiday').length - ${len(originals)}} picks`;
+        const n = Object.keys(picks).length;
+        document.getElementById('pick-stat').innerHTML =
+          `<span class="stat-value">${n}</span> / ${TOTAL_REVIEWABLE} picks`;
+        applyFilter();
       }
+      let filterMode = 'all';
+      function applyFilter() {
+        document.querySelectorAll('.holiday').forEach(card => {
+          if (filterMode === 'all') { card.classList.remove('hidden'); return; }
+          const hasPick = card.classList.contains('has-pick');
+          const isOriginal = card.querySelector('.holiday-id') &&
+                              card.querySelector('.holiday-id').textContent.includes('original');
+          if (filterMode === 'unpicked') {
+            card.classList.toggle('hidden', hasPick || isOriginal);
+          } else if (filterMode === 'picked') {
+            card.classList.toggle('hidden', !hasPick || isOriginal);
+          } else if (filterMode === 'originals') {
+            card.classList.toggle('hidden', !isOriginal);
+          }
+        });
+      }
+      // Click handlers
       document.addEventListener('change', (e) => {
         if (e.target.classList.contains('pick-radio')) {
           const picks = loadPicks();
@@ -252,6 +289,32 @@ def main():
           applyPicks(picks);
         }
       });
+      // Click variant cell to pick + zoom
+      document.addEventListener('click', (e) => {
+        const variant = e.target.closest('.variant');
+        if (variant && !e.target.classList.contains('pick-radio')) {
+          // Toggle the radio
+          const radio = variant.querySelector('.pick-radio');
+          if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+        // Zoom on image dblclick
+        if (e.target.classList.contains('variant-img') && e.detail >= 2) {
+          const modal = document.getElementById('zoom-modal');
+          modal.querySelector('img').src = e.target.src;
+          modal.querySelector('.modal-caption').textContent =
+            e.target.closest('.holiday').querySelector('.holiday-name').textContent +
+            ' · ' + e.target.closest('.variant').querySelector('.variant-label').textContent;
+          modal.classList.add('show');
+        }
+      });
+      // Modal close
+      document.getElementById('zoom-modal').addEventListener('click', () => {
+        document.getElementById('zoom-modal').classList.remove('show');
+      });
+      // Save / clear / filter buttons
       document.getElementById('save-btn').addEventListener('click', () => {
         const picks = loadPicks();
         const blob = new Blob([JSON.stringify(picks, null, 2)], {type: 'application/json'});
@@ -264,8 +327,16 @@ def main():
       document.getElementById('clear-btn').addEventListener('click', () => {
         if (confirm('Clear all picks?')) { savePicks({}); applyPicks({}); }
       });
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterMode = btn.dataset.filter;
+          document.querySelectorAll('.filter-btn').forEach(b =>
+            b.classList.toggle('active', b === btn));
+          applyFilter();
+        });
+      });
       applyPicks(loadPicks());
-    """.replace("${len(originals)}", str(len(originals)))
+    """.replace("${len(new_holidays)}", str(len(new_holidays)))
 
     full_html = f"""<!doctype html>
 <html lang="en">
@@ -277,10 +348,21 @@ def main():
 <body>
   <div class="controls">
     <h1>🏝️ Holiday Sprite Review</h1>
-    <p class="subtitle">31 new US holidays for the PS1 build. Pick one variant per holiday (LITERAL / MINIMALIST / BUSY). Picks persist in localStorage; download as JSON when done.</p>
-    <button id="save-btn" class="save-btn">Download picks JSON</button>
-    <button id="clear-btn" class="save-btn" style="background:#666;color:#fff;">Clear picks</button>
-    <span id="pick-stat" class="stat"></span>
+    <p class="subtitle">31 new US holidays for the PS1 build, 3-4 variants each (LITERAL / MINIMALIST / BUSY / PLAYFUL). Click a variant to pick it. Double-click a sprite to zoom. Picks persist in localStorage — download as JSON when done.</p>
+    <div class="controls-row">
+      <button id="save-btn" class="btn">Download picks JSON</button>
+      <button id="clear-btn" class="btn" style="background:#666;color:#fff;">Clear picks</button>
+      <span style="margin-left:8px;color:var(--muted);font-size:12px;">Filter:</span>
+      <button class="btn btn-ghost active filter-btn" data-filter="all">All</button>
+      <button class="btn btn-ghost filter-btn" data-filter="unpicked">Unpicked</button>
+      <button class="btn btn-ghost filter-btn" data-filter="picked">Picked</button>
+      <button class="btn btn-ghost filter-btn" data-filter="originals">Originals</button>
+      <span id="pick-stat" class="stat"></span>
+    </div>
+  </div>
+  <div id="zoom-modal" class="modal">
+    <img alt="">
+    <div class="modal-caption"></div>
   </div>
   {''.join(cards_html)}
   <h2 class="month-header">Originals (preserved as-is)</h2>
