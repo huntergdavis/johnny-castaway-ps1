@@ -427,6 +427,29 @@ def main():
       document.getElementById('clear-btn').addEventListener('click', () => {
         if (confirm('Clear all picks?')) { savePicks({}); applyPicks({}); }
       });
+      document.getElementById('load-input').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (typeof parsed !== 'object' || Array.isArray(parsed)) {
+              throw new Error('expected an object');
+            }
+            // Coerce values to strings for consistency with the radio values.
+            const picks = {};
+            Object.entries(parsed).forEach(([k, v]) => { picks[String(k)] = String(v); });
+            savePicks(picks);
+            applyPicks(picks);
+          } catch (err) {
+            alert('Failed to load picks JSON: ' + err.message);
+          }
+          // Reset the input so the same file can be re-loaded.
+          e.target.value = '';
+        };
+        reader.readAsText(file);
+      });
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           filterMode = btn.dataset.filter;
@@ -547,6 +570,10 @@ def main():
     <p class="subtitle">31 new US holidays for the PS1 build, 5 variants each (v1 LITERAL · v2 MINIMALIST · v3 BUSY · v4 PLAYFUL · v5 NIGHT). Click a variant to pick it. Double-click a sprite to zoom. Picks persist in localStorage — download as JSON when done.</p>
     <div class="controls-row">
       <button id="save-btn" class="btn">Download picks JSON</button>
+      <label class="btn" style="background:#446;color:#fff;cursor:pointer;">
+        Load picks JSON
+        <input id="load-input" type="file" accept="application/json,.json" style="display:none;">
+      </label>
       <button id="clear-btn" class="btn" style="background:#666;color:#fff;">Clear picks</button>
       <span style="margin-left:8px;color:var(--muted);font-size:12px;">Card filter:</span>
       <button class="btn btn-ghost active filter-btn" data-filter="all">All</button>
