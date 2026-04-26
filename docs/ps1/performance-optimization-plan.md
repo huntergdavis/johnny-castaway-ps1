@@ -678,6 +678,7 @@ upload byte volume, and upload rectangle pressure.
 | `P4-63` | Done: merge 2-row clean gaps inside vertical upload bands. | `upload_rects 518 -> 427` with flat timing; `upload_bytes` gives back only `108160` bytes versus the accepted vertical-band split and remains `676480` below the old full-band upload baseline. |
 | `P4-64` | Done: prime the first real payload during setup when frame 0 is empty. | `loop_vb 1240 -> 1237`, `blocking_vb 20 -> 13`, and `due_misses 1 -> 0`; setup pays one extra read and `prefetch_overrun_vb` rises `11 -> 13`, so the remaining CD work should target refill overrun rather than due misses. |
 | `P4-65` | Done: direct-stage small payloads at the minimum accepted slack. | `loop_vb 1237 -> 1235`, `blocking_vb 13 -> 11`, and `prefetch_overrun_vb 13 -> 11` with `due_misses=0`; this validates a narrow 3-VBlank version of the old failed short-slack direct-stage idea. |
+| `P4-66` | Failed: extend direct-stage small payloads to 4 VBlanks of slack. | The retest regressed `loop_vb 1235 -> 1239`, `blocking_vb 11 -> 39`, `prefetch_overrun_vb 11 -> 12`, and `due_misses 0 -> 5`; direct staging at 4 VBlanks loses too much stream-window lookahead until grouped reads or a second stage slot exist. |
 
 Prefetch variants to test in order:
 
@@ -1056,7 +1057,7 @@ and `2.5 MB` restore volume on fishing1 high tide.
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |
 | 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | Lower `prefetch.overrun_vb` without reintroducing due misses. |
 | 5 | CD/runtime | Sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the new baseline. | Find whether `8 KB` is the real knee or just fishing1-local. |
-| 6 | CD/runtime | Allow direct-stage at 4 VBlank slack only for larger payloads that would otherwise refill the window. | Lower `blocking_vb` or `prefetch.overrun_vb` with no hit loss. |
+| 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
 | 9 | CD/metrics | Add per-read slack, sectors, and elapsed histograms to Summary output. | Identify exact read classes causing the remaining `11` overrun VBlanks. |
