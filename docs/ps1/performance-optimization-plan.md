@@ -499,26 +499,30 @@ Red-team risks:
 Goal: stop restoring and uploading full scene-sized clean rects when the actual
 FG2 spans touch a much smaller row/X set.
 
-Status: first restore-only slice implemented on the perf branch. Dirty tracking
-now carries per-tile X extents for RAM clean-background restore while the upload
-path still uses the proven full-row batching. Fishing1 improved from
-`loop_vb=1426` to `1366` and `restore_bytes=16035840` to `9580428`; next work
-is X-aware upload batching.
+Status: second restore-only slice implemented on the perf branch. Dirty
+tracking now carries per-row X extents for current and previous dirty state, so
+RAM clean-background restore copies only the exact previous dirty row spans.
+The upload path still uses the proven full-row batching. Fishing1 improved from
+the original `loop_vb=1426` to `1266` and `restore_bytes=16035840` to
+`2510092`; next work is X-aware upload batching.
 
 | ID | Task | Rationale |
 |---|---|---|
-| `P2-01` | Partial: add per-tile `minX/maxX` alongside `minY/maxY`. | Preserve useful horizontal precision from FG2 spans without changing upload yet. |
-| `P2-02` | Partial: keep `curr` and `prev` X/Y extents per tile. | Restore previous pixels using narrower RAM copies; upload still uses row bands. |
+| `P2-01` | Done: add per-tile `minX/maxX` alongside `minY/maxY`. | Preserve useful horizontal precision from FG2 spans without changing upload yet. |
+| `P2-02` | Done: keep `curr` and `prev` X/Y extents per tile. | Restore previous pixels using narrower RAM copies; upload still uses row bands. |
 | `P2-03` | Done: change `grMarkRectDirty` to update X extents, not just row bands. | Existing callers get better restore precision automatically. |
 | `P2-04` | Done: clean-rect restore copies only previous X extents. | Avoid full-width RAM clean copies for narrow dirty bands. |
+| `P2-04a` | Done: track previous/current X extents per tile row and restore exact previous row spans. | `restore_bytes 9520664 -> 2510092`, `loop_vb 1296 -> 1266`; upload remains unchanged and conservative. |
 | `P2-05` | Batch row extents into a bounded list of `LoadImage` rectangles. | Avoid one `LoadImage` per row. |
 | `P2-06` | Use 8- or 16-pixel X bucket rounding for better batching. | Trade tiny extra upload for far fewer rectangles. |
 | `P2-07` | Add a deterministic merge policy when rect count exceeds a cap. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
 | `P2-08` | Record bytes actually uploaded in telemetry. | Confirm real win. |
 
-Expected impact: current active fishing scenes often upload 216-358 KB per
-VBlank. Exact row extents average 21-32 KB. A practical batching strategy
-should land between those numbers and much closer to the exact side.
+Expected impact: restore byte volume is no longer the primary dirty bottleneck
+for fishing1; upload still moves full dirty rows (`17172480` bytes in the
+accepted run). A practical upload batching strategy should land between the
+full-row upload number and exact row-span bytes without exploding `LoadImage`
+rect count.
 
 Red-team risks:
 
@@ -561,14 +565,14 @@ Status: first wave implemented, visually signed off, and merged to `main` in
 `prefetch-stage1` token is no longer required for the normal path;
 `no-prefetch`, `no-stage1`, and window-size tokens remain diagnostic controls.
 
-Current perf-branch target: keep squeezing CD latency without changing pixels.
-After x-aware restore, PAL4 span compositing, duplicate probe removal, the
-`2` VBlank refill slack guard, guarded fallthrough, pad/SPI diagnostic gating,
-and the 18 KB default window, fishing1 high-tide reports `loop_vb=1296`,
-`blocking_vb=75`, `due_misses=8`, and prefetch `overrun_vb=33`. The smaller
-window cuts refill overrun enough to win overall, but it raises due misses and
-blocking; next CD experiments should target grouping or due-miss hiding rather
-than blindly shrinking the window again.
+Current perf-branch target: keep squeezing CD latency and upload cost without
+changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
+removal, the `2` VBlank refill slack guard, guarded fallthrough, pad/SPI
+diagnostic gating, the 18 KB default window, and row-level dirty restore,
+fishing1 high-tide reports `loop_vb=1266`, `blocking_vb=36`, `due_misses=1`,
+and prefetch `overrun_vb=26`. Row-level restore created enough CPU headroom
+that CD blocking fell too; next experiments should target remaining upload byte
+volume and the last nonzero CD/prefetch costs.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -594,6 +598,7 @@ than blindly shrinking the window again.
 | `P4-20` | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the post-merge baseline. | Key metrics stayed identical; keep the stricter `5` VBlank default until another timing change makes this guard matter again. |
 | `P4-21` | Done: retune the default stream window from `20 KB` to `18 KB` after the 2 VBlank guard. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8` are the next CD target. |
 | `P4-22` | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | CD submetrics improved slightly, but total `loop_vb` regressed `1296 -> 1297`; keep input timing at the known-good rate unless a dedicated IRQ/input harness proves a better tradeoff. |
+| `P4-23` | Done via dirty pipeline: restore exact per-row X extents before the next CD attempt. | `loop_vb 1296 -> 1266`, `blocking_vb 75 -> 36`, `due_misses 8 -> 1`; reduced RAM restore work created more usable held-frame slack for existing prefetch policy. |
 
 Prefetch variants to test in order:
 
@@ -876,9 +881,9 @@ into one commit.
 | 43 | Pack | Flag huge frames before routing to CD. | Avoid blind large-scene regressions. |
 | 44 | Pack | Re-evaluate base frames for full-screen outliers. | Lower pack bytes and payload. |
 | 45 | Pack | Prototype `FGP3` sidecar metadata without changing pixels. | Runtime speed with easy rollback. |
-| 46 | Dirty | Replace row-band dirty state with row X extents. | Lower `dirty_rounded_bytes`. |
-| 47 | Dirty | Track previous row extents separately. | No stale pixels after motion. |
-| 48 | Dirty | Restore previous extents, upload current/previous union. | Lower `restore_bytes`. |
+| 46 | Dirty | Done: replace restore-side row-band dirty state with row X extents. | `restore_bytes 9520664 -> 2510092`. |
+| 47 | Dirty | Done: track previous row extents separately. | Correct previous-frame cleanup with `trip=0` and `frame_mismatch=0`. |
+| 48 | Dirty | Partial: restore previous extents exactly; upload remains current/previous row-band union. | Restore is now precise; upload batching is the remaining work. |
 | 49 | Dirty | Round X extents to 8-pixel buckets. | Balance bytes vs rect count. |
 | 50 | Dirty | Round X extents to 16-pixel buckets. | Lower `upload_rects`. |
 | 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects`. |
@@ -941,23 +946,23 @@ into one commit.
 | 3 | Capture the post-merge baseline matrix with `JCPERF2` Summary and selected Detail runs. | fishing1 high/low, fishing2, and fishing3 have comparable records under the new default path. |
 | 4 | Done: gate controller/SPI diagnostics off by default. | fishing1 improved `loop_vb 1369 -> 1317` with clean correctness; `pad-diag`/`pad-debug` preserve the deeper controller probe path. |
 | 5 | Reduce remaining prefetch blocking and refill overrun. | `blocking_vb`, `blocking_reads`, `due_misses`, and `overrun_vb` fall without increasing heap risk or changing sound/pixels. |
-| 6 | Add row/X dirty state and upload batching behind an experiment flag. | Byte counters and render subphase time drop with no stale pixels and no runtime full fallback. |
+| 6 | Add X-aware upload batching on top of accepted row-level restore. | `upload_bytes`, `upload_rects`, or `upload_vb` fall with no stale pixels and no runtime full fallback. |
 | 7 | Test FG2-specific present/update sequencing. | `present_wait_vb`, `upload_vb`, or `loop_vb / target_vb` improve without changing work identity. |
 | 8 | Specialize PAL4 FG2 compositor with span-level tile split and pair LUT. | Same pixels, lower compose counters. |
 
 ## Red-Team Conclusions
 
 The safest near-term speedup is not a more aggressive timing file. The measured
-runtime is already `1.55x` over the captured timing budget. We need to remove
-or hide work, not lie about the source timing.
+runtime is still `1.18x` over the captured timing budget for fishing1 after the
+latest accepted pass. We need to keep removing or hiding work, not lie about
+the source timing.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
 reads that frame. Prefetching converts those held VBlanks into useful work
 without skipping frames or changing art.
 
-The second major target is render pipeline precision and serialization. The
-current clean-rect system solved memory stability, but it still restores and
-uploads hundreds of KB per rendered entry. After prefetching reduces visible CD
-stalls, subphase counters should guide row/X dirty uploads, compositor work,
-and present scheduling.
+The second major target is render pipeline precision and serialization.
+Row-level restore removed most RAM restore waste, but VRAM upload still moves
+full dirty row bands. Subphase counters should guide X-aware dirty uploads,
+compositor work, and present scheduling.

@@ -32,20 +32,22 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `272d2e0d ps1: retune FG2 stream window to 18kb` |
-| Run ID | `20260425-174206` |
+| Commit | `26890fbb ps1: restore dirty rows at exact x extents` |
+| Run ID | `20260425-175722` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
 | Window | `18 KB default, 25616-byte runtime buffer` |
-| `loop_vb` | `1296` |
+| `loop_vb` | `1266` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `219` |
-| `blocking_vb` | `75` |
+| `overrun_vb` | `189` |
+| `blocking_vb` | `36` |
 | `loop_reads` | `56` |
-| `prefetch_hits` | `147` |
-| `prefetch_due_misses` | `8` |
-| `prefetch_overrun_vb` | `33` |
+| `prefetch_hits` | `154` |
+| `prefetch_due_misses` | `1` |
+| `prefetch_overrun_vb` | `26` |
+| `restore_bytes` | `2510092` |
+| `upload_bytes` | `17172480` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -93,6 +95,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-stage-copy-fallthrough-4vb-post-20kb` | dirty experiment after `91c0a143` | Re-test the staged-copy fallthrough guard at `4` VBlanks under the post-merge `20 KB` window and `2` VBlank refill guard. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed as a no-op. Baseline to current: `loop_vb 1300 -> 1300`, `overrun_vb 223 -> 223`, `blocking_vb 66 -> 66`, `prefetch_overrun_vb 45 -> 45`, `due_misses 4 -> 4`, `hits 151 -> 151`. Artifact: `scratch/ps1-perf-iterate/20260425-173331/summary.json`. | Do not promote. The new baseline is insensitive to this guard at `4` vs `5`; leave the stricter accepted value in place. |
 | 2026-04-25 | `fg2-window-18kb-post-2vb` | `272d2e0d` | Re-sweep smaller sector-rounded window buckets after the `20 KB` window and `2` VBlank refill guard made refill overrun the remaining CD cost. | Parameter probes for `18432`, `19456`, `17408`, and `16384`, then default `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted. The `17 KB` and `18 KB` requests both round to an `18 KB` window and match; `19 KB` rounds to the old `20 KB` no-op; `16 KB` does not improve loop time. Accepted baseline to current: `loop_vb 1300 -> 1296`, `overrun_vb 223 -> 219`, `prefetch_overrun_vb 45 -> 33`, `blocking_vb 66 -> 75`, `due_misses 4 -> 8`, `hits 151 -> 147`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-173620/summary.json`, `scratch/ps1-perf-iterate/20260425-173746/summary.json`, `scratch/ps1-perf-iterate/20260425-174033/summary.json`, `scratch/ps1-perf-iterate/20260425-174206/summary.json`. | Promote as the new default. This is a small but real total-loop win and cuts refill overrun; the extra due misses/blocking are documented as the next CD target. |
 | 2026-04-25 | `spi-poll-rate-125hz-65hz` | dirty experiment after `cd3db22f` | Reducing the continuous SPI pad poll rate might lower IRQ overhead while preserving frame-level pause responsiveness. | Build with `SPI_SetPollRate(125)`, then build with `SPI_SetPollRate(65)`, each run via `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed for total playback. `125 Hz`: `loop_vb 1296 -> 1297`, `blocking_vb 75 -> 73`, `prefetch_overrun_vb 33 -> 32`. `65 Hz`: `loop_vb 1296 -> 1297`, `blocking_vb 75 -> 72`, `prefetch_overrun_vb 33 -> 31`. Correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-174653/summary.json`, `scratch/ps1-perf-iterate/20260425-174830/summary.json`. | Do not promote. It improves CD submetrics but loses one VBlank overall and would need manual input-latency validation; keep the known-good `250 Hz` poll rate. |
+| 2026-04-25 | `row-level-x-dirty-restore` | `26890fbb` | The earlier x-aware restore still used one X min/max rectangle across every dirty row; tracking X extents per dirty tile row should restore fewer RAM pixels while leaving conservative full-row VRAM upload unchanged. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted. Baseline to current: `loop_vb 1296 -> 1266`, `overrun_vb 219 -> 189`, `blocking_vb 75 -> 36`, `prefetch_overrun_vb 33 -> 26`, `due_misses 8 -> 1`, `hits 147 -> 154`, `restore_bytes 9520664 -> 2510092`, `upload_bytes` unchanged at `17172480`; correctness stayed clean. Artifact: `scratch/ps1-perf-iterate/20260425-175722/summary.json`. | Promote. This is a large render-side cleanup that also creates more held-time headroom for CD prefetch; next dirty work should target upload batching rather than restore byte volume. |
 
 ## Retry Queue
 
