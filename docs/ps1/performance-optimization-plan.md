@@ -727,6 +727,7 @@ rectangle pressure.
 | `P4-91` | Failed: runtime read-size predictor for tight lookahead refills. | An `8 KB` tight-read cap improved nominal `loop_vb 1227 -> 1225`, but increased `blocking_vb` and `prefetch_overrun_vb` to `8`, raised loop CD read time, and changed scheduler cadence; `12 KB` regressed to `loop_vb=1233` and `blocking_vb=14`. |
 | `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); keep the accepted `8`-row gap. |
 | `P4-93` | Failed: compile hot playback translation units with `-O3`. | It reduced prepared restore/compose calls (`187 -> 182`) but regressed `loop_vb 1227 -> 1229`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; keep the SDK `-O2` default and prefer targeted hot functions/assembly. |
+| `P4-94` | Failed: read tight-slack direct-stage sectors straight into the stream-window buffer. | It removed one local seed copy in theory but regressed `loop_vb 1227 -> 1231`, `loop_reads 68 -> 69`, and `seek_back 7 -> 9`; direct-stage seeding must preserve current window coverage shape. |
 
 Prefetch variants to test in order:
 
@@ -1261,6 +1262,12 @@ actual timing and CD-pressure counters. That makes it a scheduler-shape loss,
 not a CPU win. Future compiler work should be narrow enough to keep code layout
 predictable: individual compositor helpers, CD copy loops, or hand-written
 assembly, with map-size tracking beside the perf summary.
+Reading tight-slack direct-stage sectors straight into the stream-window buffer
+also lost. The local copy removal changed the window state enough to add one
+active-loop read and two backward seeks, regressing loop time and refill
+pressure. The useful follow-up is not "read into a different buffer"; it is a
+merge-preserving direct-stage seed that appends to or preserves the existing
+window coverage.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
