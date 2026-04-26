@@ -32,26 +32,26 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: prefetch during prepared-frame waits` |
-| Run ID | `20260426-114009` |
+| Commit | `Merge remote-tracking branch 'origin/main' into ps1-perf-optimization-loop-20260426` |
+| Run ID | `20260426-121349` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, unused foreground ever diagnostics removed, unused ADS foreground start hook removed, obsolete FGPILOT ADS dispatch removed, unused foreground status accessors removed, dead foreground requested-mode state removed, base-diff foreground packs required, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, prepared-wait future prefetch, 3 VBlank refill guard, 6 VBlank fallthrough guard, exact-4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 1-row upload band gap byte trim, long-hold host-deadline catch-up` |
-| `loop_vb` | `1221` |
-| `target_vb` | `1071` |
+| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, unused foreground ever diagnostics removed, unused ADS foreground start hook removed, obsolete FGPILOT ADS dispatch removed, unused foreground status accessors removed, dead foreground requested-mode state removed, base-diff foreground packs required, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, prepared-wait future prefetch, 3 VBlank refill guard, 6 VBlank fallthrough guard, exact-4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 1-row upload band gap byte trim, long-hold host-deadline catch-up, main pause-menu credits/captions merge accepted as new baseline` |
+| `loop_vb` | `1222` |
+| `target_vb` | `1072` |
 | `overrun_vb` | `150` |
-| `blocking_vb` | `5` |
+| `blocking_vb` | `6` |
 | `loop_reads` | `68` |
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
-| `prefetch_overrun_vb` | `5` |
+| `prefetch_overrun_vb` | `6` |
 | `restore_bytes` | `2510092` |
 | `upload_bytes` | `16281600` |
 | `dirty_rows` | `25440` |
 | `upload_rects` | `502` |
-| PS1 EXE size | `137216` |
-| PS1 ELF size | `713320` |
+| PS1 EXE size | `149504` |
+| PS1 ELF size | `743944` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -251,6 +251,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `prefetch-wouldread-probe-removal` | dirty experiment after `544f95a0` | Remove the separate `fgRuntimeWindowPrefetchWouldRead()` probe and let `fgRuntimeTryPrefetchWindow()` answer whether a read is needed once, reducing redundant held-frame entry/window checks. | Deleted the probe helper, made prepared/staged/fallthrough paths call `fgRuntimeTryPrefetchWindow()` directly, ran the exact no-holiday fishing1 gate, then reverted source. | Failed. The redundant probe is cadence ballast: `loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`, `prefetch.used_vb 285 -> 293`, and `late 105 -> 106`; correctness and visual work identity stayed clean. Artifact: `scratch/ps1-perf-iterate/20260426-115403/summary.json`. | Do not promote. Avoid removing tiny scheduler probes without a replacement pacing mechanism; less CPU work can still shift CD phase into visible pressure. |
 | 2026-04-26 | `host-timing-preconvert-on-load` | dirty experiment after `e96f5db1` | Convert host-tick frame deadlines to VBlank units once during FG2 metadata load instead of multiplying/dividing inside `fgEntryHoldVBlanks()` for every frame. | Tested a helper-based preconvert and then a tighter parse-loop version; both source variants were reverted. | Failed/no promotion. The helper version passed with all runtime metrics exactly flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`) but grew `jcreborn.elf 713176 -> 714008`. The tighter parse-loop variant still grew the ELF (`713780`) and exited `137` before `JCPERF2`, producing only `missing_jcperf2`. Artifacts: `scratch/ps1-perf-iterate/20260426-115931/summary.json`, `scratch/ps1-perf-iterate/20260426-120239/fishing1/perf-summary.json`. | Do not promote. Per-frame timing conversion is not a current measured bottleneck, and moving it to setup either grows code or destabilizes the headless run. |
 | 2026-04-26 | `pal4-aligned-pair-store` | dirty experiment after `a4240dbc` | Try a 32-bit store for aligned two-pixel PAL4 opaque runs, reducing two halfword writes to one word write in the compositor hot loop. | Added an aligned-destination branch inside `grCompositePacked4OpaqueRun()`, ran the exact no-holiday fishing1 gate, then reverted source. | Failed hard. Visual work identity stayed clean, but cadence regressed: `loop_vb 1221 -> 1225`, `target_vb 1071 -> 1068`, `overrun_vb 150 -> 157`, `blocking_vb 5 -> 12`, `prefetch_overrun_vb 5 -> 12`, and `blocking_reads 4 -> 10`. Artifact: `scratch/ps1-perf-iterate/20260426-120947/summary.json`. | Do not promote. The branch/code-shape cost is worse than the theoretical store reduction; compositor fast paths need pack-time specialization or measured assembly, not dynamic alignment branching. |
+| 2026-04-26 | `main-pause-credits-captions-merge-baseline` | `d36e8319` | Pull `origin/main` pause-menu, credits, and closed-caption work into the perf branch so optimization work does not diverge from main. | Merged `origin/main`, then ran the exact no-holiday fishing1 gate against the prior accepted branch baseline. | Accepted integration baseline. Correctness stayed clean, but the larger executable moved `FISHING1.FG2` to LBA `399` and cost one cadence VBlank: `loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `scene_vb 1400 -> 1401`; `overrun_vb` stayed `150`, `due_misses=0`, and visual/sound counters stayed clean. Artifact: `scratch/ps1-perf-iterate/20260426-121349/summary.json`. | Promote as the new comparison baseline. This is an integration cost, not an optimization miss; future perf wins should compare against this merged branch state. |
 
 ## Retry Queue
 
