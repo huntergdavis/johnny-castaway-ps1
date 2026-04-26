@@ -47,6 +47,7 @@ struct TCaptionSceneMap {
 
 void captionsSetEnabled(int enabled);
 int  captionsGetEnabled(void);
+extern int ps1CaptionsEnabled;
 
 /* Call when a scene starts — looks up caption by scene ID. */
 void captionsOnSceneStart(const char *sceneId);
@@ -60,7 +61,7 @@ const char *captionsGetCurrent(void);
 /* Draw the current caption (if any) into a dark band near the bottom
  * of the 640x480 frame. Called by grUpdateDisplay after the scene
  * composite + LoadImage and before VSync. No-op when captions are
- * disabled or there's no current text — zero cost when off. */
+ * disabled or there's no current text. */
 void captionsRender(void);
 
 #endif /* PS1_CAPTIONS_H */

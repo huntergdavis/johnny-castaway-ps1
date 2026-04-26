@@ -804,7 +804,8 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
     /* Closed captions overlay — drawn AFTER the scene LoadImage so the
      * dark band + text land on top of the frame the user sees this
      * VSync. No-op when captions are off or no text is queued. */
-    captionsRender();
+    if (ps1CaptionsEnabled)
+        captionsRender();
 
     /* Handle frame timing */
     if (perfDetail)
