@@ -1,0 +1,51 @@
+---
+title: Legal
+eyebrow: License + disclaimer
+subtitle: GPL-3.0 for the code; Sierra retains the character.
+---
+
+## License (code)
+
+The code in this project is licensed under the
+**GNU General Public License v3.0**. The full license text is in
+[LICENSE]({{ site.github_url }}/blob/main/LICENSE) at the repository
+root. In short: you can use, modify, and redistribute the code,
+provided downstream work is also GPL-licensed and includes the
+license + source.
+
+This project also includes code derived from
+**spicyjpeg's PSn00bSDK pad-poll example**, which is licensed
+under the **Mozilla Public License v2.0**. That's compatible with
+GPL-3.0 in the form used here (see `src/spi.c`).
+
+## Disclaimer (assets and character)
+
+> *Johnny Castaway*, the character, the original screensaver, and
+> all original Sierra art / audio assets are © Sierra On-Line and
+> are **not** licensed under GPL.
+
+This project ships **only the code that drives the port**. End
+users running the released `.bin/.cue` are playing baked
+*playback packs* — small binary files that record what the
+original engine drew, in a form the PS1 can render. The host
+build, used during development, requires the original Sierra
+data files (`RESOURCE.MAP`, `RESOURCE.001`) which the user must
+supply themselves.
+
+## Trademarks
+
+*Johnny Castaway*, *Sierra*, and *Sierra On-Line* are trademarks
+of their respective owners. Their use here is descriptive only.
+
+## How to file a takedown
+
+If you represent the original creator or a successor in interest
+and want this work taken down, file a GitHub issue or email the
+contact in [SECURITY.md]({{ site.github_url }}/blob/main/SECURITY.md).
+We'll comply.
+
+## Privacy
+
+This site is statically hosted on GitHub Pages. It does not set
+cookies, run analytics, or load tracking scripts. GitHub may log
+requests; that's GitHub's policy, not ours.

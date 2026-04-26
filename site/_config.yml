@@ -1,0 +1,57 @@
+title: Johnny Castaway PS1
+tagline: A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.
+description: >-
+  A fan port of Sierra's 1992 Johnny Castaway screensaver to the original
+  PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under
+  GPL-3.0.
+author: Hunter Davis
+
+# Public URL — apex CNAME lives in the user-pages repo, this is a project page.
+url: "https://hunterdavis.com"
+baseurl: "/Johnny-Castaway-PS1"
+
+# Pinned values for P1. Phase P3 will replace these via _data/release.yml
+# written by the GitHub Actions workflow at build time.
+release:
+  version: "0.3.10"
+  tag: "v0.3.10-ps1"
+  scenes_validated: 2
+  scenes_total: 63
+
+repo: "huntergdavis/Johnny-Castaway-PS1"
+github_url: "https://github.com/huntergdavis/Johnny-Castaway-PS1"
+
+permalink: pretty
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-redirect-from
+
+# Default front matter applied across the site.
+defaults:
+  - scope: { path: "" }
+    values:
+      layout: page
+
+# Jekyll's source is the site/ directory itself when run from there.
+# Exclusions cover anything that shouldn't ship to _site.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - node_modules
+  - README.md
+  - LICENSE
+
+# Build settings
+sass:
+  style: compressed
+
+timezone: America/New_York

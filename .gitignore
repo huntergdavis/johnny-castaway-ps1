@@ -71,3 +71,11 @@ regtest-results/
 __pycache__/
 *.pyc
 host-results
+
+# Jekyll site build artifacts
+site/_site/
+site/.jekyll-cache/
+site/.jekyll-metadata
+site/vendor/
+site/Gemfile.lock
+site/.bundle/
