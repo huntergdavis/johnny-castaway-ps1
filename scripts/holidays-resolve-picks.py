@@ -82,6 +82,10 @@ def main():
     if not isinstance(picks, dict):
         sys.stderr.write("error: picks JSON must be a flat object\n")
         sys.exit(2)
+    # Coerce both keys and values to strings — the HTML preview saves
+    # them as strings, but a hand-written picks file might use ints
+    # (and the resolver should accept either).
+    picks = {str(k): str(v) for k, v in picks.items()}
 
     holidays = yaml.safe_load(open(YAML_PATH, "r", encoding="utf-8"))
     reviewable = [h for h in holidays if h.get("existing_sprite") is None]
