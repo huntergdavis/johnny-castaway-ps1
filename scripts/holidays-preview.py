@@ -276,6 +276,14 @@ def main():
         slug = slugify(h["short_name"])
         variants_html = []
         VARIANT_LABELS = ["LITERAL", "MINIMALIST", "BUSY", "PLAYFUL", "NIGHT"]
+        VARIANT_TOOLTIPS = [
+            "v1 LITERAL — closest reading of the design-doc concept",
+            "v2 MINIMALIST — stripped-down icon, 1-2 dominant elements",
+            "v3 BUSY — full island scene, palm + sand + Johnny + props",
+            "v4 PLAYFUL — exaggerated/comedic, sweat drops, tilted, expressive",
+            "v5 NIGHT — auto-generated procedural night recolor of v1 "
+            "(or DAWN if v1 was already night)",
+        ]
         for vi in (1, 2, 3, 4, 5):
             png_path = ART_DIR / f"{h['id']:02d}-{slug}-v{vi}.png"
             data_uri = png_to_data_uri(png_path)
@@ -283,8 +291,9 @@ def main():
                 w = h["sprite"]["width"] * 4
                 hh = h["sprite"]["height"] * 4
                 variant_label = VARIANT_LABELS[vi - 1]
+                tooltip = VARIANT_TOOLTIPS[vi - 1]
                 variants_html.append(f'''
-                <div class="variant" data-id="{h['id']}" data-variant="{vi}">
+                <div class="variant" data-id="{h['id']}" data-variant="{vi}" title="{html_escape(tooltip)}">
                   <span class="variant-label">v{vi} {variant_label}</span>
                   <img class="variant-img" src="{data_uri}" width="{w}" height="{hh}" alt="v{vi}" title="Double-click to zoom">
                   <input class="pick-radio" type="radio" name="pick-{h['id']}" value="{vi}" id="pick-{h['id']}-{vi}">
