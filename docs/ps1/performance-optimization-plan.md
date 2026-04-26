@@ -821,6 +821,7 @@ from perturbing the deterministic cadence.
 | `P4-152` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-wait prefetch. | Total loop stayed flat but visible pressure regressed (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and loop read time rose (`284 -> 300`); keep the `6` VBlank guard until grouped reads make lookahead cheaper. |
 | `P4-153` | Failed: lower long-hold catch-up threshold from `5` to `4` after prepared-wait prefetch. | The retry still starved CD cadence despite lower duplicate prep: `target_vb 1071 -> 1065`, `overrun_vb 150 -> 156`, `blocking_vb 5 -> 9`, `prefetch_overrun_vb 5 -> 9`, and `blocking_reads 4 -> 8`; keep threshold `5` until grouped/predictive prefetch changes the slack budget. |
 | `P4-154` | Failed: remove the prefetch would-read probe. | Deleting the redundant-looking probe reduced held-path checks but shifted CD phase into visible pressure (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); keep small scheduler ballast unless a replacement pacing model proves the phase stays fixed. |
+| `P4-155` | Failed/no promotion: preconvert host-tick deadlines during metadata load. | The helper version was runtime-flat but grew `jcreborn.elf 713176 -> 714008`; the tighter parse-loop version still grew the ELF and exited `137` before `JCPERF2`. Keep `fgEntryHoldVBlanks()` unchanged until finer CPU counters prove this conversion is worth moving. |
 
 Prefetch variants to test in order:
 
