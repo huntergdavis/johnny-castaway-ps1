@@ -140,12 +140,6 @@ enum {
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 5
 static struct TFgPilotRuntime gFgRuntime = {0};
-static uint8 gFgConfiguredEver = 0;
-static uint8 gFgSetClearedEver = 0;
-static uint8 gFgAdsMatchEver = 0;
-static uint8 gFgStartAttemptEver = 0;
-static uint8 gFgStartedEver = 0;
-static uint8 gFgComposedEver = 0;
 static uint8 gFgHeapProbeEnabled = 0;
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
@@ -1604,7 +1598,6 @@ int foregroundPilotRuntimeStart(const char *sceneName)
         strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
         gFgRuntime.holdFrames = kFgPilotProbeHoldFrames;
         gFgRuntime.sceneClockTick = fgReadTickCounter();
-        gFgStartedEver = 1;
         fgTelemetryUpdate();
         return 1;
     }
@@ -1770,7 +1763,6 @@ int foregroundPilotRuntimeStart(const char *sceneName)
                     ps1PerfMarkSetupPhase(PS1_PERF_SETUP_FIRST_FRAME,
                                           ps1PerfElapsedVBlanks(perfFirstFrameTick));
             }
-            gFgStartedEver = 1;
             fgTelemetryUpdate();
             return 1;
         }
@@ -1788,8 +1780,6 @@ void foregroundPilotRuntimeCompose(void)
 
     if (!gFgRuntime.active)
         return;
-
-    gFgComposedEver = 1;
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {
@@ -1952,39 +1942,9 @@ int foregroundPilotRuntimeHasFrameData(void)
     return (gFgRuntime.active && gFgRuntime.currentFrameData != NULL) ? 1 : 0;
 }
 
-int foregroundPilotConfiguredEver(void)
-{
-    return gFgConfiguredEver ? 1 : 0;
-}
-
-int foregroundPilotSetClearedEver(void)
-{
-    return gFgSetClearedEver ? 1 : 0;
-}
-
 int foregroundPilotRequestedNow(void)
 {
     return foregroundPilotRequested();
-}
-
-int foregroundPilotRuntimeAdsMatchEver(void)
-{
-    return gFgAdsMatchEver ? 1 : 0;
-}
-
-int foregroundPilotRuntimeStartAttemptedEver(void)
-{
-    return gFgStartAttemptEver ? 1 : 0;
-}
-
-int foregroundPilotRuntimeStartedEver(void)
-{
-    return gFgStartedEver ? 1 : 0;
-}
-
-int foregroundPilotRuntimeComposedEver(void)
-{
-    return gFgComposedEver ? 1 : 0;
 }
 
 void foregroundPilotRuntimeEnd(void)
@@ -2245,7 +2205,6 @@ void foregroundPilotSetScene(const char *sceneName)
     if (!sceneName) {
         gForegroundPilotScene[0] = '\0';
         gForegroundPilotRequestedMode = FG_RUNTIME_NONE;
-        gFgSetClearedEver = 1;
         return;
     }
 
@@ -2253,7 +2212,6 @@ void foregroundPilotSetScene(const char *sceneName)
         gForegroundPilotScene[i] = sceneName[i];
     gForegroundPilotScene[i] = '\0';
     gForegroundPilotRequestedMode = fgSceneModeForName(gForegroundPilotScene);
-    gFgConfiguredEver = 1;
 }
 
 void foregroundPilotSetHeapProbe(int enabled)
@@ -2289,7 +2247,6 @@ int foregroundPilotRuntimeStartRequested(void)
     if (!foregroundPilotRequested())
         return 0;
 
-    gFgStartAttemptEver = 1;
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     switch (gForegroundPilotRequestedMode) {
         case FG_RUNTIME_TESTCARD:
@@ -2438,39 +2395,9 @@ int foregroundPilotRuntimeHasFrameData(void)
     return 0;
 }
 
-int foregroundPilotConfiguredEver(void)
-{
-    return foregroundPilotRequested() ? 1 : 0;
-}
-
-int foregroundPilotSetClearedEver(void)
-{
-    return 0;
-}
-
 int foregroundPilotRequestedNow(void)
 {
     return foregroundPilotRequested() ? 1 : 0;
-}
-
-int foregroundPilotRuntimeAdsMatchEver(void)
-{
-    return 0;
-}
-
-int foregroundPilotRuntimeStartAttemptedEver(void)
-{
-    return 0;
-}
-
-int foregroundPilotRuntimeStartedEver(void)
-{
-    return 0;
-}
-
-int foregroundPilotRuntimeComposedEver(void)
-{
-    return 0;
 }
 
 void foregroundPilotPlay(void)

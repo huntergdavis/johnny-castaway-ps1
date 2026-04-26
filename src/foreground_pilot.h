@@ -28,13 +28,7 @@ unsigned long fgProbeLargestAlloc(void);
 unsigned short foregroundPilotRuntimeSourceFrame(void);
 unsigned short foregroundPilotRuntimeDisplayVBlanks(void);
 int foregroundPilotRuntimeHasFrameData(void);
-int foregroundPilotConfiguredEver(void);
-int foregroundPilotSetClearedEver(void);
 int foregroundPilotRequestedNow(void);
-int foregroundPilotRuntimeAdsMatchEver(void);
-int foregroundPilotRuntimeStartAttemptedEver(void);
-int foregroundPilotRuntimeStartedEver(void);
-int foregroundPilotRuntimeComposedEver(void);
 void foregroundPilotRuntimeEnd(void);
 
 #endif

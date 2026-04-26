@@ -49,8 +49,9 @@ telemetry body kept timing flat again, dropped speculative prep
 `3034562` to `2999408`, and shrank `jcreborn.elf` to `707916` bytes. The
 legacy foreground diagnostic gate later moved the executable into the `131072`
 byte bucket with flat timing; long-hold deadline catch-up then traded seven
-extra speculative restore/compose calls for `5` fewer loop VBlanks. The
-pre-pause best was `loop_vb=1297`.
+extra speculative restore/compose calls for `5` fewer loop VBlanks. Removing
+the unused foreground "ever" diagnostics kept timing flat and shrank
+`jcreborn.elf` to `691584` bytes. The pre-pause best was `loop_vb=1297`.
 
 Latest Detail-tier attribution on this baseline shows the remaining
 active-loop gap is not primarily due-frame CD: `render_vb=181`,
@@ -776,6 +777,7 @@ rectangle pressure.
 | `P4-133` | Failed: lower the initial FG2 metadata prefix read from `8 KB` to `4 KB`. | Fishing1 setup bytes fell (`282104 -> 278008`) and `setup_read_vb` dropped by one, but active playback regressed (`loop_vb 1222 -> 1224`, `blocking_vb 6 -> 11`, `prefetch_overrun_vb 6 -> 11`); startup read shape still acts as deterministic cadence ballast. |
 | `P4-134` | Failed: extend one-VBlank catch-up to short holds with staged/lookahead coverage. | Both `>=3` and `>=4` covered-catch variants kept `loop_vb=1222` but regressed pressure (`target_vb 1073 -> 1071`, `overrun_vb 149 -> 151`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`); coverage alone is not enough to prove spare cadence. |
 | `P4-135` | Failed/no-op: cache the no-holiday compose gate for fishing1. | Runtime timing and work identity matched exactly, but ELF size grew (`692704 -> 692924`); the holiday-stamp branch is not a measurable hot-path target in this form. |
+| `P4-136` | Done: remove unused foreground "ever" diagnostics. | Two strict runs matched timing/work identity exactly while `jcreborn.elf` shrank `692704 -> 691584`; keep pruning old diagnostic API only when the cadence gate stays flat. |
 
 Prefetch variants to test in order:
 
