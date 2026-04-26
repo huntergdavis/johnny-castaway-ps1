@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `e4dc5dd0 ps1: tune fg2 refill window after row restore` |
-| Run ID | `20260425-185413` |
+| Commit | `aeab2067 ps1: mark fg2 dirty rows per tile` |
+| Run ID | `20260425-191252` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard` |
-| `loop_vb` | `1254` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, per-tile PAL4 row dirty marking` |
+| `loop_vb` | `1248` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `177` |
-| `blocking_vb` | `35` |
+| `overrun_vb` | `171` |
+| `blocking_vb` | `21` |
 | `loop_reads` | `69` |
-| `prefetch_hits` | `149` |
-| `prefetch_due_misses` | `6` |
-| `prefetch_overrun_vb` | `6` |
+| `prefetch_hits` | `154` |
+| `prefetch_due_misses` | `1` |
+| `prefetch_overrun_vb` | `15` |
 | `restore_bytes` | `2510092` |
 | `upload_bytes` | `17172480` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
@@ -106,6 +106,8 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-window-16kb-3vb-post-row-restore` | `e4dc5dd0` | Combine the lower-blocking `16 KB` post-restore window with the lower-overrun `3` VBlank refill guard; each signal failed alone, but together they may keep due-frame residency inside the gate. | Parameter probe `./scripts/ps1-perf-iterate.sh --case "fishing1-w16-g3::fgpilot fishing1 prefetch-window 16384" ...`, then default `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted. Parameter and default-code runs matched. Baseline to current: `loop_vb 1266 -> 1254`, `overrun_vb 189 -> 177`, `blocking_vb 36 -> 35`, `prefetch_overrun_vb 26 -> 6`, `hidden_vb 225 -> 240`, `loop_reads 56 -> 69`, `due_misses 1 -> 6`, `hits 154 -> 149`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-185236/summary.json`, `scratch/ps1-perf-iterate/20260425-185413/summary.json`. | Promote. The combination preserves blocking while cutting refill overrun by `20` VBlanks and total loop by `12`; the extra reads/due misses are an accepted tradeoff for this baseline and remain the next CD target. |
 | 2026-04-25 | `fg2-stage-copy-fallthrough-4vb-post-16kb-3vb` | dirty experiment after `bbfe4f2b` | Re-test the staged-copy fallthrough guard at `4` VBlanks under the new `16 KB` window and `3` VBlank refill guard; the earlier no-op might now recover due misses. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Rejected despite harness pass. Correctness stayed clean and blocking improved, but total playback regressed: `loop_vb 1254 -> 1264`, `overrun_vb 177 -> 187`, `blocking_vb 35 -> 31`, `prefetch_overrun_vb 6 -> 7`, `due_misses 6 -> 5`, `hits 149 -> 150`. Artifact: `scratch/ps1-perf-iterate/20260425-185826/summary.json`. | Do not promote. Main speed beats submetric wins; lowering the fallthrough guard buys one fewer due miss but steals enough held-loop time to lose `10` VBlanks overall. Keep the `5` VBlank guard. |
 | 2026-04-25 | `fg2-stage-window-2vb-lookahead-3vb` | dirty experiment after `5f8d4248` | Split the refill guard: allow `2` VBlank window reads only for staging the immediate next frame, while keeping lookahead refills at `3` VBlanks. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed. It recovered due misses and blocking but lost overall speed: `loop_vb 1254 -> 1268`, `overrun_vb 177 -> 191`, `blocking_vb 35 -> 27`, `prefetch_overrun_vb 6 -> 22`, `due_misses 6 -> 1`, `hits 149 -> 154`. Artifact: `scratch/ps1-perf-iterate/20260425-190108/summary.json`. | Do not promote. Immediate short-slack reads are still too expensive; reducing due misses requires grouped/cheaper refill, not just a lower immediate-frame guard. |
+| 2026-04-25 | `fg2-pal4-row-dirty-screenwide` | dirty experiment after `68e29132` | Move PAL4 dirty marking out of every span compositor call and mark one dirty rectangle per encoded row. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Rejected after red-team review. It improved `loop_vb 1254 -> 1244` and `blocking_vb 35 -> 19`, but merged dirty extents across the 320px tile boundary and widened RAM restore: `restore_bytes 2510092 -> 3678656`; `prefetch_overrun_vb` also rose `6 -> 13`. Artifact: `scratch/ps1-perf-iterate/20260425-190649/summary.json`. | Do not promote. Row-level dirty marking must stay split per PS1 tile or it destroys the row/X restore precision won earlier. |
+| 2026-04-25 | `fg2-pal4-row-dirty-per-tile` | `aeab2067` | Mark PAL4 FG2 dirty extents once per encoded row and per 320px tile, preserving exact restore/upload metrics while removing redundant per-span dirty-marker calls. | Strict probe `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement`, then acceptance run with `--allow-regression 150` because only `prefetch_overrun_vb` exceeded the strict secondary guard. | Promoted. Baseline to current: `loop_vb 1254 -> 1248`, `overrun_vb 177 -> 171`, `blocking_vb 35 -> 21`, `due_misses 6 -> 1`, `hits 149 -> 154`, `prefetch_overrun_vb 6 -> 15`; `restore_bytes=2510092`, `upload_bytes=17172480`, and correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-191039/summary.json`, `scratch/ps1-perf-iterate/20260425-191252/summary.json`. | Promote. The restore/upload invariants prove pixel-work scope is unchanged; the extra refill overrun is bounded and buys both a `6` VBlank loop win and a `14` VBlank blocking reduction. |
 
 ## Retry Queue
 
@@ -128,6 +130,7 @@ Current accepted baseline for the next experiment:
 | `4` VBlank staged-copy fallthrough guard after the post-merge baseline | Correctness clean but identical to the accepted `5` VBlank guard; retry only after another change alters staged-copy/window timing. |
 | `4` VBlank staged-copy fallthrough guard after `16 KB`/`3` VBlank retune | Correctness clean and lower blocking, but total `loop_vb` regressed by `10`; retry only after refill/grouping changes make the extra fallthrough read cheaper. |
 | Split immediate/lookahead refill guards | Correctness clean and recovered due misses, but total `loop_vb` regressed by `14`; retry only after grouped or sector-aligned refills reduce short-read cost. |
+| Screenwide PAL4 row dirty marking | Correctness clean and faster, but widened restore across the tile boundary; retry only as per-tile row aggregation or pack-emitted per-tile extents. |
 | `19 KB` requested window after the post-2VB sweep | Sector-rounds to the old `20 KB` default and is a no-op; use sector-sized buckets for future sweeps. |
 | `125 Hz` / `65 Hz` SPI pad polling | Correctness clean but `loop_vb` regressed by one VBlank while only CD submetrics improved; retry only with finer CPU/IRQ counters or a pause-input validation harness. |
 | Post-row-restore `16/20/24/32 KB` window sweep under the `2` VBlank guard | Correctness clean but all tested sizes regressed total loop versus the then-accepted `18 KB` default; the `16 KB` point became useful only when paired with the later `3` VBlank guard. |
