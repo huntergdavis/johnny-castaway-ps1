@@ -229,9 +229,12 @@ CD latency is hidden. A naive tile-level X-aware upload experiment that packed
 partial-width rectangles through one scratch buffer failed to reach scene-end
 metrics, likely because extra `DrawSync` points and unaligned transfer lengths
 overwhelmed the byte savings. A later 16-pixel strip-batching variant also
-failed before `JCPERF2` because it still synchronized each partial strip. The
-next viable upload attempt needs a bounded scratch arena or equivalent design
-that batches partial-width strips behind one final sync.
+failed before `JCPERF2` because it still synchronized each partial strip. A
+32-pixel bucket arena variant then proved the opposite failure mode:
+`upload_bytes 17172480 -> 4933312`, but `upload_rects 351 -> 11575` and
+`upload_vb 5 -> 204`, regressing the loop. The next viable upload attempt
+must be rect-count-capped first, widening rows/bands deterministically until
+command overhead stays near the proven full-row path.
 
 ## Guardrails
 
@@ -516,9 +519,9 @@ the original `loop_vb=1426` to `1266` and `restore_bytes=16035840` to
 | `P2-03` | Done: change `grMarkRectDirty` to update X extents, not just row bands. | Existing callers get better restore precision automatically. |
 | `P2-04` | Done: clean-rect restore copies only previous X extents. | Avoid full-width RAM clean copies for narrow dirty bands. |
 | `P2-04a` | Done: track previous/current X extents per tile row and restore exact previous row spans. | `restore_bytes 9520664 -> 2510092`, `loop_vb 1296 -> 1266`; upload remains unchanged and conservative. |
-| `P2-05` | Failed naive per-partial-sync batching; retry with a bounded multi-strip scratch arena. | Avoid one `LoadImage`/`DrawSync` per row or strip; byte savings must not create sync stalls. |
-| `P2-06` | Use 8- or 16-pixel X bucket rounding for better batching. | Trade tiny extra upload for far fewer rectangles; 16-pixel buckets alone are insufficient if every strip syncs. |
-| `P2-07` | Add a deterministic merge policy when rect count exceeds a cap. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
+| `P2-05` | Failed naive per-partial-sync batching and byte-minimal arena batching. | Avoid one `LoadImage`/`DrawSync` per row or thousands of scratch strips; byte savings must not create sync or command stalls. |
+| `P2-06` | Use wider X/Y banding only under a strict rect-count budget. | Trade upload bytes back for far fewer rectangles; exact row strips are slower despite lower bytes. |
+| `P2-07` | Add a deterministic merge policy before issuing `LoadImage`. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
 | `P2-08` | Record bytes actually uploaded in telemetry. | Confirm real win. |
 
 Expected impact: restore byte volume is no longer the primary dirty bottleneck
@@ -890,9 +893,9 @@ into one commit.
 | 47 | Dirty | Done: track previous row extents separately. | Correct previous-frame cleanup with `trip=0` and `frame_mismatch=0`. |
 | 48 | Dirty | Partial: restore previous extents exactly; upload remains current/previous row-band union. | Restore is now precise; upload batching is the remaining work. |
 | 49 | Dirty | Round X extents to 8-pixel buckets. | Balance bytes vs rect count. |
-| 50 | Dirty | Round X extents to 16-pixel buckets. | Retry only as part of a one-final-sync upload arena; bucket rounding alone did not save enough. |
+| 50 | Dirty | Round X extents to 16/32-pixel buckets. | Already insufficient alone; retry only under a rect-count cap. |
 | 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects` without per-strip `DrawSync`. |
-| 52 | Dirty | Cap rects by deterministic widening, not fallback. | `cap_hits` allowed, `full_fallbacks=0`. |
+| 52 | Dirty | Cap rects by deterministic widening, not fallback. | Priority increased after `11575`-rect arena failure; `cap_hits` allowed, `full_fallbacks=0`. |
 | 53 | Dirty | Split dense frames into planned wide bands. | Stable worst-case upload time. |
 | 54 | Dirty | Avoid marking unchanged clean rows dirty. | Lower `dirty_rows`. |
 | 55 | Dirty | Cache clean-rect row source pointers. | Lower restore CPU. |
