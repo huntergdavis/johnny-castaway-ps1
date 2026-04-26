@@ -1156,7 +1156,9 @@ not as solved present serialization. A simple exact-4 slack guard was tried and
 rejected because it reduced prep calls but gave back one VBlank of loop,
 blocking, and refill-overrun time. A `4`-or-`5` VBlank cap was also rejected
 because it increased prep calls and still regressed the same timing counters,
-so the `>=4` guard remains the only accepted prepared-present shape.
+and a `3` VBlank threshold kept total loop timing flat while regressing
+blocking/refill by one VBlank and adding more duplicate prep work, so the
+`>=4` guard remains the only accepted prepared-present shape.
 Trying to use prepared-frame wait time for stream-window prefetch reduced the
 duplicate prep work back to the non-prepared baseline, but it also regressed
 loop, blocking, and refill-overrun by one VBlank. That confirms prepared wait
