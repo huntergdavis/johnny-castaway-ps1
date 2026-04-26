@@ -7,7 +7,13 @@ review and a release-engineering review. Read this before touching the
 `website` branch; revisit after every major page lands.
 
 Working branch: `website` (cut from `main` 2026-04-26).
-Site URL: `https://huntergdavis.github.io/Johnny-Castaway-PS1/` (target).
+Site URL: `https://hunterdavis.com/Johnny-Castaway-PS1/`. The apex
+`hunterdavis.com` is already served via the user's GitHub user-pages
+repo (CNAME lives there); GitHub resolves project pages under the same
+hostname at `/<repo-name>/`. **No CNAME file inside this repo.**
+`_config.yml` will set `url: https://hunterdavis.com` +
+`baseurl: /Johnny-Castaway-PS1`. Every internal link uses
+`{{ '/path' | relative_url }}` so the baseurl prefix lands correctly.
 Source of truth for the site: `_site/` generated from this repo.
 
 ---
@@ -30,8 +36,11 @@ Source of truth for the site: `_site/` generated from this repo.
 **Non-goals**
 - Not a marketing site. No "experience the magic," no Patreon banner above
   the fold, no glassmorphism cards.
-- Not a community hub. No Discord, no public roadmap with target dates, no
-  "1000 contributors!" card. Discussions tab on GitHub is enough.
+- **Not a community hub. Not a contribution surface.** This is an info dump —
+  the project's story, the port's mechanics, the artifacts of the build. No
+  Discord, no Discussions, no roadmap with target dates, no "claim this
+  scene" CTA, no "contributors welcome" framing. The author isn't soliciting
+  help; bug reports via GitHub issues are tolerated, not invited.
 - Not a code mirror. The site links GitHub for code; it does not render
   syntax-highlighted source trees.
 - Not a fan-tribute. The Johnny Castaway character belongs to its original
@@ -73,7 +82,15 @@ Source of truth for the site: `_site/` generated from this repo.
     ├── /docs/api/           api-mapping.md (SDL2 → PSn00bSDK)
     └── /docs/archive/       flat index — performance plans, hardware specs,
                              milestone reports, anything not promoted
+
+(footer-linked, not in nav)
+/faq/                        curated FAQ — author-written, not a forum
+/credits/                    full acknowledgements + drawCredits text
+/legal/                      GPL-3.0 + Sierra asset disclaimer
 ```
+
+No `/contribute/` page. The development-workflow doc stays in `/docs/`
+for the author's own reference, not surfaced as a public CTA.
 
 **Top nav (6 items, exact labels):** `Play` · `About` · `Scenes` · `Devlog`
 · `Archaeology` · `Docs`. GitHub icon outside the nav. No "Home" item — logo
@@ -104,9 +121,9 @@ past ~30 docs and we'll have ~50+ rendered).
 - `caption-audit-2026-04-26.yaml` → rendered into `/docs/captions/`
 - `hardware-specs.md` → callout in `/about/method/`, full at `/docs/build/`
 - `api-mapping.md` → `/docs/api/`
-- `development-workflow.md` → `/contribute/` (the per-scene loop is the
-  contributor's runbook)
-- `TESTING.md` → callout in `/contribute/`
+- `development-workflow.md` → `/docs/dev-workflow/` (author's own runbook;
+  not surfaced as a contributor CTA — see § 1 non-goals)
+- `TESTING.md` → callout in `/docs/dev-workflow/`
 - `milestones-YYYY-MM-DD.md` → glob into `_posts/milestones/` (separate from
   `/devlog/`)
 
@@ -335,11 +352,12 @@ keybind (`/`) lands here.
 
 ### 6.10 `/scenes/<slug>/` — per-scene case study
 
-Page exists for *every* scene, validated or not. For ⏳ scenes: a "Claim this
-scene" button opens the `scene-bringup.yml` issue template prefilled with
-slug + ADS tag + pack basenames + workflow checklist. For ✅ scenes: hero
-screenshot, variant gallery, ADS+tag, FG2 pack basenames, what "validated"
-means, link to the captioning entry.
+Page exists for *every* scene, validated or not. For ⏳ scenes: a plain
+"Not yet validated" line, ADS tag, and FG2 pack basenames if known —
+**no "Claim this scene" CTA, no issue-template button** (§ 1 non-goals;
+the scene-bringup template doesn't exist). For ✅ scenes: hero screenshot,
+variant gallery, ADS+tag, FG2 pack basenames, what "validated" means,
+link to the captioning entry.
 
 ### 6.11 `/devlog/`
 
@@ -386,13 +404,14 @@ The drawCredits text reproduced verbatim, plus full acknowledgements
 PSn00bSDK), GPL-3.0 line. Hunter shows up here once with a footer line,
 not a bio page.
 
-### 6.15 `/contribute/`
+### 6.15 `/docs/dev-workflow/` (author's runbook, not a contribute CTA)
 
-`development-workflow.md` rewritten as a contributor runbook. Three sections:
-1. Setup — Docker, DuckStation, where to clone.
-2. Pick a scene — link to `/scenes/`, claim instructions.
-3. PR checklist — variants exercised, screenshot, link to issue.
-No marketing copy, no "Welcome aboard!", no flowcharts. Same drawCredits voice.
+`development-workflow.md` lives under `/docs/` like every other reference
+manual — it's the author's own per-scene loop, kept current because the
+author runs through it. Not framed as "how to contribute," not linked
+from the home page, not promoted in the nav. A reader who lands on it is
+either the author or someone curious about the process; either is fine.
+No marketing copy, no "Welcome aboard!", no flowcharts.
 
 ### 6.16 `/legal/` (footer link)
 
@@ -401,6 +420,28 @@ GPL-3.0 + the asset/character disclaimer:
 > are © Sierra On-Line and not licensed under GPL. This project ships only
 > the code that drives the port and requires users to supply their own
 > original Sierra data files (`RESOURCE.MAP` / `RESOURCE.001`).
+
+### 6.17 `/faq/` (footer link)
+
+The site's only "answers from the author" surface. **An info dump, not
+a community channel** — curated questions and answers written by the
+author, not crowdsourced, not soliciting more. Scannable: each question
+is an H3, each answer is two or three sentences max, grouped into 3
+sections — *About* / *Running it* / *Original game*.
+
+Seed list (subject to author final pass):
+- *About* — "What is this?", "Why PS1?", "Will you port other Sierra
+  screensavers?", "Is this legal?", "Why is it only `{validated}/63`
+  scenes?".
+- *Running it* — "How do I run it?", "Do I need original Sierra files?",
+  "Does it work on real PS1 hardware?", "Which emulators are supported?",
+  "Where do I file bugs?" (link to issues, framed as *if you must*).
+- *Original game* — "Where does the caption text come from?", "Why are
+  there 35 holidays now instead of 4?", "What's faithful and what's
+  added?".
+
+No *Contributing* section — see § 1 non-goals. No "ask a question" link.
+No comment box. The page is the entire conversation.
 
 ---
 
@@ -412,12 +453,18 @@ GPL-3.0 + the asset/character disclaimer:
 | PS1 homebrew dev | "How it works" / Method | hardware specs → api-mapping → source links | a "PS1 gotchas we hit" page (SPI tx_len=5, FntFlush, SPU HLE, TTY printf) |
 | Sierra archivist | Closed captions / Faithfulness | scene ledger → caption-audit → holidays expansion | scene-by-scene gallery with "original / preserved / added" tri-color |
 | Process voyeur | Project history / Devlog | dated worklog → history phase narrative → timeline | reverse-chrono devlog with one-line summaries |
-| Contributor | "Contribute" / "Bring up a scene" | development-workflow → scene-status → TESTING | "Pick a scene" interactive table with claim-this issue button |
+
+**Note: no contributor persona by design.** The site assumes its readers
+are here to *learn about the project*, not to ship code with the author.
+A "claim this scene" CTA, an "edit this page" footer, a "good first issue"
+funnel — all skipped on purpose (§ 1 non-goals). If the project ever does
+attract regular contributors, this section gets revisited.
 
 **Cross-cutting affordances**
 - Persistent right-rail status widget (release tag · scenes validated · last
   updated). Reads from `_data/release.yml` and `_data/scenes.yml`.
-- "View source on GitHub" + "Edit this page" footers on every doc page.
+- "View source on GitHub" link in the footer (read-only; not "Edit this
+  page" — see persona note above).
 - Global `/` keybind to focus a scene-slug search (Pagefind-backed).
 
 **Flow danger zones to engineer around**
@@ -582,26 +629,36 @@ These are non-negotiable; the build fails without them.
 
 ---
 
-## 12. OSS surfaces (added at root + linked from site)
+## 12. OSS surfaces (minimal, info-dump posture)
 
-| File | Path | Site link |
-|---|---|---|
-| `CONTRIBUTING.md` | repo root | `/contribute/` (one canonical, mirror for SEO) |
-| `CODE_OF_CONDUCT.md` | repo root | `/community/` |
-| `SECURITY.md` | repo root | site footer |
-| `CITATION.cff` | repo root | linked from `/about/` |
-| `CHANGELOG.md` (or generated) | repo root | `/play/releases/` |
-| `.github/ISSUE_TEMPLATE/scene-bringup.yml` | repo | linked from each `/scenes/<slug>/` |
-| `.github/ISSUE_TEMPLATE/bug.yml` | repo | linked from `/contribute/` |
-| `.github/ISSUE_TEMPLATE/pack-mismatch.yml` | repo | linked from `/contribute/` |
-| `.github/PULL_REQUEST_TEMPLATE.md` | repo | linked from `/contribute/` |
+The user has been explicit (§ 1 non-goals): this is an info dump, not a
+collaboration surface. The OSS scaffolding is therefore **minimal**:
+license + citation + a single bug-report template. No CONTRIBUTING.md,
+no Code of Conduct, no PR template, no issue templates that imply
+"please claim this scene."
 
-Labels (set up before site launch): `good-first-scene` (low-variant scenes),
-`scene-bringup`, `pack-mismatch`, `ps1-runtime`, `host-tooling`, `docs`.
+| File | Path | Site link | Why kept |
+|---|---|---|---|
+| `LICENSE` (GPL-3.0) | repo root | `/legal/` | legally required |
+| `SECURITY.md` | repo root | site footer | one-liner: "email me" |
+| `CITATION.cff` | repo root | linked from `/about/` | for academic / archival cite |
+| `CHANGELOG.md` (or generated) | repo root | `/play/releases/` | release readers want this |
+| `.github/ISSUE_TEMPLATE/bug.yml` | repo | linked from `/faq/` "Where do I file bugs?" | tolerated, not invited |
 
-GitHub **Discussions enabled** with three categories on day one:
-"Show & tell", "Scene bring-up help", "Q&A". Don't ship eight empty
-categories.
+**Explicitly NOT added** (and why):
+- `CONTRIBUTING.md` — there is no contributor process to document.
+- `CODE_OF_CONDUCT.md` — no community to govern.
+- `.github/PULL_REQUEST_TEMPLATE.md` — implies expected PR volume that
+  isn't real.
+- `.github/ISSUE_TEMPLATE/scene-bringup.yml` — the "claim a scene" funnel
+  was killed with the contributor persona.
+- `.github/ISSUE_TEMPLATE/pack-mismatch.yml` — same; hyper-specific issue
+  templates assume a contributor population that doesn't exist.
+
+No labels created beyond GitHub defaults. **No Discussions.** Issues
+remain enabled because turning them off entirely sends a hostile signal,
+but the project doesn't promote them anywhere except the FAQ's *Where
+do I file bugs?* answer.
 
 **Badges (concrete)** on README + site header:
 - `License: GPL-3.0`
@@ -617,10 +674,12 @@ on an empty workflow.
 **OSS anti-patterns to avoid**
 1. Public roadmap with target dates (becomes a stick). The scene ledger is
    honest enough.
-2. Hyped corporate `CONTRIBUTING.md` (no "Welcome aboard!"). Three sections,
-   no marketing.
-3. Pretending there's a community when there isn't yet (no Discord badge,
-   no "1000 contributors!", no `governance.md`).
+2. A contributor funnel that nobody walks. Better to skip CONTRIBUTING.md
+   entirely than write one that decays unread.
+3. Pretending there's a community when there isn't and won't be — no
+   Discord badge, no "1000 contributors!", no `governance.md`, no
+   Discussions tab, no "good first issue" label. The `/faq/` page is the
+   only conversation surface, and it has one author.
 
 **README rebalance** (to ship < 150 lines):
 - Keep: 1-paragraph pitch, hero trio, Download links, Quick start, Original
@@ -629,6 +688,8 @@ on an empty workflow.
   full doc index, scene-ledger embeds, method deep-dive.
 - Both: status badge row (links out for full ledger), acknowledgements
   (short on README, full on `/credits/`).
+- **Skip entirely:** "Contributing" section, "Roadmap" section, "Star
+  history" widget, "Contributors" avatars block.
 
 ---
 
@@ -668,16 +729,17 @@ on an empty workflow.
 - Acceptance: a stranger can read `/archaeology/` start-to-finish and come
   away with the project's story.
 
-**P5 — OSS surfaces + hygiene (1 day).**
-- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CITATION.cff`
-  added at root.
-- Issue templates + PR template.
-- Labels created.
-- Discussions enabled with three categories.
+**P5 — Repo hygiene (½ day).**
+- `SECURITY.md` (one-liner, email contact), `CITATION.cff` added at root.
+- `LICENSE` already present (GPL-3.0); `/legal/` page links to it.
+- Single `bug.yml` issue template. No PR template, no CONTRIBUTING.md,
+  no CODE_OF_CONDUCT — see § 12.
 - Pre-commit hooks for alt-text + version-string lint.
-- README rebalanced (< 150 lines).
-- Acceptance: a stranger lands on the repo, knows in 30 seconds how to
-  download, contribute, or report.
+- README rebalanced (< 150 lines), no Contributing section.
+- `/faq/` populated with author-written answers.
+- Acceptance: a stranger lands on the repo, in 30 seconds knows what
+  this is, where to download, and that they're reading documentation —
+  not joining a project.
 
 **P6 — Polish + a11y gate (1 day).**
 - `pa11y-ci` step. Lighthouse at 95+ across all four scores on the home page.
@@ -685,7 +747,8 @@ on an empty workflow.
 - Reduced-motion polish; honor `prefers-color-scheme`.
 - Final visual pass: ensure the cyan separator + holiday emblem motif lands
   on every page.
-- Acceptance: green CI, public launch announcement on Discussions.
+- Acceptance: green CI on the site workflow. No "launch announcement" —
+  the site ships when it ships, the URL is the announcement.
 
 **Total: ~8–10 working days.** Each phase is a commit on `website`. P1 + P2
 + P3 are the merge-to-main gate; P4 + P5 + P6 can land separately.
@@ -694,21 +757,50 @@ on an empty workflow.
 
 ## 14. Open questions
 
-These need explicit answers before P1 starts:
+Five questions were posed. Four have been answered (decisions captured
+inline below); one remains.
 
-1. **Site URL.** Default `huntergdavis.github.io/Johnny-Castaway-PS1/`?
-   Custom domain (`johnnycastawayps1.dev` / `.com`)? Affects `_config.yml`
-   `url` + `baseurl`, og:image absolute paths, and CNAME.
-2. **Light/dark mode.** Default to dark (matches the deep-blue palette and
-   the screenshots). Allow toggle, or honor `prefers-color-scheme` only?
-3. **`/credits/` photos.** Acknowledgements section in README is solid as
-   text; do we want portraits, or stay text-only? (Recommend text-only —
-   simpler to maintain, matches voice.)
-4. **Per-scene case studies.** All 63 get a stub page on launch (with
-   `status: stub` for ⏳ scenes), or only validated scenes get a page?
-   (Recommend all 63 — it's how contributors discover what to claim.)
-5. **Discussions categories.** Three at launch is the recommendation; lock
-   the names: "Show & tell", "Scene bring-up help", "Q&A". OK to go?
+1. **Site URL — DECIDED.** `https://hunterdavis.com/Johnny-Castaway-PS1/`,
+   resolved via the user's existing apex CNAME in the user-pages repo. No
+   CNAME inside this repo. `_config.yml` uses
+   `url: https://hunterdavis.com` + `baseurl: /Johnny-Castaway-PS1`. All
+   internal links use `{{ '/path' | relative_url }}`.
+2. **Light/dark mode — DECIDED.** Honor `prefers-color-scheme`. No manual
+   toggle in the chrome. Implementation: CSS custom properties scoped to
+   `:root` for dark (default for `prefers-color-scheme: dark`), overridden
+   inside `@media (prefers-color-scheme: light) { :root { … } }`. The
+   palette in § 4.3 already lists both modes; the cream `#F4EAD5` becomes
+   the body background under light, `#0D1B2A` the text.
+3. **`/credits/` photos — DECIDED.** Text-only. No portraits. Matches the
+   drawCredits voice and avoids attribution / image-rights overhead. The
+   acknowledgements list is grouped by tier (upstream engine work, asset
+   preservation, toolchain, individuals) the same way the existing README
+   section does.
+4. **Per-scene case studies — DECIDED.** All 63 get a stub page on launch.
+   `_data/scenes.yml` is the only thing that varies row-to-row; the page
+   template renders both validated and unvalidated scenes from the same
+   data. **No "Claim this scene" CTA** — the page is informational only
+   (see Q5 / § 1 non-goals). A `⏳` row simply reads "Not yet validated."
+5. **Community surface — DECIDED. No community surface at all.**
+   The user's framing: *"this is an info dump, not a place for
+   collaboration. I'm not asking for help, and nobody else will ever
+   want to contribute anyway, that'd be cool but not in 1000 years it's
+   just too rare."* That settles a lot of downstream questions:
+   - No GitHub Discussions.
+   - No CONTRIBUTING.md, no CODE_OF_CONDUCT.md, no PR template, no
+     scene-bringup issue template.
+   - No "Contributing" persona in the reader-journey table.
+   - No "claim this scene" CTAs anywhere.
+   - No `/contribute/` page; `development-workflow.md` lives quietly
+     under `/docs/dev-workflow/` as the author's own runbook.
+   - No "Edit this page" footer.
+
+   **What replaces it: `/faq/` (§ 6.17).** Three sections — *About* /
+   *Running it* / *Original game* — with author-written answers. Issues
+   stay enabled (turning them off is hostile) but get exactly one
+   mention, in the FAQ's "Where do I file bugs?" answer. The site
+   doesn't pretend to be more populated than it is, and the chrome
+   doesn't beg for contributions that won't come.
 
 ---
 
