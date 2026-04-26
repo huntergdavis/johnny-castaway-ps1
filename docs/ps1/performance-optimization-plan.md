@@ -757,6 +757,7 @@ rectangle pressure.
 | `P4-121` | Failed: grow retained stream-window capacity to `24 KB` while keeping `16 KB` normal reads. | It improved total loop by one VBlank (`1227 -> 1226`) but regressed visible CD pressure (`blocking_vb 6 -> 16`), reintroduced due misses (`0 -> 3`), and increased read churn (`loop_reads 68 -> 80`); raw append growth needs pack/group scheduling before retry. |
 | `P4-122` | Failed: fixed `16 KB` payload group alignment in the fishing1 FG2 pack. | It reduced read count (`loop_reads 68 -> 56`) and backward seeks (`5 -> 3`) but grew the pack by `92413` bytes and regressed active playback (`loop_vb 1227 -> 1241`, `blocking_vb 6 -> 22`, `prefetch_overrun_vb 6 -> 22`); pack grouping must be selective/cost-aware. |
 | `P4-123` | Failed: align the FG2 payload start to a CD sector with `904` bytes of padding. | It kept due misses at zero but regressed cadence (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); small global payload shifts are unsafe without preserving the measured offset phase. |
+| `P4-124` | Failed: use a pause-poll-only event path for FG2 held/prepared waits. | It reduced speculative prep (`restore_calls/compose_calls 188 -> 183`) but regressed cadence (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`); the zero-delay event tail remains scheduler ballast until FG2 owns the full present/event phase. |
 
 Prefetch variants to test in order:
 
