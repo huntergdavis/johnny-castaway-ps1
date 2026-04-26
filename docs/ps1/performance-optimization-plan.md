@@ -716,6 +716,7 @@ rectangle pressure.
 | `P4-83` | Done: consume the leading empty capture artifact during setup with a one-VBlank setup settle. | Strict gates passed: `loop_vb 1234 -> 1227`, `overrun_vb 157 -> 150`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 8 -> 7`, and `due_misses=0`; render count drops by one non-payload frame and the settle cost is outside active playback. |
 | `P4-84` | Failed: consume the leading empty capture artifact with two setup settle VBlanks. | The second setup settle regressed the active loop (`loop_vb 1227 -> 1235`, `blocking_vb 7 -> 13`, `prefetch_overrun_vb 7 -> 13`); one setup settle is the local cadence knee. |
 | `P4-85` | Failed/no-op: re-sweep adjacent `15 KB` and `17 KB` raw stream windows after leading-empty setup consume. | `15 KB` tied the accepted `16 KB` default exactly (`loop_vb=1227`, `blocking_vb=7`); `17 KB` regressed to `loop_vb=1238`, `blocking_vb=29`, and `due_misses=2`. |
+| `P4-86` | Failed: re-test prepared-current RAM reuse after leading-empty setup consume, including reuse-plus-immediate-prefetch. | Both variants removed duplicate work (`restore_calls 187 -> 155`, `compose_calls 187 -> 155`) but regressed active playback to `loop_vb=1231`, `blocking_vb=12`, and `prefetch_overrun_vb=12`; the removed work still acts as CD-phase pacing. |
 
 Prefetch variants to test in order:
 
@@ -1208,6 +1209,11 @@ not as evidence that more startup spacing is broadly useful.
 A narrow post-cadence window sweep also left the default unchanged: `15 KB`
 tied the accepted `16 KB` timing exactly, while `17 KB` reintroduced due misses
 and jumped to `blocking_vb=29`. Raw byte-count window tuning is exhausted again.
+Prepared-current RAM reuse was re-tested on the new baseline and still failed.
+It cut duplicate restore/compose calls from `187` to `155`, but worsened active
+playback to `loop_vb=1231` and `blocking_vb=12`; an immediate next-payload
+prefetch refinement did not change the outcome. This remains a scheduler problem,
+not a local reuse toggle.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
