@@ -44,6 +44,7 @@ Review:
 
 ```text
 scratch/holidays-emblems/holiday-emblems-preview.png
+docs/ps1/holidays-emblems/holiday-emblems-preview.png
 ```
 
 Use:
@@ -52,4 +53,6 @@ Use:
 scratch/holidays-emblems/holiday-emblems-sheet.png
 scratch/holidays-emblems/review.html
 scratch/holidays-emblems/manifest.json
+docs/ps1/holidays-emblems/holiday-emblems-sheet.png
+docs/ps1/holidays-emblems/manifest.json
 ```

@@ -1,0 +1,580 @@
+{
+  "icons": [
+    {
+      "id": 5,
+      "name": "Elvis's Birthday",
+      "short_name": "ELVIS BDAY",
+      "file": "scratch/holidays-emblems/05-ELVIS_BDAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 0,
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 6,
+      "name": "MLK Jr. Day",
+      "short_name": "MLK DAY",
+      "file": "scratch/holidays-emblems/06-MLK_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 1,
+        "x": 32,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 7,
+      "name": "Groundhog Day",
+      "short_name": "GROUNDHOG",
+      "file": "scratch/holidays-emblems/07-GROUNDHOG.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 2,
+        "x": 64,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 8,
+      "name": "Valentine's Day",
+      "short_name": "VALENTINE",
+      "file": "scratch/holidays-emblems/08-VALENTINE.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 3,
+        "x": 96,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 9,
+      "name": "Super Bowl Sunday",
+      "short_name": "SUPER BOWL",
+      "file": "scratch/holidays-emblems/09-SUPER_BOWL.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 4,
+        "x": 128,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 10,
+      "name": "Presidents' Day",
+      "short_name": "PRESIDENTS",
+      "file": "scratch/holidays-emblems/10-PRESIDENTS.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 5,
+        "x": 160,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 11,
+      "name": "Mardi Gras",
+      "short_name": "MARDI GRAS",
+      "file": "scratch/holidays-emblems/11-MARDI_GRAS.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 6,
+        "x": 192,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 12,
+      "name": "Pi Day",
+      "short_name": "PI DAY",
+      "file": "scratch/holidays-emblems/12-PI_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 7,
+        "x": 224,
+        "y": 0,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 13,
+      "name": "First Day of Spring",
+      "short_name": "SPRING",
+      "file": "scratch/holidays-emblems/13-SPRING.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 8,
+        "x": 0,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 14,
+      "name": "April Fool's Day",
+      "short_name": "APRIL FOOL",
+      "file": "scratch/holidays-emblems/14-APRIL_FOOL.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 9,
+        "x": 32,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 36,
+      "name": "4/20 Day",
+      "short_name": "420 DAY",
+      "file": "scratch/holidays-emblems/36-420_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 10,
+        "x": 64,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 15,
+      "name": "Easter",
+      "short_name": "EASTER",
+      "file": "scratch/holidays-emblems/15-EASTER.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 11,
+        "x": 96,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 16,
+      "name": "Earth Day",
+      "short_name": "EARTH DAY",
+      "file": "scratch/holidays-emblems/16-EARTH_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 12,
+        "x": 128,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 17,
+      "name": "Star Wars Day",
+      "short_name": "STAR WARS",
+      "file": "scratch/holidays-emblems/17-STAR_WARS.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 13,
+        "x": 160,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 18,
+      "name": "Cinco de Mayo",
+      "short_name": "CINCO MAYO",
+      "file": "scratch/holidays-emblems/18-CINCO_MAYO.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 14,
+        "x": 192,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 19,
+      "name": "Mother's Day",
+      "short_name": "MOTHERS DAY",
+      "file": "scratch/holidays-emblems/19-MOTHERS_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 15,
+        "x": 224,
+        "y": 32,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 20,
+      "name": "Memorial Day",
+      "short_name": "MEMORIAL",
+      "file": "scratch/holidays-emblems/20-MEMORIAL.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 16,
+        "x": 0,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 21,
+      "name": "Father's Day",
+      "short_name": "FATHERS DAY",
+      "file": "scratch/holidays-emblems/21-FATHERS_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 17,
+        "x": 32,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 22,
+      "name": "First Day of Summer",
+      "short_name": "SUMMER",
+      "file": "scratch/holidays-emblems/22-SUMMER.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 18,
+        "x": 64,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 23,
+      "name": "Pride Day",
+      "short_name": "PRIDE",
+      "file": "scratch/holidays-emblems/23-PRIDE.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 19,
+        "x": 96,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 24,
+      "name": "Independence Day",
+      "short_name": "JULY 4TH",
+      "file": "scratch/holidays-emblems/24-JULY_4TH.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 20,
+        "x": 128,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 25,
+      "name": "Moon Landing Day",
+      "short_name": "MOON LAND",
+      "file": "scratch/holidays-emblems/25-MOON_LAND.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 21,
+        "x": 160,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 26,
+      "name": "National Watermelon Day",
+      "short_name": "WATERMELON",
+      "file": "scratch/holidays-emblems/26-WATERMELON.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 22,
+        "x": 192,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 27,
+      "name": "Left-Handers Day",
+      "short_name": "LEFT HAND",
+      "file": "scratch/holidays-emblems/27-LEFT_HAND.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 23,
+        "x": 224,
+        "y": 64,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 28,
+      "name": "Hawaii Statehood Day",
+      "short_name": "HAWAII DAY",
+      "file": "scratch/holidays-emblems/28-HAWAII_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 24,
+        "x": 0,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 29,
+      "name": "Labor Day",
+      "short_name": "LABOR DAY",
+      "file": "scratch/holidays-emblems/29-LABOR_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 25,
+        "x": 32,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 30,
+      "name": "Talk Like a Pirate Day",
+      "short_name": "PIRATE DAY",
+      "file": "scratch/holidays-emblems/30-PIRATE_DAY.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 26,
+        "x": 64,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 31,
+      "name": "First Day of Autumn",
+      "short_name": "AUTUMN",
+      "file": "scratch/holidays-emblems/31-AUTUMN.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 27,
+        "x": 96,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 32,
+      "name": "Columbus / Indigenous Peoples' Day",
+      "short_name": "COLUMBUS",
+      "file": "scratch/holidays-emblems/32-COLUMBUS.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 28,
+        "x": 128,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 33,
+      "name": "Election Day",
+      "short_name": "ELECTION",
+      "file": "scratch/holidays-emblems/33-ELECTION.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 29,
+        "x": 160,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 34,
+      "name": "Veterans Day",
+      "short_name": "VETERANS",
+      "file": "scratch/holidays-emblems/34-VETERANS.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 30,
+        "x": 192,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    },
+    {
+      "id": 35,
+      "name": "Thanksgiving",
+      "short_name": "THANKSGIVE",
+      "file": "scratch/holidays-emblems/35-THANKSGIVE.png",
+      "size": [
+        32,
+        32
+      ],
+      "sheet": {
+        "file": "scratch/holidays-emblems/holiday-emblems-sheet.png",
+        "cell": 31,
+        "x": 224,
+        "y": 96,
+        "w": 32,
+        "h": 32
+      }
+    }
+  ]
+}

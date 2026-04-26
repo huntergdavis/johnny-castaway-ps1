@@ -41,6 +41,14 @@ scratch/holidays-emblems/
 image with checkerboard cells and labels. `review.html` displays the sheet and
 all individual icons at review scale.
 
+Tracked review copies live in:
+
+```text
+docs/ps1/holidays-emblems/holiday-emblems-sheet.png
+docs/ps1/holidays-emblems/holiday-emblems-preview.png
+docs/ps1/holidays-emblems/manifest.json
+```
+
 ## Contract
 
 - Added holidays only. IDs 1-4 keep the original PS1 sprites.

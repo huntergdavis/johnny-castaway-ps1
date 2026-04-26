@@ -24,6 +24,14 @@ wave animation, holiday overlay, input, SPU).
   Press <strong>START</strong> mid-scene for the pause menu — sound mute, day/night and holiday overrides, perf log toggle, debug info, set time/date, save to memory card.
 </p>
 
+<p align="center">
+  <img src="docs/ps1/holidays-emblems/holiday-emblems-preview.png" width="72%" alt="Added holiday emblem sprite sheet">
+</p>
+
+<p align="center">
+  Thirty-two added holiday emblems packed into the PS1 holiday sprite sheet.
+</p>
+
 ## Download and play
 
 Latest release → [**Releases page**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest)
