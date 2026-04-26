@@ -654,6 +654,7 @@ and upload byte volume.
 | `P4-58` | Failed as no-op: coalesce consecutive full-width restore rows into one `memcpy()`. | Work identity and timing stayed exactly flat at `loop_vb=1240`, `restore_bytes=2510092`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; future restore wins need pack-emitted bands or less restore work. |
 | `P4-59` | Failed as no-op: unroll the PAL4 opaque run loop from two pixels to four pixels per iteration. | Work identity and timing stayed exactly flat at `loop_vb=1240`, `compose_calls=155`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; future compositor wins need generated or pack-specialized command streams. |
 | `P4-60` | Failed: lower the stream-window refill guard from `3` to `2` VBlanks after the tile-local PAL4 fast path. | The retest regressed `loop_vb 1240 -> 1245`, `blocking_vb 20 -> 26`, and `prefetch_overrun_vb 11 -> 18`; keep `3` VBlanks as the current lower slack bound. |
+| `P4-61` | Failed as no-op: remove the held-loop prefetch-window would-read double-check. | Letting `fgRuntimeTryPrefetchWindow()` perform the single target/window/slack decision left all key metrics flat at `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; retry only inside broader prefetch scheduler cleanup. |
 
 Prefetch variants to test in order:
 
