@@ -9,7 +9,6 @@ void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);
 void foregroundPilotSetPrefetchWindow(unsigned long bytes);
 void foregroundPilotPlay(void);
-int foregroundPilotRuntimeStart(const char *sceneName);
 void foregroundPilotRuntimeCompose(void);
 void foregroundPilotRuntimeAdvance(void);
 int foregroundPilotRuntimeActive(void);

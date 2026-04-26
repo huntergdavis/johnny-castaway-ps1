@@ -1584,7 +1584,7 @@ static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
     return 1;
 }
 
-int foregroundPilotRuntimeStart(const char *sceneName)
+static int foregroundPilotRuntimeStart(const char *sceneName)
 {
     fgRuntimeReset();
 

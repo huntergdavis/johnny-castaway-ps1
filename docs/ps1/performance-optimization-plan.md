@@ -52,8 +52,9 @@ byte bucket with flat timing; long-hold deadline catch-up then traded seven
 extra speculative restore/compose calls for `5` fewer loop VBlanks. Removing
 the unused foreground "ever" diagnostics kept timing flat and shrank
 `jcreborn.elf`; removing the unused ADS foreground auto-start hook kept timing
-flat again and shrank `jcreborn.elf` to `690932` bytes. The pre-pause best was
-`loop_vb=1297`.
+flat again and shrank `jcreborn.elf` to `690932` bytes. Removing the obsolete
+`FGPILOT` ADS debug dispatch kept playback flat and moved `jcreborn.exe` down
+to `129024` bytes. The pre-pause best was `loop_vb=1297`.
 
 Latest Detail-tier attribution on this baseline shows the remaining
 active-loop gap is not primarily due-frame CD: `render_vb=181`,
@@ -781,6 +782,7 @@ rectangle pressure.
 | `P4-135` | Failed/no-op: cache the no-holiday compose gate for fishing1. | Runtime timing and work identity matched exactly, but ELF size grew (`692704 -> 692924`); the holiday-stamp branch is not a measurable hot-path target in this form. |
 | `P4-136` | Done: remove unused foreground "ever" diagnostics. | Two strict runs matched timing/work identity exactly while `jcreborn.elf` shrank `692704 -> 691584`; keep pruning old diagnostic API only when the cadence gate stays flat. |
 | `P4-137` | Done: remove unused ADS foreground auto-start hook. | Two strict runs matched timing/work identity exactly while `jcreborn.elf` shrank `691584 -> 690932`; the explicit PS1 `FGPILOT` debug ADS path remains intact. |
+| `P4-138` | Done: remove obsolete `FGPILOT` ADS debug dispatch. | Two strict runs matched timing/work identity exactly while `jcreborn.exe` crossed down `131072 -> 129024`; ELF file size moved upward from link-layout noise, but the shipped/loadable executable is smaller. |
 
 Prefetch variants to test in order:
 
