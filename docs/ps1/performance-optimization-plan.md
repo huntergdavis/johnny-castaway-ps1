@@ -753,6 +753,7 @@ rectangle pressure.
 | `P4-117` | Done: compile out legacy foreground diagnostic scene modes from the default PS1 build. | Timing, CD, prefetch, gfx identity, and correctness stayed flat while `jcreborn.exe` shrank `137216 -> 131072` and `jcreborn.elf` shrank `707916 -> 692612`; code-size cleanup can be promoted when the headless cadence gate is exactly flat. |
 | `P4-118` | Failed: mark FG2 PAL4 dirty tile rows directly instead of routing through `grMarkRectDirty()`. | It reduced speculative restore/compose calls (`188 -> 185`) but regressed visible cadence (`loop_vb 1227 -> 1229`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`) and grew the ELF; dirty-marker micro-cleanups need scheduler headroom before retry. |
 | `P4-119` | Failed: compile out the old visual debug screen/buffer/wait implementation by default. | It saved a full 4 KB executable bucket (`131072 -> 126976`) but regressed active cadence (`loop_vb 1227 -> 1232`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); startup/debug code-shape cleanup must wait for a stronger phase barrier or scheduler model. |
+| `P4-120` | Failed: lower held-slack prepared-present threshold from `4` to `3` VBlanks. | It increased speculative prep (`restore_calls/compose_calls 188 -> 193`) and regressed active cadence (`loop_vb 1227 -> 1231`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`); the accepted `4` VBlank bridge is still the local knee from both directions. |
 
 Prefetch variants to test in order:
 
