@@ -96,6 +96,7 @@ def main():
     invalid_variants = []
     missing_pngs = []
     plan: list[tuple[Path, Path]] = []  # (src, dst) for actual copies
+    manifest_entries: list[dict] = []     # for the manifest JSON
 
     for h in reviewable:
         hid = str(h["id"])
@@ -118,6 +119,22 @@ def main():
             continue
         dst = args.out / f"{int(hid):02d}-{slug}.png"
         plan.append((src, dst))
+        manifest_entries.append({
+            "id": int(hid),
+            "name": h["name"],
+            "short_name": h["short_name"],
+            "variant": vi_int,
+            "src": str(src.relative_to(REPO)),
+            "dst": str(dst.relative_to(REPO)),
+            "sprite": {
+                "width": h["sprite"]["width"],
+                "height": h["sprite"]["height"],
+            },
+            "island_xy": [
+                h["sprite"].get("island_x", 0),
+                h["sprite"].get("island_y", 0),
+            ],
+        })
 
     has_issues = bool(missing_picks or invalid_variants or missing_pngs)
     if args.strict and has_issues:
@@ -135,6 +152,12 @@ def main():
         for src, dst in plan:
             shutil.copy2(src, dst)
             resolved += 1
+        # Write the manifest JSON next to the staged PNGs so Phase D
+        # has a single source of truth for "what was picked, from where".
+        manifest_path = args.out / "manifest.json"
+        manifest_path.write_text(
+            json.dumps({"holidays": manifest_entries}, indent=2) + "\n",
+            encoding="utf-8")
 
     if not (args.strict and has_issues):
         print(f"resolved {resolved} picks → {show_path(args.out)}/")
