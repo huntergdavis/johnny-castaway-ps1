@@ -27,14 +27,14 @@ Latest accepted default-path fishing1 high-tide run, after the pause merge,
 pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
-dirty-row upload bands with a 10-row gap merge, setup priming of the first
+dirty-row upload bands with an 11-row gap merge, setup priming of the first
 real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
 `due_misses=0`, `blocking_vb=7`, `prefetch.overrun_vb=7`, `loop_vb=1227`,
 `overrun_vb=150`, `target_vb=1077`, `restore_bytes=2986378`,
-`upload_bytes=16442880`, `dirty_rows=25692`, `upload_rects=409`, `trip=0`,
+`upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`. This is
 the current baseline for the next experiment; the pre-pause best was
 `loop_vb=1297`.
@@ -255,9 +255,12 @@ most of the byte win (`upload_bytes 16496000`), again with flat key timing.
 After the leading-empty cadence win, an 8-row gap merge became worth accepting:
 it keeps timing flat while reducing `upload_rects 424 -> 412` for only `43520`
 additional bytes across the full fishing1 run.
-A follow-up 10-row point is now the accepted local knee: timing stays flat,
+A follow-up 10-row point was accepted: timing stayed flat,
 `upload_rects` drops again to `409`, and the extra byte cost versus the 8-row
 baseline is only `17,920` bytes across the loop.
+A final 11-row probe is the current local knee: timing still stays flat,
+`upload_rects` drops to `401`, and the extra byte cost versus the 10-row
+baseline is `56,320` bytes across the loop.
 The next upload-byte attempt should move decisions to pack-time/direct-layout
 work or use scene-specific band statistics, not reintroduce runtime scratch
 packing.
@@ -536,11 +539,11 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
-vertical dirty-row bands with a 10-row clean-gap merge, while keeping full tile
+vertical dirty-row bands with an 11-row clean-gap merge, while keeping full tile
 width and no scratch packing.
 Fishing1 improved from the original `loop_vb=1426` to `1240`,
 `restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16442880`; next work is balancing upload byte savings against rectangle
+`16499200`; next work is balancing upload byte savings against rectangle
 pressure.
 
 | ID | Task | Rationale |
@@ -605,13 +608,13 @@ removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
-a post-leading-empty 10-row gap merge, setup priming of the first real payload,
+a post-leading-empty 11-row gap merge, setup priming of the first real payload,
 tight-slack direct staging, direct-stage scratch window seeding, and the
 4 VBlank held-slack prepared-present pass plus leading-empty setup consume,
 fishing1 high-tide reports
 `loop_vb=1227`, `blocking_vb=7`, `due_misses=0`, and prefetch
-`overrun_vb=7`, with `upload_bytes=16442880`, `restore_bytes=2986378`,
-and `upload_rects=409`.
+`overrun_vb=7`, with `upload_bytes=16499200`, `restore_bytes=2986378`,
+and `upload_rects=401`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
@@ -712,13 +715,14 @@ rectangle pressure.
 | `P4-89` | Failed/no-op: re-sweep tight-slack direct-stage payload caps after the 8-row upload merge. | `6 KB` and `10 KB` matched baseline exactly; `4 KB` regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 11`, and `prefetch_overrun_vb 7 -> 11`. Keep `8 KB` until grouped reads or another stage model changes the coverage tradeoff. |
 | `P4-90` | Failed: split immediate-next and pure-lookahead window refill guards. | Keeping immediate staging at `3` VBlanks but requiring `4` VBlanks for standalone lookahead refills regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; scalar slack splitting is exhausted without read-cost prediction or pack groups. |
 | `P4-91` | Failed: runtime read-size predictor for tight lookahead refills. | An `8 KB` tight-read cap improved nominal `loop_vb 1227 -> 1225`, but increased `blocking_vb` and `prefetch_overrun_vb` to `8`, raised loop CD read time, and changed scheduler cadence; `12 KB` regressed to `loop_vb=1233` and `blocking_vb=14`. |
-| `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); the later `10`-row midpoint is accepted, but `12` remains too wide. |
+| `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); the later `11`-row midpoint is accepted, but `12` remains too wide. |
 | `P4-93` | Failed: compile hot playback translation units with `-O3`. | It reduced prepared restore/compose calls (`187 -> 182`) but regressed `loop_vb 1227 -> 1229`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; keep the SDK `-O2` default and prefer targeted hot functions/assembly. |
 | `P4-94` | Failed: read tight-slack direct-stage sectors straight into the stream-window buffer. | It removed one local seed copy in theory but regressed `loop_vb 1227 -> 1231`, `loop_reads 68 -> 69`, and `seek_back 7 -> 9`; direct-stage seeding must preserve current window coverage shape. |
 | `P4-95` | Failed: skip the held-loop wait when no slack and no prepared frame are available. | The apparent overshoot cleanup regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 10`, `prefetch_overrun_vb 7 -> 10`, and added three restore/compose calls; the wait is currently part of CD/render pacing. |
 | `P4-96` | Failed: merge direct-stage scratch sectors into adjacent stream-window coverage. | Correctness stayed clean but timing regressed with the same `loop_vb=1231`, `blocking_vb=10`, `prefetch_overrun_vb=10`, and extra prep calls; direct-stage window-shape work needs per-read evidence first. |
 | `P4-97` | Failed: proactively slide/append the stream window while the next future payload is still resident. | Due misses stayed zero, but eager append work regressed `loop_vb 1227 -> 1231`, `blocking_vb 7 -> 13`, and `prefetch_overrun_vb 7 -> 13`; raw lookahead needs group/read-cost metadata. |
 | `P4-98` | Done: widen vertical dirty-upload band clean-gap merge from `8` to `10` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 412 -> 409`; byte cost is bounded (`upload_bytes 16424960 -> 16442880`) and correctness/fallback counters stayed clean. |
+| `P4-99` | Done: widen vertical dirty-upload band clean-gap merge from `10` to `11` rows. | Timing stayed flat (`loop_vb=1227`, `blocking_vb=7`, `prefetch_overrun_vb=7`) while `upload_rects 409 -> 401`; byte cost is bounded (`upload_bytes 16442880 -> 16499200`) and correctness/fallback counters stayed clean. |
 
 Prefetch variants to test in order:
 
@@ -1069,7 +1073,7 @@ into one commit.
 Current measured bottlenecks are now narrow enough that the next wins should be
 small and cumulative: `157` Detail-tier present-wait VBlanks, `7` visible CD
 blocking VBlanks, `7` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.4 MB` upload volume, `409` upload rects, and `2.99 MB` restore volume on
+`16.5 MB` upload volume, `401` upload rects, and `2.99 MB` restore volume on
 fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |
@@ -1225,10 +1229,10 @@ histograms are the next useful data.
 The next dirty-upload merge point did not clear the promotion bar. A `12`-row
 clean-gap merge lowers `LoadImage` rectangles from `412` to `399`, but gives
 back `89600` extra upload bytes versus the accepted `8`-row baseline and leaves
-all VBlank timing flat. A follow-up `10`-row midpoint is now the accepted local
-knee: `upload_rects 412 -> 409` for only `17920` more bytes. The next upload
-win should come from pack-emitted/upload-ready bands that lower command count
-without widening DMA volume.
+all VBlank timing flat. Follow-up midpoint probes moved the accepted local knee
+to `11` rows: `upload_rects 412 -> 401` for `74240` more bytes versus the
+8-row baseline. The next upload win should come from pack-emitted/upload-ready
+bands that lower command count without widening DMA volume.
 A hot translation-unit `-O3` pass also failed. The resulting code reduced
 speculative prepared-frame restore/compose calls by five, but worsened the
 actual timing and CD-pressure counters. That makes it a scheduler-shape loss,
@@ -1271,8 +1275,8 @@ to `19-20`; future CD work should preserve zero due misses through grouped or
 physically adjacent reads before tightening the guard again.
 
 The post-leading-empty upload gap sweep moved the local runtime knee upward.
-The accepted 10-row dirty-band gap merge keeps timing flat and lowers
-`upload_rects 424 -> 409` for a small byte increase. The rejected 12-row point
+The accepted 11-row dirty-band gap merge keeps timing flat and lowers
+`upload_rects 424 -> 401` for a small byte increase. The rejected 12-row point
 is still too wide; the next larger upload win should move band metadata to pack
 generation or emit upload-ready layouts.
 
