@@ -714,6 +714,7 @@ rectangle pressure.
 | `P4-81` | Failed: re-sweep `14/18/20 KB` stream windows after prepared-present. | All tested sizes regressed total loop versus the accepted `16 KB` default (`1236`, `1247`, `1249` vs `1234`), confirming raw window-size tuning is exhausted until grouped/pack-aware reads improve coverage per transaction. |
 | `P4-82` | Failed strict gate but promising: consume the leading empty capture artifact during setup. | `loop_vb 1234 -> 1228` and `overrun_vb 157 -> 151` with zero due misses, but `blocking_vb 8 -> 9`, `prefetch_overrun_vb 8 -> 9`, and render count dropped by one non-payload frame; retry with CD smoothing and explicit visual policy for empty artifacts. |
 | `P4-83` | Done: consume the leading empty capture artifact during setup with a one-VBlank setup settle. | Strict gates passed: `loop_vb 1234 -> 1227`, `overrun_vb 157 -> 150`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 8 -> 7`, and `due_misses=0`; render count drops by one non-payload frame and the settle cost is outside active playback. |
+| `P4-84` | Failed: consume the leading empty capture artifact with two setup settle VBlanks. | The second setup settle regressed the active loop (`loop_vb 1227 -> 1235`, `blocking_vb 7 -> 13`, `prefetch_overrun_vb 7 -> 13`); one setup settle is the local cadence knee. |
 
 Prefetch variants to test in order:
 
@@ -1199,6 +1200,10 @@ VBlank. The accepted retry adds a one-VBlank setup settle, dropping active
 playback to `loop_vb=1227`, `blocking_vb=7`, and `prefetch.overrun_vb=7` while
 keeping `due_misses=0`. The important lesson is that some CD cadence fixes can
 be paid before `loop_start` if they preserve the active-loop scheduler shape.
+A two-VBlank setup settle retry was rejected immediately afterward: it regressed
+the active loop to `loop_vb=1235`, `blocking_vb=13`, and
+`prefetch.overrun_vb=13`. Treat the one-VBlank settle as the current local knee,
+not as evidence that more startup spacing is broadly useful.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
