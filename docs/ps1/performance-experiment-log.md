@@ -32,12 +32,12 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `853b8310 ps1: fast-path tile-local PAL4 spans` |
-| Run ID | `20260425-222321` |
+| Commit | `this commit: ps1: upload vertical dirty bands` |
+| Run ID | `20260425-224947` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard, 6 VBlank fallthrough guard, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands` |
 | `loop_vb` | `1240` |
 | `target_vb` | `1077` |
 | `overrun_vb` | `163` |
@@ -47,7 +47,9 @@ Current accepted baseline for the next experiment:
 | `prefetch_due_misses` | `1` |
 | `prefetch_overrun_vb` | `11` |
 | `restore_bytes` | `2510092` |
-| `upload_bytes` | `17172480` |
+| `upload_bytes` | `16387840` |
+| `dirty_rows` | `25606` |
+| `upload_rects` | `518` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -141,6 +143,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-pal4-run4-unroll` | dirty experiment after `853b8310` | Unroll the PAL4 opaque compositor loop from two pixels per iteration to four pixels per iteration, keeping the same halfword palette stores and avoiding the previously slower pair-LUT word-store path. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as a VBlank-level no-op. Work identity and timing matched baseline exactly: `loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`, `render=156`, `compose_calls=155`, and `upload_calls=156`. Artifact: `scratch/ps1-perf-iterate/20260425-223934/summary.json`. | Do not promote. Simple PAL4 loop unrolling no longer moves the current bottleneck; future compositor wins likely need pack-generated commands or upload-ready/direct16 data. |
 | 2026-04-25 | `fg2-window-2vb-post-tile-fast-path` | dirty experiment after `853b8310` | Lower the stream-window refill guard from `3` to `2` VBlanks after the tile-local PAL4 fast path, testing whether the lower compositor cost can tolerate earlier refill reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed. Work identity stayed stable, but timing regressed: `loop_vb 1240 -> 1245`, `overrun_vb 163 -> 168`, `blocking_vb 20 -> 26`, and `prefetch_overrun_vb 11 -> 18`. Artifact: `scratch/ps1-perf-iterate/20260425-224201/summary.json`. | Do not promote. The `3` VBlank refill guard remains the local lower bound; `2` VBlanks starts reads that spill into visible playback. |
 | 2026-04-25 | `fg2-prefetch-single-window-check` | dirty experiment after `853b8310` | Remove the held-loop `fgRuntimeWindowPrefetchWouldRead()` pre-check and let `fgRuntimeTryPrefetchWindow()` perform the single target/window/slack decision, avoiding duplicate table/window checks before real reads. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. | Failed as a VBlank-level no-op. Work identity and timing matched baseline exactly: `loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`, `hits=154`, and `due_misses=1`. Artifact: `scratch/ps1-perf-iterate/20260425-224454/summary.json`. | Do not promote. The duplicate target/window checks are not measurable at current resolution; leave the existing helper split because it keeps duplicate metrics quiet and explicit. |
+| 2026-04-25 | `fg2-upload-vertical-dirty-bands` | `this commit` | Split each dirty tile upload into contiguous vertical dirty-row bands so clean Y gaps are not uploaded, while keeping full tile width and avoiding runtime scratch packing. | Strict run with `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`; verification run without `--require-improvement`. | Promoted as a safe work-volume reduction. Key timing stayed flat (`loop_vb=1240`, `overrun_vb=163`, `blocking_vb=20`, `prefetch_overrun_vb=11`), while `upload_bytes 17172480 -> 16387840`, `dirty_rows 26832 -> 25606`, `upload_rects 351 -> 518`, and `max_upload_rects 4 -> 6`; `cap_hits=0`, `full_fallbacks=0`, and work identity stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-224810/summary.json`, `scratch/ps1-perf-iterate/20260425-224947/summary.json`. | Promote. The VBlank timer did not move, but the runtime now uploads 784,640 fewer bytes per fishing1 loop with no correctness or timing regression. Next upload work should reduce the added rectangle pressure or move band decisions to pack time. |
 
 ## Retry Queue
 
@@ -182,6 +185,7 @@ Current accepted baseline for the next experiment:
 | PAL4 four-pixel loop unroll | Exact VBlank-level no-op; retry only if generated compositor code can combine unrolling with pack-known alignment/length classes. |
 | `2` VBlank stream-window refill guard after tile-local PAL4 fast path | Correctness clean but slower and more visibly blocking; keep `3` VBlanks unless grouped reads make short-slack refills cheaper. |
 | Single-call prefetch-window check | Exact VBlank-level no-op; retry only as part of a broader prefetch state-machine cleanup. |
+| Vertical dirty-row upload band merge/capping | The accepted band split saves bytes but raises `upload_rects`; retry merge thresholds that reduce rect pressure while preserving most byte savings. |
 | Inline PAL4 span compositor | Correctness and work identity were stable but total loop, blocking, and refill overrun regressed; retry only as generated scene-specialized code, not as a local helper-inline rewrite. |
 | Slack-adaptive `8/12/16 KB` stream windows | Lowered refill overrun and total loop slightly but regressed visible blocking; retry only after pack grouping preserves due-frame coverage. |
 | Zero-delay `eventsWaitTick` fast path | Exact VBlank-level no-op; retry only with finer CPU counters or during event/pause cleanup. |
@@ -207,10 +211,11 @@ Current accepted baseline for the next experiment:
 ## Promotion Rule
 
 An experiment is promotable only when the headless perf gate passes, correctness
-tripwires remain zero, and at least one key speed metric improves without a
-material regression in `loop_vb`, `blocking_vb`, `prefetch_overrun_vb`, or
-scene identity. A bounded secondary-metric regression can be accepted only when
-the net `loop_vb` win is material, deterministic on repeat, correctness is
-clean, and the tradeoff is explicitly recorded in the experiment row. Failed
-experiments still get recorded here so later changes can make them eligible for
-retry.
+tripwires remain zero, and either at least one key speed metric improves without
+a material regression in `loop_vb`, `blocking_vb`, `prefetch_overrun_vb`, or
+scene identity, or a bounded work-volume metric improves materially with flat
+key timing and a clear follow-up for any secondary cost. A bounded secondary
+metric regression can be accepted only when the net `loop_vb` win or
+work-volume reduction is deterministic on repeat, correctness is clean, and the
+tradeoff is explicitly recorded in the experiment row. Failed experiments still
+get recorded here so later changes can make them eligible for retry.

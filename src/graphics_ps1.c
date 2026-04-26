@@ -3476,15 +3476,21 @@ void grClearScreen(PS1Surface *sfc)
  */
 void grDrawBackground(void)
 {
+    enum { GR_MAX_UPLOAD_RECTS = 16 };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.
      * prevDirty = rows restored at frame start (framebuffer still has old content).
      * currDirty = rows composited this frame (framebuffer has clean/old content). */
     PS1Surface *tiles[4] = { bgTile0, bgTile1, bgTile3, bgTile4 };
     int screenX[4] = { 0, 320, 0, 320 };
     int screenY[4] = { 0, 0, 240, 240 };
-    RECT rects[4];
+    RECT rects[GR_MAX_UPLOAD_RECTS];
     int minYs[4];
     int maxYs[4];
+    int bandTile[GR_MAX_UPLOAD_RECTS];
+    int bandMinY[GR_MAX_UPLOAD_RECTS];
+    int bandMaxY[GR_MAX_UPLOAD_RECTS];
+    int bandCount = 0;
+    int useBands = 0;
     int dirtyCount = 0;
     int singleIndex = -1;
     uint16 uploadRects = 0;
@@ -3519,15 +3525,73 @@ void grDrawBackground(void)
 
         minYs[i] = minY;
         maxYs[i] = maxY;
-        uploadRows = (uint16)(uploadRows + (uint16)(maxY - minY + 1));
         dirtyCount++;
         singleIndex = i;
+    }
+
+    if (dirtyCount > 0) {
+        int capped = 0;
+
+        for (int i = 0; i < 4 && !capped; i++) {
+            int y;
+
+            if (minYs[i] < 0)
+                continue;
+
+            y = minYs[i];
+            while (y <= maxYs[i]) {
+                int startY;
+
+                while (y <= maxYs[i] &&
+                       prevDirtyRowMinX[i][y] < 0 &&
+                       currDirtyRowMinX[i][y] < 0) {
+                    y++;
+                }
+                if (y > maxYs[i])
+                    break;
+
+                startY = y;
+                while (y + 1 <= maxYs[i] &&
+                       (prevDirtyRowMinX[i][y + 1] >= 0 ||
+                        currDirtyRowMinX[i][y + 1] >= 0)) {
+                    y++;
+                }
+
+                if (bandCount >= GR_MAX_UPLOAD_RECTS) {
+                    capped = 1;
+                    break;
+                }
+                bandTile[bandCount] = i;
+                bandMinY[bandCount] = startY;
+                bandMaxY[bandCount] = y;
+                bandCount++;
+                y++;
+            }
+        }
+
+        useBands = (!capped && bandCount > 0) ? 1 : 0;
     }
 
     if (ps1PerfEnabled && dirtyCount > 0)
         perfStartTick = ps1PerfTick();
 
-    if (dirtyCount == 1) {
+    if (useBands) {
+        for (int b = 0; b < bandCount; b++) {
+            int i = bandTile[b];
+            int minY = bandMinY[b];
+            int h = bandMaxY[b] - minY + 1;
+            uint32 w = tiles[i]->width;
+
+            setRECT(&rects[b], screenX[i], screenY[i] + minY, w, h);
+            uploadRects++;
+            uploadRows = (uint16)(uploadRows + (uint16)h);
+            uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
+            LoadImage(&rects[b], (uint32 *)(tiles[i]->pixels + minY * w));
+        }
+
+        if (uploadRects > 0)
+            DrawSync(0);
+    } else if (dirtyCount == 1) {
         PS1Surface *tile = tiles[singleIndex];
         uint32 w = tile->width;
         int minY = minYs[singleIndex];
@@ -3535,6 +3599,7 @@ void grDrawBackground(void)
 
         setRECT(&rects[0], screenX[singleIndex], screenY[singleIndex] + minY, w, h);
         uploadRects = 1;
+        uploadRows = (uint16)h;
         uploadBytes = (uint32)w * (uint32)h * sizeof(uint16);
         LoadImage(&rects[0], (uint32 *)(tile->pixels + minY * w));
         DrawSync(0);
@@ -3549,6 +3614,7 @@ void grDrawBackground(void)
 
             setRECT(&rects[i], screenX[i], screenY[i] + minY, w, h);
             uploadRects++;
+            uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
             LoadImage(&rects[i], (uint32 *)(tiles[i]->pixels + minY * w));
         }
