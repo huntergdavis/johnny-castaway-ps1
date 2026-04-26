@@ -254,13 +254,31 @@ def compose_johnny_simple(sp: Sprite, x: int, base_y: int,
 
 
 def compose_speech_bubble(sp: Sprite, cx: int, cy: int, w: int = 14,
-                           h: int = 10, text: str = "") -> None:
-    """A tiny speech bubble centered at (cx, cy)."""
+                           h: int = 10, text: str = "",
+                           tail_dir: str = "down") -> None:
+    """A tiny speech bubble centered at (cx, cy) with an optional tail.
+
+    tail_dir: "down" (default), "down-left", "down-right", or "none".
+    Tail points outward from the lower edge of the bubble — useful when
+    the bubble is above a speaking character. Pass "none" to skip.
+    """
     x0, y0 = cx - w // 2, cy - h // 2
     x1, y1 = x0 + w, y0 + h
     sp.ellipse(x0, y0, x1, y1, WHITE, outline=BLACK)
     if text:
         sp.text(x0 + 2, y0 + 1, text[:3], BLACK)
+    # Tail — three pixels from the bubble edge to a point below.
+    if tail_dir == "none":
+        return
+    tail_x = {
+        "down":       cx,
+        "down-left":  cx - w // 4,
+        "down-right": cx + w // 4,
+    }.get(tail_dir, cx)
+    sp.line(tail_x, y1, tail_x - 1, y1 + 2, BLACK)
+    sp.line(tail_x - 1, y1 + 2, tail_x + 2, y1 + 1, BLACK)
+    # Fill the tiny tail interior with WHITE so it looks attached.
+    sp.px(tail_x, y1 + 1, WHITE)
 
 
 def compose_outlined_rect(sp: Sprite, x0: int, y0: int, x1: int, y1: int,
