@@ -628,6 +628,7 @@ and upload byte volume.
 | `P4-35` | Failed: call `markTileDirtyRect()` directly from PAL4 row dirty aggregation. | The direct path regressed `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 17`; generic `grMarkRectDirty()` stays faster in this build. |
 | `P4-36` | Failed via present pipeline: compose FG2 RAM tiles before `VSync(0)`. | Correctness stayed clean, but `loop_vb 1243 -> 1248`, `blocking_vb 21 -> 39`, `due_misses 1 -> 4`, and `prefetch_overrun_vb 12 -> 15`; render sequencing is coupled to the current prefetch cadence. |
 | `P4-37` | Failed: raise the staged-copy fallthrough guard from `6` to `7` VBlanks. | `blocking_vb` stayed `21`, but `loop_vb 1243 -> 1246` and `prefetch_overrun_vb 12 -> 13`; keep the local optimum at `6` VBlanks. |
+| `P4-38` | Failed: point due window hits directly at stream-window bytes instead of copying to `frameBuffer`. | Correctness stayed clean, but `loop_vb 1243 -> 1250`, `blocking_vb 21 -> 26`, and `prefetch_overrun_vb 12 -> 19`; the explicit copy remains faster in this code shape. |
 
 Prefetch variants to test in order:
 
@@ -901,7 +902,7 @@ into one commit.
 | 23 | CD | Coalesce adjacent due-frame misses into one direct read. | Lower `reads`. |
 | 24 | CD | Read through current window even on partial overlap. | Increase `partial_hits`. |
 | 25 | CD | Use one staged-entry buffer plus window pointer handoff. | Lower copies and misses. |
-| 26 | CD | Avoid copying window-resident entries into frame buffer. | Lower `scratch_bytes` or CPU cost. |
+| 26 | CD | Failed: avoid copying due window-resident entries into `frameBuffer`. | Correctness clean, but slower than the explicit copy; retry only with broader stream-window/stage ownership changes. |
 | 27 | CD | Track and reuse previous window if frame offset stays inside. | Increase `window_hits`. |
 | 28 | CD | Add scene-class window policy table generated from pack stats. | Deterministic buffer choice. |
 | 29 | CD | Try synchronous dual-window ping-pong during long holds. | Lower refill `blocking_vb`. |
