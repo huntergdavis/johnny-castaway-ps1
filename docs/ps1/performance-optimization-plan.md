@@ -707,6 +707,7 @@ rectangle pressure.
 | `P4-74` | Failed: lower tight-slack direct-stage cap from `8 KB` to `6 KB`. | Exact no-op against the current fishing1 baseline; it does not change the active direct-stage decisions. |
 | `P4-75` | Failed: lower tight-slack direct-stage cap from `8 KB` to `4 KB`. | Regressed `loop_vb 1234 -> 1237`, `blocking_vb 8 -> 13`, and `prefetch_overrun_vb 8 -> 13`; the accepted `8 KB` cap remains the local knee. |
 | `P4-76` | Failed: stream-window prefetch while a prepared frame waits for its present VBlank. | It removed the prepared-present duplicate prep work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; do not spend prepared-wait slack on raw reads without a cost predictor or grouped-read metadata. |
+| `P4-77` | Failed: shrink the post-prepared-present stream window to `12 KB`. | `prefetch_overrun_vb 8 -> 1`, but coverage collapsed (`due_misses 0 -> 26`, `blocking_vb 8 -> 89`, `loop_vb 1234 -> 1245`); smaller raw windows are exhausted until pack groups or another stage slot preserve near-term entries. |
 
 Prefetch variants to test in order:
 
@@ -1158,6 +1159,9 @@ Trying to use prepared-frame wait time for stream-window prefetch reduced the
 duplicate prep work back to the non-prepared baseline, but it also regressed
 loop, blocking, and refill-overrun by one VBlank. That confirms prepared wait
 slack is not free CD budget unless the read is cost-predicted or pack-grouped.
+A `12 KB` post-prepared-present window probe made the same point from the other
+side: refill overrun nearly disappeared, but due-frame coverage collapsed. The
+next meaningful CD step should preserve coverage first, then shorten reads.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
