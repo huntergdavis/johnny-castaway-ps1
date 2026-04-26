@@ -262,6 +262,100 @@ def compose_horizon(sp: Sprite, y: int) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Night-variant generator
+# ---------------------------------------------------------------------------
+#
+# v5 NIGHT: same scene, but at midnight. Implemented as a post-pass on a
+# day-time sprite — we walk the indexed pixel data, remap a small set of
+# "day" indices to their "night" equivalents, and sprinkle stars + a moon
+# into whatever region used to be sky. This avoids the cost of authoring
+# 31 hand-drawn night sprites while still giving the owner a meaningfully
+# different alternate to choose from.
+
+# Per-index recolor used by `as_night`. SKY → DEEPBLUE so the whole sky
+# region shifts to navy. YELLOW (the sun) maps to SKY (a soft moonglow).
+# ORANGE in the sky range (sunsets/dawn) becomes PURPLE for twilight.
+# Other indices pass through unchanged so foreground subjects (Johnny,
+# props, palm fronds) still read.
+_NIGHT_RECOLOR = {
+    SKY:    DEEPBLUE,
+    YELLOW: SKY,
+    ORANGE: PURPLE,
+}
+
+
+def as_night(day_sprite: Sprite, *,
+             moon_at: tuple[int, int] | None = None,
+             star_count: int = 0,
+             keep_sand: bool = True) -> Sprite:
+    """Return a new Sprite that is a night-time recolor of `day_sprite`.
+
+    The sky becomes DEEPBLUE, the sun becomes a soft SKY-blue moon glow,
+    sunset orange becomes twilight purple. Everything else passes through.
+    Then we lay stars and a small moon over what used to be the sky band.
+
+    moon_at:     (x, y) for a small WHITE moon disc with a BLACK outline.
+                 Defaults to the upper-right corner.
+    star_count:  number of WHITE star pixels to sprinkle in the sky
+                 region. Defaults to ~ (w * h) / 40 — i.e. denser for
+                 larger sprites.
+    keep_sand:   leave SAND pixels untouched. If False, sand also dims to
+                 TRUNK.
+    """
+    src = day_sprite.image
+    new = Sprite(day_sprite.w, day_sprite.h, fill=DEEPBLUE)
+    # Walk every pixel and remap.
+    src_pixels = list(src.getdata())
+    out = []
+    for p in src_pixels:
+        if not keep_sand and p == SAND:
+            out.append(TRUNK)
+        elif p in _NIGHT_RECOLOR:
+            out.append(_NIGHT_RECOLOR[p])
+        else:
+            out.append(p)
+    new.image.putdata(out)
+
+    # Determine star_count default — roughly proportional to area.
+    if star_count == 0:
+        star_count = max(8, (day_sprite.w * day_sprite.h) // 80)
+
+    # Sprinkle stars in pixels that landed on DEEPBLUE (= former sky) and
+    # are above the bottom 25% (don't put stars in the sand/water).
+    import random
+    rng = random.Random(day_sprite.w * 1009 + day_sprite.h)
+    placed = 0
+    horizon = int(day_sprite.h * 0.7)
+    attempts = 0
+    while placed < star_count and attempts < star_count * 8:
+        attempts += 1
+        x = rng.randrange(day_sprite.w)
+        y = rng.randrange(horizon)
+        idx = new.image.getpixel((x, y))
+        if idx == DEEPBLUE:
+            new.px(x, y, WHITE)
+            placed += 1
+
+    # A few twinkles — 3-pixel cross
+    for _ in range(min(4, star_count // 6)):
+        x = rng.randrange(2, day_sprite.w - 2)
+        y = rng.randrange(2, horizon - 2)
+        if new.image.getpixel((x, y)) == DEEPBLUE:
+            new.px(x, y, WHITE)
+            new.px(x - 1, y, WHITE); new.px(x + 1, y, WHITE)
+            new.px(x, y - 1, WHITE); new.px(x, y + 1, WHITE)
+
+    # Moon
+    mx, my = moon_at or (day_sprite.w - 14, 8)
+    if 0 <= mx < day_sprite.w and 0 <= my < day_sprite.h:
+        new.ellipse(mx - 5, my - 5, mx + 5, my + 5, WHITE, outline=BLACK)
+        # Crescent shadow — a partial DEEPBLUE arc on the right side
+        new.ellipse(mx - 1, my - 4, mx + 6, my + 4, DEEPBLUE)
+
+    return new
+
+
+# ---------------------------------------------------------------------------
 # Save helpers
 # ---------------------------------------------------------------------------
 

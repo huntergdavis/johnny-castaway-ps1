@@ -159,21 +159,33 @@ def mlk_v1(h):
 
 
 def mlk_v2(h):
-    """Minimalist — large microphone silhouette + a star."""
-    sp = Sprite(88, 56, fill=YELLOW)
+    """Minimalist — microphone silhouette against a warm dawn sky with a
+    speech-bubble fragment so the speech motif reads at a glance.
+    Previous version had a YELLOW star on a YELLOW fill (invisible)."""
+    sp = Sprite(88, 56, fill=ORANGE)
+    # Warm dawn band: yellow → orange → red, sand at the bottom
+    sp.rect(0, 0, 87, 24, YELLOW)
+    sp.rect(0, 24, 87, 38, ORANGE)
+    sp.rect(0, 38, 87, 50, RED)
     compose_sand_strip(sp, 50)
     cx = 44
-    # Big mic stand
-    sp.line(cx, 18, cx, 50, GRAY)
-    sp.line(cx + 1, 18, cx + 1, 50, GRAY)
-    # Mic head
+    # Mic stand
+    sp.line(cx, 18, cx, 50, BLACK)
+    sp.line(cx + 1, 18, cx + 1, 50, BLACK)
+    # Mic head — black silhouette with a single white highlight
     sp.ellipse(cx - 6, 6, cx + 6, 22, BLACK)
     sp.ellipse(cx - 4, 8, cx + 4, 18, GRAY)
+    sp.px(cx - 3, 10, WHITE); sp.px(cx - 3, 11, WHITE)
     # Mesh lines on mic
     sp.line(cx - 4, 12, cx + 4, 12, BLACK)
     sp.line(cx - 4, 15, cx + 4, 15, BLACK)
-    # Single star above
-    compose_star(sp, cx, 4, 2, YELLOW)
+    # Quote-bubble fragment to the right of the mic
+    sp.ellipse(cx + 14, 4, cx + 36, 18, WHITE, outline=BLACK)
+    sp.line(cx + 16, 18, cx + 12, 22, BLACK)
+    for x in (cx + 19, cx + 22, cx + 25, cx + 28, cx + 31):
+        sp.px(x, 10, BLACK)
+    # Star to the upper-left in WHITE so it pops against the yellow band
+    compose_star(sp, cx - 24, 8, 3, WHITE)
     # Base
     sp.rect(cx - 8, 48, cx + 8, 50, BLACK)
     return sp

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
 Generate `scratch/holidays-preview.html` — a self-contained, single-file
-HTML page that renders all 31 new holiday sprites × 4 variants in a
+HTML page that renders all 31 new holiday sprites × 5 variants in a
 calendar-ordered grid for owner review.
 
 Each cell shows:
   * Holiday name + date rule (computed via holidays-codegen rule kinds)
   * Concept description from holidays.yml
-  * Four variant images side-by-side
-    (v1 LITERAL / v2 MINIMALIST / v3 BUSY / v4 PLAYFUL)
+  * Five variant images side-by-side
+    (v1 LITERAL / v2 MINIMALIST / v3 BUSY / v4 PLAYFUL / v5 NIGHT)
   * Sprite size annotation
   * A "preference" radio that captures the owner's pick (writes a JSON
     sidecar at scratch/holidays-picks.json on Save).
@@ -183,8 +183,8 @@ def main():
 
         slug = slugify(h["short_name"])
         variants_html = []
-        VARIANT_LABELS = ["LITERAL", "MINIMALIST", "BUSY", "PLAYFUL"]
-        for vi in (1, 2, 3, 4):
+        VARIANT_LABELS = ["LITERAL", "MINIMALIST", "BUSY", "PLAYFUL", "NIGHT"]
+        for vi in (1, 2, 3, 4, 5):
             png_path = ART_DIR / f"{h['id']:02d}-{slug}-v{vi}.png"
             data_uri = png_to_data_uri(png_path)
             if data_uri:
@@ -198,7 +198,7 @@ def main():
                   <input class="pick-radio" type="radio" name="pick-{h['id']}" value="{vi}" id="pick-{h['id']}-{vi}">
                 </div>''')
             elif vi <= 3:
-                # Only flag missing for v1-v3 (v4 is being added incrementally)
+                # Only flag missing for v1-v3 (v4/v5 are alternates).
                 variants_html.append(f'''
                 <div class="variant"><span class="missing">v{vi} missing<br><small>{html_escape(str(png_path.relative_to(REPO)))}</small></span></div>''')
 
@@ -349,7 +349,7 @@ def main():
 <body>
   <div class="controls">
     <h1>🏝️ Holiday Sprite Review</h1>
-    <p class="subtitle">31 new US holidays for the PS1 build, 4 variants each (v1 LITERAL · v2 MINIMALIST · v3 BUSY · v4 PLAYFUL). Click a variant to pick it. Double-click a sprite to zoom. Picks persist in localStorage — download as JSON when done.</p>
+    <p class="subtitle">31 new US holidays for the PS1 build, 5 variants each (v1 LITERAL · v2 MINIMALIST · v3 BUSY · v4 PLAYFUL · v5 NIGHT). Click a variant to pick it. Double-click a sprite to zoom. Picks persist in localStorage — download as JSON when done.</p>
     <div class="controls-row">
       <button id="save-btn" class="btn">Download picks JSON</button>
       <button id="clear-btn" class="btn" style="background:#666;color:#fff;">Clear picks</button>
@@ -375,7 +375,7 @@ def main():
     HTML_OUT.parent.mkdir(parents=True, exist_ok=True)
     HTML_OUT.write_text(full_html, encoding="utf-8")
     print(f"Wrote {HTML_OUT.relative_to(REPO)}")
-    print(f"  {len(new_holidays)} new holidays × 4 variants")
+    print(f"  {len(new_holidays)} new holidays × 5 variants")
     print(f"  {len(originals)} originals (no review)")
     print(f"Open with: xdg-open {HTML_OUT}")
 
