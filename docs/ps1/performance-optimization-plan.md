@@ -1059,6 +1059,11 @@ dirty-band gap merge is still the best fishing1 point. Raising it to `3` or
 bytes, so the next upload path should move band metadata to pack generation or
 emit upload-ready layouts rather than tuning another runtime threshold.
 
+The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
+`18 KB` parameter probe preserved zero due misses but regressed `loop_vb`,
+`blocking_vb`, and `prefetch.overrun_vb`, so larger reads are still too slow
+unless a future grouped/pipelined layout makes them cheaper to hide.
+
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run
 where correctness counters are zero but the renderer performed far less work.
