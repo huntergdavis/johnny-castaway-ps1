@@ -609,6 +609,7 @@ volume and the last nonzero CD/prefetch costs.
 | `P4-23` | Done via dirty pipeline: restore exact per-row X extents before the next CD attempt. | `loop_vb 1296 -> 1266`, `blocking_vb 75 -> 36`, `due_misses 8 -> 1`; reduced RAM restore work created more usable held-frame slack for existing prefetch policy. |
 | `P4-24` | Failed: re-sweep `16/20/24/32 KB` stream windows after row-level restore. | All tested sizes regressed total loop (`1270`, `1276`, `1281`, `1285`) versus the accepted `18 KB` baseline (`1266`); keep `18 KB` until grouped/async refill changes the cost model. |
 | `P4-25` | Failed as a no-op: targeted clearing for row-level dirty state. | Key metrics stayed identical at VBlank resolution; retry only with finer CPU counters or during a broader dirty-state refactor. |
+| `P4-26` | Failed gate: raise the post-row-restore refill guard from `2` to `3` VBlanks. | `loop_vb 1266 -> 1257` and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56` and `due_misses 1 -> 9`; this is a useful starvation signal, not an accepted default. |
 
 Prefetch variants to test in order:
 
@@ -864,6 +865,7 @@ into one commit.
 | 18d | CD | Failed: lower the post-20 KB refill guard to `1` VBlank. | `due_misses 4 -> 2`, but `loop_vb 1300 -> 1312` and `prefetch_overrun_vb 45 -> 62`; retry only after refill cost changes. |
 | 18e | CD | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the current baseline. | `loop_vb`, `blocking_vb`, `prefetch_overrun_vb`, `hits`, and `due_misses` all matched baseline exactly. |
 | 18f | CD | Done: retune default stream window to the sector-rounded `18 KB` bucket. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8`. |
+| 18g | CD | Failed: raise the post-row-restore refill guard from `2` to `3` VBlanks. | `loop_vb 1266 -> 1257` and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56`; retry only with grouped/pipelined coverage. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
