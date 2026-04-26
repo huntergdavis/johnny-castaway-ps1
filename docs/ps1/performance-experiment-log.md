@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `8ef9aad0 ps1: lower FG2 prefetch slack guard` |
-| Run ID | `20260425-172725` |
+| Commit | `272d2e0d ps1: retune FG2 stream window to 18kb` |
+| Run ID | `20260425-174206` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `20 KB default, 27664-byte runtime buffer` |
-| `loop_vb` | `1300` |
+| Window | `18 KB default, 25616-byte runtime buffer` |
+| `loop_vb` | `1296` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `223` |
-| `blocking_vb` | `66` |
-| `loop_reads` | `41` |
-| `prefetch_hits` | `151` |
-| `prefetch_due_misses` | `4` |
-| `prefetch_overrun_vb` | `45` |
+| `overrun_vb` | `219` |
+| `blocking_vb` | `75` |
+| `loop_reads` | `56` |
+| `prefetch_hits` | `147` |
+| `prefetch_due_misses` | `8` |
+| `prefetch_overrun_vb` | `33` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -91,6 +91,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `fg2-prefetch-min-slack-2vb-post-20kb` | `8ef9aad0` | With a `20 KB` window, a `2` VBlank refill guard may recover due misses and blocking without the earlier short-slack overrun cost. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted after a strict `20%` pass failed only on `prefetch_overrun_vb` by `0.6` VBlank. Baseline to current: `loop_vb 1312 -> 1300`, `overrun_vb 235 -> 223`, `blocking_vb 91 -> 66`, `due_misses 11 -> 4`, `hits 144 -> 151`, `prefetch_overrun_vb 37 -> 45`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-172603/summary.json`, `scratch/ps1-perf-iterate/20260425-172725/summary.json`. | Promote. The overrun tradeoff is bounded and buys a material `12` VBlank loop win plus a `25` VBlank blocking reduction. |
 | 2026-04-25 | `fg2-prefetch-min-slack-1vb-post-20kb` | dirty experiment after `8ef9aad0` | Test whether a `1` VBlank refill guard recovers the remaining due misses now that the default stream window is only `20 KB`. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed. Baseline to current: `loop_vb 1300 -> 1312`, `overrun_vb 223 -> 235`, `blocking_vb 66 -> 70`, `prefetch_overrun_vb 45 -> 62`, `due_misses 4 -> 2`, `hits 151 -> 153`. Artifact: `scratch/ps1-perf-iterate/20260425-173020/summary.json`. | Do not promote. It buys only two fewer due misses while making the refill-overrun and total-loop cost visible; keep the `2` VBlank guard as the accepted default. |
 | 2026-04-25 | `fg2-stage-copy-fallthrough-4vb-post-20kb` | dirty experiment after `91c0a143` | Re-test the staged-copy fallthrough guard at `4` VBlanks under the post-merge `20 KB` window and `2` VBlank refill guard. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed as a no-op. Baseline to current: `loop_vb 1300 -> 1300`, `overrun_vb 223 -> 223`, `blocking_vb 66 -> 66`, `prefetch_overrun_vb 45 -> 45`, `due_misses 4 -> 4`, `hits 151 -> 151`. Artifact: `scratch/ps1-perf-iterate/20260425-173331/summary.json`. | Do not promote. The new baseline is insensitive to this guard at `4` vs `5`; leave the stricter accepted value in place. |
+| 2026-04-25 | `fg2-window-18kb-post-2vb` | `272d2e0d` | Re-sweep smaller sector-rounded window buckets after the `20 KB` window and `2` VBlank refill guard made refill overrun the remaining CD cost. | Parameter probes for `18432`, `19456`, `17408`, and `16384`, then default `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted. The `17 KB` and `18 KB` requests both round to an `18 KB` window and match; `19 KB` rounds to the old `20 KB` no-op; `16 KB` does not improve loop time. Accepted baseline to current: `loop_vb 1300 -> 1296`, `overrun_vb 223 -> 219`, `prefetch_overrun_vb 45 -> 33`, `blocking_vb 66 -> 75`, `due_misses 4 -> 8`, `hits 151 -> 147`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-173620/summary.json`, `scratch/ps1-perf-iterate/20260425-173746/summary.json`, `scratch/ps1-perf-iterate/20260425-174033/summary.json`, `scratch/ps1-perf-iterate/20260425-174206/summary.json`. | Promote as the new default. This is a small but real total-loop win and cuts refill overrun; the extra due misses/blocking are documented as the next CD target. |
 
 ## Retry Queue
 
@@ -99,7 +100,7 @@ Current accepted baseline for the next experiment:
 | `40 KB` stream window | Failed structurally, not because metrics proved it slow. Retry only after the headless exit-137 failure mode is understood or memory pressure is reduced elsewhere. |
 | `56 KB` stream window | Correct but slower than `32 KB`; retry only if later changes can hide larger refill reads instead of blocking on them. |
 | `64 KB` stream window | Earlier run also exited `137` before `JCPERF2`; likely too much pressure for the current simple single-window strategy. |
-| `16 KB` stream window | Produced partial metrics but regtest exited `137`; metrics were worse on `blocking_vb` and `due_misses`, so this is low priority. |
+| `16 KB` stream window | Current post-2VB run is correct but does not improve loop time; retry only if later grouping reduces due misses. |
 | `no-stage1` window-only path | Failed structurally before metrics; retry only after headless stability improves or after stage/window code is simplified. |
 | Partial tail reads | Proved harmful in isolation because fewer bytes did not compensate for more transactions; retry only as part of pack/group layout work. |
 | Same-iteration stage-copy fallthrough | Structural failure before metrics; retry only with explicit state that prevents repeated FG2 lookup/read churn. |
@@ -111,6 +112,7 @@ Current accepted baseline for the next experiment:
 | `22 KB`, `23 KB`, `26 KB`, and `28 KB` post-slack windows | All lost to the accepted smaller-window point or tied without improvement; retry only after pack grouping or async refill changes the CD cost model. |
 | `1` VBlank post-20 KB refill guard | Correctness clean but slower; retry only if later CD grouping or async refill makes the short-slack read cost materially cheaper. |
 | `4` VBlank staged-copy fallthrough guard after the post-merge baseline | Correctness clean but identical to the accepted `5` VBlank guard; retry only after another change alters staged-copy/window timing. |
+| `19 KB` requested window after the post-2VB sweep | Sector-rounds to the old `20 KB` default and is a no-op; use sector-sized buckets for future sweeps. |
 
 ## Harness Notes
 
