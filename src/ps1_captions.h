@@ -57,4 +57,10 @@ void captionsOnAdsStart(const char *adsName, uint16 adsTag);
 /* Call each frame. Returns current caption text, or NULL if none. */
 const char *captionsGetCurrent(void);
 
+/* Draw the current caption (if any) into a dark band near the bottom
+ * of the 640x480 frame. Called by grUpdateDisplay after the scene
+ * composite + LoadImage and before VSync. No-op when captions are
+ * disabled or there's no current text — zero cost when off. */
+void captionsRender(void);
+
 #endif /* PS1_CAPTIONS_H */

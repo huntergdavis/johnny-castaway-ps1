@@ -32,6 +32,23 @@ enum PauseMenuState {
 /* Initialize the pause menu system (call once during startup, after graphicsInit). */
 void pauseMenuInit(void);
 
+/* Upload the embedded 8x8 ASCII font into the pause-menu VRAM region
+ * if it isn't already there. Idempotent. Exposed so the closed-caption
+ * overlay (ps1_captions.c) can render text using the same font without
+ * having to wait for the user to open the pause menu first. */
+void pauseMenuEnsureFontUploaded(void);
+
+/* VRAM coords of the pause-menu font texture + its CLUT. Captions use
+ * these to build SPRT primitives that sample the same glyph atlas. */
+#define PAUSE_FONT_VRAM_X 640
+#define PAUSE_FONT_VRAM_Y 256
+#define PAUSE_CLUT_VRAM_X 640
+#define PAUSE_CLUT_VRAM_Y 360
+#define PAUSE_GLYPH_FIRST 0x20
+#define PAUSE_GLYPH_COUNT 96
+#define PAUSE_GLYPH_DRAW_W 16
+#define PAUSE_GLYPH_DRAW_H 16
+
 /* Show / hide the pause menu overlay. */
 void pauseMenuShow(void);
 void pauseMenuHide(void);

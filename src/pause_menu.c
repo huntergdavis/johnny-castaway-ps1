@@ -389,6 +389,12 @@ static uint16 pmNewPress(uint16 cur)
 /* ---------------------------------------------------------------------------
  *  Public API
  * ------------------------------------------------------------------------- */
+void pauseMenuEnsureFontUploaded(void)
+{
+    if (!pmFontUploaded)
+        pmUploadFont();
+}
+
 void pauseMenuInit(void)
 {
     /* Reload BIOS font into VRAM -- graphicsInit may have overwritten it. */

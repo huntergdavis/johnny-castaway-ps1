@@ -18,6 +18,11 @@
 
 #include "ps1_captions.h"
 
+#ifdef PS1_BUILD
+#include <psxgpu.h>
+#include "pause_menu.h"
+#endif
+
 /* ------------------------------------------------------------------ */
 /*  Caption text  — moved here from the header so the data lives in   */
 /*  one translation unit. Special captions (intro, christmas, etc.)   */
@@ -626,3 +631,153 @@ const char *captionsGetCurrent(void)
     captionDisplayTimer--;
     return currentCaption;
 }
+
+
+/* ------------------------------------------------------------------ */
+/*  PS1 on-screen caption renderer                                     */
+/* ------------------------------------------------------------------ */
+/*
+ * captionsRender() draws the current caption inside a dark
+ * semi-transparent band near the bottom of the 640x480 frame.
+ * Reuses the pause-menu font glyph atlas (uploaded to VRAM at
+ * (PAUSE_FONT_VRAM_X, PAUSE_FONT_VRAM_Y) — see pause_menu.c
+ * pmUploadFont). Called once per scene frame from
+ * grUpdateDisplay, after the scene composite + LoadImage and
+ * before VSync.
+ *
+ * Bails immediately if captions are disabled or there's no
+ * current caption text — zero cost when off.
+ *
+ * Builds its own OT + primitive scratch and submits via DrawOTag,
+ * so it doesn't disturb whatever else is in flight.
+ */
+
+#ifdef PS1_BUILD
+
+#define CAP_OT_LEN        4
+#define CAP_PRIM_BUF_LEN  4096
+
+#define CAP_BAND_X0   40
+#define CAP_BAND_X1   600
+#define CAP_BAND_Y0   400
+#define CAP_BAND_Y1   470
+#define CAP_LINE_STEP (PAUSE_GLYPH_DRAW_H + 2)
+
+static uint32 capOt[CAP_OT_LEN];
+static uint8  capPrimBuf[CAP_PRIM_BUF_LEN];
+
+/* Count chars up to next '\n' or end. */
+static int capLineLen(const char *s)
+{
+    int n = 0;
+    while (s[n] != '\0' && s[n] != '\n') n++;
+    return n;
+}
+
+/* Count number of '\n'-separated lines in s. */
+static int capLineCount(const char *s)
+{
+    int n = 1;
+    while (*s) {
+        if (*s++ == '\n') n++;
+    }
+    return n;
+}
+
+/* Append one SPRT primitive for char `c` at (x, y), using the
+ * pause-menu font glyph atlas. Returns advance in pixels (always
+ * PAUSE_GLYPH_DRAW_W). */
+static int capDrawChar(uint8 **nextp, uint32 *otSlot,
+                       int x, int y, char c)
+{
+    unsigned char uc = (unsigned char)c;
+    if (uc < PAUSE_GLYPH_FIRST ||
+        uc >= PAUSE_GLYPH_FIRST + PAUSE_GLYPH_COUNT)
+        return PAUSE_GLYPH_DRAW_W;
+    int idx = uc - PAUSE_GLYPH_FIRST;
+    int col = idx % 16;
+    int row = idx / 16;
+
+    SPRT *sprt = (SPRT *)(*nextp);
+    *nextp += sizeof(SPRT);
+    setSprt(sprt);
+    setXY0(sprt, x, y);
+    setWH(sprt, PAUSE_GLYPH_DRAW_W, PAUSE_GLYPH_DRAW_H);
+    setUV0(sprt, col * PAUSE_GLYPH_DRAW_W, row * PAUSE_GLYPH_DRAW_H);
+    setClut(sprt, PAUSE_CLUT_VRAM_X, PAUSE_CLUT_VRAM_Y);
+    setRGB0(sprt, 128, 128, 128);   /* white via mid-gray (PS1 doubles) */
+    addPrim(otSlot, sprt);
+    return PAUSE_GLYPH_DRAW_W;
+}
+
+void captionsRender(void)
+{
+    if (!captionsEnabled || captionDisplayTimer <= 0 ||
+        currentCaption == NULL)
+        return;
+
+    /* Caller (grUpdateDisplay) might invoke us before the first pause
+     * has been opened. Make sure the font is in VRAM. Idempotent. */
+    pauseMenuEnsureFontUploaded();
+
+    ClearOTagR(capOt, CAP_OT_LEN);
+    uint8 *next = capPrimBuf;
+
+    /* Slot N-1: TPAGE for the font region. abr=0 = source-blend
+     * (50% ish). The font uses CLUT entry 1=white, 0=transparent. */
+    DR_TPAGE *tp = (DR_TPAGE *)next;
+    next += sizeof(DR_TPAGE);
+    setDrawTPage(tp, 0, 1,
+                 getTPage(0, 0, PAUSE_FONT_VRAM_X, PAUSE_FONT_VRAM_Y));
+    addPrim(&capOt[CAP_OT_LEN - 1], tp);
+
+    /* Slot N-2: dark semi-transparent band behind the text. Sized to
+     * fit up to 3 caption lines; collapses to the actual line count.
+     * 50% black blend means the scene shows through. */
+    int lineCount = capLineCount(currentCaption);
+    if (lineCount > 4) lineCount = 4;       /* clamp */
+    int bandH = lineCount * CAP_LINE_STEP + 8;
+    int bandY0 = CAP_BAND_Y1 - bandH;
+    if (bandY0 < CAP_BAND_Y0) bandY0 = CAP_BAND_Y0;
+
+    POLY_F4 *band = (POLY_F4 *)next;
+    next += sizeof(POLY_F4);
+    setPolyF4(band);
+    setSemiTrans(band, 1);
+    setRGB0(band, 0, 0, 0);
+    setXY4(band,
+           CAP_BAND_X0,  bandY0,
+           CAP_BAND_X1,  bandY0,
+           CAP_BAND_X0,  CAP_BAND_Y1,
+           CAP_BAND_X1,  CAP_BAND_Y1);
+    addPrim(&capOt[CAP_OT_LEN - 2], band);
+
+    /* Slot N-3: text SPRTs, line by line. Center each line in the band. */
+    const char *p = currentCaption;
+    int lineY = bandY0 + 4;
+    int line = 0;
+    while (*p && line < 4) {
+        int len = capLineLen(p);
+        int width = len * PAUSE_GLYPH_DRAW_W;
+        int x = (CAP_BAND_X0 + CAP_BAND_X1 - width) / 2;
+        if (x < CAP_BAND_X0 + 4) x = CAP_BAND_X0 + 4;
+        for (int i = 0; i < len; i++) {
+            x += capDrawChar(&next, &capOt[CAP_OT_LEN - 3],
+                             x, lineY, p[i]);
+        }
+        p += len;
+        if (*p == '\n') p++;
+        lineY += CAP_LINE_STEP;
+        line++;
+    }
+
+    DrawOTag(&capOt[CAP_OT_LEN - 1]);
+}
+
+#else  /* host build — no PS1 GPU; render is a no-op */
+
+void captionsRender(void)
+{
+}
+
+#endif
