@@ -736,6 +736,7 @@ rectangle pressure.
 | `P4-104` | Failed: trim stream-window reads to complete payload entries. | Bytes/sectors dropped (`1098982 -> 1094886`, `541 -> 539`) with `hits=155` and `due_misses=0`, but elapsed CD and active timing regressed (`loop_vb 1227 -> 1240`, `loop_read_vb 286 -> 298`, `blocking_vb 6 -> 13`); trailing overread is part of the current cadence unless group metadata predicts cost. |
 | `P4-105` | Failed: prepare staged frames before pure lookahead prefetch. | Prepared work dropped (`restore_calls/compose_calls 190 -> 186`, `restore_bytes 3034562 -> 2981102`) but active playback regressed (`loop_vb 1227 -> 1240`, `blocking_vb 6 -> 18`, `prefetch_overrun_vb 6 -> 18`, `seek_back 5 -> 11`); render prep and CD lookahead need separate budgets, not a simple priority inversion. |
 | `P4-106` | Done: enable PS1 function/data sections plus linker garbage collection. | Two headless runs matched timing and work identity exactly while `jcreborn.elf` shrank `709828 -> 708656` bytes; this does not move VBlank metrics yet, but it makes later public-build/code-size cleanup measurable. |
+| `P4-107` | Failed: gate foreground ADS-style telemetry writes behind `grPs1TelemetryEnabled`. | Timing stayed flat and correctness stayed clean, but the branch grew `jcreborn.elf` by `68` bytes and shifted speculative work (`restore_calls/compose_calls 190 -> 188`); remove legacy telemetry structurally later instead of adding hot-path conditionals. |
 
 Prefetch variants to test in order:
 
