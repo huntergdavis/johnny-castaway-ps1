@@ -1,0 +1,570 @@
+# Corrected captionSceneMap[] for PS1 Johnny Castaway closed captions.
+# Re-derived content-first from caption-texts.txt against story-scenes.txt.
+# 63 active storyScenes entries (task said 62; recount confirmed 63).
+#
+# Confidence legend:
+#   HIGH      caption text contains an unambiguous keyword for this ADS+tag
+#   MED       text plausibly matches but other captions could fit too
+#   LOW       generic short text (esp. STAND idle variants); positioned by
+#             best-guess SPOT/HDG hints from storyScenes flags
+#   NO_MATCH  no caption in the corpus describes this ADS+tag well
+
+entries:
+
+  # ---- ACTIVITY.ADS (10 entries) ----
+  # All 10 ACTIVITY captions in the corpus (scene00..scene09) describe
+  # exactly the kind of generic island-life gags ACTIVITY plays. Mapping
+  # below is content-anchored to spot/heading hints; tag-to-caption order
+  # cannot be proved without runtime evidence, so most are MED.
+
+  - story_index: 0
+    ads_name: ACTIVITY
+    ads_tag: 1
+    caption_id: scene00
+    confidence: MED
+    rationale: "SPOT_E HDG_SE final — climbs tree at SPOT_E, dives (perfect flip)."
+
+  - story_index: 1
+    ads_name: ACTIVITY
+    ads_tag: 12
+    caption_id: scene01
+    confidence: MED
+    rationale: "Belly-flop dive variant — pairs naturally with tag-1 perfect dive."
+
+  - story_index: 2
+    ads_name: ACTIVITY
+    ads_tag: 11
+    caption_id: scene06
+    confidence: MED
+    rationale: "FIRST flag, no spot — long rain-dance/heat sequence starts in spawn."
+
+  - story_index: 3
+    ads_name: ACTIVITY
+    ads_tag: 10
+    caption_id: scene04
+    confidence: MED
+    rationale: "Read-under-tree gag where seagull steals the book."
+
+  - story_index: 4
+    ads_name: ACTIVITY
+    ads_tag: 4
+    caption_id: scene02
+    confidence: MED
+    rationale: "Read-under-tree gag where seagull lands on Johnny's head/club miss."
+
+  - story_index: 5
+    ads_name: ACTIVITY
+    ads_tag: 5
+    caption_id: scene05
+    confidence: LOW
+    rationale: "Climb+look+dive+walk-back composite stand-in; only ACTIVITY caption left for a SPOT_E scene."
+
+  - story_index: 6
+    ads_name: ACTIVITY
+    ads_tag: 6
+    caption_id: scene07
+    confidence: MED
+    rationale: "Read-under-tree, falls asleep, coconut bonk."
+
+  - story_index: 7
+    ads_name: ACTIVITY
+    ads_tag: 7
+    caption_id: scene03
+    confidence: MED
+    rationale: "Bathe in ocean, seagull steals clothes — SPOT_D->SPOT_F walk fits bath/clothes line."
+
+  - story_index: 8
+    ads_name: ACTIVITY
+    ads_tag: 8
+    caption_id: scene08
+    confidence: MED
+    rationale: "Read-under-tree, book upside down — FIRST flag means full setup from spawn."
+
+  - story_index: 9
+    ads_name: ACTIVITY
+    ads_tag: 9
+    caption_id: scene09
+    confidence: MED
+    rationale: "Bathe + smell-the-brush variant of scene03; only ACTIVITY caption left."
+
+
+  # ---- BUILDING.ADS (7 entries) ----
+  # Construction scenarios: sand castles, fires, raft fix.
+
+  - story_index: 10
+    ads_name: BUILDING
+    ads_tag: 1
+    caption_id: scene11
+    confidence: HIGH
+    rationale: "SPOT_F->SPOT_A long walk = walks to edge then builds sand castle (it crumbles)."
+
+  - story_index: 11
+    ads_name: BUILDING
+    ads_tag: 4
+    caption_id: scene14
+    confidence: HIGH
+    rationale: "Sand castle + lilliputians attack — castle/tree-climb at island edge."
+
+  - story_index: 12
+    ads_name: BUILDING
+    ads_tag: 3
+    caption_id: scene15
+    confidence: HIGH
+    rationale: "Builds a fire (sticks, smoke, fire, warms hands, walks around) — matches A->C walk."
+
+  - story_index: 13
+    ads_name: BUILDING
+    ads_tag: 2
+    caption_id: scene16
+    confidence: HIGH
+    rationale: "Roasts and eats an old boot over the fire — fire scenario at right-edge SPOT_F."
+
+  - story_index: 14
+    ads_name: BUILDING
+    ads_tag: 5
+    caption_id: scene35
+    confidence: HIGH
+    rationale: "Fixes raft, mermaid asks what he's doing — raft area SPOT_D, MARY-day context."
+
+  - story_index: 15
+    ads_name: BUILDING
+    ads_tag: 7
+    caption_id: scene62
+    confidence: MED
+    rationale: "Grabs wood and builds up his raft — same SPOT_D W<->E raft work as tag 5."
+
+  - story_index: 16
+    ads_name: BUILDING
+    ads_tag: 6
+    caption_id: scene13
+    confidence: LOW
+    rationale: "No clean BUILDING caption left; scene13 (sleep, walks to edge) is the closest idle/edge caption — assignment is a placeholder, consider NO_MATCH."
+
+
+  # ---- FISHING.ADS (8 entries) ----
+  # 8 fishing scenarios; corpus has exactly 8 fishing captions (scene18-25).
+
+  - story_index: 17
+    ads_name: FISHING
+    ads_tag: 1
+    caption_id: scene18
+    confidence: HIGH
+    rationale: "Goes fishing, catches a starfish, throws it back."
+
+  - story_index: 18
+    ads_name: FISHING
+    ads_tag: 2
+    caption_id: scene19
+    confidence: HIGH
+    rationale: "Goes fishing, catches a boot, keeps it."
+
+  - story_index: 19
+    ads_name: FISHING
+    ads_tag: 3
+    caption_id: scene24
+    confidence: HIGH
+    rationale: "Catches a crab that snaps his nose — final variant of crab gag."
+
+  - story_index: 20
+    ads_name: FISHING
+    ads_tag: 4
+    caption_id: scene21
+    confidence: HIGH
+    rationale: "Catches a shark, dragged jet-ski style — LEFT_ISLAND flag matches being towed away."
+
+  - story_index: 21
+    ads_name: FISHING
+    ads_tag: 5
+    caption_id: scene22
+    confidence: HIGH
+    rationale: "Shark eats Johnny, spits him back — ends on island (FINAL)."
+
+  - story_index: 22
+    ads_name: FISHING
+    ads_tag: 6
+    caption_id: scene23
+    confidence: HIGH
+    rationale: "Catches a big green fish that spits water — throws it back (FINAL)."
+
+  - story_index: 23
+    ads_name: FISHING
+    ads_tag: 7
+    caption_id: scene20
+    confidence: HIGH
+    rationale: "Catches green fish then octopus that chokes him — climbs tree (LEFT_ISLAND)."
+
+  - story_index: 24
+    ads_name: FISHING
+    ads_tag: 8
+    caption_id: scene25
+    confidence: HIGH
+    rationale: "Goes fishing, catches another boot — duplicate of scene19, second boot variant."
+
+
+  # ---- JOHNNY.ADS (6 entries) ----
+  # Story arc scenes pinned by day_no and FIRST/FINAL flags.
+
+  - story_index: 25
+    ads_name: JOHNNY
+    ads_tag: 1
+    caption_id: scene26
+    confidence: HIGH
+    rationale: "day=11, FINAL+FIRST — final story scene: clock spins, plane, parachute, 'The End'."
+
+  - story_index: 26
+    ads_name: JOHNNY
+    ads_tag: 2
+    caption_id: scene27
+    confidence: HIGH
+    rationale: "day=2, FINAL — first SOS bottle: walks to edge, finds bottle, writes SOS, throws to sea."
+
+  - story_index: 27
+    ads_name: JOHNNY
+    ads_tag: 3
+    caption_id: scene29
+    confidence: HIGH
+    rationale: "day=6 — bottle washes ashore but it is Johnny's own SOS coming back."
+
+  - story_index: 28
+    ads_name: JOHNNY
+    ads_tag: 4
+    caption_id: scene30
+    confidence: HIGH
+    rationale: "Writes a fresh SOS, corks bottle, throws to sea — repeat-message variant."
+
+  - story_index: 29
+    ads_name: JOHNNY
+    ads_tag: 5
+    caption_id: scene28
+    confidence: HIGH
+    rationale: "Writes a message, imagines a clock at 3pm — preparing for date variant."
+
+  - story_index: 30
+    ads_name: JOHNNY
+    ads_tag: 6
+    caption_id: scene31
+    confidence: HIGH
+    rationale: "day=10, FINAL+FIRST — office dream: clock, typing, dreams of island/mermaid, sad."
+
+
+  # ---- MARY.ADS (5 entries) ----
+  # Mermaid story arc, ordered by day_no.
+
+  - story_index: 31
+    ads_name: MARY
+    ads_tag: 1
+    caption_id: scene32
+    confidence: HIGH
+    rationale: "day=5 — fancy dinner with mermaid: tuxedo, dance, champagne."
+
+  - story_index: 32
+    ads_name: MARY
+    ads_tag: 3
+    caption_id: scene34
+    confidence: HIGH
+    rationale: "day=4, FIRST — Johnny fishing, mermaid swims up behind him (he thinks fish)."
+
+  - story_index: 33
+    ads_name: MARY
+    ads_tag: 2
+    caption_id: scene33
+    confidence: HIGH
+    rationale: "day=1 — first encounter: necklace gift, life preserver, proposes a date."
+
+  - story_index: 34
+    ads_name: MARY
+    ads_tag: 4
+    caption_id: scene35
+    confidence: MED
+    rationale: "day=7 — fixes raft + heartbroken mermaid; also plausibly maps to BUILDING 5 (same content)."
+
+  - story_index: 35
+    ads_name: MARY
+    ads_tag: 5
+    caption_id: scene36
+    confidence: HIGH
+    rationale: "day=8, LEFT_ISLAND, NORAFT — mermaid+shark say goodbye, Johnny paddles away."
+
+
+  # ---- MISCGAG.ADS (2 entries) ----
+
+  - story_index: 36
+    ads_name: MISCGAG
+    ads_tag: 1
+    caption_id: scene37
+    confidence: HIGH
+    rationale: "Pocket fan + melts into a puddle — quintessential oddball gag."
+
+  - story_index: 37
+    ads_name: MISCGAG
+    ads_tag: 2
+    caption_id: scene38
+    confidence: HIGH
+    rationale: "Towel + dips toe + shark snap + bathing gear strewn — oddball gag."
+
+
+  # ---- STAND.ADS (14 entries) ----
+  # All 14 STAND tags are short idle stances. Captions scene39..scene52
+  # are exactly 14 short 'tap foot / lift hat / look' lines. Mapping by
+  # SPOT/HDG hints; confidence LOW because content is interchangeable.
+
+  - story_index: 38
+    ads_name: STAND
+    ads_tag: 1
+    caption_id: scene39
+    confidence: MED
+    rationale: "SPOT_A SW — at edge of island, taps foot and tips hat (matches 'edge of the island')."
+
+  - story_index: 39
+    ads_name: STAND
+    ads_tag: 2
+    caption_id: scene40
+    confidence: LOW
+    rationale: "SPOT_A W — adjusts pants (very short stance)."
+
+  - story_index: 40
+    ads_name: STAND
+    ads_tag: 3
+    caption_id: scene46
+    confidence: LOW
+    rationale: "SPOT_A NW — lifts hat (single-action short stance)."
+
+  - story_index: 41
+    ads_name: STAND
+    ads_tag: 4
+    caption_id: scene42
+    confidence: LOW
+    rationale: "SPOT_B SW — taps foot nervously."
+
+  - story_index: 42
+    ads_name: STAND
+    ads_tag: 5
+    caption_id: scene41
+    confidence: MED
+    rationale: "SPOT_B S — looks out over ocean, adjusts hat and pants (south-facing matches ocean view)."
+
+  - story_index: 43
+    ads_name: STAND
+    ads_tag: 6
+    caption_id: scene47
+    confidence: MED
+    rationale: "SPOT_B SE — taps foot and looks at the palm tree (palm is to the SE of SPOT_B)."
+
+  - story_index: 44
+    ads_name: STAND
+    ads_tag: 7
+    caption_id: scene43
+    confidence: LOW
+    rationale: "SPOT_C NE — lifts hat and looks around."
+
+  - story_index: 45
+    ads_name: STAND
+    ads_tag: 8
+    caption_id: scene44
+    confidence: LOW
+    rationale: "SPOT_C E — taps foot, lifts hat, looks around (composite of two short stances)."
+
+  - story_index: 46
+    ads_name: STAND
+    ads_tag: 9
+    caption_id: scene45
+    confidence: LOW
+    rationale: "SPOT_D NW — taps foot, lifts hat, looks back into the distance."
+
+  - story_index: 47
+    ads_name: STAND
+    ads_tag: 10
+    caption_id: scene48
+    confidence: MED
+    rationale: "SPOT_D NE — looks at his raft (raft area is around SPOT_D, NE-facing)."
+
+  - story_index: 48
+    ads_name: STAND
+    ads_tag: 11
+    caption_id: scene50
+    confidence: MED
+    rationale: "SPOT_E NW — looks around shading himself under the palm tree (palm is NW of SPOT_E)."
+
+  - story_index: 49
+    ads_name: STAND
+    ads_tag: 12
+    caption_id: scene49
+    confidence: MED
+    rationale: "SPOT_F S — looks out over the ocean (right-edge water view)."
+
+  - story_index: 50
+    ads_name: STAND
+    ads_tag: 15
+    caption_id: scene51
+    confidence: MED
+    rationale: "SPOT_A S — pulls out spyglass and looks around (left edge horizon scan)."
+
+  - story_index: 51
+    ads_name: STAND
+    ads_tag: 16
+    caption_id: scene52
+    confidence: LOW
+    rationale: "SPOT_C S — spyglass + look around (duplicate of scene51 text)."
+
+
+  # ---- SUZY.ADS (2 entries) ----
+
+  - story_index: 52
+    ads_name: SUZY
+    ads_tag: 1
+    caption_id: scene53
+    confidence: HIGH
+    rationale: "day=3 — redhead sunbathes, finds bottle, imagines volcano island and handsome man."
+
+  - story_index: 53
+    ads_name: SUZY
+    ads_tag: 2
+    caption_id: scene54
+    confidence: HIGH
+    rationale: "day=9 — Johnny's raft drifts to her, she kisses then scolds him."
+
+
+  # ---- VISITOR.ADS (6 entries) ----
+  # Yacht/boat/plane visitors. Limited fitting captions in the corpus
+  # (scene10, scene55, scene56, scene61) — fewer than 6 entries — so the
+  # last two VISITOR slots are best-effort.
+
+  - story_index: 54
+    ads_name: VISITOR
+    ads_tag: 1
+    caption_id: scene12
+    confidence: MED
+    rationale: "SPOT_A S, low-tide ok — lilliputians arrive on three-mast ship and tie Johnny down (visitor scenario)."
+
+  - story_index: 55
+    ads_name: VISITOR
+    ads_tag: 3
+    caption_id: scene10
+    confidence: HIGH
+    rationale: "FINAL, HOLIDAY_NOK — yacht couple arrives and takes photos of mask-wearing Johnny."
+
+  - story_index: 56
+    ads_name: VISITOR
+    ads_tag: 4
+    caption_id: scene56
+    confidence: HIGH
+    rationale: "SPOT_D S->W — red boat spots Johnny, circles, fills the screen."
+
+  - story_index: 57
+    ads_name: VISITOR
+    ads_tag: 6
+    caption_id: scene61
+    confidence: HIGH
+    rationale: "SPOT_D S->SW — schooner with partygoers + waterskier; Johnny returns drunk."
+
+  - story_index: 58
+    ads_name: VISITOR
+    ads_tag: 7
+    caption_id: scene55
+    confidence: MED
+    rationale: "SPOT_D S->SW — airplane flies overhead while Johnny scans wrong way (visitor=plane)."
+
+  - story_index: 59
+    ads_name: VISITOR
+    ads_tag: 5
+    caption_id: scene57
+    confidence: LOW
+    rationale: "SPOT_E SW FINAL LEFT_ISLAND — no caption truly describes 'visitor takes Johnny away'; scene57 (shakes coconut tree, falls into ocean) is a stand-in. Strong candidate for NO_MATCH."
+
+
+  # ---- WALKSTUF.ADS (3 entries) ----
+  # Walk transitions / raft building. scene62 (build raft) was already
+  # placed under BUILDING 7 to satisfy the construction context; remaining
+  # WALKSTUF slots have no clean caption fit.
+
+  - story_index: 60
+    ads_name: WALKSTUF
+    ads_tag: 1
+    caption_id: scene63
+    confidence: MED
+    rationale: "SPOT_A NE FINAL — jogs around the island in grey jogging outfit (walk-stuf flavor scene)."
+
+  - story_index: 61
+    ads_name: WALKSTUF
+    ads_tag: 2
+    caption_id: scene58
+    confidence: LOW
+    rationale: "Pure walk transition with no narrative caption; scene58 (shakes tree, chases coconut) is the only remaining walk-y action — consider NO_MATCH."
+
+  - story_index: 62
+    ads_name: WALKSTUF
+    ads_tag: 3
+    caption_id: scene59
+    confidence: LOW
+    rationale: "SPOT_D W -> SPOT_E W — generic walk; scene59 (shakes tree, eats coconut) is leftover walk-action filler — consider NO_MATCH."
+
+
+unmapped_captions:
+  - scene17    # duplicate of scene12 (same lilliputians-tie-down content); scene12 used at VISITOR 1
+  - scene60    # empty in source; intentionally unmapped
+  # scene58 and scene59 are placeholders at WALKSTUF 2/3; consider moving them
+  # here and leaving those slots NO_MATCH if a runtime audit confirms the
+  # WALKSTUF tags really are pure walk transitions.
+
+
+notes: |
+  AUDIT-WIDE OBSERVATIONS
+
+  Count discrepancy. The task description says 62 active storyScenes
+  entries; recount of story-scenes.txt (lines starting with `    {`) gave
+  63. Each ADS group counts: ACTIVITY 10, BUILDING 7, FISHING 8, JOHNNY 6,
+  MARY 5, MISCGAG 2, STAND 14, SUZY 2, VISITOR 6, WALKSTUF 3 = 63. The
+  YAML has 63 entries (story_index 0..62).
+
+  Existing buggy map root cause. ps1_captions.h captionSceneMap[] uses
+  caption number = storyScenes index in a strictly sequential sweep:
+  scene00..scene09 -> ACTIVITY 1..9, scene10..scene16 -> BUILDING, etc.
+  This collides at the boundaries: scene10 (mask + yacht photos) gets
+  pushed into BUILDING (sand-castle/fire) when it is actually a VISITOR
+  scenario, and scene17 (lilliputians dup) lands on FISHING tag 1 even
+  though it has nothing to do with fishing. Cascade error from there:
+  every FISHING is off-by-one, JOHNNY/MARY day-arcs are misaligned, etc.
+  This corrected map drops the sequential assumption and uses (a) ADS
+  group + content match, (b) day_no / FIRST / FINAL flags for story
+  arcs, and (c) SPOT/HDG hints to disambiguate STAND tags.
+
+  Duplicate captions in corpus.
+   - scene12 and scene17 describe the same event (lilliputians tie Johnny
+     down). scene12 has the extra seagull-nests-on-Johnny tail, so it is
+     the richer caption; scene17 is left orphan.
+   - scene19 and scene25 are textually identical (catches a boot, keeps
+     it); both are mapped because FISHING.ADS has 8 distinct tags and the
+     original game ships 8 fishing variants (boot caught is genuinely a
+     repeat scenario in the source).
+   - scene51 and scene52 are textually identical (spyglass scan); mapped
+     to STAND 15 and STAND 16 respectively, distinguished only by spot.
+   - scene32 / scene35 / scene62 all overlap on raft work; assigned per
+     ADS context (MARY 1 / BUILDING 5 / BUILDING 7 respectively).
+
+  Captions authored against a different scene than they're now numbered.
+  None outright suspected, but several STAND captions read like they
+  could belong to different STAND tags than I assigned (e.g. scene47's
+  'palm tree' could fit any SE-facing tag). Without runtime evidence the
+  STAND mapping is a coherent guess, not a proof.
+
+  Slots that should probably be NO_MATCH in the final source.
+   - VISITOR 5 (LEFT_ISLAND, FINAL): no caption in the corpus describes
+     'visitor takes Johnny off the island'. The existing buggy map points
+     at scene59 here for the same reason — there simply isn't a fitting
+     caption. Consider leaving caption_id empty.
+   - WALKSTUF 1, 2, 3: pure walk-around transitions; only scene62
+     (already at BUILDING 7) and scene63 are construction/flavor lines
+     that mention walking. scene58 / scene59 placeholders here are weak.
+   - BUILDING 6: weakest BUILDING slot; scene13 (sleep + Zs + walks to
+     edge) is filler; consider NO_MATCH.
+
+  Confidence summary.
+   - HIGH: FISHING (all 8), JOHNNY (all 6), MARY (4 of 5), MISCGAG (both),
+     SUZY (both), BUILDING 1..5, VISITOR 3 + 4 + 6 = 27 HIGH.
+   - MED:  most ACTIVITY entries, some STAND entries with spot anchors,
+     VISITOR 1 + 7, WALKSTUF 1.
+   - LOW:  STAND idle variants without strong spot signals, BUILDING 6,
+     WALKSTUF 2 + 3, VISITOR 5.
+   - NO_MATCH: zero in the YAML — all 63 slots got an assignment, but
+     several (flagged in their rationale) are 'least bad' picks and are
+     candidates for blanking out in the eventual source change.

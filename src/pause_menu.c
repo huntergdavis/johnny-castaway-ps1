@@ -34,6 +34,7 @@
 #include "ps1_perf.h"
 #include "memcard.h"
 #include "holidays.h"
+#include "ps1_captions.h"
 
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
@@ -345,6 +346,7 @@ enum {
     OPT_TIDE,
     OPT_RAFT,
     OPT_HOLIDAY,
+    OPT_CAPTIONS,
     OPT_PERF,
     OPT_COUNT
 };
@@ -830,6 +832,18 @@ static void cyclePerf(int dir)
     ps1PerfSetLevel((uint32)lvl);
 }
 
+static const char *captionsLabel(void)
+{
+    return captionsGetEnabled() ? "ON" : "OFF";
+}
+
+static void cycleCaptions(int dir)
+{
+    /* Two states; either direction toggles. */
+    (void)dir;
+    captionsSetEnabled(!captionsGetEnabled());
+}
+
 static void drawMainMenu(void)
 {
     pmPrintf(" JOHNNY CASTAWAY  - PAUSED -\n");
@@ -886,6 +900,8 @@ static void drawOptions(void)
             pmPrintf("   Random each scene\n");
         }
     }
+    pmPrintf(" %s Captions:  %s\n",
+             optionsCursor == OPT_CAPTIONS ? ">" : " ", captionsLabel());
     pmPrintf(" %s Perf Log:  %s\n",
              optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
 
@@ -978,6 +994,7 @@ static void optionsCycle(int dir)
     case OPT_TIDE:     cycleTide(dir);     break;
     case OPT_RAFT:     cycleRaft(dir);     break;
     case OPT_HOLIDAY:  cycleHoliday(dir);  break;
+    case OPT_CAPTIONS: cycleCaptions(dir); break;
     case OPT_PERF:     cyclePerf(dir);     break;
     default: break;
     }

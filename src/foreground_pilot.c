@@ -14,6 +14,7 @@
 #include "island.h"
 #include "holidays.h"
 #include "pause_menu.h"
+#include "ps1_captions.h"
 #include "sound_ps1.h"
 #include "utils.h"
 #include "ps1_perf.h"
@@ -1594,6 +1595,15 @@ int foregroundPilotRuntimeStart(const char *sceneName)
         if (path != NULL) {
             uint32 maxDataSize = 0;
             uint16 i;
+            /* Trigger closed-caption lookup. fgpilot scene names map to
+             * the original ADS name + tag — fishing1 → FISHING tag 1,
+             * etc. captionsOnAdsStart bails if captions are disabled. */
+            if (fgSceneEquals(sceneName, "fishing1"))
+                captionsOnAdsStart("FISHING", 1);
+            else if (fgSceneEquals(sceneName, "fishing2"))
+                captionsOnAdsStart("FISHING", 2);
+            else if (fgSceneEquals(sceneName, "fishing3"))
+                captionsOnAdsStart("FISHING", 3);
             if (!fgLoadHeader(path, &gFgRuntime.header))
                 return 0;
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
