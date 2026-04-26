@@ -793,6 +793,7 @@ rectangle pressure.
 | `P4-139` | Done: remove unused foreground status accessors. | Two strict runs matched exactly with a small timing/CD-pressure win: `loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, and `overrun_vb=149`; normal build stays in the `129024` byte PS-EXE bucket and narrows the foreground-pilot API surface. |
 | `P4-140` | Done: remove dead foreground requested-mode state. | Two strict runs matched the accepted baseline exactly while `jcreborn.elf` shrank `690936 -> 690724`; this removes write-only scene-mode state left behind by the foreground status accessor cleanup. |
 | `P4-141` | Done: require base-diff foreground packs. | All `126` generated FG2 packs carry the base-diff flag, so the runtime now rejects non-base-diff packs at startup and drops per-frame non-base-diff fallback checks; two strict runs matched baseline exactly while `jcreborn.elf` shrank `690724 -> 689748`. |
+| `P4-142` | Done: restore the default-off JCPAD/JCSPI diagnostics gate after the pause/menu merge. | The post-menu exact no-holiday baseline was `loop_vb=1306`, `blocking_vb=19`, `prefetch_overrun_vb=14`, and `due_misses=1` because the heavy pad diagnostics path was live again. Restoring `pad-diag`/`pad-debug` as opt-in while keeping Start polling always on recovered the accepted cadence: `loop_vb 1306 -> 1221`, `blocking_vb 19 -> 5`, `prefetch_overrun_vb 14 -> 5`, `due_misses 1 -> 0`, with clean correctness. |
 
 Prefetch variants to test in order:
 
@@ -1151,13 +1152,14 @@ exact pre-integration no-holiday fishing1 variant forced (`lowtide 0 night 1
 holiday 0 raft-stage 4 island-pos -154 54`), the row-dirty restore path
 restored and the no-holiday stamp path cached, active playback measured
 `loop_vb 1221 -> 1306` (`+85`, about `+7.0%`), `overrun_vb 149 -> 256`,
-`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. Treat this as a
-first-class optimization target: recover the lost slack without removing the
-new menu/holiday feature set.
+`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. `P4-142` resolved
+this by restoring the lost default-off JCPAD/JCSPI diagnostics gate; `pad-diag`
+and `pad-debug` still re-enable the deep controller probes, while normal
+screensaver playback keeps only the lightweight Start poll.
 
 | Priority | Area | Target | Expected signal |
 |---:|---|---|---|
-| 0 | Integration/regression | Recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returns toward `loop_vb=1221`, `blocking_vb<=5`, `prefetch.overrun_vb<=5`, with holiday/menu functionality intact and correctness counters zero. |
+| 0 | Integration/regression | Done: recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returned to `loop_vb=1221`, `blocking_vb=5`, `prefetch.overrun_vb=5`, and `due_misses=0`; keep diagnostics opt-in and Start polling live. |
 | 1 | CD/pack | Add pack-emitted FG2 prefetch group metadata with aligned `offset/length` and covered frame range. | Lower `reads`, `blocking_vb`, and `prefetch.overrun_vb` without raising `pack_bytes` materially. |
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |

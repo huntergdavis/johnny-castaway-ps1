@@ -459,6 +459,8 @@ static void ps1ApplyBootOverride(char *buffer)
             ps1PerfSetLevel(PS1_PERF_LEVEL_DETAIL);
         } else if (!strcmp(tokens[i], "perf-debug")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_DEBUG);
+        } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
+            eventsSetPadDiagnostics(1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
         } else if (!strcmp(tokens[i], "padtest")) {
@@ -835,6 +837,11 @@ static void parseArgs(int argc, char **argv)
                     usage();
                 }
             }
+#ifdef PS1_BUILD
+            else if (!strcmp(argv[i], "pad-diag") || !strcmp(argv[i], "pad-debug")) {
+                eventsSetPadDiagnostics(1);
+            }
+#endif
             else if (!strcmp(argv[i], "window")) {
                 grWindowed = 1;
             }
