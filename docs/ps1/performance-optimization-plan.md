@@ -712,6 +712,7 @@ rectangle pressure.
 | `P4-79` | Failed: reuse a prepared current-frame RAM background through the normal upload path. | This removed duplicate prepared work (`restore_calls 192 -> 156`, `compose_calls 191 -> 155`) but regressed `loop_vb 1234 -> 1235`, `blocking_vb 8 -> 9`, and `prefetch_overrun_vb 8 -> 9`; the extra prep work is currently timing/pacing, not removable without replacing that pacing. |
 | `P4-80` | Failed as unproven: targeted current dirty-row state clearing. | Key timing stayed exactly flat (`loop_vb=1234`, `blocking_vb=8`, `prefetch_overrun_vb=8`) and work identity shifted slightly (`restore_calls 192 -> 190`, `compose_calls 191 -> 189`); retry only with lower-level CPU counters or during a broader dirty-state refactor. |
 | `P4-81` | Failed: re-sweep `14/18/20 KB` stream windows after prepared-present. | All tested sizes regressed total loop versus the accepted `16 KB` default (`1236`, `1247`, `1249` vs `1234`), confirming raw window-size tuning is exhausted until grouped/pack-aware reads improve coverage per transaction. |
+| `P4-82` | Failed strict gate but promising: consume the leading empty capture artifact during setup. | `loop_vb 1234 -> 1228` and `overrun_vb 157 -> 151` with zero due misses, but `blocking_vb 8 -> 9`, `prefetch_overrun_vb 8 -> 9`, and render count dropped by one non-payload frame; retry with CD smoothing and explicit visual policy for empty artifacts. |
 
 Prefetch variants to test in order:
 
@@ -1191,6 +1192,11 @@ dirty pipeline refactor.
 A post-prepared-present window-size sweep rejected `14 KB`, `18 KB`, and
 `20 KB` windows. The current `16 KB` window remains the local knee: smaller
 windows starve near-term entries and larger windows spill too much held slack.
+Consuming the leading empty capture artifact during setup is the most promising
+recent reject: it saved `6` loop VBlanks, but raised blocking/refill overrun by
+one VBlank and intentionally changed render count by skipping a non-payload
+startup render. Treat it as a policy-plus-scheduler retry, not a default path
+yet.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
