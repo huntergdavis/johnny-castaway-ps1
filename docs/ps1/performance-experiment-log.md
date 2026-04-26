@@ -32,20 +32,20 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `26890fbb ps1: restore dirty rows at exact x extents` |
-| Run ID | `20260425-175722` |
+| Commit | `e4dc5dd0 ps1: tune fg2 refill window after row restore` |
+| Run ID | `20260425-185413` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `18 KB default, 25616-byte runtime buffer` |
-| `loop_vb` | `1266` |
+| Window | `16 KB default, 23568-byte runtime buffer, 3 VBlank refill guard` |
+| `loop_vb` | `1254` |
 | `target_vb` | `1077` |
-| `overrun_vb` | `189` |
-| `blocking_vb` | `36` |
-| `loop_reads` | `56` |
-| `prefetch_hits` | `154` |
-| `prefetch_due_misses` | `1` |
-| `prefetch_overrun_vb` | `26` |
+| `overrun_vb` | `177` |
+| `blocking_vb` | `35` |
+| `loop_reads` | `69` |
+| `prefetch_hits` | `149` |
+| `prefetch_due_misses` | `6` |
+| `prefetch_overrun_vb` | `6` |
 | `restore_bytes` | `2510092` |
 | `upload_bytes` | `17172480` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
@@ -103,6 +103,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-25 | `x-aware-upload-32px-arena` | dirty experiment after `54925cf6` | Use 32-pixel X buckets plus a fixed 64 KB scratch arena so partial-width upload strips can share batch syncs instead of syncing each strip. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed with clean correctness but worse timing. Upload bytes improved `17172480 -> 4933312` and exact dirty bytes fell to `3079962`, but upload rects exploded `351 -> 11575`, `upload_vb 5 -> 204`, `loop_vb 1266 -> 1321`, `blocking_vb 36 -> 83`, and `due_misses 1 -> 9`. Artifact: `scratch/ps1-perf-iterate/20260425-183845/summary.json`. | Do not promote. Byte-minimal row strips are too command-heavy; future upload work must cap rect count first, then spend bytes by widening rows/bands deterministically until upload VBlanks stay near baseline. |
 | 2026-04-25 | `x-aware-upload-32px-tile-band` | dirty experiment after `3a203ba3` | Cap command count by using one widened 32-pixel X band per dirty tile row range, splitting only when the 64 KB scratch arena requires it. | `./scripts/build-ps1.sh`, then `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed with clean correctness. Rect count stayed near baseline (`351 -> 389`) and upload bytes improved (`17172480 -> 11074240`), but scratch packing/copying made `upload_vb 5 -> 305`, `loop_vb 1266 -> 1351`, `blocking_vb 36 -> 113`, and `due_misses 1 -> 16`. Artifact: `scratch/ps1-perf-iterate/20260425-184357/summary.json`. | Do not promote. Runtime partial-width upload requires CPU repacking from strided tiles into contiguous scratch, and that cost is worse than sending full-width rows directly from stable tile memory. Future upload-byte work should be pack-time/direct-layout, not runtime scratch packing. |
 | 2026-04-25 | `fg2-prefetch-min-slack-3vb-post-row-restore` | dirty experiment after `2b3c104a` | After row-level restore reduced due misses to one, raising the stream-window refill guard from `2` to `3` VBlanks might cut the remaining short-slack overrun without materially starving the queue. | `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Failed the blocking gate with clean correctness. Baseline to current: `loop_vb 1266 -> 1257`, `overrun_vb 189 -> 180`, and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56`, `due_misses 1 -> 9`, and `hits 154 -> 146`. Artifact: `scratch/ps1-perf-iterate/20260425-184811/summary.json`. | Do not promote. The loop win is real but unsafe under the current acceptance rule: stricter refill gating improves short-slack cost by starving near-term entries. Retry only after grouped/pipelined coverage can preserve due-frame residency. |
+| 2026-04-25 | `fg2-window-16kb-3vb-post-row-restore` | `e4dc5dd0` | Combine the lower-blocking `16 KB` post-restore window with the lower-overrun `3` VBlank refill guard; each signal failed alone, but together they may keep due-frame residency inside the gate. | Parameter probe `./scripts/ps1-perf-iterate.sh --case "fishing1-w16-g3::fgpilot fishing1 prefetch-window 16384" ...`, then default `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 25 --require-improvement` | Promoted. Parameter and default-code runs matched. Baseline to current: `loop_vb 1266 -> 1254`, `overrun_vb 189 -> 177`, `blocking_vb 36 -> 35`, `prefetch_overrun_vb 26 -> 6`, `hidden_vb 225 -> 240`, `loop_reads 56 -> 69`, `due_misses 1 -> 6`, `hits 154 -> 149`; correctness stayed clean. Artifacts: `scratch/ps1-perf-iterate/20260425-185236/summary.json`, `scratch/ps1-perf-iterate/20260425-185413/summary.json`. | Promote. The combination preserves blocking while cutting refill overrun by `20` VBlanks and total loop by `12`; the extra reads/due misses are an accepted tradeoff for this baseline and remain the next CD target. |
 
 ## Retry Queue
 
@@ -125,7 +126,7 @@ Current accepted baseline for the next experiment:
 | `4` VBlank staged-copy fallthrough guard after the post-merge baseline | Correctness clean but identical to the accepted `5` VBlank guard; retry only after another change alters staged-copy/window timing. |
 | `19 KB` requested window after the post-2VB sweep | Sector-rounds to the old `20 KB` default and is a no-op; use sector-sized buckets for future sweeps. |
 | `125 Hz` / `65 Hz` SPI pad polling | Correctness clean but `loop_vb` regressed by one VBlank while only CD submetrics improved; retry only with finer CPU/IRQ counters or a pause-input validation harness. |
-| Post-row-restore `16/20/24/32 KB` window sweep | Correctness clean but all tested sizes regressed total loop versus the accepted `18 KB` default; retry only after grouped/async refill changes refill cost or coverage. |
+| Post-row-restore `16/20/24/32 KB` window sweep under the `2` VBlank guard | Correctness clean but all tested sizes regressed total loop versus the then-accepted `18 KB` default; the `16 KB` point became useful only when paired with the later `3` VBlank guard. |
 | Targeted dirty-row state clearing | Correctness clean but no VBlank-level improvement; retry only with finer CPU counters or when dirty-state maintenance is being refactored anyway. |
 | Runtime PAL4 pair LUT and aligned word stores | Correctness clean but slower than direct halfword palette writes; retry as pack-time direct16 or with lower-overhead scene-palette specialization. |
 | 16-pixel X-aware upload strips with per-strip sync | Failed to reach scene-end within the headless frame window; retry only with a bounded scratch arena that allows batching partial strips behind one final `DrawSync`. |

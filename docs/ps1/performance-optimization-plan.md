@@ -18,7 +18,7 @@ pixel-perfect FG2 methodology.
 ## Executive Summary
 
 Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, an 18 KB FG2 stream window, guarded
+Held-entry no-work, one-entry staging, a 16 KB FG2 stream window, guarded
 fallthrough prefetch, dirty clean-rect row restore, and opt-in pad/SPI
 diagnostics are active on the perf branch. The boot parameters still exist for
 diagnostics, but the default FG2 playback policy is now `stage1_window` with no
@@ -26,10 +26,10 @@ JCPAD/JCSPI diagnostic sampling on the hot path.
 
 Latest accepted default-path fishing1 high-tide run, after the pause merge,
 pad/SPI diagnostic gating, the post-diagnostics window retunes, the
-2 VBlank refill guard, and row-level X dirty restore, reported
-`policy=stage1_window`, `buf=25616`, `hits=154`, `due_misses=1`,
-`blocking_vb=36`, `prefetch.overrun_vb=26`, `loop_vb=1266`,
-`overrun_vb=189`, `target_vb=1077`, `restore_bytes=2510092`,
+3 VBlank refill guard, and row-level X dirty restore, reported
+`policy=stage1_window`, `buf=23568`, `hits=149`, `due_misses=6`,
+`blocking_vb=35`, `prefetch.overrun_vb=6`, `loop_vb=1254`,
+`overrun_vb=177`, `target_vb=1077`, `restore_bytes=2510092`,
 `upload_bytes=17172480`, `trip=0`, `fallback=0`, `frame_mismatch=0`,
 `sound_late=0`, and `cd_fail=0`. This is the current baseline for the next
 experiment; the pre-pause best was `loop_vb=1297`.
@@ -63,7 +63,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 18 KB window | High | The current accepted fishing1 run is `loop_vb=1266` and still has `blocking_vb=36`, prefetch `overrun_vb=26`, and `due_misses=1`. |
+| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1254` and still has `blocking_vb=35`, prefetch `overrun_vb=6`, and `due_misses=6`. |
 | 2 | X-aware dirty upload | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, but still uploads `17.2 MB` across fishing1. Upload byte volume is now the clearer dirty target. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
@@ -568,19 +568,21 @@ read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
 Status: first wave implemented, visually signed off, and merged to `main` in
-`1b457163`. Stage1 entry prefetch is default. The perf branch now uses an
-18 KB stream window after the post-2VB window-size re-test. The old
+`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a
+16 KB stream window after the post-row-restore slack/window combination test. The old
 `prefetch-stage1` token is no longer required for the normal path;
 `no-prefetch`, `no-stage1`, and window-size tokens remain diagnostic controls.
 
 Current perf-branch target: keep squeezing CD latency and upload cost without
 changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
-removal, the `2` VBlank refill slack guard, guarded fallthrough, pad/SPI
-diagnostic gating, the 18 KB default window, and row-level dirty restore,
-fishing1 high-tide reports `loop_vb=1266`, `blocking_vb=36`, `due_misses=1`,
-and prefetch `overrun_vb=26`. Row-level restore created enough CPU headroom
-that CD blocking fell too; next experiments should target remaining upload byte
-volume and the last nonzero CD/prefetch costs.
+removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
+restore, and the current `16 KB`/`3` VBlank
+post-restore retune, fishing1 high-tide reports `loop_vb=1254`,
+`blocking_vb=35`, `due_misses=6`, and prefetch `overrun_vb=6`. Row-level
+restore created enough CPU headroom that CD blocking fell too; the latest
+retune converted most short-slack refill overrun into hidden reads. Next
+experiments should target the remaining due misses, nonzero blocking, and
+upload byte volume.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -607,9 +609,10 @@ volume and the last nonzero CD/prefetch costs.
 | `P4-21` | Done: retune the default stream window from `20 KB` to `18 KB` after the 2 VBlank guard. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8` are the next CD target. |
 | `P4-22` | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | CD submetrics improved slightly, but total `loop_vb` regressed `1296 -> 1297`; keep input timing at the known-good rate unless a dedicated IRQ/input harness proves a better tradeoff. |
 | `P4-23` | Done via dirty pipeline: restore exact per-row X extents before the next CD attempt. | `loop_vb 1296 -> 1266`, `blocking_vb 75 -> 36`, `due_misses 8 -> 1`; reduced RAM restore work created more usable held-frame slack for existing prefetch policy. |
-| `P4-24` | Failed: re-sweep `16/20/24/32 KB` stream windows after row-level restore. | All tested sizes regressed total loop (`1270`, `1276`, `1281`, `1285`) versus the accepted `18 KB` baseline (`1266`); keep `18 KB` until grouped/async refill changes the cost model. |
+| `P4-24` | Failed: re-sweep `16/20/24/32 KB` stream windows after row-level restore under the `2` VBlank guard. | All tested sizes regressed total loop (`1270`, `1276`, `1281`, `1285`) versus the then-accepted `18 KB` baseline (`1266`); the `16 KB` point only became useful after the later `3` VBlank guard. |
 | `P4-25` | Failed as a no-op: targeted clearing for row-level dirty state. | Key metrics stayed identical at VBlank resolution; retry only with finer CPU counters or during a broader dirty-state refactor. |
 | `P4-26` | Failed gate: raise the post-row-restore refill guard from `2` to `3` VBlanks. | `loop_vb 1266 -> 1257` and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56` and `due_misses 1 -> 9`; this is a useful starvation signal, not an accepted default. |
+| `P4-27` | Done: pair the post-row-restore `16 KB` window with the `3` VBlank refill guard. | `loop_vb 1266 -> 1254`, `blocking_vb 36 -> 35`, and `prefetch_overrun_vb 26 -> 6`; extra `due_misses 1 -> 6` are bounded and now the next CD target. |
 
 Prefetch variants to test in order:
 
@@ -617,7 +620,7 @@ Prefetch variants to test in order:
 |---|---|---|
 | One-entry synchronous staging | During held VBlanks, read the next entry into a second buffer if it is not already staged. | `cd_vb` may remain nonzero but should move out of due-frame advancement; visible speed should improve if enough hold budget exists. |
 | One-entry async staging | Start `CdRead` during held time and poll completion over later held VBlanks. | Lower blocking time, but higher controller-state risk. |
-| 18 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after the post-2VB sweep. |
+| 16 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after the post-row-restore slack/window retune. |
 | 20 KB stream window | Larger diagnostic window. | Former default; useful to re-test if later due-miss hiding makes coverage more valuable again. |
 | 24 KB stream window | Larger diagnostic window. | Former default; useful to re-test if later due-miss hiding makes coverage more valuable again. |
 | 32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
@@ -866,6 +869,7 @@ into one commit.
 | 18e | CD | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the current baseline. | `loop_vb`, `blocking_vb`, `prefetch_overrun_vb`, `hits`, and `due_misses` all matched baseline exactly. |
 | 18f | CD | Done: retune default stream window to the sector-rounded `18 KB` bucket. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8`. |
 | 18g | CD | Failed: raise the post-row-restore refill guard from `2` to `3` VBlanks. | `loop_vb 1266 -> 1257` and `prefetch_overrun_vb 26 -> 10`, but `blocking_vb 36 -> 56`; retry only with grouped/pipelined coverage. |
+| 18h | CD | Done: pair the post-row-restore `16 KB` window with the `3` VBlank refill guard. | `loop_vb 1266 -> 1254`, `blocking_vb 36 -> 35`, and `prefetch_overrun_vb 26 -> 6`; due misses rose `1 -> 6`. |
 | 19 | CD | Split prefetch budget by remaining hold slack. | Lower visible `blocking_vb`. |
 | 20 | CD | Done: stop duplicate prefetch attempts earlier. | `duplicate 887 -> 0`; timing flat, metrics cleaner. |
 | 21 | CD | Cache last resolved FG2 file handle per scene. | Lower setup/loop search cost. |
@@ -965,7 +969,7 @@ into one commit.
 ## Red-Team Conclusions
 
 The safest near-term speedup is not a more aggressive timing file. The measured
-runtime is still `1.18x` over the captured timing budget for fishing1 after the
+runtime is still `1.16x` over the captured timing budget for fishing1 after the
 latest accepted pass. We need to keep removing or hiding work, not lie about
 the source timing.
 
