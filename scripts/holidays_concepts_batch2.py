@@ -363,13 +363,33 @@ def starwars_v1(h):
 
 
 def starwars_v2(h):
-    """Minimalist — single vertical lightsaber on a starfield."""
+    """Minimalist — single vertical lightsaber on a denser starfield with
+    twin moons and a low horizon dune so the negative space still reads
+    as a scene, not a flat wash."""
     sp = Sprite(72, 96, fill=DEEPBLUE)
-    # Starfield
-    for x, y in [(6, 8), (12, 20), (24, 12), (40, 6), (56, 18), (64, 30),
-                 (10, 42), (50, 50), (20, 60), (42, 70)]:
+    # Twin moons (Tatooine cue)
+    sp.ellipse(8, 6, 18, 16, YELLOW, outline=BLACK)
+    sp.ellipse(54, 12, 60, 18, ORANGE, outline=BLACK)
+    # Denser starfield — keeps the minimalist feel but reads as space
+    stars = [
+        (4, 22), (12, 30), (24, 14), (40, 4), (52, 24), (62, 32),
+        (10, 44), (48, 48), (20, 60), (42, 70), (6, 36), (28, 38),
+        (64, 50), (32, 52), (58, 64), (16, 28), (70, 22), (36, 26),
+        (44, 16), (8, 54), (62, 8), (50, 60), (30, 64), (66, 60),
+    ]
+    for x, y in stars:
         sp.px(x, y, WHITE)
-    # Big saber, vertical, centered
+    # Small twinkles (3px crosses) for a few of the brighter stars
+    for x, y in [(12, 30), (40, 4), (48, 48), (16, 28), (62, 8)]:
+        sp.px(x - 1, y, WHITE); sp.px(x + 1, y, WHITE)
+        sp.px(x, y - 1, WHITE); sp.px(x, y + 1, WHITE)
+    # Low horizon dune at the bottom — sand-colored silhouette
+    for x in range(72):
+        # Single sine-ish dune
+        h0 = 90 - (3 if 16 <= x <= 56 else 0) - (1 if 30 <= x <= 42 else 0)
+        for y in range(h0, 96):
+            sp.px(x, y, SAND)
+    # Big saber, vertical, centered, planted in the dune
     cx = 36
     # Hilt
     sp.rect(cx - 2, 70, cx + 2, 84, GRAY, outline=BLACK)
@@ -381,6 +401,9 @@ def starwars_v2(h):
     sp.rect(cx - 2, 14, cx + 2, 70, GREEN)
     sp.rect(cx - 1, 12, cx + 1, 70, WHITE)
     sp.px(cx, 10, WHITE)
+    # Saber glow halo (wider blue-cyan ring around the blade)
+    for y in range(14, 70, 2):
+        sp.px(cx - 4, y, SKY); sp.px(cx + 4, y, SKY)
     return sp
 
 

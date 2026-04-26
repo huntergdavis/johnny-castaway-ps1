@@ -389,7 +389,7 @@ def pride_v1(h):
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.rect(fx, fy + i * stripe_h, fx + fw, fy + (i + 1) * stripe_h - 1, c)
     # Flag outline
-    sp.rect(fx, fy, fx + fw, fy + fh, TRANSPARENT, outline=BLACK)
+    sp.outline_rect(fx, fy, fx + fw, fy + fh, BLACK)
     # Flag pole already drawn by palm trunk; add little flutter
     sp.line(fx + fw, fy, fx + fw + 3, fy + 3, BLACK)
     sp.line(fx + fw, fy + fh, fx + fw + 3, fy + fh - 3, BLACK)
@@ -400,7 +400,7 @@ def pride_v1(h):
     mini_h = 1
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.rect(93, 38 + i * mini_h, 100, 38 + i * mini_h, c)
-    sp.rect(93, 38, 100, 38 + 5, TRANSPARENT, outline=BLACK)
+    sp.outline_rect(93, 38, 100, 38 + 5, BLACK)
     return sp
 
 
@@ -411,8 +411,12 @@ def pride_v2(h):
     stripe_h = 64 // 6
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.rect(0, i * stripe_h, 111, (i + 1) * stripe_h - 1, c)
-    # Border
-    sp.rect(0, 0, 111, 63, TRANSPARENT, outline=BLACK)
+    # Border drawn as 4 lines (a rect with TRANSPARENT fill would erase
+    # the stripes — this was a bug that left the sprite 94% transparent)
+    sp.line(0, 0, 111, 0, BLACK)
+    sp.line(0, 63, 111, 63, BLACK)
+    sp.line(0, 0, 0, 63, BLACK)
+    sp.line(111, 0, 111, 63, BLACK)
     # Tiny heart in the center for affection
     compose_heart(sp, 56, 32, 5, WHITE)
     return sp
@@ -434,7 +438,7 @@ def pride_v3(h):
     stripe_h = fh // 6
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.rect(fx, fy + i * stripe_h, fx + fw, fy + (i + 1) * stripe_h - 1, c)
-    sp.rect(fx, fy, fx + fw, fy + fh, TRANSPARENT, outline=BLACK)
+    sp.outline_rect(fx, fy, fx + fw, fy + fh, BLACK)
     # Three Johnnys parading
     for i, x in enumerate([48, 70, 92]):
         hat = _PRIDE_STRIPES[i * 2]
@@ -1069,7 +1073,7 @@ def pride_v4(h):
     # Tutu (rainbow stripe ring around hips)
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.line(jx - 3 + i, base_y - 2, jx + 8 - i, base_y - 2, c)
-    sp.rect(jx - 4, base_y - 4, jx + 9, base_y - 2, TRANSPARENT, outline=BLACK)
+    sp.outline_rect(jx - 4, base_y - 4, jx + 9, base_y - 2, BLACK)
     # Spinning legs with motion ghost
     sp.rect(jx + 1, base_y - 1, jx + 2, base_y + 2, TRUNK)
     sp.rect(jx + 3, base_y - 1, jx + 4, base_y + 2, TRUNK)
@@ -1094,7 +1098,7 @@ def pride_v4(h):
     stripe_h = fh // 6
     for i, c in enumerate(_PRIDE_STRIPES):
         sp.rect(fx, fy + i * stripe_h, fx + fw, fy + (i + 1) * stripe_h - 1, c)
-    sp.rect(fx, fy, fx + fw, fy + fh, TRANSPARENT, outline=BLACK)
+    sp.outline_rect(fx, fy, fx + fw, fy + fh, BLACK)
     # Wavy flag end
     for y in (fy + 2, fy + 6, fy + 10, fy + 14):
         sp.px(fx + fw + 1, y, _PRIDE_STRIPES[(y - fy) // stripe_h % 6])

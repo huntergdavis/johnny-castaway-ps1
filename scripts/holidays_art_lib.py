@@ -127,6 +127,17 @@ class Sprite:
         """Inclusive rectangle, optionally with a 1px outline."""
         self.draw.rectangle([x0, y0, x1, y1], fill=color, outline=outline)
 
+    def outline_rect(self, x0: int, y0: int, x1: int, y1: int,
+                     color: int) -> None:
+        """1px hollow rectangle that does NOT fill the interior. Use this
+        when you want to draw a border on top of existing pixels — `rect`
+        with `fill=TRANSPARENT` would overwrite the interior with palette
+        index 0, erasing whatever was drawn there."""
+        self.draw.line([x0, y0, x1, y0], fill=color)
+        self.draw.line([x0, y1, x1, y1], fill=color)
+        self.draw.line([x0, y0, x0, y1], fill=color)
+        self.draw.line([x1, y0, x1, y1], fill=color)
+
     def line(self, x0: int, y0: int, x1: int, y1: int, color: int) -> None:
         self.draw.line([x0, y0, x1, y1], fill=color)
 
