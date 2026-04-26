@@ -66,6 +66,16 @@ docs/ps1/holidays-pipeline.md                 (this file) operational pipeline d
 
 ## Quick start
 
+The fastest way is the wrapper:
+
+```bash
+cd /home/hunter/workspace/jc_ps1_sandbox
+./scripts/holidays-build-all.sh
+```
+
+That runs codegen → date tests → renderers → preview → contact sheet
+→ red-team in order, fail-fast. ~3–5 s end-to-end.
+
 ### Regenerate everything from scratch
 
 ```bash
