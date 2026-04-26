@@ -770,6 +770,7 @@ rectangle pressure.
 | `P4-130` | Failed: lower long-hold catch-up threshold from `5` to `4` VBlanks. | The threshold-4 probe matched active loop time (`loop_vb=1222`) but regressed target/pressure (`target_vb 1073 -> 1069`, `overrun_vb 149 -> 153`, `blocking_vb 6 -> 9`, `prefetch_overrun_vb 6 -> 9`); keep threshold `5` until grouped prefetch or a better slack budget makes extra catch-up free. |
 | `P4-131` | Failed: raise prepared-present minimum slack from `4` to `5` after catch-up. | It reduced duplicate prep (`restore_calls/compose_calls 195 -> 182`) and nominal loop by one VBlank (`1222 -> 1221`) but regressed target/pressure (`target_vb 1073 -> 1069`, `overrun_vb 149 -> 152`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`); the duplicate prep still acts as scheduler ballast. |
 | `P4-132` | Failed/no-op: add a second catch-up VBlank for very long holds. | Both `>=9` variants matched the accepted baseline exactly (`loop_vb=1222`, `target_vb=1073`, `blocking_vb=6`, `prefetch_overrun_vb=6`); fishing1 exposes no useful extra catch-up in that hold bucket under the current scheduler. |
+| `P4-133` | Failed: lower the initial FG2 metadata prefix read from `8 KB` to `4 KB`. | Fishing1 setup bytes fell (`282104 -> 278008`) and `setup_read_vb` dropped by one, but active playback regressed (`loop_vb 1222 -> 1224`, `blocking_vb 6 -> 11`, `prefetch_overrun_vb 6 -> 11`); startup read shape still acts as deterministic cadence ballast. |
 
 Prefetch variants to test in order:
 
