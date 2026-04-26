@@ -725,6 +725,7 @@ rectangle pressure.
 | `P4-89` | Failed/no-op: re-sweep tight-slack direct-stage payload caps after the 8-row upload merge. | `6 KB` and `10 KB` matched baseline exactly; `4 KB` regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 11`, and `prefetch_overrun_vb 7 -> 11`. Keep `8 KB` until grouped reads or another stage model changes the coverage tradeoff. |
 | `P4-90` | Failed: split immediate-next and pure-lookahead window refill guards. | Keeping immediate staging at `3` VBlanks but requiring `4` VBlanks for standalone lookahead refills regressed `loop_vb 1227 -> 1230`, `blocking_vb 7 -> 10`, and `prefetch_overrun_vb 7 -> 10`; scalar slack splitting is exhausted without read-cost prediction or pack groups. |
 | `P4-91` | Failed: runtime read-size predictor for tight lookahead refills. | An `8 KB` tight-read cap improved nominal `loop_vb 1227 -> 1225`, but increased `blocking_vb` and `prefetch_overrun_vb` to `8`, raised loop CD read time, and changed scheduler cadence; `12 KB` regressed to `loop_vb=1233` and `blocking_vb=14`. |
+| `P4-92` | Failed/no promotion: widen dirty-upload band clean-gap merge from `8` to `12` rows. | Timing stayed flat and correctness was clean, but the extra merge only traded fewer upload rectangles (`412 -> 399`) for more uploaded bytes (`16424960 -> 16514560`); keep the accepted `8`-row gap. |
 
 Prefetch variants to test in order:
 
@@ -1247,6 +1248,12 @@ but increased visible CD pressure and shifted scheduler cadence; `12 KB`
 regressed outright. The predictor needs more information than byte count:
 sector class, seek direction, covered frame range, and per-read elapsed
 histograms are the next useful data.
+The next dirty-upload merge point did not clear the promotion bar. A `12`-row
+clean-gap merge lowers `LoadImage` rectangles from `412` to `399`, but gives
+back `89600` extra upload bytes versus the accepted `8`-row baseline and leaves
+all VBlank timing flat. That says this local runtime threshold is past its
+useful knee; the next upload win should come from pack-emitted/upload-ready
+bands that lower command count without widening DMA volume.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
