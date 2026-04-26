@@ -233,6 +233,7 @@ def main():
       .variant.picked .variant-label { color: var(--pick); font-weight: 600; }
       .variant.dim { opacity: 0.25; }
       .variant.dim:hover { opacity: 0.85; }
+      .variant[data-variant="5"] .variant-label::after { content: " (auto)"; color: #888; font-style: italic; font-size: 9px; }
       .variant-img { background: #000; padding: 4px; border-radius: 4px; image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; }
       .pick-radio { margin-top: 4px; cursor: pointer; }
       .kbd { display: inline-block; background: #444; color: #ddd; padding: 1px 6px; border-radius: 3px; font: 11px/1 'SF Mono', Menlo, monospace; border: 1px solid #555; box-shadow: 0 1px 0 #222; margin: 0 1px; }
