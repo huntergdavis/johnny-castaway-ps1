@@ -11,7 +11,7 @@
 #   6. Generate default-picks fallback.
 #   7. Resolve picks → scratch/holidays-selected/.
 #   8. Build the final-review HTML.
-#   9. Run the red-team QA pass (21 checks) — any FAIL aborts.
+#   9. Run the red-team QA pass (22 checks) — any FAIL aborts.
 #
 # Run after editing holidays.yml or any renderer file. ~2.5s.
 #

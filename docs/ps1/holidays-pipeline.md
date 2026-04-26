@@ -37,7 +37,7 @@ scripts/holidays_art_lib.py                   16-color CLUT, Sprite class, primi
                                               heart, sand, sky, etc.) and
                                               `as_night(sprite)` for the v5 recolor
 scripts/holidays-quality-audit.py             ad-hoc per-sprite histogram report
-scripts/holidays-redteam.py                   21 independent QA checks; exits non-zero
+scripts/holidays-redteam.py                   22 independent QA checks; exits non-zero
                                               on any FAIL — palette discipline, dim/
                                               mode/presence, sparsity, variant
                                               diversity (incl. v5-vs-v1 ≥10%),
@@ -259,7 +259,7 @@ state.
 
 ## Red-team checks already passing
 
-`scripts/holidays-redteam.py` runs 21 independent QA checks. All
+`scripts/holidays-redteam.py` runs 22 independent QA checks. All
 currently green; 3 informational warnings remain (real same-day
 holiday overlaps where the lower id wins via C iteration order).
 
@@ -284,6 +284,7 @@ holiday overlaps where the lower id wins via C iteration order).
 19. **Render determinism** — re-rendering v1 and v5 in-process must produce byte-identical pixels. Catches a renderer that's accidentally introduced randomness.
 20. **Identical date rules** — no two yaml entries may share the exact same `date_rule` (a paste mistake that would permanently mask one holiday in `holidayForDate`).
 21. **manifest.json** — `scratch/holidays-selected/manifest.json` exists with one entry per reviewable holiday; each variant value is in 1..5. Phase D handoff format.
+22. **Originals pinned** — yaml id 1 == Halloween (PSB index 0), id 2 == St Patrick's (PSB index 1), id 3 == Christmas (index 2), id 4 == New Year's (index 3). Locked by the hardcoded switch-case in `src/island.c` `islandInitHoliday`.
 
 ## Out of scope for this round
 
