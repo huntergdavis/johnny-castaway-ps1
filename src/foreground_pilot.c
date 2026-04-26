@@ -1881,8 +1881,17 @@ void foregroundPilotRuntimeAdvance(void)
             return;
         }
 
+        {
+            uint16 presentedAdvance = frameHoldVBlanks;
+            /* Long host-deadline holds can absorb one late VBlank without
+             * skipping frames; broader catch-up starves FG2 prefetch. */
+            if (frameHoldVBlanks >= 5 &&
+                gFgRuntime.frameVBlank > frameHoldVBlanks)
+                presentedAdvance = (uint16)(frameHoldVBlanks + 1);
+            gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
+                                                   presentedAdvance);
+        }
         gFgRuntime.frameVBlank = 0;
-        gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks + frameHoldVBlanks);
         gFgRuntime.frameIndex++;
         if (!fgRuntimeLoadSceneFrame(gFgRuntime.frameIndex))
             gFgRuntime.active = 0;

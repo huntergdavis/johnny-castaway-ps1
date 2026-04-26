@@ -32,20 +32,24 @@ real payload, and tight-slack direct staging for immediate payloads up to
 8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
-garbage collection and foreground visual telemetry removal, reported
+garbage collection, foreground visual telemetry removal, legacy foreground
+diagnostic scene gating, and long-hold host-deadline catch-up, reported
 `policy=stage1_window`, `buf=23568`, `hits=155`,
-`due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1227`,
-`overrun_vb=150`, `target_vb=1077`, `restore_bytes=2999408`,
+`due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1222`,
+`overrun_vb=149`, `target_vb=1073`, `restore_bytes=3130442`,
 `upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
-`setup_read_vb=108`, and `scene_vb=1406`. This is the current baseline for the
+`setup_read_vb=108`, and `scene_vb=1401`. This is the current baseline for the
 next experiment. The section-GC pass kept those counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
 same `137216` byte sector bucket. Removing the now-unused foreground visual
 telemetry body kept timing flat again, dropped speculative prep
 `restore_calls/compose_calls` from `190` to `188`, reduced `restore_bytes` from
 `3034562` to `2999408`, and shrank `jcreborn.elf` to `707916` bytes. The
+legacy foreground diagnostic gate later moved the executable into the `131072`
+byte bucket with flat timing; long-hold deadline catch-up then traded seven
+extra speculative restore/compose calls for `5` fewer loop VBlanks. The
 pre-pause best was `loop_vb=1297`.
 
 Detail-tier attribution on this baseline shows the remaining active-loop gap is
@@ -620,11 +624,11 @@ the tile-local PAL4 span fast path, vertical dirty-row upload bands with
 a post-leading-empty 11-row gap merge, setup priming of the first real payload,
 tight-slack direct staging, direct-stage scratch window seeding, and the
 4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
-coalesced FG2 metadata-prefix startup reads,
+coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 fishing1 high-tide reports
-`loop_vb=1227`, `blocking_vb=6`, `due_misses=0`, and prefetch
-`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=2999408`,
-`upload_rects=401`, `setup_reads=6`, and `scene_vb=1406`.
+`loop_vb=1222`, `blocking_vb=6`, `due_misses=0`, and prefetch
+`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=3130442`,
+`upload_rects=401`, `setup_reads=6`, and `scene_vb=1401`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
@@ -762,6 +766,7 @@ rectangle pressure.
 | `P4-126` | Failed: replace dirty-row clear loops with fixed-size `memset(..., 0xff, ...)`. | The direct run regressed with the pack shifted to LBA `389`, and the layout-padded rerun preserved LBA `390` but still failed (`loop_vb 1227 -> 1233`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`, `restore_calls/compose_calls 188 -> 189`); keep the explicit row clear until dirty-state layout changes structurally. |
 | `P4-127` | Failed: render the first real frame during the existing setup settle after leading-empty consume. | Active playback improved (`loop_vb 1227 -> 1220`) because one render moved before `loop_start`, but full scene time stayed flat (`scene_vb=1406`) and CD pressure regressed (`blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`); do not accept setup accounting wins that do not reduce total time or preserve CD phase. |
 | `P4-128` | Failed: remove unused compose-ever foreground telemetry from the hot compose path. | Runtime metrics matched baseline exactly (`loop_vb=1227`, `blocking_vb=6`, `prefetch_overrun_vb=6`) and correctness stayed clean, but loadable text grew `124732 -> 124760`; source was reverted and this should wait for a broader telemetry/API pruning pass with map/layout review. |
+| `P4-129` | Done: catch up host-deadline timing by one VBlank only after long holds. | Full actual-elapsed catch-up and uncapped one-VBlank catch-up both starved prefetch (`due_misses=18` and `8` respectively). The accepted long-hold-only guard repeated cleanly: `loop_vb 1227 -> 1222`, `scene_vb 1406 -> 1401`, `overrun_vb 150 -> 149`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `due_misses=0`, with stable frame/sound correctness. |
 
 Prefetch variants to test in order:
 
@@ -1112,7 +1117,7 @@ into one commit.
 Current measured bottlenecks are now narrow enough that the next wins should be
 small and cumulative: `157` Detail-tier present-wait VBlanks, `6` visible CD
 blocking VBlanks, `6` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `401` upload rects, and `3.00 MB` restore volume on
+`16.5 MB` upload volume, `401` upload rects, and `3.13 MB` restore volume on
 fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |

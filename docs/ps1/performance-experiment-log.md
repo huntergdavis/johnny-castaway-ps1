@@ -32,26 +32,26 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: compile out legacy foreground diagnostics` |
-| Run ID | `20260426-062435` |
+| Commit | `ps1: catch up long host-deadline holds` |
+| Run ID | `20260426-081743` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
-| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 11-row upload band gap merge` |
-| `loop_vb` | `1227` |
-| `target_vb` | `1077` |
-| `overrun_vb` | `150` |
+| Window | `16 KB default, 23568-byte runtime buffer, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, setup-prime first payload, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, 3 VBlank refill guard, 6 VBlank fallthrough guard, 4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff FG2 OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 11-row upload band gap merge, long-hold host-deadline catch-up` |
+| `loop_vb` | `1222` |
+| `target_vb` | `1073` |
+| `overrun_vb` | `149` |
 | `blocking_vb` | `6` |
 | `loop_reads` | `68` |
 | `prefetch_hits` | `155` |
 | `prefetch_due_misses` | `0` |
 | `prefetch_overrun_vb` | `6` |
-| `restore_bytes` | `2999408` |
+| `restore_bytes` | `3130442` |
 | `upload_bytes` | `16499200` |
 | `dirty_rows` | `25780` |
 | `upload_rects` | `401` |
 | PS1 EXE size | `131072` |
-| PS1 ELF size | `692612` |
+| PS1 ELF size | `692704` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
 
 ## Experiments
@@ -222,6 +222,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-26 | `dirty-row-clear-memset` | dirty experiment after `56221e2a` | Replace the nested `grClearDirtyRows()` loops with two fixed-size `memset(..., 0xff, ...)` calls, targeting repeated dirty-state clearing without changing restore/upload policy. | Ran the standard fishing1 perf gate once directly, then reran with temporary PS-EXE layout padding so `FG\\FISHING1.FG2` stayed at LBA `390`; source and build-script padding were reverted after the runs. | Failed both ways. The unpadded run moved the pack to LBA `389` and regressed to `loop_vb=1233`, `blocking_vb=10`, `prefetch_overrun_vb=10`. The padded rerun preserved LBA `390` and produced the same miss: `loop_vb 1227 -> 1233`, `blocking_vb 6 -> 10`, `prefetch_overrun_vb 6 -> 10`, `restore_calls/compose_calls 188 -> 189`, correctness clean. Artifacts: `scratch/ps1-perf-iterate/20260426-072602/summary.json` and `scratch/ps1-perf-iterate/20260426-072804/summary.json`. | Do not promote. The hand-written loop is better for the current code shape; libc `memset` changes dirty/prepare cadence enough to lose even when CD layout is fixed. |
 | 2026-04-26 | `setup-settle-prerender-first-frame` | dirty experiment after `07f9505f` | Use the accepted one-VBlank setup settle after consuming fishing1's leading empty entry to render the first real frame before `loop_start`, so active playback begins on a held frame instead of spending the first loop iteration restoring/composing/presenting it. | Temporarily deferred the setup settle until after clean-rect setup, rendered the first real frame there with `grRestoreBgFromRects()` + `grUpdateDisplay()`, then ran `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. Source was reverted after the run. | Failed the strict gate. Active loop improved (`loop_vb 1227 -> 1220`, `overrun_vb 150 -> 143`, `render 155 -> 154`), but full scene time stayed flat (`scene_vb=1406`) and CD pressure regressed (`blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`). Correctness stayed clean with `due_misses=0`. Artifact: `scratch/ps1-perf-iterate/20260426-075545/summary.json`. | Do not promote. Rendering inside setup can move work out of `loop_vb`, but it does not reduce total scene time and it perturbs the accepted CD/refill phase; retry only with a scheduler that preserves `blocking_vb=6` or improves `scene_vb`, not just active-loop accounting. |
 | 2026-04-26 | `foreground-compose-ever-telemetry-removal` | dirty experiment after `3db0f380` | Remove the unused `foregroundPilotRuntimeComposedEver()` accessor, backing flag, and hot compose-path store to reduce per-render CPU work and code size. | Removed `gFgComposedEver`, the `gFgComposedEver = 1` store in `foregroundPilotRuntimeCompose()`, and the accessor declaration/definitions; then ran `./scripts/ps1-perf-iterate.sh --scene fishing1 --frames 4200 --timeout 180 --baseline scratch/ps1-perf-iterate/current-main-baseline.json --allow-regression 2 --require-improvement`. Source was reverted after the run. | Failed the strict gate as a neutral no-op: `loop_vb=1227`, `overrun_vb=150`, `blocking_vb=6`, `prefetch_overrun_vb=6`, and all visual-work/correctness counters matched baseline. Size red-team was not favorable enough: `jcreborn.exe` stayed `131072`, ELF file size changed `692612 -> 692436`, but loadable text grew `124732 -> 124760`. Artifact: `scratch/ps1-perf-iterate/20260426-080225/summary.json`. | Do not promote. This is dead-code cleanup in source terms, but it did not improve measured runtime and the text-size signal worsened; retry only during a broader telemetry/API removal pass where link layout can be controlled. |
+| 2026-04-26 | `long-hold-deadline-catchup` | `ps1: catch up long host-deadline holds` | Host-deadline FG2 packs use absolute PC capture deadlines, so late PS1 work should be allowed to shorten later long holds slightly instead of always preserving the ideal per-frame hold and accumulating render/CD overhead. | Tested three variants. Full actual-elapsed catch-up failed at `scratch/ps1-perf-iterate/20260426-081227/summary.json` (`loop_vb 1227 -> 1195`, but `target_vb 1077 -> 924`, `blocking_vb 6 -> 103`, `due_misses=18`). One-VBlank catch-up on any late frame failed at `scratch/ps1-perf-iterate/20260426-081427/summary.json` (`loop_vb 1227 -> 1225`, but `blocking_vb 6 -> 57`, `due_misses=8`). The promoted variant catches up by at most one VBlank only when the intended hold is at least `5` VBlanks, then repeated the strict gate twice. | Promoted. Repeat runs matched exactly: `loop_vb 1227 -> 1222`, `scene_vb 1406 -> 1401`, `overrun_vb 150 -> 149`, `blocking_vb=6`, `prefetch_overrun_vb=6`, `due_misses=0`, `hits=155`, and correctness stayed clean. It trades more speculative prep (`restore_calls/compose_calls 188 -> 195`, `restore_bytes 2999408 -> 3130442`) for fewer held-loop iterations (`668 -> 655`). Artifacts: `scratch/ps1-perf-iterate/20260426-081609/summary.json`, `scratch/ps1-perf-iterate/20260426-081743/summary.json`. | Promote. This is an absolute-deadline timing fix, not frame skipping: entries, rendered frames, upload calls, sound events, and tripwires stayed identical. Keep the long-hold guard; broader catch-up starves prefetch. |
 
 ## Retry Queue
 
