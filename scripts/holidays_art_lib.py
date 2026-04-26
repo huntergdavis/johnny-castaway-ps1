@@ -425,25 +425,28 @@ def as_night(day_sprite: Sprite, *,
     import random
     rng = random.Random(day_sprite.w * 1009 + day_sprite.h)
     placed = 0
-    horizon = int(day_sprite.h * 0.7)
+    horizon = max(1, int(day_sprite.h * 0.7))
     attempts = 0
-    while placed < star_count and attempts < star_count * 8:
-        attempts += 1
-        x = rng.randrange(day_sprite.w)
-        y = rng.randrange(horizon)
-        idx = new.image.getpixel((x, y))
-        if idx == DEEPBLUE:
-            new.px(x, y, WHITE)
-            placed += 1
+    if day_sprite.w >= 1 and horizon >= 1:
+        while placed < star_count and attempts < star_count * 8:
+            attempts += 1
+            x = rng.randrange(day_sprite.w)
+            y = rng.randrange(horizon)
+            idx = new.image.getpixel((x, y))
+            if idx == DEEPBLUE:
+                new.px(x, y, WHITE)
+                placed += 1
 
-    # A few twinkles — 3-pixel cross
-    for _ in range(min(4, star_count // 6)):
-        x = rng.randrange(2, day_sprite.w - 2)
-        y = rng.randrange(2, horizon - 2)
-        if new.image.getpixel((x, y)) == DEEPBLUE:
-            new.px(x, y, WHITE)
-            new.px(x - 1, y, WHITE); new.px(x + 1, y, WHITE)
-            new.px(x, y - 1, WHITE); new.px(x, y + 1, WHITE)
+    # A few twinkles — 3-pixel cross. Need ≥ 5 px in each dim for the
+    # cross to fit; skip gracefully on tiny sprites.
+    if day_sprite.w >= 5 and horizon >= 5:
+        for _ in range(min(4, star_count // 6)):
+            x = rng.randrange(2, day_sprite.w - 2)
+            y = rng.randrange(2, horizon - 2)
+            if new.image.getpixel((x, y)) == DEEPBLUE:
+                new.px(x, y, WHITE)
+                new.px(x - 1, y, WHITE); new.px(x + 1, y, WHITE)
+                new.px(x, y - 1, WHITE); new.px(x, y + 1, WHITE)
 
     # Moon — pick the corner with the most DEEPBLUE pixels in a 14×14
     # square so we don't paint over Johnny / a flag / etc. The default
