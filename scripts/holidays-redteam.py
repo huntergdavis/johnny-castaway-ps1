@@ -483,6 +483,41 @@ def check_final_review_present(fails, warns):
         fails.append("final-review HTML lacks card markup")
 
 
+def check_invisible_compose_calls(fails, warns):
+    """Static scan: warn if a renderer calls compose_star / compose_heart
+    with a color that matches `Sprite(.., fill=COLOR)`. Often that means
+    the icon disappears into the background. False positives exist (the
+    bg may be overwritten by a sand strip etc.), so this check produces
+    warnings rather than fails — the sparsity / variant-diversity checks
+    catch the visual consequence."""
+    import re
+    files = [
+        "holidays_concepts_reference.py",
+        "holidays_concepts_batch1.py",
+        "holidays_concepts_batch2.py",
+        "holidays_concepts_batch3.py",
+        "holidays_concepts_batch4.py",
+    ]
+    for fname in files:
+        path = REPO / "scripts" / fname
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for blk in re.split(r"\ndef ", text)[1:]:
+            fn_name = blk.split("(", 1)[0]
+            fm = re.search(r"Sprite\(\d+,\s*\d+,\s*fill=(\w+)\)", blk)
+            if not fm:
+                continue
+            bg = fm.group(1)
+            for line in blk.splitlines():
+                if not re.search(r"compose_(star|heart)\(", line):
+                    continue
+                if re.search(r",\s*" + bg + r"\)", line):
+                    warns.append(
+                        f"{fname}::{fn_name}: compose_* may be invisible — "
+                        f"bg={bg}, line: {line.strip()[:70]}")
+
+
 def check_contact_sheet_present(fails, warns):
     """Contact sheet PNG present and reasonable in size."""
     p = REPO / "scratch" / "holidays-contact-sheet.png"
@@ -526,6 +561,7 @@ def main():
         ("HTML save / modal",   lambda: check_save_button(fails, warns)),
         ("final-review HTML",   lambda: check_final_review_present(fails, warns)),
         ("contact sheet PNG",   lambda: check_contact_sheet_present(fails, warns)),
+        ("invisible compose_*", lambda: check_invisible_compose_calls(fails, warns)),
     ]
 
     print(f"red-team pass over {len(holidays)} holidays\n")
