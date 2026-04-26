@@ -33,14 +33,15 @@ real payload, and tight-slack direct staging for immediate payloads up to
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
 garbage collection, foreground visual telemetry removal, legacy foreground
-diagnostic scene gating, and long-hold host-deadline catch-up, reported
-`policy=stage1_window`, `buf=23568`, `hits=155`,
-`due_misses=0`, `blocking_vb=6`, `prefetch.overrun_vb=6`, `loop_vb=1222`,
-`overrun_vb=149`, `target_vb=1073`, `restore_bytes=3130442`,
+diagnostic scene gating, long-hold host-deadline catch-up, and unused
+foreground status accessor removal, reported `policy=stage1_window`,
+`buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
+`prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=149`,
+`target_vb=1072`, `restore_bytes=3085148`,
 `upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
-`setup_read_vb=108`, and `scene_vb=1401`. This is the current baseline for the
+`setup_read_vb=109`, and `scene_vb=1400`. This is the current baseline for the
 next experiment. The section-GC pass kept those counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
 same `137216` byte sector bucket. Removing the now-unused foreground visual
@@ -54,7 +55,9 @@ the unused foreground "ever" diagnostics kept timing flat and shrank
 `jcreborn.elf`; removing the unused ADS foreground auto-start hook kept timing
 flat again and shrank `jcreborn.elf` to `690932` bytes. Removing the obsolete
 `FGPILOT` ADS debug dispatch kept playback flat and moved `jcreborn.exe` down
-to `129024` bytes. The pre-pause best was `loop_vb=1297`.
+to `129024` bytes. Removing unused foreground status accessors then repeated at
+`loop_vb=1221` with `blocking_vb=5` and `prefetch.overrun_vb=5`. The pre-pause
+best was `loop_vb=1297`.
 
 Latest Detail-tier attribution on this baseline shows the remaining
 active-loop gap is not primarily due-frame CD: `render_vb=181`,
@@ -783,6 +786,7 @@ rectangle pressure.
 | `P4-136` | Done: remove unused foreground "ever" diagnostics. | Two strict runs matched timing/work identity exactly while `jcreborn.elf` shrank `692704 -> 691584`; keep pruning old diagnostic API only when the cadence gate stays flat. |
 | `P4-137` | Done: remove unused ADS foreground auto-start hook. | Two strict runs matched timing/work identity exactly while `jcreborn.elf` shrank `691584 -> 690932`; the explicit PS1 `FGPILOT` debug ADS path remains intact. |
 | `P4-138` | Done: remove obsolete `FGPILOT` ADS debug dispatch. | Two strict runs matched timing/work identity exactly while `jcreborn.exe` crossed down `131072 -> 129024`; ELF file size moved upward from link-layout noise, but the shipped/loadable executable is smaller. |
+| `P4-139` | Done: remove unused foreground status accessors. | Two strict runs matched exactly with a small timing/CD-pressure win: `loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, and `overrun_vb=149`; normal build stays in the `129024` byte PS-EXE bucket and narrows the foreground-pilot API surface. |
 
 Prefetch variants to test in order:
 

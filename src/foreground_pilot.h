@@ -1,8 +1,6 @@
 #ifndef FOREGROUND_PILOT_H
 #define FOREGROUND_PILOT_H
 
-int foregroundPilotRequested(void);
-const char *foregroundPilotSceneName(void);
 void foregroundPilotSetScene(const char *sceneName);
 void foregroundPilotSetHeapProbe(int enabled);
 void foregroundPilotResetPrefetchDefaults(void);
@@ -12,7 +10,6 @@ void foregroundPilotPlay(void);
 void foregroundPilotRuntimeCompose(void);
 void foregroundPilotRuntimeAdvance(void);
 int foregroundPilotRuntimeActive(void);
-int foregroundPilotRuntimeMode(void);
 const char *foregroundPilotRuntimeModeName(void);
 const char *foregroundPilotRuntimeSceneName(void);
 unsigned short foregroundPilotRuntimeFrameIndex(void);
@@ -21,10 +18,6 @@ unsigned short foregroundPilotRuntimeFrameCount(void);
  * contiguous malloc that succeeds right now. Used by the pause menu's
  * Debug Info to show real free RAM. */
 unsigned long fgProbeLargestAlloc(void);
-unsigned short foregroundPilotRuntimeSourceFrame(void);
-unsigned short foregroundPilotRuntimeDisplayVBlanks(void);
-int foregroundPilotRuntimeHasFrameData(void);
-int foregroundPilotRequestedNow(void);
 void foregroundPilotRuntimeEnd(void);
 
 #endif

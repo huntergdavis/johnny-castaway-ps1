@@ -1894,11 +1894,6 @@ int foregroundPilotRuntimeActive(void)
     return gFgRuntime.active ? 1 : 0;
 }
 
-int foregroundPilotRuntimeMode(void)
-{
-    return gFgRuntime.active ? (int)gFgRuntime.mode : 0;
-}
-
 unsigned short foregroundPilotRuntimeFrameIndex(void)
 {
     return gFgRuntime.active ? gFgRuntime.frameIndex : 0;
@@ -1923,28 +1918,6 @@ const char *foregroundPilotRuntimeModeName(void)
     case 2: return "SCENE_PACK";
     default: return "?";
     }
-}
-
-unsigned short foregroundPilotRuntimeSourceFrame(void)
-{
-    return (gFgRuntime.active && gFgRuntime.currentFrameData != NULL)
-        ? gFgRuntime.currentEntry.sourceFrame
-        : 0;
-}
-
-unsigned short foregroundPilotRuntimeDisplayVBlanks(void)
-{
-    return gFgRuntime.active ? gFgRuntime.displayVBlanks : 0;
-}
-
-int foregroundPilotRuntimeHasFrameData(void)
-{
-    return (gFgRuntime.active && gFgRuntime.currentFrameData != NULL) ? 1 : 0;
-}
-
-int foregroundPilotRequestedNow(void)
-{
-    return foregroundPilotRequested();
 }
 
 void foregroundPilotRuntimeEnd(void)
@@ -2188,16 +2161,6 @@ static void fgPlaySolidRed(void)
 }
 #endif
 
-int foregroundPilotRequested(void)
-{
-    return gForegroundPilotRequestedMode != FG_RUNTIME_NONE;
-}
-
-const char *foregroundPilotSceneName(void)
-{
-    return gForegroundPilotScene;
-}
-
 void foregroundPilotSetScene(const char *sceneName)
 {
     size_t i;
@@ -2279,16 +2242,6 @@ void foregroundPilotPlay(void)
 static char gForegroundPilotScene[16] = "";
 static unsigned char gForegroundPilotRequestedMode = 0;
 
-int foregroundPilotRequested(void)
-{
-    return gForegroundPilotRequestedMode != 0;
-}
-
-const char *foregroundPilotSceneName(void)
-{
-    return gForegroundPilotScene;
-}
-
 void foregroundPilotSetScene(const char *sceneName)
 {
     if (!sceneName) {
@@ -2320,34 +2273,9 @@ void foregroundPilotSetPrefetchWindow(unsigned long bytes)
     (void)bytes;
 }
 
-int foregroundPilotRuntimeMode(void)
-{
-    return 0;
-}
-
 unsigned short foregroundPilotRuntimeFrameIndex(void)
 {
     return 0;
-}
-
-unsigned short foregroundPilotRuntimeSourceFrame(void)
-{
-    return 0;
-}
-
-unsigned short foregroundPilotRuntimeDisplayVBlanks(void)
-{
-    return 0;
-}
-
-int foregroundPilotRuntimeHasFrameData(void)
-{
-    return 0;
-}
-
-int foregroundPilotRequestedNow(void)
-{
-    return foregroundPilotRequested() ? 1 : 0;
 }
 
 void foregroundPilotPlay(void)
