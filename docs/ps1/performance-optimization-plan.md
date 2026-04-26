@@ -651,6 +651,7 @@ and upload byte volume.
 | `P4-55` | Failed: split cross-tile PAL4 spans directly at runtime after the tile-local fast path. | Work identity stayed stable, but `loop_vb 1240 -> 1246`, `blocking_vb 20 -> 27`, and `prefetch_overrun_vb 11 -> 18`; boundary-span splitting should be pack-time if retried. |
 | `P4-56` | Failed as no-op: add a dedicated PAL4 zero-offset opaque-run helper. | The tile-local path already calls the helper with constant `srcPixel=0`; a separate helper left all key metrics flat at `loop_vb=1240`, `blocking_vb=20`, and `prefetch_overrun_vb=11`. |
 | `P4-57` | Failed: lower the staged-copy fallthrough guard from `6` to `5` VBlanks after the tile-local PAL4 fast path. | The retest regressed `loop_vb 1240 -> 1244`, `blocking_vb 20 -> 22`, and `prefetch_overrun_vb 11 -> 15`; keep `6` VBlanks as the current slack knee. |
+| `P4-58` | Failed as no-op: coalesce consecutive full-width restore rows into one `memcpy()`. | Work identity and timing stayed exactly flat at `loop_vb=1240`, `restore_bytes=2510092`, `blocking_vb=20`, and `prefetch_overrun_vb=11`; future restore wins need pack-emitted bands or less restore work. |
 
 Prefetch variants to test in order:
 
