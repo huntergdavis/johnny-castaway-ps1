@@ -150,6 +150,85 @@ def test_yaml_oob_screen():
         yaml_src.write_text(yaml_backup)
 
 
+def test_identical_date_rule():
+    """Two yaml entries with the same date_rule should fail
+    'identical date rules'."""
+    yaml_src = REPO / "holidays.yml"
+    yaml_backup = yaml_src.read_text()
+    try:
+        # Replace id 6 (MLK) date_rule with id 5 (Elvis Jan 8).
+        # Find Elvis's and copy its rule into MLK's slot.
+        # Hacky but works for the meta-test.
+        yaml_src.write_text(yaml_backup.replace(
+            'short_name: "MLK DAY"\n'
+            '  description: "Johnny stands at attention beside a small podium with a paper banner reading I HAVE A DREAM."\n'
+            '  date_rule:\n'
+            '    kind: nth_weekday\n'
+            '    month: 1\n'
+            '    n: 3\n'
+            '    weekday: 1',
+            'short_name: "MLK DAY"\n'
+            '  description: "Johnny stands at attention beside a small podium with a paper banner reading I HAVE A DREAM."\n'
+            '  date_rule:\n'
+            '    kind: fixed\n'
+            '    month: 1\n'
+            '    day: 8'
+        ))
+        # If the replace didn't take, abort.
+        if yaml_src.read_text() == yaml_backup:
+            return None
+        rc, out = run_redteam()
+        return expect_fail("identical date rules", out)
+    finally:
+        yaml_src.write_text(yaml_backup)
+
+
+def test_render_nondeterminism():
+    """A renderer that returns different pixels each call should fail
+    'render determinism'. Inject a counter into elvis_v1 AT THE END
+    so it survives any later overwrites."""
+    src = REPO / "scripts" / "holidays_concepts_batch1.py"
+    backup = src.read_text()
+    try:
+        # The injected counter pixel must be drawn AFTER the rest of the
+        # renderer's content, otherwise lines/rects below it overwrite.
+        # Replace `return sp` of elvis_v1 with `<counter pixel>; return sp`.
+        # Find elvis_v1's return statement (assume the first one after
+        # the def).
+        import re
+        m = re.search(
+            r"def elvis_v1\(h\):.*?\n(    return sp)\n",
+            backup, re.DOTALL)
+        if not m:
+            return None
+        # Inject before the return.
+        injected = (
+            "    # NONDET INJECTION\n"
+            "    if not hasattr(elvis_v1, '_n'): elvis_v1._n = 0\n"
+            "    elvis_v1._n += 1\n"
+            "    sp.px(0, 0, elvis_v1._n % 16)\n"
+            "    return sp\n"
+        )
+        bad = backup[:m.start(1)] + injected[:-len("    return sp\n")] + "    return sp" + backup[m.end(1):]
+        # Sanity: did anything actually change?
+        if bad == backup:
+            return None
+        src.write_text(bad)
+        # Clear pyc cache so the re-imported module sees the change.
+        cache = REPO / "scripts" / "__pycache__"
+        if cache.is_dir():
+            for pyc in cache.glob("*.pyc"):
+                pyc.unlink()
+        rc, out = run_redteam()
+        return expect_fail("render determinism", out)
+    finally:
+        src.write_text(backup)
+        cache = REPO / "scripts" / "__pycache__"
+        if cache.is_dir():
+            for pyc in cache.glob("*.pyc"):
+                pyc.unlink()
+
+
 def test_clean_state_passes():
     """After all the above, clean state should pass."""
     rc, out = run_redteam()
@@ -168,6 +247,10 @@ def main():
          test_duplicate_art),
         ("yaml_oob_screen detected by 'YAML schema'",
          test_yaml_oob_screen),
+        ("identical_date_rule detected by 'identical date rules'",
+         test_identical_date_rule),
+        ("render_nondeterminism detected by 'render determinism'",
+         test_render_nondeterminism),
         ("clean state still passes",
          test_clean_state_passes),
     ]
