@@ -272,14 +272,14 @@ def compose_horizon(sp: Sprite, y: int) -> None:
 # 31 hand-drawn night sprites while still giving the owner a meaningfully
 # different alternate to choose from.
 
-# Per-index recolor used by `as_night`. SKY → DEEPBLUE so the whole sky
-# region shifts to navy. YELLOW (the sun) maps to SKY (a soft moonglow).
-# ORANGE in the sky range (sunsets/dawn) becomes PURPLE for twilight.
-# Other indices pass through unchanged so foreground subjects (Johnny,
-# props, palm fronds) still read.
-_NIGHT_RECOLOR = {
+# Per-index recolor used by `as_night`. SKY → DEEPBLUE so any explicit
+# daylight sky shifts to navy. ORANGE (sunsets/dawn) becomes PURPLE for
+# twilight. The sprite's background color (whatever it is — often YELLOW
+# for MLK, ORANGE for thanksgiving, GREEN for super bowl) is detected at
+# runtime and ALSO remapped to DEEPBLUE so the night version actually
+# reads as night regardless of v1's background choice.
+_NIGHT_RECOLOR_FIXED = {
     SKY:    DEEPBLUE,
-    YELLOW: SKY,
     ORANGE: PURPLE,
 }
 
@@ -290,28 +290,51 @@ def as_night(day_sprite: Sprite, *,
              keep_sand: bool = True) -> Sprite:
     """Return a new Sprite that is a night-time recolor of `day_sprite`.
 
-    The sky becomes DEEPBLUE, the sun becomes a soft SKY-blue moon glow,
-    sunset orange becomes twilight purple. Everything else passes through.
-    Then we lay stars and a small moon over what used to be the sky band.
+    The sprite's background color is detected (top-left corner pixel,
+    fallback to most-common index in the upper third) and remapped to
+    DEEPBLUE so any sky band — yellow, orange, sky-blue, even green —
+    becomes a believable night sky. ORANGE elsewhere (sunsets) becomes
+    PURPLE for twilight. Everything else passes through so foreground
+    subjects (Johnny, props, palm fronds) still read.
+
+    Then we lay WHITE stars and a small moon over what used to be the
+    background band.
 
     moon_at:     (x, y) for a small WHITE moon disc with a BLACK outline.
                  Defaults to the upper-right corner.
-    star_count:  number of WHITE star pixels to sprinkle in the sky
-                 region. Defaults to ~ (w * h) / 40 — i.e. denser for
-                 larger sprites.
-    keep_sand:   leave SAND pixels untouched. If False, sand also dims to
-                 TRUNK.
+    star_count:  number of WHITE star pixels to sprinkle in what was
+                 the sky region. Defaults to ~ (w * h) / 80.
+    keep_sand:   leave SAND pixels untouched. If False, sand also dims
+                 to TRUNK.
     """
     src = day_sprite.image
     new = Sprite(day_sprite.w, day_sprite.h, fill=DEEPBLUE)
+    # Detect background color: corner pixel is the safest bet, since the
+    # renderers all start with `Sprite(w, h, fill=BG)`. Skip TRANSPARENT
+    # since it's idx 0 and would make the recolor a no-op.
+    bg_idx = src.getpixel((0, 0))
+    if bg_idx == TRANSPARENT:
+        # Fall back to the most-common index in the top quarter of the
+        # image, which is overwhelmingly the sky band.
+        from collections import Counter
+        top_pixels = [src.getpixel((x, y))
+                      for y in range(max(1, day_sprite.h // 4))
+                      for x in range(day_sprite.w)]
+        if top_pixels:
+            bg_idx = Counter(top_pixels).most_common(1)[0][0]
+    # Build the dynamic recolor map: detected background → DEEPBLUE,
+    # plus the fixed mappings. The detected bg wins when both apply.
+    recolor = dict(_NIGHT_RECOLOR_FIXED)
+    if bg_idx not in (TRANSPARENT, BLACK, DEEPBLUE):
+        recolor[bg_idx] = DEEPBLUE
     # Walk every pixel and remap.
     src_pixels = list(src.getdata())
     out = []
     for p in src_pixels:
         if not keep_sand and p == SAND:
             out.append(TRUNK)
-        elif p in _NIGHT_RECOLOR:
-            out.append(_NIGHT_RECOLOR[p])
+        elif p in recolor:
+            out.append(recolor[p])
         else:
             out.append(p)
     new.image.putdata(out)

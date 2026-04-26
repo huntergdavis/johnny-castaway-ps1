@@ -13,7 +13,7 @@ pipeline* — separate from the design ideation
 |-------|------|--------|
 | A | Per-holiday config + date-algorithm core (Meeus Easter, Nth-weekday math) | ✅ Shipped |
 | B | AI-generated pixel art for the 31 new holidays + HTML preview | ✅ Generated, awaiting owner review |
-| C | Owner reviews HTML, picks one variant per holiday (1=LITERAL, 2=MINIMALIST, 3=BUSY, 4=PLAYFUL) | ⏳ Awaiting owner |
+| C | Owner reviews HTML, picks one variant per holiday (1=LITERAL, 2=MINIMALIST, 3=BUSY, 4=PLAYFUL, 5=NIGHT) | ⏳ Awaiting owner |
 | D | Pack chosen variants into HOLIDAY.PSB (or a sibling HOLIDAY2.PSB), update CD layout | ⏳ Post-review |
 | E | Extend pause-menu Holiday cycling from 6 fixed states to 36 (AUTO + 35) | ⏳ Post-review |
 | F | Headless DuckStation smoke-test forcing each holiday | ⏳ Post-review |
@@ -34,7 +34,16 @@ scripts/holidays-test.py                      Python mirror of the C algorithms;
                                               Memorial, Labor, Election, day-of-week)
 scripts/holidays_art_lib.py                   16-color CLUT, Sprite class, primitive
                                               drawing helpers (palm, johnny, star,
-                                              heart, sand, sky, etc.)
+                                              heart, sand, sky, etc.) and
+                                              `as_night(sprite)` for the v5 recolor
+scripts/holidays-quality-audit.py             ad-hoc per-sprite histogram report
+scripts/holidays-redteam.py                   13 independent QA checks; exits non-zero
+                                              on any FAIL — palette discipline, dim/
+                                              mode/presence, sparsity, variant
+                                              diversity, no cross-holiday duplicates,
+                                              date-algorithm test invocation, 7-year
+                                              collision sweep, generated-table row
+                                              count, HTML integrity, save/modal hooks
 scripts/holidays_concepts.py                  master loader; merges all batch dicts
                                               into one RENDERERS = {id: (v1,v2,v3,v4)}
 scripts/holidays_concepts_reference.py        reference renderers (Valentine, Mardi
@@ -71,9 +80,9 @@ python3 scripts/holidays-codegen.py
 python3 scripts/holidays-test.py
 # → 20/20 should pass
 
-# 3. Render all 31 × N variant PNGs (currently 4: LITERAL/MINIMALIST/BUSY/PLAYFUL)
+# 3. Render all 31 × 5 variant PNGs (LITERAL/MINIMALIST/BUSY/PLAYFUL/NIGHT)
 python3 scripts/holidays-generate-art.py
-# → Rendered: 124 (or 93 if v4 not yet authored)
+# → Rendered: 155
 # → Output dir: scratch/holidays-art/
 
 # 4. Build the HTML review page
@@ -81,7 +90,10 @@ python3 scripts/holidays-preview.py
 # → Wrote scratch/holidays-preview.html
 xdg-open scratch/holidays-preview.html
 
-# 5. Build the PS1 binary (links src/holidays.c into the runtime)
+# 5. Run the red-team QA pass (exits non-zero on any FAIL)
+python3 scripts/holidays-redteam.py
+
+# 6. Build the PS1 binary (links src/holidays.c into the runtime)
 ./scripts/build-ps1.sh
 ```
 
@@ -136,7 +148,9 @@ specific `equinox_vernal` / `equinox_autumnal` / `solstice_summer` /
 
 ## Variant convention
 
-Every new holiday produces N variants (currently 3 + a planned 4th):
+Every new holiday produces 5 variants. v1..v4 are hand-authored in the
+batch files; v5 is auto-generated from v1 via
+`holidays_art_lib.as_night`.
 
 | Suffix | Style | Use case |
 |--------|-------|----------|
@@ -144,6 +158,11 @@ Every new holiday produces N variants (currently 3 + a planned 4th):
 | `v2` | MINIMALIST | stripped-down icon — 1-2 dominant elements |
 | `v3` | BUSY/SCENIC| full island scene with palm + sand + Johnny |
 | `v4` | PLAYFUL    | exaggerated/comedic — sweat drops, tilted, expressive |
+| `v5` | NIGHT      | procedural night recolor of v1 (SKY→DEEPBLUE, YELLOW sun→SKY moonglow, ORANGE→PURPLE) plus a moon and a sprinkle of WHITE stars |
+
+A batch file can override v5 by appending its own 5th element to the
+holiday's tuple in `RENDERERS_BATCHN`; otherwise `holidays_concepts.py`
+fills in the procedural night version.
 
 Owner picks one variant per holiday from the HTML preview. The picks
 JSON file becomes the input to Phase D (PSB packaging).
