@@ -745,6 +745,7 @@ rectangle pressure.
 | `P4-109` | Failed: run future stream-window prefetch while a prepared frame waits for its presentation VBlank. | Duplicate speculative prep work disappeared (`restore_calls/compose_calls 188 -> 155`), but active timing regressed (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 7`, `prefetch_overrun_vb 6 -> 7`); prepared-frame slack is not safe to spend opportunistically without grouped read-cost metadata. |
 | `P4-110` | Failed: raise held-slack prepared-present threshold from `4` to `5` VBlanks. | Only three speculative prep calls were saved (`restore_calls/compose_calls 188 -> 185`), while active timing regressed (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`); the accepted `4` VBlank bridge remains the local knee. |
 | `P4-111` | Failed: compile-gate the heavy JCPAD/JCSPI diagnostics block out of default playback. | `jcreborn.exe` shrank `137216 -> 133120` and ELF shrank `707916 -> 700304`, but timing regressed (`loop_vb 1227 -> 1232`, `blocking_vb 6 -> 12`, `prefetch_overrun_vb 6 -> 12`); code-size wins must still pass the deterministic cadence gate. |
+| `P4-112` | Failed: pointer-swap current/previous dirty-row tables instead of copying them. | It saved one total loop VBlank and shrank the binary (`jcreborn.exe 137216 -> 135168`), but failed the visible-pressure gate (`blocking_vb 6 -> 9`, `prefetch_overrun_vb 6 -> 9`); render-side micro-wins can still be unsafe if they shift CD cadence. |
 
 Prefetch variants to test in order:
 
