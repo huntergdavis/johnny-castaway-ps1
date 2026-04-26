@@ -36,6 +36,9 @@ typedef struct _FILE FILE;
 #ifndef JC_BOOT_DIAG_LOGS
 #define JC_BOOT_DIAG_LOGS 0
 #endif
+#ifndef JC_PAUSE_REQUEST_DIAG_LOGS
+#define JC_PAUSE_REQUEST_DIAG_LOGS 0
+#endif
 /* Declare functions implemented in ps1_stubs.c */
 void exit(int status);
 int atoi(const char *str);
@@ -1220,12 +1223,16 @@ int main(int argc, char **argv)
          * and falling through to fgLoopNextScene's random branch. */
         if (pauseMenuRequestNextScene) {
             pauseMenuRequestNextScene = 0;
+#if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume next-scene\n");
+#endif
         }
         if (pauseMenuRequestResetLoop) {
             pauseMenuRequestResetLoop = 0;
             explicitScene = NULL;  /* drop pinned scene → next iter random */
+#if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume reset-loop\n");
+#endif
         }
     } while (!screensaverLoopDisabled);
 
