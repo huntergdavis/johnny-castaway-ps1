@@ -2300,7 +2300,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             if (fgRuntimeCanPresentPreparedOnNextVBlank()) {
                 advancedThisLoop = fgRuntimePresentPreparedFrame(perfDetail);
             } else if (gFgRuntime.preparedFrameValid) {
-                fgRuntimeWaitHeldVBlank();
+                didPrefetch = fgRuntimeWindowPrefetchWouldRead()
+                    ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
+                    : 0;
             } else if (gFgRuntime.stagedFrameValid) {
                 didPrefetch = fgRuntimeWindowPrefetchWouldRead()
                     ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
