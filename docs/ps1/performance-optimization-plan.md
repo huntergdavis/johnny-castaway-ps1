@@ -750,6 +750,7 @@ rectangle pressure.
 | `P4-114` | Failed: use a `24 KB` stream window only for lookahead prefetches with at least `8` held VBlanks of slack. | It reduced active reads (`68 -> 56`) and loop CD read time (`285 -> 268`), but visible timing regressed (`loop_vb 1227 -> 1230`, `blocking_vb 6 -> 9`, `prefetch_overrun_vb 6 -> 9`); hidden CD efficiency is not enough unless the read-cost model preserves visible cadence. |
 | `P4-115` | Failed: use a smaller adaptive `20 KB` stream window for high-slack lookahead prefetches. | It reduced active reads (`68 -> 59`), loop CD read time (`285 -> 282`), and speculative restore/compose calls (`188 -> 180`), but still regressed visible timing (`loop_vb 1227 -> 1228`, `blocking_vb 6 -> 8`, `prefetch_overrun_vb 6 -> 8`); raw extended windows are exhausted until pack/read-cost metadata can schedule them safely. |
 | `P4-116` | Failed: release the staged payload buffer after prepared-frame composition and advance prepared frames from saved metadata. | The window-stage variant removed duplicate restore/compose work (`188 -> 155`) but regressed `loop_vb`, `blocking_vb`, and `prefetch_overrun_vb` by one VBlank and left a suspect final frame cursor; the wait-only variant starved due-frame coverage (`due_misses 0 -> 14`, `blocking_vb 6 -> 72`). Prepared-buffer ownership needs a full scheduler model before retry. |
+| `P4-117` | Done: compile out legacy foreground diagnostic scene modes from the default PS1 build. | Timing, CD, prefetch, gfx identity, and correctness stayed flat while `jcreborn.exe` shrank `137216 -> 131072` and `jcreborn.elf` shrank `707916 -> 692612`; code-size cleanup can be promoted when the headless cadence gate is exactly flat. |
 
 Prefetch variants to test in order:
 
@@ -1100,7 +1101,7 @@ into one commit.
 Current measured bottlenecks are now narrow enough that the next wins should be
 small and cumulative: `157` Detail-tier present-wait VBlanks, `6` visible CD
 blocking VBlanks, `6` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `401` upload rects, and `3.03 MB` restore volume on
+`16.5 MB` upload volume, `401` upload rects, and `3.00 MB` restore volume on
 fishing1 high tide.
 
 | Priority | Area | Target | Expected signal |

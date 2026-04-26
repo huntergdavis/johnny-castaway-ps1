@@ -118,7 +118,12 @@ struct TFgPilotRuntime {
 
 static char gForegroundPilotScene[16] = "";
 static unsigned char gForegroundPilotRequestedMode = 0;
+#ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
+#define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
+#endif
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static const uint16 kFgPilotProbeHoldFrames = 1800;
+#endif
 static const uint16 kFgPilotHeaderFlagHostTicks = 0x0002;
 static const uint16 kFgPilotHeaderFlagHostDeadlines = 0x0004;
 static const uint16 kFgPilotHeaderFlagSceneRelative = 0x0008;
@@ -262,8 +267,10 @@ static int fgRuntimeUsesBaseDiffBackdrop(void)
 
 static uint8 fgSceneModeForName(const char *sceneName)
 {
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(sceneName, "testcard"))
         return FG_RUNTIME_TESTCARD;
+#endif
     if (fgCompactOverlayPackPathForScene(sceneName) != NULL)
         return FG_RUNTIME_SCENE_PACK;
     return FG_RUNTIME_NONE;
@@ -466,6 +473,7 @@ static void fgInitVisiblePipeline(void)
     grUpdateDelay = 0;
 }
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static void fgInitBlackBackground(void)
 {
     grInitEmptyBackground();
@@ -581,6 +589,7 @@ static void fgPlayTestCard(void)
         fgPresentCurrentBackground(1);
     }
 }
+#endif
 
 /* Scene-local streaming buffers: allocated once per scene and reused for every
  * frame in that scene. They are intentionally released at scene boundaries so
@@ -1588,6 +1597,7 @@ int foregroundPilotRuntimeStart(const char *sceneName)
     if (sceneName == NULL)
         return 0;
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(sceneName, "testcard")) {
         gFgRuntime.active = 1;
         gFgRuntime.mode = FG_RUNTIME_TESTCARD;
@@ -1598,6 +1608,7 @@ int foregroundPilotRuntimeStart(const char *sceneName)
         fgTelemetryUpdate();
         return 1;
     }
+#endif
 
     {
         const char *path = fgCompactOverlayPackPathForScene(sceneName);
@@ -1770,14 +1781,17 @@ int foregroundPilotRuntimeStart(const char *sceneName)
 
 void foregroundPilotRuntimeCompose(void)
 {
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     const uint16 rectW = 120;
     const uint16 rectH = 80;
+#endif
 
     if (!gFgRuntime.active)
         return;
 
     gFgComposedEver = 1;
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {
         static uint16 *colors[4] = { NULL, NULL, NULL, NULL };
         static const uint16 colorValues[4] = { 0x001f, 0x03e0, 0x03ff, 0x7c1f };
@@ -1798,6 +1812,7 @@ void foregroundPilotRuntimeCompose(void)
         fgBlit16ToBackgroundRect(176, 136, rectW, rectH, colors[3]);
         return;
     }
+#endif
 
     if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && gFgRuntime.currentFrameData != NULL) {
         if (gFgRuntime.packFormat == kFgPilotPackFormatPal4Spans) {
@@ -1832,6 +1847,7 @@ void foregroundPilotRuntimeAdvance(void)
     if (ps1PerfEnabled)
         ps1PerfMarkAdvance(elapsedVBlanks, gFgRuntime.displayVBlanks);
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {
         if (gFgRuntime.holdFrames > elapsedVBlanks)
             gFgRuntime.holdFrames = (uint16)(gFgRuntime.holdFrames - elapsedVBlanks);
@@ -1842,6 +1858,7 @@ void foregroundPilotRuntimeAdvance(void)
         fgTelemetryUpdate();
         return;
     }
+#endif
 
     if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK) {
         uint16 frameHoldVBlanks = gFgRuntime.displayVBlanks;
@@ -1966,6 +1983,7 @@ void foregroundPilotRuntimeEnd(void)
     fgRuntimeReset();
 }
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static void fgPlayTitleCopy(void)
 {
     fgShowRawFrame("\\TITLE.RAW;1", kFgPilotProbeHoldFrames);
@@ -1990,6 +2008,7 @@ static void fgPlayOceanTest(void)
     for (i = 0; i < kFgPilotProbeHoldFrames; i++)
         grUpdateDisplay(NULL, NULL, NULL);
 }
+#endif
 
 static void fgPlayOceanRuntimeScene(const char *sceneName)
 {
@@ -2171,6 +2190,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     fgHeapProbe("after_scene_cleanup", sceneName);
 }
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static void fgShowSolidColor(uint8 r, uint8 g, uint8 b, uint16 holdFrames)
 {
     DISPENV disp;
@@ -2197,6 +2217,7 @@ static void fgPlaySolidRed(void)
 {
     fgShowSolidColor(255, 0, 0, kFgPilotProbeHoldFrames);
 }
+#endif
 
 int foregroundPilotRequested(void)
 {
@@ -2260,12 +2281,16 @@ int foregroundPilotRuntimeStartRequested(void)
         return 0;
 
     gFgStartAttemptEver = 1;
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     switch (gForegroundPilotRequestedMode) {
         case FG_RUNTIME_TESTCARD:
             return foregroundPilotRuntimeStart("testcard");
         default:
             return foregroundPilotRuntimeStart(gForegroundPilotScene);
     }
+#else
+    return foregroundPilotRuntimeStart(gForegroundPilotScene);
+#endif
 }
 
 int foregroundPilotRuntimeStartIfRequested(void)
@@ -2279,16 +2304,19 @@ int foregroundPilotRuntimeStartIfRequested(void)
 
 void foregroundPilotPlay(void)
 {
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(gForegroundPilotScene, "testcard")) {
         fgPlayTestCard();
         return;
     }
+#endif
 
     if (fgCompactOverlayPackPathForScene(gForegroundPilotScene) != NULL) {
         fgPlayOceanRuntimeScene(gForegroundPilotScene);
         return;
     }
 
+#if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(gForegroundPilotScene, "titlecopy")) {
         fgPlayTitleCopy();
         return;
@@ -2308,6 +2336,7 @@ void foregroundPilotPlay(void)
         fgPlaySolidRed();
         return;
     }
+#endif
 
     printf("FG pilot: unknown scene '%s'\n", gForegroundPilotScene);
 }
