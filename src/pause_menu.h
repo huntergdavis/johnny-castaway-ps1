@@ -29,6 +29,7 @@ enum PauseMenuState {
     PAUSE_MENU_SET_TIME,
     PAUSE_MENU_ISLAND_POS,
     PAUSE_MENU_SET_SEED,
+    PAUSE_MENU_CREDITS,
 };
 
 /* Initialize the pause menu system (call once during startup, after graphicsInit). */

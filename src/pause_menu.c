@@ -354,6 +354,7 @@ enum {
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
     MENU_DEBUG_INFO,
+    MENU_CREDITS,
     MENU_COUNT
 };
 
@@ -848,6 +849,38 @@ static void drawSetSeed(void)
 }
 
 /* ---------------------------------------------------------------------------
+ *  Sub-screen: Credits
+ * ---------------------------------------------------------------------------
+ *  A labor-of-love attribution + open-source notice + the "if you paid
+ *  you were cheated" disclaimer + the upstream URL. START = back.
+ *  Lines are tuned to ~30 chars max so they fit the panel width.
+ * ------------------------------------------------------------------------- */
+static void drawCredits(void)
+{
+    pmPrintf("        CREDITS\n");
+    drawSeparator();
+    pmPrintf(" A labor of love by\n");
+    pmPrintf(" Hunter Davis.\n");
+    pmPrintf("\n");
+    pmPrintf(" Open source and free.\n");
+    pmPrintf("\n");
+    pmPrintf(" The Johnny Castaway character\n");
+    pmPrintf(" is not owned or licensed by\n");
+    pmPrintf(" this port. The original\n");
+    pmPrintf(" creator allows ports out of\n");
+    pmPrintf(" the kindness of his heart.\n");
+    pmPrintf("\n");
+    pmPrintf(" If you paid for this in any\n");
+    pmPrintf(" way, you were cheated.\n");
+    pmPrintf("\n");
+    pmPrintf(" Updates and source:\n");
+    pmPrintf(" github.com/huntergdavis/\n");
+    pmPrintf(" Johnny-Castaway-PS1\n");
+    drawSeparator();
+    pmPrintf(" START = back\n");
+}
+
+/* ---------------------------------------------------------------------------
  *  Main menu drawing
  * ------------------------------------------------------------------------- */
 static const char *perfLevelLabel(void)
@@ -987,6 +1020,8 @@ static void drawMainMenu(void)
              menuCursor == MENU_NEXT_SCENE ? ">" : " ");
     pmPrintf(" %s Debug Info\n",
              menuCursor == MENU_DEBUG_INFO ? ">" : " ");
+    pmPrintf(" %s Credits\n",
+             menuCursor == MENU_CREDITS ? ">" : " ");
 
     drawSeparator();
     pmPrintf("  X = select   START = resume\n");
@@ -1088,6 +1123,11 @@ static int handleMainInput(uint16 pressed)
 
         case MENU_DEBUG_INFO:
             menuState = PAUSE_MENU_SCENE_INFO;
+            prevButtons = 0xFFFF;
+            break;
+
+        case MENU_CREDITS:
+            menuState = PAUSE_MENU_CREDITS;
             prevButtons = 0xFFFF;
             break;
 
@@ -1449,6 +1489,7 @@ int pauseMenuUpdate(void)
         break;
     case PAUSE_MENU_SCENE_INFO:
     case PAUSE_MENU_CONTROLS:
+    case PAUSE_MENU_CREDITS:
         keepOpen = handleSubInput(pressed);
         break;
     }
@@ -1474,6 +1515,7 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;
     case PAUSE_MENU_ISLAND_POS: drawIslandPos(); break;
     case PAUSE_MENU_SET_SEED:   drawSetSeed();   break;
+    case PAUSE_MENU_CREDITS:    drawCredits();   break;
     }
 
     /* Submit the OT to GPU. */
