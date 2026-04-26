@@ -865,8 +865,8 @@ static void drawCredits(void)
     pmPrintf(" Hunter does not own or have\n");
     pmPrintf(" a license to the Johnny\n");
     pmPrintf(" Castaway character. The\n");
-    pmPrintf(" original creator allows fan\n");
-    pmPrintf(" ports out of his kindness.\n");
+    pmPrintf(" original creator generously\n");
+    pmPrintf(" allows fan ports.\n");
     pmPrintf("\n");
     pmPrintf(" If you paid for this, you\n");
     pmPrintf(" were cheated.\n");
