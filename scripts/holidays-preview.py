@@ -69,6 +69,93 @@ def date_rule_text(rule: dict) -> str:
     return k
 
 
+def _easter_sunday(year):
+    a, b, c = year % 19, year // 100, year % 100
+    d, e = b // 4, b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    hh = (19 * a + b - d - g + 15) % 30
+    i, k = c // 4, c % 4
+    ll = (32 + 2 * e + 2 * i - hh - k) % 7
+    mm = (a + 11 * hh + 22 * ll) // 451
+    month = (hh + ll - 7 * mm + 114) // 31
+    day = ((hh + ll - 7 * mm + 114) % 31) + 1
+    return month, day
+
+
+def _nth_weekday(year, month, n, yaml_dow):
+    # yaml dow 0=Sun..6=Sat → python calendar 0=Mon..6=Sun
+    cal_dow = (yaml_dow - 1) % 7
+    import calendar
+    cal = calendar.Calendar()
+    days = [d for d, w in cal.itermonthdays2(year, month) if d != 0 and w == cal_dow]
+    return days[n - 1] if n > 0 else days[n]
+
+
+def _equinox(year, month):
+    return (3, 20) if month == 3 else (9, 22)
+
+
+def _solstice(year, month):
+    return (6, 21) if month == 6 else (12, 21)
+
+
+def _election(year):
+    import calendar
+    cal = calendar.Calendar()
+    mons = [d for d, w in cal.itermonthdays2(year, 11) if d != 0 and w == 0]
+    return (11, mons[0] + 1)
+
+
+def next_occurrence_text(rule: dict, today=None) -> str | None:
+    """Compute the next calendar date (month, day, year) this holiday
+    fires on or after `today`. Returns a short string like "Apr 5, 2026"
+    or None if the rule is unrecognized."""
+    if not rule:
+        return None
+    import datetime
+    today = today or datetime.date.today()
+    k = rule.get("kind", "")
+    for year in (today.year, today.year + 1):
+        try:
+            if k == "fixed":
+                m, d = rule["month"], rule["day"]
+            elif k == "nth_weekday":
+                d = _nth_weekday(year, rule["month"], rule["n"], rule["weekday"])
+                m = rule["month"]
+            elif k == "easter_offset":
+                em, ed = _easter_sunday(year)
+                tgt = datetime.date(year, em, ed) + datetime.timedelta(days=rule["offset"])
+                m, d = tgt.month, tgt.day
+                if tgt.year != year:
+                    continue
+            elif k == "equinox":
+                m, d = _equinox(year, rule.get("month", 3))
+            elif k == "equinox_vernal":
+                m, d = _equinox(year, 3)
+            elif k == "equinox_autumnal":
+                m, d = _equinox(year, 9)
+            elif k == "solstice":
+                m, d = _solstice(year, rule.get("month", 6))
+            elif k == "solstice_summer":
+                m, d = _solstice(year, 6)
+            elif k == "solstice_winter":
+                m, d = _solstice(year, 12)
+            elif k == "election_day":
+                m, d = _election(year)
+            else:
+                return None
+        except Exception:
+            continue
+        try:
+            occ = datetime.date(year, m, d)
+        except ValueError:
+            continue
+        if occ >= today:
+            return f"{MONTH_NAMES[m]} {d}, {year}"
+    return None
+
+
 def png_to_data_uri(path: Path) -> str | None:
     if not path.exists():
         return None
@@ -211,12 +298,16 @@ def main():
             for c in (h.get("palette") or [])
         )
 
+        next_occ = next_occurrence_text(rule)
+        date_line = html_escape(date_rule_text(rule))
+        if next_occ:
+            date_line += f' <span style="color:var(--muted);font-size:11px;">· next: {html_escape(next_occ)}</span>'
         cards_html.append(f'''
         <div class="holiday" id="h{h['id']}">
           <div class="holiday-meta">
             <div class="holiday-id">id={h['id']}</div>
             <div class="holiday-name">{html_escape(h['name'])}</div>
-            <div class="holiday-date">{html_escape(date_rule_text(rule))}</div>
+            <div class="holiday-date">{date_line}</div>
             <div class="holiday-size">{h['sprite']['width']}×{h['sprite']['height']} px</div>
             <div class="holiday-desc">{html_escape(h.get('description', ''))}</div>
             <div class="holiday-palette">{palette_swatches}</div>
@@ -229,12 +320,16 @@ def main():
     originals = [h for h in holidays_sorted if h.get("existing_sprite") is not None]
     for h in originals:
         rule = h.get("date_rule", {}) or {}
+        next_occ = next_occurrence_text(rule)
+        date_line = html_escape(date_rule_text(rule))
+        if next_occ:
+            date_line += f' <span style="color:var(--muted);font-size:11px;">· next: {html_escape(next_occ)}</span>'
         origs_html.append(f'''
         <div class="holiday">
           <div class="holiday-meta">
             <div class="holiday-id">id={h['id']} • original sprite (kept)</div>
             <div class="holiday-name">{html_escape(h['name'])}</div>
-            <div class="holiday-date">{html_escape(date_rule_text(rule))}</div>
+            <div class="holiday-date">{date_line}</div>
             <div class="holiday-size">{h['sprite']['width']}×{h['sprite']['height']} px • existing_sprite={h.get('existing_sprite')}</div>
           </div>
           <div class="variants"><span class="legend">Existing pixel art preserved (HOLIDAY.PSB index {h.get('existing_sprite')}). No review needed.</span></div>
