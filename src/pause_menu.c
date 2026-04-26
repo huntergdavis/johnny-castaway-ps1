@@ -862,21 +862,16 @@ static void drawCredits(void)
     pmPrintf(" A labor of love by\n");
     pmPrintf(" Hunter Davis.\n");
     pmPrintf("\n");
-    pmPrintf(" Open source and free.\n");
-    pmPrintf("\n");
     pmPrintf(" The Johnny Castaway character\n");
-    pmPrintf(" is not owned or licensed by\n");
-    pmPrintf(" this port. The original\n");
-    pmPrintf(" creator allows ports out of\n");
-    pmPrintf(" the kindness of his heart.\n");
+    pmPrintf(" is not owned or licensed.\n");
+    pmPrintf(" The original creator allows\n");
+    pmPrintf(" ports out of his kindness.\n");
     pmPrintf("\n");
-    pmPrintf(" If you paid for this in any\n");
-    pmPrintf(" way, you were cheated.\n");
+    pmPrintf(" If you paid, you were cheated.\n");
     pmPrintf("\n");
-    pmPrintf(" Updates and source:\n");
+    pmPrintf(" Open source and free:\n");
     pmPrintf(" github.com/huntergdavis/\n");
     pmPrintf(" Johnny-Castaway-PS1\n");
-    drawSeparator();
     pmPrintf(" START = back\n");
 }
 
