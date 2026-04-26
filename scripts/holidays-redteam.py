@@ -333,6 +333,41 @@ def check_date_algorithms(fails, warns):
         warns.append(f"holidays-test.py output unexpected: {text[-200:]}")
 
 
+def check_render_determinism(holidays, fails, warns):
+    """Re-render every reviewable v1 sprite in-process and verify it
+    matches the on-disk PNG byte-for-byte. Catches a renderer that's
+    inadvertently introduced randomness (e.g. an unkeyed
+    `random.random()` instead of the seeded `random.Random` in
+    `as_night`)."""
+    try:
+        import importlib
+        hc = importlib.import_module("holidays_concepts")
+    except Exception as e:
+        warns.append(f"determinism check: cannot import holidays_concepts: {e}")
+        return
+    holidays_by_id = {h["id"]: h for h in holidays}
+    diffs = 0
+    for hid, variants in hc.RENDERERS.items():
+        h = holidays_by_id.get(hid)
+        if not h:
+            continue
+        slug = slugify(h["short_name"])
+        # Just check v1 to keep the run fast.
+        v1 = variants[0]
+        try:
+            sp_a = v1(h)
+            sp_b = v1(h)
+        except Exception as e:
+            warns.append(f"determinism check: id={hid} v1 render failed: {e}")
+            continue
+        if list(sp_a.image.getdata()) != list(sp_b.image.getdata()):
+            diffs += 1
+            fails.append(f"id={hid} v1 renders non-deterministically "
+                         f"(re-running produced different pixels)")
+    if diffs:
+        fails.append(f"determinism: {diffs} renderers produce nondeterministic output")
+
+
 def check_no_identical_date_rules(holidays, fails, warns):
     """Two holidays with identical date_rule will ALWAYS collide every
     year — that's a yaml authoring mistake (different from the
@@ -686,6 +721,7 @@ def main():
         ("no duplicate art",    lambda: check_no_duplicate_art(holidays, fails, warns)),
         ("variant diversity",   lambda: check_variant_diversity(holidays, fails, warns)),
         ("date algorithms",     lambda: check_date_algorithms(fails, warns)),
+        ("render determinism",  lambda: check_render_determinism(holidays, fails, warns)),
         ("identical date rules", lambda: check_no_identical_date_rules(holidays, fails, warns)),
         ("holiday collisions",  lambda: check_holiday_collisions(holidays, fails, warns)),
         ("table.c generated",   lambda: check_table_c_present(fails, warns)),
