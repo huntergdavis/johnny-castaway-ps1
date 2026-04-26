@@ -86,6 +86,33 @@ def png_sha(path: Path) -> str:
 # checks
 # ---------------------------------------------------------------------------
 
+def check_originals_pinned(holidays, fails, warns):
+    """The original 4 holidays are pinned to specific IDs because
+    src/island.c hardcodes the switch-case (1=Halloween, 2=StPatrick,
+    3=Christmas, 4=NewYear). If a yaml refactor accidentally swaps
+    these IDs, the runtime would draw the wrong sprite for the wrong
+    holiday. Catch it here."""
+    expected = {
+        1: ("Halloween",          0),
+        2: ("St. Patrick's Day",  1),
+        3: ("Christmas",          2),
+        4: ("New Year's Day",     3),
+    }
+    by_id = {h["id"]: h for h in holidays}
+    for hid, (exp_name, exp_psb) in expected.items():
+        h = by_id.get(hid)
+        if not h:
+            fails.append(f"original id={hid} missing from yaml")
+            continue
+        if h["name"] != exp_name:
+            fails.append(
+                f"original id={hid}: name {h['name']!r} != expected {exp_name!r}")
+        if h.get("existing_sprite") != exp_psb:
+            fails.append(
+                f"original id={hid} ({exp_name}): existing_sprite "
+                f"{h.get('existing_sprite')} != expected {exp_psb}")
+
+
 def check_yaml_schema(holidays, fails, warns):
     """IDs unique 1..35; required fields present; sprite within bounds;
     island_xy + sprite size fits inside the 640×480 logical screen."""
@@ -746,6 +773,7 @@ def main():
     warns: list[str] = []
 
     checks = [
+        ("originals pinned",     lambda: check_originals_pinned(holidays, fails, warns)),
         ("YAML schema", lambda: check_yaml_schema(holidays, fails, warns)),
         ("renderer imports", lambda: check_renderer_imports(holidays, fails, warns)),
         ("master loader",   lambda: check_master_loader(holidays, fails, warns)),
