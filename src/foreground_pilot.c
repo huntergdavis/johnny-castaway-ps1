@@ -970,6 +970,11 @@ static uint32 fgSectorAlignDown(uint32 offset)
     return offset & ~2047UL;
 }
 
+static uint32 fgSectorAlignUp(uint32 offset)
+{
+    return (offset + 2047UL) & ~2047UL;
+}
+
 static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
 {
     uint32 windowStart;
@@ -1144,6 +1149,34 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     gFgRuntime.streamWindowBytes = readBytes;
     gFgRuntime.streamWindowValid = 1;
     return 1;
+}
+
+static void fgRuntimeSeedWindowFromScratch(const struct TFgPilotEntry *entry)
+{
+    uint32 windowStart;
+    uint32 windowEnd;
+    uint32 windowBytes;
+
+    if (!fgRuntimeCanWindowCache() ||
+        entry == NULL ||
+        gFgRuntime.streamScratch == NULL ||
+        gFgRuntime.streamWindowBuffer == NULL)
+        return;
+
+    windowStart = fgSectorAlignDown(entry->dataOffset);
+    windowEnd = fgSectorAlignUp(entry->dataOffset + entry->dataSize);
+    if (windowEnd <= windowStart)
+        return;
+
+    windowBytes = windowEnd - windowStart;
+    if (windowBytes > gFgRuntime.streamScratchSize ||
+        windowBytes > gFgRuntime.streamWindowSize)
+        return;
+
+    memcpy(gFgRuntime.streamWindowBuffer, gFgRuntime.streamScratch, windowBytes);
+    gFgRuntime.streamWindowStart = windowStart;
+    gFgRuntime.streamWindowBytes = windowBytes;
+    gFgRuntime.streamWindowValid = 1;
 }
 
 static void fgRuntimeSetStagedFrame(uint16 frameIndex,
@@ -1357,6 +1390,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 }
 
                 fgRuntimeSetStagedFrame(nextFrameIndex, entry);
+                fgRuntimeSeedWindowFromScratch(entry);
                 return 1;
             }
             if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {

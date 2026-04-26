@@ -30,8 +30,9 @@ pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
 dirty-row upload bands with a 2-row gap merge, setup priming of the first
 real payload, and tight-slack direct staging for immediate payloads up to
-8 KB, reported `policy=stage1_window`, `buf=23568`, `hits=155`,
-`due_misses=0`, `blocking_vb=11`, `prefetch.overrun_vb=11`, `loop_vb=1235`,
+8 KB, plus direct-stage scratch window seeding, reported
+`policy=stage1_window`, `buf=23568`, `hits=155`,
+`due_misses=0`, `blocking_vb=10`, `prefetch.overrun_vb=10`, `loop_vb=1235`,
 `overrun_vb=158`, `target_vb=1077`, `restore_bytes=2510092`,
 `upload_bytes=16496000`, `dirty_rows=25775`, `upload_rects=427`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`. This is
@@ -67,7 +68,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1235`; `due_misses=0`, but `blocking_vb=11` and prefetch `overrun_vb=11` still remain. |
+| 1 | Finish CD stall hiding beyond the default 16 KB window | High | The current accepted fishing1 run is `loop_vb=1235`; `due_misses=0`, but `blocking_vb=10` and prefetch `overrun_vb=10` still remain. |
 | 2 | X-aware dirty upload and rect-pressure control | Medium to high | Latest default run restores only `2.5 MB` after row-level restore, and vertical bands plus gap merging lowered upload to `16.5 MB`; upload byte volume and `LoadImage` rect pressure are now the clearer dirty targets. |
 | 3 | Detail-tier attribution on remaining render waits | Medium | The metrics pass is active; use it to distinguish present serialization, upload, restore, compose, and event wait before changing render sequencing. |
 | 4 | FG2-specific present pipeline | High | Current path still routes rendered entries through general display/update sequencing; detail counters should prove whether wait/upload ordering is serializing work. |
@@ -680,6 +681,7 @@ upload byte volume, and upload rectangle pressure.
 | `P4-65` | Done: direct-stage small payloads at the minimum accepted slack. | `loop_vb 1237 -> 1235`, `blocking_vb 13 -> 11`, and `prefetch_overrun_vb 13 -> 11` with `due_misses=0`; this validates a narrow 3-VBlank version of the old failed short-slack direct-stage idea. |
 | `P4-66` | Failed: extend direct-stage small payloads to 4 VBlanks of slack. | The retest regressed `loop_vb 1235 -> 1239`, `blocking_vb 11 -> 39`, `prefetch_overrun_vb 11 -> 12`, and `due_misses 0 -> 5`; direct staging at 4 VBlanks loses too much stream-window lookahead until grouped reads or a second stage slot exist. |
 | `P4-67` | Failed as no-op: shrink the post-direct-stage stream window to 15 KB. | The parameter probe matched the 16 KB default exactly at `loop_vb=1235`, `blocking_vb=11`, `prefetch_overrun_vb=11`, `due_misses=0`, and `loop_reads=68`; one-step window shrinkage is not a current lever. |
+| `P4-68` | Done: seed the stream window from accepted direct-stage reads. | `blocking_vb 11 -> 10`, `prefetch_overrun_vb 11 -> 10`, `read_vb 409 -> 405`, `loop_read_vb 289 -> 285`, `seq 65 -> 66`, and `seek_back 8 -> 7` with flat `loop_vb=1235` and `due_misses=0`; direct-stage sectors are now reused instead of thrown away. |
 
 Prefetch variants to test in order:
 
@@ -1047,7 +1049,7 @@ into one commit.
 ## Next 50 Targets From Current Timing
 
 Current measured bottlenecks are now narrow enough that the next wins should be
-small and cumulative: `11` visible CD blocking VBlanks, `11` prefetch-overrun
+small and cumulative: `10` visible CD blocking VBlanks, `10` prefetch-overrun
 VBlanks, `68` active-loop reads, `16.5 MB` upload volume, `427` upload rects,
 and `2.5 MB` restore volume on fishing1 high tide.
 
@@ -1110,6 +1112,12 @@ The safest near-term speedup is not a more aggressive timing file. The measured
 runtime is still `1.147x` over the captured timing budget for fishing1 after
 the latest accepted pass. We need to keep removing or hiding work, not lie
 about the source timing.
+
+Direct-stage scratch window seeding is a small but important direction signal:
+the remaining CD wins are increasingly about preserving useful coverage across
+small reads. It reduced one backward seek and one visible blocking VBlank
+without changing total loop time, which supports the next larger group-metadata
+work rather than more isolated slack or window-size probes.
 
 The tight-slack direct-stage pass proves that some previously failed ideas are
 worth retrying after the baseline changes. The old direct-stage attempt failed
