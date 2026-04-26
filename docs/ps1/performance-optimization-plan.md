@@ -593,6 +593,7 @@ than blindly shrinking the window again.
 | `P4-19` | Failed: lower the stream-window refill guard from `2` to `1` VBlank. | `due_misses 4 -> 2` did not compensate for `loop_vb 1300 -> 1312` and `prefetch_overrun_vb 45 -> 62`; keep the `2` VBlank default. |
 | `P4-20` | Failed as a no-op: lower staged-copy fallthrough from `5` to `4` VBlanks under the post-merge baseline. | Key metrics stayed identical; keep the stricter `5` VBlank default until another timing change makes this guard matter again. |
 | `P4-21` | Done: retune the default stream window from `20 KB` to `18 KB` after the 2 VBlank guard. | `loop_vb 1300 -> 1296` and `prefetch_overrun_vb 45 -> 33`; `blocking_vb 66 -> 75` and `due_misses 4 -> 8` are the next CD target. |
+| `P4-22` | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | CD submetrics improved slightly, but total `loop_vb` regressed `1296 -> 1297`; keep input timing at the known-good rate unless a dedicated IRQ/input harness proves a better tradeoff. |
 
 Prefetch variants to test in order:
 
@@ -912,7 +913,7 @@ into one commit.
 | 80 | Present | Upload before wait when safe. | Lower `present_wait_vb`. |
 | 81 | Present | Wait only when next frame deadline requires it. | Lower idle VBlanks. |
 | 82 | Present | Skip OT clear in pure software FG2 frames. | Lower per-entry CPU. |
-| 83 | Present | Keep controller polling in held wait path only. | Avoid input regressions. |
+| 83 | Present | Failed: lower SPI pad polling from `250 Hz` to `125 Hz` or `65 Hz`. | Total loop regressed by one VBlank despite slightly better CD submetrics; retry only with finer CPU/IRQ counters and input-latency validation. |
 | 84 | Present | Separate frame counter from rendered-entry counter. | Correct pause/input accounting. |
 | 85 | Present | Avoid double display updates on empty entries. | Lower `render` or `empty` cost. |
 | 86 | Present | Measure `LoadImage` rectangle count vs bytes. | Choose batching strategy. |
