@@ -232,9 +232,11 @@ overwhelmed the byte savings. A later 16-pixel strip-batching variant also
 failed before `JCPERF2` because it still synchronized each partial strip. A
 32-pixel bucket arena variant then proved the opposite failure mode:
 `upload_bytes 17172480 -> 4933312`, but `upload_rects 351 -> 11575` and
-`upload_vb 5 -> 204`, regressing the loop. The next viable upload attempt
-must be rect-count-capped first, widening rows/bands deterministically until
-command overhead stays near the proven full-row path.
+`upload_vb 5 -> 204`, regressing the loop. A rect-count-capped tile-band
+variant kept rects near baseline (`351 -> 389`) and still regressed
+`upload_vb 5 -> 305` because strided tile rows had to be CPU-copied into
+contiguous scratch before `LoadImage`. The next viable upload-byte attempt
+should be pack-time/direct-layout work, not runtime scratch packing.
 
 ## Guardrails
 
@@ -519,9 +521,9 @@ the original `loop_vb=1426` to `1266` and `restore_bytes=16035840` to
 | `P2-03` | Done: change `grMarkRectDirty` to update X extents, not just row bands. | Existing callers get better restore precision automatically. |
 | `P2-04` | Done: clean-rect restore copies only previous X extents. | Avoid full-width RAM clean copies for narrow dirty bands. |
 | `P2-04a` | Done: track previous/current X extents per tile row and restore exact previous row spans. | `restore_bytes 9520664 -> 2510092`, `loop_vb 1296 -> 1266`; upload remains unchanged and conservative. |
-| `P2-05` | Failed naive per-partial-sync batching and byte-minimal arena batching. | Avoid one `LoadImage`/`DrawSync` per row or thousands of scratch strips; byte savings must not create sync or command stalls. |
-| `P2-06` | Use wider X/Y banding only under a strict rect-count budget. | Trade upload bytes back for far fewer rectangles; exact row strips are slower despite lower bytes. |
-| `P2-07` | Add a deterministic merge policy before issuing `LoadImage`. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
+| `P2-05` | Failed naive per-partial-sync, byte-minimal arena, and rect-capped tile-band runtime upload. | Runtime scratch packing loses to full-width direct tile uploads even when bytes fall. |
+| `P2-06` | Move future X-aware upload work to pack-time/direct-layout design. | Lower upload bytes only if the source is already contiguous enough for `LoadImage`; do not repack rows during playback. |
+| `P2-07` | Keep deterministic merge/cap policy for any future upload-ready format. | Avoid command overhead spikes on dense frames without routing to an alternate render fallback. |
 | `P2-08` | Record bytes actually uploaded in telemetry. | Confirm real win. |
 
 Expected impact: restore byte volume is no longer the primary dirty bottleneck
@@ -895,8 +897,8 @@ into one commit.
 | 49 | Dirty | Round X extents to 8-pixel buckets. | Balance bytes vs rect count. |
 | 50 | Dirty | Round X extents to 16/32-pixel buckets. | Already insufficient alone; retry only under a rect-count cap. |
 | 51 | Dirty | Merge adjacent rows with similar X extents. | Lower `upload_rects` without per-strip `DrawSync`. |
-| 52 | Dirty | Cap rects by deterministic widening, not fallback. | Priority increased after `11575`-rect arena failure; `cap_hits` allowed, `full_fallbacks=0`. |
-| 53 | Dirty | Split dense frames into planned wide bands. | Stable worst-case upload time. |
+| 52 | Dirty | Cap rects by deterministic widening, not fallback. | Runtime cap alone failed because scratch copies dominated; keep for future upload-ready formats. |
+| 53 | Dirty | Split dense frames into planned wide bands at pack time. | Stable worst-case upload time without runtime row repacking. |
 | 54 | Dirty | Avoid marking unchanged clean rows dirty. | Lower `dirty_rows`. |
 | 55 | Dirty | Cache clean-rect row source pointers. | Lower restore CPU. |
 | 56 | Dirty | Use word copies for aligned restore spans. | Lower `restore_vb`. |
@@ -930,7 +932,7 @@ into one commit.
 | 84 | Present | Separate frame counter from rendered-entry counter. | Correct pause/input accounting. |
 | 85 | Present | Avoid double display updates on empty entries. | Lower `render` or `empty` cost. |
 | 86 | Present | Measure `LoadImage` rectangle count vs bytes. | Choose batching strategy. |
-| 87 | Present | Try two-phase upload for very wide dirty rows. | Lower worst-case upload spikes. |
+| 87 | Present | Try two-phase upload for very wide dirty rows only from contiguous sources. | Lower worst-case upload spikes without scratch-packing rows. |
 | 88 | Setup | Keep holiday art persistent when heap allows. | Lower `setup_reads`. |
 | 89 | Setup | Keep raft art persistent across same raft stage. | Lower `backdrop_vb`. |
 | 90 | Setup | Preload next scene metadata only, not payload. | Faster transition with low heap. |
