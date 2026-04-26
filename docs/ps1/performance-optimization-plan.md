@@ -818,6 +818,7 @@ from perturbing the deterministic cadence.
 | `P4-149` | Failed/no-op: reuse a single upload `RECT` instead of the local `RECT[16]` array. | Runtime metrics and work identity matched the accepted baseline exactly, but `jcreborn.elf` grew `713320 -> 713384`; source was reverted and only the experiment log was kept. |
 | `P4-150` | Done: prefetch a future stream window while a prepared frame waits for its present VBlank. | The post-gap1 retry kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `restore_calls/compose_calls 166 -> 155`, `restore_bytes 2701496 -> 2510092`, `loop_read_vb 289 -> 284`, and `prefetch.used_vb 292 -> 285`; this removes the remaining duplicate prepared work for fishing1 without exposing extra CD pressure. |
 | `P4-151` | Failed/no-op: restore the `>=4` prepared-present threshold after prepared-wait prefetch. | Key timing and work identity matched exactly, with only loop bookkeeping movement (`advances 951 -> 957`, `held 868 -> 874`, `late 105 -> 100`); keep exact-`4` until a new scheduler budget makes threshold widening meaningful. |
+| `P4-152` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-wait prefetch. | Total loop stayed flat but visible pressure regressed (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and loop read time rose (`284 -> 300`); keep the `6` VBlank guard until grouped reads make lookahead cheaper. |
 
 Prefetch variants to test in order:
 
