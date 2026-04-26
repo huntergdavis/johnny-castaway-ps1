@@ -149,8 +149,9 @@ def check_renderer_imports(holidays, fails, warns):
                 f"{mod_name}: {actual} renderers found, expected {expected}")
 
 
-def check_master_loader(fails, warns):
-    """holidays_concepts.py merges all batch dicts into RENDERERS dict."""
+def check_master_loader(holidays, fails, warns):
+    """holidays_concepts.py merges all batch dicts into RENDERERS dict.
+    Verify every reviewable yaml entry has a registered renderer tuple."""
     try:
         mod = importlib.import_module("holidays_concepts")
     except Exception as e:
@@ -162,6 +163,19 @@ def check_master_loader(fails, warns):
         return None
     if len(renderers) != 31:
         fails.append(f"holidays_concepts.RENDERERS has {len(renderers)} entries, expected 31")
+    # Cross-check: every reviewable yaml id should have a tuple of length 5.
+    for h in holidays:
+        if h.get("existing_sprite") is not None:
+            continue
+        hid = h["id"]
+        if hid not in renderers:
+            fails.append(f"yaml id={hid} ({h['name']}) has no renderer in RENDERERS")
+            continue
+        tup = renderers[hid]
+        if not isinstance(tup, tuple) or len(tup) != 5:
+            fails.append(
+                f"yaml id={hid} renderer tuple length {len(tup) if hasattr(tup, '__len__') else '?'} "
+                f"!= 5 (v1..v5)")
     return renderers
 
 
@@ -570,7 +584,7 @@ def main():
     checks = [
         ("YAML schema", lambda: check_yaml_schema(holidays, fails, warns)),
         ("renderer imports", lambda: check_renderer_imports(holidays, fails, warns)),
-        ("master loader",   lambda: check_master_loader(fails, warns)),
+        ("master loader",   lambda: check_master_loader(holidays, fails, warns)),
         ("PNG presence + dims", lambda: check_art_presence_and_dims(holidays, fails, warns)),
         ("palette discipline",  lambda: check_palette_discipline(holidays, fails, warns)),
         ("sparsity",            lambda: check_sparsity(holidays, fails, warns)),
