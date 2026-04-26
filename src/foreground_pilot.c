@@ -125,8 +125,8 @@ static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (20UL * 1024UL)
-/* Below 3 VBlanks, window refills are more likely to become visible delay. */
-#define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
+/* Below 2 VBlanks, window refills are more likely to become visible delay. */
+#define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 2
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 5
 static struct TFgPilotRuntime gFgRuntime = {0};
 static uint8 gFgConfiguredEver = 0;
