@@ -1434,6 +1434,9 @@ Future acceptance must compare baseline-sensitive counters such as
 The headless harness now enforces a default `75%` minimum for `render`,
 `restore_calls`, `compose_calls`, and `upload_calls` when comparing against a
 baseline; override only for deliberate pack/render architecture changes.
+It also caps `headless-regtest.log` at `536870912` bytes by default via
+`PS1_PERF_MAX_LOG_BYTES` / `--max-log-bytes`; set the cap to `0` only for
+deliberate log-mining runs.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
