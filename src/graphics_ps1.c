@@ -1809,8 +1809,6 @@ static void grCompositePacked4SpanToBackground(const uint8 *packedPixels,
     if (start >= end)
         return;
 
-    grMarkRectDirty(destX + start, destY, destX + end, destY + 1);
-
     destStartX = destX + start;
     destEndX = destX + end;
     if (destY < 240) {
@@ -1863,17 +1861,27 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
     for (uint16 row = 0; row < rowCount; row++) {
         uint16 relY;
         uint16 spanCount;
+        int rowScreenY;
+        /* Dirty rows are tracked per 320px tile; do not merge across the tile boundary. */
+        int rowLeftDirtyStart = 320;
+        int rowLeftDirtyEnd = -1;
+        int rowRightDirtyStart = 640;
+        int rowRightDirtyEnd = 319;
 
         if (offset + 4u > spanDataSize)
             return;
         relY = grReadPackedSpanU16(spanData + offset);
         spanCount = grReadPackedSpanU16(spanData + offset + 2u);
         offset += 4u;
+        rowScreenY = (int)screenY + (int)relY;
 
         for (uint16 span = 0; span < spanCount; span++) {
             uint16 relX;
             uint16 pixelCount;
             uint32 packedBytes;
+            int spanX;
+            int dirtyStart;
+            int dirtyEnd;
 
             if (offset + 4u > spanDataSize)
                 return;
@@ -1889,13 +1897,51 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
             if (offset + packedBytes > spanDataSize)
                 return;
 
+            spanX = (int)screenX + (int)relX;
+            dirtyStart = spanX;
+            dirtyEnd = spanX + (int)pixelCount;
+            if (rowScreenY >= 0 && rowScreenY < 480) {
+                if (dirtyStart < 320 && dirtyEnd > 0) {
+                    int leftStart = dirtyStart;
+                    int leftEnd = dirtyEnd;
+                    if (leftStart < 0)
+                        leftStart = 0;
+                    if (leftEnd > 320)
+                        leftEnd = 320;
+                    if (leftStart < leftEnd) {
+                        if (leftStart < rowLeftDirtyStart)
+                            rowLeftDirtyStart = leftStart;
+                        if (leftEnd > rowLeftDirtyEnd)
+                            rowLeftDirtyEnd = leftEnd;
+                    }
+                }
+                if (dirtyEnd > 320 && dirtyStart < 640) {
+                    int rightStart = dirtyStart;
+                    int rightEnd = dirtyEnd;
+                    if (rightStart < 320)
+                        rightStart = 320;
+                    if (rightEnd > 640)
+                        rightEnd = 640;
+                    if (rightStart < rightEnd) {
+                        if (rightStart < rowRightDirtyStart)
+                            rowRightDirtyStart = rightStart;
+                        if (rightEnd > rowRightDirtyEnd)
+                            rowRightDirtyEnd = rightEnd;
+                    }
+                }
+            }
+
             grCompositePacked4SpanToBackground(spanData + offset,
                                                pixelCount,
                                                palette,
-                                               (int)screenX + (int)relX,
-                                               (int)screenY + (int)relY);
+                                               spanX,
+                                               rowScreenY);
             offset += packedBytes;
         }
+        if (rowLeftDirtyStart < rowLeftDirtyEnd)
+            grMarkRectDirty(rowLeftDirtyStart, rowScreenY, rowLeftDirtyEnd, rowScreenY + 1);
+        if (rowRightDirtyStart < rowRightDirtyEnd)
+            grMarkRectDirty(rowRightDirtyStart, rowScreenY, rowRightDirtyEnd, rowScreenY + 1);
     }
     if (perfTrack)
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
