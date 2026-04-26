@@ -174,21 +174,45 @@ def compose_sky(sp: Sprite, y_bot: int, color: int = SKY) -> None:
 
 def compose_palm_tree(sp: Sprite, anchor_x: int, base_y: int,
                        trunk_h: int = 18, frond_r: int = 8) -> None:
-    """Stylized palm tree centered at (anchor_x, base_y). The base sits at
-    base_y; trunk goes upward trunk_h pixels; fronds spread frond_r pixels
-    around the top."""
-    top_y = base_y - trunk_h
-    # Trunk — slight curve achieved with 2-px offset alternating columns.
-    sp.line(anchor_x, base_y, anchor_x, top_y, TRUNK)
-    sp.line(anchor_x + 1, base_y - 1, anchor_x + 1, top_y, TRUNK)
-    # Fronds — a few line strokes radiating from the top.
+    """Stylized coconut palm tree, base at (anchor_x, base_y), trunk_h px
+    tall, fronds spread frond_r px around the top.
+
+    Trunk is a 2-px-wide banana curve — base sits at anchor_x, top
+    leans ~3 px toward the center for a Sierra-Castaway silhouette.
+    Fronds radiate from the trunk top; each line gets a 1-px DGREEN
+    shadow underneath for depth.
+    """
+    # Trunk curve: parabolic offset so the tree leans gently. dx is
+    # capped to 3 so very tall palms don't become L-shaped.
+    bend = min(3, trunk_h // 6)
+    pts = []
+    for i in range(trunk_h + 1):
+        # i=0 at base, i=trunk_h at top. Quadratic ease so most of the
+        # curve is in the upper half.
+        t = i / max(1, trunk_h)
+        dx = int(round(bend * (t * t)))
+        pts.append((anchor_x - dx, base_y - i))
+    # Draw the 2-px wide trunk by tracing the curve twice.
+    for (px, py) in pts:
+        if 0 <= px < sp.w and 0 <= py < sp.h:
+            sp.px(px, py, TRUNK)
+            if px + 1 < sp.w:
+                sp.px(px + 1, py, TRUNK)
+    # Lateral notches every 4 pixels for Sierra-style trunk segmentation.
+    for i in range(2, trunk_h - 2, 4):
+        nx = pts[i][0]
+        ny = pts[i][1]
+        if 0 <= nx + 2 < sp.w and 0 <= ny < sp.h:
+            sp.px(nx + 2, ny, DGREEN)
+    top_x, top_y = pts[-1]
+    # Fronds — line strokes radiating from the trunk top.
     for dx, dy in [(-frond_r, -2), (-frond_r // 2, -frond_r // 2),
                    ( 0, -frond_r), ( frond_r // 2, -frond_r // 2),
                    ( frond_r, -2), (-frond_r // 2, frond_r // 4),
                    ( frond_r // 2, frond_r // 4)]:
-        sp.line(anchor_x, top_y, anchor_x + dx, top_y + dy, GREEN)
+        sp.line(top_x, top_y, top_x + dx, top_y + dy, GREEN)
         # Darker shadow line one pixel below for depth
-        sp.line(anchor_x, top_y + 1, anchor_x + dx, top_y + dy + 1, DGREEN)
+        sp.line(top_x, top_y + 1, top_x + dx, top_y + dy + 1, DGREEN)
 
 
 def compose_johnny_simple(sp: Sprite, x: int, base_y: int,
