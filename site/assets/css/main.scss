@@ -352,6 +352,17 @@ hr.rule, .rule {
 }
 .footer-credit strong { color: var(--accent); }
 .footer-license { color: var(--fg-mute); font-size: 0.92rem; margin: 0.6rem 0 0; }
+.footer-transparency {
+  color: var(--fg-mute);
+  font-size: 0.88rem;
+  margin: 0.9rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 2px solid var(--accent);
+  background: transparent;
+  font-style: italic;
+  max-width: 60ch;
+}
+.footer-transparency strong { color: var(--accent); font-style: normal; }
 .footer-nav ul {
   list-style: none; padding: 0; margin: 0;
   display: flex; flex-wrap: wrap; gap: 1rem;
