@@ -929,6 +929,7 @@ from perturbing the deterministic cadence.
 | `P4-244` | Failed/no promotion: hoist `grDrawBackground()` tile screen coordinates into static tables. | The upload-coordinate table probe kept key metrics flat but grew `grDrawBackground` by `24` bytes and `jcreborn.elf 739948 -> 740092`; the compiler's local constants are better than the static-table shape, so focus upload work on pack-emitted bands or fewer commands. |
 | `P4-245` | Failed/no promotion: compile `sound_ps1.c` with `-Os`. | The audio TU shrink reduced `jcreborn.elf 739948 -> 739776` and crossed PS-EXE `149504 -> 147456`, but cadence regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`) even after restoring `FISHING1.FG2 LBA=399` with a dummy CD sector; this is another executable/load-phase miss. |
 | `P4-246` | Failed/no promotion: compile `resource.c` with `-Os`. | The resource TU shrink reduced `jcreborn.elf 739948 -> 738376`, but crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, shifted foreground hot symbols by `-240`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`). |
+| `P4-247` | Failed/no promotion: compile `ps1_perf.c` with `-O3`. | The perf TU `-O3` probe grew `jcreborn.elf 739948 -> 742300`, expanded `ps1PerfMarkCdReadDetailed` by `912` bytes, crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`). |
 
 Prefetch variants to test in order:
 
