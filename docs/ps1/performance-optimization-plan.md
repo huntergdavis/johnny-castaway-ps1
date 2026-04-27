@@ -932,6 +932,7 @@ from perturbing the deterministic cadence.
 | `P4-247` | Failed/no promotion: compile `ps1_perf.c` with `-O3`. | The perf TU `-O3` probe grew `jcreborn.elf 739948 -> 742300`, expanded `ps1PerfMarkCdReadDetailed` by `912` bytes, crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`). |
 | `P4-248` | Failed/no promotion: compile `ps1_perf.c` with `-Os`. | The perf TU `-Os` probe was cadence- and layout-flat and shrank only the ELF (`739948 -> 737472`); `jcreborn.exe` stayed `149504` while hot perf functions grew, so there was no runtime-size or speed win to accept. |
 | `P4-249` | Done: remove the unused `targetVBlanks` argument from `ps1PerfMarkAdvance()`. | The exact gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=399`) while the foreground advance helper shrank by `4` bytes and `jcreborn.elf 739948 -> 739900`; this is a flat hot-path cleanup, not a VBlank speed win. |
+| `P4-250` | Failed/no promotion: remove the unused `ps1PerfMarkCdRead()` wrapper. | The wrapper deletion is semantically valid but crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, expanded/rephased `ps1PerfMarkCdReadDetailed` by `912` bytes, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); keep it as layout ballast until code-phase control exists. |
 
 Prefetch variants to test in order:
 
