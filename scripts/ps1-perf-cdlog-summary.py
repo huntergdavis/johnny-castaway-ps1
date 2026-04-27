@@ -21,6 +21,7 @@ TIME_RE = re.compile(r"\[\s*([0-9]+(?:\.[0-9]+)?)\]")
 SETLOC_RE = re.compile(r"CDROM:\s+Setloc\s+(\d+):(\d+):(\d+)")
 READN_RE = re.compile(r"CDROM:\s+ReadN\s+(\d+):(\d+):(\d+)")
 LOCATED_RE = re.compile(r"Located file at LBA\s+(\d+)")
+DATA_SECTOR_RE = re.compile(r"CDROM:\s+DataSector\s+\d+:\d+:\d+\s+LBA=(\d+)")
 FG2_HEADER = "<4sHHHHHHHHHHIIIHH"
 FG2_HEADER_SIZE = struct.calcsize(FG2_HEADER)
 FG2_ENTRY_SIZE = 20
@@ -139,6 +140,7 @@ def parse_log(log_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]
     reads: list[dict[str, Any]] = []
     located: list[dict[str, Any]] = []
     pending_setloc: dict[str, Any] | None = None
+    active_read: dict[str, Any] | None = None
 
     for line_number, raw in enumerate(
         log_path.read_text(encoding="utf-8", errors="ignore").splitlines(),
@@ -172,6 +174,7 @@ def parse_log(log_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]
                 item["setloc_line"] = pending_setloc["line"]
                 item["setloc_time_s"] = pending_setloc["time_s"]
             reads.append(item)
+            active_read = item
             continue
 
         match = LOCATED_RE.search(line)
@@ -181,10 +184,45 @@ def parse_log(log_path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]
                 "time_s": timestamp,
                 "lba": int(match.group(1)),
             })
+            continue
+
+        match = DATA_SECTOR_RE.search(line)
+        if match and active_read is not None:
+            # DuckStation prints DataSector LBA in physical MSF space, while
+            # Setloc/ReadN and ISO file locations here are logical LBAs.
+            sector_lba = int(match.group(1)) - 150
+            sectors = active_read.setdefault("data_sector_lbas", [])
+            times = active_read.setdefault("data_sector_times_s", [])
+            sectors.append(sector_lba)
+            times.append(timestamp)
 
     for index, item in enumerate(reads):
         previous_item = reads[index - 1] if index > 0 else None
         next_item = reads[index + 1] if index + 1 < len(reads) else None
+        data_sector_lbas = item.pop("data_sector_lbas", [])
+        data_sector_times = item.pop("data_sector_times_s", [])
+        if data_sector_lbas:
+            item["data_sector_count"] = len(data_sector_lbas)
+            item["data_lba_first"] = data_sector_lbas[0]
+            item["data_lba_last"] = data_sector_lbas[-1]
+            item["data_lba_min"] = min(data_sector_lbas)
+            item["data_lba_max"] = max(data_sector_lbas)
+            item["data_contiguous"] = (
+                data_sector_lbas == list(range(data_sector_lbas[0],
+                                               data_sector_lbas[0] + len(data_sector_lbas)))
+            )
+            if data_sector_times and data_sector_times[0] is not None:
+                item["data_time_first_s"] = data_sector_times[0]
+            if data_sector_times and data_sector_times[-1] is not None:
+                item["data_time_last_s"] = data_sector_times[-1]
+            if (isinstance(item.get("data_time_first_s"), (int, float)) and
+                    isinstance(item.get("data_time_last_s"), (int, float))):
+                item["data_time_span_s"] = round(
+                    item["data_time_last_s"] - item["data_time_first_s"],
+                    6,
+                )
+        else:
+            item["data_sector_count"] = 0
         if previous_item is not None:
             item["prev_lba_delta"] = item["lba"] - previous_item["lba"]
             if item.get("time_s") is not None and previous_item.get("time_s") is not None:
@@ -204,9 +242,13 @@ def summarize_sequence(reads: list[dict[str, Any]]) -> dict[str, Any]:
     lba_deltas: list[int] = []
     time_deltas: list[float] = []
     forward_sectors: list[int] = []
+    delivered_sectors: list[int] = []
     largest_gap_candidates: list[dict[str, Any]] = []
 
     for index, item in enumerate(reads):
+        delivered_count = item.get("data_sector_count")
+        if isinstance(delivered_count, int):
+            delivered_sectors.append(delivered_count)
         if index > 0:
             previous_item = reads[index - 1]
             lba_delta = item["lba"] - previous_item["lba"]
@@ -241,6 +283,8 @@ def summarize_sequence(reads: list[dict[str, Any]]) -> dict[str, Any]:
         "max_forward_step": max((delta for delta in lba_deltas if delta > 0), default=0),
         "max_backward_step": min((delta for delta in lba_deltas if delta < 0), default=0),
         "inferred_forward_sectors_sum": sum(forward_sectors),
+        "delivered_sector_sum": sum(delivered_sectors),
+        "max_delivered_sectors": max(delivered_sectors, default=0),
         "largest_prev_time_delta_s": max(time_deltas, default=0),
         "largest_time_gaps": largest_time_gaps,
     }
@@ -255,8 +299,12 @@ def infer_read_segments(reads: list[dict[str, Any]], pack_lba: int | None,
     segments: list[dict[str, Any]] = []
     for index, item in enumerate(reads):
         start_lba = item["lba"]
-        next_lba = reads[index + 1]["lba"] if index + 1 < len(reads) else pack_end_lba
-        end_lba = next_lba if next_lba > start_lba else min(start_lba + 1, pack_end_lba)
+        data_lba_last = item.get("data_lba_last")
+        if isinstance(data_lba_last, int) and data_lba_last >= start_lba:
+            end_lba = data_lba_last + 1
+        else:
+            next_lba = reads[index + 1]["lba"] if index + 1 < len(reads) else pack_end_lba
+            end_lba = next_lba if next_lba > start_lba else min(start_lba + 1, pack_end_lba)
         if end_lba > pack_end_lba:
             end_lba = pack_end_lba
         if end_lba <= start_lba:
