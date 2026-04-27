@@ -852,6 +852,7 @@ from perturbing the deterministic cadence.
 | `P4-181` | Done: inline FG2 entry draw offsets after startup pre-apply. | The helper functions became trivial after `P4-180`; using `entry->x/y` directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `740132 -> 739684` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 | `P4-182` | Done: collapse identical held-loop prefetch branches. | Prepared-frame and staged-frame states share the same window-prefetch behavior; merging the duplicate branches kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739684 -> 739552` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 | `P4-183` | Failed/no promotion: pass `NULL` for discarded next-payload frame-index outputs. | The exact fishing1 gate stayed flat, but the source change did not improve any tracked speed/work metric and grew `jcreborn.elf` `739552 -> 739568`; source was reverted and this should wait for broader prefetch helper cleanup. |
+| `P4-184` | Failed/no promotion: combine adjacent no-slack perf-log guards. | The exact fishing1 gate stayed flat, but combining the two `ps1PerfEnabled` checks in each no-slack prefetch path grew `jcreborn.elf` `739552 -> 739664`; source was reverted and cosmetic hot-path guard combining should be avoided unless metrics improve. |
 
 Prefetch variants to test in order:
 
