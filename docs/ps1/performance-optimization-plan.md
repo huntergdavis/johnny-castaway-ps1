@@ -40,8 +40,8 @@ base-diff foreground pack enforcement, startup pre-application of
 scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
 collapsed held-loop prefetch branch shape, duplicate compose active-guard
 removal, simplified runtime-active accessor, and the fishing1 high-tide tail
-read group `396..406`, reported `policy=stage1_window`,
-`buf=31760`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
+read group `396..406` with 11-sector retained capacity, reported
+`policy=stage1_window`, `buf=29712`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2510092`,
 `upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
@@ -892,6 +892,7 @@ from perturbing the deterministic cadence.
 | `P4-219` | Queued: group-cost predictor for runtime append groups. | The accepted tail group and rejected broad group show that transaction count is insufficient; score each candidate by append sectors, preserved bytes, current slack, host-observed read cost, and whether it risks creating the fifth visible read. |
 | `P4-220` | Queued: move read-group boundaries into generated pack metadata. | The hard-coded fishing1 tail group is a proving slice. The durable version should emit per-pack group metadata without moving payload offsets, then let runtime consume scene-authored groups with the same strict cadence gates. |
 | `P4-221` | Failed/no promotion: collapse the one-entry tail read-group table to direct constants. | Timing and CD work stayed flat, but the ELF grew (`741076 -> 741404`) and `fgRuntimeFillWindowForEntry` grew by `100` bytes; keep the table form until group metadata/codegen replaces the hard-coded slice. |
+| `P4-222` | Done: tighten the tail read-group retained capacity to 11 sectors. | The exact gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=67`) while the prefetch buffer dropped `31760 -> 29712` bytes and ELF/PS-EXE size stayed flat. |
 
 Prefetch variants to test in order:
 

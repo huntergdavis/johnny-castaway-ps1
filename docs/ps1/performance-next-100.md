@@ -15,6 +15,7 @@ Current accepted fishing1 exact baseline:
 | `loop_reads` | `67` |
 | `upload_bytes` | `16281600` |
 | `restore_bytes` | `2510092` |
+| `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `149504` bytes |
 | `jcreborn.elf` | `741076` bytes |
 
@@ -27,7 +28,9 @@ stack of flat-timing cleanup wins.
 Current note: the fishing1 high-tide tail read group `396..406` is accepted as
 a work-reduction checkpoint, not a VBlank speed win. It keeps the remaining
 `150` VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
-`setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`.
+`setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`; the
+follow-up retained-capacity pass kept that saved read while reducing the
+runtime prefetch buffer `31760 -> 29712` bytes.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
