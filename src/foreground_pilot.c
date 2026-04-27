@@ -2141,7 +2141,7 @@ void foregroundPilotRuntimeAdvance(void)
     if (elapsedVBlanks == 0)
         elapsedVBlanks = 1;
     if (ps1PerfEnabled)
-        ps1PerfMarkAdvance(elapsedVBlanks, gFgRuntime.displayVBlanks);
+        ps1PerfMarkAdvance(elapsedVBlanks);
 
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {

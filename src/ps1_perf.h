@@ -60,7 +60,7 @@ void ps1PerfSetCurrentFrame(uint16 frameIndex, uint16 sourceFrame,
                             uint32 dataOffset);
 void ps1PerfMarkRenderedLoop(void);
 void ps1PerfMarkHeldLoop(void);
-void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks);
+void ps1PerfMarkAdvance(uint16 elapsedVBlanks);
 void ps1PerfMarkEntry(uint32 payloadBytes, uint16 holdVBlanks,
                       uint8 emptyEntry, uint16 sourceFrame,
                       uint32 dataOffset);
@@ -123,7 +123,7 @@ static inline void ps1PerfSetCurrentFrame(uint16 frameIndex, uint16 sourceFrame,
 }
 static inline void ps1PerfMarkRenderedLoop(void) {}
 static inline void ps1PerfMarkHeldLoop(void) {}
-static inline void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks) { (void)elapsedVBlanks; (void)targetVBlanks; }
+static inline void ps1PerfMarkAdvance(uint16 elapsedVBlanks) { (void)elapsedVBlanks; }
 static inline void ps1PerfMarkEntry(uint32 payloadBytes, uint16 holdVBlanks,
                                     uint8 emptyEntry, uint16 sourceFrame,
                                     uint32 dataOffset) {

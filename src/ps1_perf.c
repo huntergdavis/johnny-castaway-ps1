@@ -404,11 +404,10 @@ void ps1PerfMarkHeldLoop(void)
         gPs1Perf.heldLoops++;
 }
 
-void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks)
+void ps1PerfMarkAdvance(uint16 elapsedVBlanks)
 {
     if (!ps1PerfEnabled)
         return;
-    (void)targetVBlanks;
     gPs1Perf.advances++;
     gPs1Perf.elapsedVBlanks += elapsedVBlanks;
     if (elapsedVBlanks > 1)
