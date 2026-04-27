@@ -973,6 +973,7 @@ from perturbing the deterministic cadence.
 | `P4-288` | Failed/no promotion: compile only the buffered CD read helper with `-Os`. | The exact gate stayed timing/layout/work-flat with no speed movement, while ELF grew `712556 -> 712636` and the buffered helper stayed `604` bytes; source was reverted and only the experiment log was kept. |
 | `P4-289` | Failed/no promotion: lower staged-copy fallthrough guard from `6` to `5` VBlanks after CD helper cleanup. | The exact gate regressed active playback (`loop_vb 1219 -> 1221`, `blocking_vb 5 -> 10`, `prefetch_overrun_vb 5 -> 10`); source was reverted and only the experiment log was kept. |
 | `P4-290` | Failed/no promotion: raise staged-copy fallthrough guard from `6` to `7` VBlanks after CD helper cleanup. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; source was reverted and only the experiment log was kept. |
+| `P4-291` | Done: compile only the unbuffered CD stream helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `680 -> 624` bytes and ELF shrank `712556 -> 712524`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
 
 Prefetch variants to test in order:
 

@@ -815,6 +815,7 @@ int ps1_streamReadAlignedIntoFile(const CdlFILE *cdfile, uint32_t offset, uint32
     return ps1_streamReadAlignedFromCdFileInto(cdfile, offset, size, dstBuffer);
 }
 
+__attribute__((optimize("Os")))
 static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset, uint32_t size)
 {
     uint32_t startSector;

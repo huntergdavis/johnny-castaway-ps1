@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `712556` bytes |
+| `jcreborn.elf` | `712524` bytes |
 
 Goal: close `147` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -67,6 +67,9 @@ no timing movement.
 Function-scoped `-Os` on the aligned CD read helper is accepted: it keeps
 exact cadence flat while shrinking the public aligned-read wrapper to 8 bytes
 and ELF to `712556`.
+Function-scoped `-Os` on the unbuffered stream-read helper is accepted too,
+shrinking that setup-facing helper by 56 bytes and ELF to `712524` with exact
+playback identity.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -336,6 +339,7 @@ near misses:
 | Buffered CD helper function-scoped `Os` | Do not retry alone; it grew the ELF and did not shrink the helper. |
 | Fallthrough slack `5` after CD helper cleanup | Do not retry as a local guard change; it regressed `blocking_vb` and `prefetch_overrun_vb` to `10`. |
 | Fallthrough slack `7` after CD helper cleanup | Do not retry as a local guard change; it failed before metrics with log overflow/regtest `137`. |
+| Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
