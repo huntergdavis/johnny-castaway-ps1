@@ -827,6 +827,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     CdlLOC loc;
     uint8_t* result;
     uint32_t offsetInBuffer;
+    uint32_t fileLba;
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
@@ -846,9 +847,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
-        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
+        perfFileLba = fileLba;
         perfTrack = 1;
     }
 
@@ -868,7 +870,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
             chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
 
-        CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
+        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
