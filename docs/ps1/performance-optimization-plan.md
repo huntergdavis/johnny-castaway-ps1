@@ -914,6 +914,7 @@ from perturbing the deterministic cadence.
 | `P4-238` | Failed/no promotion: compile the PS1 stubs translation unit with `-Os`. | The ELF shrank slightly, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer tail-stub size work until layout/phase control exists. |
 | `P4-239` | Failed/no promotion: compile holidays with `-Os` plus one-sector CD padding. | Keeping `FISHING1.FG2 LBA=399` did not recover cadence (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); one-sector executable shrink remains unsafe without phase-independent scheduling. |
 | `P4-240` | Failed/no promotion: remove duplicate rendered/held perf guards. | The cleanup shifted hot symbols by `-40` bytes and regressed CD pressure even with pack LBA restored by padding (`blocking_vb/prefetch_overrun_vb 5 -> 6`); do not remove hot-path ballast until code phase is controlled. |
+| `P4-241` | Failed/no promotion: compile `foreground_pilot.c` with `-O3`. | Whole-TU `-O3` grew the executable bucket, moved `FISHING1.FG2` LBA `399 -> 400`, grew key foreground functions, and regressed visible CD pressure while leaving `loop_vb` flat; avoid broad hot-TU flag probes. |
 
 Prefetch variants to test in order:
 
