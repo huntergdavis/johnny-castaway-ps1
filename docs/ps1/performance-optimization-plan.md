@@ -981,6 +981,7 @@ from perturbing the deterministic cadence.
 | `P4-296` | Failed/no promotion: decoupled prepared visual with `>=4` prepare threshold v3. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; all prepared-decoupling source changes were reverted. |
 | `P4-297` | Failed/no promotion: prepared visual stage-next branch with positive-slack guard v4. | Correctness stayed clean and key timing stayed flat; it reproduced v2's secondary read/late improvements but also kept the no-slack attempts and code growth, so all source changes were reverted. |
 | `P4-298` | Failed/no promotion: add fishing1 read group `102..110`. | The candidate saved one read (`loop_reads 67 -> 66`) and three sectors, but regressed cadence (`loop_vb 1219 -> 1220`, `blocking_vb/prefetch_overrun_vb 5 -> 8`, `loop_read_vb 280 -> 293`); source was reverted and only the experiment log was kept. |
+| `P4-299` | Done: reuse one stack `RECT` for immediate background uploads. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank `1580 -> 1572` bytes and ELF shrank `712332 -> 712272`; count as hot upload-path cleanup only, not a VBlank speed win. |
 
 Prefetch variants to test in order:
 

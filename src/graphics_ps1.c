@@ -3538,7 +3538,7 @@ void grDrawBackground(void)
     PS1Surface *tiles[4] = { bgTile0, bgTile1, bgTile3, bgTile4 };
     int screenX[4] = { 0, 320, 0, 320 };
     int screenY[4] = { 0, 0, 240, 240 };
-    RECT rects[GR_MAX_UPLOAD_RECTS];
+    RECT rect;
     int minYs[4];
     int maxYs[4];
     int bandTile[GR_MAX_UPLOAD_RECTS];
@@ -3651,11 +3651,11 @@ void grDrawBackground(void)
             int h = bandMaxY[b] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rects[b], screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, screenX[i], screenY[i] + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
-            LoadImage(&rects[b], (uint32 *)(tiles[i]->pixels + minY * w));
+            LoadImage(&rect, (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
         if (uploadRects > 0)
@@ -3666,11 +3666,11 @@ void grDrawBackground(void)
         int minY = minYs[singleIndex];
         int h = maxYs[singleIndex] - minY + 1;
 
-        setRECT(&rects[0], screenX[singleIndex], screenY[singleIndex] + minY, w, h);
+        setRECT(&rect, screenX[singleIndex], screenY[singleIndex] + minY, w, h);
         uploadRects = 1;
         uploadRows = (uint16)h;
         uploadBytes = (uint32)w * (uint32)h * sizeof(uint16);
-        LoadImage(&rects[0], (uint32 *)(tile->pixels + minY * w));
+        LoadImage(&rect, (uint32 *)(tile->pixels + minY * w));
         DrawSync(0);
     } else {
         for (int i = 0; i < 4; i++) {
@@ -3681,11 +3681,11 @@ void grDrawBackground(void)
             int h = maxYs[i] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rects[i], screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, screenX[i], screenY[i] + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
-            LoadImage(&rects[i], (uint32 *)(tiles[i]->pixels + minY * w));
+            LoadImage(&rect, (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
         if (dirtyCount > 0)

@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `712332` bytes |
+| `jcreborn.elf` | `712272` bytes |
 
 Goal: close `147` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -85,6 +85,9 @@ result, so local prepared-payload decoupling is exhausted for this baseline.
 The `102..110` FG2 read-group probe is rejected even though it saved one
 transaction: visible CD pressure rose from `5` to `8` VBlanks, confirming that
 new groups need a read-duration/slack cost model before promotion.
+The upload path now reuses one stack `RECT` for immediate `LoadImage()` calls,
+shrinking `grDrawBackground` by 8 bytes and ELF to `712272` while keeping every
+timing, CD, upload, and correctness counter exact.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -340,6 +343,7 @@ near misses:
 | Upload perf marker combine | Done; keep because it removed one rendered-frame marker call and preserved all upload/dirty counters. |
 | `grDrawBackground()` function `-Os` | Done; keep because scoped upload-function codegen stayed exact-flat and shrank ELF. |
 | `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. |
+| Reusable upload `RECT` stack storage | Done; keep because it removes unused per-call stack array storage with exact timing/upload identity. |
 | `grRestoreBgFromRects()` function `-Os` | Do not retry alone; it shrank the function but grew total ELF with no timing movement. |
 | PAL4 compositor function-scoped `Os` | Do not retry; it shrank the compositor and loaded executable but regressed blocking even with foreground LBA restored. |
 | Single-band narrow upload scratch | Do not retry as a special case; fishing1 upload bytes did not move and code grew. |
