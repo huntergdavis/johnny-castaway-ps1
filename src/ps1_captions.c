@@ -542,7 +542,7 @@ static const struct TCaptionSceneMap captionSceneMap[] = {
 /*  State                                                              */
 /* ------------------------------------------------------------------ */
 
-static int captionsEnabled      = 0;
+int ps1CaptionsEnabled          = 0;
 static const char *currentCaption = NULL;
 static int captionDisplayTimer  = 0;
 
@@ -555,7 +555,7 @@ static int captionDisplayTimer  = 0;
 
 void captionsSetEnabled(int enabled)
 {
-    captionsEnabled = enabled;
+    ps1CaptionsEnabled = enabled;
     if (!enabled) {
         currentCaption = NULL;
         captionDisplayTimer = 0;
@@ -564,7 +564,7 @@ void captionsSetEnabled(int enabled)
 
 int captionsGetEnabled(void)
 {
-    return captionsEnabled;
+    return ps1CaptionsEnabled;
 }
 
 
@@ -574,7 +574,7 @@ int captionsGetEnabled(void)
 
 void captionsOnSceneStart(const char *sceneId)
 {
-    if (!captionsEnabled || sceneId == NULL) return;
+    if (!ps1CaptionsEnabled || sceneId == NULL) return;
 
     currentCaption = NULL;
     captionDisplayTimer = 0;
@@ -599,7 +599,7 @@ void captionsOnSceneStart(const char *sceneId)
 
 void captionsOnAdsStart(const char *adsName, uint16 adsTag)
 {
-    if (!captionsEnabled || adsName == NULL) return;
+    if (!ps1CaptionsEnabled || adsName == NULL) return;
 
     /* Strip ".ADS" suffix if present — compare only the base name. */
     char baseName[16];
@@ -630,7 +630,7 @@ void captionsOnAdsStart(const char *adsName, uint16 adsTag)
 
 const char *captionsGetCurrent(void)
 {
-    if (!captionsEnabled || captionDisplayTimer <= 0)
+    if (!ps1CaptionsEnabled || captionDisplayTimer <= 0)
         return NULL;
 
     captionDisplayTimer--;
@@ -717,7 +717,7 @@ static int capDrawChar(uint8 **nextp, uint32 *otSlot,
 
 void captionsRender(void)
 {
-    if (!captionsEnabled || captionDisplayTimer <= 0 ||
+    if (!ps1CaptionsEnabled || captionDisplayTimer <= 0 ||
         currentCaption == NULL)
         return;
 

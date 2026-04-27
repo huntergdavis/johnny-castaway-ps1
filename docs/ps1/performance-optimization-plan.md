@@ -20,19 +20,20 @@ pixel-perfect FG2 methodology.
 
 ## Executive Summary
 
-Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, a 24 KB FG2 stream window, and dirty
-clean-rect row restore are active on the perf branch. The boot parameters still
-exist for diagnostics, but the default FG2 playback policy is now
-`stage1_window`.
+Post-merge status: the first performance wave and subsequent retunes are now
+the normal runtime path. Held-entry no-work, one-entry staging, a sector-rounded
+`16 KB` FG2 stream window, direct-stage seeding, and dirty clean-rect row
+restore are active on the perf branch. The boot parameters still exist for
+diagnostics, but the default FG2 playback policy is now `stage1_window`.
 
-Latest accepted default-path fishing1 high-tide run, after the pause merge,
-pad/SPI diagnostic gating, the post-diagnostics window retunes, the
+Latest accepted default-path fishing1 exact no-holiday night variant
+(`lowtide 0`, `night 1`, raft stage `4`, island position `-154,54`), after the
+pause merge, pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
-dirty-row upload bands with an 11-row gap merge, setup priming of the first
-real payload, and tight-slack direct staging for immediate payloads up to
-8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
+dirty-row upload bands with a 1-row gap byte trim, setup priming of the first
+real payload, tight-slack direct staging for immediate payloads up to 8 KB,
+direct-stage scratch window seeding, and exact-4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
 garbage collection, foreground visual telemetry removal, legacy foreground
@@ -40,13 +41,18 @@ diagnostic scene gating, long-hold host-deadline catch-up, unused foreground
 status accessor removal, dead foreground requested-mode state removal, and
 base-diff foreground pack enforcement, reported `policy=stage1_window`,
 `buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
-`prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=149`,
-`target_vb=1072`, `restore_bytes=3085148`,
-`upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
+`prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
+`target_vb=1071`, `restore_bytes=2510092`,
+`upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
 `setup_read_vb=109`, and `scene_vb=1400`. This is the current baseline for the
-next experiment. The section-GC pass kept those counters flat while shrinking
+next experiment. The exact-4 plus 1-row upload plus prepared-wait prefetch
+checkpoint is a work-reduction
+promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
+and `prefetch.overrun_vb` flat while reducing `restore_calls/compose_calls`
+from `193` to `155` and reducing upload bytes by `217600`. The section-GC pass
+kept earlier counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
 same `137216` byte sector bucket. Removing the now-unused foreground visual
 telemetry body kept timing flat again, dropped speculative prep
@@ -66,7 +72,8 @@ write-only requested-mode state kept that cadence flat and shrank
 the old non-base-diff runtime branches kept cadence flat again and shrank
 `jcreborn.elf` to `689748` bytes. The pre-pause best was `loop_vb=1297`.
 
-Latest Detail-tier attribution on this baseline shows the remaining
+Latest available Detail-tier attribution on the pre-pause accepted baseline
+shows the remaining
 active-loop gap is not primarily due-frame CD: `render_vb=181`,
 `present_wait_vb=157`, `restore_vb=43`, `compose_vb=31`, `upload_vb=0`, and
 `advance_vb=1` in
@@ -79,7 +86,9 @@ the held-frame prefetch cadence. A later 4 VBlank held-slack prepared-present
 pass was accepted as a small speedup (`loop_vb 1235 -> 1234`,
 `blocking_vb 10 -> 8`), but it did not prove out as the full present-wait fix
 because it adds duplicate RAM restore/compose work (`restore_calls 156 -> 192`,
-`compose_calls 155 -> 191`).
+`compose_calls 155 -> 191`). The current post-pause exact-4 variant claws back
+some of that duplicate work with flat key timing, but the larger present-wait
+fix still needs a scheduler with separate render-prep and CD-prefetch budgets.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -110,9 +119,9 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted 4 VBlank prepared-present pass is only a bridge; the next design must reduce duplicate prep while preserving lookahead. |
-| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=6` and `prefetch.overrun_vb=6`, but every saved read still compounds. |
-| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `3.03 MB` because the prepared-present bridge adds speculative restore work; vertical bands plus gap merging keep upload near `16.5 MB`, so upload volume and duplicate prep are now the clearer dirty targets. |
+| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted prepared-present passes are only bridges; the next design must reduce duplicate prep while preserving lookahead. |
+| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=5` and `prefetch.overrun_vb=5`, but every saved read still compounds. |
+| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
 | 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `5` total backward seeks; grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
@@ -288,9 +297,13 @@ additional bytes across the full fishing1 run.
 A follow-up 10-row point was accepted: timing stayed flat,
 `upload_rects` drops again to `409`, and the extra byte cost versus the 8-row
 baseline is only `17,920` bytes across the loop.
-A final 11-row probe is the current local knee: timing still stays flat,
-`upload_rects` drops to `401`, and the extra byte cost versus the 10-row
-baseline is `56,320` bytes across the loop.
+A final 11-row probe was the pre-pause local knee: timing stayed flat,
+`upload_rects` dropped to `401`, and the extra byte cost versus the 10-row
+baseline was `56,320` bytes across the loop. After the pause/menu merge, the
+current accepted point is a 1-row byte-trim gap: key timing remains flat while
+`upload_bytes` drops `16499200 -> 16281600` and rects rise `401 -> 502`.
+The zero-gap point is still rejected, so the current safe boundary for this
+variant is between `1` and `0` clean rows.
 The next upload-byte attempt should move decisions to pack-time/direct-layout
 work or use scene-specific band statistics, not reintroduce runtime scratch
 packing.
@@ -569,12 +582,12 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
-vertical dirty-row bands with an 11-row clean-gap merge, while keeping full tile
-width and no scratch packing.
+vertical dirty-row bands with a post-pause 1-row clean-gap merge, while keeping
+full tile width and no scratch packing.
 Fishing1 improved from the original `loop_vb=1426` to `1240`,
 `restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16499200`; next work is balancing upload byte savings against rectangle
-pressure.
+`16281600`; next work is balancing upload byte savings against rectangle
+pressure and avoiding scheduler perturbation from extra rects.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -627,10 +640,10 @@ read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
 Status: first wave implemented, visually signed off, and merged to `main` in
-`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a 24 KB
-stream window after the post-slack window-size sweep. The old `prefetch-stage1` token
-is no longer required for the normal path; `no-prefetch`, `no-stage1`, and
-window-size tokens remain diagnostic controls.
+`1b457163`. Stage1 entry prefetch is default. Later retunes moved the perf
+branch to the sector-rounded `16 KB` stream window plus direct-stage seeding.
+The old `prefetch-stage1` token is no longer required for the normal path;
+`no-prefetch`, `no-stage1`, and window-size tokens remain diagnostic controls.
 
 Current perf-branch target: keep squeezing CD latency and upload cost without
 changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
@@ -638,20 +651,22 @@ removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
-a post-leading-empty 11-row gap merge, setup priming of the first real payload,
-tight-slack direct staging, direct-stage scratch window seeding, and the
-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
+a post-pause 1-row gap byte trim, setup priming of the first real payload,
+tight-slack direct staging, direct-stage scratch window seeding, prepared-wait
+future prefetch, and the
+exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
-fishing1 high-tide reports
-`loop_vb=1222`, `blocking_vb=6`, `due_misses=0`, and prefetch
-`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=3130442`,
-`upload_rects=401`, `setup_reads=6`, and `scene_vb=1401`.
+the exact no-holiday fishing1 variant reports
+`loop_vb=1221`, `blocking_vb=5`, `due_misses=0`, and prefetch
+`overrun_vb=5`, with `upload_bytes=16281600`, `restore_bytes=2510092`,
+`upload_rects=502`, `setup_reads=6`, and `scene_vb=1400`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage.
 Next experiments should target the remaining blocking, bounded refill overrun,
-duplicate prepared-frame restore/compose work, upload byte volume, and upload
-rectangle pressure.
+duplicate prepared-frame restore/compose work, upload byte volume, upload
+rectangle pressure, and pack/read-cost metadata that can stop raw window probes
+from perturbing the deterministic cadence.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -796,6 +811,40 @@ rectangle pressure.
 | `P4-139` | Done: remove unused foreground status accessors. | Two strict runs matched exactly with a small timing/CD-pressure win: `loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, and `overrun_vb=149`; normal build stays in the `129024` byte PS-EXE bucket and narrows the foreground-pilot API surface. |
 | `P4-140` | Done: remove dead foreground requested-mode state. | Two strict runs matched the accepted baseline exactly while `jcreborn.elf` shrank `690936 -> 690724`; this removes write-only scene-mode state left behind by the foreground status accessor cleanup. |
 | `P4-141` | Done: require base-diff foreground packs. | All `126` generated FG2 packs carry the base-diff flag, so the runtime now rejects non-base-diff packs at startup and drops per-frame non-base-diff fallback checks; two strict runs matched baseline exactly while `jcreborn.elf` shrank `690724 -> 689748`. |
+| `P4-142` | Done: restore the default-off JCPAD/JCSPI diagnostics gate after the pause/menu merge. | The post-menu exact no-holiday baseline was `loop_vb=1306`, `blocking_vb=19`, `prefetch_overrun_vb=14`, and `due_misses=1` because the heavy pad diagnostics path was live again. Restoring `pad-diag`/`pad-debug` as opt-in while keeping Start polling always on recovered the accepted cadence: `loop_vb 1306 -> 1221`, `blocking_vb 19 -> 5`, `prefetch_overrun_vb 14 -> 5`, `due_misses 1 -> 0`, with clean correctness. |
+| `P4-143` | Failed: re-test raw `18 KB` and `14 KB` stream windows after the pause/menu merge. | The `18 KB` probe regressed `loop_vb 1221 -> 1238`, `blocking_vb 5 -> 25`, and `prefetch_overrun_vb 5 -> 25`; the `14 KB` probe regressed `loop_vb 1221 -> 1224`, `blocking_vb 5 -> 43`, and `due_misses 0 -> 12`. Keep the sector-rounded `16 KB` default until pack groups or a costed scheduler changes useful coverage per read. |
+| `P4-144` | Failed: remove dirty-upload band gap merging after the pause/menu merge. | Exact zero-gap bands lowered upload bytes (`16499200 -> 16273280`) but raised upload rectangles (`401 -> 515`) and regressed `loop_vb 1221 -> 1224`, `blocking_vb 5 -> 10`, and `prefetch_overrun_vb 5 -> 10`; byte savings alone are not enough when rect pressure rises that far. |
+| `P4-145` | Rejected: skip explicit `CdlSetloc` for sequential CD reads. | Setloc calls dropped (`74 -> 8`) and nominal loop improved (`1221 -> 1217`), but visual-work identity collapsed (`compose_calls 193 -> 6`, `upload_bytes 16499200 -> 1919360`) and visible CD pressure worsened (`blocking_vb 5 -> 8`). Source was reverted; retry only with a proven lower-level CD continuation API and stronger frame/work-identity gates. |
+| `P4-146` | Done: combine exact-4 prepared-present gating with a 4-row upload-band gap. | This is a work-reduction checkpoint, not a VBlank speed win: `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` stayed flat, while `restore_calls/compose_calls 193 -> 166`, `restore_bytes 3085148 -> 2701496`, `upload_bytes 16499200 -> 16387840`, and `dirty_rows 25780 -> 25606`; tradeoff is `overrun_vb 149 -> 150` and `upload_rects 401 -> 421`, within the accepted flat-timing gate. |
+| `P4-147` | Done: tighten the post-pause upload-band gap from `4` rows to `2` rows. | Two exact no-holiday runs kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16387840 -> 16381440` and `dirty_rows 25606 -> 25596`; tradeoff is `upload_rects 421 -> 424`, still far below the rejected zero-gap `515` rect pressure. |
+| `P4-148` | Done: narrow the post-pause upload-band gap from `2` rows to `1` row. | Two exact no-holiday runs again kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16381440 -> 16281600` and `dirty_rows 25596 -> 25440`; tradeoff is `upload_rects 424 -> 502`, close to but still below the rejected zero-gap failure at `515` rects. |
+| `P4-149` | Failed/no-op: reuse a single upload `RECT` instead of the local `RECT[16]` array. | Runtime metrics and work identity matched the accepted baseline exactly, but `jcreborn.elf` grew `713320 -> 713384`; source was reverted and only the experiment log was kept. |
+| `P4-150` | Done: prefetch a future stream window while a prepared frame waits for its present VBlank. | The post-gap1 retry kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `restore_calls/compose_calls 166 -> 155`, `restore_bytes 2701496 -> 2510092`, `loop_read_vb 289 -> 284`, and `prefetch.used_vb 292 -> 285`; this removes the remaining duplicate prepared work for fishing1 without exposing extra CD pressure. |
+| `P4-151` | Failed/no-op: restore the `>=4` prepared-present threshold after prepared-wait prefetch. | Key timing and work identity matched exactly, with only loop bookkeeping movement (`advances 951 -> 957`, `held 868 -> 874`, `late 105 -> 100`); keep exact-`4` until a new scheduler budget makes threshold widening meaningful. |
+| `P4-152` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-wait prefetch. | Total loop stayed flat but visible pressure regressed (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and loop read time rose (`284 -> 300`); keep the `6` VBlank guard until grouped reads make lookahead cheaper. |
+| `P4-153` | Failed: lower long-hold catch-up threshold from `5` to `4` after prepared-wait prefetch. | The retry still starved CD cadence despite lower duplicate prep: `target_vb 1071 -> 1065`, `overrun_vb 150 -> 156`, `blocking_vb 5 -> 9`, `prefetch_overrun_vb 5 -> 9`, and `blocking_reads 4 -> 8`; keep threshold `5` until grouped/predictive prefetch changes the slack budget. |
+| `P4-154` | Failed: remove the prefetch would-read probe. | Deleting the redundant-looking probe reduced held-path checks but shifted CD phase into visible pressure (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); keep small scheduler ballast unless a replacement pacing model proves the phase stays fixed. |
+| `P4-155` | Failed/no promotion: preconvert host-tick deadlines during metadata load. | The helper version was runtime-flat but grew `jcreborn.elf 713176 -> 714008`; the tighter parse-loop version still grew the ELF and exited `137` before `JCPERF2`. Keep `fgEntryHoldVBlanks()` unchanged until finer CPU counters prove this conversion is worth moving. |
+| `P4-156` | Failed: use an aligned 32-bit PAL4 pair store in the compositor. | The dynamic alignment branch kept visual work identity clean but regressed cadence badly (`loop_vb 1221 -> 1225`, `overrun_vb 150 -> 157`, `blocking_vb 5 -> 12`, `prefetch_overrun_vb 5 -> 12`); compositor wins need generated/assembly code that avoids extra hot-loop branching. |
+| `P4-157` | Accepted integration baseline: merge main pause-menu credits/captions work into the perf branch. | The merge is correct but costs one cadence VBlank (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and moves `FISHING1.FG2` to LBA `399` because the executable grows to `149504` bytes; future optimization tests now compare against this accepted merged state. |
+| `P4-158` | Failed/no promotion: gate default-off caption rendering with `captionsGetEnabled()`. | Runtime metrics stayed exactly flat against the post-main baseline, but the executable grew (`149504 -> 151552`) and ELF grew (`743944 -> 744080`); keep the direct renderer call until captions expose an inline active flag or a release profile can compile captions differently. |
+| `P4-159` | Done: compile-gate pause-menu JCPAUSE diagnostics out of the default build. | Runtime metrics stayed exactly flat against the post-main baseline while default-build diagnostic text/code was removed (`jcreborn.elf 743944 -> 743136`, PS-EXE unchanged at `149504`); keep `PAUSE_MENU_DIAG_LOGS` as the explicit opt-in for pause-menu log mining. |
+| `P4-160` | Done: compile-gate `graphics_ps1.c` debug-mode diagnostics out of the default build. | Runtime metrics stayed exactly flat against the pause-diagnostics baseline while default-build graphics diagnostic text/code was removed (`jcreborn.elf 743136 -> 740984`, PS-EXE unchanged at `149504`); keep `GRAPHICS_PS1_DIAG_LOGS` as the explicit opt-in for GPU log mining. |
+| `P4-161` | Done: compile-gate routine `sound_ps1.c` SPU startup diagnostics out of the default build. | Runtime metrics stayed exactly flat against the graphics-diagnostics baseline while routine sound setup text/code was removed (`jcreborn.elf 740984 -> 740664`, PS-EXE unchanged at `149504`); keep `SOUND_PS1_DIAG_LOGS` as the explicit opt-in for audio log mining. |
+| `P4-162` | Done: compile-gate the unconditional `JCBOOT applyBootOverride` buffer dump out of the default build. | Runtime and correctness stayed clean with a small deterministic win (`loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, `loop_read_vb 292 -> 284`) while default-build boot diagnostic text/code was removed (`jcreborn.elf 740664 -> 740496`, PS-EXE unchanged at `149504`); keep `JC_BOOT_DIAG_LOGS` as the explicit opt-in for boot-string log mining. |
+| `P4-163` | Failed: compile-gate the PS1 resource-count setup diagnostic. | The ELF shrank (`740496 -> 740392`) but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and the resource-count print remains as layout/cadence ballast until CD phase is controlled. |
+| `P4-164` | Done: compile-gate PS1 pause request-consumption diagnostics out of the default build. | Runtime metrics stayed exactly flat against the boot-diagnostics baseline while cold pause-loop text/code was removed (`jcreborn.elf 740496 -> 740336`, PS-EXE unchanged at `149504`); keep `JC_PAUSE_REQUEST_DIAG_LOGS` as the explicit opt-in for pause request log mining. |
+| `P4-165` | Failed/no promotion: compile-gate the old PS1 `padtest` boot mode. | The exact gate stayed flat and correctness stayed clean, but there was no timing or file-size win (`jcreborn.exe=149504`, `jcreborn.elf=740336`); source was reverted and padtest cleanup is deferred to a future public-cleanup pass rather than the perf loop. |
+| `P4-166` | Failed: compile-gate the optional `printf-test` / `logtest` `JCLOG` probe body. | The size win was real (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738556`), but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and this becomes a layout-padding/CD-phase-control retry candidate. |
+| `P4-167` | Failed: compile-gate memory-card `JCMC` diagnostics out of the default build. | The size win crossed the same PS-EXE sector bucket (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738652`) and moved `FG\\FISHING1.FG2` from LBA `399` to `398`, but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and memcard logs remain layout/CD-phase ballast until foreground LBA and code phase can be controlled together. |
+| `P4-168` | Failed: remove unused-looking `ISLETEMP.SCR` from the active CD layout. | The FG2 pack LBA stayed fixed at `399`, but setup/CD-layout phase still regressed the exact gate (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `read_vb 393 -> 401`) and the emulator emitted invalid-read spam after `JCPERF2`; source was reverted and CD asset pruning needs a startup phase barrier plus exit sanity gate before promotion. |
+| `P4-169` | Failed: compile-gate automatic foreground heap probes out of default playback. | The source reverted after the exact gate regressed through the same layout/CD-phase shape as other one-sector shrink misses: `FG\\FISHING1.FG2 LBA 399 -> 398`, `loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`; keep the automatic FGHEAP probe code as ballast until foreground LBA/cold-section control exists or CD phase is explicit. |
+| `P4-170` | Done: skip disabled caption rendering through an inline-readable enabled flag. | The prior getter-gate probe grew the executable, but exposing the existing caption state as `ps1CaptionsEnabled` keeps the exact no-caption fishing1 cadence flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `due_misses=0`) and leaves the shipped PS-EXE at `149504`; this is a hot-path cleanup rather than a VBlank-level speed win. |
+| `P4-171` | Done: skip disabled foreground-pilot ADS caption scene lookup. | Guarding the fishing1/fishing2/fishing3 `captionsOnAdsStart()` lookup behind `ps1CaptionsEnabled` keeps the exact no-caption fishing1 cadence and work identity flat while avoiding default scene-start caption string checks; `jcreborn.exe` remains `149504` and `FG\\FISHING1.FG2` remains LBA `399`. |
+| `P4-172` | Failed/no promotion: reuse the window-prefetch candidate entry in guarded held-loop paths. | The refactor kept exact no-caption fishing1 timing and work identity flat, but it did not improve any tracked counter and grew the ELF (`740568 -> 741216` after tightening, `742828` in the first draft); source was reverted and this should wait for a broader prefetch state-machine rewrite or finer CPU counters. |
+| `P4-173` | Failed/no-op: lower the direct-stage payload cap from `8 KB` to `7 KB`. | The exact no-caption fishing1 gate matched baseline across timing, CD, prefetch, gfx, pack LBA, and binary size (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=68`, `jcreborn.exe=149504`); source was reverted and direct-stage cap tuning remains exhausted. |
+| `P4-174` | Done: lower the local dirty-upload rectangle cap from `16` to `8`. | Fishing1's measured `max_upload_rects=6`, so the smaller cap preserves exact upload behavior (`upload_rects=502`, `cap_hits=0`) while trimming stack/binary pressure slightly (`jcreborn.elf 740568 -> 740556`, PS-EXE unchanged at `149504`). |
+| `P4-175` | Failed/no promotion: lower the local dirty-upload rectangle cap from `8` to `6`. | The exact fishing1 gate stayed flat and `cap_hits=0`, but there was no additional binary win over cap `8` and no headroom above fishing1's measured `max_upload_rects=6`; source was reverted to the safer cap `8` until broader scene validation proves a tighter cap. |
 
 Prefetch variants to test in order:
 
@@ -803,8 +852,8 @@ Prefetch variants to test in order:
 |---|---|---|
 | One-entry synchronous staging | During held VBlanks, read the next entry into a second buffer if it is not already staged. | `cd_vb` may remain nonzero but should move out of due-frame advancement; visible speed should improve if enough hold budget exists. |
 | One-entry async staging | Start `CdRead` during held time and poll completion over later held VBlanks. | Lower blocking time, but higher controller-state risk. |
-| 24 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after the post-slack sweep. |
-| 32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
+| 16 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after later retunes paired with the 3 VBlank refill guard. |
+| 24 KB/32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
 | Dual-window ping-pong | Render from one window while filling the next during holds. | Best latency hiding, but only after single-window correctness. |
 | Sector-aligned FGP3 chunks | Pack frames into prefetch-friendly sector groups. | Only useful if runtime windowing exposes sector-copy overhead. |
 
@@ -1154,18 +1203,19 @@ exact pre-integration no-holiday fishing1 variant forced (`lowtide 0 night 1
 holiday 0 raft-stage 4 island-pos -154 54`), the row-dirty restore path
 restored and the no-holiday stamp path cached, active playback measured
 `loop_vb 1221 -> 1306` (`+85`, about `+7.0%`), `overrun_vb 149 -> 256`,
-`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. Treat this as a
-first-class optimization target: recover the lost slack without removing the
-new menu/holiday feature set.
+`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. `P4-142` resolved
+this by restoring the lost default-off JCPAD/JCSPI diagnostics gate; `pad-diag`
+and `pad-debug` still re-enable the deep controller probes, while normal
+screensaver playback keeps only the lightweight Start poll.
 
 | Priority | Area | Target | Expected signal |
 |---:|---|---|---|
-| 0 | Integration/regression | Recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returns toward `loop_vb=1221`, `blocking_vb<=5`, `prefetch.overrun_vb<=5`, with holiday/menu functionality intact and correctness counters zero. |
+| 0 | Integration/regression | Done: recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returned to `loop_vb=1221`, `blocking_vb=5`, `prefetch.overrun_vb=5`, and `due_misses=0`; keep diagnostics opt-in and Start polling live. |
 | 1 | CD/pack | Add pack-emitted FG2 prefetch group metadata with aligned `offset/length` and covered frame range. | Lower `reads`, `blocking_vb`, and `prefetch.overrun_vb` without raising `pack_bytes` materially. |
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |
 | 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | First runtime byte-threshold attempt failed; retry only with per-read histograms/sector classes or pack-group metadata so the predictor can distinguish coverage value, not just byte count. |
-| 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the post-gap8 baseline. | `8 KB` remains the local knee: `6 KB` and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
+| 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `7 KB`, `8 KB`, and `10 KB`. | `8 KB` remains the local knee: `6 KB`, `7 KB`, and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
@@ -1357,11 +1407,13 @@ constant family is locally exhausted. It can reduce `loop_vb` from `1237` to
 to `19-20`; future CD work should preserve zero due misses through grouped or
 physically adjacent reads before tightening the guard again.
 
-The post-leading-empty upload gap sweep moved the local runtime knee upward.
-The accepted 11-row dirty-band gap merge keeps timing flat and lowers
-`upload_rects 424 -> 401` for a small byte increase. The rejected 12-row point
-is still too wide; the next larger upload win should move band metadata to pack
-generation or emit upload-ready layouts.
+The post-leading-empty upload gap sweep moved the local runtime knee upward,
+but the post-pause accepted point moved back to a byte-saving 1-row dirty-band
+gap. That checkpoint keeps key timing flat while reducing upload bytes and
+accepting more rects. The rejected 0-row point shows the narrow-side boundary,
+and the rejected 12-row point shows the wide-side boundary; the next larger
+upload win should move band metadata to pack generation or emit upload-ready
+layouts.
 
 An inline CD-read histogram metrics pass was also rejected. The summary-level
 variant and the supposedly safer `perf-detail`-gated variant both regressed the
@@ -1392,6 +1444,16 @@ Future acceptance must compare baseline-sensitive counters such as
 The headless harness now enforces a default `75%` minimum for `render`,
 `restore_calls`, `compose_calls`, and `upload_calls` when comparing against a
 baseline; override only for deliberate pack/render architecture changes.
+It also caps `headless-regtest.log` at `536870912` bytes by default via
+`PS1_PERF_MAX_LOG_BYTES` / `--max-log-bytes`; set the cap to `0` only for
+deliberate log-mining runs.
+
+The recent diagnostic-gating misses expose a second acceptance rule: code-size
+cleanup is not safe merely because correctness and work identity remain clean.
+If shrinking the executable moves foreground pack LBAs or code phase, the scene
+can regress by one visible CD VBlank. Treat default-off diagnostics as
+layout/cadence ballast until cold sections, explicit ISO padding, or a
+phase-independent CD scheduler makes removal deterministic.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it

@@ -33,6 +33,12 @@ typedef struct _FILE FILE;
 #endif
 #define stderr ((FILE*)2)  /* PSn00bSDK doesn't define stderr */
 #define fprintf(stream, ...) printf(__VA_ARGS__)  /* Redirect to printf */
+#ifndef JC_BOOT_DIAG_LOGS
+#define JC_BOOT_DIAG_LOGS 0
+#endif
+#ifndef JC_PAUSE_REQUEST_DIAG_LOGS
+#define JC_PAUSE_REQUEST_DIAG_LOGS 0
+#endif
 /* Declare functions implemented in ps1_stubs.c */
 void exit(int status);
 int atoi(const char *str);
@@ -349,6 +355,7 @@ static void ps1ApplyBootOverride(char *buffer)
     char *cursor = buffer;
     int tokenBase = 0;
 
+#if JC_BOOT_DIAG_LOGS
     /* JCBOOT diag: print the entire buffer so we can confirm which
      * boot string the runtime actually received. */
     printf("JCBOOT applyBootOverride buffer=[%s] len_bytes_first=%d %d %d %d %d %d %d %d\n",
@@ -357,6 +364,7 @@ static void ps1ApplyBootOverride(char *buffer)
            buffer ? buffer[2] : -1, buffer ? buffer[3] : -1,
            buffer ? buffer[4] : -1, buffer ? buffer[5] : -1,
            buffer ? buffer[6] : -1, buffer ? buffer[7] : -1);
+#endif
 
     while (*cursor && tokenCount < (int)(sizeof(tokens) / sizeof(tokens[0]))) {
         while (*cursor && ps1IsSpace(*cursor)) {
@@ -482,6 +490,8 @@ static void ps1ApplyBootOverride(char *buffer)
             ps1PerfSetLevel(PS1_PERF_LEVEL_DETAIL);
         } else if (!strcmp(tokens[i], "perf-debug")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_DEBUG);
+        } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
+            eventsSetPadDiagnostics(1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
         } else if (!strcmp(tokens[i], "padtest")) {
@@ -858,6 +868,11 @@ static void parseArgs(int argc, char **argv)
                     usage();
                 }
             }
+#ifdef PS1_BUILD
+            else if (!strcmp(argv[i], "pad-diag") || !strcmp(argv[i], "pad-debug")) {
+                eventsSetPadDiagnostics(1);
+            }
+#endif
             else if (!strcmp(argv[i], "window")) {
                 grWindowed = 1;
             }
@@ -1208,12 +1223,16 @@ int main(int argc, char **argv)
          * and falling through to fgLoopNextScene's random branch. */
         if (pauseMenuRequestNextScene) {
             pauseMenuRequestNextScene = 0;
+#if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume next-scene\n");
+#endif
         }
         if (pauseMenuRequestResetLoop) {
             pauseMenuRequestResetLoop = 0;
             explicitScene = NULL;  /* drop pinned scene → next iter random */
+#if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume reset-loop\n");
+#endif
         }
     } while (!screensaverLoopDisabled);
 

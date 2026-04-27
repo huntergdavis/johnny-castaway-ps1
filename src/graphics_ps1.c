@@ -39,6 +39,16 @@
 #include "psb_registry.h"
 #include "ps1_captions.h"
 
+#ifndef GRAPHICS_PS1_DIAG_LOGS
+#define GRAPHICS_PS1_DIAG_LOGS 0
+#endif
+
+#if GRAPHICS_PS1_DIAG_LOGS
+#define GR_DIAG_PRINTF(...) do { if (debugMode) printf(__VA_ARGS__); } while (0)
+#else
+#define GR_DIAG_PRINTF(...) do { } while (0)
+#endif
+
 /* Primitive buffer for GPU commands */
 #define PRIMITIVE_BUFFER_SIZE 32768
 uint8 *primitiveBuffer[2];  /* Malloc'd, not static array! */
@@ -493,21 +503,18 @@ void graphicsInit()
      * CRITICAL: Calling ResetGraph(0) after GPU is already initialized
      * conflicts with the existing GPU state and causes hangs */
     if (!grGpuAlreadyInitialized) {
-        if (debugMode)
-            printf("GPU: Resetting GPU...\n");
+        GR_DIAG_PRINTF("GPU: Resetting GPU...\n");
 
         /* Reset GPU and set video mode */
         ResetGraph(0);
         SetVideoMode(MODE_NTSC);
 
-        if (debugMode)
-            printf("GPU: Initializing GTE...\n");
+        GR_DIAG_PRINTF("GPU: Initializing GTE...\n");
 
         /* Initialize geometry transformation engine */
         InitGeom();
 
-        if (debugMode)
-            printf("GPU: Setting up display buffers (%dx%d)...\n", SCREEN_WIDTH, SCREEN_HEIGHT);
+        GR_DIAG_PRINTF("GPU: Setting up display buffers (%dx%d)...\n", SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* Setup display environments for 640x480 interlaced mode
          * Single buffer mode since 2x640x480 won't fit in VRAM
@@ -531,8 +538,7 @@ void graphicsInit()
         draw[0].isbg = 0;  /* Don't clear - grDrawBackground handles it */
         draw[1].isbg = 0;
 
-        if (debugMode)
-            printf("GPU: Enabling display...\n");
+        GR_DIAG_PRINTF("GPU: Enabling display...\n");
 
         /* Enable display */
         SetDispMask(1);
@@ -541,8 +547,7 @@ void graphicsInit()
         PutDispEnv(&disp[db]);
         PutDrawEnv(&draw[db]);
     } else {
-        if (debugMode)
-            printf("GPU: Skipping ResetGraph - already initialized\n");
+        GR_DIAG_PRINTF("GPU: Skipping ResetGraph - already initialized\n");
 
         /* Still need to setup display/draw environments for rendering
          * GPU is already on, but we need proper environment structs */
@@ -563,8 +568,7 @@ void graphicsInit()
         PutDrawEnv(&draw[db]);
     }
 
-    if (debugMode)
-        printf("GPU: Initializing ordering tables...\n");
+    GR_DIAG_PRINTF("GPU: Initializing ordering tables...\n");
 
     /* Clear ordering tables */
     ClearOTagR(ot[0], OT_LENGTH);
@@ -584,8 +588,7 @@ void graphicsInit()
     primitiveIndex[0] = 0;
     primitiveIndex[1] = 0;
 
-    if (debugMode)
-        printf("GPU: Loading default palette...\n");
+    GR_DIAG_PRINTF("GPU: Loading default palette...\n");
 
     /* Load default palette with distinct, bright colors for testing
      * PS1 uses BGR555 format: (B << 10) | (G << 5) | R
@@ -623,13 +626,11 @@ void graphicsInit()
     setRECT(&clutRect256, 640, 2, 256, 1);  /* 256 colors, 1 row */
     LoadImage(&clutRect256, (uint32*)clut256);
 
-    if (debugMode)
-        printf("GPU: Initializing event system...\n");
+    GR_DIAG_PRINTF("GPU: Initializing event system...\n");
 
     /* Initialize event system */
     eventsInit();
-    if (debugMode)
-        printf("GPU: Graphics initialization complete!\n");
+    GR_DIAG_PRINTF("GPU: Graphics initialization complete!\n");
 }
 
 /*
@@ -803,7 +804,8 @@ void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
     /* Closed captions overlay — drawn AFTER the scene LoadImage so the
      * dark band + text land on top of the frame the user sees this
      * VSync. No-op when captions are off or no text is queued. */
-    captionsRender();
+    if (ps1CaptionsEnabled)
+        captionsRender();
 
     /* Handle frame timing */
     if (perfDetail)
@@ -2300,9 +2302,7 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
     while (tile != NULL) {
         /* Allocate DR_TPAGE + SPRT primitives from buffer */
         if (primitiveIndex[db] + sizeof(DR_TPAGE) + sizeof(SPRT) > PRIMITIVE_BUFFER_SIZE) {
-            if (debugMode) {
-                printf("Warning: Primitive buffer full!\n");
-            }
+            GR_DIAG_PRINTF("Warning: Primitive buffer full!\n");
             return;
         }
 
@@ -2342,10 +2342,8 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
         /* Add to ordering table */
         addPrim(&ot[db][0], sprt);
 
-        if (debugMode) {
-            printf("Draw tile: pos=(%d,%d) size=%dx%d VRAM=(%d,%d)\n",
-                   tileX, tileY, tile->width, tile->height, tile->x, tile->y);
-        }
+        GR_DIAG_PRINTF("Draw tile: pos=(%d,%d) size=%dx%d VRAM=(%d,%d)\n",
+                       tileX, tileY, tile->width, tile->height, tile->x, tile->y);
 
         tile = tile->nextTile;
     }
@@ -2516,9 +2514,7 @@ void grDrawSpriteFlip(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint1
         /* Allocate POLY_FT4 primitive from buffer */
         /* PS1 doesn't have hardware flip, so we use textured quad with reversed UVs */
         if (primitiveIndex[db] + sizeof(POLY_FT4) > PRIMITIVE_BUFFER_SIZE) {
-            if (debugMode) {
-                printf("Warning: Primitive buffer full!\n");
-            }
+            GR_DIAG_PRINTF("Warning: Primitive buffer full!\n");
             return;
         }
 
@@ -2563,10 +2559,8 @@ void grDrawSpriteFlip(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint1
         /* Add to ordering table */
         addPrim(&ot[db][0], poly);
 
-        if (debugMode) {
-            printf("Draw flipped tile: pos=(%d,%d) size=%dx%d\n",
-                   tileX, tileY, tile->width, tile->height);
-        }
+        GR_DIAG_PRINTF("Draw flipped tile: pos=(%d,%d) size=%dx%d\n",
+                       tileX, tileY, tile->width, tile->height);
 
         tile = tile->nextTile;
     }
@@ -3483,8 +3477,8 @@ void grClearScreen(PS1Surface *sfc)
 void grDrawBackground(void)
 {
     enum {
-        GR_MAX_UPLOAD_RECTS = 16,
-        GR_UPLOAD_BAND_MERGE_GAP = 11
+        GR_MAX_UPLOAD_RECTS = 8,
+        GR_UPLOAD_BAND_MERGE_GAP = 1
     };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.
      * prevDirty = rows restored at frame start (framebuffer still has old content).
@@ -3846,9 +3840,7 @@ void grLoadScreen(char *strArg)
     }
 
     if ((scrResource->width % 2) == 1) {
-        if (debugMode) {
-            printf("Warning: grLoadScreen(): can't manage odd widths\n");
-        }
+        GR_DIAG_PRINTF("Warning: grLoadScreen(): can't manage odd widths\n");
     }
 
     if (scrResource->width > 640 || scrResource->height > 480) {

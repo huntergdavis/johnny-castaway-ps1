@@ -30,6 +30,7 @@ FRAMES="${PS1_PERF_FRAMES:-7200}"
 INTERVAL="${PS1_PERF_INTERVAL:-999999}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-${REGTEST_TIMEOUT:-180}}"
 LOG_LEVEL="${PS1_PERF_LOG_LEVEL:-Warning}"
+MAX_LOG_BYTES="${PS1_PERF_MAX_LOG_BYTES:-536870912}"
 PERF_TOKEN="perf-log"
 BUILD_MODE="incremental"
 BASELINE_FILE=""
@@ -73,6 +74,9 @@ Options:
   --interval N             Screenshot dump interval (default: 999999).
   --timeout N              Wall-clock timeout per case (default: REGTEST_TIMEOUT or 180).
   --log LEVEL              DuckStation log level (default: Warning).
+  --max-log-bytes N        Fail early if headless log exceeds N bytes
+                           (default: PS1_PERF_MAX_LOG_BYTES or 536870912;
+                           set 0 to disable).
   --output DIR             Output root (default: scratch/ps1-perf-iterate).
   --experiment-log FILE    Append one JSONL record per attempted case
                            (default: <output>/experiments.jsonl).
@@ -212,6 +216,8 @@ while [ $# -gt 0 ]; do
             TIMEOUT="$2"; shift 2 ;;
         --log)
             LOG_LEVEL="$2"; shift 2 ;;
+        --max-log-bytes)
+            MAX_LOG_BYTES="$2"; shift 2 ;;
         --output)
             OUTPUT_ROOT="$2"; shift 2 ;;
         --experiment-log)
@@ -264,6 +270,10 @@ if ! [[ "$INTERVAL" =~ ^[0-9]+$ ]] || [ "$INTERVAL" -le 0 ]; then
 fi
 if ! [[ "$TIMEOUT" =~ ^[0-9]+$ ]] || [ "$TIMEOUT" -le 0 ]; then
     echo "ERROR: --timeout must be a positive integer." >&2
+    exit 1
+fi
+if ! [[ "$MAX_LOG_BYTES" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --max-log-bytes must be a non-negative integer." >&2
     exit 1
 fi
 if [ -n "$BASELINE_FILE" ] && [ ! -f "$BASELINE_FILE" ]; then
@@ -648,6 +658,7 @@ run_headless_regtest() {
         echo "interval=$INTERVAL"
         echo "timeout=$TIMEOUT"
         echo "log_level=$LOG_LEVEL"
+        echo "max_log_bytes=$MAX_LOG_BYTES"
         echo "bios_dir=${bios_dir:-<not-found>}"
         echo "renderer=Software"
         echo "container_name=$container_name"
@@ -697,6 +708,12 @@ run_headless_regtest() {
             elapsed=$((now - start_time))
             size="$(wc -c < "$log_file" 2>/dev/null || printf '0')"
             echo "  headless still running: ${elapsed}s elapsed, ${size} log bytes"
+            if [ "$MAX_LOG_BYTES" -gt 0 ] && [ "$size" -gt "$MAX_LOG_BYTES" ]; then
+                echo "ERROR: headless log exceeded ${MAX_LOG_BYTES} bytes; stopping $container_name" >&2
+                "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
+                kill "$pid" >/dev/null 2>&1 || true
+                break
+            fi
         fi
     done
 

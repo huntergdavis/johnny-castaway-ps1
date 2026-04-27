@@ -36,6 +36,10 @@
 #include "holidays.h"
 #include "ps1_captions.h"
 
+#ifndef PAUSE_MENU_DIAG_LOGS
+#define PAUSE_MENU_DIAG_LOGS 0
+#endif
+
 /* ---------------------------------------------------------------------------
  *  External telemetry / debug state.
  *  ads.c and story.c were retired in the legacy-runtime cleanup
@@ -316,8 +320,10 @@ static void pmUploadFont(void)
     DrawSync(0);
 
     pmFontUploaded = 1;
+#if PAUSE_MENU_DIAG_LOGS
     printf("JCPAUSE pmUploadFont done — font @ (%d,%d) clut @ (%d,%d)\n",
            PM_FONT_VRAM_X, PM_FONT_VRAM_Y, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y);
+#endif
 }
 
 /* Time/date editing fields. */
@@ -433,7 +439,9 @@ void pauseMenuInit(void)
     if (fontID < 0) {
         fontID = FntOpen(0, 0, 640, 480, 0, 1024);
     }
+#if PAUSE_MENU_DIAG_LOGS
     printf("JCPAUSE pauseMenuInit fontID=%d\n", fontID);
+#endif
 
     menuVisible = 0;
     menuCursor  = 0;
@@ -461,13 +469,15 @@ void pauseMenuShow(void)
      * memory-card support lands, we'll persist the user's choice.) */
     pauseMutedSound = 0;
 
-    /* P6: one-shot JCPAUSE snapshot for log-mining. */
+#if PAUSE_MENU_DIAG_LOGS
+    /* One-shot JCPAUSE snapshot for log-mining. */
     printf("JCPAUSE show frame=%lu scene=%s mode=%s perfLevel=%u soundMuted=%d\n",
            (unsigned long)ps1FrameCount,
            foregroundPilotRuntimeSceneName(),
            foregroundPilotRuntimeModeName(),
            (unsigned)ps1PerfLevel,
            soundMuted);
+#endif
 
     /* Refresh the heap-free cache once per pause-show. fgProbeLargestAlloc
      * does ~9 malloc/free cycles which fragments the heap if called every
@@ -1537,6 +1547,7 @@ int pauseMenuUpdate(void)
     DrawSync(0);
     menuFramebufferPrimed = 1;
 
+#if PAUSE_MENU_DIAG_LOGS
     /* JCPAUSE per-frame diag. */
     {
         static uint32 pauseFrameDbg = 0;
@@ -1545,6 +1556,7 @@ int pauseMenuUpdate(void)
                    (unsigned long)pauseFrameDbg, fontID, (int)menuState, menuCursor);
         }
     }
+#endif
 
     return 1;
 }
