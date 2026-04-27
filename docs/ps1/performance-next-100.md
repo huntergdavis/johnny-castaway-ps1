@@ -118,6 +118,11 @@ interval upload is a stronger byte floor (`86.83%` reduction) but explodes to
 but only with coalescing: exact restore skip predicts `52.41%` lower restore
 bytes but raises restore intervals from `24300` to `73417`; the current
 `min8px_max4pieces` profile still saves `26.35%` with `36450` intervals.
+The runtime prototype that parsed current PAL4 spans before restore confirmed
+the byte savings but failed as an implementation path: the best variant reduced
+`restore_bytes` to `2222854`, yet regressed `loop_vb 1219 -> 1221`, visible CD
+pressure `5 -> 6`, and moved `FISHING1.FG2` from LBA `396` to `397`. Treat
+restore-skip as an FGP3/side-metadata problem, not a runtime reparse problem.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
