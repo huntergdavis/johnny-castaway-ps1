@@ -970,6 +970,7 @@ from perturbing the deterministic cadence.
 | `P4-285` | Done: cache the file LBA in the aligned CD read helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadAlignedIntoFile` shrank `540 -> 532` bytes and ELF shrank `712828 -> 712744`; count as hot CD helper code-shape cleanup only, not a VBlank speed win. |
 | `P4-286` | Failed/no promotion: add a single-chunk fast path to the aligned CD read helper. | The exact gate stayed timing/layout/work-flat with no speed movement, while `ps1_streamReadAlignedIntoFile` grew `532 -> 636` bytes; source was reverted and only the experiment log was kept. |
 | `P4-287` | Done: compile only the aligned CD read helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadAlignedIntoFile` became a tiny wrapper (`532 -> 8` bytes) and ELF shrank `712744 -> 712556`; count as hot CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-288` | Failed/no promotion: compile only the buffered CD read helper with `-Os`. | The exact gate stayed timing/layout/work-flat with no speed movement, while ELF grew `712556 -> 712636` and the buffered helper stayed `604` bytes; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
