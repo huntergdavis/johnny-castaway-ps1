@@ -39,6 +39,7 @@ COMMIT_MESSAGE=""
 ROLLBACK_ON_FAIL=0
 ALLOW_REGRESSION_PERCENT="${PS1_PERF_ALLOW_REGRESSION_PERCENT:-2}"
 WORK_IDENTITY_MIN_PERCENT="${PS1_PERF_WORK_IDENTITY_MIN_PERCENT:-75}"
+ALLOW_LAYOUT_CHANGE="${PS1_PERF_ALLOW_LAYOUT_CHANGE:-0}"
 REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
@@ -87,6 +88,8 @@ Options:
   --allow-regression PCT   Fail if key metrics regress by more than PCT (default: 2).
   --work-identity-min PCT  Fail if baseline-sensitive render work counters fall below
                            this percent of baseline (default: 75; set 0 to disable).
+  --allow-layout-change    With --baseline, allow PS-EXE sector bucket and foreground
+                           pack LBA changes. Comparisons are still recorded.
   --require-improvement    With --baseline, require at least one key speed metric to improve.
   --commit-on-pass MSG     git add -A and commit with MSG after all gates pass.
   --rollback-on-fail       On gate failure, restore tracked worktree files to HEAD.
@@ -104,6 +107,8 @@ Gate rules:
     overrun_vb must not regress beyond --allow-regression.
   - with --baseline, render/restore/compose/upload call counts must not fall
     below --work-identity-min unless explicitly disabled.
+  - with --baseline, PS-EXE sector bucket and foreground pack LBA must stay
+    fixed unless --allow-layout-change is used.
 
 Outputs:
   <output>/<timestamp>/summary.json
@@ -237,6 +242,8 @@ while [ $# -gt 0 ]; do
             ALLOW_REGRESSION_PERCENT="$2"; shift 2 ;;
         --work-identity-min)
             WORK_IDENTITY_MIN_PERCENT="$2"; shift 2 ;;
+        --allow-layout-change)
+            ALLOW_LAYOUT_CHANGE=1; shift ;;
         --require-improvement)
             REQUIRE_IMPROVEMENT=1; shift ;;
         --commit-on-pass)
@@ -359,15 +366,21 @@ parse_case_metrics() {
     local boot="$2"
     local case_dir="$3"
     local log_file="$4"
-    local out_file="$5"
+    local ps_exe_bytes="$5"
+    local ps_exe_bucket_bytes="$6"
+    local ps_exe_sectors="$7"
+    local elf_bytes="$8"
+    local out_file="$9"
 
-    python3 - "$label" "$boot" "$case_dir" "$log_file" > "$out_file" <<'PY'
+    python3 - "$label" "$boot" "$case_dir" "$log_file" \
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" > "$out_file" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
 
 label, boot, case_dir, log_file = sys.argv[1:5]
+ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes = (int(value) for value in sys.argv[5:9])
 log_path = Path(log_file)
 ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
@@ -471,6 +484,18 @@ summary = {
     "case_dir": str(Path(case_dir).resolve()),
     "log_file": str(log_path.resolve()),
     "sections": sections,
+    "build": {
+        "ps_exe": {
+            "path": "build-ps1/jcreborn.exe",
+            "bytes": ps_exe_bytes,
+            "sector_bucket_bytes": ps_exe_bucket_bytes,
+            "sectors": ps_exe_sectors,
+        },
+        "elf": {
+            "path": "build-ps1/jcreborn.elf",
+            "bytes": elf_bytes,
+        },
+    },
     "legacy_jcperf": legacy,
     "gate": {
         "pass": not failures,
@@ -532,12 +557,16 @@ if summary_file.is_file():
     summary = json.loads(summary_file.read_text(encoding="utf-8"))
 
 sections = summary.get("sections", {})
+scene = sections.get("scene", {})
 timing = sections.get("timing", {})
 cd = sections.get("cd", {})
 prefetch = sections.get("prefetch", {})
 gfx = sections.get("gfx", {})
 correctness = sections.get("correctness", {})
 gate = summary.get("gate", {})
+build = summary.get("build", {})
+ps_exe = build.get("ps_exe", {})
+elf = build.get("elf", {})
 
 record = {
     "schema": "ps1-perf-experiment-log/v1",
@@ -588,6 +617,11 @@ record = {
         "frame_mismatch": correctness.get("frame_mismatch"),
         "sound_late": correctness.get("sound_late"),
         "cd_fail": correctness.get("cd_fail"),
+        "pack_lba": scene.get("pack_lba"),
+        "pack_sectors": scene.get("pack_sectors"),
+        "ps_exe_bytes": ps_exe.get("bytes"),
+        "ps_exe_sector_bucket_bytes": ps_exe.get("sector_bucket_bytes"),
+        "elf_bytes": elf.get("bytes"),
     },
 }
 
@@ -764,6 +798,19 @@ for i in "${!CASE_LABELS[@]}"; do
     fi
     ./scripts/make-cd-image.sh >> "$case_dir/build.log" 2>&1
 
+    ps_exe_bytes=0
+    ps_exe_bucket_bytes=0
+    ps_exe_sectors=0
+    elf_bytes=0
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
+        ps_exe_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.exe")"
+        ps_exe_sectors=$(( (ps_exe_bytes + 2047) / 2048 ))
+        ps_exe_bucket_bytes=$(( ps_exe_sectors * 2048 ))
+    fi
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.elf" ]; then
+        elf_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.elf")"
+    fi
+
     headless_root="$case_dir/headless"
     mkdir -p "$headless_root"
     log_file="$case_dir/headless-regtest.log"
@@ -774,7 +821,9 @@ for i in "${!CASE_LABELS[@]}"; do
     set -e
 
     summary_file="$case_dir/perf-summary.json"
-    parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" "$summary_file"
+    parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" \
+        "$summary_file"
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
@@ -799,7 +848,8 @@ done
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
 set +e
 python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
-    "$REQUIRE_IMPROVEMENT" "$WORK_IDENTITY_MIN_PERCENT" "${SUMMARY_PATHS[@]}" <<'PY'
+    "$REQUIRE_IMPROVEMENT" "$WORK_IDENTITY_MIN_PERCENT" "$ALLOW_LAYOUT_CHANGE" \
+    "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -810,7 +860,8 @@ baseline_path = Path(sys.argv[2]) if sys.argv[2] else None
 allow_pct = float(sys.argv[3])
 require_improvement = bool(int(sys.argv[4]))
 work_identity_min_pct = float(sys.argv[5])
-case_paths = [Path(p) for p in sys.argv[6:]]
+allow_layout_change = bool(int(sys.argv[6]))
+case_paths = [Path(p) for p in sys.argv[7:]]
 
 cases = [json.loads(path.read_text(encoding="utf-8")) for path in case_paths]
 baseline_cases = {}
@@ -833,9 +884,22 @@ work_identity_fields = [
     ("gfx", "upload_calls"),
 ]
 
+layout_identity_paths = [
+    ("scene.pack_lba", ("sections", "scene", "pack_lba")),
+    ("build.ps_exe.sector_bucket_bytes", ("build", "ps_exe", "sector_bucket_bytes")),
+]
+
 def field(case, section, key):
     value = case.get("sections", {}).get(section, {}).get(key)
     return value if isinstance(value, int) else None
+
+def path_value(case, path):
+    value = case
+    for part in path:
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
+    return value
 
 overall_failures = []
 for case in cases:
@@ -848,6 +912,7 @@ for case in cases:
     if base:
         comparisons = []
         work_identity = []
+        layout_identity = []
         for section, key in compare_fields:
             current = field(case, section, key)
             previous = field(base, section, key)
@@ -888,9 +953,25 @@ for case in cases:
                     failures.append(
                         f"work identity {section}.{key}: baseline={previous} current={current} minimum={minimum:.2f}"
                     )
+        for name, path in layout_identity_paths:
+            current = path_value(case, path)
+            previous = path_value(base, path)
+            if current is None or previous is None:
+                continue
+            layout_identity.append({
+                "field": name,
+                "baseline": previous,
+                "current": current,
+                "delta": current - previous if isinstance(current, int) and isinstance(previous, int) else None,
+                "allowed": allow_layout_change,
+            })
+            if current != previous and not allow_layout_change:
+                failures.append(f"layout identity {name}: baseline={previous} current={current}")
         case["baseline_comparison"] = comparisons
         if work_identity:
             case["work_identity_comparison"] = work_identity
+        if layout_identity:
+            case["layout_identity_comparison"] = layout_identity
         if require_improvement and not improved:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
@@ -941,6 +1022,20 @@ for case in cases:
             sign = "+" if isinstance(delta, int) and delta > 0 else ""
             parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
         print("  vs baseline: " + "; ".join(parts))
+    layout = case.get("layout_identity_comparison", [])
+    if layout:
+        parts = []
+        for item in layout:
+            field = item.get("field")
+            baseline = item.get("baseline")
+            current = item.get("current")
+            delta = item.get("delta")
+            if isinstance(delta, int):
+                sign = "+" if delta > 0 else ""
+                parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
+            else:
+                parts.append(f"{field} {baseline}->{current}")
+        print("  layout: " + "; ".join(parts))
     for suggestion in derived.get("suggestions", [])[:4]:
         print(f"  next: {suggestion}")
 print(f"Summary JSON: {out_path}")
