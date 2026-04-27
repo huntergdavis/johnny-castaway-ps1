@@ -961,6 +961,7 @@ from perturbing the deterministic cadence.
 | `P4-276` | Done: compile only `grUpdateDisplay()` with `-Os`. | The exact gate stayed timing/layout/work-flat while `grUpdateDisplay` shrank by `40` bytes and ELF shrank `713672 -> 713496`; count as hot display-wrapper code-shape cleanup only, not a VBlank speed win. |
 | `P4-277` | Failed/no promotion: compile only `grRestoreBgFromRects()` with `-Os`. | The exact gate stayed timing/layout/work-flat and the function shrank `980 -> 108` bytes, but total ELF grew `713496 -> 714132` with no speed metric movement; source was reverted and only the experiment log was kept. |
 | `P4-278` | Failed/no promotion: compile only `grCompositePacked4SpansToBackground()` with `-Os`. | The compositor and PS-EXE shrank, but cadence regressed badly (`loop_vb 1221 -> 1225`, `blocking_vb 5 -> 26`, `prefetch_overrun_vb 5 -> 12`, `due_misses 0 -> 3`) both before and after restoring `FISHING1.FG2 LBA=396` with a temporary CD pad; source/layout were reverted and only the experiment log was kept. |
+| `P4-279` | Failed/no promotion: single-band narrow upload through primitive-buffer scratch. | The exact gate stayed timing/layout-flat but upload work did not move (`upload_rects=502`, `upload_bytes=16281600`, `dirty_rows=25440`) while `grDrawBackground` grew by `200` bytes and ELF grew `713496 -> 716736`; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
