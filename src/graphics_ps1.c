@@ -158,12 +158,23 @@ static void grClearCurrDirtyState(void)
 {
     grEnsureDirtyRowState();
     for (int i = 0; i < 4; i++) {
+        if (currDirtyMinY[i] >= 0) {
+            int minY = currDirtyMinY[i];
+            int maxY = currDirtyMaxY[i];
+            if (minY < 0)
+                minY = 0;
+            if (maxY >= BG_TILE_HEIGHT)
+                maxY = BG_TILE_HEIGHT - 1;
+            for (int y = minY; y <= maxY; y++) {
+                currDirtyRowMinX[i][y] = -1;
+                currDirtyRowMaxX[i][y] = -1;
+            }
+        }
         currDirtyMinX[i] = -1;
         currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
     }
-    grClearDirtyRows(currDirtyRowMinX, currDirtyRowMaxX);
 }
 
 static void grMarkDirtyRows(sint16 rowsMinX[4][BG_TILE_HEIGHT],
