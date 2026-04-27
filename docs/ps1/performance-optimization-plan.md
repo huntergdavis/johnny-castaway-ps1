@@ -982,6 +982,11 @@ Goal: keep the executable small and hot code friendly.
 | `P7-08` | Run a toolchain flag matrix under exact layout gates. | Test `-Os`, per-file `-O2/-O3`, function alignment, section ordering, and code-address padding as first-class experiments. |
 | `P7-09` | Separate hot FG2/CD code from cold menu/debug code by translation unit or section. | Prevent valid cold-code cleanup from perturbing hot scheduler/code phase. |
 
+Detailed current experiment queue: [performance-next-100.md](performance-next-100.md).
+It uses the accepted fishing1 exact baseline as of 2026-04-26 and expands the
+next pass across harness, CD grouping, scheduler, graphics/upload, compositor,
+and toolchain/layout tests.
+
 ## Phase 7b: Remove Runtime Fallback Code
 
 Goal: after deterministic optimized paths are validated, remove alternate
