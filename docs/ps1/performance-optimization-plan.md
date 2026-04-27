@@ -967,6 +967,7 @@ from perturbing the deterministic cadence.
 | `P4-282` | Failed/no promotion: direct PAL4 row dirty marking. | The formal gate passed only because `target_vb 1072 -> 1073` made `overrun_vb 147 -> 146`; actual `loop_vb` stayed `1219`, graphics/CD work stayed flat, and the compositor/ELF grew materially (`jcreborn.elf 712828 -> 715112`), so source was reverted and only the experiment log was kept. |
 | `P4-283` | Failed/no promotion: skip clearing previous dirty rows that overlap the new current dirty range. | The exact gate stayed timing/layout/work-flat with no speed movement, while ELF grew `712828 -> 713544`; source was reverted and only the experiment log was kept. |
 | `P4-284` | Failed/no promotion: retest `20 KB` and `18 KB`/`17 KB` stream windows after dirty-row cleanup. | `20 KB` regressed active playback (`loop_vb 1219 -> 1226`, `blocking_vb 5 -> 29`, `prefetch_overrun_vb 5 -> 19`, `due_misses 0 -> 2`); `18 KB` and `17 KB` rounded into the same 9-sector read shape and failed structurally with repeated invalid reads before metrics. Keep the `16 KB` default until generated group metadata/cost prediction exists. |
+| `P4-285` | Done: cache the file LBA in the aligned CD read helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadAlignedIntoFile` shrank `540 -> 532` bytes and ELF shrank `712828 -> 712744`; count as hot CD helper code-shape cleanup only, not a VBlank speed win. |
 
 Prefetch variants to test in order:
 

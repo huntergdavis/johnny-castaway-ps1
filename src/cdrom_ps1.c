@@ -1052,6 +1052,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     uint32_t endSector;
     uint32_t numSectors;
     CdlLOC loc;
+    uint32_t fileLba;
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
@@ -1070,10 +1071,11 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     endByte = offset + size;
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
 
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
-        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
+        perfFileLba = fileLba;
         perfTrack = 1;
     }
 
@@ -1085,7 +1087,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
             chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
 
-        CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
+        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
