@@ -893,6 +893,7 @@ from perturbing the deterministic cadence.
 | `P4-220` | Queued: move read-group boundaries into generated pack metadata. | The hard-coded fishing1 tail group is a proving slice. The durable version should emit per-pack group metadata without moving payload offsets, then let runtime consume scene-authored groups with the same strict cadence gates. |
 | `P4-221` | Failed/no promotion: collapse the one-entry tail read-group table to direct constants. | Timing and CD work stayed flat, but the ELF grew (`741076 -> 741404`) and `fgRuntimeFillWindowForEntry` grew by `100` bytes; keep the table form until group metadata/codegen replaces the hard-coded slice. |
 | `P4-222` | Done: tighten the tail read-group retained capacity to 11 sectors. | The exact gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=67`) while the prefetch buffer dropped `31760 -> 29712` bytes and ELF/PS-EXE size stayed flat. |
+| `P4-223` | Failed/no promotion: tighten the tail read-group retained capacity to 10 sectors. | Timing stayed flat and the buffer would have dropped to `27664` bytes, but the accepted saved read vanished (`loop_reads 67 -> 68`, `group_hits=0`); keep 11 sectors as the current safe lower bound. |
 
 Prefetch variants to test in order:
 
