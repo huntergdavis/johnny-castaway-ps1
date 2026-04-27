@@ -59,6 +59,7 @@ set(SOURCES
 # These default-off/cold TUs sit after the hot foreground/graphics/CD objects;
 # size-optimize them without changing the active playback code phase.
 set_source_files_properties(
+    src/ps1_debug.c
     src/ps1_captions.c
     src/memcard.c
     PROPERTIES COMPILE_OPTIONS "-Os"
