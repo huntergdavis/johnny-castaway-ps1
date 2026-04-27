@@ -949,6 +949,7 @@ from perturbing the deterministic cadence.
 | `P4-264` | Done: compile `events_ps1.c` with `-Os`. | Event/pause code is phase-safe under the current baseline: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `719048 -> 717796`. Count as cumulative size cleanup only; pause/input still needs normal visual validation before merging. |
 | `P4-265` | Done: compile `utils.c` with `-Os`. | Utility support code is phase-safe under the current baseline: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `717796 -> 716584`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
 | `P4-266` | Failed/no-op: compile `uncompress.c` with `-Os`. | The exact no-holiday gate stayed flat, but no tracked size or runtime metric moved (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, PS-EXE `143360`, ELF `716584`); source was reverted and only the experiment log was kept. |
+| `P4-267` | Done: compile `island.c` with `-Os`. | The exact no-holiday fixed-island gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `716584 -> 716340`; tracked hot-symbol addresses shifted by `-48` bytes without changing cadence. Count as small cumulative size cleanup only. |
 
 Prefetch variants to test in order:
 

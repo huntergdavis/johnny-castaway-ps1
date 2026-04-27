@@ -60,6 +60,7 @@ set(SOURCES
 # gate. Most hot files stay at the SDK default because code phase is fragile.
 set_source_files_properties(
     src/utils.c
+    src/island.c
     src/ps1_debug.c
     src/foreground_pilot.c
     src/holidays.c
