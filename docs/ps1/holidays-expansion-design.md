@@ -1,5 +1,8 @@
 # Holiday Expansion Design
 
+> 🌐 **Rendered version:** **[/docs/holidays/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Historical design ideation for expanding Johnny Castaway PS1 from 4 holidays
 to 35 well-distributed, US-centric celebrations. The current art deliverable
 does not implement these as full scenes; it reduces each new holiday to one

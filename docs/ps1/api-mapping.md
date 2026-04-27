@@ -1,5 +1,8 @@
 # PS1 Port - API Mapping Reference
 
+> 🌐 **Rendered version:** **[/docs/api/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/api/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 This document shows how SDL2 functions are mapped to PSn00bSDK equivalents for the PlayStation 1 port.
 
 ## Graphics API Mapping

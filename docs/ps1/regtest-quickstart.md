@@ -1,5 +1,8 @@
 # PS1 Headless Regression Testing Harness
 
+> 🌐 **Rendered version:** **[/docs/regtest/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/regtest/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 > **⚠️ Secondary / legacy tooling.**
 > The headless regtest harness is no longer the primary acceptance gate
 > for the PS1 branch. Current scene bring-up goes through the

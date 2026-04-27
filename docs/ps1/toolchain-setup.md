@@ -1,5 +1,8 @@
 # PS1 Toolchain Setup
 
+> 🌐 **Rendered version:** **[/docs/build/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/build/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Guide to setting up the PlayStation 1 development environment for Johnny Reborn.
 
 ## Overview

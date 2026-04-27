@@ -1,5 +1,8 @@
 # Holiday emblem sheet pipeline
 
+> 🌐 **Rendered version:** **[/docs/holidays/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 The holiday art pipeline is now deliberately small: one transparent 32x32
 emblem for each added holiday, packed into a single sprite sheet.
 

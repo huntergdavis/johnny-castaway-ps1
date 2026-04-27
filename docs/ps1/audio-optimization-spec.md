@@ -1,5 +1,8 @@
 # PS1 Audio Implementation Spec
 
+> 🌐 **Rendered version:** **[/docs/audio/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/audio/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 ## 1. Sound Inventory
 
 ### 1.1 Source Format

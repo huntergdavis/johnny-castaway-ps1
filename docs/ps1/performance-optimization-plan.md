@@ -1,5 +1,8 @@
 # PS1 Scene Playback Performance Optimization Plan
 
+> 🌐 **Rendered version:** **[/docs/performance/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/performance/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Date: 2026-04-25
 
 Original planning baseline: `f704312c ps1: keep fg2 overlays scene-relative to island`
