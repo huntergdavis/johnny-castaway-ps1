@@ -856,6 +856,7 @@ from perturbing the deterministic cadence.
 | `P4-184` | Failed/no promotion: combine adjacent no-slack perf-log guards. | The exact fishing1 gate stayed flat, but combining the two `ps1PerfEnabled` checks in each no-slack prefetch path grew `jcreborn.elf` `739552 -> 739664`; source was reverted and cosmetic hot-path guard combining should be avoided unless metrics improve. |
 | `P4-185` | Done: remove duplicate compose active guard. | `grUpdateDisplay()` already guards calls to `foregroundPilotRuntimeCompose()` and the compose function still no-ops by mode; removing the duplicate active check kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739552 -> 739544`. |
 | `P4-186` | Failed/no promotion: remove the active check from `fgRuntimeCanHoldDisplayedFrame()`. | The change crossed a PS-EXE sector bucket (`149504 -> 147456`) and moved `FG\\FISHING1.FG2` to LBA `398`, but active playback regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and this becomes a layout-preservation retry candidate. |
+| `P4-187` | Failed/no promotion: remove the active check from `fgRuntimeMarkFrameRendered()`. | This also crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, producing the same active playback regression (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and active-guard pruning now needs explicit CD-layout preservation. |
 
 Prefetch variants to test in order:
 
