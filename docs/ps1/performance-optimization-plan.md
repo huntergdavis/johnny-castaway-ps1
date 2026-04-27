@@ -952,6 +952,7 @@ from perturbing the deterministic cadence.
 | `P4-267` | Done: compile `island.c` with `-Os`. | The exact no-holiday fixed-island gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `716584 -> 716340`; tracked hot-symbol addresses shifted by `-48` bytes without changing cadence. Count as small cumulative size cleanup only. |
 | `P4-268` | Done: compile `jc_reborn.c` with `-Os`. | The exact no-holiday gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `716340 -> 714520`; tracked hot-symbol addresses shifted by `-404` bytes without changing cadence. Count as cumulative main-TU size cleanup only, and keep UI validation separate. |
 | `P4-269` | Failed/no promotion: compile `cdrom_ps1.c` with `-Os`. | The CD TU did shrink PS-EXE `143360 -> 141312`, move `FISHING1.FG2 LBA 396 -> 395`, and shrink helper symbols, but it regressed cadence (`loop_vb 1221 -> 1224`, `blocking_vb/prefetch_overrun_vb 5 -> 10`); source was reverted and only the experiment log was kept. |
+| `P4-270` | Failed/no promotion: cache file LBA in `ps1_streamReadFromCdFileIntoBuffered()`. | The exact gate stayed timing/layout-flat, but the helper grew by `8` bytes and ELF grew `714520 -> 714808`; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
