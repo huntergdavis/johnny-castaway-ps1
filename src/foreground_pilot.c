@@ -2132,7 +2132,7 @@ void foregroundPilotRuntimeAdvance(void)
 
 int foregroundPilotRuntimeActive(void)
 {
-    return gFgRuntime.active ? 1 : 0;
+    return gFgRuntime.active;
 }
 
 unsigned short foregroundPilotRuntimeFrameIndex(void)

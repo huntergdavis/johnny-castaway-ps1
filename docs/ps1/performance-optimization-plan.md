@@ -38,8 +38,8 @@ diagnostic scene gating, long-hold host-deadline catch-up, unused foreground
 status accessor removal, dead foreground requested-mode state removal, and
 base-diff foreground pack enforcement, startup pre-application of
 scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
-collapsed held-loop prefetch branch shape, and duplicate compose active-guard
-removal, reported `policy=stage1_window`,
+collapsed held-loop prefetch branch shape, duplicate compose active-guard
+removal, and simplified runtime-active accessor, reported `policy=stage1_window`,
 `buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2510092`,
@@ -859,6 +859,7 @@ from perturbing the deterministic cadence.
 | `P4-187` | Failed/no promotion: remove the active check from `fgRuntimeMarkFrameRendered()`. | This also crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, producing the same active playback regression (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and active-guard pruning now needs explicit CD-layout preservation. |
 | `P4-188` | Failed/no promotion: retry mark-rendered active-guard removal with one-sector CD padding. | The temporary padding restored `FG\\FISHING1.FG2` to LBA `399`, but the exact gate still regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); the miss is code-layout/scheduler phase too, not just physical FG2 LBA. |
 | `P4-189` | Failed: disable stream-window append extension. | Removing the append/memmove path collapsed sequential window behavior (`seq 66 -> 0`, `seek_back 5 -> 71`) and badly regressed CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 26`); keep append preservation and target smarter grouped/appended reads instead. |
+| `P4-190` | Done: simplify `foregroundPilotRuntimeActive()`. | Returning the runtime byte directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739544 -> 739540` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 
 Prefetch variants to test in order:
 
