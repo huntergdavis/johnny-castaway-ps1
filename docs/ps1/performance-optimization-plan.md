@@ -1533,6 +1533,14 @@ can regress by one visible CD VBlank. Treat default-off diagnostics as
 layout/cadence ballast until cold sections, explicit ISO padding, or a
 phase-independent CD scheduler makes removal deterministic.
 
+The later hot whole-TU compiler probes add the inverse rule: speed-oriented
+compiler expansion is also not safe just because the target file is hot.
+`foreground_pilot.c -O3` grew the scheduler and raised visible CD pressure, and
+`cdrom_ps1.c -O3` grew the executable by three sectors, moved `FISHING1.FG2`
+from LBA `399` to `402`, and regressed `blocking_vb/prefetch.overrun_vb` from
+`5` to `13`. Future toolchain work needs function-scoped codegen, hot-symbol
+address padding, or a phase sweep before retrying hot translation-unit flags.
+
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
 reads that frame. Prefetching converts those held VBlanks into useful work

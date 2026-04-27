@@ -54,6 +54,41 @@ the fifth visible read. The best path is parallel pressure on five fronts:
 | Toolchain and layout control | Many valid cleanups regressed only because code/CD phase shifted. That is a solvable build problem. |
 | Separate release/perf-log baselines | Perf logging is now part of the optimized path; release-speed measurements may expose free headroom. |
 
+## Fresh Targets From The Latest Misses
+
+The late 2026-04-26 wave ruled out more blind whole-TU compiler probing. Both
+hot `-O3` attempts expanded executable layout, moved FG2 placement, and raised
+visible CD pressure. The next useful tests should control phase first, then
+retry promising source/toolchain ideas inside that controlled envelope.
+
+| # | Target | Test Shape | Expected Signal |
+|---:|---|---|---|
+| 101 | Pure CD phase sweep | Insert `0..8` dummy sectors after `JCREBORN.EXE` with no source change. | Finds whether pack LBA alone can improve or worsen the current `blocking_vb=5` knee. |
+| 102 | Pure executable bucket sweep | Add inert text/data padding to keep FG2 LBA fixed while changing EXE bucket. | Separates executable load/code phase from pack physical placement. |
+| 103 | Hot-symbol address sweep | Pad before/after `foreground_pilot.o`, `cdrom_ps1.o`, and `graphics_ps1.o` independently. | Names which hot address deltas create the fifth visible read. |
+| 104 | Link-order sweep | Move `cdrom_ps1.o` before and after foreground/graphics without changing code. | Tests instruction locality and branch/cache phase as a first-class variable. |
+| 105 | Function alignment sweep | Try 4/8/16/32-byte alignment for only CD/foreground hot functions. | Finds low-cost address buckets without whole-TU codegen changes. |
+| 106 | Cold-section ballast | Keep cold `-Os` size wins but add deterministic padding to preserve the accepted EXE sector bucket. | Unlocks prior size wins without changing playback cadence. |
+| 107 | Release-libs phase harness | Retest Release SDK libraries across CD and text phase pads. | Determines if the `1220` loop-VBlank signal can survive `blocking_vb<=5`. |
+| 108 | Fifth-read locator | Host-side script maps the extra blocking read to LBA, frame, slack, and previous operation. | Turns `blocking_reads 4 -> 5` failures into a concrete fix target. |
+| 109 | Per-read slack class report | Bucket each read by held VBlanks available, sectors, preserved bytes, and overrun. | Builds the cost predictor needed for group acceptance. |
+| 110 | Group-fire trace build | Diagnostic binary logs why each planner group did or did not fire. | Explains why `384..396` remained a no-op. |
+| 111 | Generated group metadata v2 | Emit group candidates beside FG2 entries without moving payload offsets. | Replaces hard-coded one-off group tables. |
+| 112 | Selective two-group tail retry | Retry `384..396` only after group-fire tracing proves the append point. | Avoids increasing buffer capacity for groups that cannot execute. |
+| 113 | Prepared-state detail counters | Add trace-only `prepared_used`, `prepared_missed`, and `prepared_blocked_cd` counters. | Separates useful precompose work from duplicate ballast. |
+| 114 | CD-first scheduler prototype | Held slice owner order becomes read deadline, then precompose, then idle wait. | Prevents render prep from stealing the CD slack that hides reads. |
+| 115 | Read-deadline reservation | Reserve a minimum hidden-read budget before any speculative render prep. | Retests prepared-present ideas without creating extra visible reads. |
+| 116 | No-source layout canary | Nightly/headless run checks that a rebuild of unchanged source preserves cadence. | Detects toolchain/container nondeterminism before optimization tests. |
+| 117 | Perf-log off baseline | Capture release-speed metrics with logging disabled or minimized. | Quantifies how much of the remaining gap is diagnostic overhead. |
+| 118 | Trace-binary split | Build a separate diagnostic executable so counters never perturb accepted speed binaries. | Allows high-detail metrics without invalidating timing. |
+| 119 | Pack-local upload plans | Emit dirty/upload bands at pack generation time. | Removes runtime scan/merge logic instead of tuning it further. |
+| 120 | Pack-local restore plans | Emit previous-frame restore bands and full-cover row masks. | Reduces restore work without runtime intersection checks. |
+| 121 | Generated compositor classes | Group spans by alignment/length class offline. | Enables branch-light PAL4 composition without whole-TU `-O3`. |
+| 122 | CD helper assembly microbench | Hand-code only the sector math/copy inner helper, preserving C call shape. | Tests runtime benefit without compiler expanding the whole TU. |
+| 123 | Controller-poll release probe | Measure pause/input polling cost only in release/perf-off mode. | Avoids optimizing pad paths around perf-log noise. |
+| 124 | ISO ordering probe | Move inactive resource/SND trees after active FG packs in a scratch layout. | Tests whether active scene adjacency can lower seek/read variability. |
+| 125 | Cross-scene phase sample | Run the phase winner against fishing2/fishing3 before promotion. | Prevents a fishing1-only CD layout win from hurting the next validated scenes. |
+
 ## Impact-Prioritized Order
 
 | Priority | Area | Tests | Why First |
@@ -183,7 +218,7 @@ near misses:
 | 5 | 23 | Revisit a near miss that already showed a two-VBlank loop win. |
 | 6 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 | 7 | 91 | Start compiler/toolchain matrix with cold `-Os`, not hot `-O3`. |
-| 8 | 94 | Test CD helper-specific `-O3`; it is hot and tightly scoped. |
+| 8 | 101 | Run a pure CD phase sweep before more compiler probes. |
 | 9 | 41 | Build the explicit CD-first/render-second scheduler model. |
 | 10 | 61 | Begin pack-emitted upload bands; runtime upload tuning is exhausted. |
 
@@ -196,6 +231,7 @@ near misses:
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
 | Debug/code-size compile gates | Text/CD phase padding or hot/cold section isolation exists. |
+| Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Runtime dirty/upload heuristics | Pack-emitted masks or upload plans replace hot runtime checks. |
 | Async CD | Async state ownership and polling metrics exist in a trace build. |
 | `Setloc` skipping | Full frame hashes and work-identity gates prove every frame rendered. |
