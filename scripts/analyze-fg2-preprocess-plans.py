@@ -409,9 +409,10 @@ def clip_extent_to_screen_rect(tile: int, y: int, extent: tuple[int, int],
     return x0 - tile_screen_x, x1 - tile_screen_x
 
 
-def restore_bytes_for_extents(prev: RowExtents,
-                              clean_rects: list[tuple[int, int, int, int]]) -> int:
+def restore_plan_for_extents(prev: RowExtents,
+                             clean_rects: list[tuple[int, int, int, int]]) -> dict[str, int]:
     total = 0
+    intervals = 0
     for tile in range(TILE_COUNT):
         for y in range(TILE_H):
             extent = prev[tile][y]
@@ -421,7 +422,8 @@ def restore_bytes_for_extents(prev: RowExtents,
                 clipped = clip_extent_to_screen_rect(tile, y, extent, rect)
                 if clipped is not None:
                     total += (clipped[1] - clipped[0]) * 2
-    return total
+                    intervals += 1
+    return {"bytes": total, "intervals": intervals}
 
 
 def subtract_intervals(base: list[tuple[int, int]],
@@ -443,9 +445,10 @@ def subtract_intervals(base: list[tuple[int, int]],
     return pieces
 
 
-def restore_minus_current_bytes(prev: RowExtents, current_exact: RowIntervals,
-                                clean_rects: list[tuple[int, int, int, int]]) -> int:
+def restore_minus_current_plan(prev: RowExtents, current_exact: RowIntervals,
+                               clean_rects: list[tuple[int, int, int, int]]) -> dict[str, int]:
     total = 0
+    intervals = 0
     for tile in range(TILE_COUNT):
         for y in range(TILE_H):
             extent = prev[tile][y]
@@ -458,7 +461,41 @@ def restore_minus_current_bytes(prev: RowExtents, current_exact: RowIntervals,
                     clipped_for_rects.append(clipped)
             for start, end in subtract_intervals(clipped_for_rects, current_exact[tile][y]):
                 total += (end - start) * 2
-    return total
+                intervals += 1
+    return {"bytes": total, "intervals": intervals}
+
+
+def restore_threshold_plan(prev: RowExtents, current_exact: RowIntervals,
+                           clean_rects: list[tuple[int, int, int, int]],
+                           min_saved_pixels: int,
+                           max_pieces: int) -> dict[str, int]:
+    total = 0
+    intervals = 0
+    for tile in range(TILE_COUNT):
+        for y in range(TILE_H):
+            extent = prev[tile][y]
+            if extent is None:
+                continue
+            base: list[tuple[int, int]] = []
+            for rect in clean_rects:
+                clipped = clip_extent_to_screen_rect(tile, y, extent, rect)
+                if clipped is not None:
+                    base.append(clipped)
+            base = merge_intervals(base)
+            if not base:
+                continue
+
+            pieces = subtract_intervals(base, current_exact[tile][y])
+            base_pixels = sum(end - start for start, end in base)
+            piece_pixels = sum(end - start for start, end in pieces)
+            saved_pixels = base_pixels - piece_pixels
+            if saved_pixels >= min_saved_pixels and len(pieces) <= max_pieces:
+                chosen = pieces
+            else:
+                chosen = base
+            intervals += len(chosen)
+            total += sum((end - start) * 2 for start, end in chosen)
+    return {"bytes": total, "intervals": intervals}
 
 
 def row_presence_bounds(rows: RowIntervals) -> list[tuple[int, int] | None]:
@@ -667,7 +704,9 @@ def main() -> None:
 
     totals = {
         "restore_runtime_bytes": 0,
+        "restore_runtime_intervals": 0,
         "restore_minus_current_exact_bytes": 0,
+        "restore_minus_current_exact_intervals": 0,
         "upload_runtime_full_width_bytes": 0,
         "upload_runtime_full_width_rows": 0,
         "upload_runtime_full_width_rects": 0,
@@ -685,7 +724,9 @@ def main() -> None:
     }
     maxima = {
         "restore_runtime_bytes": 0,
+        "restore_runtime_intervals": 0,
         "restore_minus_current_exact_bytes": 0,
+        "restore_minus_current_exact_intervals": 0,
         "upload_runtime_full_width_bytes": 0,
         "upload_runtime_full_width_rects": 0,
         "upload_xband_exact_bytes_align4": 0,
@@ -693,8 +734,9 @@ def main() -> None:
     }
 
     for exact_rows, extent_rows in zip(frame_exact, frame_extents):
-        restore_bytes = restore_bytes_for_extents(prev_extents, clean_rects)
-        restore_skipped = restore_minus_current_bytes(prev_extents, exact_rows, clean_rects)
+        restore_plan = restore_plan_for_extents(prev_extents, clean_rects)
+        restore_bytes = restore_plan["bytes"]
+        restore_skipped = restore_minus_current_plan(prev_extents, exact_rows, clean_rects)
         union_extent = union_extent_intervals(prev_extents, extent_rows)
         union_exact = union_intervals(prev_exact, exact_rows)
         full_plan = full_width_upload_plan(union_extent)
@@ -707,7 +749,9 @@ def main() -> None:
         x_exact_16 = xband_upload_plan(union_exact, 16)
 
         totals["restore_runtime_bytes"] += restore_bytes
-        totals["restore_minus_current_exact_bytes"] += restore_skipped
+        totals["restore_runtime_intervals"] += restore_plan["intervals"]
+        totals["restore_minus_current_exact_bytes"] += restore_skipped["bytes"]
+        totals["restore_minus_current_exact_intervals"] += restore_skipped["intervals"]
         totals["upload_runtime_full_width_bytes"] += full_plan["bytes"]
         totals["upload_runtime_full_width_rows"] += full_plan["rows"]
         totals["upload_runtime_full_width_rects"] += full_plan["rects"]
@@ -724,9 +768,17 @@ def main() -> None:
         totals["upload_extent_row_bytes"] += extent_bytes(intervals_to_extents(union_exact))
 
         maxima["restore_runtime_bytes"] = max(maxima["restore_runtime_bytes"], restore_bytes)
+        maxima["restore_runtime_intervals"] = max(
+            maxima["restore_runtime_intervals"],
+            restore_plan["intervals"],
+        )
         maxima["restore_minus_current_exact_bytes"] = max(
             maxima["restore_minus_current_exact_bytes"],
-            restore_skipped,
+            restore_skipped["bytes"],
+        )
+        maxima["restore_minus_current_exact_intervals"] = max(
+            maxima["restore_minus_current_exact_intervals"],
+            restore_skipped["intervals"],
         )
         maxima["upload_runtime_full_width_bytes"] = max(
             maxima["upload_runtime_full_width_bytes"],
@@ -752,12 +804,64 @@ def main() -> None:
     current_restore = totals["restore_runtime_bytes"]
     payload_bytes = sum(entry.data_size for entry in active_entries)
     pack_metadata_bytes = header.data_offset
+    restore_profiles: dict[str, dict[str, int]] = {
+        "exact": {
+            "bytes": totals["restore_minus_current_exact_bytes"],
+            "intervals": totals["restore_minus_current_exact_intervals"],
+            "max_bytes": maxima["restore_minus_current_exact_bytes"],
+            "max_intervals": maxima["restore_minus_current_exact_intervals"],
+        }
+    }
+
+    for name, min_saved_pixels, max_pieces in (
+        ("min8px_max4pieces", 8, 4),
+        ("min16px_max3pieces", 16, 3),
+        ("min32px_max2pieces", 32, 2),
+        ("min64px_max2pieces", 64, 2),
+        ("full_cover_only", 1, 0),
+    ):
+        total_bytes = 0
+        total_intervals = 0
+        max_bytes = 0
+        max_intervals = 0
+        prev_for_profile = empty_extents()
+        if not args.no_initial_full_dirty:
+            prev_for_profile = full_tile_extents()
+        for exact_rows, _extent_rows in zip(frame_exact, frame_extents):
+            plan = restore_threshold_plan(
+                prev_for_profile,
+                exact_rows,
+                clean_rects,
+                min_saved_pixels=min_saved_pixels,
+                max_pieces=max_pieces,
+            )
+            total_bytes += plan["bytes"]
+            total_intervals += plan["intervals"]
+            max_bytes = max(max_bytes, plan["bytes"])
+            max_intervals = max(max_intervals, plan["intervals"])
+            prev_for_profile = intervals_to_extents(exact_rows)
+        restore_profiles[name] = {
+            "bytes": total_bytes,
+            "intervals": total_intervals,
+            "max_bytes": max_bytes,
+            "max_intervals": max_intervals,
+        }
+
+    for profile in restore_profiles.values():
+        profile["saved_bytes"] = current_restore - profile["bytes"]
+        profile["saved_percent"] = pct_saved(current_restore, profile["bytes"])
+        profile["estimated_interval_metadata_bytes"] = profile["intervals"] * 6
 
     opportunities = {
         "restore_skip_under_current_exact": {
             "bytes": totals["restore_minus_current_exact_bytes"],
+            "intervals": totals["restore_minus_current_exact_intervals"],
+            "estimated_interval_metadata_bytes": (
+                totals["restore_minus_current_exact_intervals"] * 6
+            ),
             "saved_bytes": current_restore - totals["restore_minus_current_exact_bytes"],
             "saved_percent": pct_saved(current_restore, totals["restore_minus_current_exact_bytes"]),
+            "note": "Exact byte win is large, but interval count must be coalesced before runtime promotion.",
         },
         "upload_xband_extent_align4": {
             "bytes": totals["upload_xband_extent_bytes_align4"],
@@ -819,7 +923,9 @@ def main() -> None:
         },
         "runtime_model": {
             "restore_bytes": current_restore,
+            "restore_intervals": totals["restore_runtime_intervals"],
             "max_restore_bytes": maxima["restore_runtime_bytes"],
+            "max_restore_intervals": maxima["restore_runtime_intervals"],
             "upload_bytes": current_upload,
             "upload_rows": totals["upload_runtime_full_width_rows"],
             "upload_rects": totals["upload_runtime_full_width_rects"],
@@ -829,6 +935,7 @@ def main() -> None:
         },
         "preprocess_totals": totals,
         "preprocess_maxima": maxima,
+        "restore_skip_profiles": restore_profiles,
         "opportunities": opportunities,
         "red_team": [
             "Pack-emitted narrow multi-row uploads cannot read directly from current tile RAM; the rows are strided.",

@@ -114,9 +114,10 @@ fishing1 runtime graphics counters (`restore_bytes=2510092`,
 that upload-ready x-bands could cut upload bytes by about `49.61%`, but only
 by carrying about `8.2 MB` of aligned frame-band payload for fishing1. Exact
 interval upload is a stronger byte floor (`86.83%` reduction) but explodes to
-`95259` rects. The safer next pack-format experiment is therefore exact
-restore-skip metadata: it predicts `52.41%` lower restore bytes without adding
-multi-megabyte upload payloads.
+`95259` rects. Restore-skip metadata is the safer next pack-format experiment,
+but only with coalescing: exact restore skip predicts `52.41%` lower restore
+bytes but raises restore intervals from `24300` to `73417`; the current
+`min8px_max4pieces` profile still saves `26.35%` with `36450` intervals.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
