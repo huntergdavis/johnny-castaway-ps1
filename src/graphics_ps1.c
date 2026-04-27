@@ -760,6 +760,7 @@ void grReplaySprite(struct TDrawnSprite *ds)
 /*
  * Update display with all layers
  */
+__attribute__((optimize("Os")))
 void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
                      struct TTtmThread *ttmThreads,
                      struct TTtmThread *ttmHolidayThread)
