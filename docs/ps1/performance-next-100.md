@@ -39,6 +39,9 @@ the ELF to `713496` bytes.
 The `grRestoreBgFromRects()` function-scoped `-Os` retry is rejected despite a
 local function shrink, because total ELF grew to `714132` bytes with no VBlank
 movement.
+The PAL4 compositor function-scoped `-Os` retry is also rejected: it shrank the
+loaded executable, but still regressed to `blocking_vb=26` even when a temporary
+CD pad preserved `FISHING1.FG2` at LBA `396`.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -288,6 +291,7 @@ near misses:
 | `grDrawBackground()` function `-Os` | Done; keep because scoped upload-function codegen stayed exact-flat and shrank ELF. |
 | `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. |
 | `grRestoreBgFromRects()` function `-Os` | Do not retry alone; it shrank the function but grew total ELF with no timing movement. |
+| PAL4 compositor function-scoped `Os` | Do not retry; it shrank the compositor and loaded executable but regressed blocking even with foreground LBA restored. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
