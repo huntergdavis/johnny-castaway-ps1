@@ -1552,6 +1552,11 @@ one-sector executable/code-shape changes.
 Adding `2 KB` of inert initialized executable payload was timing-flat, so raw
 executable footprint is also not a standalone win. Use padding as an isolation
 tool for hot-symbol address sweeps and source-cleanup salvage tests.
+Aligning `fgRuntimeFillWindowForEntry()` to 16 and 32 byte boundaries was also
+timing-flat, even with downstream hot symbols shifted by up to `+36` bytes.
+The phase problem is narrower than "any address move"; it appears tied to
+specific shrink/code-shape changes that alter read timing, not harmless
+positive alignment shifts.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
