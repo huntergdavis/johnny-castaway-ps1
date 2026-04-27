@@ -6,24 +6,32 @@ Current accepted fishing1 exact baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1219` |
-| `target_vb` | `1072` |
-| `remaining_overrun_vb` | `147` |
-| `remaining_over_target` | `13.71%` |
-| `blocking_vb` | `5` |
-| `prefetch_overrun_vb` | `5` |
-| `loop_reads` | `67` |
+| `loop_vb` | `1215` |
+| `target_vb` | `1075` |
+| `remaining_overrun_vb` | `140` |
+| `remaining_over_target` | `13.02%` |
+| `blocking_vb` | `1` |
+| `prefetch_overrun_vb` | `1` |
+| `loop_reads` | `43` |
 | `upload_bytes` | `16281600` |
 | `restore_bytes` | `2510092` |
-| `prefetch_buffer` | `29712` bytes |
+| `prefetch_buffer` | `334864` bytes for fishing1 high-tide setup-prime, `29712` bytes otherwise |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `715432` bytes |
+| `jcreborn.elf` | `717188` bytes |
 
-Goal: close `147` remaining loop VBlanks without changing pixels, sound event
+Goal: close `140` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
 baseline is about `12` VBlanks, so the practical target is roughly fourteen
 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
 stack of flat-timing cleanup wins.
+
+Red-team caveat: the latest accepted setup-prime pass is an active-loop win,
+not an end-to-end scene-time win. It moves a large `320 KB` FG2 read into setup
+(`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`) so active playback can reduce
+visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 1`) and safely spend
+more catch-up. Future work should hide that prime during inter-scene/loading
+time or generate scene/tide-specific prime coverage, rather than treating setup
+time as free.
 
 Current note: the fishing1 high-tide tail read group `396..406` is accepted as
 a work-reduction checkpoint, not a VBlank speed win. It kept that era's
@@ -133,6 +141,12 @@ single-TU `foreground_pilot.c -O3` is rejected as a no-win size/layout loss
 conclusion is sharper: no more blind hard-coded groups or foreground-wide
 compiler flags; the next CD win needs generated/costed group metadata or a
 trace-backed scheduler budget.
+The latest setup-prime wave proves a narrow exception: preloading enough FG2
+coverage can make a previously unsafe threshold-`4` catch-up profitable, but
+only when the catch-up is gated on a successful prime. The promoted `320 KB`
+fishing1 high-tide prime improves `loop_vb 1219 -> 1215`, `overrun_vb
+147 -> 140`, `blocking_vb 5 -> 1`, and `loop_reads 67 -> 43`; smaller
+`192 KB`/`256 KB` versions either lost or still raised visible CD pressure.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -142,12 +156,14 @@ counted as a speed win.
 
 ## Highest-Leverage Thesis
 
-The remaining gap is not one single bottleneck. The current loop has hidden CD
-work mostly under control, but small scheduling/code-shape shifts still create
-the fifth visible read. The best path is parallel pressure on five fronts:
+The remaining gap is not one single bottleneck. The current loop has visible
+CD mostly contained to one VBlank on the setup-primed high-tide path, but that
+came by moving read work into setup. The best path is parallel pressure on six
+fronts:
 
 | Front | Why It Can Still Move |
 |---|---|
+| Setup-prime/inter-scene preloading | `320 KB` priming proves residency can unlock catch-up; the setup cost must be hidden or generated per scene/tide. |
 | CD grouping and read-cost prediction | Raw window sizes failed, but the CD log now shows zero-extra-sector group candidates. |
 | Explicit render/CD slack scheduler | Several rejected variants were nominally faster but stole the slack hiding CD work. |
 | Pack-emitted render/upload metadata | Runtime dirty/upload heuristics are locally exhausted; generated plans can remove branches. |
@@ -161,10 +177,11 @@ hot `-O3` attempts expanded executable layout, moved FG2 placement, and raised
 visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
-The current `perf-detail` sample (`20260426-234118`) shifts priority again:
-`present_wait_vb=157` against a remaining `150` VBlank overrun. Visible CD is
-down to `5` VBlanks. The next major win has to reduce or hide present wait
-without early display, tearing, frame drops, or weakened pause input.
+The current detail/trace samples shift priority again: `present_wait_vb=157`
+against a remaining `140` VBlank active-loop overrun, while setup-primed
+visible CD is down to `1` VBlank. The next major win has to reduce or hide
+present wait and move setup-prime cost out of visible scene startup without
+early display, tearing, frame drops, or weakened pause input.
 
 | # | Target | Test Shape | Expected Signal |
 |---:|---|---|---|
@@ -218,16 +235,26 @@ without early display, tearing, frame drops, or weakened pause input.
 | 148 | Pack-emitted present bands | Emit exactly the bands needed for prepared upload at pack time. | Replaces runtime dirty scan in the present path. |
 | 149 | Cross-scene present histogram | Run detail attribution on fishing2/fishing3 and later all scenes. | Confirms whether present wait dominates beyond fishing1. |
 | 150 | Visual signoff harness for present experiments | Capture stills/video around any present-wait change before promotion to main. | Present optimizations can pass counters while tearing visually, so they need extra signoff. |
+| 151 | Generated setup-prime planner | Analyze every scene/tide pack for the smallest setup-prime byte window that covers useful early payloads. | Generalizes the fishing1 `320 KB` win without hard-coding one scene. |
+| 152 | Inter-scene prime handoff | Start reading the next scene's prime window during the previous scene's dead/held tail when scene selection is known. | Converts the current setup-cost trade into a real end-to-end speed win. |
+| 153 | Segmented prime window | Prime only the hot early and late FG2 spans instead of one contiguous first `N` bytes. | May reduce setup bytes while preserving the catch-up-safe coverage boundary. |
+| 154 | Setup-prime low-tide sweep | Test low-tide fishing1 with generated prime sizes and keep threshold `5` unless coverage proves threshold `4` safe. | Prevents high-tide assumptions from leaking into the low-tide path. |
+| 155 | Prime-size heap budget table | Emit per-scene largest-safe prime size after clean-rect allocation and runtime buffers. | Avoids memory regressions before trying all 63 scenes. |
+| 156 | Prime-aware catch-up table | Emit frame ranges where threshold `4` is safe because all needed payload bytes are already resident. | Replaces the current scene-global setup-primed catch-up with frame-level proof. |
+| 157 | Setup-cost gate | Add a harness mode that reports active-loop win, setup cost, and net scene cost separately. | Stops future preloading wins from accidentally hiding startup regressions. |
+| 158 | Prime prefetch during title/menu | Investigate whether menu/transition time can warm the first scene's FG2 window before playback starts. | Converts cold-start setup reads into user-invisible work. |
+| 159 | Cross-scene setup-prime matrix | Run fishing1/fishing2/fishing3 high/low with generated prime settings before main promotion. | Ensures the policy is not a fishing1-only trick. |
+| 160 | Prime-plus-present scheduler | Use primed coverage to retry present/pipeline scheduling only inside proven-resident frame ranges. | Combines the current CD residency win with the remaining present-wait target. |
 
 ## Impact-Prioritized Order
 
 | Priority | Area | Tests | Why First |
 |---:|---|---|---|
-| 1 | Pack-emitted/read-costed CD groups | `11-18`, `34-35` | The hard-coded tail group proves selective grouping can remove reads, while the broad 12-sector import proves a cost predictor is mandatory. |
-| 2 | Pack-emitted render/upload metadata | `61-64`, `81-90` | Runtime upload/compositor heuristics are locally exhausted; generated metadata can remove branches and preserve deterministic work identity. |
-| 3 | Explicit scheduler/CD budget | `41-50` | Many near-misses were nominal wins that stole CD slack. A CD-first budget is the gate for retrying them safely. |
-| 4 | Toolchain/layout control | `91-100` | Valid code-size cleanups still perturb hot phase. Layout control can unlock old no-promotion wins without changing pixels. |
-| 5 | Release/perf baseline separation | `1-10` | The harness should keep improving, but the immediate speed path is now runtime/pack work rather than more baseline bookkeeping. |
+| 1 | Setup-prime and inter-scene preload | `151-160` | The latest accepted win proves residency unlocks threshold-`4` catch-up; the next step is making the prime free or generated, not hard-coded. |
+| 2 | Pack-emitted/read-costed CD groups | `11-18`, `34-35` | The hard-coded tail group proves selective grouping can remove reads, while the broad 12-sector import proves a cost predictor is mandatory. |
+| 3 | Pack-emitted render/upload metadata | `61-64`, `81-90` | Runtime upload/compositor heuristics are locally exhausted; generated metadata can remove branches and preserve deterministic work identity. |
+| 4 | Explicit scheduler/CD budget | `41-50` | Many near-misses were nominal wins that stole CD slack. A CD-first budget is the gate for retrying them safely. |
+| 5 | Toolchain/layout control | `91-100` | Valid code-size cleanups still perturb hot phase. Layout control can unlock old no-promotion wins without changing pixels. |
 
 ## Next 100 Tests
 
@@ -235,8 +262,8 @@ without early display, tearing, frame drops, or weakened pause input.
 |---:|---|---|---|---|
 | 1 | Baseline | Add a release-speed run without `perf-log` and compare against the perf-log baseline. | We may be optimizing the logging build instead of the shipped runtime. | Release run is faster and remains visually/sound identical, creating a separate target baseline. |
 | 2 | Baseline | Add a dual-baseline policy: diagnostic baseline and release baseline. | Future changes should be judged against the right runtime mode. | Harness records both without weakening the strict perf-log gate. |
-| 3 | Harness | Add a non-promotable trace binary for per-read frame/slack class logging. | Inline CD histograms perturb the speed binary. | Trace build explains the fifth visible read without changing the accepted binary. |
-| 4 | Harness | Add host-side correlation from DuckStation read timestamps to frame indices. | Current CD log has LBAs but not the exact runtime frame owner. | We can name the read/frame that creates `blocking_reads=4/5`. |
+| 3 | Harness | Add a non-promotable trace binary for per-read frame/slack class logging. | Inline CD histograms perturb the speed binary. | Trace build explains the remaining visible read and setup-prime ownership without changing the accepted binary. |
+| 4 | Harness | Add host-side correlation from DuckStation read timestamps to frame indices. | Current CD log has LBAs but not the exact runtime frame owner. | We can name the read/frame that creates the remaining `blocking_vb=1` and any setup-prime overrun. |
 | 5 | Harness | Add optional full-frame hashes to reject sequential-CD false positives. | Skipping `Setloc` once looked fast but collapsed visual work. | The gate can safely retest lower-level CD continuation ideas. |
 | 6 | Harness | Gate `scene_vb` alongside `loop_vb` for setup-shift experiments. | Setup-prerender reduced loop accounting but not total time. | Future setup shifts cannot fake active-loop wins. |
 | 7 | Harness | Add map-address tolerance bands for hot functions. | We now know fixed EXE/LBA can still regress from code-address phase. | We can identify which address shifts are dangerous. |

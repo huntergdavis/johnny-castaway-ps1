@@ -3,6 +3,10 @@
 
 #include "mytypes.h"
 
+#ifndef PS1_PERF_DEEP_TRACE
+#define PS1_PERF_DEEP_TRACE 0
+#endif
+
 #ifdef PS1_BUILD
 
 enum {
@@ -47,6 +51,13 @@ enum {
     PS1_PERF_SCHED_PREPARED_READY = 7,
     PS1_PERF_SCHED_PREPARED_USED = 8,
     PS1_PERF_SCHED_PREPARED_WASTED = 9
+};
+
+enum {
+    PS1_PERF_PIPE_NONE = 0,
+    PS1_PERF_PIPE_DUE_RENDER = 1,
+    PS1_PERF_PIPE_PREPARE = 2,
+    PS1_PERF_PIPE_PREPARED_PRESENT = 3
 };
 
 extern volatile uint8 ps1PerfEnabled;
@@ -97,6 +108,13 @@ void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payload
 void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks);
 void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks);
 void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks);
+#if PS1_PERF_DEEP_TRACE
+void ps1PerfBeginPipeline(uint8 path);
+void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks);
+#else
+static inline void ps1PerfBeginPipeline(uint8 path) { (void)path; }
+static inline void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks) { (void)path; (void)elapsedVBlanks; }
+#endif
 void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes);
 void ps1PerfMarkAllocFail(uint32 bytes);
 void ps1PerfMarkSoundEvent(void);
@@ -168,6 +186,8 @@ static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, 
 static inline void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)rows; (void)bytes; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks) { (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks) { (void)phase; (void)elapsedVBlanks; }
+static inline void ps1PerfBeginPipeline(uint8 path) { (void)path; }
+static inline void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks) { (void)path; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes) { (void)frameBufferBytes; (void)scratchBytes; }
 static inline void ps1PerfMarkAllocFail(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkSoundEvent(void) {}

@@ -16,6 +16,8 @@ project(
     VERSION 1.0.0
 )
 
+option(PS1_PERF_DEEP_TRACE "Include large, diagnostic-only PS1 perf trace counters" OFF)
+
 # Set C standard
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -88,6 +90,9 @@ target_compile_options(jcreborn PRIVATE
 target_link_options(jcreborn PRIVATE
     -Wl,--gc-sections
 )
+if(PS1_PERF_DEEP_TRACE)
+    target_compile_definitions(jcreborn PRIVATE PS1_PERF_DEEP_TRACE=1)
+endif()
 
 # Include directories
 # - src/ for the main translation units' own headers

@@ -31,8 +31,9 @@ Latest accepted default-path fishing1 exact no-holiday night variant
 pause merge, pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
-dirty-row upload bands with a 1-row gap byte trim, setup priming of the first
-real payload, tight-slack direct staging for immediate payloads up to 8 KB,
+dirty-row upload bands with a 1-row gap byte trim, setup priming of a `320 KB`
+first-payload FG2 window for fishing1 high tide, setup-gated threshold-`4`
+catch-up, tight-slack direct staging for immediate payloads up to 8 KB,
 direct-stage scratch window seeding, and exact-4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
@@ -44,14 +45,20 @@ scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
 collapsed held-loop prefetch branch shape, duplicate compose active-guard
 removal, simplified runtime-active accessor, and the fishing1 high-tide tail
 read group `396..406` with 11-sector retained capacity, reported
-`policy=stage1_window`, `buf=29712`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
-`prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
-`target_vb=1071`, `restore_bytes=2510092`,
+`policy=stage1_window`, `buf=334864`, `hits=155`, `due_misses=0`,
+`blocking_vb=1`, `prefetch.overrun_vb=1`, `loop_vb=1215`,
+`overrun_vb=140`, `target_vb=1075`, `restore_bytes=2510092`,
 `upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=42`,
-`setup_read_vb=109`, `loop_reads=67`, and `scene_vb=1400`. This is the current baseline for the
-next experiment. The exact-4 plus 1-row upload plus prepared-wait prefetch
+The same run also reports `setup_reads=6`, `pack_start_vb=105`,
+`setup_read_vb=177`, `loop_reads=43`, and `scene_vb=1461`. This is the
+current baseline for the next experiment.
+Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
+the setup prime moves CD work from active playback into scene setup
+(`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
+that prime during inter-scene/loading time or emit generated per-scene/tide
+prime windows rather than counting setup as free. The exact-4 plus 1-row upload
+plus prepared-wait prefetch
 checkpoint is a work-reduction
 promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
 and `prefetch.overrun_vb` flat while reducing `restore_calls/compose_calls`
@@ -112,6 +119,17 @@ pipeline is not wasting prepared frames in fishing1; the next scheduler win
 must spend idle/CD-reserved held slices safely instead of chasing duplicate
 prepared-frame reuse.
 
+The deeper trace surface is now split from the accepted speed binary. The first
+ungated pipeline/slack-bucket counter pass changed EXE layout and timing, so it
+is compile-gated behind `PS1_PERF_DEEP_TRACE=ON`. Default builds stay exact;
+trace builds showed `due_frames=83`, `prepare_frames=72`,
+`prepared_present_frames=72`, and `prepared_wasted=0`, confirming the scheduler
+problem is ownership of idle/CD/present slots rather than discarded prepared
+frames. A setup-primed `320 KB` first-payload window then made one previously
+unsafe threshold-`4` catch-up shape safe for fishing1 high tide, reducing the
+active-loop overrun from `147` to `140` while lowering visible CD/refill
+pressure from `5` to `1` VBlank.
+
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
 VBlanks without redraw. The scene still ran about 55% too slow inside playback:
@@ -141,10 +159,10 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted prepared-present passes are only bridges; the next design must reduce duplicate prep while preserving lookahead. |
-| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=5` and `prefetch.overrun_vb=5`, but every saved read still compounds. |
-| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
-| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `67` active-loop transactions and `4` total backward seeks; selective grouped metadata is the likely next CD breakthrough. |
+| 1 | Generated setup-prime and inter-scene preload | High | The promoted `320 KB` prime cuts active-loop overrun `147 -> 140` and visible CD/refill `5 -> 1`, but currently pays setup cost. Hiding or generating the prime can turn this into a full-scene win. |
+| 2 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`; the next design must reduce or hide present latency while preserving CD lookahead and pause/input safety. |
+| 3 | Pack-emitted read groups and sector layout | Medium | Current setup-primed high tide still has `43` active-loop reads and `3` backward seeks; selective generated metadata is safer than one-off group tables. |
+| 4 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
 Latest red-team note: local CD/runtime tweaks are hitting a hard determinism
@@ -152,7 +170,10 @@ wall. `384..396` did not fire, `307..317` was exact-flat with code growth,
 direct stage-into-window exposed one extra visible CD VBlank, and
 `foreground_pilot.c -O3` grew the executable without a speed win. Treat those
 as evidence that the next CD/render pass needs generated metadata plus an
-explicit cost/scheduler model, not another one-off hard-coded branch.
+explicit cost/scheduler model, not another one-off hard-coded branch. The
+successful setup-prime exception reinforces that point: preloaded coverage must
+be proven by pack metadata and bounded heap policy before a shorter catch-up
+threshold is safe.
 
 Non-goals:
 
@@ -682,22 +703,25 @@ removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
-a post-pause 1-row gap byte trim, setup priming of the first real payload,
-tight-slack direct staging, direct-stage scratch window seeding, prepared-wait
-future prefetch, and the
+a post-pause 1-row gap byte trim, setup priming of a `320 KB` first-payload
+FG2 window on fishing1 high tide, setup-gated threshold-`4` catch-up,
+tight-slack direct staging, direct-stage scratch window seeding,
+prepared-wait future prefetch, and the
 exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 the exact no-holiday fishing1 variant reports
-`loop_vb=1221`, `blocking_vb=5`, `due_misses=0`, and prefetch
-`overrun_vb=5`, with `upload_bytes=16281600`, `restore_bytes=2510092`,
-`upload_rects=502`, `setup_reads=6`, and `scene_vb=1400`.
+`loop_vb=1215`, `target_vb=1075`, `overrun_vb=140`, `blocking_vb=1`,
+`due_misses=0`, and prefetch `overrun_vb=1`, with
+`upload_bytes=16281600`, `restore_bytes=2510092`, `upload_rects=502`,
+`loop_reads=43`, `setup_reads=6`, and `scene_vb=1461`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
-converted redundant span-side dirty work into more useful prefetch coverage.
-Next experiments should target the remaining blocking, bounded refill overrun,
-duplicate prepared-frame restore/compose work, upload byte volume, upload
-rectangle pressure, and pack/read-cost metadata that can stop raw window probes
-from perturbing the deterministic cadence.
+converted redundant span-side dirty work into more useful prefetch coverage,
+and setup-prime converted early FG2 residency into a safe catch-up window.
+Next experiments should target the setup-cost trade, the remaining one visible
+CD/refill VBlank, duplicate prepared-frame restore/compose work, upload byte
+volume, upload rectangle pressure, and generated pack/read-cost metadata that
+can stop raw window probes from perturbing the deterministic cadence.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -1004,6 +1028,12 @@ from perturbing the deterministic cadence.
 | `P4-301` | Failed/no promotion: store upload band scratch indices/ranges as `uint8`. | The exact gate stayed timing/work-flat and `grDrawBackground` shrank `1572 -> 1544`, but total ELF grew `712272 -> 712372`; source was reverted and only the experiment log was kept. |
 | `P4-302` | Done: add scheduler ownership counters and explicit CD/prep ownership markers. | The exact no-holiday gate stayed timing/layout/work/correctness-flat (`loop_vb=1219`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while adding `JCPERF2 sched`; this is instrumentation only and grows ELF to `715432`. |
 | `P4-303` | Failed/no promotion: owned-idle 4 VBlank catch-up prototype. | The ownership-gated catch-up rule produced no useful fishing1 catch-up slots (`catchup_idle=0`), kept timing flat, and moved PS-EXE/LBA (`143360 -> 145408`, `396 -> 397`), so the behavior was reverted and only the experiment log was kept. |
+| `P4-304` | Done: compile-gate deep pipeline/slack trace counters. | The ungated trace changed EXE layout and regressed timing, so the accepted form is `PS1_PERF_DEEP_TRACE=OFF` by default with optional trace builds for ownership analysis. |
+| `P4-305` | Failed/no promotion: prepared bridge slack `>=4`. | It moved work into different held-slack buckets but left `loop_vb=1219`, `blocking_vb=5`, and `prefetch_overrun_vb=5`; broad prepared eligibility is exhausted without a real scheduler change. |
+| `P4-306` | Failed/no promotion: global threshold-`4` host-deadline catch-up. | The global guard regressed to `loop_vb=1222` and `blocking_vb/prefetch_overrun_vb=16`; threshold `4` needs resident-payload proof. |
+| `P4-307` | Failed/no promotion: setup-prime `256 KB` without catch-up. | Active reads dropped sharply, but active loop stayed flat/slower and visible pressure rose to `6`; preloading has to be spent by the scheduler to matter. |
+| `P4-308` | Failed/no promotion: setup-prime `192 KB`/`256 KB` with threshold-`4` catch-up. | `256 KB` was close but still raised visible pressure to `6`, while `192 KB` lost; the coverage boundary is real. |
+| `P4-309` | Done: setup-prime a `320 KB` fishing1 high-tide FG2 window and gate threshold-`4` catch-up on prime success. | Active-loop metrics improve (`loop_vb 1219 -> 1215`, `overrun_vb 147 -> 140`, `blocking_vb/prefetch_overrun_vb 5 -> 1`, `loop_reads 67 -> 43`) with stable correctness/layout, but setup rises (`setup_vb 185 -> 246`), so future work must hide or generate the prime. |
 
 Prefetch variants to test in order:
 
@@ -1012,6 +1042,7 @@ Prefetch variants to test in order:
 | One-entry synchronous staging | During held VBlanks, read the next entry into a second buffer if it is not already staged. | `cd_vb` may remain nonzero but should move out of due-frame advancement; visible speed should improve if enough hold budget exists. |
 | One-entry async staging | Start `CdRead` during held time and poll completion over later held VBlanks. | Lower blocking time, but higher controller-state risk. |
 | 16 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after later retunes paired with the 3 VBlank refill guard. |
+| Setup-prime stream window | Fill a larger resident window before active playback, then enable shorter catch-up only if that prime succeeded. | Current fishing1 high-tide path uses `320 KB`; future variants need generated per-scene/tide sizing and inter-scene preload. |
 | 24 KB/32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
 | Dual-window ping-pong | Render from one window while filling the next during holds. | Best latency hiding, but only after single-window correctness. |
 | Sector-aligned FGP3 chunks | Pack frames into prefetch-friendly sector groups. | Only useful if runtime windowing exposes sector-copy overhead. |
@@ -1603,6 +1634,14 @@ The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
 `18 KB` parameter probe preserved zero due misses but regressed `loop_vb`,
 `blocking_vb`, and `prefetch.overrun_vb`, so larger reads are still too slow
 unless a future grouped/pipelined layout makes them cheaper to hide.
+
+The `320 KB` setup-prime pass is the first accepted proof that larger resident
+coverage can safely unlock threshold-`4` catch-up, but only when the runtime
+knows the prime succeeded. It reduces active-loop overrun from `147` to `140`
+and visible CD/refill from `5` to `1`, while increasing setup time. Treat this
+as a preload/scheduler direction: future work should generate prime sizes,
+segment hot coverage, and move the read into previous-scene/menu time where
+possible.
 
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run
