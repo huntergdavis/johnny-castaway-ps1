@@ -858,6 +858,7 @@ from perturbing the deterministic cadence.
 | `P4-186` | Failed/no promotion: remove the active check from `fgRuntimeCanHoldDisplayedFrame()`. | The change crossed a PS-EXE sector bucket (`149504 -> 147456`) and moved `FG\\FISHING1.FG2` to LBA `398`, but active playback regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and this becomes a layout-preservation retry candidate. |
 | `P4-187` | Failed/no promotion: remove the active check from `fgRuntimeMarkFrameRendered()`. | This also crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, producing the same active playback regression (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and active-guard pruning now needs explicit CD-layout preservation. |
 | `P4-188` | Failed/no promotion: retry mark-rendered active-guard removal with one-sector CD padding. | The temporary padding restored `FG\\FISHING1.FG2` to LBA `399`, but the exact gate still regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); the miss is code-layout/scheduler phase too, not just physical FG2 LBA. |
+| `P4-189` | Failed: disable stream-window append extension. | Removing the append/memmove path collapsed sequential window behavior (`seq 66 -> 0`, `seek_back 5 -> 71`) and badly regressed CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 26`); keep append preservation and target smarter grouped/appended reads instead. |
 
 Prefetch variants to test in order:
 
