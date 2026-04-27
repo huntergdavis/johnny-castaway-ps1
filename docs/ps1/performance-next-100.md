@@ -60,6 +60,9 @@ CD pressure, while `18 KB`/`17 KB` hit a structural invalid-read failure before
 metrics.
 The aligned CD read helper now caches its file LBA once per read, keeping exact
 cadence flat while shrinking the hot helper by 8 bytes and ELF by 84 bytes.
+A single-chunk branch inside that helper is rejected: the common-case branch
+duplicated too much error/read code and grew the hot helper by 104 bytes with
+no timing movement.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -317,6 +320,7 @@ near misses:
 | Dirty-row promotion overlap clear skip | Do not retry as an isolated branchy cleanup; exact-flat timing with ELF growth. |
 | Post-dirty raw window retune | Do not retry raw `18-20 KB` windows blindly; `20 KB` regressed and the 9-sector rounded window shape crashed before metrics. Use generated group metadata/cost prediction first. |
 | Aligned CD file-LBA cache | Done; keep because it shrank the active aligned read helper and ELF with exact timing/layout identity. |
+| Aligned CD single-chunk fast path | Do not retry as a duplicated branch; it grew the helper by 104 bytes without moving timing. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
