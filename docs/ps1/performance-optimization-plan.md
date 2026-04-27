@@ -1549,6 +1549,9 @@ opposite direction: restoring `FISHING1.FG2` to LBA `399` with a dummy sector
 did not prevent the regression when hot foreground symbols moved. Hot-loop
 cleanups now require hot-symbol padding or a scheduler that is insensitive to
 one-sector executable/code-shape changes.
+Adding `2 KB` of inert initialized executable payload was timing-flat, so raw
+executable footprint is also not a standalone win. Use padding as an isolation
+tool for hot-symbol address sweeps and source-cleanup salvage tests.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
