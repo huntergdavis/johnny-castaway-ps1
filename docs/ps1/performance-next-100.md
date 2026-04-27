@@ -266,6 +266,7 @@ near misses:
 | Hot-loop source cleanups | Preserve or deliberately sweep hot-symbol addresses first; the redundant prefetch pre-check removal failed even with FG2 LBA restored. |
 | Whole-TU link-order moves | Do not retry the simple `cdrom_ps1.c`-next-to-foreground order; it was timing-flat despite large symbol movement. Use targeted hot-section padding or cold-section isolation instead. |
 | Runtime dirty/upload heuristics | Pack-emitted masks or upload plans replace hot runtime checks. |
+| Upload coordinate static tables | Do not retry; static tables grew `grDrawBackground` and did not move timing. |
 | Async CD | Async state ownership and polling metrics exist in a trace build. |
 | `Setloc` skipping | Full frame hashes and work-identity gates prove every frame rendered. |
 | Upload rect cap `6` | Cross-scene matrix proves `max_upload_rects <= 6`; current fishing1-only retest has no measured win. |
