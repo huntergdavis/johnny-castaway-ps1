@@ -1,6 +1,6 @@
 # Castaway Freeplay — Direct-Control Johnny Mode
 
-> 🌐 **Rendered version:** **[/docs/freeplay/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/freeplay/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 **Status**: design locked, implementation ready to begin

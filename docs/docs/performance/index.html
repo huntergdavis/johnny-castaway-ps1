@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -113,7 +113,7 @@ Slack exists in the held intervals; it does not exist in the entries.</p>
 <h2 id="what-was-measured">What was measured</h2>
 
 <p>The perf instrumentation lives in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a>. It is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a>. It is
 gated so it adds zero cost when off.</p>
 
 <p>Three signal sources:</p>
@@ -129,20 +129,20 @@ hot paths because it perturbs timing.</li>
 <code class="language-plaintext highlighter-rouge">upload_rects</code>, <code class="language-plaintext highlighter-rouge">loop_reads</code>. Each scene-end record dumps the
 steady-state values for that run.</li>
   <li><strong>Regtest harness frame timing.</strong> The headless DuckStation in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
 boots the disc image, captures PNGs, and ingests the TTY records into
 per-run summary JSON files under <code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/&lt;runId&gt;/</code>.</li>
 </ul>
 
 <p>Every experiment goes through the same gate:
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a>
 runs the case, compares it to a baseline <code class="language-plaintext highlighter-rouge">summary.json</code>, and either
 promotes (if a key metric improved without a material regression in
 <code class="language-plaintext highlighter-rouge">loop_vb</code> / <code class="language-plaintext highlighter-rouge">blocking_vb</code> / <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb</code> / scene identity) or
 rejects with a recorded failure reason.</p>
 
 <p>The full experiment log is at
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
 At the time of writing it contains roughly 130 experiments going back to
 2026-04-25. Most of them failed.</p>
 
@@ -390,11 +390,11 @@ day-by-day there.</li>
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a></li>
 </ul>
 
   </div>
@@ -413,7 +413,7 @@ day-by-day there.</li>
         </p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

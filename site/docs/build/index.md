@@ -30,8 +30,8 @@ If you paid for this, you were cheated. Open source and free.
 
 ```bash
 # 1. Clone
-git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
-cd Johnny-Castaway-PS1
+git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
+cd johnny-castaway-ps1
 
 # 2. Build the dev Docker image (one-time, ~5 min)
 docker build -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 \

@@ -4,8 +4,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
-cd Johnny-Castaway-PS1
+git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
+cd johnny-castaway-ps1
 
 # Build Docker container (takes ~10 minutes first time)
 docker build --platform linux/amd64 -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 .

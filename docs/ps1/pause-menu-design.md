@@ -1,6 +1,6 @@
 # Pause Menu — Design
 
-> 🌐 **Rendered version:** **[/docs/pause-menu/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/pause-menu/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/pause-menu/](https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 **Status**: design locked, implementation not started

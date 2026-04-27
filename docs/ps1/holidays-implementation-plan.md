@@ -1,6 +1,6 @@
 # Holiday Art Implementation Plan
 
-> 🌐 **Rendered version:** **[/docs/holidays/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 This document supersedes the earlier five-variant concept-art plan.

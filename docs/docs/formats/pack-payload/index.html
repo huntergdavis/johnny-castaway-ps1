@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -88,7 +88,7 @@ to be. FG2 keeps the same conceptual shape — header, palette, entry table,
 frames — but commits to 2048-byte sector alignment, a stable 40-byte
 header, and a single magic value (<code class="language-plaintext highlighter-rouge">FGP2</code>) that the runtime checks before
 trusting anything else. It is also still not the long-term binary form. The
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md">source schema doc</a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md">source schema doc</a>
 is explicit: “the live on-disc pilot format used by the runtime, even
 though it is still not the final long-term binary format.”</p>
 
@@ -555,7 +555,7 @@ pack. If <code class="language-plaintext highlighter-rouge">version</code> is no
 
 <ul>
   <li><strong>Runtime consumer</strong> —
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
 is the one and only PS1-side reader. It opens the file, validates the
 magic, walks the entry table, and presents one diff frame per
 <code class="language-plaintext highlighter-rouge">displayVBlanks</code> window. The base + diff format means it never has to
@@ -585,8 +585,8 @@ how the runtime decides which pack to start reading next.</li>
 <h2 id="source-on-github">Source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_PAYLOAD_LAYOUT.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_PAYLOAD_LAYOUT.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
 </ul>
 
   </div>
@@ -605,7 +605,7 @@ how the runtime decides which pack to start reading next.</li>
         </p>
         <p class="footer-license">
           Code: <a href="../../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

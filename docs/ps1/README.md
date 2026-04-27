@@ -1,6 +1,6 @@
 # Johnny Reborn — PlayStation 1 Port
 
-> 🌐 **Rendered version:** **[/docs/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 Quick-start entrypoint for the PS1 branch. The primary render path is

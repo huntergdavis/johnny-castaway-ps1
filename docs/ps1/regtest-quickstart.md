@@ -1,6 +1,6 @@
 # PS1 Headless Regression Testing Harness
 
-> 🌐 **Rendered version:** **[/docs/regtest/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/regtest/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 > **⚠️ Secondary / legacy tooling.**

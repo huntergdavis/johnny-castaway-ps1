@@ -15,7 +15,7 @@ The pause menu's Credits page reads, verbatim:
 >
 > If you paid for this, you were cheated.
 > Open source and free.
-> github.com/huntergdavis/Johnny-Castaway-PS1
+> github.com/huntergdavis/johnny-castaway-ps1
 
 That's the whole credits screen on the disc. The list below is
 the longer version — the people whose work this project stands on.
