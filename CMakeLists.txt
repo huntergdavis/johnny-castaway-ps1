@@ -56,10 +56,11 @@ set(SOURCES
     src/ps1_stubs.c
 )
 
-# These default-off/cold TUs sit after the hot foreground/graphics/CD objects;
-# size-optimize them without changing the active playback code phase.
+# Size-optimize only translation units that have passed the exact fishing1
+# gate. Most hot files stay at the SDK default because code phase is fragile.
 set_source_files_properties(
     src/ps1_debug.c
+    src/foreground_pilot.c
     src/ps1_captions.c
     src/memcard.c
     PROPERTIES COMPILE_OPTIONS "-Os"

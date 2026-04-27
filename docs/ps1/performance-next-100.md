@@ -16,8 +16,8 @@ Current accepted fishing1 exact baseline:
 | `upload_bytes` | `16281600` |
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
-| `jcreborn.exe` | `149504` bytes |
-| `jcreborn.elf` | `739900` bytes |
+| `jcreborn.exe` | `145408` bytes |
+| `jcreborn.elf` | `727716` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -33,9 +33,9 @@ follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
 compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
 kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
-The latest flat hot-path cleanup removes an unused `ps1PerfMarkAdvance()`
-argument, keeping all VBlank/CD metrics unchanged while shrinking the ELF to
-`739900` bytes.
+The latest flat hot-path cleanup compiles `foreground_pilot.c` with `-Os`,
+keeping all VBlank/CD/work metrics unchanged while shrinking the PS-EXE to
+`145408` bytes and the ELF to `727716` bytes.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -233,7 +233,7 @@ without early display, tearing, frame drops, or weakened pause input.
 | 92 | Toolchain | Run per-file `-O3` only on `graphics_ps1.c`. | Tested and failed; it grew graphics helpers and regressed visible CD pressure. | Do not retry whole-TU graphics `-O3`; the follow-up PAL4 helper-scoped `O3` also failed, so use assembly/generated code. |
 | 93 | Toolchain | Run per-file `-O3` only on `foreground_pilot.c`. | Scheduler code may benefit or reveal layout limits. | Loop improves without CD pressure. |
 | 94 | Toolchain | Run per-file `-O3` only on `cdrom_ps1.c`. | CD helpers are hot and recently shrank safely. | `loop_read_vb` or helper size improves. |
-| 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Smaller hot code may help I-cache/code phase. | Same or better timing with smaller ELF. |
+| 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Done: exact-flat timing/work with PS-EXE `149504 -> 145408` and ELF `739900 -> 727716`. | Keep as a size/code-shape win; do not count as VBlank speed. |
 | 96 | Toolchain | Sweep `-G0`, `-G4`, `-G8`, `-G16`/GP-relative small-data thresholds. | Current `GPREL` likely implies a default small-data tradeoff. | Loop or binary size improves without heap/data regressions. |
 | 97 | Toolchain | Sweep hot-function alignment: default, 4, 8, 16, 32 bytes. | Code-address phase is proven important. | A phase bucket improves loop or CD pressure. |
 | 98 | Toolchain | Link hot FG2/CD sections first. | Keep scheduler/CD code contiguous and stable while cold code changes. | Hot symbol addresses stabilize and timing improves or becomes less fragile. |
