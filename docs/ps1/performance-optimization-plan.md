@@ -898,6 +898,8 @@ from perturbing the deterministic cadence.
 | `P4-225` | Done: compile the memcard translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and hot-symbol addresses while `jcreborn.elf` shrank `740816 -> 740196`; continue cold-TU flag probes one file at a time. |
 | `P4-226` | Failed/no promotion: compile the holidays translation unit with `-Os`. | The ELF shrank to `737352`, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer until layout/code-phase control exists. |
 | `P4-227` | Failed/no-op: compile the generated holidays table translation unit with `-Os`. | The exact gate stayed flat, but binary size did not move (`jcreborn.elf=740196`, PS-EXE bucket `149504`); the table is data-dominated under current flags. |
+| `P4-228` | Failed/no promotion: prepared-stage decoupling v2. | Decoupling prepared visual state from staged payload first tripped correctness at frames `30`/`54`; after fixing ownership and blocking CD reads during prepared waits, the exact fishing1 gate was correctness-clean but flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`). Retry only with a first-class prepared-present scheduler and explicit prepared/CD-budget metrics, not as another local state tweak. |
+| `P4-229` | Queued: true double-buffered prepared visual state. | The no-promotion result shows one RAM background can only safely hold one prepared visual state; a real frame-ahead pipeline likely needs a second prepared RAM/VRAM target or pack-emitted upload-ready state so preparing frame+2 does not overwrite frame+1 or steal CD deadline slack. |
 
 Prefetch variants to test in order:
 
