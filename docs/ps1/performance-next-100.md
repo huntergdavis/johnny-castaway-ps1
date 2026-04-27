@@ -154,6 +154,14 @@ upload to the saved clean-rect Y band improves `loop_vb 1215 -> 1213`,
 `overrun_vb 140 -> 138`, `max_upload_bytes 614400 -> 221440`, and
 `upload_bytes 16281600 -> 15888640` without changing layout, restore bytes,
 CD pressure, or correctness.
+The I-B motion-comp analyzer changes the next pack-format order. Fishing1 has
+large frame-to-frame reuse, but it is zero-shift temporal residual reuse rather
+than translated motion: `151/154` candidate pairs, `71.16%` estimated payload
+savings, and `0` nonzero-shift candidates. Walking scenes are the true
+translation target (`WALKSTUF1` has `85` nonzero candidates; `WALK1LOW` has
+`53`). Therefore the next fishing1-safe FGP3 experiment should be zero-shift
+residual encoding first; GPU move/residual should wait for a walking-scene
+validation path and a RAM-mirror/dirty-cleanup design.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -252,16 +260,21 @@ early display, tearing, frame drops, or weakened pause input.
 | 158 | Prime prefetch during title/menu | Investigate whether menu/transition time can warm the first scene's FG2 window before playback starts. | Converts cold-start setup reads into user-invisible work. |
 | 159 | Cross-scene setup-prime matrix | Run fishing1/fishing2/fishing3 high/low with generated prime settings before main promotion. | Ensures the policy is not a fishing1-only trick. |
 | 160 | Prime-plus-present scheduler | Use primed coverage to retry present/pipeline scheduling only inside proven-resident frame ranges. | Combines the current CD residency win with the remaining present-wait target. |
+| 161 | FGP3 zero-shift residual pack | Encode fishing1 frames as previous-frame residuals where `dx=0,dy=0`. | Analyzer predicts this is the canary-safe temporal reuse path, unlike true translation. |
+| 162 | FGP3 move/residual pack | Encode nonzero translation candidates only for walking scenes. | Analyzer proves walking packs, not fishing1, are the first real MoveImage targets. |
+| 163 | Motion cleanup masks | Emit old-position cleanup bands for move/residual frames. | GPU move is unsafe unless old pixels are restored and dirty state remains exact. |
+| 164 | RAM mirror motion proof | Prototype host-side replay that keeps RAM mirror and displayed image identical after move/residual frames. | Blocks runtime MoveImage until the mirror invariant is solved. |
 
 ## Impact-Prioritized Order
 
 | Priority | Area | Tests | Why First |
 |---:|---|---|---|
 | 1 | Setup-prime and inter-scene preload | `151-160` | The latest accepted win proves residency unlocks threshold-`4` catch-up; the next step is making the prime free or generated, not hard-coded. |
-| 2 | Pack-emitted/read-costed CD groups | `11-18`, `34-35` | The hard-coded tail group proves selective grouping can remove reads, while the broad 12-sector import proves a cost predictor is mandatory. |
-| 3 | Pack-emitted render/upload metadata | `61-64`, `81-90` | Runtime upload/compositor heuristics are locally exhausted; generated metadata can remove branches and preserve deterministic work identity. |
-| 4 | Explicit scheduler/CD budget | `41-50` | Many near-misses were nominal wins that stole CD slack. A CD-first budget is the gate for retrying them safely. |
-| 5 | Toolchain/layout control | `91-100` | Valid code-size cleanups still perturb hot phase. Layout control can unlock old no-promotion wins without changing pixels. |
+| 2 | Temporal/motion FGP3 | `161-164` | The I-B analyzer shows fishing1 has a large zero-shift residual path, while true nonzero motion belongs to walking scenes. |
+| 3 | Pack-emitted/read-costed CD groups | `11-18`, `34-35` | The hard-coded tail group proves selective grouping can remove reads, while the broad 12-sector import proves a cost predictor is mandatory. |
+| 4 | Pack-emitted render/upload metadata | `61-64`, `81-90` | Runtime upload/compositor heuristics are locally exhausted; generated metadata can remove branches and preserve deterministic work identity. |
+| 5 | Explicit scheduler/CD budget | `41-50` | Many near-misses were nominal wins that stole CD slack. A CD-first budget is the gate for retrying them safely. |
+| 6 | Toolchain/layout control | `91-100` | Valid code-size cleanups still perturb hot phase. Layout control can unlock old no-promotion wins without changing pixels. |
 
 ## Next 100 Tests
 
