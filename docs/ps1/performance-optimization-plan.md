@@ -891,6 +891,7 @@ from perturbing the deterministic cadence.
 | `P4-218` | Queued: compiler/linker/toolchain flag matrix with layout gates. | The old hot-TU `-O3` probe failed, but narrower flags remain valid targets: per-file `-Os`/`-O2`/`-O3`, hot/cold translation-unit splits, function alignment, linker section ordering, and code-address padding must each pass the same exact timing/layout gate. |
 | `P4-219` | Queued: group-cost predictor for runtime append groups. | The accepted tail group and rejected broad group show that transaction count is insufficient; score each candidate by append sectors, preserved bytes, current slack, host-observed read cost, and whether it risks creating the fifth visible read. |
 | `P4-220` | Queued: move read-group boundaries into generated pack metadata. | The hard-coded fishing1 tail group is a proving slice. The durable version should emit per-pack group metadata without moving payload offsets, then let runtime consume scene-authored groups with the same strict cadence gates. |
+| `P4-221` | Failed/no promotion: collapse the one-entry tail read-group table to direct constants. | Timing and CD work stayed flat, but the ELF grew (`741076 -> 741404`) and `fgRuntimeFillWindowForEntry` grew by `100` bytes; keep the table form until group metadata/codegen replaces the hard-coded slice. |
 
 Prefetch variants to test in order:
 
