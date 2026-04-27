@@ -165,22 +165,6 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 
-static int fgEntryDrawX(const struct TFgPilotEntry *entry)
-{
-    if (entry == NULL)
-        return 0;
-
-    return entry->x;
-}
-
-static int fgEntryDrawY(const struct TFgPilotEntry *entry)
-{
-    if (entry == NULL)
-        return 0;
-
-    return entry->y;
-}
-
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -1630,14 +1614,14 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
         grCompositePacked4SpansToBackground(frameData,
                                             entry->dataSize,
                                             gFgRuntime.palette,
-                                            (sint16)fgEntryDrawX(entry),
-                                            (sint16)fgEntryDrawY(entry));
+                                            entry->x,
+                                            entry->y);
     } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
         grCompositeIndexed8SpansToBackground(frameData,
                                              entry->dataSize,
                                              gFgRuntime.palette,
-                                             (sint16)fgEntryDrawX(entry),
-                                             (sint16)fgEntryDrawY(entry));
+                                             entry->x,
+                                             entry->y);
     }
 
     /* Stamp holiday overlay on top of the pack so Johnny walks behind
@@ -1786,8 +1770,8 @@ static int fgRuntimeComputeDrawBounds(sint16 *outX, sint16 *outY,
         if (entry->width == 0 || entry->height == 0 || entry->dataSize == 0)
             continue;
 
-        x = fgEntryDrawX(entry);
-        y = fgEntryDrawY(entry);
+        x = entry->x;
+        y = entry->y;
         endX = x + (int)entry->width;
         endY = y + (int)entry->height;
 
