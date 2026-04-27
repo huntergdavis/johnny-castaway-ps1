@@ -55,6 +55,9 @@ though the formal gate passed: `loop_vb` stayed flat and the apparent overrun
 gain came only from a `target_vb` shift while the compositor grew.
 Skipping previous dirty-row clears for rows overwritten by current dirty rows
 is also rejected as an isolated change: it stayed exact-flat but grew the ELF.
+Post-dirty raw stream-window retuning is rejected: `20 KB` regressed visible
+CD pressure, while `18 KB`/`17 KB` hit a structural invalid-read failure before
+metrics.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -310,6 +313,7 @@ near misses:
 | Touched-only dirty-row promotion | Done; keep because it removes full dirty-row table copies and produced a repeatable `2` VBlank loop win. |
 | Direct PAL4 row dirty marking | Do not retry as written; it produced only target-accounting movement with flat loop speed and large compositor growth. |
 | Dirty-row promotion overlap clear skip | Do not retry as an isolated branchy cleanup; exact-flat timing with ELF growth. |
+| Post-dirty raw window retune | Do not retry raw `18-20 KB` windows blindly; `20 KB` regressed and the 9-sector rounded window shape crashed before metrics. Use generated group metadata/cost prediction first. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
