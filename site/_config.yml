@@ -55,4 +55,23 @@ exclude:
 sass:
   style: compressed
 
+# Site builds into ../docs/ so GitHub Pages can deploy from main:/docs.
+# keep_files prevents Jekyll's destination-cleanup from wiping the project
+# research that lives at docs/ps1/, docs/archive/, docs/general/, etc.
+# Anything Jekyll itself outputs is not in this list and gets refreshed
+# every build.
+destination: ../docs
+keep_files:
+  - ps1
+  - archive
+  - general
+  - readme
+  - CLEANUP_SUMMARY.md
+  - PS1_DEBUGGING.md
+  - PS1_LEFT_DEBUG_PANEL.md
+  - PS1_ROOT_CAUSE_EXEC_PLAN.md
+  - README.md
+  - resuming-1-10-2026.md
+  - screenshot_decode_2026-03-10.csv
+
 timezone: America/New_York

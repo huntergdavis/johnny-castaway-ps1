@@ -14,9 +14,15 @@ fi
 "$BUNDLE_BIN" exec jekyll build \
   --trace \
   --baseurl "" \
-  --destination "$ROOT/www"
+  --destination "$ROOT/docs"
 
-python3 "$ROOT/scripts/site-relativize-build.py" "$ROOT/www"
-rm -f "$ROOT/www/feed.xml" "$ROOT/www/sitemap.xml" "$ROOT/www/robots.txt"
-find "$ROOT/www" -type f \( -name '*.html' -o -name '*.css' -o -name '*.xml' -o -name '*.json' \) \
+python3 "$ROOT/scripts/site-relativize-build.py" "$ROOT/docs"
+rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/sitemap.xml" "$ROOT/docs/robots.txt"
+# Whitespace-normalize only the website output, NOT the preserved project
+# research living at docs/ps1/, docs/archive/, docs/general/, docs/readme/.
+find "$ROOT/docs" -type f \( -name '*.html' -o -name '*.css' -o -name '*.xml' -o -name '*.json' \) \
+  -not -path "$ROOT/docs/ps1/*" \
+  -not -path "$ROOT/docs/archive/*" \
+  -not -path "$ROOT/docs/general/*" \
+  -not -path "$ROOT/docs/readme/*" \
   -exec perl -0pi -e 's/[ \t]+$//mg; s/\n+\z/\n/s' {} +

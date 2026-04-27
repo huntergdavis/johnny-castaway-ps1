@@ -10,11 +10,11 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "docs/**"
       - "scripts/site-generate-library.py"
       - "scripts/site-relativize-build.py"
       - "scripts/site-build-static-root.sh"
       - ".github/workflows/site.yml"
-      - "index.html"
   workflow_dispatch:
 
 permissions:
@@ -57,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: www
+          path: docs
 
   deploy:
     needs: build
