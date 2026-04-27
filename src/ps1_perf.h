@@ -80,8 +80,7 @@ void ps1PerfMarkPrefetchHit(void);
 void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit);
 void ps1PerfMarkRestore(uint32 bytes);
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes);
-void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks);
-void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes);
+void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks);
 void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks);
 void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks);
 void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes);
@@ -151,8 +150,7 @@ static inline void ps1PerfMarkPrefetchHit(void) {}
 static inline void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit) { (void)countsAsDueHit; }
 static inline void ps1PerfMarkRestore(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes) { (void)rows; (void)spans; (void)pixels; (void)payloadBytes; }
-static inline void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)bytes; (void)elapsedVBlanks; }
-static inline void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes) { (void)rows; (void)exactBytes; }
+static inline void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)rows; (void)bytes; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks) { (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks) { (void)phase; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes) { (void)frameBufferBytes; (void)scratchBytes; }

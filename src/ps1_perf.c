@@ -689,7 +689,7 @@ void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payload
     gPs1Perf.composePayloadBytes += payloadBytes;
 }
 
-void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks)
+void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks)
 {
     if (!ps1PerfEnabled)
         return;
@@ -706,18 +706,12 @@ void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks)
         gPs1Perf.maxUploadRects = rects;
     if (bytes > gPs1Perf.dirtyMaxRoundedBytes)
         gPs1Perf.dirtyMaxRoundedBytes = bytes;
-}
-
-void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes)
-{
-    if (!ps1PerfEnabled)
-        return;
     gPs1Perf.dirtyRows += rows;
-    gPs1Perf.dirtyExactBytes += exactBytes;
+    gPs1Perf.dirtyExactBytes += bytes;
     if (rows > gPs1Perf.dirtyMaxRows)
         gPs1Perf.dirtyMaxRows = rows;
-    if (exactBytes > gPs1Perf.dirtyMaxExactBytes)
-        gPs1Perf.dirtyMaxExactBytes = exactBytes;
+    if (bytes > gPs1Perf.dirtyMaxExactBytes)
+        gPs1Perf.dirtyMaxExactBytes = bytes;
 }
 
 void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks)

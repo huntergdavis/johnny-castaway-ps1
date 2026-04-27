@@ -956,6 +956,7 @@ from perturbing the deterministic cadence.
 | `P4-271` | Done: combine upload perf guards in `grDrawBackground()`. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank by `64` bytes and ELF shrank `714520 -> 714440`; count as hot upload-path code cleanup only, not a VBlank speed win. |
 | `P4-272` | Failed/no promotion: cache the upload perf guard in a local. | The exact gate stayed timing/layout/work-flat and `grDrawBackground` shrank another `56` bytes, but total ELF grew `714440 -> 714456` with no speed metric movement; source was reverted and only the experiment log was kept. |
 | `P4-273` | Failed/no promotion: inline the perf-detail check at rendered-frame call sites. | The exact gate stayed timing/layout/work-flat and hot functions shrank (`foregroundPilotPlay -24`, `grUpdateDisplay -40`), but total ELF grew `714440 -> 714564` with no speed metric movement; source was reverted and only the experiment log was kept. |
+| `P4-274` | Done: combine upload and dirty-rect perf markers. | The exact gate stayed timing/layout/work-flat while preserving upload/dirty counters and shrinking ELF `714440 -> 714260`; count as perf-log hot-path cleanup only, not a VBlank speed win. |
 
 Prefetch variants to test in order:
 

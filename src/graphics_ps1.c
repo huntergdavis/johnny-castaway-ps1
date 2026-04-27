@@ -3641,8 +3641,8 @@ void grDrawBackground(void)
     }
 
     if (ps1PerfEnabled && dirtyCount > 0) {
-        ps1PerfMarkUpload(uploadRects, uploadBytes, ps1PerfElapsedVBlanks(perfStartTick));
-        ps1PerfMarkDirtyRect(uploadRows, uploadBytes);
+        ps1PerfMarkUploadDirty(uploadRects, uploadRows, uploadBytes,
+                               ps1PerfElapsedVBlanks(perfStartTick));
     }
 
     /* Advance dirty state: this frame's compositing becomes next frame's restore set */
