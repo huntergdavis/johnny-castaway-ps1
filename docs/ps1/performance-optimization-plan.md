@@ -851,6 +851,7 @@ from perturbing the deterministic cadence.
 | `P4-180` | Done: pre-apply scene-relative FG2 offsets at startup. | Random island placement is preserved because offsets are applied after variant selection; the exact fishing1 gate stayed flat across timing/CD/work identity while `jcreborn.elf` shrank `740556 -> 740132` and pack flags still report `scene_relative=1`. |
 | `P4-181` | Done: inline FG2 entry draw offsets after startup pre-apply. | The helper functions became trivial after `P4-180`; using `entry->x/y` directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `740132 -> 739684` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 | `P4-182` | Done: collapse identical held-loop prefetch branches. | Prepared-frame and staged-frame states share the same window-prefetch behavior; merging the duplicate branches kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739684 -> 739552` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
+| `P4-183` | Failed/no promotion: pass `NULL` for discarded next-payload frame-index outputs. | The exact fishing1 gate stayed flat, but the source change did not improve any tracked speed/work metric and grew `jcreborn.elf` `739552 -> 739568`; source was reverted and this should wait for broader prefetch helper cleanup. |
 
 Prefetch variants to test in order:
 
