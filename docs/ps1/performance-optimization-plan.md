@@ -885,6 +885,7 @@ from perturbing the deterministic cadence.
 | `P4-213` | Queued: cross-scene validation for cap `8` upload rects and append behavior. | Before wider promotion, run fishing2/fishing3 plus representative high/low tide variants to ensure fishing1-local knees are not hiding scene-specific regressions. |
 | `P4-214` | Failed/no promotion: remove the duplicate prepared-present guard. | `fgRuntimePresentPreparedFrame()` is currently called only after `fgRuntimeCanPresentPreparedOnNextVBlank()`, but removing the internal guard regressed visible CD pressure despite fixed layout (`blocking_vb/prefetch_overrun_vb 5 -> 7`, `blocking_reads 4 -> 5`); keep the guard as scheduler/code-shape ballast until prepared-present is redesigned. |
 | `P4-215` | Failed/no promotion: inline the window-contained check inside `fgRuntimeWindowPrefetchWouldRead()`. | The exact gate stayed flat, but the helper grew by `60` bytes and shifted downstream hot symbols; keep the shared helper call until a broader prefetch-state rewrite can reduce code size and cadence together. |
+| `P4-216` | Failed: allow `24 KB` stream-window reads only at `10+` held VBlanks. | Decoupling normal `16 KB` reads from a larger high-slack capacity kept `loop_vb=1221`, but regressed `target_vb 1071 -> 1069`, `overrun_vb 150 -> 152`, `blocking_vb 5 -> 8`, and `prefetch_overrun_vb 5 -> 8`; group/read-cost metadata must be more specific than a long-hold threshold. |
 
 Prefetch variants to test in order:
 
