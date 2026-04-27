@@ -975,6 +975,7 @@ from perturbing the deterministic cadence.
 | `P4-290` | Failed/no promotion: raise staged-copy fallthrough guard from `6` to `7` VBlanks after CD helper cleanup. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; source was reverted and only the experiment log was kept. |
 | `P4-291` | Done: compile only the unbuffered CD stream helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `680 -> 624` bytes and ELF shrank `712556 -> 712524`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
 | `P4-292` | Done: cache the file LBA in the unbuffered CD stream helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `624 -> 592` bytes and ELF shrank `712524 -> 712332`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-293` | Failed/no promotion: compile only `fgRuntimeFillWindowForEntry()` with `-Os`. | The exact gate stayed timing/layout/work-flat, but PS-EXE, ELF, and tracked hot symbol sizes also stayed exact; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
