@@ -910,6 +910,7 @@ from perturbing the deterministic cadence.
 | `P4-234` | Failed/no promotion: reset the foreground scene clock at `loop_start`. | Resetting `sceneClockTick` immediately before `ps1PerfMarkLoopStart()` was flat by itself but shifted hot symbols by `+4` bytes and did not rescue the `pause_menu.c -Os` shrink; the useful barrier must stabilize CD/controller/scheduler phase, not only foreground elapsed-time accounting. |
 | `P4-235` | Failed/no promotion: direct-fill the inferred `384..396` tail group. | Adding direct grouped fills and raising retained group capacity to `12` sectors kept timing/read shape flat but only increased prefetch memory (`29712 -> 31760`); inferred CD-log group candidates need runtime append/window-start traces before they are worth adding. |
 | `P4-236` | Failed/no promotion: switch to PSn00bSDK Release libraries. | Release SDK libraries shrink the executable bucket and improve raw loop by one VBlank, but they raise visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 8`) even with pack LBA preserved; retry only after CD scheduling is phase-independent enough to accept the size/codegen win. |
+| `P4-237` | Failed/no promotion: compile the SPI translation unit with `-Os`. | The exact gate stayed timing-flat, but `jcreborn.elf` grew `739948 -> 740092`; keep SPI at default `-O2` until a controller/input benchmark proves otherwise. |
 
 Prefetch variants to test in order:
 
