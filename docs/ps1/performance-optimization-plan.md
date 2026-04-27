@@ -1540,6 +1540,10 @@ compiler expansion is also not safe just because the target file is hot.
 from LBA `399` to `402`, and regressed `blocking_vb/prefetch.overrun_vb` from
 `5` to `13`. Future toolchain work needs function-scoped codegen, hot-symbol
 address padding, or a phase sweep before retrying hot translation-unit flags.
+A follow-up pure CD phase sweep moved `FISHING1.FG2` to LBAs `400`, `401`,
+`402`, `403`, and `407` with exact flat timing, so pack LBA alone is not the
+failing variable. The next phase-control target is executable/code/startup
+phase, not more standalone ISO padding.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it

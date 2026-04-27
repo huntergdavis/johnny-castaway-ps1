@@ -63,7 +63,7 @@ retry promising source/toolchain ideas inside that controlled envelope.
 
 | # | Target | Test Shape | Expected Signal |
 |---:|---|---|---|
-| 101 | Pure CD phase sweep | Insert `0..8` dummy sectors after `JCREBORN.EXE` with no source change. | Finds whether pack LBA alone can improve or worsen the current `blocking_vb=5` knee. |
+| 101 | Pure CD phase sweep | Insert `0..8` dummy sectors after `JCREBORN.EXE` with no source change. | Partially tested at `+1`, `+2`, `+3`, `+4`, and `+8`: exact timing-flat, so FG2 LBA alone is not the current speed lever. |
 | 102 | Pure executable bucket sweep | Add inert text/data padding to keep FG2 LBA fixed while changing EXE bucket. | Separates executable load/code phase from pack physical placement. |
 | 103 | Hot-symbol address sweep | Pad before/after `foreground_pilot.o`, `cdrom_ps1.o`, and `graphics_ps1.o` independently. | Names which hot address deltas create the fifth visible read. |
 | 104 | Link-order sweep | Move `cdrom_ps1.o` before and after foreground/graphics without changing code. | Tests instruction locality and branch/cache phase as a first-class variable. |
@@ -218,7 +218,7 @@ near misses:
 | 5 | 23 | Revisit a near miss that already showed a two-VBlank loop win. |
 | 6 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 | 7 | 91 | Start compiler/toolchain matrix with cold `-Os`, not hot `-O3`. |
-| 8 | 101 | Run a pure CD phase sweep before more compiler probes. |
+| 8 | 102 | Separate executable/code phase from pack LBA with inert text/data padding. |
 | 9 | 41 | Build the explicit CD-first/render-second scheduler model. |
 | 10 | 61 | Begin pack-emitted upload bands; runtime upload tuning is exhausted. |
 
@@ -232,6 +232,7 @@ near misses:
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
 | Debug/code-size compile gates | Text/CD phase padding or hot/cold section isolation exists. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
+| Pure FG2 LBA shifts | Do not retry as a standalone speed test; tested offsets up to `+8` sectors were timing-flat. |
 | Runtime dirty/upload heuristics | Pack-emitted masks or upload plans replace hot runtime checks. |
 | Async CD | Async state ownership and polling metrics exist in a trace build. |
 | `Setloc` skipping | Full frame hashes and work-identity gates prove every frame rendered. |
