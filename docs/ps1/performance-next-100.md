@@ -107,6 +107,16 @@ fishing1 exact-flat (`loop_vb=1219`, `blocking_vb=5`, `prefetch_overrun_vb=5`,
 prototype did not fire usefully (`catchup_idle=0`) and moved layout, so it was
 reverted; the next scheduler attempt needs per-frame ownership analysis, not
 another threshold-only catch-up.
+The first host-side preprocessing pass is now analysis-first:
+`scripts/analyze-fg2-preprocess-plans.py` exactly reproduces the accepted
+fishing1 runtime graphics counters (`restore_bytes=2510092`,
+`upload_bytes=16281600`, `upload_rects=502`) from the pack alone. It shows
+that upload-ready x-bands could cut upload bytes by about `49.61%`, but only
+by carrying about `8.2 MB` of aligned frame-band payload for fishing1. Exact
+interval upload is a stronger byte floor (`86.83%` reduction) but explodes to
+`95259` rects. The safer next pack-format experiment is therefore exact
+restore-skip metadata: it predicts `52.41%` lower restore bytes without adding
+multi-megabyte upload payloads.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

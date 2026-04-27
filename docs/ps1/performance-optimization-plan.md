@@ -1060,6 +1060,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-10` | Add per-scene capability flags: pal4-pair-lut, row-extents, tile-split, prefetch-groups, sector-aligned. | Runtime can select fast paths safely. |
 | `P5-11` | Emit pack-stat JSON alongside every FG2/FGP3. | Make routing and prefetch policy decisions data-driven. |
 | `P5-12` | Add a corpus scanner that flags scenes with full-screen diffs. | Plan special handling for Suzy, Mary3, Activity9. |
+| `P5-13` | Done: add host-side FG2 preprocessing opportunity analyzer. | `scripts/analyze-fg2-preprocess-plans.py` parses an existing pack and reproduces runtime restore/upload counters before any runtime-format change. Fishing1 exact baseline matches `restore_bytes=2510092`, `upload_bytes=16281600`, `upload_rects=502`, then predicts `52.41%` restore-byte savings from exact restore-skip metadata and `49.61%` upload-byte savings from align4 upload-ready bands at the cost of about `8.2 MB` of frame-band payload. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
