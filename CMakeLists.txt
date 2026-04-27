@@ -61,6 +61,7 @@ set(SOURCES
 set_source_files_properties(
     src/ps1_debug.c
     src/foreground_pilot.c
+    src/holidays.c
     src/ps1_captions.c
     src/memcard.c
     PROPERTIES COMPILE_OPTIONS "-Os"
