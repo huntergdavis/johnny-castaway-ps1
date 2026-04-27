@@ -233,22 +233,25 @@ pages.
 6. Runs `scripts/build-ps1.sh clean` and then `scripts/make-cd-image.sh`.
    No emulator launch — release builds are headless.
 7. Copies `jcreborn.bin` and `jcreborn.cue` into `release/`.
-8. Updates the `VERSION` file and commits the bump together with the
-   release artifacts.
-9. Creates an *orphan-tree tag commit* whose tree contains only the two
+8. Updates the `VERSION` file plus `site/_config.yml` release metadata.
+9. Rebuilds the portable website into `www/` and runs the relative-link
+   red-team.
+10. Commits the bump, release artifacts, website source metadata, and
+   generated website output together.
+11. Creates an *orphan-tree tag commit* whose tree contains only the two
    release files. This is so GitHub's auto-generated "Source code (zip)"
    download for the tag is the disc image, not the entire repo. The tag
    commit's parent is the main release commit, so provenance is
    preserved through `git log --all`.
-10. Pushes the branch and the tag.
-11. If `gh` is installed and authenticated, also publishes a GitHub
+12. Pushes the branch and the tag.
+13. If `gh` is installed and authenticated, also publishes a GitHub
     Release with `jcreborn.bin` and `jcreborn.cue` as direct-download
     assets.
 
-The website's release-data ingest at build time reads the latest tag and
-its assets via the Jekyll build pipeline, so cutting a release with this
-script is what updates `{{ site.release.tag }}` on the live site. There
-is no second hand-edit step.
+The website does not need a second hand-edit step. Cutting a release with
+this script updates the release tag in the Jekyll config, rebuilds the
+checked-in `www/` archive, and verifies that the generated site still uses
+relative links for project-page deployment.
 
 The current release is **{{ site.release.tag }}**, with
 {{ site.release.scenes_validated }} of {{ site.release.scenes_total }}

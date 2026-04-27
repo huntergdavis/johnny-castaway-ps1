@@ -165,8 +165,9 @@ Every ten scenes reaching `✅ / ✅`:
 ./scripts/release.sh "<milestone message>"
 ```
 
-That bumps `VERSION`, copies the ISO to `release/`, creates an annotated
-tag `vX.Y.Z-ps1`, and pushes.
+That bumps `VERSION`, copies the ISO to `release/`, updates the website
+release metadata, rebuilds `www/`, creates an annotated tag `vX.Y.Z-ps1`,
+and pushes.
 
 ## The shorter shortcuts
 
