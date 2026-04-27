@@ -36,6 +36,9 @@ kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
 The latest flat cleanup compiles only `grUpdateDisplay()` with `-Os`, keeping
 all VBlank/CD/work metrics and upload/dirty counters unchanged while shrinking
 the ELF to `713496` bytes.
+The `grRestoreBgFromRects()` function-scoped `-Os` retry is rejected despite a
+local function shrink, because total ELF grew to `714132` bytes with no VBlank
+movement.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -284,6 +287,7 @@ near misses:
 | Upload perf marker combine | Done; keep because it removed one rendered-frame marker call and preserved all upload/dirty counters. |
 | `grDrawBackground()` function `-Os` | Done; keep because scoped upload-function codegen stayed exact-flat and shrank ELF. |
 | `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. |
+| `grRestoreBgFromRects()` function `-Os` | Do not retry alone; it shrank the function but grew total ELF with no timing movement. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

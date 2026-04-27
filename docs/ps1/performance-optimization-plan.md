@@ -959,6 +959,7 @@ from perturbing the deterministic cadence.
 | `P4-274` | Done: combine upload and dirty-rect perf markers. | The exact gate stayed timing/layout/work-flat while preserving upload/dirty counters and shrinking ELF `714440 -> 714260`; count as perf-log hot-path cleanup only, not a VBlank speed win. |
 | `P4-275` | Done: compile only `grDrawBackground()` with `-Os`. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank by `32` bytes and ELF shrank `714260 -> 713672`; count as hot upload-function code-shape cleanup only, not a VBlank speed win. |
 | `P4-276` | Done: compile only `grUpdateDisplay()` with `-Os`. | The exact gate stayed timing/layout/work-flat while `grUpdateDisplay` shrank by `40` bytes and ELF shrank `713672 -> 713496`; count as hot display-wrapper code-shape cleanup only, not a VBlank speed win. |
+| `P4-277` | Failed/no promotion: compile only `grRestoreBgFromRects()` with `-Os`. | The exact gate stayed timing/layout/work-flat and the function shrank `980 -> 108` bytes, but total ELF grew `713496 -> 714132` with no speed metric movement; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
