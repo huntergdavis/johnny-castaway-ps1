@@ -80,6 +80,8 @@ metadata-only decoupling was flat and code-heavy, stage-next decoupling reduced
 `loop_read_vb` by 3 without moving `loop_vb`, and preparing earlier at `>=4`
 failed structurally. The next retry needs a real scheduler budget or separate
 prepared visual storage, not another local threshold tweak.
+A positive-slack-only stage-next retry reproduced the same flat/key-metric
+result, so local prepared-payload decoupling is exhausted for this baseline.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -355,6 +357,7 @@ near misses:
 | Prepared visual metadata decoupling | Do not retry as metadata-only; it adds duplicate probes and code growth without staging farther ahead. |
 | Prepared visual stage-next branch | Retry only with an explicit no-slack guard and scheduler budget; v2 was correctness-clean and lowered read/late counters but left `loop_vb` flat. |
 | Prepared visual `>=4` threshold | Do not retry as a threshold-only tweak; it failed structurally before metrics. |
+| Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

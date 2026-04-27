@@ -979,6 +979,7 @@ from perturbing the deterministic cadence.
 | `P4-294` | Failed/no promotion: prepared visual metadata decoupling v1. | Correctness stayed clean and key timing stayed flat, but the change only added duplicate prefetch probes (`0 -> 130`) and code growth (`ELF 712332 -> 713072`) without staging farther ahead. |
 | `P4-295` | Failed/no promotion: prepared visual decoupling with stage-next branch v2. | Correctness stayed clean and key timing stayed flat; secondary CD/read metrics improved slightly (`loop_read_vb 280 -> 277`, `late 98 -> 85`) but code grew and no actual loop VBlank win appeared. |
 | `P4-296` | Failed/no promotion: decoupled prepared visual with `>=4` prepare threshold v3. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; all prepared-decoupling source changes were reverted. |
+| `P4-297` | Failed/no promotion: prepared visual stage-next branch with positive-slack guard v4. | Correctness stayed clean and key timing stayed flat; it reproduced v2's secondary read/late improvements but also kept the no-slack attempts and code growth, so all source changes were reverted. |
 
 Prefetch variants to test in order:
 
