@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `712828` bytes |
+| `jcreborn.elf` | `712556` bytes |
 
 Goal: close `147` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -33,9 +33,10 @@ follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
 compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
 kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
-The latest flat cleanup compiles only `grUpdateDisplay()` with `-Os`, keeping
-all VBlank/CD/work metrics and upload/dirty counters unchanged while shrinking
-the ELF to `713496` bytes.
+Recent flat graphics cleanups compile only `grDrawBackground()` and
+`grUpdateDisplay()` with `-Os`, keeping all VBlank/CD/work metrics and
+upload/dirty counters unchanged while shrinking the ELF before the dirty-row
+and CD-helper wave.
 The `grRestoreBgFromRects()` function-scoped `-Os` retry is rejected despite a
 local function shrink, because total ELF grew to `714132` bytes with no VBlank
 movement.
@@ -63,6 +64,9 @@ cadence flat while shrinking the hot helper by 8 bytes and ELF by 84 bytes.
 A single-chunk branch inside that helper is rejected: the common-case branch
 duplicated too much error/read code and grew the hot helper by 104 bytes with
 no timing movement.
+Function-scoped `-Os` on the aligned CD read helper is accepted: it keeps
+exact cadence flat while shrinking the public aligned-read wrapper to 8 bytes
+and ELF to `712556`.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -321,6 +325,7 @@ near misses:
 | Post-dirty raw window retune | Do not retry raw `18-20 KB` windows blindly; `20 KB` regressed and the 9-sector rounded window shape crashed before metrics. Use generated group metadata/cost prediction first. |
 | Aligned CD file-LBA cache | Done; keep because it shrank the active aligned read helper and ELF with exact timing/layout identity. |
 | Aligned CD single-chunk fast path | Do not retry as a duplicated branch; it grew the helper by 104 bytes without moving timing. |
+| Aligned CD helper function-scoped `Os` | Done; keep because it shrank the aligned-read path and ELF with exact timing/layout identity. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

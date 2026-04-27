@@ -1044,6 +1044,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     return 1;
 }
 
+__attribute__((optimize("Os")))
 static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, uint32_t size,
                                                uint8_t *dstBuffer)
 {
