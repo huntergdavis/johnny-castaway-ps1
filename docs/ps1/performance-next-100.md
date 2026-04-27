@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `719096` bytes |
+| `jcreborn.elf` | `719048` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -33,9 +33,9 @@ follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
 compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
 kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
-The latest flat size cleanup re-tests `pause_menu.c -Os` after the
-foreground-size phase shift, keeping all VBlank/CD/work metrics unchanged while
-shrinking the PS-EXE to `143360` bytes and the ELF to `719096` bytes.
+The latest flat size cleanup re-tests `ps1_stubs.c -Os` after the
+pause-menu-size phase shift, keeping all VBlank/CD/work metrics unchanged while
+shrinking the ELF to `719048` bytes.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -270,6 +270,7 @@ near misses:
 | Audio TU `-Os` | Done under the foreground/resource-size baseline; keep accepted unless cross-scene sound validation regresses. |
 | Resource TU `-Os` | Done under the foreground-size baseline; keep accepted unless a cross-scene setup regression appears. |
 | Pause-menu TU `-Os` | Done under the foreground/resource/sound-size baseline; keep accepted if normal pause visual/input validation passes. |
+| PS1 stubs TU `-Os` | Done under the pause-menu-size baseline; keep as cumulative ELF pressure only. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

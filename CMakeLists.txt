@@ -65,6 +65,7 @@ set_source_files_properties(
     src/resource.c
     src/sound_ps1.c
     src/pause_menu.c
+    src/ps1_stubs.c
     src/ps1_captions.c
     src/memcard.c
     PROPERTIES COMPILE_OPTIONS "-Os"
