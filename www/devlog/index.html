@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Devlog — Johnny Castaway PS1</title>
+  <meta name="description" content="Devlog of the Johnny Castaway PS1 fan port — unedited worklogs and milestones." />
+
+  <meta property="og:title"        content="Devlog — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Devlog of the Johnny Castaway PS1 fan port — unedited worklogs and milestones." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="./" aria-current="page">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="../lab/">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reverse-chronological</p>
+      <h1>Devlog</h1>
+      <p class="subtitle">Worklogs as they happened. The dead ends matter.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>This is the unedited worklog stream for the PS1 port. The posts below
+are the same plain-text notes that were written at the keyboard on the
+day the work happened. They were not cleaned up before being published
+here. They were not rewritten with the benefit of hindsight. The dates
+on them are the dates the work was done.</p>
+
+<p>The reason verbatim matters is that most of the time on this project
+has been spent on dead ends. A scene that reads “verified” in a status
+table today only got there after several attempts that did not. A
+single-line timing bug took a week of plans and counter-plans to
+pin down. If the only artifacts left over are the wins, the actual
+shape of the work is invisible — and the actual shape of the work is
+the only useful thing to hand to the next person trying something
+similar.</p>
+
+<p>So expect plans that did not survive contact, status snapshots that
+were superseded a week later, and worklogs that are honest about
+what was tried and what failed. Each post carries an editor’s note
+above the original text giving brief context, but the body itself
+is the source file from <code class="language-plaintext highlighter-rouge">docs/ps1/research/</code>, preserved as it was
+written. A link back to the source on GitHub sits at the bottom of
+every post.</p>
+
+<ul class="devlog-list">
+
+  <li>
+    <time datetime="2026-04-25">2026-04-25</time>
+    <div>
+      <a href="./milestones-2026-04-25/">Milestones — April 25, 2026</a>
+      <span class="summary">A status snapshot from a single-day batch that pushed the PS1 port across several long-standing unknowns: working TTY, an instrumentable perf module, an on-PS1 pause menu, a hand-rolled SPI controller driver, and memcard-backed user settings.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-21">2026-04-21</time>
+    <div>
+      <a href="./water-animation-worklog/">PS1 Fishing 1 Water Animation — Session Worklog, April 21, 2026</a>
+      <span class="summary">Unedited session worklog from the day the missing-waves bug in fishing1 was traced to numSprites[0] == 0 after adsInitIsland. The dead ends are why this exists.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-21">2026-04-21</time>
+    <div>
+      <a href="./water-animation-handoff/">PS1 Fishing 1 Water Animation Handoff — April 21, 2026</a>
+      <span class="summary">Handoff document for the water-animation work in fishing1, written so the next session could pick up without re-deriving the slot-loading findings.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-21">2026-04-21</time>
+    <div>
+      <a href="./fishing1-pixel-perfect-plan/">Fishing 1 Pixel-Perfect Plan — April 21, 2026</a>
+      <span class="summary">The plan written the day work started on getting fishing1 visually identical to the original PC version across every islandState variation.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-16">2026-04-16</time>
+    <div>
+      <a href="./ocean-restore-plan/">Ocean Restore Plan — April 16, 2026</a>
+      <span class="summary">Short-term plan for restoring the ocean draw path on the prerender pilot, with the title -&gt; fgpilot fishing1 path locked in as the safe baseline.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-16">2026-04-16</time>
+    <div>
+      <a href="./current-status-2026-04-16/">Current PS1 Prerender Pilot Status — April 16, 2026</a>
+      <span class="summary">Historical status snapshot from the prerender-pilot era, between the restore-pilot work and the fgpilot/full-SFX baseline. Preserved as-is.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-13">2026-04-13</time>
+    <div>
+      <a href="./foreground-top-layer-log/">PS1 Foreground Top-Layer Validation Log — April 13, 2026</a>
+      <span class="summary">Validation log tracking prerendered foreground-only fgpilot status separately from the normal PS1 scene verification track. A scene listed here is not yet PS1-verified.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-13">2026-04-13</time>
+    <div>
+      <a href="./foreground-timing-plan/">Foreground Timing Plan — April 13, 2026</a>
+      <span class="summary">Plan written after the fgpilot fishing1 scene was visually correct but timing was drifting from the host baseline. The dead ends on scheduler-sum paths matter.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-04-12">2026-04-12</time>
+    <div>
+      <a href="./offline-scene-playback-pivot/">Offline Scene Playback Pivot — April 12, 2026</a>
+      <span class="summary">The pivot proposal that moved scene playback to an offline content pipeline. Preserved at the proposed-pivot moment, before any of it was committed to.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./vlm-classifier-plan/">VLM Classifier Plan — March 29, 2026</a>
+      <span class="summary">The hosted-VLM plan written on the same day as the local-classifier plan. The two were posed against each other; both got tried.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./vision-classifier-worklog/">Vision Classifier Worklog — March 29, 2026</a>
+      <span class="summary">Worklog from the day the local vision classifier path went from plan to running. The dead ends are inline with the wins.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./vision-classifier-usage/">Vision Classifier Usage — March 29, 2026</a>
+      <span class="summary">Operator's reference for the vision-classifier pipeline as it stood on the day it landed. One-command runs, knobs, what to expect.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./validation-log/">PS1 Scene Validation Log — March 29, 2026</a>
+      <span class="summary">Validation log from the push to verify all 63 PS1 scenes against the canonical Linux reference. Findings, build state, and what was failing where.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./local-vision-classifier-plan/">Local Vision Classifier Plan — March 29, 2026</a>
+      <span class="summary">Plan for a local vision classifier to replace heuristic captioning. Same day as the parallel VLM plan; the two were evaluated against each other.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-29">2026-03-29</time>
+    <div>
+      <a href="./agent-prompt/">PS1 Scene Validation And Debug Prompt</a>
+      <span class="summary">The mission brief handed to a debugging agent the day the validation push for all 63 scenes started. Plain instructions, no rhetoric.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-28">2026-03-28</time>
+    <div>
+      <a href="./harness-worklog/">Regtest Harness Worklog — March 28, 2026</a>
+      <span class="summary">Worklog from the day the old final-frame/hash regtest was retired in favor of a scene-sequence comparator against the canonical host baseline corpus.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-21">2026-03-21</time>
+    <div>
+      <a href="./rollout-history/">PS1 Restore Rollout History</a>
+      <span class="summary">The dated rollout chronology that used to live in the research README. Historical context for how the restore pilot moved through the scene set.</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-03-21">2026-03-21</time>
+    <div>
+      <a href="./current-status-2026-03-21/">Current PS1 Restore Rollout Status — March 21, 2026</a>
+      <span class="summary">Historical status snapshot from the restore-pilot era. The verified counts here use a different bar than what the project measures today; preserved unedited.</span>
+    </div>
+  </li>
+
+</ul>
+
+<p class="callout">
+  Older material that predates the worklog stream — earlier plans,
+  superseded designs, archived experiments — lives under
+  <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/research/archive">docs/ps1/research/archive/</a>
+  on GitHub. It is not surfaced here on purpose; the index above is the
+  active record.
+</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

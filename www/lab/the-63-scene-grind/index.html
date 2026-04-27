@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>The 63-scene grind — Johnny Castaway PS1</title>
+  <meta name="description" content="A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1." />
+
+  <meta property="og:title"        content="The 63-scene grind — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab . Retrospective</p>
+      <h1>The 63-scene grind</h1>
+      <p class="subtitle">Two scenes signed off, sixty-one to go. That is not failure. That is a ledger.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-finite-list">The finite list</h2>
+
+<p>The port has 63 routed scenes in the current ledger.</p>
+
+<p>That number is a gift. It means the project is finite. Not easy. Not short.
+Finite.</p>
+
+<p>Each scene has an ADS family and tag. Each scene has a foreground pack. Some
+have tide variants. Some have raft variants. Some need holiday overlays to
+avoid stomping pixels. Some are mostly standing animation and some are little
+movies. They all eventually need the same thing: watch the PS1 output, compare
+against reference, fix what is wrong, mark the row.</p>
+
+<h2 id="why-only-two-validated">Why only two validated</h2>
+
+<p>At this release, two scenes are validated: <code class="language-plaintext highlighter-rouge">FISHING 1</code> and <code class="language-plaintext highlighter-rouge">FISHING 2</code>.</p>
+
+<p>That can sound small if you treat the scene count like a progress bar. It is
+not the right read. The first validated scene built the pipeline. The second
+proved the pipeline was not a one-off accident. The remaining sixty-one are
+work, but they are work inside a known frame.</p>
+
+<p>The difference between “nothing is known” and “the loop is known” is enormous.</p>
+
+<h2 id="the-daily-loop">The daily loop</h2>
+
+<p>The loop is:</p>
+
+<ol>
+  <li>Pick a scene.</li>
+  <li>Capture or refresh the host reference.</li>
+  <li>Generate or inspect the FG2 pack.</li>
+  <li>Wire the runtime if this scene needs a new path.</li>
+  <li>Build the disc.</li>
+  <li>Boot DuckStation.</li>
+  <li>Watch the scene.</li>
+  <li>Compare screenshots, logs, and timing.</li>
+  <li>Fix the obvious thing.</li>
+  <li>Repeat until the human review feels boring.</li>
+</ol>
+
+<p>“Feels boring” is important. A validated scene should not feel lucky. It
+should feel like you have watched it enough times that the next playthrough is
+uneventful.</p>
+
+<h2 id="the-grind-is-the-project">The grind is the project</h2>
+
+<p>There is no grand final algorithm that validates the other sixty-one. There
+will be tricks. There will be pack improvements. There will be more codegen.
+But the work is still one scene at a time.</p>
+
+<p>That is not disappointing. It is the nature of preservation work. The only way
+to know a gag landed is to watch the gag.</p>
+
+<h2 id="why-the-website-mirrors-it">Why the website mirrors it</h2>
+
+<p>The site has 63 scene pages for the same reason the code has 63 ledger rows.
+The shape of the project is the shape of the source material. If a scene has a
+status, it deserves a page. If a regtest reference exists, it deserves a page.
+If a holiday has an emblem, it deserves a page.</p>
+
+<p>The grind becomes navigable when every unit has a shelf.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../scenes/">Scene ledger</a></li>
+  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a></li>
+  <li><a href="../regression-as-lifestyle/">Regression as a lifestyle</a></li>
+  <li><a href="../../about/method/">Method</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

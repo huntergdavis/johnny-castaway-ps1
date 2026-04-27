@@ -1,0 +1,31 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="{{ '/legal/' | relative_url }}">GPL-3.0</a> ·
+          Source: <a href="{{ site.github_url }}" rel="noopener">GitHub</a> ·
+          {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated
+          ({{ site.release.tag }})
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="{{ '/faq/'      | relative_url }}">FAQ</a></li>
+          <li><a href="{{ '/credits/'  | relative_url }}">Credits</a></li>
+          <li><a href="{{ '/hack/'     | relative_url }}">Hack</a></li>
+          <li><a href="{{ '/source/'   | relative_url }}">Source library</a></li>
+          <li><a href="{{ '/resources/' | relative_url }}">Resources</a></li>
+          <li><a href="{{ '/archaeology/regtest-references/cases/' | relative_url }}">Regtest cases</a></li>
+          <li><a href="{{ '/legal/'    | relative_url }}">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>

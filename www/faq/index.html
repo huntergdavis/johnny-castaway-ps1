@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>FAQ — Johnny Castaway PS1</title>
+  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+
+  <meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="../lab/">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Author-written answers</p>
+      <h1>FAQ</h1>
+      <p class="subtitle">This is the only conversation surface. There's no comments box, no Discord, no Discussions tab — read on.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>This page is information, not a forum. Questions and answers are
+written by the author, not crowdsourced. Three sections: about
+the project, running it, and the original game.</p>
+
+<hr />
+
+<h2 id="about">About</h2>
+
+<h3 id="what-is-this">What is this?</h3>
+
+<p>A port of Sierra’s 1992 <em>Johnny Castaway</em> screensaver to the
+original PlayStation. It runs on real hardware and on
+DuckStation. 2 of 63
+scenes are validated as of v0.3.10-ps1.</p>
+
+<h3 id="why-ps1">Why PS1?</h3>
+
+<p>The hardware has roughly the same headroom as a 1992 PC, but a
+totally different graphics pipeline. The fun was in the gap —
+making a 1992 Windows screensaver render natively on a PS1 GPU
+that doesn’t know what BMPs are.</p>
+
+<h3 id="will-you-port-other-sierra-screensavers">Will you port other Sierra screensavers?</h3>
+
+<p>No plans. <em>Johnny Castaway</em> is a special case for me; I’m not
+shopping for the next one. If someone else wants to take what’s
+here and port <em>Surf’s Up</em>, that would be cool, but it’s not
+where I’m spending evenings.</p>
+
+<h3 id="is-this-legal">Is this legal?</h3>
+
+<p>The <em>code</em> in the repository is GPL-3.0 and entirely original
+(or derived from other GPL/MPL code with attribution). The
+<em>Johnny Castaway character and original Sierra assets</em> are not
+included with the released disc image; the host build requires
+the user to supply their own original Sierra data files
+(<code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code>, <code class="language-plaintext highlighter-rouge">RESOURCE.001</code>). The released <code class="language-plaintext highlighter-rouge">.bin/.cue</code>
+contains pre-baked playback packs — derived data, no Sierra
+source files. See <a href="../legal/">/legal/</a>.</p>
+
+<h3 id="why-is-it-only-2--63-scenes">Why is it only 2 / 63 scenes?</h3>
+
+<p>Each scene needs a clean host capture, a clean PS1 replay
+through every variant, and a no-corruption second pass at
+native resolution. That’s a stricter bar than “it ran once
+without crashing.” The <a href="../scenes/">scene ledger</a>
+tracks the count.</p>
+
+<hr />
+
+<h2 id="running-it">Running it</h2>
+
+<h3 id="how-do-i-run-it">How do I run it?</h3>
+
+<p>Download the <a href="../play/">.bin and .cue</a>,
+drop both files into a folder, open the <code class="language-plaintext highlighter-rouge">.cue</code> in DuckStation.
+That’s the whole quickstart.</p>
+
+<h3 id="do-i-need-original-sierra-files">Do I need original Sierra files?</h3>
+
+<p><strong>Not for the released <code class="language-plaintext highlighter-rouge">.bin/.cue</code>.</strong> End users get pre-baked
+playback packs on the disc image and never need a Sierra file.</p>
+
+<p><strong>Yes, for the host build</strong> used during development. If you’re
+compiling from source and want host-mode capture, you need
+<code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code> and <code class="language-plaintext highlighter-rouge">RESOURCE.001</code> from a legal <em>Johnny Castaway</em>
+1.0 install. The repository does not ship them.</p>
+
+<h3 id="does-it-work-on-real-ps1-hardware">Does it work on real PS1 hardware?</h3>
+
+<p>Yes — smoke-tested on a SCPH-7501 via the
+<a href="https://github.com/socram8888/tonyhax">TonyHax</a> softmod path.
+Your mileage may vary; treat any boot success as a small miracle.</p>
+
+<h3 id="which-emulators-are-supported">Which emulators are supported?</h3>
+
+<p>DuckStation is the only one tested every commit. PCSX-Redux
+should work. ePSXe is unverified. The release smoke gauntlet
+runs in headless DuckStation, so that one is the reference.</p>
+
+<h3 id="where-do-i-file-bugs">Where do I file bugs?</h3>
+
+<p>If you must, the issue tracker is at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/issues">huntergdavis/Johnny-Castaway-PS1/issues</a>. Bugs are
+tolerated, not invited. There is no contributor onboarding
+process and no “good first issue” label — see the <a href="../about/">non-goals on
+About</a>.</p>
+
+<hr />
+
+<h2 id="original-game">Original game</h2>
+
+<h3 id="where-does-the-caption-text-come-from">Where does the caption text come from?</h3>
+
+<p>The closed-caption text was authored fresh for this port from
+scene content. It is not lifted from any prior corpus. The
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml">caption audit</a>
+shows the confidence level of every ADS-tag → caption mapping
+(30 HIGH / 21 MED / 12 LOW as of v0.3.10-ps1).</p>
+
+<h3 id="why-are-there-35-holidays-now-instead-of-4">Why are there 35 holidays now instead of 4?</h3>
+
+<p>The original Sierra game had 4 baked-in holiday decorations
+(Christmas, New Year, Halloween, St. Patrick’s Day). This port
+extends that to 35 US holidays via a code-generated table and a
+pure-algorithm date core (Meeus for Easter, Nth-weekday math for
+the others). No external date library, no expiring tables, works
+for 100+ years. See <code class="language-plaintext highlighter-rouge">holidays.yml</code> and <code class="language-plaintext highlighter-rouge">src/holidays.c</code> in the
+repository.</p>
+
+<h3 id="whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</h3>
+
+<p><strong>Faithful</strong>: every scene the original had, in the original
+order, with the original variants. The art is unchanged. The
+holidays’ visual style matches the existing 4 (Sierra retained
+the original sprites; the new ones were authored to fit).</p>
+
+<p><strong>Added</strong>: closed captions (off by default), 31 additional
+holidays, a pause menu with Sound / Day-Night / Tide / Raft /
+Captions toggles, a Set Time / Set Island Pos / Set RNG Seed
+editor for testing, and a full Credits page.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="./">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

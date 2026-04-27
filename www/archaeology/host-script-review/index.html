@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Host-script review — Johnny Castaway PS1</title>
+  <meta name="description" content="The host-script review bundle preserves the cross-scene identification, capture-regression, and expectation reports for FISHING 1 and MARY 1 from the host validation pipeline that ran before the bespoke-scene loop." />
+
+  <meta property="og:title"        content="Host-script review — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The host-script review bundle preserves the cross-scene identification, capture-regression, and expectation reports for FISHING 1 and MARY 1 from the host validation pipeline that ran before the bespoke-scene loop." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Archaeology</p>
+      <h1>Host-script review</h1>
+      <p class="subtitle">A bundled snapshot of the host-side identification pipeline as it stood when the bespoke-scene methodology took over.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>The <code class="language-plaintext highlighter-rouge">host-script-review/</code> directory is a frozen snapshot of the host-side
+review pipeline as it ran on 2026-04-04, captured against two scenes —
+FISHING 1 and MARY 1 — and indexed into a self-contained set of HTML
+viewers, JSON baselines, and regression reports. Twenty-six files total,
+roughly 285 KB on disk. None of it is invoked by the current operator
+workflow. It is preserved here so the methodology that produced the
+<a href="../regtest-references/">regtest reference set</a>
+is documented in concrete terms rather than only described in the
+<a href="../timeline/">era timeline</a>.</p>
+
+<h2 id="whats-in-there">What’s in there</h2>
+
+<p>The bundle indexes itself through <code class="language-plaintext highlighter-rouge">manifest.json</code>, which lists two
+scenes (<code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">mary1</code>) and a set of “extras” — the cross-scene
+HTML viewers and the semantic-truth payload. The
+<code class="language-plaintext highlighter-rouge">verification-summary.txt</code> is a single line of key=value pairs that
+records the full provenance contract: 41 paths, 34 file inputs, the
+SHA256 of the input set, the depth distribution of the directory tree,
+and a <code class="language-plaintext highlighter-rouge">status=PASS</code> flag. This was meant to be machine-checkable —
+another script could read the line and confirm the bundle had not been
+altered.</p>
+
+<p>The two scenes have the same shape:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fishing1/frames/frame_NNNNN.bmp</code> — five sampled host frames at
+indices 0, 20, 40, 60, 80.</li>
+  <li><code class="language-plaintext highlighter-rouge">fishing1/frame-meta/frame_NNNNN.json</code> — per-frame metadata with the
+actor draws, BMP names, and visible-unique counts.</li>
+  <li><code class="language-plaintext highlighter-rouge">fishing1/review.html</code> — the per-scene viewer.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">mary1/</code> is the same with six frames at indices 0, 50, 100, 150, 200,</p>
+<ol>
+  <li>The frame at index 80 in FISHING 1 is the first one where
+<code class="language-plaintext highlighter-rouge">actor_summary</code> records <code class="language-plaintext highlighter-rouge">johnny=1</code> and <code class="language-plaintext highlighter-rouge">bmp_names=["JOHNWALK.BMP"]</code>.
+Before that the host pipeline saw zero actor draws — the johnny sprite
+had not yet been emitted into the frame buffer. The MARY 1 capture
+shows johnny first appearing at frame 100.</li>
+</ol>
+
+<p>The cross-scene viewers (the “extras”) are the meaty part:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">identification-review.html</code></strong> (51 KB) — the full identification
+report, walking each frame’s top-1 match against the reference bank.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">capture-regression-review.html</code></strong> (4 KB) — the capture-regression
+comparison page.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">host-truth-compare.html</code></strong> (3 KB) — host-truth comparison output.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">expectation-report.html</code></strong> (3 KB) — the expectation-vs-actual
+report. For FISHING 1, frame 80’s expectation says
+<code class="language-plaintext highlighter-rouge">expect_any_actor: true, expect_entities: ["johnny"], required_actor_bmps: ["JOHNWALK.BMP"]</code>;
+the report confirms the host pipeline observed exactly that.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">repro-compare.html</code></strong> (6 KB) — reproducibility comparison: did a
+re-run produce the same outputs as the baseline?</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">index.html</code></strong> (5 KB) — the cover page that links the rest together.</li>
+</ul>
+
+<p>Behind those HTML viewers are the JSON baselines and reports that
+generated them: <code class="language-plaintext highlighter-rouge">frame-image-regression-baseline.json</code>,
+<code class="language-plaintext highlighter-rouge">frame-meta-regression-baseline.json</code>,
+<code class="language-plaintext highlighter-rouge">semantic-regression-baseline.json</code>, and the matching <code class="language-plaintext highlighter-rouge">*-report.json</code>
+files. The <code class="language-plaintext highlighter-rouge">identification-selfcheck.json</code> (28 KB),
+<code class="language-plaintext highlighter-rouge">identification-temporal.json</code> (5 KB), <code class="language-plaintext highlighter-rouge">identification-eval.json</code>,
+<code class="language-plaintext highlighter-rouge">identification-partials.json</code>, <code class="language-plaintext highlighter-rouge">identification-challenges.json</code>, and
+<code class="language-plaintext highlighter-rouge">identification-regression-floors.json</code> together describe the
+reference-bank match quality at the point the bundle was captured.</p>
+
+<h2 id="why-these-were-reviewed-and-saved">Why these were reviewed and saved</h2>
+
+<p>The host pipeline at this point was attempting to validate scene
+identification in two senses at once. First: <em>given a captured frame,
+can the system identify which scene it came from</em> by matching against a
+reference bank? Second: <em>given an expected scene structure, do the
+captured frames meet the expected actor presence at the expected frame
+indices</em>?</p>
+
+<p>The first question was tractable. The vision-classifier era’s reference
+bank contained 13,128 frames across all 63 scenes, and the
+identification self-check recorded each scene’s top-1 hit rate. FISHING
+1’s hit rate was 47% — confused with FISHING 2 about 40% of the time —
+which was one of the lowest in the set. That low number is part of why
+the project moved away from broad identification toward bespoke
+per-scene capture. The
+<a href="../vision-artifacts/">vision-classifier artifacts</a>
+preserve the broader identification record.</p>
+
+<p>The second question — actor presence at expected indices — was the
+useful part of the pipeline. It said, in writing, “at frame 80 the host
+should have drawn JOHNWALK.BMP.” That kind of frame-and-entity
+expectation is what the regtest reference set still inherits, in its
+state-hash-and-frame-count form. The host-script review is the more
+elaborate ancestor.</p>
+
+<p>Saving the bundle preserves both shapes — the broad identification
+attempt and the narrow expectation check — at the moment when the
+narrow form was about to win. Anyone reading the bundle six months
+later sees the methodology halfway through its evolution.</p>
+
+<h2 id="what-it-teaches-about-earlier-methodology">What it teaches about earlier methodology</h2>
+
+<p>The methodology was: <em>automate truth at scale</em>. Capture every frame
+from every scene, build a reference bank, ask whether each fresh frame
+matches the bank, ask whether the bank itself is internally consistent
+(self-check), ask whether each scene’s expected entities appear at the
+expected frames. If all of those hold, the scene is verified.</p>
+
+<p>The bundle shows that approach working in narrow scope — the two
+sample scenes pass — and also reveals where it strained. A 41-path
+manifest with twelve named path-map categories is a system trying to
+keep many disjoint truth surfaces consistent. The
+<code class="language-plaintext highlighter-rouge">verification-summary.txt</code> line is itself 8 KB long, summarising every
+field of every category with hashes. That’s a lot of bookkeeping to
+keep eight HTML viewers and twenty-four JSON files coherent.</p>
+
+<p>The path the project took instead was: per-scene capture, per-scene
+metadata, per-scene comparison. Three files per scene. Sixty-two
+scenes. The
+<a href="../regtest-references/">regtest reference set</a>
+is what won, and the host-script review is what it replaced.</p>
+
+<h2 id="status-retired">Status: retired</h2>
+
+<p>These files are not regenerated. The scripts that produced them are not
+on the current operator path. A future contributor wanting to re-run
+the pipeline would need to find the host-side identification code at
+the commit it last ran cleanly (around 2026-04-04) and walk it
+forward — there is no shortcut. The bundle is preserved as a complete,
+self-contained example of one validation philosophy, not as a tool
+that’s expected to keep running.</p>
+
+<p>The documents are still readable in a browser and self-explanatory if
+opened in order: start with <code class="language-plaintext highlighter-rouge">index.html</code>, follow into
+<code class="language-plaintext highlighter-rouge">identification-review.html</code> for the full match report, then into
+<code class="language-plaintext highlighter-rouge">expectation-report.html</code> for the per-frame entity check.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../docs/regtest/">Regtest documentation</a> — the
+successor harness that replaced this style of validation.</li>
+  <li><a href="../vision-artifacts/">Vision-classifier artifacts</a> —
+the larger reference-bank context this bundle’s identification
+outputs were measured against.</li>
+  <li><a href="../timeline/">Era timeline</a> —
+for the dates around when the host-script review approach was
+active and when it gave way to the bespoke per-scene line.</li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/archaeology/host-script-review/">docs/ps1/archaeology/host-script-review/</a></p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

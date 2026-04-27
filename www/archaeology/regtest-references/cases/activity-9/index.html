@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>ACTIVITY-9 regression reference — Johnny Castaway PS1</title>
+  <meta name="description" content="Regtest reference case for ACTIVITY-9." />
+
+  <meta property="og:title"        content="ACTIVITY-9 regression reference — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Regtest reference case for ACTIVITY-9." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../../">Home</a></li>
+        <li><a href="../../../../play/">Play</a></li>
+        <li><a href="../../../../about/">About</a></li>
+        <li><a href="../../../../scenes/">Scenes</a></li>
+        <li><a href="../../../../devlog/">Devlog</a></li>
+        <li><a href="../../../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../../../lab/">Lab</a></li>
+        <li><a href="../../../../hack/">Hack</a></li>
+        <li><a href="../../../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Host regression reference</p>
+      <h1>ACTIVITY-9 regression reference</h1>
+      <p class="subtitle">ACTIVITY.ADS tag 9</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>This is the public shelf page for the host regression reference at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9"><code class="language-plaintext highlighter-rouge">docs/ps1/archaeology/regtest-references/ACTIVITY-9</code></a>.</p>
+
+<h2 id="what-this-case-captures">What this case captures</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ACTIVITY-9</code> is the host-side reference for <code class="language-plaintext highlighter-rouge">ACTIVITY.ADS</code> tag <code class="language-plaintext highlighter-rouge">9</code>.
+The host runner booted the scene with:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>window nosound story single 9 seed 1
+</code></pre></div></div>
+
+<p>The reference is not a finished PS1 sign-off. It is the old-fashioned
+baseline: run the known desktop interpreter, capture the frames, save the
+metadata, and keep the result around so later PS1 work has something to argue
+with.</p>
+
+<h2 id="recorded-facts">Recorded facts</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th style="text-align: right">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ADS</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">ACTIVITY</code></td>
+    </tr>
+    <tr>
+      <td>Tag</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">9</code></td>
+    </tr>
+    <tr>
+      <td>Scene index</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">9</code></td>
+    </tr>
+    <tr>
+      <td>Status</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">verified</code></td>
+    </tr>
+    <tr>
+      <td>Capture date</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-03-28T15:22:43Z</code></td>
+    </tr>
+    <tr>
+      <td>Frames captured</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">296</code></td>
+    </tr>
+    <tr>
+      <td>Exit code</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0</code></td>
+    </tr>
+    <tr>
+      <td>Timed out</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">False</code></td>
+    </tr>
+    <tr>
+      <td>Fatal error</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">False</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="state-hash">State hash</h2>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>98410b202d55aabd6e0f1f879a8e339ad9a55c6c1295a85697e06ced86f631fd
+</code></pre></div></div>
+
+<h2 id="source-artifacts">Source artifacts</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9/metadata.json"><code class="language-plaintext highlighter-rouge">metadata.json</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9/result.json"><code class="language-plaintext highlighter-rouge">result.json</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9/review.html"><code class="language-plaintext highlighter-rouge">review.html</code></a></li>
+</ul>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../">All regtest references</a></li>
+  <li><a href="../../">Regtest reference narrative</a></li>
+  <li><a href="../../../../scenes/">Scene ledger</a></li>
+  <li><a href="../../../../docs/regtest/">Regression testing docs</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../../faq/">FAQ</a></li>
+          <li><a href="../../../../credits/">Credits</a></li>
+          <li><a href="../../../../hack/">Hack</a></li>
+          <li><a href="../../../../source/">Source library</a></li>
+          <li><a href="../../../../resources/">Resources</a></li>
+          <li><a href="../">Regtest cases</a></li>
+          <li><a href="../../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

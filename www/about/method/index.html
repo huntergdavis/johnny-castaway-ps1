@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Method — Johnny Castaway PS1</title>
+  <meta name="description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
+
+  <meta property="og:title"        content="Method — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../" aria-current="page">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Host-capture . FG2 pack . PS1 replay</p>
+      <h1>Method</h1>
+      <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-problem">The problem</h2>
+
+<p>Sierra’s <em>Johnny Castaway</em> shipped in 1992 for Windows 3.1. It is a
+screensaver. The engine is a small interpreter for two custom
+bytecodes – ADS, which selects scenes, and TTM, which scripts the
+per-scene drawing – backed by a flat resource pack
+(<code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code> / <code class="language-plaintext highlighter-rouge">RESOURCE.001</code>) of compressed bitmaps and screens.
+On modern hardware the engine has been decoded, cleaned up, and made
+portable; the upstream that this project descends from,
+<a href="https://github.com/jno6809/jc_reborn">jno6809/jc_reborn</a>, runs on top
+of SDL2.</p>
+
+<p>A PS1 port is not “swap SDL2 for PSn00bSDK.” Three things make a
+straight port impossible:</p>
+
+<ol>
+  <li><strong>No comparable graphics pipeline.</strong> The PS1 GPU does not draw
+into a CPU-addressable framebuffer. It pushes commands through an
+ordering table; sprites live in VRAM as 4-bit or 8-bit
+CLUT-indexed textures; “compositing a frame” means submitting
+<code class="language-plaintext highlighter-rouge">SPRT</code> and <code class="language-plaintext highlighter-rouge">POLY_FT4</code> primitives in z-sorted order. Sierra’s TTM
+ops were authored for a flat 8-bit framebuffer with <code class="language-plaintext highlighter-rouge">SAVE_ZONE</code>
+/ <code class="language-plaintext highlighter-rouge">RESTORE_ZONE</code> semantics, not for a tile-and-blit GPU.</li>
+  <li><strong>2 MB of system RAM and no filesystem cache.</strong> The desktop
+build trusts the OS to keep recently-read resources warm. The PS1
+has 2 MB total, a 2x CD drive (~300 KB/s, 150ms cold
+seek), no disk cache, no virtual memory, and no syscall layer.
+Anything you want quickly has to already be in RAM. Anything large
+has to be paged off the disc deterministically.</li>
+  <li><strong>SDL2 is not portable to the PS1.</strong> PSn00bSDK is the modern
+open-source SDK; it gives you <code class="language-plaintext highlighter-rouge">psxgpu</code>, <code class="language-plaintext highlighter-rouge">psxcd</code>, <code class="language-plaintext highlighter-rouge">psxspu</code>,
+<code class="language-plaintext highlighter-rouge">psxapi</code>, <code class="language-plaintext highlighter-rouge">psxgte</code>, <code class="language-plaintext highlighter-rouge">psxsio</code>. There is no <code class="language-plaintext highlighter-rouge">printf</code> you can trust
+in a hot loop, no <code class="language-plaintext highlighter-rouge">malloc</code> worth leaning on for transients, no
+<code class="language-plaintext highlighter-rouge">pthread</code>, no <code class="language-plaintext highlighter-rouge">clock_gettime</code>. SDL’s design assumptions are not
+even close.</li>
+</ol>
+
+<p>The first prototype tried to brute-force these problems in the runtime
+– a faithful TTM/ADS interpreter on the PS1, replaying scenes from
+extracted resources, recovering disappearing actors with heuristics.
+It mostly worked. It also produced “Johnny disappears” bugs that moved
+around as fast as they could be fixed, because the runtime was
+trusting state that the desktop engine had built up across many
+scenes. That class of bug is what motivated the pivot.</p>
+
+<h2 id="the-hybrid-pipeline">The hybrid pipeline</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>desktop host  ----&gt;  capture-host-scene.sh  ----&gt;  high/low frames + frame-meta JSONs + sound-events.jsonl
+                                  |
+                                  v
+            export-scene-foreground-pilot.sh
+                                  |
+                                  v
+            build-scene-foreground-pack.py
+                                  |
+                                  v  (FG2: pal4/indexed8 spans + sound-event table)
+               generated/ps1/foreground/*.FG2 ----&gt; CD image ----&gt; PS1
+                                                                |
+                                                                v
+                                              foreground_pilot.c (replay)
+                                                                |
+                                                                v
+                                             sound_ps1.c soundPlay() on cue
+</code></pre></div></div>
+
+<p>Each stage:</p>
+
+<ul>
+  <li><strong>Host capture.</strong> The desktop build (the same code, with the SDL2
+backend) is asked to play one ADS+tag scene under controlled boot
+state – tide, night, holiday, raft-stage. It writes a high-tide
+capture and a low-tide capture: a sequence of full PNG frames, one
+per displayed game frame, plus a <code class="language-plaintext highlighter-rouge">frame-meta.json</code> with timing data
+and a <code class="language-plaintext highlighter-rouge">sound-events.jsonl</code> containing every <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code> op
+the TTM interpreter fired, with frame index, sound number, and
+pan / volume. This is run by <code class="language-plaintext highlighter-rouge">scripts/capture-host-scene.sh</code>.</li>
+  <li><strong>Pack compile.</strong> <code class="language-plaintext highlighter-rouge">scripts/build-scene-foreground-pack.py</code> turns a
+capture into one FG2 binary. Each output frame becomes either a
+base full-render (the first frame, or any frame the differ flagged
+as a forced base) or a diff-from-prior. Diffs are stored as runs
+of indexed-pixel spans: <code class="language-plaintext highlighter-rouge">(y, x_start, length, indexed_bytes)</code>.
+Sound events fold into a per-frame event table.</li>
+  <li><strong>CD packaging.</strong> <code class="language-plaintext highlighter-rouge">mkpsxiso</code> consumes <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>
+and lays out the disc image. Each routed scene contributes two
+pack entries (high-tide, low-tide) plus the small fixed payload
+– the executable, <code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code>/<code class="language-plaintext highlighter-rouge">.001</code> for static metadata
+lookup, the SCR/PSB/SND assets the runtime still consults, and
+the title raw.</li>
+  <li><strong>PS1 replay.</strong> <code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code> opens the matching pack
+for the selected scene+tide, decodes its header and per-frame
+index, and during the scene loop stamps each frame’s diff spans
+on top of the prior composite. Background, wave animation, and
+holiday overlays come from the PS1’s own narrow runtime;
+sound events fire through <code class="language-plaintext highlighter-rouge">src/sound_ps1.c</code> on a per-pack event
+cursor with a fixed 3-frame delay so SPU key-on lines up with
+the visible trigger.</li>
+</ul>
+
+<p>This is the right shape because everything that needs the desktop
+engine’s full state (scene continuity, replay state, the ADS
+selector) happens once at capture time on a 64-bit machine with
+gigabytes of RAM. Everything that needs to be cheap on the PS1
+(memory access, sprite stamping, audio key-on) is one straight pass
+through a small, deterministic file.</p>
+
+<h2 id="whats-in-a-pack">What’s in a pack</h2>
+
+<p>An <code class="language-plaintext highlighter-rouge">FG2</code> pack – e.g. <code class="language-plaintext highlighter-rouge">FISHING_1.FG2</code> or <code class="language-plaintext highlighter-rouge">FISHIN_L1.FG2</code> for the
+low-tide twin – is a flat little-endian binary. The relevant
+research notes are in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_PAYLOAD_LAYOUT.md</code></a>
+and
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_MANIFEST_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_MANIFEST_SCHEMA.md</code></a>.</p>
+
+<p>Concretely, a pack contains:</p>
+
+<ul>
+  <li><strong>Header.</strong> Magic bytes, format version, frame count, base-frame
+count, palette size, indexed-bit-depth flag (<code class="language-plaintext highlighter-rouge">pal4</code> for 4-bit /
+16-color CLUT, <code class="language-plaintext highlighter-rouge">indexed8</code> for 8-bit / 256-color), high-or-low
+tide marker, source-scene identifier (ADS family + tag), and the
+byte offsets of the entry table, palette, base-frame block, and
+diff block. Sector alignment is 2048 bytes so each block lands on
+a CD-ROM sector boundary – the loader can read what it needs
+without straddling sectors and forcing extra seeks.</li>
+  <li><strong>Palette.</strong> A single CLUT for the whole scene, packed as PS1
+16-bit BGR-1555 entries. The host-side capture is constrained to a
+scene-stable palette so the pack does not have to re-upload CLUTs
+per frame.</li>
+  <li><strong>Entry table.</strong> One row per displayed frame. Each row is a fixed
+struct: frame index, source kind (<code class="language-plaintext highlighter-rouge">base</code> or <code class="language-plaintext highlighter-rouge">diff</code>), block offset,
+block length, and the frame’s intended display duration in
+60ths-of-a-second ticks. The entry table is what the replay loop
+walks; the diff/base blocks are loaded lazily.</li>
+  <li><strong>Base frames.</strong> Full-render, indexed-pixel grids covering the
+scene’s authored compose region (not the whole 640x480 – only the
+rectangle the foreground actually touches). One base at the start
+of the scene; a small number of forced bases mid-scene where the
+differ found a discontinuity it didn’t want to encode.</li>
+  <li><strong>Diff frames.</strong> Run-length-encoded spans of changed indexed
+pixels, addressed against the rectangle the prior frame
+established. Each span: <code class="language-plaintext highlighter-rouge">(row, x_start, run_length, bytes)</code>. A
+PS1 frame typically spends 80-95% fewer pixel-writes than a full
+redraw because most of a Castaway frame is unchanged background
+ocean and unchanged island.</li>
+  <li><strong>Sound-event table.</strong> Per-frame list of <code class="language-plaintext highlighter-rouge">(sound_number, pan,
+volume)</code> triples lifted from the captured <code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> events.
+This is what <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> uses to fire <code class="language-plaintext highlighter-rouge">soundPlay()</code> on
+cue.</li>
+  <li><strong>Frame-meta tail.</strong> Source frame timing in milliseconds, used at
+capture-validate time and preserved in the pack so a regtest can
+confirm the on-PS1 cadence still matches the host capture.</li>
+</ul>
+
+<p>The runtime also carries a small companion JSON sidecar (<code class="language-plaintext highlighter-rouge">pack_index</code>
+on the host side) used by the regtest harness, but on the disc the
+runtime only needs the binary. There is one pack per scene per tide,
+so the routed disc image carries up to 126 packs (<code class="language-plaintext highlighter-rouge">63 x 2</code>) – the
+generated FG2 corpus is roughly 343 MB, which is why packs are
+routed onto the CD selectively rather than all at once during
+bring-up.</p>
+
+<h2 id="ps1-hardware-constraints-we-hit">PS1 hardware constraints we hit</h2>
+
+<p>These are the gotchas that actually cost wall-clock days. Most of
+them are in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/hardware-specs.md"><code class="language-plaintext highlighter-rouge">docs/ps1/hardware-specs.md</code></a>
+or the dated worklogs under
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/research"><code class="language-plaintext highlighter-rouge">docs/ps1/research/</code></a>.</p>
+
+<p><strong>SPI pad polling needs <code class="language-plaintext highlighter-rouge">tx_len=5</code>, not 4.</strong> PSn00bSDK 0.24’s BIOS
+pad driver (<code class="language-plaintext highlighter-rouge">InitPAD</code> / <code class="language-plaintext highlighter-rouge">StartPAD</code>) does not auto-poll under
+DuckStation in the project’s runtime context. The fix was to lift
+the SPI controller driver from spicyjpeg’s <code class="language-plaintext highlighter-rouge">pads</code> example and run
+it directly: timer-2 plus SIO0 IRQ at 250 Hz, in <code class="language-plaintext highlighter-rouge">src/spi.c</code>.
+That driver, as published, sends a 4-byte poll TX. Under DuckStation
+the controller bytes never make it back; the read returns
+<code class="language-plaintext highlighter-rouge">0xFFFF</code>. The console only delivers button bytes when the full
+5-byte poll sequence comes from the TX buffer. Bumping <code class="language-plaintext highlighter-rouge">tx_len</code>
+from 4 to 5 made the controller work. This is documented in
+<code class="language-plaintext highlighter-rouge">docs/ps1/hardware-specs.md</code> and pinned in the project’s working
+notes. If you copy the spicyjpeg driver, change <code class="language-plaintext highlighter-rouge">tx_len</code>.</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in the scene-runtime context.</strong>
+The pause menu needed on-screen text. The PSn00bSDK font path
+(<code class="language-plaintext highlighter-rouge">FntLoad</code> / <code class="language-plaintext highlighter-rouge">FntPrint</code> / <code class="language-plaintext highlighter-rouge">FntFlush</code>) accepts the calls without
+error but produces no visible pixels in the running scene context
+– primitives accumulate in the OT and never present. Rather than
+chase the root cause through PSn00bSDK internals, the pause menu
+ships a custom embedded 8x8 ASCII font, drawn with <code class="language-plaintext highlighter-rouge">POLY_F4</code> glyph
+quads on the same OT as the scene. Captions reuse that same font
+atlas. New on-screen text should not regress to <code class="language-plaintext highlighter-rouge">FntFlush</code>.</p>
+
+<p><strong>VRAM corruption across scenes – <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code> wipes
+<code class="language-plaintext highlighter-rouge">currDirty</code>.</strong> The dirty-rectangle bookkeeping in
+<code class="language-plaintext highlighter-rouge">src/graphics_ps1.c</code> tracks per-frame dirty regions in <code class="language-plaintext highlighter-rouge">currDirty</code>
+and <code class="language-plaintext highlighter-rouge">prevDirty</code>. On a normal frame, <code class="language-plaintext highlighter-rouge">currDirty</code> is the spans the
+foreground touched this frame; <code class="language-plaintext highlighter-rouge">prevDirty</code> is what it touched last
+frame and now needs background restoration. The pause menu opens
+mid-scene, dims everything, and on resume needs the entire scene
+to redraw cleanly. The first attempt called <code class="language-plaintext highlighter-rouge">grRestoreBgTiles()</code> on
+resume, which uses <code class="language-plaintext highlighter-rouge">currDirty</code> to know what to restore – but
+<code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code> itself wipes <code class="language-plaintext highlighter-rouge">currDirty</code> as it goes. A full
+redraw on resume needs both <code class="language-plaintext highlighter-rouge">prevDirty</code> and <code class="language-plaintext highlighter-rouge">currDirty</code> honored,
+which is why the codebase now exposes <code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame()</code>
+to flag the next frame as a forced full background restore. This
+is pinned in the project’s memory and showed up multiple times
+during pause-menu bring-up.</p>
+
+<p><strong>SPU HLE vs hardware divergence under DuckStation.</strong>
+<code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> is not honored by DuckStation’s HLE
+audio path. The pause menu’s mute toggle had to be reimplemented
+as a direct write to the SPU master-volume registers. This was
+isolated during the <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code> audio bring-up, alongside a
+batch of VAG-encoder bugs (<code class="language-plaintext highlighter-rouge">scripts/wav2vag.py</code>): inverted
+shift-exponent, swapped ADPCM nibble pair order, missing 64-byte
+SPU DMA alignment, ADSR1 attack-rate orientation. Audio-on-real-
+hardware behavior is presumed-correct but unverified – one of
+the open items. See commit <code class="language-plaintext highlighter-rouge">355227fa</code> for the full bug list.</p>
+
+<p><strong>TTY printf is the only real debug surface, and it has a price.</strong>
+For most of 2026-Q1 the project ran with <code class="language-plaintext highlighter-rouge">debugMode=0</code> and
+“visual debugging” – colored pixels via <code class="language-plaintext highlighter-rouge">LoadImage</code>, the
+five-panel telemetry overlay, gated <code class="language-plaintext highlighter-rouge">JCPERF</code> summaries during
+scene transitions only. Per-frame <code class="language-plaintext highlighter-rouge">vprintf</code> was outright
+destabilizing scene playback (unbounded format buffers, hot-path
+text I/O changing timing). As of 2026-04-25, bounded <code class="language-plaintext highlighter-rouge">vprintf</code>
+plus DuckStation TTY/file logging restored gated <code class="language-plaintext highlighter-rouge">printf()</code>
+breadcrumbs for setup/teardown – the <code class="language-plaintext highlighter-rouge">JCSPI</code>, <code class="language-plaintext highlighter-rouge">JCPAD</code>, <code class="language-plaintext highlighter-rouge">JCPERF</code>
+prefixes downstream tools key off. It still must not be called
+per frame; that’s why <code class="language-plaintext highlighter-rouge">ps1_perf</code> is level-gated
+(<code class="language-plaintext highlighter-rouge">OFF</code>/<code class="language-plaintext highlighter-rouge">SUMMARY</code>/<code class="language-plaintext highlighter-rouge">DETAIL</code>/<code class="language-plaintext highlighter-rouge">DEBUG</code>).</p>
+
+<p>Other gotchas worth flagging in passing:</p>
+
+<ul>
+  <li>The PSn00bSDK 0.24 toolchain runs in Docker on <code class="language-plaintext highlighter-rouge">linux/amd64</code>
+(<code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code>). Native macOS toolchains were attempted and
+abandoned – missing <code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code>, source builds need
+Linux. Docker was the cheapest path that worked.</li>
+  <li>4-bit indexed sprite format (<code class="language-plaintext highlighter-rouge">indexedPixels</code>) saved roughly 4x
+the RAM of the original 15-bit direct-color path, which is what
+let multi-sprite scenes fit in 2 MB at all.</li>
+  <li>Hash-based O(1) resource lookup replaced the original O(N)
+<code class="language-plaintext highlighter-rouge">strcmp</code> scan during the 2026-03 perf push. Worth ~15-25% of
+compositing time.</li>
+  <li>BSS budget was held under ~57 KB through development;
+<code class="language-plaintext highlighter-rouge">malloc</code> is used for transients rather than static arrays
+precisely because static arrays push BSS into the danger zone.</li>
+</ul>
+
+<h2 id="why-hybrid-won">Why hybrid won</h2>
+
+<p>The PS1 does not have to be smart. The host build does the smart
+work – runs the real engine, captures the real frames, encodes the
+diffs, lays out the disc – and the PS1 just plays back. That is
+why 63 scenes can fit on a single CD-ROM at all, why the executable
+is around 84 KB after the dead ADS/TTM/FG1 paths were stripped,
+and why scene continuity bugs stopped being a runtime concern: the
+runtime no longer carries the state that those bugs lived in.</p>
+
+<p>The cost is that every scene needs a verified host capture before
+it joins the validated count, and that count is currently
+<code class="language-plaintext highlighter-rouge">2 / 63</code>.
+Two scenes pixel-perfect plus synced SFX is not 63. But the path
+from one to two was the same as the path from two to three will
+be, and the path from three to thirty will be the same again. That
+is the property the project was reaching for.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Ocean Restore Plan — April 16, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Short-term plan for restoring the ocean draw path on the PS1 prerender pilot, with fishing1 as the safe baseline." />
+
+  <meta property="og:title"        content="Ocean Restore Plan — April 16, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Short-term plan for restoring the ocean draw path on the PS1 prerender pilot, with fishing1 as the safe baseline." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-04-16">
+        April 16, 2026
+      </time>
+    </p>
+    <h1>Ocean Restore Plan — April 16, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Short-term plan for restoring the ocean draw path on the prerender pilot, with the title -> fgpilot fishing1 path locked in as the safe baseline.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Status: active short-term plan
+Owner: PS1 prerender pilot</p>
+
+<h2 id="safe-baseline">Safe baseline</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">title -&gt; fgpilot fishing1</code> is the current known-good path.</li>
+  <li><code class="language-plaintext highlighter-rouge">fishing1</code> prerender playback is visually correct on the black base.</li>
+  <li>Timing is close to PC after host-deadline replay and deadline catch-up work.</li>
+  <li>The generic foreground runtime path has already been proven on <code class="language-plaintext highlighter-rouge">fishing2</code>.</li>
+</ul>
+
+<p>Reference launch:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">./scripts/rebuild-and-let-run.sh fgpilot fishing1</code></li>
+</ul>
+
+<h2 id="what-just-failed">What just failed</h2>
+
+<p>These are explicitly not the next step:</p>
+
+<ul>
+  <li>swapping ocean into the standalone prerender loop by changing only the base
+background load</li>
+  <li>routing <code class="language-plaintext highlighter-rouge">fgpilot fishing1</code> through full <code class="language-plaintext highlighter-rouge">adsInitIsland() + adsPlay()</code></li>
+</ul>
+
+<p>Observed failures:</p>
+
+<ul>
+  <li>repeated Johnny overpaint / ghosting when ocean was forced under the
+standalone pack player</li>
+  <li>partial scene startup and missing Johnny when full ADS scene routing was used</li>
+</ul>
+
+<p>Conclusion:</p>
+
+<ul>
+  <li>ocean cannot be restored safely by brute-forcing a different background into
+the current standalone playback loop</li>
+  <li>full ADS scene routing changes too much behavior at once for this milestone</li>
+</ul>
+
+<h2 id="goal">Goal</h2>
+
+<p>Restore the real ocean layer under prerender playback while keeping the
+foreground pack playback path stable and generic.</p>
+
+<h2 id="execution-rules">Execution rules</h2>
+
+<ol>
+  <li>One change at a time.</li>
+  <li>Run after every step.</li>
+  <li>User validates every step before any commit.</li>
+  <li>No Fishing-1-only runtime hacks.</li>
+  <li>Do not reintroduce full ADS scene playback as an implicit side effect.</li>
+</ol>
+
+<h2 id="step-sequence">Step sequence</h2>
+
+<h3 id="step-1-lock-baseline-again">Step 1: Lock baseline again</h3>
+
+<p>Goal:</p>
+
+<ul>
+  <li>keep <code class="language-plaintext highlighter-rouge">title -&gt; fgpilot fishing1</code> on the known-good black-base path</li>
+</ul>
+
+<p>Exit criteria:</p>
+
+<ul>
+  <li>visuals match the current baseline</li>
+  <li>no ocean yet</li>
+  <li>no Johnny ghosting</li>
+</ul>
+
+<h3 id="step-2-prove-ocean-only-initialization-in-isolation">Step 2: Prove ocean-only initialization in isolation</h3>
+
+<p>Goal:</p>
+
+<ul>
+  <li>initialize the ocean/island background machinery without starting scene ADS
+logic or foreground playback</li>
+</ul>
+
+<p>Requirements:</p>
+
+<ul>
+  <li>no walk thread</li>
+  <li>no island animation thread unless explicitly needed for the ocean base to
+appear</li>
+  <li>no foreground prerender overlay yet</li>
+</ul>
+
+<p>Exit criteria:</p>
+
+<ul>
+  <li>ocean appears correctly</li>
+  <li>no corruption or title leftovers</li>
+  <li>stable for a simple hold run</li>
+</ul>
+
+<h3 id="step-3-put-the-existing-standalone-foreground-player-on-top-of-the-proven">Step 3: Put the existing standalone foreground player on top of the proven</h3>
+<h3 id="ocean-only-base">ocean-only base</h3>
+
+<p>Goal:</p>
+
+<ul>
+  <li>reuse the exact current standalone <code class="language-plaintext highlighter-rouge">fishing1</code> foreground playback loop</li>
+  <li>change only the source of the clean background baseline</li>
+</ul>
+
+<p>Exit criteria:</p>
+
+<ul>
+  <li>ocean visible</li>
+  <li>Johnny and props still render correctly</li>
+  <li>no cumulative overpaint / ghosting</li>
+</ul>
+
+<h3 id="step-4-if-step-3-fails-fix-restore-semantics-before-trying-more-init-work">Step 4: If Step 3 fails, fix restore semantics before trying more init work</h3>
+
+<p>Primary suspects:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">grRestoreBackgroundRectForFrame()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">grRestoreAndCompositeDirect16BackgroundRectForFrame()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">prevDirty</code> / <code class="language-plaintext highlighter-rouge">currDirty</code> advancement</li>
+  <li>assumptions in the standalone loop that only happen to work on black</li>
+</ul>
+
+<p>Rule:</p>
+
+<ul>
+  <li>do not add more background setup complexity until restore correctness is
+proven against a non-black clean baseline</li>
+</ul>
+
+<h3 id="step-5-only-after-ocean-is-stable-restore-island">Step 5: Only after ocean is stable, restore island</h3>
+
+<p>Goal:</p>
+
+<ul>
+  <li>static island first</li>
+  <li>no random placement yet</li>
+</ul>
+
+<h3 id="step-6-only-after-static-island-is-stable-restore-random-island-placement">Step 6: Only after static island is stable, restore random island placement</h3>
+
+<p>Goal:</p>
+
+<ul>
+  <li>generic island positioning</li>
+  <li>foreground playback still composes correctly</li>
+</ul>
+
+<h2 id="immediate-next-move">Immediate next move</h2>
+
+<p>Build an <code class="language-plaintext highlighter-rouge">ocean-only</code> proof path that initializes the real ocean background
+without entering full ADS scene playback, validate that by itself, then layer
+the current standalone <code class="language-plaintext highlighter-rouge">fishing1</code> foreground playback over that same base.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/OCEAN_RESTORE_PLAN_2026-04-16.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
