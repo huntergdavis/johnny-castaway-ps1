@@ -976,6 +976,9 @@ from perturbing the deterministic cadence.
 | `P4-291` | Done: compile only the unbuffered CD stream helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `680 -> 624` bytes and ELF shrank `712556 -> 712524`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
 | `P4-292` | Done: cache the file LBA in the unbuffered CD stream helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `624 -> 592` bytes and ELF shrank `712524 -> 712332`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
 | `P4-293` | Failed/no promotion: compile only `fgRuntimeFillWindowForEntry()` with `-Os`. | The exact gate stayed timing/layout/work-flat, but PS-EXE, ELF, and tracked hot symbol sizes also stayed exact; source was reverted and only the experiment log was kept. |
+| `P4-294` | Failed/no promotion: prepared visual metadata decoupling v1. | Correctness stayed clean and key timing stayed flat, but the change only added duplicate prefetch probes (`0 -> 130`) and code growth (`ELF 712332 -> 713072`) without staging farther ahead. |
+| `P4-295` | Failed/no promotion: prepared visual decoupling with stage-next branch v2. | Correctness stayed clean and key timing stayed flat; secondary CD/read metrics improved slightly (`loop_read_vb 280 -> 277`, `late 98 -> 85`) but code grew and no actual loop VBlank win appeared. |
+| `P4-296` | Failed/no promotion: decoupled prepared visual with `>=4` prepare threshold v3. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; all prepared-decoupling source changes were reverted. |
 
 Prefetch variants to test in order:
 
