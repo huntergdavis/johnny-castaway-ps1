@@ -123,6 +123,16 @@ the byte savings but failed as an implementation path: the best variant reduced
 `restore_bytes` to `2222854`, yet regressed `loop_vb 1219 -> 1221`, visible CD
 pressure `5 -> 6`, and moved `FISHING1.FG2` from LBA `396` to `397`. Treat
 restore-skip as an FGP3/side-metadata problem, not a runtime reparse problem.
+Two more hard-coded read-group probes are now rejected: `384..396` never fired
+under the retained 11-sector capacity, and `307..317` kept every timing/read
+counter exact while growing `foregroundPilotPlay` by `432` bytes. The direct
+stage-into-window cache variant is also rejected: it removed the scratch-window
+seed copy in theory, but exposed one extra visible CD VBlank. Finally,
+single-TU `foreground_pilot.c -O3` is rejected as a no-win size/layout loss
+(`jcreborn.exe 143360 -> 149504`, `FISHING1.FG2 LBA 396 -> 399`). The practical
+conclusion is sharper: no more blind hard-coded groups or foreground-wide
+compiler flags; the next CD win needs generated/costed group metadata or a
+trace-backed scheduler budget.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -393,7 +403,10 @@ near misses:
 | Prepared visual `>=4` threshold | Do not retry as a threshold-only tweak; it failed structurally before metrics. |
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | FG2 read group `102..110` | Do not retry as a raw hard-coded group; it saved one read but regressed visible CD pressure to `8` VBlanks. Retry only with group-cost prediction or CD-first slack ownership. |
+| FG2 read groups `384..396` and `307..317` | Do not retry as raw hard-coded groups. `384..396` did not fit/fire; `307..317` was exact-flat with code growth. Generated metadata must prove append fit and read-count movement first. |
+| Direct stage into stream window | Do not retry as a local helper swap; it preserved reads but raised visible CD pressure by one VBlank. Retry only when group/tail metadata proves the direct-stage window stays hidden. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
+| Foreground pilot TU `-O3` | Do not retry as a whole-TU flag; it grew `foregroundPilotPlay` by about `5 KB`, moved the foreground pack three LBAs, and produced no key speed gain. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
 | Perf TU `-O3` | Do not retry as a whole-TU flag; it bloated `ps1PerfMarkCdReadDetailed` and regressed the exact gate. |

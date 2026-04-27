@@ -147,6 +147,13 @@ Top likely wins, in order:
 | 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `67` active-loop transactions and `4` total backward seeks; selective grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
+Latest red-team note: local CD/runtime tweaks are hitting a hard determinism
+wall. `384..396` did not fire, `307..317` was exact-flat with code growth,
+direct stage-into-window exposed one extra visible CD VBlank, and
+`foreground_pilot.c -O3` grew the executable without a speed win. Treat those
+as evidence that the next CD/render pass needs generated metadata plus an
+explicit cost/scheduler model, not another one-off hard-coded branch.
+
 Non-goals:
 
 | Non-goal | Reason |
