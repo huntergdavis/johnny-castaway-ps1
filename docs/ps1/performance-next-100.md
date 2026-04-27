@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `714260` bytes |
+| `jcreborn.elf` | `713672` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -33,9 +33,9 @@ follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
 compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
 kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
-The latest flat cleanup combines upload and dirty-rect perf markers, keeping
+The latest flat cleanup compiles only `grDrawBackground()` with `-Os`, keeping
 all VBlank/CD/work metrics and upload/dirty counters unchanged while shrinking
-the ELF to `714260` bytes.
+the ELF to `713672` bytes.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -282,6 +282,7 @@ near misses:
 | Upload perf guard local cache | Do not retry alone; it shrank the function but grew total ELF with no speed movement. |
 | Inline perf-detail check | Do not retry alone; it shrank two hot functions but grew total ELF with no speed movement. |
 | Upload perf marker combine | Done; keep because it removed one rendered-frame marker call and preserved all upload/dirty counters. |
+| `grDrawBackground()` function `-Os` | Done; keep because scoped upload-function codegen stayed exact-flat and shrank ELF. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

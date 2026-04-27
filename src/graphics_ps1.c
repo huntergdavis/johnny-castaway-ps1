@@ -3474,6 +3474,7 @@ void grClearScreen(PS1Surface *sfc)
  * Re-LoadImages all tiles to framebuffer to restore background each frame.
  * Required when isbg=0 to erase previous frame's sprites.
  */
+__attribute__((optimize("Os")))
 void grDrawBackground(void)
 {
     enum {
