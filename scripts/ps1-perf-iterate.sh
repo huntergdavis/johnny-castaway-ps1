@@ -370,19 +370,45 @@ parse_case_metrics() {
     local ps_exe_bucket_bytes="$6"
     local ps_exe_sectors="$7"
     local elf_bytes="$8"
-    local out_file="$9"
+    local map_bytes="$9"
+    local out_file="${10}"
 
     python3 - "$label" "$boot" "$case_dir" "$log_file" \
-        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" > "$out_file" <<'PY'
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" > "$out_file" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
 
 label, boot, case_dir, log_file = sys.argv[1:5]
-ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes = (int(value) for value in sys.argv[5:9])
+ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes, map_bytes = (int(value) for value in sys.argv[5:10])
 log_path = Path(log_file)
 ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+
+hot_symbol_names = {
+    "fgRuntimeFillWindowForEntry",
+    "fgRuntimeTryExtendWindow",
+    "fgRuntimeTryPrefetchWindow",
+    "fgRuntimeTryStageNextFrame",
+    "fgRuntimeWindowPrefetchWouldRead",
+    "fgRuntimeLoadSceneFrame",
+    "fgRuntimeCanPrepareStagedFrame",
+    "fgRuntimePrepareStagedFrameForPresent",
+    "fgRuntimeCanPresentPreparedOnNextVBlank",
+    "fgRuntimePresentPreparedFrame",
+    "foregroundPilotRuntimeAdvance.part.0",
+    "foregroundPilotRuntimeCompose",
+    "foregroundPilotPlay",
+    "grRestoreBgFromRects",
+    "grCompositePacked4SpansToBackground",
+    "grDrawBackground",
+    "grUpdateDisplay",
+    "ps1_streamReadFromCdFile",
+    "ps1_streamReadFromCdFileIntoBuffered",
+    "ps1_streamReadAlignedIntoFile",
+    "ps1PerfMarkCdReadDetailed",
+    "ps1PerfEndScene",
+}
 
 def parse_value(value):
     value = ansi_re.sub("", value)
@@ -422,6 +448,30 @@ if log_path.is_file():
             key, value = token.split("=", 1)
             data[key] = parse_value(value)
         sections[section] = data
+
+symbols = {}
+map_path = Path("build-ps1/jcreborn.map")
+if map_path.is_file():
+    for raw in map_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        parts = raw.split(None, 4)
+        if len(parts) < 4:
+            continue
+        name, sym_type, address_text, size_text = parts[:4]
+        if name not in hot_symbol_names:
+            continue
+        try:
+            address = int(address_text, 16) & 0xFFFFFFFF
+            size = int(size_text, 16)
+        except ValueError:
+            continue
+        item = {
+            "type": sym_type,
+            "address": address,
+            "size": size,
+        }
+        if len(parts) >= 5:
+            item["source"] = parts[4]
+        symbols[name] = item
 
 def get(section, key, default=0):
     value = sections.get(section, {}).get(key, default)
@@ -495,6 +545,11 @@ summary = {
             "path": "build-ps1/jcreborn.elf",
             "bytes": elf_bytes,
         },
+        "map": {
+            "path": "build-ps1/jcreborn.map",
+            "bytes": map_bytes,
+            "symbols": symbols,
+        },
     },
     "legacy_jcperf": legacy,
     "gate": {
@@ -567,6 +622,7 @@ gate = summary.get("gate", {})
 build = summary.get("build", {})
 ps_exe = build.get("ps_exe", {})
 elf = build.get("elf", {})
+build_map = build.get("map", {})
 
 record = {
     "schema": "ps1-perf-experiment-log/v1",
@@ -622,6 +678,7 @@ record = {
         "ps_exe_bytes": ps_exe.get("bytes"),
         "ps_exe_sector_bucket_bytes": ps_exe.get("sector_bucket_bytes"),
         "elf_bytes": elf.get("bytes"),
+        "map_bytes": build_map.get("bytes"),
     },
 }
 
@@ -802,6 +859,7 @@ for i in "${!CASE_LABELS[@]}"; do
     ps_exe_bucket_bytes=0
     ps_exe_sectors=0
     elf_bytes=0
+    map_bytes=0
     if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
         ps_exe_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.exe")"
         ps_exe_sectors=$(( (ps_exe_bytes + 2047) / 2048 ))
@@ -809,6 +867,9 @@ for i in "${!CASE_LABELS[@]}"; do
     fi
     if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.elf" ]; then
         elf_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.elf")"
+    fi
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.map" ]; then
+        map_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.map")"
     fi
 
     headless_root="$case_dir/headless"
@@ -822,7 +883,7 @@ for i in "${!CASE_LABELS[@]}"; do
 
     summary_file="$case_dir/perf-summary.json"
     parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
-        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" \
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
         "$summary_file"
     SUMMARY_PATHS+=("$summary_file")
 
@@ -901,6 +962,10 @@ def path_value(case, path):
         value = value.get(part)
     return value
 
+def hot_symbols(case):
+    symbols = path_value(case, ("build", "map", "symbols"))
+    return symbols if isinstance(symbols, dict) else {}
+
 overall_failures = []
 for case in cases:
     label = case["label"]
@@ -913,6 +978,7 @@ for case in cases:
         comparisons = []
         work_identity = []
         layout_identity = []
+        symbol_layout = []
         for section, key in compare_fields:
             current = field(case, section, key)
             previous = field(base, section, key)
@@ -972,6 +1038,39 @@ for case in cases:
             case["work_identity_comparison"] = work_identity
         if layout_identity:
             case["layout_identity_comparison"] = layout_identity
+        current_symbols = hot_symbols(case)
+        previous_symbols = hot_symbols(base)
+        for name in sorted(set(current_symbols) & set(previous_symbols)):
+            current = current_symbols[name]
+            previous = previous_symbols[name]
+            if not isinstance(current, dict) or not isinstance(previous, dict):
+                continue
+            current_address = current.get("address")
+            previous_address = previous.get("address")
+            current_size = current.get("size")
+            previous_size = previous.get("size")
+            if not all(isinstance(value, int) for value in (
+                current_address,
+                previous_address,
+                current_size,
+                previous_size,
+            )):
+                continue
+            address_delta = current_address - previous_address
+            size_delta = current_size - previous_size
+            if address_delta == 0 and size_delta == 0:
+                continue
+            symbol_layout.append({
+                "symbol": name,
+                "baseline_address": previous_address,
+                "current_address": current_address,
+                "address_delta": address_delta,
+                "baseline_size": previous_size,
+                "current_size": current_size,
+                "size_delta": size_delta,
+            })
+        if symbol_layout:
+            case["symbol_layout_comparison"] = symbol_layout
         if require_improvement and not improved:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
@@ -1036,6 +1135,18 @@ for case in cases:
             else:
                 parts.append(f"{field} {baseline}->{current}")
         print("  layout: " + "; ".join(parts))
+    symbol_layout = case.get("symbol_layout_comparison", [])
+    if symbol_layout:
+        parts = []
+        for item in symbol_layout[:6]:
+            symbol = item.get("symbol")
+            address_delta = item.get("address_delta")
+            size_delta = item.get("size_delta")
+            address_sign = "+" if isinstance(address_delta, int) and address_delta > 0 else ""
+            size_sign = "+" if isinstance(size_delta, int) and size_delta > 0 else ""
+            parts.append(f"{symbol} addr {address_sign}{address_delta} size {size_sign}{size_delta}")
+        suffix = "" if len(symbol_layout) <= 6 else f"; +{len(symbol_layout) - 6} more"
+        print("  symbols: " + "; ".join(parts) + suffix)
     for suggestion in derived.get("suggestions", [])[:4]:
         print(f"  next: {suggestion}")
 print(f"Summary JSON: {out_path}")
