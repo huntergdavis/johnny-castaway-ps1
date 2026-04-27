@@ -2037,9 +2037,6 @@ void foregroundPilotRuntimeCompose(void)
     const uint16 rectH = 80;
 #endif
 
-    if (!gFgRuntime.active)
-        return;
-
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (gFgRuntime.mode == FG_RUNTIME_TESTCARD) {
         static uint16 *colors[4] = { NULL, NULL, NULL, NULL };

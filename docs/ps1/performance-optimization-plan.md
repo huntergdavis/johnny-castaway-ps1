@@ -37,8 +37,9 @@ garbage collection, foreground visual telemetry removal, legacy foreground
 diagnostic scene gating, long-hold host-deadline catch-up, unused foreground
 status accessor removal, dead foreground requested-mode state removal, and
 base-diff foreground pack enforcement, startup pre-application of
-scene-relative FG2 offsets, direct reads of those pre-applied entry offsets, and
-collapsed held-loop prefetch branch shape, reported `policy=stage1_window`,
+scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
+collapsed held-loop prefetch branch shape, and duplicate compose active-guard
+removal, reported `policy=stage1_window`,
 `buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2510092`,
@@ -853,6 +854,7 @@ from perturbing the deterministic cadence.
 | `P4-182` | Done: collapse identical held-loop prefetch branches. | Prepared-frame and staged-frame states share the same window-prefetch behavior; merging the duplicate branches kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739684 -> 739552` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 | `P4-183` | Failed/no promotion: pass `NULL` for discarded next-payload frame-index outputs. | The exact fishing1 gate stayed flat, but the source change did not improve any tracked speed/work metric and grew `jcreborn.elf` `739552 -> 739568`; source was reverted and this should wait for broader prefetch helper cleanup. |
 | `P4-184` | Failed/no promotion: combine adjacent no-slack perf-log guards. | The exact fishing1 gate stayed flat, but combining the two `ps1PerfEnabled` checks in each no-slack prefetch path grew `jcreborn.elf` `739552 -> 739664`; source was reverted and cosmetic hot-path guard combining should be avoided unless metrics improve. |
+| `P4-185` | Done: remove duplicate compose active guard. | `grUpdateDisplay()` already guards calls to `foregroundPilotRuntimeCompose()` and the compose function still no-ops by mode; removing the duplicate active check kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739552 -> 739544`. |
 
 Prefetch variants to test in order:
 
