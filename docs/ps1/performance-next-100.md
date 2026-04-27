@@ -162,6 +162,12 @@ translation target (`WALKSTUF1` has `85` nonzero candidates; `WALK1LOW` has
 `53`). Therefore the next fishing1-safe FGP3 experiment should be zero-shift
 residual encoding first; GPU move/residual should wait for a walking-scene
 validation path and a RAM-mirror/dirty-cleanup design.
+The zero-shift runtime model is strong enough to promote to implementation
+planning: fishing1 predicts compose payload `823277 -> 228087` (`72.30%`
+saved), full-width dirty upload `15667200 -> 6576000` (`58.03%` saved), and
+cleanup restore of only `136552` bytes. The hard invariant is that FGP3 must
+carry full-current dirty metadata, because unchanged foreground pixels remain
+in the RAM mirror and still need to be restorable on later frames.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

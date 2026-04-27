@@ -23,7 +23,12 @@ FG2_ENTRY_SIZE = struct.calcsize(FG2_ENTRY)
 
 SCREEN_W = 640
 SCREEN_H = 480
+TILE_W = 320
+TILE_H = 240
+TILE_COUNT = 4
 FLAG_SCENE_RELATIVE = 0x0008
+UPLOAD_MAX_RECTS = 8
+UPLOAD_BAND_MERGE_GAP = 1
 
 
 @dataclass(frozen=True)
@@ -236,6 +241,180 @@ def payload_size_for_pixels(pixels: dict[tuple[int, int], int], version: int) ->
             total += 4
             total += (count + 1) // 2 if version == 1 else count
     return total
+
+
+def tile_for_pixel(x: int, y: int) -> tuple[int, int] | None:
+    if x < 0 or x >= SCREEN_W or y < 0 or y >= SCREEN_H:
+        return None
+    tile = 0 if x < TILE_W else 1
+    local_y = y
+    if y >= TILE_H:
+        tile += 2
+        local_y -= TILE_H
+    return tile, local_y
+
+
+def dirty_rows_for_pixels(pixels: dict[tuple[int, int], int]) -> list[list[bool]]:
+    rows = [[False for _ in range(TILE_H)] for _ in range(TILE_COUNT)]
+    for x, y in pixels.keys():
+        tile_row = tile_for_pixel(x, y)
+        if tile_row is not None:
+            tile, local_y = tile_row
+            rows[tile][local_y] = True
+    return rows
+
+
+def full_width_upload_for_pixels(pixels: dict[tuple[int, int], int]) -> dict[str, int]:
+    rows = dirty_rows_for_pixels(pixels)
+    bands: list[tuple[int, int, int]] = []
+    capped = False
+
+    for tile in range(TILE_COUNT):
+        y = 0
+        while y < TILE_H and not capped:
+            while y < TILE_H and not rows[tile][y]:
+                y += 1
+            if y >= TILE_H:
+                break
+            start_y = y
+            scan_y = y + 1
+            last_dirty_y = y
+            clean_gap = 0
+            while scan_y < TILE_H:
+                if rows[tile][scan_y]:
+                    last_dirty_y = scan_y
+                    clean_gap = 0
+                else:
+                    clean_gap += 1
+                    if clean_gap > UPLOAD_BAND_MERGE_GAP:
+                        break
+                scan_y += 1
+            if len(bands) >= UPLOAD_MAX_RECTS:
+                capped = True
+                break
+            bands.append((tile, start_y, last_dirty_y))
+            y = last_dirty_y + 1
+
+    if not capped:
+        uploaded_rows = sum(end_y - start_y + 1 for _tile, start_y, end_y in bands)
+        return {
+            "bytes": uploaded_rows * TILE_W * 2,
+            "rows": uploaded_rows,
+            "rects": len(bands),
+            "cap_hit": 0,
+        }
+
+    uploaded_rows = 0
+    rects = 0
+    for tile in range(TILE_COUNT):
+        dirty = [y for y, active in enumerate(rows[tile]) if active]
+        if dirty:
+            uploaded_rows += max(dirty) - min(dirty) + 1
+            rects += 1
+    return {
+        "bytes": uploaded_rows * TILE_W * 2,
+        "rows": uploaded_rows,
+        "rects": rects,
+        "cap_hit": 1,
+    }
+
+
+def exact_interval_stats_for_pixels(pixels: dict[tuple[int, int], int]) -> dict[str, int]:
+    rows: dict[tuple[int, int], list[int]] = {}
+    for x, y in pixels.keys():
+        tile_row = tile_for_pixel(x, y)
+        if tile_row is None:
+            continue
+        tile, local_y = tile_row
+        local_x = x if tile in (0, 2) else x - TILE_W
+        rows.setdefault((tile, local_y), []).append(local_x)
+
+    intervals = 0
+    pixel_count = 0
+    for xs in rows.values():
+        ordered = sorted(set(xs))
+        if not ordered:
+            continue
+        intervals += 1
+        pixel_count += 1
+        prev_x = ordered[0]
+        for x in ordered[1:]:
+            pixel_count += 1
+            if x != prev_x + 1:
+                intervals += 1
+            prev_x = x
+
+    return {
+        "bytes": pixel_count * 2,
+        "intervals": intervals,
+        "pixels": pixel_count,
+    }
+
+
+def temporal_zero_shift_model(frames: list[DecodedFrame], version: int) -> dict[str, int | float]:
+    totals = {
+        "pairs": 0,
+        "baseline_compose_payload_bytes": 0,
+        "residual_compose_payload_bytes": 0,
+        "baseline_upload_bytes": 0,
+        "residual_upload_bytes": 0,
+        "cleanup_restore_bytes": 0,
+        "cleanup_restore_intervals": 0,
+        "cleanup_pixels": 0,
+        "draw_residual_pixels": 0,
+        "residual_upload_rects": 0,
+        "residual_upload_cap_hits": 0,
+    }
+
+    for prev, curr in zip(frames, frames[1:]):
+        if not prev.pixels or not curr.pixels:
+            continue
+        cleanup = {
+            point: value
+            for point, value in prev.pixels.items()
+            if point not in curr.pixels
+        }
+        draw = {
+            point: value
+            for point, value in curr.pixels.items()
+            if prev.pixels.get(point) != value
+        }
+        baseline_dirty = dict(prev.pixels)
+        baseline_dirty.update(curr.pixels)
+        residual_dirty = dict(cleanup)
+        residual_dirty.update(draw)
+
+        cleanup_stats = exact_interval_stats_for_pixels(cleanup)
+        residual_upload = full_width_upload_for_pixels(residual_dirty)
+        baseline_upload = full_width_upload_for_pixels(baseline_dirty)
+
+        totals["pairs"] += 1
+        totals["baseline_compose_payload_bytes"] += curr.entry.data_size
+        totals["residual_compose_payload_bytes"] += payload_size_for_pixels(draw, version)
+        totals["baseline_upload_bytes"] += baseline_upload["bytes"]
+        totals["residual_upload_bytes"] += residual_upload["bytes"]
+        totals["cleanup_restore_bytes"] += cleanup_stats["bytes"]
+        totals["cleanup_restore_intervals"] += cleanup_stats["intervals"]
+        totals["cleanup_pixels"] += cleanup_stats["pixels"]
+        totals["draw_residual_pixels"] += len(draw)
+        totals["residual_upload_rects"] += residual_upload["rects"]
+        totals["residual_upload_cap_hits"] += residual_upload["cap_hit"]
+
+    baseline_compose = int(totals["baseline_compose_payload_bytes"])
+    baseline_upload = int(totals["baseline_upload_bytes"])
+    residual_compose = int(totals["residual_compose_payload_bytes"])
+    residual_upload = int(totals["residual_upload_bytes"])
+    totals["compose_payload_saved_bytes"] = baseline_compose - residual_compose
+    totals["upload_saved_bytes"] = baseline_upload - residual_upload
+    totals["compose_payload_saved_percent"] = (
+        round((baseline_compose - residual_compose) * 100.0 / baseline_compose, 2)
+        if baseline_compose else 0.0
+    )
+    totals["upload_saved_percent"] = (
+        round((baseline_upload - residual_upload) * 100.0 / baseline_upload, 2)
+        if baseline_upload else 0.0
+    )
+    return totals
 
 
 def bbox_for_pixels(pixels: dict[tuple[int, int], int]) -> dict[str, int] | None:
@@ -540,6 +719,10 @@ def main() -> None:
                 if top_candidates else 0
             ),
         },
+        "temporal_zero_shift_runtime_model": temporal_zero_shift_model(
+            decoded,
+            header.version,
+        ),
         "top_candidates": top_candidates,
         "top_nonzero_candidates": top_nonzero_candidates,
         "top_shift_buckets": top_shift_buckets,
@@ -547,6 +730,7 @@ def main() -> None:
             "This is a payload/candidate detector, not proof that GPU MoveImage is runtime-safe.",
             "A runtime implementation must keep the RAM background mirror exact, not just the displayed VRAM image.",
             "Old-position cleanup, new-position residual upload, dirty tracking, and sound/timing order still need a format design.",
+            "The zero-shift runtime model assumes pack-emitted full-current dirty metadata so unchanged foreground pixels remain restorable on the next frame.",
             "Pairwise translation savings can be erased by CD reads, MoveImage synchronization, or extra metadata.",
         ],
     }
