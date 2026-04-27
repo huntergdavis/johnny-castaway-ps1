@@ -10,7 +10,11 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "scripts/site-generate-library.py"
+      - "scripts/site-relativize-build.py"
+      - "scripts/site-build-static-root.sh"
       - ".github/workflows/site.yml"
+      - "index.html"
   workflow_dispatch:
 
 permissions:
@@ -45,15 +49,15 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Build site
-        run: bundle exec jekyll build --trace
+      - name: Build portable static site
+        run: ../scripts/site-build-static-root.sh
         env:
           JEKYLL_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site/_site
+          path: www
 
   deploy:
     needs: build

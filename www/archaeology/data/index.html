@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Primary Sources — Johnny Castaway PS1</title>
+  <meta name="description" content="A pointer index to the primary-source YAML, JSON, and Markdown files in docs/ps1/archaeology/ that drive the Johnny Castaway PS1 narrative pages." />
+
+  <meta property="og:title"        content="Primary Sources — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A pointer index to the primary-source YAML, JSON, and Markdown files in docs/ps1/archaeology/ that drive the Johnny Castaway PS1 narrative pages." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Read the YAML, not the prose</p>
+      <h1>Primary Sources</h1>
+      <p class="subtitle">The raw archaeology files behind the narrative — what each one contains and why you'd open it.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>The narrative pages on this site — <a href="../">the five chapters</a>,
+<a href="../timeline/">the era timeline</a>,
+<a href="../team/">the team page</a> — are
+written from a small set of structured source documents that live
+under <code class="language-plaintext highlighter-rouge">docs/ps1/archaeology/</code> in the project repo. Those files are
+what get edited when the truth changes; the prose is downstream.</p>
+
+<p>If you want to verify a date, an era boundary, a deprecated tool’s
+last touched commit, or a status-surface meaning that’s been
+demoted, the primary sources below are the right place to look. They
+are also, on their own, a reasonable read — written in the same
+plain register as the prose, without the narrative connective
+tissue.</p>
+
+<h2 id="the-files">The files</h2>
+
+<h3 id="timelineyaml">timeline.yaml</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/timeline.yaml">timeline.yaml</a>
+breaks the PS1 branch into five eras with date ranges, summary
+sentences, dispositions (preserve / archive / promote), and — for
+the foreground playback era — a milestone commit list with SHAs and
+messages. It’s the structured source for the
+<a href="../timeline/">era timeline page</a>.
+Open this when you want the exact commits that walked <code class="language-plaintext highlighter-rouge">FISHING 1</code>
+from “scaffold” to “pixel-perfect with full SFX,” or when you need
+to know which part of the project history is officially demoted to
+<em>archaeology</em>.</p>
+
+<h3 id="team-perspectiveyaml">team-perspective.yaml</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/team-perspective.yaml">team-perspective.yaml</a>
+catalogues the six roles the author played across the project’s
+phases — operator-editor, embedded porter, instrumentarian,
+validator-skeptic, archaeology engineer, bespoke scene engineer —
+with the strongest evidence file for each. It also lists the
+project’s shared values in their original yaml-list form, which is
+where the website’s voice was anchored. Open this when you want to
+see which docs and skills correspond to which role, or when you
+want the canonical phrasing of the project’s ethic without the
+narrative wrapper.</p>
+
+<h3 id="toolsyaml">tools.yaml</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/tools.yaml">tools.yaml</a>
+catalogues every script in the repo with a policy: <code class="language-plaintext highlighter-rouge">keep_live</code>,
+<code class="language-plaintext highlighter-rouge">keep_but_demote_from_primary_docs</code>, or <code class="language-plaintext highlighter-rouge">archive_candidate</code>. Each
+entry has a role hint and, where relevant, a last-touched commit
+and date. It’s the source of truth for “is this script still part
+of the operator loop, or is it historical?” The currently-live
+scripts include <code class="language-plaintext highlighter-rouge">build-host.sh</code>, <code class="language-plaintext highlighter-rouge">build-ps1.sh</code>,
+<code class="language-plaintext highlighter-rouge">make-cd-image.sh</code>, <code class="language-plaintext highlighter-rouge">rebuild-and-let-run.sh</code>,
+<code class="language-plaintext highlighter-rouge">capture-host-scene.sh</code>, <code class="language-plaintext highlighter-rouge">export-scene-foreground-pilot.sh</code>,
+<code class="language-plaintext highlighter-rouge">build-scene-foreground-pack.py</code>, <code class="language-plaintext highlighter-rouge">wav2vag.py</code>, and a handful of
+others that drive the per-scene bring-up loop.</p>
+
+<h3 id="blog-source-mapmd">blog-source-map.md</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/blog-source-map.md">blog-source-map.md</a>
+is a pointer map — not raw data, but a curated list of the branch’s
+strongest narrative sources, with one-line annotations. It points at
+the early branch voice, the validation skepticism agent prompt, the
+<strong>OFFLINE_SCENE_PLAYBACK_PIVOT</strong> research note that announced the
+methodology shift, the FISHING 1 pixel-perfect plan, and the water
+animation worklog. Open this when you want to read the project’s
+own prose at the moments when the direction was changing.</p>
+
+<h3 id="assumptionsyaml">assumptions.yaml</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/assumptions.yaml">assumptions.yaml</a>
+is the project’s honest list of things it used to believe. Each
+entry has the assumption, why it made sense at the time, what
+changed, and the replacement insight. The assumptions catalogued
+include “broad automation would be the primary truth surface,”
+“generic restore and replay contracts would be the finish line,”
+“if the static analyzer said the content fit then runtime memory
+would be fine,” and “fgpilot was just a temporary experiment name.”
+Open this when you want to understand why the project went down
+particular roads before it turned around.</p>
+
+<h3 id="memory-constraintsmd">memory-constraints.md</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/memory-constraints.md">memory-constraints.md</a>
+is a short prose document that explains the two facts that shaped
+every decision: 2 MB main RAM, 1 MB VRAM, native 640x480. It walks
+through the math on why full-screen prerender for every scene was a
+non-starter (a single 16-bit frame is about 614400 bytes), why
+static fit numbers proved weaker than they looked once runtime
+allocation timing entered the picture, and how the wave-asset path
+ended up dictating preload order. Open this when you want the
+quantitative version of the chapter-4 narrative.</p>
+
+<h3 id="reporter-notesmd">reporter-notes.md</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/reporter-notes.md">reporter-notes.md</a>
+is a short essay framing the cleanest read of the branch as one
+team that <em>kept changing jobs, not standards</em>. It identifies the
+April 12–22 window as the decisive turn from “trying to prove a
+universal replay theory” to “tightening a bespoke line that
+actually closes.” Open this when you want the framing distilled to
+five paragraphs.</p>
+
+<h3 id="status-surfacesyaml">status-surfaces.yaml</h3>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/status-surfaces.yaml">status-surfaces.yaml</a>
+catalogues every “N of 63” number this project has ever published —
+25/63, 27/63, 63/63, 57/63, 60/63, 1/63, 2/63 — with the date each
+was claimed, what it meant at the time, the source documents and
+commits, and the demotion reason. The 63/63 from
+<strong>2026-03-29</strong> is explicitly preserved as a <em>historical false
+summit</em>. Open this when you want to confirm that yes, the project’s
+status numbers really did go down before they went up, and the
+reasons are documented.</p>
+
+<hr />
+
+<p>There are other supporting files in <code class="language-plaintext highlighter-rouge">docs/ps1/archaeology/</code> —
+<code class="language-plaintext highlighter-rouge">binary-library-index.csv</code>, <code class="language-plaintext highlighter-rouge">binary-library-manifest.json</code>, the
+<code class="language-plaintext highlighter-rouge">vision-artifacts/</code> and <code class="language-plaintext highlighter-rouge">regtest-references/</code> corpora, the retired
+script and source archives. Those are evidence rather than
+narrative; the index above is the curated set that the website is
+written from. The full directory listing is at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/archaeology">docs/ps1/archaeology/</a>.</p>
+
+<h2 id="drill-downs">Drill-downs</h2>
+
+<p>For each of the larger evidence corpora, there is now a per-directory
+narrative page that walks through the contents in plain prose. These
+were written so a reader can understand each archive’s purpose and
+shape without opening every file.</p>
+
+<ul>
+  <li><a href="../binary-library/">The binary library</a> —
+the indexed record of every PS1 build the project produced (6,902
+entries, originally 118 GB of payloads, deleted on 2026-04-22 with
+the index preserved).</li>
+  <li><a href="../regtest-references/">Regtest reference set</a> —
+the sixty-two frozen scene captures the regtest harness compares
+fresh runs against, with a per-scene table.</li>
+  <li><a href="../host-script-review/">Host-script review</a> —
+the bundled snapshot of the host-side identification and
+expectation pipeline as it stood on 2026-04-04.</li>
+  <li><a href="../retired-scripts/">Retired scripts</a> —
+fourteen scripts from the binary-library regression era, each with
+a paragraph explaining what it did and why it was retired.</li>
+  <li><a href="../retired-src/">Retired source code</a> —
+three minimal C bring-up programs from late 2025 that proved the
+GPU and CD-ROM I/O before the full game integration began.</li>
+  <li><a href="../vision-artifacts/">Vision-classifier artifacts</a> —
+the reference-bank self-check across 63 scenes, the pipeline
+manifest, and a frozen FISHING 1 regtest run from the
+visual-detection-spec era.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

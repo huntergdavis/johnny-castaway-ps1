@@ -1,0 +1,29 @@
+---
+layout: default
+---
+<article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Scene · {{ page.ads }} {{ page.tag }}
+      {% if page.status == "validated" %}
+        <span class="pill pill--ok">validated</span>
+      {% else %}
+        <span class="pill pill--wip">not yet validated</span>
+      {% endif %}
+    </p>
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    <hr class="rule" />
+  </header>
+
+  <div class="page-body">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="{{ '/scenes/' | relative_url }}">← back to scene ledger</a>
+    </p>
+  </footer>
+</article>

@@ -21,7 +21,7 @@ release:
 repo: "huntergdavis/Johnny-Castaway-PS1"
 github_url: "https://github.com/huntergdavis/Johnny-Castaway-PS1"
 
-permalink: pretty
+permalink: /devlog/:slug/
 
 markdown: kramdown
 kramdown:
@@ -30,8 +30,6 @@ kramdown:
 
 plugins:
   - jekyll-seo-tag
-  - jekyll-feed
-  - jekyll-sitemap
   - jekyll-redirect-from
 
 # Default front matter applied across the site.
@@ -39,6 +37,9 @@ defaults:
   - scope: { path: "" }
     values:
       layout: page
+  - scope: { path: "", type: "posts" }
+    values:
+      layout: post
 
 # Jekyll's source is the site/ directory itself when run from there.
 # Exclusions cover anything that shouldn't ship to _site.

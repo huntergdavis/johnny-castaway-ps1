@@ -1,25 +1,49 @@
 ---
 title: Devlog
 eyebrow: Reverse-chronological
-subtitle: Worklogs, milestones, release notes — written as they happened.
+subtitle: Worklogs as they happened. The dead ends matter.
+description: Devlog of the Johnny Castaway PS1 fan port — unedited worklogs and milestones.
 ---
 
-The devlog index lands here in P2. It will surface, in
-reverse-chronological order:
+This is the unedited worklog stream for the PS1 port. The posts below
+are the same plain-text notes that were written at the keyboard on the
+day the work happened. They were not cleaned up before being published
+here. They were not rewritten with the benefit of hindsight. The dates
+on them are the dates the work was done.
 
-- **28 dated worklogs** from `docs/ps1/research/` — verbatim,
-  with a one-paragraph editor's note up top ("This is an
-  unedited worklog from {date}. The dead ends matter.").
-- **Milestone reports** (`milestones-YYYY-MM-DD.md` files), each
-  a single-page summary of "where we got to that week."
-- **Per-release posts**, auto-generated from the GitHub Release
-  body when a `v*-ps1` tag ships. See [release notes for {{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
+The reason verbatim matters is that most of the time on this project
+has been spent on dead ends. A scene that reads "verified" in a status
+table today only got there after several attempts that did not. A
+single-line timing bug took a week of plans and counter-plans to
+pin down. If the only artifacts left over are the wins, the actual
+shape of the work is invisible — and the actual shape of the work is
+the only useful thing to hand to the next person trying something
+similar.
 
-The point of keeping the worklogs verbatim is that the dead ends
-mattered as much as the wins. If you're reading the devlog to
-learn how the project got here, the wins are not the lesson.
+So expect plans that did not survive contact, status snapshots that
+were superseded a week later, and worklogs that are honest about
+what was tried and what failed. Each post carries an editor's note
+above the original text giving brief context, but the body itself
+is the source file from `docs/ps1/research/`, preserved as it was
+written. A link back to the source on GitHub sits at the bottom of
+every post.
 
-For now, the [GitHub commit history]({{ site.github_url }}/commits/main)
-is the most current view. RSS will live at
-[/devlog/feed.xml]({{ '/devlog/feed.xml' | relative_url }}) once
-the index is populated.
+<ul class="devlog-list">
+  {% for post in site.posts %}
+  <li>
+    <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+    <div>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      {% if post.editor_note %}<span class="summary">{{ post.editor_note }}</span>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<p class="callout">
+  Older material that predates the worklog stream — earlier plans,
+  superseded designs, archived experiments — lives under
+  <a href="{{ site.github_url }}/tree/main/docs/ps1/research/archive">docs/ps1/research/archive/</a>
+  on GitHub. It is not surfaced here on purpose; the index above is the
+  active record.
+</p>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Foreground Timing Plan — April 13, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Plan to bring fgpilot foreground timing back in line with host baseline after the fishing1 visual win." />
+
+  <meta property="og:title"        content="Foreground Timing Plan — April 13, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Plan to bring fgpilot foreground timing back in line with host baseline after the fishing1 visual win." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-04-13">
+        April 13, 2026
+      </time>
+    </p>
+    <h1>Foreground Timing Plan — April 13, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Plan written after the fgpilot fishing1 scene was visually correct but timing was drifting from the host baseline. The dead ends on scheduler-sum paths matter.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Current validated baseline:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">fgpilot fishing1</code> is visually correct.</li>
+  <li>Full-scene export is correct.</li>
+  <li>Host timing preservation is corrected enough that playback is back near the
+earlier fast baseline instead of the over-slow scheduler-sum path.</li>
+  <li>Launch path:
+<code class="language-plaintext highlighter-rouge">./scripts/rebuild-and-let-run.sh fgpilot fishing1</code></li>
+</ul>
+
+<p>Validation rule:</p>
+
+<ol>
+  <li>One change at a time.</li>
+  <li>Clean rebuild and launch with the repo script.</li>
+  <li>Human checks visuals and speed.</li>
+  <li>If visuals are good and speed is same or better, commit and push.</li>
+</ol>
+
+<h2 id="what-worked">What Worked</h2>
+
+<ul>
+  <li>Entry-table preload.</li>
+  <li>Bulk-copy compositor fast path.</li>
+  <li>Narrow background restore.</li>
+  <li>Full-scene <code class="language-plaintext highlighter-rouge">story-single --until-exit</code> export.</li>
+  <li>Corrected host-timing preservation in the export pipeline.</li>
+  <li>Single-tile upload-path tightening.</li>
+  <li>Dedicated one-tile upload branch in <code class="language-plaintext highlighter-rouge">grDrawBackground()</code>.</li>
+  <li>Same-bounds fused restore+composite path.</li>
+</ul>
+
+<h2 id="what-failed">What Failed</h2>
+
+<ul>
+  <li>Direct framebuffer path.</li>
+  <li>Diff/direct-delta runtime path.</li>
+  <li>Progressive test path.</li>
+  <li>Overlap-skip restore as implemented.</li>
+  <li>Naive scheduler-delay summing.</li>
+  <li>Naive read-ahead / double-buffering.</li>
+  <li>Pilot-only black-clear restore replacement.</li>
+</ul>
+
+<h2 id="prioritized-speed-backlog">Prioritized Speed Backlog</h2>
+
+<ol>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">grDrawBackground()</code> / upload cost.
+Best remaining likely win on the stable path.</p>
+  </li>
+  <li>
+    <p>Safer background restore reduction.
+Retry only with stricter invariants than the broken overlap-skip version.</p>
+  </li>
+  <li>
+    <p>Pack-time precompute for runtime blits/restores.
+Tile coverage, row offsets, clipped spans.</p>
+  </li>
+  <li>
+    <p>Same-rect / same-shape cached setup.
+Reuse setup when consecutive frames share bounds.</p>
+  </li>
+  <li>
+    <p>Held-frame no-work path.
+If the frame is held, do the minimum possible.</p>
+  </li>
+  <li>
+    <p>More specialized memcpy-based foreground blit paths.
+Keep squeezing the stable compositor path.</p>
+  </li>
+  <li>
+    <p>Better CD read path, but not naive read-ahead.
+Any future buffering must preserve exact ownership and frame identity.</p>
+  </li>
+  <li>
+    <p>Pack layout improvements.
+Runtime-friendly ordering and alignment.</p>
+  </li>
+  <li>
+    <p>More timing work only after more render throughput wins.
+The biggest timing mistake is fixed for now.</p>
+  </li>
+  <li>
+    <p>Display mode experiments last.
+Do not revisit direct/progressive until the stable path is exhausted.</p>
+  </li>
+</ol>
+
+<h2 id="next-target">Next Target</h2>
+
+<p>Stay on the stable compositor path and keep attacking the heavy early-motion
+section of the scene, where the tall tree-walk rect still feels slower than the
+later action. Favor changes that reduce restore/upload work for larger active
+areas before returning to CD buffering experiments.</p>
+
+<h2 id="repeat-prompt">Repeat Prompt</h2>
+
+<blockquote>
+  <p>Continue PS1 Fishing 1 foreground speed improvements from the current repo state. Stay on the stable <code class="language-plaintext highlighter-rouge">fgpilot fishing1</code> path only. Make one high-impact safe improvement from <code class="language-plaintext highlighter-rouge">docs/ps1/research/FOREGROUND_TIMING_PLAN_2026-04-13.md</code>, launch it with <code class="language-plaintext highlighter-rouge">./scripts/rebuild-and-let-run.sh fgpilot fishing1</code>, and stop for my validation. Do not use experimental direct framebuffer, diff, or progressive paths unless explicitly asked.</p>
+</blockquote>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/FOREGROUND_TIMING_PLAN_2026-04-13.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

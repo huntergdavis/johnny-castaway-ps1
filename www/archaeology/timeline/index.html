@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Era Timeline — Johnny Castaway PS1</title>
+  <meta name="description" content="A vertical era strip covering the PS1 branch from embedded bootstrap (Oct 2025) through the foreground playback pivot (April 2026) that produced the first validated scene." />
+
+  <meta property="og:title"        content="Era Timeline — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A vertical era strip covering the PS1 branch from embedded bootstrap (Oct 2025) through the foreground playback pivot (April 2026) that produced the first validated scene." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Six months in five eras</p>
+      <h1>Era Timeline</h1>
+      <p class="subtitle">How the PS1 branch changed jobs without changing standards.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>The PS1 branch changed shape several times between October 2025 and
+April 2026. Each era had its own standards, its own tooling, and its
+own definition of <em>verified</em>. This page walks them in order. The raw
+source for the dates and dispositions is
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/archaeology/timeline.yaml">timeline.yaml</a>.</p>
+
+<p>The five eras overlap at their edges. That’s accurate to the work —
+the harness era didn’t end at midnight on April 11, it tapered off as
+the foreground pilot started looking like the answer.</p>
+
+<section class="chapter">
+  <p><span class="chapter-num">2025-10-18 → 2026-03-16</span></p>
+  <h2 id="embedded-port-bootstrap-and-runtime-survival">Embedded port bootstrap and runtime survival</h2>
+
+  <p>This is the era of “make the console boot.” Cross-compilation through
+PSn00bSDK 0.24 inside a Docker image, the CD layout XML, a CMake
+configuration that targets MIPS, and the slow grind of CD-ROM I/O.
+The graphics layer started at 700 lines and grew past 3,000 as
+primitive ordering bugs, sprite alignment quirks, and heap stability
+problems were tracked down one at a time. The acceptance bar was
+modest: the game runs at native 640x480, scenes load from disc,
+nothing crashes on long playback. Most of the foundational decisions
+that the rest of the project still rests on — the resource hash
+table, the LRU sprite cache, the dirty-rect bookkeeping — were made
+during this stretch. It’s preserved in the cleanup plan as
+<em>foundational origin story</em>.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">2026-03-17 → 2026-03-28</span></p>
+  <h2 id="restore-packs-and-the-rollout-surface">Restore packs and the rollout surface</h2>
+
+  <p>By March, the runtime worked but scene continuity didn’t. Sierra’s
+original engine relies on <em>replay continuity</em> — playing prior scenes
+to establish state for the current one. On the PS1, with CD seek
+latency and 2 MB of main RAM, that wasn’t viable. The response was an
+offline pipeline: analyze every scene, write a <em>restore spec</em> that
+declared which resources and dirty regions the scene needed, cluster
+shared specs into 34 contracts, emit a 1000-line auto-generated
+header (<code class="language-plaintext highlighter-rouge">ps1_restore_pilots.h</code>). The pipeline was real engineering
+and it produced <strong>25 of 63</strong> scenes claimed verified by March 21.
+Read carefully later, “verified” here meant “rendered without
+crashing in a headless harness.” That’s not the same as “looks right
+to a human.” This era is preserved as historical research; the
+authoring scripts still exist, the contracts file is still in the
+tree, but it’s no longer the active path.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">2026-03-29 → 2026-04-11</span></p>
+  <h2 id="validation-and-instrumentation-maximalism">Validation and instrumentation maximalism</h2>
+
+  <p>This is the period when the project tried to solve correctness with
+tooling. HTML review surfaces, semantic-truth manifests, classifier
+packs, OpenVINO-backed VLM review, headless regtest sweeps, agent
+prompts written explicitly to <em>distrust</em> what the harness reported.
+The validation log on <strong>2026-03-29</strong> claimed <strong>63 of 63</strong> scenes
+verified. That number is now flagged in the project’s own status
+docs as a <em>false summit</em> — the harness was counting black frames and
+ocean-only frames as valid. The skepticism was right; the
+infrastructure built to express that skepticism is what survived.
+The takeaway, hard-won: automation supports archaeology, not
+certification. A scene is validated when a human watches it run and
+listens to the SFX. Everything else is a hint.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">2026-04-04 → 2026-04-11</span></p>
+  <h2 id="binary-library-and-regression-archaeology">Binary library and regression archaeology</h2>
+
+  <p>Overlapping with the late maximalism era, this stretch built a large
+historical binary corpus and the bisection tooling to query it. The
+question was: <em>when did <code class="language-plaintext highlighter-rouge">FISHING 1</code> start working, and when did it
+stop?</em> The branch had broken and recovered multiple times in the
+weeks before, and the binary library — every PS-EXE and CD image
+worth keeping, indexed by commit and date — was the way to find the
+exact onset commit for any given visual symptom. It was effective
+debugging. It is also why the repo accumulated several gigabytes of
+binaries that have since been pruned to manifests-only. The corpus
+is preserved as searchable history, archived out of the primary
+branch surface.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">2026-04-12 → 2026-04-22</span></p>
+  <h2 id="foreground-playback-pivot-to-validated-baseline">Foreground playback pivot to validated baseline</h2>
+
+  <p>The decisive era. On <strong>2026-04-12</strong>, two commits — <code class="language-plaintext highlighter-rouge">1c7481ca</code> (“Add
+host foreground scene export pilot”) and <code class="language-plaintext highlighter-rouge">77276e50</code> (“Add PS1
+foreground playback pilot scaffold”) — started the work that became
+the project’s primary methodology. The host runs the original
+bytecode; the PS1 plays back the captured pixels and audio events.
+Over the next ten days the pilot graduated from a single-scene
+experiment to a working pipeline: full-frame <code class="language-plaintext highlighter-rouge">FISHING 1</code> capture
+(<code class="language-plaintext highlighter-rouge">e24c2c23</code>, <strong>04-13</strong>), generic foreground runtime proven on
+<code class="language-plaintext highlighter-rouge">FISHING 2</code> (<code class="language-plaintext highlighter-rouge">de1e0b89</code>, <strong>04-14</strong>), ocean base restored under the
+foreground runtime (<code class="language-plaintext highlighter-rouge">44cec0a6</code>, <strong>04-18</strong>), scene-relative packs
+(<code class="language-plaintext highlighter-rouge">5ea67b35</code>, <strong>04-19</strong>), animated shore waves (<code class="language-plaintext highlighter-rouge">74bb0c24</code>,
+<strong>04-21</strong>), captured <code class="language-plaintext highlighter-rouge">DRAW_LINE</code> and <code class="language-plaintext highlighter-rouge">DRAW_PIXEL</code> events
+(<code class="language-plaintext highlighter-rouge">8670d2a5</code>, <strong>04-22</strong>), holiday overlays wired through
+(<code class="language-plaintext highlighter-rouge">67822af1</code>), night-mode and host CLI overrides (<code class="language-plaintext highlighter-rouge">33263ced</code>).
+<strong><code class="language-plaintext highlighter-rouge">v0.3.5-ps1</code></strong> (<code class="language-plaintext highlighter-rouge">9448d49f</code>, <strong>04-22</strong>) declared <code class="language-plaintext highlighter-rouge">FISHING 1</code>
+pixel-perfect across all variants. <strong><code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code></strong> (<code class="language-plaintext highlighter-rouge">f2737253</code>,
+later that same day) added the full SFX pipeline — host capture, VAG
+encoding, PS1 playback, key-on alignment. That release is the first
+real validated scene under the current bar. The methodology is
+preserved as <em>authoritative current</em> and is what every subsequent
+scene gets brought up under.</p>
+</section>
+
+<hr />
+
+<p>The eras after <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code> — overnight loop stability work
+(<code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code>), the holidays expansion, the pause menu, the SPI pad
+driver, the memory-card persistence — are continuations rather than
+distinct eras. Their dated worklogs live at
+<a href="../../devlog/">/devlog/</a>. The full narrative
+walkthrough is at <a href="../">/archaeology/</a>.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

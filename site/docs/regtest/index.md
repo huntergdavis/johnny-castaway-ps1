@@ -1,0 +1,361 @@
+---
+layout: page
+title: Regression testing
+eyebrow: Reference
+subtitle: Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.
+description: The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest.
+---
+
+A labor of love by Hunter Davis. The regtest harness runs a PS1 disc image
+through DuckStation's headless `duckstation-regtest` binary inside Docker,
+captures frame PNGs at a configurable interval, SHA256-hashes RAM / VRAM /
+SPU RAM / save state, and forwards PS1 `printf()` output to stdout. There
+is no display server; it works on any Linux box with Docker. Wall-clock
+speed is ~520 FPS — about 8× realtime — so 30 seconds of PS1 gameplay
+captures in roughly 3.6 seconds.
+
+The regtest harness is **secondary tooling** in the current rollout. The
+primary acceptance bar is human visual + audible signoff on the
+scene-playback (fgpilot) path — see
+[Development workflow]({{ '/docs/dev-workflow/' | relative_url }}). Regtest
+is retained for targeted diagnostics: regression hunts, deterministic
+frame-timing investigations, and per-scene snapshot generation when a
+human review needs frozen artifacts. It is not the gate; it is a
+diagnostic.
+
+If you paid for this, you were cheated. Open source and free.
+
+## What it captures
+
+Every regtest run produces, under `regtest-results/<run-id>/`:
+
+| Artifact            | What |
+|---------------------|------|
+| `regtest.log`       | Full stdout + stderr from the run, including DuckStation host messages and PS1 guest TTY. |
+| `tty-output.txt`    | PS1 `printf()` lines only, extracted from the log. |
+| `frames/frame_NNNNN.png` | Captured screenshot every `--dumpinterval` frames. |
+| State hashes        | SHA256 of save state, main RAM (2 MB), SPU RAM, and VRAM, logged at completion. |
+| `telemetry.json`    | When the on-screen telemetry overlay is enabled, decoded by `scripts/decode-ps1-bars.py`. |
+
+The state hashes are the deterministic regression-detection surface: same
+disc + same BIOS + same frame count → same hashes, every time.
+
+## Setup
+
+### Prerequisites
+
+- Docker (rootless, or your user in the `docker` group).
+- A real PS1 BIOS file — typically `scph1001.bin`.
+- A built CD image (`jcreborn.cue` + `jcreborn.bin`). See
+  [Build & toolchain]({{ '/docs/build/' | relative_url }}).
+
+### Build the regtest Docker image
+
+```bash
+./scripts/build-regtest-image.sh
+```
+
+This is a multi-stage Docker build that compiles DuckStation from source
+(Ubuntu 24.04, clang-18, `BUILD_REGTEST=ON`), then extracts the headless
+binary plus its prebuilt shared libs into a slim runtime image. First
+build is 15–30 minutes; rebuilds are fully cached. Image tag:
+`jc-reborn-regtest:latest` (~363 MB).
+
+To force a clean rebuild:
+
+```bash
+./scripts/build-regtest-image.sh --no-cache
+```
+
+### BIOS auto-detection
+
+The wrapper script auto-detects BIOS files in the common locations:
+
+- `~/.local/share/duckstation/bios/`
+- `~/.config/duckstation/bios/`
+- `~/.var/app/org.duckstation.DuckStation/config/duckstation/bios/`
+- `~/ps1-bios/`
+- `./bios/`
+
+Or specify explicitly with `--bios /path/to/bios/`.
+
+## Running tests
+
+### Single scene
+
+```bash
+./scripts/regtest-scene.sh --scene "STAND 2"
+./scripts/regtest-scene.sh --scene "BUILDING 1" --frames 9000 --interval 120
+```
+
+`regtest-scene.sh` is the high-level wrapper. It:
+
+1. Looks up the scene in
+   [`config/ps1/regtest-scenes.txt`]({{ site.github_url }}/blob/main/config/ps1/regtest-scenes.txt).
+2. Rebuilds the CD image with the canonical boot route for that scene
+   set in `BOOTMODE.TXT`.
+3. Runs the headless harness with reviewed scene window defaults.
+4. Decodes the telemetry overlay if it's present in the captured frames.
+5. Writes a structured `result.json` describing the outcome.
+
+### Raw headless run
+
+```bash
+./scripts/run-regtest.sh \
+    --frames 3600 \
+    --start-frame 2400 \
+    --dumpinterval 60 \
+    --dumpdir scratch/regtest-out
+```
+
+`--start-frame N` filters the dumped frames so only frames at or after
+frame `N` are kept — useful for skipping the BIOS chime and title screen
+and only reviewing the actual scene window. The wrapper materializes a
+`filtered-frames/` directory with the kept set.
+
+### Direct Docker invocation
+
+```bash
+docker run --rm \
+    -v "$PWD":/game:ro \
+    -v ~/.var/app/org.duckstation.DuckStation/config/duckstation/bios:/root/.local/share/duckstation/bios:ro \
+    -v $HOME/scratch/regtest-out:/output \
+    --entrypoint duckstation-regtest \
+    jc-reborn-regtest:latest \
+    -renderer Software -console -frames 3600 -dumpdir /output -dumpinterval 60 \
+    -- /game/jcreborn.cue
+```
+
+## Command-line options
+
+`run-regtest.sh` flags:
+
+| Option              | Default           | Description |
+|---------------------|-------------------|-------------|
+| `--frames N`        | 1800              | Total frames to execute (60 fps). |
+| `--start-frame N`   | 0                 | Keep only dumped frames at or after frame N. |
+| `--dumpinterval N`  | 60                | Capture a frame every N frames. |
+| `--dumpdir DIR`     | `regtest-results/` | Output root directory. |
+| `--cue FILE`        | auto-detect       | Path to `.cue` file. |
+| `--bios DIR`        | auto-detect       | Directory containing the PS1 BIOS. |
+| `--renderer NAME`   | Software          | Software / Vulkan / OpenGL. |
+| `--log LEVEL`       | Info              | Error / Warning / Info / Verbose / Debug. |
+| `--timeout SECS`    | 120               | Wall-clock timeout. Kills runaway runs. |
+| `--upscale N`       | (native)          | Resolution multiplier. |
+| `--cpu MODE`        | (default)         | Interpreter / CachedInterpreter / Recompiler. |
+
+Defaults are sourced from
+[`config/ps1/regtest-config.sh`]({{ site.github_url }}/blob/main/config/ps1/regtest-config.sh):
+
+```bash
+REGTEST_FRAMES=1800
+REGTEST_INTERVAL=60
+REGTEST_OUTPUT_DIR=regtest-results
+REGTEST_TIMEOUT=120
+REGTEST_PARALLEL=4
+```
+
+## Scene routing
+
+The scene-routing model is "exact story-scene entry preferred":
+
+```
+story scene <index>
+```
+
+Raw `island ads <ADS> <tag>` boots are no longer the primary truth path —
+they can reach bootstrap or ocean states that are not valid certification
+routes. For fgpilot scenes, the harness sets `BOOTMODE.TXT` to:
+
+```
+fgpilot <slug> [tokens...]
+```
+
+[`config/ps1/regtest-scenes.txt`]({{ site.github_url }}/blob/main/config/ps1/regtest-scenes.txt)
+records every scene as:
+
+```
+ADS_NAME TAG SCENE_INDEX STATUS BOOTMODE...
+```
+
+Status tokens: `verified`, `bringup`, `blocked`, `untested`. These
+reflect the **legacy regtest-route** status model and are not the same
+thing as the current scene-playback acceptance bar — see
+[`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md)
+for the current per-scene ledger.
+
+### Adding a scene to the harness
+
+1. Append a row to `config/ps1/regtest-scenes.txt` in the canonical form
+   above. The boot route should match the scene's actual playback path
+   under the current rollout — typically `fgpilot <slug>` for scenes that
+   ship as `.FG2` packs.
+2. If the scene needs specific variant tokens for its truth window
+   (e.g. `night 1`, `lowtide 1`), include them after the slug.
+3. Run `./scripts/regtest-scene.sh --scene "<ADS> <tag>"` once and confirm
+   the captured frames + TTY look right.
+
+## PS1 test instrumentation
+
+When the disc is built with `-DPS1_TEST_BUILD=ON`, structured test output
+is emitted via `printf` and captured on stdout:
+
+```
+[TEST:SCENE] play STAND.ADS tag=2
+[TEST:FRAME] display frame=0 delay=3
+[TEST:PERF] upload tiles=2 rows=87
+[TEST:PERF] heartbeat frame=60
+[TEST:STATE] load_bmp slot=0 sprites=42
+[TEST:ERROR] fatal: out of memory
+```
+
+Categories: `SCENE` (lifecycle), `FRAME` (per-frame), `PERF` (metrics),
+`ERROR` (crashes), `STATE` (resources), `ASSERT` (invariants). All
+compiled out in normal builds via
+[`ps1_test.h`]({{ site.github_url }}/blob/main/ps1_test.h) macros.
+
+To build a test-instrumented binary:
+
+```bash
+docker run --rm --platform linux/amd64 \
+    -v "$PWD":/project jc-reborn-ps1-dev:amd64 \
+    bash -c "cd /project/build-ps1 && \
+             cmake -DCMAKE_BUILD_TYPE=Release -DPS1_TEST_BUILD=ON .. && \
+             make -j4 jcreborn"
+```
+
+## Overlay-backed character checks
+
+For PS1 bug fixing, the preferred screenshot harness path is:
+
+1. Run a headless regtest with `capture-overlay`.
+2. Take one dumped PNG from the run.
+3. Decode the embedded overlay into character truth.
+4. Compare against expected truth.
+5. Open the generated HTML diff report.
+
+One-command path:
+
+```bash
+./scripts/capture-and-check-ps1.sh \
+    --expected-root host-script-review/fishing1 \
+    --scene "FISHING 1" \
+    --frame-number 80 \
+    --actual-frame 1200
+```
+
+`--frame-number` chooses the expected truth frame; `--actual-frame`
+chooses the dumped `frame_NNNNN.png` to compare against it.
+`check-character-screenshot.py` prefers the frame number embedded in the
+overlay packet itself, so DuckStation timestamped filenames don't need
+manual frame numbering.
+
+Headless manual capture:
+
+```bash
+./scripts/regtest-scene.sh \
+    --scene "FISHING 1" \
+    --overlay \
+    --overlay-mask
+```
+
+Single-screenshot check against a captured screenshot:
+
+```bash
+python3 scripts/check-character-screenshot.py \
+    --image ~/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots/<shot>.png \
+    --expected-root host-script-review/fishing1 \
+    --out-dir scratch/ps1-character-check
+```
+
+## Frame-hash regression detection
+
+To compare two builds:
+
+```bash
+md5sum regtest-results/baseline/frames/*.png > scratch/baseline.md5
+cd regtest-results/candidate/frames/
+md5sum -c scratch/baseline.md5
+```
+
+DuckStation also ships `scripts/check_regression_tests.py` for HTML diff
+reports — adapted for this project as:
+
+```bash
+python3 path/to/check_regression_tests.py \
+    regtest-results/baseline \
+    regtest-results/candidate \
+    -o regtest-results/diff-report.html
+```
+
+The HTML report shows side-by-side comparisons with an interactive viewer.
+
+## Parallel runs
+
+```bash
+for scene in STAND JOHNNY WALKSTUF; do
+    ./scripts/run-regtest.sh \
+        --dumpdir "regtest-results/${scene}" \
+        --frames 1800 &
+done
+wait
+```
+
+`REGTEST_PARALLEL=4` is the intended cap for batch scripts. Each Docker
+container is isolated, so parallel runs do not interfere with each other.
+
+## Common breakages
+
+**"Docker image not found"** — Run `./scripts/build-regtest-image.sh`
+first.
+
+**"No .cue file found"** — Build the CD image:
+`./scripts/build-ps1.sh && ./scripts/make-cd-image.sh`.
+
+**Test hangs / timeout** — `--timeout` (default 120s) kills hung tests.
+Check `regtest.log` for the last activity.
+
+**No frames captured** — Frame count must exceed dump interval. With
+`--frames 60 --dumpinterval 60` only one frame is captured.
+
+**BIOS errors** — DuckStation requires a real PS1 BIOS. With `-fastboot`
+it sometimes boots without one but results may differ.
+
+**"Software renderer only"** — The Docker container has no GPU access
+by default. Use `--renderer Software` (the default).
+
+**Exit code 124** — Hit the wall-clock timeout. Either the run genuinely
+needs more frames or the game looped forever.
+
+## File reference
+
+```
+config/ps1/Dockerfile.regtest      Image build (multi-stage, builds DuckStation)
+config/ps1/regtest-config.sh       Default frame counts, timeouts, etc.
+config/ps1/regtest-scenes.txt      63-scene manifest with status + boot route
+scripts/build-regtest-image.sh     One-time image build wrapper
+scripts/run-regtest.sh             Docker wrapper, full option set
+scripts/regtest-scene.sh           Single-scene runner (uses manifest)
+scripts/regtest-all-scenes.sh      Parallel orchestrator
+scripts/analyze-regtest.py         Post-run analysis + HTML report
+scripts/regtest-compare.sh         Diff two test runs
+scripts/decode-ps1-bars.py         Telemetry overlay decoder
+scripts/check-character-screenshot.py  Overlay-backed character check
+ps1_test.h                         Test-instrumentation macros
+```
+
+## Related pages
+
+- [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the disc
+  image is produced before regtest can run.
+- [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — the
+  primary acceptance loop. Regtest is secondary tooling.
+- [API mapping]({{ '/docs/api/' | relative_url }}) — the SDL2 → PSn00bSDK
+  surface the regtest binary is exercising.
+
+## View source on GitHub
+
+- [`docs/ps1/regtest-harness.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-harness.md)
+- [`docs/ps1/regtest-quickstart.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-quickstart.md)
+- [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md)
+- [`config/ps1/regtest-scenes.txt`]({{ site.github_url }}/blob/main/config/ps1/regtest-scenes.txt)

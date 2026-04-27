@@ -1,0 +1,37 @@
+---
+layout: default
+---
+<article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="{{ page.date | date: '%Y-%m-%d' }}">
+        {{ page.date | date: "%B %-d, %Y" }}
+      </time>
+    </p>
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    <hr class="rule" />
+  </header>
+
+  {% if page.editor_note %}
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> {{ page.editor_note }}</p>
+  </aside>
+  {% endif %}
+
+  <div class="page-body">
+    {{ content }}
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="{{ '/devlog/' | relative_url }}">← back to devlog index</a>
+      {% if page.source_path %}
+      &nbsp;·&nbsp;
+      <a href="{{ site.github_url }}/blob/main/{{ page.source_path }}">view source on GitHub</a>
+      {% endif %}
+    </p>
+  </footer>
+</article>
