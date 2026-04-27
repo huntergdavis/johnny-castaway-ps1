@@ -59,6 +59,7 @@ set(SOURCES
 # Size-optimize only translation units that have passed the exact fishing1
 # gate. Most hot files stay at the SDK default because code phase is fragile.
 set_source_files_properties(
+    src/jc_reborn.c
     src/utils.c
     src/island.c
     src/ps1_debug.c

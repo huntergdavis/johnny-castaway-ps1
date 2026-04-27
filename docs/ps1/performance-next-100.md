@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `716340` bytes |
+| `jcreborn.elf` | `714520` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -33,8 +33,8 @@ follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
 compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
 kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
-The latest flat size cleanup compiles `island.c` with `-Os`, keeping all
-VBlank/CD/work metrics unchanged while shrinking the ELF to `716340` bytes.
+The latest flat size cleanup compiles `jc_reborn.c` with `-Os`, keeping all
+VBlank/CD/work metrics unchanged while shrinking the ELF to `714520` bytes.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -274,6 +274,7 @@ near misses:
 | Utils TU `-Os` | Done under the events-size baseline; keep as cumulative ELF pressure only. |
 | Uncompress TU `-Os` | Do not retry as an isolated flag; it was exact no-op on runtime and size. |
 | Island TU `-Os` | Done under the utils-size baseline; keep accepted if random-island visual validation stays clean. |
+| Main TU `-Os` | Done under the island-size baseline; keep accepted if menu/pause visual validation stays clean. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
