@@ -184,6 +184,10 @@ void grCompositeDirect16ToBackground(const uint16 *srcPixels, uint16 srcWidth, u
 void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
                                          const uint16 *palette,
                                          sint16 screenX, sint16 screenY);
+void grBeginResidualCleanBgFrame(void);
+void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                                    const uint16 *palette,
+                                                    sint16 screenX, sint16 screenY);
 void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
                                           const uint16 *palette,
                                           sint16 screenX, sint16 screenY);

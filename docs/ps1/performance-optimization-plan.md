@@ -46,19 +46,23 @@ scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
 collapsed held-loop prefetch branch shape, duplicate compose active-guard
 removal, simplified runtime-active accessor, and the fishing1 high-tide tail
 read group `396..406` with 11-sector retained capacity, reported
-`policy=stage1_window`, `buf=334864`, `hits=155`, `due_misses=0`,
-`blocking_vb=1`, `prefetch.overrun_vb=1`, `loop_vb=1213`,
-`overrun_vb=138`, `target_vb=1075`, `restore_bytes=2510092`,
-`upload_bytes=15888640`, `dirty_rows=24826`, `upload_rects=502`, `trip=0`,
+`policy=stage1_window`, `buf=333656`, `hits=155`, `due_misses=0`,
+`blocking_vb=0`, `prefetch.overrun_vb=0`, `loop_vb=1207`,
+`overrun_vb=131`, `target_vb=1076`, `restore_bytes=251144`,
+`upload_bytes=6690560`, `dirty_rows=10454`, `upload_rects=290`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=105`,
-`setup_read_vb=177`, `loop_reads=43`, `loop_read_vb=172`, and
-`scene_vb=1459`. This is the
-current baseline for the next experiment.
+The same run also reports `setup_reads=6`, `pack_start_vb=41`,
+`setup_read_vb=169`, `loop_reads=6`, `loop_read_vb=26`, and `scene_vb=1447`.
+This is the current baseline for the next experiment. The accepted FGP3
+temporal-residual pack intentionally changes layout (`FISHING1.FG2 LBA
+396 -> 397`, PS-EXE `143360 -> 145408`) while cutting high-tide pack bytes
+`829851 -> 398433`, restore bytes `2510092 -> 251144`, and upload bytes
+`15888640 -> 6690560`.
 The first-upload clean-rect pass removed the stale full-screen forced upload
 from FG2 setup (`max_upload_bytes 614400 -> 221440`) and improved active
 playback by two VBlanks without changing setup timing, restore bytes, CD
-pressure, or layout identity.
+pressure, or layout identity. The later FGP3 pass is the first accepted
+pack-format runtime win and supersedes the FG2 high-tide baseline for fishing1.
 Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
 the setup prime moves CD work from active playback into scene setup
 (`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
@@ -642,10 +646,11 @@ dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
 vertical dirty-row bands with a post-pause 1-row clean-gap merge, while keeping
 full tile width and no scratch packing.
-Fishing1 improved from the original `loop_vb=1426` to `1213`,
-`restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`15888640`; next work is balancing upload byte savings against rectangle
-pressure and avoiding scheduler perturbation from extra rects.
+Fishing1 improved from the original `loop_vb=1426` to `1207`,
+`restore_bytes=16035840` to `251144`, and `upload_bytes=17172480` to
+`6690560`; next work is balancing the FGP3 executable-size/layout cost against
+the remaining present/scheduler gap and extending residual packs beyond the
+fishing1 high-tide canary.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -716,19 +721,21 @@ tight-slack direct staging, direct-stage scratch window seeding,
 prepared-wait future prefetch, and the
 exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
-the exact no-holiday fishing1 variant reports
-`loop_vb=1213`, `target_vb=1075`, `overrun_vb=138`, `blocking_vb=1`,
-`due_misses=0`, and prefetch `overrun_vb=1`, with
-`upload_bytes=15888640`, `restore_bytes=2510092`, `upload_rects=502`,
-`loop_reads=43`, `setup_reads=6`, and `scene_vb=1459`.
+the exact no-holiday fishing1 high-tide variant now uses the FGP3
+zero-shift temporal-residual pack and reports
+`loop_vb=1207`, `target_vb=1076`, `overrun_vb=131`, `blocking_vb=0`,
+`due_misses=0`, and prefetch `overrun_vb=0`, with
+`upload_bytes=6690560`, `restore_bytes=251144`, `upload_rects=290`,
+`loop_reads=6`, `setup_reads=6`, and `scene_vb=1447`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage,
-and setup-prime converted early FG2 residency into a safe catch-up window.
-Next experiments should target the setup-cost trade, the remaining one visible
-CD/refill VBlank, duplicate prepared-frame restore/compose work, upload byte
-volume, upload rectangle pressure, and generated pack/read-cost metadata that
-can stop raw window probes from perturbing the deterministic cadence.
+setup-prime converted early foreground residency into a safe catch-up window,
+and FGP3 residuals removed most high-tide restore/upload/read volume.
+Next experiments should target the setup-cost trade, the +2 KB FGP3 executable
+cost, duplicate prepared-frame restore/compose work, remaining upload rectangle
+pressure, and generated pack/read-cost metadata that can stop raw window probes
+from perturbing the deterministic cadence.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -1110,6 +1117,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-14` | Failed: runtime restore-under-current parser. | Parsing current PAL4 spans before restore lowered restore bytes, but every tested runtime variant regressed timing or layout (`loop_vb 1219 -> 1221/1224`, visible CD pressure `5 -> 6/11`, pack LBA `396 -> 397/395`). Continue with pack-emitted side metadata or FGP3 command streams, not hot-path reparse. |
 | `P5-15` | Done: add host-side FG2 motion-comp analyzer. | `scripts/analyze-fg2-motion-comp.py` proves fishing1 is not a true translation canary: its best candidates are zero-shift temporal residuals (`151/154` pairs, `71.16%` estimated payload reduction, `0` nonzero shifts). Walking packs do have true move candidates (`WALKSTUF1` has `85`, `WALK1LOW` has `53`). Split FGP3 into zero-shift residual first, then move/residual once RAM mirror and dirty cleanup are designed. |
 | `P5-16` | Done: model zero-shift temporal residual runtime work. | Fishing1's zero-shift model predicts compose payload `823277 -> 228087` (`72.30%` saved), full-width dirty upload `15667200 -> 6576000` (`58.03%` saved), and cleanup restore of `136552` bytes. Next implementation target is FGP3 zero-shift residuals with full-current dirty metadata. |
+| `P5-17` | Done: promote first FGP3 zero-shift temporal-residual runtime pack for fishing1 high tide. | `scripts/build-fg3-temporal-residual-pack.py` converts the accepted PAL4 FG2 into `fgp3_pal4_residual`; runtime cleanup spans restore vanished pixels and residual PAL4 spans draw changed pixels. Exact high-tide gate improves `loop_vb 1213 -> 1207`, `overrun_vb 138 -> 131`, `blocking_vb/prefetch_overrun_vb 1 -> 0`, `loop_reads 43 -> 6`, `restore_bytes 2510092 -> 251144`, and `upload_bytes 15888640 -> 6690560`. The intentional cost is PS-EXE `143360 -> 145408` and `FISHING1.FG2 LBA 396 -> 397`; next work should fold generation into the batch builder and recover the executable-size cost. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 

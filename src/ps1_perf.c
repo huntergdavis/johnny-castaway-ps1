@@ -302,6 +302,8 @@ static const char *ps1PerfFormatName(void)
         return "fgp2_pal4";
     if (gPs1Perf.packFormat == 3)
         return "fgp2_indexed8";
+    if (gPs1Perf.packFormat == 4)
+        return "fgp3_pal4_residual";
     return "unknown";
 }
 

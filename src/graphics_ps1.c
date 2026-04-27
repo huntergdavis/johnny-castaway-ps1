@@ -127,6 +127,7 @@ static int grPresentDuringScreenLoad = 1;
 static void grDrawRectColor15(sint16 x, sint16 y, uint16 width, uint16 height, uint16 bgColor);
 static void grRestoreRectFromCleanBg(int x, int y, int width, int height);
 static void grCommitRectToCleanBg(int x, int y, int width, int height);
+static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width);
 
 void grSetPresentDuringScreenLoad(int enabled)
 {
@@ -213,6 +214,19 @@ static void grPromoteCurrDirtyToPrev(void)
             prevDirtyRowMinX[i][y] = currDirtyRowMinX[i][y];
             prevDirtyRowMaxX[i][y] = currDirtyRowMaxX[i][y];
         }
+    }
+}
+
+static void grClearPrevDirtyState(void)
+{
+    grEnsureDirtyRowState();
+    for (int i = 0; i < 4; i++) {
+        grClearDirtyRowRange(prevDirtyRowMinX, prevDirtyRowMaxX,
+                             i, prevDirtyMinY[i], prevDirtyMaxY[i]);
+        prevDirtyMinX[i] = -1;
+        prevDirtyMaxX[i] = -1;
+        prevDirtyMinY[i] = -1;
+        prevDirtyMaxY[i] = -1;
     }
 }
 
@@ -2043,6 +2057,62 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
+void grBeginResidualCleanBgFrame(void)
+{
+    grClearCurrDirtyState();
+    grClearPrevDirtyState();
+}
+
+void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                                    const uint16 *palette,
+                                                    sint16 screenX, sint16 screenY)
+{
+    uint32 offset = 0;
+    uint32 restoredBytes = 0;
+    uint16 cleanupRows;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    cleanupRows = grReadPackedSpanU16(spanData);
+    offset = 2;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (offset + 4u > spanDataSize)
+            return;
+        relY = grReadPackedSpanU16(spanData + offset);
+        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+        offset += 4u;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (offset + 4u > spanDataSize)
+                return;
+            relX = grReadPackedSpanU16(spanData + offset);
+            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkRestore(restoredBytes);
+    if (offset < spanDataSize)
+        grCompositePacked4SpansToBackground(spanData + offset,
+                                            spanDataSize - offset,
+                                            palette,
+                                            screenX,
+                                            screenY);
+}
+
 static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
                                                 uint16 pixelCount,
                                                 const uint16 *palette,
@@ -2895,6 +2965,86 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
     }
     if (perfTrack)
         ps1PerfMarkRestore(copiedBytes);
+}
+
+static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width)
+{
+    int xEnd;
+    uint32 copiedBytes = 0;
+
+    if (width <= 0 || y < 0 || y >= 480)
+        return 0;
+    xEnd = x + width;
+    if (x < 0)
+        x = 0;
+    if (xEnd > 640)
+        xEnd = 640;
+    if (x >= xEnd)
+        return 0;
+
+    for (int i = 0; i < gGrCleanRectCount; i++) {
+        const struct TGrCleanRect *r = &gGrCleanRects[i];
+        int rx0;
+        int rx1;
+        int sy;
+
+        if (r->pixels == NULL || r->width == 0 || r->height == 0)
+            continue;
+        if (y < r->y || y >= r->y + (int)r->height)
+            continue;
+
+        rx0 = x;
+        rx1 = xEnd;
+        if (rx0 < r->x)
+            rx0 = r->x;
+        if (rx1 > r->x + (int)r->width)
+            rx1 = r->x + (int)r->width;
+        if (rx0 >= rx1)
+            continue;
+
+        sy = y - r->y;
+        {
+            PS1Surface *tileLeft;
+            PS1Surface *tileRight;
+            int tileLocalY;
+            const uint16 *srcRow = r->pixels + (uint32)sy * (uint32)r->width;
+
+            if (y < 240) {
+                tileLocalY = y;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = y - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+
+            if (tileLeft != NULL && tileLeft->pixels != NULL && rx0 < 320) {
+                int lx0 = rx0;
+                int lx1 = (rx1 < 320) ? rx1 : 320;
+                if (lx0 < lx1) {
+                    uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
+                    size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+                    memcpy(dst, srcRow + (lx0 - r->x), bytes);
+                    grMarkRectDirty(lx0, y, lx1, y + 1);
+                    copiedBytes += (uint32)bytes;
+                }
+            }
+            if (tileRight != NULL && tileRight->pixels != NULL && rx1 > 320) {
+                int rxLocal0 = (rx0 > 320) ? (rx0 - 320) : 0;
+                int rxLocal1 = rx1 - 320;
+                if (rxLocal0 < rxLocal1) {
+                    uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + rxLocal0;
+                    size_t bytes = (size_t)(rxLocal1 - rxLocal0) * sizeof(uint16);
+                    memcpy(dst, srcRow + ((rxLocal0 + 320) - r->x), bytes);
+                    grMarkRectDirty(rxLocal0 + 320, y, rxLocal1 + 320, y + 1);
+                    copiedBytes += (uint32)bytes;
+                }
+            }
+        }
+    }
+
+    return copiedBytes;
 }
 
 static void grResetCleanBgRects(int releasePixels)

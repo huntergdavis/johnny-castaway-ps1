@@ -6,20 +6,20 @@ Current accepted fishing1 exact baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1213` |
-| `target_vb` | `1075` |
-| `remaining_overrun_vb` | `138` |
-| `remaining_over_target` | `12.84%` |
-| `blocking_vb` | `1` |
-| `prefetch_overrun_vb` | `1` |
-| `loop_reads` | `43` |
-| `upload_bytes` | `15888640` |
-| `restore_bytes` | `2510092` |
-| `prefetch_buffer` | `334864` bytes for fishing1 high-tide setup-prime, `29712` bytes otherwise |
-| `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `718676` bytes |
+| `loop_vb` | `1207` |
+| `target_vb` | `1076` |
+| `remaining_overrun_vb` | `131` |
+| `remaining_over_target` | `12.17%` |
+| `blocking_vb` | `0` |
+| `prefetch_overrun_vb` | `0` |
+| `loop_reads` | `6` |
+| `upload_bytes` | `6690560` |
+| `restore_bytes` | `251144` |
+| `prefetch_buffer` | `333656` bytes for fishing1 high-tide FGP3 setup-prime, `29712` bytes otherwise |
+| `jcreborn.exe` | `145408` bytes |
+| `jcreborn.elf` | `726432` bytes |
 
-Goal: close `138` remaining loop VBlanks without changing pixels, sound event
+Goal: close `131` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
 baseline is about `12` VBlanks, so the practical target is roughly twelve to
 fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
@@ -168,12 +168,23 @@ saved), full-width dirty upload `15667200 -> 6576000` (`58.03%` saved), and
 cleanup restore of only `136552` bytes. The hard invariant is that FGP3 must
 carry full-current dirty metadata, because unchanged foreground pixels remain
 in the RAM mirror and still need to be restorable on later frames.
+The first FGP3 zero-shift temporal-residual pack is now promoted for fishing1
+high tide. It converts `FISHING1.FG2` to `fgp3_pal4_residual`, improves
+`loop_vb 1213 -> 1207`, `overrun_vb 138 -> 131`, and clears the last visible
+high-tide CD pressure (`blocking_vb/prefetch_overrun_vb 1 -> 0`). Work volume
+drops to `restore_bytes=251144`, `upload_bytes=6690560`, `upload_rects=290`,
+and `loop_reads=6`. This accepted format change intentionally moves layout
+(`FISHING1.FG2 LBA 396 -> 397`, PS-EXE `143360 -> 145408`), so future FGP3
+work should claw back the executable cost and then fold residual generation
+into the normal batch pack builder.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
-`prefetch_overrun_vb`, layout identity, work identity, or correctness. Flat
-timing plus meaningful code-size/work reduction is acceptable, but must not be
-counted as a speed win.
+`prefetch_overrun_vb`, work identity, or correctness. Layout identity remains
+mandatory for code-only experiments; deliberate pack-format experiments may use
+`--allow-layout-change` only when the layout movement is documented and the
+speed/work win is otherwise clean. Flat timing plus meaningful code-size/work
+reduction is acceptable, but must not be counted as a speed win.
 
 ## Highest-Leverage Thesis
 
@@ -199,8 +210,8 @@ visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
 The current detail/trace samples shift priority again: `present_wait_vb=157`
-against a remaining `138` VBlank active-loop overrun, while setup-primed
-visible CD is down to `1` VBlank. The next major win has to reduce or hide
+against a remaining `131` VBlank active-loop overrun, while the FGP3 canary
+has driven high-tide visible CD pressure to `0` VBlanks. The next major win has to reduce or hide
 present wait and move setup-prime cost out of visible scene startup without
 early display, tearing, frame drops, or weakened pause input.
 
@@ -289,7 +300,7 @@ early display, tearing, frame drops, or weakened pause input.
 | 1 | Baseline | Add a release-speed run without `perf-log` and compare against the perf-log baseline. | We may be optimizing the logging build instead of the shipped runtime. | Release run is faster and remains visually/sound identical, creating a separate target baseline. |
 | 2 | Baseline | Add a dual-baseline policy: diagnostic baseline and release baseline. | Future changes should be judged against the right runtime mode. | Harness records both without weakening the strict perf-log gate. |
 | 3 | Harness | Add a non-promotable trace binary for per-read frame/slack class logging. | Inline CD histograms perturb the speed binary. | Trace build explains the remaining visible read and setup-prime ownership without changing the accepted binary. |
-| 4 | Harness | Add host-side correlation from DuckStation read timestamps to frame indices. | Current CD log has LBAs but not the exact runtime frame owner. | We can name the read/frame that creates the remaining `blocking_vb=1` and any setup-prime overrun. |
+| 4 | Harness | Add host-side correlation from DuckStation read timestamps to frame indices. | Current CD log has LBAs but not the exact runtime frame owner. | We can prove the FGP3 zero-pressure path stays zero and name any setup-prime or cross-scene read that reintroduces pressure. |
 | 5 | Harness | Add optional full-frame hashes to reject sequential-CD false positives. | Skipping `Setloc` once looked fast but collapsed visual work. | The gate can safely retest lower-level CD continuation ideas. |
 | 6 | Harness | Gate `scene_vb` alongside `loop_vb` for setup-shift experiments. | Setup-prerender reduced loop accounting but not total time. | Future setup shifts cannot fake active-loop wins. |
 | 7 | Harness | Add map-address tolerance bands for hot functions. | We now know fixed EXE/LBA can still regress from code-address phase. | We can identify which address shifts are dangerous. |
@@ -394,7 +405,7 @@ near misses:
 
 | Order | Test # | Reason |
 |---:|---:|---|
-| 1 | 1 | Establish whether the remaining `12.84%` is partly perf-log overhead. |
+| 1 | 1 | Establish whether the remaining `12.17%` is partly perf-log overhead. |
 | 2 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 3 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
 | 4 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
