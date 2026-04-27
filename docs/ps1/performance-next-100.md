@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `149504` bytes |
-| `jcreborn.elf` | `740816` bytes |
+| `jcreborn.elf` | `740196` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -30,9 +30,9 @@ a work-reduction checkpoint, not a VBlank speed win. It keeps the remaining
 `150` VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
 `setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`; the
 follow-up retained-capacity pass kept that saved read while reducing the
-runtime prefetch buffer `31760 -> 29712` bytes. The first narrow cold-TU
-compiler probe is also accepted: `ps1_captions.c -Os` kept timing and layout
-flat while shrinking `jcreborn.elf 741076 -> 740816`.
+runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
+compiler probes are also accepted: `ps1_captions.c -Os` and `memcard.c -Os`
+kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
