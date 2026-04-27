@@ -1544,6 +1544,11 @@ A follow-up pure CD phase sweep moved `FISHING1.FG2` to LBAs `400`, `401`,
 `402`, `403`, and `407` with exact flat timing, so pack LBA alone is not the
 failing variable. The next phase-control target is executable/code/startup
 phase, not more standalone ISO padding.
+The held-loop prefetch pre-check removal then confirmed that point from the
+opposite direction: restoring `FISHING1.FG2` to LBA `399` with a dummy sector
+did not prevent the regression when hot foreground symbols moved. Hot-loop
+cleanups now require hot-symbol padding or a scheduler that is insensitive to
+one-sector executable/code-shape changes.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
