@@ -341,6 +341,172 @@ def plan_read_groups(segments: list[dict[str, Any]], pack: dict[str, Any],
     }
 
 
+def numeric_delta(current: Any, baseline: Any) -> int | float | None:
+    if isinstance(current, (int, float)) and isinstance(baseline, (int, float)):
+        return current - baseline
+    return None
+
+
+def map_segments_by_sector(payload: dict[str, Any]) -> dict[int, dict[str, Any]]:
+    result: dict[int, dict[str, Any]] = {}
+    segments = payload.get("after_last_pack_locate_segments", [])
+    if not isinstance(segments, list):
+        return result
+    for segment in segments:
+        sector = segment.get("file_sector_start")
+        if isinstance(sector, int):
+            result[sector] = segment
+    return result
+
+
+def segment_elapsed_from_first(segment: dict[str, Any],
+                               first_time_s: float | None) -> float | None:
+    time_s = segment.get("time_s")
+    if not isinstance(time_s, (int, float)) or first_time_s is None:
+        return None
+    return round(float(time_s) - first_time_s, 6)
+
+
+def first_segment_time(payload: dict[str, Any]) -> float | None:
+    segments = payload.get("after_last_pack_locate_segments", [])
+    if not isinstance(segments, list) or not segments:
+        return None
+    time_s = segments[0].get("time_s")
+    if isinstance(time_s, (int, float)):
+        return float(time_s)
+    return None
+
+
+def covered_entries_for_sector(payload: dict[str, Any], start_sector: int,
+                               end_sector: int) -> list[int]:
+    pack_file = payload.get("pack_file")
+    if not isinstance(pack_file, dict):
+        return []
+    entries = payload.get("pack_entries")
+    if not isinstance(entries, list):
+        return []
+    return entries_covered_by_group(entries, start_sector, end_sector)
+
+
+def summarize_cd_comparison(current: dict[str, Any],
+                            baseline: dict[str, Any]) -> dict[str, Any]:
+    current_jcperf = current.get("jcperf2", {})
+    baseline_jcperf = baseline.get("jcperf2", {})
+    metrics = [
+        "total_reads",
+        "setup_reads",
+        "loop_reads",
+        "blocking_reads",
+        "blocking_vb",
+        "prefetch_overrun_vb",
+    ]
+    jcperf_deltas = {
+        metric: {
+            "baseline": baseline_jcperf.get(metric),
+            "current": current_jcperf.get(metric),
+            "delta": numeric_delta(current_jcperf.get(metric), baseline_jcperf.get(metric)),
+        }
+        for metric in metrics
+    }
+
+    baseline_segments = map_segments_by_sector(baseline)
+    current_segments = map_segments_by_sector(current)
+    common_sectors = sorted(set(baseline_segments) & set(current_segments))
+    missing_sectors = sorted(set(baseline_segments) - set(current_segments))
+    new_sectors = sorted(set(current_segments) - set(baseline_segments))
+    baseline_first_time = first_segment_time(baseline)
+    current_first_time = first_segment_time(current)
+
+    candidates: list[dict[str, Any]] = []
+    for sector in common_sectors:
+        base_segment = baseline_segments[sector]
+        cur_segment = current_segments[sector]
+        base_prev = base_segment.get("prev_time_delta_s")
+        cur_prev = cur_segment.get("prev_time_delta_s")
+        prev_delta = numeric_delta(cur_prev, base_prev)
+        base_elapsed = segment_elapsed_from_first(base_segment, baseline_first_time)
+        cur_elapsed = segment_elapsed_from_first(cur_segment, current_first_time)
+        elapsed_delta = numeric_delta(cur_elapsed, base_elapsed)
+        start_sector = cur_segment.get("file_sector_start", sector)
+        end_sector = cur_segment.get("file_sector_end", sector + 1)
+        if not isinstance(end_sector, int):
+            end_sector = sector + 1
+        if not isinstance(start_sector, int):
+            start_sector = sector
+        score = max(abs(prev_delta or 0), abs(elapsed_delta or 0))
+        if score <= 0:
+            continue
+        candidates.append({
+            "file_sector_start": sector,
+            "file_sector_end": end_sector,
+            "current_lba": cur_segment.get("lba"),
+            "baseline_lba": base_segment.get("lba"),
+            "current_read_index": cur_segment.get("index"),
+            "baseline_read_index": base_segment.get("index"),
+            "current_prev_time_delta_s": cur_prev,
+            "baseline_prev_time_delta_s": base_prev,
+            "prev_time_delta_s": round(prev_delta, 6) if isinstance(prev_delta, float) else prev_delta,
+            "current_elapsed_from_first_s": cur_elapsed,
+            "baseline_elapsed_from_first_s": base_elapsed,
+            "elapsed_from_first_delta_s": (
+                round(elapsed_delta, 6) if isinstance(elapsed_delta, float) else elapsed_delta
+            ),
+            "estimated_vblank_delta": (
+                round(float(prev_delta) * 60.0, 2)
+                if isinstance(prev_delta, (int, float)) else None
+            ),
+            "inferred_sectors": cur_segment.get("inferred_sectors"),
+            "covered_entries": covered_entries_for_sector(current, start_sector, end_sector),
+        })
+
+    timing_shifts = sorted(
+        candidates,
+        key=lambda item: (
+            abs(item.get("estimated_vblank_delta") or 0),
+            abs(item.get("elapsed_from_first_delta_s") or 0),
+        ),
+        reverse=True,
+    )
+    regression_candidates = sorted(
+        [
+            item for item in candidates
+            if (item.get("prev_time_delta_s") or 0) > 0
+            or (item.get("elapsed_from_first_delta_s") or 0) > 0
+        ],
+        key=lambda item: (
+            item.get("estimated_vblank_delta") or 0,
+            item.get("elapsed_from_first_delta_s") or 0,
+        ),
+        reverse=True,
+    )
+
+    blocking_delta = jcperf_deltas["blocking_reads"]["delta"]
+    return {
+        "baseline_summary_file": baseline.get("summary_file"),
+        "baseline_log_file": baseline.get("log_file"),
+        "jcperf2_deltas": jcperf_deltas,
+        "read_sequence": {
+            "baseline_segments": len(baseline_segments),
+            "current_segments": len(current_segments),
+            "common_file_sectors": len(common_sectors),
+            "missing_file_sectors": missing_sectors[:20],
+            "new_file_sectors": new_sectors[:20],
+        },
+        "extra_visible_read": {
+            "blocking_read_delta": blocking_delta,
+            "likely_regressed": (
+                isinstance(blocking_delta, (int, float)) and blocking_delta > 0
+            ),
+            "candidate_basis": (
+                "file-sector-normalized host read timing deltas; use as a locator, "
+                "not as PS1-side proof"
+            ),
+            "top_regression_candidates": regression_candidates[:12],
+            "largest_timing_shifts": timing_shifts[:12],
+        },
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("log", type=Path, help="DuckStation headless log")
@@ -348,6 +514,7 @@ def main() -> int:
     parser.add_argument("--pack-lba", type=int, help="Scene pack LBA override")
     parser.add_argument("--pack-sectors", type=int, help="Scene pack sector count override")
     parser.add_argument("--pack-file", type=Path, help="FG2 pack file for entry-aware group planning")
+    parser.add_argument("--compare", type=Path, help="Baseline CD summary JSON from this script")
     parser.add_argument("--output", type=Path, help="Write JSON summary to this path")
     args = parser.parse_args()
 
@@ -421,6 +588,7 @@ def main() -> int:
             key: value for key, value in pack.items()
             if key != "entries"
         } if pack else None,
+        "pack_entries": pack.get("entries") if pack else None,
         "group_plans": group_plans,
         "located_lbas": located,
         "reads": {
@@ -428,6 +596,9 @@ def main() -> int:
             "after_last_pack_locate": after_last_pack_locate,
         },
     }
+    if args.compare:
+        compare_payload = json.loads(args.compare.read_text(encoding="utf-8"))
+        payload["comparison"] = summarize_cd_comparison(payload, compare_payload)
 
     text = json.dumps(payload, indent=2) + "\n"
     if args.output:

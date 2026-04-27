@@ -36,6 +36,9 @@ kept timing and layout flat while shrinking `jcreborn.elf 741076 -> 740196`.
 The latest flat hot-path cleanup removes an unused `ps1PerfMarkAdvance()`
 argument, keeping all VBlank/CD metrics unchanged while shrinking the ELF to
 `739900` bytes.
+The latest harness pass adds host-side CD-summary comparison, so future
+`blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
+without adding PS1-side metrics that change the speed binary.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -78,7 +81,7 @@ without early display, tearing, frame drops, or weakened pause input.
 | 105 | Function alignment sweep | Try 4/8/16/32-byte alignment for only CD/foreground hot functions. | Finds low-cost address buckets without whole-TU codegen changes. |
 | 106 | Cold-section ballast | Keep cold `-Os` size wins but add deterministic padding to preserve the accepted EXE sector bucket. | Unlocks prior size wins without changing playback cadence. |
 | 107 | Release-libs phase harness | Retest Release SDK libraries across CD and text phase pads. | Determines if the `1220` loop-VBlank signal can survive `blocking_vb<=5`. |
-| 108 | Fifth-read locator | Host-side script maps the extra blocking read to LBA, frame, slack, and previous operation. | Turns `blocking_reads 4 -> 5` failures into a concrete fix target. |
+| 108 | Fifth-read locator | Host-side script maps the extra blocking read to LBA/file-sector timing candidates and covered entries. | Done for file-sector/CD-log comparison; frame/slack ownership still needs a trace binary or generated scheduler metadata. |
 | 109 | Per-read slack class report | Bucket each read by held VBlanks available, sectors, preserved bytes, and overrun. | Builds the cost predictor needed for group acceptance. |
 | 110 | Group-fire trace build | Diagnostic binary logs why each planner group did or did not fire. | Explains why `384..396` remained a no-op. |
 | 111 | Generated group metadata v2 | Emit group candidates beside FG2 entries without moving payload offsets. | Replaces hard-coded one-off group tables. |
@@ -145,7 +148,7 @@ without early display, tearing, frame drops, or weakened pause input.
 | 7 | Harness | Add map-address tolerance bands for hot functions. | We now know fixed EXE/LBA can still regress from code-address phase. | We can identify which address shifts are dangerous. |
 | 8 | Harness | Add automated compiler-flag matrix runner that logs no-promotion outcomes. | Toolchain work needs lots of controlled probes. | Matrix results are searchable and never dirty the accepted branch on failure. |
 | 9 | Harness | Add cross-scene smoke subset after every accepted fishing1 speed win. | Fishing1 knees may not hold for fishing2/fishing3. | Fishing2/fishing3 exact cases stay within agreed pressure gates. |
-| 10 | Harness | Add a "fifth visible read" summary to `ps1-perf-cdlog-summary.py`. | Current failures often move `blocking_reads 4 -> 5`. | Tool names the specific read boundary and candidate fixes. |
+| 10 | Harness | Add a "fifth visible read" summary to `ps1-perf-cdlog-summary.py`. | Current failures often move `blocking_reads 4 -> 5`. | Done: `--compare` reports `JCPERF2` deltas and file-sector-normalized timing candidates without touching the PS1 binary. |
 | 11 | CD | Implement runtime lookup for 12-sector zero-extra-sector read groups. | Broad import failed, but the tail-only group `396..406` is accepted; next step is costed/selective groups, not blanket planner import. | `loop_reads`, `loop_read_vb`, or `blocking_vb` falls with no new visible read. |
 | 12 | CD | Implement 16-sector group lookup behind a stricter slack guard. | Planner shows `69 -> 29`; raw 24 KB failed, but exact groups may not. | Read count falls and `blocking_vb` stays `<=5`. |
 | 13 | CD | Implement 24-sector group lookup only for proven late long-hold regions. | Planner shows `69 -> 20`; broad high-slack reads failed. | Late-sequence reads drop without `prefetch_overrun_vb` growth. |
@@ -245,7 +248,7 @@ near misses:
 | Order | Test # | Reason |
 |---:|---:|---|
 | 1 | 1 | Establish whether the remaining 14.01% is partly perf-log overhead. |
-| 2 | 10 | Identify the specific fifth-read transition that turns good probes bad. |
+| 2 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 3 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
 | 4 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
 | 5 | 23 | Revisit a near miss that already showed a two-VBlank loop win. |
