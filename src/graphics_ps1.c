@@ -154,26 +154,65 @@ static void grEnsureDirtyRowState(void)
     dirtyRowStateInitialized = 1;
 }
 
+static void grClearDirtyRowRange(sint16 rowsMinX[4][BG_TILE_HEIGHT],
+                                 sint16 rowsMaxX[4][BG_TILE_HEIGHT],
+                                 int idx,
+                                 int minY,
+                                 int maxY)
+{
+    if (idx < 0 || idx >= 4)
+        return;
+    if (minY < 0)
+        minY = 0;
+    if (maxY >= BG_TILE_HEIGHT)
+        maxY = BG_TILE_HEIGHT - 1;
+    if (minY > maxY)
+        return;
+
+    for (int y = minY; y <= maxY; y++) {
+        rowsMinX[idx][y] = -1;
+        rowsMaxX[idx][y] = -1;
+    }
+}
+
 static void grClearCurrDirtyState(void)
 {
     grEnsureDirtyRowState();
     for (int i = 0; i < 4; i++) {
-        if (currDirtyMinY[i] >= 0) {
-            int minY = currDirtyMinY[i];
-            int maxY = currDirtyMaxY[i];
-            if (minY < 0)
-                minY = 0;
-            if (maxY >= BG_TILE_HEIGHT)
-                maxY = BG_TILE_HEIGHT - 1;
-            for (int y = minY; y <= maxY; y++) {
-                currDirtyRowMinX[i][y] = -1;
-                currDirtyRowMaxX[i][y] = -1;
-            }
-        }
+        grClearDirtyRowRange(currDirtyRowMinX, currDirtyRowMaxX,
+                             i, currDirtyMinY[i], currDirtyMaxY[i]);
         currDirtyMinX[i] = -1;
         currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
+    }
+}
+
+static void grPromoteCurrDirtyToPrev(void)
+{
+    grEnsureDirtyRowState();
+    for (int i = 0; i < 4; i++) {
+        int minY;
+        int maxY;
+
+        grClearDirtyRowRange(prevDirtyRowMinX, prevDirtyRowMaxX,
+                             i, prevDirtyMinY[i], prevDirtyMaxY[i]);
+
+        prevDirtyMinX[i] = currDirtyMinX[i];
+        prevDirtyMaxX[i] = currDirtyMaxX[i];
+        prevDirtyMinY[i] = currDirtyMinY[i];
+        prevDirtyMaxY[i] = currDirtyMaxY[i];
+
+        minY = currDirtyMinY[i];
+        maxY = currDirtyMaxY[i];
+        if (minY < 0)
+            continue;
+        if (maxY >= BG_TILE_HEIGHT)
+            maxY = BG_TILE_HEIGHT - 1;
+        for (int y = minY; y <= maxY; y++) {
+            prevDirtyRowMinX[i][y] = currDirtyRowMinX[i][y];
+            prevDirtyRowMaxX[i][y] = currDirtyRowMaxX[i][y];
+        }
     }
 }
 
@@ -3658,15 +3697,8 @@ void grDrawBackground(void)
                                ps1PerfElapsedVBlanks(perfStartTick));
     }
 
-    /* Advance dirty state: this frame's compositing becomes next frame's restore set */
-    for (int i = 0; i < 4; i++) {
-        prevDirtyMinX[i] = currDirtyMinX[i];
-        prevDirtyMaxX[i] = currDirtyMaxX[i];
-        prevDirtyMinY[i] = currDirtyMinY[i];
-        prevDirtyMaxY[i] = currDirtyMaxY[i];
-    }
-    memcpy(prevDirtyRowMinX, currDirtyRowMinX, sizeof(prevDirtyRowMinX));
-    memcpy(prevDirtyRowMaxX, currDirtyRowMaxX, sizeof(prevDirtyRowMaxX));
+    /* Advance dirty state: this frame's compositing becomes next frame's restore set. */
+    grPromoteCurrDirtyToPrev();
 }
 
 /*

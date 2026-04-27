@@ -6,10 +6,10 @@ Current accepted fishing1 exact baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1221` |
-| `target_vb` | `1071` |
-| `remaining_overrun_vb` | `150` |
-| `remaining_over_target` | `14.01%` |
+| `loop_vb` | `1219` |
+| `target_vb` | `1072` |
+| `remaining_overrun_vb` | `147` |
+| `remaining_over_target` | `13.71%` |
 | `blocking_vb` | `5` |
 | `prefetch_overrun_vb` | `5` |
 | `loop_reads` | `67` |
@@ -17,17 +17,17 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `712692` bytes |
+| `jcreborn.elf` | `712828` bytes |
 
-Goal: close `150` remaining loop VBlanks without changing pixels, sound event
+Goal: close `147` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
 baseline is about `12` VBlanks, so the practical target is roughly fourteen
 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
 stack of flat-timing cleanup wins.
 
 Current note: the fishing1 high-tide tail read group `396..406` is accepted as
-a work-reduction checkpoint, not a VBlank speed win. It keeps the remaining
-`150` VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
+a work-reduction checkpoint, not a VBlank speed win. It kept that era's
+remaining VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
 `setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`; the
 follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
@@ -47,6 +47,9 @@ hit a useful single-band case, so upload bytes stayed flat while code grew.
 The latest accepted cleanup clears only touched current dirty rows before each
 frame restore, preserving all timing/work counters while shrinking the ELF to
 `712692` bytes.
+The latest speed win also promotes only touched dirty-row ranges from current
+to previous dirty state, improving `loop_vb 1221 -> 1219` and
+`overrun_vb 150 -> 147` with CD pressure and graphics work stable.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -299,6 +302,7 @@ near misses:
 | PAL4 compositor function-scoped `Os` | Do not retry; it shrank the compositor and loaded executable but regressed blocking even with foreground LBA restored. |
 | Single-band narrow upload scratch | Do not retry as a special case; fishing1 upload bytes did not move and code grew. |
 | Touched-only current dirty-row clearing | Done; keep because it removes per-frame row-table stores with exact timing/work identity and no new memory. |
+| Touched-only dirty-row promotion | Done; keep because it removes full dirty-row table copies and produced a repeatable `2` VBlank loop win. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
