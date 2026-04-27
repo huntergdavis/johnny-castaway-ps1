@@ -50,6 +50,9 @@ frame restore, preserving all timing/work counters while shrinking the ELF to
 The latest speed win also promotes only touched dirty-row ranges from current
 to previous dirty state, improving `loop_vb 1221 -> 1219` and
 `overrun_vb 150 -> 147` with CD pressure and graphics work stable.
+A direct PAL4 row dirty-marking probe after that baseline is rejected even
+though the formal gate passed: `loop_vb` stayed flat and the apparent overrun
+gain came only from a `target_vb` shift while the compositor grew.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
@@ -303,6 +306,7 @@ near misses:
 | Single-band narrow upload scratch | Do not retry as a special case; fishing1 upload bytes did not move and code grew. |
 | Touched-only current dirty-row clearing | Done; keep because it removes per-frame row-table stores with exact timing/work identity and no new memory. |
 | Touched-only dirty-row promotion | Done; keep because it removes full dirty-row table copies and produced a repeatable `2` VBlank loop win. |
+| Direct PAL4 row dirty marking | Do not retry as written; it produced only target-accounting movement with flat loop speed and large compositor growth. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

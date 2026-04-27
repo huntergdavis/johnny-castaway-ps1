@@ -964,6 +964,7 @@ from perturbing the deterministic cadence.
 | `P4-279` | Failed/no promotion: single-band narrow upload through primitive-buffer scratch. | The exact gate stayed timing/layout-flat but upload work did not move (`upload_rects=502`, `upload_bytes=16281600`, `dirty_rows=25440`) while `grDrawBackground` grew by `200` bytes and ELF grew `713496 -> 716736`; source was reverted and only the experiment log was kept. |
 | `P4-280` | Done: clear only touched current dirty rows. | The exact gate stayed timing/layout/work-flat while removing full current dirty-row-table clears from every frame and shrinking ELF `713496 -> 712692`; count as hot dirty-state cleanup only, not a VBlank speed win. |
 | `P4-281` | Done: promote only touched current dirty rows into previous dirty rows. | The exact gate improved `loop_vb 1221 -> 1219`, `overrun_vb 150 -> 147`, and `scene_vb 1400 -> 1398` while keeping `blocking_vb=5`, `prefetch_overrun_vb=5`, layout, graphics work, and correctness stable; count as a real hot dirty-state speed win. |
+| `P4-282` | Failed/no promotion: direct PAL4 row dirty marking. | The formal gate passed only because `target_vb 1072 -> 1073` made `overrun_vb 147 -> 146`; actual `loop_vb` stayed `1219`, graphics/CD work stayed flat, and the compositor/ELF grew materially (`jcreborn.elf 712828 -> 715112`), so source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
