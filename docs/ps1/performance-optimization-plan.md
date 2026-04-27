@@ -94,6 +94,15 @@ because it adds duplicate RAM restore/compose work (`restore_calls 156 -> 192`,
 some of that duplicate work with flat key timing, but the larger present-wait
 fix still needs a scheduler with separate render-prep and CD-prefetch budgets.
 
+Current post-cleanup Detail-tier attribution on `20260426-234118` confirms the
+same priority more sharply: `loop_vb=1221`, `overrun_vb=150`,
+`render_vb=179`, `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`,
+`blocking_vb=5`, and `prefetch.overrun_vb=5`. The remaining gap is dominated
+by present wait, not visible CD. A direct prepared-present event-poll removal
+was rejected because it regressed visible CD pressure and weakens pause/input
+semantics; the present fix needs a real scheduler/presentation design, not a
+local poll deletion.
+
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
 VBlanks without redraw. The scene still ran about 55% too slow inside playback:
