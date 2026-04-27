@@ -56,6 +56,10 @@ set(SOURCES
     src/ps1_stubs.c
 )
 
+# Captions are cold/default-off in FG2 playback; size-optimize that TU without
+# changing the hot foreground/graphics/CD object order.
+set_source_files_properties(src/ps1_captions.c PROPERTIES COMPILE_OPTIONS "-Os")
+
 # Create PS1 executable
 # Note: GPREL = use GP-relative addressing for faster data access
 psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
