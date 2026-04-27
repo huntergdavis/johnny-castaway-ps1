@@ -345,6 +345,7 @@ near misses:
 | `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. |
 | Reusable upload `RECT` stack storage | Done; keep because it removes unused per-call stack array storage with exact timing/upload identity. |
 | Upload rect cap `6` after stack reuse | Do not promote from fishing1 alone; it was exact no-op on all tracked metrics and narrows cross-scene headroom. |
+| Upload band byte arrays | Do not promote alone; it shrank `grDrawBackground` but grew the final ELF with no timing or work movement. |
 | `grRestoreBgFromRects()` function `-Os` | Do not retry alone; it shrank the function but grew total ELF with no timing movement. |
 | PAL4 compositor function-scoped `Os` | Do not retry; it shrank the compositor and loaded executable but regressed blocking even with foreground LBA restored. |
 | Single-band narrow upload scratch | Do not retry as a special case; fishing1 upload bytes did not move and code grew. |

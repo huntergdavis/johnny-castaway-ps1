@@ -983,6 +983,7 @@ from perturbing the deterministic cadence.
 | `P4-298` | Failed/no promotion: add fishing1 read group `102..110`. | The candidate saved one read (`loop_reads 67 -> 66`) and three sectors, but regressed cadence (`loop_vb 1219 -> 1220`, `blocking_vb/prefetch_overrun_vb 5 -> 8`, `loop_read_vb 280 -> 293`); source was reverted and only the experiment log was kept. |
 | `P4-299` | Done: reuse one stack `RECT` for immediate background uploads. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank `1580 -> 1572` bytes and ELF shrank `712332 -> 712272`; count as hot upload-path cleanup only, not a VBlank speed win. |
 | `P4-300` | Failed/no promotion: lower upload rect cap from `8` to `6`. | Fishing1 stayed exact-flat with `cap_hits=0`, but PS-EXE, ELF, hot-symbol size, timing, and upload work did not move; source was reverted to preserve cross-scene headroom. |
+| `P4-301` | Failed/no promotion: store upload band scratch indices/ranges as `uint8`. | The exact gate stayed timing/work-flat and `grDrawBackground` shrank `1572 -> 1544`, but total ELF grew `712272 -> 712372`; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
