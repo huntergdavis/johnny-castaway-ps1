@@ -1003,7 +1003,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1011,7 +1011,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1024,7 +1024,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1040,7 +1040,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     if (perfTrack)
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
-                                  1, perfFileLba, offset, 1);
+                                  1, perfFileLba, offset, 0);
     return 1;
 }
 
@@ -1091,7 +1091,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1099,7 +1099,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1112,7 +1112,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1122,7 +1122,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     if (perfTrack)
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
-                                  1, perfFileLba, offset, 1);
+                                  1, perfFileLba, offset, 0);
     return 1;
 }
 

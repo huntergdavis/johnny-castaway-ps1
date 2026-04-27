@@ -886,6 +886,8 @@ from perturbing the deterministic cadence.
 | `P4-214` | Failed/no promotion: remove the duplicate prepared-present guard. | `fgRuntimePresentPreparedFrame()` is currently called only after `fgRuntimeCanPresentPreparedOnNextVBlank()`, but removing the internal guard regressed visible CD pressure despite fixed layout (`blocking_vb/prefetch_overrun_vb 5 -> 7`, `blocking_reads 4 -> 5`); keep the guard as scheduler/code-shape ballast until prepared-present is redesigned. |
 | `P4-215` | Failed/no promotion: inline the window-contained check inside `fgRuntimeWindowPrefetchWouldRead()`. | The exact gate stayed flat, but the helper grew by `60` bytes and shifted downstream hot symbols; keep the shared helper call until a broader prefetch-state rewrite can reduce code size and cadence together. |
 | `P4-216` | Failed: allow `24 KB` stream-window reads only at `10+` held VBlanks. | Decoupling normal `16 KB` reads from a larger high-slack capacity kept `loop_vb=1221`, but regressed `target_vb 1071 -> 1069`, `overrun_vb 150 -> 152`, `blocking_vb 5 -> 8`, and `prefetch_overrun_vb 5 -> 8`; group/read-cost metadata must be more specific than a long-hold threshold. |
+| `P4-217` | Done: skip legacy CD accumulator writes for modern foreground reads. | The exact gate stayed flat while `jcreborn.elf` shrank `739540 -> 739524` and the buffered/aligned CD helper symbols each shrank by `8` bytes; `JCPERF2` remains authoritative and the legacy print now mirrors modern CD totals. |
+| `P4-218` | Queued: compiler/linker/toolchain flag matrix with layout gates. | The old hot-TU `-O3` probe failed, but narrower flags remain valid targets: per-file `-Os`/`-O2`/`-O3`, hot/cold translation-unit splits, function alignment, linker section ordering, and code-address padding must each pass the same exact timing/layout gate. |
 
 Prefetch variants to test in order:
 
@@ -977,6 +979,8 @@ Goal: keep the executable small and hot code friendly.
 | `P7-05` | Remove or compile-gate unused debug/text formatting in release builds. | `vsnprintf` and debug paths are visible in the map. |
 | `P7-06` | Skip `ClearOTagR` in pure FG2 software-background frames if safe. | Active playback often does not emit GPU primitives. |
 | `P7-07` | Keep the primitive path available for debug/other scenes. | Avoid breaking future sandbox work. |
+| `P7-08` | Run a toolchain flag matrix under exact layout gates. | Test `-Os`, per-file `-O2/-O3`, function alignment, section ordering, and code-address padding as first-class experiments. |
+| `P7-09` | Separate hot FG2/CD code from cold menu/debug code by translation unit or section. | Prevent valid cold-code cleanup from perturbing hot scheduler/code phase. |
 
 ## Phase 7b: Remove Runtime Fallback Code
 
@@ -1411,8 +1415,9 @@ A hot translation-unit `-O3` pass also failed. The resulting code reduced
 speculative prepared-frame restore/compose calls by five, but worsened the
 actual timing and CD-pressure counters. That makes it a scheduler-shape loss,
 not a CPU win. Future compiler work should be narrow enough to keep code layout
-predictable: individual compositor helpers, CD copy loops, or hand-written
-assembly, with map-size tracking beside the perf summary.
+predictable: individual compositor helpers, CD copy loops, per-file `-Os`/`-O2`
+hybrids, function alignment/ordering, or hand-written assembly, with
+map-size/address tracking beside the perf summary.
 Reading tight-slack direct-stage sectors straight into the stream-window buffer
 also lost. The local copy removal changed the window state enough to add one
 active-loop read and two backward seeks, regressing loop time and refill

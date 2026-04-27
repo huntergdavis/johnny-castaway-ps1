@@ -837,13 +837,13 @@ static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
     );
     printf(
         "JCPERF cd reads=%lu fail=%lu bytes=%lu sectors=%lu max_sectors=%u cd_vb=%lu max_cd_vb=%u\n",
-        (unsigned long)gPs1Perf.legacyCdReads,
-        (unsigned long)gPs1Perf.legacyCdReadFailures,
-        (unsigned long)gPs1Perf.legacyCdBytes,
-        (unsigned long)gPs1Perf.legacyCdSectors,
-        (unsigned int)gPs1Perf.legacyMaxCdSectors,
-        (unsigned long)gPs1Perf.legacyCdElapsedVBlanks,
-        (unsigned int)gPs1Perf.legacyMaxCdElapsedVBlanks
+        (unsigned long)gPs1Perf.cdReads,
+        (unsigned long)gPs1Perf.cdReadFailures,
+        (unsigned long)gPs1Perf.cdBytes,
+        (unsigned long)gPs1Perf.cdSectors,
+        (unsigned int)gPs1Perf.maxCdSectors,
+        (unsigned long)gPs1Perf.cdElapsedVBlanks,
+        (unsigned int)gPs1Perf.maxCdElapsedVBlanks
     );
     printf(
         "JCPERF gfx restore_calls=%lu restore_bytes=%lu compose_calls=%lu rows=%lu spans=%lu pixels=%lu payload=%lu uploads=%lu rects=%lu upload_bytes=%lu upload_vb=%lu max_upload_vb=%u\n",
