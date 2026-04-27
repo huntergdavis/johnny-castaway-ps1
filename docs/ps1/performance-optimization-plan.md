@@ -862,6 +862,7 @@ from perturbing the deterministic cadence.
 | `P4-190` | Done: simplify `foregroundPilotRuntimeActive()`. | Returning the runtime byte directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739544 -> 739540` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
 | `P4-191` | Failed/no-op: remove the ternary from `fgRuntimeWindowSlackEligible()`. | The exact fishing1 gate and binary size matched baseline exactly (`jcreborn.elf=739540`), so the source was reverted; retry only as part of broader prefetch helper inlining. |
 | `P4-192` | Failed/no-op: remove the ternary from `fgEntryHasPayload()`. | The exact fishing1 gate and binary size matched baseline exactly (`jcreborn.elf=739540`), so the source was reverted; isolated boolean-helper cleanup is exhausted unless part of a larger hot-helper rewrite. |
+| `P4-193` | Failed/no promotion: cache `ps1PerfEnabled` inside `fgRuntimeTryPrefetchWindow()`. | The local cache crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, regressing active playback (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and perf-flag cache refactors need layout control. |
 
 Prefetch variants to test in order:
 
