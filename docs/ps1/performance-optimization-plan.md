@@ -33,7 +33,8 @@ pause merge, pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
 dirty-row upload bands with a 1-row gap byte trim, setup priming of a `320 KB`
 first-payload FG2 window for fishing1 high tide, setup-gated threshold-`4`
-catch-up, tight-slack direct staging for immediate payloads up to 8 KB,
+catch-up, first FG2 upload scoped to the saved clean-rect Y band,
+tight-slack direct staging for immediate payloads up to 8 KB,
 direct-stage scratch window seeding, and exact-4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
@@ -46,13 +47,18 @@ collapsed held-loop prefetch branch shape, duplicate compose active-guard
 removal, simplified runtime-active accessor, and the fishing1 high-tide tail
 read group `396..406` with 11-sector retained capacity, reported
 `policy=stage1_window`, `buf=334864`, `hits=155`, `due_misses=0`,
-`blocking_vb=1`, `prefetch.overrun_vb=1`, `loop_vb=1215`,
-`overrun_vb=140`, `target_vb=1075`, `restore_bytes=2510092`,
-`upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
+`blocking_vb=1`, `prefetch.overrun_vb=1`, `loop_vb=1213`,
+`overrun_vb=138`, `target_vb=1075`, `restore_bytes=2510092`,
+`upload_bytes=15888640`, `dirty_rows=24826`, `upload_rects=502`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=105`,
-`setup_read_vb=177`, `loop_reads=43`, and `scene_vb=1461`. This is the
+`setup_read_vb=177`, `loop_reads=43`, `loop_read_vb=172`, and
+`scene_vb=1459`. This is the
 current baseline for the next experiment.
+The first-upload clean-rect pass removed the stale full-screen forced upload
+from FG2 setup (`max_upload_bytes 614400 -> 221440`) and improved active
+playback by two VBlanks without changing setup timing, restore bytes, CD
+pressure, or layout identity.
 Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
 the setup prime moves CD work from active playback into scene setup
 (`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
@@ -636,9 +642,9 @@ dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
 vertical dirty-row bands with a post-pause 1-row clean-gap merge, while keeping
 full tile width and no scratch packing.
-Fishing1 improved from the original `loop_vb=1426` to `1240`,
+Fishing1 improved from the original `loop_vb=1426` to `1213`,
 `restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16281600`; next work is balancing upload byte savings against rectangle
+`15888640`; next work is balancing upload byte savings against rectangle
 pressure and avoiding scheduler perturbation from extra rects.
 
 | ID | Task | Rationale |
@@ -705,15 +711,16 @@ marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
 a post-pause 1-row gap byte trim, setup priming of a `320 KB` first-payload
 FG2 window on fishing1 high tide, setup-gated threshold-`4` catch-up,
+first FG2 upload scoped to the saved clean-rect Y band,
 tight-slack direct staging, direct-stage scratch window seeding,
 prepared-wait future prefetch, and the
 exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 the exact no-holiday fishing1 variant reports
-`loop_vb=1215`, `target_vb=1075`, `overrun_vb=140`, `blocking_vb=1`,
+`loop_vb=1213`, `target_vb=1075`, `overrun_vb=138`, `blocking_vb=1`,
 `due_misses=0`, and prefetch `overrun_vb=1`, with
-`upload_bytes=16281600`, `restore_bytes=2510092`, `upload_rects=502`,
-`loop_reads=43`, `setup_reads=6`, and `scene_vb=1461`.
+`upload_bytes=15888640`, `restore_bytes=2510092`, `upload_rects=502`,
+`loop_reads=43`, `setup_reads=6`, and `scene_vb=1459`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage,
@@ -1034,6 +1041,7 @@ can stop raw window probes from perturbing the deterministic cadence.
 | `P4-307` | Failed/no promotion: setup-prime `256 KB` without catch-up. | Active reads dropped sharply, but active loop stayed flat/slower and visible pressure rose to `6`; preloading has to be spent by the scheduler to matter. |
 | `P4-308` | Failed/no promotion: setup-prime `192 KB`/`256 KB` with threshold-`4` catch-up. | `256 KB` was close but still raised visible pressure to `6`, while `192 KB` lost; the coverage boundary is real. |
 | `P4-309` | Done: setup-prime a `320 KB` fishing1 high-tide FG2 window and gate threshold-`4` catch-up on prime success. | Active-loop metrics improve (`loop_vb 1219 -> 1215`, `overrun_vb 147 -> 140`, `blocking_vb/prefetch_overrun_vb 5 -> 1`, `loop_reads 67 -> 43`) with stable correctness/layout, but setup rises (`setup_vb 185 -> 246`), so future work must hide or generate the prime. |
+| `P4-310` | Done: scope FG2 first upload to the saved clean-rect Y band. | The static backdrop is already presented before clean-rect setup, so the first forced upload no longer dirties all four screen tiles. Active-loop metrics improve (`loop_vb 1215 -> 1213`, `overrun_vb 140 -> 138`), `max_upload_bytes` drops `614400 -> 221440`, and layout/CD/correctness stay stable. |
 
 Prefetch variants to test in order:
 
@@ -1642,6 +1650,11 @@ and visible CD/refill from `5` to `1`, while increasing setup time. Treat this
 as a preload/scheduler direction: future work should generate prime sizes,
 segment hot coverage, and move the read into previous-scene/menu time where
 possible.
+The clean-rect first-upload pass is a smaller proof that setup assumptions still
+matter: once the static backdrop has been presented, full-screen first upload is
+unnecessary for FG2. Keep future active-region work pack- or clean-rect-driven;
+do not reintroduce blind full-screen forced redraws unless a visual regression
+proves they are required.
 
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run

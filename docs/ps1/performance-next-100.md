@@ -1,28 +1,28 @@
 # PS1 Performance Next 100
 
-Date: 2026-04-26
+Date: 2026-04-27
 
 Current accepted fishing1 exact baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1215` |
+| `loop_vb` | `1213` |
 | `target_vb` | `1075` |
-| `remaining_overrun_vb` | `140` |
-| `remaining_over_target` | `13.02%` |
+| `remaining_overrun_vb` | `138` |
+| `remaining_over_target` | `12.84%` |
 | `blocking_vb` | `1` |
 | `prefetch_overrun_vb` | `1` |
 | `loop_reads` | `43` |
-| `upload_bytes` | `16281600` |
+| `upload_bytes` | `15888640` |
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `334864` bytes for fishing1 high-tide setup-prime, `29712` bytes otherwise |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `717188` bytes |
+| `jcreborn.elf` | `718676` bytes |
 
-Goal: close `140` remaining loop VBlanks without changing pixels, sound event
+Goal: close `138` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
-baseline is about `12` VBlanks, so the practical target is roughly fourteen
-1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
+baseline is about `12` VBlanks, so the practical target is roughly twelve to
+fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
 stack of flat-timing cleanup wins.
 
 Red-team caveat: the latest accepted setup-prime pass is an active-loop win,
@@ -147,6 +147,13 @@ only when the catch-up is gated on a successful prime. The promoted `320 KB`
 fishing1 high-tide prime improves `loop_vb 1219 -> 1215`, `overrun_vb
 147 -> 140`, `blocking_vb 5 -> 1`, and `loop_reads 67 -> 43`; smaller
 `192 KB`/`256 KB` versions either lost or still raised visible CD pressure.
+The active-region/clean-rect follow-up found one safe narrow win: the static
+backdrop has already been presented when FG2 clean rects are saved, so the
+first forced upload no longer dirties all four screen tiles. Scoping that first
+upload to the saved clean-rect Y band improves `loop_vb 1215 -> 1213`,
+`overrun_vb 140 -> 138`, `max_upload_bytes 614400 -> 221440`, and
+`upload_bytes 16281600 -> 15888640` without changing layout, restore bytes,
+CD pressure, or correctness.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -178,7 +185,7 @@ visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
 The current detail/trace samples shift priority again: `present_wait_vb=157`
-against a remaining `140` VBlank active-loop overrun, while setup-primed
+against a remaining `138` VBlank active-loop overrun, while setup-primed
 visible CD is down to `1` VBlank. The next major win has to reduce or hide
 present wait and move setup-prime cost out of visible scene startup without
 early display, tearing, frame drops, or weakened pause input.
@@ -368,7 +375,7 @@ near misses:
 
 | Order | Test # | Reason |
 |---:|---:|---|
-| 1 | 1 | Establish whether the remaining 14.01% is partly perf-log overhead. |
+| 1 | 1 | Establish whether the remaining `12.84%` is partly perf-log overhead. |
 | 2 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 3 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
 | 4 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
