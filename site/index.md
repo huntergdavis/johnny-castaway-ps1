@@ -51,15 +51,14 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 Sierra's *Johnny Castaway* (1992) is a screensaver about a man stranded
 on a tiny island. It runs in tiny vignettes — a fishing line, a passing
-ship, a holiday decoration — quietly, all day. It cost about thirty
-dollars when it shipped on a CD with a manual and a registration card.
+ship, a holiday decoration — quietly, all day.
 
 This is a port of those vignettes to the original Sony PlayStation,
 running on real hardware or on DuckStation. It is a fan project: the
 character belongs to the original creator, and the site's chrome and
 its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
-It's also incomplete on purpose. Out of **63 scenes**,
+It's also a work in progress. Out of **63 scenes**,
 **{{ site.release.scenes_validated }} are validated** under the
 fishing-1 bar (pixel-perfect visuals plus synced SFX, signed off by
 human review across every applicable variant). The

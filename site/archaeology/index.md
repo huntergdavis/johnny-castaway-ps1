@@ -20,8 +20,8 @@ too — the dead ends are what made the eventual method look obvious.
 ## The screensaver before the project
 
 In November 1992, Sierra On-Line shipped *Johnny Castaway* as a Windows
-3.1 screensaver. It cost about thirty dollars and ran on a stretch of
-PC hardware that was already starting to feel old: a 386 with VGA, a
+3.1 screensaver. It ran on a stretch of PC hardware that was already
+starting to feel old: a 386 with VGA, a
 Sound Blaster if you were lucky, and 4 megabytes of RAM if you'd
 splurged. The premise was small. A man is stranded on an island the
 size of a kitchen rug. He fishes. He reads books. He waves at passing
