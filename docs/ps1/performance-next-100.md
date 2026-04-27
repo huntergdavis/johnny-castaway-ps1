@@ -280,6 +280,7 @@ near misses:
 | Buffered read file-LBA cache | Do not retry alone; it was timing-flat but grew the helper and ELF. |
 | Upload perf guard combine | Done; keep because it shrank `grDrawBackground` with exact timing/work identity. |
 | Upload perf guard local cache | Do not retry alone; it shrank the function but grew total ELF with no speed movement. |
+| Inline perf-detail check | Do not retry alone; it shrank two hot functions but grew total ELF with no speed movement. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |

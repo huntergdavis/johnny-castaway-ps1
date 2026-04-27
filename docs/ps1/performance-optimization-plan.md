@@ -955,6 +955,7 @@ from perturbing the deterministic cadence.
 | `P4-270` | Failed/no promotion: cache file LBA in `ps1_streamReadFromCdFileIntoBuffered()`. | The exact gate stayed timing/layout-flat, but the helper grew by `8` bytes and ELF grew `714520 -> 714808`; source was reverted and only the experiment log was kept. |
 | `P4-271` | Done: combine upload perf guards in `grDrawBackground()`. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank by `64` bytes and ELF shrank `714520 -> 714440`; count as hot upload-path code cleanup only, not a VBlank speed win. |
 | `P4-272` | Failed/no promotion: cache the upload perf guard in a local. | The exact gate stayed timing/layout/work-flat and `grDrawBackground` shrank another `56` bytes, but total ELF grew `714440 -> 714456` with no speed metric movement; source was reverted and only the experiment log was kept. |
+| `P4-273` | Failed/no promotion: inline the perf-detail check at rendered-frame call sites. | The exact gate stayed timing/layout/work-flat and hot functions shrank (`foregroundPilotPlay -24`, `grUpdateDisplay -40`), but total ELF grew `714440 -> 714564` with no speed metric movement; source was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
