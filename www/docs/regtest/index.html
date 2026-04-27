@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Regression testing — Johnny Castaway PS1</title>
+  <meta name="description" content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." />
+
+  <meta property="og:title"        content="Regression testing — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Regression testing</h1>
+      <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The regtest harness runs a PS1 disc image
+through DuckStation’s headless <code class="language-plaintext highlighter-rouge">duckstation-regtest</code> binary inside Docker,
+captures frame PNGs at a configurable interval, SHA256-hashes RAM / VRAM /
+SPU RAM / save state, and forwards PS1 <code class="language-plaintext highlighter-rouge">printf()</code> output to stdout. There
+is no display server; it works on any Linux box with Docker. Wall-clock
+speed is ~520 FPS — about 8× realtime — so 30 seconds of PS1 gameplay
+captures in roughly 3.6 seconds.</p>
+
+<p>The regtest harness is <strong>secondary tooling</strong> in the current rollout. The
+primary acceptance bar is human visual + audible signoff on the
+scene-playback (fgpilot) path — see
+<a href="../dev-workflow/">Development workflow</a>. Regtest
+is retained for targeted diagnostics: regression hunts, deterministic
+frame-timing investigations, and per-scene snapshot generation when a
+human review needs frozen artifacts. It is not the gate; it is a
+diagnostic.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="what-it-captures">What it captures</h2>
+
+<p>Every regtest run produces, under <code class="language-plaintext highlighter-rouge">regtest-results/&lt;run-id&gt;/</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Artifact</th>
+      <th>What</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">regtest.log</code></td>
+      <td>Full stdout + stderr from the run, including DuckStation host messages and PS1 guest TTY.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tty-output.txt</code></td>
+      <td>PS1 <code class="language-plaintext highlighter-rouge">printf()</code> lines only, extracted from the log.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">frames/frame_NNNNN.png</code></td>
+      <td>Captured screenshot every <code class="language-plaintext highlighter-rouge">--dumpinterval</code> frames.</td>
+    </tr>
+    <tr>
+      <td>State hashes</td>
+      <td>SHA256 of save state, main RAM (2 MB), SPU RAM, and VRAM, logged at completion.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">telemetry.json</code></td>
+      <td>When the on-screen telemetry overlay is enabled, decoded by <code class="language-plaintext highlighter-rouge">scripts/decode-ps1-bars.py</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The state hashes are the deterministic regression-detection surface: same
+disc + same BIOS + same frame count → same hashes, every time.</p>
+
+<h2 id="setup">Setup</h2>
+
+<h3 id="prerequisites">Prerequisites</h3>
+
+<ul>
+  <li>Docker (rootless, or your user in the <code class="language-plaintext highlighter-rouge">docker</code> group).</li>
+  <li>A real PS1 BIOS file — typically <code class="language-plaintext highlighter-rouge">scph1001.bin</code>.</li>
+  <li>A built CD image (<code class="language-plaintext highlighter-rouge">jcreborn.cue</code> + <code class="language-plaintext highlighter-rouge">jcreborn.bin</code>). See
+<a href="../build/">Build &amp; toolchain</a>.</li>
+</ul>
+
+<h3 id="build-the-regtest-docker-image">Build the regtest Docker image</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/build-regtest-image.sh
+</code></pre></div></div>
+
+<p>This is a multi-stage Docker build that compiles DuckStation from source
+(Ubuntu 24.04, clang-18, <code class="language-plaintext highlighter-rouge">BUILD_REGTEST=ON</code>), then extracts the headless
+binary plus its prebuilt shared libs into a slim runtime image. First
+build is 15–30 minutes; rebuilds are fully cached. Image tag:
+<code class="language-plaintext highlighter-rouge">jc-reborn-regtest:latest</code> (~363 MB).</p>
+
+<p>To force a clean rebuild:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/build-regtest-image.sh <span class="nt">--no-cache</span>
+</code></pre></div></div>
+
+<h3 id="bios-auto-detection">BIOS auto-detection</h3>
+
+<p>The wrapper script auto-detects BIOS files in the common locations:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">~/.local/share/duckstation/bios/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">~/.config/duckstation/bios/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">~/.var/app/org.duckstation.DuckStation/config/duckstation/bios/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">~/ps1-bios/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">./bios/</code></li>
+</ul>
+
+<p>Or specify explicitly with <code class="language-plaintext highlighter-rouge">--bios /path/to/bios/</code>.</p>
+
+<h2 id="running-tests">Running tests</h2>
+
+<h3 id="single-scene">Single scene</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/regtest-scene.sh <span class="nt">--scene</span> <span class="s2">"STAND 2"</span>
+./scripts/regtest-scene.sh <span class="nt">--scene</span> <span class="s2">"BUILDING 1"</span> <span class="nt">--frames</span> 9000 <span class="nt">--interval</span> 120
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">regtest-scene.sh</code> is the high-level wrapper. It:</p>
+
+<ol>
+  <li>Looks up the scene in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>.</li>
+  <li>Rebuilds the CD image with the canonical boot route for that scene
+set in <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>.</li>
+  <li>Runs the headless harness with reviewed scene window defaults.</li>
+  <li>Decodes the telemetry overlay if it’s present in the captured frames.</li>
+  <li>Writes a structured <code class="language-plaintext highlighter-rouge">result.json</code> describing the outcome.</li>
+</ol>
+
+<h3 id="raw-headless-run">Raw headless run</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/run-regtest.sh <span class="se">\</span>
+    <span class="nt">--frames</span> 3600 <span class="se">\</span>
+    <span class="nt">--start-frame</span> 2400 <span class="se">\</span>
+    <span class="nt">--dumpinterval</span> 60 <span class="se">\</span>
+    <span class="nt">--dumpdir</span> scratch/regtest-out
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--start-frame N</code> filters the dumped frames so only frames at or after
+frame <code class="language-plaintext highlighter-rouge">N</code> are kept — useful for skipping the BIOS chime and title screen
+and only reviewing the actual scene window. The wrapper materializes a
+<code class="language-plaintext highlighter-rouge">filtered-frames/</code> directory with the kept set.</p>
+
+<h3 id="direct-docker-invocation">Direct Docker invocation</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="se">\</span>
+    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/game:ro <span class="se">\</span>
+    <span class="nt">-v</span> ~/.var/app/org.duckstation.DuckStation/config/duckstation/bios:/root/.local/share/duckstation/bios:ro <span class="se">\</span>
+    <span class="nt">-v</span> <span class="nv">$HOME</span>/scratch/regtest-out:/output <span class="se">\</span>
+    <span class="nt">--entrypoint</span> duckstation-regtest <span class="se">\</span>
+    jc-reborn-regtest:latest <span class="se">\</span>
+    <span class="nt">-renderer</span> Software <span class="nt">-console</span> <span class="nt">-frames</span> 3600 <span class="nt">-dumpdir</span> /output <span class="nt">-dumpinterval</span> 60 <span class="se">\</span>
+    <span class="nt">--</span> /game/jcreborn.cue
+</code></pre></div></div>
+
+<h2 id="command-line-options">Command-line options</h2>
+
+<p><code class="language-plaintext highlighter-rouge">run-regtest.sh</code> flags:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--frames N</code></td>
+      <td>1800</td>
+      <td>Total frames to execute (60 fps).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--start-frame N</code></td>
+      <td>0</td>
+      <td>Keep only dumped frames at or after frame N.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--dumpinterval N</code></td>
+      <td>60</td>
+      <td>Capture a frame every N frames.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--dumpdir DIR</code></td>
+      <td><code class="language-plaintext highlighter-rouge">regtest-results/</code></td>
+      <td>Output root directory.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--cue FILE</code></td>
+      <td>auto-detect</td>
+      <td>Path to <code class="language-plaintext highlighter-rouge">.cue</code> file.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--bios DIR</code></td>
+      <td>auto-detect</td>
+      <td>Directory containing the PS1 BIOS.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--renderer NAME</code></td>
+      <td>Software</td>
+      <td>Software / Vulkan / OpenGL.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--log LEVEL</code></td>
+      <td>Info</td>
+      <td>Error / Warning / Info / Verbose / Debug.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--timeout SECS</code></td>
+      <td>120</td>
+      <td>Wall-clock timeout. Kills runaway runs.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--upscale N</code></td>
+      <td>(native)</td>
+      <td>Resolution multiplier.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--cpu MODE</code></td>
+      <td>(default)</td>
+      <td>Interpreter / CachedInterpreter / Recompiler.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Defaults are sourced from
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-config.sh"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-config.sh</code></a>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">REGTEST_FRAMES</span><span class="o">=</span>1800
+<span class="nv">REGTEST_INTERVAL</span><span class="o">=</span>60
+<span class="nv">REGTEST_OUTPUT_DIR</span><span class="o">=</span>regtest-results
+<span class="nv">REGTEST_TIMEOUT</span><span class="o">=</span>120
+<span class="nv">REGTEST_PARALLEL</span><span class="o">=</span>4
+</code></pre></div></div>
+
+<h2 id="scene-routing">Scene routing</h2>
+
+<p>The scene-routing model is “exact story-scene entry preferred”:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>story scene &lt;index&gt;
+</code></pre></div></div>
+
+<p>Raw <code class="language-plaintext highlighter-rouge">island ads &lt;ADS&gt; &lt;tag&gt;</code> boots are no longer the primary truth path —
+they can reach bootstrap or ocean states that are not valid certification
+routes. For fgpilot scenes, the harness sets <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> to:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot &lt;slug&gt; [tokens...]
+</code></pre></div></div>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>
+records every scene as:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADS_NAME TAG SCENE_INDEX STATUS BOOTMODE...
+</code></pre></div></div>
+
+<p>Status tokens: <code class="language-plaintext highlighter-rouge">verified</code>, <code class="language-plaintext highlighter-rouge">bringup</code>, <code class="language-plaintext highlighter-rouge">blocked</code>, <code class="language-plaintext highlighter-rouge">untested</code>. These
+reflect the <strong>legacy regtest-route</strong> status model and are not the same
+thing as the current scene-playback acceptance bar — see
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
+for the current per-scene ledger.</p>
+
+<h3 id="adding-a-scene-to-the-harness">Adding a scene to the harness</h3>
+
+<ol>
+  <li>Append a row to <code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code> in the canonical form
+above. The boot route should match the scene’s actual playback path
+under the current rollout — typically <code class="language-plaintext highlighter-rouge">fgpilot &lt;slug&gt;</code> for scenes that
+ship as <code class="language-plaintext highlighter-rouge">.FG2</code> packs.</li>
+  <li>If the scene needs specific variant tokens for its truth window
+(e.g. <code class="language-plaintext highlighter-rouge">night 1</code>, <code class="language-plaintext highlighter-rouge">lowtide 1</code>), include them after the slug.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">./scripts/regtest-scene.sh --scene "&lt;ADS&gt; &lt;tag&gt;"</code> once and confirm
+the captured frames + TTY look right.</li>
+</ol>
+
+<h2 id="ps1-test-instrumentation">PS1 test instrumentation</h2>
+
+<p>When the disc is built with <code class="language-plaintext highlighter-rouge">-DPS1_TEST_BUILD=ON</code>, structured test output
+is emitted via <code class="language-plaintext highlighter-rouge">printf</code> and captured on stdout:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[TEST:SCENE] play STAND.ADS tag=2
+[TEST:FRAME] display frame=0 delay=3
+[TEST:PERF] upload tiles=2 rows=87
+[TEST:PERF] heartbeat frame=60
+[TEST:STATE] load_bmp slot=0 sprites=42
+[TEST:ERROR] fatal: out of memory
+</code></pre></div></div>
+
+<p>Categories: <code class="language-plaintext highlighter-rouge">SCENE</code> (lifecycle), <code class="language-plaintext highlighter-rouge">FRAME</code> (per-frame), <code class="language-plaintext highlighter-rouge">PERF</code> (metrics),
+<code class="language-plaintext highlighter-rouge">ERROR</code> (crashes), <code class="language-plaintext highlighter-rouge">STATE</code> (resources), <code class="language-plaintext highlighter-rouge">ASSERT</code> (invariants). All
+compiled out in normal builds via
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/ps1_test.h"><code class="language-plaintext highlighter-rouge">ps1_test.h</code></a> macros.</p>
+
+<p>To build a test-instrumented binary:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
+    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
+             cmake -DCMAKE_BUILD_TYPE=Release -DPS1_TEST_BUILD=ON .. &amp;&amp; </span><span class="se">\</span><span class="s2">
+             make -j4 jcreborn"</span>
+</code></pre></div></div>
+
+<h2 id="overlay-backed-character-checks">Overlay-backed character checks</h2>
+
+<p>For PS1 bug fixing, the preferred screenshot harness path is:</p>
+
+<ol>
+  <li>Run a headless regtest with <code class="language-plaintext highlighter-rouge">capture-overlay</code>.</li>
+  <li>Take one dumped PNG from the run.</li>
+  <li>Decode the embedded overlay into character truth.</li>
+  <li>Compare against expected truth.</li>
+  <li>Open the generated HTML diff report.</li>
+</ol>
+
+<p>One-command path:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/capture-and-check-ps1.sh <span class="se">\</span>
+    <span class="nt">--expected-root</span> host-script-review/fishing1 <span class="se">\</span>
+    <span class="nt">--scene</span> <span class="s2">"FISHING 1"</span> <span class="se">\</span>
+    <span class="nt">--frame-number</span> 80 <span class="se">\</span>
+    <span class="nt">--actual-frame</span> 1200
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--frame-number</code> chooses the expected truth frame; <code class="language-plaintext highlighter-rouge">--actual-frame</code>
+chooses the dumped <code class="language-plaintext highlighter-rouge">frame_NNNNN.png</code> to compare against it.
+<code class="language-plaintext highlighter-rouge">check-character-screenshot.py</code> prefers the frame number embedded in the
+overlay packet itself, so DuckStation timestamped filenames don’t need
+manual frame numbering.</p>
+
+<p>Headless manual capture:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/regtest-scene.sh <span class="se">\</span>
+    <span class="nt">--scene</span> <span class="s2">"FISHING 1"</span> <span class="se">\</span>
+    <span class="nt">--overlay</span> <span class="se">\</span>
+    <span class="nt">--overlay-mask</span>
+</code></pre></div></div>
+
+<p>Single-screenshot check against a captured screenshot:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 scripts/check-character-screenshot.py <span class="se">\</span>
+    <span class="nt">--image</span> ~/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots/&lt;shot&gt;.png <span class="se">\</span>
+    <span class="nt">--expected-root</span> host-script-review/fishing1 <span class="se">\</span>
+    <span class="nt">--out-dir</span> scratch/ps1-character-check
+</code></pre></div></div>
+
+<h2 id="frame-hash-regression-detection">Frame-hash regression detection</h2>
+
+<p>To compare two builds:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">md5sum </span>regtest-results/baseline/frames/<span class="k">*</span>.png <span class="o">&gt;</span> scratch/baseline.md5
+<span class="nb">cd </span>regtest-results/candidate/frames/
+<span class="nb">md5sum</span> <span class="nt">-c</span> scratch/baseline.md5
+</code></pre></div></div>
+
+<p>DuckStation also ships <code class="language-plaintext highlighter-rouge">scripts/check_regression_tests.py</code> for HTML diff
+reports — adapted for this project as:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 path/to/check_regression_tests.py <span class="se">\</span>
+    regtest-results/baseline <span class="se">\</span>
+    regtest-results/candidate <span class="se">\</span>
+    <span class="nt">-o</span> regtest-results/diff-report.html
+</code></pre></div></div>
+
+<p>The HTML report shows side-by-side comparisons with an interactive viewer.</p>
+
+<h2 id="parallel-runs">Parallel runs</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>scene <span class="k">in </span>STAND JOHNNY WALKSTUF<span class="p">;</span> <span class="k">do</span>
+    ./scripts/run-regtest.sh <span class="se">\</span>
+        <span class="nt">--dumpdir</span> <span class="s2">"regtest-results/</span><span class="k">${</span><span class="nv">scene</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+        <span class="nt">--frames</span> 1800 &amp;
+<span class="k">done
+</span><span class="nb">wait</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">REGTEST_PARALLEL=4</code> is the intended cap for batch scripts. Each Docker
+container is isolated, so parallel runs do not interfere with each other.</p>
+
+<h2 id="common-breakages">Common breakages</h2>
+
+<p><strong>“Docker image not found”</strong> — Run <code class="language-plaintext highlighter-rouge">./scripts/build-regtest-image.sh</code>
+first.</p>
+
+<p><strong>“No .cue file found”</strong> — Build the CD image:
+<code class="language-plaintext highlighter-rouge">./scripts/build-ps1.sh &amp;&amp; ./scripts/make-cd-image.sh</code>.</p>
+
+<p><strong>Test hangs / timeout</strong> — <code class="language-plaintext highlighter-rouge">--timeout</code> (default 120s) kills hung tests.
+Check <code class="language-plaintext highlighter-rouge">regtest.log</code> for the last activity.</p>
+
+<p><strong>No frames captured</strong> — Frame count must exceed dump interval. With
+<code class="language-plaintext highlighter-rouge">--frames 60 --dumpinterval 60</code> only one frame is captured.</p>
+
+<p><strong>BIOS errors</strong> — DuckStation requires a real PS1 BIOS. With <code class="language-plaintext highlighter-rouge">-fastboot</code>
+it sometimes boots without one but results may differ.</p>
+
+<p><strong>“Software renderer only”</strong> — The Docker container has no GPU access
+by default. Use <code class="language-plaintext highlighter-rouge">--renderer Software</code> (the default).</p>
+
+<p><strong>Exit code 124</strong> — Hit the wall-clock timeout. Either the run genuinely
+needs more frames or the game looped forever.</p>
+
+<h2 id="file-reference">File reference</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>config/ps1/Dockerfile.regtest      Image build (multi-stage, builds DuckStation)
+config/ps1/regtest-config.sh       Default frame counts, timeouts, etc.
+config/ps1/regtest-scenes.txt      63-scene manifest with status + boot route
+scripts/build-regtest-image.sh     One-time image build wrapper
+scripts/run-regtest.sh             Docker wrapper, full option set
+scripts/regtest-scene.sh           Single-scene runner (uses manifest)
+scripts/regtest-all-scenes.sh      Parallel orchestrator
+scripts/analyze-regtest.py         Post-run analysis + HTML report
+scripts/regtest-compare.sh         Diff two test runs
+scripts/decode-ps1-bars.py         Telemetry overlay decoder
+scripts/check-character-screenshot.py  Overlay-backed character check
+ps1_test.h                         Test-instrumentation macros
+</code></pre></div></div>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../build/">Build &amp; toolchain</a> — how the disc
+image is produced before regtest can run.</li>
+  <li><a href="../dev-workflow/">Development workflow</a> — the
+primary acceptance loop. Regtest is secondary tooling.</li>
+  <li><a href="../api/">API mapping</a> — the SDL2 → PSn00bSDK
+surface the regtest binary is exercising.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/regtest-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-harness.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/regtest-quickstart.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-quickstart.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

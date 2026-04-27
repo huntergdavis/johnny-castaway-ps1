@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Performance work — Johnny Castaway PS1</title>
+  <meta name="description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." />
+
+  <meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference + log</p>
+      <h1>Performance work</h1>
+      <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This page is the running summary of perf
+work on the PS1 port at v0.3.10-ps1: where the bottleneck is, what
+got measured, which experiments stayed in the build, and which got reverted.
+The full per-experiment ledger lives in the source tree; the link is at the
+bottom. If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="the-constraint">The constraint</h2>
+
+<p>“Performance” on a PS1 means a different shape of problem than performance
+on anything modern.</p>
+
+<p>The MIPS R3000A core runs at 33.8688 MHz with no FPU. The GPU is
+fixed-function — sprites, primitives, an ordering table, no shaders. Audio
+is a separate processor with its own RAM. The CD is a 2x drive: 300 KB/s
+sustained, 150 ms cold seek. There is no memory bandwidth budget worth
+talking about for a 16-color screensaver port; the bandwidth budget is the
+CD’s, and it gets spent in seek latency, not transfer time.</p>
+
+<p>The frame budget at 60 Hz is 16.6 ms. <em>Johnny Castaway</em> is a 1992 VGA
+screensaver — at the source level, foreground content changes roughly four
+times per second. The PS1 still has to draw a frame at 60 Hz, but it can
+hold the same content frame after frame for many VBlanks at a stretch. The
+VBlank cadence is the rendering loop’s heartbeat; the <em>interesting</em> timing
+is which VBlanks have actual work in them and which are held idle.</p>
+
+<p>That asymmetry is what shapes the runtime. A held VBlank is free CPU and
+free CD bus. The whole optimization story is about scheduling work — CD
+reads, RAM tile composition, dirty-row uploads — into held VBlanks before
+the next “real” frame arrives. When that scheduling fails, the active
+frame’s VBlank gets stretched and <code class="language-plaintext highlighter-rouge">loop_vb</code> goes up.</p>
+
+<p>The frame budget for a screensaver is more forgiving than a game. Nothing
+the user does requires sub-frame latency. But the project’s acceptance bar
+is pixel-perfect playback against host-captured reference frames, which
+means the runtime cannot drop frames or compress timing files to “feel
+faster” — it has to render every captured entry on the captured beat.
+Slack exists in the held intervals; it does not exist in the entries.</p>
+
+<h2 id="what-was-measured">What was measured</h2>
+
+<p>The perf instrumentation lives in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a>. It is
+gated so it adds zero cost when off.</p>
+
+<p>Three signal sources:</p>
+
+<ul>
+  <li><strong>TTY printf</strong> at scene-start and scene-end with structured <code class="language-plaintext highlighter-rouge">JCPERF</code> /
+<code class="language-plaintext highlighter-rouge">JCPERF2</code> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
+on-demand records cross the TTY surface; per-frame text is forbidden in
+hot paths because it perturbs timing.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">ps1_perf</code> module counters</strong> for VBlank-level metrics: <code class="language-plaintext highlighter-rouge">loop_vb</code>,
+<code class="language-plaintext highlighter-rouge">target_vb</code>, <code class="language-plaintext highlighter-rouge">overrun_vb</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb</code>,
+<code class="language-plaintext highlighter-rouge">due_misses</code>, <code class="language-plaintext highlighter-rouge">restore_bytes</code>, <code class="language-plaintext highlighter-rouge">upload_bytes</code>, <code class="language-plaintext highlighter-rouge">dirty_rows</code>,
+<code class="language-plaintext highlighter-rouge">upload_rects</code>, <code class="language-plaintext highlighter-rouge">loop_reads</code>. Each scene-end record dumps the
+steady-state values for that run.</li>
+  <li><strong>Regtest harness frame timing.</strong> The headless DuckStation in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+boots the disc image, captures PNGs, and ingests the TTY records into
+per-run summary JSON files under <code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/&lt;runId&gt;/</code>.</li>
+</ul>
+
+<p>Every experiment goes through the same gate:
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a>
+runs the case, compares it to a baseline <code class="language-plaintext highlighter-rouge">summary.json</code>, and either
+promotes (if a key metric improved without a material regression in
+<code class="language-plaintext highlighter-rouge">loop_vb</code> / <code class="language-plaintext highlighter-rouge">blocking_vb</code> / <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb</code> / scene identity) or
+rejects with a recorded failure reason.</p>
+
+<p>The full experiment log is at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
+At the time of writing it contains roughly 130 experiments going back to
+2026-04-25. Most of them failed.</p>
+
+<h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
+
+<p>A representative slice of rejected experiments and why each one didn’t
+stick. The pattern is more useful than any individual line — almost every
+“obvious” idea gets discarded because the PS1 runtime has counter-intuitive
+cost structure.</p>
+
+<ul>
+  <li><strong>Larger stream windows.</strong> <code class="language-plaintext highlighter-rouge">40 KB</code>, <code class="language-plaintext highlighter-rouge">56 KB</code>, <code class="language-plaintext highlighter-rouge">64 KB</code>. Larger windows
+reduce CD transaction count but overrun held slack more often. The
+current default is <code class="language-plaintext highlighter-rouge">20 KB</code> after a long sweep; everything bigger lost.</li>
+  <li><strong>Smaller stream windows.</strong> <code class="language-plaintext highlighter-rouge">12 KB</code>, <code class="language-plaintext highlighter-rouge">14 KB</code>, <code class="language-plaintext highlighter-rouge">16 KB</code>. Smaller windows
+reduce per-refill overrun but starve due frames — <code class="language-plaintext highlighter-rouge">due_misses</code> rises
+and <code class="language-plaintext highlighter-rouge">blocking_vb</code> follows. The knee is sharp; one sector size in
+either direction matters.</li>
+  <li><strong>Disabling stage1 isolation.</strong> Booting with <code class="language-plaintext highlighter-rouge">no-stage1</code> to test
+whether stage-copy overhead was a real cost. The headless harness
+exited 137 before <code class="language-plaintext highlighter-rouge">JCPERF2</code> could record anything; the test was
+structurally inconclusive. Kept staging on.</li>
+  <li><strong>Partial tail reads when a staged frame straddles the window end.</strong>
+Sounded right on paper. In practice, smaller tail reads multiply CD
+transaction count and <code class="language-plaintext highlighter-rouge">due_misses</code> rises faster than the byte
+savings help. Rejected.</li>
+  <li><strong>Compose-before-VSync sequencing.</strong> Move the FG2 RAM composition
+before the VBlank wait so CPU work overlaps with previous-frame
+scanout, then upload after VBlank. Reduced <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb</code> but
+stole held-prefetch time elsewhere; total <code class="language-plaintext highlighter-rouge">loop_vb</code> regressed by 12.</li>
+  <li><strong>Held-loop no-slack wait skip.</strong> Looked like a clean one-VBlank
+overshoot fix. Regressed loop, blocking, and refill metrics
+simultaneously; the skipped wait was load-bearing.</li>
+  <li><strong>Async stream-window refill.</strong> Naive async polling regressed
+<code class="language-plaintext highlighter-rouge">blocking_vb</code> badly. The CD subsystem has implicit ownership rules
+the synchronous path was respecting; the async path violated them.
+Rejected without a first-class CD-state ownership model.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">-O3</code> on hot translation units.</strong> Less prepared RAM work in some
+scenes, but worse loop/blocking/refill timing overall. The
+optimization changed code shape enough that CD scheduling phase
+shifted unfavorably. Kept <code class="language-plaintext highlighter-rouge">-O2</code>.</li>
+  <li><strong>Holiday overlap restamping.</strong> Seed holiday decoration into the
+clean backdrop and only restamp it when the current FG2 frame
+overlaps. Logically sound, but the active fishing1 frames overlap
+the Christmas decoration enough that this didn’t reduce dirty work.
+Pure no-op, rejected.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">vprintf</code> inline diagnostics.</strong> Adding a CD-read histogram inline
+with <code class="language-plaintext highlighter-rouge">JCPERF</code> regressed timing even with detail-gating. The act of
+having the code present changed binary shape enough to move
+scheduling phase. Reverted; histograms now live in post-processing.</li>
+  <li><strong>FG2 sound-event table in the metadata prefix.</strong> Setup reads
+improved, but moving the table ahead of the payload shifted every
+payload by 36 bytes and badly worsened active CD phase. The pack
+layout is more sensitive to byte offsets than is comfortable.</li>
+</ul>
+
+<p>The recurring lesson: changes that look like clean wins on paper often
+shift CD scheduling phase in ways that are not visible until the full
+scene runs. The headless gate is what catches this; experiments that
+regress <code class="language-plaintext highlighter-rouge">loop_vb</code> or <code class="language-plaintext highlighter-rouge">blocking_vb</code> against a baseline get rejected
+even when they “obviously” should have helped.</p>
+
+<h2 id="experiments-that-did">Experiments that did</h2>
+
+<p>A condensed list of changes that survived and are in the runtime today.
+They cluster into a few themes.</p>
+
+<p><strong>Foreground prefetch and stream window:</strong></p>
+
+<ul>
+  <li>Stage1 staging buffer for the next FG2 entry, prefetched during
+held VBlanks.</li>
+  <li>Stream window default of <code class="language-plaintext highlighter-rouge">20 KB</code>, reduced from earlier <code class="language-plaintext highlighter-rouge">32 KB</code> after
+the post-pause-merge sweep showed it as the local minimum.</li>
+  <li>3 VBlank refill guard, raised from earlier 2/1 thresholds after
+smaller guards caused due-frame starvation.</li>
+  <li>Forward-extend stream window when a straddling entry is detected:
+preserve the resident suffix and append-read only the missing
+aligned tail. Replaces overlapping full-window refills.</li>
+  <li>Stage-copy fallthrough at 5 VBlanks: after a zero-VBlank stage copy
+from the resident window, immediately prefetch the following
+window if at least 5 held VBlanks remain. Converts idle held time
+into hidden CD work.</li>
+  <li>Tight-slack direct staging up to <code class="language-plaintext highlighter-rouge">8 KB</code> for immediate payloads when
+the window refill would otherwise be skipped.</li>
+</ul>
+
+<p><strong>Compositor:</strong></p>
+
+<ul>
+  <li>PAL4 opaque-span compositor — FG2 PAL4 spans contain only visible
+pixels, so the per-pixel transparent-index branch was removable.</li>
+  <li>Tile-local PAL4 fast path — split each span by destination tile
+once instead of per-pixel.</li>
+  <li>Per-tile PAL4 row dirty marking — track which rows of which tiles
+changed, not just which tiles.</li>
+  <li>Base-diff FG2 pack format — the active path requires base-diff
+packs, which makes RAM tile compositing the only render path and
+lets <code class="language-plaintext highlighter-rouge">grBeginFrame()</code> / <code class="language-plaintext highlighter-rouge">ClearOTagR()</code> skip when nothing’s queued.</li>
+</ul>
+
+<p><strong>Dirty-rect bookkeeping:</strong></p>
+
+<ul>
+  <li>X-aware clean-rect restore — track dirty X extents per tile so
+RAM clean-background restore only touches the changed region.</li>
+  <li>Vertical dirty-row upload bands with an 11-row gap merge —
+collapses adjacent uploads into wider rectangles.</li>
+  <li>Long-hold host-deadline catch-up — a small render bookkeeping
+adjustment that traded seven extra speculative restore/compose
+calls for five fewer loop VBlanks.</li>
+</ul>
+
+<p><strong>Code shape and link:</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-ffunction-sections -fdata-sections</code> plus <code class="language-plaintext highlighter-rouge">--gc-sections</code> for the
+PS1 link. The legacy ADS / TTM / FG1 / FOC runtime paths are still
+in the source tree but get stripped at link time.</li>
+  <li>Removal of the foreground visual telemetry hot-path body, the
+legacy foreground diagnostic gate, the unused foreground “ever”
+diagnostics, the unused ADS foreground start hook, the obsolete
+FGPILOT ADS dispatch, the unused foreground status accessors, the
+dead foreground requested-mode state.</li>
+</ul>
+
+<p><strong>Diagnostic gating:</strong></p>
+
+<ul>
+  <li>Pad / SPI diagnostics gated default-off. The pause-menu work
+introduced always-on <code class="language-plaintext highlighter-rouge">JCPAD</code> / <code class="language-plaintext highlighter-rouge">JCSPI</code> sampling; a strict-gate
+red-team pass showed the diagnostics were costing 52 VBlanks of
+loop time. Default-off recovered that; <code class="language-plaintext highlighter-rouge">pad-diag</code> / <code class="language-plaintext highlighter-rouge">pad-debug</code>
+boot tokens still enable them on demand.</li>
+</ul>
+
+<p>The cumulative effect is visible in the current accepted baseline:
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1221</code> against a target of
+<code class="language-plaintext highlighter-rouge">target_vb=1072</code>. Pre-pause-merge the best was <code class="language-plaintext highlighter-rouge">loop_vb=1297</code>.</p>
+
+<h2 id="where-it-sits-at-v0310-ps1">Where it sits at v0.3.10-ps1</h2>
+
+<p>The current accepted fishing1 high-tide run, captured in the perf log:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>policy = stage1_window
+buf    = 23568
+hits   = 155
+due_misses = 0
+blocking_vb = 5
+prefetch.overrun_vb = 5
+loop_vb = 1221
+overrun_vb = 149
+target_vb = 1072
+restore_bytes = 3,085,148
+upload_bytes  = 16,499,200
+dirty_rows    = 25,780
+upload_rects  = 401
+trip = 0   fallback = 0   frame_mismatch = 0
+sound_late = 0   cd_fail = 0
+</code></pre></div></div>
+
+<p>The 1.55x overrun against target — <code class="language-plaintext highlighter-rouge">loop_vb</code> at 1221 vs <code class="language-plaintext highlighter-rouge">target_vb</code> at 1072 —
+is the remaining headroom. Detail-tier attribution shows where it goes:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>render_vb        = 181
+present_wait_vb  = 157
+restore_vb      =  43
+compose_vb      =  31
+upload_vb       =   0
+advance_vb      =   1
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">present_wait_vb</code> is mostly the required frame cadence — the runtime is
+waiting on VSync for legitimate reasons. <code class="language-plaintext highlighter-rouge">render_vb</code> and <code class="language-plaintext highlighter-rouge">restore_vb</code> are
+real remaining work. The next plausible wins, in priority order:</p>
+
+<ol>
+  <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong>
+Detail counters show <code class="language-plaintext highlighter-rouge">present_wait_vb=157</code>, but the first attempt at
+a staged-present scheduler regressed loop time by disrupting CD
+prefetch. The next design needs separate render-prep and CD-prefetch
+slack budgets — stealing held-frame prefetch cadence is what the
+first attempt got wrong.</li>
+  <li><strong>CD stall hiding beyond the current direct-stage / window path.</strong>
+Fishing1 already has only <code class="language-plaintext highlighter-rouge">blocking_vb=5</code> and <code class="language-plaintext highlighter-rouge">prefetch.overrun_vb=5</code>,
+but every saved read still compounds.</li>
+  <li><strong>X-aware dirty upload and rect-pressure control.</strong> Upload still
+restores ~3.03 MB and uploads ~16.5 MB per run; the prepared-present
+bridge added speculative restore work, and getting that back is
+probably the next clean win.</li>
+  <li><strong>Pack-emitted read groups and sector layout.</strong> Current raw-window
+reads still make 68 active-loop transactions and 5 total backward
+seeks; grouped metadata is the likely next CD breakthrough.</li>
+  <li><strong>Specialized PAL4 FG2 compositor.</strong> Fishing frames are modest;
+larger scenes will make span/tile split and PAL4 conversion overhead
+more important.</li>
+</ol>
+
+<p>The author considers the current build comfortable for the validated
+scenes, not yet headroom-clean. The bottleneck is no longer raw CPU work
+on the MIPS core; it’s CD scheduling phase and the present-wait cadence.
+Those are different bugs from the ones the perf work has been chasing
+for the last month, and chasing them will probably mean adding more
+counters before changing more code.</p>
+
+<h2 id="non-goals">Non-goals</h2>
+
+<p>A few things the perf work explicitly does not chase, with reasons:</p>
+
+<ul>
+  <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
+bar requires every captured entry to render on its captured beat.</li>
+  <li><strong>Timing compression before throughput work.</strong> Measured playback is
+1.55x over target; compressing the timing files would expose the
+same throughput bottleneck without fixing it.</li>
+  <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired
+from the active public path. The PS1 executable links only the
+scene-playback runtime plus the minimal background / audio / input
+/ CD layers it needs.</li>
+  <li><strong>Fixed island assumptions.</strong> The runtime must randomly place the
+island per scene, so all optimizations must preserve scene-relative
+FG2 placement.</li>
+  <li><strong>Direct framebuffer or progressive-mode experiments as first
+moves.</strong> Prior history says these were unstable. Exhaust stable
+scene playback first.</li>
+</ul>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../hardware/">Hardware</a> — what the
+optimizations are running against.</li>
+  <li><a href="../build/">Build &amp; toolchain</a> — how the
+PS1 binary is produced.</li>
+  <li><a href="../infrastructure/">Build infrastructure</a> —
+the wrapper around the perf iterate script.</li>
+  <li><a href="../audio/">Audio pipeline</a> — the SPU side,
+which has its own scheduling concerns.</li>
+  <li><a href="../vision/">Vision-classifier work</a> — the
+validation layer that runs against perf-experiment outputs.</li>
+  <li><a href="../../devlog/">Devlog</a> — perf work shows up
+day-by-day there.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

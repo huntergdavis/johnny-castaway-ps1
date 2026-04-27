@@ -1,0 +1,32 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>{% if page.title and page.url != "/" %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — fan port{% endif %}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}" />
+
+  <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
+  <meta property="og:description"  content="{{ page.description | default: site.description }}" />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="{{ page.url | relative_url }}" />
+  <meta property="og:image"        content="{{ '/assets/img/branding/og-image.png' | relative_url }}" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="{{ '/assets/img/branding/twitter-card.png' | relative_url }}" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="{{ '/assets/fonts/inter-latin-400-normal.woff2' | relative_url }}" />
+
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
+
+  <link rel="icon" type="image/x-icon" href="{{ '/assets/img/branding/favicon.ico' | relative_url }}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/img/branding/favicon-32.png' | relative_url }}" />
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/img/branding/favicon-16.png' | relative_url }}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/branding/apple-touch-icon.png' | relative_url }}" />
+</head>

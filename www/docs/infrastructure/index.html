@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Build infrastructure & dev environment — Johnny Castaway PS1</title>
+  <meta name="description" content="The dev environment for the Johnny Castaway PS1 port — Docker image with PSn00bSDK 0.24, CMake configuration, the mkpsxiso CD pipeline, and the release script that bumps version, tags, and publishes." />
+
+  <meta property="og:title"        content="Build infrastructure & dev environment — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The dev environment for the Johnny Castaway PS1 port — Docker image with PSn00bSDK 0.24, CMake configuration, the mkpsxiso CD pipeline, and the release script that bumps version, tags, and publishes." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Process</p>
+      <h1>Build infrastructure & dev environment</h1>
+      <p class="subtitle">How a one-person fan port keeps a reproducible cross-compile pipeline together — Docker, CMake, mkpsxiso, and a release script that tags itself.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This page is the story of how the PS1 port
+keeps its build pipeline reproducible across machines, what the Docker dev
+image actually contains, what the wrapper scripts do, and where the
+automation stops and the author starts typing things by hand. If you paid
+for this, you were cheated. Open source and free.</p>
+
+<h2 id="why-docker">Why Docker</h2>
+
+<p>PSn00bSDK is sensitive to toolchain version. The SDK is a thin layer over a
+specific build of <code class="language-plaintext highlighter-rouge">mipsel-none-elf-gcc</code> and a set of static archives; small
+mismatches between the compiler and the SDK headers produce silent runtime
+errors that look like emulator bugs rather than build bugs. The author’s
+first month of the port had two laptops with two slightly different MIPS
+toolchains installed natively, and one of them produced a binary that
+crashed inside <code class="language-plaintext highlighter-rouge">SpuInit()</code> on real hardware. The other one didn’t. That was
+the start of the problem.</p>
+
+<p>A native macOS toolchain attempt was abandoned earlier than that. The
+precompiled binaries from <code class="language-plaintext highlighter-rouge">psx.arthus.net/sdk/mipsel/</code> (binutils 2.37 and
+gcc 11.2) installed cleanly enough that <code class="language-plaintext highlighter-rouge">mipsel-none-elf-gcc --version</code>
+worked, but they were missing <code class="language-plaintext highlighter-rouge">cc1</code> and <code class="language-plaintext highlighter-rouge">cc1plus</code> and were built for macOS
+10.15 — incompatible with macOS 14.5. The host build couldn’t reach a
+working compile.</p>
+
+<p>Docker won by default, not by enthusiasm. A Docker dev image pins the
+compiler, the SDK, the CD authoring tool, and every Ubuntu apt package the
+build chain touches. The image is <code class="language-plaintext highlighter-rouge">--platform linux/amd64</code> so it runs on
+Intel Macs natively, Apple Silicon Macs through Rosetta 2, Linux x86-64
+natively, and Windows via WSL2. Once the image landed, “it builds on my
+machine” stopped being a question — every machine runs the same Linux
+inside Docker, and the host OS only needs a working Docker daemon and a
+PS1 BIOS file for testing.</p>
+
+<p>This is not a high-throughput build. A clean Docker rebuild of the PS1
+executable plus CD image is around 20 seconds on a recent laptop. The
+overhead of running <code class="language-plaintext highlighter-rouge">docker run</code> per step (CMake configure, make, mkpsxiso)
+is real but irrelevant for a one-person workflow. What matters is that
+every build is the same build.</p>
+
+<h2 id="the-docker-dev-image">The Docker dev image</h2>
+
+<p>The image lives in the repo at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a>.
+A second image,
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/Dockerfile.regtest"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.regtest</code></a>,
+adds DuckStation and the headless capture harness on top — that one belongs
+to <a href="../regtest/">Regression testing</a>, not here.</p>
+
+<p>The dev image is Ubuntu 22.04 plus:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Version</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PSn00bSDK</td>
+      <td>0.24</td>
+      <td><code class="language-plaintext highlighter-rouge">github.com/Lameguy64/PSn00bSDK</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mipsel-none-elf-gcc</code></td>
+      <td>12.3.0</td>
+      <td>PSn00bSDK release downloads</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mkpsxiso</code> (CD authoring)</td>
+      <td>bundled</td>
+      <td><code class="language-plaintext highlighter-rouge">github.com/Lameguy64/mkpsxiso</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">elf2x</code> (ELF → PS-EXE)</td>
+      <td>bundled</td>
+      <td>shipped with PSn00bSDK</td>
+    </tr>
+    <tr>
+      <td>CMake</td>
+      <td>3.22+</td>
+      <td>Ubuntu 22.04 apt</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">build-essential</code>, <code class="language-plaintext highlighter-rouge">git</code>, <code class="language-plaintext highlighter-rouge">wget</code>, <code class="language-plaintext highlighter-rouge">unzip</code></td>
+      <td>—</td>
+      <td>Ubuntu apt</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Inside the container the toolchain installs to <code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/</code> and
+<code class="language-plaintext highlighter-rouge">/opt/mipsel-none-elf/</code>, both prepended to <code class="language-plaintext highlighter-rouge">PATH</code>. The host source tree
+mounts at <code class="language-plaintext highlighter-rouge">/project/</code>. Build the image once with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-f</span> config/ps1/Dockerfile.ps1 <span class="se">\</span>
+    <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>It takes about five minutes the first time and is cached afterwards.</p>
+
+<p>The host capture build — the SDL2-linked native binary that records
+foreground frames for the PS1 to replay — does not use this image. It
+builds against whatever the host’s native compiler and SDL2 happen to be.
+That asymmetry is intentional: the host build only has to run on the
+author’s actual development machine, while the PS1 build has to be
+reproducible everywhere.</p>
+
+<h2 id="the-build-pipeline-end-to-end">The build pipeline end-to-end</h2>
+
+<p>From a fresh clone, the path to <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> is:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Clone</span>
+git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
+<span class="nb">cd </span>Johnny-Castaway-PS1
+
+<span class="c"># 2. Build the dev Docker image (one-time, ~5 minutes)</span>
+docker build <span class="nt">-f</span> config/ps1/Dockerfile.ps1 <span class="se">\</span>
+    <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
+
+<span class="c"># 3. Build the PS1 executable + CD image</span>
+./scripts/build-ps1.sh
+
+<span class="c"># 4. Boot it</span>
+<span class="c">#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code> is the wrapper. It runs three Docker invocations in
+sequence: a clean of the previous build directory, a CMake configure plus
+<code class="language-plaintext highlighter-rouge">make</code>, and <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. The output lands
+in the repo root as <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> (the CD image) and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> (the
+cue sheet that tells DuckStation where the data track lives).</p>
+
+<p>The CMake configuration lives in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> at the repo root. The
+relevant shape:</p>
+
+<div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cmake_minimum_required</span><span class="p">(</span>VERSION 3.21<span class="p">)</span>
+
+<span class="c1"># Find PSn00bSDK first (required before project())</span>
+<span class="nb">list</span><span class="p">(</span>APPEND CMAKE_MODULE_PATH <span class="s2">"$ENV{PSN00BSDK}/lib/libpsn00b/cmake"</span><span class="p">)</span>
+<span class="nb">include</span><span class="p">(</span>sdk<span class="p">)</span>
+
+<span class="nb">project</span><span class="p">(</span>JohnnyReborn LANGUAGES C VERSION 1.0.0<span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span>CMAKE_C_FLAGS <span class="s2">"</span><span class="si">${</span><span class="nv">CMAKE_C_FLAGS</span><span class="si">}</span><span class="s2"> -Wall -Wpedantic -DPS1_BUILD -ffreestanding"</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span>SOURCES
+    src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
+    src/foreground_pilot.c src/ps1_perf.c src/island.c
+    src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
+    src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
+    src/spi.c src/memcard.c
+    src/holidays.c src/holidays_table.c
+    src/ps1_stubs.c<span class="p">)</span>
+
+<span class="nf">psn00bsdk_add_executable</span><span class="p">(</span>jcreborn GPREL <span class="si">${</span><span class="nv">SOURCES</span><span class="si">}</span><span class="p">)</span>
+
+<span class="nb">target_compile_options</span><span class="p">(</span>jcreborn PRIVATE
+    -ffunction-sections -fdata-sections<span class="p">)</span>
+<span class="nb">target_link_options</span><span class="p">(</span>jcreborn PRIVATE -Wl,--gc-sections<span class="p">)</span>
+
+<span class="nb">target_link_libraries</span><span class="p">(</span>jcreborn PRIVATE
+    psxgpu psxgte psxspu psxcd c<span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">GPREL</code> enables GP-relative addressing, which makes data access faster on
+the MIPS R3000A. <code class="language-plaintext highlighter-rouge">-ffunction-sections -fdata-sections</code> plus
+<code class="language-plaintext highlighter-rouge">--gc-sections</code> lets the linker drop unused engine paths — the legacy ADS
+and TTM runtime routes were retired from the active build, but the C
+sources still reference them, and section GC removes the dead code at
+link time.</p>
+
+<h3 id="host-build-vs-ps1-build">Host build vs PS1 build</h3>
+
+<p>The repo contains two build trees with different jobs:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">build-ps1/</code></strong> is the PSn00bSDK cross-compile. Output is
+<code class="language-plaintext highlighter-rouge">jcreborn.elf</code> (MIPS ELF, used for symbol lookup) and <code class="language-plaintext highlighter-rouge">jcreborn.exe</code>
+(PS-EXE format, what gets packaged onto the disc).</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">build-host/</code></strong> is a native SDL2-linked binary called <code class="language-plaintext highlighter-rouge">jc_reborn-host</code>.
+It runs the original Sierra engine, captures foreground frames per
+scene, and emits the <code class="language-plaintext highlighter-rouge">.FG2</code> packs that the PS1 replays. The host build
+is the authoritative renderer; the PS1 is a hybrid replay target. See
+<a href="../../about/method/">Method</a> for the rationale.</li>
+</ul>
+
+<p>Both trees share most C sources (<code class="language-plaintext highlighter-rouge">jc_reborn.c</code>, <code class="language-plaintext highlighter-rouge">resource.c</code>,
+<code class="language-plaintext highlighter-rouge">uncompress.c</code>, etc). The host build links against SDL2; the PS1 build
+links against PSn00bSDK’s <code class="language-plaintext highlighter-rouge">psxgpu</code> / <code class="language-plaintext highlighter-rouge">psxspu</code> / <code class="language-plaintext highlighter-rouge">psxcd</code> and uses the
+<code class="language-plaintext highlighter-rouge">*_ps1.c</code> adapter modules instead.</p>
+
+<h3 id="the-mkpsxiso-step">The <code class="language-plaintext highlighter-rouge">mkpsxiso</code> step</h3>
+
+<p>After <code class="language-plaintext highlighter-rouge">make</code> finishes, <code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code> runs <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against
+<code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. The XML describes the ISO9660 directory tree:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;iso_project</span> <span class="na">image_name=</span><span class="s">"jcreborn.bin"</span> <span class="na">cue_sheet=</span><span class="s">"jcreborn.cue"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;track</span> <span class="na">type=</span><span class="s">"data"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;directory_tree&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"JCREBORN.EXE"</span> <span class="na">source=</span><span class="s">"build-ps1/jcreborn.exe"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"RESOURCE.MAP"</span> <span class="na">source=</span><span class="s">"jc_resources/RESOURCE.MAP"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"RESOURCE.001"</span> <span class="na">source=</span><span class="s">"jc_resources/RESOURCE.001"</span><span class="nt">/&gt;</span>
+      <span class="c">&lt;!-- Active FG2 packs added per scene as they get wired in --&gt;</span>
+    <span class="nt">&lt;/directory_tree&gt;</span>
+  <span class="nt">&lt;/track&gt;</span>
+<span class="nt">&lt;/iso_project&gt;</span>
+</code></pre></div></div>
+
+<p>The boot file is <code class="language-plaintext highlighter-rouge">SYSTEM.CNF</code>:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BOOT  = cdrom:\JCREBORN.EXE;1
+TCB   = 4
+EVENT = 10
+STACK = 801FFF00
+</code></pre></div></div>
+
+<p>Per-scene <code class="language-plaintext highlighter-rouge">.FG2</code> foreground packs are added as scenes get wired in.
+Routing a scene means appending its high/low pack pair to the
+<code class="language-plaintext highlighter-rouge">directory_tree</code> and rebuilding the CD image — <code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is
+faster than a full executable rebuild and is the day-to-day inner loop.</p>
+
+<h2 id="the-wrapper-scripts">The wrapper scripts</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">scripts/</code> directory contains roughly 130 shell and Python files at
+the time of writing. The ones that matter for daily build work:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Script</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></td>
+      <td>Clean rebuild of executable + CD image. The “make me a fresh disc” button.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></td>
+      <td>Re-run <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against the current <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.exe</code>. Faster than a full rebuild when only the layout XML changed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></td>
+      <td>Rebuild + CD + launch DuckStation with a temporary TTY-logging config. Day-to-day scene work.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-host.sh</code></td>
+      <td>Build the SDL2 capture binary. Independent of the PS1 image.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></td>
+      <td>Bump VERSION, tag, push, attach assets to a GitHub release.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-docker-image.sh</code></td>
+      <td>Wrapper around <code class="language-plaintext highlighter-rouge">docker build</code> for the dev image.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-regtest-image.sh</code></td>
+      <td>Same, for the regtest image.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></td>
+      <td>Run the headless DuckStation harness against a built CD image.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The rest of the directory is scene capture, FG2 pack compilation, vision
+artifact pipelines, and host-side analysis scripts — those belong to other
+pages.</p>
+
+<h2 id="the-release-script">The release script</h2>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/release.sh</code> is what cuts a tagged build. The flow:</p>
+
+<ol>
+  <li>Refuses to run as root. Sudo + Docker corrupts file ownership.</li>
+  <li>Reads the current version from the <code class="language-plaintext highlighter-rouge">VERSION</code> file at the repo root.</li>
+  <li>Increments the patch component (e.g. <code class="language-plaintext highlighter-rouge">0.3.9</code> → <code class="language-plaintext highlighter-rouge">0.3.10</code>).</li>
+  <li>Constructs the tag name as <code class="language-plaintext highlighter-rouge">v&lt;version&gt;-ps1</code>.</li>
+  <li>Aborts if the tag already exists.</li>
+  <li>Runs <code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh clean</code> and then <code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code>.
+No emulator launch — release builds are headless.</li>
+  <li>Copies <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> into <code class="language-plaintext highlighter-rouge">release/</code>.</li>
+  <li>Updates the <code class="language-plaintext highlighter-rouge">VERSION</code> file and commits the bump together with the
+release artifacts.</li>
+  <li>Creates an <em>orphan-tree tag commit</em> whose tree contains only the two
+release files. This is so GitHub’s auto-generated “Source code (zip)”
+download for the tag is the disc image, not the entire repo. The tag
+commit’s parent is the main release commit, so provenance is
+preserved through <code class="language-plaintext highlighter-rouge">git log --all</code>.</li>
+  <li>Pushes the branch and the tag.</li>
+  <li>If <code class="language-plaintext highlighter-rouge">gh</code> is installed and authenticated, also publishes a GitHub
+Release with <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> as direct-download
+assets.</li>
+</ol>
+
+<p>The website’s release-data ingest at build time reads the latest tag and
+its assets via the Jekyll build pipeline, so cutting a release with this
+script is what updates <code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code> on the live site. There
+is no second hand-edit step.</p>
+
+<p>The current release is <strong>v0.3.10-ps1</strong>, with
+2 of 63
+scenes validated under the human-signoff bar. See the
+<a href="../../scenes/">scene ledger</a> for which scenes those are.</p>
+
+<h2 id="where-this-gets-tested">Where this gets tested</h2>
+
+<p>The build pipeline produces a CD image. Testing that image happens in two
+places: live in DuckStation on the developer’s machine, and headlessly via
+the Docker-packaged regtest harness. The regtest harness boots the same
+<code class="language-plaintext highlighter-rouge">jcreborn.cue</code>, runs scenes for a configurable number of frames, captures
+PNGs every <em>N</em> frames, and reads the on-screen telemetry overlay to
+identify which scene the runtime believes it is rendering. That’s the
+surface the perf experiments and vision-classifier work both run against.</p>
+
+<p>This page does not reproduce the regtest content. See
+<a href="../regtest/">Regression testing</a> for the
+harness, and <a href="../vision/">Vision-classifier work</a>
+for the pixel-vs-reference comparison layer that runs on top of it.</p>
+
+<h2 id="whats-not-automated-yet">What’s not automated yet</h2>
+
+<p>The release flow is automated end-to-end, but several scene-bring-up steps
+the author still does by hand on each release:</p>
+
+<ul>
+  <li><strong>Routing new FG2 packs into <code class="language-plaintext highlighter-rouge">cd_layout.xml</code>.</strong> When a scene gets
+promoted from bring-up to validated, its high/low FG2 pair gets added
+to the layout XML and the project structure manually. There is no
+scene-promotion script that does this in one step.</li>
+  <li><strong>Visual sign-off.</strong> The acceptance bar for a scene is human visual +
+audible review on the playback path. The vision classifier and the
+pixel-diff regtest both produce useful signal, but neither one signs
+off a scene. The author watches it.</li>
+  <li><strong>DuckStation TTY config.</strong> <code class="language-plaintext highlighter-rouge">rebuild-and-let-run.sh</code> enables TTY
+logging for the run by editing the DuckStation config in place and
+reverting it after. This is fine but fragile; if DuckStation’s config
+schema changes, the script breaks silently.</li>
+  <li><strong>CD image asset pruning.</strong> The 9.9 MB CD image carries only the FG2
+packs for currently-validated scenes plus minimal SCR/PSB/SND assets.
+When scenes get retired or restructured, deciding what stays on the
+disc is a manual diff against <code class="language-plaintext highlighter-rouge">cd_layout.xml</code>.</li>
+  <li><strong>Hardware burn-in.</strong> Real-hardware testing happens on the author’s
+PS1 when something looks wrong on emulator and the question is “is
+this DuckStation HLE diverging?” There is no automated hardware
+test rig.</li>
+</ul>
+
+<p>The pipeline does what it needs to. It does not need to do more.</p>
+
+<h2 id="common-breakages">Common breakages</h2>
+
+<p><strong>“Could not find toolchain file”</strong> — PSn00bSDK didn’t install correctly
+in the container. Confirm
+<code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake</code> exists in the image:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    <span class="nb">ls</span> /opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+</code></pre></div></div>
+
+<p><strong>“undefined reference to <code class="language-plaintext highlighter-rouge">SpuInit</code>“</strong> — A new audio path needs <code class="language-plaintext highlighter-rouge">psxspu</code>
+in the link list. Audio code that does not link will surface as missing
+<code class="language-plaintext highlighter-rouge">SpuSetKey</code>, <code class="language-plaintext highlighter-rouge">SpuSetVoiceAttr</code>, etc.</p>
+
+<p><strong>Permission errors on build outputs</strong> — Never run docker with <code class="language-plaintext highlighter-rouge">sudo</code>. If
+ownership is already wrong, <code class="language-plaintext highlighter-rouge">sudo chown -R $USER:$USER .</code> once and never
+again. Sudo + Docker corrupts permissions in surprising ways and breaks
+DuckStation’s access to <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../build/">Build &amp; toolchain</a> — the
+pipeline as a quick-reference.</li>
+  <li><a href="../hardware/">Hardware</a> — what the build
+output is targeting.</li>
+  <li><a href="../performance/">Performance work</a> — the
+experiment ledger that runs against this build.</li>
+  <li><a href="../regtest/">Regression testing</a> — the
+headless harness that boots the disc image.</li>
+  <li><a href="../../about/method/">Method</a> — how the project
+decides what’s worth automating.</li>
+  <li><a href="../../devlog/">Devlog</a> — day-by-day worklog.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/build-system.md"><code class="language-plaintext highlighter-rouge">docs/ps1/build-system.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/toolchain-setup.md"><code class="language-plaintext highlighter-rouge">docs/ps1/toolchain-setup.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/Dockerfile.regtest"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.regtest</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/release.sh"><code class="language-plaintext highlighter-rouge">scripts/release.sh</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>The voice anchor problem — Johnny Castaway PS1</title>
+  <meta name="description" content="A prose-process essay about the Johnny Castaway PS1 site's voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review." />
+
+  <meta property="og:title"        content="The voice anchor problem — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A prose-process essay about the Johnny Castaway PS1 site's voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab . Prose engineering</p>
+      <h1>The voice anchor problem</h1>
+      <p class="subtitle">Keeping a giant AI-assisted site from sounding like a brochure.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-problem">The problem</h2>
+
+<p>AI prose has a smell.</p>
+
+<p>It is not always bad. Sometimes it is clear and useful. But it has tells:
+“seamless”, “deep dive”, “robust”, “journey”, “we’re excited”, “this
+showcases”. It rounds off every edge. It hates saying “this failed.” It loves
+ending paragraphs with a little trumpet.</p>
+
+<p>That is not the voice of this project.</p>
+
+<p>The voice of this project is the pause-menu Credits screen:</p>
+
+<blockquote>
+  <p>A labor of love by Hunter Davis.
+Hunter does not own or have a license to the Johnny Castaway character.
+The original creator generously allows fan ports.
+If you paid for this, you were cheated. Open source and free.</p>
+</blockquote>
+
+<p>Short. Plain. A little funny. Legally careful without sounding like a lawyer.
+That is the anchor.</p>
+
+<h2 id="why-it-matters">Why it matters</h2>
+
+<p>The site is large now. About pages, archaeology chapters, 63 scene pages, 36
+holiday pages, lab essays, generated source wrappers, regtest case pages. Some
+of that prose started as agent drafts. Some of it came from old worklogs. Some
+of it is generated from structured files.</p>
+
+<p>Without a voice anchor, the site becomes a committee. The About page sounds
+like a museum placard. The Lab sounds like a conference talk. The docs sound
+like a SaaS onboarding funnel. Nobody wants that. I certainly don’t.</p>
+
+<p>So the voice guide exists. It is not public navigation. It is an internal
+tool, checked into <code class="language-plaintext highlighter-rouge">site/_includes/voice-guide.md</code>, read before new prose gets
+written.</p>
+
+<h2 id="the-hunter-shape">The Hunter shape</h2>
+
+<p>The source samples are my project posts: Dreamcast, embedded Linux live CD,
+text edition, weird one-off tools, the dunking bird. The pattern is pretty
+consistent:</p>
+
+<ul>
+  <li>first person</li>
+  <li>specific numbers</li>
+  <li>named constraints</li>
+  <li>dead ends admitted</li>
+  <li>jokes that are small, not performative</li>
+  <li>no corporate “we”</li>
+  <li>no fake excitement</li>
+  <li>no apology for small projects</li>
+</ul>
+
+<p>The rhythm is: I tried a thing. It broke. Bummer. I tried the next thing.
+Lightbulb moment. Here are the files. Here is the release. If you paid for
+this, you were cheated.</p>
+
+<p>That works for Johnny because Johnny is small and serious at the same time.
+The island is silly. The port is not.</p>
+
+<h2 id="editing-the-agents">Editing the agents</h2>
+
+<p>The first AI draft usually gets the facts mostly right and the voice mostly
+wrong. That is fine. The first draft is not the artifact.</p>
+
+<p>The edit pass removes:</p>
+
+<ul>
+  <li>fake “we”</li>
+  <li>superlatives</li>
+  <li>rhetorical endings</li>
+  <li>claims not tied to source files</li>
+  <li>paragraphs that say “this is important” instead of showing the mechanism</li>
+  <li>cute transitions</li>
+</ul>
+
+<p>Then the page gets more numbers. More filenames. More “what failed.” More
+“what I actually did.”</p>
+
+<p>The result still may have started as an AI draft. It should not read like one.</p>
+
+<h2 id="generated-pages-have-a-voice-too">Generated pages have a voice too</h2>
+
+<p>Even the generated source-library pages have to talk like the rest of the
+site. They say “this is the shelf page” instead of “welcome to an exciting
+overview.” They name the source path. They say whether a file is active docs,
+archive, or generated archaeology. They do not pretend a generated wrapper is
+hand-authored prose.</p>
+
+<p>That honesty is part of the voice.</p>
+
+<h2 id="the-rule">The rule</h2>
+
+<p>If a sentence would look stupid on the PS1 pause menu, it probably does not
+belong on the site.</p>
+
+<p>Not every sentence has to be short enough to fit there. This page itself
+would be unreadable in 30-character lines. But the spirit has to survive that
+compression. Plain. Specific. Free. Slightly annoyed by nonsense.</p>
+
+<p>That’s the voice anchor problem, and that is the solution.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../credits/">Credits</a></li>
+  <li><a href="../../docs/agents/">AI sub-agents on this project</a></li>
+  <li><a href="../llm-pass/">The LLM pass</a></li>
+  <li><a href="https://hunterdavis.com/">About Hunter Davis</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+name: Site
+
+# P1 wiring — minimum viable Pages deploy.
+# Triggers covered today: push to main (any change in site/ or workflow),
+# manual dispatch. P3 will add: tags ['v*-ps1'], release: published, and a
+# nightly schedule for self-heal, plus the release-data ingest + per-release
+# devlog generator steps (§ 9.2 in docs/ps1/website-plan.md).
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/site-generate-library.py"
+      - "scripts/site-relativize-build.py"
+      - "scripts/site-build-static-root.sh"
+      - ".github/workflows/site.yml"
+      - "index.html"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Don't cancel an in-flight deploy with a newer push — release deploys must
+# never get killed by a docs commit. The nightly self-heal in P3 also
+# depends on this.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+          working-directory: site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build portable static site
+        run: ../scripts/site-build-static-root.sh
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

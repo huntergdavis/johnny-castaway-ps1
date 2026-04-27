@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>The pivot that almost did not happen — Johnny Castaway PS1</title>
+  <meta name="description" content="A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay." />
+
+  <meta property="og:title"        content="The pivot that almost did not happen — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab . Retrospective</p>
+      <h1>The pivot that almost did not happen</h1>
+      <p class="subtitle">The project could have shipped at "close enough." That would have been the wrong project.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="close-enough-was-available">Close enough was available</h2>
+
+<p>There is a version of this project that ships much earlier.</p>
+
+<p>It interprets enough ADS and TTM bytecode on the PS1 to show Johnny walking,
+fishing, and waving. The palette is mostly right. The island is mostly right.
+The sounds play when something like the right thing happens. It runs in
+DuckStation. It has a release zip. People say “neat” and move on.</p>
+
+<p>That version was available. It was also the wrong project.</p>
+
+<h2 id="the-problem-with-approximate">The problem with approximate</h2>
+
+<p>Johnny Castaway lives in timing. The gag is not “Johnny goes fishing.” The gag
+is the pause before he reacts to the starfish. The small walk back. The way the
+ocean keeps moving while the foreground holds. The holiday decoration that is
+barely there unless you happen to notice it.</p>
+
+<p>Approximate playback erases those edges. It makes the port impressive as a
+technical demo and weak as a preservation object.</p>
+
+<p>Once that became obvious, the target changed: the PS1 would replay captured
+foreground packs, not reinterpret the whole Sierra runtime at scene time.</p>
+
+<h2 id="the-host-and-replay-move">The host-and-replay move</h2>
+
+<p>The host build does what the desktop is good at. It runs the decoded Sierra
+engine, captures foreground frames, records sound events, and writes compact
+FG2 packs.</p>
+
+<p>The PS1 does what the console is good at. It loads those packs, composites
+them over its own background, runs waves, stamps holidays, plays SPU samples,
+and keeps VBlank cadence.</p>
+
+<p>That split is the project. It is the reason a 1992 screensaver fits into a
+1994 console in a way that can be tested.</p>
+
+<h2 id="what-the-pivot-cost">What the pivot cost</h2>
+
+<p>It cost tooling. A lot of tooling.</p>
+
+<p>The moment you choose pixel-perfect replay, you need pack formats, manifests,
+dirty-region templates, reference captures, validation scripts, build scripts,
+scene ledgers, timing logs, and a way to compare the PS1 output against the
+host without lying to yourself.</p>
+
+<p>It also cost pride. A straight interpreter port is cleaner to brag about. A
+hybrid pipeline is less romantic. It says: the console is not running the
+whole original engine. It is running the right artifact for the hardware.</p>
+
+<p>I am fine with that trade. The disc plays.</p>
+
+<h2 id="what-it-bought">What it bought</h2>
+
+<p>It bought a real acceptance bar.</p>
+
+<p>FISHING 1 can be validated because there is a reference to validate against.
+The scene either matches or it does not. The sound either lands on the right
+frame or it does not. The runtime either survives night, tide, holiday, and
+raft variants or it does not.</p>
+
+<p>The rest of the project inherits that bar. Sixty-one scenes remain, but the
+shape of the work is no longer mysterious.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../about/method/">Method</a></li>
+  <li><a href="../../docs/formats/pack-payload/">FG2 pack payload</a></li>
+  <li><a href="../../docs/performance/">Performance work</a></li>
+  <li><a href="../the-63-scene-grind/">The 63-scene grind</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

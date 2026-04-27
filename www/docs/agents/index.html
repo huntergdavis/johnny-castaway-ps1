@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>AI sub-agents on this project — Johnny Castaway PS1</title>
+  <meta name="description" content="An honest accounting of where and how AI sub-agents were used on the Johnny Castaway PS1 fan port — captions, holiday emblems, this website, code review — and where they were not." />
+
+  <meta property="og:title"        content="AI sub-agents on this project — Johnny Castaway PS1" />
+  <meta property="og:description"  content="An honest accounting of where and how AI sub-agents were used on the Johnny Castaway PS1 fan port — captions, holiday emblems, this website, code review — and where they were not." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Process</p>
+      <h1>AI sub-agents on this project</h1>
+      <p class="subtitle">How LLMs were actually used. The honest version.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This page describes how AI sub-agents have
+actually been used on the PS1 port. It is not a sales pitch for AI tooling
+and it is not a denial that AI was used. The project’s voice is plainspoken;
+pretending the author wrote every word would not be plainspoken. If you paid
+for this, you were cheated. Open source and free.</p>
+
+<h2 id="the-lay-of-the-land">The lay of the land</h2>
+
+<p>This is a one-person fan port. Hunter writes code, decides what scenes ship,
+runs the validation passes, signs off on each release, and writes the
+pause-menu Credits text. He is also the only operator of any AI tooling
+involved.</p>
+
+<p>The project uses AI sub-agents — Claude, mostly, with occasional excursions
+into other models for specific jobs — as an unusual member of the team. The
+agents draft text, scaffold code, run parallel research passes against
+documentation, and rubber-duck design questions. They do not own decisions.
+They do not pick what’s worth shipping. They do not validate scenes. The
+chrome of the product — the on-screen pause menu, the merge bar that gates
+a scene as validated, the website’s information architecture — is the
+author’s call.</p>
+
+<p>The claim being made on this page is narrow: AI helped with first drafts,
+mechanical work, and parallel exploration. The author kept the pen.</p>
+
+<h2 id="what-agents-actually-wrote">What agents actually wrote</h2>
+
+<p>A few specific places where AI-drafted output is in the shipping product or
+the public site, with the author as the editor and final reviewer.</p>
+
+<h3 id="the-closed-caption-corpus">The closed-caption corpus</h3>
+
+<p>The PS1 port supports closed captions. The caption corpus describes what
+each scene is doing in plain English, keyed by ADS family and scene tag, so
+players who can’t hear the SFX still get the gag. Writing 60-plus captions
+from a cold start is the kind of mechanical drafting work AI does well.</p>
+
+<p>A sub-agent produced the first-draft caption text for every routed scene
+plus a confidence rating per caption. The audit lives in the repo at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml"><code class="language-plaintext highlighter-rouge">docs/ps1/caption-audit-2026-04-26.yaml</code></a>.
+The breakdown was 30 HIGH, 21 MED, and 12 LOW confidence ratings — meaning
+the agent was reasonably sure about half of its own output, ambivalent
+about a third, and explicitly flagging the rest as needing human review.</p>
+
+<p>The author then went through every caption and edited or replaced the ones
+that were wrong. Several scenes had captions that were technically
+plausible but wrong about what was actually happening in the gag — the
+agent had inferred from the scene name and family rather than the actual
+sprite content. Those got rewritten by hand. The final caption set is a
+human-edited version of the agent’s draft. See
+<a href="../captions/">Closed captions</a> for the runtime
+side and the audit breakdown in detail.</p>
+
+<h3 id="the-holiday-emblem-sprites">The holiday emblem sprites</h3>
+
+<p>The 2026-04 holiday expansion grew the project from four shipped holidays
+to thirty-six. Each holiday gets a 32×32 emblem sprite in the 16-color
+EGA/VGA palette, drawn in a Sierra-screensaver-adjacent style: chunky
+pixels, bold outlines, recognizable at 32 pixels.</p>
+
+<p>Drawing 32 thematically distinct sprites in a constrained palette is the
+kind of work that stops being interesting after the third sprite. A
+sub-agent authored Python+PIL scripts that generated the emblems
+algorithmically — primitive shapes, palette-locked colors, a per-holiday
+“compose this from these primitives” routine. The output is the sprite
+sheet at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/holiday-emblem-sheet.png</code></a>.
+The script lives at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/holidays-emblem-sheet.py"><code class="language-plaintext highlighter-rouge">scripts/holidays-emblem-sheet.py</code></a>.</p>
+
+<p>The author reviewed every emblem at full size, rejected several, and asked
+the agent to redraw them with different primitives. Some emblems went
+through three or four iterations before the author was happy. A few were
+abandoned and drawn by hand. The shipping sheet is a curated subset of
+agent-generated art with human edits on top.</p>
+
+<h3 id="this-websites-first-draft-prose">This website’s first-draft prose</h3>
+
+<p>The page you are reading now started as a sub-agent draft. So did most of
+the long-form pages under <code class="language-plaintext highlighter-rouge">/docs/</code>, the <a href="../../about/">About</a>
+narrative, and the chapter pages under <a href="../../about/history/">History</a>.</p>
+
+<p>The author writes prompts that establish voice constraints — plainspoken,
+no marketing fluff, no rhetorical flourishes, no superlatives — and the
+agent writes a long-form draft against those constraints. The author
+then reads the draft, rewrites the parts that drift off-voice or invent
+things, fills in details the agent didn’t know, deletes the cute-but-empty
+sentences, and signs off.</p>
+
+<p>This page is meta about that process, but every other page on this site
+went through it.</p>
+
+<h3 id="the-archaeology-narrative-chapters">The archaeology narrative chapters</h3>
+
+<p>The <a href="../../about/history/">history</a> section narrates how
+the port came to exist — the original Sierra screensaver, the upstream
+Amiga port, the desktop reimplementation, the first PS1 attempt that didn’t
+work, the second one that did. Sub-agents drafted those chapters with the
+author’s notes and commit history as source material. The author signed
+off on each chapter and rewrote the parts that read as confident-sounding
+fiction rather than what actually happened.</p>
+
+<h2 id="what-agents-helped-with-but-didnt-own">What agents helped with but didn’t own</h2>
+
+<p>The line is blurrier here. These are cases where an agent contributed
+to work that ended up in the project, but the substantive decision-making
+was the author’s.</p>
+
+<ul>
+  <li><strong>Code review.</strong> Sub-agents have read pull requests and pointed out
+bugs, missing edge cases, and style inconsistencies. The author has
+agreed with some of the feedback and ignored some. The agent does not
+approve the merge.</li>
+  <li><strong>Regression-test failure triage.</strong> When a regtest run fails, an agent
+can read the harness output, the TTY log, and the per-frame PNG diffs
+and produce a triage summary much faster than the author can. The
+author reads the summary, decides whether the failure is real, and
+fixes the underlying issue.</li>
+  <li><strong>“Find the file that does X.”</strong> The codebase has 130 scripts and
+several hundred source files between the host and PS1 builds. Agents
+are good at searching across that surface and answering “where is the
+CD prefetch state machine” or “which script generates the foreground
+packs” without the author having to remember.</li>
+  <li><strong>Debugging logs.</strong> When a perf experiment regresses, an agent can
+diff the JSONL logs against baseline and produce a structured summary
+of what changed. The decision to promote or reject the experiment is
+the author’s, working from that summary plus their own read.</li>
+  <li><strong>Performance experiment hypothesis generation.</strong> Some of the
+experiments listed in the <a href="../performance/">perf log</a>
+were ideas an agent suggested as plausible. The author ran them.
+Roughly half were rejected at the gate; the perf log is a complete
+record of what stuck and what didn’t.</li>
+</ul>
+
+<h2 id="what-agents-didnt-do">What agents didn’t do</h2>
+
+<p>Some of these are explicit firewalls. Some are just things the author
+hasn’t delegated.</p>
+
+<ul>
+  <li><strong>The decisions.</strong> What the project is, what it isn’t, when to cut a
+release, when a scene is validated, when to declare an experiment
+done. All of that is the author’s call.</li>
+  <li><strong>The merge bar.</strong> A scene is validated when the author watches it on
+emulator (and ideally hardware) and signs off on the visual + audible
+pass. No vision classifier and no test harness gates this; the human
+does.</li>
+  <li>
+    <p><strong>The pause-menu Credits text.</strong> The four-line credits screen was
+written by the author, by hand, before any AI involvement on this
+project. It reads:</p>
+
+    <blockquote>
+      <p>A labor of love by Hunter Davis.
+Hunter does not own or have a license to the Johnny Castaway character. The original creator generously allows fan ports.
+If you paid for this, you were cheated.
+Open source and free.</p>
+    </blockquote>
+
+    <p>That voice is the project’s voice. The website’s voice constraints
+are derived from that anchor, not the other way around. It is not
+draftable, and it is not editable by an agent.</p>
+  </li>
+  <li><strong>Naming the project.</strong> What does “fan port” mean? What does the
+project owe the original creator? What scope of polish does shipping
+imply? Those are the author’s questions to answer. Agents are
+helpful tools for stress-testing answers; they are not where the
+answers come from.</li>
+  <li><strong>Per-scene visual sign-off.</strong> The author watches every validated
+scene end-to-end on emulator before promoting it. There is no
+shortcut.</li>
+</ul>
+
+<h2 id="the-honest-limits">The honest limits</h2>
+
+<p>Three places where AI tooling has fallen short on this project, written
+plainly so the disclosure is balanced.</p>
+
+<p><strong>Agents invent things.</strong> This is the single most expensive failure
+mode. An agent will produce confident-sounding documentation for code
+that doesn’t exist if you let it. The author has caught this multiple
+times: a draft that described a function that wasn’t there, a docs
+page that listed a CLI flag that was never implemented, a script
+description that named a behavior the script did not have. Every
+agent-drafted page on this site got at least one factual edit in the
+review pass, and a few got rewritten substantially because the draft
+was confidently wrong.</p>
+
+<p><strong>Agents get tone wrong on the first try.</strong> The voice constraints on
+this project are aggressive — no superlatives, no marketing language,
+no first-person plural to fake a team, no rhetorical questions ending
+paragraphs. Agents drift back to default prose unless reminded. The
+first draft of any long-form page reliably has a sentence ending in
+“…and that’s what makes this project special.” (or similar) which
+gets deleted in review. The author has stopped expecting the first
+draft to land on voice and now treats voice editing as a guaranteed
+pass.</p>
+
+<p><strong>Agents are bad judges of their own confidence.</strong> The captions audit
+that produced 30 HIGH / 21 MED / 12 LOW ratings was useful, but the
+author found errors in the HIGH-confidence captions at roughly the
+same rate as in the MED ones. The LOW ones were genuinely worse.
+Treat agent-stated confidence as a coarse signal that flags clear
+weakness, not as a reliable measure of correctness.</p>
+
+<p>The author re-reads everything. Not as a workflow optimization — as a
+correctness requirement.</p>
+
+<h2 id="why-disclose-this">Why disclose this</h2>
+
+<p>The project’s voice is plainspoken. The pause-menu Credits screen reads
+“A labor of love by Hunter Davis”; everything downstream of that —
+including this website — has to mean it. Pretending the author wrote
+every word of every long-form page would not be plainspoken. It would
+be dishonest in a small but compounding way.</p>
+
+<p>The disclosure also lets the reader calibrate. A page that started as
+an AI draft and got human-edited is different from a page the author
+sat down and wrote from scratch. Both can be useful. They are not the
+same artifact, and the reader is entitled to know which is which.</p>
+
+<p>If a future contribution to the codebase comes from someone other
+than the author, they will be credited by name in commits and on the
+relevant page. The same standard applies to AI sub-agents: the work
+they did is identified, and the editorial responsibility for what
+shipped is the author’s.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../about/method/">Method</a> — how the project
+decides what’s worth shipping.</li>
+  <li><a href="../captions/">Closed captions</a> — the
+caption corpus the audit produced.</li>
+  <li><a href="../holidays/">Holidays</a> — the 36-holiday
+expansion the emblem sheet supports.</li>
+  <li><a href="../vision/">Vision-classifier work</a> —
+another place AI runs at process boundaries, on the host validation
+side.</li>
+  <li><a href="../../devlog/">Devlog</a> — the running worklog.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

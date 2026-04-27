@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>35 holidays in 4 weeks — Johnny Castaway PS1</title>
+  <meta name="description" content="A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites." />
+
+  <meta property="og:title"        content="35 holidays in 4 weeks — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab . Codegen study</p>
+      <h1>35 holidays in 4 weeks</h1>
+      <p class="subtitle">A small YAML file, a calendar engine, and a sprite sheet full of tiny props.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="four-was-not-enough">Four was not enough</h2>
+
+<p>The original screensaver had four holiday decorations: Halloween, St.
+Patrick’s Day, Christmas, and New Year. They are charming because they are
+small. A pumpkin. A tree. A banner. A few clovers. Not a reskin. Not a
+special mode. Just the island noticing the calendar.</p>
+
+<p>The PS1 port keeps those four exactly as they were. Then it adds more.</p>
+
+<p>The final table at this release has 36 holidays, including 4/20 Day because
+the user asked for it directly and it made the sheet better. Fixed dates,
+movable Sundays, Nth weekday rules, Easter-relative holidays, solstices,
+Election Day. A tiny calendar engine hiding behind a tiny beach.</p>
+
+<h2 id="the-source-of-truth">The source of truth</h2>
+
+<p>The source file is <code class="language-plaintext highlighter-rouge">holidays.yml</code>.</p>
+
+<p>That file names each holiday, its short label, date rule, sprite dimensions,
+anchor, palette hints, and description. Codegen turns it into
+<code class="language-plaintext highlighter-rouge">src/holidays_table.c</code>. Tests make sure the original four IDs do not move,
+date rules resolve correctly, and duplicate IDs do not sneak in.</p>
+
+<p>That is the right shape for this problem. Calendar rules belong in data.
+Runtime lookup belongs in C. The generated file should be boring.</p>
+
+<h2 id="the-sprite-sheet-correction">The sprite-sheet correction</h2>
+
+<p>The first AI pass got the problem wrong. It drew scenes. Palm trees, sand,
+sky, Johnny. Pretty little concepts, totally wrong for the runtime.</p>
+
+<p>The actual runtime composites an overlay sprite on top of the existing island.
+So the art had to be transparent-background props: eggs, lightsaber, tiny
+chalkboard, football, medal, peace medallion, hibiscus, ballot box. 32x32
+cells in a shared 16-color CLUT. Index 0 transparent. No Johnny. No island.
+No sand.</p>
+
+<p>Once that constraint was enforced, the sheet snapped into focus.</p>
+
+<h2 id="algorithms-over-tables">Algorithms over tables</h2>
+
+<p>The important decision was not to ship a list of dates.</p>
+
+<p>Easter uses the Meeus / Jones / Butcher algorithm. Nth weekday holidays use a
+small date helper. Election Day follows the “Tuesday after the first Monday in
+November” rule. Fixed holidays compare month and day. The runtime can answer
+future dates without waiting for me to update a table in 2030.</p>
+
+<p>This is overkill in the best way. The visual output is a 32-pixel watermelon.
+The date engine under it is correct.</p>
+
+<h2 id="what-codegen-bought">What codegen bought</h2>
+
+<p>It bought fearlessness. Adding a holiday became:</p>
+
+<ol>
+  <li>Add a row to YAML.</li>
+  <li>Add or adjust the emblem.</li>
+  <li>Regenerate.</li>
+  <li>Run tests.</li>
+  <li>Review in the pause menu date picker.</li>
+</ol>
+
+<p>No hand-edited C table. No stale title string. No date rule duplicated in a
+second file. The generated page set under <a href="../../docs/holidays/">/docs/holidays/</a>
+is part of the same bargain: the data produces the runtime table and the
+documentation.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../docs/holidays/">Holidays</a></li>
+  <li><a href="../../docs/holidays/algorithm/">Date-algorithm core</a></li>
+  <li><a href="../../docs/holidays/emblems/">Holiday emblem gallery</a></li>
+  <li><a href="../../docs/holidays/calendar/420-day/">4/20 Day</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
