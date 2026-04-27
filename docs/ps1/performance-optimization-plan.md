@@ -897,6 +897,7 @@ from perturbing the deterministic cadence.
 | `P4-224` | Done: compile the default-off captions translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and hot-symbol addresses while `jcreborn.elf` shrank `741076 -> 740816`; this validates narrow cold-TU compiler probes under the layout gates. |
 | `P4-225` | Done: compile the memcard translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and hot-symbol addresses while `jcreborn.elf` shrank `740816 -> 740196`; continue cold-TU flag probes one file at a time. |
 | `P4-226` | Failed/no promotion: compile the holidays translation unit with `-Os`. | The ELF shrank to `737352`, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer until layout/code-phase control exists. |
+| `P4-227` | Failed/no-op: compile the generated holidays table translation unit with `-Os`. | The exact gate stayed flat, but binary size did not move (`jcreborn.elf=740196`, PS-EXE bucket `149504`); the table is data-dominated under current flags. |
 
 Prefetch variants to test in order:
 
