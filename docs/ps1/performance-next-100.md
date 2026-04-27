@@ -230,7 +230,7 @@ without early display, tearing, frame drops, or weakened pause input.
 | 89 | Compose | Test LUT-per-palette direct two-pixel writes in generated code. | Runtime LUT attempt was not enough. | Compose detail improves with no branch growth. |
 | 90 | Compose | Test row-level span coalescing at pack time. | PAL4 four-pixel unroll was no-op alone. | Fewer commands/spans or lower compose detail. |
 | 91 | Toolchain | Run per-file `-Os` on cold files: pause, captions, memcard, holidays, debug. | Cold code shrink often regressed phase; layout gates can now classify it. | EXE/ELF shrinks and exact cadence passes. |
-| 92 | Toolchain | Run per-file `-O3` only on `graphics_ps1.c`. | Hot-TU group `-O3` failed; one file may win. | Compose/upload detail or loop improves. |
+| 92 | Toolchain | Run per-file `-O3` only on `graphics_ps1.c`. | Tested and failed; it grew graphics helpers and regressed visible CD pressure. | Do not retry whole-TU graphics `-O3`; use helper-scoped/assembly/generated code. |
 | 93 | Toolchain | Run per-file `-O3` only on `foreground_pilot.c`. | Scheduler code may benefit or reveal layout limits. | Loop improves without CD pressure. |
 | 94 | Toolchain | Run per-file `-O3` only on `cdrom_ps1.c`. | CD helpers are hot and recently shrank safely. | `loop_read_vb` or helper size improves. |
 | 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Smaller hot code may help I-cache/code phase. | Same or better timing with smaller ELF. |
@@ -270,6 +270,7 @@ near misses:
 | Audio TU `-Os` | Do not retry without code-phase control; it shrank the build but regressed cadence even with FG2 LBA restored. |
 | Resource TU `-Os` | Do not retry without code-phase control; it shrank the build but moved foreground symbols and created the fifth visible read. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
+| Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | Perf TU `-O3` | Do not retry as a whole-TU flag; it bloated `ps1PerfMarkCdReadDetailed` and regressed the exact gate. |
 | Perf TU `-Os` | Do not promote just for ELF shrink; it left `jcreborn.exe` flat and grew hot perf functions. |
 | Unused perf wrapper removals | Do not remove `ps1PerfMarkCdRead()` without padding/control; it is dead code but currently stabilizes perf/CD layout. |
