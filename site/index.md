@@ -163,7 +163,7 @@ The pause menu's Credits screen reads, verbatim:
 >
 > If you paid for this, you were cheated.
 > Open source and free.
-> github.com/huntergdavis/Johnny-Castaway-PS1
+> github.com/huntergdavis/johnny-castaway-ps1
 
 That text is the voice of the in-game credits. It is also the voice of
 this whole site. There's no marketing cope, no "experience the magic,"

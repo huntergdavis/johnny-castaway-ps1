@@ -91,7 +91,7 @@ From a fresh clone, the path to `jcreborn.bin` + `jcreborn.cue` is:
 ```bash
 # 1. Clone
 git clone https://github.com/{{ site.repo }}.git
-cd Johnny-Castaway-PS1
+cd johnny-castaway-ps1
 
 # 2. Build the dev Docker image (one-time, ~5 minutes)
 docker build -f config/ps1/Dockerfile.ps1 \

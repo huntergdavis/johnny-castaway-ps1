@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -182,7 +182,7 @@ build is 15–30 minutes; rebuilds are fully cached. Image tag:
 
 <ol>
   <li>Looks up the scene in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>.</li>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>.</li>
   <li>Rebuilds the CD image with the canonical boot route for that scene
 set in <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>.</li>
   <li>Runs the headless harness with reviewed scene window defaults.</li>
@@ -288,7 +288,7 @@ and only reviewing the actual scene window. The wrapper materializes a
 </table>
 
 <p>Defaults are sourced from
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-config.sh"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-config.sh</code></a>:</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-config.sh"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-config.sh</code></a>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">REGTEST_FRAMES</span><span class="o">=</span>1800
 <span class="nv">REGTEST_INTERVAL</span><span class="o">=</span>60
@@ -311,7 +311,7 @@ routes. For fgpilot scenes, the harness sets <code class="language-plaintext hig
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot &lt;slug&gt; [tokens...]
 </code></pre></div></div>
 
-<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>
 records every scene as:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ADS_NAME TAG SCENE_INDEX STATUS BOOTMODE...
@@ -320,7 +320,7 @@ records every scene as:</p>
 <p>Status tokens: <code class="language-plaintext highlighter-rouge">verified</code>, <code class="language-plaintext highlighter-rouge">bringup</code>, <code class="language-plaintext highlighter-rouge">blocked</code>, <code class="language-plaintext highlighter-rouge">untested</code>. These
 reflect the <strong>legacy regtest-route</strong> status model and are not the same
 thing as the current scene-playback acceptance bar — see
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
 for the current per-scene ledger.</p>
 
 <h3 id="adding-a-scene-to-the-harness">Adding a scene to the harness</h3>
@@ -352,7 +352,7 @@ is emitted via <code class="language-plaintext highlighter-rouge">printf</code> 
 <p>Categories: <code class="language-plaintext highlighter-rouge">SCENE</code> (lifecycle), <code class="language-plaintext highlighter-rouge">FRAME</code> (per-frame), <code class="language-plaintext highlighter-rouge">PERF</code> (metrics),
 <code class="language-plaintext highlighter-rouge">ERROR</code> (crashes), <code class="language-plaintext highlighter-rouge">STATE</code> (resources), <code class="language-plaintext highlighter-rouge">ASSERT</code> (invariants). All
 compiled out in normal builds via
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/ps1_test.h"><code class="language-plaintext highlighter-rouge">ps1_test.h</code></a> macros.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/ps1_test.h"><code class="language-plaintext highlighter-rouge">ps1_test.h</code></a> macros.</p>
 
 <p>To build a test-instrumented binary:</p>
 
@@ -492,10 +492,10 @@ surface the regtest binary is exercising.</li>
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/regtest-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-harness.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/regtest-quickstart.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-quickstart.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-harness.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-quickstart.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-quickstart.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a></li>
 </ul>
 
   </div>
@@ -514,7 +514,7 @@ surface the regtest binary is exercising.</li>
         </p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

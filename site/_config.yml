@@ -8,7 +8,7 @@ author: Hunter Davis
 
 # Public URL — apex CNAME lives in the user-pages repo, this is a project page.
 url: "https://hunterdavis.com"
-baseurl: "/Johnny-Castaway-PS1"
+baseurl: "/johnny-castaway-ps1"
 
 # Pinned values for P1. Phase P3 will replace these via _data/release.yml
 # written by the GitHub Actions workflow at build time.
@@ -18,8 +18,8 @@ release:
   scenes_validated: 2
   scenes_total: 63
 
-repo: "huntergdavis/Johnny-Castaway-PS1"
-github_url: "https://github.com/huntergdavis/Johnny-Castaway-PS1"
+repo: "huntergdavis/johnny-castaway-ps1"
+github_url: "https://github.com/huntergdavis/johnny-castaway-ps1"
 
 permalink: /devlog/:slug/
 

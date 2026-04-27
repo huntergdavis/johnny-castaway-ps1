@@ -1,6 +1,6 @@
 # Visual Detection Spec: Screenshot-Based Scene and Sprite Identification
 
-> 🌐 **Rendered version:** **[/docs/vision/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/vision/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/vision/](https://hunterdavis.com/johnny-castaway-ps1/docs/vision/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 Date: 2026-03-22

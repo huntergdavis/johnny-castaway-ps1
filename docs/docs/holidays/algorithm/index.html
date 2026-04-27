@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -91,7 +91,7 @@ that needs annual republishing was not acceptable.</p>
 
 <p>So every date is computed from a pure algorithm at runtime. No
 year-specific data, no embedded calendar. The whole core lives in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
 roughly 200 lines of C, no allocations, no PS1 dependencies.</p>
 
 <h2 id="day-of-week-from-month-day-year">Day-of-week from (month, day, year)</h2>
@@ -361,9 +361,9 @@ called once per scene start, no need to memoize.</p>
 </code></pre></div></div>
 
 <p>The dispatcher’s complement is the codegen output. Each row of
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays_table.c"><code class="language-plaintext highlighter-rouge">gHolidays[]</code></a> is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays_table.c"><code class="language-plaintext highlighter-rouge">gHolidays[]</code></a> is
 generated from
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> by
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> by
 <code class="language-plaintext highlighter-rouge">scripts/holidays-codegen.py</code>. The C file never lists holidays
 literally — only the algorithm. Adding a new holiday is a YAML edit and
 a rebuild.</p>
@@ -442,11 +442,11 @@ shipped with.</p>
 holiday’s own page with worked dates.</li>
   <li><a href="../emblems/">Emblem gallery</a> —
 the 32-icon sheet.</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
 this file’s algorithms.</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.h"><code class="language-plaintext highlighter-rouge">src/holidays.h</code></a> —
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/holidays.h"><code class="language-plaintext highlighter-rouge">src/holidays.h</code></a> —
 public API.</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> —
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> —
 source of truth for the table.</li>
 </ul>
 
@@ -466,7 +466,7 @@ source of truth for the table.</li>
         </p>
         <p class="footer-license">
           Code: <a href="../../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

@@ -1,6 +1,6 @@
 # PS1 Toolchain Setup
 
-> 🌐 **Rendered version:** **[/docs/build/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/build/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/build/](https://hunterdavis.com/johnny-castaway-ps1/docs/build/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 Guide to setting up the PlayStation 1 development environment for Johnny Reborn.
@@ -21,8 +21,8 @@ The easiest way to build for PS1 is using the provided Docker environment:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
-cd Johnny-Castaway-PS1
+git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
+cd johnny-castaway-ps1
 
 # 2. Build Docker image (first time only, ~5 minutes)
 docker build -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 --platform linux/amd64 .

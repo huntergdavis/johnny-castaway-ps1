@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -81,7 +81,7 @@ holidays plus Elvis’s Birthday, which received a fresh emblem because
 the original game did not include it.</p>
 
 <p>The icons were authored by AI sub-agents working from
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a>
 and a shared 16-color CLUT defined in <code class="language-plaintext highlighter-rouge">scripts/holidays_art_lib.py</code>.
 Index 0 is reserved for transparent. The visual register matches the
 Sierra screensaver house style: saturated VGA primaries (cyan, blue,
@@ -97,10 +97,10 @@ offset and blits it transparent over the screen at the
 
 <h2 id="the-sheet">The sheet</h2>
 
-<p><img src="https://github.com/huntergdavis/Johnny-Castaway-PS1/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" /></p>
+<p><img src="https://github.com/huntergdavis/johnny-castaway-ps1/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" /></p>
 
 <p>Direct link:
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/holiday-emblems-sheet.png</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/holiday-emblems-sheet.png</code></a>.
 A checkerboard preview at the same path makes transparency obvious.</p>
 
 <h2 id="per-emblem-index">Per-emblem index</h2>
@@ -149,7 +149,7 @@ own page.</p>
 
 <h2 id="style-rules">Style rules</h2>
 
-<p>From <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a>:</p>
+<p>From <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a>:</p>
 
 <ul>
   <li>32x32 canvas; transparent (palette index 0) background.</li>
@@ -169,7 +169,7 @@ full palette. The full palette is the shared CLUT.</li>
 <h2 id="adding-an-emblem">Adding an emblem</h2>
 
 <p>See the build pipeline reference:
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-pipeline.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-pipeline.md</code></a>.
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-pipeline.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-pipeline.md</code></a>.
 Short version:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/holidays-build-all.sh <span class="nt">--clean</span>
@@ -178,16 +178,16 @@ Short version:</p>
 <p>That regenerates the per-icon PNGs, the packed sheet, the
 checkerboard preview, and <code class="language-plaintext highlighter-rouge">manifest.json</code> into <code class="language-plaintext highlighter-rouge">scratch/holidays-emblems/</code>.
 Tracked review copies live at
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/holidays-emblems"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/</code></a>.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/holidays-emblems"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/</code></a>.</p>
 
 <h2 id="related">Related</h2>
 
 <ul>
   <li><a href="../">Per-holiday calendar</a></li>
   <li><a href="../algorithm/">Date-algorithm core</a></li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> — source of truth</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/holidays_art_lib.py"><code class="language-plaintext highlighter-rouge">scripts/holidays_art_lib.py</code></a> — shared CLUT</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a> — full style rules</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> — source of truth</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/holidays_art_lib.py"><code class="language-plaintext highlighter-rouge">scripts/holidays_art_lib.py</code></a> — shared CLUT</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-style-guide.md"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-style-guide.md</code></a> — full style rules</li>
 </ul>
 
   </div>
@@ -206,7 +206,7 @@ Tracked review copies live at
         </p>
         <p class="footer-license">
           Code: <a href="../../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

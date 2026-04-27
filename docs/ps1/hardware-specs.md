@@ -1,6 +1,6 @@
 # PlayStation 1 - Hardware Specifications
 
-> 🌐 **Rendered version:** **[/docs/hardware/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/hardware/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/hardware/](https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 Technical specifications of the PlayStation 1 hardware relevant to the Johnny Reborn port.

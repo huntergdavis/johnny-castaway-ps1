@@ -178,7 +178,7 @@ TAG_TREE_SHA=$(printf '100644 blob %s\tjcreborn.bin\n100644 blob %s\tjcreborn.cu
 # provenance is preserved (git log --all, tag -> commit -> parent chain).
 MAIN_RELEASE_SHA=$(git rev-parse HEAD)
 REPO_SLUG="$(git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|')"
-RAW_BASE="https://github.com/${REPO_SLUG:-huntergdavis/Johnny-Castaway-PS1}/raw/$TAG_NAME"
+RAW_BASE="https://github.com/${REPO_SLUG:-huntergdavis/johnny-castaway-ps1}/raw/$TAG_NAME"
 TAG_COMMIT_MSG="$TAG_NAME: $RELEASE_MSG
 
 Direct downloads (no zip):

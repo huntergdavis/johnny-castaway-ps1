@@ -7,12 +7,12 @@ review and a release-engineering review. Read this before touching the
 `website` branch; revisit after every major page lands.
 
 Working branch: `website` (cut from `main` 2026-04-26).
-Site URL: `https://hunterdavis.com/Johnny-Castaway-PS1/`. The apex
+Site URL: `https://hunterdavis.com/johnny-castaway-ps1/`. The apex
 `hunterdavis.com` is already served via the user's GitHub user-pages
 repo (CNAME lives there); GitHub resolves project pages under the same
 hostname at `/<repo-name>/`. **No CNAME file inside this repo.**
 `_config.yml` will set `url: https://hunterdavis.com` +
-`baseurl: /Johnny-Castaway-PS1`. Every internal link uses
+`baseurl: /johnny-castaway-ps1`. Every internal link uses
 `{{ '/path' | relative_url }}` so the baseurl prefix lands correctly.
 Source of truth for the site: `_site/` generated from this repo.
 
@@ -760,10 +760,10 @@ on an empty workflow.
 Five questions were posed. Four have been answered (decisions captured
 inline below); one remains.
 
-1. **Site URL — DECIDED.** `https://hunterdavis.com/Johnny-Castaway-PS1/`,
+1. **Site URL — DECIDED.** `https://hunterdavis.com/johnny-castaway-ps1/`,
    resolved via the user's existing apex CNAME in the user-pages repo. No
    CNAME inside this repo. `_config.yml` uses
-   `url: https://hunterdavis.com` + `baseurl: /Johnny-Castaway-PS1`. All
+   `url: https://hunterdavis.com` + `baseurl: /johnny-castaway-ps1`. All
    internal links use `{{ '/path' | relative_url }}`.
 2. **Light/dark mode — DECIDED.** Honor `prefers-color-scheme`. No manual
    toggle in the chrome. Implementation: CSS custom properties scoped to

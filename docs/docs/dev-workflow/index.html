@@ -55,7 +55,7 @@
       </ul>
     </nav>
     <a class="site-gh"
-       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
        aria-label="Source code on GitHub"
        rel="noopener">GitHub →</a>
   </div>
@@ -86,7 +86,7 @@ place.</p>
 
 <p>The current acceptance bar is <strong>human visual + audible signoff</strong> on the
 scene-playback (fgpilot) path. A scene reaches <code class="language-plaintext highlighter-rouge">✅ / ✅</code> in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
 when the author has confirmed visuals + SFX are correct across every
 applicable variant for that scene.</p>
 
@@ -157,14 +157,14 @@ regenerated or committed under the current bar.</p>
 
 <p>Three files touch the wiring:</p>
 
-<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/cd_layout.xml"><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code></a> —
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/cd_layout.xml"><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code></a> —
 add the packs:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"&lt;PACK_BASENAME&gt;.FG2"</span>     <span class="na">type=</span><span class="s">"data"</span> <span class="na">source=</span><span class="s">"../../generated/ps1/foreground/&lt;PACK_BASENAME&gt;.FG2"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"&lt;LOW_PACK_BASENAME&gt;.FG2"</span> <span class="na">type=</span><span class="s">"data"</span> <span class="na">source=</span><span class="s">"../../generated/ps1/foreground/&lt;LOW_PACK_BASENAME&gt;.FG2"</span><span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> —
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> —
 add the scene to the active routing function:</p>
 
 <ul>
@@ -172,7 +172,7 @@ add the scene to the active routing function:</p>
 <code class="language-plaintext highlighter-rouge">.FG2</code> based on <code class="language-plaintext highlighter-rouge">islandState.lowTide</code>.</li>
 </ul>
 
-<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a> —
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/jc_reborn.c"><code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code></a> —
 add the slug to <code class="language-plaintext highlighter-rouge">kProvenScenes</code> <strong>only after full human visual + audible
 signoff</strong>. Pending scenes can still be launched explicitly with
 <code class="language-plaintext highlighter-rouge">fgpilot &lt;slug&gt;</code> once the routing function knows about them, but they
@@ -191,7 +191,7 @@ before the scene loads. The game then boots straight into whatever scene
 
 <h3 id="4-validate-variants">4. Validate variants</h3>
 
-<p>Edit <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/BOOTMODE.TXT"><code class="language-plaintext highlighter-rouge">config/ps1/BOOTMODE.TXT</code></a>
+<p>Edit <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/BOOTMODE.TXT"><code class="language-plaintext highlighter-rouge">config/ps1/BOOTMODE.TXT</code></a>
 (or pass tokens on the <code class="language-plaintext highlighter-rouge">rebuild-and-let-run</code> line) to exercise each
 applicable variant:</p>
 
@@ -204,7 +204,7 @@ fgpilot &lt;slug&gt; island-pos &lt;x&gt; &lt;y&gt;       # forced island positi
 </code></pre></div></div>
 
 <p>Strike through any variant that does not apply to the scene (the legend
-in <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
+in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">scene-status.md</code></a>
 lists which variants apply to which scenes). Sign off each variant by
 human visual + audible review.</p>
 
@@ -304,7 +304,7 @@ exists as a diagnostic — not as the acceptance gate.</p>
 
 <ul>
   <li><strong>Telemetry overlay</strong>:
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/ps1_debug.c"><code class="language-plaintext highlighter-rouge">ps1_debug.c</code></a> provides
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_debug.c"><code class="language-plaintext highlighter-rouge">ps1_debug.c</code></a> provides
 a 5-panel on-screen overlay. Use this for frame-by-frame counters and
 hot-path diagnostics.</li>
   <li><strong>PS1 <code class="language-plaintext highlighter-rouge">printf()</code> / TTY logging</strong> works in DuckStation for gated probes.
@@ -365,7 +365,7 @@ should not be used to certify or bring up scenes under the current bar.</p>
 
 <p><code class="language-plaintext highlighter-rouge">./scripts/batch-capture-all-scenes.sh</code> has previously generated
 high-tide and low-tide FG2 packs for all 63 scenes in
-<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/generated/ps1/foreground"><code class="language-plaintext highlighter-rouge">generated/ps1/foreground/</code></a>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/generated/ps1/foreground"><code class="language-plaintext highlighter-rouge">generated/ps1/foreground/</code></a>
 (126 packs total). The corpus exists so new scenes can be routed and
 validated one at a time; the CD image should include only the packs
 currently needed by routed scene-playback entries.</p>
@@ -413,9 +413,9 @@ status.</li>
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a> — original.</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a> — the active strategy.</li>
-  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code></a> — per-scene ledger.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a> — original.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a> — the active strategy.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code></a> — per-scene ledger.</li>
 </ul>
 
   </div>
@@ -434,7 +434,7 @@ status.</li>
         </p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
-          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
           (v0.3.10-ps1)
         </p>

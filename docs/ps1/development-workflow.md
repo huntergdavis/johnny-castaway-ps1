@@ -1,6 +1,6 @@
 # PS1 Development Workflow
 
-> 🌐 **Rendered version:** **[/docs/dev-workflow/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/dev-workflow/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+> 🌐 **Rendered version:** **[/docs/dev-workflow/](https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
 Operator loop for bringing up a new scene to the current acceptance bar

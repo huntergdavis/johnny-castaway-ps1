@@ -2,7 +2,7 @@
 """Rewrite a generated static site so local URLs are relative.
 
 GitHub Pages branch-root publishing may serve this repository at
-/johnny-castaway-ps1/, /Johnny-Castaway-PS1/, or another prefix later. Jekyll's
+/johnny-castaway-ps1/, /johnny-castaway-ps1/, or another prefix later. Jekyll's
 relative_url filter is prefix-relative, not file-relative, so the committed
 static build gets a final portability pass.
 """

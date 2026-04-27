@@ -1,6 +1,6 @@
 # Johnny Castaway — PlayStation 1
 
-**Website: [hunterdavis.com/Johnny-Castaway-PS1](https://hunterdavis.com/Johnny-Castaway-PS1/)** — the full project site, with screenshots, scene ledger, deep dives, devlog, and history. *This README is the short version.*
+**Website: [hunterdavis.com/johnny-castaway-ps1](https://hunterdavis.com/johnny-castaway-ps1/)** — the full project site, with screenshots, scene ledger, deep dives, devlog, and history. *This README is the short version.*
 
 A ground-up PS1 port of Sierra's classic *Johnny Castaway* screen saver,
 using a hybrid scene-playback pipeline: desktop host is the authoritative
@@ -47,24 +47,24 @@ wave animation, holiday overlay, input, SPU).
 The website is the canonical surface — most of what's below is mirrored
 there with proper cross-linking, prose context, and per-section depth:
 
-- **[/play/](https://hunterdavis.com/Johnny-Castaway-PS1/play/)** — download + DuckStation quickstart + controls.
-- **[/about/method/](https://hunterdavis.com/Johnny-Castaway-PS1/about/method/)** — hybrid pipeline deep-dive.
-- **[/scenes/](https://hunterdavis.com/Johnny-Castaway-PS1/scenes/)** — live ledger of all 63 scenes + per-scene case studies.
-- **[/archaeology/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/)** — the full 5-chapter project story.
-- **[/devlog/](https://hunterdavis.com/Johnny-Castaway-PS1/devlog/)** — dated worklogs preserved verbatim.
-- **[/lab/](https://hunterdavis.com/Johnny-Castaway-PS1/lab/)** — magazine-length essays on methodology (the dunking-bird perf loop, LLM-assisted dev, hallucination control).
-- **[/hack/](https://hunterdavis.com/Johnny-Castaway-PS1/hack/)** — for curious hackers: learning C from this codebase, porting Johnny to a new platform, the printf-driven perf loop, the visual-debug script catalog.
-- **[/docs/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
-- **[/credits/](https://hunterdavis.com/Johnny-Castaway-PS1/credits/)** — the labor-of-love list.
+- **[/play/](https://hunterdavis.com/johnny-castaway-ps1/play/)** — download + DuckStation quickstart + controls.
+- **[/about/method/](https://hunterdavis.com/johnny-castaway-ps1/about/method/)** — hybrid pipeline deep-dive.
+- **[/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/)** — live ledger of all 63 scenes + per-scene case studies.
+- **[/archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)** — the full 5-chapter project story.
+- **[/devlog/](https://hunterdavis.com/johnny-castaway-ps1/devlog/)** — dated worklogs preserved verbatim.
+- **[/lab/](https://hunterdavis.com/johnny-castaway-ps1/lab/)** — magazine-length essays on methodology (the dunking-bird perf loop, LLM-assisted dev, hallucination control).
+- **[/hack/](https://hunterdavis.com/johnny-castaway-ps1/hack/)** — for curious hackers: learning C from this codebase, porting Johnny to a new platform, the printf-driven perf loop, the visual-debug script catalog.
+- **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
+- **[/credits/](https://hunterdavis.com/johnny-castaway-ps1/credits/)** — the labor-of-love list.
 
 ## Download and play
 
-Latest release → [**Releases page**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest) — or read the [Play page on the site](https://hunterdavis.com/Johnny-Castaway-PS1/play/) for the full quickstart with controls.
+Latest release → [**Releases page**](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest) — or read the [Play page on the site](https://hunterdavis.com/johnny-castaway-ps1/play/) for the full quickstart with controls.
 
 Or grab the files directly (auto-updates to the latest release):
 
-- [**jcreborn.bin**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest/download/jcreborn.bin) — PS1 CD image
-- [**jcreborn.cue**](https://github.com/huntergdavis/Johnny-Castaway-PS1/releases/latest/download/jcreborn.cue) — cuesheet
+- [**jcreborn.bin**](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/jcreborn.bin) — PS1 CD image
+- [**jcreborn.cue**](https://github.com/huntergdavis/johnny-castaway-ps1/releases/latest/download/jcreborn.cue) — cuesheet
 
 Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 emulator).
 
@@ -75,8 +75,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Current release | **`v0.3.9-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
-| Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/Johnny-Castaway-PS1/scenes/) (rendered) |
-| Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/Johnny-Castaway-PS1/about/status/) (rendered) |
+| Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
+| Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Primary acceptance gate | human visual + audible signoff |
 
 One scene at a time is promoted to the "fully validated" bar. Older
@@ -106,7 +106,7 @@ but not yet promoted to the pixel-perfect bar.
 
 The full pipeline — pack format byte layout, hardware constraints hit
 on the way, the SPI pad-poll fix, dirty-rect bookkeeping — is detailed
-at [/about/method/](https://hunterdavis.com/Johnny-Castaway-PS1/about/method/).
+at [/about/method/](https://hunterdavis.com/johnny-castaway-ps1/about/method/).
 
 ## Quick start
 
@@ -134,7 +134,7 @@ the disk. Override with `RUN_TIMEOUT_SECONDS=<n>` or `0` to disable.
 ### Bring up a new scene
 The full capture → pack → wire → validate loop is in
 [docs/ps1/development-workflow.md](docs/ps1/development-workflow.md) — also rendered at
-[/docs/dev-workflow/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/dev-workflow/) with cross-links to the regtest harness and per-scene ledger.
+[/docs/dev-workflow/](https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/) with cross-links to the regtest harness and per-scene ledger.
 
 ## Original data files
 
@@ -198,7 +198,7 @@ scenes ≈ gigabytes). The hybrid-playback model sidesteps that by keeping
 foreground content in authored packs and a narrow runtime for
 background / waves / overlays.
 
-Full hardware reference + the gotchas hit in practice: [/docs/hardware/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/hardware/).
+Full hardware reference + the gotchas hit in practice: [/docs/hardware/](https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/).
 
 ## Controller mapping
 
@@ -249,7 +249,7 @@ edges — will be refined as more scenes are validated under the
 fishing1 bar.
 
 Full caption corpus, audit confidence breakdown by ADS file, and the
-rendering pipeline: [/docs/captions/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/captions/).
+rendering pipeline: [/docs/captions/](https://hunterdavis.com/johnny-castaway-ps1/docs/captions/).
 
 ## Documentation
 
@@ -257,26 +257,26 @@ The website is the rendered, cross-linked, prose-context view; the
 GitHub paths are the raw source. Both are kept; pick whichever you
 prefer.
 
-**Current truth** — [website](https://hunterdavis.com/Johnny-Castaway-PS1/about/status/)
-- [scene-status.md](docs/ps1/scene-status.md) ↔ [/scenes/](https://hunterdavis.com/Johnny-Castaway-PS1/scenes/)
-- [current-status.md](docs/ps1/current-status.md) ↔ [/about/status/](https://hunterdavis.com/Johnny-Castaway-PS1/about/status/)
-- [development-workflow.md](docs/ps1/development-workflow.md) ↔ [/docs/dev-workflow/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/dev-workflow/)
+**Current truth** — [website](https://hunterdavis.com/johnny-castaway-ps1/about/status/)
+- [scene-status.md](docs/ps1/scene-status.md) ↔ [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/)
+- [current-status.md](docs/ps1/current-status.md) ↔ [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)
+- [development-workflow.md](docs/ps1/development-workflow.md) ↔ [/docs/dev-workflow/](https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/)
 - [TESTING.md](docs/ps1/TESTING.md) — validation strategy
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
 
-**Platform reference** — [website /docs/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/)
-- [hardware-specs.md](docs/ps1/hardware-specs.md) ↔ [/docs/hardware/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/hardware/)
-- [api-mapping.md](docs/ps1/api-mapping.md) ↔ [/docs/api/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/api/)
-- [build-system.md](docs/ps1/build-system.md) + [toolchain-setup.md](docs/ps1/toolchain-setup.md) ↔ [/docs/build/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/build/)
-- [pause-menu-design.md](docs/ps1/pause-menu-design.md) ↔ [/docs/pause-menu/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/pause-menu/)
-- [freeplay-mode-design.md](docs/ps1/freeplay-mode-design.md) ↔ [/docs/freeplay/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/freeplay/)
-- [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/regtest/)
-- [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/) (with [algorithm](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/emblems/) + 36 per-holiday pages)
+**Platform reference** — [website /docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)
+- [hardware-specs.md](docs/ps1/hardware-specs.md) ↔ [/docs/hardware/](https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/)
+- [api-mapping.md](docs/ps1/api-mapping.md) ↔ [/docs/api/](https://hunterdavis.com/johnny-castaway-ps1/docs/api/)
+- [build-system.md](docs/ps1/build-system.md) + [toolchain-setup.md](docs/ps1/toolchain-setup.md) ↔ [/docs/build/](https://hunterdavis.com/johnny-castaway-ps1/docs/build/)
+- [pause-menu-design.md](docs/ps1/pause-menu-design.md) ↔ [/docs/pause-menu/](https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/)
+- [freeplay-mode-design.md](docs/ps1/freeplay-mode-design.md) ↔ [/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)
+- [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)
+- [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/) (with [algorithm](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/emblems/) + 36 per-holiday pages)
 
-**History + archaeology** — [website /archaeology/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/)
-- [project-history.md](docs/ps1/project-history.md) ↔ [/about/history/](https://hunterdavis.com/Johnny-Castaway-PS1/about/history/) and the 5-chapter [/archaeology/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/) narrative
-- [docs/ps1/archaeology/](docs/ps1/archaeology/) — timeline, tools, status surfaces, team perspective, assumptions, memory constraints, blog source map ↔ rendered drill-downs at [/archaeology/data/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/data/), [/archaeology/timeline/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/timeline/), [/archaeology/team/](https://hunterdavis.com/Johnny-Castaway-PS1/archaeology/team/), and per-subdirectory pages (binary-library, regtest-references, host-script-review, retired-scripts, retired-src, vision-artifacts)
-- [docs/ps1/research/](docs/ps1/research/) — dated design logs ↔ [/devlog/](https://hunterdavis.com/Johnny-Castaway-PS1/devlog/) (rendered with editor's notes)
+**History + archaeology** — [website /archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)
+- [project-history.md](docs/ps1/project-history.md) ↔ [/about/history/](https://hunterdavis.com/johnny-castaway-ps1/about/history/) and the 5-chapter [/archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/) narrative
+- [docs/ps1/archaeology/](docs/ps1/archaeology/) — timeline, tools, status surfaces, team perspective, assumptions, memory constraints, blog source map ↔ rendered drill-downs at [/archaeology/data/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/data/), [/archaeology/timeline/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/timeline/), [/archaeology/team/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/team/), and per-subdirectory pages (binary-library, regtest-references, host-script-review, retired-scripts, retired-src, vision-artifacts)
+- [docs/ps1/research/](docs/ps1/research/) — dated design logs ↔ [/devlog/](https://hunterdavis.com/johnny-castaway-ps1/devlog/) (rendered with editor's notes)
 - [ps1-branch-cleanup-plan.yaml](docs/ps1/ps1-branch-cleanup-plan.yaml) — cleanup contract
 
 ## Repo lineage
@@ -291,7 +291,7 @@ Castaway engine — without that foundation this port wouldn't exist.
 ## Acknowledgements
 
 Short list below; the full version with context per name lives at
-[/credits/](https://hunterdavis.com/Johnny-Castaway-PS1/credits/).
+[/credits/](https://hunterdavis.com/johnny-castaway-ps1/credits/).
 
 - [jno6809/jc_reborn](https://github.com/jno6809/jc_reborn) — engine
   decode + the original Johnny Reborn project
@@ -307,7 +307,7 @@ Claude, Gemini, and OpenAI Codex were all used extensively across this
 project — for programming, debugging support, and generating the prose
 on the website. Decisions and the merge bar are Hunter's; first drafts
 often were not. The full disclosure footer carries on every page of
-[the site](https://hunterdavis.com/Johnny-Castaway-PS1/).
+[the site](https://hunterdavis.com/johnny-castaway-ps1/).
 
 ## License
 
