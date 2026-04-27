@@ -21,8 +21,8 @@ Two compounding findings from the audit:
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/pause-menu-design.md` |
-| Lines | 372 |
-| Approx. words | 2512 |
+| Lines | 375 |
+| Approx. words | 2541 |
 | Code fences | 3 |
 
 ## Outline

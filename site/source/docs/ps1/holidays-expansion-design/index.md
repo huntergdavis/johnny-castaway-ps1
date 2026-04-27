@@ -21,8 +21,8 @@ Historical design ideation for expanding Johnny Castaway PS1 from 4 holidays to 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/holidays-expansion-design.md` |
-| Lines | 204 |
-| Approx. words | 1136 |
+| Lines | 207 |
+| Approx. words | 1165 |
 | Code fences | 0 |
 
 ## Outline

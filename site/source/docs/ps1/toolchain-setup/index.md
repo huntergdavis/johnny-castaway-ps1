@@ -21,8 +21,8 @@ Guide to setting up the PlayStation 1 development environment for Johnny Reborn.
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/toolchain-setup.md` |
-| Lines | 249 |
-| Approx. words | 934 |
+| Lines | 252 |
+| Approx. words | 963 |
 | Code fences | 12 |
 
 ## Outline

@@ -21,8 +21,8 @@ This document shows how SDL2 functions are mapped to PSn00bSDK equivalents for t
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/api-mapping.md` |
-| Lines | 280 |
-| Approx. words | 876 |
+| Lines | 283 |
+| Approx. words | 905 |
 | Code fences | 12 |
 
 ## Outline

@@ -21,13 +21,14 @@ A ground-up PS1 port of Sierra's classic Johnny Castaway screen saver, using a h
 | Field | Value |
 |---|---:|
 | Source path | `README.md` |
-| Lines | 270 |
-| Approx. words | 1617 |
+| Lines | 315 |
+| Approx. words | 2200 |
 | Code fences | 1 |
 
 ## Outline
 
 - Johnny Castaway — PlayStation 1
+-   Where to read more
 -   Download and play
 -   Status
 -   Method
@@ -40,7 +41,6 @@ A ground-up PS1 port of Sierra's classic Johnny Castaway screen saver, using a h
 -   Controller mapping
 -   Closed captions
 -   Documentation
--   Repo lineage
 
 ## Read it in context
 

@@ -21,8 +21,8 @@ The added holiday art should look like small Johnny Castaway overlay props, not 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/holidays-style-guide.md` |
-| Lines | 59 |
-| Approx. words | 207 |
+| Lines | 62 |
+| Approx. words | 236 |
 | Code fences | 3 |
 
 ## Outline

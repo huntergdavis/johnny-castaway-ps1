@@ -21,8 +21,8 @@ The holiday art pipeline is now deliberately small: one transparent 32x32 emblem
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/holidays-pipeline.md` |
-| Lines | 72 |
-| Approx. words | 245 |
+| Lines | 75 |
+| Approx. words | 274 |
 | Code fences | 5 |
 
 ## Outline

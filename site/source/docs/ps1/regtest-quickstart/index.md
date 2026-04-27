@@ -21,8 +21,8 @@ A fully headless PS1 emulation testing system built on DuckStation's duckstation
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/regtest-quickstart.md` |
-| Lines | 128 |
-| Approx. words | 678 |
+| Lines | 131 |
+| Approx. words | 707 |
 | Code fences | 7 |
 
 ## Outline
