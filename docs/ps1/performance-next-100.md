@@ -262,6 +262,7 @@ near misses:
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
 | Debug/code-size compile gates | Text/CD phase padding or hot/cold section isolation exists. |
 | Audio TU `-Os` | Do not retry without code-phase control; it shrank the build but regressed cadence even with FG2 LBA restored. |
+| Resource TU `-Os` | Do not retry without code-phase control; it shrank the build but moved foreground symbols and created the fifth visible read. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Pure FG2 LBA shifts | Do not retry as a standalone speed test; tested offsets up to `+8` sectors were timing-flat. |
 | Hot-loop source cleanups | Preserve or deliberately sweep hot-symbol addresses first; the redundant prefetch pre-check removal failed even with FG2 LBA restored. |
