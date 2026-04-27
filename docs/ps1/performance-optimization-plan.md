@@ -39,14 +39,15 @@ status accessor removal, dead foreground requested-mode state removal, and
 base-diff foreground pack enforcement, startup pre-application of
 scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
 collapsed held-loop prefetch branch shape, duplicate compose active-guard
-removal, and simplified runtime-active accessor, reported `policy=stage1_window`,
-`buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
+removal, simplified runtime-active accessor, and the fishing1 high-tide tail
+read group `396..406`, reported `policy=stage1_window`,
+`buf=31760`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
 `prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=150`,
 `target_vb=1071`, `restore_bytes=2510092`,
 `upload_bytes=16281600`, `dirty_rows=25440`, `upload_rects=502`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
 The same run also reports `setup_reads=6`, `pack_start_vb=42`,
-`setup_read_vb=109`, and `scene_vb=1400`. This is the current baseline for the
+`setup_read_vb=109`, `loop_reads=67`, and `scene_vb=1400`. This is the current baseline for the
 next experiment. The exact-4 plus 1-row upload plus prepared-wait prefetch
 checkpoint is a work-reduction
 promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
@@ -122,7 +123,7 @@ Top likely wins, in order:
 | 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted prepared-present passes are only bridges; the next design must reduce duplicate prep while preserving lookahead. |
 | 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=5` and `prefetch.overrun_vb=5`, but every saved read still compounds. |
 | 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
-| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `5` total backward seeks; grouped metadata is the likely next CD breakthrough. |
+| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `67` active-loop transactions and `4` total backward seeks; selective grouped metadata is the likely next CD breakthrough. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
 
 Non-goals:
@@ -870,7 +871,7 @@ from perturbing the deterministic cadence.
 | `P4-198` | Queued: isolate foreground runtime into a layout-stable translation unit section. | Keep hot FG2 scheduler/compositor code addresses stable while allowing cold diagnostics and pause/menu code to shrink independently. |
 | `P4-199` | Queued: pack-emitted append groups with current payload offsets preserved. | Fixed 16 KB group padding failed; instead emit group metadata that describes cheap append windows without moving payload bytes. |
 | `P4-200` | Done: host-side group planner for fishing1 read sequence. | `ps1-perf-cdlog-summary.py --pack-file` now parses the FG2 entry table and emits zero-extra-sector group candidates; on the accepted fishing1 log it proposes `69 -> 46` reads at `12` sectors, `69 -> 29` reads at `16` sectors, and `69 -> 20` reads at `24` sectors while preserving current payload offsets. |
-| `P4-201` | Queued: runtime group lookup that only changes read length, not frame identity. | First implementation should preserve stage/window semantics and only choose a measured group end when slack proves it cheap. |
+| `P4-201` | Partial: runtime group lookup that only changes read length, not frame identity. | Broad 12-sector grouping failed (`loop_reads 68 -> 66` but `blocking_vb 5 -> 10`). The narrow fishing1 high-tide tail group `396..406` is accepted as work reduction (`loop_reads 68 -> 67`, `setloc 74 -> 73`, flat key timing), proving selective groups are valid but must be costed boundary-by-boundary. |
 | `P4-202` | Queued: append-cost predictor based on sectors plus preserved tail. | Byte-only predictors failed; model `appendBytes`, `preserveBytes`, sector count, and current slack before starting any lookahead read. |
 | `P4-203` | Queued: block the fifth visible read specifically. | Current baseline has `blocking_reads=4`; rejected variants move it to `5`. Identify the exact read shape and target only that transition. |
 | `P4-204` | Queued: diagnostic-only per-read trace binary. | Inline CD histograms regressed the speed baseline; create a separate non-promotable trace mode/binary for read sequence analysis. |
@@ -888,6 +889,8 @@ from perturbing the deterministic cadence.
 | `P4-216` | Failed: allow `24 KB` stream-window reads only at `10+` held VBlanks. | Decoupling normal `16 KB` reads from a larger high-slack capacity kept `loop_vb=1221`, but regressed `target_vb 1071 -> 1069`, `overrun_vb 150 -> 152`, `blocking_vb 5 -> 8`, and `prefetch_overrun_vb 5 -> 8`; group/read-cost metadata must be more specific than a long-hold threshold. |
 | `P4-217` | Done: skip legacy CD accumulator writes for modern foreground reads. | The exact gate stayed flat while `jcreborn.elf` shrank `739540 -> 739524` and the buffered/aligned CD helper symbols each shrank by `8` bytes; `JCPERF2` remains authoritative and the legacy print now mirrors modern CD totals. |
 | `P4-218` | Queued: compiler/linker/toolchain flag matrix with layout gates. | The old hot-TU `-O3` probe failed, but narrower flags remain valid targets: per-file `-Os`/`-O2`/`-O3`, hot/cold translation-unit splits, function alignment, linker section ordering, and code-address padding must each pass the same exact timing/layout gate. |
+| `P4-219` | Queued: group-cost predictor for runtime append groups. | The accepted tail group and rejected broad group show that transaction count is insufficient; score each candidate by append sectors, preserved bytes, current slack, host-observed read cost, and whether it risks creating the fifth visible read. |
+| `P4-220` | Queued: move read-group boundaries into generated pack metadata. | The hard-coded fishing1 tail group is a proving slice. The durable version should emit per-pack group metadata without moving payload offsets, then let runtime consume scene-authored groups with the same strict cadence gates. |
 
 Prefetch variants to test in order:
 
@@ -1244,8 +1247,8 @@ into one commit.
 
 Current measured bottlenecks are now narrow enough that the next wins should be
 small and cumulative: `157` Detail-tier present-wait VBlanks, `5` visible CD
-blocking VBlanks, `5` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `401` upload rects, and `3.09 MB` restore volume on
+blocking VBlanks, `5` prefetch-overrun VBlanks, `67` active-loop reads,
+`16.28 MB` upload volume, `502` upload rects, and `2.51 MB` restore volume on
 fishing1 high tide.
 
 A post-holiday/menu integration probe exposed a new regression target. With the

@@ -12,17 +12,22 @@ Current accepted fishing1 exact baseline:
 | `remaining_over_target` | `14.01%` |
 | `blocking_vb` | `5` |
 | `prefetch_overrun_vb` | `5` |
-| `loop_reads` | `68` |
+| `loop_reads` | `67` |
 | `upload_bytes` | `16281600` |
 | `restore_bytes` | `2510092` |
 | `jcreborn.exe` | `149504` bytes |
-| `jcreborn.elf` | `739524` bytes |
+| `jcreborn.elf` | `741076` bytes |
 
 Goal: close `150` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
 baseline is about `12` VBlanks, so the practical target is roughly fourteen
 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
 stack of flat-timing cleanup wins.
+
+Current note: the fishing1 high-tide tail read group `396..406` is accepted as
+a work-reduction checkpoint, not a VBlank speed win. It keeps the remaining
+`150` VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
+`setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -44,6 +49,16 @@ the fifth visible read. The best path is parallel pressure on five fronts:
 | Toolchain and layout control | Many valid cleanups regressed only because code/CD phase shifted. That is a solvable build problem. |
 | Separate release/perf-log baselines | Perf logging is now part of the optimized path; release-speed measurements may expose free headroom. |
 
+## Impact-Prioritized Order
+
+| Priority | Area | Tests | Why First |
+|---:|---|---|---|
+| 1 | Pack-emitted/read-costed CD groups | `11-18`, `34-35` | The hard-coded tail group proves selective grouping can remove reads, while the broad 12-sector import proves a cost predictor is mandatory. |
+| 2 | Pack-emitted render/upload metadata | `61-64`, `81-90` | Runtime upload/compositor heuristics are locally exhausted; generated metadata can remove branches and preserve deterministic work identity. |
+| 3 | Explicit scheduler/CD budget | `41-50` | Many near-misses were nominal wins that stole CD slack. A CD-first budget is the gate for retrying them safely. |
+| 4 | Toolchain/layout control | `91-100` | Valid code-size cleanups still perturb hot phase. Layout control can unlock old no-promotion wins without changing pixels. |
+| 5 | Release/perf baseline separation | `1-10` | The harness should keep improving, but the immediate speed path is now runtime/pack work rather than more baseline bookkeeping. |
+
 ## Next 100 Tests
 
 | # | Area | Test | Why Now | Promote If |
@@ -58,10 +73,10 @@ the fifth visible read. The best path is parallel pressure on five fronts:
 | 8 | Harness | Add automated compiler-flag matrix runner that logs no-promotion outcomes. | Toolchain work needs lots of controlled probes. | Matrix results are searchable and never dirty the accepted branch on failure. |
 | 9 | Harness | Add cross-scene smoke subset after every accepted fishing1 speed win. | Fishing1 knees may not hold for fishing2/fishing3. | Fishing2/fishing3 exact cases stay within agreed pressure gates. |
 | 10 | Harness | Add a "fifth visible read" summary to `ps1-perf-cdlog-summary.py`. | Current failures often move `blocking_reads 4 -> 5`. | Tool names the specific read boundary and candidate fixes. |
-| 11 | CD | Implement runtime lookup for 12-sector zero-extra-sector read groups. | Host planner shows `69 -> 46` possible reads without moving payloads. | `loop_reads`, `loop_read_vb`, or `blocking_vb` falls with no new visible read. |
+| 11 | CD | Implement runtime lookup for 12-sector zero-extra-sector read groups. | Broad import failed, but the tail-only group `396..406` is accepted; next step is costed/selective groups, not blanket planner import. | `loop_reads`, `loop_read_vb`, or `blocking_vb` falls with no new visible read. |
 | 12 | CD | Implement 16-sector group lookup behind a stricter slack guard. | Planner shows `69 -> 29`; raw 24 KB failed, but exact groups may not. | Read count falls and `blocking_vb` stays `<=5`. |
 | 13 | CD | Implement 24-sector group lookup only for proven late long-hold regions. | Planner shows `69 -> 20`; broad high-slack reads failed. | Late-sequence reads drop without `prefetch_overrun_vb` growth. |
-| 14 | CD | Target only the group around LBAs `748`, `755`, `762`, `769`, `801`. | These are the largest host-visible gaps in the accepted log. | That cluster loses at least one read or hidden VBlank. |
+| 14 | CD | Target the remaining late groups around LBAs `748`, `755`, `762`, `769`, `801`. | The tail group already removed one late read; continue only where the cost model says the append fits held slack. | That cluster loses at least one more read or hidden VBlank. |
 | 15 | CD | Target only group `file_sector 22..34` from the 12-sector plan. | First simple merge that replaces two reads without sector growth. | No timing regression and read count drops by one. |
 | 16 | CD | Add append-cost predictor using `appendBytes`, `preserveBytes`, sector count, and slack. | Byte-only predictors failed. | Predictor blocks variants that would create the fifth visible read. |
 | 17 | CD | Add group-cost predictor from measured host read durations. | Same sector count can have different elapsed cost. | Group selection correlates with lower `loop_read_vb`. |
@@ -158,8 +173,8 @@ near misses:
 |---:|---:|---|
 | 1 | 1 | Establish whether the remaining 14.01% is partly perf-log overhead. |
 | 2 | 10 | Identify the specific fifth-read transition that turns good probes bad. |
-| 3 | 11 | Smallest concrete grouped-read runtime test with zero sector growth. |
-| 4 | 16 | Cost predictor needed before any more raw window-size probes. |
+| 3 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
+| 4 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
 | 5 | 23 | Revisit a near miss that already showed a two-VBlank loop win. |
 | 6 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 | 7 | 91 | Start compiler/toolchain matrix with cold `-Os`, not hot `-O3`. |

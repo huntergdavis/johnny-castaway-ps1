@@ -100,9 +100,11 @@ struct TFgPilotRuntime {
     uint32 prefetchFrameBufferSize; /* Capacity of prefetchFrameBuffer. */
     uint8 *streamWindowBuffer;      /* Optional larger FG2 window cache. */
     uint32 streamWindowSize;        /* Capacity of streamWindowBuffer. */
+    uint32 streamWindowReadSize;    /* Normal read size; capacity may be larger for grouped appends. */
     uint32 streamWindowStart;       /* File offset of first byte in streamWindowBuffer. */
     uint32 streamWindowBytes;       /* Valid byte count in streamWindowBuffer. */
     uint8 streamWindowValid;
+    uint8 streamReadGroupsEnabled;
     uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
     CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
@@ -138,6 +140,7 @@ enum {
     FG_PACK_METADATA_PREFIX_BYTES = 8192
 };
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
+#define FG_PREFETCH_GROUP_WINDOW_BYTES (12UL * 2048UL)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
@@ -164,6 +167,15 @@ static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
+
+struct TFgPilotReadGroup {
+    uint16 startSector;
+    uint16 endSector;
+};
+
+static const struct TFgPilotReadGroup kFishing1HighReadGroups12[] = {
+    {396, 406}
+};
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
@@ -653,9 +665,11 @@ static void fgRuntimeReset(void)
     gFgRuntime.prefetchFrameBufferSize = 0;
     gFgRuntime.streamWindowBuffer = NULL;
     gFgRuntime.streamWindowSize = 0;
+    gFgRuntime.streamWindowReadSize = 0;
     gFgRuntime.streamWindowStart = 0;
     gFgRuntime.streamWindowBytes = 0;
     gFgRuntime.streamWindowValid = 0;
+    gFgRuntime.streamReadGroupsEnabled = 0;
     gFgRuntime.streamScratch = NULL;
     gFgRuntime.streamScratchSize = 0;
     gFgRuntime.packCdFileValid = 0;
@@ -954,17 +968,55 @@ static uint32 fgSectorAlignUp(uint32 offset)
     return (offset + 2047UL) & ~2047UL;
 }
 
+static uint32 fgRuntimeWindowReadSize(void)
+{
+    if (gFgRuntime.streamWindowReadSize > 0)
+        return gFgRuntime.streamWindowReadSize;
+    return gFgRuntime.streamWindowSize;
+}
+
+static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
+                                              uint32 windowStart,
+                                              uint32 targetEnd)
+{
+    uint16 startSector;
+    uint16 i;
+
+    if (!gFgRuntime.streamReadGroupsEnabled ||
+        (appendStart & 2047UL) != 0)
+        return targetEnd;
+
+    startSector = (uint16)(appendStart >> 11);
+    for (i = 0; i < (uint16)(sizeof(kFishing1HighReadGroups12) /
+                             sizeof(kFishing1HighReadGroups12[0])); i++) {
+        if (kFishing1HighReadGroups12[i].startSector == startSector) {
+            uint32 candidateEnd = ((uint32)kFishing1HighReadGroups12[i].endSector) << 11;
+            uint32 packEnd = fgSectorAlignUp((uint32)gFgRuntime.packCdFile.size);
+            if (candidateEnd > packEnd)
+                candidateEnd = packEnd;
+            if (candidateEnd > targetEnd &&
+                candidateEnd - windowStart <= gFgRuntime.streamWindowSize)
+                return candidateEnd;
+            return targetEnd;
+        }
+    }
+
+    return targetEnd;
+}
+
 static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
 {
     uint32 windowStart;
     uint32 offsetInWindow;
+    uint32 readBytes;
 
     if (!fgRuntimeCanWindowCache() || !fgEntryHasPayload(entry))
         return 0;
 
     windowStart = fgSectorAlignDown(entry->dataOffset);
     offsetInWindow = entry->dataOffset - windowStart;
-    return (offsetInWindow + entry->dataSize <= gFgRuntime.streamWindowSize) ? 1 : 0;
+    readBytes = fgRuntimeWindowReadSize();
+    return (offsetInWindow + entry->dataSize <= readBytes) ? 1 : 0;
 }
 
 static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
@@ -1021,6 +1073,8 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     currentStart = gFgRuntime.streamWindowStart;
     currentEnd = currentStart + gFgRuntime.streamWindowBytes;
     targetEnd = windowStart + readBytes;
+    targetEnd = fgRuntimeGroupedAppendTargetEnd(currentEnd, windowStart, targetEnd);
+    readBytes = targetEnd - windowStart;
 
     if (windowStart < currentStart ||
         windowStart >= currentEnd ||
@@ -1089,7 +1143,7 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
         return 0;
 
     windowStart = fgSectorAlignDown(entry->dataOffset);
-    readBytes = gFgRuntime.streamWindowSize;
+    readBytes = fgRuntimeWindowReadSize();
     if (windowStart >= (uint32)gFgRuntime.packCdFile.size)
         return 0;
     readEnd = windowStart + readBytes;
@@ -1895,19 +1949,28 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             }
             if (gFgPrefetchWindowBytes > 0) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
-                if (windowBytes > gFgStreamWindowBufferSize) {
+                uint32 windowCapacityBytes = windowBytes;
+                gFgRuntime.streamReadGroupsEnabled =
+                    (fgSceneEquals(sceneName, "fishing1") &&
+                     islandState.lowTide == 0 &&
+                     windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES) ? 1 : 0;
+                if (gFgRuntime.streamReadGroupsEnabled &&
+                    windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
+                    windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
+                if (windowCapacityBytes > gFgStreamWindowBufferSize) {
                     if (gFgStreamWindowBuffer != NULL)
                         free(gFgStreamWindowBuffer);
-                    gFgStreamWindowBuffer = (uint8 *)malloc(windowBytes);
+                    gFgStreamWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
                     if (gFgStreamWindowBuffer == NULL) {
                         if (ps1PerfEnabled)
-                            ps1PerfMarkAllocFail(windowBytes);
+                            ps1PerfMarkAllocFail(windowCapacityBytes);
                         gFgStreamWindowBufferSize = 0;
                         fgRuntimeReset();
                         return 0;
                     }
-                    gFgStreamWindowBufferSize = windowBytes;
+                    gFgStreamWindowBufferSize = windowCapacityBytes;
                 }
+                gFgRuntime.streamWindowReadSize = windowBytes;
             }
             {
                 uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
@@ -1933,6 +1996,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.prefetchFrameBufferSize = gFgPrefetchFrameBufferSize;
             gFgRuntime.streamWindowBuffer = gFgStreamWindowBuffer;
             gFgRuntime.streamWindowSize = gFgStreamWindowBufferSize;
+            if (gFgRuntime.streamWindowReadSize == 0)
+                gFgRuntime.streamWindowReadSize = gFgStreamWindowBufferSize;
             gFgRuntime.streamWindowStart = 0;
             gFgRuntime.streamWindowBytes = 0;
             gFgRuntime.streamWindowValid = 0;
