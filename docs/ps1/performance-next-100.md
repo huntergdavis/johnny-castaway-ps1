@@ -275,6 +275,7 @@ near misses:
 | Uncompress TU `-Os` | Do not retry as an isolated flag; it was exact no-op on runtime and size. |
 | Island TU `-Os` | Done under the utils-size baseline; keep accepted if random-island visual validation stays clean. |
 | Main TU `-Os` | Done under the island-size baseline; keep accepted if menu/pause visual validation stays clean. |
+| CDROM TU `-Os` | Do not retry as a whole-TU flag; it crossed a smaller PS-EXE bucket and regressed `blocking_vb` to `10`. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
