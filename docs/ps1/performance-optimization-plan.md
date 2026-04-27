@@ -912,6 +912,7 @@ from perturbing the deterministic cadence.
 | `P4-236` | Failed/no promotion: switch to PSn00bSDK Release libraries. | Release SDK libraries shrink the executable bucket and improve raw loop by one VBlank, but they raise visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 8`) even with pack LBA preserved; retry only after CD scheduling is phase-independent enough to accept the size/codegen win. |
 | `P4-237` | Failed/no promotion: compile the SPI translation unit with `-Os`. | The exact gate stayed timing-flat, but `jcreborn.elf` grew `739948 -> 740092`; keep SPI at default `-O2` until a controller/input benchmark proves otherwise. |
 | `P4-238` | Failed/no promotion: compile the PS1 stubs translation unit with `-Os`. | The ELF shrank slightly, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer tail-stub size work until layout/phase control exists. |
+| `P4-239` | Failed/no promotion: compile holidays with `-Os` plus one-sector CD padding. | Keeping `FISHING1.FG2 LBA=399` did not recover cadence (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); one-sector executable shrink remains unsafe without phase-independent scheduling. |
 
 Prefetch variants to test in order:
 
