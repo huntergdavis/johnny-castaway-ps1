@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>History — Johnny Castaway PS1</title>
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.3.10-ps1." />
+
+  <meta property="og:title"        content="History — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.3.10-ps1." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../" aria-current="page">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">2025-10 to v0.3.10-ps1</p>
+      <h1>History</h1>
+      <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-pre-port-era">The pre-port era</h2>
+
+<p>Before this project there was an engine to decode. <em>Johnny Castaway</em>
+shipped in 1992 as a Win16 screensaver: a small interpreter for two
+custom bytecodes (ADS, scene selector; TTM, per-scene script) backed
+by a single packed resource file (<code class="language-plaintext highlighter-rouge">RESOURCE.MAP</code> / <code class="language-plaintext highlighter-rouge">RESOURCE.001</code>).
+The decode work that made any later port possible is upstream
+<a href="https://github.com/jno6809/jc_reborn">jno6809/jc_reborn</a>, a clean
+SDL2 reimplementation of the engine. Other lineage that fed in:
+<a href="https://github.com/nivs1978/Johnny-Castaway-Open-Source">Hans Milling’s JCOS</a>,
+which extracted the WAV sound effects into a usable form, and
+<a href="https://github.com/xesf/castaway">Alexandre Fontoura’s Castaway</a>.
+The Sierra Chest archive page kept the original screensaver and
+documentation findable through 30 years of link-rot.</p>
+
+<p>This project began as a branch of <code class="language-plaintext highlighter-rouge">jc_reborn</code> aimed at PlayStation 1.
+A fuller version of the pre-port archaeology – jno6809’s commits, the
+JCOS sound extraction, the abandoned Castaway port lineage – lives at
+<a href="../../archaeology/">/archaeology/</a>. The short
+version is: without that decode, this port would not exist, and the
+license here (GPL-3.0) is inherited from there.</p>
+
+<h2 id="first-ps1-prototype-attempts">First PS1 prototype attempts</h2>
+
+<p>The initial session was <strong>2025-10-18</strong>. The starting point was the
+<code class="language-plaintext highlighter-rouge">4mb2025</code> branch of upstream <code class="language-plaintext highlighter-rouge">jc_reborn</code>, an aggressively memory-
+optimized variant that had brought peak runtime usage down to about
+<strong>350 KB</strong> – a number that was load-bearing for the PS1, since
+the console’s 2 MB main RAM left ~1.65 MB of headroom for
+resource caching above the engine’s working set.</p>
+
+<p>The first phase was infrastructure. PSn00bSDK 0.24 was selected over
+the official Sony SDK – modern, open source, CMake-friendly. A
+precompiled macOS toolchain was attempted and abandoned (missing
+<code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code>); building from source needed Linux. The fix was
+Docker: <code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>, which works on Intel Mac,
+Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
+through CMake with PSn00bSDK’s toolchain file; CD packaging via
+mkpsxiso; one shell script (<code class="language-plaintext highlighter-rouge">build-ps1.sh</code>, later
+<code class="language-plaintext highlighter-rouge">rebuild-and-let-run.sh</code>) on top.</p>
+
+<p>Core implementation came next. The plan was: port only the platform
+layer, leave the engine alone. That principle held: only three files
+needed real porting – <code class="language-plaintext highlighter-rouge">graphics_ps1.c</code>, <code class="language-plaintext highlighter-rouge">events_ps1.c</code>,
+<code class="language-plaintext highlighter-rouge">sound_ps1.c</code> – plus a CD I/O reimplementation in <code class="language-plaintext highlighter-rouge">cdrom_ps1.c</code>
+(~2,280 lines, replacing <code class="language-plaintext highlighter-rouge">fopen</code> / <code class="language-plaintext highlighter-rouge">fread</code> against CD sectors).
+Roughly 4,000+ lines of upstream engine code went unchanged. By the
+end of Phase 4 the game booted on DuckStation and loaded resources
+from the CD image.</p>
+
+<p>What didn’t work, in this era:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">vprintf</code> in hot paths was destabilizing.</strong> Unbounded format
+buffers plus per-frame text I/O changed timing in ways that
+showed up as scene playback corruption. The interim answer was
+“visual debugging” – colored pixels via <code class="language-plaintext highlighter-rouge">LoadImage</code>, the
+five-panel telemetry overlay, and <code class="language-plaintext highlighter-rouge">debugMode=0</code> to disable
+noisy text paths. Reliable TTY printf would not return until
+<strong>2026-04-25</strong>.</li>
+  <li><strong>A faithful TTM/ADS interpreter on the PS1 produced
+“Johnny disappears” bugs that moved as fast as they were
+fixed.</strong> The runtime was trusting cross-scene state that the
+desktop engine had built up across many scenes; CD latency
+(150ms cold seeks) plus the original engine’s “replay prior
+scenes to establish state” model did not survive the port
+context. The bug class was real and recurrent; the fix class
+– recovery heuristics, state injection, replay merge –
+produced incrementally smarter heuristics and incrementally
+shifted bugs.</li>
+</ul>
+
+<p>The next two phases were performance and offline-restore. Phase 6
+(2026-03) brought the rendering hot-path optimizations that still
+ship: 4-bit indexed sprite format (<code class="language-plaintext highlighter-rouge">indexedPixels</code>, ~4x RAM savings
+over 15-bit direct color), palette LUT compositing, 4-pixel unrolled
+inner loop, opaque sprite fast-path, hash-based O(1) resource lookup
+replacing O(N) <code class="language-plaintext highlighter-rouge">strcmp</code> scanning, and a dirty-rect system that cut
+per-frame data movement by <strong>80-95%</strong>. Binary size came down from
+~124 KB to ~120 KB; compositing was ~15-25% faster.</p>
+
+<p>Phase 7 (2026-03, historical) tried to fix the disappearing-Johnny
+class structurally rather than heuristically. The idea was offline-
+authored <em>scene restore contracts</em>: analyze every scene offline,
+declare which BMP/SCR resources it needs and which dirty regions it
+expects to touch, compile that into a C header (<code class="language-plaintext highlighter-rouge">ps1_restore_pilots.h</code>,
+~1,000 auto-generated lines), and have the runtime consume those
+contracts instead of replaying prior scenes. This worked, partly. The
+restore-pilot pipeline was real; 63 scene-scoped restore specs were
+generated, compressed into 34 cluster contracts, and the live header
+carried 26 active pilots. <strong>25 of 63</strong> scenes were verified under
+that model on <strong>2026-03-21</strong>.</p>
+
+<p>That number does not appear in current status. It was a different
+definition of “verified” – bring-up under the harness with no
+disappearing Johnny on the canonical route – and the harness itself
+was later demoted as a primary acceptance gate. The
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/current-status.md"><code class="language-plaintext highlighter-rouge">current-status.md</code></a>
+document calls out the older counts explicitly:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>25 / 63   2026-03-21   Restore-rollout verified scenes
+27 / 63   2026-03-21   Research-snapshot verified
+63 / 63   2026-03-29   Harness-level validation claim
+                       (retroactively demoted as a false summit)
+57 / 63   2026-04-04   Scenes rendering with island content
+60 / 63   2026-04-04..07  Bringup in the headless regtest surface
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">63/63</code> row is the relevant one: a harness pass declared all 63
+scenes validated on <strong>2026-03-29</strong>, and that claim later collapsed
+when human visual + audible signoff was applied to specific scenes
+and revealed differences the harness had not been measuring. It is
+preserved in the doc as a <em>false summit</em>. Each older count belongs
+to a different definition of “verified”; none of them carry
+forward.</p>
+
+<h2 id="the-hybrid-pipeline-pivot">The hybrid pipeline pivot</h2>
+
+<p>The pivot happened in <strong>2026-04</strong>, in two beats. The first beat was
+that a fully working scene needed a real acceptance bar – not a
+harness count, not a “renders something on the island” check, but
+<strong>pixel-perfect visuals plus synced SFX, signed off across every
+applicable variant by human visual + audible review</strong>. The second
+beat was that meeting that bar through a runtime TTM/ADS
+interpreter, even with offline restore contracts, was not the
+straightest path.</p>
+
+<p>The straighter path was to stop interpreting on the PS1 at all. Run
+the desktop engine – the same engine, on a host that has gigabytes
+of RAM and a real OS – as the authoritative renderer. Capture every
+visible foreground draw. Capture every <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code> opcode
+the TTM interpreter fired. Encode the result into a small per-scene
+binary (an <strong>FG2 pack</strong>: full-render base frames plus per-frame
+indexed-pixel diff spans plus a sound-event table). Ship the packs
+on the CD. On the PS1, replay the packs and own only the narrow
+runtime surface: background, wave animation, holiday overlay,
+controller input, SPU playback.</p>
+
+<p>Internally this was called <code class="language-plaintext highlighter-rouge">fgpilot</code> (after the <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code>
+runtime); externally it is “PS1 scene playback.” The decisive
+property is that the PS1 stops carrying state that the desktop
+engine built up across scenes. The disappearing-Johnny class doesn’t
+need a heuristic fix because the runtime no longer has the state in
+which it lived.</p>
+
+<h2 id="first-scenes-validated">First scenes validated</h2>
+
+<p><code class="language-plaintext highlighter-rouge">FISHING 1</code> was the first reference scene. <strong>2026-04-22</strong> was the
+first human-signed pass under the full visual + SFX bar. The
+release that captured it was <strong><code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code></strong> (commit <code class="language-plaintext highlighter-rouge">f2737253</code>):
+fishing1 pixel-perfect with full SFX across every applicable variant
+– night, low-tide, holiday, raft-stage. A prior visual-only release
+<strong><code class="language-plaintext highlighter-rouge">v0.3.5-ps1</code></strong> (commit <code class="language-plaintext highlighter-rouge">9448d49f</code>) was superseded by it.</p>
+
+<p>That milestone also drove the SPU bring-up. The VAG encoder
+(<code class="language-plaintext highlighter-rouge">scripts/wav2vag.py</code>) and the SPU upload/playback path
+(<code class="language-plaintext highlighter-rouge">sound_ps1.c</code>) had a long bug list that had to be cleared before
+captured <code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> events would fire correctly: shift-exponent
+inversion, ADPCM nibble-pair order swapped, SPU DMA missing 64-byte
+alignment, ADSR1 attack-rate orientation flipped, mute requiring
+direct SPU register writes because <code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> is
+not honored by DuckStation HLE. Commit <code class="language-plaintext highlighter-rouge">355227fa</code> is the canonical
+reference for that work.</p>
+
+<p><code class="language-plaintext highlighter-rouge">FISHING 2</code> followed on <strong>2026-04-23</strong>. Same bar, same variants.
+That was the second scene; the project’s count of “fully validated”
+became <strong>2 / 63</strong>.</p>
+
+<h2 id="the-63-scene-grind">The 63-scene grind</h2>
+
+<p><code class="language-plaintext highlighter-rouge">FISHING 3</code> is in bring-up at the time of writing – loop-stable
+and tide-correct on FG2, but not yet promoted. The remaining 60 are
+queued. The per-scene workflow is the same loop, repeated:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. capture-host-scene.sh          (host capture, high tide + low tide)
+2. export-scene-foreground-pilot  (build the FG2 pack from the capture)
+3. wire it into cd_layout.xml     (route the pack onto the CD image)
+4. wire it into foreground_pilot.c (route the scene at runtime)
+5. make-cd-image + rebuild-and-let-run
+6. human visual + audible signoff
+7. update scene-status.md, commit
+</code></pre></div></div>
+
+<p>There is no shortcut and no batch promotion. Each scene needs one
+high-tide capture and one low-tide capture, each capture needs
+to produce a pack the PS1 can replay, and each replay needs a human
+review that signs off pixels and audio. Milestone releases are cut
+every 10 newly validated scenes; smaller stability releases happen
+between milestones.</p>
+
+<p>The phases that lived alongside the grind, recently, are the
+component-completeness phases:</p>
+
+<ul>
+  <li><strong>Closed captions.</strong> Pause -&gt; Options -&gt; Captions: ON. A dark
+band at the bottom of the frame for ~5 seconds at scene start
+with descriptive subtitle text. Corpus from the upstream
+<code class="language-plaintext highlighter-rouge">closed_captions</code> branch of <code class="language-plaintext highlighter-rouge">jc_reborn</code>. The original sequential
+ADS-tag map had ~20 mismatches; a content-driven re-audit
+(<code class="language-plaintext highlighter-rouge">docs/ps1/caption-audit-2026-04-26.yaml</code>) replaced it.</li>
+  <li><strong>Holidays expansion.</strong> From a small original set to <strong>35
+holidays</strong>, code-generated, with an emblem sprite sheet packed
+into the holiday overlay. Selectable from the pause menu and
+from <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>. Design notes in
+<code class="language-plaintext highlighter-rouge">docs/ps1/holidays-expansion-design.md</code>.</li>
+  <li><strong>Pause menu locked design.</strong> Start opens an overlay mid-scene,
+custom embedded 8x8 ASCII font (because PSn00bSDK’s <code class="language-plaintext highlighter-rouge">FntFlush</code>
+is empirically broken in the scene-runtime context),
+<code class="language-plaintext highlighter-rouge">POLY_F4</code> dim quad. Items: Resume, Options (Sound, Day/Night,
+Tide, Raft, Holiday, Captions, Perf log, Set Time/Date, Set
+Island Pos, Set RNG Seed), Save Settings to Memcard, Reset
+Current Scene, Next Scene, Debug Info, Credits.</li>
+  <li><strong>Memcard persistence.</strong> Pause-menu choices save to <code class="language-plaintext highlighter-rouge">bu00:</code>
+block 0; restore on boot. Edge cases on a fresh / formatted
+card are still under iteration.</li>
+  <li><strong>TTY printf restored.</strong> <strong>2026-04-25</strong>: bounded <code class="language-plaintext highlighter-rouge">vprintf</code>
+plus DuckStation TTY/file logging restored gated <code class="language-plaintext highlighter-rouge">printf()</code>
+for setup/teardown probes. The <code class="language-plaintext highlighter-rouge">JCSPI</code>, <code class="language-plaintext highlighter-rouge">JCPAD</code>, <code class="language-plaintext highlighter-rouge">JCPERF</code>
+prefixes downstream tools key off were introduced here.</li>
+  <li><strong>SPI pad driver.</strong> Lifted from spicyjpeg’s <code class="language-plaintext highlighter-rouge">pads</code> example
+because the BIOS pad path (<code class="language-plaintext highlighter-rouge">InitPAD</code> / <code class="language-plaintext highlighter-rouge">StartPAD</code>) was
+unusable in PSn00bSDK 0.24 + DuckStation. One change from the
+reference: poll <code class="language-plaintext highlighter-rouge">tx_len</code> is <strong>5</strong>, not 4. DuckStation only
+delivers button bytes when the full 5-byte sequence comes
+from the TX buffer.</li>
+</ul>
+
+<h2 id="where-it-stands-at-v0310-ps1">Where it stands at v0.3.10-ps1</h2>
+
+<ul>
+  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code></strong>.</li>
+  <li>Validated scenes: <strong>2 / 63</strong>
+(<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>).</li>
+  <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">FISHING 3</code></strong>.</li>
+  <li>Last loop-stability release: <strong><code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code></strong> (commit
+<code class="language-plaintext highlighter-rouge">111efa9f</code>) – the fishing3 overnight loop-stability release;
+confirms the current runtime can run long sessions without the
+prior scene-to-scene leak.</li>
+  <li>PS-EXE size: <strong>~84 KB</strong> after legacy ADS/TTM/FG1 paths
+were stripped.</li>
+  <li>Routed CD image: <strong>~9.9 MB</strong>.</li>
+  <li>Generated FG2 corpus on disk: <strong>126 packs</strong> (high-tide +
+low-tide for all 63 scenes), <strong>~343 MB</strong>, routed onto
+the CD image selectively.</li>
+  <li>Real PS1 hardware: untested. Long-term list.</li>
+</ul>
+
+<p>This isn’t done. That’s fine. A labor of love by Hunter Davis. The
+original creator generously allows fan ports. If you paid for this,
+you were cheated. Open source and free.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

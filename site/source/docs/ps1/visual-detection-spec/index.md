@@ -21,8 +21,8 @@ Date: 2026-03-22
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/visual-detection-spec.md` |
-| Lines | 697 |
-| Approx. words | 4112 |
+| Lines | 700 |
+| Approx. words | 4141 |
 | Code fences | 3 |
 
 ## Outline

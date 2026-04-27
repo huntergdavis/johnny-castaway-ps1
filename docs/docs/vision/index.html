@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Vision-classifier work — Johnny Castaway PS1</title>
+  <meta name="description" content="The vision-classifier validation layer for the Johnny Castaway PS1 fan port — reference-first nearest-neighbor retrieval on the host, with optional VLM captioning, used to triage scene rendering bugs." />
+
+  <meta property="og:title"        content="Vision-classifier work — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The vision-classifier validation layer for the Johnny Castaway PS1 fan port — reference-first nearest-neighbor retrieval on the host, with optional VLM captioning, used to triage scene rendering bugs." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Vision-classifier work</h1>
+      <p class="subtitle">A host-side semantic layer that compares PS1 frames to a reference bank — what it caught, what it missed, where it stands.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This page describes the vision-classifier
+work done on the host validation side of the project: what problem it
+solves, what model it uses, how it gets called, and where it currently
+stands. If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="why-a-vision-classifier">Why a vision classifier</h2>
+
+<p>The validation problem on this project is “did this scene render
+correctly?” The acceptance bar is human visual + audible signoff, but
+human review does not scale to an iterative CD-image rebuild loop.
+Something has to triage: which scenes look broken, which look fine,
+which look subtly wrong in a way that warrants a closer human pass.</p>
+
+<p>Pixel-by-pixel diff against a host-captured reference frame works for
+some scenes. It breaks for others, in predictable ways:</p>
+
+<ul>
+  <li><strong>Palette mismatches.</strong> Index 5 is true black on the host, mapped to
+PS1 0x0001 because 0x0000 is the transparency semaphore. Direct
+pixel comparison flags every black pixel as different.</li>
+  <li><strong>Tile-edge artifacts.</strong> The PS1 compositor draws on 320x240 tile
+boundaries inside the 640x480 framebuffer. Sub-pixel stitching at
+tile edges produces small differences that pixel diff treats as
+failures.</li>
+  <li><strong>Randomized variants.</strong> The island position randomizes per scene
+(xPos / yPos offsets within fixed ranges). A captured reference
+frame at xPos=-200 cannot pixel-diff against a PS1 frame at
+xPos=-114; the same scene is at a different screen position.</li>
+  <li><strong>Telemetry overlay contamination.</strong> When telemetry is on (it is
+by default in dev builds), the top-left 100×243 region of the
+framebuffer is colored diagnostic bars. Pixel diff against a
+telemetry-free reference flags every bar pixel as broken.</li>
+</ul>
+
+<p>A per-scene visual-difference <em>metric</em> — “how similar are these two
+frames in the way that matters?” — is much more useful than raw pixel
+diff. The vision classifier is that metric.</p>
+
+<h2 id="the-local-classifier">The local classifier</h2>
+
+<p>The classifier is reference-first, not training-first. Source of truth
+is the canonical reference capture set at
+<code class="language-plaintext highlighter-rouge">regtest-references/</code>, produced by running the host build through every
+scene and saving frame PNGs. The PS1 evaluation compares against that
+bank rather than inferring scene content from scratch.</p>
+
+<p><strong>Where it runs:</strong> Host build only. The PS1 has no business running a
+classifier. Output is written to host disk and consumed by the regtest
+harness and the scene-promotion workflow.</p>
+
+<p><strong>What model:</strong> The current operational pipeline is non-neural — it
+uses Pillow + NumPy and deterministic visual features (color
+histograms, water/dark/edge ratios, telemetry presence) plus
+lightweight per-frame feature vectors and nearest-neighbor retrieval.
+The decision to start there was deliberate: avoid heavyweight runtime
+dependencies (<code class="language-plaintext highlighter-rouge">torch</code>, <code class="language-plaintext highlighter-rouge">transformers</code>, <code class="language-plaintext highlighter-rouge">sklearn</code>) so the pipeline runs
+cleanly on the author’s ~8 GB RAM dev machine without GPU.</p>
+
+<p><strong>The original plan</strong> was a layered approach: deterministic triage
+first, then CLIP ViT-B/32 embeddings for nearest-neighbor retrieval,
+then optional Florence-2 or SmolVLM captioning on sampled mismatch
+frames. The deterministic and feature-vector retrieval layers are
+implemented and operational. The CLIP and VLM layers were specced but
+the working pipeline reached usable triage quality without them, so
+they remain on the shelf.</p>
+
+<p><strong>A separate VLM track</strong> spec’d at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/VLM_CLASSIFIER_PLAN_2026-03-29.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/VLM_CLASSIFIER_PLAN_2026-03-29.md</code></a>
+points at OpenVINO GenAI with <code class="language-plaintext highlighter-rouge">llmware/Qwen2.5-VL-3B-Instruct-ov-int4</code>
+for structured semantic captioning (“Johnny is fishing off the right
+side of the dock”). That track is in research status — runtime is
+installed, smoke tests are run, but the operational pipeline does not
+depend on it.</p>
+
+<h2 id="how-it-gets-called">How it gets called</h2>
+
+<p>The pipeline lives at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/vision_classifier.py"><code class="language-plaintext highlighter-rouge">scripts/vision_classifier.py</code></a>
+with a one-command runner at
+<code class="language-plaintext highlighter-rouge">scripts/run-vision-reference-pipeline.sh</code>. Three primary subcommands:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Build the reference bank (one-time, or after reference recapture)</span>
+python3 scripts/vision_classifier.py build-reference-bank <span class="se">\</span>
+    <span class="nt">--refdir</span> regtest-references <span class="se">\</span>
+    <span class="nt">--outdir</span> artifacts/vision-reference-bank-20260329
+
+<span class="c"># Analyze one PS1 run against the bank</span>
+python3 scripts/vision_classifier.py analyze-run <span class="se">\</span>
+    <span class="nt">--scene-dir</span> regtest-results/&lt;runId&gt;/ACTIVITY-1 <span class="se">\</span>
+    <span class="nt">--bank-dir</span>  artifacts/vision-reference-bank-20260329 <span class="se">\</span>
+    <span class="nt">--outdir</span>    vision-artifacts/&lt;runId&gt;/ACTIVITY-1 <span class="se">\</span>
+    <span class="nt">--expected-scene</span> ACTIVITY-1
+
+<span class="c"># Self-check: analyze every reference scene against the bank</span>
+python3 scripts/vision_classifier.py analyze-reference-set <span class="se">\</span>
+    <span class="nt">--refdir</span>    regtest-references <span class="se">\</span>
+    <span class="nt">--bank-dir</span>  artifacts/vision-reference-bank-20260329 <span class="se">\</span>
+    <span class="nt">--outdir</span>    vision-artifacts/vision-reference-selfcheck-...
+</code></pre></div></div>
+
+<p>Output for each analysis is structured JSON plus a per-scene HTML
+review page. The harness ingests the JSON and the human reads the
+HTML when triaging a regression. A top-level published index lives at
+<code class="language-plaintext highlighter-rouge">vision-artifacts/vision-reference-pipeline-current/index.html</code>.</p>
+
+<p>The reference bank as last built indexed <strong>13,128 frames across 63
+scenes</strong>. Per-frame data:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scene_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY-1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"frame"</span><span class="p">:</span><span class="w"> </span><span class="s2">"frame_06000.png"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"mean_rgb"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">88</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"water_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.41</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dark_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"edge_density"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.19</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"telemetry_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"screen_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scene"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"scene_family_guess"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"sprites_visible"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"johnny_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mary_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>A PS1 run analysis emits both a <code class="language-plaintext highlighter-rouge">best_expected_match</code> (within the
+target scene) and a <code class="language-plaintext highlighter-rouge">best_global_match</code> (across all reference scenes).
+The distinction is what makes the output useful: an expected scene of
+<code class="language-plaintext highlighter-rouge">ACTIVITY-1</code> with global match of <code class="language-plaintext highlighter-rouge">FISHING-3</code> is a different kind of
+failure than <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code> with global match of <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code> but low
+sprite-visible ratio. The first is a wrong-family failure; the second
+is a sprite-rendering failure.</p>
+
+<h2 id="what-it-caught-that-pixel-diff-missed">What it caught that pixel-diff missed</h2>
+
+<p>The retrieval-plus-labels approach has flagged failure modes that
+pixel-diff couldn’t:</p>
+
+<ul>
+  <li><strong>Background-correct, sprite-missing.</strong> The PS1 frame matches the
+expected reference background (ocean, island, sky) but the sprite
+compositing region has no characteristic non-background palette
+colors. Visually: “Johnny didn’t get drawn.” Pixel-diff would
+report a high diff and not say why.</li>
+  <li><strong>Wrong-family reroute.</strong> Expected <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code> but global-match
+closest scene is <code class="language-plaintext highlighter-rouge">FISHING-3</code>. The runtime took the wrong ADS
+family branch — usually a story-state bug, not a rendering bug.</li>
+  <li><strong>Title persistence.</strong> PS1 frame is dominated by black + bright
+cyan in <code class="language-plaintext highlighter-rouge">INTRO.SCR</code>-typical proportions when the scene should
+already have started. Indicates a startup hang or a load failure.</li>
+  <li><strong>Ocean-only when island expected.</strong> Detects the absence of
+bright yellow (palette index 14) in the scene region. Pixel diff
+would flag the whole frame as different; the classifier flags
+<em>why</em>: island content didn’t render.</li>
+</ul>
+
+<h2 id="what-it-didnt-help-with">What it didn’t help with</h2>
+
+<p>The classifier is a visual layer. It does not see audio, time, or
+input. Things it does not catch:</p>
+
+<ul>
+  <li><strong>Audio sync.</strong> A frame can render correctly but have the SFX play
+on the wrong beat. The vision classifier sees the frame, not the
+sound.</li>
+  <li><strong>Controller flow.</strong> Pause-menu and input-handling regressions
+produce identical frames to a working build until the player tries
+to interact. The classifier never tries.</li>
+  <li><strong>Scene timing.</strong> Two runs of the same scene can render the same
+frames at different rates. The classifier looks at output, not
+cadence; the regtest harness’s <code class="language-plaintext highlighter-rouge">loop_vb</code> counters do that.</li>
+  <li><strong>First-time-on-hardware bugs.</strong> Everything described here runs
+against DuckStation captures. Real-hardware-only divergences
+(rare but exist) need real-hardware capture, which the
+classifier doesn’t drive.</li>
+</ul>
+
+<h2 id="where-it-stands">Where it stands</h2>
+
+<p>The pipeline is operational on the reference side. <strong>63 reference
+scenes processed, 13,128 frames indexed</strong>, full self-check artifact
+set published. Quality reports, confusion reports, family reports,
+and inventory CSVs are all generated.</p>
+
+<p>Semantic precision is acknowledged as v1, not final. Known weak
+areas, from the worklog:</p>
+
+<ul>
+  <li>Similar <code class="language-plaintext highlighter-rouge">FISHING</code> scenes cross-match each other.</li>
+  <li>Several <code class="language-plaintext highlighter-rouge">STAND</code> scenes remain hard to separate.</li>
+  <li>Some scene families need stronger actor/sprite semantics than the
+current deterministic features expose.</li>
+</ul>
+
+<p>The pipeline’s status today is <strong>in active use for reference-side
+self-check, in standby for PS1-run analysis.</strong> The next planned
+practical step is running the same pipeline against PS1 result
+directories to produce per-scene PS1 quality summaries — that is the
+specific use case that would directly help fix PS1 scene bugs. It is
+ready to run; it is not yet wired into the bring-up loop on every
+scene.</p>
+
+<p>The VLM track (Qwen2.5-VL-3B in OpenVINO) remains in research status.
+If actor identification gets stuck on the deterministic feature
+ceiling, that’s the path to revisit. As of v0.3.10-ps1 the
+deterministic + retrieval pipeline is doing enough that the VLM has
+not been pulled forward.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/visual-detection-spec.md">Visual detection spec</a> —
+the underlying palette and sprite analysis the classifier rests on.</li>
+  <li><a href="../regtest/">Regression testing</a> — the
+harness that produces the inputs to this pipeline.</li>
+  <li><a href="../performance/">Performance work</a> — the
+other validation surface, for runtime cadence rather than pixel
+content.</li>
+  <li><a href="../agents/">AI sub-agents</a> — vision
+classification is one place AI gets used at process boundaries.</li>
+  <li><a href="../../about/method/">Method</a> — how the
+validation work fits the project’s overall acceptance model.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/visual-detection-spec.md"><code class="language-plaintext highlighter-rouge">docs/ps1/visual-detection-spec.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/LOCAL_VISION_CLASSIFIER_PLAN_2026-03-29.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/LOCAL_VISION_CLASSIFIER_PLAN_2026-03-29.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/VISION_CLASSIFIER_WORKLOG_2026-03-29.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/VISION_CLASSIFIER_WORKLOG_2026-03-29.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/VISION_CLASSIFIER_USAGE_2026-03-29.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/VISION_CLASSIFIER_USAGE_2026-03-29.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/VLM_CLASSIFIER_PLAN_2026-03-29.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/VLM_CLASSIFIER_PLAN_2026-03-29.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/vision_classifier.py"><code class="language-plaintext highlighter-rouge">scripts/vision_classifier.py</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/scripts/run-vision-reference-pipeline.sh"><code class="language-plaintext highlighter-rouge">scripts/run-vision-reference-pipeline.sh</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

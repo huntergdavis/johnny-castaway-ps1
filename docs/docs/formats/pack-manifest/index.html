@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>FG2 pack manifest — Johnny Castaway PS1</title>
+  <meta name="description" content="Reference for the FG2 pack manifest — the JSON sidecar describing one compiled scene pack. Required fields, resource sections, runtime requirements envelope, transition and prefetch hints, an example manifest, and how the manifest is consumed by the CD image build, the regtest harness, and runtime sanity checks." />
+
+  <meta property="og:title"        content="FG2 pack manifest — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference for the FG2 pack manifest — the JSON sidecar describing one compiled scene pack. Required fields, resource sections, runtime requirements envelope, transition and prefetch hints, an example manifest, and how the manifest is consumed by the CD image build, the regtest harness, and runtime sanity checks." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../">Home</a></li>
+        <li><a href="../../../play/">Play</a></li>
+        <li><a href="../../../about/">About</a></li>
+        <li><a href="../../../scenes/">Scenes</a></li>
+        <li><a href="../../../devlog/">Devlog</a></li>
+        <li><a href="../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../lab/">Lab</a></li>
+        <li><a href="../../../hack/">Hack</a></li>
+        <li><a href="../../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>FG2 pack manifest</h1>
+      <p class="subtitle">The JSON sidecar that travels with each pack — scene indices, ADS names, resource memberships, peak memory, prefetch hints. Schema version 1, draft.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The pack manifest is the JSON file that
+sits next to each compiled FG2 pack and describes what is inside it. The
+<a href="../pack-payload/">pack payload</a> is the
+binary the PS1 reads at runtime; the manifest is what every other tool in
+the pipeline reads to <em>reason</em> about that binary. CD image builders read
+manifests to decide layout. The regtest harness reads them to check that
+the right packs are present. Pack-planning tools read them to estimate
+peak memory and pick pack granularity. Runtime sanity checks read a
+trimmed subset of them to assert “the pack on disc is the pack we built.”</p>
+
+<p>It is intentionally a JSON manifest, not a binary on-disc format. From the
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_MANIFEST_SCHEMA.md">source schema</a>:</p>
+
+<blockquote>
+  <p>Define the minimum manifest contract for Phase 5 pack compilation work so
+that analyzer-derived planning tools emit a stable intermediate format,
+pack compiler work can start before the final binary pack layout is
+chosen, and transition and prefetch studies target the same field names.</p>
+</blockquote>
+
+<p>The schema is on <code class="language-plaintext highlighter-rouge">schema_version: 1</code>, draft. It is producible from
+analyzer output plus post-processing tools and consumable without
+scraping text reports. Pack granularity is still open — one manifest can
+cover one ADS tag, one scene cluster, or a hybrid pack with a shared
+bank.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="required-top-level-fields">Required top-level fields</h2>
+
+<p>Every manifest must carry these keys:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schema_version</code></td>
+      <td>integer</td>
+      <td>Currently <code class="language-plaintext highlighter-rouge">1</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">manifest_kind</code></td>
+      <td>string</td>
+      <td><code class="language-plaintext highlighter-rouge">"scene_pack_manifest"</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">pack_id</code></td>
+      <td>string</td>
+      <td>Stable identifier for this pack across rebuilds.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">pack_strategy</code></td>
+      <td>string enum</td>
+      <td><code class="language-plaintext highlighter-rouge">"ads_cluster"</code>, <code class="language-plaintext highlighter-rouge">"scene_tag"</code>, or <code class="language-plaintext highlighter-rouge">"hybrid"</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scene_indices</code></td>
+      <td>array of integer</td>
+      <td>Story-order scene indices this pack covers.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ads_names</code></td>
+      <td>array of string</td>
+      <td>Source ADS file names. Often a single entry.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">resources</code></td>
+      <td>object</td>
+      <td>See <em>resources</em> below.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">runtime_requirements</code></td>
+      <td>object</td>
+      <td>See <em>runtime requirements</em> below.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">transition_hints</code></td>
+      <td>object</td>
+      <td>See <em>transition hints</em> below.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">prefetch_hints</code></td>
+      <td>object</td>
+      <td>See <em>prefetch hints</em> below.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">pack_strategy</code> is the planner’s intent — <em>why</em> these scenes were grouped
+into one pack. <code class="language-plaintext highlighter-rouge">ads_cluster</code> means “all scenes that share an ADS family
+landed here.” <code class="language-plaintext highlighter-rouge">scene_tag</code> means “this is one tag’s worth of scenes.” <code class="language-plaintext highlighter-rouge">hybrid</code>
+means “this pack plus a separately-loaded shared bank covers the working
+set.”</p>
+
+<h2 id="resources"><code class="language-plaintext highlighter-rouge">resources</code></h2>
+
+<p>The resources section describes what the pack needs available for
+deterministic runtime use. Each sub-list is the set of asset names the
+pack depends on — the manifest does not embed the assets, only references
+them.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"resources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"bmps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJDIVE.BMP"</span><span class="p">,</span><span class="w"> </span><span class="s2">"MJDIVE.BMP"</span><span class="p">,</span><span class="w"> </span><span class="s2">"JOHNWALK.BMP"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"scrs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ISLETEMP.SCR"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"ttms"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJDIVE.TTM"</span><span class="p">,</span><span class="w"> </span><span class="s2">"MJDIVE.TTM"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"ads"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="s2">"ACTIVITY.ADS"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"shared_candidates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"JOHNWALK.BMP"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">bmps</code></td>
+      <td>BMP names the pack references.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scrs</code></td>
+      <td>SCR (background) names.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ttms</code></td>
+      <td>TTM (animation script) names.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ads</code></td>
+      <td>ADS (scene controller script) names.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">shared_candidates</code></td>
+      <td>Resources the planner thinks should move into a shared bank later.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">shared_candidates</code> is purely advisory. If a BMP appears in many packs
+(e.g. <code class="language-plaintext highlighter-rouge">JOHNWALK.BMP</code>, which is on screen in nearly every walking scene),
+the manifest tags it for later deduplication. Today nothing actually
+deduplicates them — the source schema notes “no shared-bank deduplication
+is applied across packs yet.”</p>
+
+<h2 id="runtime_requirements"><code class="language-plaintext highlighter-rouge">runtime_requirements</code></h2>
+
+<p>The runtime envelope the pack must satisfy. If the pack covers multiple
+scenes, these values represent the envelope for the whole pack, not a
+single scene.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"runtime_requirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"max_concurrent_threads"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"max_sprite_frames"</span><span class="p">:</span><span class="w"> </span><span class="mi">160</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"peak_memory_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">436592</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"memory_components"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"bmp_indexed_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">228598</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ttm_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">7288</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ads_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">2528</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"scr_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">112038</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"sprite_pointer_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ttm_slot_overhead_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">49152</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">max_concurrent_threads</code></td>
+      <td>Peak active TTM thread count this pack ever needs.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">max_sprite_frames</code></td>
+      <td>Peak frame count across all sprite slots.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">peak_memory_bytes</code></td>
+      <td>Top-line worst-case memory for the pack.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">memory_components.*</code></td>
+      <td>Breakdown by source — which subsystem owns what fraction of peak.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The pack-planning tools use <code class="language-plaintext highlighter-rouge">peak_memory_bytes</code> to decide whether a
+candidate pack fits the PS1’s working budget. The runtime does not
+allocate against these numbers directly — it allocates against fixed
+buffers — but if a pack reports <code class="language-plaintext highlighter-rouge">peak_memory_bytes</code> larger than the
+fixed buffer, that is a sign the pack will not fit and the planner
+should split it.</p>
+
+<h2 id="transition_hints"><code class="language-plaintext highlighter-rouge">transition_hints</code></h2>
+
+<p>Pack-boundary and load-time planning data. Generated post-analysis from
+the story-order graph and resource churn between scenes.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"transition_hints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"likely_next_pack_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ads-cluster-building"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"high_churn_transitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"from_scene_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="nl">"to_scene_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nl">"total_resource_churn"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"transition_budget_notes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Derived from analyzer post-processing; not yet runtime-validated."</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">likely_next_pack_ids</code></td>
+      <td>Pack IDs the runtime is likely to load next. Feeds prefetch.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">high_churn_transitions</code></td>
+      <td>Scene-to-scene transitions where many resources change at once.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">transition_budget_notes</code></td>
+      <td>Optional freeform note about heuristics in use.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These are heuristic. The schema doc is explicit that scene ordering is the
+analyzer’s story order, not an instrumented runtime trace. When the
+project gains validated transition telemetry the hints should be
+regenerated from real data.</p>
+
+<h2 id="prefetch_hints"><code class="language-plaintext highlighter-rouge">prefetch_hints</code></h2>
+
+<p>Early streaming policy work. Drives the
+<a href="../transition-prefetch/">transition prefetch schema</a>.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"prefetch_hints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"candidate_scene_indices"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"additional_bmps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"FISHPOLE.BMP"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"additional_scrs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="nl">"additional_ttms"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJNAT3.TTM"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"heuristic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ads_family_union"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">candidate_scene_indices</code></td>
+      <td>Scene indices likely to follow the current pack.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">additional_bmps</code> / <code class="language-plaintext highlighter-rouge">_scrs</code> / <code class="language-plaintext highlighter-rouge">_ttms</code></td>
+      <td>Resources to consider warming.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">heuristic</code></td>
+      <td>Name of the rule that produced this hint.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">confidence</code></td>
+      <td><code class="language-plaintext highlighter-rouge">low</code>, <code class="language-plaintext highlighter-rouge">medium</code>, or <code class="language-plaintext highlighter-rouge">high</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Current expectation per the schema: “all initial prefetch hints should be
+treated as heuristic; confidence should stay <code class="language-plaintext highlighter-rouge">low</code> until we have
+validated transition data.” Today every hint is <code class="language-plaintext highlighter-rouge">low</code>. Promoting hints
+to <code class="language-plaintext highlighter-rouge">medium</code> or <code class="language-plaintext highlighter-rouge">high</code> requires runtime telemetry that does not exist yet.</p>
+
+<h2 id="example-manifest">Example manifest</h2>
+
+<p>A complete manifest for an ADS-cluster pack:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"schema_version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"manifest_kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scene_pack_manifest"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"pack_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ads-cluster-activity"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"pack_strategy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ads_cluster"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scene_indices"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"ads_names"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ACTIVITY.ADS"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"resources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"bmps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJDIVE.BMP"</span><span class="p">,</span><span class="w"> </span><span class="s2">"MJDIVE.BMP"</span><span class="p">,</span><span class="w"> </span><span class="s2">"JOHNWALK.BMP"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"scrs"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ISLETEMP.SCR"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"ttms"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJDIVE.TTM"</span><span class="p">,</span><span class="w"> </span><span class="s2">"MJDIVE.TTM"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"ads"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ACTIVITY.ADS"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"shared_candidates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"JOHNWALK.BMP"</span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"runtime_requirements"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"max_concurrent_threads"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"max_sprite_frames"</span><span class="p">:</span><span class="w"> </span><span class="mi">160</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"peak_memory_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">436592</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"memory_components"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"bmp_indexed_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">228598</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ttm_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">7288</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ads_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">2528</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"scr_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">112038</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"sprite_pointer_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ttm_slot_overhead_bytes"</span><span class="p">:</span><span class="w"> </span><span class="mi">49152</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"transition_hints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"likely_next_pack_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ads-cluster-building"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"high_churn_transitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w"> </span><span class="nl">"from_scene_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="nl">"to_scene_index"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nl">"total_resource_churn"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="w"> </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"transition_budget_notes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Derived from analyzer post-processing; not yet runtime-validated."</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"prefetch_hints"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"candidate_scene_indices"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"additional_bmps"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"FISHPOLE.BMP"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"additional_scrs"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+    </span><span class="nl">"additional_ttms"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"GJNAT3.TTM"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"heuristic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ads_family_union"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="s2">"low"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The pack compiler emits this alongside <code class="language-plaintext highlighter-rouge">pack_payload.bin</code>. The bytes
+described in the manifest’s <code class="language-plaintext highlighter-rouge">resources</code> lists end up referenced from
+<code class="language-plaintext highlighter-rouge">pack_index.json</code> — see the
+<a href="../pack-payload/">pack payload reference</a>
+for the relationship between the binary and its index.</p>
+
+<h2 id="how-the-manifest-is-consumed">How the manifest is consumed</h2>
+
+<p>Three readers, three jobs.</p>
+
+<p><strong>CD image build.</strong> <code class="language-plaintext highlighter-rouge">mkpsxiso</code> does not read the manifest itself, but the
+<code class="language-plaintext highlighter-rouge">cd_layout.xml</code> generator does. It walks the manifest set, picks which
+<code class="language-plaintext highlighter-rouge">FG\*.FG2</code> payloads to stamp onto the disc, and orders sectors so that
+packs the manifest marks as <code class="language-plaintext highlighter-rouge">likely_next_pack_ids</code> of each other land
+near each other on the spiral. This is best-effort — the layout file
+ships hand-curated for the pilot scenes — but the manifest is the source
+of truth when the layout gets regenerated.</p>
+
+<p><strong>Regtest harness.</strong> The <a href="../../regtest/">regtest</a>
+tooling reads each manifest at startup to know which scene indices a
+pack is supposed to cover. When a regtest run captures a screenshot for
+scene N, the harness looks up the manifest that owns N and asserts the
+pack actually loaded. If the pack loaded but the dirty-rect bookkeeping
+disagrees with the manifest’s <code class="language-plaintext highlighter-rouge">runtime_requirements</code>, the run is flagged
+for review.</p>
+
+<p><strong>Runtime sanity checks.</strong> The PS1 build does <em>not</em> parse JSON. It
+consumes a trimmed binary index (<code class="language-plaintext highlighter-rouge">pack_index.json</code> written into a
+fixed-shape sidecar) that carries only the fields the runtime cares
+about: pack ID, scene indices, magic + version of the corresponding FG2
+payload. A mismatch between disc and index is logged to TTY and the
+scene falls back to the legacy ADS path.</p>
+
+<h2 id="known-limitations">Known limitations</h2>
+
+<p>Direct from the schema doc:</p>
+
+<ul>
+  <li>the research sidecar index is still JSON</li>
+  <li>no shared-bank deduplication is applied across packs yet</li>
+  <li>no checksum validation is performed on-console yet</li>
+</ul>
+
+<p>The runtime does not currently verify SHA256 of the pack payload against
+the <code class="language-plaintext highlighter-rouge">sha256</code> field that <code class="language-plaintext highlighter-rouge">pack_index.json</code> carries per entry. That check
+exists only in the regtest harness today.</p>
+
+<h2 id="related-references">Related references</h2>
+
+<ul>
+  <li><a href="../pack-payload/">FG2 pack payload</a> —
+the binary the manifest describes.</li>
+  <li><a href="../transition-prefetch/">Transition prefetch schema</a> —
+the post-processed planner that feeds <code class="language-plaintext highlighter-rouge">prefetch_hints</code>.</li>
+  <li><a href="../../regtest/">Regression testing</a> — the
+consumer that uses manifests for cross-checks.</li>
+  <li><a href="../../build/">Build &amp; toolchain</a> — where
+<code class="language-plaintext highlighter-rouge">cd_layout.xml</code> and <code class="language-plaintext highlighter-rouge">mkpsxiso</code> come together.</li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_MANIFEST_SCHEMA.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_MANIFEST_SCHEMA.md</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../faq/">FAQ</a></li>
+          <li><a href="../../../credits/">Credits</a></li>
+          <li><a href="../../../hack/">Hack</a></li>
+          <li><a href="../../../source/">Source library</a></li>
+          <li><a href="../../../resources/">Resources</a></li>
+          <li><a href="../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

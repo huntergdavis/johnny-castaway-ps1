@@ -21,8 +21,8 @@ plus the 2026-04-25 batch — see milestones-2026-04-25.md).
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 180 |
-| Approx. words | 1156 |
+| Lines | 183 |
+| Approx. words | 1185 |
 | Code fences | 1 |
 
 ## Outline

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Archaeology — Johnny Castaway PS1</title>
+  <meta name="description" content="The full story of the Johnny Castaway PS1 fan port — from Sierra's 1992 screensaver through three prior reverse-engineered ports to the hybrid host-and-replay pipeline that made FISHING 1 work." />
+
+  <meta property="og:title"        content="Archaeology — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The full story of the Johnny Castaway PS1 fan port — from Sierra's 1992 screensaver through three prior reverse-engineered ports to the hybrid host-and-replay pipeline that made FISHING 1 work." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="./" aria-current="page">Archaeology</a></li>
+        <li><a href="../lab/">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">How a 1992 screensaver became a 2026 PS1 disc</p>
+      <h1>Archaeology</h1>
+      <p class="subtitle">Five chapters. The dead ends count.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>This is the long version. Twelve to fifteen minutes of reading, depending
+on how fast you skim the part where the printf calls corrupt the runtime.
+The short version lives on the <a href="../about/">About page</a>
+and the per-scene ledger lives at <a href="../scenes/">/scenes/</a>.</p>
+
+<p>The numbers, dates, and names below are real. Where something is unknown
+or contested, that’s stated. Where Hunter took a wrong turn, that’s stated
+too — the dead ends are what made the eventual method look obvious.</p>
+
+<section class="chapter">
+  <p><span class="chapter-num">Chapter 1</span></p>
+  <h2 id="the-screensaver-before-the-project">The screensaver before the project</h2>
+
+  <p>In November 1992, Sierra On-Line shipped <em>Johnny Castaway</em> as a Windows
+3.1 screensaver. It ran on a stretch of PC hardware that was already
+starting to feel old: a 386 with VGA, a
+Sound Blaster if you were lucky, and 4 megabytes of RAM if you’d
+splurged. The premise was small. A man is stranded on an island the
+size of a kitchen rug. He fishes. He reads books. He waves at passing
+ships that never stop. Holidays come and go and Johnny notices them in
+small ways — a Christmas tree, a turkey, a pumpkin. The whole thing is
+about ninety scenes deep, plays out in soft cartoon colors at 640x480,
+and was meant to run on your monitor when you walked away from your
+desk.</p>
+
+  <p>That last part matters. <em>Johnny Castaway</em> belongs to a genre that
+doesn’t really exist anymore: the screensaver as software product. In
+1992 a CRT monitor that displayed the same pixels for hours could
+literally burn the phosphor and leave a ghost image you could read
+through the next morning’s spreadsheet. Screensavers were necessary
+infrastructure. So they became a market. <em>After Dark</em> shipped flying
+toasters and aquariums and modular themes. <em>Idle PC</em> shipped puzzle
+worlds. Berkeley Systems made millions on what was, technically,
+software designed to do nothing.</p>
+
+  <p>Sierra’s contribution to that market was Johnny. The pitch was
+narrative. Most screensavers were patterns or kaleidoscopes; Johnny was
+a <em>story</em> you watched in glances. You’d come back from lunch and Johnny
+would be hauling something out of the surf. You’d come back from a
+meeting and a shark would be circling. The animation work is hand-drawn
+in the Sierra house style of the late King’s Quest era. The engine
+underneath is a small bytecode interpreter that walks through scripts
+named <code class="language-plaintext highlighter-rouge">FISHING.ADS</code>, <code class="language-plaintext highlighter-rouge">WALKSTUF.ADS</code>, <code class="language-plaintext highlighter-rouge">MISCGAG.ADS</code>, calling animation
+files (<code class="language-plaintext highlighter-rouge">TTM</code>) and resource files (<code class="language-plaintext highlighter-rouge">RES</code>) on demand.</p>
+
+  <p>The genre died for two reasons, both undramatic. LCD monitors don’t
+burn in the way CRTs did, so the <em>necessary infrastructure</em> argument
+disappeared in the early 2000s. And the kind of person who would have
+bought <em>After Dark</em> in 1993 had, by 2003, a web browser full of free
+distractions. The market for screensaver-as-product collapsed faster
+than the market for shareware. Most of the catalog from that era is
+unrecoverable now — gone with the floppies, the boxes, the install
+disks that nobody bothered to image. <em>Johnny Castaway</em> survived because
+people loved it enough to keep their original CDs and, eventually, to
+reverse-engineer the engine.</p>
+
+  <p>What’s left of the original release is a <code class="language-plaintext highlighter-rouge">JOHNNY.EXE</code> and a directory
+of <code class="language-plaintext highlighter-rouge">.ADS</code>, <code class="language-plaintext highlighter-rouge">.TTM</code>, and <code class="language-plaintext highlighter-rouge">.RES</code> files, plus a 286-era VGA palette and a
+batch of digitized sound effects. That’s the seed corpus for everything
+downstream.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">Chapter 2</span></p>
+  <h2 id="the-first-port">The first port</h2>
+
+  <p>The work that made every later port possible was done by <code class="language-plaintext highlighter-rouge">jno6809</code>,
+under the project name <code class="language-plaintext highlighter-rouge">jc_reborn</code>. It’s an SDL2 reimplementation of
+the original engine, written in plain C, available on GitHub. What
+that codebase actually accomplished, in technical terms, is the part
+nobody outside this small circle quite appreciates: it reads Sierra’s
+proprietary scripting bytecode and runs it.</p>
+
+  <p>The original <code class="language-plaintext highlighter-rouge">JOHNNY.EXE</code> is not a video player. It’s an interpreter.
+The <code class="language-plaintext highlighter-rouge">.ADS</code> files are <em>animation description scripts</em> — a small,
+stack-based bytecode that says things like “play TTM scene 17,” “wait
+for a sound to finish,” “branch on holiday flag,” “loop until input.”
+The <code class="language-plaintext highlighter-rouge">.TTM</code> files are the animations themselves, also bytecode, with
+opcodes like <code class="language-plaintext highlighter-rouge">DRAW_PIXEL</code>, <code class="language-plaintext highlighter-rouge">DRAW_LINE</code>, <code class="language-plaintext highlighter-rouge">LOAD_SPRITE</code>, <code class="language-plaintext highlighter-rouge">BLIT</code>, and
+<code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code>. The <code class="language-plaintext highlighter-rouge">.RES</code> files hold sprite atlases and palettes. The
+engine binds these together with a global “island state” — what time
+of day it is, what the tide is doing, which holiday is active, how far
+along the raft Johnny is building.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">jc_reborn</code> works out the bytecode. It walks every opcode. It reads
+the resource format. It manages the dirty-rect bookkeeping the
+original engine relied on to redraw only the pixels that changed,
+because in 1992 a 640x480 full-screen blit was expensive enough to
+matter. It does all this on top of SDL2 so it can run on a modern
+desktop, in a window, with the fan switching on after about thirty
+seconds because the SDL surface lock isn’t doing the original engine
+any favors.</p>
+
+  <p>You can quibble with parts of the implementation — the threading
+model, the audio mixer, how aggressively the dirty rectangles are
+coalesced — but the foundational work is solid, and once it exists,
+every subsequent port is a translation problem rather than a
+reverse-engineering problem. This PS1 project’s host build is a
+direct fork of <code class="language-plaintext highlighter-rouge">jc_reborn</code>. The ADS, TTM, and RES interpreters are
+that work, with PS1-specific glue around the edges.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">jno6809</code> did the difficult part. The credits page on the disc
+mentions it; this site mentions it; the source headers preserve the
+original copyright notice. The point is: there is a single moment
+where someone reads a binary format and writes the parser, and after
+that everyone else is doing applied work. That moment was 2017.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">Chapter 3</span></p>
+  <h2 id="across-the-ports">Across the ports</h2>
+
+  <p><code class="language-plaintext highlighter-rouge">jc_reborn</code> is the canonical decoding effort, but it isn’t the only
+one. Two other projects worked the same problem from different angles,
+and a fourth source kept the documentation trail intact.</p>
+
+  <p><strong><code class="language-plaintext highlighter-rouge">nivs1978/JCOS</code></strong> is an alternate decoding effort, written
+independently, that approaches the bytecode from a slightly different
+direction. The two interpreters do not always agree on edge cases.
+That disagreement is useful — when this project’s PS1 host capture
+disagreed with what a scene was supposed to look like, having a second
+reference implementation was a way to ask <em>whose interpretation is
+wrong, mine or the engine’s?</em> without having to crack the original
+1992 binary in a disassembler. JCOS rendered slightly different output
+on a handful of opcodes; the differences are catalogued in the host
+capture’s frame-meta JSON files.</p>
+
+  <p><strong><code class="language-plaintext highlighter-rouge">xesf/Castaway</code></strong> is a smaller reverse-engineering effort, more
+notes than running code, but it preserves things the running ports
+elide. Some of the engine’s quirks — the way it handles certain rare
+opcodes, the unusual tide-state flag, the off-by-one in palette index
+zero — appear in <code class="language-plaintext highlighter-rouge">xesf</code>’s notes before they appear anywhere else. When
+this project hit a TTM opcode that the SDL2 path was silently
+ignoring, <code class="language-plaintext highlighter-rouge">xesf</code>’s reading of the bytecode was the way to confirm
+“that’s not garbage, the original engine actually does that.”</p>
+
+  <p><strong>The Sierra Chest archive</strong> is a community-run repository of Sierra
+materials — manuals, box copy, install disk images, advertising. It’s
+the place where the original <code class="language-plaintext highlighter-rouge">JOHNNY.EXE</code> and resource files came
+from in the form this project uses them. Without the Chest there’s no
+way to verify a fresh dump against a known-good copy. Without that
+verification, every later “is the bytecode being read correctly”
+question becomes harder to answer.</p>
+
+  <p>None of these efforts are this project. None of them ported anything
+to the PS1, or wanted to. But the PS1 port stands on what each one
+preserved. The right way to think of the prior ports is as a
+<em>bibliography</em>: a row of books on the shelf you keep reaching for,
+each open to the chapter you need.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">Chapter 4</span></p>
+  <h2 id="the-ps1-question">The PS1 question</h2>
+
+  <p>The first commit on the PS1 branch landed on <strong>2025-10-18</strong>. The
+question that started it was specific: could a 1994 console run a
+1992 screensaver?</p>
+
+  <p>On paper the fit looks suspiciously good. The PlayStation 1 has 2 MB
+of main RAM. <em>Johnny Castaway</em>’s desktop port, after Hunter’s earlier
+<code class="language-plaintext highlighter-rouge">4mb2025</code> memory-optimization branch, peaks at about 350 KB. The
+console runs a native 640x480 mode. The original game was authored at
+640x480. The PS1’s hardware sprite engine is built for exactly the
+kind of indexed-palette compositing that Johnny’s sprites already use.
+On those numbers, the port is supposed to be easy.</p>
+
+  <p>It was not easy. It was, in fact, several months of dead ends.</p>
+
+  <p>The first prototype tried the obvious thing. Take <code class="language-plaintext highlighter-rouge">jc_reborn</code>’s SDL2
+codebase, swap SDL for PSn00bSDK, swap <code class="language-plaintext highlighter-rouge">fopen</code> for <code class="language-plaintext highlighter-rouge">CdRead</code>, and let
+the existing ADS/TTM/RES interpreters run on the MIPS R3000A. The
+build came up. Resources loaded from the CD. Scenes ran. And then,
+roughly, everything went wrong:</p>
+
+  <ul>
+    <li>
+      <p><strong>TTY logging corrupted the runtime.</strong> The host port leans heavily
+on <code class="language-plaintext highlighter-rouge">printf</code> and <code class="language-plaintext highlighter-rouge">vprintf</code> for tracing. On the PS1 those calls,
+routed through DuckStation’s TTY surface, were not safe in their
+unbounded form. Long scene playback would destabilize. The interim
+fix was to disable text logging entirely (<code class="language-plaintext highlighter-rouge">debugMode=0</code>) and debug
+by drawing colored pixels into the framebuffer with <code class="language-plaintext highlighter-rouge">LoadImage</code>.
+Reliable bounded <code class="language-plaintext highlighter-rouge">printf</code> did not arrive until <strong>2026-04-25</strong>.</p>
+    </li>
+    <li>
+      <p><strong>The SPI pad-poll fix took two days.</strong> The PSn00bSDK pad library
+(<code class="language-plaintext highlighter-rouge">InitPAD</code> / <code class="language-plaintext highlighter-rouge">StartPAD</code>) was unusable in the
+PSn00bSDK 0.24 + DuckStation environment. The replacement was a
+direct SIO0 driver derived from spicyjpeg’s MPL-licensed example.
+Spicyjpeg’s reference code uses a 4-byte poll transmission. On
+DuckStation, that returns <code class="language-plaintext highlighter-rouge">0xFFFF</code> for every button. The console
+only delivers the actual button bytes when the full 5-byte poll
+sequence is presented; <code class="language-plaintext highlighter-rouge">tx_len</code> had to be 5, not 4. Two days
+reading the SIO0 datasheet and the DuckStation source to figure out
+which side was wrong. (Both, depending on how you look at it.)</p>
+    </li>
+    <li>
+      <p><strong>Dirty-rect bookkeeping fought the pause menu.</strong> The optimization
+that makes the engine fast on 1992 hardware — only redraw the
+rectangles that changed since last frame — broke when the pause
+menu opened and closed mid-scene. <code class="language-plaintext highlighter-rouge">grRestoreBgTiles</code> was wiping
+<code class="language-plaintext highlighter-rouge">currDirty</code> without preserving <code class="language-plaintext highlighter-rouge">prevDirty</code>, so the resume after
+pause would paint a new frame on top of stale tiles. The fix is a
+helper, <code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame</code>, that the pause-menu close
+path now calls. That’s not interesting unless you’d seen the
+artifact, which was a row of Johnnys ghosting across the beach.</p>
+    </li>
+    <li>
+      <p><strong>VRAM corruption across scenes.</strong> The PS1 has 1 MB of VRAM. Sprite
+uploads through <code class="language-plaintext highlighter-rouge">LoadImage</code> need to be tracked because the GPU does
+not give that memory back when you’re done with it. Early builds
+would run one scene fine, transition to the next, and produce
+garbage in the upper half of the framebuffer where a previous
+scene’s atlas hadn’t been evicted. The eventual fix involves a
+small VRAM allocator with LRU eviction and explicit pinning for
+resources that need to stay resident.</p>
+    </li>
+  </ul>
+
+  <p>By <strong>early 2026</strong> it was clear the obvious approach — run Sierra’s
+bytecode on the PS1 — was working in degenerate cases and failing in
+real ones. There was a long detour through what came to be called the
+<em>restore pilot</em> era: an offline pipeline that analyzed every scene
+ahead of time, produced “restore specs” declaring which resources and
+dirty regions a scene actually needed, clustered them into 34
+contracts, and emitted a 1000-line auto-generated C header. That work
+was real; it produced 25 scenes that <em>looked</em> validated by
+March 21, 2026. Then 27 in a research snapshot. Then <strong>63 of 63</strong> on
+March 29, in a harness validation log that — read carefully later —
+was counting black frames and ocean-only frames as wins.</p>
+
+  <p>That 63/63 is now flagged in the project’s own status doc as a
+<em>false summit</em>. It mattered to admit that. The harness was honest
+about what it measured; the measurement was the wrong thing.</p>
+
+  <p>The pivot came on <strong>2026-04-12</strong>. The realization, which feels
+obvious in retrospect and was not obvious at the time, is: <em>don’t run
+Sierra’s bytecode on the PS1 at all</em>. Run it on the host. Capture
+exactly what pixels get drawn — every <code class="language-plaintext highlighter-rouge">DRAW_LINE</code>, <code class="language-plaintext highlighter-rouge">DRAW_PIXEL</code>,
+sprite blit, and <code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> event the TTM interpreter emits —
+into a small binary file per scene, per tide variant. Ship those
+files on the disc. The PS1 runtime becomes a player: it loads the
+correct <em>foreground pack</em>, walks through the captured draw events,
+fires SPU voices on the captured audio cues, and otherwise owns only
+the narrow native runtime — background tiles, wave animation, holiday
+overlays, input, pause menu.</p>
+
+  <p>This is the <em>hybrid pipeline</em>. Internally it’s called <code class="language-plaintext highlighter-rouge">fgpilot</code>
+because that’s what the directory was named when it was a pilot
+experiment that didn’t yet work. The name stuck. The project is
+gradually migrating it to <em>PS1 scene playback</em> in operator-facing
+docs. The internal name is in <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> and is going to
+stay there until someone has time to rename two thousand lines of C.</p>
+
+  <p>The first scene that worked, end to end, under this method was
+<strong>FISHING 1</strong>. By <strong>2026-04-21</strong> it was pixel-perfect across all
+variants — night, low tide, holiday overlay, raft-stage. By
+<strong>2026-04-22</strong> it had captured SFX replaying through the SPU with a
+3-frame delay constant to align key-on with the visible frame. The
+release tag is <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code>, commit <code class="language-plaintext highlighter-rouge">f2737253</code>. That’s the moment the
+project’s status page counts as the first real validated scene.</p>
+
+  <p>A second scene, <strong>FISHING 2</strong>, was promoted on <strong>2026-04-24</strong>. As of
+the current release <code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code>, the count is
+<strong>2 / 63</strong>.</p>
+
+  <p>The bar for “validated” is human visual signoff plus audible SFX
+signoff, across every applicable variant of a scene. It is not a
+machine metric. There is no automated test that decides what passes.
+That is on purpose — the harness era proved that automation can be
+honest about the wrong question.</p>
+</section>
+
+<section class="chapter">
+  <p><span class="chapter-num">Chapter 5</span></p>
+  <h2 id="where-it-stands-now">Where it stands now</h2>
+
+  <p>The disc plays. That’s the headline.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code> boots on DuckStation, loads from a 9.9 MB CD image,
+runs the validated scenes correctly, and idles cleanly through long
+sessions thanks to the loop-stability work in <code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code>. The PS1
+executable is about 84 KB after the legacy ADS/TTM/FG1 runtime paths
+were removed; the rest of the disc is foreground packs, the
+title raw, palette tables, and the resource map. The full FG2 corpus
+— 126 packs covering every scene’s high-tide and low-tide variants —
+exists offline at about 343 MB but only the validated scenes’ packs
+are routed into the CD image at any one time.</p>
+
+  <p>Around the validated-scene work, several other surfaces have come up
+to where they need to be:</p>
+
+  <p><strong>The 35 holidays expansion.</strong> The original game has a small set of
+holiday overlays — Christmas, Halloween, Thanksgiving, the Fourth of
+July. The PS1 port expands that to 35, including movable feasts that
+need a real Easter calculation. The Easter algorithm in use here is
+the Meeus / Jones / Butcher formulation. It’s accurate from 1900
+forward. The overlay is composited into the foreground replay path
+so it survives every scene that ships with a <code class="language-plaintext highlighter-rouge">holiday</code> variant.</p>
+
+  <p><strong>Closed captions.</strong> The captions on this port were authored fresh
+from scene content. They are not lifted from any prior corpus. There’s
+a confidence audit at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml">caption-audit-2026-04-26.yaml</a>
+that grades each ADS-tag → caption mapping. Some are high confidence
+(“Johnny is fishing”). Some are guesses. The guesses are marked.</p>
+
+  <p><strong>The pause menu.</strong> Press Start during any scene and you get an
+overlay menu — credits, holiday selection, captions toggle, mute,
+restart. It uses a custom embedded 8x8 ASCII font because PSn00bSDK’s
+<code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in the scene-runtime context: the
+primitives accumulate but no pixels appear. POLY_F4 quads handle the
+dim and the panel chrome. User settings persist to a memory card
+save at <code class="language-plaintext highlighter-rouge">bu00:</code> through <code class="language-plaintext highlighter-rouge">memcard.c</code>, which is currently in progress
+but reads and writes the basic option set.</p>
+
+  <p><strong>Audio.</strong> All 23 VAG sound effects are preloaded into SPU RAM at
+boot. <code class="language-plaintext highlighter-rouge">soundPlay(nb)</code> rotates them through 8 round-robin voices.
+<code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> is not honored by DuckStation’s HLE SPU —
+the mute path writes the master-volume registers directly. The VAG
+encoder in <code class="language-plaintext highlighter-rouge">scripts/wav2vag.py</code> and the SPU upload path in
+<code class="language-plaintext highlighter-rouge">sound_ps1.c</code> were debugged over the course of <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code>
+(commit <code class="language-plaintext highlighter-rouge">355227fa</code>) for issues including shift-exponent inversion,
+ADPCM nibble-pair order, SPU DMA 64-byte alignment, and ADSR1
+attack-rate orientation. Each of those was its own afternoon.</p>
+
+  <p><strong>Performance instrumentation.</strong> <code class="language-plaintext highlighter-rouge">ps1_perf.c</code> emits level-gated
+<code class="language-plaintext highlighter-rouge">JCPERF</code> / <code class="language-plaintext highlighter-rouge">JCPERF2</code> lines on the TTY. The level is set by
+<code class="language-plaintext highlighter-rouge">ps1PerfSetLevel(OFF / SUMMARY / DETAIL / DEBUG)</code>. Per-frame state
+that used to require visual debugging now also has a text breadcrumb
+trail. The visual telemetry overlay (5 panels) is still the right
+tool for per-frame state; the text logs are for setup and teardown.</p>
+
+  <p>What’s left is mostly more scenes. There are 61 more entries on the
+ledger — <code class="language-plaintext highlighter-rouge">ACTIVITY 1</code>, <code class="language-plaintext highlighter-rouge">BUILDING 1</code>, all of <code class="language-plaintext highlighter-rouge">JOHNNY</code>, all of <code class="language-plaintext highlighter-rouge">MARY</code>,
+the <code class="language-plaintext highlighter-rouge">STAND</code> set, the <code class="language-plaintext highlighter-rouge">VISITOR</code> set, <code class="language-plaintext highlighter-rouge">WALKSTUF</code>, the <code class="language-plaintext highlighter-rouge">MISCGAG</code> pair,
+and the rest of the <code class="language-plaintext highlighter-rouge">FISHING</code> family. Each one needs a host capture,
+a base-diff FG2 pack for both tide states, a CD layout entry, a
+routing entry in <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code>, and a human signoff. The
+estimated cost per scene is somewhere between an evening and a long
+weekend, depending on how many variants exist and how cleanly the
+host capture survives the bytecode. There is no committed timeline.
+The project ships when scenes ship.</p>
+
+  <p>There are also things that won’t ship. Real hardware testing is on
+the long-term list and may not happen — the PS1 hardware is plentiful
+and cheap, but burning a CD-R that boots on a real console without a
+modchip is a separate problem from making the game run. Memory card
+save/load is in progress but will likely stay minimal. A title screen
+beyond the existing <code class="language-plaintext highlighter-rouge">TITLE.RAW</code> is on the list and may stay there.
+The known limitations section in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/current-status.md">current-status.md</a>
+is the honest list of what is broken in ways that the project knows
+about.</p>
+
+  <p>The disc plays. The validated count is small. The author is one
+person. The work is open source under GPL-3.0 and free at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1">github.com</a>. The credits screen on the disc
+itself reads:</p>
+
+  <blockquote>
+    <p>A labor of love by Hunter Davis.</p>
+
+    <p>Hunter does not own or have a license to the Johnny Castaway
+character. The original creator generously allows fan ports.</p>
+
+    <p>If you paid for this, you were cheated.
+Open source and free.</p>
+  </blockquote>
+
+  <p>That’s the whole thing. That’s the project. The site’s
+<a href="../credits/">Credits page</a> lists the longer
+version — the prior ports, the toolchain authors, the algorithm
+references. None of this would exist without that bibliography. None
+of it would have shipped without one person deciding to keep going
+after the 63/63 turned out to mean nothing.</p>
+
+  <p>A 1992 screensaver runs on a 1994 console in 2026. The hardware
+matched. The bytecode was decoded long ago. The hard part was
+admitting which problem the PS1 was actually being asked to solve.</p>
+</section>
+
+<hr />
+
+<p>If you want the dated worklogs and the day-by-day progression rather
+than the narrative, those live at <a href="../devlog/">/devlog/</a>.
+The supporting archaeology — the timeline, the team, the raw source
+documents — is split across <a href="./timeline/">the era timeline</a>,
+<a href="./team/">the team page</a>, and
+<a href="./data/">the primary-source index</a>.
+For the exhaustive shelves, use the <a href="../source/">source library</a>,
+the <a href="../resources/">resource catalog</a>, and the
+<a href="./regtest-references/cases/">regtest case pages</a>.
+For the “how would I learn from this?” path, use
+<a href="../hack/">/hack/</a>.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="./regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

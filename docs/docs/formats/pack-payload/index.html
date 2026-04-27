@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>FG2 pack payload — Johnny Castaway PS1</title>
+  <meta name="description" content="Byte-level reference for the FG2 (Foreground Pilot 2) pack payload — the on-disc binary the PS1 build reads at runtime to replay one captured ADS scene. Header layout, palette, entry table, base/diff frame format, sound-event table, sector alignment, and a worked example walking the first 64 bytes." />
+
+  <meta property="og:title"        content="FG2 pack payload — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Byte-level reference for the FG2 (Foreground Pilot 2) pack payload — the on-disc binary the PS1 build reads at runtime to replay one captured ADS scene. Header layout, palette, entry table, base/diff frame format, sound-event table, sector alignment, and a worked example walking the first 64 bytes." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../">Home</a></li>
+        <li><a href="../../../play/">Play</a></li>
+        <li><a href="../../../about/">About</a></li>
+        <li><a href="../../../scenes/">Scenes</a></li>
+        <li><a href="../../../devlog/">Devlog</a></li>
+        <li><a href="../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../lab/">Lab</a></li>
+        <li><a href="../../../hack/">Hack</a></li>
+        <li><a href="../../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>FG2 pack payload</h1>
+      <p class="subtitle">The on-disc binary form of one captured ADS scene. 40-byte header, palette, entry table, base-plus-diff frame stream, padded to 2048-byte CD sectors.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. An <em>FG2 pack</em> is the on-disc binary form
+of one captured ADS scene — the pre-baked replay of what the original Sierra
+script does when it runs through to a stop. The PS1 does not interpret ADS
+bytecode at runtime; that work happens on a host build with full SDL2, and
+the result of every frame gets serialized into a flat binary file. At
+runtime the console reads the binary, walks an entry table, and presents one
+frame per VBlank window. There is no script, no thread scheduler, no
+TTM/SCR composition step. Just <code class="language-plaintext highlighter-rouge">read sector → upload pixels → wait</code>.</p>
+
+<p>The format is called <em>FG2</em> because it is the second iteration of the
+foreground-pilot binary. The first iteration was a quick proof-of-concept
+that did not align to CD sectors and made <code class="language-plaintext highlighter-rouge">CdRead</code> more painful than it had
+to be. FG2 keeps the same conceptual shape — header, palette, entry table,
+frames — but commits to 2048-byte sector alignment, a stable 40-byte
+header, and a single magic value (<code class="language-plaintext highlighter-rouge">FGP2</code>) that the runtime checks before
+trusting anything else. It is also still not the long-term binary form. The
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md">source schema doc</a>
+is explicit: “the live on-disc pilot format used by the runtime, even
+though it is still not the final long-term binary format.”</p>
+
+<p>The pack payload sits in the disc image as <code class="language-plaintext highlighter-rouge">FG\&lt;SCENENAME&gt;.FG2</code>. At runtime
+<code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> resolves the file with <code class="language-plaintext highlighter-rouge">CdSearchFile</code>, reads the header
+from sector 0, validates the magic, and uses <code class="language-plaintext highlighter-rouge">tableOffset</code> and <code class="language-plaintext highlighter-rouge">dataOffset</code>
+to find the rest. Sound events live at <code class="language-plaintext highlighter-rouge">soundEventsOffset</code> if the scene has
+any.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="on-disc-layout">On-disc layout</h2>
+
+<p>A pack file is a single contiguous binary. Top-level shape, in order:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Region</th>
+      <th>Size</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Header</td>
+      <td>40 bytes</td>
+      <td>Fixed-width. Magic <code class="language-plaintext highlighter-rouge">FGP2</code> first.</td>
+    </tr>
+    <tr>
+      <td>Palette</td>
+      <td>256 × 2 bytes (512 bytes)</td>
+      <td>16-bit BGR555, one entry per indexed color.</td>
+    </tr>
+    <tr>
+      <td>Entry table</td>
+      <td><code class="language-plaintext highlighter-rouge">frameCount</code> × 20 bytes</td>
+      <td>Located at <code class="language-plaintext highlighter-rouge">tableOffset</code>. One row per presented frame.</td>
+    </tr>
+    <tr>
+      <td>Sound-event table</td>
+      <td><code class="language-plaintext highlighter-rouge">soundEventCount</code> × 4 bytes</td>
+      <td>Located at <code class="language-plaintext highlighter-rouge">soundEventsOffset</code>. Optional.</td>
+    </tr>
+    <tr>
+      <td>Frame data stream</td>
+      <td>variable</td>
+      <td>Located at <code class="language-plaintext highlighter-rouge">dataOffset</code>. Concatenated base + diff frame payloads.</td>
+    </tr>
+    <tr>
+      <td>Trailing padding</td>
+      <td>up to 2047 bytes</td>
+      <td>Pads the file up to a 2048-byte sector boundary.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The header is read into a fixed <code class="language-plaintext highlighter-rouge">struct TFgPilotHeader</code> at runtime (40 bytes
+on the wire, packed). The palette is uploaded once to the CLUT region of
+VRAM at scene activation. The entry table is read once and cached. The
+sound-event table is small and read once. Only the frame data stream is
+streamed sector by sector during playback.</p>
+
+<h2 id="header-fields">Header fields</h2>
+
+<p>Header layout, exactly as <code class="language-plaintext highlighter-rouge">foreground_pilot.c:42</code> reads it:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">TFgPilotHeader</span> <span class="p">{</span>
+    <span class="kt">char</span>     <span class="n">magic</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>           <span class="cm">/* "FGP2" */</span>
+    <span class="n">uint16</span>   <span class="n">version</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">frameCount</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">displayVBlanks</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">reserved0</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">screenWidth</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">screenHeight</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">unionX</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">unionY</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">unionWidth</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">unionHeight</span><span class="p">;</span>
+    <span class="n">uint32</span>   <span class="n">tableOffset</span><span class="p">;</span>
+    <span class="n">uint32</span>   <span class="n">dataOffset</span><span class="p">;</span>
+    <span class="n">uint32</span>   <span class="n">soundEventsOffset</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">soundEventCount</span><span class="p">;</span>
+    <span class="n">uint16</span>   <span class="n">reserved1</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Total: 40 bytes (<code class="language-plaintext highlighter-rouge">FG_PACK_HEADER_SIZE</code> in the source). All multi-byte
+fields are little-endian (PS1 native).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">Offset</th>
+      <th style="text-align: right">Size</th>
+      <th>Field</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">0x00</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">magic</code></td>
+      <td>ASCII <code class="language-plaintext highlighter-rouge">"FGP2"</code>. Runtime rejects anything else.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x04</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">version</code></td>
+      <td>Header format version. Currently 1.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x06</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">frameCount</code></td>
+      <td>Number of rows in the entry table.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x08</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">displayVBlanks</code></td>
+      <td>Default VBlanks-per-frame when an entry does not override.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x0A</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">reserved0</code></td>
+      <td>Reserved. Currently flag bits: <code class="language-plaintext highlighter-rouge">0x0002</code> host-ticks, <code class="language-plaintext highlighter-rouge">0x0004</code> host-deadlines, <code class="language-plaintext highlighter-rouge">0x0008</code> scene-relative coords, <code class="language-plaintext highlighter-rouge">0x0010</code> base-diff payload required.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x0C</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">screenWidth</code></td>
+      <td>Capture screen width (typically 320).</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x0E</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">screenHeight</code></td>
+      <td>Capture screen height (typically 200).</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x10</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">unionX</code></td>
+      <td>Union dirty-rect X across all frames in this pack.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x12</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">unionY</code></td>
+      <td>Union dirty-rect Y.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x14</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">unionWidth</code></td>
+      <td>Union dirty-rect width.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x16</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">unionHeight</code></td>
+      <td>Union dirty-rect height.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x18</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">tableOffset</code></td>
+      <td>Byte offset of the entry table from the start of the file.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x1C</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">dataOffset</code></td>
+      <td>Byte offset of the frame-data stream.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x20</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">soundEventsOffset</code></td>
+      <td>Byte offset of the sound-event table, or 0 if none.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x24</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">soundEventCount</code></td>
+      <td>Row count for sound events. May be 0.</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x26</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">reserved1</code></td>
+      <td>Reserved, currently zero.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The flag bits in <code class="language-plaintext highlighter-rouge">reserved0</code> are an in-place revision channel — when the
+runtime needs a new behavior gated on a header property it stamps a flag
+there rather than bumping <code class="language-plaintext highlighter-rouge">version</code>. Of those, <code class="language-plaintext highlighter-rouge">0x0010</code> (base-diff payload
+required) is now mandatory: see commit <code class="language-plaintext highlighter-rouge">9122c0e</code> (“ps1: require base-diff
+foreground packs”). Packs without it are rejected.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">union*</code> fields exist so the runtime can pre-size its frame buffer and
+seed dirty-rect bookkeeping without reading the entry table first. They are
+the bounding rectangle that contains every per-frame dirty rect in the
+pack.</p>
+
+<h2 id="palette">Palette</h2>
+
+<p>Immediately after the header, at byte 40 (0x28), the file stores 256 × 2
+bytes of palette data. Each entry is a 16-bit value in PS1 BGR555 format:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bit 15        bit 0
+| | | | | | | | | | | | | | | | |
+ T  B B B B B  G G G G G  R R R R R
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">T</code> is the PS1 transparency bit (set means “transparent when drawn over a
+background”). The host capture tool fills this in from SDL2’s surface
+palette and re-encodes for PS1 GPU consumption. The runtime uploads this
+block as one DMA to the CLUT region.</p>
+
+<h2 id="entry-table">Entry table</h2>
+
+<p>At <code class="language-plaintext highlighter-rouge">tableOffset</code> (always 32-bit aligned), the file stores <code class="language-plaintext highlighter-rouge">frameCount</code>
+rows of 20 bytes each. The structure as <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> reads it:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">TFgPilotEntry</span> <span class="p">{</span>
+    <span class="n">uint16</span>   <span class="n">sourceFrame</span><span class="p">;</span>   <span class="cm">/* Original frame index in the captured scene */</span>
+    <span class="n">sint16</span>   <span class="n">x</span><span class="p">;</span>             <span class="cm">/* Dirty-rect top-left X for this frame */</span>
+    <span class="n">sint16</span>   <span class="n">y</span><span class="p">;</span>             <span class="cm">/* Dirty-rect top-left Y */</span>
+    <span class="n">uint16</span>   <span class="n">width</span><span class="p">;</span>         <span class="cm">/* Dirty-rect width */</span>
+    <span class="n">uint16</span>   <span class="n">height</span><span class="p">;</span>        <span class="cm">/* Dirty-rect height */</span>
+    <span class="n">uint16</span>   <span class="n">reserved0</span><span class="p">;</span>
+    <span class="n">uint32</span>   <span class="n">dataOffset</span><span class="p">;</span>    <span class="cm">/* Offset into the frame-data stream */</span>
+    <span class="n">uint32</span>   <span class="n">dataSize</span><span class="p">;</span>      <span class="cm">/* Payload byte count for this frame */</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Per-row layout:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">Offset</th>
+      <th style="text-align: right">Size</th>
+      <th>Field</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">0x00</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">sourceFrame</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x02</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">x</code> (signed)</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x04</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">y</code> (signed)</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x06</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">width</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x08</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">height</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x0A</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">reserved0</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x0C</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">dataOffset</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x10</td>
+      <td style="text-align: right">4</td>
+      <td><code class="language-plaintext highlighter-rouge">dataSize</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Total per row: 20 bytes (<code class="language-plaintext highlighter-rouge">FG_PACK_ENTRY_SIZE</code>).</p>
+
+<p><code class="language-plaintext highlighter-rouge">dataOffset</code> is from the start of the file, not from <code class="language-plaintext highlighter-rouge">dataOffset</code> in the
+header. The runtime can <code class="language-plaintext highlighter-rouge">CdRead</code> directly using this offset without further
+arithmetic. <code class="language-plaintext highlighter-rouge">dataSize</code> is the <em>unpadded</em> payload byte count for the frame;
+the actual on-disc layout may bump it up to a sector boundary, but only
+<code class="language-plaintext highlighter-rouge">dataSize</code> bytes are decompressed.</p>
+
+<h2 id="base--diff-frames">Base + diff frames</h2>
+
+<p>The first frame in the entry table is the <em>base</em>: a full indexed-color
+image of the dirty rectangle. Every subsequent frame is a <em>diff</em> — only
+the spans of pixels that changed since the previous frame, encoded as
+<code class="language-plaintext highlighter-rouge">(span_offset, span_len, pixels...)</code> runs.</p>
+
+<p>The runtime keeps a single <code class="language-plaintext highlighter-rouge">frameBuffer</code> of <code class="language-plaintext highlighter-rouge">union_width × union_height</code>
+indexed pixels and applies each diff in place. To draw a frame to the GPU
+it uploads the dirty rectangle to VRAM via <code class="language-plaintext highlighter-rouge">LoadImage</code>. The encoding
+choice is signalled by <code class="language-plaintext highlighter-rouge">packFormat</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Value</th>
+      <th>Constant</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2</td>
+      <td><code class="language-plaintext highlighter-rouge">kFgPilotPackFormatPal4Spans</code></td>
+      <td>4-bit indexed, run-length spans.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><code class="language-plaintext highlighter-rouge">kFgPilotPackFormatIndexed8Spans</code></td>
+      <td>8-bit indexed, run-length spans.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Format 3 is what current packs ship as. Format 2 was an experiment for the
+smaller-palette TTMs and is not currently emitted. The header flag
+<code class="language-plaintext highlighter-rouge">0x0010</code> (“base-diff payload required”) asserts that the pack is in this
+shape — packs older than that flag are rejected at load time.</p>
+
+<h2 id="sound-event-table">Sound-event table</h2>
+
+<p>If <code class="language-plaintext highlighter-rouge">soundEventsOffset</code> is non-zero, the file holds <code class="language-plaintext highlighter-rouge">soundEventCount</code> rows
+of 4 bytes:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">TFgPilotSoundEvent</span> <span class="p">{</span>
+    <span class="n">uint16</span>  <span class="n">sourceFrame</span><span class="p">;</span>
+    <span class="n">uint16</span>  <span class="n">sampleId</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">Offset</th>
+      <th style="text-align: right">Size</th>
+      <th>Field</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">0x00</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">sourceFrame</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: right">0x02</td>
+      <td style="text-align: right">2</td>
+      <td><code class="language-plaintext highlighter-rouge">sampleId</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">sourceFrame</code> matches the <code class="language-plaintext highlighter-rouge">sourceFrame</code> field on entry rows. <code class="language-plaintext highlighter-rouge">sampleId</code>
+indexes into the project’s sound bank. The runtime maintains a
+<code class="language-plaintext highlighter-rouge">soundEventCursor</code> and fires events as the playback head crosses their
+source frames.</p>
+
+<h2 id="padding--sector-alignment">Padding &amp; sector alignment</h2>
+
+<p>CD-ROM Mode 2 Form 1 sectors are 2048 bytes of user data. Every FG2 pack
+file is padded with zero bytes so its total length is a multiple of 2048.
+Inside the file, the source schema also aligns each compiled-pack resource
+to a 2048-byte boundary so streaming code can always issue
+sector-aligned reads. From the source doc:</p>
+
+<blockquote>
+  <p>Each resource starts on a <code class="language-plaintext highlighter-rouge">2048</code>-byte boundary so the payload can already
+be reasoned about in CD-sector terms. The first resource currently begins
+at sector 1, after the header/TOC block is padded up to <code class="language-plaintext highlighter-rouge">2048</code> bytes.</p>
+</blockquote>
+
+<p>The runtime reuses <code class="language-plaintext highlighter-rouge">streamScratch</code> (sector-sized, sector-aligned) for
+<code class="language-plaintext highlighter-rouge">CdRead</code> calls and copies the relevant slice into <code class="language-plaintext highlighter-rouge">frameBuffer</code> or
+<code class="language-plaintext highlighter-rouge">streamWindowBuffer</code>. <code class="language-plaintext highlighter-rouge">FG_PREFETCH_DEFAULT_WINDOW_BYTES</code> is 16 KB, which
+covers eight sectors worth of frame data — enough lookahead that the
+2x drive’s ~150 ms cold seek does not stall presentation. See
+<a href="../transition-prefetch/">transition prefetch</a>.</p>
+
+<p>The first 8192 bytes of the file are reserved as a metadata-prefix region
+(<code class="language-plaintext highlighter-rouge">FG_PACK_METADATA_PREFIX_BYTES</code>). The runtime treats this as the safe
+chunk to read in one shot at scene activation: header, palette, full entry
+table, sound-event table, and the start of the frame stream all fit
+within it for typical packs.</p>
+
+<h2 id="reading-a-pack-with-a-hex-dump">Reading a pack with a hex dump</h2>
+
+<p>Using <code class="language-plaintext highlighter-rouge">FG\FISHING1.FG2</code> as the canonical reference. The file lives on disc
+at the sector <code class="language-plaintext highlighter-rouge">mkpsxiso</code> chose at build time; <code class="language-plaintext highlighter-rouge">CdSearchFile</code> resolves it
+to a <code class="language-plaintext highlighter-rouge">CdlFILE</code> handle and the runtime reads from there.</p>
+
+<p>The first 40 bytes of the on-disc form should look like:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Offset  Bytes (hex)                                          ASCII
+------  ---------------------------------------------------  --------
+0x0000  46 47 50 32 01 00 NN NN  XX XX 00 00 NN NN NN NN     FGP2....
+0x0008  40 01 C8 00 RR RR RR RR  RR RR RR RR 28 02 00 00     @...........(...
+0x0018  TT TT TT TT 00 20 00 00  SS SS SS SS NN NN 00 00     ............
+</code></pre></div></div>
+
+<p>Field-by-field:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">0x00..0x03</code>: <code class="language-plaintext highlighter-rouge">46 47 50 32</code> — ASCII <code class="language-plaintext highlighter-rouge">FGP2</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x04..0x05</code>: <code class="language-plaintext highlighter-rouge">01 00</code> — version 1.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x06..0x07</code>: <code class="language-plaintext highlighter-rouge">NN NN</code> — frame count, little-endian. For FISHING1 this is
+in the low hundreds; the exact value depends on the captured run length.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x08..0x09</code>: <code class="language-plaintext highlighter-rouge">XX XX</code> — <code class="language-plaintext highlighter-rouge">displayVBlanks</code>, typically 4 or 6 (60 Hz / 4 ≈
+15 Hz, the original screensaver’s perceived rate).</li>
+  <li><code class="language-plaintext highlighter-rouge">0x0A..0x0B</code>: <code class="language-plaintext highlighter-rouge">reserved0</code>, header flag bits. With base-diff required this
+is at minimum <code class="language-plaintext highlighter-rouge">0x10 0x00</code> (little-endian <code class="language-plaintext highlighter-rouge">0x0010</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">0x0C..0x0D</code>: <code class="language-plaintext highlighter-rouge">40 01</code> — <code class="language-plaintext highlighter-rouge">screenWidth = 320</code> (<code class="language-plaintext highlighter-rouge">0x0140</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">0x0E..0x0F</code>: <code class="language-plaintext highlighter-rouge">C8 00</code> — <code class="language-plaintext highlighter-rouge">screenHeight = 200</code> (<code class="language-plaintext highlighter-rouge">0x00C8</code>).</li>
+  <li><code class="language-plaintext highlighter-rouge">0x10..0x17</code>: union dirty-rect (X, Y, W, H). FISHING1’s union covers the
+pier area, roughly <code class="language-plaintext highlighter-rouge">unionX ≈ 0xA0</code>, <code class="language-plaintext highlighter-rouge">unionY ≈ 0x60</code>, <code class="language-plaintext highlighter-rouge">unionWidth ≈
+0x80</code>, <code class="language-plaintext highlighter-rouge">unionHeight ≈ 0x40</code> — scene-dependent.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x18..0x1B</code>: <code class="language-plaintext highlighter-rouge">tableOffset = 0x00000228</code> (552). After the 40-byte header
+    <ul>
+      <li>512-byte palette = 552, where the entry table starts.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">0x1C..0x1F</code>: <code class="language-plaintext highlighter-rouge">dataOffset</code> — the offset where the frame-data stream
+starts. With <code class="language-plaintext highlighter-rouge">frameCount × 20</code> entry-table bytes packed in, this lands
+somewhere between 1 KB and 4 KB depending on frame count, and is then
+rounded up to the next 32-bit boundary.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x20..0x23</code>: <code class="language-plaintext highlighter-rouge">soundEventsOffset</code> — non-zero if the scene has any
+sound events; zero for silent packs.</li>
+  <li><code class="language-plaintext highlighter-rouge">0x24..0x25</code>: <code class="language-plaintext highlighter-rouge">soundEventCount</code> — row count for the sound-event table.</li>
+</ul>
+
+<p>Bytes <code class="language-plaintext highlighter-rouge">0x28..0x227</code> are the 256-entry palette (512 bytes of BGR555). The
+entry table starts at <code class="language-plaintext highlighter-rouge">tableOffset</code>. From there, every 20 bytes is one
+frame entry; <code class="language-plaintext highlighter-rouge">dataOffset</code> and <code class="language-plaintext highlighter-rouge">dataSize</code> on each row tell you where to
+read the frame payload from.</p>
+
+<p>If the magic at <code class="language-plaintext highlighter-rouge">0x00..0x03</code> is anything other than <code class="language-plaintext highlighter-rouge">FGP2</code>, the runtime
+will print a <code class="language-plaintext highlighter-rouge">JCFG2: bad magic</code> line to TTY and refuse to activate the
+pack. If <code class="language-plaintext highlighter-rouge">version</code> is not 1, same thing.</p>
+
+<h2 id="where-this-is-used">Where this is used</h2>
+
+<ul>
+  <li><strong>Runtime consumer</strong> —
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
+is the one and only PS1-side reader. It opens the file, validates the
+magic, walks the entry table, and presents one diff frame per
+<code class="language-plaintext highlighter-rouge">displayVBlanks</code> window. The base + diff format means it never has to
+decode a full image after the first frame.</li>
+  <li><strong>Host capture writer</strong> — the host build (under <code class="language-plaintext highlighter-rouge">jc_reborn-host/</code>)
+runs each ADS scene through SDL2 and emits the FG2 binary plus the
+manifest sidecar. That writer is the source of truth for the byte
+layout — the doc you are reading is a re-narration.</li>
+  <li><strong>Disc image</strong> — <code class="language-plaintext highlighter-rouge">cd_layout.xml</code> lists every <code class="language-plaintext highlighter-rouge">FG\*.FG2</code> file
+<code class="language-plaintext highlighter-rouge">mkpsxiso</code> should stamp onto <code class="language-plaintext highlighter-rouge">jcreborn.bin</code>. See
+<a href="../../build/">Build &amp; toolchain</a>.</li>
+  <li><strong>Manifest</strong> — every pack ships with a JSON sidecar. See
+<a href="../pack-manifest/">FG2 pack manifest</a>.</li>
+</ul>
+
+<h2 id="related-references">Related references</h2>
+
+<ul>
+  <li><a href="../pack-manifest/">FG2 pack manifest</a> —
+the JSON sidecar that travels with each pack.</li>
+  <li><a href="../dirty-region/">Dirty region template</a> —
+offline scene-state file consumed alongside a pack.</li>
+  <li><a href="../transition-prefetch/">Transition prefetch</a> —
+how the runtime decides which pack to start reading next.</li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/PACK_PAYLOAD_LAYOUT.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/PACK_PAYLOAD_LAYOUT.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../faq/">FAQ</a></li>
+          <li><a href="../../../credits/">Credits</a></li>
+          <li><a href="../../../hack/">Hack</a></li>
+          <li><a href="../../../source/">Source library</a></li>
+          <li><a href="../../../resources/">Resources</a></li>
+          <li><a href="../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,5 +1,8 @@
 # Pause Menu — Design
 
+> 🌐 **Rendered version:** **[/docs/pause-menu/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/pause-menu/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 **Status**: design locked, implementation not started
 **Branch**: `pause-menu-wire` (to be created at start of work)
 **Audience**: PS1 hardware target (DuckStation for testing, real hardware compatibility is a hard requirement). Host build out of scope.

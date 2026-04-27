@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Build & toolchain — Johnny Castaway PS1</title>
+  <meta name="description" content="How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 toolchain, the Docker dev image, cmake configuration, and the mkpsxiso CD pipeline." />
+
+  <meta property="og:title"        content="Build & toolchain — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 toolchain, the Docker dev image, cmake configuration, and the mkpsxiso CD pipeline." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Build</p>
+      <h1>Build & toolchain</h1>
+      <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This page documents the build pipeline that
+turns the source tree into <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. The toolchain is
+PSn00bSDK 0.24 + a MIPS cross-compiler, both of which live inside a
+reproducible Docker image so the build is identical on Linux, Intel macOS,
+Apple Silicon (via Rosetta 2), and Windows (via WSL2). The native macOS
+toolchain attempt was abandoned because the precompiled binaries from
+psx.arthus.net were missing <code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code> and were built for macOS 10.15.
+Docker won by default.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="what-you-need">What you need</h2>
+
+<ul>
+  <li><strong>Docker Desktop</strong> (or rootless Docker on Linux). The build never runs
+natively on the host.</li>
+  <li><strong>Git</strong>, to clone the repository.</li>
+  <li><strong>DuckStation</strong> for testing — the regtest image carries its own copy, but
+for live development you launch the desktop emulator yourself. Get a real
+PS1 BIOS file separately; the project does not redistribute one.</li>
+</ul>
+
+<h2 id="the-fast-path">The fast path</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Clone</span>
+git clone https://github.com/huntergdavis/Johnny-Castaway-PS1.git
+<span class="nb">cd </span>Johnny-Castaway-PS1
+
+<span class="c"># 2. Build the dev Docker image (one-time, ~5 min)</span>
+docker build <span class="nt">-f</span> Dockerfile.ps1 <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
+
+<span class="c"># 3. Build the PS1 executable + CD image</span>
+./build-ps1.sh
+
+<span class="c"># 4. Boot it</span>
+<span class="c">#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).</span>
+</code></pre></div></div>
+
+<p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. The CD image is
+about 650 KB. If you want the per-scene loop instead of a one-shot build,
+read <a href="../dev-workflow/">Development workflow</a>.</p>
+
+<h2 id="the-docker-image">The Docker image</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> is built <code class="language-plaintext highlighter-rouge">--platform linux/amd64</code> so it works on every host
+architecture the author owns. It’s based on Ubuntu 22.04 and installs:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Version</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PSn00bSDK</td>
+      <td>0.24</td>
+      <td>github.com/Lameguy64/PSn00bSDK</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mipsel-none-elf-gcc</code></td>
+      <td>12.3.0</td>
+      <td>github.com/Lameguy64/PSn00bSDK releases</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mkpsxiso</code> (CD authoring)</td>
+      <td>bundled</td>
+      <td>github.com/Lameguy64/mkpsxiso</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">elf2x</code> (ELF → PS-EXE)</td>
+      <td>bundled</td>
+      <td>shipped with PSn00bSDK</td>
+    </tr>
+    <tr>
+      <td>CMake</td>
+      <td>3.22+</td>
+      <td>Ubuntu 22.04</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Inside the container the toolchain lives at <code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/</code> with a
+<code class="language-plaintext highlighter-rouge">PATH=/opt/psn00bsdk/bin:/opt/mipsel-none-elf/bin:$PATH</code>. The host source
+tree mounts at <code class="language-plaintext highlighter-rouge">/project/</code>.</p>
+
+<h2 id="cmake-configuration">CMake configuration</h2>
+
+<p>The PS1 build is a separate CMake invocation from the host capture build.
+Configuration always points at the PSn00bSDK toolchain file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-B</span> build-ps1 <span class="nt">-S</span> <span class="nb">.</span> <span class="se">\</span>
+    <span class="nt">-DCMAKE_TOOLCHAIN_FILE</span><span class="o">=</span>/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+</code></pre></div></div>
+
+<p>Sources split into two groups in <code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code>. The core engine list
+is portable C — it compiles for both the host capture binary and the PS1.
+The PS1-specific list adds the PSn00bSDK adapter modules:</p>
+
+<div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span><span class="p">(</span>CORE_SOURCES
+    jc_reborn.c resource.c uncompress.c ttm.c ads.c story.c
+    walk.c calcpath.c island.c utils.c config.c bench.c<span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span>PS1_SOURCES
+    graphics_ps1.c sound_ps1.c events_ps1.c cdrom_ps1.c ps1_stubs.c<span class="p">)</span>
+
+<span class="nb">add_executable</span><span class="p">(</span>jcreborn <span class="si">${</span><span class="nv">CORE_SOURCES</span><span class="si">}</span> <span class="si">${</span><span class="nv">PS1_SOURCES</span><span class="si">}</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Linked PSn00bSDK libraries:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxgpu</code></td>
+      <td>GPU primitives, OT, VRAM upload</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxcd</code></td>
+      <td>CD-ROM access (<code class="language-plaintext highlighter-rouge">CdRead</code>, <code class="language-plaintext highlighter-rouge">CdSearchFile</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxspu</code></td>
+      <td>SPU init + voice keys for sound</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxapi</code></td>
+      <td>System / kernel calls</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxgte</code></td>
+      <td>Geometry transformation engine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxsio</code></td>
+      <td>Serial I/O (TTY breadcrumbs)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">psxpress</code></td>
+      <td>CD compression/decompression utilities</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Link order matters because they’re static archives. <code class="language-plaintext highlighter-rouge">psxgpu</code> first;
+<code class="language-plaintext highlighter-rouge">psxpress</code> last; everything else in the middle. See
+<code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code> for the canonical order.</p>
+
+<p>The compiler flags inherited from PSn00bSDK’s toolchain file are
+<code class="language-plaintext highlighter-rouge">-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding</code>. The project layers
+its own <code class="language-plaintext highlighter-rouge">-O2 -Wall -Wpedantic</code> on top.</p>
+
+<h2 id="the-end-to-end-build-by-hand">The end-to-end build, by hand</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure</span>
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
+    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
+             cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .."</span>
+
+<span class="c"># Compile (produces build-ps1/jcreborn.elf and jcreborn.exe)</span>
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
+    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; make"</span>
+
+<span class="c"># Author the CD image</span>
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
+    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkpsxiso cd_layout.xml"</span>
+</code></pre></div></div>
+
+<p>The post-build step inside CMake runs <code class="language-plaintext highlighter-rouge">elf2x -q jcreborn jcreborn.exe</code>,
+which is what <code class="language-plaintext highlighter-rouge">mkpsxiso</code> actually packages onto the disc. The <code class="language-plaintext highlighter-rouge">.elf</code> is
+useful for symbol lookups when debugging.</p>
+
+<h2 id="cd-layout">CD layout</h2>
+
+<p><code class="language-plaintext highlighter-rouge">cd_layout.xml</code> describes the ISO9660 tree that <code class="language-plaintext highlighter-rouge">mkpsxiso</code> writes:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;iso_project</span> <span class="na">image_name=</span><span class="s">"jcreborn.bin"</span> <span class="na">cue_sheet=</span><span class="s">"jcreborn.cue"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;track</span> <span class="na">type=</span><span class="s">"data"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;directory_tree&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"JCREBORN.EXE"</span> <span class="na">source=</span><span class="s">"build-ps1/jcreborn.exe"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"RESOURCE.MAP"</span> <span class="na">source=</span><span class="s">"jc_resources/RESOURCE.MAP"</span><span class="nt">/&gt;</span>
+      <span class="nt">&lt;file</span> <span class="na">name=</span><span class="s">"RESOURCE.001"</span> <span class="na">source=</span><span class="s">"jc_resources/RESOURCE.001"</span><span class="nt">/&gt;</span>
+      <span class="c">&lt;!-- per-scene .FG2 packs added here as scenes get wired --&gt;</span>
+    <span class="nt">&lt;/directory_tree&gt;</span>
+  <span class="nt">&lt;/track&gt;</span>
+<span class="nt">&lt;/iso_project&gt;</span>
+</code></pre></div></div>
+
+<p>Boot configuration lives in <code class="language-plaintext highlighter-rouge">SYSTEM.CNF</code>:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BOOT  = cdrom:\JCREBORN.EXE;1
+TCB   = 4
+EVENT = 10
+STACK = 801FFF00
+</code></pre></div></div>
+
+<p>Per-scene <code class="language-plaintext highlighter-rouge">.FG2</code> packs are added under <code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code> as scenes
+get wired in — see <a href="../dev-workflow/">Development workflow</a>
+for the routing step.</p>
+
+<h2 id="the-wrapper-scripts">The wrapper scripts</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Script</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">build-ps1.sh</code></td>
+      <td>Clean rebuild of executable + CD image. The “make me a fresh disc” button.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></td>
+      <td>Incremental executable build only. No CD authoring.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code></td>
+      <td>Re-run <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against the current <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.exe</code>. Faster than a full rebuild when only the layout XML changed.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></td>
+      <td>Rebuild + CD + launch DuckStation with a temporary TTY-logging config. Used for day-to-day scene work.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The clean build path inside <code class="language-plaintext highlighter-rouge">build-ps1.sh</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; rm -rf build-ps1"</span>
+
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkdir build-ps1 &amp;&amp; cd build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
+        cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .. &amp;&amp; make"</span>
+
+docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
+    jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkpsxiso cd_layout.xml"</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">make-cd-image.sh</code> is the third step on its own and is fast enough to run
+between scene edits.</p>
+
+<h2 id="common-breakages">Common breakages</h2>
+
+<p><strong>“Could not find toolchain file”</strong> — PSn00bSDK didn’t install correctly in
+the container. Confirm <code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake</code>
+exists in the image:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
+    <span class="nb">ls</span> /opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+</code></pre></div></div>
+
+<p><strong>“undefined reference to <code class="language-plaintext highlighter-rouge">SpuInit</code>“</strong> — A new audio path needs <code class="language-plaintext highlighter-rouge">psxspu</code> in
+the link list. Audio code that doesn’t link will surface as missing
+<code class="language-plaintext highlighter-rouge">SpuSetKey</code>, <code class="language-plaintext highlighter-rouge">SpuSetVoiceAttr</code>, etc.</p>
+
+<p><strong>“File not found: RESOURCE.MAP”</strong> — The CD step is run from the wrong
+directory or the resource files are missing. <code class="language-plaintext highlighter-rouge">ls jc_resources/RESOURCE.MAP
+jc_resources/RESOURCE.001</code> should both succeed before <code class="language-plaintext highlighter-rouge">mkpsxiso</code> runs.</p>
+
+<p><strong>Permission errors on build outputs</strong> — Never run docker with <code class="language-plaintext highlighter-rouge">sudo</code>. If
+ownership is already wrong, <code class="language-plaintext highlighter-rouge">sudo chown -R $USER:$USER .</code> once and never
+again. Sudo + Docker breaks DuckStation’s access to the cue file in
+unrelated and surprising ways.</p>
+
+<h2 id="verifying-a-fresh-setup">Verifying a fresh setup</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Toolchain version check</span>
+docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 mipsel-none-elf-gcc <span class="nt">--version</span>
+<span class="c"># expected: mipsel-none-elf-gcc (GCC) 12.3.0</span>
+
+<span class="c"># Full build smoke test</span>
+./build-ps1.sh
+<span class="nb">ls</span> <span class="nt">-lh</span> jcreborn.bin jcreborn.cue
+<span class="c"># expected: jcreborn.bin around 650 KB, jcreborn.cue a few hundred bytes</span>
+</code></pre></div></div>
+
+<p>If both succeed, the next step is loading <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in DuckStation —
+or running it through the <a href="../regtest/">headless regtest harness</a>.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../dev-workflow/">Development workflow</a> — what to do
+<em>with</em> a fresh build, scene by scene.</li>
+  <li><a href="../regtest/">Regression testing</a> — booting the disc
+image headlessly for screenshots and TTY capture.</li>
+  <li><a href="../api/">API mapping</a> — what each PSn00bSDK
+library is replacing.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/build-system.md"><code class="language-plaintext highlighter-rouge">docs/ps1/build-system.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/toolchain-setup.md"><code class="language-plaintext highlighter-rouge">docs/ps1/toolchain-setup.md</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code></a></li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/CMakeLists.ps1.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

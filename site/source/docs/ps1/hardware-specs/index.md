@@ -21,8 +21,8 @@ Technical specifications of the PlayStation 1 hardware relevant to the Johnny Re
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/hardware-specs.md` |
-| Lines | 181 |
-| Approx. words | 634 |
+| Lines | 184 |
+| Approx. words | 663 |
 | Code fences | 3 |
 
 ## Outline

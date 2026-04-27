@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Lab — Johnny Castaway PS1</title>
+  <meta name="description" content="The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port." />
+
+  <meta property="og:title"        content="Lab — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="./" aria-current="page">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Magazine . Methodology and reflection</p>
+      <h1>Lab</h1>
+      <p class="subtitle">How a one-person PS1 fan port actually gets built. Twelve feature articles on the craft, the failures, and the tools.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The pages collected here are not the
+devlog and they are not the docs. The devlog is reverse-chronological,
+unedited, dated; it is what was in my head on a particular Tuesday. The
+docs are reference manuals; they tell you what <code class="language-plaintext highlighter-rouge">FntFlush</code> does and how
+the regtest harness loads a BIOS. The Lab is the third thing. It’s
+where I write down <em>how the work actually gets done</em> — the tools, the
+habits, the tricks, the things that surprised me, the things that
+failed.</p>
+
+<p>I’ve been porting Johnny Castaway to one platform or another for years
+now. Dreamcast, embedded Linux on framebuffer-console boxes, RetroFW
+handhelds, a receipt-printer text edition. The PS1 port is another
+expression of an existing practice. What’s changed about the practice
+in the last six months is mostly the <em>pace</em> — sub-agents draft code and
+prose in parallel, a Docker farm runs builds and regressions while I
+sleep, a thirty-cent novelty bird taps a keyboard when I’m not at it.
+This section is where I write all that down so I’ll remember next time.</p>
+
+<p>A few of these articles were drafted by AI sub-agents and then
+human-edited, in the same workflow described inside them. That
+disclosure is part of the methodology, not an apology for it. The
+voice anchor for the whole site — the four-line <code class="language-plaintext highlighter-rouge">drawCredits</code> text in
+<code class="language-plaintext highlighter-rouge">src/pause_menu.c</code> — is hand-written and load-bearing; everything
+downstream of it gets edited until it sounds like the same person. The
+<a href="./voice-anchor-problem/">voice-anchor article</a>
+goes into how that pipeline works in practice.</p>
+
+<p>If you want the practical learning path rather than the magazine treatment,
+start with the <a href="../hack/">Curious Hacker’s Guide</a>. If you
+want the raw documents behind the essays, use the
+<a href="../source/">source library</a> and the
+<a href="../resources/">resource catalog</a>.</p>
+
+<h2 id="contents">Contents</h2>
+
+<p>Twelve feature articles in two streams. The first six are mine; the
+second six are the companion craft retrospectives.</p>
+
+<h3 id="methodology-infrastructure-and-tools">Methodology, infrastructure, and tools</h3>
+
+<ul class="doc-grid">
+  <li>
+    <a href="./dunking-bird/">The dunking bird</a>
+    <p>How a fifty-cent novelty toy kept a Johnny Castaway performance experiment alive for nine days. The hack, the science, the coda.</p>
+  </li>
+  <li>
+    <a href="./llm-pass/">The LLM pass</a>
+    <p>How a one-person fan port uses AI sub-agents without lying about it. The methodology essay; the docs version is at <a href="../docs/agents/">/docs/agents/</a>.</p>
+  </li>
+  <li>
+    <a href="./hallucination-engineering/">Hallucination engineering</a>
+    <p>Mitigating LLM-driven dev's specific failure mode: confident wrong answers. War stories, mitigations, what the year of practice teaches.</p>
+  </li>
+  <li>
+    <a href="./build-farm/">The 24/7 build farm</a>
+    <p>Docker, multiple branches, headless DuckStation. How a one-person project keeps a build matrix running around the clock.</p>
+  </li>
+  <li>
+    <a href="./regression-as-lifestyle/">Regression as a lifestyle</a>
+    <p>Continuous regtest is not a CI feature. On this project it's a way of working — frame-by-frame screenshot diffs are the heartbeat.</p>
+  </li>
+  <li>
+    <a href="./voice-anchor-problem/">The voice anchor problem</a>
+    <p>Keeping a project's voice consistent when half the prose was drafted by AI sub-agents. The drawCredits text, the voice guide, the audit pass.</p>
+  </li>
+</ul>
+
+<h3 id="craft-retrospectives">Craft retrospectives</h3>
+
+<ul class="doc-grid">
+  <li>
+    <a href="./pixel-perfect-pivot/">The pivot that almost didn't happen</a>
+    <p>How the project nearly shipped at "looks similar" before pixel-perfect became the bar. A retrospective on the choice that defined everything else.</p>
+  </li>
+  <li>
+    <a href="./35-holidays-codegen/">35 holidays in 4 weeks: a codegen study</a>
+    <p>From four shipped holidays to thirty-six in a month, via Meeus, Zeller, and a YAML file that compiles to a C struct array.</p>
+  </li>
+  <li>
+    <a href="./why-i-keep-porting-johnny/">Why I keep porting Johnny Castaway</a>
+    <p>Dreamcast, picture frame, embedded Linux, PS1. The same screensaver, four times. What I'm actually doing when I do it again.</p>
+  </li>
+  <li>
+    <a href="./two-day-spi-bug/">The two-day SPI bug</a>
+    <p>A war story about the PS1 controller pad-poll TX length. DuckStation only delivers button bytes when you send the full five-byte sequence. Spicyjpeg's example is wrong about that.</p>
+  </li>
+  <li>
+    <a href="./fan-port-in-public/">Building a fan port in public</a>
+    <p>Disclaimers, the original creator, GPL-3.0 inheritance, "if you paid for this, you were cheated." How shipping a fan port works without lawyers in 2026.</p>
+  </li>
+  <li>
+    <a href="./the-63-scene-grind/">The 63-scene grind</a>
+    <p>Two scenes signed off, sixty-one to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
+  </li>
+</ul>
+
+<h2 id="what-this-section-is-not">What this section is not</h2>
+
+<p>It’s not a contributor onboarding. It’s not a tutorial series. It’s not
+content marketing for the project. There is no “in this section we’ll
+explore” framing, no roadmap of future articles, no call to action at
+the bottom. It is the methodology I would write up if a future me were
+porting Johnny Castaway again to a fifth platform and wanted to know
+what worked, and that future me is the primary reader. You’re welcome
+to read along.</p>
+
+<p>For the live status of the port, see
+<a href="../about/status/">/about/status/</a>. For the
+day-by-day worklogs, see
+<a href="../devlog/">/devlog/</a>. For reference docs, see
+<a href="../docs/">/docs/</a>. For a guided path through the
+codebase, see <a href="../hack/">/hack/</a>.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Hallucination engineering — Johnny Castaway PS1</title>
+  <meta name="description" content="A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline." />
+
+  <meta property="og:title"        content="Hallucination engineering — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab . Advanced development techniques</p>
+      <h1>Hallucination engineering</h1>
+      <p class="subtitle">The failure mode is not that the model is weird. The failure mode is that it sounds normal.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-expensive-kind-of-wrong">The expensive kind of wrong</h2>
+
+<p>The dangerous LLM answer is not the surreal one. The dangerous answer is the
+one that almost looks like the codebase.</p>
+
+<p>It names <code class="language-plaintext highlighter-rouge">foregroundPilotRuntimeCaptionStart()</code> because the surrounding code
+has <code class="language-plaintext highlighter-rouge">foregroundPilotRuntimeStart()</code>, <code class="language-plaintext highlighter-rouge">foregroundPilotRuntimeAdvance()</code>, and
+<code class="language-plaintext highlighter-rouge">foregroundPilotRuntimeCompose()</code>. It suggests a <code class="language-plaintext highlighter-rouge">--holiday-id</code> flag because
+there is a <code class="language-plaintext highlighter-rouge">holiday</code> boot token and a pause-menu override. It says the memory
+card saves captions because that would be a sensible thing to save.</p>
+
+<p>All of those can be false. They are not obviously false. That’s why they cost
+time.</p>
+
+<p>Hallucination engineering is the practice of making that failure mode cheap
+to detect.</p>
+
+<h2 id="source-first">Source first</h2>
+
+<p>The first rule is simple: the agent has to read the files.</p>
+
+<p>Not “you know C”. Not “this is probably a Jekyll site”. The actual files.
+<code class="language-plaintext highlighter-rouge">src/pause_menu.c</code>. <code class="language-plaintext highlighter-rouge">src/jc_reborn.c</code>. <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>. <code class="language-plaintext highlighter-rouge">holidays.yml</code>.
+The generated pages under <code class="language-plaintext highlighter-rouge">site/docs/holidays/calendar/</code>. The build script.
+The release script. If the task touches a subsystem, the agent reads the
+subsystem before it writes.</p>
+
+<p>That does two things. It gives the model real names and real constraints. It
+also gives me a review handle: if the answer does not cite or edit the files
+I know it needed, I treat the answer as suspect.</p>
+
+<h2 id="the-generated-shelves">The generated shelves</h2>
+
+<p>The source library on this site is not just for readers. It is also an
+anti-hallucination tool.</p>
+
+<p>Every Markdown source file gets a web wrapper with a source path, outline,
+word count, and category. The regtest references get one page per preserved
+case. The resource catalog lists the BMPs, ADS scripts, TTM animations, VAG
+samples, PSB sprite banks, and FG2 packs. That gives the next agent something
+specific to search instead of asking it to infer the archive from memory.</p>
+
+<p>Generated shelves are not glamorous. They are the difference between “there
+might be a doc about this” and “the source-library page says this file exists
+and here is the heading outline.”</p>
+
+<h2 id="build-gates-beat-confidence">Build gates beat confidence</h2>
+
+<p>The compiler is still the best hallucination detector ever shipped.</p>
+
+<p>For code changes, the answer does not count until the build runs. On this
+project that usually means:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/build-ps1.sh
+./scripts/make-cd-image.sh
+</code></pre></div></div>
+
+<p>For site changes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>site
+bundle <span class="nb">exec </span>jekyll build
+</code></pre></div></div>
+
+<p>For holiday changes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 scripts/holidays-test.py
+./scripts/holidays-build-all.sh
+</code></pre></div></div>
+
+<p>A model can sound very sure about a Liquid include. Jekyll does not care. A
+model can be very confident about a struct field. GCC does not care. Good.</p>
+
+<h2 id="runtime-gates-matter-too">Runtime gates matter too</h2>
+
+<p>Some hallucinations compile.</p>
+
+<p>The PS1 pad bug compiled. The wrong <code class="language-plaintext highlighter-rouge">tx_len</code> compiled. The pause-menu dirty
+rectangle bug compiled. Caption text mapped to the wrong scene compiles
+perfectly and is still wrong.</p>
+
+<p>That’s why this project has visual gates. DuckStation captures. Host
+references. Frame metadata. Perf logs. Holiday sprite sheets. Human review on
+the actual emulator window. A passing build means the artifact is syntactically
+real. It does not mean it is right.</p>
+
+<h2 id="prompt-shape-that-works">Prompt shape that works</h2>
+
+<p>The prompts that work here are ugly in the way good engineering documents are
+ugly:</p>
+
+<ul>
+  <li>“Only edit these files.”</li>
+  <li>“Do not touch <code class="language-plaintext highlighter-rouge">src/holidays.c</code>.”</li>
+  <li>“Index 0 is transparent.”</li>
+  <li>“Build must pass.”</li>
+  <li>“If you cannot find the function, say that.”</li>
+  <li>“Cite the file and line you used.”</li>
+</ul>
+
+<p>The prompts that fail are soft:</p>
+
+<ul>
+  <li>“Make it better.”</li>
+  <li>“Be comprehensive.”</li>
+  <li>“Use your judgment.”</li>
+  <li>“Write in my voice.”</li>
+</ul>
+
+<p>Those are goals, not constraints. Goals need constraints under them.</p>
+
+<h2 id="the-one-human-rule">The one human rule</h2>
+
+<p>No agent merges itself.</p>
+
+<p>That sounds obvious until you run six agents in parallel and one of them
+produces exactly the page you wanted. The temptation is to trust the shape of
+the output. Don’t. Read it. Build it. Search for broken links. Ask where every
+claim came from.</p>
+
+<p>I use agents because they make the work faster. I keep the review bar because
+the project has my name on the Credits screen.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../llm-pass/">The LLM pass</a></li>
+  <li><a href="../../docs/agents/">AI sub-agents on this project</a></li>
+  <li><a href="../regression-as-lifestyle/">Regression as a lifestyle</a></li>
+  <li><a href="../../source/">Source library</a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

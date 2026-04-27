@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Retired scripts — Johnny Castaway PS1</title>
+  <meta name="description" content="Fourteen retired scripts from the Johnny Castaway PS1 fan port's binary-library regression era — what each one did, why it was useful, and why it was retired when the project pivoted away from history-bisection." />
+
+  <meta property="og:title"        content="Retired scripts — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Fourteen retired scripts from the Johnny Castaway PS1 fan port's binary-library regression era — what each one did, why it was useful, and why it was retired when the project pivoted away from history-bisection." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Archaeology</p>
+      <h1>Retired scripts</h1>
+      <p class="subtitle">Fourteen shell and Python scripts from the binary-library regression era, kept here so the era's tooling is findable without commit archaeology.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>The <code class="language-plaintext highlighter-rouge">retired-scripts/</code> directory holds fourteen scripts that ran during
+the 2026-03-29 to 2026-04-11 binary-library regression era. They built
+the <a href="../binary-library/">binary library</a>,
+swept through it looking for regressions in FISHING 1, and reported on
+its coverage gaps. None of them are invoked by the current operator
+workflow. They are preserved here per the cleanup plan’s <code class="language-plaintext highlighter-rouge">phase_04</code>
+archive decision so that “what existed during the binary-library era”
+is one directory listing rather than a commit archaeology exercise.</p>
+
+<p>The scripts’ own README documents the inventory in tabular form. What
+follows is the narrative version — what each one was for, what made it
+the right call at the time, and what made retiring it the right call
+once the project changed shape.</p>
+
+<h2 id="the-library-builders">The library builders</h2>
+
+<p><code class="language-plaintext highlighter-rouge">build-binary-library.sh</code> (17 KB) was the workhorse. Given a commit
+range, it walked every code-changing commit, built the PS1 exe and the
+disc image at that commit using the existing <code class="language-plaintext highlighter-rouge">build-ps1.sh</code> and
+<code class="language-plaintext highlighter-rouge">make-cd-image.sh</code>, captured a <code class="language-plaintext highlighter-rouge">metadata.json</code> recording the build
+result, and dropped everything into a sequence-numbered directory
+under <code class="language-plaintext highlighter-rouge">binary-library/</code>. It was last touched on 2026-04-12 in commit
+<code class="language-plaintext highlighter-rouge">0c6387a9</code>. Over the course of the era it produced approximately
+118 GB of artefacts indexed by 6,902 entries.</p>
+
+<p><code class="language-plaintext highlighter-rouge">regtest-binary-library-scene.sh</code> (26 KB) was the consumer. Given a
+specific scene tag and a binary-library entry, it spun up DuckStation
+against the entry’s exe and disc image, captured frames, and ran the
+regtest comparison logic. This was how FISHING 1 — and only FISHING 1,
+in practice — got swept across history. Last touched 2026-04-12,
+commit <code class="language-plaintext highlighter-rouge">fa5be68e</code>.</p>
+
+<p>Both scripts assumed a working <code class="language-plaintext highlighter-rouge">binary-library/</code> tree on disk. With the
+payloads deleted in 2026-04-22, neither script will run end-to-end
+without rebuilding the tree first.</p>
+
+<h2 id="the-fishing-1-onset-hunters">The FISHING-1 onset hunters</h2>
+
+<p>This is a family of five scripts, all dealing with the same question
+in different framings: <em>when in history did FISHING 1 first do thing X?</em></p>
+
+<p><code class="language-plaintext highlighter-rouge">find-fishing1-startup-onset.sh</code> (20 KB) hunted for the commit where
+the scene first reached the launched-and-running state. The “onset” was
+the boundary between a build that crashed before the title and a build
+that booted into the scene. Last touched 2026-04-11, commit <code class="language-plaintext highlighter-rouge">8d2e6d90</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">find-fishing1-visibility-onset.sh</code> (16 KB) hunted for the commit where
+the scene first drew anything visible — sprites on the screen rather
+than just a background. The two onsets were not the same; a scene
+could “start” without drawing.</p>
+
+<p><code class="language-plaintext highlighter-rouge">continue-fishing1-startup-onset.sh</code> (9 KB) was the resume-from-where-
+you-left-off variant for when the startup-onset sweep was interrupted.
+The sweep took hours; if a workstation rebooted partway through, this
+script found the last successful library entry and continued from
+there.</p>
+
+<p><code class="language-plaintext highlighter-rouge">refine-fishing1-startup-onset.sh</code> (3 KB) and
+<code class="language-plaintext highlighter-rouge">refine-fishing1-visibility-onset.sh</code> (4 KB) were the narrow-the-range
+variants. After a coarse sweep had bracketed an onset to between two
+commits, these scripts ran the same comparison at higher resolution —
+every commit in the bracket — to pin the boundary down to a single
+commit.</p>
+
+<p><code class="language-plaintext highlighter-rouge">scan-fishing1-binary-regression.sh</code> (11 KB) was the same idea applied
+to regressions: given a known-good earlier commit and a known-broken
+later commit, sweep the library for the boundary commit where the
+regression entered. Last touched 2026-04-11, commit <code class="language-plaintext highlighter-rouge">8d2e6d90</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">find-fishing1-regression-boundary.py</code> (7 KB) was the binary-search
+implementation underneath the bash sweep — given a comparison function,
+do log-N library lookups to find the boundary commit instead of
+walking linearly. This was the right shape for a fast bisect, but only
+worked when the failure mode was monotonic (a regression that, once
+introduced, stayed broken).</p>
+
+<p>These five scripts were the right tool for one specific class of
+question. If the question is <em>which commit broke this scene</em>, you want
+a binary library and a sweep. The questions stopped being that shape
+once the foreground playback pivot landed, because the answer became
+<em>the host build at HEAD has the truth and the PS1 build matches it
+through pack data</em>. Bisecting history was no longer the route to
+fixing scenes.</p>
+
+<h2 id="the-library-reporters">The library reporters</h2>
+
+<p>Three Python scripts read the index and produced summary reports.</p>
+
+<p><code class="language-plaintext highlighter-rouge">report-binary-library-epochs.py</code> (4 KB) divided the library into
+epochs — broadly contiguous stretches of similar build behaviour — and
+reported how many entries each epoch contained. Useful when looking at
+the library as a whole and asking <em>how many builds came before the
+graphics rewrite vs. after</em>. Last touched 2026-04-11, commit
+<code class="language-plaintext highlighter-rouge">5d374a46</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">report-binary-library-gaps.py</code> (3 KB) reported coverage gaps —
+sequences of commits where the build failed and produced no entry, or
+where the sequence numbering jumped. Reading this output was how the
+operator confirmed the library had built cleanly across a range,
+rather than skipping over a string of broken commits.</p>
+
+<p><code class="language-plaintext highlighter-rouge">report-binary-library-sequence-resets.py</code> (4 KB) detected
+sequence-counter resets — points where <code class="language-plaintext highlighter-rouge">build-binary-library.sh</code> had
+been started fresh and the counter went back to 1. The library went
+through several reset boundaries as the build script itself was
+adjusted; finding them required scanning the index for the
+discontinuities.</p>
+
+<p>These three are still readable as stand-alone Python and would
+nominally still run against the surviving index files, but their
+output ceases to be useful once the binaries themselves are gone — the
+reports are about a corpus that no longer exists.</p>
+
+<h2 id="the-audit-utilities">The audit utilities</h2>
+
+<p><code class="language-plaintext highlighter-rouge">verify-fishing1-head-clean.sh</code> (6 KB) checked HEAD’s PS1 build against
+the binary-library baseline for FISHING 1. It was a fast pre-flight: if
+HEAD’s build didn’t agree with the most recent library entry, no point
+in running deeper sweeps. Last touched 2026-04-11, commit <code class="language-plaintext highlighter-rouge">047c1685</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">analyze-scenes.sh</code> (1 KB) is a small shim that ran the host-side scene
+analysis against a single scene, used during the host-script review
+era to keep the per-scene inputs into the manifest in sync. Last
+touched 2026-04-04 in commit <code class="language-plaintext highlighter-rouge">15c8e08e</code>.</p>
+
+<h2 id="why-archived-not-deleted">Why archived, not deleted</h2>
+
+<p>Three reasons, taken straight from the directory’s own README:</p>
+
+<ul>
+  <li>Git history keeps the source, but having the era’s scripts grouped
+in one directory makes them findable without commit archaeology.</li>
+  <li>They reference a workflow that the current scene-playback path has
+replaced; re-running them against today’s HEAD will not work
+cleanly.</li>
+  <li>They are concrete record of what the binary-library era’s tooling
+looked like — the philosophical predecessor of every <code class="language-plaintext highlighter-rouge">regtest-*</code>
+script the project still uses.</li>
+</ul>
+
+<p>If a future contributor wants to use one of them again, the README
+spells out the steps: copy out (do not symlink, the scripts expect to
+live under <code class="language-plaintext highlighter-rouge">scripts/</code>), confirm the Docker image still builds the
+target commit range, and confirm the helper paths still exist. None of
+those preconditions hold today out of the box; all are recoverable.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../binary-library/">The binary library</a> —
+the corpus these scripts consumed.</li>
+  <li><a href="../timeline/">Era timeline</a> —
+the dates around when these scripts were active and when they were
+retired.</li>
+  <li><a href="../data/">Primary sources</a> — the
+<code class="language-plaintext highlighter-rouge">tools.yaml</code> catalogue records last-touched commits for every script
+the project has ever shipped.</li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<p><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/tree/main/docs/ps1/archaeology/retired-scripts/">docs/ps1/archaeology/retired-scripts/</a> —
+fourteen scripts plus README.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

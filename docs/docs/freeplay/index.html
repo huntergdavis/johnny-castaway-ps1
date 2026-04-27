@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Freeplay mode — Johnny Castaway PS1</title>
+  <meta name="description" content="Freeplay mode in the Johnny Castaway PS1 port — a runtime-driven scene with 4-way walking, 8 self-gags, 10 summons, persistent island state, and Konami-style secrets." />
+
+  <meta property="og:title"        content="Freeplay mode — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Freeplay mode in the Johnny Castaway PS1 port — a runtime-driven scene with 4-way walking, 8 self-gags, 10 summons, persistent island state, and Konami-style secrets." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Freeplay mode</h1>
+      <p class="subtitle">A runtime-driven scene where the player drives Johnny instead of watching him.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. <em>Freeplay</em> is the only PS1 scene where
+the player drives Johnny instead of watching him. Every other scene
+(<code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code>, <code class="language-plaintext highlighter-rouge">fishing3</code>, etc.) is a captured <code class="language-plaintext highlighter-rouge">.FG2</code> pack
+played back as a pre-rendered foreground stream. Freeplay can’t work that
+way — there’s no canonical frame stream because gameplay branches with
+input. So freeplay lives entirely in C on the PS1, sharing the ocean-runtime
+surface (background SCR, wave tick, clean-rect restore, present) but
+computing the per-frame foreground sprite live from a state machine.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="vision">Vision</h2>
+
+<p>A perpetual Saturday-morning Johnny Castaway: walking, fishing, building,
+summoning visitors, surviving cosmic moments. The sandcastle you built
+two minutes ago is still there. The fire you lit is still flickering.
+Friday remembers your previous visits. King Kong might appear on the
+horizon if you ask politely.</p>
+
+<p>Goal: someone watching a friend play it should say “wait, I want to try”
+within thirty seconds.</p>
+
+<h2 id="boot-token-cli">Boot-token CLI</h2>
+
+<p>Freeplay is a foreground-pilot scene like any other, dispatched from
+<code class="language-plaintext highlighter-rouge">foreground_pilot.c</code>. The boot tokens are written to
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/config/ps1/BOOTMODE.TXT"><code class="language-plaintext highlighter-rouge">config/ps1/BOOTMODE.TXT</code></a>
+on the disc. The simplest invocation:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot freeplay
+</code></pre></div></div>
+
+<p>That boots straight into freeplay at scene start. To launch it from a
+live development run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/rebuild-and-let-run.sh fgpilot freeplay
+</code></pre></div></div>
+
+<p>Variant tokens that work in other scenes also work here:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Effect</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">night 1</code></td>
+      <td>Force night palette at boot. R1 + ↑ toggles it inside freeplay.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">lowtide 1</code></td>
+      <td>Force low-tide state at boot. R1 + ↓ toggles inside.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">holiday &lt;N&gt;</code></td>
+      <td>Pin a holiday overlay (1..36). R1 + → cycles inside.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">raft-stage &lt;N&gt;</code></td>
+      <td>Pin raft-build state (0..5). R1 + ← cycles inside.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">island-pos &lt;x&gt; &lt;y&gt;</code></td>
+      <td>Force a specific island position.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Inside <code class="language-plaintext highlighter-rouge">foreground_pilot.c::foregroundPilotPlay()</code>, the dispatch is a
+single equality test:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">fgSceneEquals</span><span class="p">(</span><span class="n">gForegroundPilotScene</span><span class="p">,</span> <span class="s">"freeplay"</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">freeplayRun</span><span class="p">();</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">freeplayRun()</code> lives in <code class="language-plaintext highlighter-rouge">src/scene_freeplay.c</code>. It mirrors
+<code class="language-plaintext highlighter-rouge">fgPlayOceanRuntimeScene</code>: preload <code class="language-plaintext highlighter-rouge">BACKGRND.BMP</code>, enable the wave
+backdrop, save clean rects, run the main loop, tear down via
+<code class="language-plaintext highlighter-rouge">fgBackdropRelease(1)</code> (keep <code class="language-plaintext highlighter-rouge">BACKGRND</code> for the next scene).</p>
+
+<p>The “do not add this slug to <code class="language-plaintext highlighter-rouge">kProvenScenes</code>” rule is deliberate —
+freeplay should never be picked at random by the screensaver rotation.
+It’s an opt-in scene only.</p>
+
+<h2 id="control-surface">Control surface</h2>
+
+<p>PS1 has D-pad + 4 face buttons + L1 / L2 / R1 / R2 + Select + Start.
+Both pads are polled.</p>
+
+<h3 id="always-active">Always active</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Control</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>D-pad / left analog</td>
+      <td>4-way walk. Analog has ~32-unit dead-zone.</td>
+    </tr>
+    <tr>
+      <td>Cross (✕)</td>
+      <td>Context verb — does the right thing for Johnny’s current zone.</td>
+    </tr>
+    <tr>
+      <td>Start (tap)</td>
+      <td>Exit freeplay → return to screensaver random rotation.</td>
+    </tr>
+    <tr>
+      <td>Select</td>
+      <td>Toggle help overlay (3-sec auto-fade or until pressed again).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="self-expression-no-modifier">Self-expression (no modifier)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Control</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Square (□)</td>
+      <td>Cycle through 8 self-gags (see below).</td>
+    </tr>
+    <tr>
+      <td>Circle (○)</td>
+      <td>Re-fire the gag Square just did.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="outside-world">Outside world</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Control</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Triangle (△)</td>
+      <td>Cycle through 10 summons (see below).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="modifier-combos">Modifier combos</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Combo</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>L1 + Square</td>
+      <td>Bonk-head.</td>
+    </tr>
+    <tr>
+      <td>L1 + Triangle</td>
+      <td>Summon Mary.</td>
+    </tr>
+    <tr>
+      <td>L1 + Circle</td>
+      <td>Summon King Kong.</td>
+    </tr>
+    <tr>
+      <td>L1 + Cross</td>
+      <td>Knock coconut on Johnny’s head.</td>
+    </tr>
+    <tr>
+      <td>R1 + ↑</td>
+      <td>Toggle day / night.</td>
+    </tr>
+    <tr>
+      <td>R1 + ↓</td>
+      <td>Toggle low-tide / high-tide.</td>
+    </tr>
+    <tr>
+      <td>R1 + →</td>
+      <td>Cycle holiday overlay (none → Halloween → St. Patrick → Christmas → New Year).</td>
+    </tr>
+    <tr>
+      <td>R1 + ←</td>
+      <td>Cycle raft-build progress (0 → 1 → 2 → 3 → 4 → 5 → 0).</td>
+    </tr>
+    <tr>
+      <td>R1 + Cross</td>
+      <td>Light / extinguish fire at Johnny’s position.</td>
+    </tr>
+    <tr>
+      <td>R1 + Square</td>
+      <td>Drop coconut.</td>
+    </tr>
+    <tr>
+      <td>R1 + Triangle</td>
+      <td>Spawn seagull flock.</td>
+    </tr>
+    <tr>
+      <td>R1 + Circle</td>
+      <td>Spawn cloud drift.</td>
+    </tr>
+    <tr>
+      <td>L1 + R1</td>
+      <td>Combo prefix for easter eggs.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="held--continuous">Held / continuous</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Held</th>
+      <th>Effect</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>L2 (held)</td>
+      <td>Sprint: walk speed 2 px / frame.</td>
+    </tr>
+    <tr>
+      <td>R2 (held)</td>
+      <td>Tiptoe: walk speed 0.5 px / frame.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="self-gag-catalog-square-cycle">Self-gag catalog (Square cycle)</h2>
+
+<p>Mundane → escalating, so first impressions feel chill and discovery
+rewards repetition.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">#</th>
+      <th>Gag</th>
+      <th>Sprite source</th>
+      <th>Vibe</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">1</td>
+      <td>Eat</td>
+      <td><code class="language-plaintext highlighter-rouge">GJFFFOOD.BMP</code></td>
+      <td>domestic</td>
+      <td>90 vb</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td>Wipe brow</td>
+      <td><code class="language-plaintext highlighter-rouge">GJHOT.BMP</code></td>
+      <td>domestic</td>
+      <td>90 vb</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">3</td>
+      <td>Idea</td>
+      <td><code class="language-plaintext highlighter-rouge">LITEBULB.BMP</code> over idle Johnny</td>
+      <td>first “aha”</td>
+      <td>120 vb</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">4</td>
+      <td>Angry</td>
+      <td><code class="language-plaintext highlighter-rouge">GJANGRY.BMP</code></td>
+      <td>first emote</td>
+      <td>90 vb</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">5</td>
+      <td>Bonk head</td>
+      <td><code class="language-plaintext highlighter-rouge">JOHNWALK.BMP</code></td>
+      <td>slapstick</td>
+      <td>75 vb</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">6</td>
+      <td>Drunk toggle</td>
+      <td><code class="language-plaintext highlighter-rouge">DRUNKJON.BMP</code></td>
+      <td>silly state</td>
+      <td>sticky</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">7</td>
+      <td>Snazzy strut</td>
+      <td><code class="language-plaintext highlighter-rouge">MEXCWALK.BMP</code></td>
+      <td>charm</td>
+      <td>5 sec auto-revert</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">8</td>
+      <td>Run away</td>
+      <td><code class="language-plaintext highlighter-rouge">GJRUNAWA.BMP</code></td>
+      <td>action peak</td>
+      <td>3-sec dash</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Cycle wraps. Drunk is a flag, not a mode — it modifies all subsequent
+walking. Circle re-fires whatever Square just did. The original sprite
+filename <code class="language-plaintext highlighter-rouge">MEXCWALK.BMP</code> is retained from the Sierra assets; the gag name
+was renamed from “Mexican walk” to “Snazzy strut” so the gag name is
+decoupled from any nationality.</p>
+
+<h2 id="summon-catalog-triangle-cycle">Summon catalog (Triangle cycle)</h2>
+
+<p>Ten summons, one slot at a time. Pressing Triangle during an active
+summon either queues or interrupts (tuneable).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">#</th>
+      <th>Summon</th>
+      <th>Behavior</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">1</td>
+      <td>Seagull (single)</td>
+      <td>Figure-8 across upper sky. SFX: distant cry.</td>
+      <td>6 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td>Liliput parade</td>
+      <td>5 tiny natives cross beach in single file.</td>
+      <td>8 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">3</td>
+      <td>Biplane fly-by</td>
+      <td>Plane banks across sky; banner reads “JOHNNY”.</td>
+      <td>6 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">4</td>
+      <td>Native canoe</td>
+      <td>Friday paddles past. After friendship counter ≥ 1 he lands. After ≥ 3, full greeting.</td>
+      <td>10 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">5</td>
+      <td>Visitor boat</td>
+      <td>Boat lands at right shore, visitor disembarks, leaves.</td>
+      <td>12 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">6</td>
+      <td>King Kong</td>
+      <td>Massive sprite on top-left horizon. Auto-triggers <code class="language-plaintext highlighter-rouge">GJRUNAWA</code>.</td>
+      <td>8 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">7</td>
+      <td>Mary the mermaid</td>
+      <td>Surfaces at left shore; if Johnny walks within 50 px, hearts.</td>
+      <td>10 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">8</td>
+      <td>Pirate cameo</td>
+      <td>Walks across upper beach, plants flag, leaves.</td>
+      <td>8 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">9</td>
+      <td>Seagull flock</td>
+      <td>3 birds on independent figure-8s.</td>
+      <td>10 sec</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">10</td>
+      <td>“Meanwhile…” panel</td>
+      <td>Full-screen comic panel flashes (~600 ms), dismisses.</td>
+      <td>1.5 sec</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>L1 + button shortcuts skip directly to specific summons without disturbing
+the cycle pointer. Summons do <strong>not</strong> lock input — Johnny stays
+controllable while seagulls / Mary / King Kong play out.</p>
+
+<h2 id="persistent-island-state">Persistent island state</h2>
+
+<p>Once placed, things stay until the player exits freeplay. State resets on
+each fresh entry into freeplay (no memory-card persistence).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Object</th>
+      <th>Trigger</th>
+      <th>Limit</th>
+      <th>Restore handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sandcastle</td>
+      <td>Cross on beach center, 5th press finalizes</td>
+      <td>Up to 3 simultaneous</td>
+      <td>Stamped into clean baseline at place time. Sub-rect re-snapshot.</td>
+    </tr>
+    <tr>
+      <td>Lit fire</td>
+      <td>R1 + Cross</td>
+      <td>One at a time</td>
+      <td>Animated <code class="language-plaintext highlighter-rouge">FIRE1-5.BMP</code> cycle, redrawn per frame.</td>
+    </tr>
+    <tr>
+      <td>Raft stage</td>
+      <td>R1 + ←</td>
+      <td>Stage 0..5</td>
+      <td>Stamped at canonical raft position. Re-snapshot on change.</td>
+    </tr>
+    <tr>
+      <td>Coconut pile</td>
+      <td>knocked from tree</td>
+      <td>Up to 5 piled</td>
+      <td>Stamped at impact position. 6th triggers explosion easter egg.</td>
+    </tr>
+    <tr>
+      <td>Day / night</td>
+      <td>R1 + ↑</td>
+      <td>Either</td>
+      <td>Re-stamps all persistents into new clean baseline, then re-snapshots.</td>
+    </tr>
+    <tr>
+      <td>Holiday</td>
+      <td>R1 + →</td>
+      <td>One of 5</td>
+      <td>Loads <code class="language-plaintext highlighter-rouge">HOLIDAY.BMP</code> lazily; stamped per-frame.</td>
+    </tr>
+    <tr>
+      <td>Friday-friendship</td>
+      <td>Native Canoe summon counter</td>
+      <td>0..3 sticky during session</td>
+      <td>Affects Native Canoe summon behavior.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The “freeplay-owned clean-rect array” is the core implementation pattern.
+Freeplay maintains <code class="language-plaintext highlighter-rouge">gFreeplayOwnedRects[]</code> (up to 8 entries). When
+persistent state changes, freeplay rebuilds the list, stamps new state
+into the bg tiles, then calls <code class="language-plaintext highlighter-rouge">grSaveCleanBgRects(...)</code> with the full
+set. This is the same pattern the ocean runtime uses for its wave +
+Johnny rect.</p>
+
+<h2 id="ambient-life">Ambient life</h2>
+
+<p>The island has a heartbeat. These tick continuously regardless of input:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>Cadence</th>
+      <th>What</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cloud drift</td>
+      <td>every 25–45 sec (random)</td>
+      <td>A <code class="language-plaintext highlighter-rouge">CLOUDS.BMP</code> cloud crosses sky.</td>
+    </tr>
+    <tr>
+      <td>Solo seagull</td>
+      <td>every 30–90 sec</td>
+      <td>One bird crosses (silent, low-key).</td>
+    </tr>
+    <tr>
+      <td>Random coconut</td>
+      <td>every 60–180 sec, low chance</td>
+      <td>Coconut drops from tree.</td>
+    </tr>
+    <tr>
+      <td>Auto-thirst</td>
+      <td>after 90 sec of walking</td>
+      <td>Johnny auto-fires the “hot” gag once.</td>
+    </tr>
+    <tr>
+      <td>Auto-fish-bite</td>
+      <td>after 30 sec fishing</td>
+      <td>Auto-triggers the catch sequence with kingfish.</td>
+    </tr>
+    <tr>
+      <td>Auto-sleep</td>
+      <td>60 sec idle</td>
+      <td>Johnny yawns, sits down, “Z” sprite. Wakes on any input.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Auto-events only fire while Johnny is in <code class="language-plaintext highlighter-rouge">IDLE</code> mode (or <code class="language-plaintext highlighter-rouge">WALK</code>, for
+thirst). They never interrupt cinematics, gag cycles, or active summons.</p>
+
+<h2 id="konami-code--secrets">Konami code &amp; secrets</h2>
+
+<p><strong>↑ ↑ ↓ ↓ ← → ← → Square Cross</strong> within 4 seconds triggers the <strong>Castaway
+Cove Carnival</strong>: every summon spawns simultaneously, banner reads “PARTY!”,
+King Kong roars, layered SFX (capped at 8 simultaneous SPU voices). Lasts
+~12 seconds; input is locked. After: everyone exits in their normal
+patterns and Johnny does one celebratory snazzy-strut.</p>
+
+<p>Other secrets include “The Big One” (Cross 7 times within 2 sec at fishing
+shore), Sleep walker, Coconut stack-pocalypse, Friday’s friend, The
+Tornado, Holiday speedrun, Strut forever, and Drunken master. Easter-egg
+combo detection is data-driven — a struct array of
+<code class="language-plaintext highlighter-rouge">{ buttonSequence, callback, lockMs }</code> so adding new secrets later
+doesn’t touch input code.</p>
+
+<h2 id="memory-budget">Memory budget</h2>
+
+<p>Comfortably under the 2 MB ceiling.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Size</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BACKGRND.BMP</code> slot 0</td>
+      <td>~93 KB</td>
+      <td>Sticky across screensaver loops.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY.BMP</code> variant slot</td>
+      <td>~30 KB</td>
+      <td>Lazy on first holiday-toggle.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">JOHNWALK.BMP</code> slot 1</td>
+      <td>~100 KB</td>
+      <td>Always loaded.</td>
+    </tr>
+    <tr>
+      <td>Active gag BMP, slot 2</td>
+      <td>≤ 50 KB</td>
+      <td>LRU; one at a time.</td>
+    </tr>
+    <tr>
+      <td>Active summon BMP, slot 3</td>
+      <td>≤ 80 KB</td>
+      <td>LRU; King Kong is the largest.</td>
+    </tr>
+    <tr>
+      <td>Persistent BMPs (FIRE, COCONUTS, MRAFT, GJCASTLE)</td>
+      <td>≤ 60 KB</td>
+      <td>Concat where possible.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">LITEBULB</code> overlay</td>
+      <td>≤ 5 KB</td>
+      <td>tiny</td>
+    </tr>
+    <tr>
+      <td>bg tiles (4)</td>
+      <td>614 KB</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Clean rects</td>
+      <td>~280 KB</td>
+      <td>Slightly larger than fishing3 due to summon corridors.</td>
+    </tr>
+    <tr>
+      <td>Freeplay state struct + arrays</td>
+      <td>&lt; 4 KB</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>~1.3 MB</strong></td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If memory pressure surfaces: drop a couple of summons or aggressively
+LRU more slots.</p>
+
+<h2 id="real-hardware-constraints">Real-hardware constraints</h2>
+
+<ul>
+  <li>Only PSn00bSDK APIs. No DuckStation-specific shortcuts. No emulator-only
+behavior.</li>
+  <li>VRAM addressing strict — freeplay reuses the existing infrastructure
+and introduces no new VRAM math.</li>
+  <li>No CD streaming per-frame (no <code class="language-plaintext highlighter-rouge">.FG2</code>); all BMPs load once at scene
+start. Safer than fishing scenes from a CD-timing standpoint.</li>
+  <li>No interrupt blocking; long animations advance frame-by-frame.</li>
+  <li>Cap simultaneous SPU voices at 8 (PS1 SPU has 24, headroom reserved).</li>
+  <li>Standard digital + analog pad reads only.</li>
+</ul>
+
+<h2 id="pause-menu-integration">Pause-menu integration</h2>
+
+<p>Freeplay is also reachable from the <a href="../pause-menu/">pause menu</a>.
+Selecting “Freeplay Mode” sets a scene-switch flag which the current
+scene’s main loop checks via <code class="language-plaintext highlighter-rouge">sceneSwitchRequested()</code>; the loop exits
+cleanly and the screensaver outer loop calls <code class="language-plaintext highlighter-rouge">foregroundPilotPlay()</code> again,
+which dispatches to freeplay.</p>
+
+<p>Inside freeplay:</p>
+
+<ul>
+  <li>Start (tap) = exit to screensaver random rotation.</li>
+  <li>Long-press Start (&gt;1 sec) = open pause menu inside freeplay.</li>
+</ul>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../pause-menu/">Pause menu</a> — entry point
+from in-screensaver.</li>
+  <li><a href="../holidays/">Holidays</a> — the holiday
+overlay cycle uses <code class="language-plaintext highlighter-rouge">gHolidays[]</code>.</li>
+  <li><a href="../dev-workflow/">Development workflow</a> — how
+freeplay differs from a captured-pack scene during bring-up.</li>
+</ul>
+
+<h2 id="view-source-on-github">View source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/freeplay-mode-design.md"><code class="language-plaintext highlighter-rouge">docs/ps1/freeplay-mode-design.md</code></a> — locked design.</li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> — dispatch entry point.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

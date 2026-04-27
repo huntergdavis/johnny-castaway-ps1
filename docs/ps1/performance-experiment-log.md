@@ -1,5 +1,8 @@
 # PS1 Performance Experiment Log
 
+> 🌐 **Rendered version:** **[/docs/performance/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/performance/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Date started: 2026-04-25
 
 Purpose: tracked, searchable ledger for PS1 scene-playback performance

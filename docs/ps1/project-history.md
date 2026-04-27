@@ -1,5 +1,8 @@
 # PS1 Port - Project History
 
+> 🌐 **Rendered version:** **[/about/history/](https://hunterdavis.com/Johnny-Castaway-PS1/about/history/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 The development journey, challenges, and lessons learned from porting Johnny Reborn to PlayStation 1.
 
 This is a historical narrative, not the live progress ledger. Current

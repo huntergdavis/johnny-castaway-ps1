@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>SDL compat lite — Johnny Castaway PS1</title>
+  <meta name="description" content="Reference for the SDL compat lite contract — the narrow graphics surface the project's gameplay code is allowed to depend on, regardless of whether it is running against SDL2 on the host or PSn00bSDK on the PS1. Layer lifecycle, frame lifecycle, sprite drawing, primitive drawing, region save/restore, the gap matrix, and the kill list of long-standing leaks." />
+
+  <meta property="og:title"        content="SDL compat lite — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference for the SDL compat lite contract — the narrow graphics surface the project's gameplay code is allowed to depend on, regardless of whether it is running against SDL2 on the host or PSn00bSDK on the PS1. Layer lifecycle, frame lifecycle, sprite drawing, primitive drawing, region save/restore, the gap matrix, and the kill list of long-standing leaks." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../">Home</a></li>
+        <li><a href="../../../play/">Play</a></li>
+        <li><a href="../../../about/">About</a></li>
+        <li><a href="../../../scenes/">Scenes</a></li>
+        <li><a href="../../../devlog/">Devlog</a></li>
+        <li><a href="../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../lab/">Lab</a></li>
+        <li><a href="../../../hack/">Hack</a></li>
+        <li><a href="../../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>SDL compat lite</h1>
+      <p class="subtitle">The narrow set of gr* graphics functions gameplay code is allowed to call. Both the host SDL2 build and the PS1 PSn00bSDK build implement this surface.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The host capture build runs against
+SDL2 because that is what the original Johnny Castaway engine ports use,
+and SDL2 is what gives the host a pixel-accurate rendering of every
+scene to capture from. The PS1 build cannot run SDL2 — there is no
+SDL2 for PSn00bSDK, and even if there were, its memory and threading
+assumptions would not survive the console. Both builds need to share
+gameplay code anyway, because writing two divergent versions of <code class="language-plaintext highlighter-rouge">ttm.c</code>
+or <code class="language-plaintext highlighter-rouge">walk.c</code> would mean two divergent renderers, two divergent bug
+surfaces, and two pipelines that never agree on what scene N looks
+like.</p>
+
+<p>The bridge is the SDL compat lite contract. It is not a file format. It
+is not even a piece of code that ships in either build. It is a written
+specification — at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/SDL_COMPAT_LITE_SPEC.md"><code class="language-plaintext highlighter-rouge">SDL_COMPAT_LITE_SPEC.md</code></a>
+— describing the narrow graphics surface gameplay code is allowed to
+call. The host build implements that surface in terms of SDL2. The PS1
+build implements it in terms of PSn00bSDK and the dirty-row tile
+renderer. Gameplay code uses neither directly; it calls <code class="language-plaintext highlighter-rouge">gr*</code> functions
+and accepts whatever result the build provides.</p>
+
+<p>The contract surface is intentionally smaller than full SDL.</p>
+
+<blockquote>
+  <p>Define the narrow graphics/runtime surface the PS1 path must satisfy
+so gameplay code can target stable semantics instead of PS1-specific
+replay and recovery workarounds.</p>
+</blockquote>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<h2 id="contract-surface">Contract surface</h2>
+
+<p>Six functional areas. Each lists the public API surface and the required
+behavior — implementation details are explicitly <em>out of contract</em>.</p>
+
+<h3 id="layer-lifecycle">Layer lifecycle</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grNewLayer</span><span class="p">();</span>
+<span class="n">grFreeLayer</span><span class="p">();</span>
+<span class="n">grLoadScreen</span><span class="p">();</span>
+<span class="n">grInitEmptyBackground</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Required behavior: gameplay can acquire a logical per-thread layer.
+Layers persist across frames until explicitly released. Background load
+establishes the clean scene base for subsequent draw and restore. Layer
+allocation and release are implementation details, not gameplay state.</p>
+
+<h3 id="frame-lifecycle">Frame lifecycle</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grBeginFrame</span><span class="p">();</span>      <span class="cm">/* PS1 only */</span>
+<span class="n">grUpdateDisplay</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Required behavior: the runtime starts a frame from a deterministic base
+state. The current PS1 implementation achieves this with
+clean-background tile copies plus dirty-row restore — not a full-frame
+rebuild every tick. The runtime presents layers in deterministic order:
+background, saved/restored zone overlay (if used), active ADS/TTM thread
+layers in slot order, holiday/extra layer last. Gameplay must not know
+whether present uses SDL blits, RAM compositing, or GPU primitives.</p>
+
+<h3 id="sprite-drawing">Sprite drawing</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grLoadBmp</span><span class="p">();</span>
+<span class="n">grReleaseBmp</span><span class="p">();</span>
+<span class="n">grDrawSprite</span><span class="p">();</span>
+<span class="n">grDrawSpriteFlip</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Required behavior: sprite draw uses transparent blit semantics. Flipped
+draw is behaviorally equivalent to horizontal flip of the same source.
+Sprite resources are loaded and released by slot, not by caller-managed
+surfaces. Caller-visible semantics are position, image selection, and
+ordering only. The runtime may satisfy this through either legacy BMP
+decode or offline-transcoded PSB sprite bundles; that choice must not
+change gameplay-visible semantics.</p>
+
+<h3 id="primitive-drawing">Primitive drawing</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grDrawPixel</span><span class="p">();</span>
+<span class="n">grDrawLine</span><span class="p">();</span>
+<span class="n">grDrawRect</span><span class="p">();</span>
+<span class="n">grDrawCircle</span><span class="p">();</span>
+<span class="n">grClearScreen</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Required behavior: primitives apply to the current logical target and
+layer semantics. <code class="language-plaintext highlighter-rouge">grClearScreen()</code> clears the current logical layer, not
+global gameplay state. Implementations may choose software or hardware
+paths, but results must remain deterministic for the script patterns
+that exist.</p>
+
+<h3 id="region-save--restore">Region save / restore</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grCopyZoneToBg</span><span class="p">();</span>
+<span class="n">grSaveImage1</span><span class="p">();</span>
+<span class="n">grSaveZone</span><span class="p">();</span>
+<span class="n">grRestoreZone</span><span class="p">();</span>
+</code></pre></div></div>
+
+<p>Required behavior: the runtime supports the current script pattern of
+saving and later restoring a bounded region. Gameplay does not need to
+know whether restore comes from a separate saved layer, clean
+background tiles, or offline templates. Restore behavior must not depend
+on replay-record resurrection.</p>
+
+<h3 id="clip-and-offsets">Clip and offsets</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grSetClipZone</span><span class="p">();</span>
+<span class="k">extern</span> <span class="kt">int</span> <span class="n">grDx</span><span class="p">,</span> <span class="n">grDy</span><span class="p">;</span>     <span class="cm">/* Global offsets */</span>
+</code></pre></div></div>
+
+<p>Required behavior: gameplay can request bounded drawing regions where
+scripts rely on it. Coordinate offsets remain a runtime presentation
+concern, not gameplay logic.</p>
+
+<h2 id="out-of-contract">Out of contract</h2>
+
+<p>These are implementation details. They appear on the PS1 path today but
+must not leak back into gameplay logic:</p>
+
+<ul>
+  <li>replay records</li>
+  <li>actor continuity matching</li>
+  <li>handoff replay injection</li>
+  <li>background tile management</li>
+  <li>dirty-row tracking and partial tile upload</li>
+  <li>pack lookup and prefetch</li>
+  <li>PSB registry lookup</li>
+  <li>BMP/TTM caching policy</li>
+</ul>
+
+<p>The dirty-row tracking subsystem, for example, is the engine the
+<a href="../dirty-region/">dirty-region template</a>
+feeds. Gameplay code does not see it. Gameplay code calls
+<code class="language-plaintext highlighter-rouge">grUpdateDisplay()</code> and gets a presented frame.</p>
+
+<h2 id="current-gameplay-dependency-map">Current gameplay dependency map</h2>
+
+<p>Direct graphics call sites in gameplay/runtime code:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Calls used</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ttm.c</code></td>
+      <td>clip zone, copy/save/restore zone, pixel/line/rect/circle, draw sprite / draw sprite flip, clear screen, load screen, load BMP</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walk.c</code></td>
+      <td>clear screen, draw sprite / draw sprite flip</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">island.c</code></td>
+      <td>load screen, load BMP / release BMP, draw sprite / draw sprite flip</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ads.c</code></td>
+      <td>layer allocation/release, frame begin/present, restore background tiles, replay sprite path <em>(current workaround, not contract)</em></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">ads.c</code>’s replay sprite path is the largest current contract violation.
+It exists because PS1 frame correctness used to depend on remembered
+sprite identity rather than explicit restore data. Removing that
+dependency is on the
+<a href="#kill-list-for-long-standing-bug-sources">kill list</a> below.</p>
+
+<h2 id="gap-matrix">Gap matrix</h2>
+
+<p>Legend:</p>
+
+<ul>
+  <li><strong>Complete</strong> — behavior exists and matches the current contract.</li>
+  <li><strong>Partial</strong> — behavior exists but is implemented through PS1-specific
+machinery or only covers current script patterns.</li>
+  <li><strong>Stub</strong> — declared but not meaningfully implemented on PS1.</li>
+  <li><strong>Leak</strong> — gameplay currently depends on non-contract implementation
+details.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>PC SDL path</th>
+      <th>PS1 path</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Layer allocation/release</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>Both paths expose logical layers.</td>
+    </tr>
+    <tr>
+      <td>Background load/base scene</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>PS1 uses clean background tiles internally.</td>
+    </tr>
+    <tr>
+      <td>Frame present ordering</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>PS1 order is deterministic, though implemented differently.</td>
+    </tr>
+    <tr>
+      <td>Frame begin/reset</td>
+      <td>Implicit</td>
+      <td>Explicit</td>
+      <td>Partial</td>
+      <td>PS1 requires <code class="language-plaintext highlighter-rouge">grBeginFrame()</code>; contract should standardize this lifecycle.</td>
+    </tr>
+    <tr>
+      <td>Draw sprite</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>PS1 path is pack-backed and authoritative now; sprite source may be BMP or PSB.</td>
+    </tr>
+    <tr>
+      <td>Draw sprite flip</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>Same semantics, different backend.</td>
+    </tr>
+    <tr>
+      <td>Transparent blit semantics</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>Works on current paths; still split across BMP and PSB backends and needs semantic convergence.</td>
+    </tr>
+    <tr>
+      <td>Load/release BMP by slot</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>Runtime implementation differs, caller contract matches.</td>
+    </tr>
+    <tr>
+      <td>Draw rect</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>PS1 uses optimized software tile writes and dirty-row tracking instead of SDL fill.</td>
+    </tr>
+    <tr>
+      <td>Draw pixel</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Complete</td>
+      <td>Present on both.</td>
+    </tr>
+    <tr>
+      <td>Draw line</td>
+      <td>Yes</td>
+      <td>Weak</td>
+      <td>Partial</td>
+      <td>PS1 is still effectively stub/cosmetic for now.</td>
+    </tr>
+    <tr>
+      <td>Draw circle</td>
+      <td>Yes</td>
+      <td>Weak</td>
+      <td>Partial</td>
+      <td>PS1 path is limited and should be validated against actual script usage.</td>
+    </tr>
+    <tr>
+      <td>Set clip zone</td>
+      <td>Yes</td>
+      <td>Minimal</td>
+      <td>Partial</td>
+      <td>Exists on PS1 but needs tighter semantic validation.</td>
+    </tr>
+    <tr>
+      <td>Copy zone to background</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>PS1 commits the rectangle into the clean-background restore baseline instead of keeping a separate saved-zones overlay layer.</td>
+    </tr>
+    <tr>
+      <td>Save image1</td>
+      <td>Minimal</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>PS1 routes it through the same bounded clean-background commit behavior as <code class="language-plaintext highlighter-rouge">COPY_ZONE_TO_BG</code>.</td>
+    </tr>
+    <tr>
+      <td>Save zone</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>PS1 tracks one active zone, matching current script assumptions.</td>
+    </tr>
+    <tr>
+      <td>Restore zone</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>PS1 restores from clean background tiles, but only for the simple active-zone pattern.</td>
+    </tr>
+    <tr>
+      <td>Clear screen</td>
+      <td>Yes</td>
+      <td>Divergent</td>
+      <td>Partial</td>
+      <td>PS1 intentionally suppresses some clears to avoid blinking; this needs to become offline/runtime policy.</td>
+    </tr>
+    <tr>
+      <td>Replay sprite</td>
+      <td>N/A</td>
+      <td>Yes</td>
+      <td>Leak</td>
+      <td>Legacy PS1-only workaround, now a shrinking boundary.</td>
+    </tr>
+    <tr>
+      <td>Actor continuity / recovery injection</td>
+      <td>N/A</td>
+      <td>Yes</td>
+      <td>Leak</td>
+      <td>Must continue moving out of gameplay-visible correctness path.</td>
+    </tr>
+    <tr>
+      <td>Dirty-row tile restore/upload</td>
+      <td>N/A</td>
+      <td>Yes</td>
+      <td>Implementation detail</td>
+      <td>Renderer optimization boundary; stays invisible to gameplay semantics.</td>
+    </tr>
+    <tr>
+      <td>PSB sprite path</td>
+      <td>N/A</td>
+      <td>Yes</td>
+      <td>Partial</td>
+      <td>Good fit for the target architecture, still needs route-by-route convergence with legacy BMP behavior.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The matrix is the canonical state-of-things. Status downgrades and
+upgrades land here as the renderer changes.</p>
+
+<h2 id="which-functions-appear-in-which-build">Which functions appear in which build</h2>
+
+<p>Both builds expose the entire contract surface. The differences are in
+the implementation file each build links:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Build</th>
+      <th>Implementation file</th>
+      <th>Backend</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Host</td>
+      <td><code class="language-plaintext highlighter-rouge">graphics.c</code> (host)</td>
+      <td>SDL2 surfaces, blits</td>
+    </tr>
+    <tr>
+      <td>PS1</td>
+      <td><code class="language-plaintext highlighter-rouge">graphics_ps1.c</code></td>
+      <td>PSn00bSDK GPU + tile renderer</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Gameplay code in <code class="language-plaintext highlighter-rouge">ttm.c</code>, <code class="language-plaintext highlighter-rouge">walk.c</code>, <code class="language-plaintext highlighter-rouge">island.c</code>, <code class="language-plaintext highlighter-rouge">ads.c</code> is one set of
+files compiled twice — see the <code class="language-plaintext highlighter-rouge">CORE_SOURCES</code> list in
+<a href="../../build/">Build &amp; toolchain</a>. The build
+system selects which graphics implementation to link based on the
+target.</p>
+
+<h2 id="kill-list-for-long-standing-bug-sources">Kill list for long-standing bug sources</h2>
+
+<p>The schema doc keeps a running list of the highest-value leaks to
+remove as the new architecture advances:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">ads.c</code> dependence on replay carry/merge/recover for visual
+correctness.</li>
+  <li>PS1-only interpretation of <code class="language-plaintext highlighter-rouge">CLEAR_SCREEN</code> to suppress blinking.</li>
+  <li>PS1 frame correctness depending on remembered sprite identity rather
+than explicit restore data.</li>
+  <li>Remaining sprite-path divergence where PSB and BMP do not yet behave
+identically.</li>
+  <li>Remaining stubbed or partial zone/image operations that force
+unrelated replay behavior to carry correctness.</li>
+</ol>
+
+<p>The list is the prioritized work. The dirty-region template work
+(item 2) is the active front; offline templates plus
+<code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame</code> are the lever that lets <code class="language-plaintext highlighter-rouge">CLEAR_SCREEN</code>
+become a runtime policy decision instead of a gameplay-visible
+divergence.</p>
+
+<h2 id="immediate-next-implementation-targets">Immediate next implementation targets</h2>
+
+<p>Direct from the schema:</p>
+
+<ol>
+  <li>Replace <code class="language-plaintext highlighter-rouge">CLEAR_SCREEN</code> divergence with explicit restore/template
+policy on the pilot route.</li>
+  <li>Emit offline dirty-region templates for a pilot family and consume
+them from pack-backed runtime data.</li>
+  <li>Reduce <code class="language-plaintext highlighter-rouge">ads.c</code> replay continuity on the pilot path until it is no
+longer a correctness dependency.</li>
+</ol>
+
+<p>(2) is largely done — the templates exist and ship as compiler
+sidecars. (1) and (3) are in progress.</p>
+
+<h2 id="related-references">Related references</h2>
+
+<ul>
+  <li><a href="../../api/">API mapping</a> — the SDL2 ↔
+PSn00bSDK symbol table this contract sits on top of.</li>
+  <li><a href="../dirty-region/">Dirty region template</a> —
+the offline data the contract’s restore behavior leans on.</li>
+  <li><a href="../../build/">Build &amp; toolchain</a> — where the
+two graphics implementations get selected.</li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/SDL_COMPAT_LITE_SPEC.md"><code class="language-plaintext highlighter-rouge">docs/ps1/research/SDL_COMPAT_LITE_SPEC.md</code></a></li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../faq/">FAQ</a></li>
+          <li><a href="../../../credits/">Credits</a></li>
+          <li><a href="../../../hack/">Hack</a></li>
+          <li><a href="../../../source/">Source library</a></li>
+          <li><a href="../../../resources/">Resources</a></li>
+          <li><a href="../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Halloween — Johnny Castaway PS1</title>
+  <meta name="description" content="Halloween: October 31 — fixed date. Johnny in witch hat, jack-o'-lantern beside the palm, bats silhouetted against a full moon." />
+
+  <meta property="og:title"        content="Halloween — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Halloween: October 31 — fixed date. Johnny in witch hat, jack-o'-lantern beside the palm, bats silhouetted against a full moon." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../../">Home</a></li>
+        <li><a href="../../../../play/">Play</a></li>
+        <li><a href="../../../../about/">About</a></li>
+        <li><a href="../../../../scenes/">Scenes</a></li>
+        <li><a href="../../../../devlog/">Devlog</a></li>
+        <li><a href="../../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../../lab/">Lab</a></li>
+        <li><a href="../../../../hack/">Hack</a></li>
+        <li><a href="../../../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Holiday 1</p>
+      <h1>Halloween</h1>
+      <p class="subtitle">October 31 — fixed date</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="when-it-falls">When it falls</h2>
+
+<p>October 31 — fixed date.</p>
+
+<p>Worked dates:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026</td>
+      <td>October 31</td>
+    </tr>
+    <tr>
+      <td>2030</td>
+      <td>October 31</td>
+    </tr>
+    <tr>
+      <td>2050</td>
+      <td>October 31</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="what-it-shows-on-the-island">What it shows on the island</h2>
+
+<p>From <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a>:</p>
+
+<blockquote>
+  <p>Johnny in witch hat, jack-o’-lantern beside the palm, bats silhouetted against a full moon.</p>
+</blockquote>
+
+<h2 id="sprite">Sprite</h2>
+
+<p>Dimensions: <strong>40 × 34</strong> pixels. Anchored at island position <strong>(410, 298)</strong>.</p>
+
+<p>This is one of the four <strong>original Sierra sprites</strong> preserved from the 1992 game. <code class="language-plaintext highlighter-rouge">existing_sprite</code> index <code class="language-plaintext highlighter-rouge">0</code>. The asset is the original full-island scene — Johnny appears in costume, the palm or message bottle is reskinned. The four originals are New Year’s Day, St. Patrick’s Day, Halloween, and Christmas; together they pin holiday IDs 1–4.</p>
+
+<h2 id="palette">Palette</h2>
+
+<p><span style="display:inline-block;width:1em;height:1em;background:#FF7A1A;border:1px solid #444;vertical-align:middle"></span> <code>#FF7A1A</code>, <span style="display:inline-block;width:1em;height:1em;background:#000000;border:1px solid #444;vertical-align:middle"></span> <code>#000000</code>, <span style="display:inline-block;width:1em;height:1em;background:#F0F0F0;border:1px solid #444;vertical-align:middle"></span> <code>#F0F0F0</code></p>
+
+<p>Three-color hint from <code class="language-plaintext highlighter-rouge">holidays.yml</code>. This is a guide for the codegen step and the emblem authoring pass; the actual emblem samples from the shared 16-color CLUT, and the original Sierra sprites use the original game palette directly.</p>
+
+<h2 id="algorithm">Algorithm</h2>
+
+<p>Fixed date — no computation; the <code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_FIXED</code> dispatch in <code class="language-plaintext highlighter-rouge">holidayForDate</code> compares <code class="language-plaintext highlighter-rouge">month</code> and <code class="language-plaintext highlighter-rouge">day</code> directly. See <a href="../../algorithm/">Date-algorithm core</a>.</p>
+
+<h2 id="emblem">Emblem</h2>
+
+<p>No 32x32 emblem entry; the visual for this holiday is the original Sierra full-island sprite, not a sheet emblem.</p>
+
+<h2 id="source">Source</h2>
+
+<ul>
+  <li>Row in <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> (search for <code class="language-plaintext highlighter-rouge">id: 1</code> or <code class="language-plaintext highlighter-rouge">short_name: "HALLOWEEN"</code>).</li>
+  <li>Generated row in <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays_table.c"><code class="language-plaintext highlighter-rouge">src/holidays_table.c</code></a>.</li>
+  <li>Original Sierra sprite (1992 game). Sprite frame index <code class="language-plaintext highlighter-rouge">0</code>.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../../faq/">FAQ</a></li>
+          <li><a href="../../../../credits/">Credits</a></li>
+          <li><a href="../../../../hack/">Hack</a></li>
+          <li><a href="../../../../source/">Source library</a></li>
+          <li><a href="../../../../resources/">Resources</a></li>
+          <li><a href="../../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -21,8 +21,8 @@ Automated PS1 regression testing for scene rollout, using:
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/regtest-harness.md` |
-| Lines | 347 |
-| Approx. words | 1429 |
+| Lines | 350 |
+| Approx. words | 1458 |
 | Code fences | 16 |
 
 ## Outline

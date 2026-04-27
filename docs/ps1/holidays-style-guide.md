@@ -1,5 +1,8 @@
 # Holiday Emblem Style Guide
 
+> 🌐 **Rendered version:** **[/docs/holidays/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/holidays/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 The added holiday art should look like small Johnny Castaway overlay props,
 not full scenes.
 

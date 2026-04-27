@@ -1,5 +1,8 @@
 # PS1 Scene Pipeline Status
 
+> 🌐 **Rendered version:** **[/scenes/](https://hunterdavis.com/Johnny-Castaway-PS1/scenes/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Tracks per-scene readiness under the **fishing1 bar**: pixel-perfect visuals
 plus synced SFX, across every applicable variant.
 

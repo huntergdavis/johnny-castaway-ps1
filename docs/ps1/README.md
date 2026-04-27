@@ -1,5 +1,8 @@
 # Johnny Reborn — PlayStation 1 Port
 
+> 🌐 **Rendered version:** **[/docs/](https://hunterdavis.com/Johnny-Castaway-PS1/docs/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 Quick-start entrypoint for the PS1 branch. The primary render path is
 **hybrid scene playback** (internal code name `fgpilot`): host-captured
 foreground pixels, captured SFX, and a narrow PS1 runtime that handles

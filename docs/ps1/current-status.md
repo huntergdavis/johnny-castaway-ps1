@@ -1,5 +1,8 @@
 # PS1 Port — Current Status
 
+> 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/Johnny-Castaway-PS1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
+
+
 **Last updated:** 2026-04-25 (release `v0.3.9-ps1`, commit `111efa9f`;
 plus the 2026-04-25 batch — see [milestones-2026-04-25.md](milestones-2026-04-25.md)).
 

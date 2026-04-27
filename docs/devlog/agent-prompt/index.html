@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>PS1 Scene Validation And Debug Prompt — Johnny Castaway PS1</title>
+  <meta name="description" content="Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts." />
+
+  <meta property="og:title"        content="PS1 Scene Validation And Debug Prompt — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-03-29">
+        March 29, 2026
+      </time>
+    </p>
+    <h1>PS1 Scene Validation And Debug Prompt</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> The mission brief handed to a debugging agent the day the validation push for all 63 scenes started. Plain instructions, no rhetoric.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>You are working in the <code class="language-plaintext highlighter-rouge">jc_reborn</code> repository on the PS1 runtime and test harness.</p>
+
+<p>Your mission is not to produce plausible-looking runs. Your mission is to get to <code class="language-plaintext highlighter-rouge">63</code> actually validated PS1 story scenes against the canonical Linux/reference output, with trustworthy comparison artifacts a human can review.</p>
+
+<h2 id="primary-goal">Primary Goal</h2>
+
+<p>Reach a state where all <code class="language-plaintext highlighter-rouge">63</code> target PS1 story scenes can be:</p>
+
+<ol>
+  <li>booted deterministically</li>
+  <li>captured reproducibly</li>
+  <li>compared against the canonical reference set</li>
+  <li>reviewed visually in generated HTML</li>
+  <li>marked validated only when they actually match scene content, not just because they share black frames, title frames, or empty/ocean fallback frames</li>
+</ol>
+
+<p>Do not count:</p>
+<ul>
+  <li>black-screen agreement</li>
+  <li>title-screen agreement</li>
+  <li>empty-ocean agreement</li>
+  <li>“close enough” when no scene content launched</li>
+</ul>
+
+<p>The standard is validated scene content.</p>
+
+<h2 id="source-of-truth">Source Of Truth</h2>
+
+<p>The baseline source of truth is already present in this repo:</p>
+
+<ul>
+  <li>reference root:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/regtest-references</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>This contains the canonical Linux/reference outputs for the scene set. Treat that as authoritative.</p>
+
+<p>Important related files:</p>
+
+<ul>
+  <li>reference scene list:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/config/ps1/regtest-scenes.txt</code></li>
+    </ul>
+  </li>
+  <li>single-scene runner:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/scripts/regtest-scene.sh</code></li>
+    </ul>
+  </li>
+  <li>batch compare runner:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/scripts/compare-reference-batch.sh</code></li>
+    </ul>
+  </li>
+  <li>compare renderer:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/scripts/render-compare-timeline.py</code></li>
+    </ul>
+  </li>
+  <li>single-run review renderer:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/scripts/render-regtest-run.py</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="current-expectations">Current Expectations</h2>
+
+<p>There is still work to do on both:</p>
+
+<ul>
+  <li>the harness</li>
+  <li>the actual PS1 scene runs</li>
+</ul>
+
+<p>Assume the current harness is useful but not fully solved.</p>
+
+<p>In particular, there is an active suspicion that the harness may be stopping too early relative to the real PS1 boot/title lead-in.</p>
+
+<p>Working hypothesis to test:</p>
+
+<ul>
+  <li>scene timing windows may need to be increased significantly</li>
+  <li>a good first hypothesis is that effective scene timing may need roughly <code class="language-plaintext highlighter-rouge">+35 seconds</code> of extra boot allowance before valid scene comparison begins</li>
+</ul>
+
+<p>Do not assume that hypothesis is true. Test it.</p>
+
+<h2 id="comparison-requirements">Comparison Requirements</h2>
+
+<p>For every serious run, produce artifacts that a human can inspect.</p>
+
+<p>At minimum, each scene run should leave:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">result.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">review.html</code></li>
+  <li>raw captured frames</li>
+  <li>if reference-compared, <code class="language-plaintext highlighter-rouge">compare.json</code></li>
+  <li>if reference-compared, <code class="language-plaintext highlighter-rouge">compare.html</code></li>
+</ol>
+
+<p>The human must be able to open the HTML and confirm whether the run contains real scene content.</p>
+
+<h2 id="how-to-compare-correctly">How To Compare Correctly</h2>
+
+<h3 id="single-ps1-run-review">Single PS1 run review</h3>
+
+<p>Use:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/regtest-scene.sh</code></li>
+</ul>
+
+<p>This now emits:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">result.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">review.html</code></li>
+</ul>
+
+<p>The review page is for raw PS1 inspection only. It is not proof of correctness by itself.</p>
+
+<h3 id="ps1-vs-reference-comparison">PS1 vs reference comparison</h3>
+
+<p>Use:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/compare-reference-batch.sh</code></li>
+</ul>
+
+<p>This should be the main path for actual validation sweeps against the canonical reference set.</p>
+
+<p>Expected comparison artifacts per scene:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">compare.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">compare.html</code></li>
+</ul>
+
+<p>If compare alignment fails, that is not a pass. It means the harness or the run still needs work.</p>
+
+<h3 id="validation-rule">Validation rule</h3>
+
+<p>A scene is only validated when:</p>
+
+<ul>
+  <li>the PS1 run clearly reaches the intended scene</li>
+  <li>the scene content aligns against the reference in a defensible way</li>
+  <li>the generated HTML artifacts support that claim</li>
+</ul>
+
+<h2 id="current-harness-concerns-to-investigate">Current Harness Concerns To Investigate</h2>
+
+<p>You should actively test and improve these:</p>
+
+<ol>
+  <li>Boot lead-in may be under-budgeted.
+    <ul>
+      <li>Current scene windows may begin too early.</li>
+      <li>Test longer frame budgets and later alignment windows.</li>
+    </ul>
+  </li>
+  <li>Some current comparisons may overweight title/black/ocean contamination.
+    <ul>
+      <li>The harness must reject invalid anchors instead of fabricating confidence.</li>
+    </ul>
+  </li>
+  <li>HTML output must always exist for human review.
+    <ul>
+      <li>Keep that invariant.</li>
+    </ul>
+  </li>
+  <li>The “best frame” or “state hash” is not enough.
+    <ul>
+      <li>Validation must be scene-content driven.</li>
+    </ul>
+  </li>
+  <li>If the compare path falls back, make that obvious.
+    <ul>
+      <li>Fallback review pages are useful, but they are not validated compare pages.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="current-ps1-runtime-debug-context">Current PS1 Runtime Debug Context</h2>
+
+<p>The active deep bug work has been concentrated on <code class="language-plaintext highlighter-rouge">ACTIVITY 1</code>.</p>
+
+<p>Current strongest runtime read:</p>
+
+<ul>
+  <li>the live seam is likely in <code class="language-plaintext highlighter-rouge">ps1PilotLoadPackIndex(...)</code> in:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">repo:/cdrom_ps1.c</code></li>
+    </ul>
+  </li>
+  <li>it appears stack-layout-sensitive</li>
+  <li>exact local ordering of:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">cdPath</code></li>
+      <li><code class="language-plaintext highlighter-rouge">cdfile</code>
+matters</li>
+    </ul>
+  </li>
+  <li>tiny caller-frame changes around <code class="language-plaintext highlighter-rouge">CdSearchFile(...)</code> move the runtime between stable bad branches</li>
+</ul>
+
+<p>This means:</p>
+
+<ul>
+  <li>do not assume a clean logic bug</li>
+  <li>suspect UB, overwrite, or stack-sensitive corruption around the pack-file lookup path</li>
+</ul>
+
+<p>That said, do not get trapped in only one scene forever if the better immediate win is harness confidence or a different scene that is closer to validated.</p>
+
+<h2 id="recommended-work-sequence">Recommended Work Sequence</h2>
+
+<ol>
+  <li>Verify the harness outputs are always reviewable.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">review.html</code> for single runs</li>
+      <li><code class="language-plaintext highlighter-rouge">compare.html</code> for reference comparisons</li>
+    </ul>
+  </li>
+  <li>Audit timing assumptions.
+    <ul>
+      <li>Test whether boot grace, scene-entry windows, or total run length need to move later</li>
+      <li>Specifically test the “add roughly 35 seconds” hypothesis</li>
+    </ul>
+  </li>
+  <li>Run targeted scene comparisons against the reference set.
+    <ul>
+      <li>Prefer one scene at a time when debugging</li>
+      <li>Prefer broader sweeps when ranking “closest to validated”</li>
+    </ul>
+  </li>
+  <li>Identify the easiest real win.
+    <ul>
+      <li>Choose scenes that already show actual content and are closest to aligned reference output</li>
+    </ul>
+  </li>
+  <li>Only then return to deeper runtime surgery when needed.</li>
+</ol>
+
+<h2 id="logging-requirements">Logging Requirements</h2>
+
+<p>Keep a concise progress log in:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/docs/ps1/research/HARNESS_WORKLOG_2026-03-28.md</code></li>
+</ul>
+
+<p>For each significant step, record:</p>
+
+<ul>
+  <li>what was changed</li>
+  <li>what run was executed</li>
+  <li>where the result artifacts are</li>
+  <li>what conclusion is justified</li>
+  <li>what the next target is</li>
+</ul>
+
+<p>Do not write vague summaries. Record the actual result and the actual conclusion.</p>
+
+<h2 id="standards">Standards</h2>
+
+<p>Be skeptical of false positives.</p>
+
+<p>If a scene:</p>
+
+<ul>
+  <li>never launches</li>
+  <li>only shows water</li>
+  <li>only shows black</li>
+  <li>only shows title</li>
+  <li>or fails to align cleanly against reference</li>
+</ul>
+
+<p>then it is not validated.</p>
+
+<p>The end goal is:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">63</code> scenes</li>
+  <li>all human-reviewable</li>
+  <li>all compared against canonical reference</li>
+  <li>all validated on real scene content</li>
+</ul>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/AGENT_PROMPT_2026-03-29.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

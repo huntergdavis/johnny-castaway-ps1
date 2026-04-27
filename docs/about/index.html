@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>About — Johnny Castaway PS1</title>
+  <meta name="description" content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." />
+
+  <meta property="og:title"        content="About — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="./" aria-current="page">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="../lab/">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">What this is . How it works</p>
+      <h1>About</h1>
+      <p class="subtitle">A fan port of Sierra's Johnny Castaway to the original PlayStation, built as a hybrid host-and-replay pipeline.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="in-one-paragraph">In one paragraph</h2>
+
+<p>Sierra’s <em>Johnny Castaway</em> is a 1992 Windows 3.1 screensaver about a
+small man on a small island. This is a fan port of it to the original
+PlayStation. It is a labor of love by Hunter Davis. Hunter does not own
+or have a license to the Johnny Castaway character; the original
+creator generously allows fan ports. If you paid for this, you were
+cheated. The technical short version: the project does not run Sierra’s
+original ADS / TTM bytecode on the PS1 at all. A desktop host runs the
+real engine, captures every visible foreground draw plus every
+<code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> event, and writes the result into a small per-scene
+binary called an <strong>FG2 pack</strong>. The PS1 build loads packs from the disc
+and replays them, while owning only the narrow runtime it must:
+background, wave animation, holiday overlay, controller input, SPU
+audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
+inside 2 MB of RAM at all.</p>
+
+<p>Current release: <code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code>. Validated scenes:
+<code class="language-plaintext highlighter-rouge">2 / 63</code>
+under the project’s acceptance bar (pixel-perfect visuals plus synced
+SFX, signed off by human visual and audible review across every
+applicable variant).</p>
+
+<h2 id="the-hybrid-pipeline-one-sketch">The hybrid pipeline (one sketch)</h2>
+
+<p>A <em>pack</em> is a small binary file that records every visible bitblit in a
+scene – what was drawn, where, when, and against what background –
+plus a per-frame sound-event table. There is one high-tide pack and
+one low-tide pack per scene. Each pack carries its own palette,
+frame-timing table, base-frame full-render, and per-frame diff spans.
+The PS1 build’s job is to replay them in step with its own background
+and overlay layers; it never has to interpret a Sierra bytecode op at
+runtime.</p>
+
+<p>That choice is the whole shape of the project. The PS1 has 2 MB of
+main RAM, 1 MB of VRAM, 512 KB of SPU RAM, and a 2x CD drive
+with ~150ms cold-seek latency. Sierra’s TTM/ADS interpreter on the
+desktop side cheerfully resolves resources by name out of a flat
+filesystem and replays prior scenes to establish state. None of that
+is workable on a console with no syscall layer, no filesystem cache,
+and a sprite engine that wants pre-mangled CLUT-indexed bitmaps. The
+hybrid pipeline punts every piece of “smart” work back to the host
+build where RAM and CPU are not constraints, and ships the PS1 a
+deterministic flipbook to render.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ original Sierra engine ]   --plays a scene--&gt;  [ host capture ]
+                                                    |
+                                                    v
+                                             [ FG2 packs:  one
+                                               per ADS+tag ]
+                                                    |
+                                                    v
+                       [ CD-ROM image ]   &lt;-bundles--+
+                                                    |
+                                                    v
+                                            [ PS1 GPU replay ]
+</code></pre></div></div>
+
+<p>The price: each scene needs a verified host capture and a successful
+PS1 replay before it joins the validated count. There is no shortcut.
+<code class="language-plaintext highlighter-rouge">FISHING 1</code> and <code class="language-plaintext highlighter-rouge">FISHING 2</code> are signed off. <code class="language-plaintext highlighter-rouge">FISHING 3</code> is loop-stable
+and tide-correct on FG2 but not yet promoted. The other 60 are queued.</p>
+
+<h2 id="what-this-isnt">What this isn’t</h2>
+
+<p>A few things this project is deliberately not trying to be:</p>
+
+<ul>
+  <li><strong>Not an emulator.</strong> It does not run Sierra’s original Win16
+binary. It does not interpret ADS or TTM bytecode on the PS1. It
+replays packs.</li>
+  <li><strong>Not a re-creation.</strong> No one is rewriting the engine in pure C++
+and calling it homage. The packs are derived from the real
+desktop runtime running real Sierra data files.</li>
+  <li><strong>Not a polished commercial product.</strong> It boots in DuckStation,
+it should boot on a real PS1, the regtest harness is the source
+of truth for what works, and the visible bugs are documented
+rather than papered over.</li>
+  <li><strong>Not a community hub.</strong> Issues and PRs on
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1">huntergdavis/Johnny-Castaway-PS1</a> are welcome but
+unscheduled. There is no Discord, no roadmap survey, no roadmap
+voting, no Patreon.</li>
+</ul>
+
+<h2 id="where-to-go-from-here">Where to go from here</h2>
+
+<ul>
+  <li><a href="./method/">/about/method/</a> – the
+technical deep-dive: pipeline, pack format, hardware gotchas
+hit on the way (SPI pad polling, <code class="language-plaintext highlighter-rouge">FntFlush</code>, dirty-rect
+bookkeeping, SPU HLE divergence, TTY printf).</li>
+  <li><a href="./status/">/about/status/</a> –
+component-level status. Renderer, audio, input, captions,
+holidays, pause menu, memcard, regtest harness, host capture,
+CD packaging.</li>
+  <li><a href="./history/">/about/history/</a> –
+the timeline. Pre-port era, first PS1 attempts, the hybrid
+pivot, the 63-scene grind, where it stands at
+<code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code>.</li>
+  <li><a href="../scenes/">/scenes/</a> – live per-scene
+ledger. What’s validated, what’s in bring-up, what’s blocked.</li>
+  <li><a href="../devlog/">/devlog/</a> – the dated
+worklogs that drove each phase, in original form.</li>
+  <li><a href="../archaeology/">/archaeology/</a> – older
+status surfaces, retired tooling, the harness era, the
+restore-pilot era, and other paths that did not become the
+active methodology.</li>
+  <li><a href="../lab/">/lab/</a> – feature-length essays on
+the dunking bird, LLM-assisted development, hallucination control,
+build infrastructure, and regression practice.</li>
+  <li><a href="../hack/">/hack/</a> – a learning path for
+hackers who want to read the C, port to another machine, or
+understand the debugging loops.</li>
+  <li><a href="../source/">/source/</a> and
+<a href="../resources/">/resources/</a> – the complete
+documentation shelf and asset catalog.</li>
+</ul>
+
+<p>The repository is at
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1">huntergdavis/Johnny-Castaway-PS1</a>. Open source under GPL-3.0,
+inherited from upstream
+<a href="https://github.com/jno6809/jc_reborn">jno6809/jc_reborn</a> – without
+that engine decode this port would not exist.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Local Vision Classifier Plan — March 29, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative." />
+
+  <meta property="og:title"        content="Local Vision Classifier Plan — March 29, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-03-29">
+        March 29, 2026
+      </time>
+    </p>
+    <h1>Local Vision Classifier Plan — March 29, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Plan for a local vision classifier to replace heuristic captioning. Same day as the parallel VLM plan; the two were evaluated against each other.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Date: 2026-03-29</p>
+
+<p>Worktree:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/jc_reborn_ps1_debug</code></li>
+</ul>
+
+<p>Branch:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">worktree-ps1-debug-20260329</code></li>
+</ul>
+
+<p>Goal:</p>
+<ul>
+  <li>build a local visual analysis pipeline for PS1 scene validation and debugging</li>
+  <li>run under severe local constraints:
+    <ul>
+      <li>about <code class="language-plaintext highlighter-rouge">8 GB</code> system RAM</li>
+      <li>effectively no useful GPU</li>
+      <li>CPU-only inference is acceptable</li>
+      <li>slow inference is acceptable</li>
+    </ul>
+  </li>
+  <li>use the canonical Linux/reference scene captures as the semantic source of truth</li>
+  <li>pre-run the classifier on those references so PS1 evaluation is reference-driven instead of free-form</li>
+</ul>
+
+<p>This is not primarily a training problem yet.
+The first target is a practical semantic harness that converts frames into structured, comparable scene descriptions.</p>
+
+<h2 id="executive-recommendation">Executive Recommendation</h2>
+
+<p>Do this as a reference-first system, not a generic captioning toy.</p>
+
+<p>The classifier should not try to infer the world from scratch for every PS1 frame.
+Instead, it should:</p>
+
+<ol>
+  <li>extract cheap visual signatures from every canonical reference frame</li>
+  <li>precompute lightweight learned embeddings for those reference frames</li>
+  <li>assign semantic labels to reference frames once</li>
+  <li>evaluate PS1 frames by comparing them against that prepared reference bank</li>
+  <li>only use a small VLM on a sampled subset of frames where we need explanations</li>
+</ol>
+
+<p>That gives us three layers:</p>
+
+<ol>
+  <li>deterministic triage</li>
+  <li>reference-bank retrieval and semantic matching</li>
+  <li>sampled-frame textual explanation</li>
+</ol>
+
+<h2 id="why-this-is-the-right-shape">Why This Is The Right Shape</h2>
+
+<p>We already know a lot:</p>
+
+<ul>
+  <li>the canonical scene list</li>
+  <li>the canonical reference images</li>
+  <li>which frame ranges matter</li>
+  <li>the common PS1 failure modes:
+    <ul>
+      <li>black screen</li>
+      <li>title persistence</li>
+      <li>ocean-only background</li>
+      <li>wrong family</li>
+      <li>sprites missing</li>
+      <li>sprites present but wrong timing/content</li>
+    </ul>
+  </li>
+</ul>
+
+<p>That means the cheapest useful classifier is not “train a world model.”
+It is:</p>
+
+<ul>
+  <li>nearest-neighbor against the known good image bank</li>
+  <li>plus a small amount of semantic labeling</li>
+</ul>
+
+<p>This also fits the machine constraints much better than training or running a large VLM over every frame.</p>
+
+<h2 id="source-of-truth">Source Of Truth</h2>
+
+<p>Canonical reference runs:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/regtest-references</code></li>
+</ul>
+
+<p>Scene list:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/config/ps1/regtest-scenes.txt</code></li>
+</ul>
+
+<p>Related existing scripts:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/build-reference-index.py</code></li>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/calibrate-visual-detect.py</code></li>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/compare-reference-batch.sh</code></li>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/render-compare-timeline.py</code></li>
+</ul>
+
+<p>Validation target:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">63</code> scenes</li>
+</ul>
+
+<p>The classifier is not the source of truth.
+The reference captures are.
+The classifier is a semantic layer that makes the truth usable for automated triage and debugging.</p>
+
+<h2 id="what-the-harness-must-answer">What The Harness Must Answer</h2>
+
+<p>Per frame, we need a compact schema like:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"screen_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"title|black|ocean|island|scene|transition|unknown"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scene_family_guess"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY|BUILDING|WALKSTUF|FISHING|TITLE|unknown"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sprites_visible"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sprite_density"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none|low|medium|high"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"actors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"johnny"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"left|center|right|upper-left|upper-right|lower-left|lower-right"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.83</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"objects"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"raft"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"present"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"position"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.21</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"action_summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Johnny is standing near the shoreline."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"reference_match"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"scene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY-1"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"frame"</span><span class="p">:</span><span class="w"> </span><span class="s2">"frame_06000.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"distance"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"confidence"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.78</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"notes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"background only"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"no active sprite composition visible"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Important:</p>
+
+<ul>
+  <li>position buckets are enough initially</li>
+  <li>we do not need perfect bounding boxes</li>
+  <li>we do not need perfect actor names in phase one</li>
+  <li>we do need stable “ocean-only vs actual scene” answers</li>
+</ul>
+
+<h2 id="core-design-reference-first-semantic-retrieval">Core Design: Reference-First Semantic Retrieval</h2>
+
+<p>The canonical references should be processed offline into a reusable semantic bank.</p>
+
+<h3 id="reference-bank-contents">Reference Bank Contents</h3>
+
+<p>For each canonical frame:</p>
+
+<ul>
+  <li>file path</li>
+  <li>scene id</li>
+  <li>frame number</li>
+  <li>cheap deterministic metrics</li>
+  <li>embedding vector</li>
+  <li>optional text summary</li>
+  <li>optional semantic labels</li>
+</ul>
+
+<p>Example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scene_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY-1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"frame"</span><span class="p">:</span><span class="w"> </span><span class="s2">"frame_06000.png"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"embedding_model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"clip-vit-base-patch32"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"embedding"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"metrics"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"mean_rgb"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">88</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"water_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.41</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dark_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"edge_density"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.19</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"telemetry_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"screen_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scene"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"scene_family_guess"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"sprites_visible"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"johnny_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mary_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"raft_present"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"caption"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Johnny stands on the beach near the center of the frame."</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="runtime-ps1-evaluation">Runtime PS1 Evaluation</h3>
+
+<p>For each PS1 frame:</p>
+
+<ol>
+  <li>compute deterministic metrics</li>
+  <li>compute embedding</li>
+  <li>find nearest reference frames globally and within target scene</li>
+  <li>compare semantic labels against nearest reference cluster</li>
+  <li>emit:
+    <ul>
+      <li>best reference match</li>
+      <li>semantic mismatch reasons</li>
+      <li>confidence</li>
+    </ul>
+  </li>
+</ol>
+
+<p>This gives us answers like:</p>
+
+<ul>
+  <li>“PS1 frame most closely matches ACTIVITY-1 frame_06000 background, but sprites are missing”</li>
+  <li>“PS1 frame is closer to FISHING than ACTIVITY”</li>
+  <li>“PS1 frame is title-like even though story scene should have launched”</li>
+</ul>
+
+<h2 id="architecture">Architecture</h2>
+
+<h3 id="stage-0-build-the-reference-index">Stage 0: Build The Reference Index</h3>
+
+<p>Create a new offline indexer:</p>
+
+<ul>
+  <li>input:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">regtest-references/</code></li>
+    </ul>
+  </li>
+  <li>output:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">regtest-references/index.json</code></li>
+      <li><code class="language-plaintext highlighter-rouge">regtest-references/embeddings/*.npy</code> or a compact shard format</li>
+      <li>optional sampled captions</li>
+    </ul>
+  </li>
+</ul>
+
+<p>This stage should:</p>
+
+<ul>
+  <li>enumerate all reference frames</li>
+  <li>attach scene/frame metadata</li>
+  <li>compute cheap deterministic signatures</li>
+  <li>compute embeddings once</li>
+  <li>optionally generate labels for a sampled subset</li>
+</ul>
+
+<h3 id="stage-1-cheap-deterministic-triage">Stage 1: Cheap Deterministic Triage</h3>
+
+<p>Use classical CV and fixed heuristics first for:</p>
+
+<ul>
+  <li>black</li>
+  <li>title</li>
+  <li>ocean-only</li>
+  <li>mostly-water</li>
+  <li>telemetry presence</li>
+  <li>sprite-like foreground density</li>
+  <li>transition frames</li>
+</ul>
+
+<p>We already have the beginning of this approach in:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/scripts/calibrate-visual-detect.py</code></li>
+</ul>
+
+<p>This stage should be fast and should handle the most common failure modes without any model call.</p>
+
+<h3 id="stage-2-lightweight-embedding-model">Stage 2: Lightweight Embedding Model</h3>
+
+<p>Use a small image embedding model to compare frames to the reference bank.</p>
+
+<p>Recommended default:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openai/clip-vit-base-patch32</code></li>
+</ul>
+
+<p>Why:</p>
+
+<ul>
+  <li>mature</li>
+  <li>simple</li>
+  <li>good enough for zero-shot and embedding retrieval</li>
+  <li>much lighter than a full VLM</li>
+  <li>can run on CPU</li>
+</ul>
+
+<p>This stage should answer:</p>
+
+<ul>
+  <li>which reference frame is this closest to</li>
+  <li>which scene family cluster is this closest to</li>
+  <li>whether PS1 is semantically near the expected reference state</li>
+</ul>
+
+<h3 id="stage-3-sampled-semantic-explainer">Stage 3: Sampled Semantic Explainer</h3>
+
+<p>Use a small VLM only on selected frames:</p>
+
+<ul>
+  <li>first visible scene frame</li>
+  <li>first mismatch frame</li>
+  <li>best-match frame</li>
+  <li>final frame</li>
+  <li>one or two boundary frames around a divergence</li>
+</ul>
+
+<p>This stage produces:</p>
+
+<ul>
+  <li>short caption</li>
+  <li>visible actors/objects</li>
+  <li>rough action summary</li>
+  <li>“background only” vs “live scene content”</li>
+</ul>
+
+<p>Do not run a VLM across every captured frame at first.</p>
+
+<h3 id="stage-4-optional-tiny-supervised-classifier">Stage 4: Optional Tiny Supervised Classifier</h3>
+
+<p>Once we have enough labeled reference and PS1 frames, train a tiny classifier for:</p>
+
+<ul>
+  <li>screen_type</li>
+  <li>sprites_visible</li>
+  <li>johnny_present</li>
+  <li>mary_present</li>
+  <li>likely_scene_family</li>
+</ul>
+
+<p>This stage is optional and should happen only after the earlier pipeline proves which labels are stable and useful.</p>
+
+<h2 id="recommended-models-under-8-gb-ram">Recommended Models Under 8 GB RAM</h2>
+
+<h3 id="1-clip-vit-b32">1. CLIP ViT-B/32</h3>
+
+<p>Model:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openai/clip-vit-base-patch32</code></li>
+</ul>
+
+<p>Role:</p>
+
+<ul>
+  <li>default embedding model</li>
+  <li>zero-shot classifier for coarse labels</li>
+</ul>
+
+<p>Why:</p>
+
+<ul>
+  <li>lowest-risk default for a reference-bank system</li>
+  <li>good for nearest-neighbor retrieval</li>
+  <li>no need to train to get immediate value</li>
+</ul>
+
+<p>Use it for labels like:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">title screen</code></li>
+  <li><code class="language-plaintext highlighter-rouge">black screen</code></li>
+  <li><code class="language-plaintext highlighter-rouge">ocean background only</code></li>
+  <li><code class="language-plaintext highlighter-rouge">beach scene with character</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Johnny visible</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Mary visible</code></li>
+  <li><code class="language-plaintext highlighter-rouge">raft visible</code></li>
+</ul>
+
+<h3 id="2-florence-2-base-ft">2. Florence-2-base-ft</h3>
+
+<p>Model:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">microsoft/Florence-2-base-ft</code></li>
+</ul>
+
+<p>Role:</p>
+
+<ul>
+  <li>sampled-frame semantic explainer</li>
+  <li>captioning and object-oriented prompting</li>
+</ul>
+
+<p>Why:</p>
+
+<ul>
+  <li>small by VLM standards</li>
+  <li>multi-task prompting is useful</li>
+  <li>better explanatory power than CLIP</li>
+</ul>
+
+<p>Use it for:</p>
+
+<ul>
+  <li>sampled mismatch frames</li>
+  <li>human-review summaries</li>
+  <li>first-pass pseudo-labeling on the reference set</li>
+</ul>
+
+<h3 id="3-smolvlm-500m">3. SmolVLM-500M</h3>
+
+<p>Model:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">HuggingFaceTB/SmolVLM-500M-Instruct</code></li>
+</ul>
+
+<p>Role:</p>
+
+<ul>
+  <li>fallback low-memory VLM</li>
+</ul>
+
+<p>Why:</p>
+
+<ul>
+  <li>designed for constrained devices</li>
+  <li>smaller than most VLMs</li>
+  <li>useful if Florence-2 is too slow or memory-heavy on CPU</li>
+</ul>
+
+<h3 id="4-moondream2">4. moondream2</h3>
+
+<p>Model:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">vikhyatk/moondream2</code></li>
+</ul>
+
+<p>Role:</p>
+
+<ul>
+  <li>optional CPU captioner if its dedicated runtime proves stable locally</li>
+</ul>
+
+<p>Why:</p>
+
+<ul>
+  <li>plausible CPU memory footprint</li>
+  <li>popular for lightweight image description</li>
+</ul>
+
+<p>Risk:</p>
+
+<ul>
+  <li>more integration complexity than CLIP</li>
+  <li>less attractive as the first default in this repo</li>
+</ul>
+
+<h2 id="reference-grounded-labeling-strategy">Reference-Grounded Labeling Strategy</h2>
+
+<p>This is where we use our existing knowledge aggressively.</p>
+
+<h3 id="pass-a-deterministic-label-seed">Pass A: Deterministic Label Seed</h3>
+
+<p>For all reference frames, assign cheap seed labels:</p>
+
+<ul>
+  <li>black</li>
+  <li>title-like</li>
+  <li>ocean-heavy</li>
+  <li>telemetry-present</li>
+  <li>scene-like</li>
+</ul>
+
+<h3 id="pass-b-nearest-neighbor-clustering">Pass B: Nearest-Neighbor Clustering</h3>
+
+<p>Compute embeddings for all reference frames and cluster them by:</p>
+
+<ul>
+  <li>scene family</li>
+  <li>visual phase</li>
+  <li>sprite density</li>
+</ul>
+
+<p>This gives us prototype groups like:</p>
+
+<ul>
+  <li>ACTIVITY beach with Johnny</li>
+  <li>ACTIVITY ocean-only intro</li>
+  <li>title/menu</li>
+  <li>black/transition</li>
+  <li>FISHING island</li>
+</ul>
+
+<h3 id="pass-c-sampled-vlm-annotation">Pass C: Sampled VLM Annotation</h3>
+
+<p>Do not caption every frame.</p>
+
+<p>Instead caption:</p>
+
+<ul>
+  <li>cluster centers</li>
+  <li>cluster outliers</li>
+  <li>representative frames per scene</li>
+  <li>known important frames:
+    <ul>
+      <li>first visible scene frame</li>
+      <li>middle frame</li>
+      <li>final frame</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Then propagate those labels through nearest-neighbor groups.</p>
+
+<p>This keeps VLM cost low while still giving us semantic labels for almost the whole reference bank.</p>
+
+<h3 id="pass-d-human-correction-loop">Pass D: Human Correction Loop</h3>
+
+<p>Build review pages so we can quickly correct:</p>
+
+<ul>
+  <li>wrong actor names</li>
+  <li>wrong family labels</li>
+  <li>wrong action summaries</li>
+</ul>
+
+<p>Then persist corrected labels back into the reference bank.</p>
+
+<h2 id="how-ps1-comparison-should-work">How PS1 Comparison Should Work</h2>
+
+<p>For a PS1 run:</p>
+
+<ol>
+  <li>identify expected reference scene</li>
+  <li>for each sampled PS1 frame:
+    <ul>
+      <li>deterministic triage</li>
+      <li>embedding lookup</li>
+      <li>nearest reference match within expected scene</li>
+      <li>nearest global reference match</li>
+    </ul>
+  </li>
+  <li>emit both:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">best_expected_match</code></li>
+      <li><code class="language-plaintext highlighter-rouge">best_global_match</code></li>
+    </ul>
+  </li>
+</ol>
+
+<p>This distinction matters.</p>
+
+<p>Examples:</p>
+
+<ul>
+  <li>expected scene says <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code>, but global match says <code class="language-plaintext highlighter-rouge">FISHING-3</code></li>
+  <li>expected scene says <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code>, expected-match frame is ocean-only and global-match frame is also ocean-only</li>
+  <li>expected scene says <code class="language-plaintext highlighter-rouge">ACTIVITY-1</code>, best expected match is correct background but labels show <code class="language-plaintext highlighter-rouge">sprites_visible = false</code></li>
+</ul>
+
+<p>That gives us much better debugging signal than pixel mismatch alone.</p>
+
+<h2 id="proposed-output-files">Proposed Output Files</h2>
+
+<p>Per reference bank build:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">regtest-references/index.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">regtest-references/embeddings/clip-vit-base-patch32.f16.npy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">regtest-references/semantic-labels.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">regtest-references/captions.json</code></li>
+</ul>
+
+<p>Per analyzed PS1 run:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">vision-analysis.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">vision-summary.json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">vision-review.html</code></li>
+</ul>
+
+<p>Example <code class="language-plaintext highlighter-rouge">vision-summary.json</code>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY-1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"expected_family"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"frames_analyzed"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"best_expected_match_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.81</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"best_global_match_scene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACTIVITY-1"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"dominant_failure_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"background_only_missing_sprites"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"sprite_visible_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.08</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"title_like_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ocean_only_ratio"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.67</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"notes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Background matches expected intro ocean frames."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"No later frame matches reference frames with visible Johnny sprites."</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="what-counts-as-success">What Counts As Success</h2>
+
+<p>For scene validation, success is not:</p>
+
+<ul>
+  <li>same last-frame hash</li>
+  <li>same black frame</li>
+  <li>“looks close enough”</li>
+</ul>
+
+<p>Success is:</p>
+
+<ul>
+  <li>PS1 frames retrieve into the expected reference scene</li>
+  <li>the semantic labels broadly agree:
+    <ul>
+      <li>sprites visible when reference has sprites</li>
+      <li>same family</li>
+      <li>same coarse phase</li>
+      <li>same actor presence on key frames</li>
+    </ul>
+  </li>
+</ul>
+
+<p>For the <code class="language-plaintext highlighter-rouge">63</code>-scene target, the harness should let us say:</p>
+
+<ul>
+  <li>fully validated</li>
+  <li>visually close but semantically wrong</li>
+  <li>background-correct but sprite-missing</li>
+  <li>wrong-family reroute</li>
+  <li>title/black persistence</li>
+</ul>
+
+<h2 id="recommended-implementation-order">Recommended Implementation Order</h2>
+
+<h3 id="phase-1">Phase 1</h3>
+
+<p>Implement:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">build_reference_bank.py</code></li>
+  <li>deterministic metric extraction</li>
+  <li>CLIP embeddings for references</li>
+  <li>nearest-neighbor lookup for PS1 frames</li>
+</ul>
+
+<p>No training yet.</p>
+
+<h3 id="phase-2">Phase 2</h3>
+
+<p>Implement:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">analyze_run_vision.py</code></li>
+  <li><code class="language-plaintext highlighter-rouge">vision-review.html</code></li>
+  <li>per-run semantic summaries</li>
+</ul>
+
+<h3 id="phase-3">Phase 3</h3>
+
+<p>Add sampled VLM labeling:</p>
+
+<ul>
+  <li>Florence-2 default</li>
+  <li>SmolVLM fallback</li>
+</ul>
+
+<h3 id="phase-4">Phase 4</h3>
+
+<p>Only after enough labels exist:</p>
+
+<ul>
+  <li>tiny supervised classifier for stable labels</li>
+</ul>
+
+<h2 id="immediate-practical-recommendation">Immediate Practical Recommendation</h2>
+
+<p>Build the first version around:</p>
+
+<ol>
+  <li>deterministic metrics</li>
+  <li>CLIP embeddings</li>
+  <li>nearest reference retrieval</li>
+  <li>sampled Florence-2 captions</li>
+</ol>
+
+<p>That is the best tradeoff for this machine and this repo.</p>
+
+<p>It uses what we already know instead of pretending we need a bespoke model first.</p>
+
+<h2 id="research-notes">Research Notes</h2>
+
+<p>Useful model pages / references:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">microsoft/Florence-2-base-ft</code></li>
+  <li><code class="language-plaintext highlighter-rouge">openai/clip-vit-base-patch32</code></li>
+  <li><code class="language-plaintext highlighter-rouge">HuggingFaceTB/SmolVLM-500M-Instruct</code></li>
+  <li><code class="language-plaintext highlighter-rouge">vikhyatk/moondream2</code></li>
+</ul>
+
+<p>Key design implication from that research:</p>
+
+<ul>
+  <li>CLIP-class retrieval should be the backbone</li>
+  <li>tiny VLMs should be used as sparse explainers</li>
+  <li>reference-bank preprocessing is where we should spend most of the compute</li>
+</ul>
+
+<h2 id="progress-logging">Progress Logging</h2>
+
+<p>All implementation work for this classifier should log:</p>
+
+<ul>
+  <li>what model was tested</li>
+  <li>RAM usage observed</li>
+  <li>per-frame inference time</li>
+  <li>whether output was actually useful for PS1 debugging</li>
+  <li>where false positives happened</li>
+</ul>
+
+<p>That log should live under:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/jc_reborn_ps1_debug/docs/ps1/research/</code></li>
+</ul>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/LOCAL_VISION_CLASSIFIER_PLAN_2026-03-29.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

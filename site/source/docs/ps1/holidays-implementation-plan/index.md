@@ -21,8 +21,8 @@ This document supersedes the earlier five-variant concept-art plan.
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/holidays-implementation-plan.md` |
-| Lines | 51 |
-| Approx. words | 178 |
+| Lines | 54 |
+| Approx. words | 207 |
 | Code fences | 2 |
 
 ## Outline

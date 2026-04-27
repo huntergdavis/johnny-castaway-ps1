@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Vision Classifier Usage — March 29, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Operator reference for running the PS1 vision-classifier captioning pipeline end-to-end." />
+
+  <meta property="og:title"        content="Vision Classifier Usage — March 29, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Operator reference for running the PS1 vision-classifier captioning pipeline end-to-end." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-03-29">
+        March 29, 2026
+      </time>
+    </p>
+    <h1>Vision Classifier Usage — March 29, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Operator's reference for the vision-classifier pipeline as it stood on the day it landed. One-command runs, knobs, what to expect.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Worktree:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/jc_reborn_ps1_debug</code></li>
+</ul>
+
+<h2 id="one-command-reference-pipeline">One-Command Reference Pipeline</h2>
+
+<p>Run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tmp/jc_reborn_ps1_debug/scripts/run-vision-reference-pipeline.sh
+</code></pre></div></div>
+
+<p>Optional custom output root:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/tmp/jc_reborn_ps1_debug/scripts/run-vision-reference-pipeline.sh <span class="se">\</span>
+  repo:/vision-artifacts/custom-reference-pipeline
+</code></pre></div></div>
+
+<h2 id="primary-outputs">Primary Outputs</h2>
+
+<p>Top-level published entry:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-pipeline-current/index.html</code></li>
+</ul>
+
+<p>Reference bank:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/tmp/jc_reborn_ps1_debug/artifacts/vision-reference-bank-20260329/index.html</code></li>
+</ul>
+
+<p>Latest self-check:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-selfcheck-20260329-v4/index.html</code></li>
+</ul>
+
+<h2 id="useful-reports">Useful Reports</h2>
+
+<ul>
+  <li>quality: <code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-selfcheck-20260329-v4/quality-report.html</code></li>
+  <li>confusion: <code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-selfcheck-20260329-v4/confusion-report.html</code></li>
+  <li>family: <code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-selfcheck-20260329-v4/family-report.html</code></li>
+  <li>inventory: <code class="language-plaintext highlighter-rouge">repo:/vision-artifacts/vision-reference-pipeline-current/scene-inventory.html</code></li>
+</ul>
+
+<h2 id="core-cli">Core CLI</h2>
+
+<p>Build bank:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 /tmp/jc_reborn_ps1_debug/scripts/vision_classifier.py <span class="se">\</span>
+  build-reference-bank <span class="se">\</span>
+  <span class="nt">--refdir</span> repo:/regtest-references <span class="se">\</span>
+  <span class="nt">--outdir</span> /tmp/jc_reborn_ps1_debug/artifacts/vision-reference-bank-20260329
+</code></pre></div></div>
+
+<p>Analyze one run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 /tmp/jc_reborn_ps1_debug/scripts/vision_classifier.py <span class="se">\</span>
+  analyze-run <span class="se">\</span>
+  <span class="nt">--scene-dir</span> repo:/regtest-references/ACTIVITY-1 <span class="se">\</span>
+  <span class="nt">--bank-dir</span> /tmp/jc_reborn_ps1_debug/artifacts/vision-reference-bank-20260329 <span class="se">\</span>
+  <span class="nt">--outdir</span> repo:/vision-artifacts/example-run <span class="se">\</span>
+  <span class="nt">--expected-scene</span> ACTIVITY-1
+</code></pre></div></div>
+
+<p>Analyze all reference scenes against the bank:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 /tmp/jc_reborn_ps1_debug/scripts/vision_classifier.py <span class="se">\</span>
+  analyze-reference-set <span class="se">\</span>
+  <span class="nt">--refdir</span> repo:/regtest-references <span class="se">\</span>
+  <span class="nt">--bank-dir</span> /tmp/jc_reborn_ps1_debug/artifacts/vision-reference-bank-20260329 <span class="se">\</span>
+  <span class="nt">--outdir</span> repo:/vision-artifacts/vision-reference-selfcheck-20260329-v4
+</code></pre></div></div>
+
+<p>Publish top-level entry pages:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 /tmp/jc_reborn_ps1_debug/scripts/publish-vision-pipeline.py
+</code></pre></div></div>
+
+<h2 id="important-note">Important Note</h2>
+
+<p>This pipeline is complete on the reference side.
+The next meaningful use is PS1 analysis against the built reference bank.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/VISION_CLASSIFIER_USAGE_2026-03-29.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

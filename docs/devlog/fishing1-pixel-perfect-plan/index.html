@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Fishing 1 Pixel-Perfect Plan — April 21, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation." />
+
+  <meta property="og:title"        content="Fishing 1 Pixel-Perfect Plan — April 21, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-04-21">
+        April 21, 2026
+      </time>
+    </p>
+    <h1>Fishing 1 Pixel-Perfect Plan — April 21, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> The plan written the day work started on getting fishing1 visually identical to the original PC version across every islandState variation.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <h2 id="goal">Goal</h2>
+
+<p>Get the fishing1 fgpilot scene visually identical to the original PC
+version of Johnny Castaway, covering every <code class="language-plaintext highlighter-rouge">islandState</code>-driven variation
+the scene supports (tide, raft stage, holiday, night, island position,
+etc.). This is Stage 1 of a larger effort to pixel-perfect every scene.</p>
+
+<h2 id="working-mode">Working mode</h2>
+
+<p>One step at a time. For every step:</p>
+
+<ol>
+  <li>I build exactly one targeted change.</li>
+  <li>The build + DuckStation launch runs.</li>
+  <li>You look at the result and say whether it’s right, and if not, what’s
+off.</li>
+  <li>We iterate on that step, or move to the next one.</li>
+</ol>
+
+<p>Verification is a visual check by eye, comparing against your memory of
+the PC version — no screenshot diffing, no automated perceptual
+compare, no reference image. If your eye says it’s right, it’s right.</p>
+
+<h2 id="approach-path-a-bespoke-stay-on-else-branch">Approach: Path A (bespoke, stay on ELSE branch)</h2>
+
+<p>We tried switching to the IF branch (full <code class="language-plaintext highlighter-rouge">adsInitIsland</code>) first — it
+produced multiple regressions (tree missing, Johnny pack mis-aligned,
+BACKGRND failing to re-load after <code class="language-plaintext highlighter-rouge">ttmInitSlot</code> zeroed our preload).
+Reverted.</p>
+
+<p>Instead we stay on the current <strong>ELSE branch</strong> (known-good working state
+from commit <code class="language-plaintext highlighter-rouge">74bb0c24</code>: waves animate, scene plays through, no
+ghosting) and <strong>add <code class="language-plaintext highlighter-rouge">islandState</code>-driven variations on top of it
+manually</strong>. We keep the memory layout we already tuned (preloaded
+BACKGRND in <code class="language-plaintext highlighter-rouge">ttmBackgroundSlot</code>, rect-based clean backup).</p>
+
+<p>Important note: <strong>fgpilot mode does not run the original <code class="language-plaintext highlighter-rouge">FISHING.ADS</code>
+script or its TTMs.</strong> Johnny’s actions come from the pre-captured
+foreground pack (<code class="language-plaintext highlighter-rouge">FISHING1.FG1</code>) — pixel snapshots from the host build.
+Scene base drawing (island, trunk, raft, clouds, waves, holiday
+overlay) comes from <code class="language-plaintext highlighter-rouge">island.c</code> functions (<code class="language-plaintext highlighter-rouge">islandInit</code>,
+<code class="language-plaintext highlighter-rouge">islandAnimate</code>, <code class="language-plaintext highlighter-rouge">islandInitHoliday</code>). We call these directly with a
+controlled <code class="language-plaintext highlighter-rouge">islandState</code> in our ELSE-branch glue. Result is pixel-
+identical to calling <code class="language-plaintext highlighter-rouge">adsInitIsland</code> — same drawing code, just
+different glue.</p>
+
+<h2 id="step-list">Step list</h2>
+
+<h3 id="step-1--boot-override-tokens-for-islandstate">Step 1 — Boot-override tokens for <code class="language-plaintext highlighter-rouge">islandState</code></h3>
+
+<p>Without this we can’t reliably test each variation. The <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>
+parser already handles <code class="language-plaintext highlighter-rouge">fgpilot &lt;scene&gt;</code> — extend it to accept
+key=value tokens after the scene name:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot fishing1 day=N tide=low|high raft=N holiday=N night=0|1 \
+                 islandx=N islandy=N
+</code></pre></div></div>
+
+<p>Most of these map to existing forced-variables (<code class="language-plaintext highlighter-rouge">storyForcedCurrentDay</code>,
+<code class="language-plaintext highlighter-rouge">hostForcedLowTide</code>, <code class="language-plaintext highlighter-rouge">hostForcedRaftStage</code>, <code class="language-plaintext highlighter-rouge">hostForcedIslandX/Y</code>). Some
+need new hooks (<code class="language-plaintext highlighter-rouge">holiday</code>, <code class="language-plaintext highlighter-rouge">night</code>). Parse in <code class="language-plaintext highlighter-rouge">jc_reborn.c</code>’s boot-
+override handling and apply to <code class="language-plaintext highlighter-rouge">islandState</code> at the top of
+<code class="language-plaintext highlighter-rouge">fgPlayOceanRuntimeScene</code> (after the current preload, before the ELSE
+branch draws).</p>
+
+<p><strong>You verify</strong>: setting <code class="language-plaintext highlighter-rouge">fgpilot fishing1 tide=low</code> visibly flips wave
+positions to the low-tide set; setting <code class="language-plaintext highlighter-rouge">night=1</code> flips to <code class="language-plaintext highlighter-rouge">NIGHT.SCR</code>;
+etc. (If the ELSE branch doesn’t yet respond to a token, we just see no
+change — that’s fine, the step is “parser wired, overrides present,
+ready to drive subsequent steps”.)</p>
+
+<h3 id="step-2--boot-override-for-islandstate-via-bootmodetxt">Step 2 — Boot-override for <code class="language-plaintext highlighter-rouge">islandState</code> via <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></h3>
+
+<p>Add parse tokens so we can pin variations for testing:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot fishing1 day=N tide=low|high raft=N holiday=N night=0|1 \
+                 islandx=N islandy=N
+</code></pre></div></div>
+
+<p>Most of these already correspond to existing <code class="language-plaintext highlighter-rouge">storyForced*</code> /
+<code class="language-plaintext highlighter-rouge">hostForced*</code> variables — we just need the <code class="language-plaintext highlighter-rouge">BOOTMODE</code> parser to recognize
+the <code class="language-plaintext highlighter-rouge">key=value</code> tokens and feed them in. Without this we can’t reliably
+exercise variations one at a time.</p>
+
+<p><strong>You verify</strong>: each token actually changes the rendered scene as
+expected.</p>
+
+<h3 id="step-3--high-tide-baseline">Step 3 — High-tide baseline</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot fishing1 day=1 tide=high raft=1 holiday=0 night=0 islandx=0 islandy=0
+</code></pre></div></div>
+
+<p><strong>You verify</strong>: looks like high-tide fishing1 on the PC.</p>
+
+<h3 id="step-4--low-tide">Step 4 — Low-tide</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot fishing1 day=1 tide=low raft=1 holiday=0 night=0 islandx=0 islandy=0
+</code></pre></div></div>
+
+<p><strong>You verify</strong>.</p>
+
+<h3 id="steps-59--raft-stages">Steps 5–9 — Raft stages</h3>
+
+<p><code class="language-plaintext highlighter-rouge">raft=1</code>, <code class="language-plaintext highlighter-rouge">raft=2</code>, <code class="language-plaintext highlighter-rouge">raft=3</code>, <code class="language-plaintext highlighter-rouge">raft=4</code>, <code class="language-plaintext highlighter-rouge">raft=5</code>. One step per stage.
+<strong>You verify each</strong>.</p>
+
+<h3 id="steps-1013--holidays">Steps 10–13 — Holidays</h3>
+
+<ul>
+  <li>10: <code class="language-plaintext highlighter-rouge">holiday=1</code> — Halloween</li>
+  <li>11: <code class="language-plaintext highlighter-rouge">holiday=2</code> — St. Patrick’s</li>
+  <li>12: <code class="language-plaintext highlighter-rouge">holiday=3</code> — Christmas</li>
+  <li>13: <code class="language-plaintext highlighter-rouge">holiday=4</code> — New Year</li>
+</ul>
+
+<p><strong>You verify each</strong>.</p>
+
+<h3 id="step-14--night-mode">Step 14 — Night mode</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fgpilot fishing1 day=1 tide=high raft=1 holiday=0 night=1 islandx=0 islandy=0
+</code></pre></div></div>
+
+<p><strong>You verify</strong>.</p>
+
+<h3 id="step-15--island-position-variations">Step 15 — Island position variations</h3>
+
+<p>A couple of sample <code class="language-plaintext highlighter-rouge">(islandx, islandy)</code> pairs from the <code class="language-plaintext highlighter-rouge">VARPOS_OK</code> ranges
+the original randomizer uses:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">islandx=-200 islandy=-20</code></li>
+  <li><code class="language-plaintext highlighter-rouge">islandx=-60 islandy=-60</code></li>
+  <li><code class="language-plaintext highlighter-rouge">islandx=-114 islandy=14</code></li>
+</ul>
+
+<p><strong>You verify</strong> each looks sane and matches how the PC places the island.</p>
+
+<h3 id="step-16--anything-else-you-spot">Step 16 — Anything else you spot</h3>
+
+<p>Whatever fishing1 variation or detail you notice is off that isn’t one of
+the above — coconuts state, seagulls, boat, banners, rain/weather,
+sparkles, special FX, etc. Handled one at a time.</p>
+
+<h3 id="step-17--cleanup--handoff">Step 17 — Cleanup / handoff</h3>
+
+<p>Decide: keep the <code class="language-plaintext highlighter-rouge">BOOTMODE</code> override tokens as a permanent dev
+affordance (documented), or gate them behind a debug flag. Either way,
+commit a final “pixel-perfect fishing1” marker so we can return to it as
+the known-good baseline when we generalize to other scenes.</p>
+
+<h2 id="after-this-document-is-done">After this document is done</h2>
+
+<p>Stage 2 (future): apply the same process to fishing2 and onward; build
+the scene-specific dirty-rect table needed for the rect-based clean
+backup; generalize island-relative offset math so the rects move with
+<code class="language-plaintext highlighter-rouge">islandState.xPos</code> / <code class="language-plaintext highlighter-rouge">LEFT_ISLAND</code>.</p>
+
+<p>Stage 3 (future): Johnny walk transitions between scenes, holiday
+toggles at the start-screen level, direct joystick control mode — per
+the larger master plan.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/docs/ps1/research/FISHING1_PIXEL_PERFECT_PLAN_2026-04-21.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

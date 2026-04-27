@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Date-algorithm core — Johnny Castaway PS1</title>
+  <meta name="description" content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 35 holidays from 1583 to 4099." />
+
+  <meta property="og:title"        content="Date-algorithm core — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 35 holidays from 1583 to 4099." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../../">Home</a></li>
+        <li><a href="../../../play/">Play</a></li>
+        <li><a href="../../../about/">About</a></li>
+        <li><a href="../../../scenes/">Scenes</a></li>
+        <li><a href="../../../devlog/">Devlog</a></li>
+        <li><a href="../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../lab/">Lab</a></li>
+        <li><a href="../../../hack/">Hack</a></li>
+        <li><a href="../../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/Johnny-Castaway-PS1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Date-algorithm core</h1>
+      <p class="subtitle">How the 35 holidays compute their dates with no expiring tables.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <h2 id="the-problem">The problem</h2>
+
+<p>The original 1992 Sierra screensaver shipped four holidays — New Year’s
+Day, St. Patrick’s Day, Halloween, Christmas. Three of those are fixed
+calendar dates and the fourth is a fixed calendar date too. They never
+move. A two-line lookup table is enough.</p>
+
+<p>This port carries 35 holidays. Several of them move year to year:
+Easter, Mardi Gras, Thanksgiving, MLK Day, Memorial Day, Labor Day,
+Election Day, both equinoxes, both solstices, Mother’s Day, Father’s
+Day, Pride Day, Super Bowl Sunday, Presidents’ Day, Columbus /
+Indigenous Peoples’ Day. The PS1 has no internet, no NTP, no licensed
+calendar library. It cannot phone home for a date table, and a baked-in
+table would expire — the port targets a 100+ year service window
+(1583–4099 is the supported Gregorian range), and shipping a stale CSV
+that needs annual republishing was not acceptable.</p>
+
+<p>So every date is computed from a pure algorithm at runtime. No
+year-specific data, no embedded calendar. The whole core lives in
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
+roughly 200 lines of C, no allocations, no PS1 dependencies.</p>
+
+<h2 id="day-of-week-from-month-day-year">Day-of-week from (month, day, year)</h2>
+
+<p>The foundation. Used directly by every Nth-weekday holiday and by
+Election Day. The implementation is the Tomohiko Sakamoto variant of
+Zeller’s congruence for the Gregorian calendar. January and February are
+treated as months 13 and 14 of the previous year, which removes the
+leap-year branch from the inner formula.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">holidayDayOfWeek</span><span class="p">(</span><span class="kt">int</span> <span class="n">year</span><span class="p">,</span> <span class="kt">int</span> <span class="n">month</span><span class="p">,</span> <span class="kt">int</span> <span class="n">day</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">month</span> <span class="o">+=</span> <span class="mi">12</span><span class="p">;</span>
+        <span class="n">year</span>  <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">K</span> <span class="o">=</span> <span class="n">year</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">J</span> <span class="o">=</span> <span class="n">year</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="cm">/* h = 0 -&gt; Saturday, 1 -&gt; Sunday, ... */</span>
+    <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="n">day</span> <span class="o">+</span> <span class="p">(</span><span class="mi">13</span> <span class="o">*</span> <span class="p">(</span><span class="n">month</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">K</span> <span class="o">+</span> <span class="n">K</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">J</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span><span class="p">;</span>
+    <span class="cm">/* Convert to 0=Sunday, 1=Monday, ... 6=Saturday. */</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The native Zeller convention is <code class="language-plaintext highlighter-rouge">0=Saturday</code>. The function shifts to
+<code class="language-plaintext highlighter-rouge">0=Sunday</code> because the rest of the code (and <code class="language-plaintext highlighter-rouge">weekday</code> fields in
+<code class="language-plaintext highlighter-rouge">holidays.yml</code>) use the Sunday-zero convention.</p>
+
+<p><strong>Worked example.</strong> What day of the week was 2026-04-26?</p>
+
+<p>April is month 4, no shift. <code class="language-plaintext highlighter-rouge">K = 26</code>, <code class="language-plaintext highlighter-rouge">J = 20</code>.
+<code class="language-plaintext highlighter-rouge">h = (26 + (13 * 5) / 5 + 26 + 26/4 + 20/4 + 5*20) % 7</code>
+`  = (26 + 13 + 26 + 6 + 5 + 100) % 7<code class="language-plaintext highlighter-rouge">
+</code>  = 176 % 7 = 1<code class="language-plaintext highlighter-rouge"> (Sunday in Zeller's convention).
+</code>(1 + 6) % 7 = 0` -&gt; Sunday. Correct.</p>
+
+<h2 id="nth-weekday-of-month">Nth weekday of month</h2>
+
+<p>The pattern that drives most US movable holidays.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Holiday</th>
+      <th>Rule</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MLK Day</td>
+      <td>3rd Monday of January</td>
+    </tr>
+    <tr>
+      <td>Super Bowl Sunday</td>
+      <td>2nd Sunday of February</td>
+    </tr>
+    <tr>
+      <td>Presidents’ Day</td>
+      <td>3rd Monday of February</td>
+    </tr>
+    <tr>
+      <td>Mother’s Day</td>
+      <td>2nd Sunday of May</td>
+    </tr>
+    <tr>
+      <td>Memorial Day</td>
+      <td>Last Monday of May</td>
+    </tr>
+    <tr>
+      <td>Father’s Day</td>
+      <td>3rd Sunday of June</td>
+    </tr>
+    <tr>
+      <td>Pride Day</td>
+      <td>Last Sunday of June</td>
+    </tr>
+    <tr>
+      <td>Labor Day</td>
+      <td>1st Monday of September</td>
+    </tr>
+    <tr>
+      <td>Columbus / Indigenous Peoples’ Day</td>
+      <td>2nd Monday of October</td>
+    </tr>
+    <tr>
+      <td>Thanksgiving</td>
+      <td>4th Thursday of November</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The algorithm: find the first day-of-month that lands on the target
+weekday, then add <code class="language-plaintext highlighter-rouge">(n - 1) * 7</code>. For <code class="language-plaintext highlighter-rouge">n == -1</code> (“last”), walk forward by
+7 until the next step would overshoot the month length.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">holidayNthWeekdayOfMonth</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">weekday</span><span class="p">,</span> <span class="kt">int</span> <span class="n">month</span><span class="p">,</span> <span class="kt">int</span> <span class="n">year</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">month</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">)</span>            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">weekday</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">weekday</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">)</span>         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">holidayDaysInMonth</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">year</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">firstDow</span> <span class="o">=</span> <span class="n">holidayDayOfWeek</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">first</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">((</span><span class="n">weekday</span> <span class="o">-</span> <span class="n">firstDow</span> <span class="o">+</span> <span class="mi">7</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">first</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">&lt;=</span> <span class="n">dim</span><span class="p">)</span> <span class="n">d</span> <span class="o">+=</span> <span class="mi">7</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">d</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span>                     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;=</span> <span class="n">dim</span><span class="p">)</span> <span class="o">?</span> <span class="n">d</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The function returns 0 for “no such Nth occurrence” — e.g. asking for
+the 5th Wednesday of a month with only four. Callers treat 0 as
+“holiday does not match today.”</p>
+
+<p><strong>Worked example.</strong> When is Thanksgiving 2050?</p>
+
+<p><code class="language-plaintext highlighter-rouge">holidayDayOfWeek(2050, 11, 1)</code> returns Tuesday (<code class="language-plaintext highlighter-rouge">2</code>). Thursday is
+<code class="language-plaintext highlighter-rouge">weekday=4</code>. <code class="language-plaintext highlighter-rouge">first = 1 + ((4 - 2 + 7) % 7) = 1 + 2 = 3</code>. So Nov 3 is
+the first Thursday. Add <code class="language-plaintext highlighter-rouge">(4 - 1) * 7 = 21</code>. Result: November 24, 2050.</p>
+
+<h2 id="easter-sunday--meeus--jones--butcher">Easter Sunday — Meeus / Jones / Butcher</h2>
+
+<p>The largest single block. Gregorian Easter via the
+Meeus / Jones / Butcher algorithm, valid 1583 through 4099. The
+implementation is straight off Astronomical Algorithms, second edition.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">holidayEasterSunday</span><span class="p">(</span><span class="kt">int</span> <span class="n">year</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">out_month</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">out_day</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="n">year</span> <span class="o">%</span> <span class="mi">19</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">year</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">year</span> <span class="o">%</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="n">b</span> <span class="o">/</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">e</span> <span class="o">=</span> <span class="n">b</span> <span class="o">%</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">25</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">f</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="mi">19</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="n">d</span> <span class="o">-</span> <span class="n">g</span> <span class="o">+</span> <span class="mi">15</span><span class="p">)</span> <span class="o">%</span> <span class="mi">30</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">c</span> <span class="o">/</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">c</span> <span class="o">%</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="mi">32</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="n">h</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="mi">7</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">11</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">22</span> <span class="o">*</span> <span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="mi">451</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">month</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">114</span><span class="p">)</span> <span class="o">/</span> <span class="mi">31</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">day</span>   <span class="o">=</span> <span class="p">((</span><span class="n">h</span> <span class="o">+</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">7</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">114</span><span class="p">)</span> <span class="o">%</span> <span class="mi">31</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">out_month</span><span class="p">)</span> <span class="o">*</span><span class="n">out_month</span> <span class="o">=</span> <span class="n">month</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">out_day</span><span class="p">)</span>   <span class="o">*</span><span class="n">out_day</span>   <span class="o">=</span> <span class="n">day</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Easter offsets (Mardi Gras = Easter − 47, Ash Wednesday = Easter − 46,
+Good Friday = Easter − 2, Pentecost = Easter + 49) chain through
+<code class="language-plaintext highlighter-rouge">holidayDateAdd</code>, which carries day deltas across month and year
+boundaries:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">holidayDateAdd</span><span class="p">(</span><span class="kt">int</span> <span class="n">year</span><span class="p">,</span> <span class="kt">int</span> <span class="n">month</span><span class="p">,</span> <span class="kt">int</span> <span class="n">day</span><span class="p">,</span> <span class="kt">int</span> <span class="n">delta_days</span><span class="p">,</span>
+                    <span class="kt">int</span> <span class="o">*</span><span class="n">out_year</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">out_month</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">out_day</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>In this corpus only Easter itself (offset 0) and Mardi Gras
+(offset −47) are used; the machinery handles the rest if added.</p>
+
+<p><strong>Worked example.</strong> Easter 2026.</p>
+
+<p><code class="language-plaintext highlighter-rouge">a = 2026 % 19 = 12</code>, <code class="language-plaintext highlighter-rouge">b = 20</code>, <code class="language-plaintext highlighter-rouge">c = 26</code>, <code class="language-plaintext highlighter-rouge">d = 5</code>, <code class="language-plaintext highlighter-rouge">e = 0</code>, <code class="language-plaintext highlighter-rouge">f = 1</code>,
+<code class="language-plaintext highlighter-rouge">g = 6</code>, <code class="language-plaintext highlighter-rouge">h = (228 + 20 - 5 - 6 + 15) % 30 = 252 % 30 = 12</code>, <code class="language-plaintext highlighter-rouge">i = 6</code>,
+<code class="language-plaintext highlighter-rouge">k = 2</code>, <code class="language-plaintext highlighter-rouge">l = (32 + 0 + 12 - 12 - 2) % 7 = 30 % 7 = 2</code>, <code class="language-plaintext highlighter-rouge">m = 0</code>.
+<code class="language-plaintext highlighter-rouge">month = (12 + 2 - 0 + 114) / 31 = 128 / 31 = 4</code>,
+<code class="language-plaintext highlighter-rouge">day = (128 % 31) + 1 = 4 + 1 = 5</code>.</p>
+
+<p>Easter 2026 = April 5. Mardi Gras 2026 = April 5 minus 47 days =
+February 17.</p>
+
+<p>A few more cross-checks: Easter 2030 = April 21. Easter 2050 = April 10.
+Easter 2099 = April 12.</p>
+
+<h2 id="solstice-and-equinox">Solstice and equinox</h2>
+
+<p>Real astronomical solstice and equinox calculation needs Meeus’s
+year-specific tables — the kind of data table the rest of this design
+deliberately avoids. The dates drift by at most ±1 day across centuries,
+and the holiday is a visual decoration, not a navigation aid. So the
+runtime returns canonical fixed dates that are correct most years
+2000–2100:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">holidayWinterSolstice</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="o">*</span><span class="n">m</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span> <span class="o">*</span><span class="n">d</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">holidaySummerSolstice</span> <span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="o">*</span><span class="n">m</span> <span class="o">=</span>  <span class="mi">6</span><span class="p">;</span> <span class="o">*</span><span class="n">d</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">holidayVernalEquinox</span>  <span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="o">*</span><span class="n">m</span> <span class="o">=</span>  <span class="mi">3</span><span class="p">;</span> <span class="o">*</span><span class="n">d</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">holidayAutumnalEquinox</span><span class="p">(</span><span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">d</span><span class="p">)</span> <span class="p">{</span> <span class="o">*</span><span class="n">m</span> <span class="o">=</span>  <span class="mi">9</span><span class="p">;</span> <span class="o">*</span><span class="n">d</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Tolerance is ±1 day, fine for a screensaver. If precision ever becomes
+important the upgrade path is a clean swap to
+<a href="https://books.google.com/books?id=cjVmDwAAQBAJ">Meeus 1998, ch. 27</a>.</p>
+
+<p><strong>Worked dates for 2026.</strong> Vernal equinox: March 20. Summer solstice:
+June 21. Autumnal equinox: September 22. Winter solstice: December 21.</p>
+
+<h2 id="election-day">Election Day</h2>
+
+<p>A special case worth its own dispatch. US federal Election Day is the
+first Tuesday after the first Monday of November — <em>not</em> the first
+Tuesday of November. The two coincide unless November 1 falls on a
+Tuesday, in which case the first Monday is November 7 and Election Day
+shifts to November 8. Always falls Nov 2..8.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">firstMon</span> <span class="o">=</span> <span class="n">holidayNthWeekdayOfMonth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="cm">/*Mon*/</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">year</span><span class="p">);</span>
+<span class="n">rm</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+<span class="n">rd</span> <span class="o">=</span> <span class="n">firstMon</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Worked dates: Election Day 2026 = November 3. Election Day 2028 =
+November 7.</p>
+
+<h2 id="putting-it-together">Putting it together</h2>
+
+<p><code class="language-plaintext highlighter-rouge">holidayForDate(year, month, day)</code> walks the holiday table and
+dispatches on each row’s <code class="language-plaintext highlighter-rouge">kind</code>. First match wins; returns 0 if no
+holiday matches today. Cost is one cheap arithmetic pass per holiday —
+called once per scene start, no need to memoize.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">holidayForDate</span><span class="p">(</span><span class="kt">int</span> <span class="n">year</span><span class="p">,</span> <span class="kt">int</span> <span class="n">month</span><span class="p">,</span> <span class="kt">int</span> <span class="n">day</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">month</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">day</span> <span class="o">&lt;</span> <span class="mi">1</span>   <span class="o">||</span> <span class="n">day</span> <span class="o">&gt;</span> <span class="mi">31</span><span class="p">)</span>   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">gHolidayCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">const</span> <span class="k">struct</span> <span class="n">Holiday</span> <span class="o">*</span><span class="n">h</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gHolidays</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="kt">int</span> <span class="n">rm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">em</span><span class="p">,</span> <span class="n">ed</span><span class="p">,</span> <span class="n">ey</span><span class="p">;</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">h</span><span class="o">-&gt;</span><span class="n">kind</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_FIXED</span><span class="p">:</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">month</span><span class="p">;</span>
+            <span class="n">rd</span> <span class="o">=</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">day</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_NTH_WEEKDAY</span><span class="p">:</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">month</span><span class="p">;</span>
+            <span class="n">rd</span> <span class="o">=</span> <span class="n">holidayNthWeekdayOfMonth</span><span class="p">(</span><span class="n">h</span><span class="o">-&gt;</span><span class="n">n</span><span class="p">,</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">weekday</span><span class="p">,</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">month</span><span class="p">,</span> <span class="n">year</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_EASTER_OFFSET</span><span class="p">:</span>
+            <span class="n">holidayEasterSunday</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">em</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ed</span><span class="p">);</span>
+            <span class="n">holidayDateAdd</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">em</span><span class="p">,</span> <span class="n">ed</span><span class="p">,</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">easter_offset</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ey</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rd</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ey</span> <span class="o">!=</span> <span class="n">year</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_SOLSTICE_WIN</span><span class="p">:</span>
+            <span class="n">holidayWinterSolstice</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rd</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_SOLSTICE_SUM</span><span class="p">:</span>
+            <span class="n">holidaySummerSolstice</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rd</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_EQUINOX_VER</span><span class="p">:</span>
+            <span class="n">holidayVernalEquinox</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rd</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_EQUINOX_AUT</span><span class="p">:</span>
+            <span class="n">holidayAutumnalEquinox</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rm</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rd</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="n">HOLIDAY_KIND_ELECTION_DAY</span><span class="p">:</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">firstMon</span> <span class="o">=</span> <span class="n">holidayNthWeekdayOfMonth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="n">year</span><span class="p">);</span>
+            <span class="n">rm</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+            <span class="n">rd</span> <span class="o">=</span> <span class="n">firstMon</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nl">default:</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rm</span> <span class="o">==</span> <span class="n">month</span> <span class="o">&amp;&amp;</span> <span class="n">rd</span> <span class="o">==</span> <span class="n">day</span><span class="p">)</span> <span class="k">return</span> <span class="n">h</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The dispatcher’s complement is the codegen output. Each row of
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays_table.c"><code class="language-plaintext highlighter-rouge">gHolidays[]</code></a> is
+generated from
+<a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> by
+<code class="language-plaintext highlighter-rouge">scripts/holidays-codegen.py</code>. The C file never lists holidays
+literally — only the algorithm. Adding a new holiday is a YAML edit and
+a rebuild.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><code class="language-plaintext highlighter-rouge">HolidayDateKind</code></th>
+      <th>Rule fields</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_FIXED</code></td>
+      <td><code class="language-plaintext highlighter-rouge">month</code>, <code class="language-plaintext highlighter-rouge">day</code></td>
+      <td>New Year’s = (1, 1)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_NTH_WEEKDAY</code></td>
+      <td><code class="language-plaintext highlighter-rouge">month</code>, <code class="language-plaintext highlighter-rouge">n</code>, <code class="language-plaintext highlighter-rouge">weekday</code></td>
+      <td>MLK Day = (1, 3, Mon)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_EASTER_OFFSET</code></td>
+      <td><code class="language-plaintext highlighter-rouge">easter_offset</code></td>
+      <td>Mardi Gras = −47</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_SOLSTICE_WIN</code></td>
+      <td>(none)</td>
+      <td>First Day of Winter</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_SOLSTICE_SUM</code></td>
+      <td>(none)</td>
+      <td>First Day of Summer</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_EQUINOX_VER</code></td>
+      <td>(none)</td>
+      <td>First Day of Spring</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_EQUINOX_AUT</code></td>
+      <td>(none)</td>
+      <td>First Day of Autumn</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_ELECTION_DAY</code></td>
+      <td>(none)</td>
+      <td>1st Tue after 1st Mon Nov</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="why-no-hijri--lunar-new-year--diwali">Why no Hijri / Lunar New Year / Diwali</h2>
+
+<p>Honest answer: the current corpus is US-centric. The 35 holidays cover
+the US federal calendar, the four original Sierra holidays, and a
+handful of internet-popular dates (Pi Day, Star Wars Day, Pirate Day,
+4/20). There is no Lunar New Year, no Hijri calendar holiday, no Diwali,
+no Rosh Hashanah, no Lunar Mid-Autumn Festival. The algorithmic spine
+above is general — Hindu, Hebrew, and Islamic calendar conversions are
+all covered by Meeus’s book — and adding a <code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_HIJRI_FIXED</code>
+or <code class="language-plaintext highlighter-rouge">HOLIDAY_KIND_LUNISOLAR</code> is the obvious extension. The reason it is
+not done yet is that nobody has drawn the emblems and nobody has
+written the conversion tables. The runtime is the easy part. This is
+not a culturally complete calendar; it is the calendar this port
+shipped with.</p>
+
+<h2 id="related">Related</h2>
+
+<ul>
+  <li><a href="../">Per-holiday calendar</a> — every
+holiday’s own page with worked dates.</li>
+  <li><a href="../emblems/">Emblem gallery</a> —
+the 32-icon sheet.</li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.c"><code class="language-plaintext highlighter-rouge">src/holidays.c</code></a> —
+this file’s algorithms.</li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/src/holidays.h"><code class="language-plaintext highlighter-rouge">src/holidays.h</code></a> —
+public API.</li>
+  <li><a href="https://github.com/huntergdavis/Johnny-Castaway-PS1/blob/main/holidays.yml"><code class="language-plaintext highlighter-rouge">holidays.yml</code></a> —
+source of truth for the table.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/Johnny-Castaway-PS1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.10-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../../faq/">FAQ</a></li>
+          <li><a href="../../../credits/">Credits</a></li>
+          <li><a href="../../../hack/">Hack</a></li>
+          <li><a href="../../../source/">Source library</a></li>
+          <li><a href="../../../resources/">Resources</a></li>
+          <li><a href="../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
