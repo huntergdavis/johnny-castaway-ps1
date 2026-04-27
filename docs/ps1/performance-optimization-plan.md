@@ -924,6 +924,7 @@ from perturbing the deterministic cadence.
 | `P4-239` | Failed/no promotion: compile holidays with `-Os` plus one-sector CD padding. | Keeping `FISHING1.FG2 LBA=399` did not recover cadence (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); one-sector executable shrink remains unsafe without phase-independent scheduling. |
 | `P4-240` | Failed/no promotion: remove duplicate rendered/held perf guards. | The cleanup shifted hot symbols by `-40` bytes and regressed CD pressure even with pack LBA restored by padding (`blocking_vb/prefetch_overrun_vb 5 -> 6`); do not remove hot-path ballast until code phase is controlled. |
 | `P4-241` | Failed/no promotion: compile `foreground_pilot.c` with `-O3`. | Whole-TU `-O3` grew the executable bucket, moved `FISHING1.FG2` LBA `399 -> 400`, grew key foreground functions, and regressed visible CD pressure while leaving `loop_vb` flat; avoid broad hot-TU flag probes. |
+| `P4-242` | Failed/no promotion: allow 4-VBlank catch-up only when the next prepared frame and following stream-window payload are resident. | The safety-gated short-hold catch-up was correctness-clean and layout-stable but exact no-op (`loop_vb=1221`, `target_vb=1071`, `blocking_vb=5`, `prefetch_overrun_vb=5`); local threshold guards are exhausted for fishing1, so present-wait work needs a structural prepared/dual-buffer scheduler or explicit hold rebalance. |
 
 Prefetch variants to test in order:
 
