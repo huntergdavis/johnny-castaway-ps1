@@ -17,7 +17,7 @@ Current accepted fishing1 exact baseline:
 | `restore_bytes` | `2510092` |
 | `prefetch_buffer` | `29712` bytes |
 | `jcreborn.exe` | `143360` bytes |
-| `jcreborn.elf` | `712272` bytes |
+| `jcreborn.elf` | `715432` bytes |
 
 Goal: close `147` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -98,6 +98,15 @@ metrics. Local fallthrough-threshold probing is exhausted for this baseline.
 The latest harness pass adds host-side CD-summary comparison, so future
 `blocking_reads 4 -> 5` regressions can be localized to FG2 file sectors
 without adding PS1-side metrics that change the speed binary.
+The latest runtime pass adds `JCPERF2 sched` ownership counters. It keeps
+fishing1 exact-flat (`loop_vb=1219`, `blocking_vb=5`, `prefetch_overrun_vb=5`,
+`FISHING1.FG2 LBA=396`, PS-EXE `143360`) and reports `present=72`,
+`cd_stage=108`, `cd_window=54`, `visual_prepare=72`, `wait=574`,
+`cd_reserved=28`, `prep_blocked_cd=13`, `prepared_ready=72`,
+`prepared_used=72`, and `prepared_wasted=0`. The first owned-idle catch-up
+prototype did not fire usefully (`catchup_idle=0`) and moved layout, so it was
+reverted; the next scheduler attempt needs per-frame ownership analysis, not
+another threshold-only catch-up.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -145,8 +154,8 @@ without early display, tearing, frame drops, or weakened pause input.
 | 110 | Group-fire trace build | Diagnostic binary logs why each planner group did or did not fire. | Explains why `384..396` remained a no-op. |
 | 111 | Generated group metadata v2 | Emit group candidates beside FG2 entries without moving payload offsets. | Replaces hard-coded one-off group tables. |
 | 112 | Selective two-group tail retry | Retry `384..396` only after group-fire tracing proves the append point. | Avoids increasing buffer capacity for groups that cannot execute. |
-| 113 | Prepared-state detail counters | Add trace-only `prepared_used`, `prepared_missed`, and `prepared_blocked_cd` counters. | Separates useful precompose work from duplicate ballast. |
-| 114 | CD-first scheduler prototype | Held slice owner order becomes read deadline, then precompose, then idle wait. | Prevents render prep from stealing the CD slack that hides reads. |
+| 113 | Prepared-state detail counters | Done in Summary as `JCPERF2 sched`: prepared-ready/used/wasted plus CD-blocked prep and held-slice owners. | Fishing1 shows `72 ready / 72 used / 0 wasted`, so duplicate prepared-frame waste is not the current big win. |
+| 114 | CD-first scheduler prototype | Refine from the first no-win ownership pass into a per-frame budget: read deadline, then precompose, then idle wait. | Prevents render prep from stealing CD slack while identifying which of the `574` wait slots and `28` CD-reserved slots can become useful work. |
 | 115 | Read-deadline reservation | Reserve a minimum hidden-read budget before any speculative render prep. | Retests prepared-present ideas without creating extra visible reads. |
 | 116 | No-source layout canary | Nightly/headless run checks that a rebuild of unchanged source preserves cadence. | Detects toolchain/container nondeterminism before optimization tests. |
 | 117 | Perf-log off baseline | Capture release-speed metrics with logging disabled or minimized. | Quantifies how much of the remaining gap is diagnostic overhead. |

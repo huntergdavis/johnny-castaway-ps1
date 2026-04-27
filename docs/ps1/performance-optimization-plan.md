@@ -103,6 +103,15 @@ was rejected because it regressed visible CD pressure and weakens pause/input
 semantics; the present fix needs a real scheduler/presentation design, not a
 local poll deletion.
 
+The first scheduler ownership pass on `20260427-105900` adds the missing
+Summary-tier ownership surface without changing fishing1 timing or PS-EXE
+bucket: `present=72`, `cd_stage=108`, `cd_window=54`, `visual_prepare=72`,
+`wait=574`, `cd_reserved=28`, `prep_blocked_cd=13`, `prepared_ready=72`,
+`prepared_used=72`, and `prepared_wasted=0`. That proves the current prepared
+pipeline is not wasting prepared frames in fishing1; the next scheduler win
+must spend idle/CD-reserved held slices safely instead of chasing duplicate
+prepared-frame reuse.
+
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
 VBlanks without redraw. The scene still ran about 55% too slow inside playback:
@@ -504,6 +513,7 @@ Metric precision audit:
 | CD alignment | Unaligned count. | Split unaligned start/end, overread bytes, scratch-copy bytes, max read sectors. | Existing offset/size math. |
 | CD blocking | One read VBlank total. | Split setup, hidden prefetch, blocking due-frame, async-blocking, and prefetch overrun VBlanks. | Existing phase/prefetch state. |
 | Prefetch | Hits and misses. | Add eligibility, skipped reasons, lead min/max, stage/window/group hit types, partial hits, duplicate attempts, wasted bytes. | Existing prefetch decisions. |
+| Scheduler ownership | Implicit in branch order. | Add held-slice owner counters, CD-reserved slots, CD-blocked visual prep, prepared-ready/used/wasted, and held-slack min/max. | Existing held-loop decisions. |
 | Async | Done or not done. | Add starts, polls, completions, timeouts, cancels, blocking completion VBlanks. | Existing async state machine. |
 | Render timing | One render total. | Summary: render counts and max elapsed index. Detail: split restore, compose, present wait, upload, event wait, advance/load, max render index, crossing counts. | Detail tier only for subphase VSync probes. |
 | Dirty precision | Upload bytes. | Add exact vs rounded dirty bytes/rows, max dirty rows/bytes, cap hits, and full-fallback tripwire counts that must remain zero. | Existing dirty marking/batching. |
@@ -525,6 +535,7 @@ Required metrics inventory:
 | CD base | `reads`, `setup_reads`, `loop_reads`, `setloc`, `fail`, `bytes`, `sectors`, `read_vb`, `setup_read_vb`, `loop_read_vb`, `max_read_vb`, `max_read_idx`, `max_read_sectors`, `unaligned_start`, `unaligned_end`, `overread_bytes`, `scratch_bytes`, seek/sector buckets | Prefetch, stream windows, pack grouping | Distinguishes setup reads, playback reads, read count, read size, sector alignment, seek pattern, and scratch-copy cost. |
 | CD blocking split | `blocking_vb`, `hidden_vb`, `blocking_reads`, `hidden_reads` | Any prefetch experiment | Measures whether CD work was hidden under held VBlanks or still delayed due frames. |
 | Prefetch | `policy`, `buf`, `attempts`, `eligible`, `ineligible`, `hits`, `misses`, `due_misses`, `stage_hits`, `window_hits`, `group_hits`, `partial_hits`, `slack_vb`, `used_vb`, `overrun_vb`, `lead_min`, `lead_max`, `wasted_bytes`, `skipped_*`, `duplicate` | One-entry staging, stream windows, async prefetch | Needed to debug why prefetch did or did not help. |
+| Scheduler ownership | `present`, `cd_stage`, `cd_window`, `visual_prepare`, `wait`, `cd_reserved`, `prep_blocked_cd`, `prepared_ready`, `prepared_used`, `prepared_wasted`, `slack_vb`, `slack_min`, `slack_max` | Present scheduler, prepared-frame scheduler, CD-first budgeting | Shows who owns each held slice and whether prepared work is useful, blocked by CD, or wasted. |
 | Async prefetch | `async_start`, `async_poll`, `async_done`, `async_timeout`, `async_cancel`, `async_blocking_vb` | Async CD experiments | Keeps controller-state risk visible before enabling async broadly. |
 | Render subphases | `render_vb`, `max_render_vb`, `max_render_idx`, `restore_vb`, `compose_vb`, `present_wait_vb`, `upload_vb`, `event_wait_vb`, `advance_vb`, `crossed_*` | Present pipeline, dirty upload, compositor work | Splits the remaining `~6.6` non-CD VBlanks per rendered entry and identifies phases that cross frame boundaries. |
 | Dirty precision | `dirty_rows`, `dirty_exact_bytes`, `dirty_rounded_bytes`, `dirty_tiles`, `dirty_max_*`, `cap_hits`, `full_fallbacks` | Row/X dirty restore and upload | Proves byte reductions are not offset by too many `LoadImage` rects; `full_fallbacks` must remain zero in accepted builds. |
@@ -984,6 +995,8 @@ from perturbing the deterministic cadence.
 | `P4-299` | Done: reuse one stack `RECT` for immediate background uploads. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank `1580 -> 1572` bytes and ELF shrank `712332 -> 712272`; count as hot upload-path cleanup only, not a VBlank speed win. |
 | `P4-300` | Failed/no promotion: lower upload rect cap from `8` to `6`. | Fishing1 stayed exact-flat with `cap_hits=0`, but PS-EXE, ELF, hot-symbol size, timing, and upload work did not move; source was reverted to preserve cross-scene headroom. |
 | `P4-301` | Failed/no promotion: store upload band scratch indices/ranges as `uint8`. | The exact gate stayed timing/work-flat and `grDrawBackground` shrank `1572 -> 1544`, but total ELF grew `712272 -> 712372`; source was reverted and only the experiment log was kept. |
+| `P4-302` | Done: add scheduler ownership counters and explicit CD/prep ownership markers. | The exact no-holiday gate stayed timing/layout/work/correctness-flat (`loop_vb=1219`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while adding `JCPERF2 sched`; this is instrumentation only and grows ELF to `715432`. |
+| `P4-303` | Failed/no promotion: owned-idle 4 VBlank catch-up prototype. | The ownership-gated catch-up rule produced no useful fishing1 catch-up slots (`catchup_idle=0`), kept timing flat, and moved PS-EXE/LBA (`143360 -> 145408`, `396 -> 397`), so the behavior was reverted and only the experiment log was kept. |
 
 Prefetch variants to test in order:
 
@@ -1399,7 +1412,7 @@ screensaver playback keeps only the lightweight Start poll.
 | 40 | Compose/metrics | Add span class counters: tile-local, cross-tile, clipped, odd-left, odd-right. | Pick compositor optimizations from measured distribution. |
 | 41 | Present/runtime | Done: run Detail-tier baseline after the latest accepted CD win. | `present_wait_vb=157`, `restore_vb=18`, `compose_vb=0`, `upload_vb=0`, and `advance_vb=1`; present serialization is the largest measured remaining bucket. |
 | 42 | Present/runtime | Done as a bridge: prepare staged frames only when held slack is at least `4` VBlanks. | `loop_vb 1235 -> 1234` and `blocking_vb 10 -> 8`, but extra `restore_calls`/`compose_calls` mean this is not the final present pipeline. |
-| 43 | Present/runtime | Redesign the staged present scheduler with separate render-prep and CD-prefetch slack budgets. | Recover present wait without repeating the `loop_vb 1235 -> 1306` regression or the duplicate-prep cost from the accepted bridge. |
+| 43 | Present/runtime | Redesign the staged present scheduler with separate render-prep and CD-prefetch slack budgets. | Recover present wait without repeating the `loop_vb 1235 -> 1306` regression or the duplicate-prep cost from the accepted bridge; use `JCPERF2 sched` to prove which slices were owned by present, CD, visual prep, or idle wait. |
 | 44 | Present/runtime | Separate upload completion wait from display VSync wait in metrics and code shape. | Identify hidden serialization in `grUpdateDisplay()`. |
 | 45 | Present/runtime | Avoid double update work on empty capture entries. | Lower `render`/held overhead on scenes with blank ledger frames. |
 | 46 | Setup/runtime | Persist same-raft and non-holiday overlays across scene loops where heap probes prove safe. | Lower setup time without active-loop risk. |

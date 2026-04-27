@@ -144,6 +144,20 @@ struct TPs1PerfCounters {
     uint32 prefetchDuplicate;
     uint32 prefetchWastedBytes;
 
+    uint32 schedWait;
+    uint32 schedPresent;
+    uint32 schedCdStage;
+    uint32 schedCdWindow;
+    uint32 schedVisualPrepare;
+    uint32 schedCdReserved;
+    uint32 schedPrepareBlockedCd;
+    uint32 schedPreparedReady;
+    uint32 schedPreparedUsed;
+    uint32 schedPreparedWasted;
+    uint32 schedSlackVBlanks;
+    uint16 schedSlackMin;
+    uint16 schedSlackMax;
+
     uint32 restoreCalls;
     uint32 restoreBytes;
     uint32 maxRestoreBytes;
@@ -668,6 +682,53 @@ void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit)
         gPs1Perf.prefetchHits++;
 }
 
+void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks)
+{
+    if (!ps1PerfEnabled)
+        return;
+
+    switch (event) {
+        case PS1_PERF_SCHED_WAIT:
+            gPs1Perf.schedWait++;
+            break;
+        case PS1_PERF_SCHED_PRESENT:
+            gPs1Perf.schedPresent++;
+            break;
+        case PS1_PERF_SCHED_CD_STAGE:
+            gPs1Perf.schedCdStage++;
+            break;
+        case PS1_PERF_SCHED_CD_WINDOW:
+            gPs1Perf.schedCdWindow++;
+            break;
+        case PS1_PERF_SCHED_VISUAL_PREPARE:
+            gPs1Perf.schedVisualPrepare++;
+            break;
+        case PS1_PERF_SCHED_CD_RESERVED:
+            gPs1Perf.schedCdReserved++;
+            return;
+        case PS1_PERF_SCHED_PREP_BLOCKED_CD:
+            gPs1Perf.schedPrepareBlockedCd++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_READY:
+            gPs1Perf.schedPreparedReady++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_USED:
+            gPs1Perf.schedPreparedUsed++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_WASTED:
+            gPs1Perf.schedPreparedWasted++;
+            return;
+        default:
+            return;
+    }
+
+    gPs1Perf.schedSlackVBlanks += slackVBlanks;
+    if (gPs1Perf.schedSlackMin == 0 || slackVBlanks < gPs1Perf.schedSlackMin)
+        gPs1Perf.schedSlackMin = slackVBlanks;
+    if (slackVBlanks > gPs1Perf.schedSlackMax)
+        gPs1Perf.schedSlackMax = slackVBlanks;
+}
+
 void ps1PerfMarkRestore(uint32 bytes)
 {
     if (!ps1PerfEnabled)
@@ -991,6 +1052,22 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.prefetchSkippedNoSlack,
         (unsigned long)gPs1Perf.prefetchDuplicate,
         (unsigned long)gPs1Perf.prefetchWastedBytes
+    );
+    printf(
+        "JCPERF2 sched present=%lu cd_stage=%lu cd_window=%lu visual_prepare=%lu wait=%lu cd_reserved=%lu prep_blocked_cd=%lu prepared_ready=%lu prepared_used=%lu prepared_wasted=%lu slack_vb=%lu slack_min=%u slack_max=%u\n",
+        (unsigned long)gPs1Perf.schedPresent,
+        (unsigned long)gPs1Perf.schedCdStage,
+        (unsigned long)gPs1Perf.schedCdWindow,
+        (unsigned long)gPs1Perf.schedVisualPrepare,
+        (unsigned long)gPs1Perf.schedWait,
+        (unsigned long)gPs1Perf.schedCdReserved,
+        (unsigned long)gPs1Perf.schedPrepareBlockedCd,
+        (unsigned long)gPs1Perf.schedPreparedReady,
+        (unsigned long)gPs1Perf.schedPreparedUsed,
+        (unsigned long)gPs1Perf.schedPreparedWasted,
+        (unsigned long)gPs1Perf.schedSlackVBlanks,
+        (unsigned int)gPs1Perf.schedSlackMin,
+        (unsigned int)gPs1Perf.schedSlackMax
     );
     printf(
         "JCPERF2 async async_start=0 async_poll=0 async_done=0 async_timeout=0 async_cancel=0 async_blocking_vb=0\n"

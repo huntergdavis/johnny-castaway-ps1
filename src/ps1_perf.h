@@ -36,6 +36,19 @@ enum {
     PS1_PERF_PREFETCH_STAGE1_WINDOW = 3
 };
 
+enum {
+    PS1_PERF_SCHED_WAIT = 0,
+    PS1_PERF_SCHED_PRESENT = 1,
+    PS1_PERF_SCHED_CD_STAGE = 2,
+    PS1_PERF_SCHED_CD_WINDOW = 3,
+    PS1_PERF_SCHED_VISUAL_PREPARE = 4,
+    PS1_PERF_SCHED_CD_RESERVED = 5,
+    PS1_PERF_SCHED_PREP_BLOCKED_CD = 6,
+    PS1_PERF_SCHED_PREPARED_READY = 7,
+    PS1_PERF_SCHED_PREPARED_USED = 8,
+    PS1_PERF_SCHED_PREPARED_WASTED = 9
+};
+
 extern volatile uint8 ps1PerfEnabled;
 extern volatile uint8 ps1PerfLevel;
 
@@ -78,6 +91,7 @@ void ps1PerfBeginPrefetchRead(uint16 slackVBlanks);
 void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok);
 void ps1PerfMarkPrefetchHit(void);
 void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit);
+void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks);
 void ps1PerfMarkRestore(uint32 bytes);
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes);
 void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks);
@@ -148,6 +162,7 @@ static inline void ps1PerfBeginPrefetchRead(uint16 slackVBlanks) { (void)slackVB
 static inline void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok) { (void)elapsedVBlanks; (void)bytes; (void)ok; }
 static inline void ps1PerfMarkPrefetchHit(void) {}
 static inline void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit) { (void)countsAsDueHit; }
+static inline void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks) { (void)event; (void)slackVBlanks; }
 static inline void ps1PerfMarkRestore(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes) { (void)rows; (void)spans; (void)pixels; (void)payloadBytes; }
 static inline void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)rows; (void)bytes; (void)elapsedVBlanks; }

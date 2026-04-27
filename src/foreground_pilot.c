@@ -1735,6 +1735,8 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
 
     gFgRuntime.preparedFrameValid = 1;
     gFgRuntime.preparedFrameIndex = gFgRuntime.stagedFrameIndex;
+    if (ps1PerfEnabled)
+        ps1PerfMarkScheduler(PS1_PERF_SCHED_PREPARED_READY, 0);
     return 1;
 }
 
@@ -1797,6 +1799,8 @@ static int fgRuntimePresentPreparedFrame(int perfDetail)
     if (perfDetail)
         ps1PerfMarkRenderTotal(ps1PerfElapsedVBlanks(perfRenderTick));
     gFgRuntime.preparedFrameValid = 0;
+    if (ps1PerfEnabled)
+        ps1PerfMarkScheduler(PS1_PERF_SCHED_PREPARED_USED, 0);
     fgRuntimeMarkFrameRendered();
     return 1;
 }
@@ -2363,39 +2367,74 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         if (fgRuntimeCanHoldDisplayedFrame()) {
             uint16 prefetchElapsedVBlanks = 0;
             uint16 prepareElapsedVBlanks = 0;
+            uint16 heldSlackVBlanks = 0;
+            uint8 schedOwner = PS1_PERF_SCHED_WAIT;
             int didPrefetch = 0;
             int didPrepare = 0;
-            if (ps1PerfEnabled)
+            if (ps1PerfEnabled) {
                 ps1PerfMarkHeldLoop();
+                heldSlackVBlanks = fgRuntimeHeldSlackBeforeWait();
+            }
             if (fgRuntimeCanPresentPreparedOnNextVBlank()) {
                 advancedThisLoop = fgRuntimePresentPreparedFrame(perfDetail);
+                if (advancedThisLoop)
+                    schedOwner = PS1_PERF_SCHED_PRESENT;
             } else if (gFgRuntime.preparedFrameValid ||
                        gFgRuntime.stagedFrameValid) {
-                didPrefetch = fgRuntimeWindowPrefetchWouldRead()
+                int windowWouldRead = fgRuntimeWindowPrefetchWouldRead();
+                if (windowWouldRead && ps1PerfEnabled) {
+                    ps1PerfMarkScheduler(PS1_PERF_SCHED_CD_RESERVED,
+                                         heldSlackVBlanks);
+                    if (!gFgRuntime.preparedFrameValid &&
+                        fgRuntimeCanPrepareStagedFrame()) {
+                        ps1PerfMarkScheduler(PS1_PERF_SCHED_PREP_BLOCKED_CD,
+                                             heldSlackVBlanks);
+                    }
+                }
+                didPrefetch = windowWouldRead
                     ? fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks)
                     : 0;
+                if (didPrefetch)
+                    schedOwner = PS1_PERF_SCHED_CD_WINDOW;
             } else {
                 didPrefetch = fgRuntimeTryStageNextFrame(&prefetchElapsedVBlanks);
+                if (didPrefetch)
+                    schedOwner = PS1_PERF_SCHED_CD_STAGE;
                 if (didPrefetch &&
                     prefetchElapsedVBlanks == 0 &&
                     gFgRuntime.stagedFrameValid &&
                     fgRuntimeHeldSlackBeforeWait() >= FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS &&
                     fgRuntimeWindowPrefetchWouldRead()) {
                     uint16 windowElapsedVBlanks = 0;
-                    if (fgRuntimeTryPrefetchWindow(&windowElapsedVBlanks))
+                    if (fgRuntimeTryPrefetchWindow(&windowElapsedVBlanks)) {
                         prefetchElapsedVBlanks = windowElapsedVBlanks;
+                        schedOwner = PS1_PERF_SCHED_CD_WINDOW;
+                    }
                 }
             }
             if (!advancedThisLoop &&
                 !didPrefetch &&
-                !gFgRuntime.stagedFrameValid)
+                !gFgRuntime.stagedFrameValid) {
                 didPrefetch = fgRuntimeTryPrefetchWindow(&prefetchElapsedVBlanks);
+                if (didPrefetch)
+                    schedOwner = PS1_PERF_SCHED_CD_WINDOW;
+            }
             if (!advancedThisLoop &&
                 !didPrefetch &&
                 fgRuntimeCanPrepareStagedFrame()) {
-                didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,
-                                                                   perfDetail);
+                if (fgRuntimeWindowPrefetchWouldRead()) {
+                    if (ps1PerfEnabled)
+                        ps1PerfMarkScheduler(PS1_PERF_SCHED_PREP_BLOCKED_CD,
+                                             heldSlackVBlanks);
+                } else {
+                    didPrepare = fgRuntimePrepareStagedFrameForPresent(&prepareElapsedVBlanks,
+                                                                       perfDetail);
+                    if (didPrepare)
+                        schedOwner = PS1_PERF_SCHED_VISUAL_PREPARE;
+                }
             }
+            if (ps1PerfEnabled)
+                ps1PerfMarkScheduler(schedOwner, heldSlackVBlanks);
             if (!advancedThisLoop) {
                 if (didPrepare) {
                     if (prepareElapsedVBlanks == 0)
@@ -2415,8 +2454,11 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             uint32 perfRenderTick = 0;
             uint32 perfDetailTick = 0;
             if (gFgRuntime.preparedFrameValid &&
-                gFgRuntime.preparedFrameIndex == gFgRuntime.frameIndex)
+                gFgRuntime.preparedFrameIndex == gFgRuntime.frameIndex) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkScheduler(PS1_PERF_SCHED_PREPARED_WASTED, 0);
                 gFgRuntime.preparedFrameValid = 0;
+            }
             if (ps1PerfEnabled)
                 ps1PerfMarkRenderedLoop();
             if (perfDetail)
