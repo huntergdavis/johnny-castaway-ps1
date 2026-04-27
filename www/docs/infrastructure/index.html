@@ -362,23 +362,26 @@ pages.</p>
   <li>Runs <code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh clean</code> and then <code class="language-plaintext highlighter-rouge">scripts/make-cd-image.sh</code>.
 No emulator launch — release builds are headless.</li>
   <li>Copies <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> into <code class="language-plaintext highlighter-rouge">release/</code>.</li>
-  <li>Updates the <code class="language-plaintext highlighter-rouge">VERSION</code> file and commits the bump together with the
-release artifacts.</li>
+  <li>Updates the <code class="language-plaintext highlighter-rouge">VERSION</code> file plus <code class="language-plaintext highlighter-rouge">site/_config.yml</code> release metadata.</li>
+  <li>Rebuilds the portable website into <code class="language-plaintext highlighter-rouge">www/</code> and runs the relative-link
+red-team.</li>
+  <li>Commits the bump, release artifacts, website source metadata, and
+   generated website output together.</li>
   <li>Creates an <em>orphan-tree tag commit</em> whose tree contains only the two
-release files. This is so GitHub’s auto-generated “Source code (zip)”
-download for the tag is the disc image, not the entire repo. The tag
-commit’s parent is the main release commit, so provenance is
-preserved through <code class="language-plaintext highlighter-rouge">git log --all</code>.</li>
+   release files. This is so GitHub’s auto-generated “Source code (zip)”
+   download for the tag is the disc image, not the entire repo. The tag
+   commit’s parent is the main release commit, so provenance is
+   preserved through <code class="language-plaintext highlighter-rouge">git log --all</code>.</li>
   <li>Pushes the branch and the tag.</li>
   <li>If <code class="language-plaintext highlighter-rouge">gh</code> is installed and authenticated, also publishes a GitHub
 Release with <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> and <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> as direct-download
 assets.</li>
 </ol>
 
-<p>The website’s release-data ingest at build time reads the latest tag and
-its assets via the Jekyll build pipeline, so cutting a release with this
-script is what updates <code class="language-plaintext highlighter-rouge">v0.3.10-ps1</code> on the live site. There
-is no second hand-edit step.</p>
+<p>The website does not need a second hand-edit step. Cutting a release with
+this script updates the release tag in the Jekyll config, rebuilds the
+checked-in <code class="language-plaintext highlighter-rouge">www/</code> archive, and verifies that the generated site still uses
+relative links for project-page deployment.</p>
 
 <p>The current release is <strong>v0.3.10-ps1</strong>, with
 2 of 63
