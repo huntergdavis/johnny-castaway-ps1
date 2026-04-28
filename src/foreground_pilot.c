@@ -1921,9 +1921,6 @@ static int fgRuntimePresentPreparedFrame(int perfDetail)
     uint32 perfTick = 0;
     uint16 preparedFrameIndex;
 
-    if (!fgRuntimeCanPresentPreparedOnNextVBlank())
-        return 0;
-
     preparedFrameIndex = gFgRuntime.preparedFrameIndex;
     if (ps1PerfEnabled)
         ps1PerfMarkRenderedLoop();
