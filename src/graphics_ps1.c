@@ -3703,7 +3703,6 @@ void grDrawBackground(void)
     int bandCount = 0;
     int capped = 0;
     int dirtyCount = 0;
-    int singleIndex = -1;
     uint16 uploadRects = 0;
     uint16 uploadRows = 0;
     uint32 uploadBytes = 0;
@@ -3737,7 +3736,6 @@ void grDrawBackground(void)
         minYs[i] = minY;
         maxYs[i] = maxY;
         dirtyCount++;
-        singleIndex = i;
     }
 
     if (dirtyCount > 0) {
@@ -3812,18 +3810,6 @@ void grDrawBackground(void)
 
         if (uploadRects > 0)
             DrawSync(0);
-    } else if (dirtyCount == 1) {
-        PS1Surface *tile = tiles[singleIndex];
-        uint32 w = tile->width;
-        int minY = minYs[singleIndex];
-        int h = maxYs[singleIndex] - minY + 1;
-
-        setRECT(&rect, screenX[singleIndex], screenY[singleIndex] + minY, w, h);
-        uploadRects = 1;
-        uploadRows = (uint16)h;
-        uploadBytes = (uint32)w * (uint32)h * sizeof(uint16);
-        LoadImage(&rect, (uint32 *)(tile->pixels + minY * w));
-        DrawSync(0);
     } else {
         for (int i = 0; i < 4; i++) {
             if (minYs[i] < 0)

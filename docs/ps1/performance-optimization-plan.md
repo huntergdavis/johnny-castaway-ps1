@@ -767,7 +767,7 @@ the exact no-holiday fishing1 high-tide variant now uses the FGP3
 zero-shift temporal-residual pack and reports
 `loop_vb=1207`, `target_vb=1076`, `overrun_vb=131`, `blocking_vb=0`,
 `due_misses=0`, and prefetch `overrun_vb=0`, with
-`upload_bytes=6690560`, `restore_bytes=251144`, `upload_rects=290`,
+`upload_bytes=8533120`, `restore_bytes=251144`, `upload_rects=436`,
 `loop_reads=6`, `setup_reads=6`, and `scene_vb=1447`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
@@ -1218,6 +1218,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-73` | Done: prune fill-window output clear. | Non-null callers of `fgRuntimeFillWindowForEntry()` initialize their local elapsed value to zero before calling, and NULL callers do not need output normalization. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and shrinks `jcreborn.elf 722336 -> 722304`. This is a small work-reduction/code-size promotion, not a VBlank win. |
 | `P5-74` | Done: lower dirty-upload band merge gap to zero rows. | The accepted post-pause upload path used a one-row clean-gap merge. Tightening it to zero keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat on loop/blocking/refill, preserves PS-EXE `145408` and pack LBAs, and reduces uploaded bytes/dirty rows across all three gates: FISHING1 `8584960 -> 8533120`, FISHING3 high `16771200 -> 16665600`, and FISHING3 low `11838720 -> 11820800`. Rect count rises (`355 -> 436`, `693 -> 858`, `412 -> 440`), so this is an upload-byte work-reduction checkpoint, not a VBlank win. A cap-6 follow-up gave back part of the high-tide byte win, so keep the cap at `8`. |
 | `P5-75` | Done: branch directly on dirty-upload cap state. | `grDrawBackground()` no longer needs a separate `useBands` local after scanning upload bands; `capped` plus `bandCount` is the authoritative decision. Removing the extra flag keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `56` bytes, and shrinks `jcreborn.elf 722312 -> 722044`. This is a clean upload-path code-size/work-shape promotion, not a VBlank win. |
+| `P5-76` | Done: prune the single-dirty-tile upload fallback. | The band path already handles uncapped single-tile uploads, and the generic fallback emits the same whole-tile upload when banding caps. Removing the special `dirtyCount == 1` branch and dead `singleIndex` bookkeeping keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `160` bytes, and shrinks `jcreborn.elf 722044 -> 721456`. This is an upload-path code-size/work-shape promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2022,3 +2023,7 @@ Removing the separate dirty-upload `useBands` flag is accepted immediately
 afterward: upload work and timing stay exact-flat across the same three gates,
 while `grDrawBackground` shrinks by `56` bytes and the current code-size
 cleanup baseline moves to `jcreborn.elf=722044` bytes.
+Pruning the single-dirty-tile upload fallback is accepted as the next upload
+source-shape cleanup: the same three gates stay exact-flat with identical upload
+work, `grDrawBackground` shrinks by another `160` bytes, and the current
+code-size cleanup baseline moves to `jcreborn.elf=721456` bytes.
