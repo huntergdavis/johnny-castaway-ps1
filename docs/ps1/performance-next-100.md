@@ -234,6 +234,13 @@ stable `FISH2LOW.FG2` LBA and PS-EXE bucket after cold diagnostic strings were
 shortened. The rejected `320 KB` probe hit the log cap/regtest `137`, so low
 tide should not grow a contiguous setup prime past `256 KB` without a new heap
 or segmented-prime design.
+Fishing3 high tide now uses FGP3 as the first larger next-scene proof point.
+`FISHING3.FG2` shrinks `1831749 -> 724829` bytes and improves `loop_vb 2123 ->
+2099`, `overrun_vb 189 -> 149`, `blocking_vb 87 -> 24`,
+`prefetch_overrun_vb 39 -> 21`, and `due_misses 11 -> 1`. Its high-pack LBA and
+PS-EXE bucket stay fixed; fishing3 low smoke still passes after the downstream
+LBA shift. Next likely wins: FISH3LOW FGP3, then scene-specific or segmented
+prime budgets.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
