@@ -1228,6 +1228,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-83` | Failed/no promotion: add FISHING3 high read group `246..258`. | The group saved one active-loop read (`41 -> 40`) but crossed the visible-pressure knee: `loop_vb 2093 -> 2096`, `blocking_vb 15 -> 17`, `prefetch_overrun_vb 10 -> 12`, and `due_misses 0 -> 1`; source was reverted and only the experiment log was kept. |
 | `P5-84` | Done: trust generated read-group bounds. | Removing the pack-end clamp from `fgRuntimeGroupedAppendTargetEnd()` keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, shrinks `fgRuntimeFillWindowForEntry 844 -> 820`, and shrinks `jcreborn.elf 721376 -> 721232`. This is deterministic fallback removal and grouped-read code-size cleanup, not a VBlank win. |
 | `P5-85` | Done: require initialized stream read size. | Removing the startup fallback from zero read size to stream-window capacity keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, shrinks `foregroundPilotPlay 9020 -> 8996`, and shrinks `jcreborn.elf 721232 -> 721200`. This is deterministic startup cleanup, not a VBlank win. |
+| `P5-86` | Done: prune redundant extend-window valid store. | Successful append extension starts from an already valid window, so restating `streamWindowValid=1` is unnecessary. Removing it keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and shrinks `fgRuntimeFillWindowForEntry 820 -> 816`; aggregate ELF moves `721200 -> 721228`, so this is hot-helper work-shape cleanup, not a binary-size win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2096,3 +2097,9 @@ already initializes `streamWindowReadSize` when prefetch is enabled, and the
 disabled-prefetch path rejects before using it. Removing the fallback keeps the
 same three gates exact-flat, shrinks `foregroundPilotPlay 9020 -> 8996`, and
 moves the aggregate ELF baseline to `721200` bytes.
+The successful append-extension validity store is also removed. The function
+only enters with a valid window and only the failure path clears validity, so a
+successful append only needs to update the start and byte count. The measured
+result is exact-flat timing with `fgRuntimeFillWindowForEntry 820 -> 816`; the
+aggregate ELF moves to `721228`, so treat this as a hot-path store removal, not
+as a binary-size win.

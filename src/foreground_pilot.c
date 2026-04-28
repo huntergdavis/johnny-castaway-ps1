@@ -1187,7 +1187,6 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
 
     gFgRuntime.streamWindowStart = windowStart;
     gFgRuntime.streamWindowBytes = readBytes;
-    gFgRuntime.streamWindowValid = 1;
     return 1;
 }
 
