@@ -1787,9 +1787,6 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
 static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
                                               uint8 *frameData)
 {
-    if (entry == NULL || frameData == NULL)
-        return;
-
     if (gFgRuntime.packFormat == kFgPilotPackFormatPal4Spans) {
         grCompositePacked4SpansToBackground(frameData,
                                             entry->dataSize,
