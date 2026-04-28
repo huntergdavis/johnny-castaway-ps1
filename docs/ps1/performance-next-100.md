@@ -217,6 +217,11 @@ heap shape: `384 KB` and full-pack `544 KB` failed before loop start, while
 `368 KB` hit the log cap/regtest `137`. The remaining two blocking VBlanks
 should be attacked with generated read groups or inter-scene preload, not by
 blindly growing the setup window.
+A manual fishing2 high read-group probe for relative sectors `178..191` is
+rejected. It moved the executable into the next sector bucket and shifted
+`FISHING2.FG2 LBA 740 -> 741`, while regressing `loop_vb 1898 -> 1899` and
+`blocking_vb/prefetch_overrun_vb 2 -> 3`. Any retry needs generated metadata
+plus layout control, not another local source-table group.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
