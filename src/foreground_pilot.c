@@ -165,6 +165,8 @@ enum {
      gFgRuntime.streamWindowReadSize : gFgRuntime.streamWindowSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
+#define fgRuntimeWindowSlackEligible(slackVBlanks) \
+    (((slackVBlanks) >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0)
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
@@ -1330,11 +1332,6 @@ static int fgRuntimeConsumeStagedFrame(uint16 frameIndex)
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
-}
-
-static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
-{
-    return (slackVBlanks >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0;
 }
 
 static int fgRuntimePrimeNextFrameForSetup(void)
