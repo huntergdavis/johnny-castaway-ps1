@@ -1367,7 +1367,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
             (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
             FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
     if (fgSceneEquals(sceneName, "fishing3") && islandState.lowTide)
-        return FG_SETUP_PRIME_WINDOW_BYTES - (64UL * 1024UL);
+        return FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL);
     return 0;
 }
 

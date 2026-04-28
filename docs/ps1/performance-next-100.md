@@ -26,7 +26,7 @@ fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plu
 stack of flat-timing cleanup wins.
 
 Red-team caveat: setup-prime passes are active-loop wins, not end-to-end
-scene-time wins. The latest fishing2/fishing3 budgets move `256-352 KB` of
+scene-time wins. The latest fishing2/fishing3 budgets move `288-352 KB` of
 foreground reads into setup so active playback can reduce visible CD pressure
 and spend more catch-up. Future work should hide these primes during
 inter-scene/loading time or generate scene/tide-specific segmented coverage,
@@ -249,14 +249,14 @@ Contiguous fishing3 high setup-prime is rejected for now. `320 KB` failed
 before playback; `256 KB` completed but kept `blocking_vb=24`, worsened
 `due_misses 1 -> 2`, and moved both PS-EXE and `FISHING3.FG2` LBA. Retry this
 scene only with segmented/generated prime coverage or inter-scene preload.
-Fishing3 low tide accepts a smaller `256 KB` contiguous setup-prime budget after
-shortening cold heap/raw foreground diagnostics to keep the PS-EXE sector bucket
-stable. It improves `loop_vb 2098 -> 2091`, `overrun_vb 138 -> 134`,
-`blocking_vb 8 -> 7`, `prefetch_overrun_vb 9 -> 7`, and `loop_reads 42 -> 24`;
-fishing3 high stays exact-flat. The first attempt produced the same speed shape
-but moved `FISH3LOW.FG2` by one LBA, so this remains a phase-sensitive
-active-loop win and the next larger target should be generated/segmented prime
-coverage, not bigger contiguous reads.
+Fishing3 low tide now uses a `288 KB` contiguous setup-prime budget. The first
+`256 KB` pass improved `loop_vb 2098 -> 2091` and `blocking_vb 8 -> 7`; the
+retune keeps `loop_vb=2091` but lowers overrun/CD pressure to the fishing1-class
+gap: `overrun_vb 134 -> 131`, `blocking_vb 7 -> 4`,
+`prefetch_overrun_vb 7 -> 4`, and `loop_reads 24 -> 21`. Fishing3 high stays
+exact-flat. The larger `320 KB` low-tide probe still remains rejected, so the
+next larger target should be generated/segmented prime coverage, not another
+blind contiguous read.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
