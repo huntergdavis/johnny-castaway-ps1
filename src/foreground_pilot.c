@@ -1212,9 +1212,6 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     uint16 elapsedVBlanks;
     int ok;
 
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = 0;
-
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
