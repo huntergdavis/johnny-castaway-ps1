@@ -104,6 +104,9 @@ struct TFgPilotRuntime {
     uint32 streamWindowStart;       /* File offset of first byte in streamWindowBuffer. */
     uint32 streamWindowBytes;       /* Valid byte count in streamWindowBuffer. */
     uint32 setupPrimeWindowBytes;   /* Scene/tide-specific setup residency budget, or 0 when disabled. */
+    uint8 *setupSegmentBuffer;      /* Small setup-read segment retained independently from streamScratch. */
+    uint32 setupSegmentStart;
+    uint32 setupSegmentBytes;
     uint8 streamWindowValid;
     uint8 setupWindowPrimed;
     uint8 setupSegmentPrimed;
@@ -153,6 +156,8 @@ enum {
 #define FG_CD_SECTOR_SIZE 2048UL
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
+#define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
+#define FG_FISHING3_LOW_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
@@ -609,6 +614,8 @@ static uint8 *gFgStreamWindowBuffer = NULL;
 static uint32 gFgStreamWindowBufferSize = 0;
 static uint8 *gFgStreamScratch = NULL;
 static uint32 gFgStreamScratchSize = 0;
+static uint8 *gFgSetupSegmentBuffer = NULL;
+static uint32 gFgSetupSegmentBufferSize = 0;
 
 static void fgReleaseStreamBuffers(void)
 {
@@ -632,6 +639,11 @@ static void fgReleaseStreamBuffers(void)
         gFgStreamScratch = NULL;
     }
     gFgStreamScratchSize = 0;
+    if (gFgSetupSegmentBuffer != NULL) {
+        free(gFgSetupSegmentBuffer);
+        gFgSetupSegmentBuffer = NULL;
+    }
+    gFgSetupSegmentBufferSize = 0;
 }
 
 unsigned long fgProbeLargestAlloc(void)
@@ -696,6 +708,9 @@ static void fgRuntimeReset(void)
     gFgRuntime.streamWindowStart = 0;
     gFgRuntime.streamWindowBytes = 0;
     gFgRuntime.setupPrimeWindowBytes = 0;
+    gFgRuntime.setupSegmentBuffer = NULL;
+    gFgRuntime.setupSegmentStart = 0;
+    gFgRuntime.setupSegmentBytes = 0;
     gFgRuntime.streamWindowValid = 0;
     gFgRuntime.streamReadGroupsEnabled = 0;
     gFgRuntime.streamScratch = NULL;
@@ -978,6 +993,23 @@ static int fgRuntimeCanWindowCache(void)
            gFgRuntime.streamWindowSize > 0;
 }
 
+static int fgRuntimeSetupSegmentForScene(const char *sceneName,
+                                         uint32 *outStart,
+                                         uint32 *outBytes)
+{
+    if (!fgSceneEquals(sceneName, "fishing3"))
+        return 0;
+
+    if (islandState.lowTide) {
+        *outStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
+        *outBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
+    } else {
+        *outStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
+        *outBytes = FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES;
+    }
+    return 1;
+}
+
 static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
 {
     return (entry != NULL &&
@@ -1066,9 +1098,10 @@ static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
     }
 
     return (gFgRuntime.setupSegmentPrimed &&
-            entry->dataOffset >= FG_FISHING3_HIGH_SETUP_SEGMENT_START &&
-            entryEnd <= FG_FISHING3_HIGH_SETUP_SEGMENT_START +
-                FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES) ? 1 : 0;
+            gFgRuntime.setupSegmentBuffer != NULL &&
+            entry->dataOffset >= gFgRuntime.setupSegmentStart &&
+            entryEnd <= gFgRuntime.setupSegmentStart +
+                gFgRuntime.setupSegmentBytes) ? 1 : 0;
 }
 
 static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
@@ -1081,12 +1114,12 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
         return 0;
 
     if (gFgRuntime.setupSegmentPrimed &&
-        entry->dataOffset >= FG_FISHING3_HIGH_SETUP_SEGMENT_START &&
+        gFgRuntime.setupSegmentBuffer != NULL &&
+        entry->dataOffset >= gFgRuntime.setupSegmentStart &&
         entry->dataOffset + entry->dataSize <=
-            FG_FISHING3_HIGH_SETUP_SEGMENT_START +
-                FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES) {
-        offsetInWindow = entry->dataOffset - FG_FISHING3_HIGH_SETUP_SEGMENT_START;
-        memcpy(dst, gFgRuntime.streamScratch + offsetInWindow, entry->dataSize);
+            gFgRuntime.setupSegmentStart + gFgRuntime.setupSegmentBytes) {
+        offsetInWindow = entry->dataOffset - gFgRuntime.setupSegmentStart;
+        memcpy(dst, gFgRuntime.setupSegmentBuffer + offsetInWindow, entry->dataSize);
         gFgRuntime.setupSegmentPrimed = 0;
     } else {
         offsetInWindow = entry->dataOffset - gFgRuntime.streamWindowStart;
@@ -1447,20 +1480,45 @@ static int fgRuntimePrimeSetupWindow(void)
 
 static int fgRuntimePrimeSetupSegment(const char *sceneName)
 {
-    if (!fgSceneEquals(sceneName, "fishing3") ||
-        islandState.lowTide ||
-        gFgRuntime.streamScratch == NULL ||
-        gFgRuntime.streamScratchSize < FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES)
+    uint32 segmentStart;
+    uint32 segmentBytes;
+    uint8 *segmentBuffer;
+
+    if (!fgRuntimeSetupSegmentForScene(sceneName, &segmentStart, &segmentBytes))
         return 1;
 
+    if (islandState.lowTide) {
+        if (segmentBytes > gFgSetupSegmentBufferSize) {
+            if (gFgSetupSegmentBuffer != NULL)
+                free(gFgSetupSegmentBuffer);
+            gFgSetupSegmentBuffer = (uint8 *)malloc(segmentBytes);
+            if (gFgSetupSegmentBuffer == NULL) {
+                if (ps1PerfEnabled)
+                    ps1PerfMarkAllocFail(segmentBytes);
+                gFgSetupSegmentBufferSize = 0;
+                return 0;
+            }
+            gFgSetupSegmentBufferSize = segmentBytes;
+        }
+        segmentBuffer = gFgSetupSegmentBuffer;
+    } else {
+        if (gFgRuntime.streamScratch == NULL ||
+            gFgRuntime.streamScratchSize < segmentBytes)
+            return 1;
+        segmentBuffer = gFgRuntime.streamScratch;
+    }
+
     if (!ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
-                                       FG_FISHING3_HIGH_SETUP_SEGMENT_START,
-                                       FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES,
-                                       gFgRuntime.streamScratch)) {
+                                       segmentStart,
+                                       segmentBytes,
+                                       segmentBuffer)) {
         gFgRuntime.setupSegmentPrimed = 0;
         return 0;
     }
 
+    gFgRuntime.setupSegmentBuffer = segmentBuffer;
+    gFgRuntime.setupSegmentStart = segmentStart;
+    gFgRuntime.setupSegmentBytes = segmentBytes;
     gFgRuntime.setupSegmentPrimed = 1;
     return 1;
 }
