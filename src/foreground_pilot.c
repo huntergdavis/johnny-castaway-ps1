@@ -307,20 +307,6 @@ static uint16 fgEntryHoldVBlanks(const struct TFgPilotHeader *header,
     return hold;
 }
 
-static uint16 fgElapsedVBlanksSince(uint32 *lastTick)
-{
-    uint32 nowTick;
-    uint32 elapsed;
-
-    if (lastTick == NULL)
-        return 0;
-
-    nowTick = fgReadTickCounter();
-    elapsed = (nowTick >= *lastTick) ? (nowTick - *lastTick) : 0;
-    *lastTick = nowTick;
-    return (uint16)(elapsed > 0 ? elapsed : 0);
-}
-
 static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
 {
     if (fgSceneEquals(sceneName, "fishing1")) {
@@ -2286,12 +2272,19 @@ void foregroundPilotRuntimeCompose(void)
 
 void foregroundPilotRuntimeAdvance(void)
 {
+    uint32 nowTick;
+    uint32 elapsedTicks;
     uint16 elapsedVBlanks;
 
     if (!gFgRuntime.active)
         return;
 
-    elapsedVBlanks = fgElapsedVBlanksSince(&gFgRuntime.sceneClockTick);
+    nowTick = fgReadTickCounter();
+    elapsedTicks = (nowTick >= gFgRuntime.sceneClockTick)
+        ? (nowTick - gFgRuntime.sceneClockTick)
+        : 0;
+    gFgRuntime.sceneClockTick = nowTick;
+    elapsedVBlanks = (uint16)elapsedTicks;
     if (elapsedVBlanks == 0)
         elapsedVBlanks = 1;
     if (ps1PerfEnabled)
