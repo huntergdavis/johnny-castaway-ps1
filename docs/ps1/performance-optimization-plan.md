@@ -1856,3 +1856,10 @@ that high tide still has `43` uncovered post-locate pack-read segments after
 setup coverage `[3..73)`, while low tide has `20` and only `3` blocking
 VBlanks. The next runtime experiment should be a measured generated
 setup/read-segment test, not another source-shape cleanup.
+
+The first analyzer-selected runtime segment, FISHING3 high sectors `223..234`,
+is accepted as a work-reduction baseline after visual signoff. It keeps
+`loop_vb=2093` and `blocking_vb=16` flat while reducing high-tide
+`loop_reads 44 -> 43` and `loop_read_vb 188 -> 185`. Continue stacking
+measured groups; do not count this as a visible-speed win until `loop_vb` or
+visible CD pressure falls.

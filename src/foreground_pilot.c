@@ -231,6 +231,10 @@ static const struct TFgPilotReadGroup kFishing1HighReadGroups12[] = {
     {396, 406}
 };
 
+static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
+    {223, 234}
+};
+
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -1010,6 +1014,8 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 windowStart,
                                               uint32 targetEnd)
 {
+    const struct TFgPilotReadGroup *groups;
+    uint16 groupCount;
     uint16 startSector;
     uint16 i;
 
@@ -1017,11 +1023,20 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
         (appendStart & 2047UL) != 0)
         return targetEnd;
 
+    if (gFgRuntime.streamReadGroupsEnabled == 2) {
+        groups = kFishing3HighReadGroups12;
+        groupCount = (uint16)(sizeof(kFishing3HighReadGroups12) /
+                              sizeof(kFishing3HighReadGroups12[0]));
+    } else {
+        groups = kFishing1HighReadGroups12;
+        groupCount = (uint16)(sizeof(kFishing1HighReadGroups12) /
+                              sizeof(kFishing1HighReadGroups12[0]));
+    }
+
     startSector = (uint16)(appendStart >> 11);
-    for (i = 0; i < (uint16)(sizeof(kFishing1HighReadGroups12) /
-                             sizeof(kFishing1HighReadGroups12[0])); i++) {
-        if (kFishing1HighReadGroups12[i].startSector == startSector) {
-            uint32 candidateEnd = ((uint32)kFishing1HighReadGroups12[i].endSector) << 11;
+    for (i = 0; i < groupCount; i++) {
+        if (groups[i].startSector == startSector) {
+            uint32 candidateEnd = ((uint32)groups[i].endSector) << 11;
             uint32 packEnd = fgSectorAlignUp((uint32)gFgRuntime.packCdFile.size);
             if (candidateEnd > packEnd)
                 candidateEnd = packEnd;
@@ -1116,6 +1131,7 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     uint32 currentStart;
     uint32 currentEnd;
     uint32 targetEnd;
+    uint32 originalTargetEnd;
     uint32 preserveOffset;
     uint32 preserveBytes;
     uint32 appendBytes;
@@ -1129,11 +1145,12 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     currentStart = gFgRuntime.streamWindowStart;
     currentEnd = currentStart + gFgRuntime.streamWindowBytes;
     targetEnd = windowStart + readBytes;
+    originalTargetEnd = targetEnd;
     targetEnd = fgRuntimeGroupedAppendTargetEnd(currentEnd, windowStart, targetEnd);
     readBytes = targetEnd - windowStart;
 
     if (windowStart < currentStart ||
-        windowStart >= currentEnd ||
+        windowStart > currentEnd ||
         targetEnd <= currentEnd)
         return 0;
 
@@ -1144,7 +1161,7 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     preserveOffset = windowStart - currentStart;
     preserveBytes = currentEnd - windowStart;
     appendBytes = targetEnd - currentEnd;
-    if (preserveBytes == 0 ||
+    if ((preserveBytes == 0 && targetEnd == originalTargetEnd) ||
         appendBytes == 0 ||
         preserveBytes >= gFgRuntime.streamWindowSize ||
         preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
@@ -1154,7 +1171,7 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     if (countAsPrefetch && ps1PerfEnabled)
         ps1PerfBeginPrefetchRead(slackVBlanks);
 
-    if (preserveOffset > 0)
+    if (preserveOffset > 0 && preserveBytes > 0)
         memmove(gFgRuntime.streamWindowBuffer,
                 gFgRuntime.streamWindowBuffer + preserveOffset,
                 preserveBytes);
@@ -2079,10 +2096,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (gFgRuntime.setupPrimeWindowBytes > 0 &&
                     windowCapacityBytes < gFgRuntime.setupPrimeWindowBytes)
                     windowCapacityBytes = gFgRuntime.setupPrimeWindowBytes;
-                gFgRuntime.streamReadGroupsEnabled =
-                    (fgSceneEquals(sceneName, "fishing1") &&
-                     islandState.lowTide == 0 &&
-                     windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES) ? 1 : 0;
+                if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
+                    islandState.lowTide == 0 &&
+                    fgSceneEquals(sceneName, "fishing1")) {
+                    gFgRuntime.streamReadGroupsEnabled = 1;
+                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
+                           islandState.lowTide == 0 &&
+                           fgSceneEquals(sceneName, "fishing3")) {
+                    gFgRuntime.streamReadGroupsEnabled = 2;
+                } else {
+                    gFgRuntime.streamReadGroupsEnabled = 0;
+                }
                 if (gFgRuntime.streamReadGroupsEnabled &&
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
