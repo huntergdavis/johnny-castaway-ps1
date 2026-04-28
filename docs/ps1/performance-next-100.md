@@ -276,6 +276,10 @@ The `144 KB` midpoint is also rejected. It looked better only while moving the
 executable/pack LBA; after recovering layout with cold string shrink, it
 regressed `loop_vb 2094 -> 2096` and `blocking_vb 16 -> 21`. Treat high-tide
 contiguous budget probing as exhausted at `128 KB`.
+The planner-targeted `140 KB` point also failed with stable layout, regressing
+`loop_vb 2094 -> 2095` and `blocking_vb 16 -> 19`. This confirms that the next
+FISHING3 high win is not another contiguous prime size; it needs segmented
+coverage or scheduler changes.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
