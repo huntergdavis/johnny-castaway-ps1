@@ -1633,9 +1633,6 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     if (outElapsedVBlanks != NULL)
         *outElapsedVBlanks = 0;
 
-    if (!fgRuntimeCanWindowCache())
-        return 0;
-
     entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
     (void)targetFrameIndex;
     if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
