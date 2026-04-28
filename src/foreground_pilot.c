@@ -1810,9 +1810,6 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
     uint32 perfTick = 0;
     uint16 elapsedVBlanks;
 
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = 0;
-
     prepTick = fgReadTickCounter();
 
     if (perfDetail)
@@ -1837,8 +1834,7 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
                                ps1PerfElapsedVBlanks(perfTick));
 
     elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(prepTick);
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = elapsedVBlanks;
+    *outElapsedVBlanks = elapsedVBlanks;
     if (perfDetail)
         ps1PerfEndPipeline(PS1_PERF_PIPE_PREPARE, elapsedVBlanks);
 

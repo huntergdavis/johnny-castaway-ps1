@@ -1214,6 +1214,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-69` | Done: prune prechecked compose-entry null guard. | `fgRuntimeComposeEntryToBackground()` is internal and both call sites pass runtime-owned entries/buffers after scene-pack startup or staged prep. Removing the duplicate guard keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `foregroundPilotPlay 9016 -> 8996`, shrinks `foregroundPilotRuntimeCompose 56 -> 44`, and shrinks `jcreborn.elf 722660 -> 722376`. This is a work-reduction/code-size promotion, not a VBlank win. |
 | `P5-70` | Done: prune prefetch-window output clear. | `fgRuntimeTryPrefetchWindow()` callers always pass a real elapsed-output pointer and ignore it on false returns. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeTryPrefetchWindow 392 -> 388`, and shrinks `jcreborn.elf 722376 -> 722364`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 | `P5-71` | Done: prune stage-next output guards. | `fgRuntimeTryStageNextFrame()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable writes keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722364 -> 722348`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-72` | Done: prune prepare output guards. | `fgRuntimePrepareStagedFrameForPresent()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable final write keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722348 -> 722336`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2002,4 +2003,6 @@ prefetch-window output clear is accepted as a follow-on hot-helper cleanup and
 moves the current code-size cleanup baseline to `jcreborn.elf=722364` bytes.
 Pruning the stage-next elapsed-output guards keeps the same gates exact-flat and
 moves the current code-size cleanup baseline to `jcreborn.elf=722348` bytes
-with no VBlank change.
+with no VBlank change. Pruning the prepare elapsed-output guards keeps the same
+gates exact-flat and moves the current code-size cleanup baseline to
+`jcreborn.elf=722336` bytes with no VBlank change.
