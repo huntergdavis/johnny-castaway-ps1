@@ -1202,8 +1202,6 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     readEnd = windowStart + readBytes;
     if (readEnd > (uint32)gFgRuntime.packCdFile.size)
         readBytes = (uint32)gFgRuntime.packCdFile.size - windowStart;
-    if (readBytes == 0)
-        return 0;
 
     ok = fgRuntimeTryExtendWindow(windowStart,
                                   readBytes,
