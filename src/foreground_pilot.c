@@ -255,6 +255,10 @@ static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
     {345, 354}
 };
 
+static const struct TFgPilotReadGroup kFishing3LowReadGroups12[] = {
+    {159, 171}
+};
+
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -1028,6 +1032,10 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
         groups = kFishing3HighReadGroups12;
         groupCount = (uint16)(sizeof(kFishing3HighReadGroups12) /
                               sizeof(kFishing3HighReadGroups12[0]));
+    } else if (gFgRuntime.streamReadGroupsEnabled == 3) {
+        groups = kFishing3LowReadGroups12;
+        groupCount = (uint16)(sizeof(kFishing3LowReadGroups12) /
+                              sizeof(kFishing3LowReadGroups12[0]));
     } else {
         groups = kFishing1HighReadGroups12;
         groupCount = (uint16)(sizeof(kFishing1HighReadGroups12) /
@@ -2059,9 +2067,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     fgSceneEquals(sceneName, "fishing1")) {
                     gFgRuntime.streamReadGroupsEnabled = 1;
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                           islandState.lowTide == 0 &&
                            fgSceneEquals(sceneName, "fishing3")) {
-                    gFgRuntime.streamReadGroupsEnabled = 2;
+                    gFgRuntime.streamReadGroupsEnabled = islandState.lowTide ? 3 : 2;
                 } else {
                     gFgRuntime.streamReadGroupsEnabled = 0;
                 }

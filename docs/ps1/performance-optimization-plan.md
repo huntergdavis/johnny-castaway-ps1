@@ -2057,3 +2057,10 @@ stay exact-flat while `fgRuntimeFillWindowForEntry`,
 `fgRuntimeWindowPrefetchWouldRead` shrink by `32` bytes total. This is not a
 VBlank win and not an aggregate ELF-size win; it is a smaller hot helper shape
 with the PS-EXE sector bucket unchanged.
+FISHING3 low tide now has its first accepted read group. Adding the generated
+candidate `159..171` keeps visible timing flat but reduces active CD work:
+`loop_reads 21 -> 20`, `hidden_reads 21 -> 20`, `loop_read_vb 85 -> 81`, and
+`setloc 28 -> 27`. FISHING3 high and FISHING1 remain exact-flat. Count this as
+a small CD transaction/read-time reduction, not as a VBlank win; the next
+low-tide groups should be judged the same way and must avoid turning hidden
+read reductions into visible blocking.
