@@ -187,6 +187,14 @@ high-impact path is no longer local restore/CD cleanup for fishing1 high tide;
 it is a first-class present scheduler, a release/perf-log split, or a broader
 pack/runtime architecture that can hide the mandatory VSync ownership without
 dropping frames or weakening pause input.
+The same FGP3 zero-shift format is now promoted for fishing1 low tide as well.
+`FISH1LOW.FG2` converts to `fgp3_pal4_residual`, shrinks `426082 -> 303083`
+bytes, and improves the low-tide gate `loop_vb 1215 -> 1209`,
+`overrun_vb 142 -> 135`, `blocking_vb 5 -> 4`, `prefetch_overrun_vb 5 -> 4`,
+and `loop_reads 31 -> 22`. High tide remained exact-flat after the low-tide
+pack change. This makes generated all-scene FGP3 rollout a practical next
+path, while low tide still has enough CD/refill pressure to justify targeted
+pack-group or setup-prime policy work.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
