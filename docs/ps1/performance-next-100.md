@@ -246,6 +246,10 @@ Fishing3 low tide now also uses FGP3. `FISH3LOW.FG2` shrinks `906053 ->
 `blocking_vb 21 -> 8`, `prefetch_overrun_vb 21 -> 9`, and `loop_reads 65 ->
 42`. Fishing3 now needs setup-prime or segmented preload work, not more format
 conversion.
+Contiguous fishing3 high setup-prime is rejected for now. `320 KB` failed
+before playback; `256 KB` completed but kept `blocking_vb=24`, worsened
+`due_misses 1 -> 2`, and moved both PS-EXE and `FISHING3.FG2` LBA. Retry this
+scene only with segmented/generated prime coverage or inter-scene preload.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
