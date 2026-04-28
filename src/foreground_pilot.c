@@ -1635,7 +1635,7 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
 
     entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
     (void)targetFrameIndex;
-    if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
+    if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
     if (fgRuntimeWindowContainsEntry(entry)) {
@@ -1680,7 +1680,7 @@ static int fgRuntimeWindowPrefetchWouldRead(void)
 
     entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
     (void)targetFrameIndex;
-    if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
+    if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
     return fgRuntimeWindowContainsEntry(entry) ? 0 : 1;
