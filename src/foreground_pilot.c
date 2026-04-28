@@ -192,6 +192,15 @@ enum {
      !gFgRuntime.preparedFrameValid && \
      gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) && \
      fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS)
+#define fgRuntimeCanPresentPreparedOnNextVBlank() \
+    (gFgRuntime.active && \
+     gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
+     gFgRuntime.frameRendered && \
+     gFgRuntime.stagedFrameValid && \
+     gFgRuntime.preparedFrameValid && \
+     gFgRuntime.preparedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) && \
+     gFgRuntime.stagedFrameIndex == gFgRuntime.preparedFrameIndex && \
+     fgRuntimeHeldSlackBeforeWait() == 1)
 #define fgRuntimeSetStagedFrame(frameIndex_, entry_) \
     do { \
         gFgRuntime.stagedEntry = *(entry_); \
@@ -1870,18 +1879,6 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
     if (ps1PerfEnabled)
         ps1PerfMarkScheduler(PS1_PERF_SCHED_PREPARED_READY, 0);
     return 1;
-}
-
-static int fgRuntimeCanPresentPreparedOnNextVBlank(void)
-{
-    return gFgRuntime.active &&
-           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           gFgRuntime.frameRendered &&
-           gFgRuntime.stagedFrameValid &&
-           gFgRuntime.preparedFrameValid &&
-           gFgRuntime.preparedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
-           gFgRuntime.stagedFrameIndex == gFgRuntime.preparedFrameIndex &&
-           fgRuntimeHeldSlackBeforeWait() == 1;
 }
 
 static int fgRuntimePresentPreparedFrame(int perfDetail)
