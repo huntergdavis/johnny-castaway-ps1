@@ -195,6 +195,13 @@ and `loop_reads 31 -> 22`. High tide remained exact-flat after the low-tide
 pack change. This makes generated all-scene FGP3 rollout a practical next
 path, while low tide still has enough CD/refill pressure to justify targeted
 pack-group or setup-prime policy work.
+Fishing1 low tide now also uses the existing `320 KB` setup-prime policy.
+Because the FGP3 low-tide pack fits inside the prime window, active-loop reads
+fall `22 -> 0`, `blocking_vb 4 -> 0`, and `loop_vb 1209 -> 1207`; overrun
+falls to the same `131` VBlank gap as high tide. This is intentionally logged
+as an active-loop win with setup-cost trade (`setup_vb 182 -> 238`,
+`scene_vb 1391 -> 1445`), so the next real global win is hiding that prime via
+inter-scene preload or generated prime budgets.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

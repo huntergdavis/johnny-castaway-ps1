@@ -1355,7 +1355,6 @@ static int fgRuntimeShouldPrimeSetupWindow(const char *sceneName,
 {
     /* Scene-specific until generated prime budgets exist for all variants. */
     return fgSceneEquals(sceneName, "fishing1") &&
-           islandState.lowTide == 0 &&
            normalWindowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 }
 
