@@ -222,6 +222,11 @@ rejected. It moved the executable into the next sector bucket and shifted
 `FISHING2.FG2 LBA 740 -> 741`, while regressing `loop_vb 1898 -> 1899` and
 `blocking_vb/prefetch_overrun_vb 2 -> 3`. Any retry needs generated metadata
 plus layout control, not another local source-table group.
+Fishing2 low tide now also uses FGP3. `FISH2LOW.FG2` shrinks `784126 ->
+385436` bytes, improves `loop_vb 1912 -> 1900`, `overrun_vb 157 -> 136`,
+`blocking_vb/prefetch_overrun_vb 20 -> 5`, and `loop_reads 58 -> 27`, while
+fishing2 high stays exact-flat. Remaining low-tide CD pressure is now small
+enough to test generated setup-prime sizing or segmented prime coverage.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
