@@ -280,6 +280,9 @@ The planner-targeted `140 KB` point also failed with stable layout, regressing
 `loop_vb 2094 -> 2095` and `blocking_vb 16 -> 19`. This confirms that the next
 FISHING3 high win is not another contiguous prime size; it needs segmented
 coverage or scheduler changes.
+The scene-specific `2` VBlank refill guard is rejected too: it increased
+visible CD pressure to `blocking_vb=23` and moved layout. Short-slack reads
+remain unsafe without a real ownership budget.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
