@@ -160,6 +160,9 @@ enum {
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
+#define fgRuntimeWindowReadSize() \
+    ((gFgRuntime.streamWindowReadSize > 0) ? \
+     gFgRuntime.streamWindowReadSize : gFgRuntime.streamWindowSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
@@ -999,13 +1002,6 @@ static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
             entry->dataSize > 0 &&
             entry->width > 0 &&
             entry->height > 0) ? 1 : 0;
-}
-
-static uint32 fgRuntimeWindowReadSize(void)
-{
-    if (gFgRuntime.streamWindowReadSize > 0)
-        return gFgRuntime.streamWindowReadSize;
-    return gFgRuntime.streamWindowSize;
 }
 
 static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
