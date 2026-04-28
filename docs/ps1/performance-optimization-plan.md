@@ -1808,3 +1808,44 @@ current clean-rect system solved memory stability, but it still restores and
 uploads hundreds of KB per rendered entry. After prefetching reduces visible CD
 stalls, subphase counters should guide row/X dirty uploads, compositor work,
 and present scheduling.
+
+## Next 30 Targets After Source-Shape Plateau
+
+The late `P5-56..P5-62` pass shows that safe foreground source-shape cleanups
+are now mostly code-size wins, not VBlank wins. Several return-shape and guard
+prune tests became exact no-ops or code-size regressions. The next meaningful
+speed work should move information out of the hot runtime and into generated
+pack metadata, controlled setup/preload policy, or separate diagnostic builds.
+
+| Priority | Area | Experiment | Acceptance signal |
+|---:|---|---|---|
+| 1 | Pack/CD | Generate per-scene/tide segmented setup-prime metadata instead of hard-coded FISHING3 ranges. | High-tide `blocking_vb` falls below `16` without PS-EXE/LBA movement. |
+| 2 | Pack/CD | Emit candidate segment hit counts from the pack builder for FISHING3 high. | Host-side report identifies ranges with repeated active-loop reads before runtime code changes. |
+| 3 | Pack/CD | Generate a no-code JSON read-plan for FISHING3 high from existing summaries and pack offsets. | Predicts which loop reads remain visible and which setup segment would cover them. |
+| 4 | Pack/CD | Add a generated cold metadata table consumed through existing setup-prime code. | Same timing or better with no hot source table growth. |
+| 5 | CD/runtime | Test one generated high-tide segment using existing low-owned ownership, but behind layout padding if needed. | `blocking_vb` or `prefetch_overrun_vb` improves and process exits cleanly. |
+| 6 | CD/runtime | Test high-tide owned segment cleanup only as a first-class ownership patch, not local scratch replacement. | No post-scene invalid-read spam and no log-cap exit. |
+| 7 | CD/runtime | Add host-side read-boundary analyzer for `setup_read_vb` vs `loop_read_vb`. | No runtime code; produces ranked next segment candidates. |
+| 8 | CD/runtime | Re-score rejected setup-prime sizes using current ELF `722752` layout. | Only retry if predicted sectors avoid known bad `140/144/160 KB` phase. |
+| 9 | CD/runtime | Try a smaller high-tide contiguous midpoint below `128 KB` only if the analyzer predicts fewer loop reads. | Loop reads fall without increasing blocking. |
+| 10 | Scheduler | Split `cd_reserved` into setup-segment-covered vs not-covered ownership in a diagnostic build. | Explains the three `prep_blocked_cd` cases without baseline code growth. |
+| 11 | Scheduler | Prototype a separate diagnostic ISO/build profile for high-detail CD traces. | Baseline speed binary remains unchanged; diagnostics no longer perturb timing. |
+| 12 | Scheduler | Add host parser for existing DuckStation CD log lines instead of new runtime counters. | Per-read timing table with no PS1 code change. |
+| 13 | Scheduler | Model each held slice as CD/prep/present ownership offline from JCPERF2 summary plus frame table. | Identifies candidate frames for scheduler changes. |
+| 14 | Scheduler | Test a CD-first policy only for held slices with no prepared frame and generated segment coverage. | Reduces `blocking_vb` without increasing `prepared_wasted` or due misses. |
+| 15 | Scheduler | Test a prepare-first policy only when next window read is setup-covered. | Lowers `prep_blocked_cd` or overrun without more CD pressure. |
+| 16 | Pack/render | Generate per-entry dirty/upload cost classes for FISHING3. | Finds frames where render work, not CD, owns lateness. |
+| 17 | Pack/render | Emit upload band metadata for FGP3 residual entries. | `upload_rects` or `upload_bytes` falls with stable first-frame correctness. |
+| 18 | Pack/render | Emit restore band metadata for FGP3 residual entries. | `restore_bytes` falls without stale pixels. |
+| 19 | Pack/render | Host-side compare full-current dirty vs previous/current union for FISHING3. | Quantifies if another row-dirty win exists before runtime changes. |
+| 20 | Pack/render | Identify entries with max `upload_bytes` / `restore_bytes` in FISHING3 summaries. | Ranks render-side targets after CD stalls. |
+| 21 | Format | Prototype direct16 only for the highest compose-cost FISHING3 frame range in a side pack. | Compose work falls enough to justify pack growth. |
+| 22 | Format | Generate per-scene PAL4 palette specialization report. | Finds whether scene-specific compositor constants are worth codegen. |
+| 23 | Format | Test FGP3 residual chunk ordering by playback order, not source order. | Lowers seeks or loop reads with identical pixels. |
+| 24 | Format | Emit frame-to-sector coverage maps as build artifacts. | Makes future group/segment tests deterministic and searchable. |
+| 25 | Toolchain | Build a hot-symbol padding harness for `foregroundPilotPlay` address sweeps. | Separates real source wins from code-phase accidents. |
+| 26 | Toolchain | Test function-scoped `-Os` on only `fgRuntimeFillWindowForEntry()` with layout padding. | Promotes only if timing flat and ELF shrinks without CD pressure. |
+| 27 | Toolchain | Test function-scoped `-Os` on only `fgRuntimeCopyEntryFromWindow()` with layout padding. | Same flat timing plus shrink requirement. |
+| 28 | Cleanup | Stop trying source-only ternary/boolean rewrites in foreground hot path. | Logged no-op pattern stays documented; avoids churn. |
+| 29 | Validation | Add a script to list promoted vs rejected experiments since the current baseline. | Faster status cards and no manual counting. |
+| 30 | Validation | Add a host-side pack/read candidate report to the perf script output. | Every run suggests next segment/group candidates without changing PS1 code. |
