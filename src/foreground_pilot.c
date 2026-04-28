@@ -1023,8 +1023,6 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 windowStart,
                                               uint32 targetEnd)
 {
-    const struct TFgPilotReadGroup *groups;
-    uint8 groupCount;
     uint16 startSector;
     uint8 i;
 
@@ -1032,12 +1030,10 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
         (appendStart & 2047UL) != 0)
         return targetEnd;
 
-    groups = gFgRuntime.streamReadGroups;
-    groupCount = gFgRuntime.streamReadGroupCount;
     startSector = (uint16)(appendStart >> 11);
-    for (i = 0; i < groupCount; i++) {
-        if (groups[i].startSector == startSector) {
-            uint32 candidateEnd = ((uint32)groups[i].endSector) << 11;
+    for (i = 0; i < gFgRuntime.streamReadGroupCount; i++) {
+        if (gFgRuntime.streamReadGroups[i].startSector == startSector) {
+            uint32 candidateEnd = ((uint32)gFgRuntime.streamReadGroups[i].endSector) << 11;
             uint32 packEnd = fgSectorAlignUp((uint32)gFgRuntime.packCdFile.size);
             if (candidateEnd > packEnd)
                 candidateEnd = packEnd;

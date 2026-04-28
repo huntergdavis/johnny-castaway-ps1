@@ -1224,6 +1224,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-79` | Failed/no promotion: make the fallback upload branch explicit on `dirtyCount > 0`. | FISHING1 stayed timing/layout/work-flat, but the branch reshuffle grew `grDrawBackground` by `72` bytes and regressed `jcreborn.elf 721396 -> 721680`; source was reverted and only the experiment log was kept. |
 | `P5-80` | Done: compute upload tile coordinates from the tile index. | Replacing local `screenX`/`screenY` arrays with direct index arithmetic keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `8` bytes, and shrinks `jcreborn.elf 721396 -> 721380`. This is a tiny upload-path code-size promotion, not a VBlank win. |
 | `P5-81` | Failed/no promotion: replace the local background-tile pointer array with index-selection macros. | FISHING1 stayed timing/layout/work-flat, but repeated ternary tile selection grew `grDrawBackground` by `248` bytes and regressed `jcreborn.elf 721380 -> 722372`; source was reverted and only the experiment log was kept. |
+| `P5-82` | Done: scan active read groups directly. | After the active read-group table/count moved into runtime state, the grouped-append helper no longer needs local copies before scanning. Removing them keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, keeps `fgRuntimeFillWindowForEntry=844`, and shrinks `jcreborn.elf 721504 -> 721376`. This is a tiny grouped-read code-size promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2074,3 +2075,8 @@ Narrowing the cached read-group count/index to `uint8` is accepted immediately
 afterward. It preserves all timing and read-work counters, keeps the
 `fgRuntimeFillWindowForEntry` shrink, and claws back `60` aggregate ELF bytes
 from the table-pointer refactor while staying in the same PS-EXE sector bucket.
+The following source-shape pass removes the grouped-append local table/count
+copies entirely. Scanning the cached runtime table directly keeps FISHING1,
+FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and
+moves the aggregate ELF baseline from `721504` to `721376` bytes. This is a
+small grouped-read path cleanup, not a VBlank win.
