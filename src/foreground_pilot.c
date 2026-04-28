@@ -1624,18 +1624,18 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
 
     slackVBlanks = fgRuntimeHeldSlackBeforeWait();
     if (slackVBlanks == 0) {
-        if (ps1PerfEnabled)
+        if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
-        if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
+        }
         return 0;
     }
 
     if (!fgRuntimeWindowSlackEligible(slackVBlanks)) {
-        if (ps1PerfEnabled)
+        if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
-        if (ps1PerfEnabled)
             ps1PerfMarkPrefetchSkipNoSlack();
+        }
         return 0;
     }
 
