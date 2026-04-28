@@ -1217,6 +1217,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-72` | Done: prune prepare output guards. | `fgRuntimePrepareStagedFrameForPresent()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable final write keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722348 -> 722336`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 | `P5-73` | Done: prune fill-window output clear. | Non-null callers of `fgRuntimeFillWindowForEntry()` initialize their local elapsed value to zero before calling, and NULL callers do not need output normalization. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and shrinks `jcreborn.elf 722336 -> 722304`. This is a small work-reduction/code-size promotion, not a VBlank win. |
 | `P5-74` | Done: lower dirty-upload band merge gap to zero rows. | The accepted post-pause upload path used a one-row clean-gap merge. Tightening it to zero keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat on loop/blocking/refill, preserves PS-EXE `145408` and pack LBAs, and reduces uploaded bytes/dirty rows across all three gates: FISHING1 `8584960 -> 8533120`, FISHING3 high `16771200 -> 16665600`, and FISHING3 low `11838720 -> 11820800`. Rect count rises (`355 -> 436`, `693 -> 858`, `412 -> 440`), so this is an upload-byte work-reduction checkpoint, not a VBlank win. A cap-6 follow-up gave back part of the high-tide byte win, so keep the cap at `8`. |
+| `P5-75` | Done: branch directly on dirty-upload cap state. | `grDrawBackground()` no longer needs a separate `useBands` local after scanning upload bands; `capped` plus `bandCount` is the authoritative decision. Removing the extra flag keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `56` bytes, and shrinks `jcreborn.elf 722312 -> 722044`. This is a clean upload-path code-size/work-shape promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2017,3 +2018,7 @@ flat, uploaded bytes fall by `51.8 KB` on FISHING1, `105.6 KB` on FISHING3 high,
 and `17.9 KB` on FISHING3 low, while `LoadImage` rectangle counts rise. Keep
 this as a measured byte-vs-rect tradeoff until a lower-level GPU/DMA counter
 proves command count dominates byte volume.
+Removing the separate dirty-upload `useBands` flag is accepted immediately
+afterward: upload work and timing stay exact-flat across the same three gates,
+while `grDrawBackground` shrinks by `56` bytes and the current code-size
+cleanup baseline moves to `jcreborn.elf=722044` bytes.

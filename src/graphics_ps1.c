@@ -3701,7 +3701,7 @@ void grDrawBackground(void)
     int bandMinY[GR_MAX_UPLOAD_RECTS];
     int bandMaxY[GR_MAX_UPLOAD_RECTS];
     int bandCount = 0;
-    int useBands = 0;
+    int capped = 0;
     int dirtyCount = 0;
     int singleIndex = -1;
     uint16 uploadRects = 0;
@@ -3741,8 +3741,6 @@ void grDrawBackground(void)
     }
 
     if (dirtyCount > 0) {
-        int capped = 0;
-
         for (int i = 0; i < 4 && !capped; i++) {
             int y;
 
@@ -3793,14 +3791,12 @@ void grDrawBackground(void)
                 y++;
             }
         }
-
-        useBands = (!capped && bandCount > 0) ? 1 : 0;
     }
 
     if (ps1PerfEnabled && dirtyCount > 0)
         perfStartTick = ps1PerfTick();
 
-    if (useBands) {
+    if (!capped && bandCount > 0) {
         for (int b = 0; b < bandCount; b++) {
             int i = bandTile[b];
             int minY = bandMinY[b];
