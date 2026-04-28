@@ -1864,8 +1864,6 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
 
     if (outElapsedVBlanks != NULL)
         *outElapsedVBlanks = 0;
-    if (!fgRuntimeCanPrepareStagedFrame())
-        return 0;
 
     prepTick = fgReadTickCounter();
 
