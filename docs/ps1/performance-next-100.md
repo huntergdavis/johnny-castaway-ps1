@@ -283,6 +283,10 @@ coverage or scheduler changes.
 The scene-specific `2` VBlank refill guard is rejected too: it increased
 visible CD pressure to `blocking_vb=23` and moved layout. Short-slack reads
 remain unsafe without a real ownership budget.
+Forcing fishing3 high back to catch-up threshold `5` is rejected as well:
+blocking stayed flat while loop/refill/layout worsened. Keep setup-primed
+threshold `4` until a scheduler can account for CD and catch-up ownership
+together.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
