@@ -1915,3 +1915,11 @@ one more read. It regresses FISHING3 high to `loop_vb=2096`,
 manual extension boundary for this phase; the next high-impact FISHING3 CD work
 should be generated segmented setup/preload metadata or scheduler ownership,
 not another hand-written adjacent read group.
+
+A widened persistent side segment for FISHING3 high, `67..97`, is also
+rejected. It reduced active-loop reads (`41 -> 38`) but bypassed the normal
+stream-window seed pattern and made later active reads worse:
+`loop_vb=2102`, `blocking_vb=32`, and `prefetch_overrun_vb=17`. The useful
+lesson is structural: setup/preload bytes should feed the main window or carry
+explicit scheduler ownership; a long-lived side buffer is not automatically a
+win even when it removes CD transactions.
