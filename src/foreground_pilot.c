@@ -1678,9 +1678,6 @@ static int fgRuntimeWindowPrefetchWouldRead(void)
     uint16 targetFrameIndex = 0;
     const struct TFgPilotEntry *entry;
 
-    if (!fgRuntimeCanWindowCache())
-        return 0;
-
     entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
     (void)targetFrameIndex;
     if (entry == NULL || !fgRuntimeEntryFitsWindow(entry))
