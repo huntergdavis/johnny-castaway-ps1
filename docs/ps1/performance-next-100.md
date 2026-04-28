@@ -268,6 +268,10 @@ safe version of the earlier failed high-tide contiguous-prime idea: it improves
 Larger high-tide contiguous windows remain rejected; the next high-tide step
 should be another measured small knee or segmented prime coverage, not a jump
 back to `256 KB`.
+The `160 KB` high-tide retest confirms the current knee: layout stayed fixed,
+but active timing regressed to `loop_vb 2100`, `blocking_vb 29`, and
+`due_misses 3`. Keep `128 KB` until the next test can preload later ranges
+without using one larger contiguous read.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
