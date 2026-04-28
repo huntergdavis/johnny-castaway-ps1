@@ -170,6 +170,11 @@ enum {
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
+#define fgRuntimeHeldSlackBeforeWait() \
+    ((uint16)((!gFgRuntime.active || \
+               gFgRuntime.displayVBlanks == 0 || \
+               gFgRuntime.displayVBlanks <= gFgRuntime.frameVBlank) ? \
+              0 : (gFgRuntime.displayVBlanks - gFgRuntime.frameVBlank)))
 #define fgRuntimeCanHoldDisplayedFrame() \
     (gFgRuntime.active && \
      gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
@@ -970,16 +975,6 @@ static void fgBackdropStampHoliday(void)
     grDrawSprite(grBackgroundSfc, &gFgBackdropSlot,
                  holiday->island_x, holiday->island_y,
                  (uint16)holiday->sprite_index, 2);
-}
-
-static uint16 fgRuntimeHeldSlackBeforeWait(void)
-{
-    if (!gFgRuntime.active || gFgRuntime.displayVBlanks == 0)
-        return 0;
-
-    if (gFgRuntime.displayVBlanks <= gFgRuntime.frameVBlank)
-        return 0;
-    return (uint16)(gFgRuntime.displayVBlanks - gFgRuntime.frameVBlank);
 }
 
 static int fgRuntimeCanStageNextFrame(void)
