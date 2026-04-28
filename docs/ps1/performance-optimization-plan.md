@@ -1962,3 +1962,8 @@ also rejected. It made the active loop worse (`loop_vb=2098`,
 `blocking_vb=21`, `prefetch_overrun_vb=16`), proving the early accepted segment
 is more valuable than later single-read candidates when only one segment is
 available.
+
+A FISHING3 low read-group probe for `159..171` is rejected. It removed one
+loop read but did not move `loop_vb`, `blocking_vb`, or
+`prefetch_overrun_vb`, and it grew the hot foreground code. Low-tide groups
+need pressure-counter movement before they justify a new table/branch path.
