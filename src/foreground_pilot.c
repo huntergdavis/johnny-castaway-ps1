@@ -1125,7 +1125,6 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     uint32 currentStart;
     uint32 currentEnd;
     uint32 targetEnd;
-    uint32 originalTargetEnd;
     uint32 preserveOffset;
     uint32 preserveBytes;
     uint32 appendBytes;
@@ -1139,7 +1138,6 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     currentStart = gFgRuntime.streamWindowStart;
     currentEnd = currentStart + gFgRuntime.streamWindowBytes;
     targetEnd = windowStart + readBytes;
-    originalTargetEnd = targetEnd;
     targetEnd = fgRuntimeGroupedAppendTargetEnd(currentEnd, windowStart, targetEnd);
     readBytes = targetEnd - windowStart;
 
@@ -1155,8 +1153,7 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     preserveOffset = windowStart - currentStart;
     preserveBytes = currentEnd - windowStart;
     appendBytes = targetEnd - currentEnd;
-    if ((preserveBytes == 0 && targetEnd == originalTargetEnd) ||
-        preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
+    if (preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
         return 0;
 
     stageTick = fgReadTickCounter();
