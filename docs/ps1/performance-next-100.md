@@ -15,7 +15,7 @@ Current accepted fishing1 exact baseline:
 | `loop_reads` | `6` |
 | `upload_bytes` | `6690560` |
 | `restore_bytes` | `251144` |
-| `prefetch_buffer` | `333656` bytes for fishing1 high-tide FGP3 setup-prime, `29712` bytes otherwise |
+| `prefetch_buffer` | `333656` bytes for fishing1 high-tide FGP3 setup-prime, `366841` bytes for fishing2 high-tide FGP3 setup-prime, smaller variants otherwise |
 | `jcreborn.exe` | `145408` bytes |
 | `jcreborn.elf` | `726432` bytes |
 
@@ -25,13 +25,13 @@ baseline is about `12` VBlanks, so the practical target is roughly twelve to
 fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
 stack of flat-timing cleanup wins.
 
-Red-team caveat: the latest accepted setup-prime pass is an active-loop win,
-not an end-to-end scene-time win. It moves a large `320 KB` FG2 read into setup
-(`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`) so active playback can reduce
-visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 1`) and safely spend
-more catch-up. Future work should hide that prime during inter-scene/loading
-time or generate scene/tide-specific prime coverage, rather than treating setup
-time as free.
+Red-team caveat: setup-prime passes are active-loop wins, not end-to-end
+scene-time wins. The latest fishing2 high-tide budget moves a `352 KB`
+foreground read into setup (`setup_vb 184 -> 251`, `scene_vb 2087 -> 2149`) so
+active playback can reduce visible CD pressure (`blocking_vb/prefetch_overrun_vb
+8 -> 2`) and spend more catch-up. Future work should hide these primes during
+inter-scene/loading time or generate scene/tide-specific segmented coverage,
+rather than treating setup time as free.
 
 Current note: the fishing1 high-tide tail read group `396..406` is accepted as
 a work-reduction checkpoint, not a VBlank speed win. It kept that era's
@@ -209,6 +209,14 @@ FGP3 is now validated on fishing2 high tide as well. `FISHING2.FG2` shrinks
 FGP3 residual approach scales past fishing1, but fishing2 still has enough
 active-loop CD pressure to make setup-prime or generated pack-read groups the
 next likely scene-specific win.
+Fishing2 high tide now has a scene/tide-specific setup-prime budget. A
+`352 KB` prime is the largest promoted point: it improves `loop_vb 1903 ->
+1898`, `overrun_vb 139 -> 133`, `blocking_vb/prefetch_overrun_vb 8 -> 2`,
+and `loop_reads 40 -> 14`. Larger contiguous primes are unsafe for this scene's
+heap shape: `384 KB` and full-pack `544 KB` failed before loop start, while
+`368 KB` hit the log cap/regtest `137`. The remaining two blocking VBlanks
+should be attacked with generated read groups or inter-scene preload, not by
+blindly growing the setup window.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

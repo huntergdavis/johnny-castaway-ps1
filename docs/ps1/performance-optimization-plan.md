@@ -95,11 +95,21 @@ FGP3 is now accepted for fishing2 high tide as well. `FISHING2.FG2` shrinks
 `loop_reads 134 -> 40`. This is the first non-fishing1 FGP3 runtime promotion
 and confirms the format is a scene-family strategy, not a single-scene trick.
 Remaining fishing2 pressure is now mostly read-window policy.
-Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
-the setup prime moves CD work from active playback into scene setup
-(`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
-that prime during inter-scene/loading time or emit generated per-scene/tide
-prime windows rather than counting setup as free. The exact-4 plus 1-row upload
+Fishing2 high tide now also has an explicit `352 KB` setup-prime budget. This
+cuts active-loop CD pressure again: `loop_vb 1903 -> 1898`,
+`overrun_vb 139 -> 133`, `blocking_vb/prefetch.overrun_vb 8 -> 2`,
+`loop_reads 40 -> 14`, and `loop_read_vb 170 -> 63`. The heap boundary is
+real: `384 KB` and `544 KB` failed before loop start, and `368 KB` hit the
+headless log cap. The next fishing2 high win should be generated read groups,
+segmented prime, or inter-scene preload rather than a larger contiguous setup
+prime.
+Red-team caveat: setup-prime wins are active-loop wins, not end-to-end
+scene-time wins. Fishing2 high now moves a `352 KB` foreground read into setup
+(`setup_vb 184 -> 251`, `scene_vb 2087 -> 2149`) so active playback can reduce
+visible CD pressure; earlier fishing1 setup-prime wins have the same trade. The
+next pass should hide these primes during inter-scene/loading time or emit
+generated per-scene/tide prime windows rather than counting setup as free. The
+exact-4 plus 1-row upload
 plus prepared-wait prefetch
 checkpoint is a work-reduction
 promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
@@ -1153,6 +1163,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-18` | Done: promote FGP3 zero-shift temporal residuals for fishing1 low tide. | `FISH1LOW.FG2` now uses `fgp3_pal4_residual`; low-tide gate improves `loop_vb 1215 -> 1209`, `overrun_vb 142 -> 135`, `blocking_vb/prefetch_overrun_vb 5 -> 4`, `loop_reads 31 -> 22`, `restore_bytes 1234716 -> 182892`, and `upload_bytes 11457920 -> 5278080`. The low pack LBA stays stable at `592`, and high tide remains exact-flat after the change. |
 | `P5-19` | Done: setup-prime fishing1 low tide FGP3. | The existing `320 KB` setup-prime policy now covers both fishing1 tides. Low tide improves `loop_vb 1209 -> 1207`, `overrun_vb 135 -> 131`, `blocking_vb/prefetch_overrun_vb 4 -> 0`, and `loop_reads 22 -> 0`; high tide remains exact-flat. Setup cost rises (`setup_vb 182 -> 238`), so the follow-up remains generated prime budgets or inter-scene preload. |
 | `P5-20` | Done: promote FGP3 zero-shift temporal residuals for fishing2 high tide. | `FISHING2.FG2` now uses `fgp3_pal4_residual`; high-tide gate improves `loop_vb 1928 -> 1903`, `overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`, `prefetch_overrun_vb 44 -> 8`, `due_misses 2 -> 0`, `loop_reads 134 -> 40`, `restore_bytes 5353808 -> 333876`, and `upload_bytes 28215040 -> 9055360`. Fishing2 low smoke still passes. |
+| `P5-21` | Done: setup-prime fishing2 high tide FGP3 with an explicit scene/tide budget. | A `352 KB` budget improves `loop_vb 1903 -> 1898`, `overrun_vb 139 -> 133`, `blocking_vb/prefetch_overrun_vb 8 -> 2`, and `loop_reads 40 -> 14`. The runtime now stores `setupPrimeWindowBytes` explicitly so setup priming is policy-driven, not inferred from buffer capacity. Larger contiguous probes were rejected: `384 KB`/`544 KB` failed before playback and `368 KB` hit the log cap. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 

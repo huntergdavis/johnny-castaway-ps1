@@ -103,6 +103,7 @@ struct TFgPilotRuntime {
     uint32 streamWindowReadSize;    /* Normal read size; capacity may be larger for grouped appends. */
     uint32 streamWindowStart;       /* File offset of first byte in streamWindowBuffer. */
     uint32 streamWindowBytes;       /* Valid byte count in streamWindowBuffer. */
+    uint32 setupPrimeWindowBytes;   /* Scene/tide-specific setup residency budget, or 0 when disabled. */
     uint8 streamWindowValid;
     uint8 setupWindowPrimed;
     uint8 streamReadGroupsEnabled;
@@ -144,6 +145,7 @@ enum {
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (11UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
+#define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
@@ -681,6 +683,7 @@ static void fgRuntimeReset(void)
     gFgRuntime.streamWindowReadSize = 0;
     gFgRuntime.streamWindowStart = 0;
     gFgRuntime.streamWindowBytes = 0;
+    gFgRuntime.setupPrimeWindowBytes = 0;
     gFgRuntime.streamWindowValid = 0;
     gFgRuntime.streamReadGroupsEnabled = 0;
     gFgRuntime.streamScratch = NULL;
@@ -1350,12 +1353,18 @@ static int fgRuntimePrimeNextFrameForSetup(void)
     return 1;
 }
 
-static int fgRuntimeShouldPrimeSetupWindow(const char *sceneName,
-                                           uint32 normalWindowBytes)
+static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
+                                             uint32 normalWindowBytes)
 {
+    if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
+        return 0;
+
     /* Scene-specific until generated prime budgets exist for all variants. */
-    return fgSceneEquals(sceneName, "fishing1") &&
-           normalWindowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES;
+    if (fgSceneEquals(sceneName, "fishing1"))
+        return FG_SETUP_PRIME_WINDOW_BYTES;
+    if (fgSceneEquals(sceneName, "fishing2") && islandState.lowTide == 0)
+        return FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
+    return 0;
 }
 
 static int fgRuntimePrimeSetupWindow(void)
@@ -1366,8 +1375,9 @@ static int fgRuntimePrimeSetupWindow(void)
     uint32 validBytes;
 
     if (!gFgRuntime.packCdFileValid ||
+        gFgRuntime.setupPrimeWindowBytes == 0 ||
         gFgRuntime.streamWindowBuffer == NULL ||
-        gFgRuntime.streamWindowSize < FG_SETUP_PRIME_WINDOW_BYTES)
+        gFgRuntime.streamWindowSize < gFgRuntime.setupPrimeWindowBytes)
         return 1;
 
     windowStart = (gFgRuntime.header.dataOffset / FG_CD_SECTOR_SIZE) * FG_CD_SECTOR_SIZE;
@@ -1376,8 +1386,8 @@ static int fgRuntimePrimeSetupWindow(void)
         return 1;
 
     validBytes = fileBytes - windowStart;
-    if (validBytes > FG_SETUP_PRIME_WINDOW_BYTES)
-        validBytes = FG_SETUP_PRIME_WINDOW_BYTES;
+    if (validBytes > gFgRuntime.setupPrimeWindowBytes)
+        validBytes = gFgRuntime.setupPrimeWindowBytes;
     windowBytes = ((validBytes + FG_CD_SECTOR_SIZE - 1u) / FG_CD_SECTOR_SIZE) *
         FG_CD_SECTOR_SIZE;
     if (windowBytes > gFgRuntime.streamWindowSize)
@@ -2039,9 +2049,11 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchWindowBytes > 0) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
-                if (fgRuntimeShouldPrimeSetupWindow(sceneName, windowBytes) &&
-                    windowCapacityBytes < FG_SETUP_PRIME_WINDOW_BYTES)
-                    windowCapacityBytes = FG_SETUP_PRIME_WINDOW_BYTES;
+                gFgRuntime.setupPrimeWindowBytes =
+                    fgRuntimeSetupPrimeWindowBytes(sceneName, windowBytes);
+                if (gFgRuntime.setupPrimeWindowBytes > 0 &&
+                    windowCapacityBytes < gFgRuntime.setupPrimeWindowBytes)
+                    windowCapacityBytes = gFgRuntime.setupPrimeWindowBytes;
                 gFgRuntime.streamReadGroupsEnabled =
                     (fgSceneEquals(sceneName, "fishing1") &&
                      islandState.lowTide == 0 &&
