@@ -1894,3 +1894,7 @@ already gives that function its size-optimized shape.
 A one-VBlank FISHING3-high setup settle is rejected as well. Even with stable
 pack LBA and PS-EXE bucket, it pushed active CD/refill pressure sharply worse,
 so startup barriers are not a substitute for read-level ownership metadata.
+`scripts/ps1-perf-iterate.sh` now emits foreground read-plan artifacts for each
+case. This closes the validation/tooling loop: every accepted or rejected run
+captures the pack/read candidate table that should drive the next preload,
+grouping, or scheduler experiment.

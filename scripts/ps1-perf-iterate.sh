@@ -571,6 +571,64 @@ print()
 PY
 }
 
+emit_foreground_read_plan() {
+    local summary_file="$1"
+    local case_dir="$2"
+    local pack_file
+    local plan_json="$case_dir/foreground-read-plan.json"
+    local plan_text="$case_dir/foreground-read-plan.txt"
+    local plan_err="$case_dir/foreground-read-plan.err"
+
+    if ! pack_file="$(python3 - "$summary_file" "$PROJECT_ROOT" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+project_root = Path(sys.argv[2])
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+scene = summary.get("sections", {}).get("scene", {})
+pack = str(scene.get("pack", "")).replace("\\", "/")
+pack_name = Path(pack).name
+if not pack_name:
+    raise SystemExit(1)
+pack_path = project_root / "generated" / "ps1" / "foreground" / pack_name
+if not pack_path.is_file():
+    raise SystemExit(1)
+print(pack_path)
+PY
+    )"; then
+        return 0
+    fi
+
+    if python3 "$PROJECT_ROOT/scripts/ps1-foreground-read-plan.py" \
+        --summary "$summary_file" \
+        --pack "$pack_file" \
+        --top 4 \
+        --output "$plan_json" > "$plan_text" 2> "$plan_err"; then
+        python3 - "$summary_file" "$plan_json" "$plan_text" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+artifacts = summary.setdefault("artifacts", {})
+artifacts["foreground_read_plan_json"] = sys.argv[2]
+artifacts["foreground_read_plan_text"] = sys.argv[3]
+summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+PY
+        echo ""
+        echo "Foreground read plan:"
+        sed -n '1,44p' "$plan_text"
+    else
+        echo "WARN: foreground read-plan generation failed for $summary_file" >&2
+        if [ -s "$plan_err" ]; then
+            sed -n '1,8p' "$plan_err" >&2
+        fi
+    fi
+}
+
 append_experiment_log() {
     local summary_file="$1"
     local regtest_exit="$2"
@@ -885,6 +943,7 @@ for i in "${!CASE_LABELS[@]}"; do
     parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
         "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
         "$summary_file"
+    emit_foreground_read_plan "$summary_file" "$case_dir"
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
