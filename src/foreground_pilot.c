@@ -213,6 +213,11 @@ enum {
         eventsWaitTick(0); \
     } while (0)
 #define fgReadTickCounter() ((uint32)VSync(-1))
+#define fgRuntimeMarkFrameRendered() \
+    do { \
+        if (gFgRuntime.active && gFgRuntime.mode == FG_RUNTIME_SCENE_PACK) \
+            gFgRuntime.frameRendered = 1; \
+    } while (0)
 static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
@@ -1791,12 +1796,6 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
-}
-
-static void fgRuntimeMarkFrameRendered(void)
-{
-    if (gFgRuntime.active && gFgRuntime.mode == FG_RUNTIME_SCENE_PACK)
-        gFgRuntime.frameRendered = 1;
 }
 
 static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
