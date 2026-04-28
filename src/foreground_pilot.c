@@ -1233,10 +1233,6 @@ static void fgRuntimeSeedWindowFromScratch(const struct TFgPilotEntry *entry)
     windowEnd = fgSectorAlignUp(entry->dataOffset + entry->dataSize);
 
     windowBytes = windowEnd - windowStart;
-    if (windowBytes > gFgRuntime.streamScratchSize ||
-        windowBytes > gFgRuntime.streamWindowSize)
-        return;
-
     memcpy(gFgRuntime.streamWindowBuffer, gFgRuntime.streamScratch, windowBytes);
     gFgRuntime.streamWindowStart = windowStart;
     gFgRuntime.streamWindowBytes = windowBytes;
