@@ -1089,7 +1089,7 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
 {
     uint32 offsetInWindow;
 
-    if (dst == NULL || !fgRuntimeWindowContainsEntry(entry))
+    if (!fgRuntimeWindowContainsEntry(entry))
         return 0;
 
     if (gFgRuntime.setupSegmentPrimed &&
