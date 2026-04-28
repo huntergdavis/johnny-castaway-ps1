@@ -1241,9 +1241,6 @@ static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(void)
 {
     uint16 frameIndex;
 
-    if (!gFgRuntime.active)
-        return NULL;
-
     frameIndex = gFgRuntime.stagedFrameValid
         ? (uint16)(gFgRuntime.stagedFrameIndex + 1)
         : (uint16)(gFgRuntime.frameIndex + 1);
