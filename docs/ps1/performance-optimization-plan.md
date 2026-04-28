@@ -1883,3 +1883,8 @@ adjacent grouping is exhausted for now: it saved one transaction but regressed
 `loop_vb` and emitted post-scene invalid BIOS-address writes. Do not add more
 one-off high-tide read groups until the scheduler can prove ownership or the
 pack generator emits safe segment/group metadata.
+
+A function-scoped `O2` probe on `fgRuntimeFillWindowForEntry()` is also
+rejected for this baseline. It shrank that symbol but moved nearby hot symbols
+and produced exact-flat timing/CD metrics, so future toolchain experiments need
+layout padding or a clear size/phase acceptance rule before promotion.
