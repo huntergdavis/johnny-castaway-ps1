@@ -1908,3 +1908,10 @@ from `11` to `13` sectors, keeps `loop_vb=2093` while improving
 FISHING1 high both validate exact-flat. This is still a small active-loop win,
 but it proves the per-run read plan can find pressure-reducing groups after the
 earlier manual adjacent-group failures.
+
+The immediately adjacent `246..258` group is rejected even though it removes
+one more read. It regresses FISHING3 high to `loop_vb=2096`,
+`blocking_vb=17`, and `prefetch_overrun_vb=12`. Treat `234..246` as the safe
+manual extension boundary for this phase; the next high-impact FISHING3 CD work
+should be generated segmented setup/preload metadata or scheduler ownership,
+not another hand-written adjacent read group.
