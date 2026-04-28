@@ -992,16 +992,6 @@ static int fgRuntimeCanStageNextFrame(void)
            gFgRuntime.prefetchFrameBuffer != NULL;
 }
 
-static int fgRuntimeCanWindowCache(void)
-{
-    return gFgPrefetchWindowBytes > 0 &&
-           gFgRuntime.active &&
-           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           gFgRuntime.packCdFileValid &&
-           gFgRuntime.streamWindowBuffer != NULL &&
-           gFgRuntime.streamWindowSize > 0;
-}
-
 static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 windowStart,
                                               uint32 targetEnd)
@@ -1037,7 +1027,13 @@ static int fgRuntimeEntryFitsWindow(const struct TFgPilotEntry *entry)
     uint32 offsetInWindow;
     uint32 readBytes;
 
-    if (!fgRuntimeCanWindowCache() || !fgEntryHasPayload(entry))
+    if (gFgPrefetchWindowBytes == 0 ||
+        !gFgRuntime.active ||
+        gFgRuntime.mode != FG_RUNTIME_SCENE_PACK ||
+        !gFgRuntime.packCdFileValid ||
+        gFgRuntime.streamWindowBuffer == NULL ||
+        gFgRuntime.streamWindowSize == 0 ||
+        !fgEntryHasPayload(entry))
         return 0;
 
     windowStart = fgSectorAlignDown(entry->dataOffset);
