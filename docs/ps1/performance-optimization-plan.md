@@ -2048,3 +2048,12 @@ to `jcreborn.elf=721380` bytes.
 Replacing the local tile-pointer table with index-selection macros is rejected:
 the table costs stack space but produces much smaller generated code in this
 compiler shape.
+Removing the fallback from `fgRuntimeWindowReadSize()` is accepted as a narrow
+hot-helper cleanup. Active FG2 playback initializes `streamWindowReadSize`
+before the window-fit/fill helpers run, so the fallback to `streamWindowSize`
+is obsolete in the measured path. FISHING1, FISHING3 high, and FISHING3 low
+stay exact-flat while `fgRuntimeFillWindowForEntry`,
+`fgRuntimeLoadSceneFrame`, `fgRuntimeTryPrefetchWindow`, and
+`fgRuntimeWindowPrefetchWouldRead` shrink by `32` bytes total. This is not a
+VBlank win and not an aggregate ELF-size win; it is a smaller hot helper shape
+with the PS-EXE sector bucket unchanged.

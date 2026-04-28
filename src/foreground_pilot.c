@@ -160,9 +160,7 @@ enum {
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
-#define fgRuntimeWindowReadSize() \
-    ((gFgRuntime.streamWindowReadSize > 0) ? \
-     gFgRuntime.streamWindowReadSize : gFgRuntime.streamWindowSize)
+#define fgRuntimeWindowReadSize() (gFgRuntime.streamWindowReadSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define fgRuntimeWindowSlackEligible(slackVBlanks) \
