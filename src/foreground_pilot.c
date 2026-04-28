@@ -993,23 +993,6 @@ static int fgRuntimeCanWindowCache(void)
            gFgRuntime.streamWindowSize > 0;
 }
 
-static int fgRuntimeSetupSegmentForScene(const char *sceneName,
-                                         uint32 *outStart,
-                                         uint32 *outBytes)
-{
-    if (!fgSceneEquals(sceneName, "fishing3"))
-        return 0;
-
-    if (islandState.lowTide) {
-        *outStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
-        *outBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
-    } else {
-        *outStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
-        *outBytes = FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES;
-    }
-    return 1;
-}
-
 static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
 {
     return (entry != NULL &&
@@ -1484,10 +1467,12 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     uint32 segmentBytes;
     uint8 *segmentBuffer;
 
-    if (!fgRuntimeSetupSegmentForScene(sceneName, &segmentStart, &segmentBytes))
+    if (!fgSceneEquals(sceneName, "fishing3"))
         return 1;
 
     if (islandState.lowTide) {
+        segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
+        segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
         if (segmentBytes > gFgSetupSegmentBufferSize) {
             if (gFgSetupSegmentBuffer != NULL)
                 free(gFgSetupSegmentBuffer);
@@ -1502,6 +1487,8 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
         }
         segmentBuffer = gFgSetupSegmentBuffer;
     } else {
+        segmentStart = FG_FISHING3_HIGH_SETUP_SEGMENT_START;
+        segmentBytes = FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES;
         if (gFgRuntime.streamScratch == NULL ||
             gFgRuntime.streamScratchSize < segmentBytes)
             return 1;
