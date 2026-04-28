@@ -1061,9 +1061,6 @@ static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
     uint32 entryEnd;
     uint32 windowEnd;
 
-    if (!fgEntryHasPayload(entry))
-        return 0;
-
     entryEnd = entry->dataOffset + entry->dataSize;
 
     if (gFgRuntime.streamWindowValid) {
