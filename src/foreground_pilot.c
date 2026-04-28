@@ -508,7 +508,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
         return NULL;
 
     if (CdSearchFile(&fileInfo, (char *)cdPath) == NULL) {
-        printf("FG pilot: CdSearchFile failed for %s\n", cdPath);
+        printf("FG CdSearch fail %s\n", cdPath);
         return NULL;
     }
 
@@ -521,7 +521,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
     CdControl(CdlSetloc, (uint8 *)&fileInfo.pos, 0);
     CdRead(totalSectors, (uint32 *)buffer, CdlModeSpeed);
     if (CdReadSync(0, 0) < 0) {
-        printf("FG pilot: CdReadSync failed for %s\n", cdPath);
+        printf("FG CdRead fail %s\n", cdPath);
         free(buffer);
         return NULL;
     }
@@ -543,7 +543,7 @@ static void fgShowRawFrame(const char *cdPath, uint16 holdFrames)
     if (screenBuffer == NULL)
         return;
     if (rawSize < (uint32)(640 * 480 * 2)) {
-        printf("FG pilot: short raw frame %s (%u bytes)\n", cdPath, (unsigned int)rawSize);
+        printf("FG short raw %s %u\n", cdPath, (unsigned int)rawSize);
         free(screenBuffer);
         return;
     }
@@ -656,7 +656,7 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
         return;
 
     largest = fgProbeLargestAlloc();
-    printf("FGHEAP phase=%s scene=%s largest=%lu fg=%lu prefetch=%lu window=%lu scratch=%lu rects=%d rect_bytes=%lu\n",
+    printf("FGHEAP p=%s s=%s l=%lu fg=%lu pf=%lu win=%lu sc=%lu r=%d rb=%lu\n",
            phase != NULL ? phase : "?",
            sceneName != NULL ? sceneName : "?",
            largest,
@@ -1366,6 +1366,8 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         return islandState.lowTide ?
             (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
             FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
+    if (fgSceneEquals(sceneName, "fishing3") && islandState.lowTide)
+        return FG_SETUP_PRIME_WINDOW_BYTES - (64UL * 1024UL);
     return 0;
 }
 

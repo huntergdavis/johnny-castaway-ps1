@@ -26,10 +26,9 @@ fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plu
 stack of flat-timing cleanup wins.
 
 Red-team caveat: setup-prime passes are active-loop wins, not end-to-end
-scene-time wins. The latest fishing2 high-tide budget moves a `352 KB`
-foreground read into setup (`setup_vb 184 -> 251`, `scene_vb 2087 -> 2149`) so
-active playback can reduce visible CD pressure (`blocking_vb/prefetch_overrun_vb
-8 -> 2`) and spend more catch-up. Future work should hide these primes during
+scene-time wins. The latest fishing2/fishing3 budgets move `256-352 KB` of
+foreground reads into setup so active playback can reduce visible CD pressure
+and spend more catch-up. Future work should hide these primes during
 inter-scene/loading time or generate scene/tide-specific segmented coverage,
 rather than treating setup time as free.
 
@@ -250,6 +249,14 @@ Contiguous fishing3 high setup-prime is rejected for now. `320 KB` failed
 before playback; `256 KB` completed but kept `blocking_vb=24`, worsened
 `due_misses 1 -> 2`, and moved both PS-EXE and `FISHING3.FG2` LBA. Retry this
 scene only with segmented/generated prime coverage or inter-scene preload.
+Fishing3 low tide accepts a smaller `256 KB` contiguous setup-prime budget after
+shortening cold heap/raw foreground diagnostics to keep the PS-EXE sector bucket
+stable. It improves `loop_vb 2098 -> 2091`, `overrun_vb 138 -> 134`,
+`blocking_vb 8 -> 7`, `prefetch_overrun_vb 9 -> 7`, and `loop_reads 42 -> 24`;
+fishing3 high stays exact-flat. The first attempt produced the same speed shape
+but moved `FISH3LOW.FG2` by one LBA, so this remains a phase-sensitive
+active-loop win and the next larger target should be generated/segmented prime
+coverage, not bigger contiguous reads.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
