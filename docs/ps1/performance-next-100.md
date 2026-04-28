@@ -257,6 +257,11 @@ fishing3 high stays exact-flat. The first attempt produced the same speed shape
 but moved `FISH3LOW.FG2` by one LBA, so this remains a phase-sensitive
 active-loop win and the next larger target should be generated/segmented prime
 coverage, not bigger contiguous reads.
+A fishing3 high read-group retry for relative sectors `223..234` is rejected:
+the host CD log made it look like the safest local group, but the source-table
+change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
+`blocking_vb 24 -> 28`. Future read groups must be generated and layout-held;
+one-off hot source tables are exhausted for fishing3.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
