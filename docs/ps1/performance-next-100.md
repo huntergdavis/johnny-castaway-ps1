@@ -292,6 +292,12 @@ the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
 `blocking_vb 24 -> 28`. Future read groups must be generated and layout-held;
 one-off hot source tables are exhausted for fishing3.
+The first segmented setup-prime probe is accepted, but only as a narrow proof:
+FISHING3 high relative sectors `67..73` read into scratch during setup moves
+`loop_vb 2094 -> 2093` with stable layout and low tide exact-flat. It does not
+lower `blocking_vb` yet, and it costs one setup read, so the next version needs
+generated segment metadata or inter-scene preload that can target multiple
+ranges without adding more hard-coded hot source logic.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

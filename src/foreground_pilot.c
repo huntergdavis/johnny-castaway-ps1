@@ -106,6 +106,7 @@ struct TFgPilotRuntime {
     uint32 setupPrimeWindowBytes;   /* Scene/tide-specific setup residency budget, or 0 when disabled. */
     uint8 streamWindowValid;
     uint8 setupWindowPrimed;
+    uint8 setupSegmentPrimed;
     uint8 streamReadGroupsEnabled;
     uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
@@ -127,6 +128,9 @@ static char gForegroundPilotScene[16] = "";
 #ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 #define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
 #endif
+#ifndef FG_HEAP_PROBE_LOGS
+#define FG_HEAP_PROBE_LOGS 0
+#endif
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static const uint16 kFgPilotProbeHoldFrames = 1800;
 #endif
@@ -147,13 +151,17 @@ enum {
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
+#define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
+#define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 static struct TFgPilotRuntime gFgRuntime = {0};
+#if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
+#endif
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 static struct TTtmSlot gFgBackdropSlot;
@@ -508,7 +516,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
         return NULL;
 
     if (CdSearchFile(&fileInfo, (char *)cdPath) == NULL) {
-        printf("FG CdSearch fail %s\n", cdPath);
+        printf("FG search %s\n", cdPath);
         return NULL;
     }
 
@@ -521,7 +529,7 @@ static uint8 *fgLoadRawFileDirect(const char *cdPath, uint32 *outSize)
     CdControl(CdlSetloc, (uint8 *)&fileInfo.pos, 0);
     CdRead(totalSectors, (uint32 *)buffer, CdlModeSpeed);
     if (CdReadSync(0, 0) < 0) {
-        printf("FG CdRead fail %s\n", cdPath);
+        printf("FG read %s\n", cdPath);
         free(buffer);
         return NULL;
     }
@@ -543,7 +551,7 @@ static void fgShowRawFrame(const char *cdPath, uint16 holdFrames)
     if (screenBuffer == NULL)
         return;
     if (rawSize < (uint32)(640 * 480 * 2)) {
-        printf("FG short raw %s %u\n", cdPath, (unsigned int)rawSize);
+        printf("FG raw %s %u\n", cdPath, (unsigned int)rawSize);
         free(screenBuffer);
         return;
     }
@@ -648,6 +656,7 @@ unsigned long fgProbeLargestAlloc(void)
     return lo;
 }
 
+#if FG_HEAP_PROBE_LOGS
 static void fgHeapProbe(const char *phase, const char *sceneName)
 {
     unsigned long largest;
@@ -656,7 +665,7 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
         return;
 
     largest = fgProbeLargestAlloc();
-    printf("FGHEAP p=%s s=%s l=%lu fg=%lu pf=%lu win=%lu sc=%lu r=%d rb=%lu\n",
+    printf("FH p=%s s=%s l=%lu f=%lu p=%lu w=%lu s=%lu r=%d b=%lu\n",
            phase != NULL ? phase : "?",
            sceneName != NULL ? sceneName : "?",
            largest,
@@ -667,6 +676,9 @@ static void fgHeapProbe(const char *phase, const char *sceneName)
            grCleanBgRectsCount(),
            grCleanBgRectsBytes());
 }
+#else
+#define fgHeapProbe(phase, sceneName) ((void)0)
+#endif
 
 static void fgRuntimeReset(void)
 {
@@ -1041,14 +1053,22 @@ static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
     uint32 windowEnd;
 
     if (!fgRuntimeCanWindowCache() ||
-        !gFgRuntime.streamWindowValid ||
         !fgEntryHasPayload(entry))
         return 0;
 
     entryEnd = entry->dataOffset + entry->dataSize;
-    windowEnd = gFgRuntime.streamWindowStart + gFgRuntime.streamWindowBytes;
-    return (entry->dataOffset >= gFgRuntime.streamWindowStart &&
-            entryEnd <= windowEnd) ? 1 : 0;
+
+    if (gFgRuntime.streamWindowValid) {
+        windowEnd = gFgRuntime.streamWindowStart + gFgRuntime.streamWindowBytes;
+        if (entry->dataOffset >= gFgRuntime.streamWindowStart &&
+            entryEnd <= windowEnd)
+            return 1;
+    }
+
+    return (gFgRuntime.setupSegmentPrimed &&
+            entry->dataOffset >= FG_FISHING3_HIGH_SETUP_SEGMENT_START &&
+            entryEnd <= FG_FISHING3_HIGH_SETUP_SEGMENT_START +
+                FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES) ? 1 : 0;
 }
 
 static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
@@ -1060,8 +1080,18 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
     if (dst == NULL || !fgRuntimeWindowContainsEntry(entry))
         return 0;
 
-    offsetInWindow = entry->dataOffset - gFgRuntime.streamWindowStart;
-    memcpy(dst, gFgRuntime.streamWindowBuffer + offsetInWindow, entry->dataSize);
+    if (gFgRuntime.setupSegmentPrimed &&
+        entry->dataOffset >= FG_FISHING3_HIGH_SETUP_SEGMENT_START &&
+        entry->dataOffset + entry->dataSize <=
+            FG_FISHING3_HIGH_SETUP_SEGMENT_START +
+                FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES) {
+        offsetInWindow = entry->dataOffset - FG_FISHING3_HIGH_SETUP_SEGMENT_START;
+        memcpy(dst, gFgRuntime.streamScratch + offsetInWindow, entry->dataSize);
+        gFgRuntime.setupSegmentPrimed = 0;
+    } else {
+        offsetInWindow = entry->dataOffset - gFgRuntime.streamWindowStart;
+        memcpy(dst, gFgRuntime.streamWindowBuffer + offsetInWindow, entry->dataSize);
+    }
     if (ps1PerfEnabled)
         ps1PerfMarkPrefetchWindowHit(countsAsDueHit);
     return 1;
@@ -1340,6 +1370,7 @@ static int fgRuntimePrimeNextFrameForSetup(void)
         return 1;
     }
 
+    gFgRuntime.setupSegmentPrimed = 0;
     if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                         entry->dataOffset,
                                         entry->dataSize,
@@ -1414,6 +1445,26 @@ static int fgRuntimePrimeSetupWindow(void)
     return 1;
 }
 
+static int fgRuntimePrimeSetupSegment(const char *sceneName)
+{
+    if (!fgSceneEquals(sceneName, "fishing3") ||
+        islandState.lowTide ||
+        gFgRuntime.streamScratch == NULL ||
+        gFgRuntime.streamScratchSize < FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES)
+        return 1;
+
+    if (!ps1_streamReadAlignedIntoFile(&gFgRuntime.packCdFile,
+                                       FG_FISHING3_HIGH_SETUP_SEGMENT_START,
+                                       FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES,
+                                       gFgRuntime.streamScratch)) {
+        gFgRuntime.setupSegmentPrimed = 0;
+        return 0;
+    }
+
+    gFgRuntime.setupSegmentPrimed = 1;
+    return 1;
+}
+
 static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 {
     uint16 nextFrameIndex;
@@ -1480,6 +1531,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 stageTick = fgReadTickCounter();
                 if (ps1PerfEnabled)
                     ps1PerfBeginPrefetchRead(slackVBlanks);
+                gFgRuntime.setupSegmentPrimed = 0;
                 ok = ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                                     entry->dataOffset,
                                                     entry->dataSize,
@@ -1530,6 +1582,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
     if (ps1PerfEnabled) {
         ps1PerfBeginPrefetchRead(slackVBlanks);
     }
+    gFgRuntime.setupSegmentPrimed = 0;
     ok = ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                         entry->dataOffset,
                                         entry->dataSize,
@@ -1694,6 +1747,7 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
             }
             gFgRuntime.currentFrameData = gFgRuntime.frameBuffer;
         } else {
+            gFgRuntime.setupSegmentPrimed = 0;
             if (!ps1_streamReadIntoFileBuffered(&gFgRuntime.packCdFile,
                                                 gFgRuntime.currentEntry.dataOffset,
                                                 gFgRuntime.currentEntry.dataSize,
@@ -2119,6 +2173,10 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             }
             gFgRuntime.packCdFileValid = 1;
             if (!fgRuntimePrimeSetupWindow()) {
+                fgRuntimeReset();
+                return 0;
+            }
+            if (!fgRuntimePrimeSetupSegment(sceneName)) {
                 fgRuntimeReset();
                 return 0;
             }
@@ -2668,7 +2726,11 @@ void foregroundPilotSetScene(const char *sceneName)
 
 void foregroundPilotSetHeapProbe(int enabled)
 {
+#if FG_HEAP_PROBE_LOGS
     gFgHeapProbeEnabled = enabled ? 1 : 0;
+#else
+    (void)enabled;
+#endif
 }
 
 void foregroundPilotResetPrefetchDefaults(void)
