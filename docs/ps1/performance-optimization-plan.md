@@ -1956,3 +1956,9 @@ Macro expansion remains selective. The single-call prepared-present predicate
 is accepted as a shrink, but `fgRuntimeCanStageNextFrame()` is rejected:
 duplicating its two call sites kept timing flat while growing
 `foregroundPilotPlay 8936 -> 9032` and `jcreborn.elf 723228 -> 723308`.
+
+Moving the existing FISHING3 high setup segment from `67..73` to `168..174` is
+also rejected. It made the active loop worse (`loop_vb=2098`,
+`blocking_vb=21`, `prefetch_overrun_vb=16`), proving the early accepted segment
+is more valuable than later single-read candidates when only one segment is
+available.
