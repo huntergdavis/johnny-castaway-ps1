@@ -2070,3 +2070,7 @@ validated timing flat while moving table selection out of the append probe:
 `fgRuntimeFillWindowForEntry` shrinks `892 -> 844`, offset by setup/play growth
 and a larger runtime struct. Treat this as a hot-helper cleanup only; it is not
 an aggregate binary-size win.
+Narrowing the cached read-group count/index to `uint8` is accepted immediately
+afterward. It preserves all timing and read-work counters, keeps the
+`fgRuntimeFillWindowForEntry` shrink, and claws back `60` aggregate ELF bytes
+from the table-pointer refactor while staying in the same PS-EXE sector bucket.

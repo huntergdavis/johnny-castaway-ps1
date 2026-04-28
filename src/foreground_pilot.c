@@ -110,7 +110,7 @@ struct TFgPilotRuntime {
     uint32 setupSegmentStart;
     uint32 setupSegmentBytes;
     const struct TFgPilotReadGroup *streamReadGroups;
-    uint16 streamReadGroupCount;
+    uint8 streamReadGroupCount;
     uint8 streamWindowValid;
     uint8 setupWindowPrimed;
     uint8 setupSegmentPrimed;
@@ -1024,9 +1024,9 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 targetEnd)
 {
     const struct TFgPilotReadGroup *groups;
-    uint16 groupCount;
+    uint8 groupCount;
     uint16 startSector;
-    uint16 i;
+    uint8 i;
 
     if (gFgRuntime.streamReadGroupCount == 0 ||
         (appendStart & 2047UL) != 0)
@@ -2059,20 +2059,20 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     fgSceneEquals(sceneName, "fishing1")) {
                     gFgRuntime.streamReadGroups = kFishing1HighReadGroups12;
                     gFgRuntime.streamReadGroupCount =
-                        (uint16)(sizeof(kFishing1HighReadGroups12) /
-                                 sizeof(kFishing1HighReadGroups12[0]));
+                        (uint8)(sizeof(kFishing1HighReadGroups12) /
+                                sizeof(kFishing1HighReadGroups12[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            fgSceneEquals(sceneName, "fishing3")) {
                     if (islandState.lowTide) {
                         gFgRuntime.streamReadGroups = kFishing3LowReadGroups12;
                         gFgRuntime.streamReadGroupCount =
-                            (uint16)(sizeof(kFishing3LowReadGroups12) /
-                                     sizeof(kFishing3LowReadGroups12[0]));
+                            (uint8)(sizeof(kFishing3LowReadGroups12) /
+                                    sizeof(kFishing3LowReadGroups12[0]));
                     } else {
                         gFgRuntime.streamReadGroups = kFishing3HighReadGroups12;
                         gFgRuntime.streamReadGroupCount =
-                            (uint16)(sizeof(kFishing3HighReadGroups12) /
-                                     sizeof(kFishing3HighReadGroups12[0]));
+                            (uint8)(sizeof(kFishing3HighReadGroups12) /
+                                    sizeof(kFishing3HighReadGroups12[0]));
                     }
                 } else {
                     gFgRuntime.streamReadGroups = NULL;
