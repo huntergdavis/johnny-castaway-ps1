@@ -207,6 +207,11 @@ enum {
         gFgRuntime.stagedFrameIndex = (frameIndex_); \
         gFgRuntime.stagedFrameValid = 1; \
     } while (0)
+#define fgRuntimeWaitHeldVBlank() \
+    do { \
+        VSync(0); \
+        eventsWaitTick(0); \
+    } while (0)
 static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
@@ -1827,12 +1832,6 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
     /* Stamp holiday overlay on top of the pack so Johnny walks behind
      * the holiday decoration, matching islandInitHoliday's z-order. */
     fgBackdropStampHoliday();
-}
-
-static void fgRuntimeWaitHeldVBlank(void)
-{
-    VSync(0);
-    eventsWaitTick(0);
 }
 
 static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,

@@ -1207,6 +1207,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-62` | Done: inline copy-window source selection. | `fgRuntimeCopyEntryFromWindow()` called window-containment and then repeated the setup-segment containment test to choose the source. Inlining source selection in the copy helper keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722756 -> 722752`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 | `P5-63` | Done: add FISHING3 high follow-on read group `234..246`. | The per-run read-plan artifact identified the next contiguous high-tide group after `223..234`. Adding `{234,246}` and raising retained group capacity to `13` sectors keeps FISHING3 high `loop_vb=2093` while improving `overrun_vb 139 -> 138`, `blocking_vb 16 -> 15`, `prefetch_overrun_vb 11 -> 10`, and `loop_reads 42 -> 41`; FISHING3 low and FISHING1 high stay exact-flat. This is a small active-loop pressure win and validates the new read-plan-in-the-loop method. |
 | `P5-64` | Done: macro-expand prepared-present predicate. | `fgRuntimeCanPresentPreparedOnNextVBlank()` had one held-loop call site and only checked runtime state. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723380 -> 723228`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-65` | Done: inline held-vblank wait helper. | `fgRuntimeWaitHeldVBlank()` wrapped `VSync(0)` plus `eventsWaitTick(0)` and sat on the hottest held-frame wait path. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723228 -> 723024`. This is a work-reduction/code-size promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -1972,3 +1973,8 @@ Threading precomputed prefetch candidates through the held-loop scheduler is
 also rejected in the current source shape. It avoids a duplicate next-payload
 scan but grows `foregroundPilotPlay` and the ELF with no key metric movement.
 Retry only with finer CPU counters or a smaller call-site shape.
+
+Inlining the held-vblank wait helper is accepted as a small code-size/work
+reduction. It keeps FISHING3 high/low and FISHING1 exact-flat, preserves the
+`145408` byte PS-EXE bucket and pack LBAs, and shrinks `jcreborn.elf
+723228 -> 723024` even though `foregroundPilotPlay` itself grows by `8` bytes.
