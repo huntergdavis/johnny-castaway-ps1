@@ -1849,3 +1849,10 @@ pack metadata, controlled setup/preload policy, or separate diagnostic builds.
 | 28 | Cleanup | Stop trying source-only ternary/boolean rewrites in foreground hot path. | Logged no-op pattern stays documented; avoids churn. |
 | 29 | Validation | Add a script to list promoted vs rejected experiments since the current baseline. | Faster status cards and no manual counting. |
 | 30 | Validation | Add a host-side pack/read candidate report to the perf script output. | Every run suggests next segment/group candidates without changing PS1 code. |
+
+Progress note: `scripts/ps1-foreground-read-plan.py` now covers targets `2`,
+`3`, and `7` for ad-hoc analysis. On the accepted FISHING3 baseline it confirms
+that high tide still has `43` uncovered post-locate pack-read segments after
+setup coverage `[3..73)`, while low tide has `20` and only `3` blocking
+VBlanks. The next runtime experiment should be a measured generated
+setup/read-segment test, not another source-shape cleanup.
