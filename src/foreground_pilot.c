@@ -1080,19 +1080,25 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
                                         uint8 *dst,
                                         uint8 countsAsDueHit)
 {
+    uint32 entryEnd;
     uint32 offsetInWindow;
 
-    if (!fgRuntimeWindowContainsEntry(entry))
-        return 0;
+    entryEnd = entry->dataOffset + entry->dataSize;
 
     if (gFgRuntime.setupSegmentPrimed &&
         entry->dataOffset >= gFgRuntime.setupSegmentStart &&
-        entry->dataOffset + entry->dataSize <=
-            gFgRuntime.setupSegmentStart + gFgRuntime.setupSegmentBytes) {
+        entryEnd <= gFgRuntime.setupSegmentStart + gFgRuntime.setupSegmentBytes) {
         offsetInWindow = entry->dataOffset - gFgRuntime.setupSegmentStart;
         memcpy(dst, gFgRuntime.setupSegmentBuffer + offsetInWindow, entry->dataSize);
         gFgRuntime.setupSegmentPrimed = 0;
     } else {
+        uint32 windowEnd;
+        if (!gFgRuntime.streamWindowValid)
+            return 0;
+        windowEnd = gFgRuntime.streamWindowStart + gFgRuntime.streamWindowBytes;
+        if (entry->dataOffset < gFgRuntime.streamWindowStart ||
+            entryEnd > windowEnd)
+            return 0;
         offsetInWindow = entry->dataOffset - gFgRuntime.streamWindowStart;
         memcpy(dst, gFgRuntime.streamWindowBuffer + offsetInWindow, entry->dataSize);
     }
