@@ -54,7 +54,7 @@ def parse_fg2_pack(path: Path | None) -> dict[str, Any]:
         return {}
     payload = path.read_bytes()
     if len(payload) < FG2_HEADER_SIZE:
-        raise SystemExit(f"FG2 pack too small: {path}")
+        raise SystemExit(f"FG pack too small: {path}")
 
     (
         magic,
@@ -75,10 +75,10 @@ def parse_fg2_pack(path: Path | None) -> dict[str, Any]:
         reserved1,
     ) = struct.unpack_from(FG2_HEADER, payload, 0)
 
-    if magic != b"FGP2":
-        raise SystemExit(f"not an FGP2 pack: {path}")
+    if magic not in (b"FGP2", b"FGP3"):
+        raise SystemExit(f"not an FG2/FGP3 pack: {path}")
     if table_offset + frame_count * FG2_ENTRY_SIZE > len(payload):
-        raise SystemExit(f"FG2 entry table extends beyond pack: {path}")
+        raise SystemExit(f"FG entry table extends beyond pack: {path}")
 
     entries: list[dict[str, Any]] = []
     payload_entries: list[dict[str, Any]] = []
@@ -113,6 +113,7 @@ def parse_fg2_pack(path: Path | None) -> dict[str, Any]:
     return {
         "path": str(path.resolve()),
         "bytes": len(payload),
+        "magic": magic.decode("ascii", errors="replace"),
         "header": {
             "version": version,
             "frame_count": frame_count,
