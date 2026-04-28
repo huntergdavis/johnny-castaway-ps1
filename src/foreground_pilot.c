@@ -170,6 +170,11 @@ enum {
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
+#define fgEntryHasPayload(entry) \
+    (((entry) != NULL && \
+      (entry)->dataSize > 0 && \
+      (entry)->width > 0 && \
+      (entry)->height > 0) ? 1 : 0)
 #define fgRuntimeHeldSlackBeforeWait() \
     ((uint16)((!gFgRuntime.active || \
                gFgRuntime.displayVBlanks == 0 || \
@@ -995,14 +1000,6 @@ static int fgRuntimeCanWindowCache(void)
            gFgRuntime.packCdFileValid &&
            gFgRuntime.streamWindowBuffer != NULL &&
            gFgRuntime.streamWindowSize > 0;
-}
-
-static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
-{
-    return (entry != NULL &&
-            entry->dataSize > 0 &&
-            entry->width > 0 &&
-            entry->height > 0) ? 1 : 0;
 }
 
 static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
