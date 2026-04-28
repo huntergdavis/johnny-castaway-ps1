@@ -1156,8 +1156,6 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     preserveBytes = currentEnd - windowStart;
     appendBytes = targetEnd - currentEnd;
     if ((preserveBytes == 0 && targetEnd == originalTargetEnd) ||
-        appendBytes == 0 ||
-        preserveBytes >= gFgRuntime.streamWindowSize ||
         preserveBytes + appendBytes > gFgRuntime.streamWindowSize)
         return 0;
 
