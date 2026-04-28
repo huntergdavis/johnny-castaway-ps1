@@ -3738,56 +3738,54 @@ void grDrawBackground(void)
         dirtyCount++;
     }
 
-    if (dirtyCount > 0) {
-        for (int i = 0; i < 4 && !capped; i++) {
-            int y;
+    for (int i = 0; i < 4 && !capped; i++) {
+        int y;
 
-            if (minYs[i] < 0)
-                continue;
+        if (minYs[i] < 0)
+            continue;
 
-            y = minYs[i];
-            while (y <= maxYs[i]) {
-                int startY;
+        y = minYs[i];
+        while (y <= maxYs[i]) {
+            int startY;
 
-                while (y <= maxYs[i] &&
-                       prevDirtyRowMinX[i][y] < 0 &&
-                       currDirtyRowMinX[i][y] < 0) {
-                    y++;
-                }
-                if (y > maxYs[i])
-                    break;
-
-                startY = y;
-                {
-                    int scanY = y + 1;
-                    int lastDirtyY = y;
-                    int cleanGap = 0;
-
-                    while (scanY <= maxYs[i]) {
-                        if (prevDirtyRowMinX[i][scanY] >= 0 ||
-                            currDirtyRowMinX[i][scanY] >= 0) {
-                            lastDirtyY = scanY;
-                            cleanGap = 0;
-                        } else {
-                            cleanGap++;
-                            if (cleanGap > GR_UPLOAD_BAND_MERGE_GAP)
-                                break;
-                        }
-                        scanY++;
-                    }
-                    y = lastDirtyY;
-                }
-
-                if (bandCount >= GR_MAX_UPLOAD_RECTS) {
-                    capped = 1;
-                    break;
-                }
-                bandTile[bandCount] = i;
-                bandMinY[bandCount] = startY;
-                bandMaxY[bandCount] = y;
-                bandCount++;
+            while (y <= maxYs[i] &&
+                   prevDirtyRowMinX[i][y] < 0 &&
+                   currDirtyRowMinX[i][y] < 0) {
                 y++;
             }
+            if (y > maxYs[i])
+                break;
+
+            startY = y;
+            {
+                int scanY = y + 1;
+                int lastDirtyY = y;
+                int cleanGap = 0;
+
+                while (scanY <= maxYs[i]) {
+                    if (prevDirtyRowMinX[i][scanY] >= 0 ||
+                        currDirtyRowMinX[i][scanY] >= 0) {
+                        lastDirtyY = scanY;
+                        cleanGap = 0;
+                    } else {
+                        cleanGap++;
+                        if (cleanGap > GR_UPLOAD_BAND_MERGE_GAP)
+                            break;
+                    }
+                    scanY++;
+                }
+                y = lastDirtyY;
+            }
+
+            if (bandCount >= GR_MAX_UPLOAD_RECTS) {
+                capped = 1;
+                break;
+            }
+            bandTile[bandCount] = i;
+            bandMinY[bandCount] = startY;
+            bandMaxY[bandCount] = y;
+            bandCount++;
+            y++;
         }
     }
 
