@@ -184,6 +184,14 @@ enum {
     (gFgRuntime.active && \
      gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
      gFgRuntime.frameRendered)
+#define fgRuntimeCanPrepareStagedFrame() \
+    (gFgRuntime.active && \
+     gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
+     gFgRuntime.frameRendered && \
+     gFgRuntime.stagedFrameValid && \
+     !gFgRuntime.preparedFrameValid && \
+     gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) && \
+     fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS)
 #define fgRuntimeSetStagedFrame(frameIndex_, entry_) \
     do { \
         gFgRuntime.stagedEntry = *(entry_); \
@@ -1799,17 +1807,6 @@ static void fgRuntimeWaitHeldVBlank(void)
 {
     VSync(0);
     eventsWaitTick(0);
-}
-
-static int fgRuntimeCanPrepareStagedFrame(void)
-{
-    return gFgRuntime.active &&
-           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           gFgRuntime.frameRendered &&
-           gFgRuntime.stagedFrameValid &&
-           !gFgRuntime.preparedFrameValid &&
-           gFgRuntime.stagedFrameIndex == (uint16)(gFgRuntime.frameIndex + 1) &&
-           fgRuntimeHeldSlackBeforeWait() == FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS;
 }
 
 static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
