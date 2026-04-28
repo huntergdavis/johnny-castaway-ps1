@@ -241,6 +241,11 @@ Fishing3 high tide now uses FGP3 as the first larger next-scene proof point.
 PS-EXE bucket stay fixed; fishing3 low smoke still passes after the downstream
 LBA shift. Next likely wins: FISH3LOW FGP3, then scene-specific or segmented
 prime budgets.
+Fishing3 low tide now also uses FGP3. `FISH3LOW.FG2` shrinks `906053 ->
+549622` bytes and improves `loop_vb 2110 -> 2098`, `overrun_vb 156 -> 138`,
+`blocking_vb 21 -> 8`, `prefetch_overrun_vb 21 -> 9`, and `loop_reads 65 ->
+42`. Fishing3 now needs setup-prime or segmented preload work, not more format
+conversion.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
