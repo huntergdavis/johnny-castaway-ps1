@@ -1362,8 +1362,10 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     /* Scene-specific until generated prime budgets exist for all variants. */
     if (fgSceneEquals(sceneName, "fishing1"))
         return FG_SETUP_PRIME_WINDOW_BYTES;
-    if (fgSceneEquals(sceneName, "fishing2") && islandState.lowTide == 0)
-        return FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
+    if (fgSceneEquals(sceneName, "fishing2"))
+        return islandState.lowTide ?
+            (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
+            FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
     return 0;
 }
 
@@ -1999,7 +2001,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             else
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
             if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) == 0) {
-                printf("FG pilot: pack '%s' is not base-diff\n", path);
+                printf("FG not base-diff %s\n", path);
                 fgRuntimeReset();
                 return 0;
             }
@@ -2717,7 +2719,7 @@ void foregroundPilotPlay(void)
     }
 #endif
 
-    printf("FG pilot: unknown scene '%s'\n", gForegroundPilotScene);
+    printf("FG unknown scene %s\n", gForegroundPilotScene);
 }
 
 #else

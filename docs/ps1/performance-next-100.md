@@ -227,6 +227,13 @@ Fishing2 low tide now also uses FGP3. `FISH2LOW.FG2` shrinks `784126 ->
 `blocking_vb/prefetch_overrun_vb 20 -> 5`, and `loop_reads 58 -> 27`, while
 fishing2 high stays exact-flat. Remaining low-tide CD pressure is now small
 enough to test generated setup-prime sizing or segmented prime coverage.
+Fishing2 low tide now has a `256 KB` setup-prime budget. It improves
+`loop_vb 1900 -> 1898`, `overrun_vb 136 -> 131`,
+`blocking_vb/prefetch_overrun_vb 5 -> 0`, and `loop_reads 27 -> 10`, with
+stable `FISH2LOW.FG2` LBA and PS-EXE bucket after cold diagnostic strings were
+shortened. The rejected `320 KB` probe hit the log cap/regtest `137`, so low
+tide should not grow a contiguous setup prime past `256 KB` without a new heap
+or segmented-prime design.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
