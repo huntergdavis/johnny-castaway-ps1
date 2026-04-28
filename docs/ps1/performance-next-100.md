@@ -257,6 +257,10 @@ gap: `overrun_vb 134 -> 131`, `blocking_vb 7 -> 4`,
 exact-flat. The larger `320 KB` low-tide probe still remains rejected, so the
 next larger target should be generated/segmented prime coverage, not another
 blind contiguous read.
+The `304 KB` low-tide retest confirms the knee: it kept layout stable but
+regressed `blocking_vb 4 -> 5` and `overrun_vb 131 -> 132`. Keep `288 KB`
+until segmented prime coverage can preload later ranges without shifting the
+current CD phase.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
