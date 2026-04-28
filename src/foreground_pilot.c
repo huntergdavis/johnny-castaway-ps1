@@ -1233,12 +1233,6 @@ static void fgRuntimeSeedWindowFromScratch(const struct TFgPilotEntry *entry)
     uint32 windowEnd;
     uint32 windowBytes;
 
-    if (!fgRuntimeCanWindowCache() ||
-        entry == NULL ||
-        gFgRuntime.streamScratch == NULL ||
-        gFgRuntime.streamWindowBuffer == NULL)
-        return;
-
     windowStart = fgSectorAlignDown(entry->dataOffset);
     windowEnd = fgSectorAlignUp(entry->dataOffset + entry->dataSize);
     if (windowEnd <= windowStart)
