@@ -1226,6 +1226,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-81` | Failed/no promotion: replace the local background-tile pointer array with index-selection macros. | FISHING1 stayed timing/layout/work-flat, but repeated ternary tile selection grew `grDrawBackground` by `248` bytes and regressed `jcreborn.elf 721380 -> 722372`; source was reverted and only the experiment log was kept. |
 | `P5-82` | Done: scan active read groups directly. | After the active read-group table/count moved into runtime state, the grouped-append helper no longer needs local copies before scanning. Removing them keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, keeps `fgRuntimeFillWindowForEntry=844`, and shrinks `jcreborn.elf 721504 -> 721376`. This is a tiny grouped-read code-size promotion, not a VBlank win. |
 | `P5-83` | Failed/no promotion: add FISHING3 high read group `246..258`. | The group saved one active-loop read (`41 -> 40`) but crossed the visible-pressure knee: `loop_vb 2093 -> 2096`, `blocking_vb 15 -> 17`, `prefetch_overrun_vb 10 -> 12`, and `due_misses 0 -> 1`; source was reverted and only the experiment log was kept. |
+| `P5-84` | Done: trust generated read-group bounds. | Removing the pack-end clamp from `fgRuntimeGroupedAppendTargetEnd()` keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, shrinks `fgRuntimeFillWindowForEntry 844 -> 820`, and shrinks `jcreborn.elf 721376 -> 721232`. This is deterministic fallback removal and grouped-read code-size cleanup, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2081,3 +2082,11 @@ copies entirely. Scanning the cached runtime table directly keeps FISHING1,
 FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and
 moves the aggregate ELF baseline from `721504` to `721376` bytes. This is a
 small grouped-read path cleanup, not a VBlank win.
+The `246..258` FISHING3 high follow-on group is rejected despite saving one
+read because it creates a due miss and raises visible CD pressure. Runtime
+grouping should not count a transaction win as progress unless blocking/refill
+also stays flat. The next accepted grouped-read cleanup removes the pack-end
+clamp from the append helper: group bounds are generated from validated pack
+sectors, so clamping them in the PS1 hot path is fallback logic. Removing it
+keeps all three gates exact-flat, shrinks `fgRuntimeFillWindowForEntry 844 ->
+820`, and moves the aggregate ELF baseline to `721232` bytes.

@@ -1034,9 +1034,6 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
     for (i = 0; i < gFgRuntime.streamReadGroupCount; i++) {
         if (gFgRuntime.streamReadGroups[i].startSector == startSector) {
             uint32 candidateEnd = ((uint32)gFgRuntime.streamReadGroups[i].endSector) << 11;
-            uint32 packEnd = fgSectorAlignUp((uint32)gFgRuntime.packCdFile.size);
-            if (candidateEnd > packEnd)
-                candidateEnd = packEnd;
             if (candidateEnd > targetEnd &&
                 candidateEnd - windowStart <= gFgRuntime.streamWindowSize)
                 return candidateEnd;
