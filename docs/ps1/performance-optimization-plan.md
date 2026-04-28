@@ -2064,3 +2064,9 @@ candidate `159..171` keeps visible timing flat but reduces active CD work:
 a small CD transaction/read-time reduction, not as a VBlank win; the next
 low-tide groups should be judged the same way and must avoid turning hidden
 read reductions into visible blocking.
+The grouped-append helper now caches the active read-group table pointer/count
+at scene startup. This keeps the accepted FISHING3 low read reduction and all
+validated timing flat while moving table selection out of the append probe:
+`fgRuntimeFillWindowForEntry` shrinks `892 -> 844`, offset by setup/play growth
+and a larger runtime struct. Treat this as a hot-helper cleanup only; it is not
+an aggregate binary-size win.

@@ -79,6 +79,8 @@ struct TFgPilotEntryTable {
     uint16 count;
 };
 
+struct TFgPilotReadGroup;
+
 struct TFgPilotRuntime {
     uint8 active;
     uint8 mode;
@@ -107,10 +109,11 @@ struct TFgPilotRuntime {
     uint8 *setupSegmentBuffer;      /* Small setup-read segment retained independently from streamScratch. */
     uint32 setupSegmentStart;
     uint32 setupSegmentBytes;
+    const struct TFgPilotReadGroup *streamReadGroups;
+    uint16 streamReadGroupCount;
     uint8 streamWindowValid;
     uint8 setupWindowPrimed;
     uint8 setupSegmentPrimed;
-    uint8 streamReadGroupsEnabled;
     uint8 *streamScratch;           /* Pre-allocated sector-aligned scratch for CD reads. */
     uint32 streamScratchSize;       /* Capacity of streamScratch. */
     CdlFILE packCdFile;             /* Resolved CD file handle for the pack (avoids per-frame CdSearchFile). */
@@ -753,8 +756,9 @@ static void fgRuntimeReset(void)
     gFgRuntime.setupSegmentBuffer = NULL;
     gFgRuntime.setupSegmentStart = 0;
     gFgRuntime.setupSegmentBytes = 0;
+    gFgRuntime.streamReadGroups = NULL;
+    gFgRuntime.streamReadGroupCount = 0;
     gFgRuntime.streamWindowValid = 0;
-    gFgRuntime.streamReadGroupsEnabled = 0;
     gFgRuntime.streamScratch = NULL;
     gFgRuntime.streamScratchSize = 0;
     gFgRuntime.packCdFileValid = 0;
@@ -1024,24 +1028,12 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
     uint16 startSector;
     uint16 i;
 
-    if (!gFgRuntime.streamReadGroupsEnabled ||
+    if (gFgRuntime.streamReadGroupCount == 0 ||
         (appendStart & 2047UL) != 0)
         return targetEnd;
 
-    if (gFgRuntime.streamReadGroupsEnabled == 2) {
-        groups = kFishing3HighReadGroups12;
-        groupCount = (uint16)(sizeof(kFishing3HighReadGroups12) /
-                              sizeof(kFishing3HighReadGroups12[0]));
-    } else if (gFgRuntime.streamReadGroupsEnabled == 3) {
-        groups = kFishing3LowReadGroups12;
-        groupCount = (uint16)(sizeof(kFishing3LowReadGroups12) /
-                              sizeof(kFishing3LowReadGroups12[0]));
-    } else {
-        groups = kFishing1HighReadGroups12;
-        groupCount = (uint16)(sizeof(kFishing1HighReadGroups12) /
-                              sizeof(kFishing1HighReadGroups12[0]));
-    }
-
+    groups = gFgRuntime.streamReadGroups;
+    groupCount = gFgRuntime.streamReadGroupCount;
     startSector = (uint16)(appendStart >> 11);
     for (i = 0; i < groupCount; i++) {
         if (groups[i].startSector == startSector) {
@@ -2065,14 +2057,28 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                     islandState.lowTide == 0 &&
                     fgSceneEquals(sceneName, "fishing1")) {
-                    gFgRuntime.streamReadGroupsEnabled = 1;
+                    gFgRuntime.streamReadGroups = kFishing1HighReadGroups12;
+                    gFgRuntime.streamReadGroupCount =
+                        (uint16)(sizeof(kFishing1HighReadGroups12) /
+                                 sizeof(kFishing1HighReadGroups12[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            fgSceneEquals(sceneName, "fishing3")) {
-                    gFgRuntime.streamReadGroupsEnabled = islandState.lowTide ? 3 : 2;
+                    if (islandState.lowTide) {
+                        gFgRuntime.streamReadGroups = kFishing3LowReadGroups12;
+                        gFgRuntime.streamReadGroupCount =
+                            (uint16)(sizeof(kFishing3LowReadGroups12) /
+                                     sizeof(kFishing3LowReadGroups12[0]));
+                    } else {
+                        gFgRuntime.streamReadGroups = kFishing3HighReadGroups12;
+                        gFgRuntime.streamReadGroupCount =
+                            (uint16)(sizeof(kFishing3HighReadGroups12) /
+                                     sizeof(kFishing3HighReadGroups12[0]));
+                    }
                 } else {
-                    gFgRuntime.streamReadGroupsEnabled = 0;
+                    gFgRuntime.streamReadGroups = NULL;
+                    gFgRuntime.streamReadGroupCount = 0;
                 }
-                if (gFgRuntime.streamReadGroupsEnabled &&
+                if (gFgRuntime.streamReadGroupCount > 0 &&
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
