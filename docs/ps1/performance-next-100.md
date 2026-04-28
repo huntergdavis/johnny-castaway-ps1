@@ -26,7 +26,7 @@ fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plu
 stack of flat-timing cleanup wins.
 
 Red-team caveat: setup-prime passes are active-loop wins, not end-to-end
-scene-time wins. The latest fishing2/fishing3 budgets move `288-352 KB` of
+scene-time wins. The latest fishing2/fishing3 budgets move `128-352 KB` of
 foreground reads into setup so active playback can reduce visible CD pressure
 and spend more catch-up. Future work should hide these primes during
 inter-scene/loading time or generate scene/tide-specific segmented coverage,
@@ -261,6 +261,13 @@ The `304 KB` low-tide retest confirms the knee: it kept layout stable but
 regressed `blocking_vb 4 -> 5` and `overrun_vb 131 -> 132`. Keep `288 KB`
 until segmented prime coverage can preload later ranges without shifting the
 current CD phase.
+Fishing3 high tide now has a smaller `128 KB` setup-prime budget. This is the
+safe version of the earlier failed high-tide contiguous-prime idea: it improves
+`loop_vb 2099 -> 2094`, `overrun_vb 149 -> 139`, `blocking_vb 24 -> 16`,
+`prefetch_overrun_vb 21 -> 11`, and `loop_reads 52 -> 44` with stable layout.
+Larger high-tide contiguous windows remain rejected; the next high-tide step
+should be another measured small knee or segmented prime coverage, not a jump
+back to `256 KB`.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
