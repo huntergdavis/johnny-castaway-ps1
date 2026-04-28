@@ -2113,8 +2113,6 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.prefetchFrameBufferSize = gFgPrefetchFrameBufferSize;
             gFgRuntime.streamWindowBuffer = gFgStreamWindowBuffer;
             gFgRuntime.streamWindowSize = gFgStreamWindowBufferSize;
-            if (gFgRuntime.streamWindowReadSize == 0)
-                gFgRuntime.streamWindowReadSize = gFgStreamWindowBufferSize;
             gFgRuntime.streamWindowStart = 0;
             gFgRuntime.streamWindowBytes = 0;
             gFgRuntime.streamWindowValid = 0;
