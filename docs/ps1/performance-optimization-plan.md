@@ -1212,6 +1212,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-67` | Done: inline frame-rendered marker. | `fgRuntimeMarkFrameRendered()` had two render-completion call sites and only marked scene-pack frames as rendered. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722940 -> 722792`. This is a work-reduction/code-size promotion, not a VBlank win. |
 | `P5-68` | Done: inline foreground elapsed-vblank accounting. | `fgElapsedVBlanksSince()` had one caller and carried a dead null-pointer guard. Inlining the scene-clock update in `foregroundPilotRuntimeAdvance()` keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, keeps `foregroundPilotPlay=9016`, and shrinks `jcreborn.elf 722792 -> 722660`. This is a work-reduction/code-size promotion, not a VBlank win. |
 | `P5-69` | Done: prune prechecked compose-entry null guard. | `fgRuntimeComposeEntryToBackground()` is internal and both call sites pass runtime-owned entries/buffers after scene-pack startup or staged prep. Removing the duplicate guard keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `foregroundPilotPlay 9016 -> 8996`, shrinks `foregroundPilotRuntimeCompose 56 -> 44`, and shrinks `jcreborn.elf 722660 -> 722376`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-70` | Done: prune prefetch-window output clear. | `fgRuntimeTryPrefetchWindow()` callers always pass a real elapsed-output pointer and ignore it on false returns. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeTryPrefetchWindow 392 -> 388`, and shrinks `jcreborn.elf 722376 -> 722364`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -1995,4 +1996,7 @@ exact-flat, preserve the `145408` byte PS-EXE bucket and pack LBAs, and shrink
 Pruning the prechecked compose-entry null guard is accepted as a larger
 source-shape cleanup: it keeps the same three gates exact-flat, shrinks
 `foregroundPilotPlay 9016 -> 8996`, and moves the current code-size cleanup
-baseline to `jcreborn.elf=722376` bytes with no VBlank change.
+baseline to `jcreborn.elf=722376` bytes with no VBlank change. Pruning the
+prefetch-window output clear is accepted as a follow-on hot-helper cleanup and
+moves the current code-size cleanup baseline to `jcreborn.elf=722364` bytes
+with no VBlank change.

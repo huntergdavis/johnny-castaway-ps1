@@ -1630,9 +1630,6 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     uint16 slackVBlanks;
     const struct TFgPilotEntry *entry;
 
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = 0;
-
     entry = fgRuntimeNextPayloadEntry();
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
