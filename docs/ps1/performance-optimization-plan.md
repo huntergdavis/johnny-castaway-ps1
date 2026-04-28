@@ -1216,6 +1216,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-71` | Done: prune stage-next output guards. | `fgRuntimeTryStageNextFrame()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable writes keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722364 -> 722348`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 | `P5-72` | Done: prune prepare output guards. | `fgRuntimePrepareStagedFrameForPresent()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable final write keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722348 -> 722336`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
 | `P5-73` | Done: prune fill-window output clear. | Non-null callers of `fgRuntimeFillWindowForEntry()` initialize their local elapsed value to zero before calling, and NULL callers do not need output normalization. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and shrinks `jcreborn.elf 722336 -> 722304`. This is a small work-reduction/code-size promotion, not a VBlank win. |
+| `P5-74` | Done: lower dirty-upload band merge gap to zero rows. | The accepted post-pause upload path used a one-row clean-gap merge. Tightening it to zero keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat on loop/blocking/refill, preserves PS-EXE `145408` and pack LBAs, and reduces uploaded bytes/dirty rows across all three gates: FISHING1 `8584960 -> 8533120`, FISHING3 high `16771200 -> 16665600`, and FISHING3 low `11838720 -> 11820800`. Rect count rises (`355 -> 436`, `693 -> 858`, `412 -> 440`), so this is an upload-byte work-reduction checkpoint, not a VBlank win. A cap-6 follow-up gave back part of the high-tide byte win, so keep the cap at `8`. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2010,3 +2011,9 @@ gates exact-flat and moves the current code-size cleanup baseline to
 same gates exact-flat, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and
 moves the current code-size cleanup baseline to `jcreborn.elf=722304` bytes
 with no VBlank change.
+Lowering the dirty-upload band merge gap from one clean row to zero clean rows
+is accepted as a render/upload work-reduction checkpoint: key timing stays
+flat, uploaded bytes fall by `51.8 KB` on FISHING1, `105.6 KB` on FISHING3 high,
+and `17.9 KB` on FISHING3 low, while `LoadImage` rectangle counts rise. Keep
+this as a measured byte-vs-rect tradeoff until a lower-level GPU/DMA counter
+proves command count dominates byte volume.
