@@ -1930,3 +1930,6 @@ regressed `loop_vb` to `2102`, `blocking_vb` to `29`, and
 `prefetch_overrun_vb` to `25`. The current `128 KB` high-prime plus narrow
 segments/groups is a real knee; bigger setup reads are not automatically
 usable unless a scheduler can prove they land outside active pressure.
+The narrower `160 KB` probe confirms that knee: it still regressed
+`loop_vb=2100`, `blocking_vb=26`, and `due_misses=3`. Do not continue blind
+contiguous high-prime sweeps below a new scheduler/ownership model.
