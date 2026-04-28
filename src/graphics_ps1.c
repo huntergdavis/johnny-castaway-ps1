@@ -3692,8 +3692,6 @@ void grDrawBackground(void)
      * prevDirty = rows restored at frame start (framebuffer still has old content).
      * currDirty = rows composited this frame (framebuffer has clean/old content). */
     PS1Surface *tiles[4] = { bgTile0, bgTile1, bgTile3, bgTile4 };
-    int screenX[4] = { 0, 320, 0, 320 };
-    int screenY[4] = { 0, 0, 240, 240 };
     RECT rect;
     int minYs[4];
     int maxYs[4];
@@ -3799,7 +3797,7 @@ void grDrawBackground(void)
             int h = bandMaxY[b] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rect, screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, (i & 1) ? 320 : 0, ((i & 2) ? 240 : 0) + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
@@ -3816,7 +3814,7 @@ void grDrawBackground(void)
             int h = maxYs[i] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rect, screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, (i & 1) ? 320 : 0, ((i & 2) ? 240 : 0) + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);

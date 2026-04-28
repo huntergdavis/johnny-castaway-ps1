@@ -1222,6 +1222,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-77` | Done: prune the dirty-upload scan guard. | The upload-band scan already skips every clean tile through `minYs[i] < 0`, so the outer `dirtyCount > 0` wrapper was redundant. Removing it keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `16` bytes, and shrinks `jcreborn.elf 721456 -> 721400`. This is an upload-path code-size/work-shape promotion, not a VBlank win. |
 | `P5-78` | Done: prune the band-upload draw-sync guard. | Entry to the banded upload path already requires `bandCount > 0`, and the loop emits one `LoadImage` per band. Removing the redundant `uploadRects > 0` guard keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 721400 -> 721396`. This is a tiny upload-path code-size promotion, not a VBlank win. |
 | `P5-79` | Failed/no promotion: make the fallback upload branch explicit on `dirtyCount > 0`. | FISHING1 stayed timing/layout/work-flat, but the branch reshuffle grew `grDrawBackground` by `72` bytes and regressed `jcreborn.elf 721396 -> 721680`; source was reverted and only the experiment log was kept. |
+| `P5-80` | Done: compute upload tile coordinates from the tile index. | Replacing local `screenX`/`screenY` arrays with direct index arithmetic keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `8` bytes, and shrinks `jcreborn.elf 721396 -> 721380`. This is a tiny upload-path code-size promotion, not a VBlank win. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -2039,3 +2040,7 @@ and the current code-size cleanup baseline moves to `jcreborn.elf=721396` bytes.
 The fallback-branch reshuffle is rejected immediately after that: it kept
 FISHING1 exact-flat but grew `grDrawBackground` and the ELF, so the older
 fallback shape remains the baseline.
+Computing tile screen coordinates directly from the tile index is accepted as a
+separate measured shape from the earlier rejected static-table probe. It keeps
+the same three gates exact-flat and moves the current code-size cleanup baseline
+to `jcreborn.elf=721380` bytes.
