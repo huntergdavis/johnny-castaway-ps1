@@ -1605,15 +1605,13 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
 
 static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
 {
-    uint16 targetFrameIndex = 0;
     uint16 slackVBlanks;
     const struct TFgPilotEntry *entry;
 
     if (outElapsedVBlanks != NULL)
         *outElapsedVBlanks = 0;
 
-    entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
-    (void)targetFrameIndex;
+    entry = fgRuntimeNextPayloadEntry(NULL);
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
@@ -1654,11 +1652,9 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
 
 static int fgRuntimeWindowPrefetchWouldRead(void)
 {
-    uint16 targetFrameIndex = 0;
     const struct TFgPilotEntry *entry;
 
-    entry = fgRuntimeNextPayloadEntry(&targetFrameIndex);
-    (void)targetFrameIndex;
+    entry = fgRuntimeNextPayloadEntry(NULL);
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
