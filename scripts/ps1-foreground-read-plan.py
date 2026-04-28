@@ -84,6 +84,27 @@ def range_overlaps(ranges: list[tuple[int, int]], start: int, end: int) -> bool:
     return any(start < cover_end and end > cover_start for cover_start, cover_end in ranges)
 
 
+def numeric_values(values: list[Any]) -> list[float]:
+    return [float(value) for value in values if isinstance(value, (int, float))]
+
+
+def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
+    if len(fully_covered_reads) <= 1:
+        return "single-read-or-padding"
+
+    gaps = numeric_values([segment.get("prev_time_delta_s") for segment in fully_covered_reads])
+    if not gaps:
+        return "unknown-gap"
+
+    min_gap = min(gaps)
+    max_gap = max(gaps)
+    if min_gap < 0.5:
+        return "high-tight-cluster"
+    if max_gap < 1.0:
+        return "medium-no-long-gap"
+    return "medium-validate-phase"
+
+
 def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int]], str]:
     scene = case.get("sections", {}).get("scene", {})
     scene_name = scene.get("scene")
@@ -179,6 +200,10 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             prev_time = segment.get("prev_time_delta_s")
             if isinstance(prev_time, (int, float)):
                 read_vblank_estimate += float(prev_time) * 60.0
+        read_gaps = numeric_values([
+            segment.get("prev_time_delta_s")
+            for segment in fully_covered_reads
+        ])
 
         score = (
             len(fully_covered_reads) * 1_000_000 +
@@ -199,8 +224,13 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "first_entry": covered_entries[0]["index"] if covered_entries else None,
             "last_entry": covered_entries[-1]["index"] if covered_entries else None,
             "fully_covered_read_count": len(fully_covered_reads),
+            "estimated_saved_reads": max(0, len(fully_covered_reads) - 1),
             "touched_read_count": len(touched_reads),
             "estimated_read_vblanks": round(read_vblank_estimate, 2),
+            "min_prev_gap_s": round(min(read_gaps), 4) if read_gaps else None,
+            "max_prev_gap_s": round(max(read_gaps), 4) if read_gaps else None,
+            "avg_prev_gap_s": round(sum(read_gaps) / len(read_gaps), 4) if read_gaps else None,
+            "phase_risk_hint": phase_risk_hint(fully_covered_reads),
             "source_read_indices": [segment.get("index") for segment in fully_covered_reads],
         })
 
@@ -375,8 +405,11 @@ def print_human(report: dict[str, Any]) -> None:
                 "  "
                 f"{item['start_sector']}:{item['end_sector']} "
                 f"reads={item['fully_covered_read_count']} "
+                f"saved={item['estimated_saved_reads']} "
                 f"touches={item['touched_read_count']} "
                 f"est_vb={item['estimated_read_vblanks']} "
+                f"gap={item['min_prev_gap_s']}..{item['max_prev_gap_s']}s "
+                f"risk={item['phase_risk_hint']} "
                 f"entries={item['covered_entry_count']}({entry_span}) "
                 f"bytes={item['covered_payload_bytes']}"
             )

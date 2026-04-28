@@ -1870,3 +1870,10 @@ safe in the current runtime. The narrower `345..354` group is accepted: it keeps
 high and low timing flat, exits cleanly, and reduces high-tide `loop_reads
 43 -> 42` plus `loop_read_vb 185 -> 183`. Future read groups should be narrow
 or generated with explicit capacity/lifetime proof.
+
+Three follow-up FISHING3 high read groups, `149..161`, `277..289`, and
+`161..174`, all saved a loop transaction but regressed visible blocking/refill.
+`scripts/ps1-foreground-read-plan.py` now prints estimated saved reads, read-gap
+timing, and a phase-risk hint so tight clusters are visible before runtime
+patches. The remaining FISHING3 high gap should now favor generated
+setup/preload ownership or scheduler work over more adjacent read merges.
