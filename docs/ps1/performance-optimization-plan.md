@@ -63,6 +63,17 @@ from FG2 setup (`max_upload_bytes 614400 -> 221440`) and improved active
 playback by two VBlanks without changing setup timing, restore bytes, CD
 pressure, or layout identity. The later FGP3 pass is the first accepted
 pack-format runtime win and supersedes the FG2 high-tide baseline for fishing1.
+The FGP3 red-team pass changes the next bottleneck. `perf-detail` on the
+accepted canary shows `present_wait_vb=155`, while `compose_vb=2`,
+`restore_vb=0`, `upload_vb=0`, `blocking_vb=0`, and
+`prefetch.overrun_vb=0`. Local retries after FGP3 did not promote:
+prepared-present slack `3` and `2`, setup-prime catch-up `3`, previous-dirty
+bounds discard, due-frame precompose-before-present, FGP3 helper `-Os`, and
+no-holiday call-site guarding all stayed timing-flat or worsened accounting.
+The next meaningful speed work should target present/VSync ownership,
+release-vs-perf-log measurement, generated all-scene FGP3 rollout, or
+inter-scene/setup-prime hiding instead of more fishing1 high-tide restore/CD
+micro-probes.
 Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
 the setup prime moves CD work from active playback into scene setup
 (`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
@@ -732,10 +743,10 @@ CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage,
 setup-prime converted early foreground residency into a safe catch-up window,
 and FGP3 residuals removed most high-tide restore/upload/read volume.
-Next experiments should target the setup-cost trade, the +2 KB FGP3 executable
-cost, duplicate prepared-frame restore/compose work, remaining upload rectangle
-pressure, and generated pack/read-cost metadata that can stop raw window probes
-from perturbing the deterministic cadence.
+Next experiments should target the present/VSync ownership model, the setup-cost
+trade, release/perf-log measurement split, generated all-scene FGP3 rollout,
+and generated pack/read-cost metadata that can stop raw window probes from
+perturbing the deterministic cadence.
 
 | ID | Task | Rationale |
 |---|---|---|

@@ -177,6 +177,16 @@ and `loop_reads=6`. This accepted format change intentionally moves layout
 (`FISHING1.FG2 LBA 396 -> 397`, PS-EXE `143360 -> 145408`), so future FGP3
 work should claw back the executable cost and then fold residual generation
 into the normal batch pack builder.
+The follow-up red-team pass after FGP3 tested several local retries and found
+the new bottleneck. Detail-tier attribution for the accepted canary reports
+`present_wait_vb=155`, `compose_vb=2`, `restore_vb=0`, `upload_vb=0`,
+`blocking_vb=0`, and `prefetch_overrun_vb=0`. Threshold-only prepared-present
+changes, due-frame precompose, previous-dirty discard, FGP3 helper `-Os`, and
+no-holiday call-site guarding all failed or stayed exact-flat. The next
+high-impact path is no longer local restore/CD cleanup for fishing1 high tide;
+it is a first-class present scheduler, a release/perf-log split, or a broader
+pack/runtime architecture that can hide the mandatory VSync ownership without
+dropping frames or weakening pause input.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
@@ -209,11 +219,12 @@ hot `-O3` attempts expanded executable layout, moved FG2 placement, and raised
 visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
-The current detail/trace samples shift priority again: `present_wait_vb=157`
+The current detail/trace samples shift priority again: `present_wait_vb=155`
 against a remaining `131` VBlank active-loop overrun, while the FGP3 canary
-has driven high-tide visible CD pressure to `0` VBlanks. The next major win has to reduce or hide
-present wait and move setup-prime cost out of visible scene startup without
-early display, tearing, frame drops, or weakened pause input.
+has driven high-tide visible CD pressure to `0` VBlanks. The next major win
+has to reduce or hide present wait and move setup-prime cost out of visible
+scene startup without early display, tearing, frame drops, or weakened pause
+input.
 
 | # | Target | Test Shape | Expected Signal |
 |---:|---|---|---|
