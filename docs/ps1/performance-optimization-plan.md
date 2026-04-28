@@ -1967,3 +1967,8 @@ A FISHING3 low read-group probe for `159..171` is rejected. It removed one
 loop read but did not move `loop_vb`, `blocking_vb`, or
 `prefetch_overrun_vb`, and it grew the hot foreground code. Low-tide groups
 need pressure-counter movement before they justify a new table/branch path.
+
+Threading precomputed prefetch candidates through the held-loop scheduler is
+also rejected in the current source shape. It avoids a duplicate next-payload
+scan but grows `foregroundPilotPlay` and the ELF with no key metric movement.
+Retry only with finer CPU counters or a smaller call-site shape.
