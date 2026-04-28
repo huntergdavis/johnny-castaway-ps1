@@ -1940,3 +1940,9 @@ for future policy probes: while a source change is in flight, the candidate
 table should reflect the source under test instead of the last hard-coded
 baseline assumption. Historical artifacts still need reruns after source
 reverts.
+
+A stream-window-seeded side segment for FISHING3 high `67..97` is rejected,
+but it is less bad than the persistent-side-buffer version: `loop_vb=2097`
+instead of `2102`, with `prefetch_overrun_vb` flat. The idea has a usable
+shape only if the segment is much smaller; broad setup coverage still creates
+blocking pressure later in the active loop.
