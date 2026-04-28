@@ -1231,7 +1231,7 @@ static void fgRuntimeSetStagedFrame(uint16 frameIndex,
     gFgRuntime.stagedFrameValid = 1;
 }
 
-static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(uint16 *outFrameIndex)
+static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(void)
 {
     uint16 frameIndex;
 
@@ -1246,8 +1246,6 @@ static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(uint16 *outFrameInd
         const struct TFgPilotEntry *entry =
             fgGetEntryFromTable(&gFgRuntime.entryTable, frameIndex);
         if (fgEntryHasPayload(entry)) {
-            if (outFrameIndex != NULL)
-                *outFrameIndex = frameIndex;
             return entry;
         }
         frameIndex++;
@@ -1611,7 +1609,7 @@ static int fgRuntimeTryPrefetchWindow(uint16 *outElapsedVBlanks)
     if (outElapsedVBlanks != NULL)
         *outElapsedVBlanks = 0;
 
-    entry = fgRuntimeNextPayloadEntry(NULL);
+    entry = fgRuntimeNextPayloadEntry();
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
@@ -1654,7 +1652,7 @@ static int fgRuntimeWindowPrefetchWouldRead(void)
 {
     const struct TFgPilotEntry *entry;
 
-    entry = fgRuntimeNextPayloadEntry(NULL);
+    entry = fgRuntimeNextPayloadEntry();
     if (!fgRuntimeEntryFitsWindow(entry))
         return 0;
 
