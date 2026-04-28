@@ -1079,7 +1079,6 @@ static int fgRuntimeWindowContainsEntry(const struct TFgPilotEntry *entry)
     }
 
     return (gFgRuntime.setupSegmentPrimed &&
-            gFgRuntime.setupSegmentBuffer != NULL &&
             entry->dataOffset >= gFgRuntime.setupSegmentStart &&
             entryEnd <= gFgRuntime.setupSegmentStart +
                 gFgRuntime.setupSegmentBytes) ? 1 : 0;
@@ -1095,7 +1094,6 @@ static int fgRuntimeCopyEntryFromWindow(const struct TFgPilotEntry *entry,
         return 0;
 
     if (gFgRuntime.setupSegmentPrimed &&
-        gFgRuntime.setupSegmentBuffer != NULL &&
         entry->dataOffset >= gFgRuntime.setupSegmentStart &&
         entry->dataOffset + entry->dataSize <=
             gFgRuntime.setupSegmentStart + gFgRuntime.setupSegmentBytes) {
