@@ -3806,8 +3806,7 @@ void grDrawBackground(void)
             LoadImage(&rect, (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
-        if (uploadRects > 0)
-            DrawSync(0);
+        DrawSync(0);
     } else {
         for (int i = 0; i < 4; i++) {
             if (minYs[i] < 0)
