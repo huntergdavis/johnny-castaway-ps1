@@ -184,6 +184,12 @@ enum {
     (gFgRuntime.active && \
      gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
      gFgRuntime.frameRendered)
+#define fgRuntimeSetStagedFrame(frameIndex_, entry_) \
+    do { \
+        gFgRuntime.stagedEntry = *(entry_); \
+        gFgRuntime.stagedFrameIndex = (frameIndex_); \
+        gFgRuntime.stagedFrameValid = 1; \
+    } while (0)
 static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
@@ -1221,14 +1227,6 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     gFgRuntime.streamWindowBytes = readBytes;
     gFgRuntime.streamWindowValid = 1;
     return 1;
-}
-
-static void fgRuntimeSetStagedFrame(uint16 frameIndex,
-                                    const struct TFgPilotEntry *entry)
-{
-    gFgRuntime.stagedEntry = *entry;
-    gFgRuntime.stagedFrameIndex = frameIndex;
-    gFgRuntime.stagedFrameValid = 1;
 }
 
 static const struct TFgPilotEntry *fgRuntimeNextPayloadEntry(void)
