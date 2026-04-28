@@ -1891,3 +1891,6 @@ layout padding or a clear size/phase acceptance rule before promotion.
 The matching `Os` probe is retired too: it produced byte-for-byte identical
 tracked hot symbols and no ELF shrink, confirming the current file-level build
 already gives that function its size-optimized shape.
+A one-VBlank FISHING3-high setup settle is rejected as well. Even with stable
+pack LBA and PS-EXE bucket, it pushed active CD/refill pressure sharply worse,
+so startup barriers are not a substitute for read-level ownership metadata.
