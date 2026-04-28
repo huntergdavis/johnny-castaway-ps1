@@ -1481,9 +1481,6 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
     uint32 stageTick = 0;
     uint16 elapsedVBlanks = 0;
 
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = 0;
-
     if (!fgRuntimeCanStageNextFrame())
         return 0;
 
@@ -1548,8 +1545,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 elapsedVBlanks = (uint16)ps1PerfElapsedVBlanks(stageTick);
                 if (ps1PerfEnabled)
                     ps1PerfEndPrefetchRead(elapsedVBlanks, entry->dataSize, ok);
-                if (outElapsedVBlanks != NULL)
-                    *outElapsedVBlanks = elapsedVBlanks;
+                *outElapsedVBlanks = elapsedVBlanks;
 
                 if (!ok) {
                     if (ps1PerfEnabled)
@@ -1579,8 +1575,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 gFgRuntime.active = 0;
                 return 1;
             }
-            if (outElapsedVBlanks != NULL)
-                *outElapsedVBlanks = elapsedVBlanks;
+            *outElapsedVBlanks = elapsedVBlanks;
         } else if (ps1PerfEnabled) {
             ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 1);
         }
@@ -1611,8 +1606,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
     if (ps1PerfEnabled) {
         ps1PerfEndPrefetchRead(elapsedVBlanks, entry->dataSize, ok);
     }
-    if (outElapsedVBlanks != NULL)
-        *outElapsedVBlanks = elapsedVBlanks;
+    *outElapsedVBlanks = elapsedVBlanks;
 
     if (!ok) {
         if (ps1PerfEnabled)
