@@ -1888,3 +1888,6 @@ A function-scoped `O2` probe on `fgRuntimeFillWindowForEntry()` is also
 rejected for this baseline. It shrank that symbol but moved nearby hot symbols
 and produced exact-flat timing/CD metrics, so future toolchain experiments need
 layout padding or a clear size/phase acceptance rule before promotion.
+The matching `Os` probe is retired too: it produced byte-for-byte identical
+tracked hot symbols and no ELF shrink, confirming the current file-level build
+already gives that function its size-optimized shape.
