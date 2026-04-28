@@ -212,6 +212,7 @@ enum {
         VSync(0); \
         eventsWaitTick(0); \
     } while (0)
+#define fgReadTickCounter() ((uint32)VSync(-1))
 static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
@@ -299,11 +300,6 @@ static uint16 fgEntryHoldVBlanks(const struct TFgPilotHeader *header,
     }
 
     return hold;
-}
-
-static uint32 fgReadTickCounter(void)
-{
-    return (uint32)VSync(-1);
 }
 
 static uint16 fgElapsedVBlanksSince(uint32 *lastTick)
