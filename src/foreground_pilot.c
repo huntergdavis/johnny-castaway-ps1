@@ -1223,22 +1223,6 @@ static int fgRuntimeFillWindowForEntry(const struct TFgPilotEntry *entry,
     return 1;
 }
 
-static void fgRuntimeSeedWindowFromScratch(const struct TFgPilotEntry *entry)
-{
-    uint32 windowStart;
-    uint32 windowEnd;
-    uint32 windowBytes;
-
-    windowStart = fgSectorAlignDown(entry->dataOffset);
-    windowEnd = fgSectorAlignUp(entry->dataOffset + entry->dataSize);
-
-    windowBytes = windowEnd - windowStart;
-    memcpy(gFgRuntime.streamWindowBuffer, gFgRuntime.streamScratch, windowBytes);
-    gFgRuntime.streamWindowStart = windowStart;
-    gFgRuntime.streamWindowBytes = windowBytes;
-    gFgRuntime.streamWindowValid = 1;
-}
-
 static void fgRuntimeSetStagedFrame(uint16 frameIndex,
                                     const struct TFgPilotEntry *entry)
 {
@@ -1553,7 +1537,18 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                 }
 
                 fgRuntimeSetStagedFrame(nextFrameIndex, entry);
-                fgRuntimeSeedWindowFromScratch(entry);
+                {
+                    uint32 windowStart = fgSectorAlignDown(entry->dataOffset);
+                    uint32 windowBytes =
+                        fgSectorAlignUp(entry->dataOffset + entry->dataSize) -
+                        windowStart;
+                    memcpy(gFgRuntime.streamWindowBuffer,
+                           gFgRuntime.streamScratch,
+                           windowBytes);
+                    gFgRuntime.streamWindowStart = windowStart;
+                    gFgRuntime.streamWindowBytes = windowBytes;
+                    gFgRuntime.streamWindowValid = 1;
+                }
                 return 1;
             }
             if (!fgRuntimeFillWindowForEntry(entry, slackVBlanks, 1, &elapsedVBlanks)) {
