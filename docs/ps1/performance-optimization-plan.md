@@ -1951,3 +1951,8 @@ The smaller seeded `67..80` version is also rejected (`loop_vb=2094`,
 `blocking_vb=17`, `prefetch_overrun_vb=13`). This closes the manual expansion
 path for the accepted `67..73` high segment. Future wins here need generated
 scheduler-owned preload, not a wider hand-authored setup segment.
+
+Macro expansion remains selective. The single-call prepared-present predicate
+is accepted as a shrink, but `fgRuntimeCanStageNextFrame()` is rejected:
+duplicating its two call sites kept timing flat while growing
+`foregroundPilotPlay 8936 -> 9032` and `jcreborn.elf 723228 -> 723308`.
