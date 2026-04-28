@@ -1923,3 +1923,10 @@ stream-window seed pattern and made later active reads worse:
 lesson is structural: setup/preload bytes should feed the main window or carry
 explicit scheduler ownership; a long-lived side buffer is not automatically a
 win even when it removes CD transactions.
+
+Raising FISHING3 high contiguous setup-prime coverage to `192 KB` is rejected
+for the same active-cadence reason. It reduced `loop_reads 41 -> 36`, but
+regressed `loop_vb` to `2102`, `blocking_vb` to `29`, and
+`prefetch_overrun_vb` to `25`. The current `128 KB` high-prime plus narrow
+segments/groups is a real knee; bigger setup reads are not automatically
+usable unless a scheduler can prove they land outside active pressure.
