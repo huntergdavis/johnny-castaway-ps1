@@ -615,7 +615,6 @@ static uint32 gFgStreamWindowBufferSize = 0;
 static uint8 *gFgStreamScratch = NULL;
 static uint32 gFgStreamScratchSize = 0;
 static uint8 *gFgSetupSegmentBuffer = NULL;
-static uint32 gFgSetupSegmentBufferSize = 0;
 
 static void fgReleaseStreamBuffers(void)
 {
@@ -643,7 +642,6 @@ static void fgReleaseStreamBuffers(void)
         free(gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
     }
-    gFgSetupSegmentBufferSize = 0;
 }
 
 unsigned long fgProbeLargestAlloc(void)
@@ -1473,17 +1471,13 @@ static int fgRuntimePrimeSetupSegment(const char *sceneName)
     if (islandState.lowTide) {
         segmentStart = FG_FISHING3_LOW_SETUP_SEGMENT_START;
         segmentBytes = FG_FISHING3_LOW_SETUP_SEGMENT_BYTES;
-        if (segmentBytes > gFgSetupSegmentBufferSize) {
-            if (gFgSetupSegmentBuffer != NULL)
-                free(gFgSetupSegmentBuffer);
-            gFgSetupSegmentBuffer = (uint8 *)malloc(segmentBytes);
+        if (gFgSetupSegmentBuffer == NULL) {
+            gFgSetupSegmentBuffer = (uint8 *)malloc(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
             if (gFgSetupSegmentBuffer == NULL) {
                 if (ps1PerfEnabled)
-                    ps1PerfMarkAllocFail(segmentBytes);
-                gFgSetupSegmentBufferSize = 0;
+                    ps1PerfMarkAllocFail(FG_FISHING3_LOW_SETUP_SEGMENT_BYTES);
                 return 0;
             }
-            gFgSetupSegmentBufferSize = segmentBytes;
         }
         segmentBuffer = gFgSetupSegmentBuffer;
     } else {
