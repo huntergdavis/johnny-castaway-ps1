@@ -272,6 +272,10 @@ The `160 KB` high-tide retest confirms the current knee: layout stayed fixed,
 but active timing regressed to `loop_vb 2100`, `blocking_vb 29`, and
 `due_misses 3`. Keep `128 KB` until the next test can preload later ranges
 without using one larger contiguous read.
+The `144 KB` midpoint is also rejected. It looked better only while moving the
+executable/pack LBA; after recovering layout with cold string shrink, it
+regressed `loop_vb 2094 -> 2096` and `blocking_vb 16 -> 21`. Treat high-tide
+contiguous budget probing as exhausted at `128 KB`.
 A fishing3 high read-group retry for relative sectors `223..234` is rejected:
 the host CD log made it look like the safest local group, but the source-table
 change moved PS-EXE/LBA and regressed `loop_vb 2099 -> 2103` plus
