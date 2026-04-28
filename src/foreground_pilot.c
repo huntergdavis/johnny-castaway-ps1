@@ -150,7 +150,7 @@ enum {
     FG_PACK_METADATA_PREFIX_BYTES = 8192
 };
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
-#define FG_PREFETCH_GROUP_WINDOW_BYTES (11UL * 2048UL)
+#define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
@@ -233,6 +233,7 @@ static const struct TFgPilotReadGroup kFishing1HighReadGroups12[] = {
 
 static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
     {223, 234},
+    {234, 246},
     {345, 354}
 };
 

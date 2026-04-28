@@ -1205,6 +1205,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-60` | Done: prune unreachable refill zero-byte guard. | After entry-fit proves a nonzero payload and `windowStart < packCdFile.size`, the clamped refill size cannot become zero for a valid generated pack. Removing that guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry` by `40` bytes, and shrinks `jcreborn.elf 722952 -> 722828`. This is a work-reduction/code-size promotion, not a VBlank win. |
 | `P5-61` | Done: prune duplicate window-contains payload guard. | Current window-containment callers already pass known non-empty entries or have just passed `fgRuntimeEntryFitsWindow()`. Removing the duplicate `fgEntryHasPayload()` check keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722828 -> 722756`. This is a work-reduction/code-size promotion, not a VBlank win. |
 | `P5-62` | Done: inline copy-window source selection. | `fgRuntimeCopyEntryFromWindow()` called window-containment and then repeated the setup-segment containment test to choose the source. Inlining source selection in the copy helper keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722756 -> 722752`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-63` | Done: add FISHING3 high follow-on read group `234..246`. | The per-run read-plan artifact identified the next contiguous high-tide group after `223..234`. Adding `{234,246}` and raising retained group capacity to `13` sectors keeps FISHING3 high `loop_vb=2093` while improving `overrun_vb 139 -> 138`, `blocking_vb 16 -> 15`, `prefetch_overrun_vb 11 -> 10`, and `loop_reads 42 -> 41`; FISHING3 low and FISHING1 high stay exact-flat. This is a small active-loop pressure win and validates the new read-plan-in-the-loop method. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -1898,3 +1899,12 @@ so startup barriers are not a substitute for read-level ownership metadata.
 case. This closes the validation/tooling loop: every accepted or rejected run
 captures the pack/read candidate table that should drive the next preload,
 grouping, or scheduler experiment.
+
+The first follow-on run driven directly from those emitted artifacts is
+accepted. FISHING3 high sectors `234..246`, with retained group capacity raised
+from `11` to `13` sectors, keeps `loop_vb=2093` while improving
+`overrun_vb 139 -> 138`, `blocking_vb 16 -> 15`,
+`prefetch_overrun_vb 11 -> 10`, and `loop_reads 42 -> 41`. FISHING3 low and
+FISHING1 high both validate exact-flat. This is still a small active-loop win,
+but it proves the per-run read plan can find pressure-reducing groups after the
+earlier manual adjacent-group failures.
