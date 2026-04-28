@@ -154,6 +154,8 @@ enum {
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
+#define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
+#define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_START (67UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_HIGH_SETUP_SEGMENT_BYTES (6UL * FG_CD_SECTOR_SIZE)
 #define FG_FISHING3_LOW_SETUP_SEGMENT_START (146UL * FG_CD_SECTOR_SIZE)
@@ -997,16 +999,6 @@ static int fgEntryHasPayload(const struct TFgPilotEntry *entry)
             entry->dataSize > 0 &&
             entry->width > 0 &&
             entry->height > 0) ? 1 : 0;
-}
-
-static uint32 fgSectorAlignDown(uint32 offset)
-{
-    return offset & ~2047UL;
-}
-
-static uint32 fgSectorAlignUp(uint32 offset)
-{
-    return (offset + 2047UL) & ~2047UL;
 }
 
 static uint32 fgRuntimeWindowReadSize(void)
