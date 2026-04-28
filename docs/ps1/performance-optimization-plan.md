@@ -1863,3 +1863,10 @@ is accepted as a work-reduction baseline after visual signoff. It keeps
 `loop_reads 44 -> 43` and `loop_read_vb 188 -> 185`. Continue stacking
 measured groups; do not count this as a visible-speed win until `loop_vb` or
 visible CD pressure falls.
+
+A broad FISHING3 high tail group, `338..354`, saved transactions but failed the
+clean-exit bar with post-scene invalid-read spam, so broad tail grouping is not
+safe in the current runtime. The narrower `345..354` group is accepted: it keeps
+high and low timing flat, exits cleanly, and reduces high-tide `loop_reads
+43 -> 42` plus `loop_read_vb 185 -> 183`. Future read groups should be narrow
+or generated with explicit capacity/lifetime proof.
