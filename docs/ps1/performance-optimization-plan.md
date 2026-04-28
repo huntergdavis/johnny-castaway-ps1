@@ -88,6 +88,13 @@ fall `4 -> 0`, and `loop_vb 1209 -> 1207`, matching the high-tide active-loop
 gap. The trade is explicit: `setup_vb 182 -> 238` and `scene_vb 1391 -> 1445`.
 This should be treated as proof that generated prime budgets can make FGP3
 active playback CD-clean, not as proof that setup time is free.
+FGP3 is now accepted for fishing2 high tide as well. `FISHING2.FG2` shrinks
+`1595559 -> 542743` bytes, `loop_vb 1928 -> 1903`,
+`overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`,
+`prefetch.overrun_vb 44 -> 8`, `due_misses 2 -> 0`, and
+`loop_reads 134 -> 40`. This is the first non-fishing1 FGP3 runtime promotion
+and confirms the format is a scene-family strategy, not a single-scene trick.
+Remaining fishing2 pressure is now mostly read-window policy.
 Red-team caveat: this is an active-loop win, not an end-to-end scene-time win;
 the setup prime moves CD work from active playback into scene setup
 (`setup_vb 185 -> 246`, `scene_vb 1404 -> 1461`). The next pass should hide
@@ -1145,6 +1152,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-17` | Done: promote first FGP3 zero-shift temporal-residual runtime pack for fishing1 high tide. | `scripts/build-fg3-temporal-residual-pack.py` converts the accepted PAL4 FG2 into `fgp3_pal4_residual`; runtime cleanup spans restore vanished pixels and residual PAL4 spans draw changed pixels. Exact high-tide gate improves `loop_vb 1213 -> 1207`, `overrun_vb 138 -> 131`, `blocking_vb/prefetch_overrun_vb 1 -> 0`, `loop_reads 43 -> 6`, `restore_bytes 2510092 -> 251144`, and `upload_bytes 15888640 -> 6690560`. The intentional cost is PS-EXE `143360 -> 145408` and `FISHING1.FG2 LBA 396 -> 397`; next work should fold generation into the batch builder and recover the executable-size cost. |
 | `P5-18` | Done: promote FGP3 zero-shift temporal residuals for fishing1 low tide. | `FISH1LOW.FG2` now uses `fgp3_pal4_residual`; low-tide gate improves `loop_vb 1215 -> 1209`, `overrun_vb 142 -> 135`, `blocking_vb/prefetch_overrun_vb 5 -> 4`, `loop_reads 31 -> 22`, `restore_bytes 1234716 -> 182892`, and `upload_bytes 11457920 -> 5278080`. The low pack LBA stays stable at `592`, and high tide remains exact-flat after the change. |
 | `P5-19` | Done: setup-prime fishing1 low tide FGP3. | The existing `320 KB` setup-prime policy now covers both fishing1 tides. Low tide improves `loop_vb 1209 -> 1207`, `overrun_vb 135 -> 131`, `blocking_vb/prefetch_overrun_vb 4 -> 0`, and `loop_reads 22 -> 0`; high tide remains exact-flat. Setup cost rises (`setup_vb 182 -> 238`), so the follow-up remains generated prime budgets or inter-scene preload. |
+| `P5-20` | Done: promote FGP3 zero-shift temporal residuals for fishing2 high tide. | `FISHING2.FG2` now uses `fgp3_pal4_residual`; high-tide gate improves `loop_vb 1928 -> 1903`, `overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`, `prefetch_overrun_vb 44 -> 8`, `due_misses 2 -> 0`, `loop_reads 134 -> 40`, `restore_bytes 5353808 -> 333876`, and `upload_bytes 28215040 -> 9055360`. Fishing2 low smoke still passes. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 

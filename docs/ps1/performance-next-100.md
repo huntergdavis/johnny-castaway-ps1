@@ -202,6 +202,13 @@ falls to the same `131` VBlank gap as high tide. This is intentionally logged
 as an active-loop win with setup-cost trade (`setup_vb 182 -> 238`,
 `scene_vb 1391 -> 1445`), so the next real global win is hiding that prime via
 inter-scene preload or generated prime budgets.
+FGP3 is now validated on fishing2 high tide as well. `FISHING2.FG2` shrinks
+`1595559 -> 542743` bytes, clears due misses (`2 -> 0`), and improves
+`loop_vb 1928 -> 1903`, `overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`,
+`prefetch_overrun_vb 44 -> 8`, and `loop_reads 134 -> 40`. This proves the
+FGP3 residual approach scales past fishing1, but fishing2 still has enough
+active-loop CD pressure to make setup-prime or generated pack-read groups the
+next likely scene-specific win.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
