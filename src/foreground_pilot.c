@@ -170,6 +170,10 @@ enum {
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
+#define fgRuntimeCanHoldDisplayedFrame() \
+    (gFgRuntime.active && \
+     gFgRuntime.mode == FG_RUNTIME_SCENE_PACK && \
+     gFgRuntime.frameRendered)
 static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
@@ -1795,13 +1799,6 @@ static int fgRuntimeLoadSceneFrame(uint16 frameIndex)
     fgFireSoundEventsUpTo(gFgRuntime.currentEntry.sourceFrame);
     fgTelemetryUpdate();
     return 1;
-}
-
-static int fgRuntimeCanHoldDisplayedFrame(void)
-{
-    return gFgRuntime.active &&
-           gFgRuntime.mode == FG_RUNTIME_SCENE_PACK &&
-           gFgRuntime.frameRendered;
 }
 
 static void fgRuntimeMarkFrameRendered(void)
