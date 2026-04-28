@@ -12,11 +12,13 @@ import argparse
 import importlib.util
 import json
 import math
+import re
 from pathlib import Path
 from typing import Any
 
 
 SECTOR_SIZE = 2048
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def load_cdlog_module() -> Any:
@@ -105,18 +107,106 @@ def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
     return "medium-validate-phase"
 
 
+def eval_c_int_expr(expr: str, symbols: dict[str, int]) -> int | None:
+    text = re.sub(r"/\*.*?\*/", "", expr)
+    text = re.sub(r"//.*", "", text)
+    text = re.sub(r"\b([0-9]+)[uUlL]*\b", r"\1", text)
+    for name, value in sorted(symbols.items(), key=lambda item: len(item[0]), reverse=True):
+        text = re.sub(rf"\b{re.escape(name)}\b", str(value), text)
+    if re.search(r"[A-Za-z_]", text):
+        return None
+    if not re.fullmatch(r"[0-9\s+\-*/%()<>|&~]+", text):
+        return None
+    try:
+        value = eval(text, {"__builtins__": {}}, {})
+    except Exception:
+        return None
+    return int(value) if isinstance(value, int) and value >= 0 else None
+
+
+def parse_source_setup_policy() -> dict[str, Any]:
+    source_path = REPO_ROOT / "src" / "foreground_pilot.c"
+    try:
+        source = source_path.read_text(encoding="utf-8")
+    except OSError:
+        return {}
+
+    symbols: dict[str, int] = {"FG_CD_SECTOR_SIZE": SECTOR_SIZE}
+    define_pattern = re.compile(r"^#define\s+([A-Za-z_][A-Za-z0-9_]*)\s+(.+)$")
+    for _ in range(4):
+        changed = False
+        for line in source.splitlines():
+            match = define_pattern.match(line.strip())
+            if match is None:
+                continue
+            name, expr = match.groups()
+            if name in symbols or "(" in name or "?" in expr:
+                continue
+            value = eval_c_int_expr(expr, symbols)
+            if value is not None:
+                symbols[name] = value
+                changed = True
+        if not changed:
+            break
+
+    policy: dict[str, Any] = {"symbols": symbols}
+    fishing3 = re.search(
+        r'if\s*\(fgSceneEquals\(sceneName,\s*"fishing3"\)\)\s*'
+        r"return\s+islandState\.lowTide\s*\?\s*(.*?)\s*:\s*(.*?);",
+        source,
+        re.S,
+    )
+    if fishing3 is not None:
+        low_expr, high_expr = fishing3.groups()
+        policy["fishing3_low_prime_bytes"] = eval_c_int_expr(low_expr, symbols)
+        policy["fishing3_high_prime_bytes"] = eval_c_int_expr(high_expr, symbols)
+
+    fishing2 = re.search(
+        r'if\s*\(fgSceneEquals\(sceneName,\s*"fishing2"\)\)\s*'
+        r"return\s+islandState\.lowTide\s*\?\s*(.*?)\s*:\s*(.*?);",
+        source,
+        re.S,
+    )
+    if fishing2 is not None:
+        low_expr, high_expr = fishing2.groups()
+        policy["fishing2_low_prime_bytes"] = eval_c_int_expr(low_expr, symbols)
+        policy["fishing2_high_prime_bytes"] = eval_c_int_expr(high_expr, symbols)
+
+    if "FG_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["fishing1_prime_bytes"] = symbols["FG_SETUP_PRIME_WINDOW_BYTES"]
+
+    for tide in ("HIGH", "LOW"):
+        start = symbols.get(f"FG_FISHING3_{tide}_SETUP_SEGMENT_START")
+        size = symbols.get(f"FG_FISHING3_{tide}_SETUP_SEGMENT_BYTES")
+        if start is not None and size is not None and size > 0:
+            policy[f"fishing3_{tide.lower()}_segments"] = [
+                (start // SECTOR_SIZE, int(math.ceil((start + size) / SECTOR_SIZE)))
+            ]
+
+    return policy
+
+
 def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int]], str]:
     scene = case.get("sections", {}).get("scene", {})
     scene_name = scene.get("scene")
     lowtide = scene.get("lowtide") == 1
+    source_policy = parse_source_setup_policy()
     if scene_name == "fishing1":
-        return 320 * 1024, [], "auto:fishing1"
+        return int(source_policy.get("fishing1_prime_bytes") or 320 * 1024), [], "auto:fishing1"
     if scene_name == "fishing2":
-        return (256 if lowtide else 352) * 1024, [], "auto:fishing2-low" if lowtide else "auto:fishing2-high"
+        if lowtide:
+            prime = source_policy.get("fishing2_low_prime_bytes")
+            return int(prime or 256 * 1024), [], "auto:fishing2-low"
+        prime = source_policy.get("fishing2_high_prime_bytes")
+        return int(prime or 352 * 1024), [], "auto:fishing2-high"
     if scene_name == "fishing3":
         if lowtide:
-            return 288 * 1024, [(146, 152)], "auto:fishing3-low"
-        return 128 * 1024, [(67, 73)], "auto:fishing3-high"
+            prime = source_policy.get("fishing3_low_prime_bytes")
+            segments = source_policy.get("fishing3_low_segments") or [(146, 152)]
+            return int(prime or 288 * 1024), list(segments), "auto:fishing3-low"
+        prime = source_policy.get("fishing3_high_prime_bytes")
+        segments = source_policy.get("fishing3_high_segments") or [(67, 73)]
+        return int(prime or 128 * 1024), list(segments), "auto:fishing3-high"
     return 0, [], "none"
 
 

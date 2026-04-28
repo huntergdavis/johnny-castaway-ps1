@@ -1933,3 +1933,10 @@ usable unless a scheduler can prove they land outside active pressure.
 The narrower `160 KB` probe confirms that knee: it still regressed
 `loop_vb=2100`, `blocking_vb=26`, and `due_misses=3`. Do not continue blind
 contiguous high-prime sweeps below a new scheduler/ownership model.
+
+The read-plan analyzer now parses setup-prime constants and FISHING3
+setup-segment ranges from `src/foreground_pilot.c` at run time. This matters
+for future policy probes: while a source change is in flight, the candidate
+table should reflect the source under test instead of the last hard-coded
+baseline assumption. Historical artifacts still need reruns after source
+reverts.
