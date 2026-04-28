@@ -2063,6 +2063,11 @@ void grBeginResidualCleanBgFrame(void)
     grClearPrevDirtyState();
 }
 
+void grBeginResidualCleanBgFirstFrame(void)
+{
+    grClearCurrDirtyState();
+}
+
 void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
                                                     const uint16 *palette,
                                                     sint16 screenX, sint16 screenY)
@@ -3097,8 +3102,6 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
                        const uint16 *wArr, const uint16 *hArr, int n)
 {
     int i;
-    int dirtyY0 = 480;
-    int dirtyY1 = 0;
     uint32 requiredBytes[GR_MAX_CLEAN_RECTS];
     int allocatedThisCall[GR_MAX_CLEAN_RECTS];
 
@@ -3141,36 +3144,13 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
         gGrCleanRects[i].width = wArr[i];
         gGrCleanRects[i].height = hArr[i];
         grCleanRectCopyOut(&gGrCleanRects[i]);
-        {
-            int y0 = yArr[i];
-            int y1 = y0 + (int)hArr[i];
-            if (y0 < 0) y0 = 0;
-            if (y1 > 480) y1 = 480;
-            if (y0 < y1) {
-                if (y0 < dirtyY0) dirtyY0 = y0;
-                if (y1 > dirtyY1) dirtyY1 = y1;
-            }
-        }
     }
     gGrCleanRectCount = n;
 
-    /* Backdrop setup has already presented the static frame; only the dynamic
-     * clean-rect regions need first-frame refresh under FG2. */
-    for (i = 0; i < 4; i++) {
-        currDirtyMinY[i] = prevDirtyMinY[i] = -1;
-        if (dirtyY0 < dirtyY1) {
-            int y0 = dirtyY0;
-            int y1 = dirtyY1 - 1;
-            if (i & 2) {
-                y0 -= 240;
-                y1 -= 240;
-            }
-            if (y0 < 0) y0 = 0;
-            if (y1 > 239) y1 = 239;
-            if (y0 <= y1)
-                grMarkPrevTileDirtyRect(i, 0, 319, y0, y1);
-        }
-    }
+    /* Force a full first-frame upload. FG2 restores clean rects after setup,
+     * but static pixels outside those rects still need an initial refresh. */
+    grMarkAllTilesDirty();
+    grMarkPrevAllTilesDirty();
     return gGrCleanRectCount;
 
 fail:

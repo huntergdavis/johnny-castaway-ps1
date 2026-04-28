@@ -2636,10 +2636,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                 perfRenderTick = ps1PerfTick();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
-            if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual)
-                grBeginResidualCleanBgFrame();
-            else
+            if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual) {
+                if (gFgRuntime.frameRendered)
+                    grBeginResidualCleanBgFrame();
+                else
+                    grBeginResidualCleanBgFirstFrame();
+            } else {
                 grRestoreBgFromRects();
+            }
             if (perfDetail)
                 ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                        ps1PerfElapsedVBlanks(perfDetailTick));
