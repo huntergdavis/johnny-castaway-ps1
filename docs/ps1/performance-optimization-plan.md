@@ -1877,3 +1877,9 @@ Three follow-up FISHING3 high read groups, `149..161`, `277..289`, and
 timing, and a phase-risk hint so tight clusters are visible before runtime
 patches. The remaining FISHING3 high gap should now favor generated
 setup/preload ownership or scheduler work over more adjacent read merges.
+
+The medium-risk `80..96` group then confirmed that manual FISHING3 high
+adjacent grouping is exhausted for now: it saved one transaction but regressed
+`loop_vb` and emitted post-scene invalid BIOS-address writes. Do not add more
+one-off high-tide read groups until the scheduler can prove ownership or the
+pack generator emits safe segment/group metadata.
