@@ -1946,3 +1946,7 @@ but it is less bad than the persistent-side-buffer version: `loop_vb=2097`
 instead of `2102`, with `prefetch_overrun_vb` flat. The idea has a usable
 shape only if the segment is much smaller; broad setup coverage still creates
 blocking pressure later in the active loop.
+The smaller seeded `67..80` version is also rejected (`loop_vb=2094`,
+`blocking_vb=17`, `prefetch_overrun_vb=13`). This closes the manual expansion
+path for the accepted `67..73` high segment. Future wins here need generated
+scheduler-owned preload, not a wider hand-authored setup segment.
