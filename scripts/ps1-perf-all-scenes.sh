@@ -15,6 +15,7 @@ FRAMES="${PS1_PERF_FRAMES:-7200}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-220}"
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 SHEET="$PROJECT_ROOT/docs/ps1/performance-scene-matrix.csv"
+STATS_VERSION="${PS1_PERF_STATS_VERSION:-}"
 UPDATE_SHEET=1
 SKIP_MEASURED=0
 
@@ -38,6 +39,7 @@ Options:
   --timeout N                Wall-clock timeout per case (default: PS1_PERF_TIMEOUT or 220).
   --output DIR               Perf output root (default: scratch/ps1-perf-iterate).
   --sheet PATH               CSV sheet to refresh after a successful run.
+  --stats-version VERSION    Stamp generated CSV metrics with this version.
   --no-sheet                 Do not refresh the CSV sheet.
   --skip-measured            Skip rows already marked measured in the sheet.
   --only-pending             Alias for --skip-measured.
@@ -67,6 +69,8 @@ while [ $# -gt 0 ]; do
             OUTPUT_ROOT="$2"; shift 2 ;;
         --sheet)
             SHEET="$2"; UPDATE_SHEET=1; shift 2 ;;
+        --stats-version)
+            STATS_VERSION="$2"; shift 2 ;;
         --no-sheet)
             UPDATE_SHEET=0; shift ;;
         --skip-measured|--only-pending)
@@ -123,6 +127,9 @@ PERF_STATUS=$?
 set -e
 
 if [ "$UPDATE_SHEET" -eq 1 ]; then
+    if [ -z "$STATS_VERSION" ]; then
+        STATS_VERSION="git:$(git rev-parse --short=8 HEAD)"
+    fi
     SUMMARY_ARGS=()
     while IFS= read -r summary; do
         SUMMARY_ARGS+=(--summary "$summary")
@@ -130,6 +137,7 @@ if [ "$UPDATE_SHEET" -eq 1 ]; then
         \( -name 'summary.json' -o -name 'current-*.json' \) -print | sort)
     "$SCRIPT_DIR/ps1-foreground-scene-manifest.py" \
         --write-sheet "$SHEET" \
+        --stats-version "$STATS_VERSION" \
         "${SUMMARY_ARGS[@]}"
     echo "Updated sheet: $SHEET"
 fi

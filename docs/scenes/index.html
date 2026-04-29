@@ -951,7 +951,11 @@ optimization battle card for “how fast does this scene/tide variant run.”</l
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-04-29T15:15:58</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-04-29T15:31:39</code></td>
+    </tr>
+    <tr>
+      <td>Stats versions</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code> rows are post-compaction; <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> rows are backfilled pre-compaction stats</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -986,6 +990,9 @@ Lower is better.</li>
   <li><strong>Latest Run</strong>: ISO timestamp derived from the headless summary path
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
+  <li><strong>Stats Version</strong>: performance/layout version for that row. Existing rows
+were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code>; compacted-pack reruns use
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>.</li>
 </ul>
 
 <h3 id="126-variant-battle-card">126-variant battle card</h3>
@@ -997,6 +1004,7 @@ matrix run has been recorded for that variant.</li>
       <th>Tide</th>
       <th>Status</th>
       <th>Latest Run</th>
+      <th>Stats Version</th>
       <th style="text-align: right">Over Target</th>
       <th style="text-align: right">Target Speed</th>
       <th style="text-align: right">VBlanks</th>
@@ -1012,6 +1020,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T21:34:02</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+3.0%</td>
       <td style="text-align: right">97.1%</td>
       <td style="text-align: right">4373/4244</td>
@@ -1025,6 +1034,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T22:15:22</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+3.1%</td>
       <td style="text-align: right">97.0%</td>
       <td style="text-align: right">4373/4242</td>
@@ -1038,6 +1048,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T21:27:47</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.9%</td>
       <td style="text-align: right">88.5%</td>
       <td style="text-align: right">1205/1067</td>
@@ -1051,6 +1062,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T22:06:21</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.5%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">1203/1069</td>
@@ -1064,6 +1076,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T21:11:41</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.3%</td>
       <td style="text-align: right">91.5%</td>
       <td style="text-align: right">1866/1707</td>
@@ -1077,6 +1090,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T21:57:32</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.1%</td>
       <td style="text-align: right">91.7%</td>
       <td style="text-align: right">1861/1706</td>
@@ -1090,6 +1104,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T21:20:58</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+14.5%</td>
       <td style="text-align: right">87.3%</td>
       <td style="text-align: right">1043/911</td>
@@ -1103,6 +1118,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T23:00:11</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+14.5%</td>
       <td style="text-align: right">87.3%</td>
       <td style="text-align: right">1043/911</td>
@@ -1116,6 +1132,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T20:54:38</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+22.7%</td>
       <td style="text-align: right">81.5%</td>
       <td style="text-align: right">751/612</td>
@@ -1129,6 +1146,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T21:43:07</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+21.7%</td>
       <td style="text-align: right">82.2%</td>
       <td style="text-align: right">747/614</td>
@@ -1142,6 +1160,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1154,6 +1173,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1168,6 +1188,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T22:50:08</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+11.2%</td>
       <td style="text-align: right">89.9%</td>
       <td style="text-align: right">2268/2039</td>
@@ -1181,6 +1202,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T23:13:29</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+11.1%</td>
       <td style="text-align: right">90.0%</td>
       <td style="text-align: right">2271/2044</td>
@@ -1194,6 +1216,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T05:10:31</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.3%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1408/1254</td>
@@ -1207,6 +1230,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T03:28:40</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1408/1255</td>
@@ -1220,6 +1244,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T10:34:38</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+8.1%</td>
       <td style="text-align: right">92.5%</td>
       <td style="text-align: right">1864/1724</td>
@@ -1233,6 +1258,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T10:48:17</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+8.3%</td>
       <td style="text-align: right">92.3%</td>
       <td style="text-align: right">1866/1723</td>
@@ -1246,6 +1272,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T05:25:38</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.9%</td>
       <td style="text-align: right">91.0%</td>
       <td style="text-align: right">1551/1411</td>
@@ -1259,6 +1286,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T03:39:20</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+10.2%</td>
       <td style="text-align: right">90.8%</td>
       <td style="text-align: right">1551/1408</td>
@@ -1272,6 +1300,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T07:52:19</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+25.6%</td>
       <td style="text-align: right">79.6%</td>
       <td style="text-align: right">966/769</td>
@@ -1285,6 +1314,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T11:16:06</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+24.2%</td>
       <td style="text-align: right">80.5%</td>
       <td style="text-align: right">953/767</td>
@@ -1298,6 +1328,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T00:51:42</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+21.8%</td>
       <td style="text-align: right">82.1%</td>
       <td style="text-align: right">1572/1291</td>
@@ -1311,6 +1342,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T01:03:17</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+21.4%</td>
       <td style="text-align: right">82.4%</td>
       <td style="text-align: right">1570/1293</td>
@@ -1324,6 +1356,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T06:29:00</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.4%</td>
       <td style="text-align: right">91.4%</td>
       <td style="text-align: right">1565/1431</td>
@@ -1336,6 +1369,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">building3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1350,6 +1384,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T23:31:51</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.5%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">3141/2792</td>
@@ -1363,6 +1398,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T23:43:30</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.4%</td>
       <td style="text-align: right">89.0%</td>
       <td style="text-align: right">3135/2790</td>
@@ -1376,6 +1412,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T02:23:18</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+5.4%</td>
       <td style="text-align: right">94.9%</td>
       <td style="text-align: right">3514/3334</td>
@@ -1389,6 +1426,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T02:32:45</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+4.8%</td>
       <td style="text-align: right">95.4%</td>
       <td style="text-align: right">3508/3346</td>
@@ -1402,6 +1440,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T01:15:17</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+13.1%</td>
       <td style="text-align: right">88.4%</td>
       <td style="text-align: right">2754/2435</td>
@@ -1415,6 +1454,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T01:29:52</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.9%</td>
       <td style="text-align: right">88.6%</td>
       <td style="text-align: right">2746/2433</td>
@@ -1428,6 +1468,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T02:04:56</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+5.5%</td>
       <td style="text-align: right">94.8%</td>
       <td style="text-align: right">3861/3659</td>
@@ -1441,6 +1482,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T02:13:58</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+4.5%</td>
       <td style="text-align: right">95.7%</td>
       <td style="text-align: right">3837/3672</td>
@@ -1453,7 +1495,8 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T15:15:58</td>
+      <td>2026-04-29T15:29:13</td>
+      <td>compact-fgp3-v1</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1207/1076</td>
@@ -1467,6 +1510,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-27T17:40:04</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1207/1076</td>
@@ -1480,6 +1524,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T17:40:29</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.5%</td>
       <td style="text-align: right">93.0%</td>
       <td style="text-align: right">1898/1765</td>
@@ -1493,6 +1538,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-27T18:50:02</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.4%</td>
       <td style="text-align: right">93.1%</td>
       <td style="text-align: right">1898/1767</td>
@@ -1506,6 +1552,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T17:36:58</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.1%</td>
       <td style="text-align: right">93.4%</td>
       <td style="text-align: right">2093/1955</td>
@@ -1519,6 +1566,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-28T16:50:36</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+6.6%</td>
       <td style="text-align: right">93.8%</td>
       <td style="text-align: right">2090/1960</td>
@@ -1532,6 +1580,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T10:23:32</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+16.7%</td>
       <td style="text-align: right">85.7%</td>
       <td style="text-align: right">978/838</td>
@@ -1544,6 +1593,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1558,6 +1608,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1570,6 +1621,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1584,6 +1636,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T11:07:36</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+19.2%</td>
       <td style="text-align: right">83.9%</td>
       <td style="text-align: right">893/749</td>
@@ -1597,6 +1650,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T11:44:20</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+19.6%</td>
       <td style="text-align: right">83.6%</td>
       <td style="text-align: right">897/750</td>
@@ -1610,6 +1664,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T10:04:49</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+19.4%</td>
       <td style="text-align: right">83.8%</td>
       <td style="text-align: right">863/723</td>
@@ -1622,6 +1677,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1636,6 +1692,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T04:19:49</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.4%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">1400/1245</td>
@@ -1649,6 +1706,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T12:00:44</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+11.1%</td>
       <td style="text-align: right">90.1%</td>
       <td style="text-align: right">1387/1249</td>
@@ -1662,6 +1720,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-28T23:54:52</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.5%</td>
       <td style="text-align: right">91.3%</td>
       <td style="text-align: right">2128/1943</td>
@@ -1675,6 +1734,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T00:05:46</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.8%</td>
       <td style="text-align: right">91.1%</td>
       <td style="text-align: right">2132/1942</td>
@@ -1688,6 +1748,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T12:09:01</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.3%</td>
       <td style="text-align: right">93.2%</td>
       <td style="text-align: right">1878/1750</td>
@@ -1701,6 +1762,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T12:17:15</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.3%</td>
       <td style="text-align: right">93.2%</td>
       <td style="text-align: right">1878/1750</td>
@@ -1714,6 +1776,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T05:42:22</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.8%</td>
       <td style="text-align: right">88.7%</td>
       <td style="text-align: right">1308/1160</td>
@@ -1727,6 +1790,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T08:55:48</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1305/1163</td>
@@ -1740,6 +1804,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1752,6 +1817,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1766,6 +1832,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1778,6 +1845,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1792,6 +1860,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T01:46:20</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+3.6%</td>
       <td style="text-align: right">96.5%</td>
       <td style="text-align: right">2901/2799</td>
@@ -1805,6 +1874,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T01:55:45</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+3.8%</td>
       <td style="text-align: right">96.3%</td>
       <td style="text-align: right">2905/2798</td>
@@ -1818,6 +1888,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T00:18:38</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+4.5%</td>
       <td style="text-align: right">95.7%</td>
       <td style="text-align: right">5028/4813</td>
@@ -1831,6 +1902,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T00:30:11</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+3.8%</td>
       <td style="text-align: right">96.4%</td>
       <td style="text-align: right">5011/4830</td>
@@ -1844,6 +1916,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T04:40:25</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+1.7%</td>
       <td style="text-align: right">98.3%</td>
       <td style="text-align: right">2286/2248</td>
@@ -1857,6 +1930,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T04:55:27</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+1.7%</td>
       <td style="text-align: right">98.3%</td>
       <td style="text-align: right">2286/2248</td>
@@ -1870,6 +1944,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1882,6 +1957,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1896,6 +1972,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T12:37:06</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">-2.5%</td>
       <td style="text-align: right">102.5%</td>
       <td style="text-align: right">1969/2019</td>
@@ -1908,6 +1985,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1922,6 +2000,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T03:50:10</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.4%</td>
       <td style="text-align: right">93.1%</td>
       <td style="text-align: right">1698/1581</td>
@@ -1935,6 +2014,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T04:00:29</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.0%</td>
       <td style="text-align: right">93.4%</td>
       <td style="text-align: right">1694/1583</td>
@@ -1948,6 +2028,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T11:24:47</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+16.9%</td>
       <td style="text-align: right">85.6%</td>
       <td style="text-align: right">1115/954</td>
@@ -1961,6 +2042,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T11:35:00</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+14.6%</td>
       <td style="text-align: right">87.3%</td>
       <td style="text-align: right">1099/959</td>
@@ -1974,6 +2056,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1987,6 +2070,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1999,6 +2083,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2013,6 +2098,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2026,6 +2112,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2038,6 +2125,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2052,6 +2140,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T13:33:50</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+24.9%</td>
       <td style="text-align: right">80.1%</td>
       <td style="text-align: right">693/555</td>
@@ -2064,6 +2153,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2078,6 +2168,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T07:31:30</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1365/1216</td>
@@ -2090,6 +2181,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2104,6 +2196,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T06:44:33</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.7%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1600/1459</td>
@@ -2116,6 +2209,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2130,6 +2224,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T07:00:48</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+10.5%</td>
       <td style="text-align: right">90.5%</td>
       <td style="text-align: right">1503/1360</td>
@@ -2142,6 +2237,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2156,6 +2252,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T12:54:14</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+26.1%</td>
       <td style="text-align: right">79.3%</td>
       <td style="text-align: right">676/536</td>
@@ -2169,6 +2266,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2181,19 +2279,21 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T15:13:34</td>
+      <td>2026-04-29T15:31:39</td>
+      <td>compact-fgp3-v1</td>
       <td style="text-align: right">+27.0%</td>
       <td style="text-align: right">78.7%</td>
       <td style="text-align: right">635/500</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td>compact FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2208,6 +2308,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T14:13:53</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+25.8%</td>
       <td style="text-align: right">79.5%</td>
       <td style="text-align: right">673/535</td>
@@ -2220,6 +2321,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2234,6 +2336,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T14:54:05</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+25.8%</td>
       <td style="text-align: right">79.5%</td>
       <td style="text-align: right">673/535</td>
@@ -2246,6 +2349,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2260,7 +2364,8 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T15:04:03</td>
-      <td style="text-align: right">+25.7%</td>
+      <td>padded-fgp3-v1</td>
+      <td style="text-align: right">+25.8%</td>
       <td style="text-align: right">79.5%</td>
       <td style="text-align: right">674/536</td>
       <td style="text-align: right">3</td>
@@ -2272,6 +2377,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2286,6 +2392,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T06:13:45</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.7%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1597/1456</td>
@@ -2298,6 +2405,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2312,6 +2420,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T12:30:59</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+15.2%</td>
       <td style="text-align: right">86.8%</td>
       <td style="text-align: right">1135/985</td>
@@ -2324,6 +2433,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2338,6 +2448,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T10:13:31</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+11.7%</td>
       <td style="text-align: right">89.5%</td>
       <td style="text-align: right">1328/1189</td>
@@ -2350,6 +2461,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2364,18 +2476,20 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>blocked</td>
       <td>2026-04-28T23:20:55</td>
+      <td>padded-fgp3-v1</td>
+      <td style="text-align: right">+0.0%</td>
       <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td style="text-align: right">0/6</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
       <td>baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2390,18 +2504,20 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>blocked</td>
       <td>2026-04-29T02:57:54</td>
+      <td>padded-fgp3-v1</td>
+      <td style="text-align: right">+0.0%</td>
       <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td style="text-align: right">0/6</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
       <td>fgpilot coverage gap; pack loads but foreground loop never starts</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2416,6 +2532,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T09:38:48</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+22.5%</td>
       <td style="text-align: right">81.6%</td>
       <td style="text-align: right">822/671</td>
@@ -2428,6 +2545,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2442,6 +2560,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T02:42:08</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+56.1%</td>
       <td style="text-align: right">64.1%</td>
       <td style="text-align: right">1581/1013</td>
@@ -2455,6 +2574,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T02:51:12</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+58.4%</td>
       <td style="text-align: right">63.1%</td>
       <td style="text-align: right">1611/1017</td>
@@ -2468,6 +2588,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2480,6 +2601,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2494,6 +2616,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T03:18:33</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+20.0%</td>
       <td style="text-align: right">83.3%</td>
       <td style="text-align: right">1295/1079</td>
@@ -2507,6 +2630,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>measured</td>
       <td>2026-04-29T10:57:15</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+15.2%</td>
       <td style="text-align: right">86.8%</td>
       <td style="text-align: right">1250/1085</td>
@@ -2520,6 +2644,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T05:58:39</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+7.5%</td>
       <td style="text-align: right">93.0%</td>
       <td style="text-align: right">2198/2044</td>
@@ -2532,6 +2657,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2546,6 +2672,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T07:16:36</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+9.6%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1777/1621</td>
@@ -2559,6 +2686,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2571,6 +2699,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2585,6 +2714,7 @@ matrix run has been recorded for that variant.</li>
       <td>low</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2598,6 +2728,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>pending</td>
       <td>-</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2610,6 +2741,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2624,6 +2756,7 @@ matrix run has been recorded for that variant.</li>
       <td>high</td>
       <td>measured</td>
       <td>2026-04-29T03:08:07</td>
+      <td>padded-fgp3-v1</td>
       <td style="text-align: right">+10.4%</td>
       <td style="text-align: right">90.6%</td>
       <td style="text-align: right">2512/2275</td>
@@ -2636,6 +2769,7 @@ matrix run has been recorded for that variant.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>

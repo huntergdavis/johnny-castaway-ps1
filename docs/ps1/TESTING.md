@@ -67,7 +67,8 @@ Current battle-card rollup as of 2026-04-29:
 | Blocked variants | `2 / 126` |
 | Measured average over target | `+13.5%` |
 | Measured average target speed | `88.7%` |
-| Latest perf matrix run | `2026-04-29T15:15:58` |
+| Latest perf matrix run | `2026-04-29T15:31:39` |
+| Stats versions | `compact-fgp3-v1` for reruns after FGP3 padding removal; `padded-fgp3-v1` for backfilled pre-compaction rows |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -78,6 +79,9 @@ surfaces should summarize it, not invent independent numbers.
 Each measured or blocked CSV row carries `last_run_at`, derived from the
 headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
+Rows also carry `stats_version`. Existing rows were backfilled as
+`padded-fgp3-v1`; new compacted-pack reruns use `compact-fgp3-v1` so mixed
+statistics stay searchable during the transition.
 
 ## Secondary (historical): headless regtest harness
 

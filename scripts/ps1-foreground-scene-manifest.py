@@ -11,8 +11,10 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import random
 import re
+import subprocess
 from datetime import datetime
 from dataclasses import dataclass
 from pathlib import Path
@@ -219,6 +221,7 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
                 over_target = str(loop_vb - target_vb)
                 over_percent = f"{((loop_vb - target_vb) * 100.0 / target_vb):.2f}"
             metrics[metric_key] = {
+                "pack_bytes": str(scene_info.get("pack_bytes", "")),
                 "last_summary": repo_relative(path),
                 "last_run_at": run_timestamp_from_summary(path, path_mtime),
                 "loop_vb": str(loop_vb) if isinstance(loop_vb, int) else "",
@@ -238,6 +241,21 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
     return metrics
 
 
+def default_stats_version() -> str:
+    override = os.environ.get("PS1_PERF_STATS_VERSION", "").strip()
+    if override:
+        return override
+    try:
+        commit = subprocess.check_output(
+            ["git", "rev-parse", "--short=8", "HEAD"],
+            cwd=REPO_ROOT,
+            text=True,
+        ).strip()
+    except Exception:
+        return ""
+    return f"git:{commit}"
+
+
 def boot_for(record: SceneRecord, tide: str) -> str:
     lowtide = "1" if tide == "low" else "0"
     return (
@@ -250,6 +268,7 @@ def sheet_rows(
     records: list[SceneRecord],
     metrics: dict[tuple[str, str], dict[str, str]],
     pack_dir: Path,
+    stats_version: str,
 ) -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
     for record in records:
@@ -268,6 +287,7 @@ def sheet_rows(
                 "pack_bytes": str((pack_dir / source).stat().st_size) if (pack_dir / source).is_file() else "",
                 "last_summary": "",
                 "last_run_at": "",
+                "stats_version": "",
                 "loop_vb": "",
                 "target_vb": "",
                 "over_target_vb": "",
@@ -283,12 +303,15 @@ def sheet_rows(
                 "notes": "",
             }
             row.update(measured)
+            if measured and not row.get("stats_version"):
+                row["stats_version"] = stats_version
             rows.append(row)
     return rows
 
 
-def write_sheet(path: Path, records: list[SceneRecord], summaries: list[Path], pack_dir: Path) -> None:
-    rows = sheet_rows(records, load_summary_metrics(summaries), pack_dir)
+def write_sheet(path: Path, records: list[SceneRecord], summaries: list[Path],
+                pack_dir: Path, stats_version: str) -> None:
+    rows = sheet_rows(records, load_summary_metrics(summaries), pack_dir, stats_version)
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0].keys()) if rows else []
     with path.open("w", encoding="utf-8", newline="") as fh:
@@ -345,6 +368,7 @@ def main() -> int:
     parser.add_argument("--write-cd-layout", type=Path)
     parser.add_argument("--write-sheet", type=Path)
     parser.add_argument("--summary", action="append", type=Path, default=[])
+    parser.add_argument("--stats-version", default=default_stats_version())
     parser.add_argument("--print-cases", action="store_true")
     parser.add_argument("--tides", choices=("high", "low", "both"), default="both")
     parser.add_argument("--order", choices=("list", "random"), default="list")
@@ -357,7 +381,7 @@ def main() -> int:
     if args.write_cd_layout:
         update_cd_layout(args.write_cd_layout, records, args.pack_dir)
     if args.write_sheet:
-        write_sheet(args.write_sheet, records, args.summary, args.pack_dir)
+        write_sheet(args.write_sheet, records, args.summary, args.pack_dir, args.stats_version)
     if args.print_cases:
         print_cases(records, args.tides, args.order, args.limit, args.seed, args.skip_measured_from)
     if not (args.write_cd_layout or args.write_sheet or args.print_cases):

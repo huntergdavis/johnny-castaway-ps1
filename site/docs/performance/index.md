@@ -242,10 +242,15 @@ target speed**.
 As of 2026-04-29, 80 of 126 scene/tide variants have current headless
 perf measurements. 50 of 63 scenes have at least one timed variant; 30
 scenes have both high- and low-tide variants timed. The latest matrix
-run is `2026-04-29T15:15:58`; per-row freshness is shown on the
+run is `2026-04-29T15:31:39`; per-row freshness and stats version are shown on the
 [scene ledger]({{ '/scenes/' | relative_url }}). The values below are `over
 target / target speed (loop_vb/target_vb)`, with `blk` and `due` called out
 when nonzero.
+
+Rows measured before the FGP3 compaction pass are backfilled as
+`padded-fgp3-v1`. New rows measured after padding removal use
+`compact-fgp3-v1`, so the battle card can mix old and new data without
+pretending they came from the same layout.
 
 | Scene | High tide | Low tide |
 |---|---:|---:|
