@@ -62,6 +62,7 @@ set(SOURCES
     src/walk.c
     src/calcpath.c
     src/walk_render.c
+    src/walk_pilot.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )

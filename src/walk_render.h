@@ -63,4 +63,21 @@ void walkRenderFrame(SDL_Surface *sfc,
                      sint16 x, sint16 y, uint16 spriteIdx,
                      int flip, int behindTree, int fireFootstep);
 
+/* Re-draw the most recent walkRenderFrame() pose against a fresh
+ * frame envelope, without firing a footstep. The story-loop driver
+ * uses this between walkAnimate() advance ticks (typically every
+ * 6 VBlanks) to keep Johnny visible during the in-between frames.
+ *
+ * Freeplay does NOT use this — it calls walkRenderFrame every
+ * VBlank with live D-pad-driven coords.
+ *
+ * Caller still owns grBeginFrame / grRestoreBgTiles / grEndFrame. */
+void walkRedrawLastFrame(SDL_Surface *sfc,
+                         struct TTtmSlot *johnwalkSlot,
+                         struct TTtmSlot *islandBgSlot);
+
+/* Reset cached last-frame state. Call when a walk sequence ends so
+ * the next sequence doesn't accidentally redraw a stale pose. */
+void walkRenderResetCache(void);
+
 #endif /* WALK_RENDER_H */

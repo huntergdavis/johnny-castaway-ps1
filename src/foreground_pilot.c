@@ -243,6 +243,16 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 
+/* Public accessor for walk_pilot — returns the slot holding
+ * BACKGRND.PSB sprites (used for behind-tree trunk + leaf cover-up
+ * during walk transitions). NULL if backdrop isn't loaded yet. */
+struct TTtmSlot *fgBackdropGetSlot(void)
+{
+    if (gFgBackdropSlot.numSprites[0] == 0)
+        return NULL;
+    return &gFgBackdropSlot;
+}
+
 struct TFgPilotReadGroup {
     uint16 startSector;
     uint16 endSector;

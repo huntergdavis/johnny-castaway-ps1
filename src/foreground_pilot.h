@@ -20,4 +20,13 @@ unsigned short foregroundPilotRuntimeFrameCount(void);
 unsigned long fgProbeLargestAlloc(void);
 void foregroundPilotRuntimeEnd(void);
 
+/* Access to the island-background TTtmSlot that fg_pilot owns.
+ * Used by walk_pilot.c (and freeplay) to source the trunk + leaf
+ * cover-up sprites for behind-tree compositing. Returns NULL if the
+ * backdrop hasn't been loaded yet (caller should fall back to
+ * tree-front compositing being skipped — Johnny just renders on
+ * top of the tree). Defined in foreground_pilot.c. */
+struct TTtmSlot;
+struct TTtmSlot *fgBackdropGetSlot(void);
+
 #endif

@@ -24,6 +24,24 @@
  * is harmlessly a no-op even with this flag ON — see Phase 4.1 audit. */
 int footstepsEnabled = 1;
 
+/* Last-frame cache: stores the most recent walkRenderFrame() params
+ * so the story-loop driver can re-draw the same pose against a new
+ * frame envelope without ticking walkAnimate(). This is a redraw
+ * cache, NOT walk state — walk state (current spot, heading, path)
+ * stays in walk.c. */
+static int    sCacheValid    = 0;
+static sint16 sCacheX         = 0;
+static sint16 sCacheY         = 0;
+static uint16 sCacheSpriteIdx = 0;
+static int    sCacheFlip      = 0;
+static int    sCacheBehindTree = 0;
+
+
+void walkRenderResetCache(void)
+{
+    sCacheValid = 0;
+}
+
 
 void walkRenderFrame(SDL_Surface *sfc,
                      struct TTtmSlot *johnwalkSlot,
@@ -62,4 +80,33 @@ void walkRenderFrame(SDL_Surface *sfc,
     if (fireFootstep && footstepsEnabled) {
         /* Phase 4.2: soundPlay(walkStepSampleId); */
     }
+
+    /* Update redraw cache. Always — every fresh frame becomes the
+     * "current pose" the story-loop driver may want to redraw on
+     * inter-tick VBlanks. */
+    sCacheValid     = 1;
+    sCacheX         = x;
+    sCacheY         = y;
+    sCacheSpriteIdx = spriteIdx;
+    sCacheFlip      = flip;
+    sCacheBehindTree = behindTree;
+}
+
+
+void walkRedrawLastFrame(SDL_Surface *sfc,
+                         struct TTtmSlot *johnwalkSlot,
+                         struct TTtmSlot *islandBgSlot)
+{
+    if (!sCacheValid) return;
+
+    if (sCacheFlip)
+        grDrawSpriteFlip(sfc, johnwalkSlot, sCacheX, sCacheY, sCacheSpriteIdx, 0);
+    else
+        grDrawSprite    (sfc, johnwalkSlot, sCacheX, sCacheY, sCacheSpriteIdx, 0);
+
+    if (sCacheBehindTree && islandBgSlot != NULL) {
+        grDrawSprite(sfc, islandBgSlot, 442, 148, 13, 0);  /* trunk */
+        grDrawSprite(sfc, islandBgSlot, 365, 122, 12, 0);  /* leaves */
+    }
+    /* No footstep on redraw — that's a once-per-step trigger. */
 }
