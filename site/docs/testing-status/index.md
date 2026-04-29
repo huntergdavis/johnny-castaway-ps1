@@ -23,13 +23,13 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `57 / 126` |
-| Scenes with at least one timed variant | `34 / 63` |
+| Scene/tide variants timed | `58 / 126` |
+| Scenes with at least one timed variant | `35 / 63` |
 | Scenes with both high/low variants timed | `23 / 63` |
-| Pending variants | `67 / 126` |
+| Pending variants | `66 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.1%` |
-| Measured average target speed | `89.8%` |
+| Measured average over target | `+12.2%` |
+| Measured average target speed | `89.7%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -167,7 +167,7 @@ and this page.
 | `suzy1` | low | pending | - | - | - | - | - | - |  |
 | `suzy2` | high | blocked | - | - | - | - | - | - | fgpilot coverage gap; pack loads but foreground loop never starts |
 | `suzy2` | low | pending | - | - | - | - | - | - |  |
-| `visitor1` | high | pending | - | - | - | - | - | - |  |
+| `visitor1` | high | measured | +22.5% | 81.6% | 822/671 | 22 | 22 | 0 | padded FGP3 |
 | `visitor1` | low | pending | - | - | - | - | - | - |  |
 | `visitor3` | high | measured | +56.1% | 64.1% | 1581/1013 | 424 | 145 | 24 | padded FGP3; still CD-bound |
 | `visitor3` | low | measured | +58.4% | 63.1% | 1611/1017 | 404 | 99 | 26 | padded FGP3; still CD-bound |

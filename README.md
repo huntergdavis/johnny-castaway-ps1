@@ -72,12 +72,12 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.3.9-ps1`** |
+| Current release | **`v0.3.11-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
-| Headless perf battle card | **57 / 126** scene/tide variants measured; **34 / 63** scenes have at least one timed variant; measured average is **+12.1% over target / 89.8% target speed** |
+| Headless perf battle card | **58 / 126** scene/tide variants measured; **35 / 63** scenes have at least one timed variant; measured average is **+12.2% over target / 89.7% target speed** |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
