@@ -106,14 +106,14 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `73 / 126` |
-| Scenes with at least one timed variant | `43 / 63` |
+| Scene/tide variants timed | `74 / 126` |
+| Scenes with at least one timed variant | `44 / 63` |
 | Scenes with both high/low variants timed | `30 / 63` |
-| Pending variants | `51 / 126` |
+| Pending variants | `50 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.7%` |
-| Measured average target speed | `89.3%` |
-| Latest perf matrix run | `2026-04-29T12:33:29` |
+| Measured average over target | `+12.5%` |
+| Measured average target speed | `89.4%` |
+| Latest perf matrix run | `2026-04-29T12:37:06` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -214,7 +214,7 @@ and this page.
 | `mary2` | low | measured | 2026-04-29T04:55:27 | +1.7% | 98.3% | 2286/2248 | 8 | 8 | 0 | padded FGP3 |
 | `mary3` | high | pending | - | - | - | - | - | - | - |  |
 | `mary3` | low | pending | - | - | - | - | - | - | - |  |
-| `mary4` | high | pending | - | - | - | - | - | - | - |  |
+| `mary4` | high | measured | 2026-04-29T12:37:06 | -2.5% | 102.5% | 1969/2019 | 27 | 10 | 4 | FGP2 baseline; plain padded FGP3 rejected due prefetch-overrun regression |
 | `mary4` | low | pending | - | - | - | - | - | - | - |  |
 | `mary5` | high | measured | 2026-04-29T03:50:10 | +7.4% | 93.1% | 1698/1581 | 20 | 20 | 0 | padded FGP3 |
 | `mary5` | low | measured | 2026-04-29T04:00:29 | +7.0% | 93.4% | 1694/1583 | 14 | 14 | 0 | padded FGP3 |
@@ -272,6 +272,7 @@ and this page.
 | `walkstuf2` | low | pending | - | - | - | - | - | - | - |  |
 | `walkstuf3` | high | measured | 2026-04-29T03:08:07 | +10.4% | 90.6% | 2512/2275 | 130 | 90 | 6 | padded FGP3 |
 | `walkstuf3` | low | pending | - | - | - | - | - | - | - |  |
+
 ## How to read this
 
 **Status column.**
