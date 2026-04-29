@@ -106,13 +106,13 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `71 / 126` |
+| Scene/tide variants timed | `72 / 126` |
 | Scenes with at least one timed variant | `42 / 63` |
-| Scenes with both high/low variants timed | `29 / 63` |
-| Pending variants | `53 / 126` |
+| Scenes with both high/low variants timed | `30 / 63` |
+| Pending variants | `52 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.7%` |
-| Measured average target speed | `89.2%` |
+| Measured average over target | `+12.6%` |
+| Measured average target speed | `89.3%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -195,7 +195,7 @@ and this page.
 | `johnny1` | high | measured | +9.5% | 91.3% | 2128/1943 | 31 | 31 | 0 | padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun |
 | `johnny1` | low | measured | +9.8% | 91.1% | 2132/1942 | 37 | 37 | 0 | padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun |
 | `johnny2` | high | measured | +7.3% | 93.2% | 1878/1750 | 1 | 1 | 0 | padded FGP3 |
-| `johnny2` | low | pending | - | - | - | - | - | - |  |
+| `johnny2` | low | measured | +7.3% | 93.2% | 1878/1750 | 1 | 1 | 0 | padded FGP3 |
 | `johnny3` | high | measured | +12.8% | 88.7% | 1308/1160 | 20 | 16 | 1 | padded FGP3 |
 | `johnny3` | low | measured | +12.2% | 89.1% | 1305/1163 | 10 | 10 | 0 | padded FGP3 |
 | `johnny4` | high | pending | - | - | - | - | - | - |  |
