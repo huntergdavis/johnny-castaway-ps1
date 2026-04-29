@@ -33,6 +33,7 @@
 
 extern int soundMuted;
 extern int footstepsEnabled;  /* walk_render.c — pause-menu Footsteps */
+extern int storyCurrentDay;   /* jc_reborn.c — 11-day story calendar */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
 extern int ps1SoftTimeEnabled;
@@ -351,6 +352,8 @@ int memcardLoadSettings(void)
 
     soundMuted        = s->soundMuted ? 1 : 0;
     footstepsEnabled  = s->footstepsEnabled ? 1 : 0;
+    storyCurrentDay   = (s->storyCurrentDay >= 1 && s->storyCurrentDay <= 11)
+                          ? s->storyCurrentDay : 1;
     hostForcedNight   = s->dayNightOverride;
     hostForcedHoliday = s->holidayOverride;
     if (hostForcedHoliday < -1 ||
@@ -392,10 +395,9 @@ int memcardSaveSettings(void)
     s->version          = MC_VERSION;
     s->soundMuted       = (uint8)(soundMuted ? 1 : 0);
     s->footstepsEnabled = (uint8)(footstepsEnabled ? 1 : 0);
-    /* storyCurrentDay is wired in Phase 8; for now it just rides along
-     * as 0 (= no story-day forced) so old saves and new saves are
-     * binary-compatible at the layout level. */
-    s->storyCurrentDay  = 0;
+    s->storyCurrentDay  = (uint8)((storyCurrentDay >= 1
+                                   && storyCurrentDay <= 11)
+                                  ? storyCurrentDay : 1);
     s->dayNightOverride = (sint8)hostForcedNight;
     s->holidayOverride  = (sint8)hostForcedHoliday;
     s->softTimeEnabled  = (uint8)(ps1SoftTimeEnabled ? 1 : 0);

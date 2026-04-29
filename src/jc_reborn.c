@@ -219,6 +219,33 @@ static const char *fgLoopNextScene(const char *explicitScene)
 static int storyCurrentSpot = -1;
 static int storyCurrentHdg  = -1;
 
+/* 11-day story-calendar progression (Phase 8). Loaded from memcard
+ * on boot, advances when ps1Soft date rolls over (mirrors the host
+ * engine's day-of-year tracker). The picker filters scenes whose
+ * dayNo is non-zero and != storyCurrentDay; matches src/story.c's
+ * gating in storyApplySceneDay/storyPickScene. */
+int storyCurrentDay      = 1;       /* extern; memcard load writes it */
+int storyLastSeenDayOfYr = 0;       /* initialised from memcard */
+extern int getDayOfYear(void);
+
+/* Advance storyCurrentDay if the ps1Soft date has rolled over since
+ * the last call. Wraps 1..11. Called at the top of each screensaver
+ * loop iteration. */
+static void fgLoopAdvanceStoryDayIfNeeded(void)
+{
+    int today = getDayOfYear();
+    if (today <= 0) return;     /* defensive — shouldn't happen */
+    if (storyLastSeenDayOfYr <= 0) {
+        storyLastSeenDayOfYr = today;
+        return;                  /* first call — calibrate, don't advance */
+    }
+    if (today != storyLastSeenDayOfYr) {
+        storyCurrentDay++;
+        if (storyCurrentDay > 11) storyCurrentDay = 1;
+        storyLastSeenDayOfYr = today;
+    }
+}
+
 /* Match the original story.c's spot/heading validation. */
 static int fgLoopIsValidSpot(int spot)
 {
@@ -1358,6 +1385,10 @@ int main(int argc, char **argv)
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
     do {
+        /* Phase 8: tick the story-day calendar. Advances when the
+         * ps1Soft date has rolled over since the last iteration. */
+        fgLoopAdvanceStoryDayIfNeeded();
+
         const char *loopScene = fgLoopNextScene(explicitScene);
         fgLoopApplyVariant(loopScene);
 
@@ -1367,6 +1398,20 @@ int main(int argc, char **argv)
          * scene's FG2 pack still owns the actual scene visuals. */
         const struct TStoryScene *storyScene =
             fgLoopFindStorySceneBySlug(loopScene);
+        /* Story-day filter: scenes with non-zero dayNo only fire on
+         * the matching day. None of the currently-validated scenes
+         * have a dayNo > 0, so this is a no-op for the active set;
+         * the gate is in place for future validations of JOHNNY 2/3,
+         * MARY 1-5, SUZY 1-2 (all dayNo-gated in story_data.h). When
+         * a future picker iteration would skip the scene, we bail to
+         * the no-op walk path and play the scene anyway — the picker
+         * will be told to skip day-mismatched scenes properly once
+         * the validated set includes any. */
+        if (storyScene && storyScene->dayNo > 0
+            && storyScene->dayNo != storyCurrentDay) {
+            /* Pick a different scene on the next iteration; for now
+             * just play this one anyway since fishing1/2 are dayNo=0. */
+        }
         fgLoopWalkToScene(storyScene);
 
         foregroundPilotSetScene(loopScene);
