@@ -21,9 +21,9 @@ Date: 2026-04-29 Status: planned, not started Owner: PS1 perf branch
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/walk-implementation-plan.md` |
-| Lines | 750 |
-| Approx. words | 4937 |
-| Code fences | 12 |
+| Lines | 1117 |
+| Approx. words | 7227 |
+| Code fences | 18 |
 
 ## Outline
 
@@ -35,12 +35,12 @@ Date: 2026-04-29 Status: planned, not started Owner: PS1 perf branch
 -     1.3 The story loop chains scenes together
 -   2. Current PS1 state
 -   3. Architecture choice — port walk.c only
--   4. Implementation phases
--     Phase 1 — Assets + build integration (~1 day)
--     Phase 2 — Walk rendering on PS1 (~2-3 days)
--     Phase 3 — Scene picker with spot/heading tracking (~1 day)
--     Phase 4 — Footstep sounds (~1 day)
--     Phase 5 — Behind-tree compositing (~1-2 days)
+-   3.5 Cross-cutting architecture (shared with freeplay)
+-     3.5.1 Two drivers, one render kernel
+-     3.5.2 Shared position type
+-     3.5.3 Spot ↔ coord mapping (extracted from walkdata.h)
+-     3.5.4 Per-mode ownership
+-     3.5.5 Behind-tree compositing is a kernel parameter
 
 ## Read it in context
 

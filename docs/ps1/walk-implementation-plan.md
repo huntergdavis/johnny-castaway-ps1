@@ -133,6 +133,137 @@ each, 1-5 walks per scene transition); the perf optimizations the perf
 branch built up for FG2 don't apply, but they don't need to — walks are
 not the cost surface.
 
+## 3.5 Cross-cutting architecture (shared with freeplay)
+
+This walk subsystem is designed up front to be **shared with the
+freeplay direct-control mode** described in
+[`docs/ps1/freeplay-mode-design.md`](freeplay-mode-design.md). Both
+modes need to render Johnny walking; they differ only in what drives
+the steps. Avoiding two parallel implementations is non-negotiable —
+the project's voice is plainspoken about not building things twice.
+
+### 3.5.1 Two drivers, one render kernel
+
+```
+                    +----------------------------+
+                    |       walk_render.c        |
+                    |   (the shared kernel)      |
+                    |                            |
+                    |   walkRenderFrame(sprite,  |
+                    |     x, y, heading,         |
+                    |     behindTree, footstep)  |
+                    +----------------------------+
+                          ^                ^
+                          |                |
+            +-------------+                +--------------+
+            |                                              |
+   +------------------+                       +-------------------+
+   |  walk_pilot.c    |                       |  scene_freeplay.c |
+   |  story-loop      |                       |  freeplay         |
+   |  walks           |                       |  direct-control   |
+   |                  |                       |                   |
+   | drives the kernel|                       | drives the kernel |
+   | from walk_data.h |                       | from D-pad input  |
+   | pre-baked path   |                       | per VBlank        |
+   +------------------+                       +-------------------+
+```
+
+The shared kernel does ONE thing: takes a current `(sprite_frame_idx,
+x, y, heading)` plus a couple of flags and emits one frame against
+restored background tiles. It does not own walk state; it does not
+track spots; it does not advance frames. Both drivers do that
+themselves and then call the kernel.
+
+### 3.5.2 Shared position type
+
+```c
+// src/walk_render.h
+struct TWalkPos {
+    int x;          // pixel coord, island-relative
+    int y;          // pixel coord, island-relative
+    int heading;    // HDG_S..SE
+    int spot;       // SPOT_A..F, or -1 if mid-edge / freely positioned
+};
+```
+
+Both drivers track Johnny as `TWalkPos`. The story-loop driver
+stamps `spot` at scene boundaries and lets it go to -1 mid-walk;
+the freeplay driver leaves `spot` at -1 except when a contextual
+verb needs to know which named spot Johnny is currently nearest.
+
+### 3.5.3 Spot ↔ coord mapping (extracted from walk_data.h)
+
+`walk_data.h`'s first/last frames per (fromSpot, toSpot) edge declare
+the canonical pixel coordinates of each spot. From the head of the
+file:
+
+| Spot | Approx (x, y) | Source |
+|---|---|---|
+| A | (306, 238)   | first frame of "A to E" entry |
+| C | (~395, 240)  | last frame of "A to C" |
+| E | (390, 213)   | last frame of "A to E" |
+| F | (~435, 224)  | last frame of "A to F" |
+| B, D | TBD       | extract from B-rooted and D-rooted entries |
+
+Phase 1's pre-flight checklist adds: extract canonical coordinates
+for all 6 spots from `walk_data.h`. Both drivers use this mapping;
+freeplay's "press Cross at fishing shore" verb uses it to ask "what
+spot is Johnny nearest right now?" without inventing geometry.
+
+### 3.5.4 Per-mode ownership
+
+| Resource | Owner | Reason |
+|---|---|---|
+| `walkData[]` table | shared (read-only) | static const data |
+| `walkPath`, `currentSpot`, `currentHdg` (statics in walk.c) | story-loop driver only | freeplay doesn't use calcPath |
+| `JOHNWALK.BMP` slot 1 | shared (kernel reserves) | matches freeplay design slot allocation |
+| Clean-rect set | per-mode | freeplay owns `gFreeplayOwnedRects[]`; story-loop uses the island's set |
+| Holiday overlay | runtime, not kernel | both modes call the existing `fgBackdropStampHoliday` after the kernel returns |
+| Footstep SFX | per-mode opt-in | conditional; see Phase 4 + R2.3 |
+
+The kernel does NOT touch `walk.c`'s static globals
+(`walkPath`, `currentSpot`, etc.). Only `walk_pilot.c` calls
+`walkInit()` / `walkAnimate()` and reads those globals.
+`scene_freeplay.c` never calls into `walk.c`; it computes
+`(x, y, heading)` from input and calls `walkRenderFrame()` directly.
+This isolation matters for R3.5 (state-machine reset safety): the
+two modes cannot corrupt each other's walk state.
+
+### 3.5.5 Behind-tree compositing is a kernel parameter
+
+`walkRenderFrame(..., bool behindTree, ...)`. Both modes set it the
+same way — based on a coordinate-zone test against the palm tree
+sprite's bbox. Story-loop driver derives it from the
+`(currentSpot, nextSpot)` pair (preserves walk.c's existing
+`SPOT_3 ↔ SPOT_4` rule). Freeplay derives it from the live (x, y)
+intersection with the tree z-region (per
+`docs/ps1/freeplay-mode-design.md` § 14, lines 337-339).
+
+The kernel doesn't know or care which mode called it — it just
+stamps the trunk + leaf cover-up sprites after the walking sprite
+when the flag is set.
+
+### 3.5.6 Holiday overlay is NOT in the kernel
+
+Both modes already have a per-frame compositor pipeline (the
+freeplay design's locked render order at § 15, lines 357-371). The
+kernel runs at step 6 of that pipeline ("Johnny — last among
+foreground"). Holiday overlay (step 7) and help overlay (step 8)
+run AFTER the kernel returns, in the mode's main loop. The walk
+plan inherits that ordering. Phase 6 of this plan no longer adds
+special holiday handling; it just confirms the existing pipeline
+runs unchanged across walk frames.
+
+### 3.5.7 Footstep audio note
+
+The freeplay design (§ 12, line 282) declares the original engine's
+walking was silent. The user's direction for this walk plan is "add
+footstep walks noises like original." The two assertions disagree.
+Resolution path is in Phase 4 — implementation defaults to silent;
+optional footstep table is hooked but disabled until the user
+confirms which version of "like original" they want. See R2.3 for
+detail.
+
 ## 4. Implementation phases
 
 Each phase ends in a clean commit. Phases land in order; later phases
@@ -180,45 +311,91 @@ can defer if perf or schedule pressure says so.
 - Boot a regression scene (`fishing1`) — no behavioral change, just
   proving the new code is on the disc and not regressing anything.
 
-### Phase 2 — Walk rendering on PS1 (~2-3 days)
+### Phase 2 — Walk render kernel (~1-2 days)
 
-**Goal:** call a walk sequence from a test boot token and see Johnny
-walk visibly across the island.
+**Goal:** the shared kernel from § 3.5.1 exists and renders correctly
+when given a sprite frame + position + flags. No driver yet.
 
-1. New file `src/walk_pilot.c` (or extend `foreground_pilot.c`).
-   Public API:
+1. New file `src/walk_render.c` + `src/walk_render.h`. Public API:
+   ```c
+   void walkRenderInit(void);             // load JOHNWALK.BMP into slot 1
+   void walkRenderRelease(void);          // free slot 1
+   void walkRenderFrame(int spriteIdx,
+                        int x, int y,
+                        int heading,
+                        int behindTree,
+                        int fireFootstep);
+   ```
+   The kernel:
+    - Restores background tiles via existing `grRestoreBgTiles()`
+    - Draws the walking sprite at (x, y)
+    - If `behindTree`, stamps the trunk + leaf cover-up sprites after
+      the walking sprite
+    - If `fireFootstep`, calls `soundPlay(footstepSampleId)` (sample
+      id resolved per Phase 4; gated by config)
+    - Returns. Does NOT call grBeginFrame/grEndFrame — the caller
+      owns the frame envelope and will call holiday + help overlays
+      AFTER the kernel returns (matches freeplay's locked render
+      order, § 15 of `freeplay-mode-design.md`).
+
+2. Add a boot-token test mode that calls the kernel directly:
+   ```
+   walk-render-test
+   ```
+   Renders Johnny standing at a fixed coord, facing each of the 8
+   headings in turn, 60 VBlanks each. Lets us verify sprite framing,
+   palette, and slot allocation independent of any walk path or
+   driver state.
+
+3. Coordinate offset handling: walk_data.h coords are absolute
+   640×480; the runtime offsets by `islandState.xPos`/`yPos`. The
+   kernel takes pre-offset (x, y) — drivers do the offset before
+   calling.
+
+**Acceptance:**
+- Boot `walk-render-test` and see Johnny standing at fixed pixel,
+  cycling through 8 facings, 60 VBlanks each.
+- No VRAM corruption, slot 1 holds `JOHNWALK.BMP` cleanly, palette
+  is correct.
+- The kernel works without ever touching `walk.c`'s static globals.
+
+### Phase 2.5 — Story-loop walk driver (~1-2 days)
+
+**Goal:** call a walk SEQUENCE from a test boot token and see Johnny
+walk visibly across the island, driven by `walk.c`'s state machine.
+
+1. New file `src/walk_pilot.c`. Public API:
    ```c
    int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg);
    ```
    Returns 0 on success, non-zero on harness-abort signal.
 
-2. Implementation outline (mirrors `adsPlayWalk()` in `src/ads.c:2216`
-   but without the SDL/TTM thread machinery):
+2. Implementation outline — drives the kernel from `walk.c`'s pre-baked
+   path data:
    ```c
    walkInit(fromSpot, fromHdg, toSpot, toHdg);
-   int delay = walkAnimate(/*ttm slot params*/);
+   walkRenderInit();
+   int delay = walkAnimate(/*params*/);   // returns sprite frame info
    while (delay > 0) {
-       eventsWaitTick(delay);   // wait the right number of VBlanks
+       eventsWaitTick(delay);
        grBeginFrame();
-       grRestoreBgTiles();      // restore island background
-       /* draw walking sprite from JOHNWALK */
-       /* ...holiday overlay from existing path... */
+       /* derive (sprite_idx, x, y, heading, behindTree) from walk.c
+        * statics — currentSpot, walkPath, isBehindTree, etc. */
+       walkRenderFrame(sprite_idx, x, y, heading, isBehindTree,
+                       /*fireFootstep=*/0);
+       /* holiday overlay, help overlay run here in main loop */
        grEndFrame();
        delay = walkAnimate(/*params*/);
    }
+   walkRenderRelease();
    ```
 
-3. Coordinate offset: the walk_data.h coordinates are absolute
-   640×480 pixels. The runtime offsets by `islandState.xPos` and `yPos`
-   (stored in `grDx`/`grDy`) so walks track the randomized island
-   position. Confirm the existing PS1 walk is wired the same way.
+3. The driver is the ONLY caller of `walk.c`. Its statics
+   (`walkPath`, `currentSpot`, `currentHdg`, `nextSpot`, `nextHdg`,
+   etc.) live entirely inside walk.c and are scoped per-`fgWalkRender`
+   call.
 
-4. Sprite rendering on PS1: `grDrawSprite()` in `graphics_ps1.c` should
-   already accept walking sprites if they share the same atlas format
-   as scene foregrounds. If `JOHNWALK.BMP` decodes to multiple sub-frames,
-   the slot's `numSprites` count must be correctly populated.
-
-5. Add a boot-token test mode for development:
+4. Add a boot-token test mode:
    ```
    walk-test fromSpot fromHdg toSpot toHdg
    ```
@@ -226,11 +403,12 @@ walk visibly across the island.
 
 **Acceptance:**
 - Boot `walk-test E E A S` and see Johnny walk from spot E heading east
-  to spot A heading south.
+  to spot A heading south, driven by walk.c.
 - Compare frame-by-frame against the host build's same walk. Pixel-exact
   match would be ideal; visually-identical-at-2× is acceptable for
   promotion.
 - No VRAM corruption, no crash, no audible artifacts.
+- `walk.c`'s static state is fully reset on every `fgWalkRender` call.
 
 ### Phase 3 — Scene picker with spot/heading tracking (~1 day)
 
@@ -279,111 +457,163 @@ next scene, walks to that scene's start, plays it, repeats.
   cleanly.
 - No teleportation. Position state remains consistent across iterations.
 
-### Phase 4 — Footstep sounds (~1 day)
+### Phase 4 — Footstep sounds (~1 day, gated on user clarification)
 
-**Goal:** matching the original engine, walks emit the correct footstep
-samples on the correct frames.
+**Goal:** walks optionally emit footstep samples on the correct
+frames, with the audio path shared between story-loop walks and
+freeplay walking.
 
-1. Identify the walk audio in the original `RESOURCE.001`. The
-   `JOHNWALK` walking animation should fire footsteps at known frame
-   intervals. Reverse-engineer from:
-    - The host build's behavior — capture audio during a walk, identify
-      sample IDs from the SPU state.
-    - Sierra's original `SCRANTIC.SCR` — the same source `walk_data.h`
-      was extracted from. Check `extract_walk_data.c` if it preserved
-      audio cues.
+> **Conflict to resolve before Phase 4 starts.** The freeplay design
+> (`docs/ps1/freeplay-mode-design.md` § 12, line 282) explicitly
+> states the original engine's footsteps were silent. The user's
+> direction for this plan was "add footstep walks noises like
+> original." These two assertions can't both be exactly true. Phase 4
+> resolves it before writing code.
 
-2. Add a `walkSoundEvents[]` table next to `walk_data.h` if needed:
-   ```c
-   struct TWalkSoundEvent { int frameIdx; int sampleId; };
-   ```
-   keyed by current spot-pair edge.
+**Phase 4.0 — clarification (½ day, no code)**
 
-3. Hook into `walkAnimate()` (or wrapped in `fgWalkRender()`'s loop) so
-   that when the walk frame index hits a sound trigger, call
-   `soundPlay(sampleId)` to fire the SPU sample.
+- Capture audio from the host build during a walk. If samples fire,
+  the freeplay design is wrong; identify them.
+- Disassemble Sierra's original walking-sequence handling in
+  `RESOURCE.001` (or the existing `extract_walk_data.c` source).
+- Decision matrix:
+  - If original WAS silent: implement silent walks; user can add a
+    "footsteps" pause-menu toggle later if they want non-faithful
+    audio. Update `freeplay-mode-design.md` to remain authoritative.
+  - If original HAD footsteps: implement footsteps in Phase 4.1;
+    update `freeplay-mode-design.md` line 282 to match.
 
-4. Verify the relevant footstep VAGs are already preloaded. The PS1
-   build preloads "all 23 SFX VAGs at boot" per `hardware-specs.md`; if
-   footsteps are among them, no asset work needed. If not, add to the
-   boot preload list.
+**Phase 4.1 — implementation (½ day, conditional on above)**
+
+- New table `src/walk_sound_events.h`:
+  ```c
+  struct TWalkSoundEvent { int frameIdx; int sampleId; };
+  static const struct TWalkSoundEvent walkStepSamples[NUM_OF_NODES][NUM_OF_NODES][/*...*/];
+  ```
+  keyed by current spot-pair edge.
+
+- The shared kernel's `fireFootstep` parameter is the trigger point.
+  Both drivers compute it the same way (frame index in the walk
+  cycle hits a step-foot-down position) and pass it in.
+
+- `walk_pilot.c` derives `fireFootstep` from `walkAnimate()`'s frame
+  cadence + the `walkStepSamples` table.
+- `scene_freeplay.c` derives `fireFootstep` from its own walk cycle
+  counter (`TFreeplayJohnny.walkStepCount` already in the design at
+  § 17, line 414) — fires on even or odd step indices, configurable.
+
+- Verify the relevant footstep VAGs are preloaded. The PS1 build
+  preloads "all 23 SFX VAGs at boot" per `hardware-specs.md`; if
+  footsteps are among them, no asset work needed. If not, decide:
+  add to boot preload (ties up SPU RAM for a possibly-silent feature)
+  vs. lazy-load on first walk.
 
 **Acceptance:**
-- Walks have audible footsteps that match the rhythm of the leg
-  movement.
-- No SPU pop, click, or stuck note. Verify in DuckStation and (if
-  available) on hardware.
-- Footstep timing matches host build within ±1 VBlank.
+- Decision matrix above is recorded as a doc commit before any
+  audio code lands.
+- If footsteps are added: walks have audible footsteps matching the
+  rhythm of leg movement, both in story-loop walks and freeplay
+  walks. No SPU pop, click, or stuck note.
+- If footsteps are skipped: silent walks ship; the audio path stays
+  in place behind a config flag for future activation.
 
-### Phase 5 — Behind-tree compositing (~1-2 days)
+### Phase 5 — Behind-tree compositing (~1-2 days, kernel-resident)
 
-**Goal:** when Johnny walks between spots 3 and 4 (the path that goes
-behind the palm tree), the tree visibly covers him at the right
-points.
+**Goal:** when Johnny walks behind the palm tree, the tree visibly
+covers him. Implementation lives **in the shared kernel** so both
+story-loop walks AND freeplay get it for free.
 
 1. The original behind-tree code is `walk.c:103-104`:
    ```c
    isBehindTree = ((currentSpot == 3) && (nextSpot == 4))
                  || ((currentSpot == 4) && (nextSpot == 3));
    ```
-   When set, `walkAnimate()` draws extra cover-up sprites (`walk.c:174`):
+   When set, `walkAnimate()` draws extra cover-up sprites
+   (`walk.c:174`):
    ```c
    grDrawSprite(sfc, ttmBgSlot, 442, 148, 13, 0);  // trunk
    grDrawSprite(sfc, ttmBgSlot, 365, 122, 12, 0);  // leafs
    ```
-   These sprites are pulled from the BACKGROUND TTM slot. Drawing them
-   AFTER the walking sprite means they cover Johnny at the right pixels.
 
-2. On PS1, the question is whether `grDrawSprite()` calls in sequence
-   can produce the desired overlap. The PS1 GPU's ordered-table model
-   has explicit z-priority, but if the walk render simply submits to
-   the OT in order (walk sprite first, then trunk + leaf sprites), the
-   trunk and leaf will draw in front. Confirm by experiment.
+2. The shared kernel's `behindTree` parameter triggers this stamp.
+   The kernel, not the driver, owns the cover-up sprite indices and
+   their positions. That keeps both modes honest:
+    - Story-loop driver: passes `behindTree` from walk.c's
+      static (`isBehindTree`) which it already maintains.
+    - Freeplay driver: passes `behindTree` from a coordinate-zone
+      test against the tree z-region (per
+      `freeplay-mode-design.md` § 14, lines 337-339:
+      "tree z-region (430..480, 220..250)").
 
-3. The trunk and leaf sprites must be available in a TTM slot that's
-   resident during the walk. On host the background slot
-   (`ttmBackgroundThread.ttmSlot`) holds the island scenery; on PS1 the
-   equivalent is the loaded background asset. Need a loader path that
-   extracts the trunk and leaf sub-sprites from the island background
-   atlas and keeps them callable during walks.
+3. PS1 z-order: confirm by experiment that submitting the walk
+   sprite to the OT *before* the trunk + leaf cover-up produces the
+   desired overlap. The PS1 GPU draws OT entries in submission
+   order; later submissions land on top of earlier ones. If that's
+   how the existing renderer is wired (it is, per the experiment
+   log's repeated references to OT-submission ordering), the naive
+   approach works.
 
-4. Alternative if (3) is too invasive: pre-extract the trunk and leaf
-   sub-sprites at pack-build time and ship as a small new asset
-   (`JOHNTREE.BMP`?) loaded alongside `JOHNWALK.BMP`.
+4. The trunk and leaf sub-sprites must be reachable at walk-time.
+   Two options:
+    - Use the existing background TTM slot at the same indices the
+      host build uses (sprite indices 12 and 13). Confirm those
+      indices resolve to trunk + leaf in the PS1 background atlas.
+    - Pre-extract trunk + leaf into a small dedicated asset
+      (`JOHNTREE.BMP`?) loaded alongside `JOHNWALK.BMP`. Adds disc
+      footprint but isolates the dependency.
 
-5. Validate visually with regression: walk from spot 3 to spot 4 and
-   reverse. Johnny should disappear behind the palm trunk and reappear
-   on the other side, matching host frame-by-frame.
+   Pick option 1 unless the indices don't line up.
+
+5. Validate visually for both modes:
+    - Story-loop: walk-test from spot 3 to spot 4 and reverse.
+    - Freeplay: D-pad-walk through the tree z-region.
+   Both should show Johnny covered at the correct moments.
 
 **Acceptance:**
-- Behind-tree walks render correctly: Johnny is hidden behind the
-  trunk and leaf cluster at the right moments.
+- Both story-loop walks and freeplay walks render the behind-tree
+  effect identically.
 - No z-fighting, flickering, or one-frame visibility glitches.
-- Same trunk position whether Johnny is or is not currently behind it.
+- The cover-up sprite indices are kernel-internal — neither driver
+  has to know about them.
 
-### Phase 6 — Holiday overlay during walks (~½ day)
+### Phase 6 — Holiday overlay during walks (~½ day, mostly verification)
 
-**Goal:** the active holiday emblem stays on screen during walks (it
-belongs to the island, not to a specific scene).
+**Goal:** the active holiday emblem stays on screen during walks
+(it belongs to the island, not to a specific scene), with the same
+compositor call both modes use.
 
-1. The PS1 runtime currently renders the holiday overlay during scene
-   playback via the existing graphics_ps1 path. During walks, the same
-   overlay path should fire — walks just don't touch it.
+1. The freeplay design's locked render order
+   (`freeplay-mode-design.md` § 15, lines 357-371) places the holiday
+   overlay at step 7, AFTER Johnny is rendered. Story-loop walks
+   inherit that order — walks don't draw the overlay; the main loop
+   does, after the kernel returns.
 
-2. In `fgWalkRender()`'s frame loop, after the walking sprite is
-   composed, call the existing holiday overlay function. If holiday
-   overlay is currently embedded in scene playback rather than the
-   per-frame compositor, refactor to a callable used by both scene and
-   walk paths.
+2. The story-loop driver's frame loop has the same shape as the
+   freeplay frame loop:
+   ```
+   grBeginFrame()
+   grRestoreBgTiles()
+   /* wave / persistents — story-loop walks: just waves */
+   walkRenderFrame(...)        /* the kernel */
+   if (holiday active) fgBackdropStampHoliday(...)
+   grEndFrame()
+   ```
+   The `fgBackdropStampHoliday()` call is the SAME function freeplay
+   uses. No refactor needed; just wire the call into the walk
+   driver's frame loop in the right order.
 
 3. Verify with `holiday christmas` boot token: walk transitions show
-   the Christmas tree at the same coordinates as the scenes that
-   surround them.
+   the holiday emblem at the same coordinates as the scenes that
+   surround them. Cross-verify with `walk-render-test` + holiday
+   token: the emblem should be present even on the bare-test path.
 
 **Acceptance:**
-- Holiday emblem persists across scene→walk→scene transitions with no
-  flicker or position jump.
+- Holiday emblem persists across scene→walk→scene transitions with
+  no flicker, no position jump, no emblem disappearance during the
+  walk frames.
 - Works with all 36 holidays from `holidays.yml`.
+- The same `fgBackdropStampHoliday()` call drives the overlay in
+  story-loop walks, freeplay walks, and existing scenes.
 
 ### Phase 7 — Validation harness (~2-3 days)
 
@@ -420,10 +650,22 @@ belongs to the island, not to a specific scene).
    is FG2-pack-specific; walks may need their own dirty layout (or a
    simpler "full active region" mode).
 
+6. **Freeplay-parity test.** Build a tiny harness scene that calls
+   the shared kernel from a synthetic freeplay-style driver: feed a
+   pre-recorded sequence of `(spriteIdx, x, y, heading, behindTree)`
+   tuples and capture the rendered frames. Compare against
+   story-loop walks rendered through the same kernel for an
+   equivalent path. Any pixel difference is a kernel bug — both
+   drivers should produce identical output for identical input.
+   This guards against the kernel accidentally depending on
+   walk.c's static state.
+
 **Acceptance:**
 - All currently-used walk edges have a regtest case.
 - All cases pass pixel-perfect against host reference.
 - Walk-to-scene-frame-0 transitions show no visible pop.
+- Freeplay-parity test passes: synthetic-driver output =
+  story-loop-driver output for matched inputs.
 
 ### Phase 8 — 11-day story calendar (~3-5 days, last phase)
 
@@ -744,6 +986,131 @@ without breaking the visual gate. Order is flexible.
       extraction came from
 - [ ] Identify the original engine's footstep sample IDs by replaying
       a host walk under a debugger or audio-capture wrapper
+- [ ] **Extract canonical (x, y) coordinates for all 6 spots from
+      walk_data.h's first/last frames per edge** — needed by both
+      drivers to bridge the spot↔coord systems. Output:
+      `docs/ps1/walk-spot-coordinates.md`.
 
-These four checks de-risk the four highest-uncertainty items above.
+These five checks de-risk the highest-uncertainty items above.
 Don't merge Phase 1 without them.
+
+---
+
+## R7. Shared-kernel architecture review (added 2026-04-29)
+
+This section red-teams the cross-cutting architecture in § 3.5
+specifically against the freeplay design.
+
+**R7.1. Kernel API surface — what doesn't belong inside.**
+The shared kernel must NOT call:
+- `walk.c` statics (walkPath, currentSpot, etc.) — only walk_pilot.c
+  reads those
+- `calcPath()` — pathfinding is story-loop-only
+- `fgBackdropStampHoliday()` — caller's job after kernel returns
+- `eventsWaitTick()` — caller controls frame cadence
+- `grBeginFrame()` / `grEndFrame()` — caller owns frame envelope
+- `freeplayState.*` — kernel must not see freeplay's struct
+The kernel's stateless API is what makes the freeplay-parity test
+in Phase 7 step 6 meaningful. **Risk: medium** if reviewers add
+"convenience" helpers that drag mode-specific state in. **Mitigation:**
+the API in § 3.5.1 is the entire kernel surface; PRs that add
+parameters need explicit review.
+
+**R7.2. Spot↔coord mapping correctness.** § 3.5.3 extracts canonical
+coords from `walk_data.h`'s first/last frames. If those frames
+include lead-in turning poses, the coords will be slightly off. **Risk:
+medium.** **Mitigation:** R6's "extract canonical coords" pre-flight
+must validate against the host build's actual displayed Johnny
+position when standing at each spot. If walk_data's first-frame coord
+doesn't match standing position, look up the turn-in-place table
+(`walkDataBookmarksTurns`) instead — those frames are explicitly
+"standing at spot S facing heading H" poses.
+
+**R7.3. Behind-tree zone test divergence.** The story-loop driver
+derives `behindTree` from `(currentSpot, nextSpot)` per walk.c line
+103. The freeplay driver derives it from a coord-zone test. These
+two derivations could disagree at the same physical (x, y) — a
+freeplay user walking on the same trajectory as a story-loop walk
+might see a one-frame mismatch in tree-cover behavior. **Risk: low**
+visually but real. **Mitigation:** Phase 5's acceptance test
+explicitly compares both modes on the same trajectory; if they
+disagree, the freeplay zone test wins (it's the more general one)
+and the story-loop driver derives `behindTree` from the same
+coord-zone test rather than the spot-pair rule.
+
+**R7.4. Footstep contradiction (R2.3 expanded).** The freeplay
+design says original walks were silent. The walk plan was told to
+"add footstep walks noises like original." Phase 4.0 resolves this
+before any audio code lands. **Risk: low** (a doc fix either way),
+but requires explicit user decision.
+
+**R7.5. JOHNWALK slot allocation.** Freeplay's design (§ 16) reserves
+slot 1 for `JOHNWALK.BMP`. The walk kernel should use the same slot
+identifier so the two modes don't fight over slots. **Risk: low.**
+**Mitigation:** add a constant `WALK_BMP_SLOT = 1` to a shared
+header (`walk_render.h`) — both modes include it.
+
+**R7.6. Frame cadence model.** The story-loop driver waits whatever
+delay `walkAnimate()` returns — usually 6 VBlanks per walk frame.
+Freeplay's main loop is 1 VBlank per iteration. The kernel doesn't
+care, but the per-mode drivers MUST drive the kernel at compatible
+cadences. If freeplay calls `walkRenderFrame` once per VBlank with
+an unchanged sprite frame index, Johnny appears to "stutter" — the
+sprite refreshes but the pose doesn't change. **Risk: medium.**
+**Mitigation:** freeplay driver advances its own sprite-frame index
+on a 6-VBlank cadence (`TFreeplayJohnny.frameTimer` already in the
+design at § 17 line 414); the kernel sees a moving sprite index just
+like the story-loop driver.
+
+**R7.7. Walk-end pose continuity for freeplay.** The story-loop
+walk ends with Johnny in `walk.c`'s "hands in pockets" pose at the
+target spot/heading (R1.2 covers this for scenes). Freeplay walks
+end with Johnny in whatever sprite the last D-pad input dictated.
+**Risk: low** for freeplay (no scene follows; D-pad release puts him
+in IDLE pose), but the kernel's behavior when freeplay shifts from
+WALK to a non-walk mode (FISH, BUILD, etc.) needs to be defined.
+The kernel is stateless, so the mode-shift is the freeplay
+driver's responsibility — Phase 7's freeplay-parity test should
+exercise this transition.
+
+**R7.8. Disagreement on whether freeplay even uses calcPath.** The
+freeplay design specifies free 4-way movement, no spot graph. The
+walk plan keeps calcPath alive for story-loop only. **Risk: very low**
+— this is just a documented design choice, but worth noting that
+a future "freeplay → walk to nearest spot for scene activation"
+extension would require a coord→spot mapping (covered by R7.2's
+canonical-coord table) and would NOT need calcPath either (it just
+needs the closest-spot lookup).
+
+**R7.9. Memcard schema for freeplay state during walks.** Phase 8
+adds `currentDay` to memcard. Freeplay's design (§ 2 non-goals,
+line 30) says state DOESN'T persist across sessions. So the memcard
+schema only needs the story-loop's `currentDay`, not freeplay
+state. Worth confirming the two save schemas don't cross-pollute.
+**Risk: very low.** **Mitigation:** freeplay reads islandState
+fresh on each entry; doesn't write back. memcard.c only persists
+pause-menu settings + storyCurrentDay.
+
+## R8. Phasing logic — does freeplay block on this plan?
+
+Freeplay's Phase 1a (`freeplay: phase 1a — skeleton (walk + exit)`)
+needs Johnny to walk on D-pad input. With the shared-kernel
+architecture, freeplay's Phase 1a can land BEFORE walk plan Phase 3
+(story-loop picker) but AFTER walk plan Phase 2 (kernel exists).
+
+Recommended phase-interleaving if both projects run in parallel:
+
+```
+walk plan Phase 1   →  build integration + assets  (both depend)
+walk plan Phase 2   →  kernel exists                (freeplay can start)
+  freeplay Phase 0       freeplay Phase 0 (audit)   (independent)
+  freeplay Phase 1a      freeplay Phase 1a (skeleton walk)
+walk plan Phase 2.5 →  story-loop driver
+walk plan Phase 3   →  scene picker
+  freeplay Phase 1b → freeplay rest
+walk plan Phase 4-8 (parallel with freeplay 2-6)
+```
+
+Both teams call the kernel; neither team owns it. Kernel changes
+require sign-off from both owners. **Risk: low** assuming both teams
+agree the kernel API in § 3.5.1 is the contract.
