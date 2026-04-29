@@ -61,19 +61,23 @@ Current battle-card rollup as of 2026-04-29:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `57 / 126` |
-| Scenes with at least one timed variant | `34 / 63` |
-| Scenes with both high/low variants timed | `23 / 63` |
+| Scene/tide variants measured | `75 / 126` |
+| Scenes with at least one timed variant | `45 / 63` |
+| Scenes with both high/low variants timed | `30 / 63` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.1%` |
-| Measured average target speed | `89.8%` |
+| Measured average over target | `+12.6%` |
+| Measured average target speed | `89.3%` |
+| Latest perf matrix run | `2026-04-29T12:56:40` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
 `performance-experiment-log.md`, the README status table, and the rendered
-website testing-status page. The CSV is the durable numeric source; prose
+website scene/performance battle card. The CSV is the durable numeric source; prose
 surfaces should summarize it, not invent independent numbers.
+Each measured or blocked CSV row carries `last_run_at`, derived from the
+headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
+scene rows are visible on the rendered battle card.
 
 ## Secondary (historical): headless regtest harness
 

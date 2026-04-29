@@ -13,6 +13,7 @@ import csv
 import json
 import random
 import re
+from datetime import datetime
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -173,6 +174,19 @@ def repo_relative(path: Path) -> str:
         return str(path)
 
 
+def run_timestamp_from_summary(path: Path, path_mtime: float | None = None) -> str:
+    match = re.search(r"(\d{8})-(\d{6})", str(path))
+    if match:
+        date, clock = match.groups()
+        return (
+            f"{date[0:4]}-{date[4:6]}-{date[6:8]}T"
+            f"{clock[0:2]}:{clock[2:4]}:{clock[4:6]}"
+        )
+    if path_mtime is None:
+        return ""
+    return datetime.fromtimestamp(path_mtime).isoformat(timespec="seconds")
+
+
 def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, str]]:
     metrics: dict[tuple[str, str], dict[str, str]] = {}
     metric_mtimes: dict[tuple[str, str], float] = {}
@@ -206,6 +220,7 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
                 over_percent = f"{((loop_vb - target_vb) * 100.0 / target_vb):.2f}"
             metrics[metric_key] = {
                 "last_summary": repo_relative(path),
+                "last_run_at": run_timestamp_from_summary(path, path_mtime),
                 "loop_vb": str(loop_vb) if isinstance(loop_vb, int) else "",
                 "target_vb": str(target_vb) if isinstance(target_vb, int) else "",
                 "over_target_vb": over_target,
@@ -252,6 +267,7 @@ def sheet_rows(
                 "source_pack": f"generated/ps1/foreground/{source}",
                 "pack_bytes": str((pack_dir / source).stat().st_size) if (pack_dir / source).is_file() else "",
                 "last_summary": "",
+                "last_run_at": "",
                 "loop_vb": "",
                 "target_vb": "",
                 "over_target_vb": "",

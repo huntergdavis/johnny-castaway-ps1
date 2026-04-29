@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 331 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 320 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -385,18 +385,7 @@ for a guided learning path through the machinery.
 
 <ul class="doc-grid">
 <li><a href="{{ '/source/models/Qwen2.5-VL-3B-Instruct-ov-int4/README/' | relative_url }}">Choose GPU instead of CPU in the line below to run the model on Intel integrated or discrete GPU</a><p><code>models/Qwen2.5-VL-3B-Instruct-ov-int4/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/cmake_reference/' | relative_url }}">PSn00bSDK CMake reference</a><p><code>scratch/psn00b-src/doc/cmake_reference.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/dev_notes/' | relative_url }}">Development notes</a><p><code>scratch/psn00b-src/doc/dev_notes.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/drawing_queue/' | relative_url }}">GPU drawing queue</a><p><code>scratch/psn00b-src/doc/drawing_queue.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/installation/' | relative_url }}">Getting started with PSn00bSDK</a><p><code>scratch/psn00b-src/doc/installation.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/known_bugs/' | relative_url }}">Known PSn00bSDK bugs</a><p><code>scratch/psn00b-src/doc/known_bugs.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/old/old_changelog/' | relative_url }}">PSn00bSDK changelog (archived)</a><p><code>scratch/psn00b-src/doc/old/old_changelog.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/toolchain/' | relative_url }}">Building the GCC toolchain</a><p><code>scratch/psn00b-src/doc/toolchain.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/examples/README/' | relative_url }}">PSn00bSDK Example Programs</a><p><code>scratch/psn00b-src/examples/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/indev/README/' | relative_url }}">The indev directory</a><p><code>scratch/psn00b-src/indev/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/libpsn00b/psxpress/README/' | relative_url }}">PSn00bSDK MDEC library</a><p><code>scratch/psn00b-src/libpsn00b/psxpress/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/LICENSE/' | relative_url }}">PSn00bSDK licenses</a><p><code>scratch/psn00b-src/LICENSE.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/README/' | relative_url }}">PSn00bSDK</a><p><code>scratch/psn00b-src/README.md</code></p></li>
+<li><a href="{{ '/source/scratch/ps1-perf-iterate/current-retry-manifest/' | relative_url }}">PS1 Perf Retry Manifest</a><p><code>scratch/ps1-perf-iterate/current-retry-manifest.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>

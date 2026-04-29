@@ -923,19 +923,19 @@ optimization battle card for “how fast does this scene/tide variant run.”</l
     </tr>
     <tr>
       <td>Scene/tide variants timed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">57 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">75 / 126</code></td>
     </tr>
     <tr>
       <td>Scenes with at least one timed variant</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">34 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">45 / 63</code></td>
     </tr>
     <tr>
       <td>Scenes with both high/low variants timed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">23 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">30 / 63</code></td>
     </tr>
     <tr>
       <td>Pending variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">67 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">49 / 126</code></td>
     </tr>
     <tr>
       <td>Blocked variants</td>
@@ -943,11 +943,15 @@ optimization battle card for “how fast does this scene/tide variant run.”</l
     </tr>
     <tr>
       <td>Measured average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+12.1%</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+12.6%</code></td>
     </tr>
     <tr>
       <td>Measured average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">89.8%</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">89.3%</code></td>
+    </tr>
+    <tr>
+      <td>Latest perf matrix run</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-04-29T12:56:40</code></td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -979,6 +983,9 @@ Lower is better.</li>
   <li><strong>Blocking</strong>: visible CD/blocking VBlanks.</li>
   <li><strong>Prefetch</strong>: prefetch overrun VBlanks.</li>
   <li><strong>Due</strong>: due-frame misses.</li>
+  <li><strong>Latest Run</strong>: ISO timestamp derived from the headless summary path
+(<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
+matrix run has been recorded for that variant.</li>
 </ul>
 
 <h3 id="126-variant-battle-card">126-variant battle card</h3>
@@ -989,6 +996,7 @@ Lower is better.</li>
       <th>Scene</th>
       <th>Tide</th>
       <th>Status</th>
+      <th>Latest Run</th>
       <th style="text-align: right">Over Target</th>
       <th style="text-align: right">Target Speed</th>
       <th style="text-align: right">VBlanks</th>
@@ -1003,6 +1011,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T21:34:02</td>
       <td style="text-align: right">+3.0%</td>
       <td style="text-align: right">97.1%</td>
       <td style="text-align: right">4373/4244</td>
@@ -1015,6 +1024,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T22:15:22</td>
       <td style="text-align: right">+3.1%</td>
       <td style="text-align: right">97.0%</td>
       <td style="text-align: right">4373/4242</td>
@@ -1027,6 +1037,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T21:27:47</td>
       <td style="text-align: right">+12.9%</td>
       <td style="text-align: right">88.5%</td>
       <td style="text-align: right">1205/1067</td>
@@ -1039,6 +1050,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T22:06:21</td>
       <td style="text-align: right">+12.5%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">1203/1069</td>
@@ -1051,6 +1063,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T21:11:41</td>
       <td style="text-align: right">+9.3%</td>
       <td style="text-align: right">91.5%</td>
       <td style="text-align: right">1866/1707</td>
@@ -1063,6 +1076,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T21:57:32</td>
       <td style="text-align: right">+9.1%</td>
       <td style="text-align: right">91.7%</td>
       <td style="text-align: right">1861/1706</td>
@@ -1075,6 +1089,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T21:20:58</td>
       <td style="text-align: right">+14.5%</td>
       <td style="text-align: right">87.3%</td>
       <td style="text-align: right">1043/911</td>
@@ -1087,6 +1102,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T23:00:11</td>
       <td style="text-align: right">+14.5%</td>
       <td style="text-align: right">87.3%</td>
       <td style="text-align: right">1043/911</td>
@@ -1099,6 +1115,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T20:54:38</td>
       <td style="text-align: right">+22.7%</td>
       <td style="text-align: right">81.5%</td>
       <td style="text-align: right">751/612</td>
@@ -1111,6 +1128,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T21:43:07</td>
       <td style="text-align: right">+21.7%</td>
       <td style="text-align: right">82.2%</td>
       <td style="text-align: right">747/614</td>
@@ -1123,6 +1141,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1135,6 +1154,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1147,6 +1167,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T22:50:08</td>
       <td style="text-align: right">+11.2%</td>
       <td style="text-align: right">89.9%</td>
       <td style="text-align: right">2268/2039</td>
@@ -1159,6 +1180,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T23:13:29</td>
       <td style="text-align: right">+11.1%</td>
       <td style="text-align: right">90.0%</td>
       <td style="text-align: right">2271/2044</td>
@@ -1171,6 +1193,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T05:10:31</td>
       <td style="text-align: right">+12.3%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1408/1254</td>
@@ -1183,6 +1206,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T03:28:40</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1408/1255</td>
@@ -1194,31 +1218,34 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:34:38</td>
+      <td style="text-align: right">+8.1%</td>
+      <td style="text-align: right">92.5%</td>
+      <td style="text-align: right">1864/1724</td>
+      <td style="text-align: right">9</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:48:17</td>
+      <td style="text-align: right">+8.3%</td>
+      <td style="text-align: right">92.3%</td>
+      <td style="text-align: right">1866/1723</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T05:25:38</td>
       <td style="text-align: right">+9.9%</td>
       <td style="text-align: right">91.0%</td>
       <td style="text-align: right">1551/1411</td>
@@ -1231,6 +1258,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T03:39:20</td>
       <td style="text-align: right">+10.2%</td>
       <td style="text-align: right">90.8%</td>
       <td style="text-align: right">1551/1408</td>
@@ -1243,6 +1271,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building1</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T07:52:19</td>
       <td style="text-align: right">+25.6%</td>
       <td style="text-align: right">79.6%</td>
       <td style="text-align: right">966/769</td>
@@ -1254,19 +1283,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building1</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T11:16:06</td>
+      <td style="text-align: right">+24.2%</td>
+      <td style="text-align: right">80.5%</td>
+      <td style="text-align: right">953/767</td>
+      <td style="text-align: right">62</td>
+      <td style="text-align: right">46</td>
+      <td style="text-align: right">4</td>
+      <td>padded FGP3; loop-validated; due_misses tradeoff 2-&gt;4 accepted</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building2</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T00:51:42</td>
       <td style="text-align: right">+21.8%</td>
       <td style="text-align: right">82.1%</td>
       <td style="text-align: right">1572/1291</td>
@@ -1279,6 +1310,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building2</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T01:03:17</td>
       <td style="text-align: right">+21.4%</td>
       <td style="text-align: right">82.4%</td>
       <td style="text-align: right">1570/1293</td>
@@ -1291,6 +1323,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building3</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T06:29:00</td>
       <td style="text-align: right">+9.4%</td>
       <td style="text-align: right">91.4%</td>
       <td style="text-align: right">1565/1431</td>
@@ -1303,6 +1336,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1315,6 +1349,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building4</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T23:31:51</td>
       <td style="text-align: right">+12.5%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">3141/2792</td>
@@ -1327,6 +1362,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building4</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T23:43:30</td>
       <td style="text-align: right">+12.4%</td>
       <td style="text-align: right">89.0%</td>
       <td style="text-align: right">3135/2790</td>
@@ -1339,6 +1375,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building5</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T02:23:18</td>
       <td style="text-align: right">+5.4%</td>
       <td style="text-align: right">94.9%</td>
       <td style="text-align: right">3514/3334</td>
@@ -1351,6 +1388,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building5</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T02:32:45</td>
       <td style="text-align: right">+4.8%</td>
       <td style="text-align: right">95.4%</td>
       <td style="text-align: right">3508/3346</td>
@@ -1363,6 +1401,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T01:15:17</td>
       <td style="text-align: right">+13.1%</td>
       <td style="text-align: right">88.4%</td>
       <td style="text-align: right">2754/2435</td>
@@ -1375,6 +1414,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T01:29:52</td>
       <td style="text-align: right">+12.9%</td>
       <td style="text-align: right">88.6%</td>
       <td style="text-align: right">2746/2433</td>
@@ -1387,6 +1427,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T02:04:56</td>
       <td style="text-align: right">+5.5%</td>
       <td style="text-align: right">94.8%</td>
       <td style="text-align: right">3861/3659</td>
@@ -1399,6 +1440,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T02:13:58</td>
       <td style="text-align: right">+4.5%</td>
       <td style="text-align: right">95.7%</td>
       <td style="text-align: right">3837/3672</td>
@@ -1411,6 +1453,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T12:56:40</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1207/1076</td>
@@ -1423,6 +1466,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-27T17:40:04</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1207/1076</td>
@@ -1435,6 +1479,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T17:40:29</td>
       <td style="text-align: right">+7.5%</td>
       <td style="text-align: right">93.0%</td>
       <td style="text-align: right">1898/1765</td>
@@ -1447,6 +1492,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-27T18:50:02</td>
       <td style="text-align: right">+7.4%</td>
       <td style="text-align: right">93.1%</td>
       <td style="text-align: right">1898/1767</td>
@@ -1459,6 +1505,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T17:36:58</td>
       <td style="text-align: right">+7.1%</td>
       <td style="text-align: right">93.4%</td>
       <td style="text-align: right">2093/1955</td>
@@ -1471,6 +1518,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-28T16:50:36</td>
       <td style="text-align: right">+6.6%</td>
       <td style="text-align: right">93.8%</td>
       <td style="text-align: right">2090/1960</td>
@@ -1482,19 +1530,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:23:32</td>
+      <td style="text-align: right">+16.7%</td>
+      <td style="text-align: right">85.7%</td>
+      <td style="text-align: right">978/838</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1507,6 +1557,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1519,6 +1570,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1530,43 +1582,47 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T11:07:36</td>
+      <td style="text-align: right">+19.2%</td>
+      <td style="text-align: right">83.9%</td>
+      <td style="text-align: right">893/749</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T11:44:20</td>
+      <td style="text-align: right">+19.6%</td>
+      <td style="text-align: right">83.6%</td>
+      <td style="text-align: right">897/750</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:04:49</td>
+      <td style="text-align: right">+19.4%</td>
+      <td style="text-align: right">83.8%</td>
+      <td style="text-align: right">863/723</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1579,6 +1635,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T04:19:49</td>
       <td style="text-align: right">+12.4%</td>
       <td style="text-align: right">88.9%</td>
       <td style="text-align: right">1400/1245</td>
@@ -1590,19 +1647,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:00:44</td>
+      <td style="text-align: right">+11.1%</td>
+      <td style="text-align: right">90.1%</td>
+      <td style="text-align: right">1387/1249</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-28T23:54:52</td>
       <td style="text-align: right">+9.5%</td>
       <td style="text-align: right">91.3%</td>
       <td style="text-align: right">2128/1943</td>
@@ -1615,6 +1674,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T00:05:46</td>
       <td style="text-align: right">+9.8%</td>
       <td style="text-align: right">91.1%</td>
       <td style="text-align: right">2132/1942</td>
@@ -1626,31 +1686,34 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:09:01</td>
+      <td style="text-align: right">+7.3%</td>
+      <td style="text-align: right">93.2%</td>
+      <td style="text-align: right">1878/1750</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:17:15</td>
+      <td style="text-align: right">+7.3%</td>
+      <td style="text-align: right">93.2%</td>
+      <td style="text-align: right">1878/1750</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T05:42:22</td>
       <td style="text-align: right">+12.8%</td>
       <td style="text-align: right">88.7%</td>
       <td style="text-align: right">1308/1160</td>
@@ -1663,6 +1726,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T08:55:48</td>
       <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1305/1163</td>
@@ -1675,6 +1739,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1687,6 +1752,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1699,6 +1765,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1711,6 +1778,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1723,6 +1791,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T01:46:20</td>
       <td style="text-align: right">+3.6%</td>
       <td style="text-align: right">96.5%</td>
       <td style="text-align: right">2901/2799</td>
@@ -1735,6 +1804,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T01:55:45</td>
       <td style="text-align: right">+3.8%</td>
       <td style="text-align: right">96.3%</td>
       <td style="text-align: right">2905/2798</td>
@@ -1747,6 +1817,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T00:18:38</td>
       <td style="text-align: right">+4.5%</td>
       <td style="text-align: right">95.7%</td>
       <td style="text-align: right">5028/4813</td>
@@ -1759,7 +1830,8 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td style="text-align: right">+3.7%</td>
+      <td>2026-04-29T00:30:11</td>
+      <td style="text-align: right">+3.8%</td>
       <td style="text-align: right">96.4%</td>
       <td style="text-align: right">5011/4830</td>
       <td style="text-align: right">50</td>
@@ -1771,6 +1843,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T04:40:25</td>
       <td style="text-align: right">+1.7%</td>
       <td style="text-align: right">98.3%</td>
       <td style="text-align: right">2286/2248</td>
@@ -1783,6 +1856,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T04:55:27</td>
       <td style="text-align: right">+1.7%</td>
       <td style="text-align: right">98.3%</td>
       <td style="text-align: right">2286/2248</td>
@@ -1795,6 +1869,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1807,6 +1882,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1818,19 +1894,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:37:06</td>
+      <td style="text-align: right">-2.5%</td>
+      <td style="text-align: right">102.5%</td>
+      <td style="text-align: right">1969/2019</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">4</td>
+      <td>FGP2 baseline; plain padded FGP3 rejected due prefetch-overrun regression</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1843,6 +1921,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T03:50:10</td>
       <td style="text-align: right">+7.4%</td>
       <td style="text-align: right">93.1%</td>
       <td style="text-align: right">1698/1581</td>
@@ -1855,6 +1934,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T04:00:29</td>
       <td style="text-align: right">+7.0%</td>
       <td style="text-align: right">93.4%</td>
       <td style="text-align: right">1694/1583</td>
@@ -1866,31 +1946,34 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T11:24:47</td>
+      <td style="text-align: right">+16.9%</td>
+      <td style="text-align: right">85.6%</td>
+      <td style="text-align: right">1115/954</td>
+      <td style="text-align: right">26</td>
+      <td style="text-align: right">26</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T11:35:00</td>
+      <td style="text-align: right">+14.6%</td>
+      <td style="text-align: right">87.3%</td>
+      <td style="text-align: right">1099/959</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1903,6 +1986,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1915,6 +1999,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1927,6 +2012,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1939,6 +2025,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1951,6 +2038,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1963,6 +2051,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1975,6 +2064,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -1987,7 +2077,8 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td style="text-align: right">+12.3%</td>
+      <td>2026-04-29T07:31:30</td>
+      <td style="text-align: right">+12.2%</td>
       <td style="text-align: right">89.1%</td>
       <td style="text-align: right">1365/1216</td>
       <td style="text-align: right">12</td>
@@ -1999,6 +2090,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2011,6 +2103,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T06:44:33</td>
       <td style="text-align: right">+9.7%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1600/1459</td>
@@ -2023,6 +2116,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2035,6 +2129,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T07:00:48</td>
       <td style="text-align: right">+10.5%</td>
       <td style="text-align: right">90.5%</td>
       <td style="text-align: right">1503/1360</td>
@@ -2047,6 +2142,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2058,19 +2154,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:54:14</td>
+      <td style="text-align: right">+26.1%</td>
+      <td style="text-align: right">79.3%</td>
+      <td style="text-align: right">676/536</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2083,6 +2181,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2095,6 +2194,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2107,6 +2207,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2119,6 +2220,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2131,6 +2233,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2143,6 +2246,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2155,6 +2259,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2167,6 +2272,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2179,6 +2285,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T06:13:45</td>
       <td style="text-align: right">+9.7%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1597/1456</td>
@@ -2191,6 +2298,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2202,19 +2310,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T12:30:59</td>
+      <td style="text-align: right">+15.2%</td>
+      <td style="text-align: right">86.8%</td>
+      <td style="text-align: right">1135/985</td>
+      <td style="text-align: right">17</td>
+      <td style="text-align: right">17</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2226,19 +2336,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:13:31</td>
+      <td style="text-align: right">+11.7%</td>
+      <td style="text-align: right">89.5%</td>
+      <td style="text-align: right">1328/1189</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2251,6 +2363,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
       <td>high</td>
       <td>blocked</td>
+      <td>2026-04-28T23:20:55</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2263,6 +2376,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2275,6 +2389,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
       <td>high</td>
       <td>blocked</td>
+      <td>2026-04-29T02:57:54</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2287,6 +2402,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2298,19 +2414,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T09:38:48</td>
+      <td style="text-align: right">+22.5%</td>
+      <td style="text-align: right">81.6%</td>
+      <td style="text-align: right">822/671</td>
+      <td style="text-align: right">22</td>
+      <td style="text-align: right">22</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2323,6 +2441,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T02:42:08</td>
       <td style="text-align: right">+56.1%</td>
       <td style="text-align: right">64.1%</td>
       <td style="text-align: right">1581/1013</td>
@@ -2335,6 +2454,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
       <td>low</td>
       <td>measured</td>
+      <td>2026-04-29T02:51:12</td>
       <td style="text-align: right">+58.4%</td>
       <td style="text-align: right">63.1%</td>
       <td style="text-align: right">1611/1017</td>
@@ -2347,6 +2467,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2359,6 +2480,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2371,6 +2493,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T03:18:33</td>
       <td style="text-align: right">+20.0%</td>
       <td style="text-align: right">83.3%</td>
       <td style="text-align: right">1295/1079</td>
@@ -2382,19 +2505,21 @@ Lower is better.</li>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td>measured</td>
+      <td>2026-04-29T10:57:15</td>
+      <td style="text-align: right">+15.2%</td>
+      <td style="text-align: right">86.8%</td>
+      <td style="text-align: right">1250/1085</td>
+      <td style="text-align: right">62</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">6</td>
+      <td>padded FGP3</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T05:58:39</td>
       <td style="text-align: right">+7.5%</td>
       <td style="text-align: right">93.0%</td>
       <td style="text-align: right">2198/2044</td>
@@ -2407,6 +2532,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2419,6 +2545,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T07:16:36</td>
       <td style="text-align: right">+9.6%</td>
       <td style="text-align: right">91.2%</td>
       <td style="text-align: right">1777/1621</td>
@@ -2431,6 +2558,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2443,6 +2571,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2455,6 +2584,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2467,6 +2597,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
       <td>high</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2479,6 +2610,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
@@ -2491,6 +2623,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
       <td>high</td>
       <td>measured</td>
+      <td>2026-04-29T03:08:07</td>
       <td style="text-align: right">+10.4%</td>
       <td style="text-align: right">90.6%</td>
       <td style="text-align: right">2512/2275</td>
@@ -2503,6 +2636,7 @@ Lower is better.</li>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
       <td>low</td>
       <td>pending</td>
+      <td>-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
