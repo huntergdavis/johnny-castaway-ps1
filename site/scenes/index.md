@@ -106,12 +106,12 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `66 / 126` |
-| Scenes with at least one timed variant | `40 / 63` |
+| Scene/tide variants timed | `67 / 126` |
+| Scenes with at least one timed variant | `41 / 63` |
 | Scenes with both high/low variants timed | `26 / 63` |
-| Pending variants | `58 / 126` |
+| Pending variants | `57 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.6%` |
+| Measured average over target | `+12.7%` |
 | Measured average target speed | `89.3%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
@@ -214,7 +214,7 @@ and this page.
 | `mary4` | low | pending | - | - | - | - | - | - |  |
 | `mary5` | high | measured | +7.4% | 93.1% | 1698/1581 | 20 | 20 | 0 | padded FGP3 |
 | `mary5` | low | measured | +7.0% | 93.4% | 1694/1583 | 14 | 14 | 0 | padded FGP3 |
-| `miscgag1` | high | pending | - | - | - | - | - | - |  |
+| `miscgag1` | high | measured | +16.9% | 85.6% | 1115/954 | 26 | 26 | 0 | padded FGP3 |
 | `miscgag1` | low | pending | - | - | - | - | - | - |  |
 | `miscgag2` | high | pending | - | - | - | - | - | - |  |
 | `miscgag2` | low | pending | - | - | - | - | - | - |  |
