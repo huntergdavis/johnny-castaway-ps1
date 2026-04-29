@@ -175,6 +175,8 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
         path_mtime = path.stat().st_mtime
         summary = json.loads(path.read_text(encoding="utf-8"))
         for case in summary.get("cases", []):
+            if case.get("gate", {}).get("pass") is False:
+                continue
             boot = str(case.get("boot", ""))
             scene, lowtide = parse_boot(boot)
             if not scene:
@@ -272,11 +274,36 @@ def write_sheet(path: Path, records: list[SceneRecord], summaries: list[Path], p
         writer.writerows(rows)
 
 
-def print_cases(records: list[SceneRecord], tides: str, order: str, limit: int | None, seed: int) -> None:
+def load_measured_keys(path: Path | None) -> set[tuple[str, str]]:
+    measured: set[tuple[str, str]] = set()
+    if path is None or not path.is_file():
+        return measured
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            if row.get("status") != "measured":
+                continue
+            scene = row.get("scene_slug", "")
+            tide = row.get("tide", "")
+            if scene and tide:
+                measured.add((scene, tide))
+    return measured
+
+
+def print_cases(
+    records: list[SceneRecord],
+    tides: str,
+    order: str,
+    limit: int | None,
+    seed: int,
+    skip_measured_from: Path | None,
+) -> None:
     case_rows: list[tuple[str, str]] = []
+    measured = load_measured_keys(skip_measured_from)
     selected_tides = ("high", "low") if tides == "both" else (tides,)
     for record in records:
         for tide in selected_tides:
+            if (record.slug, tide) in measured:
+                continue
             label = f"{record.slug}-{tide}"
             case_rows.append((label, boot_for(record, tide)))
     if order == "random":
@@ -300,6 +327,7 @@ def main() -> int:
     parser.add_argument("--order", choices=("list", "random"), default="list")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument("--skip-measured-from", type=Path)
     args = parser.parse_args()
 
     records = parse_scene_list(args.scene_list)
@@ -308,7 +336,7 @@ def main() -> int:
     if args.write_sheet:
         write_sheet(args.write_sheet, records, args.summary, args.pack_dir)
     if args.print_cases:
-        print_cases(records, args.tides, args.order, args.limit, args.seed)
+        print_cases(records, args.tides, args.order, args.limit, args.seed, args.skip_measured_from)
     if not (args.write_cd_layout or args.write_sheet or args.print_cases):
         print(json.dumps([record.__dict__ for record in records], indent=2))
     return 0

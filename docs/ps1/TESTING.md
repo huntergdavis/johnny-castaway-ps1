@@ -47,6 +47,9 @@ coverage, not the legacy regtest certification scripts:
 
 # Walk the full 126-variant matrix. This is intentionally long-running.
 ./scripts/ps1-perf-all-scenes.sh --tides both --frames 7200
+
+# Resume from rows not yet measured in the CSV sheet.
+./scripts/ps1-perf-all-scenes.sh --only-pending --limit 8 --tides high
 ```
 
 The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows

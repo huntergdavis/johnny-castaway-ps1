@@ -16,6 +16,7 @@ TIMEOUT="${PS1_PERF_TIMEOUT:-220}"
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 SHEET="$PROJECT_ROOT/docs/ps1/performance-scene-matrix.csv"
 UPDATE_SHEET=1
+SKIP_MEASURED=0
 
 PERF_ARGS=()
 
@@ -38,6 +39,8 @@ Options:
   --output DIR               Perf output root (default: scratch/ps1-perf-iterate).
   --sheet PATH               CSV sheet to refresh after a successful run.
   --no-sheet                 Do not refresh the CSV sheet.
+  --skip-measured            Skip rows already marked measured in the sheet.
+  --only-pending             Alias for --skip-measured.
   -h, --help                 Show this help.
 
 Any arguments after -- are passed through to ps1-perf-iterate.sh.
@@ -66,6 +69,8 @@ while [ $# -gt 0 ]; do
             SHEET="$2"; UPDATE_SHEET=1; shift 2 ;;
         --no-sheet)
             UPDATE_SHEET=0; shift ;;
+        --skip-measured|--only-pending)
+            SKIP_MEASURED=1; shift ;;
         --)
             shift
             PERF_ARGS+=("$@")
@@ -91,6 +96,9 @@ fi
 MANIFEST_ARGS=(--print-cases --tides "$TIDES" --order "$ORDER" --seed "$SEED")
 if [ -n "$LIMIT" ]; then
     MANIFEST_ARGS+=(--limit "$LIMIT")
+fi
+if [ "$SKIP_MEASURED" -eq 1 ] && [ -f "$SHEET" ]; then
+    MANIFEST_ARGS+=(--skip-measured-from "$SHEET")
 fi
 
 CASE_ARGS=()
