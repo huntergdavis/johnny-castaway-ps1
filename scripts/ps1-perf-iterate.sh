@@ -30,6 +30,7 @@ FRAMES="${PS1_PERF_FRAMES:-7200}"
 INTERVAL="${PS1_PERF_INTERVAL:-999999}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-${REGTEST_TIMEOUT:-180}}"
 LOG_LEVEL="${PS1_PERF_LOG_LEVEL:-Warning}"
+MAX_LOG_BYTES="${PS1_PERF_MAX_LOG_BYTES:-536870912}"
 PERF_TOKEN="perf-log"
 BUILD_MODE="incremental"
 BASELINE_FILE=""
@@ -37,6 +38,9 @@ WRITE_BASELINE=""
 COMMIT_MESSAGE=""
 ROLLBACK_ON_FAIL=0
 ALLOW_REGRESSION_PERCENT="${PS1_PERF_ALLOW_REGRESSION_PERCENT:-2}"
+WORK_IDENTITY_MIN_PERCENT="${PS1_PERF_WORK_IDENTITY_MIN_PERCENT:-75}"
+ALLOW_LAYOUT_CHANGE="${PS1_PERF_ALLOW_LAYOUT_CHANGE:-0}"
+MAX_SYMBOL_ADDRESS_DELTA="${PS1_PERF_MAX_SYMBOL_ADDRESS_DELTA:-}"
 REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
@@ -73,6 +77,9 @@ Options:
   --interval N             Screenshot dump interval (default: 999999).
   --timeout N              Wall-clock timeout per case (default: REGTEST_TIMEOUT or 180).
   --log LEVEL              DuckStation log level (default: Warning).
+  --max-log-bytes N        Fail early if headless log exceeds N bytes
+                           (default: PS1_PERF_MAX_LOG_BYTES or 536870912;
+                           set 0 to disable).
   --output DIR             Output root (default: scratch/ps1-perf-iterate).
   --experiment-log FILE    Append one JSONL record per attempted case
                            (default: <output>/experiments.jsonl).
@@ -80,6 +87,13 @@ Options:
   --baseline FILE          Compare against a prior summary JSON.
   --write-baseline FILE    Also copy this run summary to FILE.
   --allow-regression PCT   Fail if key metrics regress by more than PCT (default: 2).
+  --work-identity-min PCT  Fail if baseline-sensitive render work counters fall below
+                           this percent of baseline (default: 75; set 0 to disable).
+  --allow-layout-change    With --baseline, allow PS-EXE sector bucket and foreground
+                           pack LBA changes. Comparisons are still recorded.
+  --max-symbol-address-delta N
+                           With --baseline, fail if any tracked hot symbol moves by
+                           more than N bytes. Use 0 for exact-address phase gates.
   --require-improvement    With --baseline, require at least one key speed metric to improve.
   --commit-on-pass MSG     git add -A and commit with MSG after all gates pass.
   --rollback-on-fail       On gate failure, restore tracked worktree files to HEAD.
@@ -95,6 +109,10 @@ Gate rules:
   - gfx full_fallbacks must be zero.
   - with --baseline, loop_vb, timing overrun_vb, blocking_vb, and prefetch
     overrun_vb must not regress beyond --allow-regression.
+  - with --baseline, render/restore/compose/upload call counts must not fall
+    below --work-identity-min unless explicitly disabled.
+  - with --baseline, PS-EXE sector bucket and foreground pack LBA must stay
+    fixed unless --allow-layout-change is used.
 
 Outputs:
   <output>/<timestamp>/summary.json
@@ -212,6 +230,8 @@ while [ $# -gt 0 ]; do
             TIMEOUT="$2"; shift 2 ;;
         --log)
             LOG_LEVEL="$2"; shift 2 ;;
+        --max-log-bytes)
+            MAX_LOG_BYTES="$2"; shift 2 ;;
         --output)
             OUTPUT_ROOT="$2"; shift 2 ;;
         --experiment-log)
@@ -224,6 +244,12 @@ while [ $# -gt 0 ]; do
             WRITE_BASELINE="$2"; shift 2 ;;
         --allow-regression)
             ALLOW_REGRESSION_PERCENT="$2"; shift 2 ;;
+        --work-identity-min)
+            WORK_IDENTITY_MIN_PERCENT="$2"; shift 2 ;;
+        --allow-layout-change)
+            ALLOW_LAYOUT_CHANGE=1; shift ;;
+        --max-symbol-address-delta)
+            MAX_SYMBOL_ADDRESS_DELTA="$2"; shift 2 ;;
         --require-improvement)
             REQUIRE_IMPROVEMENT=1; shift ;;
         --commit-on-pass)
@@ -266,8 +292,21 @@ if ! [[ "$TIMEOUT" =~ ^[0-9]+$ ]] || [ "$TIMEOUT" -le 0 ]; then
     echo "ERROR: --timeout must be a positive integer." >&2
     exit 1
 fi
+if ! [[ "$MAX_LOG_BYTES" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --max-log-bytes must be a non-negative integer." >&2
+    exit 1
+fi
 if [ -n "$BASELINE_FILE" ] && [ ! -f "$BASELINE_FILE" ]; then
     echo "ERROR: baseline file not found: $BASELINE_FILE" >&2
+    exit 1
+fi
+if ! [[ "$WORK_IDENTITY_MIN_PERCENT" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+    echo "ERROR: --work-identity-min must be a non-negative number." >&2
+    exit 1
+fi
+if [ -n "$MAX_SYMBOL_ADDRESS_DELTA" ] &&
+   ! [[ "$MAX_SYMBOL_ADDRESS_DELTA" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --max-symbol-address-delta must be a non-negative integer." >&2
     exit 1
 fi
 
@@ -338,17 +377,49 @@ parse_case_metrics() {
     local boot="$2"
     local case_dir="$3"
     local log_file="$4"
-    local out_file="$5"
+    local ps_exe_bytes="$5"
+    local ps_exe_bucket_bytes="$6"
+    local ps_exe_sectors="$7"
+    local elf_bytes="$8"
+    local map_bytes="$9"
+    local out_file="${10}"
 
-    python3 - "$label" "$boot" "$case_dir" "$log_file" > "$out_file" <<'PY'
+    python3 - "$label" "$boot" "$case_dir" "$log_file" \
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" > "$out_file" <<'PY'
 import json
 import re
 import sys
 from pathlib import Path
 
 label, boot, case_dir, log_file = sys.argv[1:5]
+ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes, map_bytes = (int(value) for value in sys.argv[5:10])
 log_path = Path(log_file)
 ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+
+hot_symbol_names = {
+    "fgRuntimeFillWindowForEntry",
+    "fgRuntimeTryExtendWindow",
+    "fgRuntimeTryPrefetchWindow",
+    "fgRuntimeTryStageNextFrame",
+    "fgRuntimeWindowPrefetchWouldRead",
+    "fgRuntimeLoadSceneFrame",
+    "fgRuntimeCanPrepareStagedFrame",
+    "fgRuntimePrepareStagedFrameForPresent",
+    "fgRuntimeCanPresentPreparedOnNextVBlank",
+    "fgRuntimePresentPreparedFrame",
+    "foregroundPilotRuntimeAdvance.part.0",
+    "foregroundPilotRuntimeCompose",
+    "foregroundPilotPlay",
+    "grRestoreBgFromRects",
+    "grCompositePacked4SpansToBackground",
+    "grDrawBackground",
+    "grUpdateDisplay",
+    "ps1_streamReadFromCdFile",
+    "ps1_streamReadFromCdFileIntoBuffered",
+    "ps1_streamReadAlignedIntoFile",
+    "ps1PerfMarkCdReadDetailed",
+    "ps1PerfEndScene",
+}
 
 def parse_value(value):
     value = ansi_re.sub("", value)
@@ -388,6 +459,30 @@ if log_path.is_file():
             key, value = token.split("=", 1)
             data[key] = parse_value(value)
         sections[section] = data
+
+symbols = {}
+map_path = Path("build-ps1/jcreborn.map")
+if map_path.is_file():
+    for raw in map_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        parts = raw.split(None, 4)
+        if len(parts) < 4:
+            continue
+        name, sym_type, address_text, size_text = parts[:4]
+        if name not in hot_symbol_names:
+            continue
+        try:
+            address = int(address_text, 16) & 0xFFFFFFFF
+            size = int(size_text, 16)
+        except ValueError:
+            continue
+        item = {
+            "type": sym_type,
+            "address": address,
+            "size": size,
+        }
+        if len(parts) >= 5:
+            item["source"] = parts[4]
+        symbols[name] = item
 
 def get(section, key, default=0):
     value = sections.get(section, {}).get(key, default)
@@ -450,6 +545,23 @@ summary = {
     "case_dir": str(Path(case_dir).resolve()),
     "log_file": str(log_path.resolve()),
     "sections": sections,
+    "build": {
+        "ps_exe": {
+            "path": "build-ps1/jcreborn.exe",
+            "bytes": ps_exe_bytes,
+            "sector_bucket_bytes": ps_exe_bucket_bytes,
+            "sectors": ps_exe_sectors,
+        },
+        "elf": {
+            "path": "build-ps1/jcreborn.elf",
+            "bytes": elf_bytes,
+        },
+        "map": {
+            "path": "build-ps1/jcreborn.map",
+            "bytes": map_bytes,
+            "symbols": symbols,
+        },
+    },
     "legacy_jcperf": legacy,
     "gate": {
         "pass": not failures,
@@ -468,6 +580,78 @@ summary = {
 json.dump(summary, sys.stdout, indent=2)
 print()
 PY
+}
+
+emit_foreground_read_plan() {
+    local summary_file="$1"
+    local case_dir="$2"
+    local pack_file
+    local plan_json="$case_dir/foreground-read-plan.json"
+    local plan_text="$case_dir/foreground-read-plan.txt"
+    local plan_err="$case_dir/foreground-read-plan.err"
+
+    if ! pack_file="$(python3 - "$summary_file" "$PROJECT_ROOT" <<'PY'
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+project_root = Path(sys.argv[2])
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+scene = summary.get("sections", {}).get("scene", {})
+pack = str(scene.get("pack", "")).replace("\\", "/")
+pack_name = Path(pack).name
+if not pack_name:
+    raise SystemExit(1)
+pack_path = project_root / "generated" / "ps1" / "foreground" / pack_name
+if not pack_path.is_file():
+    scene_name = scene.get("scene")
+    lowtide = scene.get("lowtide") == 1
+    manifest_path = project_root / "scripts" / "ps1-foreground-scene-manifest.py"
+    manifest = json.loads(subprocess.check_output([str(manifest_path)], text=True))
+    for record in manifest:
+        if record.get("slug") != scene_name:
+            continue
+        source_name = record.get("low_source" if lowtide else "high_source", "")
+        source_path = project_root / "generated" / "ps1" / "foreground" / source_name
+        if source_path.is_file():
+            pack_path = source_path
+            break
+if not pack_path.is_file():
+    raise SystemExit(1)
+print(pack_path)
+PY
+    )"; then
+        return 0
+    fi
+
+    if python3 "$PROJECT_ROOT/scripts/ps1-foreground-read-plan.py" \
+        --summary "$summary_file" \
+        --pack "$pack_file" \
+        --top 4 \
+        --output "$plan_json" > "$plan_text" 2> "$plan_err"; then
+        python3 - "$summary_file" "$plan_json" "$plan_text" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+summary_path = Path(sys.argv[1])
+summary = json.loads(summary_path.read_text(encoding="utf-8"))
+artifacts = summary.setdefault("artifacts", {})
+artifacts["foreground_read_plan_json"] = sys.argv[2]
+artifacts["foreground_read_plan_text"] = sys.argv[3]
+summary_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+PY
+        echo ""
+        echo "Foreground read plan:"
+        sed -n '1,44p' "$plan_text"
+    else
+        echo "WARN: foreground read-plan generation failed for $summary_file" >&2
+        if [ -s "$plan_err" ]; then
+            sed -n '1,8p' "$plan_err" >&2
+        fi
+    fi
 }
 
 append_experiment_log() {
@@ -511,12 +695,17 @@ if summary_file.is_file():
     summary = json.loads(summary_file.read_text(encoding="utf-8"))
 
 sections = summary.get("sections", {})
+scene = sections.get("scene", {})
 timing = sections.get("timing", {})
 cd = sections.get("cd", {})
 prefetch = sections.get("prefetch", {})
 gfx = sections.get("gfx", {})
 correctness = sections.get("correctness", {})
 gate = summary.get("gate", {})
+build = summary.get("build", {})
+ps_exe = build.get("ps_exe", {})
+elf = build.get("elf", {})
+build_map = build.get("map", {})
 
 record = {
     "schema": "ps1-perf-experiment-log/v1",
@@ -567,6 +756,12 @@ record = {
         "frame_mismatch": correctness.get("frame_mismatch"),
         "sound_late": correctness.get("sound_late"),
         "cd_fail": correctness.get("cd_fail"),
+        "pack_lba": scene.get("pack_lba"),
+        "pack_sectors": scene.get("pack_sectors"),
+        "ps_exe_bytes": ps_exe.get("bytes"),
+        "ps_exe_sector_bucket_bytes": ps_exe.get("sector_bucket_bytes"),
+        "elf_bytes": elf.get("bytes"),
+        "map_bytes": build_map.get("bytes"),
     },
 }
 
@@ -648,6 +843,7 @@ run_headless_regtest() {
         echo "interval=$INTERVAL"
         echo "timeout=$TIMEOUT"
         echo "log_level=$LOG_LEVEL"
+        echo "max_log_bytes=$MAX_LOG_BYTES"
         echo "bios_dir=${bios_dir:-<not-found>}"
         echo "renderer=Software"
         echo "container_name=$container_name"
@@ -697,6 +893,12 @@ run_headless_regtest() {
             elapsed=$((now - start_time))
             size="$(wc -c < "$log_file" 2>/dev/null || printf '0')"
             echo "  headless still running: ${elapsed}s elapsed, ${size} log bytes"
+            if [ "$MAX_LOG_BYTES" -gt 0 ] && [ "$size" -gt "$MAX_LOG_BYTES" ]; then
+                echo "ERROR: headless log exceeded ${MAX_LOG_BYTES} bytes; stopping $container_name" >&2
+                "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
+                kill "$pid" >/dev/null 2>&1 || true
+                break
+            fi
         fi
     done
 
@@ -736,6 +938,23 @@ for i in "${!CASE_LABELS[@]}"; do
     fi
     ./scripts/make-cd-image.sh >> "$case_dir/build.log" 2>&1
 
+    ps_exe_bytes=0
+    ps_exe_bucket_bytes=0
+    ps_exe_sectors=0
+    elf_bytes=0
+    map_bytes=0
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
+        ps_exe_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.exe")"
+        ps_exe_sectors=$(( (ps_exe_bytes + 2047) / 2048 ))
+        ps_exe_bucket_bytes=$(( ps_exe_sectors * 2048 ))
+    fi
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.elf" ]; then
+        elf_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.elf")"
+    fi
+    if [ -f "$PROJECT_ROOT/build-ps1/jcreborn.map" ]; then
+        map_bytes="$(wc -c < "$PROJECT_ROOT/build-ps1/jcreborn.map")"
+    fi
+
     headless_root="$case_dir/headless"
     mkdir -p "$headless_root"
     log_file="$case_dir/headless-regtest.log"
@@ -746,7 +965,10 @@ for i in "${!CASE_LABELS[@]}"; do
     set -e
 
     summary_file="$case_dir/perf-summary.json"
-    parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" "$summary_file"
+    parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
+        "$summary_file"
+    emit_foreground_read_plan "$summary_file" "$case_dir"
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
@@ -771,7 +993,8 @@ done
 FINAL_SUMMARY="$RUN_ROOT/summary.json"
 set +e
 python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
-    "$REQUIRE_IMPROVEMENT" "${SUMMARY_PATHS[@]}" <<'PY'
+    "$REQUIRE_IMPROVEMENT" "$WORK_IDENTITY_MIN_PERCENT" "$ALLOW_LAYOUT_CHANGE" \
+    "$MAX_SYMBOL_ADDRESS_DELTA" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -781,7 +1004,10 @@ out_path = Path(sys.argv[1])
 baseline_path = Path(sys.argv[2]) if sys.argv[2] else None
 allow_pct = float(sys.argv[3])
 require_improvement = bool(int(sys.argv[4]))
-case_paths = [Path(p) for p in sys.argv[5:]]
+work_identity_min_pct = float(sys.argv[5])
+allow_layout_change = bool(int(sys.argv[6]))
+max_symbol_address_delta = int(sys.argv[7]) if sys.argv[7] else None
+case_paths = [Path(p) for p in sys.argv[8:]]
 
 cases = [json.loads(path.read_text(encoding="utf-8")) for path in case_paths]
 baseline_cases = {}
@@ -797,9 +1023,33 @@ compare_fields = [
     ("prefetch", "overrun_vb"),
 ]
 
+work_identity_fields = [
+    ("timing", "render"),
+    ("gfx", "restore_calls"),
+    ("gfx", "compose_calls"),
+    ("gfx", "upload_calls"),
+]
+
+layout_identity_paths = [
+    ("scene.pack_lba", ("sections", "scene", "pack_lba")),
+    ("build.ps_exe.sector_bucket_bytes", ("build", "ps_exe", "sector_bucket_bytes")),
+]
+
 def field(case, section, key):
     value = case.get("sections", {}).get(section, {}).get(key)
     return value if isinstance(value, int) else None
+
+def path_value(case, path):
+    value = case
+    for part in path:
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
+    return value
+
+def hot_symbols(case):
+    symbols = path_value(case, ("build", "map", "symbols"))
+    return symbols if isinstance(symbols, dict) else {}
 
 overall_failures = []
 for case in cases:
@@ -811,6 +1061,9 @@ for case in cases:
     improved = False
     if base:
         comparisons = []
+        work_identity = []
+        layout_identity = []
+        symbol_layout = []
         for section, key in compare_fields:
             current = field(case, section, key)
             previous = field(base, section, key)
@@ -831,7 +1084,86 @@ for case in cases:
                 failures.append(
                     f"regression {section}.{key}: baseline={previous} current={current} allowed={limit:.2f}"
                 )
+        if work_identity_min_pct > 0:
+            for section, key in work_identity_fields:
+                current = field(case, section, key)
+                previous = field(base, section, key)
+                if current is None or previous is None or previous <= 0:
+                    continue
+                minimum = previous * (work_identity_min_pct / 100.0)
+                delta = current - previous
+                work_identity.append({
+                    "field": f"{section}.{key}",
+                    "baseline": previous,
+                    "current": current,
+                    "delta": delta,
+                    "minimum_percent": work_identity_min_pct,
+                    "minimum_allowed": minimum,
+                })
+                if current < minimum:
+                    failures.append(
+                        f"work identity {section}.{key}: baseline={previous} current={current} minimum={minimum:.2f}"
+                    )
+        for name, path in layout_identity_paths:
+            current = path_value(case, path)
+            previous = path_value(base, path)
+            if current is None or previous is None:
+                continue
+            layout_identity.append({
+                "field": name,
+                "baseline": previous,
+                "current": current,
+                "delta": current - previous if isinstance(current, int) and isinstance(previous, int) else None,
+                "allowed": allow_layout_change,
+            })
+            if current != previous and not allow_layout_change:
+                failures.append(f"layout identity {name}: baseline={previous} current={current}")
         case["baseline_comparison"] = comparisons
+        if work_identity:
+            case["work_identity_comparison"] = work_identity
+        if layout_identity:
+            case["layout_identity_comparison"] = layout_identity
+        current_symbols = hot_symbols(case)
+        previous_symbols = hot_symbols(base)
+        for name in sorted(set(current_symbols) & set(previous_symbols)):
+            current = current_symbols[name]
+            previous = previous_symbols[name]
+            if not isinstance(current, dict) or not isinstance(previous, dict):
+                continue
+            current_address = current.get("address")
+            previous_address = previous.get("address")
+            current_size = current.get("size")
+            previous_size = previous.get("size")
+            if not all(isinstance(value, int) for value in (
+                current_address,
+                previous_address,
+                current_size,
+                previous_size,
+            )):
+                continue
+            address_delta = current_address - previous_address
+            size_delta = current_size - previous_size
+            if address_delta == 0 and size_delta == 0:
+                continue
+            symbol_layout.append({
+                "symbol": name,
+                "baseline_address": previous_address,
+                "current_address": current_address,
+                "address_delta": address_delta,
+                "baseline_size": previous_size,
+                "current_size": current_size,
+                "size_delta": size_delta,
+                "max_address_delta_allowed": max_symbol_address_delta,
+            })
+            if (max_symbol_address_delta is not None and
+                    abs(address_delta) > max_symbol_address_delta):
+                failures.append(
+                    f"symbol address {name}: baseline={previous_address} "
+                    f"current={current_address} delta={address_delta} "
+                    f"allowed={max_symbol_address_delta}"
+                )
+        if symbol_layout:
+            case["symbol_layout_comparison"] = symbol_layout
         if require_improvement and not improved:
             failures.append("no key metric improved vs baseline")
     elif baseline_path:
@@ -882,6 +1214,32 @@ for case in cases:
             sign = "+" if isinstance(delta, int) and delta > 0 else ""
             parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
         print("  vs baseline: " + "; ".join(parts))
+    layout = case.get("layout_identity_comparison", [])
+    if layout:
+        parts = []
+        for item in layout:
+            field = item.get("field")
+            baseline = item.get("baseline")
+            current = item.get("current")
+            delta = item.get("delta")
+            if isinstance(delta, int):
+                sign = "+" if delta > 0 else ""
+                parts.append(f"{field} {baseline}->{current} ({sign}{delta})")
+            else:
+                parts.append(f"{field} {baseline}->{current}")
+        print("  layout: " + "; ".join(parts))
+    symbol_layout = case.get("symbol_layout_comparison", [])
+    if symbol_layout:
+        parts = []
+        for item in symbol_layout[:6]:
+            symbol = item.get("symbol")
+            address_delta = item.get("address_delta")
+            size_delta = item.get("size_delta")
+            address_sign = "+" if isinstance(address_delta, int) and address_delta > 0 else ""
+            size_sign = "+" if isinstance(size_delta, int) and size_delta > 0 else ""
+            parts.append(f"{symbol} addr {address_sign}{address_delta} size {size_sign}{size_delta}")
+        suffix = "" if len(symbol_layout) <= 6 else f"; +{len(symbol_layout) - 6} more"
+        print("  symbols: " + "; ".join(parts) + suffix)
     for suggestion in derived.get("suggestions", [])[:4]:
         print(f"  next: {suggestion}")
 print(f"Summary JSON: {out_path}")

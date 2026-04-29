@@ -50,18 +50,21 @@ by the PS1 CD are committed. FG1/FOC outputs and per-scene establishing
 
 ### 2. Wire the scene in
 
-`config/ps1/cd_layout.xml` — add:
-```xml
-<file name="<PACK_BASENAME>.FG2"  type="data" source="../../generated/ps1/foreground/<PACK_BASENAME>.FG2"/>
-<file name="<LOW_PACK_BASENAME>.FG2" type="data" source="../../generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2"/>
+`scripts/ps1-foreground-scene-manifest.py` — regenerate the active
+foreground inventory from `config/ps1/regtest-scenes.txt`:
+```bash
+./scripts/ps1-foreground-scene-manifest.py \
+  --write-cd-layout config/ps1/cd_layout.xml \
+  --write-sheet docs/ps1/performance-scene-matrix.csv
 ```
 
-`foreground_pilot.c` — add the scene to the active routing functions:
-- `fgCompactOverlayPackPathForScene(sceneName)` → high/low `.FG2` selected by `islandState.lowTide`
+`foreground_pilot.c` — routes every generated scene family dynamically.
+Do not add one-off scene branches for normal FG2 playback; add a family only
+if the rollout manifest introduces a new ADS prefix/naming rule.
 
 `jc_reborn.c` — add the slug to `kProvenScenes` only after full human
-visual + audible signoff. Pending scenes can still be launched
-explicitly with `fgpilot <slug>` once `foreground_pilot.c` routes them.
+visual + audible signoff. Pending scenes can still be launched explicitly with
+`fgpilot <slug>` because all generated FG2 scene slugs are routable.
 
 ### 3. Build + launch
 

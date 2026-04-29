@@ -78,6 +78,12 @@ The full experiment log is at
 At the time of writing it contains roughly 130 experiments going back to
 2026-04-25. Most of them failed.
 
+The full scene/tide battle card is
+[`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
+and is rendered at [Current testing status]({{ '/docs/testing-status/' | relative_url }}).
+It is not the human scene-promotion ledger; it is the timing sheet for
+headless performance work.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't
@@ -200,8 +206,10 @@ They cluster into a few themes.
   boot tokens still enable them on demand.
 
 The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at `loop_vb=1221` against a target of
-`target_vb=1072`. Pre-pause-merge the best was `loop_vb=1297`.
+fishing1 high-tide playback at `loop_vb=1207` against a target of
+`target_vb=1076`. The original headless perf-loop baseline was
+`loop_vb=1426`, so the FISHING 1 canary is down `219` VBlanks
+(`15.36%` loop reduction).
 
 ## Where it sits at {{ site.release.tag }}
 
@@ -209,64 +217,143 @@ The current accepted fishing1 high-tide run, captured in the perf log:
 
 ```text
 policy = stage1_window
-buf    = 23568
+buf    = 333656
 hits   = 155
 due_misses = 0
-blocking_vb = 5
-prefetch.overrun_vb = 5
-loop_vb = 1221
-overrun_vb = 149
-target_vb = 1072
-restore_bytes = 3,085,148
-upload_bytes  = 16,499,200
-dirty_rows    = 25,780
-upload_rects  = 401
+blocking_vb = 0
+prefetch.overrun_vb = 0
+loop_vb = 1207
+overrun_vb = 131
+target_vb = 1076
+restore_bytes = 251,144
+upload_bytes  = 8,533,120
+dirty_rows    = 13,333
+upload_rects  = 436
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-The 1.55x overrun against target — `loop_vb` at 1221 vs `target_vb` at 1072 —
-is the remaining headroom. Detail-tier attribution shows where it goes:
+That is **+12.2% over target**, or **89.1% of target speed**. Across the
+measured battle-card rows, the average is **+12.1% over target / 89.8%
+target speed**.
+
+## Scene Battle Card
+
+As of 2026-04-29, 57 of 126 scene/tide variants have current headless
+perf measurements. 34 of 63 scenes have at least one timed variant; 23
+scenes have both high- and low-tide variants timed. The values below are
+`over target / target speed (loop_vb/target_vb)`, with `blk` and `due`
+called out when nonzero.
+
+| Scene | High tide | Low tide |
+|---|---:|---:|
+| `activity1` | +3.0% / 97.1% (4373/4244) | +3.1% / 97.0% (4373/4242); blk 2 |
+| `activity4` | +12.9% / 88.5% (1205/1067); blk 5 | +12.5% / 88.9% (1203/1069); blk 1 |
+| `activity5` | +9.3% / 91.5% (1866/1707); due 4, blk 25 | +9.1% / 91.7% (1861/1706); due 3, blk 29 |
+| `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
+| `activity7` | +22.7% / 81.5% (751/612); blk 8 | +21.7% / 82.2% (747/614); blk 1 |
+| `activity8` | pending | pending |
+| `activity9` | +11.2% / 89.9% (2268/2039); due 9, blk 97 | +11.1% / 90.0% (2271/2044); due 8, blk 92 |
+| `activity10` | +12.3% / 89.1% (1408/1254); due 1, blk 18 | +12.2% / 89.1% (1408/1255); due 2, blk 23 |
+| `activity11` | pending | pending |
+| `activity12` | +9.9% / 91.0% (1551/1411); blk 12 | +10.2% / 90.8% (1551/1408); due 1, blk 20 |
+| `building1` | +25.6% / 79.6% (966/769); due 6, blk 76 | pending |
+| `building2` | +21.8% / 82.1% (1572/1291); due 20, blk 173 | +21.4% / 82.4% (1570/1293); due 20, blk 172 |
+| `building3` | +9.4% / 91.4% (1565/1431); blk 4 | pending |
+| `building4` | +12.5% / 88.9% (3141/2792); due 39, blk 326 | +12.4% / 89.0% (3135/2790); due 40, blk 335 |
+| `building5` | +5.4% / 94.9% (3514/3334); due 6, blk 65 | +4.8% / 95.4% (3508/3346); due 2, blk 33 |
+| `building6` | +13.1% / 88.4% (2754/2435); due 39, blk 317 | +12.9% / 88.6% (2746/2433); due 38, blk 312 |
+| `building7` | +5.5% / 94.8% (3861/3659); due 3, blk 66 | +4.5% / 95.7% (3837/3672); blk 23 |
+| `fishing1` | +12.2% / 89.1% (1207/1076) | +12.2% / 89.1% (1207/1076) |
+| `fishing2` | +7.5% / 93.0% (1898/1765); blk 2 | +7.4% / 93.1% (1898/1767) |
+| `fishing3` | +7.1% / 93.4% (2093/1955); due 1, blk 15 | +6.6% / 93.8% (2090/1960); blk 3 |
+| `fishing4` | pending | pending |
+| `fishing5` | pending | pending |
+| `fishing6` | pending | pending |
+| `fishing7` | pending | pending |
+| `fishing8` | +12.4% / 88.9% (1400/1245); blk 21 | pending |
+| `johnny1` | +9.5% / 91.3% (2128/1943); blk 31 | +9.8% / 91.1% (2132/1942); blk 37 |
+| `johnny2` | pending | pending |
+| `johnny3` | +12.8% / 88.7% (1308/1160); due 1, blk 20 | +12.2% / 89.1% (1305/1163); blk 10 |
+| `johnny4` | pending | pending |
+| `johnny5` | pending | pending |
+| `johnny6` | +3.6% / 96.5% (2901/2799); blk 33 | +3.8% / 96.3% (2905/2798); blk 37 |
+| `mary1` | +4.5% / 95.7% (5028/4813); due 2, blk 87 | +3.7% / 96.4% (5011/4830); due 1, blk 50 |
+| `mary2` | +1.7% / 98.3% (2286/2248); blk 8 | +1.7% / 98.3% (2286/2248); blk 8 |
+| `mary3` | pending | pending |
+| `mary4` | pending | pending |
+| `mary5` | +7.4% / 93.1% (1698/1581); blk 20 | +7.0% / 93.4% (1694/1583); blk 14 |
+| `miscgag1` | pending | pending |
+| `miscgag2` | pending | pending |
+| `stand1` | pending | pending |
+| `stand2` | pending | pending |
+| `stand3` | pending | pending |
+| `stand4` | +12.3% / 89.1% (1365/1216); blk 12 | pending |
+| `stand5` | +9.7% / 91.2% (1600/1459); blk 8 | pending |
+| `stand6` | +10.5% / 90.5% (1503/1360); blk 8 | pending |
+| `stand7` | pending | pending |
+| `stand8` | pending | pending |
+| `stand9` | pending | pending |
+| `stand10` | pending | pending |
+| `stand11` | pending | pending |
+| `stand12` | +9.7% / 91.2% (1597/1456); blk 8 | pending |
+| `stand15` | pending | pending |
+| `stand16` | pending | pending |
+| `suzy1` | BLOCKED | pending |
+| `suzy2` | BLOCKED | pending |
+| `visitor1` | pending | pending |
+| `visitor3` | +56.1% / 64.1% (1581/1013); due 24, blk 424 | +58.4% / 63.1% (1611/1017); due 26, blk 404 |
+| `visitor4` | pending | pending |
+| `visitor5` | +20.0% / 83.3% (1295/1079); due 9, blk 107 | pending |
+| `visitor6` | +7.5% / 93.0% (2198/2044); blk 14 | pending |
+| `visitor7` | +9.6% / 91.2% (1777/1621); blk 15 | pending |
+| `walkstuf1` | pending | pending |
+| `walkstuf2` | pending | pending |
+| `walkstuf3` | +10.4% / 90.6% (2512/2275); due 6, blk 130 | pending |
+
+Detail-tier attribution for the canary currently points at render and
+restore pressure rather than CD stalls:
 
 ```text
-render_vb        = 181
-present_wait_vb  = 157
-restore_vb      =  43
-compose_vb      =  31
-upload_vb       =   0
-advance_vb      =   1
+sched.wait       = 769
+sched.present    = 105
+sched.cd_stage   = 146
+sched.cd_window  =   6
+gfx.restore_bytes = 251,144
+gfx.upload_bytes  = 8,533,120
 ```
 
-`present_wait_vb` is mostly the required frame cadence — the runtime is
-waiting on VSync for legitimate reasons. `render_vb` and `restore_vb` are
-real remaining work. The next plausible wins, in priority order:
+The canary now has no visible CD stall, but the full battle card still has
+CD-heavy scenes (`visitor3`, `building4`, `building6`, `walkstuf3`). The
+next plausible wins, in priority order:
 
 1. **FG2-specific present pipeline with explicit slack budgeting.**
-   Detail counters show `present_wait_vb=157`, but the first attempt at
-   a staged-present scheduler regressed loop time by disrupting CD
-   prefetch. The next design needs separate render-prep and CD-prefetch
-   slack budgets — stealing held-frame prefetch cadence is what the
-   first attempt got wrong.
+   Earlier detail counters showed present/wait ownership as a real
+   scheduling surface, but the first attempt at a staged-present
+   scheduler regressed loop time by disrupting CD prefetch. The next
+   design needs separate render-prep and CD-prefetch slack budgets —
+   stealing held-frame prefetch cadence is what the first attempt got
+   wrong.
 2. **CD stall hiding beyond the current direct-stage / window path.**
-   Fishing1 already has only `blocking_vb=5` and `prefetch.overrun_vb=5`,
-   but every saved read still compounds.
+   Fishing1 is already at `blocking_vb=0`, but the broader scene matrix
+   still has large blocking counts. Every saved read still compounds.
 3. **X-aware dirty upload and rect-pressure control.** Upload still
-   restores ~3.03 MB and uploads ~16.5 MB per run; the prepared-present
-   bridge added speculative restore work, and getting that back is
-   probably the next clean win.
+   restores 251 KB and uploads 8.5 MB in the FISHING 1 canary; larger
+   scenes have much more pressure. Getting that down without changing
+   pixels is still a clean win.
 4. **Pack-emitted read groups and sector layout.** Current raw-window
-   reads still make 68 active-loop transactions and 5 total backward
-   seeks; grouped metadata is the likely next CD breakthrough.
+   reads still leave large blocking counts in non-canary scenes; grouped
+   metadata is the likely next CD breakthrough.
 5. **Specialized PAL4 FG2 compositor.** Fishing frames are modest;
    larger scenes will make span/tile split and PAL4 conversion overhead
    more important.
 
 The author considers the current build comfortable for the validated
-scenes, not yet headroom-clean. The bottleneck is no longer raw CPU work
-on the MIPS core; it's CD scheduling phase and the present-wait cadence.
-Those are different bugs from the ones the perf work has been chasing
-for the last month, and chasing them will probably mean adding more
-counters before changing more code.
+scenes, not yet headroom-clean. The canary bottleneck is no longer raw CD
+stall; the matrix bottleneck is uneven per-scene payload/read shape plus
+render/restore pressure. Those are different bugs from the ones the perf
+work was chasing early in the loop, and each new experiment needs to stay
+matrix-aware instead of only optimizing FISHING 1.
 
 ## Non-goals
 

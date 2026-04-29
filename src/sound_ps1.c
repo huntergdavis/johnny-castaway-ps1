@@ -32,6 +32,16 @@
 #include "utils.h"
 #include "cdrom_ps1.h"
 
+#ifndef SOUND_PS1_DIAG_LOGS
+#define SOUND_PS1_DIAG_LOGS 0
+#endif
+
+#if SOUND_PS1_DIAG_LOGS
+#define SOUND_DIAG_PRINTF(...) do { printf(__VA_ARGS__); } while (0)
+#else
+#define SOUND_DIAG_PRINTF(...) do { } while (0)
+#endif
+
 /* Global variables */
 int soundDisabled = 0;
 int soundMuted = 0;
@@ -63,7 +73,7 @@ static uint32_t readBE32(const uint8_t *p)
 void soundInit()
 {
     if (soundDisabled) {
-        printf("Sound disabled\n");
+        SOUND_DIAG_PRINTF("Sound disabled\n");
         return;
     }
 
@@ -143,9 +153,9 @@ void soundInit()
 
     if (loaded > 0) {
         soundsLoaded = 1;
-        printf("SPU: loaded %d sounds\n", loaded);
+        SOUND_DIAG_PRINTF("SPU: loaded %d sounds\n", loaded);
     } else {
-        printf("SPU: no VAG files found\n");
+        SOUND_DIAG_PRINTF("SPU: no VAG files found\n");
     }
 }
 

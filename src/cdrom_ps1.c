@@ -815,6 +815,7 @@ int ps1_streamReadAlignedIntoFile(const CdlFILE *cdfile, uint32_t offset, uint32
     return ps1_streamReadAlignedFromCdFileInto(cdfile, offset, size, dstBuffer);
 }
 
+__attribute__((optimize("Os")))
 static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset, uint32_t size)
 {
     uint32_t startSector;
@@ -826,6 +827,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     CdlLOC loc;
     uint8_t* result;
     uint32_t offsetInBuffer;
+    uint32_t fileLba;
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
@@ -845,9 +847,10 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
     bufferSize = numSectors * CD_SECTOR_SIZE;
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
-        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
+        perfFileLba = fileLba;
         perfTrack = 1;
     }
 
@@ -867,7 +870,7 @@ static uint8_t* ps1_streamReadFromCdFile(const CdlFILE *cdfile, uint32_t offset,
         if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
             chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
 
-        CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
+        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
@@ -1003,7 +1006,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1011,7 +1014,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1024,7 +1027,7 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1040,10 +1043,11 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     if (perfTrack)
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
-                                  1, perfFileLba, offset, 1);
+                                  1, perfFileLba, offset, 0);
     return 1;
 }
 
+__attribute__((optimize("Os")))
 static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t offset, uint32_t size,
                                                uint8_t *dstBuffer)
 {
@@ -1052,6 +1056,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     uint32_t endSector;
     uint32_t numSectors;
     CdlLOC loc;
+    uint32_t fileLba;
     int syncResult;
     int timeout;
     uint32_t sectorsRead;
@@ -1070,10 +1075,11 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     endByte = offset + size;
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
+    fileLba = (uint32_t)CdPosToInt((CdlLOC *)&cdfile->pos);
 
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
-        perfFileLba = (uint32)CdPosToInt((CdlLOC *)&cdfile->pos);
+        perfFileLba = fileLba;
         perfTrack = 1;
     }
 
@@ -1085,13 +1091,13 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
         if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
             chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
 
-        CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
+        CdIntToPos(fileLba + startSector + sectorsRead, &loc);
 
         if (CdControl(CdlSetloc, (uint8_t*)&loc, NULL) == 0) {
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1099,7 +1105,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1112,7 +1118,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
             if (perfTrack)
                 ps1PerfMarkCdReadDetailed(size, numSectors,
                                           ps1PerfElapsedVBlanks(perfStartTick),
-                                          0, perfFileLba, offset, 1);
+                                          0, perfFileLba, offset, 0);
             return 0;
         }
 
@@ -1122,7 +1128,7 @@ static int ps1_streamReadAlignedFromCdFileInto(const CdlFILE *cdfile, uint32_t o
     if (perfTrack)
         ps1PerfMarkCdReadDetailed(size, numSectors,
                                   ps1PerfElapsedVBlanks(perfStartTick),
-                                  1, perfFileLba, offset, 1);
+                                  1, perfFileLba, offset, 0);
     return 1;
 }
 

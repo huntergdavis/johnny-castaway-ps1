@@ -9,6 +9,8 @@ cd "$(dirname "$0")/.."  # Change to project root
 source "scripts/docker-common.sh"
 docker_init
 
+PS1_PERF_DEEP_TRACE="${PS1_PERF_DEEP_TRACE:-OFF}"
+
 python3 - <<'PY'
 import json
 from pathlib import Path
@@ -40,6 +42,7 @@ if [ "${1:-}" = "clean" ]; then
             mkdir -p /project/build-ps1
             cmake -G "Unix Makefiles" \
                 -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+                -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
                 -S /project -B /project/build-ps1
         '
 fi
@@ -52,6 +55,7 @@ echo "=== Building PS1 executable ==="
         set -e
         cmake -G "Unix Makefiles" \
             -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+            -DPS1_PERF_DEEP_TRACE='"$PS1_PERF_DEEP_TRACE"' \
             -S /project -B /project/build-ps1
         cd /project/build-ps1
         if ! make jcreborn; then

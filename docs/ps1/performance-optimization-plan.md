@@ -20,33 +20,102 @@ pixel-perfect FG2 methodology.
 
 ## Executive Summary
 
-Post-merge status: the first performance wave is now the normal runtime path.
-Held-entry no-work, one-entry staging, a 24 KB FG2 stream window, and dirty
-clean-rect row restore are active on the perf branch. The boot parameters still
-exist for diagnostics, but the default FG2 playback policy is now
-`stage1_window`.
+Post-merge status: the first performance wave and subsequent retunes are now
+the normal runtime path. Held-entry no-work, one-entry staging, a sector-rounded
+`16 KB` FG2 stream window, direct-stage seeding, and dirty clean-rect row
+restore are active on the perf branch. The boot parameters still exist for
+diagnostics, but the default FG2 playback policy is now `stage1_window`.
 
-Latest accepted default-path fishing1 high-tide run, after the pause merge,
-pad/SPI diagnostic gating, the post-diagnostics window retunes, the
+Latest accepted default-path fishing1 exact no-holiday night variant
+(`lowtide 0`, `night 1`, raft stage `4`, island position `-154,54`), after the
+pause merge, pad/SPI diagnostic gating, the post-diagnostics window retunes, the
 3 VBlank refill guard, 6 VBlank fallthrough guard, row-level X dirty restore,
 per-tile PAL4 row dirty marking, the tile-local PAL4 fast path, vertical
-dirty-row upload bands with an 11-row gap merge, setup priming of the first
-real payload, and tight-slack direct staging for immediate payloads up to
-8 KB, direct-stage scratch window seeding, and 4 VBlank held-slack staged-frame
+dirty-row upload bands with a 1-row gap byte trim, setup priming of a `320 KB`
+first-payload FG2 window for fishing1 high tide, setup-gated threshold-`4`
+catch-up, first FG2 upload scoped to the saved clean-rect Y band,
+tight-slack direct staging for immediate payloads up to 8 KB,
+direct-stage scratch window seeding, and exact-4 VBlank held-slack staged-frame
 prep, plus leading-empty setup consume with a one-VBlank setup settle and
 coalesced FG2 metadata-prefix startup reads, plus PS1 function/data section
 garbage collection, foreground visual telemetry removal, legacy foreground
 diagnostic scene gating, long-hold host-deadline catch-up, unused foreground
 status accessor removal, dead foreground requested-mode state removal, and
-base-diff foreground pack enforcement, reported `policy=stage1_window`,
-`buf=23568`, `hits=155`, `due_misses=0`, `blocking_vb=5`,
-`prefetch.overrun_vb=5`, `loop_vb=1221`, `overrun_vb=149`,
-`target_vb=1072`, `restore_bytes=3085148`,
-`upload_bytes=16499200`, `dirty_rows=25780`, `upload_rects=401`, `trip=0`,
+base-diff foreground pack enforcement, startup pre-application of
+scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
+collapsed held-loop prefetch branch shape, duplicate compose active-guard
+removal, simplified runtime-active accessor, and the fishing1 high-tide tail
+read group `396..406` with 11-sector retained capacity, reported
+`policy=stage1_window`, `buf=333656`, `hits=155`, `due_misses=0`,
+`blocking_vb=0`, `prefetch.overrun_vb=0`, `loop_vb=1207`,
+`overrun_vb=131`, `target_vb=1076`, `restore_bytes=251144`,
+`upload_bytes=6690560`, `dirty_rows=10454`, `upload_rects=290`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=42`,
-`setup_read_vb=109`, and `scene_vb=1400`. This is the current baseline for the
-next experiment. The section-GC pass kept those counters flat while shrinking
+The same run also reports `setup_reads=6`, `pack_start_vb=41`,
+`setup_read_vb=169`, `loop_reads=6`, `loop_read_vb=26`, and `scene_vb=1447`.
+This is the current baseline for the next experiment. The accepted FGP3
+temporal-residual pack intentionally changes layout (`FISHING1.FG2 LBA
+396 -> 397`, PS-EXE `143360 -> 145408`) while cutting high-tide pack bytes
+`829851 -> 398433`, restore bytes `2510092 -> 251144`, and upload bytes
+`15888640 -> 6690560`.
+The first-upload clean-rect pass removed the stale full-screen forced upload
+from FG2 setup (`max_upload_bytes 614400 -> 221440`) and improved active
+playback by two VBlanks without changing setup timing, restore bytes, CD
+pressure, or layout identity. The later FGP3 pass is the first accepted
+pack-format runtime win and supersedes the FG2 high-tide baseline for fishing1.
+The FGP3 red-team pass changes the next bottleneck. `perf-detail` on the
+accepted canary shows `present_wait_vb=155`, while `compose_vb=2`,
+`restore_vb=0`, `upload_vb=0`, `blocking_vb=0`, and
+`prefetch.overrun_vb=0`. Local retries after FGP3 did not promote:
+prepared-present slack `3` and `2`, setup-prime catch-up `3`, previous-dirty
+bounds discard, due-frame precompose-before-present, FGP3 helper `-Os`, and
+no-holiday call-site guarding all stayed timing-flat or worsened accounting.
+The next meaningful speed work should target present/VSync ownership,
+release-vs-perf-log measurement, generated all-scene FGP3 rollout, or
+inter-scene/setup-prime hiding instead of more fishing1 high-tide restore/CD
+micro-probes.
+The next FGP3 rollout step is also accepted for fishing1 low tide:
+`FISH1LOW.FG2` now uses `fgp3_pal4_residual`, cuts pack bytes
+`426082 -> 303083`, and improves the low-tide gate `loop_vb 1215 -> 1209`,
+`overrun_vb 142 -> 135`, `blocking_vb 5 -> 4`, `prefetch.overrun_vb 5 -> 4`,
+and `loop_reads 31 -> 22`. High tide stayed exact-flat afterward. This turns
+FGP3 from a single-canary high-tide experiment into the preferred fishing1
+high/low methodology, with remaining low-tide pressure now concentrated in
+CD/refill policy rather than restore/upload volume.
+Fishing1 low tide is now also covered by the existing `320 KB` setup-prime
+window. Active-loop reads fall `22 -> 0`, `blocking_vb/prefetch.overrun_vb`
+fall `4 -> 0`, and `loop_vb 1209 -> 1207`, matching the high-tide active-loop
+gap. The trade is explicit: `setup_vb 182 -> 238` and `scene_vb 1391 -> 1445`.
+This should be treated as proof that generated prime budgets can make FGP3
+active playback CD-clean, not as proof that setup time is free.
+FGP3 is now accepted for fishing2 high tide as well. `FISHING2.FG2` shrinks
+`1595559 -> 542743` bytes, `loop_vb 1928 -> 1903`,
+`overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`,
+`prefetch.overrun_vb 44 -> 8`, `due_misses 2 -> 0`, and
+`loop_reads 134 -> 40`. This is the first non-fishing1 FGP3 runtime promotion
+and confirms the format is a scene-family strategy, not a single-scene trick.
+Remaining fishing2 pressure is now mostly read-window policy.
+Fishing2 high tide now also has an explicit `352 KB` setup-prime budget. This
+cuts active-loop CD pressure again: `loop_vb 1903 -> 1898`,
+`overrun_vb 139 -> 133`, `blocking_vb/prefetch.overrun_vb 8 -> 2`,
+`loop_reads 40 -> 14`, and `loop_read_vb 170 -> 63`. The heap boundary is
+real: `384 KB` and `544 KB` failed before loop start, and `368 KB` hit the
+headless log cap. The next fishing2 high win should be generated read groups,
+segmented prime, or inter-scene preload rather than a larger contiguous setup
+prime.
+Red-team caveat: setup-prime wins are active-loop wins, not end-to-end
+scene-time wins. Fishing2 high now moves a `352 KB` foreground read into setup
+(`setup_vb 184 -> 251`, `scene_vb 2087 -> 2149`) so active playback can reduce
+visible CD pressure; earlier fishing1 setup-prime wins have the same trade. The
+next pass should hide these primes during inter-scene/loading time or emit
+generated per-scene/tide prime windows rather than counting setup as free. The
+exact-4 plus 1-row upload
+plus prepared-wait prefetch
+checkpoint is a work-reduction
+promotion, not a claimed VBlank speed win: it kept `loop_vb`, `blocking_vb`,
+and `prefetch.overrun_vb` flat while reducing `restore_calls/compose_calls`
+from `193` to `155` and reducing upload bytes by `217600`. The section-GC pass
+kept earlier counters flat while shrinking
 `jcreborn.elf` from `709828` to `708656` bytes; `jcreborn.exe` remains in the
 same `137216` byte sector bucket. Removing the now-unused foreground visual
 telemetry body kept timing flat again, dropped speculative prep
@@ -66,7 +135,8 @@ write-only requested-mode state kept that cadence flat and shrank
 the old non-base-diff runtime branches kept cadence flat again and shrank
 `jcreborn.elf` to `689748` bytes. The pre-pause best was `loop_vb=1297`.
 
-Latest Detail-tier attribution on this baseline shows the remaining
+Latest available Detail-tier attribution on the pre-pause accepted baseline
+shows the remaining
 active-loop gap is not primarily due-frame CD: `render_vb=181`,
 `present_wait_vb=157`, `restore_vb=43`, `compose_vb=31`, `upload_vb=0`, and
 `advance_vb=1` in
@@ -79,7 +149,44 @@ the held-frame prefetch cadence. A later 4 VBlank held-slack prepared-present
 pass was accepted as a small speedup (`loop_vb 1235 -> 1234`,
 `blocking_vb 10 -> 8`), but it did not prove out as the full present-wait fix
 because it adds duplicate RAM restore/compose work (`restore_calls 156 -> 192`,
-`compose_calls 155 -> 191`).
+`compose_calls 155 -> 191`). The current post-pause exact-4 variant claws back
+some of that duplicate work with flat key timing, but the larger present-wait
+fix still needs a scheduler with separate render-prep and CD-prefetch budgets.
+
+Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
+`loop_vb=1221`, `overrun_vb=150`, `render_vb=179`,
+`present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
+and `prefetch.overrun_vb=5`. That is now historical context, not the current
+canary. As of the 2026-04-29 battle-card refresh, FISHING 1 high is
+`loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
+`prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
+56/126 scene/tide variants are timed and average `+12.0%` over target /
+`89.8%` target speed. The remaining optimization target is therefore
+matrix-wide: some scenes are now canary-clean, while others still have large
+CD/payload and render/restore pressure. A direct prepared-present event-poll
+removal was rejected because it regressed visible CD pressure and weakens
+pause/input semantics; the present fix needs a real scheduler/presentation
+design, not a local poll deletion.
+
+The first scheduler ownership pass on `20260427-105900` adds the missing
+Summary-tier ownership surface without changing fishing1 timing or PS-EXE
+bucket: `present=72`, `cd_stage=108`, `cd_window=54`, `visual_prepare=72`,
+`wait=574`, `cd_reserved=28`, `prep_blocked_cd=13`, `prepared_ready=72`,
+`prepared_used=72`, and `prepared_wasted=0`. That proves the current prepared
+pipeline is not wasting prepared frames in fishing1; the next scheduler win
+must spend idle/CD-reserved held slices safely instead of chasing duplicate
+prepared-frame reuse.
+
+The deeper trace surface is now split from the accepted speed binary. The first
+ungated pipeline/slack-bucket counter pass changed EXE layout and timing, so it
+is compile-gated behind `PS1_PERF_DEEP_TRACE=ON`. Default builds stay exact;
+trace builds showed `due_frames=83`, `prepare_frames=72`,
+`prepared_present_frames=72`, and `prepared_wasted=0`, confirming the scheduler
+problem is ownership of idle/CD/present slots rather than discarded prepared
+frames. A setup-primed `320 KB` first-payload window then made one previously
+unsafe threshold-`4` catch-up shape safe for fishing1 high tide, reducing the
+active-loop overrun from `147` to `140` while lowering visible CD/refill
+pressure from `5` to `1` VBlank.
 
 The first real `JCPERF` sample changes the priority order. Held-entry no-work
 is already implemented and working: fishing1 rendered 137 entries and held 206
@@ -110,11 +217,21 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 1 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`, but the first staged-present scheduler regressed by disrupting CD prefetch and the accepted 4 VBlank prepared-present pass is only a bridge; the next design must reduce duplicate prep while preserving lookahead. |
-| 2 | Finish CD stall hiding beyond the current direct-stage/window path | Medium | The current accepted fishing1 run has only `blocking_vb=6` and `prefetch.overrun_vb=6`, but every saved read still compounds. |
-| 3 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `3.03 MB` because the prepared-present bridge adds speculative restore work; vertical bands plus gap merging keep upload near `16.5 MB`, so upload volume and duplicate prep are now the clearer dirty targets. |
-| 4 | Pack-emitted read groups and sector layout | Medium | Current raw-window reads still make `68` active-loop transactions and `5` total backward seeks; grouped metadata is the likely next CD breakthrough. |
+| 1 | Generated setup-prime and inter-scene preload | High | The promoted `320 KB` prime cuts active-loop overrun `147 -> 140` and visible CD/refill `5 -> 1`, but currently pays setup cost. Hiding or generating the prime can turn this into a full-scene win. |
+| 2 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`; the next design must reduce or hide present latency while preserving CD lookahead and pause/input safety. |
+| 3 | Pack-emitted read groups and sector layout | Medium | Current setup-primed high tide still has `43` active-loop reads and `3` backward seeks; selective generated metadata is safer than one-off group tables. |
+| 4 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
 | 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
+
+Latest red-team note: local CD/runtime tweaks are hitting a hard determinism
+wall. `384..396` did not fire, `307..317` was exact-flat with code growth,
+direct stage-into-window exposed one extra visible CD VBlank, and
+`foreground_pilot.c -O3` grew the executable without a speed win. Treat those
+as evidence that the next CD/render pass needs generated metadata plus an
+explicit cost/scheduler model, not another one-off hard-coded branch. The
+successful setup-prime exception reinforces that point: preloaded coverage must
+be proven by pack metadata and bounded heap policy before a shorter catch-up
+threshold is safe.
 
 Non-goals:
 
@@ -288,9 +405,13 @@ additional bytes across the full fishing1 run.
 A follow-up 10-row point was accepted: timing stayed flat,
 `upload_rects` drops again to `409`, and the extra byte cost versus the 8-row
 baseline is only `17,920` bytes across the loop.
-A final 11-row probe is the current local knee: timing still stays flat,
-`upload_rects` drops to `401`, and the extra byte cost versus the 10-row
-baseline is `56,320` bytes across the loop.
+A final 11-row probe was the pre-pause local knee: timing stayed flat,
+`upload_rects` dropped to `401`, and the extra byte cost versus the 10-row
+baseline was `56,320` bytes across the loop. After the pause/menu merge, the
+current accepted point is a 1-row byte-trim gap: key timing remains flat while
+`upload_bytes` drops `16499200 -> 16281600` and rects rise `401 -> 502`.
+The zero-gap point is still rejected, so the current safe boundary for this
+variant is between `1` and `0` clean rows.
 The next upload-byte attempt should move decisions to pack-time/direct-layout
 work or use scene-specific band statistics, not reintroduce runtime scratch
 packing.
@@ -478,6 +599,7 @@ Metric precision audit:
 | CD alignment | Unaligned count. | Split unaligned start/end, overread bytes, scratch-copy bytes, max read sectors. | Existing offset/size math. |
 | CD blocking | One read VBlank total. | Split setup, hidden prefetch, blocking due-frame, async-blocking, and prefetch overrun VBlanks. | Existing phase/prefetch state. |
 | Prefetch | Hits and misses. | Add eligibility, skipped reasons, lead min/max, stage/window/group hit types, partial hits, duplicate attempts, wasted bytes. | Existing prefetch decisions. |
+| Scheduler ownership | Implicit in branch order. | Add held-slice owner counters, CD-reserved slots, CD-blocked visual prep, prepared-ready/used/wasted, and held-slack min/max. | Existing held-loop decisions. |
 | Async | Done or not done. | Add starts, polls, completions, timeouts, cancels, blocking completion VBlanks. | Existing async state machine. |
 | Render timing | One render total. | Summary: render counts and max elapsed index. Detail: split restore, compose, present wait, upload, event wait, advance/load, max render index, crossing counts. | Detail tier only for subphase VSync probes. |
 | Dirty precision | Upload bytes. | Add exact vs rounded dirty bytes/rows, max dirty rows/bytes, cap hits, and full-fallback tripwire counts that must remain zero. | Existing dirty marking/batching. |
@@ -499,6 +621,7 @@ Required metrics inventory:
 | CD base | `reads`, `setup_reads`, `loop_reads`, `setloc`, `fail`, `bytes`, `sectors`, `read_vb`, `setup_read_vb`, `loop_read_vb`, `max_read_vb`, `max_read_idx`, `max_read_sectors`, `unaligned_start`, `unaligned_end`, `overread_bytes`, `scratch_bytes`, seek/sector buckets | Prefetch, stream windows, pack grouping | Distinguishes setup reads, playback reads, read count, read size, sector alignment, seek pattern, and scratch-copy cost. |
 | CD blocking split | `blocking_vb`, `hidden_vb`, `blocking_reads`, `hidden_reads` | Any prefetch experiment | Measures whether CD work was hidden under held VBlanks or still delayed due frames. |
 | Prefetch | `policy`, `buf`, `attempts`, `eligible`, `ineligible`, `hits`, `misses`, `due_misses`, `stage_hits`, `window_hits`, `group_hits`, `partial_hits`, `slack_vb`, `used_vb`, `overrun_vb`, `lead_min`, `lead_max`, `wasted_bytes`, `skipped_*`, `duplicate` | One-entry staging, stream windows, async prefetch | Needed to debug why prefetch did or did not help. |
+| Scheduler ownership | `present`, `cd_stage`, `cd_window`, `visual_prepare`, `wait`, `cd_reserved`, `prep_blocked_cd`, `prepared_ready`, `prepared_used`, `prepared_wasted`, `slack_vb`, `slack_min`, `slack_max` | Present scheduler, prepared-frame scheduler, CD-first budgeting | Shows who owns each held slice and whether prepared work is useful, blocked by CD, or wasted. |
 | Async prefetch | `async_start`, `async_poll`, `async_done`, `async_timeout`, `async_cancel`, `async_blocking_vb` | Async CD experiments | Keeps controller-state risk visible before enabling async broadly. |
 | Render subphases | `render_vb`, `max_render_vb`, `max_render_idx`, `restore_vb`, `compose_vb`, `present_wait_vb`, `upload_vb`, `event_wait_vb`, `advance_vb`, `crossed_*` | Present pipeline, dirty upload, compositor work | Splits the remaining `~6.6` non-CD VBlanks per rendered entry and identifies phases that cross frame boundaries. |
 | Dirty precision | `dirty_rows`, `dirty_exact_bytes`, `dirty_rounded_bytes`, `dirty_tiles`, `dirty_max_*`, `cap_hits`, `full_fallbacks` | Row/X dirty restore and upload | Proves byte reductions are not offset by too many `LoadImage` rects; `full_fallbacks` must remain zero in accepted builds. |
@@ -569,12 +692,13 @@ PAL4 compositor cleanup reducing dirty-marker calls without changing the dirty
 region. Dirty tracking now carries per-row X extents for current and previous
 dirty state, so RAM clean-background restore copies only the exact previous
 dirty row spans. The upload path now splits dirty tile uploads into contiguous
-vertical dirty-row bands with an 11-row clean-gap merge, while keeping full tile
-width and no scratch packing.
-Fishing1 improved from the original `loop_vb=1426` to `1240`,
-`restore_bytes=16035840` to `2510092`, and `upload_bytes=17172480` to
-`16499200`; next work is balancing upload byte savings against rectangle
-pressure.
+vertical dirty-row bands with a post-pause 1-row clean-gap merge, while keeping
+full tile width and no scratch packing.
+Fishing1 improved from the original `loop_vb=1426` to `1207`,
+`restore_bytes=16035840` to `251144`, and `upload_bytes=17172480` to
+`6690560`; next work is balancing the FGP3 executable-size/layout cost against
+the remaining present/scheduler gap and extending residual packs beyond the
+fishing1 high-tide canary.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -627,10 +751,10 @@ read-ahead behavior called out in the historical timing plan. The first target
 is to move next-entry reads into already-idle held VBlanks.
 
 Status: first wave implemented, visually signed off, and merged to `main` in
-`1b457163`. Stage1 entry prefetch is default. The perf branch now uses a 24 KB
-stream window after the post-slack window-size sweep. The old `prefetch-stage1` token
-is no longer required for the normal path; `no-prefetch`, `no-stage1`, and
-window-size tokens remain diagnostic controls.
+`1b457163`. Stage1 entry prefetch is default. Later retunes moved the perf
+branch to the sector-rounded `16 KB` stream window plus direct-stage seeding.
+The old `prefetch-stage1` token is no longer required for the normal path;
+`no-prefetch`, `no-stage1`, and window-size tokens remain diagnostic controls.
 
 Current perf-branch target: keep squeezing CD latency and upload cost without
 changing pixels. After x-aware restore, PAL4 span compositing, duplicate probe
@@ -638,20 +762,28 @@ removal, guarded fallthrough, pad/SPI diagnostic gating, row-level dirty
 restore, the `16 KB`/`3` VBlank post-restore retune, per-tile row dirty
 marking, the `6` VBlank fallthrough guard, the base-diff OT-clear skip,
 the tile-local PAL4 span fast path, vertical dirty-row upload bands with
-a post-leading-empty 11-row gap merge, setup priming of the first real payload,
-tight-slack direct staging, direct-stage scratch window seeding, and the
-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
+a post-pause 1-row gap byte trim, setup priming of a `320 KB` first-payload
+FG2 window on fishing1 high tide, setup-gated threshold-`4` catch-up,
+first FG2 upload scoped to the saved clean-rect Y band,
+tight-slack direct staging, direct-stage scratch window seeding,
+prepared-wait future prefetch, and the
+exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume and
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
-fishing1 high-tide reports
-`loop_vb=1222`, `blocking_vb=6`, `due_misses=0`, and prefetch
-`overrun_vb=6`, with `upload_bytes=16499200`, `restore_bytes=3130442`,
-`upload_rects=401`, `setup_reads=6`, and `scene_vb=1401`.
+the exact no-holiday fishing1 high-tide variant now uses the FGP3
+zero-shift temporal-residual pack and reports
+`loop_vb=1207`, `target_vb=1076`, `overrun_vb=131`, `blocking_vb=0`,
+`due_misses=0`, and prefetch `overrun_vb=0`, with
+`upload_bytes=8533120`, `restore_bytes=251144`, `upload_rects=436`,
+`loop_reads=6`, `setup_reads=6`, and `scene_vb=1447`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
-converted redundant span-side dirty work into more useful prefetch coverage.
-Next experiments should target the remaining blocking, bounded refill overrun,
-duplicate prepared-frame restore/compose work, upload byte volume, and upload
-rectangle pressure.
+converted redundant span-side dirty work into more useful prefetch coverage,
+setup-prime converted early foreground residency into a safe catch-up window,
+and FGP3 residuals removed most high-tide restore/upload/read volume.
+Next experiments should target the present/VSync ownership model, the setup-cost
+trade, release/perf-log measurement split, generated fishing-scene FGP3 rollout,
+and generated pack/read-cost metadata that can stop raw window probes from
+perturbing the deterministic cadence.
 
 | ID | Task | Rationale |
 |---|---|---|
@@ -796,6 +928,175 @@ rectangle pressure.
 | `P4-139` | Done: remove unused foreground status accessors. | Two strict runs matched exactly with a small timing/CD-pressure win: `loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, and `overrun_vb=149`; normal build stays in the `129024` byte PS-EXE bucket and narrows the foreground-pilot API surface. |
 | `P4-140` | Done: remove dead foreground requested-mode state. | Two strict runs matched the accepted baseline exactly while `jcreborn.elf` shrank `690936 -> 690724`; this removes write-only scene-mode state left behind by the foreground status accessor cleanup. |
 | `P4-141` | Done: require base-diff foreground packs. | All `126` generated FG2 packs carry the base-diff flag, so the runtime now rejects non-base-diff packs at startup and drops per-frame non-base-diff fallback checks; two strict runs matched baseline exactly while `jcreborn.elf` shrank `690724 -> 689748`. |
+| `P4-142` | Done: restore the default-off JCPAD/JCSPI diagnostics gate after the pause/menu merge. | The post-menu exact no-holiday baseline was `loop_vb=1306`, `blocking_vb=19`, `prefetch_overrun_vb=14`, and `due_misses=1` because the heavy pad diagnostics path was live again. Restoring `pad-diag`/`pad-debug` as opt-in while keeping Start polling always on recovered the accepted cadence: `loop_vb 1306 -> 1221`, `blocking_vb 19 -> 5`, `prefetch_overrun_vb 14 -> 5`, `due_misses 1 -> 0`, with clean correctness. |
+| `P4-143` | Failed: re-test raw `18 KB` and `14 KB` stream windows after the pause/menu merge. | The `18 KB` probe regressed `loop_vb 1221 -> 1238`, `blocking_vb 5 -> 25`, and `prefetch_overrun_vb 5 -> 25`; the `14 KB` probe regressed `loop_vb 1221 -> 1224`, `blocking_vb 5 -> 43`, and `due_misses 0 -> 12`. Keep the sector-rounded `16 KB` default until pack groups or a costed scheduler changes useful coverage per read. |
+| `P4-144` | Failed: remove dirty-upload band gap merging after the pause/menu merge. | Exact zero-gap bands lowered upload bytes (`16499200 -> 16273280`) but raised upload rectangles (`401 -> 515`) and regressed `loop_vb 1221 -> 1224`, `blocking_vb 5 -> 10`, and `prefetch_overrun_vb 5 -> 10`; byte savings alone are not enough when rect pressure rises that far. |
+| `P4-145` | Rejected: skip explicit `CdlSetloc` for sequential CD reads. | Setloc calls dropped (`74 -> 8`) and nominal loop improved (`1221 -> 1217`), but visual-work identity collapsed (`compose_calls 193 -> 6`, `upload_bytes 16499200 -> 1919360`) and visible CD pressure worsened (`blocking_vb 5 -> 8`). Source was reverted; retry only with a proven lower-level CD continuation API and stronger frame/work-identity gates. |
+| `P4-146` | Done: combine exact-4 prepared-present gating with a 4-row upload-band gap. | This is a work-reduction checkpoint, not a VBlank speed win: `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` stayed flat, while `restore_calls/compose_calls 193 -> 166`, `restore_bytes 3085148 -> 2701496`, `upload_bytes 16499200 -> 16387840`, and `dirty_rows 25780 -> 25606`; tradeoff is `overrun_vb 149 -> 150` and `upload_rects 401 -> 421`, within the accepted flat-timing gate. |
+| `P4-147` | Done: tighten the post-pause upload-band gap from `4` rows to `2` rows. | Two exact no-holiday runs kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16387840 -> 16381440` and `dirty_rows 25606 -> 25596`; tradeoff is `upload_rects 421 -> 424`, still far below the rejected zero-gap `515` rect pressure. |
+| `P4-148` | Done: narrow the post-pause upload-band gap from `2` rows to `1` row. | Two exact no-holiday runs again kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `upload_bytes 16381440 -> 16281600` and `dirty_rows 25596 -> 25440`; tradeoff is `upload_rects 424 -> 502`, close to but still below the rejected zero-gap failure at `515` rects. |
+| `P4-149` | Failed/no-op: reuse a single upload `RECT` instead of the local `RECT[16]` array. | Runtime metrics and work identity matched the accepted baseline exactly, but `jcreborn.elf` grew `713320 -> 713384`; source was reverted and only the experiment log was kept. |
+| `P4-150` | Done: prefetch a future stream window while a prepared frame waits for its present VBlank. | The post-gap1 retry kept `loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, and `due_misses=0` flat while reducing `restore_calls/compose_calls 166 -> 155`, `restore_bytes 2701496 -> 2510092`, `loop_read_vb 289 -> 284`, and `prefetch.used_vb 292 -> 285`; this removes the remaining duplicate prepared work for fishing1 without exposing extra CD pressure. |
+| `P4-151` | Failed/no-op: restore the `>=4` prepared-present threshold after prepared-wait prefetch. | Key timing and work identity matched exactly, with only loop bookkeeping movement (`advances 951 -> 957`, `held 868 -> 874`, `late 105 -> 100`); keep exact-`4` until a new scheduler budget makes threshold widening meaningful. |
+| `P4-152` | Failed: lower staged-copy fallthrough from `6` to `5` VBlanks after prepared-wait prefetch. | Total loop stayed flat but visible pressure regressed (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and loop read time rose (`284 -> 300`); keep the `6` VBlank guard until grouped reads make lookahead cheaper. |
+| `P4-153` | Failed: lower long-hold catch-up threshold from `5` to `4` after prepared-wait prefetch. | The retry still starved CD cadence despite lower duplicate prep: `target_vb 1071 -> 1065`, `overrun_vb 150 -> 156`, `blocking_vb 5 -> 9`, `prefetch_overrun_vb 5 -> 9`, and `blocking_reads 4 -> 8`; keep threshold `5` until grouped/predictive prefetch changes the slack budget. |
+| `P4-154` | Failed: remove the prefetch would-read probe. | Deleting the redundant-looking probe reduced held-path checks but shifted CD phase into visible pressure (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); keep small scheduler ballast unless a replacement pacing model proves the phase stays fixed. |
+| `P4-155` | Failed/no promotion: preconvert host-tick deadlines during metadata load. | The helper version was runtime-flat but grew `jcreborn.elf 713176 -> 714008`; the tighter parse-loop version still grew the ELF and exited `137` before `JCPERF2`. Keep `fgEntryHoldVBlanks()` unchanged until finer CPU counters prove this conversion is worth moving. |
+| `P4-156` | Failed: use an aligned 32-bit PAL4 pair store in the compositor. | The dynamic alignment branch kept visual work identity clean but regressed cadence badly (`loop_vb 1221 -> 1225`, `overrun_vb 150 -> 157`, `blocking_vb 5 -> 12`, `prefetch_overrun_vb 5 -> 12`); compositor wins need generated/assembly code that avoids extra hot-loop branching. |
+| `P4-157` | Accepted integration baseline: merge main pause-menu credits/captions work into the perf branch. | The merge is correct but costs one cadence VBlank (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`) and moves `FISHING1.FG2` to LBA `399` because the executable grows to `149504` bytes; future optimization tests now compare against this accepted merged state. |
+| `P4-158` | Failed/no promotion: gate default-off caption rendering with `captionsGetEnabled()`. | Runtime metrics stayed exactly flat against the post-main baseline, but the executable grew (`149504 -> 151552`) and ELF grew (`743944 -> 744080`); keep the direct renderer call until captions expose an inline active flag or a release profile can compile captions differently. |
+| `P4-159` | Done: compile-gate pause-menu JCPAUSE diagnostics out of the default build. | Runtime metrics stayed exactly flat against the post-main baseline while default-build diagnostic text/code was removed (`jcreborn.elf 743944 -> 743136`, PS-EXE unchanged at `149504`); keep `PAUSE_MENU_DIAG_LOGS` as the explicit opt-in for pause-menu log mining. |
+| `P4-160` | Done: compile-gate `graphics_ps1.c` debug-mode diagnostics out of the default build. | Runtime metrics stayed exactly flat against the pause-diagnostics baseline while default-build graphics diagnostic text/code was removed (`jcreborn.elf 743136 -> 740984`, PS-EXE unchanged at `149504`); keep `GRAPHICS_PS1_DIAG_LOGS` as the explicit opt-in for GPU log mining. |
+| `P4-161` | Done: compile-gate routine `sound_ps1.c` SPU startup diagnostics out of the default build. | Runtime metrics stayed exactly flat against the graphics-diagnostics baseline while routine sound setup text/code was removed (`jcreborn.elf 740984 -> 740664`, PS-EXE unchanged at `149504`); keep `SOUND_PS1_DIAG_LOGS` as the explicit opt-in for audio log mining. |
+| `P4-162` | Done: compile-gate the unconditional `JCBOOT applyBootOverride` buffer dump out of the default build. | Runtime and correctness stayed clean with a small deterministic win (`loop_vb 1222 -> 1221`, `blocking_vb 6 -> 5`, `prefetch_overrun_vb 6 -> 5`, `loop_read_vb 292 -> 284`) while default-build boot diagnostic text/code was removed (`jcreborn.elf 740664 -> 740496`, PS-EXE unchanged at `149504`); keep `JC_BOOT_DIAG_LOGS` as the explicit opt-in for boot-string log mining. |
+| `P4-163` | Failed: compile-gate the PS1 resource-count setup diagnostic. | The ELF shrank (`740496 -> 740392`) but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and the resource-count print remains as layout/cadence ballast until CD phase is controlled. |
+| `P4-164` | Done: compile-gate PS1 pause request-consumption diagnostics out of the default build. | Runtime metrics stayed exactly flat against the boot-diagnostics baseline while cold pause-loop text/code was removed (`jcreborn.elf 740496 -> 740336`, PS-EXE unchanged at `149504`); keep `JC_PAUSE_REQUEST_DIAG_LOGS` as the explicit opt-in for pause request log mining. |
+| `P4-165` | Failed/no promotion: compile-gate the old PS1 `padtest` boot mode. | The exact gate stayed flat and correctness stayed clean, but there was no timing or file-size win (`jcreborn.exe=149504`, `jcreborn.elf=740336`); source was reverted and padtest cleanup is deferred to a future public-cleanup pass rather than the perf loop. |
+| `P4-166` | Failed: compile-gate the optional `printf-test` / `logtest` `JCLOG` probe body. | The size win was real (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738556`), but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and this becomes a layout-padding/CD-phase-control retry candidate. |
+| `P4-167` | Failed: compile-gate memory-card `JCMC` diagnostics out of the default build. | The size win crossed the same PS-EXE sector bucket (`jcreborn.exe 149504 -> 147456`, `jcreborn.elf 740336 -> 738652`) and moved `FG\\FISHING1.FG2` from LBA `399` to `398`, but the exact gate regressed cadence (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`); source was reverted and memcard logs remain layout/CD-phase ballast until foreground LBA and code phase can be controlled together. |
+| `P4-168` | Failed: remove unused-looking `ISLETEMP.SCR` from the active CD layout. | The FG2 pack LBA stayed fixed at `399`, but setup/CD-layout phase still regressed the exact gate (`loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `read_vb 393 -> 401`) and the emulator emitted invalid-read spam after `JCPERF2`; source was reverted and CD asset pruning needs a startup phase barrier plus exit sanity gate before promotion. |
+| `P4-169` | Failed: compile-gate automatic foreground heap probes out of default playback. | The source reverted after the exact gate regressed through the same layout/CD-phase shape as other one-sector shrink misses: `FG\\FISHING1.FG2 LBA 399 -> 398`, `loop_vb 1221 -> 1222`, `blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`, `loop_read_vb 284 -> 292`; keep the automatic FGHEAP probe code as ballast until foreground LBA/cold-section control exists or CD phase is explicit. |
+| `P4-170` | Done: skip disabled caption rendering through an inline-readable enabled flag. | The prior getter-gate probe grew the executable, but exposing the existing caption state as `ps1CaptionsEnabled` keeps the exact no-caption fishing1 cadence flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `due_misses=0`) and leaves the shipped PS-EXE at `149504`; this is a hot-path cleanup rather than a VBlank-level speed win. |
+| `P4-171` | Done: skip disabled foreground-pilot ADS caption scene lookup. | Guarding the fishing1/fishing2/fishing3 `captionsOnAdsStart()` lookup behind `ps1CaptionsEnabled` keeps the exact no-caption fishing1 cadence and work identity flat while avoiding default scene-start caption string checks; `jcreborn.exe` remains `149504` and `FG\\FISHING1.FG2` remains LBA `399`. |
+| `P4-172` | Failed/no promotion: reuse the window-prefetch candidate entry in guarded held-loop paths. | The refactor kept exact no-caption fishing1 timing and work identity flat, but it did not improve any tracked counter and grew the ELF (`740568 -> 741216` after tightening, `742828` in the first draft); source was reverted and this should wait for a broader prefetch state-machine rewrite or finer CPU counters. |
+| `P4-173` | Failed/no-op: lower the direct-stage payload cap from `8 KB` to `7 KB`. | The exact no-caption fishing1 gate matched baseline across timing, CD, prefetch, gfx, pack LBA, and binary size (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=68`, `jcreborn.exe=149504`); source was reverted and direct-stage cap tuning remains exhausted. |
+| `P4-174` | Done: lower the local dirty-upload rectangle cap from `16` to `8`. | Fishing1's measured `max_upload_rects=6`, so the smaller cap preserves exact upload behavior (`upload_rects=502`, `cap_hits=0`) while trimming stack/binary pressure slightly (`jcreborn.elf 740568 -> 740556`, PS-EXE unchanged at `149504`). |
+| `P4-175` | Failed/no promotion: lower the local dirty-upload rectangle cap from `8` to `6`. | The exact fishing1 gate stayed flat and `cap_hits=0`, but there was no additional binary win over cap `8` and no headroom above fishing1's measured `max_upload_rects=6`; source was reverted to the safer cap `8` until broader scene validation proves a tighter cap. |
+| `P4-176` | Failed: narrow `grDrawBackground()` upload bookkeeping locals. | The ELF shrank (`740556 -> 740516`) with identical upload work, but the exact gate regressed cadence (`loop_vb 1221 -> 1225`, `blocking_vb 5 -> 12`, `prefetch_overrun_vb 5 -> 12`, `blocking_reads 4 -> 10`); source was reverted and this should only be retried with map/register review or upload-path translation-unit isolation. |
+| `P4-177` | Failed: prepare staged frames at `3` VBlanks as well as the accepted exact-`4` point. | It improved nominal deadline accounting (`target_vb 1071 -> 1073`, `overrun_vb 150 -> 148`, `late 105 -> 100`) but did not reduce actual loop time and regressed visible CD pressure (`blocking_vb 5 -> 6`, `prefetch_overrun_vb 5 -> 6`); source was reverted and present-prep changes need an explicit render-prep/CD slack budget before retry. |
+| `P4-178` | Failed: read tight-slack direct-stage sectors straight into the stream window. | An `8 KB` aligned-window cap improved actual loop time (`1221 -> 1219`) but moved one more read into visible pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`, `blocking_reads 4 -> 5`, `loop_read_vb 284 -> 293`); a `6 KB` cap was an exact no-op. Source was reverted; retry only with grouped/predicted direct-stage windows that preserve the current blocking-read count. |
+| `P4-179` | Done: enforce work-identity floors in the headless perf harness. | The new default `75%` floor on `timing.render`, `gfx.restore_calls`, `gfx.compose_calls`, and `gfx.upload_calls` keeps the exact fishing1 baseline passing (`155 -> 155` for all four) while rejecting future false speedups that silently skip most visual work. |
+| `P4-180` | Done: pre-apply scene-relative FG2 offsets at startup. | Random island placement is preserved because offsets are applied after variant selection; the exact fishing1 gate stayed flat across timing/CD/work identity while `jcreborn.elf` shrank `740556 -> 740132` and pack flags still report `scene_relative=1`. |
+| `P4-181` | Done: inline FG2 entry draw offsets after startup pre-apply. | The helper functions became trivial after `P4-180`; using `entry->x/y` directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `740132 -> 739684` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
+| `P4-182` | Done: collapse identical held-loop prefetch branches. | Prepared-frame and staged-frame states share the same window-prefetch behavior; merging the duplicate branches kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739684 -> 739552` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
+| `P4-183` | Failed/no promotion: pass `NULL` for discarded next-payload frame-index outputs. | The exact fishing1 gate stayed flat, but the source change did not improve any tracked speed/work metric and grew `jcreborn.elf` `739552 -> 739568`; source was reverted and this should wait for broader prefetch helper cleanup. |
+| `P4-184` | Failed/no promotion: combine adjacent no-slack perf-log guards. | The exact fishing1 gate stayed flat, but combining the two `ps1PerfEnabled` checks in each no-slack prefetch path grew `jcreborn.elf` `739552 -> 739664`; source was reverted and cosmetic hot-path guard combining should be avoided unless metrics improve. |
+| `P4-185` | Done: remove duplicate compose active guard. | `grUpdateDisplay()` already guards calls to `foregroundPilotRuntimeCompose()` and the compose function still no-ops by mode; removing the duplicate active check kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739552 -> 739544`. |
+| `P4-186` | Failed/no promotion: remove the active check from `fgRuntimeCanHoldDisplayedFrame()`. | The change crossed a PS-EXE sector bucket (`149504 -> 147456`) and moved `FG\\FISHING1.FG2` to LBA `398`, but active playback regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and this becomes a layout-preservation retry candidate. |
+| `P4-187` | Failed/no promotion: remove the active check from `fgRuntimeMarkFrameRendered()`. | This also crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, producing the same active playback regression (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and active-guard pruning now needs explicit CD-layout preservation. |
+| `P4-188` | Failed/no promotion: retry mark-rendered active-guard removal with one-sector CD padding. | The temporary padding restored `FG\\FISHING1.FG2` to LBA `399`, but the exact gate still regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); the miss is code-layout/scheduler phase too, not just physical FG2 LBA. |
+| `P4-189` | Failed: disable stream-window append extension. | Removing the append/memmove path collapsed sequential window behavior (`seq 66 -> 0`, `seek_back 5 -> 71`) and badly regressed CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 26`); keep append preservation and target smarter grouped/appended reads instead. |
+| `P4-190` | Done: simplify `foregroundPilotRuntimeActive()`. | Returning the runtime byte directly kept the exact fishing1 gate flat across timing/CD/work identity while `jcreborn.elf` shrank `739544 -> 739540` and `jcreborn.exe` stayed in the same `149504` byte bucket. |
+| `P4-191` | Failed/no-op: remove the ternary from `fgRuntimeWindowSlackEligible()`. | The exact fishing1 gate and binary size matched baseline exactly (`jcreborn.elf=739540`), so the source was reverted; retry only as part of broader prefetch helper inlining. |
+| `P4-192` | Failed/no-op: remove the ternary from `fgEntryHasPayload()`. | The exact fishing1 gate and binary size matched baseline exactly (`jcreborn.elf=739540`), so the source was reverted; isolated boolean-helper cleanup is exhausted unless part of a larger hot-helper rewrite. |
+| `P4-193` | Failed/no promotion: cache `ps1PerfEnabled` inside `fgRuntimeTryPrefetchWindow()`. | The local cache crossed the PS-EXE sector bucket and moved `FG\\FISHING1.FG2` to LBA `398`, regressing active playback (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); source was reverted and perf-flag cache refactors need layout control. |
+| `P4-194` | Done: add a PS-EXE sector-bucket gate to `ps1-perf-iterate`. | The harness now records `jcreborn.exe` bytes, sector bucket, sector count, and ELF bytes in each summary/JSONL row; once a baseline contains these fields, sector-bucket changes fail by default unless `--allow-layout-change` is explicit. |
+| `P4-195` | Done: add a foreground-pack LBA comparison gate. | Baseline comparisons now include `scene.pack_lba`, so `FG\\FISHING1.FG2 LBA 399 -> 398` becomes an immediate layout-identity failure instead of a manual clue found after CD metric triage. |
+| `P4-196` | Done: parse build map deltas for hot functions. | `ps1-perf-iterate` now records a selected hot-symbol snapshot from `jcreborn.map` and reports address/size deltas against the baseline without failing the gate; this gives code-layout evidence before retrying helper/cache refactors. |
+| `P4-197` | Queued: test deterministic executable padding independent of ISO padding. | The CD-padded retry preserved FG2 LBA but still regressed; try linker/EXE text padding to preserve code address phase, not just file placement. |
+| `P4-198` | Queued: isolate foreground runtime into a layout-stable translation unit section. | Keep hot FG2 scheduler/compositor code addresses stable while allowing cold diagnostics and pause/menu code to shrink independently. |
+| `P4-199` | Queued: pack-emitted append groups with current payload offsets preserved. | Fixed 16 KB group padding failed; instead emit group metadata that describes cheap append windows without moving payload bytes. |
+| `P4-200` | Done: host-side group planner for fishing1 read sequence. | `ps1-perf-cdlog-summary.py --pack-file` now parses the FG2 entry table and emits zero-extra-sector group candidates; on the accepted fishing1 log it proposes `69 -> 46` reads at `12` sectors, `69 -> 29` reads at `16` sectors, and `69 -> 20` reads at `24` sectors while preserving current payload offsets. |
+| `P4-201` | Partial: runtime group lookup that only changes read length, not frame identity. | Broad 12-sector grouping failed (`loop_reads 68 -> 66` but `blocking_vb 5 -> 10`). The narrow fishing1 high-tide tail group `396..406` is accepted as work reduction (`loop_reads 68 -> 67`, `setloc 74 -> 73`, flat key timing), proving selective groups are valid but must be costed boundary-by-boundary. |
+| `P4-202` | Queued: append-cost predictor based on sectors plus preserved tail. | Byte-only predictors failed; model `appendBytes`, `preserveBytes`, sector count, and current slack before starting any lookahead read. |
+| `P4-203` | Queued: block the fifth visible read specifically. | Current baseline has `blocking_reads=4`; rejected variants move it to `5`. Identify the exact read shape and target only that transition. |
+| `P4-204` | Queued: diagnostic-only per-read trace binary. | Inline CD histograms regressed the speed baseline; create a separate non-promotable trace mode/binary for read sequence analysis. |
+| `P4-205` | Done: host-side DuckStation log read-sequence extractor. | `scripts/ps1-perf-cdlog-summary.py` parses `Setloc`/`ReadN` lines and anchors them to the scene pack LBA from `summary.json`; the accepted fishing1 run shows `69` post-locate FG2 reads from LBA `400` through `801`, matching the legacy active-read count without PS1-side instrumentation. |
+| `P4-206` | Queued: setup-to-loop cadence barrier experiment. | Several setup/code-shape changes perturb active cadence; test a deterministic settle/barrier that makes loop start phase independent of setup reads. |
+| `P4-207` | Queued: non-`perf-log` speed baseline comparison. | The accepted loop currently measures with summary logging enabled; compare a non-logging run to decide whether perf probes themselves are now a significant scheduling actor. |
+| `P4-208` | Queued: release-vs-perf dual baseline policy. | If `perf-log` materially changes cadence, maintain a diagnostic baseline and a release-speed baseline instead of optimizing the logging build only. |
+| `P4-209` | Queued: retry active-guard/code-size removals under code-address padding. | The source changes are semantically valid and size-positive; they become candidates again only if text/code phase can be held constant. |
+| `P4-210` | Queued: narrow `fgRuntimeWindowPrefetchWouldRead()` without removing pacing. | Prior removal shifted phase; try a layout-stable inline/read-only variant only after map gating exists. |
+| `P4-211` | Queued: append-preserving direct-stage seed v2. | Direct read-into-window and seed merge both failed; retry only with exact current-window/tail metrics and no extra backward seek. |
+| `P4-212` | Queued: pack-time upload bands for high-rect frames. | Upload byte volume remains large but rect-count tuning is locally exhausted; generated dirty/upload bands may reduce CPU/command work without widening bytes. |
+| `P4-213` | Queued: cross-scene validation for cap `8` upload rects and append behavior. | Before wider promotion, run fishing2/fishing3 plus representative high/low tide variants to ensure fishing1-local knees are not hiding scene-specific regressions. |
+| `P4-214` | Failed/no promotion: remove the duplicate prepared-present guard. | `fgRuntimePresentPreparedFrame()` is currently called only after `fgRuntimeCanPresentPreparedOnNextVBlank()`, but removing the internal guard regressed visible CD pressure despite fixed layout (`blocking_vb/prefetch_overrun_vb 5 -> 7`, `blocking_reads 4 -> 5`); keep the guard as scheduler/code-shape ballast until prepared-present is redesigned. |
+| `P4-215` | Failed/no promotion: inline the window-contained check inside `fgRuntimeWindowPrefetchWouldRead()`. | The exact gate stayed flat, but the helper grew by `60` bytes and shifted downstream hot symbols; keep the shared helper call until a broader prefetch-state rewrite can reduce code size and cadence together. |
+| `P4-216` | Failed: allow `24 KB` stream-window reads only at `10+` held VBlanks. | Decoupling normal `16 KB` reads from a larger high-slack capacity kept `loop_vb=1221`, but regressed `target_vb 1071 -> 1069`, `overrun_vb 150 -> 152`, `blocking_vb 5 -> 8`, and `prefetch_overrun_vb 5 -> 8`; group/read-cost metadata must be more specific than a long-hold threshold. |
+| `P4-217` | Done: skip legacy CD accumulator writes for modern foreground reads. | The exact gate stayed flat while `jcreborn.elf` shrank `739540 -> 739524` and the buffered/aligned CD helper symbols each shrank by `8` bytes; `JCPERF2` remains authoritative and the legacy print now mirrors modern CD totals. |
+| `P4-218` | Queued: compiler/linker/toolchain flag matrix with layout gates. | The old hot-TU `-O3` probe failed, but narrower flags remain valid targets: per-file `-Os`/`-O2`/`-O3`, hot/cold translation-unit splits, function alignment, linker section ordering, and code-address padding must each pass the same exact timing/layout gate. |
+| `P4-219` | Queued: group-cost predictor for runtime append groups. | The accepted tail group and rejected broad group show that transaction count is insufficient; score each candidate by append sectors, preserved bytes, current slack, host-observed read cost, and whether it risks creating the fifth visible read. |
+| `P4-220` | Queued: move read-group boundaries into generated pack metadata. | The hard-coded fishing1 tail group is a proving slice. The durable version should emit per-pack group metadata without moving payload offsets, then let runtime consume scene-authored groups with the same strict cadence gates. |
+| `P4-221` | Failed/no promotion: collapse the one-entry tail read-group table to direct constants. | Timing and CD work stayed flat, but the ELF grew (`741076 -> 741404`) and `fgRuntimeFillWindowForEntry` grew by `100` bytes; keep the table form until group metadata/codegen replaces the hard-coded slice. |
+| `P4-222` | Done: tighten the tail read-group retained capacity to 11 sectors. | The exact gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `loop_reads=67`) while the prefetch buffer dropped `31760 -> 29712` bytes and ELF/PS-EXE size stayed flat. |
+| `P4-223` | Failed/no promotion: tighten the tail read-group retained capacity to 10 sectors. | Timing stayed flat and the buffer would have dropped to `27664` bytes, but the accepted saved read vanished (`loop_reads 67 -> 68`, `group_hits=0`); keep 11 sectors as the current safe lower bound. |
+| `P4-224` | Done: compile the default-off captions translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and hot-symbol addresses while `jcreborn.elf` shrank `741076 -> 740816`; this validates narrow cold-TU compiler probes under the layout gates. |
+| `P4-225` | Done: compile the memcard translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and hot-symbol addresses while `jcreborn.elf` shrank `740816 -> 740196`; continue cold-TU flag probes one file at a time. |
+| `P4-226` | Failed/no promotion: compile the holidays translation unit with `-Os`. | The ELF shrank to `737352`, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer until layout/code-phase control exists. |
+| `P4-227` | Failed/no-op: compile the generated holidays table translation unit with `-Os`. | The exact gate stayed flat, but binary size did not move (`jcreborn.elf=740196`, PS-EXE bucket `149504`); the table is data-dominated under current flags. |
+| `P4-228` | Failed/no promotion: prepared-stage decoupling v2. | Decoupling prepared visual state from staged payload first tripped correctness at frames `30`/`54`; after fixing ownership and blocking CD reads during prepared waits, the exact fishing1 gate was correctness-clean but flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`). Retry only with a first-class prepared-present scheduler and explicit prepared/CD-budget metrics, not as another local state tweak. |
+| `P4-229` | Queued: true double-buffered prepared visual state. | The no-promotion result shows one RAM background can only safely hold one prepared visual state; a real frame-ahead pipeline likely needs a second prepared RAM/VRAM target or pack-emitted upload-ready state so preparing frame+2 does not overwrite frame+1 or steal CD deadline slack. |
+| `P4-230` | Failed/no promotion: adjacent fishing1 tail group `384..396`. | Both the table-only form and an explicit adjacent-append variant kept timing/read counts flat, did not change the runtime read shape, and raised the retained buffer `29712 -> 31760`; keep the accepted 11-sector capacity until runtime append-start evidence or generated group metadata identifies a real next group. |
+| `P4-231` | Done: compile the PS1 debug translation unit with `-Os`. | The exact gate stayed flat across timing/CD/layout/work identity and tracked hot symbol addresses/sizes while `jcreborn.elf` shrank `740196 -> 739948`; continue cold/default-off TU flag probes while the PS-EXE bucket remains stable. |
+| `P4-232` | Failed/no promotion: compile the pause-menu translation unit with `-Os`. | The ELF shrank `739948 -> 735944`, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`, `blocking_reads 4 -> 5`); defer large cold-code shrink probes until layout padding/cold-section control or phase-independent CD scheduling exists. |
+| `P4-233` | Failed/no promotion: compile pause-menu with `-Os` plus one-sector CD padding. | Preserving `FISHING1.FG2 LBA=399` with `<dummy sectors="1"/>` did not recover cadence: `loop_vb 1221 -> 1222` and `blocking_vb/prefetch_overrun_vb 5 -> 6` still regressed while PS-EXE bucket shrank `149504 -> 147456`; the problem is executable/load/startup phase, so prioritize a setup-to-loop cadence barrier or phase-independent CD scheduler before retrying large size wins. |
+| `P4-234` | Failed/no promotion: reset the foreground scene clock at `loop_start`. | Resetting `sceneClockTick` immediately before `ps1PerfMarkLoopStart()` was flat by itself but shifted hot symbols by `+4` bytes and did not rescue the `pause_menu.c -Os` shrink; the useful barrier must stabilize CD/controller/scheduler phase, not only foreground elapsed-time accounting. |
+| `P4-235` | Failed/no promotion: direct-fill the inferred `384..396` tail group. | Adding direct grouped fills and raising retained group capacity to `12` sectors kept timing/read shape flat but only increased prefetch memory (`29712 -> 31760`); inferred CD-log group candidates need runtime append/window-start traces before they are worth adding. |
+| `P4-236` | Failed/no promotion: switch to PSn00bSDK Release libraries. | Release SDK libraries shrink the executable bucket and improve raw loop by one VBlank, but they raise visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 8`) even with pack LBA preserved; retry only after CD scheduling is phase-independent enough to accept the size/codegen win. |
+| `P4-237` | Failed/no promotion: compile the SPI translation unit with `-Os`. | The exact gate stayed timing-flat, but `jcreborn.elf` grew `739948 -> 740092`; keep SPI at default `-O2` until a controller/input benchmark proves otherwise. |
+| `P4-238` | Failed/no promotion: compile the PS1 stubs translation unit with `-Os`. | The ELF shrank slightly, but the PS-EXE crossed `149504 -> 147456`, moved `FISHING1.FG2` LBA `399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); defer tail-stub size work until layout/phase control exists. |
+| `P4-239` | Failed/no promotion: compile holidays with `-Os` plus one-sector CD padding. | Keeping `FISHING1.FG2 LBA=399` did not recover cadence (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`); one-sector executable shrink remains unsafe without phase-independent scheduling. |
+| `P4-240` | Failed/no promotion: remove duplicate rendered/held perf guards. | The cleanup shifted hot symbols by `-40` bytes and regressed CD pressure even with pack LBA restored by padding (`blocking_vb/prefetch_overrun_vb 5 -> 6`); do not remove hot-path ballast until code phase is controlled. |
+| `P4-241` | Failed/no promotion: compile `foreground_pilot.c` with `-O3`. | Whole-TU `-O3` grew the executable bucket, moved `FISHING1.FG2` LBA `399 -> 400`, grew key foreground functions, and regressed visible CD pressure while leaving `loop_vb` flat; avoid broad hot-TU flag probes. |
+| `P4-242` | Failed/no promotion: allow 4-VBlank catch-up only when the next prepared frame and following stream-window payload are resident. | The safety-gated short-hold catch-up was correctness-clean and layout-stable but exact no-op (`loop_vb=1221`, `target_vb=1071`, `blocking_vb=5`, `prefetch_overrun_vb=5`); local threshold guards are exhausted for fishing1, so present-wait work needs a structural prepared/dual-buffer scheduler or explicit hold rebalance. |
+| `P4-243` | Failed/no promotion: move `cdrom_ps1.c` beside `foreground_pilot.c` in link order. | The hot-CD link-order bucket moved tracked symbols by about `+9496` bytes but key timing/CD/layout stayed exact (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=399`); simple whole-TU order changes are not enough, so use layout control to unlock specific known size/codegen wins instead. |
+| `P4-244` | Failed/no promotion: hoist `grDrawBackground()` tile screen coordinates into static tables. | The upload-coordinate table probe kept key metrics flat but grew `grDrawBackground` by `24` bytes and `jcreborn.elf 739948 -> 740092`; the compiler's local constants are better than the static-table shape, so focus upload work on pack-emitted bands or fewer commands. |
+| `P4-245` | Failed/no promotion: compile `sound_ps1.c` with `-Os`. | The audio TU shrink reduced `jcreborn.elf 739948 -> 739776` and crossed PS-EXE `149504 -> 147456`, but cadence regressed (`loop_vb 1221 -> 1222`, `blocking_vb/prefetch_overrun_vb 5 -> 6`) even after restoring `FISHING1.FG2 LBA=399` with a dummy CD sector; this is another executable/load-phase miss. |
+| `P4-246` | Failed/no promotion: compile `resource.c` with `-Os`. | The resource TU shrink reduced `jcreborn.elf 739948 -> 738376`, but crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, shifted foreground hot symbols by `-240`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`). |
+| `P4-247` | Failed/no promotion: compile `ps1_perf.c` with `-O3`. | The perf TU `-O3` probe grew `jcreborn.elf 739948 -> 742300`, expanded `ps1PerfMarkCdReadDetailed` by `912` bytes, crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`). |
+| `P4-248` | Failed/no promotion: compile `ps1_perf.c` with `-Os`. | The perf TU `-Os` probe was cadence- and layout-flat and shrank only the ELF (`739948 -> 737472`); `jcreborn.exe` stayed `149504` while hot perf functions grew, so there was no runtime-size or speed win to accept. |
+| `P4-249` | Done: remove the unused `targetVBlanks` argument from `ps1PerfMarkAdvance()`. | The exact gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=399`) while the foreground advance helper shrank by `4` bytes and `jcreborn.elf 739948 -> 739900`; this is a flat hot-path cleanup, not a VBlank speed win. |
+| `P4-250` | Failed/no promotion: remove the unused `ps1PerfMarkCdRead()` wrapper. | The wrapper deletion is semantically valid but crossed PS-EXE `149504 -> 147456`, moved `FISHING1.FG2 LBA 399 -> 398`, expanded/rephased `ps1PerfMarkCdReadDetailed` by `912` bytes, and regressed visible CD pressure (`blocking_vb/prefetch_overrun_vb 5 -> 6`); keep it as layout ballast until code-phase control exists. |
+| `P4-251` | Done: add host-side fifth-visible-read comparison. | `ps1-perf-cdlog-summary.py --compare` now compares a candidate CD log summary against the accepted baseline without touching the PS1 binary, reports `JCPERF2` deltas, and ranks file-sector-normalized read timing candidates. Against the wrapper-removal miss it correctly flags `blocking_reads +1` and points at sector `106..110` / entry `38` as the largest positive timing suspect. |
+| `P4-252` | Failed/no promotion: add a hard-coded fishing1 group for sectors `106..117`. | The new fifth-read locator made this region worth testing, but the runtime append path never used the group (`group_hits=0`) and all timing/CD counters stayed flat while the ELF grew `739900 -> 740444`; retry only after append-start tracing or generated group metadata proves the group can fire. |
+| `P4-253` | Failed/no promotion: raise retained group capacity to `15` sectors for the `106..117` probe. | Capacity was not the blocker: timing/CD shape stayed exact no-op, `group_hits=0`, and the only measured changes were bad (`heap.prefetch 29712 -> 37904`, `jcreborn.elf 739900 -> 740444`). Do not add more early manual groups before tracing append starts. |
+| `P4-254` | Failed/no promotion: compile `graphics_ps1.c` with `-O3`. | Whole-TU graphics optimization grew the PS-EXE two sectors, moved `FISHING1.FG2` to LBA `401`, expanded `grDrawBackground` and restore code, and regressed cadence (`loop_vb 1221 -> 1225`, `blocking_vb/prefetch_overrun_vb 5 -> 11`); graphics codegen needs helper-scoped or generated paths, not broad `-O3`. |
+| `P4-255` | Failed/no promotion: compile only `grCompositePacked4SpansToBackground()` with `-O3`. | Function-scoped `O3` did shrink the PAL4 compositor by `28` bytes, but it regressed cadence both before and after restoring `FISHING1.FG2 LBA=399` with a dummy CD sector (`loop_vb 1221 -> 1226`, `blocking_vb/prefetch_overrun_vb 5 -> 11`). Do not retry GCC `O3` on this helper; move compositor work to generated/assembly shapes if needed. |
+| `P4-256` | Done: parse delivered CD sectors host-side. | `ps1-perf-cdlog-summary.py` now counts DuckStation `DataSector` lines per `ReadN` and converts physical DataSector LBAs back to logical LBAs, so group planning uses actual delivered sector spans instead of next-read inference. Baseline fishing1 now shows `408` delivered active-loop pack sectors and a `12`-sector grouping plan of `68 -> 47` reads with `sector_delta=-3`; keep using this host-side evidence before adding more runtime groups. |
+| `P4-257` | Failed/no promotion: add a hard-coded fishing1 group for sectors `384..396` with `13`-sector capacity. | Delivered-sector planning showed a real late two-read span before the accepted tail group, but the runtime probe was timing/CD exact no-op while increasing prefetch heap `29712 -> 33808` and growing `fgRuntimeFillWindowForEntry` by `72` bytes. Do not add more manual groups until append-start/slack ownership tracing proves they can save an actual read. |
+| `P4-258` | Done: compile `foreground_pilot.c` with `-Os`. | Unlike the failed foreground `-O3` probe, `-Os` kept the exact fishing1 cadence and work identity flat while shrinking PS-EXE `149504 -> 145408` and ELF `739900 -> 727716`; the branch baseline now allows the deliberate `FISHING1.FG2 LBA 399 -> 397` shift because timing/CD/correctness stayed unchanged. Count this as a binary-size/code-shape win, not a VBlank speed win. |
+| `P4-259` | Done: retry `holidays.c -Os` after the foreground-size baseline. | The old holidays-size failure no longer regresses cadence under the new code/CD phase: the exact no-holiday gate stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=397`, PS-EXE `145408`) while ELF shrinks `727716 -> 724868`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
+| `P4-260` | Done: retry `resource.c -Os` after the foreground-size baseline. | The old resource-size failure is also phase-safe now: the exact no-holiday gate stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=397`, PS-EXE `145408`) while ELF shrinks `724868 -> 723284`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
+| `P4-261` | Done: retry `sound_ps1.c -Os` after the foreground-size baseline. | The old sound-size failure is now phase-safe and sound-correct: the exact no-holiday gate stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `sound_events=9`, `sound_late=0`, `sound_cursor_end=9`, `FISHING1.FG2 LBA=397`, PS-EXE `145408`) while ELF shrinks `723284 -> 723104`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
+| `P4-262` | Done: retry `pause_menu.c -Os` after the foreground-size baseline. | The old pause-menu size failure is now phase-safe for the fishing1 perf path: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA 397 -> 396`) while PS-EXE shrinks `145408 -> 143360` and ELF shrinks `723104 -> 719096`. Count as loaded-executable size cleanup only; pause UI still needs normal visual/input validation before merging. |
+| `P4-263` | Done: retry `ps1_stubs.c -Os` after the pause-menu size baseline. | The old stubs-size failure is now phase-safe but tiny: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `719096 -> 719048`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
+| `P4-264` | Done: compile `events_ps1.c` with `-Os`. | Event/pause code is phase-safe under the current baseline: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `719048 -> 717796`. Count as cumulative size cleanup only; pause/input still needs normal visual validation before merging. |
+| `P4-265` | Done: compile `utils.c` with `-Os`. | Utility support code is phase-safe under the current baseline: exact no-holiday cadence stays flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `717796 -> 716584`. Count as cumulative size cleanup only, not a VBlank or loaded-executable-size win. |
+| `P4-266` | Failed/no-op: compile `uncompress.c` with `-Os`. | The exact no-holiday gate stayed flat, but no tracked size or runtime metric moved (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, PS-EXE `143360`, ELF `716584`); source was reverted and only the experiment log was kept. |
+| `P4-267` | Done: compile `island.c` with `-Os`. | The exact no-holiday fixed-island gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `716584 -> 716340`; tracked hot-symbol addresses shifted by `-48` bytes without changing cadence. Count as small cumulative size cleanup only. |
+| `P4-268` | Done: compile `jc_reborn.c` with `-Os`. | The exact no-holiday gate stayed flat (`loop_vb=1221`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while ELF shrinks `716340 -> 714520`; tracked hot-symbol addresses shifted by `-404` bytes without changing cadence. Count as cumulative main-TU size cleanup only, and keep UI validation separate. |
+| `P4-269` | Failed/no promotion: compile `cdrom_ps1.c` with `-Os`. | The CD TU did shrink PS-EXE `143360 -> 141312`, move `FISHING1.FG2 LBA 396 -> 395`, and shrink helper symbols, but it regressed cadence (`loop_vb 1221 -> 1224`, `blocking_vb/prefetch_overrun_vb 5 -> 10`); source was reverted and only the experiment log was kept. |
+| `P4-270` | Failed/no promotion: cache file LBA in `ps1_streamReadFromCdFileIntoBuffered()`. | The exact gate stayed timing/layout-flat, but the helper grew by `8` bytes and ELF grew `714520 -> 714808`; source was reverted and only the experiment log was kept. |
+| `P4-271` | Done: combine upload perf guards in `grDrawBackground()`. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank by `64` bytes and ELF shrank `714520 -> 714440`; count as hot upload-path code cleanup only, not a VBlank speed win. |
+| `P4-272` | Failed/no promotion: cache the upload perf guard in a local. | The exact gate stayed timing/layout/work-flat and `grDrawBackground` shrank another `56` bytes, but total ELF grew `714440 -> 714456` with no speed metric movement; source was reverted and only the experiment log was kept. |
+| `P4-273` | Failed/no promotion: inline the perf-detail check at rendered-frame call sites. | The exact gate stayed timing/layout/work-flat and hot functions shrank (`foregroundPilotPlay -24`, `grUpdateDisplay -40`), but total ELF grew `714440 -> 714564` with no speed metric movement; source was reverted and only the experiment log was kept. |
+| `P4-274` | Done: combine upload and dirty-rect perf markers. | The exact gate stayed timing/layout/work-flat while preserving upload/dirty counters and shrinking ELF `714440 -> 714260`; count as perf-log hot-path cleanup only, not a VBlank speed win. |
+| `P4-275` | Done: compile only `grDrawBackground()` with `-Os`. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank by `32` bytes and ELF shrank `714260 -> 713672`; count as hot upload-function code-shape cleanup only, not a VBlank speed win. |
+| `P4-276` | Done: compile only `grUpdateDisplay()` with `-Os`. | The exact gate stayed timing/layout/work-flat while `grUpdateDisplay` shrank by `40` bytes and ELF shrank `713672 -> 713496`; count as hot display-wrapper code-shape cleanup only, not a VBlank speed win. |
+| `P4-277` | Failed/no promotion: compile only `grRestoreBgFromRects()` with `-Os`. | The exact gate stayed timing/layout/work-flat and the function shrank `980 -> 108` bytes, but total ELF grew `713496 -> 714132` with no speed metric movement; source was reverted and only the experiment log was kept. |
+| `P4-278` | Failed/no promotion: compile only `grCompositePacked4SpansToBackground()` with `-Os`. | The compositor and PS-EXE shrank, but cadence regressed badly (`loop_vb 1221 -> 1225`, `blocking_vb 5 -> 26`, `prefetch_overrun_vb 5 -> 12`, `due_misses 0 -> 3`) both before and after restoring `FISHING1.FG2 LBA=396` with a temporary CD pad; source/layout were reverted and only the experiment log was kept. |
+| `P4-279` | Failed/no promotion: single-band narrow upload through primitive-buffer scratch. | The exact gate stayed timing/layout-flat but upload work did not move (`upload_rects=502`, `upload_bytes=16281600`, `dirty_rows=25440`) while `grDrawBackground` grew by `200` bytes and ELF grew `713496 -> 716736`; source was reverted and only the experiment log was kept. |
+| `P4-280` | Done: clear only touched current dirty rows. | The exact gate stayed timing/layout/work-flat while removing full current dirty-row-table clears from every frame and shrinking ELF `713496 -> 712692`; count as hot dirty-state cleanup only, not a VBlank speed win. |
+| `P4-281` | Done: promote only touched current dirty rows into previous dirty rows. | The exact gate improved `loop_vb 1221 -> 1219`, `overrun_vb 150 -> 147`, and `scene_vb 1400 -> 1398` while keeping `blocking_vb=5`, `prefetch_overrun_vb=5`, layout, graphics work, and correctness stable; count as a real hot dirty-state speed win. |
+| `P4-282` | Failed/no promotion: direct PAL4 row dirty marking. | The formal gate passed only because `target_vb 1072 -> 1073` made `overrun_vb 147 -> 146`; actual `loop_vb` stayed `1219`, graphics/CD work stayed flat, and the compositor/ELF grew materially (`jcreborn.elf 712828 -> 715112`), so source was reverted and only the experiment log was kept. |
+| `P4-283` | Failed/no promotion: skip clearing previous dirty rows that overlap the new current dirty range. | The exact gate stayed timing/layout/work-flat with no speed movement, while ELF grew `712828 -> 713544`; source was reverted and only the experiment log was kept. |
+| `P4-284` | Failed/no promotion: retest `20 KB` and `18 KB`/`17 KB` stream windows after dirty-row cleanup. | `20 KB` regressed active playback (`loop_vb 1219 -> 1226`, `blocking_vb 5 -> 29`, `prefetch_overrun_vb 5 -> 19`, `due_misses 0 -> 2`); `18 KB` and `17 KB` rounded into the same 9-sector read shape and failed structurally with repeated invalid reads before metrics. Keep the `16 KB` default until generated group metadata/cost prediction exists. |
+| `P4-285` | Done: cache the file LBA in the aligned CD read helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadAlignedIntoFile` shrank `540 -> 532` bytes and ELF shrank `712828 -> 712744`; count as hot CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-286` | Failed/no promotion: add a single-chunk fast path to the aligned CD read helper. | The exact gate stayed timing/layout/work-flat with no speed movement, while `ps1_streamReadAlignedIntoFile` grew `532 -> 636` bytes; source was reverted and only the experiment log was kept. |
+| `P4-287` | Done: compile only the aligned CD read helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadAlignedIntoFile` became a tiny wrapper (`532 -> 8` bytes) and ELF shrank `712744 -> 712556`; count as hot CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-288` | Failed/no promotion: compile only the buffered CD read helper with `-Os`. | The exact gate stayed timing/layout/work-flat with no speed movement, while ELF grew `712556 -> 712636` and the buffered helper stayed `604` bytes; source was reverted and only the experiment log was kept. |
+| `P4-289` | Failed/no promotion: lower staged-copy fallthrough guard from `6` to `5` VBlanks after CD helper cleanup. | The exact gate regressed active playback (`loop_vb 1219 -> 1221`, `blocking_vb 5 -> 10`, `prefetch_overrun_vb 5 -> 10`); source was reverted and only the experiment log was kept. |
+| `P4-290` | Failed/no promotion: raise staged-copy fallthrough guard from `6` to `7` VBlanks after CD helper cleanup. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; source was reverted and only the experiment log was kept. |
+| `P4-291` | Done: compile only the unbuffered CD stream helper with `-Os`. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `680 -> 624` bytes and ELF shrank `712556 -> 712524`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-292` | Done: cache the file LBA in the unbuffered CD stream helper. | The exact gate stayed timing/layout/work-flat while `ps1_streamReadFromCdFile` shrank `624 -> 592` bytes and ELF shrank `712524 -> 712332`; count as CD helper code-shape cleanup only, not a VBlank speed win. |
+| `P4-293` | Failed/no promotion: compile only `fgRuntimeFillWindowForEntry()` with `-Os`. | The exact gate stayed timing/layout/work-flat, but PS-EXE, ELF, and tracked hot symbol sizes also stayed exact; source was reverted and only the experiment log was kept. |
+| `P4-294` | Failed/no promotion: prepared visual metadata decoupling v1. | Correctness stayed clean and key timing stayed flat, but the change only added duplicate prefetch probes (`0 -> 130`) and code growth (`ELF 712332 -> 713072`) without staging farther ahead. |
+| `P4-295` | Failed/no promotion: prepared visual decoupling with stage-next branch v2. | Correctness stayed clean and key timing stayed flat; secondary CD/read metrics improved slightly (`loop_read_vb 280 -> 277`, `late 98 -> 85`) but code grew and no actual loop VBlank win appeared. |
+| `P4-296` | Failed/no promotion: decoupled prepared visual with `>=4` prepare threshold v3. | The run failed structurally before metrics: headless log exceeded `512 MB` and regtest exited `137`; all prepared-decoupling source changes were reverted. |
+| `P4-297` | Failed/no promotion: prepared visual stage-next branch with positive-slack guard v4. | Correctness stayed clean and key timing stayed flat; it reproduced v2's secondary read/late improvements but also kept the no-slack attempts and code growth, so all source changes were reverted. |
+| `P4-298` | Failed/no promotion: add fishing1 read group `102..110`. | The candidate saved one read (`loop_reads 67 -> 66`) and three sectors, but regressed cadence (`loop_vb 1219 -> 1220`, `blocking_vb/prefetch_overrun_vb 5 -> 8`, `loop_read_vb 280 -> 293`); source was reverted and only the experiment log was kept. |
+| `P4-299` | Done: reuse one stack `RECT` for immediate background uploads. | The exact gate stayed timing/layout/work-flat while `grDrawBackground` shrank `1580 -> 1572` bytes and ELF shrank `712332 -> 712272`; count as hot upload-path cleanup only, not a VBlank speed win. |
+| `P4-300` | Failed/no promotion: lower upload rect cap from `8` to `6`. | Fishing1 stayed exact-flat with `cap_hits=0`, but PS-EXE, ELF, hot-symbol size, timing, and upload work did not move; source was reverted to preserve cross-scene headroom. |
+| `P4-301` | Failed/no promotion: store upload band scratch indices/ranges as `uint8`. | The exact gate stayed timing/work-flat and `grDrawBackground` shrank `1572 -> 1544`, but total ELF grew `712272 -> 712372`; source was reverted and only the experiment log was kept. |
+| `P4-302` | Done: add scheduler ownership counters and explicit CD/prep ownership markers. | The exact no-holiday gate stayed timing/layout/work/correctness-flat (`loop_vb=1219`, `blocking_vb=5`, `prefetch_overrun_vb=5`, `FISHING1.FG2 LBA=396`, PS-EXE `143360`) while adding `JCPERF2 sched`; this is instrumentation only and grows ELF to `715432`. |
+| `P4-303` | Failed/no promotion: owned-idle 4 VBlank catch-up prototype. | The ownership-gated catch-up rule produced no useful fishing1 catch-up slots (`catchup_idle=0`), kept timing flat, and moved PS-EXE/LBA (`143360 -> 145408`, `396 -> 397`), so the behavior was reverted and only the experiment log was kept. |
+| `P4-304` | Done: compile-gate deep pipeline/slack trace counters. | The ungated trace changed EXE layout and regressed timing, so the accepted form is `PS1_PERF_DEEP_TRACE=OFF` by default with optional trace builds for ownership analysis. |
+| `P4-305` | Failed/no promotion: prepared bridge slack `>=4`. | It moved work into different held-slack buckets but left `loop_vb=1219`, `blocking_vb=5`, and `prefetch_overrun_vb=5`; broad prepared eligibility is exhausted without a real scheduler change. |
+| `P4-306` | Failed/no promotion: global threshold-`4` host-deadline catch-up. | The global guard regressed to `loop_vb=1222` and `blocking_vb/prefetch_overrun_vb=16`; threshold `4` needs resident-payload proof. |
+| `P4-307` | Failed/no promotion: setup-prime `256 KB` without catch-up. | Active reads dropped sharply, but active loop stayed flat/slower and visible pressure rose to `6`; preloading has to be spent by the scheduler to matter. |
+| `P4-308` | Failed/no promotion: setup-prime `192 KB`/`256 KB` with threshold-`4` catch-up. | `256 KB` was close but still raised visible pressure to `6`, while `192 KB` lost; the coverage boundary is real. |
+| `P4-309` | Done: setup-prime a `320 KB` fishing1 high-tide FG2 window and gate threshold-`4` catch-up on prime success. | Active-loop metrics improve (`loop_vb 1219 -> 1215`, `overrun_vb 147 -> 140`, `blocking_vb/prefetch_overrun_vb 5 -> 1`, `loop_reads 67 -> 43`) with stable correctness/layout, but setup rises (`setup_vb 185 -> 246`), so future work must hide or generate the prime. |
+| `P4-310` | Done: scope FG2 first upload to the saved clean-rect Y band. | The static backdrop is already presented before clean-rect setup, so the first forced upload no longer dirties all four screen tiles. Active-loop metrics improve (`loop_vb 1215 -> 1213`, `overrun_vb 140 -> 138`), `max_upload_bytes` drops `614400 -> 221440`, and layout/CD/correctness stay stable. |
 
 Prefetch variants to test in order:
 
@@ -803,8 +1104,9 @@ Prefetch variants to test in order:
 |---|---|---|
 | One-entry synchronous staging | During held VBlanks, read the next entry into a second buffer if it is not already staged. | `cd_vb` may remain nonzero but should move out of due-frame advancement; visible speed should improve if enough hold budget exists. |
 | One-entry async staging | Start `CdRead` during held time and poll completion over later held VBlanks. | Lower blocking time, but higher controller-state risk. |
-| 24 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after the post-slack sweep. |
-| 32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
+| 16 KB stream window | Read a forward window from the current FG2 file and serve several entries from RAM. | Current default for fishing1 after later retunes paired with the 3 VBlank refill guard. |
+| Setup-prime stream window | Fill a larger resident window before active playback, then enable shorter catch-up only if that prime succeeded. | Current fishing1 high-tide path uses `320 KB`; future variants need generated per-scene/tide sizing and inter-scene preload. |
+| 24 KB/32 KB/64 KB stream windows | Larger diagnostic windows. | Useful only if later grouping/async work can hide larger refill reads. |
 | Dual-window ping-pong | Render from one window while filling the next during holds. | Best latency hiding, but only after single-window correctness. |
 | Sector-aligned FGP3 chunks | Pack frames into prefetch-friendly sector groups. | Only useful if runtime windowing exposes sector-copy overhead. |
 
@@ -859,6 +1161,323 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-10` | Add per-scene capability flags: pal4-pair-lut, row-extents, tile-split, prefetch-groups, sector-aligned. | Runtime can select fast paths safely. |
 | `P5-11` | Emit pack-stat JSON alongside every FG2/FGP3. | Make routing and prefetch policy decisions data-driven. |
 | `P5-12` | Add a corpus scanner that flags scenes with full-screen diffs. | Plan special handling for Suzy, Mary3, Activity9. |
+| `P5-13` | Done: add host-side FG2 preprocessing opportunity analyzer. | `scripts/analyze-fg2-preprocess-plans.py` parses an existing pack and reproduces runtime restore/upload counters before any runtime-format change. Fishing1 exact baseline matches `restore_bytes=2510092`, `restore_intervals=24300`, `upload_bytes=16281600`, and `upload_rects=502`. Exact restore skip predicts `52.41%` byte savings but `73417` intervals; coalesced `min8px_max4pieces` still saves `26.35%` with `36450` intervals. Align4 upload-ready bands save `49.61%` upload bytes but cost about `8.2 MB` of frame-band payload. |
+| `P5-14` | Failed: runtime restore-under-current parser. | Parsing current PAL4 spans before restore lowered restore bytes, but every tested runtime variant regressed timing or layout (`loop_vb 1219 -> 1221/1224`, visible CD pressure `5 -> 6/11`, pack LBA `396 -> 397/395`). Continue with pack-emitted side metadata or FGP3 command streams, not hot-path reparse. |
+| `P5-15` | Done: add host-side FG2 motion-comp analyzer. | `scripts/analyze-fg2-motion-comp.py` proves fishing1 is not a true translation canary: its best candidates are zero-shift temporal residuals (`151/154` pairs, `71.16%` estimated payload reduction, `0` nonzero shifts). Walking packs do have true move candidates (`WALKSTUF1` has `85`, `WALK1LOW` has `53`). Split FGP3 into zero-shift residual first, then move/residual once RAM mirror and dirty cleanup are designed. |
+| `P5-16` | Done: model zero-shift temporal residual runtime work. | Fishing1's zero-shift model predicts compose payload `823277 -> 228087` (`72.30%` saved), full-width dirty upload `15667200 -> 6576000` (`58.03%` saved), and cleanup restore of `136552` bytes. Next implementation target is FGP3 zero-shift residuals with full-current dirty metadata. |
+| `P5-17` | Done: promote first FGP3 zero-shift temporal-residual runtime pack for fishing1 high tide. | `scripts/build-fg3-temporal-residual-pack.py` converts the accepted PAL4 FG2 into `fgp3_pal4_residual`; runtime cleanup spans restore vanished pixels and residual PAL4 spans draw changed pixels. Exact high-tide gate improves `loop_vb 1213 -> 1207`, `overrun_vb 138 -> 131`, `blocking_vb/prefetch_overrun_vb 1 -> 0`, `loop_reads 43 -> 6`, `restore_bytes 2510092 -> 251144`, and `upload_bytes 15888640 -> 6690560`. The intentional cost is PS-EXE `143360 -> 145408` and `FISHING1.FG2 LBA 396 -> 397`; next work should fold generation into the batch builder and recover the executable-size cost. |
+| `P5-18` | Done: promote FGP3 zero-shift temporal residuals for fishing1 low tide. | `FISH1LOW.FG2` now uses `fgp3_pal4_residual`; low-tide gate improves `loop_vb 1215 -> 1209`, `overrun_vb 142 -> 135`, `blocking_vb/prefetch_overrun_vb 5 -> 4`, `loop_reads 31 -> 22`, `restore_bytes 1234716 -> 182892`, and `upload_bytes 11457920 -> 5278080`. The low pack LBA stays stable at `592`, and high tide remains exact-flat after the change. |
+| `P5-19` | Done: setup-prime fishing1 low tide FGP3. | The existing `320 KB` setup-prime policy now covers both fishing1 tides. Low tide improves `loop_vb 1209 -> 1207`, `overrun_vb 135 -> 131`, `blocking_vb/prefetch_overrun_vb 4 -> 0`, and `loop_reads 22 -> 0`; high tide remains exact-flat. Setup cost rises (`setup_vb 182 -> 238`), so the follow-up remains generated prime budgets or inter-scene preload. |
+| `P5-20` | Done: promote FGP3 zero-shift temporal residuals for fishing2 high tide. | `FISHING2.FG2` now uses `fgp3_pal4_residual`; high-tide gate improves `loop_vb 1928 -> 1903`, `overrun_vb 190 -> 139`, `blocking_vb 50 -> 8`, `prefetch_overrun_vb 44 -> 8`, `due_misses 2 -> 0`, `loop_reads 134 -> 40`, `restore_bytes 5353808 -> 333876`, and `upload_bytes 28215040 -> 9055360`. Fishing2 low smoke still passes. |
+| `P5-21` | Done: setup-prime fishing2 high tide FGP3 with an explicit scene/tide budget. | A `352 KB` budget improves `loop_vb 1903 -> 1898`, `overrun_vb 139 -> 133`, `blocking_vb/prefetch_overrun_vb 8 -> 2`, and `loop_reads 40 -> 14`. The runtime now stores `setupPrimeWindowBytes` explicitly so setup priming is policy-driven, not inferred from buffer capacity. Larger contiguous probes were rejected: `384 KB`/`544 KB` failed before playback and `368 KB` hit the log cap. |
+| `P5-22` | Failed: manual fishing2 high read group for sectors `178..191`. | A local source-table group moved PS-EXE `145408 -> 147456`, shifted `FISHING2.FG2 LBA 740 -> 741`, and regressed `loop_vb 1898 -> 1899` plus `blocking_vb/prefetch_overrun_vb 2 -> 3`. Retry only with generated read metadata and layout control. |
+| `P5-23` | Done: promote FGP3 zero-shift temporal residuals for fishing2 low tide. | `FISH2LOW.FG2` now uses `fgp3_pal4_residual`; low-tide gate improves `loop_vb 1912 -> 1900`, `overrun_vb 157 -> 136`, `blocking_vb/prefetch_overrun_vb 20 -> 5`, `loop_reads 58 -> 27`, `restore_bytes 5353808 -> 220390`, and `upload_bytes 28215040 -> 6727040`. Fishing2 high stays exact-flat. |
+| `P5-24` | Done: setup-prime fishing2 low tide FGP3 with a `256 KB` budget. | Low tide improves `loop_vb 1900 -> 1898`, `overrun_vb 136 -> 131`, `blocking_vb/prefetch_overrun_vb 5 -> 0`, and `loop_reads 27 -> 10`. A `320 KB` low-tide prime failed structurally with a log-cap/regtest `137`; the promoted source also shortens cold foreground diagnostics to keep PS-EXE at `145408`. |
+| `P5-25` | Done: promote FGP3 zero-shift temporal residuals for fishing3 high tide. | `FISHING3.FG2` now uses `fgp3_pal4_residual`; high-tide gate improves `loop_vb 2123 -> 2099`, `overrun_vb 189 -> 149`, `blocking_vb 87 -> 24`, `prefetch_overrun_vb 39 -> 21`, `due_misses 11 -> 1`, and pack bytes `1831749 -> 724829`. Fishing3 low smoke passes after the downstream LBA shift. |
+| `P5-26` | Done: promote FGP3 zero-shift temporal residuals for fishing3 low tide. | `FISH3LOW.FG2` now uses `fgp3_pal4_residual`; low-tide gate improves `loop_vb 2110 -> 2098`, `overrun_vb 156 -> 138`, `blocking_vb 21 -> 8`, `prefetch_overrun_vb 21 -> 9`, `loop_reads 65 -> 42`, and pack bytes `906053 -> 549622`. Fishing3 high stays exact-flat. |
+| `P5-27` | Failed: contiguous setup-prime for fishing3 high tide. | `320 KB` failed before playback and moved layout; `256 KB` completed but kept `blocking_vb=24`, worsened `due_misses 1 -> 2`, and still moved PS-EXE/LBA. Retry through segmented/generated prime coverage, not a hard-coded contiguous window. |
+| `P5-28` | Done: setup-prime fishing3 low tide FGP3 with a `256 KB` budget. | Low tide improves `loop_vb 2098 -> 2091`, `overrun_vb 138 -> 134`, `blocking_vb 8 -> 7`, `prefetch_overrun_vb 9 -> 7`, and `loop_reads 42 -> 24`; fishing3 high stays exact-flat. The accepted source also shortens cold heap/raw foreground diagnostics to keep PS-EXE at `145408` and `FISH3LOW.FG2` at LBA `1549`. Larger/other fishing3 prime work should move to generated segmented coverage. |
+| `P5-29` | Done: retune fishing3 low tide setup-prime to `288 KB`. | The planner showed the `256 KB` prime stopped at the next active read boundary. Raising only low tide to `288 KB` keeps `loop_vb=2091` while improving `overrun_vb 134 -> 131`, `blocking_vb 7 -> 4`, `prefetch_overrun_vb 7 -> 4`, and `loop_reads 24 -> 21`; fishing3 high stays exact-flat. Do not jump to `320 KB` without segmented coverage because the earlier probe failed structurally. |
+| `P5-30` | Done: setup-prime fishing3 high tide FGP3 with a `128 KB` budget. | A smaller high-tide prime succeeds where `256 KB`/`320 KB` failed: high tide improves `loop_vb 2099 -> 2094`, `overrun_vb 149 -> 139`, `blocking_vb 24 -> 16`, `prefetch_overrun_vb 21 -> 11`, and `loop_reads 52 -> 44`; fishing3 low stays exact-flat. Setup cost rises (`setup_vb 191 -> 213`), so this remains an active-loop win until inter-scene preload exists. |
+| `P5-31` | Done: setup-prime fishing3 high tide relative sectors `67..73` as a scratch segment. | A hard-coded segment read proves non-contiguous setup coverage can move high tide without a larger contiguous prime. High tide improves `loop_vb 2094 -> 2093` with stable layout, while `overrun_vb=139`, `blocking_vb=16`, and `prefetch_overrun_vb=11` stay flat; low tide validates exact-flat. Setup cost rises to `setup_reads=7` / `setup_bytes=409128`. The source also gates default-off heap-probe logging out of the speed build to keep PS-EXE at `145408`. Next step is generated segment metadata or inter-scene preload, not more one-off hot source tables. |
+| `P5-32` | Done: setup-prime fishing3 low tide relative sectors `146..152` with owned storage. | The first low-segment probe proved the timing signal but failed teardown because it reused volatile streaming scratch. The promoted version keeps high tide on the accepted scratch-backed `67..73` path and gives low tide an owned segment buffer. Low tide improves `loop_vb 2091 -> 2090`, `overrun_vb 131 -> 130`, `blocking_vb/prefetch_overrun_vb 4 -> 3`, and `loop_read_vb 91 -> 85`; high tide stays exact-flat. Setup cost rises to `setup_reads=7` / `setup_bytes=572968`. |
+| `P5-33` | Done: inline fishing3 setup-segment selection. | Removing the one-call selector helper keeps high/low FISHING3 timing exact-flat while shrinking the accepted low-segment build (`jcreborn.elf 726268 -> 726068`, `foregroundPilotPlay 8312 -> 8308`). This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-34` | Done: remove fixed low-segment size tracking. | The owned fishing3 low-tide setup segment has one fixed size and is released with the other scene-stream buffers, so the separate size tracker was dead state. Removing it keeps high/low FISHING3 timing exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `foregroundPilotPlay 8308 -> 8280`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-35` | Done: prune redundant setup-segment pointer checks. | `setupSegmentPrimed` is the authoritative validity bit after setup reads and runtime reset, so the extra pointer checks in the segment window/copy path were redundant. Removing them keeps high/low FISHING3 timing exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725872 -> 725828`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-36` | Done: prune duplicate window-cache gate from segment/window containment. | Callers already prove the window-capable path or safely fall through when no stream window or setup segment is valid, so the extra `fgRuntimeCanWindowCache()` gate in `fgRuntimeWindowContainsEntry()` was redundant. Removing it keeps high/low FISHING3 timing exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725828 -> 725820`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-37` | Done: prune duplicate destination-null guard from window copy. | `fgRuntimeCopyEntryFromWindow()` is internal and all callers pass prevalidated scene frame or prefetch buffers, so the `dst == NULL` guard was dead. Removing it keeps high/low FISHING3 timing exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725820 -> 725720`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-38` | Done: macro-expand FG2 sector alignment helpers. | Converting the tiny sector-align helpers to macros removes their callable bodies without changing stream-window behavior. High/low FISHING3 stayed exact-flat, PS-EXE stayed `145408`, pack LBAs stayed `1195/1549`, and `jcreborn.elf` shrank `725720 -> 725348`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-39` | Done: macro-expand FG2 window read-size helper. | The window read-size helper is a two-field selection used only by the stream-window fit/fill path. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725348 -> 725164`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-40` | Done: macro-expand window slack eligibility helper. | The prefetch slack-eligibility helper is a single threshold compare used in two hot scheduling paths. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725164 -> 725008`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-41` | Done: macro-expand hold-frame predicate. | `fgRuntimeCanHoldDisplayedFrame()` had one hot-loop call site and a three-field predicate. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 725008 -> 724876`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-42` | Done: remove duplicate prepared-present guard. | The foreground loop checks `fgRuntimeCanPresentPreparedOnNextVBlank()` immediately before calling `fgRuntimePresentPreparedFrame()`, and that function has no other call sites. Removing the callee guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724876 -> 724760`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-43` | Done: remove duplicate prepared-frame guard. | The foreground loop checks `fgRuntimeCanPrepareStagedFrame()` before calling `fgRuntimePrepareStagedFrameForPresent()`, and that function has no other call sites. Removing the callee guard keeps high/low FISHING3 exact-flat, preserves prepared-ready/used counts, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724760 -> 724756`. This is a small work-reduction promotion, not a VBlank win. |
+| `P5-44` | Done: macro-expand held-slack helper. | `fgRuntimeHeldSlackBeforeWait()` is called throughout the held-frame scheduler and was still emitted as an 84-byte callable helper. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724756 -> 724544`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-45` | Done: macro-expand payload predicate helper. | `fgEntryHasPayload()` is small but used throughout frame selection, window containment, and load paths. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724544 -> 724132`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-46` | Done: prune duplicate prefetch-window capability check. | `fgRuntimeTryPrefetchWindow()` checked window-cache capability before calling `fgRuntimeEntryFitsWindow()`, which checks the same capability. Removing the outer duplicate keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724132 -> 724096`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-47` | Done: prune duplicate prefetch-would-read capability check. | `fgRuntimeWindowPrefetchWouldRead()` had the same outer window-cache capability check before `fgRuntimeEntryFitsWindow()`. Removing that duplicate keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724096 -> 724044`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-48` | Done: prune duplicate prefetch null-entry checks. | The active prefetch and would-read helpers both checked `entry == NULL` immediately before `fgRuntimeEntryFitsWindow()`, whose payload predicate already handles null. Removing both duplicates keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724044 -> 724012`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-49` | Done: prune prechecked seed-window guards. | `fgRuntimeSeedWindowFromScratch()` has one call site after stage capability, entry-fit, and a successful direct-stage read are proven. Removing its duplicated entry/window/scratch guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 724012 -> 723740`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-50` | Done: inline single-call window capability helper. | `fgRuntimeCanWindowCache()` was only used by `fgRuntimeEntryFitsWindow()`, so keeping a callable helper no longer paid for itself. Inlining the capability predicate keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723740 -> 723724`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-51` | Done: prune seed-window nonempty guard. | The only `fgRuntimeSeedWindowFromScratch()` call site is after entry-fit, which proves payload size is nonzero. Removing the unreachable `windowEnd <= windowStart` guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723724 -> 723680`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-52` | Done: prune seed-window capacity guards. | The direct-stage buffered read only succeeds when scratch can hold the sector-aligned span, and entry-fit proves the same span fits the stream window. Removing the duplicated capacity guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723680 -> 723620`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-53` | Done: inline single-call seed-window helper. | After the guard pruning, `fgRuntimeSeedWindowFromScratch()` had one direct-stage call site and only copied the already-read scratch span into the stream window. Inlining it keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723620 -> 723508`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-54` | Done: skip unused next-payload output index. | The prefetch-window helpers requested `fgRuntimeNextPayloadEntry()` to fill a frame index and immediately discarded it. Passing `NULL` removes the useless write/local while keeping high/low FISHING3 exact-flat, preserving PS-EXE `145408` and pack LBAs, and shrinking `jcreborn.elf 723508 -> 723368`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-55` | Done: remove next-payload output parameter. | After `P5-54`, every `fgRuntimeNextPayloadEntry()` caller passed `NULL`, so the helper no longer needed to support frame-index output. Removing that parameter and dead write keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723368 -> 723308`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-56` | Done: macro-expand staged-frame setter. | `fgRuntimeSetStagedFrame()` was still emitted as a 72-byte helper with five hot-path call sites. Macro expansion removes the calls while keeping high/low FISHING3 exact-flat, preserving PS-EXE `145408` and pack LBAs, and shrinking `jcreborn.elf 723308 -> 723136`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-57` | Done: macro-expand prepare-staged predicate. | `fgRuntimeCanPrepareStagedFrame()` was a two-call-site held-loop predicate still emitted as a 172-byte helper. Macro expansion keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723136 -> 723012`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-58` | Done: prune duplicate next-payload active guard. | `fgRuntimeNextPayloadEntry()` is only consumed by prefetch probes that immediately validate the returned entry through the broader entry-fit predicate. Removing the duplicate local active guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723012 -> 722988`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-59` | Done: coalesce prefetch no-slack perf gates. | `fgRuntimeTryPrefetchWindow()` had duplicate adjacent `ps1PerfEnabled` branches in the no-slack and slack-ineligible paths. Coalescing each pair keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeTryPrefetchWindow` by `20` bytes, and shrinks `jcreborn.elf 722988 -> 722952`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-60` | Done: prune unreachable refill zero-byte guard. | After entry-fit proves a nonzero payload and `windowStart < packCdFile.size`, the clamped refill size cannot become zero for a valid generated pack. Removing that guard keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry` by `40` bytes, and shrinks `jcreborn.elf 722952 -> 722828`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-61` | Done: prune duplicate window-contains payload guard. | Current window-containment callers already pass known non-empty entries or have just passed `fgRuntimeEntryFitsWindow()`. Removing the duplicate `fgEntryHasPayload()` check keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722828 -> 722756`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-62` | Done: inline copy-window source selection. | `fgRuntimeCopyEntryFromWindow()` called window-containment and then repeated the setup-segment containment test to choose the source. Inlining source selection in the copy helper keeps high/low FISHING3 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722756 -> 722752`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-63` | Done: add FISHING3 high follow-on read group `234..246`. | The per-run read-plan artifact identified the next contiguous high-tide group after `223..234`. Adding `{234,246}` and raising retained group capacity to `13` sectors keeps FISHING3 high `loop_vb=2093` while improving `overrun_vb 139 -> 138`, `blocking_vb 16 -> 15`, `prefetch_overrun_vb 11 -> 10`, and `loop_reads 42 -> 41`; FISHING3 low and FISHING1 high stay exact-flat. This is a small active-loop pressure win and validates the new read-plan-in-the-loop method. |
+| `P5-64` | Done: macro-expand prepared-present predicate. | `fgRuntimeCanPresentPreparedOnNextVBlank()` had one held-loop call site and only checked runtime state. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723380 -> 723228`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-65` | Done: inline held-vblank wait helper. | `fgRuntimeWaitHeldVBlank()` wrapped `VSync(0)` plus `eventsWaitTick(0)` and sat on the hottest held-frame wait path. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723228 -> 723024`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-66` | Done: macro-expand foreground tick counter. | `fgReadTickCounter()` only wrapped `VSync(-1)` and was used throughout the foreground timing path. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 723024 -> 722940`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-67` | Done: inline frame-rendered marker. | `fgRuntimeMarkFrameRendered()` had two render-completion call sites and only marked scene-pack frames as rendered. Macro expansion keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722940 -> 722792`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-68` | Done: inline foreground elapsed-vblank accounting. | `fgElapsedVBlanksSince()` had one caller and carried a dead null-pointer guard. Inlining the scene-clock update in `foregroundPilotRuntimeAdvance()` keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, keeps `foregroundPilotPlay=9016`, and shrinks `jcreborn.elf 722792 -> 722660`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-69` | Done: prune prechecked compose-entry null guard. | `fgRuntimeComposeEntryToBackground()` is internal and both call sites pass runtime-owned entries/buffers after scene-pack startup or staged prep. Removing the duplicate guard keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `foregroundPilotPlay 9016 -> 8996`, shrinks `foregroundPilotRuntimeCompose 56 -> 44`, and shrinks `jcreborn.elf 722660 -> 722376`. This is a work-reduction/code-size promotion, not a VBlank win. |
+| `P5-70` | Done: prune prefetch-window output clear. | `fgRuntimeTryPrefetchWindow()` callers always pass a real elapsed-output pointer and ignore it on false returns. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeTryPrefetchWindow 392 -> 388`, and shrinks `jcreborn.elf 722376 -> 722364`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-71` | Done: prune stage-next output guards. | `fgRuntimeTryStageNextFrame()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable writes keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722364 -> 722348`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-72` | Done: prune prepare output guards. | `fgRuntimePrepareStagedFrameForPresent()` has one active-loop caller with a real elapsed-output pointer. Removing the redundant initial clear and nullable final write keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 722348 -> 722336`. This is a tiny work-reduction/code-size promotion, not a VBlank win. |
+| `P5-73` | Done: prune fill-window output clear. | Non-null callers of `fgRuntimeFillWindowForEntry()` initialize their local elapsed value to zero before calling, and NULL callers do not need output normalization. Removing the redundant initial clear keeps FISHING3 high/low and FISHING1 exact-flat, preserves PS-EXE `145408` and pack LBAs, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and shrinks `jcreborn.elf 722336 -> 722304`. This is a small work-reduction/code-size promotion, not a VBlank win. |
+| `P5-74` | Done: lower dirty-upload band merge gap to zero rows. | The accepted post-pause upload path used a one-row clean-gap merge. Tightening it to zero keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat on loop/blocking/refill, preserves PS-EXE `145408` and pack LBAs, and reduces uploaded bytes/dirty rows across all three gates: FISHING1 `8584960 -> 8533120`, FISHING3 high `16771200 -> 16665600`, and FISHING3 low `11838720 -> 11820800`. Rect count rises (`355 -> 436`, `693 -> 858`, `412 -> 440`), so this is an upload-byte work-reduction checkpoint, not a VBlank win. A cap-6 follow-up gave back part of the high-tide byte win, so keep the cap at `8`. |
+| `P5-75` | Done: branch directly on dirty-upload cap state. | `grDrawBackground()` no longer needs a separate `useBands` local after scanning upload bands; `capped` plus `bandCount` is the authoritative decision. Removing the extra flag keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `56` bytes, and shrinks `jcreborn.elf 722312 -> 722044`. This is a clean upload-path code-size/work-shape promotion, not a VBlank win. |
+| `P5-76` | Done: prune the single-dirty-tile upload fallback. | The band path already handles uncapped single-tile uploads, and the generic fallback emits the same whole-tile upload when banding caps. Removing the special `dirtyCount == 1` branch and dead `singleIndex` bookkeeping keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `160` bytes, and shrinks `jcreborn.elf 722044 -> 721456`. This is an upload-path code-size/work-shape promotion, not a VBlank win. |
+| `P5-77` | Done: prune the dirty-upload scan guard. | The upload-band scan already skips every clean tile through `minYs[i] < 0`, so the outer `dirtyCount > 0` wrapper was redundant. Removing it keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `16` bytes, and shrinks `jcreborn.elf 721456 -> 721400`. This is an upload-path code-size/work-shape promotion, not a VBlank win. |
+| `P5-78` | Done: prune the band-upload draw-sync guard. | Entry to the banded upload path already requires `bandCount > 0`, and the loop emits one `LoadImage` per band. Removing the redundant `uploadRects > 0` guard keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, and shrinks `jcreborn.elf 721400 -> 721396`. This is a tiny upload-path code-size promotion, not a VBlank win. |
+| `P5-79` | Failed/no promotion: make the fallback upload branch explicit on `dirtyCount > 0`. | FISHING1 stayed timing/layout/work-flat, but the branch reshuffle grew `grDrawBackground` by `72` bytes and regressed `jcreborn.elf 721396 -> 721680`; source was reverted and only the experiment log was kept. |
+| `P5-80` | Done: compute upload tile coordinates from the tile index. | Replacing local `screenX`/`screenY` arrays with direct index arithmetic keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat with identical upload work, preserves PS-EXE `145408` and pack LBAs, shrinks `grDrawBackground` by `8` bytes, and shrinks `jcreborn.elf 721396 -> 721380`. This is a tiny upload-path code-size promotion, not a VBlank win. |
+| `P5-81` | Failed/no promotion: replace the local background-tile pointer array with index-selection macros. | FISHING1 stayed timing/layout/work-flat, but repeated ternary tile selection grew `grDrawBackground` by `248` bytes and regressed `jcreborn.elf 721380 -> 722372`; source was reverted and only the experiment log was kept. |
+| `P5-82` | Done: scan active read groups directly. | After the active read-group table/count moved into runtime state, the grouped-append helper no longer needs local copies before scanning. Removing them keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, keeps `fgRuntimeFillWindowForEntry=844`, and shrinks `jcreborn.elf 721504 -> 721376`. This is a tiny grouped-read code-size promotion, not a VBlank win. |
+| `P5-83` | Failed/no promotion: add FISHING3 high read group `246..258`. | The group saved one active-loop read (`41 -> 40`) but crossed the visible-pressure knee: `loop_vb 2093 -> 2096`, `blocking_vb 15 -> 17`, `prefetch_overrun_vb 10 -> 12`, and `due_misses 0 -> 1`; source was reverted and only the experiment log was kept. |
+| `P5-84` | Done: trust generated read-group bounds. | Removing the pack-end clamp from `fgRuntimeGroupedAppendTargetEnd()` keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, shrinks `fgRuntimeFillWindowForEntry 844 -> 820`, and shrinks `jcreborn.elf 721376 -> 721232`. This is deterministic fallback removal and grouped-read code-size cleanup, not a VBlank win. |
+| `P5-85` | Done: require initialized stream read size. | Removing the startup fallback from zero read size to stream-window capacity keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, shrinks `foregroundPilotPlay 9020 -> 8996`, and shrinks `jcreborn.elf 721232 -> 721200`. This is deterministic startup cleanup, not a VBlank win. |
+| `P5-86` | Done: prune redundant extend-window valid store. | Successful append extension starts from an already valid window, so restating `streamWindowValid=1` is unnecessary. Removing it keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and shrinks `fgRuntimeFillWindowForEntry 820 -> 816`; aggregate ELF moves `721200 -> 721228`, so this is hot-helper work-shape cleanup, not a binary-size win. |
+| `P5-87` | Failed/no promotion: skip non-prefetch elapsed probes conditionally. | Avoiding the wrapper tick on non-prefetch/no-output reads was runtime-flat but grew `fgRuntimeFillWindowForEntry 816 -> 928` and aggregate ELF `721228 -> 721656`; source was reverted and only the experiment log was kept. |
+| `P5-88` | Done: prune redundant extend-window capacity guards. | `targetEnd <= currentEnd` and the final capacity check already cover `appendBytes == 0` and an overlarge preserved prefix. Removing the extra guards keeps FISHING1, FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and shrinks `fgRuntimeFillWindowForEntry 816 -> 812`; aggregate ELF moves `721228 -> 721232`, so this is hot-helper cleanup, not a binary-size win. |
+| `P5-89` | Failed/no promotion: hoist append alignment before grouped-read lookup. | The shape was runtime-flat but grew `fgRuntimeFillWindowForEntry 812 -> 820` and aggregate ELF `721232 -> 721276`; source was reverted and only the experiment log was kept. Keep the helper-local alignment guard. |
+| `P5-90` | Done: fill contiguous windows through the extend path. | Allowing `fgRuntimeTryExtendWindow()` to handle `windowStart == currentEnd` removes the fallthrough to the normal fill path for contiguous aligned reads. FISHING1, FISHING3 high, and FISHING3 low stay exact-flat, PS-EXE stays `145408`, `fgRuntimeFillWindowForEntry` shrinks `812 -> 788`, and aggregate ELF shrinks `721232 -> 721144`. This is a hot-helper/size cleanup, not a VBlank win. |
+| `P5-91` | Failed/no promotion: remove the grouped-read zero-count guard. | The run was timing-flat and aggregate ELF shrank, but `fgRuntimeFillWindowForEntry 788 -> 792` and scenes without generated groups would pay extra helper work. Source was reverted and only the experiment log was kept. |
+| `P5-92` | Done: add host-side retry manifest and read-cost profile tooling. | `scripts/ps1-perf-retry-manifest.py` mines the durable experiment log, classifies failed/no-promotion rows into the grouped priority ladder, extracts near-miss metric signals, and attaches current read-cost profiles/read-plan candidates from existing summaries. The first run analyzed `322` failed/rejected rows, found `98` conditional retries and `67` near misses, and confirmed the current read-cost split: FISHING1 is CD-clean, FISHING3 high still has `25` visible-pressure VBlanks with one due miss, and FISHING3 low has `6` visible-pressure VBlanks. This is host-side evidence tooling only; it does not change the PS1 runtime or speed binary. |
+| `P5-93` | Done: scope the retry manifest for all-scene prioritization. | The manifest now tags candidates as `global-runtime`, `generated-all-scene`, `scene-family-canary`, `one-off-scene`, or `unknown` and sorts global/generalizable work ahead of one-off probes. The refreshed canary profile includes FISHING1, FISHING2 high/low, and FISHING3 high/low: only FISHING1 is currently `12.17%` over target, while the other measured FISHING canaries are `6.63%` to `7.54%` over. This keeps FISHING3 useful as a stress canary without making hand-authored FISHING3 sector fixes the main strategy. |
+| `P5-94` | Failed/no promotion: FISHING2 high setup segment `185..191`. | The read-plan's top FISHING2 high single-read candidate did not promote through either scratch-owned or persistent-owned setup-segment ownership. Scratch ownership stayed timing-flat without reducing `loop_reads`; persistent ownership regressed `loop_vb 1898 -> 1900` and `blocking_vb/prefetch_overrun_vb 2 -> 4`. The next CD/setup attempt should be generated multi-segment policy with explicit scheduler ownership/cost proof, not another hand-authored single side segment. |
+| `P5-95` | Done: remove stale FISHING1 read group. | The old FISHING1 high group `{396,406}` was beyond the current FGP3 pack sector range and could not fire. Removing the table and startup branch keeps FISHING1, FISHING2 high/low, and FISHING3 high/low exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `foregroundPilotPlay` by `44` bytes. This is generated-policy cleanup, not a VBlank win. |
+| `P5-96` | Done: wire the all-scene fgpilot performance matrix. | `scripts/ps1-foreground-scene-manifest.py` now derives the `63` scene slugs and `126` tide variants from `config/ps1/regtest-scenes.txt`, emits the full `FG/` CD layout from generated FG2 packs, prints perf-runner cases, and writes `docs/ps1/performance-scene-matrix.csv`. `scripts/ps1-perf-all-scenes.sh` runs that generated case set through the headless perf harness and refreshes the sheet from collected summaries. Runtime routing now constructs pack paths for every generated scene family while `kProvenScenes` still controls only the human-validated default random loop. |
+| `P5-97` | Done: resolve FG CD aliases in the read-plan hook. | The all-scene CD layout uses short 8.3 CD aliases for several families, such as `FG\\ACTV1.FG2`, while the generated source pack is `ACTIVITY1.FG2`. `ps1-perf-iterate.sh` now falls back through `scripts/ps1-foreground-scene-manifest.py` when a CD basename is not present in `generated/ps1/foreground`, so every routed scene can emit foreground read-plan artifacts. ACTIVITY1 high now reports uncovered read candidates instead of silently skipping the plan, while timing remains unchanged at `loop_vb=4383`, `target_vb=4241`, and `blocking_vb=4`. |
+| `P5-98` | Failed/no promotion: blind `128 KB` general setup-prime. | Applying a default `128 KB` setup-prime window to non-specialized scenes reduced ACTIVITY1 high loop reads but made visible pressure worse: `loop_vb 4383 -> 4384`, `blocking_vb 4 -> 5`, and `prefetch_overrun_vb 4 -> 6`. Source was reverted. Do not retry blind all-scene setup-prime sizes; future non-FISHING setup work needs generated per-scene coverage/cost metadata and full `scene_vb` accounting. |
+| `P5-99` | Done: resume pending all-scene matrix rows safely. | `ps1-perf-all-scenes.sh --only-pending` now skips rows already marked `measured` in `docs/ps1/performance-scene-matrix.csv`, and the sheet importer ignores failed-gate summaries so rejected dirty experiments cannot overwrite accepted measurements. The first resumed run added ACTIVITY4 high and ACTIVITY5 high; ACTIVITY5 high is now the top measured bottleneck at `16.46%` over target with `158` blocking VBlanks and `25` due misses. |
+| `P5-100` | Failed/no promotion: ACTIVITY5 scalar stream-window sweep. | Raw `20 KB`, `22 KB`, `24 KB`, and `32 KB` stream-window probes show ACTIVITY5 high is window-coverage sensitive but not promotable through a scalar size. `22 KB` improved `loop_vb 1953 -> 1921` but regressed `blocking_vb 158 -> 167`; `24 KB` improved `loop_vb 1953 -> 1946` and `blocking_vb 158 -> 127` but regressed `prefetch_overrun_vb 47 -> 75`; `32 KB` reduced due misses to `6` but regressed loop and overrun. Next attempt should combine generated group/segment coverage with the `22/24 KB` signal rather than changing the global window. |
+| `P5-101` | Failed/no promotion: ACTIVITY5 read-plan range as append group. | A manual ACTIVITY5 high group for the read-plan range `465..477` left every key metric exactly flat and `group_hits=0`, then source was reverted. The host planner must model runtime append starts and preserved-window capacity before emitting group tables; observed hot sector ranges alone are not sufficient. |
+| `P5-102` | Failed/no promotion: ACTIVITY5 grouped fill/direct-stage bypass. | Extending the same `465..477` ACTIVITY5 group to fresh window fills, then bypassing the 3-VBlank direct-stage shortcut for entries whose aligned start matched a group, still left ACTIVITY5 high exact-flat: `loop_vb=1953`, `blocking_vb=158`, `prefetch_overrun_vb=47`, `due_misses=25`, and the CD sector sequence stayed identical. Source was reverted. The next ACTIVITY5 attempt needs to target the blocking due-frame loader or emit scheduler-owned coverage metadata; adding group awareness to the append/window-prefetch hooks is exhausted for this range. |
+| `P5-103` | Failed/no promotion: ACTIVITY5 retained group capacity `18` sectors. | Giving ACTIVITY5 high the `465..477` group plus an `18`-sector retained window finally changed read work (`loop_reads 139 -> 137`, `due_misses 25 -> 24`) but moved the cost into visible pressure (`blocking_vb 158 -> 162`, `prefetch_overrun_vb 47 -> 50`, `overrun_vb 276 -> 277`) and triggered post-run invalid-read log spam. Source was reverted. Larger retained windows need a scheduler owner/cost model before promotion; raw retained capacity repeats the scalar-window failure in a more targeted form. |
+| `P5-104` | Failed/no promotion: ACTIVITY5 narrow group `465..471`. | Keeping the default `13`-sector group capacity and narrowing the generated ACTIVITY5 range to `465..471` saved one loop read but made the active loop worse: `loop_vb 1953 -> 1958`, `blocking_vb 158 -> 170`, `prefetch_overrun_vb 47 -> 50`, and `due_misses 25 -> 26`. Source was reverted. This closes manual group-boundary trimming for the first ACTIVITY5 hot cluster; the scheduler must decide when grouped reads are safe, not just how wide they are. |
+| `P5-105` | Done: expand the all-scene matrix to ACTIVITY6/7 high. | The pending-row runner added ACTIVITY6 high (`1054/910`, `15.82%` over, `6` blocking VBlanks) and ACTIVITY7 high (`762/599`, `27.21%` over, `26` blocking VBlanks, zero due misses). ACTIVITY7 is now the highest measured percentage gap, and its zero-due-miss profile says the next broad win should separate CD misses from non-CD/render/target overhead instead of assuming every high gap is an ACTIVITY5-style prefetch failure. The sheet writer now preserves repo-relative `last_summary` paths when refreshed from absolute output roots. |
+| `P5-106` | Failed/no promotion: ACTIVITY7 high setup-prime `384 KB`. | A scene-specific `384 KB` setup-prime for ACTIVITY7 high produced the right local shape (`loop_vb 762 -> 751`, `blocking_vb 26 -> 4`, `prefetch_overrun_vb 27 -> 4`, `loop_reads 52 -> 21`) and avoided the `448 KB` invalid-read cliff, but the added source shifted hot code enough to regress FISHING3 high (`loop_vb 2093 -> 2095`, `blocking_vb 15 -> 19`, `prefetch_overrun_vb 10 -> 14`) and trigger invalid-read log spam. Source was reverted. This is a real idea, but it needs layout-preserving/cold generated policy plumbing before it can be retried. |
+| `P5-107` | Failed/no promotion: ACTIVITY7 setup-prime wrapper policy. | Retrying the same `384 KB` ACTIVITY7 high prime through a wrapper that left the old setup-prime body intact still reproduced the cross-scene failure. ACTIVITY7 again improved (`loop_vb 762 -> 751`, `blocking_vb 26 -> 4`, `prefetch_overrun_vb 27 -> 4`) and FISHING1/ACTIVITY5 stayed exact-flat, but FISHING3 high regressed to `loop_vb=2095`, `blocking_vb=19`, `prefetch_overrun_vb=14`, then emitted invalid-read log spam. Source was reverted. A wrapper is not layout-preserving enough; the next retry needs generated policy data that does not perturb hot foreground layout, or a scheduler/pack-format change that makes the phase shift irrelevant. |
+| `P5-108` | Failed/no promotion: stage-next zero-slack perf-gate coalesce. | Coalescing two adjacent `ps1PerfEnabled` checks in the zero-slack stage-next branch looked like a repeat of the earlier accepted prefetch-gate cleanup, but the map preflight showed `foregroundPilotPlay` growing by `8` bytes with no helper shrink. Source was reverted without a headless run because the experiment had no speed hypothesis and failed its size/work-shape acceptance precondition. |
+| `P5-109` | Failed/no promotion: setup-prime next-entry null-guard prune. | Removing the setup-time `entry == NULL` guard after the frame-count bounds check shrank aggregate ELF by `112` bytes and kept FISHING1 exact-flat, but the resulting `+4` hot-symbol phase shift reproduced the FISHING3 high failure (`loop_vb=2095`, `blocking_vb=19`, `prefetch_overrun_vb=14`) and invalid-read log spam. Source was reverted. FISHING3 high is now the phase canary for even setup-only cleanup; do not promote setup guard removals unless hot-symbol phase stays fixed or FISHING3 high passes. |
+| `P5-110` | Done: add phase-risk and pressure ranking to the retry manifest. | `scripts/ps1-perf-retry-manifest.py` now tags failed/no-promotion rows with phase risk and sorts read-cost profiles by visible pressure, due misses, and overrun. The current manifest analyzed `333` failed/rejected/unknown rows, including `22` `fishing3-high-required`, `5` `invalid-read-log-risk`, and `90` `layout-sensitive` rows. Current read pressure sorts ACTIVITY5 high first (`score=2826`, `visible=205`, `due_misses=25`), then ACTIVITY7 high (`score=693`, `visible=53`), then FISHING3 high (`score=408`, `visible=25`, `due_misses=1`). This is host-side evidence tooling only; speed baseline remains FISHING1 `loop_vb=1207`, `12.17%` over target. |
+| `P5-111` | Failed/no promotion: single-parse scene identity startup. | Parsing scene family/tag once and threading that identity into setup-prime/read-group selection kept FISHING1 high exact-flat, but still shifted hot foreground symbols enough to reproduce the FISHING3 high phase failure (`loop_vb=2095`, `blocking_vb=19`, `prefetch_overrun_vb=14`) and log cap. Source was reverted. Generated policy plumbing cannot be added to `foreground_pilot.c` casually; use cold/generated data, a padding harness, or a phase-independent scheduler before retrying this class. |
+| `P5-112` | Failed/no promotion: hoist clean-span tile selection. | Moving `grRestoreCleanBgSpanFromRects()` tile selection out of its clean-rect loop kept FISHING1 high exact-flat, but a `+4` graphics/CD-helper address shift still reproduced the FISHING3 high phase failure and log cap. Source was reverted. The phase problem is broader than foreground source shape; add a hot-symbol/padding harness before more micro-optimizations in any hot PS1 translation unit. |
+| `P5-113` | Done: add optional hot-symbol address gate to the perf harness. | `scripts/ps1-perf-iterate.sh` now accepts `--max-symbol-address-delta N` and `PS1_PERF_MAX_SYMBOL_ADDRESS_DELTA`; default behavior is unchanged. Use `--max-symbol-address-delta 0` for source-shape probes so FISHING1 canary runs fail immediately when tracked hot symbols move, before a FISHING3 high run spends time and explodes logs on a known-bad phase. |
+| `P5-114` | Done: convert ACTIVITY7 high to padded FGP3. | Converting `ACTIVITY7.FG2` from FGP2 to the existing FGP3 temporal-residual format, then padding it back to its original `645455` bytes, improves ACTIVITY7 high from `loop_vb 762 -> 751`, `overrun_vb 163 -> 139`, `blocking_vb 26 -> 8`, `prefetch_overrun_vb 27 -> 8`, and `loop_reads 52 -> 10` while keeping `FG\\ACTV7.FG2` at LBA `5634`. FISHING1 high stays exact-flat. The current FISHING3 high baseline is stale under the all-FG/executable layout and fails the same way with the original ACTIVITY7 pack restored, so refresh that baseline before using it as a pack-only discriminator. This validates layout-stable FGP3 conversion as the next high-impact host-side path for large FGP2 packs. |
+| `P5-115` | Done: convert ACTIVITY5 high to padded FGP3. | Converting `ACTIVITY5.FG2` from FGP2 to padded FGP3 cuts payload `1634015 -> 632152`, improves ACTIVITY5 high `loop_vb 1953 -> 1866`, `overrun_vb 276 -> 159`, `blocking_vb 158 -> 25`, `prefetch_overrun_vb 47 -> 8`, `due_misses 25 -> 4`, and `loop_reads 139 -> 48`, while preserving `FG\\ACTV5.FG2` LBA `4050` and PS-EXE `147456`. FISHING1 high and the newly accepted ACTIVITY7 high stay exact-flat. This confirms padded FGP3 as a high-impact host-preprocessing lane for large FGP2 packs and makes the next best targets ACTIVITY1/4/6 or the worst pending measured FGP2 rows. |
+| `P5-116` | Done: convert ACTIVITY6 high to padded FGP3. | Converting `ACTIVITY6.FG2` from FGP2 to padded FGP3 cuts payload `385869 -> 98412`, improves ACTIVITY6 high `loop_vb 1054 -> 1043`, `overrun_vb 144 -> 132`, `blocking_vb 6 -> 0`, `prefetch_overrun_vb 6 -> 0`, and `loop_reads 29 -> 6`, while preserving `FG\\ACTV6.FG2` LBA `5254` and PS-EXE `147456`. FISHING1 high stayed exact-flat. This keeps the pack-format lane as the highest current ROI because it removes CD/render pressure without hot source movement. |
+| `P5-117` | Done: convert ACTIVITY4 high to padded FGP3. | Converting `ACTIVITY4.FG2` from FGP2 to padded FGP3 cuts payload `836087 -> 291214`, improves ACTIVITY4 high `loop_vb 1215 -> 1205`, `overrun_vb 150 -> 138`, `blocking_vb 8 -> 5`, `prefetch_overrun_vb 8 -> 5`, and `loop_reads 63 -> 20`, while preserving `FG\\ACTV4.FG2` LBA `3474` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue this host-side lane on remaining measured FGP2 rows before returning to source-shape work. |
+| `P5-118` | Done: convert ACTIVITY1 high to padded FGP3. | Converting `ACTIVITY1.FG2` from FGP2 to padded FGP3 cuts payload `1683850 -> 685922`, improves ACTIVITY1 high `loop_vb 4383 -> 4373`, `overrun_vb 142 -> 129`, `blocking_vb 4 -> 0`, `prefetch_overrun_vb 4 -> 0`, and `loop_reads 137 -> 50`, while preserving `FG\\ACTV1.FG2` LBA `1822` and PS-EXE `147456`. FISHING1 high stayed exact-flat. This completes the currently measured ACTIVITY high-tide FGP2 conversion set; next work should either measure more pending rows or move to low-tide/other-family FGP2 packs with the same padded-FGP3 gate. |
+| `P5-119` | Done: convert ACTIVITY7 low to padded FGP3. | Capturing a fresh ACTIVITY7 low baseline and converting `ACTV7LOW.FG2` to padded FGP3 improves `loop_vb 754 -> 747`, `overrun_vb 139 -> 133`, `blocking_vb 4 -> 1`, `prefetch_overrun_vb 4 -> 1`, and `loop_reads 27 -> 6`, while preserving `FG\\ACTV7LOW.FG2` LBA `5950` and PS-EXE `147456`. FISHING1 high stayed exact-flat. This starts the low-tide half of the ACTIVITY family conversion lane. |
+| `P5-120` | Failed/no promotion: ACTIVITY6 low padded FGP3. | ACTIVITY6 low showed the same nominal conversion win as high tide (`loop_vb 1054 -> 1043`, `blocking_vb 5 -> 0`, `loop_reads 29 -> 6`), but the run emitted invalid-read log spam and exited `137`. The FGP3 pack was restored to FGP2. Retry only after the low-tide FGP3 cleanup/post-scene lifetime issue is understood; the FGP2 baseline is now recorded in the matrix. |
+| `P5-121` | Done: convert ACTIVITY5 low to padded FGP3. | Capturing a fresh ACTIVITY5 low baseline and converting `ACTV5LOW.FG2` to padded FGP3 improves `loop_vb 1879 -> 1861`, `overrun_vb 183 -> 155`, `blocking_vb 47 -> 29`, `prefetch_overrun_vb 29 -> 16`, `due_misses 4 -> 3`, and `loop_reads 62 -> 36`, while preserving `FG\\ACTV5LOW.FG2` LBA `4851` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue low-tide conversions, but keep ACTIVITY6 low blocked until the invalid-read lifetime issue is fixed. |
+| `P5-122` | Done: convert ACTIVITY4 low to padded FGP3. | Capturing a fresh ACTIVITY4 low baseline and converting `ACTV4LOW.FG2` to padded FGP3 improves `loop_vb 1213 -> 1203`, `overrun_vb 144 -> 134`, `blocking_vb 2 -> 1`, `prefetch_overrun_vb 2 -> 1`, and `loop_reads 24 -> 13`, while preserving `FG\\ACTV4LOW.FG2` LBA `3885` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with ACTIVITY1 low as the last ACTIVITY low FGP2 candidate not already blocked. |
+| `P5-123` | Done: convert ACTIVITY1 low to padded FGP3. | Capturing a fresh ACTIVITY1 low baseline and converting `ACTV1LOW.FG2` to padded FGP3 improves `loop_vb 4382 -> 4373`, `overrun_vb 141 -> 131`, `blocking_vb 3 -> 2`, `prefetch_overrun_vb 3 -> 2`, and `loop_reads 137 -> 50`, while preserving `FG\\ACTV1LOW.FG2` LBA `2648` and PS-EXE `147456`. FISHING1 high stayed exact-flat. ACTIVITY high/low FGP3 conversion is now complete except for the blocked ACTIVITY6 low structural miss. |
+| `P5-124` | Failed/no promotion: ACTIVITY9 high padded FGP3. | ACTIVITY9 high is the biggest measured opportunity: FGP2 baseline `loop_vb=11819`, `blocking_vb=7301`, `due_misses=260`; padded FGP3 would improve the per-case summary to `loop_vb=2267`, `blocking_vb=92`, `due_misses=7`, and payload `29732775 -> 1746749`. It still emitted invalid-read log spam and exited `137`, so the pack was restored to FGP2. This confirms the next big unlock is fixing FGP3 post-scene/lifetime cleanup for structurally noisy scenes, not another simple conversion. |
+| `P5-125` | Done: promote ACTIVITY9 high padded FGP3 via loop validation. | Re-testing the same padded FGP3 pack on the real screensaver loop completed three ACTIVITY9 scene ends with zero correctness failures and no invalid-write spam. The accepted pack keeps `FG\\ACTV9.FG2` at LBA `6532` and improves the measured row from FGP2 `loop_vb=11819`, `blocking_vb=7301`, `due_misses=260` to loop-validated FGP3 `loop_vb=2268`, `blocking_vb=97`, `due_misses=9`, with payload `29732775 -> 1746749`. FISHING1 high stayed exact-flat. Until the one-shot shutdown artifact is fixed, validate ACTIVITY9 FGP3 with `loop`, not default `noloop`. |
+| `P5-126` | Done: promote ACTIVITY6 low padded FGP3 via loop validation. | Re-testing the saved ACTV6LOW FGP3 pack on the real screensaver loop passed against the prior FGP2 baseline and cross-gated FISHING1 exact-flat. The accepted pack keeps `FG\\ACTV6LOW.FG2` at LBA `5444` and improves `loop_vb 1054 -> 1043`, `blocking_vb 5 -> 0`, `prefetch_overrun_vb 5 -> 0`, `loop_reads 29 -> 6`, and payload `385869 -> 98412`. This reclassifies the earlier ACTIVITY6 low no-promotion as the same one-shot shutdown artifact class seen on ACTIVITY9. |
+| `P5-127` | Done: convert ACTIVITY9 low to padded FGP3. | Capturing a fresh ACTIVITY9 low FGP2 baseline and converting `ACTV9LOW.FG2` to padded FGP3 improves `loop_vb 12101 -> 2271`, `blocking_vb 7444 -> 92`, `due_misses 250 -> 8`, `loop_reads 264 -> 134`, and payload `29424855 -> 1666401`, while preserving `FG\\ACTV9LOW.FG2` LBA `21053` and PS-EXE `147456`. FISHING1 high stayed exact-flat. ACTIVITY9 high/low are now both in the accepted padded-FGP3 lane. |
+| `P5-128` | Done: convert BUILDING4 high to padded FGP3. | Capturing a fresh BUILDING4 high FGP2 baseline and converting `BUILDING4.FG2` to padded FGP3 improves `loop_vb 4094 -> 3141`, `blocking_vb 1591 -> 326`, `due_misses 274 -> 39`, `loop_reads 354 -> 78`, and payload `5417481 -> 1139499`, while preserving `FG\\BUIL4.FG2` LBA `45522` and PS-EXE `147456`. FISHING1 high stayed exact-flat. This extends the padded-FGP3 win outside ACTIVITY scenes. |
+| `P5-129` | Done: convert BUILDING4 low to padded FGP3. | Capturing a fresh BUILDING4 low FGP2 baseline and converting `BUIL4LOW.FG2` to padded FGP3 improves `loop_vb 4111 -> 3135`, `blocking_vb 1572 -> 335`, `due_misses 265 -> 40`, `loop_reads 354 -> 78`, and payload `5417481 -> 1139499`, while preserving `FG\\BUIL4LOW.FG2` LBA `48172` and PS-EXE `147456`. FISHING1 high stayed exact-flat. BUILDING4 high/low are now both in the accepted padded-FGP3 lane. |
+| `P5-130` | Done: convert JOHNNY1 high to padded FGP3. | Capturing a fresh JOHNNY1 high FGP2 baseline and converting `JOHNNY1.FG2` to padded FGP3 improves `loop_vb 4311 -> 2128`, `blocking_vb 1976 -> 31`, `due_misses 106 -> 0`, `loop_reads 109 -> 16`, and payload `7753614 -> 446058`, while preserving `FG\\JOHNNY1.FG2` LBA `63124` and PS-EXE `147456`. FISHING1 high stayed exact-flat. The strict gate failed only on zero-baseline `prefetch_overrun_vb 0 -> 31`; this is manually accepted because loop/overrun/blocking all improved materially. Add a future harness mode for composite acceptance of this pattern. |
+| `P5-131` | Done: convert JOHNNY1 low to padded FGP3. | Capturing a fresh JOHNNY1 low FGP2 baseline and converting `JOHN1LOW.FG2` to padded FGP3 improves `loop_vb 4314 -> 2132`, `blocking_vb 1989 -> 37`, `due_misses 106 -> 0`, `loop_reads 109 -> 16`, and payload `7753614 -> 446058`, while preserving `FG\\JOHN1LOW.FG2` LBA `66912` and PS-EXE `147456`. FISHING1 high stayed exact-flat. The strict gate failed only on zero-baseline `prefetch_overrun_vb 0 -> 37`; manually accepted under the same policy as JOHNNY1 high. |
+| `P5-132` | Failed/no promotion: SUZY1 high baseline coverage gap. | SUZY1 high is a large PAL4 target (`20634648` bytes), but the baseline probe emitted `loop_vb=0`, `advances=0`, `last_frame=0`, `expected_frames=177` after loading `FG\\SUZY1.FG2`. Do not convert SUZY packs until fgpilot/runtime coverage for these scenes is understood; zero-loop baselines cannot validate FGP3 speed or correctness. |
+| `P5-133` | Done: convert MARY1 high to padded FGP3. | Capturing a fresh MARY1 high FGP2 baseline and converting `MARY1.FG2` to padded FGP3 improves `loop_vb 6070 -> 5028`, `blocking_vb 2362 -> 87`, `due_misses 487 -> 2`, `loop_reads 707 -> 119`, and payload `6564891 -> 1600043`, while preserving `FG\\MARY1.FG2` LBA `77353` and PS-EXE `147456`. FISHING1 high stayed exact-flat. |
+| `P5-134` | Done: convert MARY1 low to padded FGP3. | Capturing a fresh MARY1 low FGP2 baseline and converting `MARY1LOW.FG2` to padded FGP3 improves `loop_vb 5087 -> 5011`, `blocking_vb 166 -> 50`, `due_misses 10 -> 1`, `loop_reads 346 -> 89`, and payload `3944246 -> 1164115`, while preserving `FG\\MARY1LOW.FG2` LBA `80567` and PS-EXE `147456`. FISHING1 high stayed exact-flat. This is a smaller local speed win but a strong CD/read reduction. |
+| `P5-135` | Done: convert BUILDING2 high to padded FGP3. | Capturing a fresh BUILDING2 high FGP2 baseline and converting `BUILDING2.FG2` to padded FGP3 improves `loop_vb 3142 -> 1572`, `blocking_vb 1562 -> 173`, `due_misses 220 -> 20`, `loop_reads 262 -> 70`, and payload `4514780 -> 862297`, while preserving `FG\\BUIL2.FG2` LBA `40278` and PS-EXE `147456`. FISHING1 high stayed exact-flat. |
+| `P5-136` | Done: convert BUILDING2 low to padded FGP3. | Capturing a fresh BUILDING2 low FGP2 baseline and converting `BUIL2LOW.FG2` to padded FGP3 improves `loop_vb 3219 -> 1570`, `blocking_vb 1592 -> 172`, `due_misses 214 -> 20`, `loop_reads 262 -> 69`, and payload `4514780 -> 862297`, while preserving `FG\\BUIL2LOW.FG2` LBA `42486` and PS-EXE `147456`. FISHING1 high stayed exact-flat. BUILDING2 high/low are now both accepted. |
+| `P5-137` | Done: convert BUILDING6 high to padded FGP3. | Capturing a fresh BUILDING6 high FGP2 baseline and converting `BUILDING6.FG2` to padded FGP3 improves `loop_vb 3414 -> 2754`, `blocking_vb 1111 -> 317`, `due_misses 170 -> 39`, `loop_reads 254 -> 72`, and payload `4391520 -> 1052803`, while preserving `FG\\BUIL6.FG2` LBA `53292` and PS-EXE `147456`. FISHING1 high stayed exact-flat. |
+| `P5-138` | Done: convert BUILDING6 low to padded FGP3 via loop validation. | Capturing a fresh BUILDING6 low FGP2 baseline and converting `BUIL6LOW.FG2` to padded FGP3 improves `loop_vb 3474 -> 2746`, `blocking_vb 1175 -> 312`, `due_misses 169 -> 38`, `loop_reads 254 -> 72`, and payload `4391520 -> 1052803`, while preserving `FG\\BUIL6LOW.FG2` LBA `55440` and PS-EXE `147456`. The one-shot runner emitted post-scene invalid-read spam at `0xFFFFBF80`; explicit `loop` validation passed and FISHING1 high stayed exact-flat. BUILDING6 high/low are now both accepted. |
+| `P5-139` | Done: convert JOHNNY6 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop JOHNNY6 high FGP2 baseline and converting `JOHNNY6.FG2` to padded FGP3 improves `loop_vb 3680 -> 2901`, `blocking_vb 873 -> 33`, `due_misses 69 -> 0`, `loop_reads 79 -> 12`, and payload `4309554 -> 400778`, while preserving `FG\\JOHNNY6.FG2` LBA `73141` and PS-EXE `147456`. The generic gate failed only on a small `prefetch_overrun_vb 27 -> 33` tradeoff; manual acceptance is justified because overrun, blocking, reads, and loop time all improve materially and FISHING1 high stayed exact-flat. Continue with JOHNNY6 low. |
+| `P5-140` | Done: convert JOHNNY6 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop JOHNNY6 low FGP2 baseline and converting `JOHN6LOW.FG2` to padded FGP3 improves `loop_vb 3675 -> 2905`, `blocking_vb 865 -> 37`, `due_misses 69 -> 0`, `loop_reads 79 -> 12`, and payload `4309554 -> 400778`, while preserving `FG\\JOHN6LOW.FG2` LBA `75247` and PS-EXE `147456`. The generic gate failed only on `prefetch_overrun_vb 26 -> 37`; manual acceptance follows the high-tide policy because overrun, blocking, reads, and loop time all improve materially and FISHING1 high stayed exact-flat. JOHNNY6 high/low are now both accepted. |
+| `P5-141` | Done: convert BUILDING7 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING7 high FGP2 baseline and converting `BUILDING7.FG2` to padded FGP3 improves `loop_vb 4067 -> 3861`, `blocking_vb 383 -> 66`, `prefetch_overrun_vb 159 -> 47`, `due_misses 47 -> 3`, `loop_reads 284 -> 77`, and payload `3530087 -> 1047635`, while preserving `FG\\BUIL7.FG2` LBA `57588` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with BUILDING7 low. |
+| `P5-142` | Done: convert BUILDING7 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING7 low FGP2 baseline and converting `BUIL7LOW.FG2` to padded FGP3 improves `loop_vb 3882 -> 3837`, `blocking_vb 139 -> 23`, `prefetch_overrun_vb 71 -> 23`, `due_misses 13 -> 0`, `loop_reads 128 -> 50`, and payload `1735855 -> 723937`, while preserving `FG\\BUIL7LOW.FG2` LBA `59319` and PS-EXE `147456`. FISHING1 high stayed exact-flat. BUILDING7 high/low are now both accepted. |
+| `P5-143` | Done: convert BUILDING5 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING5 high FGP2 baseline and converting `BUILDING5.FG2` to padded FGP3 improves `loop_vb 3653 -> 3514`, `blocking_vb 339 -> 65`, `prefetch_overrun_vb 161 -> 36`, `due_misses 38 -> 6`, `loop_reads 276 -> 69`, and payload `3329888 -> 966157`, while preserving `FG\\BUIL5.FG2` LBA `50822` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with BUILDING5 low. |
+| `P5-144` | Done: convert BUILDING5 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING5 low FGP2 baseline and converting `BUIL5LOW.FG2` to padded FGP3 improves `loop_vb 3534 -> 3508`, `blocking_vb 79 -> 33`, `prefetch_overrun_vb 67 -> 23`, `loop_reads 124 -> 47`, and payload `1701266 -> 671445`, while preserving `FG\\BUIL5LOW.FG2` LBA `52455` and PS-EXE `147456`. FISHING1 high stayed exact-flat. BUILDING5 high/low are now both accepted. |
+| `P5-145` | Done: convert VISITOR3 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR3 high FGP2 baseline and converting `VISITOR3.FG2` to padded FGP3 improves `loop_vb 1864 -> 1581`, `blocking_vb 743 -> 424`, `prefetch_overrun_vb 192 -> 145`, `due_misses 43 -> 24`, `loop_reads 122 -> 73`, and payload `2957520 -> 1529778`, while preserving `FG\\VISITOR3.FG2` LBA `161093` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with VISITOR3 low, then consider read-plan/prefetch follow-up because the accepted pack still has significant CD pressure. |
+| `P5-146` | Done: convert VISITOR3 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR3 low FGP2 baseline and converting `VIST3LOW.FG2` to padded FGP3 improves `loop_vb 1997 -> 1611`, `blocking_vb 713 -> 404`, `prefetch_overrun_vb 145 -> 99`, `loop_reads 77 -> 63`, and payload `2935011 -> 1452700`, while preserving `FG\\VIST3LOW.FG2` LBA `162540` and PS-EXE `147456`. FISHING1 high stayed exact-flat. VISITOR3 high/low are now both accepted, but both remain CD-bound after conversion; add a second-stage read grouping or scene-specific prefetch experiment for tall full-width PAL4 packs. |
+| `P5-147` | Failed/no promotion: SUZY2 high baseline coverage gap. | SUZY2 high is a large PAL4 target (`13706356` bytes), but the baseline probe loaded the pack and never entered active foreground playback: `loop_vb=0`, `advances=0`, `render=0`, `last_frame=0`, `expected_frames=133`, and `loop_reads=0`. Do not convert SUZY2 high until fgpilot/runtime coverage for SUZY scenes is fixed. |
+| `P5-148` | Done: convert WALKSTUF3 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop WALKSTUF3 high FGP2 baseline and converting `WALKSTUF3.FG2` to padded FGP3 improves `loop_vb 2704 -> 2512`, `blocking_vb 345 -> 130`, `prefetch_overrun_vb 212 -> 90`, `due_misses 19 -> 6`, `loop_reads 166 -> 74`, and payload `2116871 -> 1017926`, while preserving `FG\\WALK3.FG2` LBA `172729` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with WALKSTUF3 low or the next large v1 PAL4 candidate. |
+| `P5-149` | Done: convert VISITOR5 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR5 high FGP2 baseline and converting `VISITOR5.FG2` to padded FGP3 improves `loop_vb 2140 -> 1295`, `blocking_vb 1546 -> 107`, `due_misses 215 -> 9`, `loop_reads 223 -> 43`, and payload `2041304 -> 576996`, while preserving `FG\\VISITOR5.FG2` LBA `164212` and PS-EXE `147456`. The generic gate failed only on `prefetch_overrun_vb 11 -> 52`; manual acceptance is justified because overrun, blocking, reads, and loop time all improve materially and FISHING1 high stayed exact-flat. |
+| `P5-150` | Done: convert ACTIVITY10 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop ACTIVITY10 low FGP2 baseline and converting `ACTV10L.FG2` to padded FGP3 improves `loop_vb 1702 -> 1408`, `blocking_vb 495 -> 23`, `prefetch_overrun_vb 43 -> 14`, `due_misses 118 -> 2`, `loop_reads 186 -> 22`, and payload `1866208 -> 297646`, while preserving `FG\\ACTV10L.FG2` LBA `36202` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with ACTIVITY10 high or the next large v1 PAL4 pending row. |
+| `P5-151` | Done: convert ACTIVITY12 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop ACTIVITY12 low FGP2 baseline and converting `ACTV12L.FG2` to padded FGP3 improves `loop_vb 1749 -> 1551`, `blocking_vb 433 -> 20`, `prefetch_overrun_vb 62 -> 14`, `due_misses 98 -> 1`, `loop_reads 184 -> 25`, and payload `1860209 -> 358097`, while preserving `FG\\ACTV12L.FG2` LBA `38620` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with ACTIVITY12 high or the next large v1 PAL4 pending row. |
+| `P5-152` | Done: convert MARY5 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop MARY5 high FGP2 baseline and converting `MARY5.FG2` to padded FGP3 improves `loop_vb 1759 -> 1698`, `blocking_vb 119 -> 20`, `prefetch_overrun_vb 99 -> 20`, `due_misses 4 -> 0`, `loop_reads 116 -> 37`, and payload `1832429 -> 495145`, while preserving `FG\\MARY5.FG2` LBA `118121` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with MARY5 low or the next large v1 PAL4 pending row. |
+| `P5-153` | Done: convert MARY5 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop MARY5 low FGP2 baseline and converting `MARY5LOW.FG2` to padded FGP3 improves `loop_vb 1768 -> 1694`, `blocking_vb 139 -> 14`, `prefetch_overrun_vb 106 -> 14`, `due_misses 6 -> 0`, `loop_reads 116 -> 37`, and payload `1832429 -> 495145`, while preserving `FG\\MARY5LOW.FG2` LBA `119018` and PS-EXE `147456`. FISHING1 high stayed exact-flat. MARY5 high/low are now both accepted. |
+| `P5-154` | Done: convert FISHING8 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop FISHING8 high FGP2 baseline and converting `FISHING8.FG2` to padded FGP3 improves `loop_vb 1691 -> 1400`, `blocking_vb 756 -> 21`, `prefetch_overrun_vb 33 -> 21`, `due_misses 139 -> 0`, `loop_reads 200 -> 35`, and payload `1825136 -> 477210`, while preserving `FG\\FISHING8.FG2` LBA `61940` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with MARY2 high/low or the next large v1 PAL4 pending row. |
+| `P5-155` | Done: convert MARY2 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop MARY2 high FGP2 baseline and converting `MARY2.FG2` to padded FGP3 improves `loop_vb 2399 -> 2286`, `blocking_vb 248 -> 8`, `prefetch_overrun_vb 23 -> 8`, `due_misses 50 -> 0`, `loop_reads 144 -> 32`, and payload `1692166 -> 457249`, while preserving `FG\\MARY2.FG2` LBA `82500` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with MARY2 low to complete the pair. |
+| `P5-156` | Done: convert MARY2 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop MARY2 low FGP2 baseline and converting `MARY2LOW.FG2` to padded FGP3 improves `loop_vb 2410 -> 2286`, `blocking_vb 254 -> 8`, `prefetch_overrun_vb 38 -> 8`, `due_misses 48 -> 0`, `loop_reads 144 -> 32`, and payload `1692166 -> 457249`, while preserving `FG\\MARY2LOW.FG2` LBA `83329` and PS-EXE `147456`. FISHING1 high stayed exact-flat. MARY2 high/low are now both accepted. |
+| `P5-157` | Done: convert ACTIVITY10 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop ACTIVITY10 high FGP2 baseline and converting `ACTIVITY10.FG2` to padded FGP3 improves `loop_vb 1543 -> 1408`, `blocking_vb 237 -> 18`, `prefetch_overrun_vb 43 -> 13`, `due_misses 39 -> 1`, `loop_reads 127 -> 19`, and payload `1588080 -> 275651`, while preserving `FG\\ACTV10.FG2` LBA `35424` and PS-EXE `147456`. FISHING1 high stayed exact-flat. ACTIVITY10 high/low are now both accepted. |
+| `P5-158` | Done: convert ACTIVITY12 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop ACTIVITY12 high FGP2 baseline and converting `ACTIVITY12.FG2` to padded FGP3 improves `loop_vb 1611 -> 1551`, `blocking_vb 193 -> 12`, `prefetch_overrun_vb 44 -> 12`, `due_misses 33 -> 0`, `loop_reads 132 -> 23`, and payload `1571016 -> 333162`, while preserving `FG\\ACTV12.FG2` LBA `37850` and PS-EXE `147456`. FISHING1 high stayed exact-flat. ACTIVITY12 high/low are now both accepted. |
+| `P5-159` | Done: convert JOHNNY3 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop JOHNNY3 high FGP2 baseline and converting `JOHNNY3.FG2` to padded FGP3 improves `loop_vb 1425 -> 1308`, `blocking_vb 247 -> 20`, `prefetch_overrun_vb 94 -> 16`, `due_misses 28 -> 1`, `loop_reads 103 -> 23`, and payload `1568749 -> 317406`, while preserving `FG\\JOHNNY3.FG2` LBA `71310` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with VISITOR6 high or the next large v1 PAL4 pending row. |
+| `P5-160` | Done: convert VISITOR6 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR6 high FGP2 baseline and converting `VISITOR6.FG2` to padded FGP3 improves `loop_vb 2281 -> 2198`, `blocking_vb 119 -> 14`, `prefetch_overrun_vb 119 -> 14`, `loop_reads 105 -> 32`, and payload `1345696 -> 452898`, while preserving `FG\\VISITOR6.FG2` LBA `165588` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with STAND12 high or the next large v1 PAL4 pending row. |
+| `P5-161` | Done: convert STAND12 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop STAND12 high FGP2 baseline and converting `STAND12.FG2` to padded FGP3 improves `loop_vb 1624 -> 1597`, `blocking_vb 56 -> 8`, `prefetch_overrun_vb 56 -> 8`, `loop_reads 102 -> 18`, and payload `1173091 -> 270953`, while preserving `FG\\STAND12.FG2` LBA `125057` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with BUILDING3 high or the next large v1 PAL4 pending row. |
+| `P5-162` | Done: convert BUILDING3 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING3 high FGP2 baseline and converting `BUILDING3.FG2` to padded FGP3 improves `loop_vb 1583 -> 1565`, `blocking_vb 29 -> 4`, `prefetch_overrun_vb 22 -> 4`, `due_misses 1 -> 0`, `loop_reads 88 -> 27`, and payload `1152474 -> 386802`, while preserving `FG\\BUIL3.FG2` LBA `44694` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with STAND5 high or the next large v1 PAL4 pending row. |
+| `P5-163` | Done: convert STAND5 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop STAND5 high FGP2 baseline and converting `STAND5.FG2` to padded FGP3 improves `loop_vb 1635 -> 1600`, `blocking_vb 65 -> 8`, `prefetch_overrun_vb 65 -> 8`, `loop_reads 79 -> 18`, and payload `1112379 -> 264280`, while preserving `FG\\STAND5.FG2` LBA `122163` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with STAND6 high or the next large v1 PAL4 pending row. |
+| `P5-164` | Done: convert STAND6 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop STAND6 high FGP2 baseline and converting `STAND6.FG2` to padded FGP3 improves `loop_vb 1535 -> 1503`, `blocking_vb 59 -> 8`, `prefetch_overrun_vb 59 -> 8`, `loop_reads 79 -> 18`, and payload `1063672 -> 264261`, while preserving `FG\\STAND6.FG2` LBA `122973` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with VISITOR7 high, STAND4 high, or the next large v1 PAL4 pending row. |
+| `P5-165` | Done: convert VISITOR7 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR7 high FGP2 baseline and converting `VISITOR7.FG2` to padded FGP3 improves `loop_vb 1837 -> 1777`, `blocking_vb 83 -> 15`, `prefetch_overrun_vb 83 -> 15`, `loop_reads 79 -> 26`, and payload `1034782 -> 367617`, while preserving `FG\\VISITOR7.FG2` LBA `166535` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with STAND4 high, BUILDING1 high, or the next large v1 PAL4 pending row. |
+| `P5-166` | Done: convert STAND4 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop STAND4 high FGP2 baseline and converting `STAND4.FG2` to padded FGP3 improves `loop_vb 1405 -> 1365`, `blocking_vb 71 -> 12`, `prefetch_overrun_vb 71 -> 12`, `loop_reads 89 -> 16`, and payload `994023 -> 241352`, while preserving `FG\\STAND4.FG2` LBA `121433` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with BUILDING1 high, WALKSTUF3 low, or the next large v1 PAL4 pending row. |
+| `P5-167` | Done: convert BUILDING1 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING1 high FGP2 baseline and converting `BUILDING1.FG2` to padded FGP3 improves `loop_vb 1019 -> 966`, `blocking_vb 184 -> 76`, `due_misses 27 -> 6`, `loop_reads 80 -> 44`, and payload `951375 -> 526376`, while preserving `FG\\BUIL1.FG2` LBA `39531` and PS-EXE `147456`. `prefetch_overrun_vb` regresses slightly `50 -> 52`; this is accepted with bounded tolerance because the scene still saves `53` loop VBlanks and removes most due misses. FISHING1 high stayed exact-flat. Continue with WALKSTUF3 low, low-tide pairs for accepted high scenes, or the next large v1 PAL4 pending row. |
+| `P5-168` | Rejected: plain padded FGP3 for WALKSTUF3 low. | Capturing a clean explicit-loop WALKSTUF3 low FGP2 baseline and converting `WALK3LOW.FG2` to padded FGP3 only improves `loop_vb 2494 -> 2485` and `blocking_vb 97 -> 86`, while `prefetch_overrun_vb` regresses `65 -> 69` and fails the default gate. Payload only drops `986873 -> 811444`. The original FGP2 pack was restored; retry this scene only with generated grouping/direct16/residual metadata or scheduler changes. Continue with STAND5 low, STAND6 low, STAND4 low, or another eligible v1 PAL4 pending row. |
+| `P5-169` | Done: convert JOHNNY3 low to padded FGP3 via loop validation. | Capturing a clean explicit-loop JOHNNY3 low FGP2 baseline and converting `JOHN3LOW.FG2` to padded FGP3 improves `loop_vb 1346 -> 1305`, `blocking_vb 71 -> 10`, `prefetch_overrun_vb 35 -> 10`, `due_misses 7 -> 0`, `loop_reads 60 -> 16`, and payload `884828 -> 213873`, while preserving `FG\\JOHN3LOW.FG2` LBA `72079` and PS-EXE `147456`. FISHING1 high stayed exact-flat. JOHNNY3 high/low are now both accepted; continue with VISITOR1 high, FISHING7 high, STAND16 high, or the next large v1 PAL4 pending row. |
+
+## Failed Experiment Triage After P5-90
+
+The recent wins changed the shape of the failed backlog. FGP3 residual packs,
+setup-prime and setup-segment coverage, delivered-sector host parsing,
+work-identity floors, the foreground-pilot `-Os` phase shift, and the grouped
+append path mean some old failures are worth re-opening. The useful failures
+are the ones that already moved one metric but lacked generated metadata,
+offset control, or scheduler ownership. Local threshold tweaks and source-shape
+micro-edits remain low-value unless a broader change moves the underlying cost
+model first.
+
+| Failed class | Current verdict | Retest condition |
+|---|---|---|
+| Raw stream-window size sweeps | Do not retry as scalar sizes. | Retry only when pack metadata changes useful coverage per read. |
+| Split immediate/lookahead guards | Do not retry as fixed thresholds. | Retry with per-read cost classes and due-frame coverage proof. |
+| Staged-copy fallthrough thresholds | Do not retry locally. | Retry after grouped reads make same-iteration lookahead cheaper. |
+| Direct-stage read into stream window | Retry as a metadata-driven experiment. | Must preserve the current stream-window tail and not add a visible read. |
+| Two-entry direct-stage queue | Retry only if group-fed. | A second isolated exact-payload slot already caused due misses. |
+| Manual hard-coded read groups | Retry through generated metadata. | Manual groups often saved reads but missed append-start timing or shifted layout. |
+| Fixed `16 KB` payload grouping | Retry selectively. | Use host-planned hot boundaries, not every arbitrary crossing. |
+| Setup-prime blind sizes | Retry through generated segmented coverage. | Contiguous probes expose heap/log-cap limits and setup/loop accounting tradeoffs. |
+| Setup-settle first-frame prerender | Retry only as full-scene timing work. | Active-loop wins that leave `scene_vb` flat are not real speed wins. |
+| Metadata-prefix changes | Retry only offset-stable. | Moving payload starts by bytes or sectors repeatedly damaged active CD phase. |
+| Sound/event table prefixing | Retry as sidecar metadata. | Preserve payload offsets unless the group planner intentionally changes layout. |
+| Runtime read-size predictors | Retry as host-generated policy. | Runtime heuristics need per-read histograms or emitted group costs. |
+| Prepared-present/prepared-buffer release | Retry as a first-class scheduler. | Local thresholds moved work but stole CD cadence or duplicate-prep ballast. |
+| Prepared-wait prefetch follow-ups | Retry under explicit ownership. | Further reads need proof that present, prep, and CD are not competing for the same slice. |
+| Host-deadline catch-up threshold `4` | Retry only with resident-payload proof. | Setup-prime made one threshold-4 shape safe; global threshold-4 still regressed. |
+| Dirty-row pointer/clear micro-edits | Retry as structural dirty-state layout. | Single rewrites are phase-sensitive and often grow code or CD pressure. |
+| Upload gap and rect sweeps | Retry with generated upload-ready bands. | Runtime scratch packing and exact splitting traded bytes for too many rects. |
+| PAL4 LUT, aligned stores, inline compositor | Retry as generated or assembly code. | Runtime branching and broad compiler optimization consistently hurt cadence. |
+| Runtime restore-under-current parsing | Retry as pack-emitted restore metadata. | Hot-path parsing saved bytes but cost more than it saved. |
+| CD helper broad `-O3` or `-Os` | Retry only with map/layout gates. | Some TUs became phase-safe after size wins; hot CD/compositor helpers still regressed. |
+| Diagnostic compile gates that shifted phase | Retry with cold sections or padding harness. | Size wins are real, but active cadence must be held flat. |
+| Inline runtime histograms | Do not put in speed binary. | Use separate diagnostic builds or host post-processing. |
+| Pure FG2 LBA padding | Use only as a control. | LBA shifts alone were flat; code/startup phase is the stronger variable. |
+| Sequential CD reads without `Setloc` | Do not retry without a new correctness gate. | It looked faster only because visual work collapsed. |
+| Removing deterministic guard rails | Do not retry unless generated invariants prove them. | `P5-91` shows aggregate size can improve while hot helper and future-scene cost worsen. |
+
+Immediate retest queue from the failed ledger:
+
+| ID | Candidate | Acceptance bar |
+|---|---|---|
+| `RT-001` | Build a host-side failed-experiment classifier that tags each log entry with `retry-after`, `do-not-retry`, or `needs-metadata`. | Documentation/tool-only change, no runtime effect, produces a sorted queue from the existing log. |
+| `RT-002` | Generate FISHING3 high setup segments from delivered-sector logs instead of hand-coded sectors. | Reduce high-tide `blocking_vb` or `prefetch_overrun_vb` without moving FISHING1 or FISHING3 low. |
+| `RT-003` | Retry the rejected FISHING3 high `246..258` read group only with a companion setup segment or group-cost guard. | Saves the read without reintroducing `due_misses`. |
+| `RT-004` | Retry direct-stage-to-window for tight `8 KB` reads only when host metadata proves the window tail is preserved. | Loop time improves and `blocking_reads` stays flat. |
+| `RT-005` | Retry short-slack refill guard `2` only for generated cheap groups. | Due misses stay zero and visible CD pressure does not rise. |
+| `RT-006` | Add an offset-preserving sidecar for pack metadata before any new prefix data. | Startup metadata grows without shifting payload offsets or sector crossings. |
+| `RT-007` | Generate segmented setup-prime plans for FISHING2 and FISHING3 before adding more contiguous prime bytes. | Active-loop pressure improves with bounded setup memory and no log-cap failures. |
+| `RT-008` | Retry diagnostic/code-pruning failures under a cold-section or padding harness. | Keeps `loop_vb`, pack LBA, and hot-symbol phase stable while shrinking shipped code. |
+| `RT-009` | Generate upload-ready or restore-ready bands for one dense FGP3 scene. | Runtime upload/restore bytes fall without rect-count explosion or scratch-copy cost. |
+| `RT-010` | Convert one manual successful read group into generated metadata and remove the hard-coded source table. | Same timing, smaller hot source surface, same correctness across FISHING1/FISHING3. |
+
+Host preprocessing and multi-step idea backlog:
+
+| ID | Idea | Why it is newly plausible |
+|---|---|---|
+| `HP-001` | Mine the experiment log into a condition-indexed retry manifest. | Many failures say exactly what condition would make them worth re-testing. |
+| `HP-002` | Replay existing CD logs against a host simulator for stream-window state. | Lets us reject bad group/window ideas before touching PS1 code. |
+| `HP-003` | Generate per-scene/tide setup-prime segment plans with heap limits. | Fishing3 proved non-contiguous setup coverage can pay. |
+| `HP-004` | Build a greedy read-group planner that minimizes visible CD VBlanks, not read count. | Several failures saved reads while making the expensive read visible. |
+| `HP-005` | Add a dynamic-programming pack planner with constraints for setup bytes, group bytes, and due coverage. | The remaining wins are coupled, not single-knob threshold changes. |
+| `HP-006` | Preserve payload offsets while adding metadata through a sidecar file or end-of-pack table. | Prefix metadata failures mostly came from phase shifts, not bad metadata. |
+| `HP-007` | Classify reads as cheap, normal, or expensive from delivered sectors and elapsed VBlanks. | Short-slack policies need read-specific cost, not a scalar guard. |
+| `HP-008` | Emit per-entry next-coverage metadata: next payload offset, next group end, and safe lead VBlanks. | The runtime can decide quickly without scanning or guessing. |
+| `HP-009` | Rank every failed "saved one read but regressed pressure" probe by missing companion coverage. | These are the best candidates for multi-step fixes. |
+| `HP-010` | Track setup-vs-loop-vs-scene timing as a first-class report for every accepted setup-prime win. | Prevents counting active-loop shifts as true end-to-end speed. |
+| `HP-011` | Generate read-group metadata for all routed FGP3 packs. | Removes one-off source tables and lets scene policy be data-driven. |
+| `HP-012` | Generate retained-capacity requirements per group. | Capacity misses made some manual groups no-ops or heap regressions. |
+| `HP-013` | Duplicate tiny backward-read payloads inside a pack when the byte cost is lower than the seek cost. | Backward seeks are a recurring visible-pressure source. |
+| `HP-014` | Reorder FGP3 payloads into playback order for a new pack version while keeping frame table offsets explicit. | Replay order can reduce seeks more than runtime heuristics can. |
+| `HP-015` | Add scene-local policy records: stream size, setup segments, group table, direct-stage cap, and catch-up guard. | One global policy is already exhausted. |
+| `HP-016` | Generate setup-preload plans for scene transitions, not just scene start. | Setup-prime wins become real only if hidden during inter-scene time. |
+| `HP-017` | Use the previous scene's ending hold or fade time to start the next scene's foreground prime. | Screensaver flow gives us hiding windows outside active playback. |
+| `HP-018` | Build an all-scene/tide prime budget dashboard sorted by active-loop pressure per setup byte. | Chooses the next scene targets rationally. |
+| `HP-019` | Convert successful manual setup segments into generated pack-side segment tables. | Keeps source professional and reduces hot-path special cases. |
+| `HP-020` | Emit "group cannot be used if due frame is within N VBlanks" metadata. | Prevents groups from stealing the slice needed for presentation. |
+| `HP-021` | Retry exact short-slack refills only for groups tagged cheap by the host model. | Failed scalar slack probes may pay when limited to cheap reads. |
+| `HP-022` | Retry direct-stage-to-window only for reads whose aligned sector span extends the current window. | Avoids the earlier tail-replacement regression. |
+| `HP-023` | Add a two-entry stage queue fed only by group reads. | The isolated second slot failed because it increased transaction churn. |
+| `HP-024` | Split scheduler ownership into present, prep, window-refill, direct-stage, and event-poll budgets. | Prepared-present failures were ownership conflicts, not proof the idea is bad. |
+| `HP-025` | Generate per-frame slack maps from timing files plus current render/CD measurements. | Lets us pick the frames that can safely carry more work. |
+| `HP-026` | Build a release-profile timing oracle without heavy perf counters, using periodic scene-end summaries only. | Keeps speed binary stable while preserving acceptance evidence. |
+| `HP-027` | Move detailed counters to a separate diagnostic ISO profile. | Inline histogram attempts already proved detail in the speed binary is dangerous. |
+| `HP-028` | Add a map-delta gate that reports hot-symbol size, address, PS-EXE sectors, and pack LBA together. | Phase-sensitive failures need one combined explanation surface. |
+| `HP-029` | Add cold-section isolation for default-off diagnostics and old test modes. | Retires ballast without perturbing the hot executable phase. |
+| `HP-030` | Sweep function ordering with a linker-map harness after each large code-size win. | Some old `-Os` failures became safe only after the phase moved. |
+| `HP-031` | Continue per-TU `-Os` retries, but require exact cadence and no hot-helper growth. | Several old size failures are now phase-safe, while CD/compositor TUs still are not. |
+| `HP-032` | Try helper-scoped hand-written MIPS for PAL4 residual compose. | Compiler `O3` and branchy C variants lost; assembly can avoid runtime decision cost. |
+| `HP-033` | Generate PAL4 scene-specialized compositor loops from pack statistics. | Scene-known alignment/length classes can replace hot runtime branches. |
+| `HP-034` | Emit same-pair PAL4 command streams for uniform byte pairs. | Avoids runtime detection while exploiting a real pack-side pattern. |
+| `HP-035` | Emit direct16 chunks only for dense frames where doubled pack bytes beat runtime CLUT work. | Direct16 should be selective, not a blanket format pivot. |
+| `HP-036` | Generate per-tile command streams for FGP3 residuals. | Removes runtime cross-tile splitting and dirty marking branches. |
+| `HP-037` | Emit restore-clean bands for vanished pixels. | Replaces runtime restore-under-current parsing with cheap generated metadata. |
+| `HP-038` | Emit upload-ready contiguous bands for scenes with many narrow dirty rows. | Avoids scratch packing and rect explosion from runtime X-aware upload. |
+| `HP-039` | Generate per-scene upload rect caps from actual max rect pressure. | Keeps FISHING1's cap small without assuming all scenes share the same bound. |
+| `HP-040` | Pack dirty-row state into bitsets or byte spans so clear/promote work scales with touched rows. | Dirty-row touched-only cleanup finally produced a real VBlank win. |
+| `HP-041` | Replace dirty-row `memset` retries with a custom fixed-size MIPS fill only after bitset packing. | The library-call shape failed; operation count must change first. |
+| `HP-042` | Detect translation-only FGP3 frames and encode GPU `MoveImage` plus residual. | Walking scenes show real move candidates even though fishing1 did not. |
+| `HP-043` | Generate static-backdrop reuse maps for scenes whose residual never touches large regions. | Reduces restore/upload ownership instead of redoing known clean areas. |
+| `HP-044` | Evaluate GPU-sprite foreground compositing for a single sprite-heavy scene as an architectural branch. | It is high-risk, but it is one of the few remaining double-digit possibilities. |
+| `HP-045` | Add host-side frame-hash smoke tests for every generated pack-policy change. | Prevents false speedups like the skipped-visual-work `Setloc` probe. |
+| `HP-046` | Expand work-identity floors by scene class before broad optimization merges. | FISHING1 floors are not enough for Mary/Suzy/full-screen scenes. |
+| `HP-047` | Add "no runtime fallback" audits for pack features after generation coverage reaches all scenes. | Deterministic generated data can replace expensive safety branches. |
+| `HP-048` | Generate a pack-size and read-pressure Pareto chart for all 126 tide variants. | Shows where FGP3, direct16, grouping, or motion compensation is worth the bytes. |
+| `HP-049` | Create a host replay for "what if this failed experiment ran on today's baseline" using metrics deltas. | Lets old failures be re-ranked without re-running every branch. |
+| `HP-050` | Keep a "near miss" list separate from "dead end" experiments. | Ideas that saved reads or bytes but regressed pressure are useful after scheduler changes. |
+| `HP-051` | Re-test old no-promotion size cleanups only after a phase-control harness exists. | Size wins matter, but not at the cost of one visible CD VBlank. |
+| `HP-052` | Model pack payload sector crossings and byte offsets before changing any header/prefix layout. | Byte-level shifts repeatedly changed playback cadence. |
+| `HP-053` | Try a generated metadata footer rather than prefix for FG2/FGP3 extensions. | Footer data can add tables without disturbing existing payload offsets. |
+| `HP-054` | Add a host "segment plus group" combiner for FISHING3 high. | The next high-tide win likely needs a setup segment and a safe read group together. |
+| `HP-055` | Build a per-scene hold-distribution report to find scenes where long-hold catch-up can actually fire. | Fishing1 exhausted some catch-up buckets; other scenes may expose them. |
+| `HP-056` | Try scene-specific direct-stage caps generated from payload-size histograms. | The global `8 KB` knee may not be the knee for other scenes. |
+| `HP-057` | Add an optional async-CD sandbox profile with first-class CD-state ownership counters. | Async is still plausible, but only outside the accepted speed binary first. |
+| `HP-058` | Use DuckStation logs to detect emulator-side read clustering and physical-sector delivery quirks. | Delivered-sector parsing already found better evidence than inferred next reads. |
+| `HP-059` | Generate blog/archeology annotations for interesting failures as the retry manifest is built. | Keeps the journey searchable without polluting the active optimization queue. |
+| `HP-060` | After each accepted multi-step win, auto-promote newly eligible failed classes into the next queue. | The foreground `-Os` and holiday/resource retries proved eligibility changes over time. |
+
+Grouped priority queue from this triage:
+
+| Group | Priority | Included IDs | Execution rule | Expected payoff |
+|---|---|---|---|---|
+| Evidence and ranking foundation | 1 | `RT-001`, `HP-001`, `HP-002`, `HP-007`, `HP-009`, `HP-028`, `HP-049`, `HP-050`, `HP-058`, `HP-060` | Do first. These are host-side or documentation/tooling changes and should not perturb the PS1 speed binary. | Produces a ranked retry manifest, read-cost classes, and map/layout evidence so the next code experiments are not guesses. |
+| Offset-stable metadata enablers | 2 | `RT-006`, `HP-006`, `HP-008`, `HP-011`, `HP-012`, `HP-015`, `HP-020`, `HP-052`, `HP-053` | Do before adding more runtime read heuristics. Metadata must be sidecar/footer or otherwise payload-offset stable. | Unlocks generated groups, setup segments, safe direct-stage windows, and scene-local policy without repeating prefix-phase failures. |
+| Generated CD/setup pressure wins | 3 | `RT-002`, `RT-003`, `RT-007`, `RT-010`, `HP-003`, `HP-004`, `HP-005`, `HP-018`, `HP-019`, `HP-054` | Start with FISHING3 high because it still has visible pressure and several near-miss groups/segments. Promote only if FISHING1 and FISHING3 low stay clean. | Best near-term VBlank reduction path; turns one-off successful groups and setup segments into generated policy. |
+| Scheduler/read-policy retries | 4 | `RT-004`, `RT-005`, `HP-021`, `HP-022`, `HP-023`, `HP-024`, `HP-025`, `HP-055`, `HP-056`, `HP-057` | Do after metadata/read-cost work. Threshold-only retries are still banned until the runtime can prove read cost and payload coverage. | Reopens old direct-stage, short-slack refill, two-entry queue, async, and prepared-present failures under a real ownership model. |
+| Scene-transition and setup hiding | 5 | `HP-010`, `HP-016`, `HP-017`, `HP-026` | Run beside generated setup-prime work, but judge by `scene_vb`, not only active `loop_vb`. | Converts existing active-loop setup-prime wins into real end-to-end screensaver speed by hiding setup between scenes. |
+| Pack-time graphics preprocessing | 6 | `RT-009`, `HP-032`, `HP-033`, `HP-034`, `HP-035`, `HP-036`, `HP-037`, `HP-038`, `HP-039`, `HP-040`, `HP-041`, `HP-042`, `HP-043` | Do after the CD/setup queue unless a non-fishing canary shows graphics dominates. Prefer generated data or assembly over runtime branches. | Moves restore, compose, upload, and dirty-state work off the PS1 hot path without repeating runtime parser/scratch-packing failures. |
+| Layout, binary size, and diagnostic cleanup | 7 | `RT-008`, `HP-027`, `HP-029`, `HP-030`, `HP-031`, `HP-051` | Run when a phase-control harness exists or when a current baseline makes a prior failure phase-safe. Require exact cadence if it is not a speed experiment. | Recovers binary size and public-readiness cleanup without paying the recurring one-visible-VBlank phase tax. |
+| Validation and expansion guardrails | 8 | `HP-045`, `HP-046`, `HP-047`, `HP-048`, `HP-059` | Run continuously around promotions, especially when expanding beyond FISHING scenes. | Prevents false wins, keeps no-fallback cleanup honest, and preserves archeology/blog traceability. |
+| Architectural branch | 9 | `HP-013`, `HP-014`, `HP-044` | Branch separately after generated metadata and validation are stable. Treat as high-risk, high-upside work, not a quick loop test. | Possible larger gains through payload duplication/reorder or GPU-sprite foreground compositing if incremental wins plateau. |
+
+All-scene targeting rule: prefer fixes whose mechanism applies to every routed
+FGP3 scene, even if FISHING3 high is the first canary. One-off scene tables,
+manual sector ranges, and hard-coded tide policies are acceptable only as
+temporary probes or as generated-data outputs. A promotion should either improve
+the shared runtime, improve the shared pack format/generator, or add
+machine-generated per-scene policy that can be emitted for all `126` tide
+variants. Do not spend the main optimization loop on hand-authored FISHING3
+patches that cannot generalize.
+
+Current measured canary gaps are not uniformly `12%`: FISHING1 high/low are
+`12.17%` over target, FISHING2 high/low are `7.54%` and `7.41%`, and FISHING3
+high/low are `7.06%` and `6.63%`. The all-scene sheet now exists at
+`docs/ps1/performance-scene-matrix.csv`; rows not yet measured remain
+`pending`. All-scene speed claims must come from that generated matrix rather
+than extrapolation from FISHING canaries.
+
+Near-term execution order:
+
+| Order | Work item | Why now |
+|---|---|---|
+| 1 | Build the host retry manifest and read-cost simulator. | It is the cheapest way to stop repeating failed scalar probes and identify which near misses are now eligible. |
+| 2 | Add offset-stable metadata sidecar/footer support for generated policies. | Most valuable retries need metadata, and prefix changes have repeatedly broken CD phase. |
+| 3 | Generate FISHING3 high segment-plus-group candidates from delivered-sector logs. | FISHING3 high still has measurable visible pressure, and existing manual probes already found useful regions. |
+| 4 | Promote one generated read/segment policy only if FISHING1, FISHING3 high, and FISHING3 low all pass. | This proves the grouped methodology before broadening to every scene. |
+| 5 | Retry direct-stage-to-window and short-slack refill only with generated cost/coverage tags. | These old failures had useful signals but need the metadata from the previous steps. |
+| 6 | Start scene-transition preload/hiding once generated setup segments are reliable. | This is how setup-prime wins become real `scene_vb` wins instead of accounting shifts. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
@@ -887,6 +1506,13 @@ Goal: keep the executable small and hot code friendly.
 | `P7-05` | Remove or compile-gate unused debug/text formatting in release builds. | `vsnprintf` and debug paths are visible in the map. |
 | `P7-06` | Skip `ClearOTagR` in pure FG2 software-background frames if safe. | Active playback often does not emit GPU primitives. |
 | `P7-07` | Keep the primitive path available for debug/other scenes. | Avoid breaking future sandbox work. |
+| `P7-08` | Run a toolchain flag matrix under exact layout gates. | Test `-Os`, per-file `-O2/-O3`, function alignment, section ordering, and code-address padding as first-class experiments. |
+| `P7-09` | Separate hot FG2/CD code from cold menu/debug code by translation unit or section. | Prevent valid cold-code cleanup from perturbing hot scheduler/code phase. |
+
+Detailed current experiment queue: [performance-next-100.md](performance-next-100.md).
+It uses the accepted fishing1 exact baseline as of 2026-04-26 and expands the
+next pass across harness, CD grouping, scheduler, graphics/upload, compositor,
+and toolchain/layout tests.
 
 ## Phase 7b: Remove Runtime Fallback Code
 
@@ -1145,8 +1771,8 @@ into one commit.
 
 Current measured bottlenecks are now narrow enough that the next wins should be
 small and cumulative: `157` Detail-tier present-wait VBlanks, `5` visible CD
-blocking VBlanks, `5` prefetch-overrun VBlanks, `68` active-loop reads,
-`16.5 MB` upload volume, `401` upload rects, and `3.09 MB` restore volume on
+blocking VBlanks, `5` prefetch-overrun VBlanks, `67` active-loop reads,
+`16.28 MB` upload volume, `502` upload rects, and `2.51 MB` restore volume on
 fishing1 high tide.
 
 A post-holiday/menu integration probe exposed a new regression target. With the
@@ -1154,18 +1780,19 @@ exact pre-integration no-holiday fishing1 variant forced (`lowtide 0 night 1
 holiday 0 raft-stage 4 island-pos -154 54`), the row-dirty restore path
 restored and the no-holiday stamp path cached, active playback measured
 `loop_vb 1221 -> 1306` (`+85`, about `+7.0%`), `overrun_vb 149 -> 256`,
-`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. Treat this as a
-first-class optimization target: recover the lost slack without removing the
-new menu/holiday feature set.
+`blocking_vb 5 -> 19`, and `prefetch.overrun_vb 5 -> 14`. `P4-142` resolved
+this by restoring the lost default-off JCPAD/JCSPI diagnostics gate; `pad-diag`
+and `pad-debug` still re-enable the deep controller probes, while normal
+screensaver playback keeps only the lightweight Start poll.
 
 | Priority | Area | Target | Expected signal |
 |---:|---|---|---|
-| 0 | Integration/regression | Recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returns toward `loop_vb=1221`, `blocking_vb<=5`, `prefetch.overrun_vb<=5`, with holiday/menu functionality intact and correctness counters zero. |
+| 0 | Integration/regression | Done: recover the post-holiday/menu no-holiday fast-path cost. | Exact-variant fishing1 returned to `loop_vb=1221`, `blocking_vb=5`, `prefetch.overrun_vb=5`, and `due_misses=0`; keep diagnostics opt-in and Start polling live. |
 | 1 | CD/pack | Add pack-emitted FG2 prefetch group metadata with aligned `offset/length` and covered frame range. | Lower `reads`, `blocking_vb`, and `prefetch.overrun_vb` without raising `pack_bytes` materially. |
 | 2 | CD/runtime | Teach the stream window to fill from group boundaries instead of raw next-entry sector boundaries. | More `window_hits` per read and fewer backwards seeks. |
 | 3 | CD/pack | Generate groups using a max-sector budget derived from observed 3-6 VBlank slack. | Preserve zero `due_misses` while lowering overrun. |
 | 4 | CD/runtime | Replace fixed slack constants with a sector-count read-cost predictor. | First runtime byte-threshold attempt failed; retry only with per-read histograms/sector classes or pack-group metadata so the predictor can distinguish coverage value, not just byte count. |
-| 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `8 KB`, and `10 KB` under the post-gap8 baseline. | `8 KB` remains the local knee: `6 KB` and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
+| 5 | CD/runtime | Done: re-sweep direct-stage payload caps at `4 KB`, `6 KB`, `7 KB`, `8 KB`, and `10 KB`. | `8 KB` remains the local knee: `6 KB`, `7 KB`, and `10 KB` are no-ops, while `4 KB` regresses blocking/refill. |
 | 6 | CD/runtime | Retry 4-VBlank direct-stage only after grouped prefetch metadata or a two-entry stage queue preserves lookahead. | Avoid repeating the observed `due_misses 0 -> 5` and `blocking_vb 11 -> 39` regression. |
 | 7 | CD/runtime | Add a two-entry stage queue with bounded memory. | Convert more tight holds to stage hits without window refill. |
 | 8 | CD/runtime | After a direct-stage read, prefetch the following window only if remaining slack is still above predicted cost. | Recover the one lost `window_hit` without overrun. |
@@ -1203,7 +1830,7 @@ new menu/holiday feature set.
 | 40 | Compose/metrics | Add span class counters: tile-local, cross-tile, clipped, odd-left, odd-right. | Pick compositor optimizations from measured distribution. |
 | 41 | Present/runtime | Done: run Detail-tier baseline after the latest accepted CD win. | `present_wait_vb=157`, `restore_vb=18`, `compose_vb=0`, `upload_vb=0`, and `advance_vb=1`; present serialization is the largest measured remaining bucket. |
 | 42 | Present/runtime | Done as a bridge: prepare staged frames only when held slack is at least `4` VBlanks. | `loop_vb 1235 -> 1234` and `blocking_vb 10 -> 8`, but extra `restore_calls`/`compose_calls` mean this is not the final present pipeline. |
-| 43 | Present/runtime | Redesign the staged present scheduler with separate render-prep and CD-prefetch slack budgets. | Recover present wait without repeating the `loop_vb 1235 -> 1306` regression or the duplicate-prep cost from the accepted bridge. |
+| 43 | Present/runtime | Redesign the staged present scheduler with separate render-prep and CD-prefetch slack budgets. | Recover present wait without repeating the `loop_vb 1235 -> 1306` regression or the duplicate-prep cost from the accepted bridge; use `JCPERF2 sched` to prove which slices were owned by present, CD, visual prep, or idle wait. |
 | 44 | Present/runtime | Separate upload completion wait from display VSync wait in metrics and code shape. | Identify hidden serialization in `grUpdateDisplay()`. |
 | 45 | Present/runtime | Avoid double update work on empty capture entries. | Lower `render`/held overhead on scenes with blank ledger frames. |
 | 46 | Setup/runtime | Persist same-raft and non-holiday overlays across scene loops where heap probes prove safe. | Lower setup time without active-loop risk. |
@@ -1320,8 +1947,9 @@ A hot translation-unit `-O3` pass also failed. The resulting code reduced
 speculative prepared-frame restore/compose calls by five, but worsened the
 actual timing and CD-pressure counters. That makes it a scheduler-shape loss,
 not a CPU win. Future compiler work should be narrow enough to keep code layout
-predictable: individual compositor helpers, CD copy loops, or hand-written
-assembly, with map-size tracking beside the perf summary.
+predictable: individual compositor helpers, CD copy loops, per-file `-Os`/`-O2`
+hybrids, function alignment/ordering, or hand-written assembly, with
+map-size/address tracking beside the perf summary.
 Reading tight-slack direct-stage sectors straight into the stream-window buffer
 also lost. The local copy removal changed the window state enough to add one
 active-loop read and two backward seeks, regressing loop time and refill
@@ -1357,11 +1985,13 @@ constant family is locally exhausted. It can reduce `loop_vb` from `1237` to
 to `19-20`; future CD work should preserve zero due misses through grouped or
 physically adjacent reads before tightening the guard again.
 
-The post-leading-empty upload gap sweep moved the local runtime knee upward.
-The accepted 11-row dirty-band gap merge keeps timing flat and lowers
-`upload_rects 424 -> 401` for a small byte increase. The rejected 12-row point
-is still too wide; the next larger upload win should move band metadata to pack
-generation or emit upload-ready layouts.
+The post-leading-empty upload gap sweep moved the local runtime knee upward,
+but the post-pause accepted point moved back to a byte-saving 1-row dirty-band
+gap. That checkpoint keeps key timing flat while reducing upload bytes and
+accepting more rects. The rejected 0-row point shows the narrow-side boundary,
+and the rejected 12-row point shows the wide-side boundary; the next larger
+upload win should move band metadata to pack generation or emit upload-ready
+layouts.
 
 An inline CD-read histogram metrics pass was also rejected. The summary-level
 variant and the supposedly safer `perf-detail`-gated variant both regressed the
@@ -1383,6 +2013,19 @@ The post-prime stream-window knee also stayed at sector-rounded `16 KB`. An
 `blocking_vb`, and `prefetch.overrun_vb`, so larger reads are still too slow
 unless a future grouped/pipelined layout makes them cheaper to hide.
 
+The `320 KB` setup-prime pass is the first accepted proof that larger resident
+coverage can safely unlock threshold-`4` catch-up, but only when the runtime
+knows the prime succeeded. It reduces active-loop overrun from `147` to `140`
+and visible CD/refill from `5` to `1`, while increasing setup time. Treat this
+as a preload/scheduler direction: future work should generate prime sizes,
+segment hot coverage, and move the read into previous-scene/menu time where
+possible.
+The clean-rect first-upload pass is a smaller proof that setup assumptions still
+matter: once the static backdrop has been presented, full-screen first upload is
+unnecessary for FG2. Keep future active-region work pack- or clean-rect-driven;
+do not reintroduce blind full-screen forced redraws unless a visual regression
+proves they are required.
+
 Timing wins are only valid when work identity stays stable. The sequential
 `Setloc` skip experiment proved that the current Summary gate can accept a run
 where correctness counters are zero but the renderer performed far less work.
@@ -1392,6 +2035,41 @@ Future acceptance must compare baseline-sensitive counters such as
 The headless harness now enforces a default `75%` minimum for `render`,
 `restore_calls`, `compose_calls`, and `upload_calls` when comparing against a
 baseline; override only for deliberate pack/render architecture changes.
+It also caps `headless-regtest.log` at `536870912` bytes by default via
+`PS1_PERF_MAX_LOG_BYTES` / `--max-log-bytes`; set the cap to `0` only for
+deliberate log-mining runs.
+
+The recent diagnostic-gating misses expose a second acceptance rule: code-size
+cleanup is not safe merely because correctness and work identity remain clean.
+If shrinking the executable moves foreground pack LBAs or code phase, the scene
+can regress by one visible CD VBlank. Treat default-off diagnostics as
+layout/cadence ballast until cold sections, explicit ISO padding, or a
+phase-independent CD scheduler makes removal deterministic.
+
+The later hot whole-TU compiler probes add the inverse rule: speed-oriented
+compiler expansion is also not safe just because the target file is hot.
+`foreground_pilot.c -O3` grew the scheduler and raised visible CD pressure, and
+`cdrom_ps1.c -O3` grew the executable by three sectors, moved `FISHING1.FG2`
+from LBA `399` to `402`, and regressed `blocking_vb/prefetch.overrun_vb` from
+`5` to `13`. Future toolchain work needs function-scoped codegen, hot-symbol
+address padding, or a phase sweep before retrying hot translation-unit flags.
+A follow-up pure CD phase sweep moved `FISHING1.FG2` to LBAs `400`, `401`,
+`402`, `403`, and `407` with exact flat timing, so pack LBA alone is not the
+failing variable. The next phase-control target is executable/code/startup
+phase, not more standalone ISO padding.
+The held-loop prefetch pre-check removal then confirmed that point from the
+opposite direction: restoring `FISHING1.FG2` to LBA `399` with a dummy sector
+did not prevent the regression when hot foreground symbols moved. Hot-loop
+cleanups now require hot-symbol padding or a scheduler that is insensitive to
+one-sector executable/code-shape changes.
+Adding `2 KB` of inert initialized executable payload was timing-flat, so raw
+executable footprint is also not a standalone win. Use padding as an isolation
+tool for hot-symbol address sweeps and source-cleanup salvage tests.
+Aligning `fgRuntimeFillWindowForEntry()` to 16 and 32 byte boundaries was also
+timing-flat, even with downstream hot symbols shifted by up to `+36` bytes.
+The phase problem is narrower than "any address move"; it appears tied to
+specific shrink/code-shape changes that alter read timing, not harmless
+positive alignment shifts.
 
 The first measured target is CD latency. Held-frame no-work created idle
 VBlanks, but the runtime currently waits until the next frame is due before it
@@ -1403,3 +2081,274 @@ current clean-rect system solved memory stability, but it still restores and
 uploads hundreds of KB per rendered entry. After prefetching reduces visible CD
 stalls, subphase counters should guide row/X dirty uploads, compositor work,
 and present scheduling.
+
+## Next 30 Targets After Source-Shape Plateau
+
+The late `P5-56..P5-62` pass shows that safe foreground source-shape cleanups
+are now mostly code-size wins, not VBlank wins. Several return-shape and guard
+prune tests became exact no-ops or code-size regressions. The next meaningful
+speed work should move information out of the hot runtime and into generated
+pack metadata, controlled setup/preload policy, or separate diagnostic builds.
+
+| Priority | Area | Experiment | Acceptance signal |
+|---:|---|---|---|
+| 1 | Pack/CD | Generate per-scene/tide segmented setup-prime metadata instead of hard-coded FISHING3 ranges. | High-tide `blocking_vb` falls below `16` without PS-EXE/LBA movement. |
+| 2 | Pack/CD | Emit candidate segment hit counts from the pack builder for FISHING3 high. | Host-side report identifies ranges with repeated active-loop reads before runtime code changes. |
+| 3 | Pack/CD | Generate a no-code JSON read-plan for FISHING3 high from existing summaries and pack offsets. | Predicts which loop reads remain visible and which setup segment would cover them. |
+| 4 | Pack/CD | Add a generated cold metadata table consumed through existing setup-prime code. | Same timing or better with no hot source table growth. |
+| 5 | CD/runtime | Test one generated high-tide segment using existing low-owned ownership, but behind layout padding if needed. | `blocking_vb` or `prefetch_overrun_vb` improves and process exits cleanly. |
+| 6 | CD/runtime | Test high-tide owned segment cleanup only as a first-class ownership patch, not local scratch replacement. | No post-scene invalid-read spam and no log-cap exit. |
+| 7 | CD/runtime | Add host-side read-boundary analyzer for `setup_read_vb` vs `loop_read_vb`. | No runtime code; produces ranked next segment candidates. |
+| 8 | CD/runtime | Re-score rejected setup-prime sizes using current ELF `722752` layout. | Only retry if predicted sectors avoid known bad `140/144/160 KB` phase. |
+| 9 | CD/runtime | Try a smaller high-tide contiguous midpoint below `128 KB` only if the analyzer predicts fewer loop reads. | Loop reads fall without increasing blocking. |
+| 10 | Scheduler | Split `cd_reserved` into setup-segment-covered vs not-covered ownership in a diagnostic build. | Explains the three `prep_blocked_cd` cases without baseline code growth. |
+| 11 | Scheduler | Prototype a separate diagnostic ISO/build profile for high-detail CD traces. | Baseline speed binary remains unchanged; diagnostics no longer perturb timing. |
+| 12 | Scheduler | Add host parser for existing DuckStation CD log lines instead of new runtime counters. | Per-read timing table with no PS1 code change. |
+| 13 | Scheduler | Model each held slice as CD/prep/present ownership offline from JCPERF2 summary plus frame table. | Identifies candidate frames for scheduler changes. |
+| 14 | Scheduler | Test a CD-first policy only for held slices with no prepared frame and generated segment coverage. | Reduces `blocking_vb` without increasing `prepared_wasted` or due misses. |
+| 15 | Scheduler | Test a prepare-first policy only when next window read is setup-covered. | Lowers `prep_blocked_cd` or overrun without more CD pressure. |
+| 16 | Pack/render | Generate per-entry dirty/upload cost classes for FISHING3. | Finds frames where render work, not CD, owns lateness. |
+| 17 | Pack/render | Emit upload band metadata for FGP3 residual entries. | `upload_rects` or `upload_bytes` falls with stable first-frame correctness. |
+| 18 | Pack/render | Emit restore band metadata for FGP3 residual entries. | `restore_bytes` falls without stale pixels. |
+| 19 | Pack/render | Host-side compare full-current dirty vs previous/current union for FISHING3. | Quantifies if another row-dirty win exists before runtime changes. |
+| 20 | Pack/render | Identify entries with max `upload_bytes` / `restore_bytes` in FISHING3 summaries. | Ranks render-side targets after CD stalls. |
+| 21 | Format | Prototype direct16 only for the highest compose-cost FISHING3 frame range in a side pack. | Compose work falls enough to justify pack growth. |
+| 22 | Format | Generate per-scene PAL4 palette specialization report. | Finds whether scene-specific compositor constants are worth codegen. |
+| 23 | Format | Test FGP3 residual chunk ordering by playback order, not source order. | Lowers seeks or loop reads with identical pixels. |
+| 24 | Format | Emit frame-to-sector coverage maps as build artifacts. | Makes future group/segment tests deterministic and searchable. |
+| 25 | Toolchain | Build a hot-symbol padding harness for `foregroundPilotPlay` address sweeps. | Separates real source wins from code-phase accidents. |
+| 26 | Toolchain | Test function-scoped `-Os` on only `fgRuntimeFillWindowForEntry()` with layout padding. | Promotes only if timing flat and ELF shrinks without CD pressure. |
+| 27 | Toolchain | Test function-scoped `-Os` on only `fgRuntimeCopyEntryFromWindow()` with layout padding. | Same flat timing plus shrink requirement. |
+| 28 | Cleanup | Stop trying source-only ternary/boolean rewrites in foreground hot path. | Logged no-op pattern stays documented; avoids churn. |
+| 29 | Validation | Add a script to list promoted vs rejected experiments since the current baseline. | Faster status cards and no manual counting. |
+| 30 | Validation | Add a host-side pack/read candidate report to the perf script output. | Every run suggests next segment/group candidates without changing PS1 code. |
+
+Progress note: `scripts/ps1-foreground-read-plan.py` now covers targets `2`,
+`3`, and `7` for ad-hoc analysis. On the accepted FISHING3 baseline it confirms
+that high tide still has `43` uncovered post-locate pack-read segments after
+setup coverage `[3..73)`, while low tide has `20` and only `3` blocking
+VBlanks. The next runtime experiment should be a measured generated
+setup/read-segment test, not another source-shape cleanup.
+
+The first analyzer-selected runtime segment, FISHING3 high sectors `223..234`,
+is accepted as a work-reduction baseline after visual signoff. It keeps
+`loop_vb=2093` and `blocking_vb=16` flat while reducing high-tide
+`loop_reads 44 -> 43` and `loop_read_vb 188 -> 185`. Continue stacking
+measured groups; do not count this as a visible-speed win until `loop_vb` or
+visible CD pressure falls.
+
+A broad FISHING3 high tail group, `338..354`, saved transactions but failed the
+clean-exit bar with post-scene invalid-read spam, so broad tail grouping is not
+safe in the current runtime. The narrower `345..354` group is accepted: it keeps
+high and low timing flat, exits cleanly, and reduces high-tide `loop_reads
+43 -> 42` plus `loop_read_vb 185 -> 183`. Future read groups should be narrow
+or generated with explicit capacity/lifetime proof.
+
+Three follow-up FISHING3 high read groups, `149..161`, `277..289`, and
+`161..174`, all saved a loop transaction but regressed visible blocking/refill.
+`scripts/ps1-foreground-read-plan.py` now prints estimated saved reads, read-gap
+timing, and a phase-risk hint so tight clusters are visible before runtime
+patches. The remaining FISHING3 high gap should now favor generated
+setup/preload ownership or scheduler work over more adjacent read merges.
+
+The medium-risk `80..96` group then confirmed that manual FISHING3 high
+adjacent grouping is exhausted for now: it saved one transaction but regressed
+`loop_vb` and emitted post-scene invalid BIOS-address writes. Do not add more
+one-off high-tide read groups until the scheduler can prove ownership or the
+pack generator emits safe segment/group metadata.
+
+A function-scoped `O2` probe on `fgRuntimeFillWindowForEntry()` is also
+rejected for this baseline. It shrank that symbol but moved nearby hot symbols
+and produced exact-flat timing/CD metrics, so future toolchain experiments need
+layout padding or a clear size/phase acceptance rule before promotion.
+The matching `Os` probe is retired too: it produced byte-for-byte identical
+tracked hot symbols and no ELF shrink, confirming the current file-level build
+already gives that function its size-optimized shape.
+A one-VBlank FISHING3-high setup settle is rejected as well. Even with stable
+pack LBA and PS-EXE bucket, it pushed active CD/refill pressure sharply worse,
+so startup barriers are not a substitute for read-level ownership metadata.
+`scripts/ps1-perf-iterate.sh` now emits foreground read-plan artifacts for each
+case. This closes the validation/tooling loop: every accepted or rejected run
+captures the pack/read candidate table that should drive the next preload,
+grouping, or scheduler experiment.
+
+The first follow-on run driven directly from those emitted artifacts is
+accepted. FISHING3 high sectors `234..246`, with retained group capacity raised
+from `11` to `13` sectors, keeps `loop_vb=2093` while improving
+`overrun_vb 139 -> 138`, `blocking_vb 16 -> 15`,
+`prefetch_overrun_vb 11 -> 10`, and `loop_reads 42 -> 41`. FISHING3 low and
+FISHING1 high both validate exact-flat. This is still a small active-loop win,
+but it proves the per-run read plan can find pressure-reducing groups after the
+earlier manual adjacent-group failures.
+
+The immediately adjacent `246..258` group is rejected even though it removes
+one more read. It regresses FISHING3 high to `loop_vb=2096`,
+`blocking_vb=17`, and `prefetch_overrun_vb=12`. Treat `234..246` as the safe
+manual extension boundary for this phase; the next high-impact FISHING3 CD work
+should be generated segmented setup/preload metadata or scheduler ownership,
+not another hand-written adjacent read group.
+
+A widened persistent side segment for FISHING3 high, `67..97`, is also
+rejected. It reduced active-loop reads (`41 -> 38`) but bypassed the normal
+stream-window seed pattern and made later active reads worse:
+`loop_vb=2102`, `blocking_vb=32`, and `prefetch_overrun_vb=17`. The useful
+lesson is structural: setup/preload bytes should feed the main window or carry
+explicit scheduler ownership; a long-lived side buffer is not automatically a
+win even when it removes CD transactions.
+
+Raising FISHING3 high contiguous setup-prime coverage to `192 KB` is rejected
+for the same active-cadence reason. It reduced `loop_reads 41 -> 36`, but
+regressed `loop_vb` to `2102`, `blocking_vb` to `29`, and
+`prefetch_overrun_vb` to `25`. The current `128 KB` high-prime plus narrow
+segments/groups is a real knee; bigger setup reads are not automatically
+usable unless a scheduler can prove they land outside active pressure.
+The narrower `160 KB` probe confirms that knee: it still regressed
+`loop_vb=2100`, `blocking_vb=26`, and `due_misses=3`. Do not continue blind
+contiguous high-prime sweeps below a new scheduler/ownership model.
+
+The read-plan analyzer now parses setup-prime constants and FISHING3
+setup-segment ranges from `src/foreground_pilot.c` at run time. This matters
+for future policy probes: while a source change is in flight, the candidate
+table should reflect the source under test instead of the last hard-coded
+baseline assumption. Historical artifacts still need reruns after source
+reverts.
+
+A stream-window-seeded side segment for FISHING3 high `67..97` is rejected,
+but it is less bad than the persistent-side-buffer version: `loop_vb=2097`
+instead of `2102`, with `prefetch_overrun_vb` flat. The idea has a usable
+shape only if the segment is much smaller; broad setup coverage still creates
+blocking pressure later in the active loop.
+The smaller seeded `67..80` version is also rejected (`loop_vb=2094`,
+`blocking_vb=17`, `prefetch_overrun_vb=13`). This closes the manual expansion
+path for the accepted `67..73` high segment. Future wins here need generated
+scheduler-owned preload, not a wider hand-authored setup segment.
+
+Macro expansion remains selective. The single-call prepared-present predicate
+is accepted as a shrink, but `fgRuntimeCanStageNextFrame()` is rejected:
+duplicating its two call sites kept timing flat while growing
+`foregroundPilotPlay 8936 -> 9032` and `jcreborn.elf 723228 -> 723308`.
+
+Moving the existing FISHING3 high setup segment from `67..73` to `168..174` is
+also rejected. It made the active loop worse (`loop_vb=2098`,
+`blocking_vb=21`, `prefetch_overrun_vb=16`), proving the early accepted segment
+is more valuable than later single-read candidates when only one segment is
+available.
+
+A FISHING3 low read-group probe for `159..171` is rejected. It removed one
+loop read but did not move `loop_vb`, `blocking_vb`, or
+`prefetch_overrun_vb`, and it grew the hot foreground code. Low-tide groups
+need pressure-counter movement before they justify a new table/branch path.
+
+Threading precomputed prefetch candidates through the held-loop scheduler is
+also rejected in the current source shape. It avoids a duplicate next-payload
+scan but grows `foregroundPilotPlay` and the ELF with no key metric movement.
+Retry only with finer CPU counters or a smaller call-site shape.
+
+Inlining the held-vblank wait helper is accepted as a small code-size/work
+reduction. It keeps FISHING3 high/low and FISHING1 exact-flat, preserves the
+`145408` byte PS-EXE bucket and pack LBAs, and shrinks `jcreborn.elf
+723228 -> 723024` even though `foregroundPilotPlay` itself grows by `8` bytes.
+
+Macro-expanding the foreground tick-counter wrapper is accepted under the same
+rule. It keeps the same three gates exact-flat, preserves layout, and shrinks
+`jcreborn.elf 723024 -> 722940`.
+
+Inlining the frame-rendered marker and foreground elapsed-vblank accounting is
+accepted under the same rule. Both keep FISHING3 high/low and FISHING1
+exact-flat, preserve the `145408` byte PS-EXE bucket and pack LBAs, and shrink
+`jcreborn.elf 722940 -> 722660`.
+
+Pruning the prechecked compose-entry null guard is accepted as a larger
+source-shape cleanup: it keeps the same three gates exact-flat, shrinks
+`foregroundPilotPlay 9016 -> 8996`, and moves the current code-size cleanup
+baseline to `jcreborn.elf=722376` bytes with no VBlank change. Pruning the
+prefetch-window output clear is accepted as a follow-on hot-helper cleanup and
+moves the current code-size cleanup baseline to `jcreborn.elf=722364` bytes.
+Pruning the stage-next elapsed-output guards keeps the same gates exact-flat and
+moves the current code-size cleanup baseline to `jcreborn.elf=722348` bytes
+with no VBlank change. Pruning the prepare elapsed-output guards keeps the same
+gates exact-flat and moves the current code-size cleanup baseline to
+`jcreborn.elf=722336` bytes. Pruning the fill-window output clear keeps the
+same gates exact-flat, shrinks `fgRuntimeFillWindowForEntry 900 -> 888`, and
+moves the current code-size cleanup baseline to `jcreborn.elf=722304` bytes
+with no VBlank change.
+Lowering the dirty-upload band merge gap from one clean row to zero clean rows
+is accepted as a render/upload work-reduction checkpoint: key timing stays
+flat, uploaded bytes fall by `51.8 KB` on FISHING1, `105.6 KB` on FISHING3 high,
+and `17.9 KB` on FISHING3 low, while `LoadImage` rectangle counts rise. Keep
+this as a measured byte-vs-rect tradeoff until a lower-level GPU/DMA counter
+proves command count dominates byte volume.
+Removing the separate dirty-upload `useBands` flag is accepted immediately
+afterward: upload work and timing stay exact-flat across the same three gates,
+while `grDrawBackground` shrinks by `56` bytes and the current code-size
+cleanup baseline moves to `jcreborn.elf=722044` bytes.
+Pruning the single-dirty-tile upload fallback is accepted as the next upload
+source-shape cleanup: the same three gates stay exact-flat with identical upload
+work, `grDrawBackground` shrinks by another `160` bytes, and the current
+code-size cleanup baseline moves to `jcreborn.elf=721456` bytes.
+Pruning the outer dirty-upload scan guard is accepted after that: the tile-level
+clean checks preserve behavior, the same three gates stay exact-flat, and the
+current code-size cleanup baseline moves to `jcreborn.elf=721400` bytes.
+Pruning the band-upload `DrawSync(0)` guard is also accepted. The band path
+precondition proves at least one upload occurred, so the redundant branch is gone
+and the current code-size cleanup baseline moves to `jcreborn.elf=721396` bytes.
+The fallback-branch reshuffle is rejected immediately after that: it kept
+FISHING1 exact-flat but grew `grDrawBackground` and the ELF, so the older
+fallback shape remains the baseline.
+Computing tile screen coordinates directly from the tile index is accepted as a
+separate measured shape from the earlier rejected static-table probe. It keeps
+the same three gates exact-flat and moves the current code-size cleanup baseline
+to `jcreborn.elf=721380` bytes.
+Replacing the local tile-pointer table with index-selection macros is rejected:
+the table costs stack space but produces much smaller generated code in this
+compiler shape.
+Removing the fallback from `fgRuntimeWindowReadSize()` is accepted as a narrow
+hot-helper cleanup. Active FG2 playback initializes `streamWindowReadSize`
+before the window-fit/fill helpers run, so the fallback to `streamWindowSize`
+is obsolete in the measured path. FISHING1, FISHING3 high, and FISHING3 low
+stay exact-flat while `fgRuntimeFillWindowForEntry`,
+`fgRuntimeLoadSceneFrame`, `fgRuntimeTryPrefetchWindow`, and
+`fgRuntimeWindowPrefetchWouldRead` shrink by `32` bytes total. This is not a
+VBlank win and not an aggregate ELF-size win; it is a smaller hot helper shape
+with the PS-EXE sector bucket unchanged.
+FISHING3 low tide now has its first accepted read group. Adding the generated
+candidate `159..171` keeps visible timing flat but reduces active CD work:
+`loop_reads 21 -> 20`, `hidden_reads 21 -> 20`, `loop_read_vb 85 -> 81`, and
+`setloc 28 -> 27`. FISHING3 high and FISHING1 remain exact-flat. Count this as
+a small CD transaction/read-time reduction, not as a VBlank win; the next
+low-tide groups should be judged the same way and must avoid turning hidden
+read reductions into visible blocking.
+The grouped-append helper now caches the active read-group table pointer/count
+at scene startup. This keeps the accepted FISHING3 low read reduction and all
+validated timing flat while moving table selection out of the append probe:
+`fgRuntimeFillWindowForEntry` shrinks `892 -> 844`, offset by setup/play growth
+and a larger runtime struct. Treat this as a hot-helper cleanup only; it is not
+an aggregate binary-size win.
+Narrowing the cached read-group count/index to `uint8` is accepted immediately
+afterward. It preserves all timing and read-work counters, keeps the
+`fgRuntimeFillWindowForEntry` shrink, and claws back `60` aggregate ELF bytes
+from the table-pointer refactor while staying in the same PS-EXE sector bucket.
+The following source-shape pass removes the grouped-append local table/count
+copies entirely. Scanning the cached runtime table directly keeps FISHING1,
+FISHING3 high, and FISHING3 low exact-flat, preserves PS-EXE `145408`, and
+moves the aggregate ELF baseline from `721504` to `721376` bytes. This is a
+small grouped-read path cleanup, not a VBlank win.
+The `246..258` FISHING3 high follow-on group is rejected despite saving one
+read because it creates a due miss and raises visible CD pressure. Runtime
+grouping should not count a transaction win as progress unless blocking/refill
+also stays flat. The next accepted grouped-read cleanup removes the pack-end
+clamp from the append helper: group bounds are generated from validated pack
+sectors, so clamping them in the PS1 hot path is fallback logic. Removing it
+keeps all three gates exact-flat, shrinks `fgRuntimeFillWindowForEntry 844 ->
+820`, and moves the aggregate ELF baseline to `721232` bytes.
+The startup read-size fallback is removed next. Active foreground playback
+already initializes `streamWindowReadSize` when prefetch is enabled, and the
+disabled-prefetch path rejects before using it. Removing the fallback keeps the
+same three gates exact-flat, shrinks `foregroundPilotPlay 9020 -> 8996`, and
+moves the aggregate ELF baseline to `721200` bytes.
+The successful append-extension validity store is also removed. The function
+only enters with a valid window and only the failure path clears validity, so a
+successful append only needs to update the start and byte count. The measured
+result is exact-flat timing with `fgRuntimeFillWindowForEntry 820 -> 816`; the
+aggregate ELF moves to `721228`, so treat this as a hot-path store removal, not
+as a binary-size win.

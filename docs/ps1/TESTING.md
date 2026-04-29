@@ -35,6 +35,46 @@ smaller stability releases may happen between scene milestones.
 | `raft-stage <N>` | 0..5 | Cumulative raft-build state |
 | `island-pos <x> <y>` | — | Force island position |
 
+## Headless Performance Matrix
+
+All generated FG2 scene/tide variants are routable through `fgpilot`, even
+before they are human-certified. Use the generated matrix runner for speed
+coverage, not the legacy regtest certification scripts:
+
+```bash
+# Smoke one generated case.
+./scripts/ps1-perf-all-scenes.sh --limit 1 --tides high --frames 7200
+
+# Walk the full 126-variant matrix. This is intentionally long-running.
+./scripts/ps1-perf-all-scenes.sh --tides both --frames 7200
+
+# Resume from rows not yet measured in the CSV sheet.
+./scripts/ps1-perf-all-scenes.sh --only-pending --limit 8 --tides high
+```
+
+The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
+mean no current headless perf summary has been recorded for that scene/tide.
+The rendered website battle card is
+[/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/).
+
+Current battle-card rollup as of 2026-04-29:
+
+| Metric | Value |
+|---|---:|
+| Scene/tide variants measured | `57 / 126` |
+| Scenes with at least one timed variant | `34 / 63` |
+| Scenes with both high/low variants timed | `23 / 63` |
+| Blocked variants | `2 / 126` |
+| Measured average over target | `+12.1%` |
+| Measured average target speed | `89.8%` |
+| FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
+
+Reporting rule: after every accepted perf optimization, or every rejected
+experiment worth preserving, update `performance-scene-matrix.csv`,
+`performance-experiment-log.md`, the README status table, and the rendered
+website testing-status page. The CSV is the durable numeric source; prose
+surfaces should summarize it, not invent independent numbers.
+
 ## Secondary (historical): headless regtest harness
 
 The headless regtest harness runs DuckStation's regtest binary in Docker

@@ -16,6 +16,8 @@ project(
     VERSION 1.0.0
 )
 
+option(PS1_PERF_DEEP_TRACE "Include large, diagnostic-only PS1 perf trace counters" OFF)
+
 # Set C standard
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -56,6 +58,25 @@ set(SOURCES
     src/ps1_stubs.c
 )
 
+# Size-optimize only translation units that have passed the exact fishing1
+# gate. Most hot files stay at the SDK default because code phase is fragile.
+set_source_files_properties(
+    src/jc_reborn.c
+    src/utils.c
+    src/island.c
+    src/ps1_debug.c
+    src/foreground_pilot.c
+    src/holidays.c
+    src/resource.c
+    src/sound_ps1.c
+    src/events_ps1.c
+    src/pause_menu.c
+    src/ps1_stubs.c
+    src/ps1_captions.c
+    src/memcard.c
+    PROPERTIES COMPILE_OPTIONS "-Os"
+)
+
 # Create PS1 executable
 # Note: GPREL = use GP-relative addressing for faster data access
 psn00bsdk_add_executable(jcreborn GPREL ${SOURCES})
@@ -69,6 +90,9 @@ target_compile_options(jcreborn PRIVATE
 target_link_options(jcreborn PRIVATE
     -Wl,--gc-sections
 )
+if(PS1_PERF_DEEP_TRACE)
+    target_compile_definitions(jcreborn PRIVATE PS1_PERF_DEEP_TRACE=1)
+endif()
 
 # Include directories
 # - src/ for the main translation units' own headers

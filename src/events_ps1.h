@@ -27,5 +27,6 @@ extern int evHotKeysEnabled;
 
 void eventsInit();
 void eventsWaitTick(uint16 delay);
+void eventsSetPadDiagnostics(int enabled);
 
 #endif /* EVENTS_PS1_H */
