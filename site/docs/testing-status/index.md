@@ -3,7 +3,7 @@ layout: page
 title: Current Testing Status
 eyebrow: Live progress
 subtitle: The current scene-validation and headless performance battle card for the PS1 port.
-description: Current Johnny Castaway PS1 testing status: scene validation, headless performance progress, and the full 126-variant timing battle card.
+description: "Current Johnny Castaway PS1 testing status: scene validation, headless performance progress, and the full 126-variant timing battle card."
 ---
 
 This is the working status page. It tracks two different bars:
