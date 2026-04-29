@@ -1235,6 +1235,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-90` | Done: fill contiguous windows through the extend path. | Allowing `fgRuntimeTryExtendWindow()` to handle `windowStart == currentEnd` removes the fallthrough to the normal fill path for contiguous aligned reads. FISHING1, FISHING3 high, and FISHING3 low stay exact-flat, PS-EXE stays `145408`, `fgRuntimeFillWindowForEntry` shrinks `812 -> 788`, and aggregate ELF shrinks `721232 -> 721144`. This is a hot-helper/size cleanup, not a VBlank win. |
 | `P5-91` | Failed/no promotion: remove the grouped-read zero-count guard. | The run was timing-flat and aggregate ELF shrank, but `fgRuntimeFillWindowForEntry 788 -> 792` and scenes without generated groups would pay extra helper work. Source was reverted and only the experiment log was kept. |
 | `P5-92` | Done: add host-side retry manifest and read-cost profile tooling. | `scripts/ps1-perf-retry-manifest.py` mines the durable experiment log, classifies failed/no-promotion rows into the grouped priority ladder, extracts near-miss metric signals, and attaches current read-cost profiles/read-plan candidates from existing summaries. The first run analyzed `322` failed/rejected rows, found `98` conditional retries and `67` near misses, and confirmed the current read-cost split: FISHING1 is CD-clean, FISHING3 high still has `25` visible-pressure VBlanks with one due miss, and FISHING3 low has `6` visible-pressure VBlanks. This is host-side evidence tooling only; it does not change the PS1 runtime or speed binary. |
+| `P5-93` | Done: scope the retry manifest for all-scene prioritization. | The manifest now tags candidates as `global-runtime`, `generated-all-scene`, `scene-family-canary`, `one-off-scene`, or `unknown` and sorts global/generalizable work ahead of one-off probes. The refreshed canary profile includes FISHING1, FISHING2 high/low, and FISHING3 high/low: only FISHING1 is currently `12.17%` over target, while the other measured FISHING canaries are `6.63%` to `7.54%` over. This keeps FISHING3 useful as a stress canary without making hand-authored FISHING3 sector fixes the main strategy. |
 
 ## Failed Experiment Triage After P5-90
 
@@ -1368,6 +1369,21 @@ Grouped priority queue from this triage:
 | Layout, binary size, and diagnostic cleanup | 7 | `RT-008`, `HP-027`, `HP-029`, `HP-030`, `HP-031`, `HP-051` | Run when a phase-control harness exists or when a current baseline makes a prior failure phase-safe. Require exact cadence if it is not a speed experiment. | Recovers binary size and public-readiness cleanup without paying the recurring one-visible-VBlank phase tax. |
 | Validation and expansion guardrails | 8 | `HP-045`, `HP-046`, `HP-047`, `HP-048`, `HP-059` | Run continuously around promotions, especially when expanding beyond FISHING scenes. | Prevents false wins, keeps no-fallback cleanup honest, and preserves archeology/blog traceability. |
 | Architectural branch | 9 | `HP-013`, `HP-014`, `HP-044` | Branch separately after generated metadata and validation are stable. Treat as high-risk, high-upside work, not a quick loop test. | Possible larger gains through payload duplication/reorder or GPU-sprite foreground compositing if incremental wins plateau. |
+
+All-scene targeting rule: prefer fixes whose mechanism applies to every routed
+FGP3 scene, even if FISHING3 high is the first canary. One-off scene tables,
+manual sector ranges, and hard-coded tide policies are acceptable only as
+temporary probes or as generated-data outputs. A promotion should either improve
+the shared runtime, improve the shared pack format/generator, or add
+machine-generated per-scene policy that can be emitted for all `126` tide
+variants. Do not spend the main optimization loop on hand-authored FISHING3
+patches that cannot generalize.
+
+Current measured canary gaps are not uniformly `12%`: FISHING1 high/low are
+`12.17%` over target, FISHING2 high/low are `7.54%` and `7.41%`, and FISHING3
+high/low are `7.06%` and `6.63%`. Comparable baselines for all `63` scenes do
+not exist yet, so all-scene claims must come from a generated matrix run rather
+than extrapolation from FISHING canaries.
 
 Near-term execution order:
 

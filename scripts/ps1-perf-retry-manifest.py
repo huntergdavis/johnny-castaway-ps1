@@ -191,6 +191,77 @@ GROUPS: list[tuple[str, int, tuple[str, ...]]] = [
     ),
 ]
 
+SCOPES: list[tuple[str, int, tuple[str, ...]]] = [
+    (
+        "global-runtime",
+        1,
+        (
+            "default",
+            "runtime",
+            "scheduler",
+            "prefetch",
+            "stream-window",
+            "direct-stage",
+            "cd helper",
+            "compositor",
+            "upload",
+            "restore",
+            "dirty-row",
+            "pal4",
+            "events",
+            "toolchain",
+            "diagnostic",
+            "fallback",
+            "metadata",
+            "generated policy",
+        ),
+    ),
+    (
+        "generated-all-scene",
+        2,
+        (
+            "generated",
+            "pack-emitted",
+            "pack-time",
+            "all routed",
+            "all scenes",
+            "all 126",
+            "sidecar",
+            "footer",
+            "read-plan",
+            "manifest",
+        ),
+    ),
+    (
+        "scene-family-canary",
+        3,
+        (
+            "fishing",
+            "fishing1",
+            "fishing2",
+            "fishing3",
+            "high-tide",
+            "low-tide",
+        ),
+    ),
+    (
+        "one-off-scene",
+        4,
+        (
+            "hard-coded",
+            "manual",
+            "one-off",
+            "sectors ",
+            "sector ",
+            "67..",
+            "246..",
+            "277..",
+            "384..",
+            "106..",
+        ),
+    ),
+]
+
 METRIC_RE = re.compile(r"`?([A-Za-z0-9_.\-/]+)`?\s+`?(-?\d+)`?\s*->\s*`?(-?\d+)`?")
 RETRY_SENTENCE_RE = re.compile(r"([^.!?]*\bretry\b[^.!?]*[.!?])", re.I)
 
@@ -344,6 +415,20 @@ def group_for_text(text: str) -> tuple[str, int, list[str]]:
     return group, -neg_priority, hits
 
 
+def scope_for_text(text: str) -> tuple[str, int, list[str]]:
+    lowered = text.lower()
+    scores: list[tuple[int, int, str, list[str]]] = []
+    for scope, priority, keywords in SCOPES:
+        hits = [keyword for keyword in keywords if keyword_matches(keyword, lowered)]
+        if hits:
+            scores.append((len(hits), -priority, scope, hits))
+    if not scores:
+        return "unknown", 99, []
+    scores.sort(reverse=True)
+    hit_count, neg_priority, scope, hits = scores[0]
+    return scope, -neg_priority, hits
+
+
 def retry_condition(text: str) -> str | None:
     matches = RETRY_SENTENCE_RE.findall(text)
     if not matches:
@@ -366,6 +451,7 @@ def classify_row(row: dict[str, Any]) -> dict[str, Any]:
     positive_score = sum(abs(item["delta"]) * item["weight"] for item in positive)
     negative_score = sum(abs(item["delta"]) * item["weight"] for item in negative)
     group, group_priority, group_hits = group_for_text(text)
+    scope, scope_priority, scope_hits = scope_for_text(text)
 
     if "do not retry" in lowered or "unsafe" in lowered:
         disposition = "dead-end"
@@ -400,6 +486,9 @@ def classify_row(row: dict[str, Any]) -> dict[str, Any]:
         "group": group,
         "group_priority": group_priority,
         "group_hits": group_hits,
+        "scope": scope,
+        "scope_priority": scope_priority,
+        "scope_hits": scope_hits,
         "relevance": relevance,
         "retry_condition": retry_condition(text),
         "metrics": deltas,
@@ -592,6 +681,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
     for items in grouped.values():
         items.sort(
             key=lambda row: (
+                row["scope_priority"],
                 row["group_priority"],
                 0 if row["relevance"] == "high" else 1 if row["relevance"] == "medium" else 2,
                 -row["positive_score"],
@@ -609,6 +699,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
             and row["group"] != "unclassified"
         ],
         key=lambda row: (
+            row["scope_priority"],
             row["group_priority"],
             0 if row["relevance"] == "high" else 1,
             -row["positive_score"],
@@ -626,6 +717,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
             "by_status": dict(Counter(row["status"] for row in rows)),
             "by_disposition": dict(Counter(row["disposition"] for row in rows)),
             "by_group": dict(Counter(row["group"] for row in rows)),
+            "by_scope": dict(Counter(row["scope"] for row in rows)),
         },
         "top_queue": top_queue[: args.top],
         "groups": {group: items[: args.top] for group, items in sorted(grouped.items())},
@@ -659,16 +751,17 @@ def write_markdown(path: Path, manifest: dict[str, Any]) -> None:
     lines.append(f"- By status: `{json.dumps(summary['by_status'], sort_keys=True)}`")
     lines.append(f"- By disposition: `{json.dumps(summary['by_disposition'], sort_keys=True)}`")
     lines.append(f"- By group: `{json.dumps(summary['by_group'], sort_keys=True)}`")
+    lines.append(f"- By scope: `{json.dumps(summary['by_scope'], sort_keys=True)}`")
     lines.append("")
     lines.append("## Top Queue")
     lines.append("")
-    lines.append("| Group | ID | Disposition | Retry condition | Positive signals | Negative signals |")
-    lines.append("|---|---|---|---|---|---|")
+    lines.append("| Scope | Group | ID | Disposition | Retry condition | Positive signals | Negative signals |")
+    lines.append("|---|---|---|---|---|---|---|")
     for row in manifest["top_queue"]:
         condition = row.get("retry_condition") or "-"
         lines.append(
             "| "
-            f"{row['group']} | `{row['id']}` | {row['disposition']} | "
+            f"{row['scope']} | {row['group']} | `{row['id']}` | {row['disposition']} | "
             f"{condition} | {metric_brief(row['top_positive_metrics'])} | "
             f"{metric_brief(row['top_negative_metrics'])} |"
         )
@@ -715,10 +808,11 @@ def print_human(manifest: dict[str, Any]) -> None:
     print(f"By status: {json.dumps(summary['by_status'], sort_keys=True)}")
     print(f"By disposition: {json.dumps(summary['by_disposition'], sort_keys=True)}")
     print(f"By group: {json.dumps(summary['by_group'], sort_keys=True)}")
+    print(f"By scope: {json.dumps(summary['by_scope'], sort_keys=True)}")
     print("\nTop queue:")
     for row in manifest["top_queue"][:12]:
         print(
-            f"  {row['group']:24s} {row['id']:42s} "
+            f"  {row['scope']:19s} {row['group']:24s} {row['id']:42s} "
             f"{row['disposition']:18s} +[{metric_brief(row['top_positive_metrics'])}] "
             f"-[{metric_brief(row['top_negative_metrics'])}]"
         )
