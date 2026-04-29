@@ -61,18 +61,18 @@ Current battle-card rollup as of 2026-04-29:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `60 / 126` |
-| Scenes with at least one timed variant | `37 / 63` |
+| Scene/tide variants measured | `61 / 126` |
+| Scenes with at least one timed variant | `38 / 63` |
 | Scenes with both high/low variants timed | `23 / 63` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.3%` |
-| Measured average target speed | `89.6%` |
+| Measured average over target | `+12.4%` |
+| Measured average target speed | `89.5%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
 `performance-experiment-log.md`, the README status table, and the rendered
-website testing-status page. The CSV is the durable numeric source; prose
+website scene/performance battle card. The CSV is the durable numeric source; prose
 surfaces should summarize it, not invent independent numbers.
 
 ## Secondary (historical): headless regtest harness
