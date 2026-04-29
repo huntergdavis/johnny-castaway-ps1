@@ -61,9 +61,9 @@ Current battle-card rollup as of 2026-04-29:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `63 / 126` |
+| Scene/tide variants measured | `64 / 126` |
 | Scenes with at least one timed variant | `39 / 63` |
-| Scenes with both high/low variants timed | `24 / 63` |
+| Scenes with both high/low variants timed | `25 / 63` |
 | Blocked variants | `2 / 126` |
 | Measured average over target | `+12.3%` |
 | Measured average target speed | `89.6%` |

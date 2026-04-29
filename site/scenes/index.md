@@ -106,10 +106,10 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `63 / 126` |
+| Scene/tide variants timed | `64 / 126` |
 | Scenes with at least one timed variant | `39 / 63` |
-| Scenes with both high/low variants timed | `24 / 63` |
-| Pending variants | `61 / 126` |
+| Scenes with both high/low variants timed | `25 / 63` |
+| Pending variants | `60 / 126` |
 | Blocked variants | `2 / 126` |
 | Measured average over target | `+12.3%` |
 | Measured average target speed | `89.6%` |
@@ -257,7 +257,7 @@ and this page.
 | `visitor4` | high | pending | - | - | - | - | - | - |  |
 | `visitor4` | low | pending | - | - | - | - | - | - |  |
 | `visitor5` | high | measured | +20.0% | 83.3% | 1295/1079 | 107 | 52 | 9 | padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially |
-| `visitor5` | low | pending | - | - | - | - | - | - |  |
+| `visitor5` | low | measured | +15.2% | 86.8% | 1250/1085 | 62 | 27 | 6 | padded FGP3 |
 | `visitor6` | high | measured | +7.5% | 93.0% | 2198/2044 | 14 | 14 | 0 | padded FGP3 |
 | `visitor6` | low | pending | - | - | - | - | - | - |  |
 | `visitor7` | high | measured | +9.6% | 91.2% | 1777/1621 | 15 | 15 | 0 | padded FGP3 |
