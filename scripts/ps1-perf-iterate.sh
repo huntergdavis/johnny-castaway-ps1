@@ -40,6 +40,7 @@ ROLLBACK_ON_FAIL=0
 ALLOW_REGRESSION_PERCENT="${PS1_PERF_ALLOW_REGRESSION_PERCENT:-2}"
 WORK_IDENTITY_MIN_PERCENT="${PS1_PERF_WORK_IDENTITY_MIN_PERCENT:-75}"
 ALLOW_LAYOUT_CHANGE="${PS1_PERF_ALLOW_LAYOUT_CHANGE:-0}"
+MAX_SYMBOL_ADDRESS_DELTA="${PS1_PERF_MAX_SYMBOL_ADDRESS_DELTA:-}"
 REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
@@ -90,6 +91,9 @@ Options:
                            this percent of baseline (default: 75; set 0 to disable).
   --allow-layout-change    With --baseline, allow PS-EXE sector bucket and foreground
                            pack LBA changes. Comparisons are still recorded.
+  --max-symbol-address-delta N
+                           With --baseline, fail if any tracked hot symbol moves by
+                           more than N bytes. Use 0 for exact-address phase gates.
   --require-improvement    With --baseline, require at least one key speed metric to improve.
   --commit-on-pass MSG     git add -A and commit with MSG after all gates pass.
   --rollback-on-fail       On gate failure, restore tracked worktree files to HEAD.
@@ -244,6 +248,8 @@ while [ $# -gt 0 ]; do
             WORK_IDENTITY_MIN_PERCENT="$2"; shift 2 ;;
         --allow-layout-change)
             ALLOW_LAYOUT_CHANGE=1; shift ;;
+        --max-symbol-address-delta)
+            MAX_SYMBOL_ADDRESS_DELTA="$2"; shift 2 ;;
         --require-improvement)
             REQUIRE_IMPROVEMENT=1; shift ;;
         --commit-on-pass)
@@ -296,6 +302,11 @@ if [ -n "$BASELINE_FILE" ] && [ ! -f "$BASELINE_FILE" ]; then
 fi
 if ! [[ "$WORK_IDENTITY_MIN_PERCENT" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
     echo "ERROR: --work-identity-min must be a non-negative number." >&2
+    exit 1
+fi
+if [ -n "$MAX_SYMBOL_ADDRESS_DELTA" ] &&
+   ! [[ "$MAX_SYMBOL_ADDRESS_DELTA" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --max-symbol-address-delta must be a non-negative integer." >&2
     exit 1
 fi
 
@@ -983,7 +994,7 @@ FINAL_SUMMARY="$RUN_ROOT/summary.json"
 set +e
 python3 - "$FINAL_SUMMARY" "$BASELINE_FILE" "$ALLOW_REGRESSION_PERCENT" \
     "$REQUIRE_IMPROVEMENT" "$WORK_IDENTITY_MIN_PERCENT" "$ALLOW_LAYOUT_CHANGE" \
-    "${SUMMARY_PATHS[@]}" <<'PY'
+    "$MAX_SYMBOL_ADDRESS_DELTA" "${SUMMARY_PATHS[@]}" <<'PY'
 import json
 import shutil
 import sys
@@ -995,7 +1006,8 @@ allow_pct = float(sys.argv[3])
 require_improvement = bool(int(sys.argv[4]))
 work_identity_min_pct = float(sys.argv[5])
 allow_layout_change = bool(int(sys.argv[6]))
-case_paths = [Path(p) for p in sys.argv[7:]]
+max_symbol_address_delta = int(sys.argv[7]) if sys.argv[7] else None
+case_paths = [Path(p) for p in sys.argv[8:]]
 
 cases = [json.loads(path.read_text(encoding="utf-8")) for path in case_paths]
 baseline_cases = {}
@@ -1141,7 +1153,15 @@ for case in cases:
                 "baseline_size": previous_size,
                 "current_size": current_size,
                 "size_delta": size_delta,
+                "max_address_delta_allowed": max_symbol_address_delta,
             })
+            if (max_symbol_address_delta is not None and
+                    abs(address_delta) > max_symbol_address_delta):
+                failures.append(
+                    f"symbol address {name}: baseline={previous_address} "
+                    f"current={current_address} delta={address_delta} "
+                    f"allowed={max_symbol_address_delta}"
+                )
         if symbol_layout:
             case["symbol_layout_comparison"] = symbol_layout
         if require_improvement and not improved:
