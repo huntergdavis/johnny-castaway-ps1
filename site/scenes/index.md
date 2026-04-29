@@ -106,14 +106,14 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `74 / 126` |
-| Scenes with at least one timed variant | `44 / 63` |
+| Scene/tide variants timed | `75 / 126` |
+| Scenes with at least one timed variant | `45 / 63` |
 | Scenes with both high/low variants timed | `30 / 63` |
-| Pending variants | `50 / 126` |
+| Pending variants | `49 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.5%` |
-| Measured average target speed | `89.4%` |
-| Latest perf matrix run | `2026-04-29T12:37:06` |
+| Measured average over target | `+12.6%` |
+| Measured average target speed | `89.3%` |
+| Latest perf matrix run | `2026-04-29T12:56:40` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -180,7 +180,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T01:29:52 | +12.9% | 88.6% | 2746/2433 | 312 | 55 | 38 | padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam |
 | `building7` | high | measured | 2026-04-29T02:04:56 | +5.5% | 94.8% | 3861/3659 | 66 | 47 | 3 | padded FGP3 |
 | `building7` | low | measured | 2026-04-29T02:13:58 | +4.5% | 95.7% | 3837/3672 | 23 | 23 | 0 | padded FGP3 |
-| `fishing1` | high | measured | 2026-04-29T12:33:29 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-29T12:56:40 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-27T17:40:04 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-28T17:40:29 | +7.5% | 93.0% | 1898/1765 | 2 | 2 | 0 |  |
 | `fishing2` | low | measured | 2026-04-27T18:50:02 | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
@@ -234,7 +234,7 @@ and this page.
 | `stand5` | low | pending | - | - | - | - | - | - | - |  |
 | `stand6` | high | measured | 2026-04-29T07:00:48 | +10.5% | 90.5% | 1503/1360 | 8 | 8 | 0 | padded FGP3 |
 | `stand6` | low | pending | - | - | - | - | - | - | - |  |
-| `stand7` | high | pending | - | - | - | - | - | - | - |  |
+| `stand7` | high | measured | 2026-04-29T12:54:14 | +26.1% | 79.3% | 676/536 | 5 | 5 | 0 | padded FGP3 |
 | `stand7` | low | pending | - | - | - | - | - | - | - |  |
 | `stand8` | high | pending | - | - | - | - | - | - | - |  |
 | `stand8` | low | pending | - | - | - | - | - | - | - |  |
@@ -250,9 +250,9 @@ and this page.
 | `stand15` | low | pending | - | - | - | - | - | - | - |  |
 | `stand16` | high | measured | 2026-04-29T10:13:31 | +11.7% | 89.5% | 1328/1189 | 7 | 7 | 0 | padded FGP3 |
 | `stand16` | low | pending | - | - | - | - | - | - | - |  |
-| `suzy1` | high | blocked | 2026-04-28T23:20:55 | +0.0% | - | 0/6 | 0 | 0 | 0 | baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood |
+| `suzy1` | high | blocked | 2026-04-28T23:20:55 | - | - | - | - | - | - | baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood |
 | `suzy1` | low | pending | - | - | - | - | - | - | - |  |
-| `suzy2` | high | blocked | 2026-04-29T02:57:54 | +0.0% | - | 0/6 | 0 | 0 | 0 | fgpilot coverage gap; pack loads but foreground loop never starts |
+| `suzy2` | high | blocked | 2026-04-29T02:57:54 | - | - | - | - | - | - | fgpilot coverage gap; pack loads but foreground loop never starts |
 | `suzy2` | low | pending | - | - | - | - | - | - | - |  |
 | `visitor1` | high | measured | 2026-04-29T09:38:48 | +22.5% | 81.6% | 822/671 | 22 | 22 | 0 | padded FGP3 |
 | `visitor1` | low | pending | - | - | - | - | - | - | - |  |

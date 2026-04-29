@@ -239,10 +239,10 @@ target speed**.
 
 ## Scene Battle Card
 
-As of 2026-04-29, 74 of 126 scene/tide variants have current headless
-perf measurements. 44 of 63 scenes have at least one timed variant; 30
+As of 2026-04-29, 75 of 126 scene/tide variants have current headless
+perf measurements. 45 of 63 scenes have at least one timed variant; 30
 scenes have both high- and low-tide variants timed. The latest matrix
-run is `2026-04-29T12:37:06`; per-row freshness is shown on the
+run is `2026-04-29T12:56:40`; per-row freshness is shown on the
 [scene ledger]({{ '/scenes/' | relative_url }}). The values below are `over
 target / target speed (loop_vb/target_vb)`, with `blk` and `due` called out
 when nonzero.
@@ -251,49 +251,49 @@ when nonzero.
 |---|---:|---:|
 | `activity1` | +3.0% / 97.1% (4373/4244) | +3.1% / 97.0% (4373/4242); blk 2 |
 | `activity4` | +12.9% / 88.5% (1205/1067); blk 5 | +12.5% / 88.9% (1203/1069); blk 1 |
-| `activity5` | +9.3% / 91.5% (1866/1707); due 4, blk 25 | +9.1% / 91.7% (1861/1706); due 3, blk 29 |
+| `activity5` | +9.3% / 91.5% (1866/1707); due 4; blk 25 | +9.1% / 91.7% (1861/1706); due 3; blk 29 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
 | `activity7` | +22.7% / 81.5% (751/612); blk 8 | +21.7% / 82.2% (747/614); blk 1 |
 | `activity8` | pending | pending |
-| `activity9` | +11.2% / 89.9% (2268/2039); due 9, blk 97 | +11.1% / 90.0% (2271/2044); due 8, blk 92 |
-| `activity10` | +12.3% / 89.1% (1408/1254); due 1, blk 18 | +12.2% / 89.1% (1408/1255); due 2, blk 23 |
-| `activity11` | +8.1% / 92.5% (1864/1724); due 1, blk 9 | +8.3% / 92.3% (1866/1723); due 1, blk 10 |
-| `activity12` | +9.9% / 91.0% (1551/1411); blk 12 | +10.2% / 90.8% (1551/1408); due 1, blk 20 |
-| `building1` | +25.6% / 79.6% (966/769); due 6, blk 76 | +24.2% / 80.5% (953/767); due 4, blk 62 |
-| `building2` | +21.8% / 82.1% (1572/1291); due 20, blk 173 | +21.4% / 82.4% (1570/1293); due 20, blk 172 |
+| `activity9` | +11.2% / 89.9% (2268/2039); due 9; blk 97 | +11.1% / 90.0% (2271/2044); due 8; blk 92 |
+| `activity10` | +12.3% / 89.1% (1408/1254); due 1; blk 18 | +12.2% / 89.1% (1408/1255); due 2; blk 23 |
+| `activity11` | +8.1% / 92.5% (1864/1724); due 1; blk 9 | +8.3% / 92.3% (1866/1723); due 1; blk 10 |
+| `activity12` | +9.9% / 91.0% (1551/1411); blk 12 | +10.2% / 90.8% (1551/1408); due 1; blk 20 |
+| `building1` | +25.6% / 79.6% (966/769); due 6; blk 76 | +24.2% / 80.5% (953/767); due 4; blk 62 |
+| `building2` | +21.8% / 82.1% (1572/1291); due 20; blk 173 | +21.4% / 82.4% (1570/1293); due 20; blk 172 |
 | `building3` | +9.4% / 91.4% (1565/1431); blk 4 | pending |
-| `building4` | +12.5% / 88.9% (3141/2792); due 39, blk 326 | +12.4% / 89.0% (3135/2790); due 40, blk 335 |
-| `building5` | +5.4% / 94.9% (3514/3334); due 6, blk 65 | +4.8% / 95.4% (3508/3346); due 2, blk 33 |
-| `building6` | +13.1% / 88.4% (2754/2435); due 39, blk 317 | +12.9% / 88.6% (2746/2433); due 38, blk 312 |
-| `building7` | +5.5% / 94.8% (3861/3659); due 3, blk 66 | +4.5% / 95.7% (3837/3672); blk 23 |
+| `building4` | +12.5% / 88.9% (3141/2792); due 39; blk 326 | +12.4% / 89.0% (3135/2790); due 40; blk 335 |
+| `building5` | +5.4% / 94.9% (3514/3334); due 6; blk 65 | +4.8% / 95.4% (3508/3346); due 2; blk 33 |
+| `building6` | +13.1% / 88.4% (2754/2435); due 39; blk 317 | +12.9% / 88.6% (2746/2433); due 38; blk 312 |
+| `building7` | +5.5% / 94.8% (3861/3659); due 3; blk 66 | +4.5% / 95.7% (3837/3672); blk 23 |
 | `fishing1` | +12.2% / 89.1% (1207/1076) | +12.2% / 89.1% (1207/1076) |
 | `fishing2` | +7.5% / 93.0% (1898/1765); blk 2 | +7.4% / 93.1% (1898/1767) |
-| `fishing3` | +7.1% / 93.4% (2093/1955); due 1, blk 15 | +6.6% / 93.8% (2090/1960); blk 3 |
+| `fishing3` | +7.1% / 93.4% (2093/1955); due 1; blk 15 | +6.6% / 93.8% (2090/1960); blk 3 |
 | `fishing4` | +16.7% / 85.7% (978/838); blk 15 | pending |
 | `fishing5` | pending | pending |
 | `fishing6` | +19.2% / 83.9% (893/749); blk 7 | +19.6% / 83.6% (897/750); blk 10 |
 | `fishing7` | +19.4% / 83.8% (863/723); blk 7 | pending |
-| `fishing8` | +12.4% / 88.9% (1400/1245); blk 21 | +11.0% / 90.0% (1387/1249); blk 11 |
+| `fishing8` | +12.4% / 88.9% (1400/1245); blk 21 | +11.1% / 90.1% (1387/1249); blk 11 |
 | `johnny1` | +9.5% / 91.3% (2128/1943); blk 31 | +9.8% / 91.1% (2132/1942); blk 37 |
 | `johnny2` | +7.3% / 93.2% (1878/1750); blk 1 | +7.3% / 93.2% (1878/1750); blk 1 |
-| `johnny3` | +12.8% / 88.7% (1308/1160); due 1, blk 20 | +12.2% / 89.1% (1305/1163); blk 10 |
+| `johnny3` | +12.8% / 88.7% (1308/1160); due 1; blk 20 | +12.2% / 89.1% (1305/1163); blk 10 |
 | `johnny4` | pending | pending |
 | `johnny5` | pending | pending |
 | `johnny6` | +3.6% / 96.5% (2901/2799); blk 33 | +3.8% / 96.3% (2905/2798); blk 37 |
-| `mary1` | +4.5% / 95.7% (5028/4813); due 2, blk 87 | +3.7% / 96.4% (5011/4830); due 1, blk 50 |
+| `mary1` | +4.5% / 95.7% (5028/4813); due 2; blk 87 | +3.8% / 96.4% (5011/4830); due 1; blk 50 |
 | `mary2` | +1.7% / 98.3% (2286/2248); blk 8 | +1.7% / 98.3% (2286/2248); blk 8 |
 | `mary3` | pending | pending |
-| `mary4` | -2.5% / 102.5% (1969/2019); due 4, blk 27 | pending |
+| `mary4` | -2.5% / 102.5% (1969/2019); due 4; blk 27 | pending |
 | `mary5` | +7.4% / 93.1% (1698/1581); blk 20 | +7.0% / 93.4% (1694/1583); blk 14 |
 | `miscgag1` | +16.9% / 85.6% (1115/954); blk 26 | +14.6% / 87.3% (1099/959); blk 5 |
 | `miscgag2` | pending | pending |
 | `stand1` | pending | pending |
 | `stand2` | pending | pending |
 | `stand3` | pending | pending |
-| `stand4` | +12.3% / 89.1% (1365/1216); blk 12 | pending |
+| `stand4` | +12.2% / 89.1% (1365/1216); blk 12 | pending |
 | `stand5` | +9.7% / 91.2% (1600/1459); blk 8 | pending |
 | `stand6` | +10.5% / 90.5% (1503/1360); blk 8 | pending |
-| `stand7` | pending | pending |
+| `stand7` | +26.1% / 79.3% (676/536); blk 5 | pending |
 | `stand8` | pending | pending |
 | `stand9` | pending | pending |
 | `stand10` | pending | pending |
@@ -304,14 +304,14 @@ when nonzero.
 | `suzy1` | BLOCKED | pending |
 | `suzy2` | BLOCKED | pending |
 | `visitor1` | +22.5% / 81.6% (822/671); blk 22 | pending |
-| `visitor3` | +56.1% / 64.1% (1581/1013); due 24, blk 424 | +58.4% / 63.1% (1611/1017); due 26, blk 404 |
+| `visitor3` | +56.1% / 64.1% (1581/1013); due 24; blk 424 | +58.4% / 63.1% (1611/1017); due 26; blk 404 |
 | `visitor4` | pending | pending |
-| `visitor5` | +20.0% / 83.3% (1295/1079); due 9, blk 107 | +15.2% / 86.8% (1250/1085); due 6, blk 62 |
+| `visitor5` | +20.0% / 83.3% (1295/1079); due 9; blk 107 | +15.2% / 86.8% (1250/1085); due 6; blk 62 |
 | `visitor6` | +7.5% / 93.0% (2198/2044); blk 14 | pending |
 | `visitor7` | +9.6% / 91.2% (1777/1621); blk 15 | pending |
 | `walkstuf1` | pending | pending |
 | `walkstuf2` | pending | pending |
-| `walkstuf3` | +10.4% / 90.6% (2512/2275); due 6, blk 130 | pending |
+| `walkstuf3` | +10.4% / 90.6% (2512/2275); due 6; blk 130 | pending |
 
 Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:

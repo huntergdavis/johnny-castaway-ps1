@@ -35,8 +35,8 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: add fgp3 temporal residual fishing1 pack` |
-| Run ID | `20260427-161748` |
+| Commit | `ps1: convert stand7 foreground to padded fgp3` |
+| Run ID | `20260429-125640` |
 | Scene | `fishing1` |
 | Boot | `fgpilot fishing1 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
@@ -50,9 +50,9 @@ Current accepted baseline for the next experiment:
 | `prefetch_due_misses` | `0` |
 | `prefetch_overrun_vb` | `0` |
 | `restore_bytes` | `251144` |
-| `upload_bytes` | `6690560` |
-| `dirty_rows` | `10454` |
-| `upload_rects` | `290` |
+| `upload_bytes` | `8533120` |
+| `dirty_rows` | `13333` |
+| `upload_rects` | `436` |
 | PS1 EXE size | `145408` |
 | PS1 ELF size | `726432` |
 | Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
@@ -659,6 +659,7 @@ Current accepted baseline for the next experiment:
 | 2026-04-29 | `perf-matrix-last-run-at-column` | `ps1: add perf matrix freshness timestamps` | Make scene/tide measurement freshness explicit as the perf suite expands past the canary scenes. | Added a `last_run_at` CSV column populated from the headless summary path (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), updated the manifest writer to emit it for future runs, and added a `Latest Run` column to the rendered scene battle card. | Promoted as tooling. The latest matrix run is now surfaced by the battle-card rollups; pending rows remain blank, and measured/blocked rows carry their own run timestamp. | Keep this column updated with every accepted matrix row so stale measurements are visible during broad 63-scene coverage. |
 | 2026-04-29 | `stand15-high-padded-fgp3-loop-validation` | `ps1: convert stand15 foreground to padded fgp3` | Expand coverage to a previously untouched stand-family scene while continuing the padded-FGP3 conversion lane. | Captured a loop FGP2 baseline for `fgpilot stand15 lowtide 0`, converted `generated/ps1/foreground/STAND15.FG2` to padded FGP3 while preserving the original CD file size, validated against the baseline with FGP3 work-identity disabled, then cross-gated FISHING1 high with strict no-regression. | Promoted. STAND15 high improves `loop_vb 1164 -> 1135`, `target_vb 973 -> 985`, `overrun_vb 191 -> 150`, `blocking_vb 51 -> 17`, `prefetch_overrun_vb 51 -> 17`, `loop_reads 46 -> 14`, and `loop_read_vb 300 -> 87`; `due_misses` stays at `0`. Payload drops `634174 -> 205538`; the CD file remains `637046` bytes and `FG\\STAND15.FG2` stays at LBA `125899`. FISHING1 high stayed exact-flat (`loop_vb=1207`, `blocking_vb=0`, `prefetch_overrun_vb=0`, LBA `401`). Artifacts: FGP2 baseline `scratch/ps1-perf-iterate/20260429-122256/summary.json`, accepted FGP3 metrics `scratch/ps1-perf-iterate/20260429-123059/summary.json`, FISHING1 canary `scratch/ps1-perf-iterate/20260429-123329/summary.json`. | Promote. STAND15 high now uses padded FGP3; continue with another new scene slug such as MARY4, ACTIVITY8, MISCGAG2, JOHNNY4, or STAND7 before doing more pair-only coverage. |
 | 2026-04-29 | `mary4-high-padded-fgp3-loop-validation` | Log-only reject; keep FGP2 baseline measurement. | Test a new MARY-family scene for coverage and see whether plain padded FGP3 helps a pack that is already faster than target but still has due misses and visible CD pressure. | Captured a loop FGP2 baseline for `fgpilot mary4 lowtide 0`, converted `generated/ps1/foreground/MARY4.FG2` to padded FGP3 while preserving the original CD file size, validated against the baseline with FGP3 work-identity disabled, then restored FGP2 after the gate failed. | Rejected as a pack conversion, but retained the FGP2 baseline in the scene matrix. Baseline: `loop_vb=1969`, `target_vb=2019`, `over_target_vb=-50`, `blocking_vb=27`, `prefetch_overrun_vb=10`, `due_misses=4`, `loop_reads=42`. FGP3 improved `loop_vb 1969 -> 1960` and `blocking_vb 27 -> 20`, but payload barely changed `547571 -> 541622` and `prefetch_overrun_vb` regressed `10 -> 15`, failing the default gate. Artifacts: FGP2 baseline `scratch/ps1-perf-iterate/20260429-123706/summary.json`, rejected FGP3 metrics `scratch/ps1-perf-iterate/20260429-123948/summary.json`. | Do not promote plain padded FGP3 for MARY4 high. Keep the measured FGP2 row for coverage; retry with grouped-read/direct16 metadata or a scheduler that targets due misses without increasing prefetch overrun. |
+| 2026-04-29 | `stand7-high-padded-fgp3-loop-validation` | `ps1: convert stand7 foreground to padded fgp3` | Use the host-side residual-size scan to pick a high-savings untouched scene slug, then test whether STAND7 high benefits from plain padded FGP3 without changing CD layout. | Captured a loop FGP2 baseline for `fgpilot stand7 lowtide 0`, converted `generated/ps1/foreground/STAND7.FG2` to padded FGP3 while preserving the original CD file size, validated against the baseline with FGP3 work-identity disabled, then cross-gated FISHING1 high with strict no-regression. | Promoted. STAND7 high improves `loop_vb 684 -> 676`, `target_vb 531 -> 536`, `overrun_vb 153 -> 140`, `blocking_vb 15 -> 5`, `prefetch_overrun_vb 15 -> 5`, `loop_reads 28 -> 6`, and `loop_read_vb 155 -> 36`; `due_misses` stays at `0`. Payload drops `386843 -> 94333`; the CD file remains `388655` bytes and `FG\\STAND7.FG2` stays at LBA `123747`. FISHING1 high stayed exact-flat (`loop_vb=1207`, `blocking_vb=0`, `prefetch_overrun_vb=0`, LBA `401`). Artifacts: FGP2 baseline `scratch/ps1-perf-iterate/20260429-125137/summary.json`, accepted FGP3 metrics `scratch/ps1-perf-iterate/20260429-125414/summary.json`, FISHING1 canary `scratch/ps1-perf-iterate/20260429-125640/summary.json`. | Promote. STAND7 high now uses padded FGP3 and adds another new stand-family scene to the timed matrix. Continue with high-savings untouched packs such as STAND3 high, STAND9 high, STAND10 high, STAND11 high, or ACTIVITY8 before doing more pair-only coverage. |
 
 ## Retry Queue
 
