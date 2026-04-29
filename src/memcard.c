@@ -32,6 +32,7 @@
 #include "spi.h"
 
 extern int soundMuted;
+extern int footstepsEnabled;  /* walk_render.c — pause-menu Footsteps */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
 extern int ps1SoftTimeEnabled;
@@ -43,7 +44,8 @@ extern int ps1SoftYear;
 extern void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     1
+#define MC_VERSION     2  /* v2 adds footstepsEnabled (Phase 4 of walks).
+                           * v1 saves load with defaults (footsteps ON). */
 #define MC_BLOCK       1            /* memcard block we own (1..15) */
 #define MC_FIRST_SECT  (MC_BLOCK * 64)
 #define MC_FRAME_SIZE  8192
@@ -243,7 +245,9 @@ typedef struct {
     uint8  softYearLo;
     uint8  softYearHi;
     uint8  softMinute;
-    uint8  reserved[4];
+    uint8  footstepsEnabled;   /* added in MC_VERSION 2 — walk plan Phase 4.3 */
+    uint8  storyCurrentDay;    /* added in MC_VERSION 2 — walk plan Phase 8 */
+    uint8  reserved[2];
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -346,6 +350,7 @@ int memcardLoadSettings(void)
     }
 
     soundMuted        = s->soundMuted ? 1 : 0;
+    footstepsEnabled  = s->footstepsEnabled ? 1 : 0;
     hostForcedNight   = s->dayNightOverride;
     hostForcedHoliday = s->holidayOverride;
     if (hostForcedHoliday < -1 ||
@@ -386,6 +391,11 @@ int memcardSaveSettings(void)
     s->magic            = MC_MAGIC;
     s->version          = MC_VERSION;
     s->soundMuted       = (uint8)(soundMuted ? 1 : 0);
+    s->footstepsEnabled = (uint8)(footstepsEnabled ? 1 : 0);
+    /* storyCurrentDay is wired in Phase 8; for now it just rides along
+     * as 0 (= no story-day forced) so old saves and new saves are
+     * binary-compatible at the layout level. */
+    s->storyCurrentDay  = 0;
     s->dayNightOverride = (sint8)hostForcedNight;
     s->holidayOverride  = (sint8)hostForcedHoliday;
     s->softTimeEnabled  = (uint8)(ps1SoftTimeEnabled ? 1 : 0);
