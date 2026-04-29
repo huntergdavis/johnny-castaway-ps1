@@ -1021,10 +1021,9 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
     int framesLoaded;
     uint32 frameTableEnd;
 
-    /* Diagnostic guard: keep JOHNWALK on the legacy BMP path until the
-     * new PSB-backed sprite route is proven correct across ACTIVITY/MISCGAG. */
-    if (strcmp(strArg, "JOHNWALK.BMP") == 0)
-        return 0;
+    /* JOHNWALK.BMP — Phase 1+ of the walk plan promotes this to the
+     * PSB-backed sprite route. Earlier guard removed 2026-04-29; the
+     * registry lookup below pulls JOHNWALK.PSB's size from cd_layout. */
 
     /* Fast registry lookup — avoids any CD access for unknown BMPs. */
     psbSize = psbRegistryLookup(strArg);
