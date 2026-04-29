@@ -61,11 +61,11 @@ Current battle-card rollup as of 2026-04-29:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `59 / 126` |
-| Scenes with at least one timed variant | `36 / 63` |
+| Scene/tide variants measured | `60 / 126` |
+| Scenes with at least one timed variant | `37 / 63` |
 | Scenes with both high/low variants timed | `23 / 63` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.4%` |
+| Measured average over target | `+12.3%` |
 | Measured average target speed | `89.6%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 

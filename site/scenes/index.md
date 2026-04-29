@@ -106,12 +106,12 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `59 / 126` |
-| Scenes with at least one timed variant | `36 / 63` |
+| Scene/tide variants timed | `60 / 126` |
+| Scenes with at least one timed variant | `37 / 63` |
 | Scenes with both high/low variants timed | `23 / 63` |
-| Pending variants | `65 / 126` |
+| Pending variants | `64 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.4%` |
+| Measured average over target | `+12.3%` |
 | Measured average target speed | `89.6%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
@@ -244,7 +244,7 @@ and this page.
 | `stand12` | low | pending | - | - | - | - | - | - |  |
 | `stand15` | high | pending | - | - | - | - | - | - |  |
 | `stand15` | low | pending | - | - | - | - | - | - |  |
-| `stand16` | high | pending | - | - | - | - | - | - |  |
+| `stand16` | high | measured | +11.7% | 89.5% | 1328/1189 | 7 | 7 | 0 | padded FGP3 |
 | `stand16` | low | pending | - | - | - | - | - | - |  |
 | `suzy1` | high | blocked | - | - | - | - | - | - | baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood |
 | `suzy1` | low | pending | - | - | - | - | - | - |  |
