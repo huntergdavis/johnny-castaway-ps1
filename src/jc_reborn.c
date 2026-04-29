@@ -87,6 +87,16 @@ extern uint8 pad_buff[2][34];
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 
+/* story_data.h is platform-independent — it's just a const struct
+ * array. Pulling it into the PS1 build gives the screensaver-loop
+ * picker access to per-scene start/end spot/heading metadata so it
+ * can call fgWalkRender between scenes. The story.c / ads.c / ttm.c
+ * runtime engines stay out of the PS1 build. */
+#include "story_data.h"
+#ifdef PS1_BUILD
+#include "walk_pilot.h"
+#endif
+
 #ifndef PS1_BUILD
 #include "dump.h"
 #include "ttm.h"
@@ -199,6 +209,122 @@ static const char *fgLoopNextScene(const char *explicitScene)
         return explicitScene;
     return kProvenScenes[rand() % NUM_PROVEN_SCENES];
 }
+
+#ifdef PS1_BUILD
+/* Walk subsystem state — Johnny's last known spot/heading. -1 means
+ * "no defined position" (LEFT_ISLAND scene set the sentinel, or this
+ * is the first iteration and no scene has run yet). The screensaver
+ * loop walks from this state to the next scene's start before each
+ * scene plays. */
+static int storyCurrentSpot = -1;
+static int storyCurrentHdg  = -1;
+
+/* Match the original story.c's spot/heading validation. */
+static int fgLoopIsValidSpot(int spot)
+{
+    return (spot >= SPOT_A && spot <= SPOT_F);
+}
+
+static int fgLoopIsValidHdg(int hdg)
+{
+    return (hdg >= HDG_S && hdg <= HDG_SE);
+}
+
+static int fgLoopSceneHasValidStart(const struct TStoryScene *s)
+{
+    return s != NULL
+        && fgLoopIsValidSpot(s->spotStart)
+        && fgLoopIsValidHdg(s->hdgStart);
+}
+
+static int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
+{
+    return s != NULL
+        && fgLoopIsValidSpot(s->spotEnd)
+        && fgLoopIsValidHdg(s->hdgEnd);
+}
+
+/* Resolve a slug like "fishing1" to its storyScenes[] entry by parsing
+ * the slug into (family, tag) and linear-searching the array. The
+ * validated set is small; an O(N) scan over 63 entries is fine. */
+static const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug)
+{
+    if (slug == NULL || slug[0] == '\0') return NULL;
+
+    /* Split into letters + digits. */
+    int letterLen = 0;
+    while (slug[letterLen] && (slug[letterLen] < '0' || slug[letterLen] > '9'))
+        letterLen++;
+    if (letterLen == 0 || slug[letterLen] == '\0')
+        return NULL;
+
+    /* Tag from trailing digits. */
+    int tag = 0;
+    for (int i = letterLen; slug[i]; i++) {
+        if (slug[i] < '0' || slug[i] > '9') return NULL;
+        tag = tag * 10 + (slug[i] - '0');
+    }
+
+    /* Build the ADS name "FISHING.ADS" from "fishing". */
+    char adsName[13];
+    int j = 0;
+    for (int i = 0; i < letterLen && j < 8; i++) {
+        char c = slug[i];
+        if (c >= 'a' && c <= 'z') c = (char)(c - 'a' + 'A');
+        adsName[j++] = c;
+    }
+    /* Append ".ADS" — TStoryScene.adsName uses the original Sierra
+     * filename suffix even though the on-disc PS1 packs are .FG2. */
+    if (j + 4 >= (int)sizeof(adsName)) return NULL;
+    adsName[j++] = '.';
+    adsName[j++] = 'A';
+    adsName[j++] = 'D';
+    adsName[j++] = 'S';
+    adsName[j]   = '\0';
+
+    for (int i = 0; i < NUM_SCENES; i++) {
+        const struct TStoryScene *s = &storyScenes[i];
+        if (s->adsTagNo != tag) continue;
+        /* strcmp against fixed-length adsName field. */
+        int eq = 1;
+        for (int k = 0; k < 13; k++) {
+            if (s->adsName[k] != adsName[k]) { eq = 0; break; }
+            if (adsName[k] == '\0') break;
+        }
+        if (eq) return s;
+    }
+    return NULL;
+}
+
+/* Walk Johnny from his current spot/heading to the given scene's
+ * start. No-op if any of the spot/hdg values are unset (-1). */
+static void fgLoopWalkToScene(const struct TStoryScene *next)
+{
+    if (!fgLoopSceneHasValidStart(next))
+        return;     /* scene doesn't care where Johnny was */
+    if (!fgLoopIsValidSpot(storyCurrentSpot)
+        || !fgLoopIsValidHdg(storyCurrentHdg))
+        return;     /* Johnny has no defined position to walk from */
+
+    fgWalkRender(storyCurrentSpot, storyCurrentHdg,
+                 next->spotStart, next->hdgStart);
+}
+
+/* Update storyCurrentSpot/Hdg after a scene plays. */
+static void fgLoopUpdatePosFromScene(const struct TStoryScene *s)
+{
+    if (fgLoopSceneHasValidEnd(s)) {
+        storyCurrentSpot = s->spotEnd;
+        storyCurrentHdg  = s->hdgEnd;
+    } else {
+        /* LEFT_ISLAND scene, or scene with no defined end. The next
+         * picker iteration must skip the walk-to-scene step (caller
+         * already handles this via fgLoopSceneHasValidStart's gate). */
+        storyCurrentSpot = -1;
+        storyCurrentHdg  = -1;
+    }
+}
+#endif /* PS1_BUILD */
 
 static int fgLoopSceneMatchesPrefixNumber(const char *sceneName,
                                           const char *prefix)
@@ -1234,12 +1360,25 @@ int main(int argc, char **argv)
     do {
         const char *loopScene = fgLoopNextScene(explicitScene);
         fgLoopApplyVariant(loopScene);
+
+        /* Walk subsystem: walk Johnny from his last spot/heading to
+         * this scene's start before the FG2 pack plays. fgLoopWalkToScene
+         * is a no-op if either side has no defined position; the
+         * scene's FG2 pack still owns the actual scene visuals. */
+        const struct TStoryScene *storyScene =
+            fgLoopFindStorySceneBySlug(loopScene);
+        fgLoopWalkToScene(storyScene);
+
         foregroundPilotSetScene(loopScene);
         ps1PerfBeginScene(loopScene);
         ps1PrintfProbe("scene-start", loopScene);
         foregroundPilotPlay();
         ps1PerfEndScene(loopScene);
         ps1PrintfProbe("scene-end", loopScene);
+
+        /* After the scene played, update Johnny's spot/heading so the
+         * next loop iteration knows where to walk from. */
+        fgLoopUpdatePosFromScene(storyScene);
 
         /* Consume pause-menu requests. NextScene = let the next loop
          * iteration pick a fresh scene (already happens). ResetLoop =
