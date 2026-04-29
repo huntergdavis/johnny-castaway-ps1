@@ -32,6 +32,7 @@
 #include "calcpath.h"
 #include "walk.h"
 #include "walk_data.h"
+#include "walk_render.h"
 
 
 static int *walkPath;
@@ -163,17 +164,27 @@ int walkAnimate(struct TTtmThread *ttmThread, struct TTtmSlot *ttmBgSlot)
         grClearScreen(sfc);
 #endif
 
-        if ((*data)[0])
-            grDrawSpriteFlip(sfc, ttmSlot,
-                (*data)[1] - 1, (*data)[2], (*data)[3], 0);
-        else
-            grDrawSprite(sfc, ttmSlot,
-                (*data)[1] - 1, (*data)[2], (*data)[3], 0);
-
-        if (isBehindTree) {
-            grDrawSprite(sfc, ttmBgSlot, 442, 148, 13, 0);  // trunk
-            grDrawSprite(sfc, ttmBgSlot, 365, 122, 12, 0);  // leafs
-        }
+        /* Delegate the per-frame draw to the shared kernel (walk_render).
+         * Same code path used by freeplay direct-control mode (Phase 2.5+
+         * of docs/ps1/walk-implementation-plan.md). The kernel handles
+         * the sprite draw, the behind-tree cover-up, and the footstep
+         * trigger gate — story-loop driver supplies the per-frame
+         * (spriteIdx, x, y, flip, behindTree, fireFootstep) and the
+         * kernel does the work. */
+        /* walkData layout: { flip, x+1, y, spriteIdx }
+         * The original walk.c subtracted 1 from the second field to
+         * recover the actual x. The kernel takes (x, y, spriteIdx) in
+         * grDrawSprite's native order. */
+        walkRenderFrame(sfc, ttmSlot, ttmBgSlot,
+                        (sint16)((*data)[1] - 1),  /* x */
+                        (sint16)(*data)[2],         /* y */
+                        (uint16)(*data)[3],         /* spriteIdx */
+                        (int)(*data)[0],            /* flip */
+                        isBehindTree,
+                        /* fireFootstep — Phase 4 wires the per-edge
+                         * step-cadence trigger; pass 0 until then so
+                         * the kernel's footstep gate stays no-op. */
+                        0);
 
         if (hasArrived)
             delay = 80;
