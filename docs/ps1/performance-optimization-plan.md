@@ -1235,6 +1235,136 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-90` | Done: fill contiguous windows through the extend path. | Allowing `fgRuntimeTryExtendWindow()` to handle `windowStart == currentEnd` removes the fallthrough to the normal fill path for contiguous aligned reads. FISHING1, FISHING3 high, and FISHING3 low stay exact-flat, PS-EXE stays `145408`, `fgRuntimeFillWindowForEntry` shrinks `812 -> 788`, and aggregate ELF shrinks `721232 -> 721144`. This is a hot-helper/size cleanup, not a VBlank win. |
 | `P5-91` | Failed/no promotion: remove the grouped-read zero-count guard. | The run was timing-flat and aggregate ELF shrank, but `fgRuntimeFillWindowForEntry 788 -> 792` and scenes without generated groups would pay extra helper work. Source was reverted and only the experiment log was kept. |
 
+## Failed Experiment Triage After P5-90
+
+The recent wins changed the shape of the failed backlog. FGP3 residual packs,
+setup-prime and setup-segment coverage, delivered-sector host parsing,
+work-identity floors, the foreground-pilot `-Os` phase shift, and the grouped
+append path mean some old failures are worth re-opening. The useful failures
+are the ones that already moved one metric but lacked generated metadata,
+offset control, or scheduler ownership. Local threshold tweaks and source-shape
+micro-edits remain low-value unless a broader change moves the underlying cost
+model first.
+
+| Failed class | Current verdict | Retest condition |
+|---|---|---|
+| Raw stream-window size sweeps | Do not retry as scalar sizes. | Retry only when pack metadata changes useful coverage per read. |
+| Split immediate/lookahead guards | Do not retry as fixed thresholds. | Retry with per-read cost classes and due-frame coverage proof. |
+| Staged-copy fallthrough thresholds | Do not retry locally. | Retry after grouped reads make same-iteration lookahead cheaper. |
+| Direct-stage read into stream window | Retry as a metadata-driven experiment. | Must preserve the current stream-window tail and not add a visible read. |
+| Two-entry direct-stage queue | Retry only if group-fed. | A second isolated exact-payload slot already caused due misses. |
+| Manual hard-coded read groups | Retry through generated metadata. | Manual groups often saved reads but missed append-start timing or shifted layout. |
+| Fixed `16 KB` payload grouping | Retry selectively. | Use host-planned hot boundaries, not every arbitrary crossing. |
+| Setup-prime blind sizes | Retry through generated segmented coverage. | Contiguous probes expose heap/log-cap limits and setup/loop accounting tradeoffs. |
+| Setup-settle first-frame prerender | Retry only as full-scene timing work. | Active-loop wins that leave `scene_vb` flat are not real speed wins. |
+| Metadata-prefix changes | Retry only offset-stable. | Moving payload starts by bytes or sectors repeatedly damaged active CD phase. |
+| Sound/event table prefixing | Retry as sidecar metadata. | Preserve payload offsets unless the group planner intentionally changes layout. |
+| Runtime read-size predictors | Retry as host-generated policy. | Runtime heuristics need per-read histograms or emitted group costs. |
+| Prepared-present/prepared-buffer release | Retry as a first-class scheduler. | Local thresholds moved work but stole CD cadence or duplicate-prep ballast. |
+| Prepared-wait prefetch follow-ups | Retry under explicit ownership. | Further reads need proof that present, prep, and CD are not competing for the same slice. |
+| Host-deadline catch-up threshold `4` | Retry only with resident-payload proof. | Setup-prime made one threshold-4 shape safe; global threshold-4 still regressed. |
+| Dirty-row pointer/clear micro-edits | Retry as structural dirty-state layout. | Single rewrites are phase-sensitive and often grow code or CD pressure. |
+| Upload gap and rect sweeps | Retry with generated upload-ready bands. | Runtime scratch packing and exact splitting traded bytes for too many rects. |
+| PAL4 LUT, aligned stores, inline compositor | Retry as generated or assembly code. | Runtime branching and broad compiler optimization consistently hurt cadence. |
+| Runtime restore-under-current parsing | Retry as pack-emitted restore metadata. | Hot-path parsing saved bytes but cost more than it saved. |
+| CD helper broad `-O3` or `-Os` | Retry only with map/layout gates. | Some TUs became phase-safe after size wins; hot CD/compositor helpers still regressed. |
+| Diagnostic compile gates that shifted phase | Retry with cold sections or padding harness. | Size wins are real, but active cadence must be held flat. |
+| Inline runtime histograms | Do not put in speed binary. | Use separate diagnostic builds or host post-processing. |
+| Pure FG2 LBA padding | Use only as a control. | LBA shifts alone were flat; code/startup phase is the stronger variable. |
+| Sequential CD reads without `Setloc` | Do not retry without a new correctness gate. | It looked faster only because visual work collapsed. |
+| Removing deterministic guard rails | Do not retry unless generated invariants prove them. | `P5-91` shows aggregate size can improve while hot helper and future-scene cost worsen. |
+
+Immediate retest queue from the failed ledger:
+
+| ID | Candidate | Acceptance bar |
+|---|---|---|
+| `RT-001` | Build a host-side failed-experiment classifier that tags each log entry with `retry-after`, `do-not-retry`, or `needs-metadata`. | Documentation/tool-only change, no runtime effect, produces a sorted queue from the existing log. |
+| `RT-002` | Generate FISHING3 high setup segments from delivered-sector logs instead of hand-coded sectors. | Reduce high-tide `blocking_vb` or `prefetch_overrun_vb` without moving FISHING1 or FISHING3 low. |
+| `RT-003` | Retry the rejected FISHING3 high `246..258` read group only with a companion setup segment or group-cost guard. | Saves the read without reintroducing `due_misses`. |
+| `RT-004` | Retry direct-stage-to-window for tight `8 KB` reads only when host metadata proves the window tail is preserved. | Loop time improves and `blocking_reads` stays flat. |
+| `RT-005` | Retry short-slack refill guard `2` only for generated cheap groups. | Due misses stay zero and visible CD pressure does not rise. |
+| `RT-006` | Add an offset-preserving sidecar for pack metadata before any new prefix data. | Startup metadata grows without shifting payload offsets or sector crossings. |
+| `RT-007` | Generate segmented setup-prime plans for FISHING2 and FISHING3 before adding more contiguous prime bytes. | Active-loop pressure improves with bounded setup memory and no log-cap failures. |
+| `RT-008` | Retry diagnostic/code-pruning failures under a cold-section or padding harness. | Keeps `loop_vb`, pack LBA, and hot-symbol phase stable while shrinking shipped code. |
+| `RT-009` | Generate upload-ready or restore-ready bands for one dense FGP3 scene. | Runtime upload/restore bytes fall without rect-count explosion or scratch-copy cost. |
+| `RT-010` | Convert one manual successful read group into generated metadata and remove the hard-coded source table. | Same timing, smaller hot source surface, same correctness across FISHING1/FISHING3. |
+
+Host preprocessing and multi-step idea backlog:
+
+| ID | Idea | Why it is newly plausible |
+|---|---|---|
+| `HP-001` | Mine the experiment log into a condition-indexed retry manifest. | Many failures say exactly what condition would make them worth re-testing. |
+| `HP-002` | Replay existing CD logs against a host simulator for stream-window state. | Lets us reject bad group/window ideas before touching PS1 code. |
+| `HP-003` | Generate per-scene/tide setup-prime segment plans with heap limits. | Fishing3 proved non-contiguous setup coverage can pay. |
+| `HP-004` | Build a greedy read-group planner that minimizes visible CD VBlanks, not read count. | Several failures saved reads while making the expensive read visible. |
+| `HP-005` | Add a dynamic-programming pack planner with constraints for setup bytes, group bytes, and due coverage. | The remaining wins are coupled, not single-knob threshold changes. |
+| `HP-006` | Preserve payload offsets while adding metadata through a sidecar file or end-of-pack table. | Prefix metadata failures mostly came from phase shifts, not bad metadata. |
+| `HP-007` | Classify reads as cheap, normal, or expensive from delivered sectors and elapsed VBlanks. | Short-slack policies need read-specific cost, not a scalar guard. |
+| `HP-008` | Emit per-entry next-coverage metadata: next payload offset, next group end, and safe lead VBlanks. | The runtime can decide quickly without scanning or guessing. |
+| `HP-009` | Rank every failed "saved one read but regressed pressure" probe by missing companion coverage. | These are the best candidates for multi-step fixes. |
+| `HP-010` | Track setup-vs-loop-vs-scene timing as a first-class report for every accepted setup-prime win. | Prevents counting active-loop shifts as true end-to-end speed. |
+| `HP-011` | Generate read-group metadata for all routed FGP3 packs. | Removes one-off source tables and lets scene policy be data-driven. |
+| `HP-012` | Generate retained-capacity requirements per group. | Capacity misses made some manual groups no-ops or heap regressions. |
+| `HP-013` | Duplicate tiny backward-read payloads inside a pack when the byte cost is lower than the seek cost. | Backward seeks are a recurring visible-pressure source. |
+| `HP-014` | Reorder FGP3 payloads into playback order for a new pack version while keeping frame table offsets explicit. | Replay order can reduce seeks more than runtime heuristics can. |
+| `HP-015` | Add scene-local policy records: stream size, setup segments, group table, direct-stage cap, and catch-up guard. | One global policy is already exhausted. |
+| `HP-016` | Generate setup-preload plans for scene transitions, not just scene start. | Setup-prime wins become real only if hidden during inter-scene time. |
+| `HP-017` | Use the previous scene's ending hold or fade time to start the next scene's foreground prime. | Screensaver flow gives us hiding windows outside active playback. |
+| `HP-018` | Build an all-scene/tide prime budget dashboard sorted by active-loop pressure per setup byte. | Chooses the next scene targets rationally. |
+| `HP-019` | Convert successful manual setup segments into generated pack-side segment tables. | Keeps source professional and reduces hot-path special cases. |
+| `HP-020` | Emit "group cannot be used if due frame is within N VBlanks" metadata. | Prevents groups from stealing the slice needed for presentation. |
+| `HP-021` | Retry exact short-slack refills only for groups tagged cheap by the host model. | Failed scalar slack probes may pay when limited to cheap reads. |
+| `HP-022` | Retry direct-stage-to-window only for reads whose aligned sector span extends the current window. | Avoids the earlier tail-replacement regression. |
+| `HP-023` | Add a two-entry stage queue fed only by group reads. | The isolated second slot failed because it increased transaction churn. |
+| `HP-024` | Split scheduler ownership into present, prep, window-refill, direct-stage, and event-poll budgets. | Prepared-present failures were ownership conflicts, not proof the idea is bad. |
+| `HP-025` | Generate per-frame slack maps from timing files plus current render/CD measurements. | Lets us pick the frames that can safely carry more work. |
+| `HP-026` | Build a release-profile timing oracle without heavy perf counters, using periodic scene-end summaries only. | Keeps speed binary stable while preserving acceptance evidence. |
+| `HP-027` | Move detailed counters to a separate diagnostic ISO profile. | Inline histogram attempts already proved detail in the speed binary is dangerous. |
+| `HP-028` | Add a map-delta gate that reports hot-symbol size, address, PS-EXE sectors, and pack LBA together. | Phase-sensitive failures need one combined explanation surface. |
+| `HP-029` | Add cold-section isolation for default-off diagnostics and old test modes. | Retires ballast without perturbing the hot executable phase. |
+| `HP-030` | Sweep function ordering with a linker-map harness after each large code-size win. | Some old `-Os` failures became safe only after the phase moved. |
+| `HP-031` | Continue per-TU `-Os` retries, but require exact cadence and no hot-helper growth. | Several old size failures are now phase-safe, while CD/compositor TUs still are not. |
+| `HP-032` | Try helper-scoped hand-written MIPS for PAL4 residual compose. | Compiler `O3` and branchy C variants lost; assembly can avoid runtime decision cost. |
+| `HP-033` | Generate PAL4 scene-specialized compositor loops from pack statistics. | Scene-known alignment/length classes can replace hot runtime branches. |
+| `HP-034` | Emit same-pair PAL4 command streams for uniform byte pairs. | Avoids runtime detection while exploiting a real pack-side pattern. |
+| `HP-035` | Emit direct16 chunks only for dense frames where doubled pack bytes beat runtime CLUT work. | Direct16 should be selective, not a blanket format pivot. |
+| `HP-036` | Generate per-tile command streams for FGP3 residuals. | Removes runtime cross-tile splitting and dirty marking branches. |
+| `HP-037` | Emit restore-clean bands for vanished pixels. | Replaces runtime restore-under-current parsing with cheap generated metadata. |
+| `HP-038` | Emit upload-ready contiguous bands for scenes with many narrow dirty rows. | Avoids scratch packing and rect explosion from runtime X-aware upload. |
+| `HP-039` | Generate per-scene upload rect caps from actual max rect pressure. | Keeps FISHING1's cap small without assuming all scenes share the same bound. |
+| `HP-040` | Pack dirty-row state into bitsets or byte spans so clear/promote work scales with touched rows. | Dirty-row touched-only cleanup finally produced a real VBlank win. |
+| `HP-041` | Replace dirty-row `memset` retries with a custom fixed-size MIPS fill only after bitset packing. | The library-call shape failed; operation count must change first. |
+| `HP-042` | Detect translation-only FGP3 frames and encode GPU `MoveImage` plus residual. | Walking scenes show real move candidates even though fishing1 did not. |
+| `HP-043` | Generate static-backdrop reuse maps for scenes whose residual never touches large regions. | Reduces restore/upload ownership instead of redoing known clean areas. |
+| `HP-044` | Evaluate GPU-sprite foreground compositing for a single sprite-heavy scene as an architectural branch. | It is high-risk, but it is one of the few remaining double-digit possibilities. |
+| `HP-045` | Add host-side frame-hash smoke tests for every generated pack-policy change. | Prevents false speedups like the skipped-visual-work `Setloc` probe. |
+| `HP-046` | Expand work-identity floors by scene class before broad optimization merges. | FISHING1 floors are not enough for Mary/Suzy/full-screen scenes. |
+| `HP-047` | Add "no runtime fallback" audits for pack features after generation coverage reaches all scenes. | Deterministic generated data can replace expensive safety branches. |
+| `HP-048` | Generate a pack-size and read-pressure Pareto chart for all 126 tide variants. | Shows where FGP3, direct16, grouping, or motion compensation is worth the bytes. |
+| `HP-049` | Create a host replay for "what if this failed experiment ran on today's baseline" using metrics deltas. | Lets old failures be re-ranked without re-running every branch. |
+| `HP-050` | Keep a "near miss" list separate from "dead end" experiments. | Ideas that saved reads or bytes but regressed pressure are useful after scheduler changes. |
+| `HP-051` | Re-test old no-promotion size cleanups only after a phase-control harness exists. | Size wins matter, but not at the cost of one visible CD VBlank. |
+| `HP-052` | Model pack payload sector crossings and byte offsets before changing any header/prefix layout. | Byte-level shifts repeatedly changed playback cadence. |
+| `HP-053` | Try a generated metadata footer rather than prefix for FG2/FGP3 extensions. | Footer data can add tables without disturbing existing payload offsets. |
+| `HP-054` | Add a host "segment plus group" combiner for FISHING3 high. | The next high-tide win likely needs a setup segment and a safe read group together. |
+| `HP-055` | Build a per-scene hold-distribution report to find scenes where long-hold catch-up can actually fire. | Fishing1 exhausted some catch-up buckets; other scenes may expose them. |
+| `HP-056` | Try scene-specific direct-stage caps generated from payload-size histograms. | The global `8 KB` knee may not be the knee for other scenes. |
+| `HP-057` | Add an optional async-CD sandbox profile with first-class CD-state ownership counters. | Async is still plausible, but only outside the accepted speed binary first. |
+| `HP-058` | Use DuckStation logs to detect emulator-side read clustering and physical-sector delivery quirks. | Delivered-sector parsing already found better evidence than inferred next reads. |
+| `HP-059` | Generate blog/archeology annotations for interesting failures as the retry manifest is built. | Keeps the journey searchable without polluting the active optimization queue. |
+| `HP-060` | After each accepted multi-step win, auto-promote newly eligible failed classes into the next queue. | The foreground `-Os` and holiday/resource retries proved eligibility changes over time. |
+
+Highest-priority next bets from this triage:
+
+| Priority | Bet | Why this comes first |
+|---|---|---|
+| 1 | Host read-cost simulator plus generated setup/read metadata for FISHING3 high. | It attacks the current visible CD pressure with evidence from the failed near misses. |
+| 2 | Offset-preserving metadata sidecar/footer. | Many better policies need metadata, and prefix shifts have already failed. |
+| 3 | Generated segment-plus-group planner. | The one-off fishing3 segment and read-group results show small wins stack when coverage is correct. |
+| 4 | First-class scheduler ownership for prep, present, and CD. | Threshold experiments are exhausted until ownership is explicit. |
+| 5 | Pack-time upload/restore bands for one dense residual scene. | Runtime parsing/packing failed, but generated data still has a plausible work-reduction path. |
+| 6 | Cold-section/layout harness for old diagnostic and size cleanups. | It can recover binary size while controlling the phase sensitivity that made earlier cleanup risky. |
+
 ## Phase 6: Scene Startup And Backdrop Cost
 
 Goal: keep per-scene setup from stealing heap and causing long transitions.
