@@ -35,6 +35,23 @@ smaller stability releases may happen between scene milestones.
 | `raft-stage <N>` | 0..5 | Cumulative raft-build state |
 | `island-pos <x> <y>` | — | Force island position |
 
+## Headless Performance Matrix
+
+All generated FG2 scene/tide variants are routable through `fgpilot`, even
+before they are human-certified. Use the generated matrix runner for speed
+coverage, not the legacy regtest certification scripts:
+
+```bash
+# Smoke one generated case.
+./scripts/ps1-perf-all-scenes.sh --limit 1 --tides high --frames 7200
+
+# Walk the full 126-variant matrix. This is intentionally long-running.
+./scripts/ps1-perf-all-scenes.sh --tides both --frames 7200
+```
+
+The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
+mean no current headless perf summary has been recorded for that scene/tide.
+
 ## Secondary (historical): headless regtest harness
 
 The headless regtest harness runs DuckStation's regtest binary in Docker

@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""Maintain PS1 foreground scene routing/test metadata.
+
+This is host-side tooling. It derives the 63 scene slugs and their high/low
+FG2 pack names from config/ps1/regtest-scenes.txt, then can update the PS1 CD
+layout, print ps1-perf-iterate cases, or write the all-scene performance sheet.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import random
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SCENE_LIST = REPO_ROOT / "config" / "ps1" / "regtest-scenes.txt"
+DEFAULT_PACK_DIR = REPO_ROOT / "generated" / "ps1" / "foreground"
+DEFAULT_CD_LAYOUT = REPO_ROOT / "config" / "ps1" / "cd_layout.xml"
+DEFAULT_SHEET = REPO_ROOT / "docs" / "ps1" / "performance-scene-matrix.csv"
+
+ADS_ABBREV = {
+    "ACTIVITY": "ACTV",
+    "BUILDING": "BUIL",
+    "FISHING": "FISH",
+    "JOHNNY": "JOHN",
+    "MARY": "MARY",
+    "MISCGAG": "MISC",
+    "STAND": "STND",
+    "SUZY": "SUZY",
+    "VISITOR": "VIST",
+    "WALKSTUF": "WALK",
+}
+
+HIGH_CD_PREFIX = {
+    "ACTIVITY": "ACTV",
+    "BUILDING": "BUIL",
+    "FISHING": "FISHING",
+    "JOHNNY": "JOHNNY",
+    "MARY": "MARY",
+    "MISCGAG": "MISCGAG",
+    "STAND": "STAND",
+    "SUZY": "SUZY",
+    "VISITOR": "VISITOR",
+    "WALKSTUF": "WALK",
+}
+
+
+@dataclass(frozen=True)
+class SceneRecord:
+    ads: str
+    tag: int
+    slug: str
+    high_source: str
+    low_source: str
+    high_cd_name: str
+    low_cd_name: str
+
+
+def low_pack_basename(ads: str, tag: int) -> str:
+    base = f"{ADS_ABBREV.get(ads, ads[:4])}{tag}"
+    long_name = f"{base}LOW"
+    return f"{base}L" if len(long_name) > 8 else long_name
+
+
+def high_cd_basename(ads: str, tag: int) -> str:
+    return f"{HIGH_CD_PREFIX.get(ads, ads)}{tag}"
+
+
+def parse_scene_list(path: Path) -> list[SceneRecord]:
+    records: list[SceneRecord] = []
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        parts = line.split()
+        if len(parts) < 2:
+            continue
+        ads = parts[0].upper()
+        try:
+            tag = int(parts[1])
+        except ValueError:
+            continue
+        slug = f"{ads.lower()}{tag}"
+        high_source = f"{ads}{tag}.FG2"
+        low_source = f"{low_pack_basename(ads, tag)}.FG2"
+        high_cd_name = f"{high_cd_basename(ads, tag)}.FG2"
+        low_cd_name = low_source
+        records.append(SceneRecord(
+            ads=ads,
+            tag=tag,
+            slug=slug,
+            high_source=high_source,
+            low_source=low_source,
+            high_cd_name=high_cd_name,
+            low_cd_name=low_cd_name,
+        ))
+    return records
+
+
+def ordered_for_cd(records: list[SceneRecord]) -> list[tuple[SceneRecord, str]]:
+    priority = {("FISHING", 1): 0, ("FISHING", 2): 1, ("FISHING", 3): 2}
+    pairs: list[tuple[SceneRecord, str]] = []
+    for record in sorted(
+        records,
+        key=lambda item: (priority.get((item.ads, item.tag), 1000), item.ads, item.tag),
+    ):
+        pairs.append((record, "high"))
+        pairs.append((record, "low"))
+    return pairs
+
+
+def xml_file_line(record: SceneRecord, tide: str) -> str:
+    if tide == "high":
+        cd_name = record.high_cd_name
+        source = record.high_source
+    else:
+        cd_name = record.low_cd_name
+        source = record.low_source
+    return (
+        f'                <file name="{cd_name}" type="data" '
+        f'source="../../generated/ps1/foreground/{source}"/>'
+    )
+
+
+def update_cd_layout(path: Path, records: list[SceneRecord], pack_dir: Path) -> None:
+    missing: list[str] = []
+    for record in records:
+        for filename in (record.high_source, record.low_source):
+            if not (pack_dir / filename).is_file():
+                missing.append(filename)
+    if missing:
+        raise SystemExit("missing foreground packs: " + ", ".join(missing))
+
+    text = path.read_text(encoding="utf-8")
+    block = "\n".join(xml_file_line(record, tide) for record, tide in ordered_for_cd(records))
+    replacement = f'            <dir name="FG">\n{block}\n            </dir>'
+    new_text, count = re.subn(
+        r'            <dir name="FG">\n.*?\n            </dir>',
+        replacement,
+        text,
+        count=1,
+        flags=re.S,
+    )
+    if count != 1:
+        raise SystemExit(f"could not replace FG directory block in {path}")
+    path.write_text(new_text, encoding="utf-8")
+
+
+def parse_boot(boot: str) -> tuple[str | None, int]:
+    tokens = boot.split()
+    scene: str | None = None
+    lowtide = 0
+    for i, token in enumerate(tokens):
+        if token == "fgpilot" and i + 1 < len(tokens):
+            scene = tokens[i + 1]
+        if token == "lowtide" and i + 1 < len(tokens):
+            try:
+                lowtide = int(tokens[i + 1])
+            except ValueError:
+                lowtide = 0
+    return scene, 1 if lowtide else 0
+
+
+def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, str]]:
+    metrics: dict[tuple[str, str], dict[str, str]] = {}
+    metric_mtimes: dict[tuple[str, str], float] = {}
+    for path in paths:
+        if not path.is_file():
+            continue
+        path_mtime = path.stat().st_mtime
+        summary = json.loads(path.read_text(encoding="utf-8"))
+        for case in summary.get("cases", []):
+            boot = str(case.get("boot", ""))
+            scene, lowtide = parse_boot(boot)
+            if not scene:
+                continue
+            tide = "low" if lowtide else "high"
+            metric_key = (scene, tide)
+            if metric_key in metric_mtimes and path_mtime < metric_mtimes[metric_key]:
+                continue
+            sections = case.get("sections", {})
+            timing = sections.get("timing", {})
+            cd = sections.get("cd", {})
+            prefetch = sections.get("prefetch", {})
+            scene_info = sections.get("scene", {})
+            loop_vb = timing.get("loop_vb")
+            target_vb = timing.get("target_vb")
+            over_target = ""
+            over_percent = ""
+            if isinstance(loop_vb, int) and isinstance(target_vb, int) and target_vb > 0:
+                over_target = str(loop_vb - target_vb)
+                over_percent = f"{((loop_vb - target_vb) * 100.0 / target_vb):.2f}"
+            metrics[metric_key] = {
+                "last_summary": str(path),
+                "loop_vb": str(loop_vb) if isinstance(loop_vb, int) else "",
+                "target_vb": str(target_vb) if isinstance(target_vb, int) else "",
+                "over_target_vb": over_target,
+                "over_target_percent": over_percent,
+                "blocking_vb": str(cd.get("blocking_vb", "")),
+                "prefetch_overrun_vb": str(prefetch.get("overrun_vb", "")),
+                "loop_reads": str(cd.get("loop_reads", "")),
+                "loop_read_vb": str(cd.get("loop_read_vb", "")),
+                "due_misses": str(prefetch.get("due_misses", "")),
+                "pack_lba": str(scene_info.get("pack_lba", "")),
+                "pack_sectors": str(scene_info.get("pack_sectors", "")),
+                "status": "measured",
+            }
+            metric_mtimes[metric_key] = path_mtime
+    return metrics
+
+
+def boot_for(record: SceneRecord, tide: str) -> str:
+    lowtide = "1" if tide == "low" else "0"
+    return (
+        f"fgpilot {record.slug} lowtide {lowtide} night 1 holiday 0 "
+        "raft-stage 4 island-pos -154 54 perf-log noloop seed 1"
+    )
+
+
+def sheet_rows(
+    records: list[SceneRecord],
+    metrics: dict[tuple[str, str], dict[str, str]],
+    pack_dir: Path,
+) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for record in records:
+        for tide in ("high", "low"):
+            cd_name = record.high_cd_name if tide == "high" else record.low_cd_name
+            source = record.high_source if tide == "high" else record.low_source
+            measured = metrics.get((record.slug, tide), {})
+            row = {
+                "scene_slug": record.slug,
+                "ads": record.ads,
+                "tag": str(record.tag),
+                "tide": tide,
+                "boot": boot_for(record, tide),
+                "cd_pack": f"FG\\{cd_name}",
+                "source_pack": f"generated/ps1/foreground/{source}",
+                "pack_bytes": str((pack_dir / source).stat().st_size) if (pack_dir / source).is_file() else "",
+                "last_summary": "",
+                "loop_vb": "",
+                "target_vb": "",
+                "over_target_vb": "",
+                "over_target_percent": "",
+                "blocking_vb": "",
+                "prefetch_overrun_vb": "",
+                "loop_reads": "",
+                "loop_read_vb": "",
+                "due_misses": "",
+                "pack_lba": "",
+                "pack_sectors": "",
+                "status": "pending",
+                "notes": "",
+            }
+            row.update(measured)
+            rows.append(row)
+    return rows
+
+
+def write_sheet(path: Path, records: list[SceneRecord], summaries: list[Path], pack_dir: Path) -> None:
+    rows = sheet_rows(records, load_summary_metrics(summaries), pack_dir)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = list(rows[0].keys()) if rows else []
+    with path.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def print_cases(records: list[SceneRecord], tides: str, order: str, limit: int | None, seed: int) -> None:
+    case_rows: list[tuple[str, str]] = []
+    selected_tides = ("high", "low") if tides == "both" else (tides,)
+    for record in records:
+        for tide in selected_tides:
+            label = f"{record.slug}-{tide}"
+            case_rows.append((label, boot_for(record, tide)))
+    if order == "random":
+        rng = random.Random(seed)
+        rng.shuffle(case_rows)
+    if limit is not None:
+        case_rows = case_rows[:limit]
+    for label, boot in case_rows:
+        print(f"{label}\t{boot}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--scene-list", type=Path, default=DEFAULT_SCENE_LIST)
+    parser.add_argument("--pack-dir", type=Path, default=DEFAULT_PACK_DIR)
+    parser.add_argument("--write-cd-layout", type=Path)
+    parser.add_argument("--write-sheet", type=Path)
+    parser.add_argument("--summary", action="append", type=Path, default=[])
+    parser.add_argument("--print-cases", action="store_true")
+    parser.add_argument("--tides", choices=("high", "low", "both"), default="both")
+    parser.add_argument("--order", choices=("list", "random"), default="list")
+    parser.add_argument("--limit", type=int)
+    parser.add_argument("--seed", type=int, default=1)
+    args = parser.parse_args()
+
+    records = parse_scene_list(args.scene_list)
+    if args.write_cd_layout:
+        update_cd_layout(args.write_cd_layout, records, args.pack_dir)
+    if args.write_sheet:
+        write_sheet(args.write_sheet, records, args.summary, args.pack_dir)
+    if args.print_cases:
+        print_cases(records, args.tides, args.order, args.limit, args.seed)
+    if not (args.write_cd_layout or args.write_sheet or args.print_cases):
+        print(json.dumps([record.__dict__ for record in records], indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -248,6 +248,46 @@ struct TFgPilotReadGroup {
     uint16 endSector;
 };
 
+struct TFgPilotSceneFamily {
+    const char *scenePrefix;
+    const char *adsName;
+    const char *highPackPrefix;
+    const char *lowPackPrefix;
+    uint32 tagMask;
+};
+
+#define FG_TAG_MASK(tag_) (1UL << (tag_))
+#define FG_TAG_RANGE_1_2 (FG_TAG_MASK(1) | FG_TAG_MASK(2))
+#define FG_TAG_RANGE_1_3 (FG_TAG_RANGE_1_2 | FG_TAG_MASK(3))
+#define FG_TAG_RANGE_1_5 (FG_TAG_RANGE_1_3 | FG_TAG_MASK(4) | FG_TAG_MASK(5))
+#define FG_TAG_RANGE_1_6 (FG_TAG_RANGE_1_5 | FG_TAG_MASK(6))
+#define FG_TAG_RANGE_1_7 (FG_TAG_RANGE_1_6 | FG_TAG_MASK(7))
+#define FG_TAG_RANGE_1_8 (FG_TAG_RANGE_1_7 | FG_TAG_MASK(8))
+
+static const struct TFgPilotSceneFamily kFgPilotSceneFamilies[] = {
+    { "activity", "ACTIVITY", "ACTV",    "ACTV",
+      FG_TAG_MASK(1) | FG_TAG_MASK(4) | FG_TAG_MASK(5) |
+      FG_TAG_MASK(6) | FG_TAG_MASK(7) | FG_TAG_MASK(8) |
+      FG_TAG_MASK(9) | FG_TAG_MASK(10) | FG_TAG_MASK(11) |
+      FG_TAG_MASK(12) },
+    { "building", "BUILDING", "BUIL",    "BUIL", FG_TAG_RANGE_1_7 },
+    { "fishing",  "FISHING",  "FISHING", "FISH", FG_TAG_RANGE_1_8 },
+    { "johnny",   "JOHNNY",   "JOHNNY",  "JOHN", FG_TAG_RANGE_1_6 },
+    { "mary",     "MARY",     "MARY",    "MARY", FG_TAG_RANGE_1_5 },
+    { "miscgag",  "MISCGAG",  "MISCGAG", "MISC", FG_TAG_RANGE_1_2 },
+    { "stand",    "STAND",    "STAND",   "STND",
+      FG_TAG_RANGE_1_8 | FG_TAG_MASK(9) | FG_TAG_MASK(10) |
+      FG_TAG_MASK(11) | FG_TAG_MASK(12) | FG_TAG_MASK(15) |
+      FG_TAG_MASK(16) },
+    { "suzy",     "SUZY",     "SUZY",    "SUZY", FG_TAG_RANGE_1_2 },
+    { "visitor",  "VISITOR",  "VISITOR", "VIST",
+      FG_TAG_MASK(1) | FG_TAG_MASK(3) | FG_TAG_MASK(4) |
+      FG_TAG_MASK(5) | FG_TAG_MASK(6) | FG_TAG_MASK(7) },
+    { "walkstuf", "WALKSTUF", "WALK",    "WALK", FG_TAG_RANGE_1_3 }
+};
+
+static char gFgCompactOverlayPackPath[24];
+
 static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
     {223, 234},
     {234, 246},
@@ -308,18 +348,115 @@ static uint16 fgEntryHoldVBlanks(const struct TFgPilotHeader *header,
     return hold;
 }
 
+static int fgSceneRoutePrefixMatches(const char *sceneName,
+                                     const char *prefix,
+                                     const char **digitsOut)
+{
+    while (*prefix != '\0') {
+        if (*sceneName != *prefix)
+            return 0;
+        sceneName++;
+        prefix++;
+    }
+    if (*sceneName < '0' || *sceneName > '9')
+        return 0;
+    *digitsOut = sceneName;
+    return 1;
+}
+
+static int fgParseCompactOverlayScene(const char *sceneName,
+                                      const struct TFgPilotSceneFamily **familyOut,
+                                      uint16 *tagOut)
+{
+    uint16 i;
+
+    if (sceneName == NULL)
+        return 0;
+
+    for (i = 0; i < (uint16)(sizeof(kFgPilotSceneFamilies) /
+                             sizeof(kFgPilotSceneFamilies[0])); i++) {
+        const char *digits = NULL;
+        uint16 tag = 0;
+        if (!fgSceneRoutePrefixMatches(sceneName,
+                                       kFgPilotSceneFamilies[i].scenePrefix,
+                                       &digits))
+            continue;
+        while (*digits >= '0' && *digits <= '9') {
+            tag = (uint16)((tag * 10u) + (uint16)(*digits - '0'));
+            digits++;
+        }
+        if (*digits != '\0' || tag == 0 || tag >= 32)
+            return 0;
+        if ((kFgPilotSceneFamilies[i].tagMask & FG_TAG_MASK(tag)) == 0)
+            return 0;
+        if (familyOut != NULL)
+            *familyOut = &kFgPilotSceneFamilies[i];
+        if (tagOut != NULL)
+            *tagOut = tag;
+        return 1;
+    }
+
+    return 0;
+}
+
+static char *fgAppendText(char *dst, const char *src)
+{
+    while (*src != '\0') {
+        *dst = *src;
+        dst++;
+        src++;
+    }
+    return dst;
+}
+
+static char *fgAppendTag(char *dst, uint16 tag)
+{
+    if (tag >= 10) {
+        *dst = (char)('0' + (tag / 10));
+        dst++;
+    }
+    *dst = (char)('0' + (tag % 10));
+    dst++;
+    return dst;
+}
+
+static const char *fgBuildCompactOverlayPackPath(const struct TFgPilotSceneFamily *family,
+                                                 uint16 tag,
+                                                 int lowTide)
+{
+    char *dst = gFgCompactOverlayPackPath;
+    char *baseStart;
+    const char *prefix;
+    int baseLen;
+
+    *dst++ = 'F';
+    *dst++ = 'G';
+    *dst++ = '\\';
+    baseStart = dst;
+    prefix = lowTide ? family->lowPackPrefix : family->highPackPrefix;
+    dst = fgAppendText(dst, prefix);
+    dst = fgAppendTag(dst, tag);
+    if (lowTide) {
+        baseLen = (int)(dst - baseStart);
+        if (baseLen + 3 <= 8)
+            dst = fgAppendText(dst, "LOW");
+        else
+            dst = fgAppendText(dst, "L");
+    }
+    dst = fgAppendText(dst, ".FG2");
+    *dst = '\0';
+    return gFgCompactOverlayPackPath;
+}
+
 static const char *fgCompactOverlayPackPathForScene(const char *sceneName)
 {
-    if (fgSceneEquals(sceneName, "fishing1")) {
-        return islandState.lowTide ? "FG\\FISH1LOW.FG2" : "FG\\FISHING1.FG2";
-    }
-    if (fgSceneEquals(sceneName, "fishing2")) {
-        return islandState.lowTide ? "FG\\FISH2LOW.FG2" : "FG\\FISHING2.FG2";
-    }
-    if (fgSceneEquals(sceneName, "fishing3")) {
-        return islandState.lowTide ? "FG\\FISH3LOW.FG2" : "FG\\FISHING3.FG2";
-    }
-    return NULL;
+    const struct TFgPilotSceneFamily *family = NULL;
+    uint16 tag = 0;
+
+    if (!fgParseCompactOverlayScene(sceneName, &family, &tag))
+        return NULL;
+
+    return fgBuildCompactOverlayPackPath(family, tag, islandState.lowTide);
 }
 
 static uint16 fgReadU16(const uint8 *p)
@@ -1955,20 +2092,17 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
     {
         const char *path = fgCompactOverlayPackPathForScene(sceneName);
         if (path != NULL) {
+            const struct TFgPilotSceneFamily *sceneFamily = NULL;
+            uint16 sceneTag = 0;
             uint32 maxDataSize = 0;
             uint16 packFlags;
             uint16 i;
             /* Trigger closed-caption lookup only when captions are active.
              * Normal playback keeps captions off, so avoid scene-name checks
              * and ADS caption lookup on the default path. */
-            if (ps1CaptionsEnabled) {
-                if (fgSceneEquals(sceneName, "fishing1"))
-                    captionsOnAdsStart("FISHING", 1);
-                else if (fgSceneEquals(sceneName, "fishing2"))
-                    captionsOnAdsStart("FISHING", 2);
-                else if (fgSceneEquals(sceneName, "fishing3"))
-                    captionsOnAdsStart("FISHING", 3);
-            }
+            if (ps1CaptionsEnabled &&
+                fgParseCompactOverlayScene(sceneName, &sceneFamily, &sceneTag))
+                captionsOnAdsStart(sceneFamily->adsName, sceneTag);
             if (!fgLoadMetadataPrefix(path,
                                       &gFgRuntime.header,
                                       gFgRuntime.palette,

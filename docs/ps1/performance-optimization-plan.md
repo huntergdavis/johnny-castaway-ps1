@@ -1238,6 +1238,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-93` | Done: scope the retry manifest for all-scene prioritization. | The manifest now tags candidates as `global-runtime`, `generated-all-scene`, `scene-family-canary`, `one-off-scene`, or `unknown` and sorts global/generalizable work ahead of one-off probes. The refreshed canary profile includes FISHING1, FISHING2 high/low, and FISHING3 high/low: only FISHING1 is currently `12.17%` over target, while the other measured FISHING canaries are `6.63%` to `7.54%` over. This keeps FISHING3 useful as a stress canary without making hand-authored FISHING3 sector fixes the main strategy. |
 | `P5-94` | Failed/no promotion: FISHING2 high setup segment `185..191`. | The read-plan's top FISHING2 high single-read candidate did not promote through either scratch-owned or persistent-owned setup-segment ownership. Scratch ownership stayed timing-flat without reducing `loop_reads`; persistent ownership regressed `loop_vb 1898 -> 1900` and `blocking_vb/prefetch_overrun_vb 2 -> 4`. The next CD/setup attempt should be generated multi-segment policy with explicit scheduler ownership/cost proof, not another hand-authored single side segment. |
 | `P5-95` | Done: remove stale FISHING1 read group. | The old FISHING1 high group `{396,406}` was beyond the current FGP3 pack sector range and could not fire. Removing the table and startup branch keeps FISHING1, FISHING2 high/low, and FISHING3 high/low exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `foregroundPilotPlay` by `44` bytes. This is generated-policy cleanup, not a VBlank win. |
+| `P5-96` | Done: wire the all-scene fgpilot performance matrix. | `scripts/ps1-foreground-scene-manifest.py` now derives the `63` scene slugs and `126` tide variants from `config/ps1/regtest-scenes.txt`, emits the full `FG/` CD layout from generated FG2 packs, prints perf-runner cases, and writes `docs/ps1/performance-scene-matrix.csv`. `scripts/ps1-perf-all-scenes.sh` runs that generated case set through the headless perf harness and refreshes the sheet from collected summaries. Runtime routing now constructs pack paths for every generated scene family while `kProvenScenes` still controls only the human-validated default random loop. |
 
 ## Failed Experiment Triage After P5-90
 
@@ -1383,8 +1384,9 @@ patches that cannot generalize.
 
 Current measured canary gaps are not uniformly `12%`: FISHING1 high/low are
 `12.17%` over target, FISHING2 high/low are `7.54%` and `7.41%`, and FISHING3
-high/low are `7.06%` and `6.63%`. Comparable baselines for all `63` scenes do
-not exist yet, so all-scene claims must come from a generated matrix run rather
+high/low are `7.06%` and `6.63%`. The all-scene sheet now exists at
+`docs/ps1/performance-scene-matrix.csv`; rows not yet measured remain
+`pending`. All-scene speed claims must come from that generated matrix rather
 than extrapolation from FISHING canaries.
 
 Near-term execution order:
