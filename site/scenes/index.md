@@ -106,9 +106,9 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `67 / 126` |
+| Scene/tide variants timed | `68 / 126` |
 | Scenes with at least one timed variant | `41 / 63` |
-| Scenes with both high/low variants timed | `26 / 63` |
+| Scenes with both high/low variants timed | `27 / 63` |
 | Pending variants | `57 / 126` |
 | Blocked variants | `2 / 126` |
 | Measured average over target | `+12.7%` |
@@ -215,7 +215,7 @@ and this page.
 | `mary5` | high | measured | +7.4% | 93.1% | 1698/1581 | 20 | 20 | 0 | padded FGP3 |
 | `mary5` | low | measured | +7.0% | 93.4% | 1694/1583 | 14 | 14 | 0 | padded FGP3 |
 | `miscgag1` | high | measured | +16.9% | 85.6% | 1115/954 | 26 | 26 | 0 | padded FGP3 |
-| `miscgag1` | low | pending | - | - | - | - | - | - |  |
+| `miscgag1` | low | measured | +14.6% | 87.3% | 1099/959 | 5 | 5 | 0 | padded FGP3 |
 | `miscgag2` | high | pending | - | - | - | - | - | - |  |
 | `miscgag2` | low | pending | - | - | - | - | - | - |  |
 | `stand1` | high | pending | - | - | - | - | - | - |  |
