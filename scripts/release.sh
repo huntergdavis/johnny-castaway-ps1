@@ -147,8 +147,7 @@ echo -e "${YELLOW}=== Step 5: Rebuilding website ===${NC}"
 "$SITE_BUILD_SCRIPT"
 python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/docs" \
     --require-relative \
-    --exclude 'ps1/archaeology/regtest-references/**' \
-    --exclude 'ps1/archaeology/vision-artifacts/**'
+    --exclude 'ps1/archaeology/**'
 
 # Step 6: Git commit
 echo ""
