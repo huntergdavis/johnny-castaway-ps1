@@ -279,7 +279,7 @@ Tentative mapping (refined after Phase 0.2 SFX inventory):
 | Chomp / eat | 8 | best guess |
 | Idea ding | tbd | system beep if no dedicated sample |
 | Drunk hiccup | tbd | |
-| Footstep | none (silent) | original was silent |
+| Footstep | TBD per Phase 4 audit of the original engine | played when present in the original (default ON, pause-menu toggle to mute); see [walk-implementation-plan.md](walk-implementation-plan.md) Phase 4 |
 | Coconut thunk | tbd | reuse bonk if no dedicated |
 | Fire whoosh | tbd | |
 | Castle build poof | tbd | |

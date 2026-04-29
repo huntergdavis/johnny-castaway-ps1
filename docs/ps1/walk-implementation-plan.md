@@ -254,15 +254,25 @@ plan inherits that ordering. Phase 6 of this plan no longer adds
 special holiday handling; it just confirms the existing pipeline
 runs unchanged across walk frames.
 
-### 3.5.7 Footstep audio note
+### 3.5.7 Footstep audio rule
 
-The freeplay design (§ 12, line 282) declares the original engine's
-walking was silent. The user's direction for this walk plan is "add
-footstep walks noises like original." The two assertions disagree.
-Resolution path is in Phase 4 — implementation defaults to silent;
-optional footstep table is hooked but disabled until the user
-confirms which version of "like original" they want. See R2.3 for
-detail.
+User-decided 2026-04-29: **if the original engine has footstep
+samples in its walking code, play them. Add a pause-menu toggle so
+users can turn them off.** The freeplay design's claim "original was
+silent" is updated to match.
+
+Implementation:
+- Phase 4 audits the original engine's walk audio path. If samples
+  fire, identify them and wire into `walkSoundEvents[]`. If the
+  audit finds none, walks ship silent.
+- The kernel's `fireFootstep` parameter remains. Both drivers
+  always pass the trigger value the same way.
+- Inside the kernel, `fireFootstep` is gated by a global runtime
+  flag `footstepsEnabled` (default ON, settable via pause menu).
+  When OFF, the trigger is a no-op; sample selection is unaffected.
+- Pause-menu Options sub-screen gains a "Footsteps" toggle alongside
+  Sound, DayNight, Tide, Raft, Captions, Perf. Persisted to memcard
+  like other toggles.
 
 ## 4. Implementation phases
 
@@ -457,33 +467,28 @@ next scene, walks to that scene's start, plays it, repeats.
   cleanly.
 - No teleportation. Position state remains consistent across iterations.
 
-### Phase 4 — Footstep sounds (~1 day, gated on user clarification)
+### Phase 4 — Footstep sounds (~1-1.5 days)
 
-**Goal:** walks optionally emit footstep samples on the correct
-frames, with the audio path shared between story-loop walks and
-freeplay walking.
+**Goal:** if the original engine had footstep samples, play them;
+add a pause-menu toggle so users can turn them off.
 
-> **Conflict to resolve before Phase 4 starts.** The freeplay design
-> (`docs/ps1/freeplay-mode-design.md` § 12, line 282) explicitly
-> states the original engine's footsteps were silent. The user's
-> direction for this plan was "add footstep walks noises like
-> original." These two assertions can't both be exactly true. Phase 4
-> resolves it before writing code.
+User decision (2026-04-29): footsteps are ON by default if Sierra's
+code has them. No "should we?" question — Phase 4 just identifies
+the samples, wires them, and adds the toggle.
 
-**Phase 4.0 — clarification (½ day, no code)**
+**Phase 4.1 — audit (½ day)**
 
-- Capture audio from the host build during a walk. If samples fire,
-  the freeplay design is wrong; identify them.
-- Disassemble Sierra's original walking-sequence handling in
-  `RESOURCE.001` (or the existing `extract_walk_data.c` source).
-- Decision matrix:
-  - If original WAS silent: implement silent walks; user can add a
-    "footsteps" pause-menu toggle later if they want non-faithful
-    audio. Update `freeplay-mode-design.md` to remain authoritative.
-  - If original HAD footsteps: implement footsteps in Phase 4.1;
-    update `freeplay-mode-design.md` line 282 to match.
+- Capture audio from the host build during a walk on every spot
+  edge. Identify the sample IDs that fire. Document in
+  `docs/ps1/walk-spot-coordinates.md` (the same artifact R6 builds)
+  alongside the canonical coords.
+- Cross-check against Sierra's `RESOURCE.001` walking-sequence
+  handling and `extract_walk_data.c` if it preserved audio cues.
+- If audit finds zero samples: ship silent walks; the kernel's
+  `fireFootstep` parameter and the pause-menu toggle still go in
+  (the toggle is harmless when there's nothing to gate).
 
-**Phase 4.1 — implementation (½ day, conditional on above)**
+**Phase 4.2 — implementation (½ day)**
 
 - New table `src/walk_sound_events.h`:
   ```c
@@ -491,31 +496,42 @@ freeplay walking.
   static const struct TWalkSoundEvent walkStepSamples[NUM_OF_NODES][NUM_OF_NODES][/*...*/];
   ```
   keyed by current spot-pair edge.
-
-- The shared kernel's `fireFootstep` parameter is the trigger point.
-  Both drivers compute it the same way (frame index in the walk
-  cycle hits a step-foot-down position) and pass it in.
-
+- The kernel's `fireFootstep` parameter is the trigger point. Both
+  drivers compute it the same way (frame index hits a step-foot-down
+  position) and pass it in. The kernel calls
+  `if (footstepsEnabled && fireFootstep) soundPlay(sampleId);`.
 - `walk_pilot.c` derives `fireFootstep` from `walkAnimate()`'s frame
   cadence + the `walkStepSamples` table.
 - `scene_freeplay.c` derives `fireFootstep` from its own walk cycle
-  counter (`TFreeplayJohnny.walkStepCount` already in the design at
-  § 17, line 414) — fires on even or odd step indices, configurable.
+  counter (`TFreeplayJohnny.walkStepCount` already in the freeplay
+  design § 17, line 414) — fires on alternating step indices.
+- Verify the relevant footstep VAGs are in the preload set. The PS1
+  build preloads "all 23 SFX VAGs at boot" per `hardware-specs.md`;
+  if footsteps are among them, no asset work. If not, add to the
+  boot preload list — they're small samples, SPU budget is not
+  tight.
 
-- Verify the relevant footstep VAGs are preloaded. The PS1 build
-  preloads "all 23 SFX VAGs at boot" per `hardware-specs.md`; if
-  footsteps are among them, no asset work needed. If not, decide:
-  add to boot preload (ties up SPU RAM for a possibly-silent feature)
-  vs. lazy-load on first walk.
+**Phase 4.3 — pause-menu toggle (½ day)**
+
+- Add `OPT_FOOTSTEPS` to the Options enum in `src/pause_menu.c`,
+  alongside `OPT_SOUND`, `OPT_DAYNIGHT`, `OPT_TIDE`, `OPT_RAFT`,
+  `OPT_HOLIDAY`, `OPT_CAPTIONS`, `OPT_PERF`.
+- New global `int footstepsEnabled = 1;` in the same scope as
+  `soundMuted` etc., persisted to memcard via the existing settings
+  block in `src/memcard.c`.
+- Default ON. Memcard restoration on boot picks up the user's last
+  setting.
 
 **Acceptance:**
-- Decision matrix above is recorded as a doc commit before any
-  audio code lands.
-- If footsteps are added: walks have audible footsteps matching the
-  rhythm of leg movement, both in story-loop walks and freeplay
-  walks. No SPU pop, click, or stuck note.
-- If footsteps are skipped: silent walks ship; the audio path stays
-  in place behind a config flag for future activation.
+- If samples fire in the original: walks have audible footsteps
+  matching leg cadence in both story-loop walks and freeplay walks.
+  No SPU pop, click, or stuck note.
+- Pause-menu Footsteps toggle works; flips state mid-walk takes
+  effect on the next step trigger.
+- Setting persists across power cycle via memcard.
+- The freeplay design's "original was silent" line at § 12 line 282
+  is updated to "footsteps when enabled (pause-menu toggle, default
+  ON)."
 
 ### Phase 5 — Behind-tree compositing (~1-2 days, kernel-resident)
 
@@ -1038,11 +1054,13 @@ disagree, the freeplay zone test wins (it's the more general one)
 and the story-loop driver derives `behindTree` from the same
 coord-zone test rather than the spot-pair rule.
 
-**R7.4. Footstep contradiction (R2.3 expanded).** The freeplay
-design says original walks were silent. The walk plan was told to
-"add footstep walks noises like original." Phase 4.0 resolves this
-before any audio code lands. **Risk: low** (a doc fix either way),
-but requires explicit user decision.
+**R7.4. Footstep contradiction — resolved 2026-04-29.** Original
+risk: freeplay design said walks were silent; this plan was told
+to add footsteps. Resolution: user ruled footsteps ON if the
+original engine has them, with a pause-menu toggle for opt-out.
+Phase 4 audits then implements. The pause-menu toggle keeps the
+choice with each user instead of in the design doc. **Risk:
+closed.**
 
 **R7.5. JOHNWALK slot allocation.** Freeplay's design (§ 16) reserves
 slot 1 for `JOHNWALK.BMP`. The walk kernel should use the same slot
