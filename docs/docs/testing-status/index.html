@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Current Testing Status — Johnny Castaway PS1</title>
+  <meta name="description" content="Current Johnny Castaway PS1 testing status: scene validation, headless performance progress, and the full 126-variant timing battle card." />
+
+  <meta property="og:title"        content="Current Testing Status — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Current Johnny Castaway PS1 testing status: scene validation, headless performance progress, and the full 126-variant timing battle card." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Live progress</p>
+      <h1>Current Testing Status</h1>
+      <p class="subtitle">The current scene-validation and headless performance battle card for the PS1 port.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>This is the working status page. It tracks two different bars:</p>
+
+<ul>
+  <li><strong>Scene validation</strong> is human visual + audible signoff. That is the release
+bar for “done.”</li>
+  <li><strong>Headless performance</strong> is automated DuckStation timing. That is the
+optimization battle card for “how fast does this scene/tide variant run.”</li>
+</ul>
+
+<p>Do not mix them. A scene can be timed here without being visually certified.</p>
+
+<h2 id="rollup">Rollup</h2>
+
+<p>Current battle-card rollup as of 2026-04-29:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th style="text-align: right">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Scenes visually validated</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2 / 63</code></td>
+    </tr>
+    <tr>
+      <td>Validated scenes</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code></td>
+    </tr>
+    <tr>
+      <td>Scene/tide variants timed</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">57 / 126</code></td>
+    </tr>
+    <tr>
+      <td>Scenes with at least one timed variant</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">34 / 63</code></td>
+    </tr>
+    <tr>
+      <td>Scenes with both high/low variants timed</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">23 / 63</code></td>
+    </tr>
+    <tr>
+      <td>Pending variants</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">67 / 126</code></td>
+    </tr>
+    <tr>
+      <td>Blocked variants</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2 / 126</code></td>
+    </tr>
+    <tr>
+      <td>Measured average over target</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+12.1%</code></td>
+    </tr>
+    <tr>
+      <td>Measured average target speed</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">89.8%</code></td>
+    </tr>
+    <tr>
+      <td>FISHING 1 canary</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">1207 / 1076 VBlanks</code>, <code class="language-plaintext highlighter-rouge">+12.2%</code>, <code class="language-plaintext highlighter-rouge">89.1% target speed</code>, <code class="language-plaintext highlighter-rouge">blocking_vb=0</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The durable numeric source is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>.
+The experiment trail is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
+The human signoff ledger is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code></a>.</p>
+
+<p>Maintenance rule: every accepted perf optimization, rejected experiment worth
+preserving, or new scene/tide timing run must update the CSV, the experiment
+log, <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/README.md">README.md</a>,
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a>,
+and this page.</p>
+
+<h2 id="reading-the-table">Reading The Table</h2>
+
+<ul>
+  <li><strong>Over Target</strong>: how far <code class="language-plaintext highlighter-rouge">loop_vb</code> is above the captured target timing.
+Lower is better.</li>
+  <li><strong>Target Speed</strong>: <code class="language-plaintext highlighter-rouge">target_vb / loop_vb</code>. <code class="language-plaintext highlighter-rouge">100%</code> means exact target cadence.</li>
+  <li><strong>VBlanks</strong>: <code class="language-plaintext highlighter-rouge">loop_vb/target_vb</code>.</li>
+  <li><strong>Blocking</strong>: visible CD/blocking VBlanks.</li>
+  <li><strong>Prefetch</strong>: prefetch overrun VBlanks.</li>
+  <li><strong>Due</strong>: due-frame misses.</li>
+</ul>
+
+<h2 id="126-variant-battle-card">126-Variant Battle Card</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scene</th>
+      <th>Tide</th>
+      <th>Status</th>
+      <th style="text-align: right">Over Target</th>
+      <th style="text-align: right">Target Speed</th>
+      <th style="text-align: right">VBlanks</th>
+      <th style="text-align: right">Blocking</th>
+      <th style="text-align: right">Prefetch</th>
+      <th style="text-align: right">Due</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+3.0%</td>
+      <td style="text-align: right">97.1%</td>
+      <td style="text-align: right">4373/4244</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+3.1%</td>
+      <td style="text-align: right">97.0%</td>
+      <td style="text-align: right">4373/4242</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.9%</td>
+      <td style="text-align: right">88.5%</td>
+      <td style="text-align: right">1205/1067</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.5%</td>
+      <td style="text-align: right">88.9%</td>
+      <td style="text-align: right">1203/1069</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.3%</td>
+      <td style="text-align: right">91.5%</td>
+      <td style="text-align: right">1866/1707</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">4</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.1%</td>
+      <td style="text-align: right">91.7%</td>
+      <td style="text-align: right">1861/1706</td>
+      <td style="text-align: right">29</td>
+      <td style="text-align: right">16</td>
+      <td style="text-align: right">3</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+14.5%</td>
+      <td style="text-align: right">87.3%</td>
+      <td style="text-align: right">1043/911</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+14.5%</td>
+      <td style="text-align: right">87.3%</td>
+      <td style="text-align: right">1043/911</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+22.7%</td>
+      <td style="text-align: right">81.5%</td>
+      <td style="text-align: right">751/612</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+21.7%</td>
+      <td style="text-align: right">82.2%</td>
+      <td style="text-align: right">747/614</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+11.2%</td>
+      <td style="text-align: right">89.9%</td>
+      <td style="text-align: right">2268/2039</td>
+      <td style="text-align: right">97</td>
+      <td style="text-align: right">60</td>
+      <td style="text-align: right">9</td>
+      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+11.1%</td>
+      <td style="text-align: right">90.0%</td>
+      <td style="text-align: right">2271/2044</td>
+      <td style="text-align: right">92</td>
+      <td style="text-align: right">56</td>
+      <td style="text-align: right">8</td>
+      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.3%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1408/1254</td>
+      <td style="text-align: right">18</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1408/1255</td>
+      <td style="text-align: right">23</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">2</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.9%</td>
+      <td style="text-align: right">91.0%</td>
+      <td style="text-align: right">1551/1411</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+10.2%</td>
+      <td style="text-align: right">90.8%</td>
+      <td style="text-align: right">1551/1408</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+25.6%</td>
+      <td style="text-align: right">79.6%</td>
+      <td style="text-align: right">966/769</td>
+      <td style="text-align: right">76</td>
+      <td style="text-align: right">52</td>
+      <td style="text-align: right">6</td>
+      <td>padded FGP3; prefetch_overrun tradeoff +2 accepted</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+21.8%</td>
+      <td style="text-align: right">82.1%</td>
+      <td style="text-align: right">1572/1291</td>
+      <td style="text-align: right">173</td>
+      <td style="text-align: right">66</td>
+      <td style="text-align: right">20</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+21.4%</td>
+      <td style="text-align: right">82.4%</td>
+      <td style="text-align: right">1570/1293</td>
+      <td style="text-align: right">172</td>
+      <td style="text-align: right">62</td>
+      <td style="text-align: right">20</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.4%</td>
+      <td style="text-align: right">91.4%</td>
+      <td style="text-align: right">1565/1431</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.5%</td>
+      <td style="text-align: right">88.9%</td>
+      <td style="text-align: right">3141/2792</td>
+      <td style="text-align: right">326</td>
+      <td style="text-align: right">43</td>
+      <td style="text-align: right">39</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.4%</td>
+      <td style="text-align: right">89.0%</td>
+      <td style="text-align: right">3135/2790</td>
+      <td style="text-align: right">335</td>
+      <td style="text-align: right">46</td>
+      <td style="text-align: right">40</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+5.4%</td>
+      <td style="text-align: right">94.9%</td>
+      <td style="text-align: right">3514/3334</td>
+      <td style="text-align: right">65</td>
+      <td style="text-align: right">36</td>
+      <td style="text-align: right">6</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+4.8%</td>
+      <td style="text-align: right">95.4%</td>
+      <td style="text-align: right">3508/3346</td>
+      <td style="text-align: right">33</td>
+      <td style="text-align: right">23</td>
+      <td style="text-align: right">2</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+13.1%</td>
+      <td style="text-align: right">88.4%</td>
+      <td style="text-align: right">2754/2435</td>
+      <td style="text-align: right">317</td>
+      <td style="text-align: right">43</td>
+      <td style="text-align: right">39</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.9%</td>
+      <td style="text-align: right">88.6%</td>
+      <td style="text-align: right">2746/2433</td>
+      <td style="text-align: right">312</td>
+      <td style="text-align: right">55</td>
+      <td style="text-align: right">38</td>
+      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+5.5%</td>
+      <td style="text-align: right">94.8%</td>
+      <td style="text-align: right">3861/3659</td>
+      <td style="text-align: right">66</td>
+      <td style="text-align: right">47</td>
+      <td style="text-align: right">3</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+4.5%</td>
+      <td style="text-align: right">95.7%</td>
+      <td style="text-align: right">3837/3672</td>
+      <td style="text-align: right">23</td>
+      <td style="text-align: right">23</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1207/1076</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1207/1076</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.5%</td>
+      <td style="text-align: right">93.0%</td>
+      <td style="text-align: right">1898/1765</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.4%</td>
+      <td style="text-align: right">93.1%</td>
+      <td style="text-align: right">1898/1767</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.1%</td>
+      <td style="text-align: right">93.4%</td>
+      <td style="text-align: right">2093/1955</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+6.6%</td>
+      <td style="text-align: right">93.8%</td>
+      <td style="text-align: right">2090/1960</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.4%</td>
+      <td style="text-align: right">88.9%</td>
+      <td style="text-align: right">1400/1245</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.5%</td>
+      <td style="text-align: right">91.3%</td>
+      <td style="text-align: right">2128/1943</td>
+      <td style="text-align: right">31</td>
+      <td style="text-align: right">31</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.8%</td>
+      <td style="text-align: right">91.1%</td>
+      <td style="text-align: right">2132/1942</td>
+      <td style="text-align: right">37</td>
+      <td style="text-align: right">37</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.8%</td>
+      <td style="text-align: right">88.7%</td>
+      <td style="text-align: right">1308/1160</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">16</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1305/1163</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+3.6%</td>
+      <td style="text-align: right">96.5%</td>
+      <td style="text-align: right">2901/2799</td>
+      <td style="text-align: right">33</td>
+      <td style="text-align: right">33</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+3.8%</td>
+      <td style="text-align: right">96.3%</td>
+      <td style="text-align: right">2905/2798</td>
+      <td style="text-align: right">37</td>
+      <td style="text-align: right">37</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+4.5%</td>
+      <td style="text-align: right">95.7%</td>
+      <td style="text-align: right">5028/4813</td>
+      <td style="text-align: right">87</td>
+      <td style="text-align: right">75</td>
+      <td style="text-align: right">2</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+3.7%</td>
+      <td style="text-align: right">96.4%</td>
+      <td style="text-align: right">5011/4830</td>
+      <td style="text-align: right">50</td>
+      <td style="text-align: right">45</td>
+      <td style="text-align: right">1</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+1.7%</td>
+      <td style="text-align: right">98.3%</td>
+      <td style="text-align: right">2286/2248</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+1.7%</td>
+      <td style="text-align: right">98.3%</td>
+      <td style="text-align: right">2286/2248</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.4%</td>
+      <td style="text-align: right">93.1%</td>
+      <td style="text-align: right">1698/1581</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.0%</td>
+      <td style="text-align: right">93.4%</td>
+      <td style="text-align: right">1694/1583</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+12.3%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1365/1216</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.7%</td>
+      <td style="text-align: right">91.2%</td>
+      <td style="text-align: right">1600/1459</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+10.5%</td>
+      <td style="text-align: right">90.5%</td>
+      <td style="text-align: right">1503/1360</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.7%</td>
+      <td style="text-align: right">91.2%</td>
+      <td style="text-align: right">1597/1456</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
+      <td>high</td>
+      <td>blocked</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td>baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
+      <td>high</td>
+      <td>blocked</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td>fgpilot coverage gap; pack loads but foreground loop never starts</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+56.1%</td>
+      <td style="text-align: right">64.1%</td>
+      <td style="text-align: right">1581/1013</td>
+      <td style="text-align: right">424</td>
+      <td style="text-align: right">145</td>
+      <td style="text-align: right">24</td>
+      <td>padded FGP3; still CD-bound</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td style="text-align: right">+58.4%</td>
+      <td style="text-align: right">63.1%</td>
+      <td style="text-align: right">1611/1017</td>
+      <td style="text-align: right">404</td>
+      <td style="text-align: right">99</td>
+      <td style="text-align: right">26</td>
+      <td>padded FGP3; still CD-bound</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+20.0%</td>
+      <td style="text-align: right">83.3%</td>
+      <td style="text-align: right">1295/1079</td>
+      <td style="text-align: right">107</td>
+      <td style="text-align: right">52</td>
+      <td style="text-align: right">9</td>
+      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+7.5%</td>
+      <td style="text-align: right">93.0%</td>
+      <td style="text-align: right">2198/2044</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+9.6%</td>
+      <td style="text-align: right">91.2%</td>
+      <td style="text-align: right">1777/1621</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">15</td>
+      <td style="text-align: right">0</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
+      <td>high</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td style="text-align: right">+10.4%</td>
+      <td style="text-align: right">90.6%</td>
+      <td style="text-align: right">2512/2275</td>
+      <td style="text-align: right">130</td>
+      <td style="text-align: right">90</td>
+      <td style="text-align: right">6</td>
+      <td>padded FGP3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
+      <td>low</td>
+      <td>pending</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.3.11-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

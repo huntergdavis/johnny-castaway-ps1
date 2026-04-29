@@ -73,7 +73,7 @@
 
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page is the running summary of perf
-work on the PS1 port at v0.3.10-ps1: where the bottleneck is, what
+work on the PS1 port at v0.3.11-ps1: where the bottleneck is, what
 got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
 bottom. If you paid for this, you were cheated. Open source and free.</p>
@@ -145,6 +145,12 @@ rejects with a recorded failure reason.</p>
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
 At the time of writing it contains roughly 130 experiments going back to
 2026-04-25. Most of them failed.</p>
+
+<p>The full scene/tide battle card is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
+and is rendered at <a href="../testing-status/">Current testing status</a>.
+It is not the human scene-promotion ledger; it is the timing sheet for
+headless performance work.</p>
 
 <h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
 
@@ -280,73 +286,415 @@ boot tokens still enable them on demand.</li>
 </ul>
 
 <p>The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1221</code> against a target of
-<code class="language-plaintext highlighter-rouge">target_vb=1072</code>. Pre-pause-merge the best was <code class="language-plaintext highlighter-rouge">loop_vb=1297</code>.</p>
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1207</code> against a target of
+<code class="language-plaintext highlighter-rouge">target_vb=1076</code>. The original headless perf-loop baseline was
+<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">219</code> VBlanks
+(<code class="language-plaintext highlighter-rouge">15.36%</code> loop reduction).</p>
 
-<h2 id="where-it-sits-at-v0310-ps1">Where it sits at v0.3.10-ps1</h2>
+<h2 id="where-it-sits-at-v0311-ps1">Where it sits at v0.3.11-ps1</h2>
 
 <p>The current accepted fishing1 high-tide run, captured in the perf log:</p>
 
 <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>policy = stage1_window
-buf    = 23568
+buf    = 333656
 hits   = 155
 due_misses = 0
-blocking_vb = 5
-prefetch.overrun_vb = 5
-loop_vb = 1221
-overrun_vb = 149
-target_vb = 1072
-restore_bytes = 3,085,148
-upload_bytes  = 16,499,200
-dirty_rows    = 25,780
-upload_rects  = 401
+blocking_vb = 0
+prefetch.overrun_vb = 0
+loop_vb = 1207
+overrun_vb = 131
+target_vb = 1076
+restore_bytes = 251,144
+upload_bytes  = 8,533,120
+dirty_rows    = 13,333
+upload_rects  = 436
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>The 1.55x overrun against target — <code class="language-plaintext highlighter-rouge">loop_vb</code> at 1221 vs <code class="language-plaintext highlighter-rouge">target_vb</code> at 1072 —
-is the remaining headroom. Detail-tier attribution shows where it goes:</p>
+<p>That is <strong>+12.2% over target</strong>, or <strong>89.1% of target speed</strong>. Across the
+measured battle-card rows, the average is <strong>+12.1% over target / 89.8%
+target speed</strong>.</p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>render_vb        = 181
-present_wait_vb  = 157
-restore_vb      =  43
-compose_vb      =  31
-upload_vb       =   0
-advance_vb      =   1
+<h2 id="scene-battle-card">Scene Battle Card</h2>
+
+<p>As of 2026-04-29, 57 of 126 scene/tide variants have current headless
+perf measurements. 34 of 63 scenes have at least one timed variant; 23
+scenes have both high- and low-tide variants timed. The values below are
+<code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code>
+called out when nonzero.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Scene</th>
+      <th style="text-align: right">High tide</th>
+      <th style="text-align: right">Low tide</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
+      <td style="text-align: right">+3.0% / 97.1% (4373/4244)</td>
+      <td style="text-align: right">+3.1% / 97.0% (4373/4242); blk 2</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
+      <td style="text-align: right">+12.9% / 88.5% (1205/1067); blk 5</td>
+      <td style="text-align: right">+12.5% / 88.9% (1203/1069); blk 1</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
+      <td style="text-align: right">+9.3% / 91.5% (1866/1707); due 4, blk 25</td>
+      <td style="text-align: right">+9.1% / 91.7% (1861/1706); due 3, blk 29</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
+      <td style="text-align: right">+14.5% / 87.3% (1043/911)</td>
+      <td style="text-align: right">+14.5% / 87.3% (1043/911)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
+      <td style="text-align: right">+22.7% / 81.5% (751/612); blk 8</td>
+      <td style="text-align: right">+21.7% / 82.2% (747/614); blk 1</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
+      <td style="text-align: right">+11.2% / 89.9% (2268/2039); due 9, blk 97</td>
+      <td style="text-align: right">+11.1% / 90.0% (2271/2044); due 8, blk 92</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
+      <td style="text-align: right">+12.3% / 89.1% (1408/1254); due 1, blk 18</td>
+      <td style="text-align: right">+12.2% / 89.1% (1408/1255); due 2, blk 23</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td style="text-align: right">+9.9% / 91.0% (1551/1411); blk 12</td>
+      <td style="text-align: right">+10.2% / 90.8% (1551/1408); due 1, blk 20</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
+      <td style="text-align: right">+25.6% / 79.6% (966/769); due 6, blk 76</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
+      <td style="text-align: right">+21.8% / 82.1% (1572/1291); due 20, blk 173</td>
+      <td style="text-align: right">+21.4% / 82.4% (1570/1293); due 20, blk 172</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
+      <td style="text-align: right">+9.4% / 91.4% (1565/1431); blk 4</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
+      <td style="text-align: right">+12.5% / 88.9% (3141/2792); due 39, blk 326</td>
+      <td style="text-align: right">+12.4% / 89.0% (3135/2790); due 40, blk 335</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
+      <td style="text-align: right">+5.4% / 94.9% (3514/3334); due 6, blk 65</td>
+      <td style="text-align: right">+4.8% / 95.4% (3508/3346); due 2, blk 33</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
+      <td style="text-align: right">+13.1% / 88.4% (2754/2435); due 39, blk 317</td>
+      <td style="text-align: right">+12.9% / 88.6% (2746/2433); due 38, blk 312</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
+      <td style="text-align: right">+5.5% / 94.8% (3861/3659); due 3, blk 66</td>
+      <td style="text-align: right">+4.5% / 95.7% (3837/3672); blk 23</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
+      <td style="text-align: right">+12.2% / 89.1% (1207/1076)</td>
+      <td style="text-align: right">+12.2% / 89.1% (1207/1076)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
+      <td style="text-align: right">+7.5% / 93.0% (1898/1765); blk 2</td>
+      <td style="text-align: right">+7.4% / 93.1% (1898/1767)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
+      <td style="text-align: right">+7.1% / 93.4% (2093/1955); due 1, blk 15</td>
+      <td style="text-align: right">+6.6% / 93.8% (2090/1960); blk 3</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
+      <td style="text-align: right">+12.4% / 88.9% (1400/1245); blk 21</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
+      <td style="text-align: right">+9.5% / 91.3% (2128/1943); blk 31</td>
+      <td style="text-align: right">+9.8% / 91.1% (2132/1942); blk 37</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
+      <td style="text-align: right">+12.8% / 88.7% (1308/1160); due 1, blk 20</td>
+      <td style="text-align: right">+12.2% / 89.1% (1305/1163); blk 10</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td style="text-align: right">+3.6% / 96.5% (2901/2799); blk 33</td>
+      <td style="text-align: right">+3.8% / 96.3% (2905/2798); blk 37</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
+      <td style="text-align: right">+4.5% / 95.7% (5028/4813); due 2, blk 87</td>
+      <td style="text-align: right">+3.7% / 96.4% (5011/4830); due 1, blk 50</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
+      <td style="text-align: right">+1.7% / 98.3% (2286/2248); blk 8</td>
+      <td style="text-align: right">+1.7% / 98.3% (2286/2248); blk 8</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td style="text-align: right">+7.4% / 93.1% (1698/1581); blk 20</td>
+      <td style="text-align: right">+7.0% / 93.4% (1694/1583); blk 14</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
+      <td style="text-align: right">+12.3% / 89.1% (1365/1216); blk 12</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
+      <td style="text-align: right">+9.7% / 91.2% (1600/1459); blk 8</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
+      <td style="text-align: right">+10.5% / 90.5% (1503/1360); blk 8</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
+      <td style="text-align: right">+9.7% / 91.2% (1597/1456); blk 8</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
+      <td style="text-align: right">BLOCKED</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
+      <td style="text-align: right">BLOCKED</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
+      <td style="text-align: right">+56.1% / 64.1% (1581/1013); due 24, blk 424</td>
+      <td style="text-align: right">+58.4% / 63.1% (1611/1017); due 26, blk 404</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
+      <td style="text-align: right">+20.0% / 83.3% (1295/1079); due 9, blk 107</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
+      <td style="text-align: right">+7.5% / 93.0% (2198/2044); blk 14</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
+      <td style="text-align: right">+9.6% / 91.2% (1777/1621); blk 15</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
+      <td style="text-align: right">pending</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
+      <td style="text-align: right">+10.4% / 90.6% (2512/2275); due 6, blk 130</td>
+      <td style="text-align: right">pending</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Detail-tier attribution for the canary currently points at render and
+restore pressure rather than CD stalls:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sched.wait       = 769
+sched.present    = 105
+sched.cd_stage   = 146
+sched.cd_window  =   6
+gfx.restore_bytes = 251,144
+gfx.upload_bytes  = 8,533,120
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">present_wait_vb</code> is mostly the required frame cadence — the runtime is
-waiting on VSync for legitimate reasons. <code class="language-plaintext highlighter-rouge">render_vb</code> and <code class="language-plaintext highlighter-rouge">restore_vb</code> are
-real remaining work. The next plausible wins, in priority order:</p>
+<p>The canary now has no visible CD stall, but the full battle card still has
+CD-heavy scenes (<code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">building6</code>, <code class="language-plaintext highlighter-rouge">walkstuf3</code>). The
+next plausible wins, in priority order:</p>
 
 <ol>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong>
-Detail counters show <code class="language-plaintext highlighter-rouge">present_wait_vb=157</code>, but the first attempt at
-a staged-present scheduler regressed loop time by disrupting CD
-prefetch. The next design needs separate render-prep and CD-prefetch
-slack budgets — stealing held-frame prefetch cadence is what the
-first attempt got wrong.</li>
+Earlier detail counters showed present/wait ownership as a real
+scheduling surface, but the first attempt at a staged-present
+scheduler regressed loop time by disrupting CD prefetch. The next
+design needs separate render-prep and CD-prefetch slack budgets —
+stealing held-frame prefetch cadence is what the first attempt got
+wrong.</li>
   <li><strong>CD stall hiding beyond the current direct-stage / window path.</strong>
-Fishing1 already has only <code class="language-plaintext highlighter-rouge">blocking_vb=5</code> and <code class="language-plaintext highlighter-rouge">prefetch.overrun_vb=5</code>,
-but every saved read still compounds.</li>
+Fishing1 is already at <code class="language-plaintext highlighter-rouge">blocking_vb=0</code>, but the broader scene matrix
+still has large blocking counts. Every saved read still compounds.</li>
   <li><strong>X-aware dirty upload and rect-pressure control.</strong> Upload still
-restores ~3.03 MB and uploads ~16.5 MB per run; the prepared-present
-bridge added speculative restore work, and getting that back is
-probably the next clean win.</li>
+restores 251 KB and uploads 8.5 MB in the FISHING 1 canary; larger
+scenes have much more pressure. Getting that down without changing
+pixels is still a clean win.</li>
   <li><strong>Pack-emitted read groups and sector layout.</strong> Current raw-window
-reads still make 68 active-loop transactions and 5 total backward
-seeks; grouped metadata is the likely next CD breakthrough.</li>
+reads still leave large blocking counts in non-canary scenes; grouped
+metadata is the likely next CD breakthrough.</li>
   <li><strong>Specialized PAL4 FG2 compositor.</strong> Fishing frames are modest;
 larger scenes will make span/tile split and PAL4 conversion overhead
 more important.</li>
 </ol>
 
 <p>The author considers the current build comfortable for the validated
-scenes, not yet headroom-clean. The bottleneck is no longer raw CPU work
-on the MIPS core; it’s CD scheduling phase and the present-wait cadence.
-Those are different bugs from the ones the perf work has been chasing
-for the last month, and chasing them will probably mean adding more
-counters before changing more code.</p>
+scenes, not yet headroom-clean. The canary bottleneck is no longer raw CD
+stall; the matrix bottleneck is uneven per-scene payload/read shape plus
+render/restore pressure. Those are different bugs from the ones the perf
+work was chasing early in the loop, and each new experiment needs to stay
+matrix-aware instead of only optimizing FISHING 1.</p>
 
 <h2 id="non-goals">Non-goals</h2>
 
@@ -415,7 +763,7 @@ day-by-day there.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.3.10-ps1)
+          (v0.3.11-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

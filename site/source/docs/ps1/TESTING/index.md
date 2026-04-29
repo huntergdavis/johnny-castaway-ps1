@@ -21,15 +21,16 @@ scene-playback (fgpilot) path. Everything else in this document is secondary too
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/TESTING.md` |
-| Lines | 163 |
-| Approx. words | 829 |
-| Code fences | 6 |
+| Lines | 203 |
+| Approx. words | 1052 |
+| Code fences | 7 |
 
 ## Outline
 
 - PS1 Port Testing Guide
 -   Primary: scene-playback validation
 -     Variant tokens
+-   Headless Performance Matrix
 -   Secondary (historical): headless regtest harness
 -   Secondary (historical): binary library
 -   Boot modes
