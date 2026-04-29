@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 331 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 332 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -48,6 +48,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/TODO/' | relative_url }}">PS1 Port TODO</a><p><code>docs/ps1/TODO.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/toolchain-setup/' | relative_url }}">PS1 Toolchain Setup</a><p><code>docs/ps1/toolchain-setup.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/visual-detection-spec/' | relative_url }}">Visual Detection Spec: Screenshot-Based Scene and Sprite Identification</a><p><code>docs/ps1/visual-detection-spec.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/walk-implementation-plan/' | relative_url }}">Walk-Connected Story Loop — Implementation Plan</a><p><code>docs/ps1/walk-implementation-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/website-plan/' | relative_url }}">Website Master Plan — Johnny Castaway PS1</a><p><code>docs/ps1/website-plan.md</code></p></li>
 </ul>
 
