@@ -239,8 +239,8 @@ target speed**.
 
 ## Scene Battle Card
 
-As of 2026-04-29, 62 of 126 scene/tide variants have current headless
-perf measurements. 39 of 63 scenes have at least one timed variant; 23
+As of 2026-04-29, 63 of 126 scene/tide variants have current headless
+perf measurements. 39 of 63 scenes have at least one timed variant; 24
 scenes have both high- and low-tide variants timed. The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due`
 called out when nonzero.
@@ -255,7 +255,7 @@ called out when nonzero.
 | `activity8` | pending | pending |
 | `activity9` | +11.2% / 89.9% (2268/2039); due 9, blk 97 | +11.1% / 90.0% (2271/2044); due 8, blk 92 |
 | `activity10` | +12.3% / 89.1% (1408/1254); due 1, blk 18 | +12.2% / 89.1% (1408/1255); due 2, blk 23 |
-| `activity11` | +8.1% / 92.5% (1864/1724); due 1, blk 9 | pending |
+| `activity11` | +8.1% / 92.5% (1864/1724); due 1, blk 9 | +8.3% / 92.3% (1866/1723); due 1, blk 10 |
 | `activity12` | +9.9% / 91.0% (1551/1411); blk 12 | +10.2% / 90.8% (1551/1408); due 1, blk 20 |
 | `building1` | +25.6% / 79.6% (966/769); due 6, blk 76 | pending |
 | `building2` | +21.8% / 82.1% (1572/1291); due 20, blk 173 | +21.4% / 82.4% (1570/1293); due 20, blk 172 |

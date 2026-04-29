@@ -106,10 +106,10 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `62 / 126` |
+| Scene/tide variants timed | `63 / 126` |
 | Scenes with at least one timed variant | `39 / 63` |
-| Scenes with both high/low variants timed | `23 / 63` |
-| Pending variants | `62 / 126` |
+| Scenes with both high/low variants timed | `24 / 63` |
+| Pending variants | `61 / 126` |
 | Blocked variants | `2 / 126` |
 | Measured average over target | `+12.3%` |
 | Measured average target speed | `89.6%` |
@@ -159,7 +159,7 @@ and this page.
 | `activity10` | high | measured | +12.3% | 89.1% | 1408/1254 | 18 | 13 | 1 | padded FGP3 |
 | `activity10` | low | measured | +12.2% | 89.1% | 1408/1255 | 23 | 14 | 2 | padded FGP3 |
 | `activity11` | high | measured | +8.1% | 92.5% | 1864/1724 | 9 | 5 | 1 | padded FGP3 |
-| `activity11` | low | pending | - | - | - | - | - | - |  |
+| `activity11` | low | measured | +8.3% | 92.3% | 1866/1723 | 10 | 5 | 1 | padded FGP3 |
 | `activity12` | high | measured | +9.9% | 91.0% | 1551/1411 | 12 | 12 | 0 | padded FGP3 |
 | `activity12` | low | measured | +10.2% | 90.8% | 1551/1408 | 20 | 14 | 1 | padded FGP3 |
 | `building1` | high | measured | +25.6% | 79.6% | 966/769 | 76 | 52 | 6 | padded FGP3; prefetch_overrun tradeoff +2 accepted |
