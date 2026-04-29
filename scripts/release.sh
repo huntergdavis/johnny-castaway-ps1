@@ -10,7 +10,7 @@
 #   2. Increments the patch version (e.g., 0.3.0 -> 0.3.1)
 #   3. Copies build artifacts to release/ folder
 #   4. Updates VERSION and website release metadata
-#   5. Rebuilds the portable website under www/
+#   5. Rebuilds the portable website under docs/
 #   6. Commits changes and creates a git tag
 #   7. Pushes to GitHub
 
@@ -145,14 +145,17 @@ echo "Updated site release metadata to $TAG_NAME"
 echo ""
 echo -e "${YELLOW}=== Step 5: Rebuilding website ===${NC}"
 "$SITE_BUILD_SCRIPT"
-python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/www" --require-relative
+python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/docs" \
+    --require-relative \
+    --exclude 'ps1/archaeology/regtest-references/**' \
+    --exclude 'ps1/archaeology/vision-artifacts/**'
 
 # Step 6: Git commit
 echo ""
 echo -e "${YELLOW}=== Step 6: Committing changes ===${NC}"
 git add VERSION release/jcreborn.bin release/jcreborn.cue \
     site/_config.yml site/source site/archaeology/regtest-references/cases \
-    site/resources www index.html .nojekyll
+    site/resources docs
 
 git commit -m "$(cat <<EOF
 release: $TAG_NAME - $RELEASE_MSG
