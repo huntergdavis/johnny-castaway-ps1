@@ -262,6 +262,43 @@ SCOPES: list[tuple[str, int, tuple[str, ...]]] = [
     ),
 ]
 
+PHASE_RISK_PATTERNS: list[tuple[str, tuple[str, ...]]] = [
+    (
+        "fishing3-phase-canary-required",
+        (
+            "fishing3 high regressed",
+            "fishing3 high still regressed",
+            "fishing3 high failure",
+            "fishing3 high phase",
+            "fishing3 high",
+        ),
+    ),
+    (
+        "invalid-read-log-cap",
+        (
+            "invalid-read log spam",
+            "invalid read log spam",
+            "invalid-read spam",
+            "invalid read spam",
+            "log cap",
+            "headless log exceeded",
+        ),
+    ),
+    (
+        "hot-layout-sensitive",
+        (
+            "hot-symbol",
+            "hot symbol",
+            "phase shift",
+            "layout-preserving",
+            "layout preserving",
+            "ps-exe",
+            "sector bucket",
+            "pack lba",
+        ),
+    ),
+]
+
 METRIC_RE = re.compile(r"`?([A-Za-z0-9_.\-/]+)`?\s+`?(-?\d+)`?\s*->\s*`?(-?\d+)`?")
 RETRY_SENTENCE_RE = re.compile(r"([^.!?]*\bretry\b[^.!?]*[.!?])", re.I)
 
@@ -437,6 +474,33 @@ def retry_condition(text: str) -> str | None:
     return re.sub(r"\s+", " ", cleaned)
 
 
+def phase_risk_for_text(text: str) -> tuple[str, list[str], str]:
+    lowered = text.lower()
+    hits: list[str] = []
+    for _, patterns in PHASE_RISK_PATTERNS:
+        hits.extend(pattern for pattern in patterns if pattern in lowered)
+
+    if not hits:
+        return "normal", [], "standard gates"
+    if any(pattern in lowered for pattern in PHASE_RISK_PATTERNS[0][1]):
+        return (
+            "fishing3-high-required",
+            hits,
+            "Run FISHING3 high as a required phase canary before promotion.",
+        )
+    if any(pattern in lowered for pattern in PHASE_RISK_PATTERNS[1][1]):
+        return (
+            "invalid-read-log-risk",
+            hits,
+            "Treat clean JCPERF2 as insufficient; require clean process exit/log cap behavior.",
+        )
+    return (
+        "layout-sensitive",
+        hits,
+        "Require exact hot-symbol/PS-EXE/LBA phase or a canary that covers the shifted path.",
+    )
+
+
 def classify_row(row: dict[str, Any]) -> dict[str, Any]:
     text = f"{row['id']} {row['hypothesis']} {row['result']} {row['decision']}"
     lowered = text.lower()
@@ -452,6 +516,7 @@ def classify_row(row: dict[str, Any]) -> dict[str, Any]:
     negative_score = sum(abs(item["delta"]) * item["weight"] for item in negative)
     group, group_priority, group_hits = group_for_text(text)
     scope, scope_priority, scope_hits = scope_for_text(text)
+    phase_risk, phase_hits, phase_recommendation = phase_risk_for_text(text)
 
     if "do not retry" in lowered or "unsafe" in lowered:
         disposition = "dead-end"
@@ -489,6 +554,9 @@ def classify_row(row: dict[str, Any]) -> dict[str, Any]:
         "scope": scope,
         "scope_priority": scope_priority,
         "scope_hits": scope_hits,
+        "phase_risk": phase_risk,
+        "phase_hits": phase_hits,
+        "phase_recommendation": phase_recommendation,
         "relevance": relevance,
         "retry_condition": retry_condition(text),
         "metrics": deltas,
@@ -547,7 +615,9 @@ def build_read_cost_profiles(summary_paths: list[Path]) -> list[dict[str, Any]]:
         blocking_vb = section_int(case, "cd", "blocking_vb") or 0
         prefetch_overrun_vb = prefetch.get("overrun_vb") if isinstance(prefetch.get("overrun_vb"), int) else 0
         due_misses = prefetch.get("due_misses") if isinstance(prefetch.get("due_misses"), int) else 0
+        overrun_vb = section_int(case, "timing", "overrun_vb") or 0
         visible_pressure = blocking_vb + prefetch_overrun_vb
+        pressure_score = visible_pressure * 10 + due_misses * 20 + max(0, overrun_vb)
         if visible_pressure == 0 and due_misses == 0:
             pressure_class = "cd-clean"
         elif due_misses > 0:
@@ -566,7 +636,7 @@ def build_read_cost_profiles(summary_paths: list[Path]) -> list[dict[str, Any]]:
                 "pack_sectors": scene.get("pack_sectors"),
                 "loop_vb": section_int(case, "timing", "loop_vb"),
                 "target_vb": section_int(case, "timing", "target_vb"),
-                "overrun_vb": section_int(case, "timing", "overrun_vb"),
+                "overrun_vb": overrun_vb,
                 "loop_reads": loop_reads,
                 "loop_read_vb": loop_read_vb,
                 "blocking_reads": blocking_reads,
@@ -579,6 +649,7 @@ def build_read_cost_profiles(summary_paths: list[Path]) -> list[dict[str, Any]]:
                 "avg_hidden_read_vb": round(hidden_vb / hidden_reads, 3) if hidden_reads else 0,
                 "avg_blocking_vb": round(blocking_vb / blocking_reads, 3) if blocking_reads else 0,
                 "visible_pressure_vb": visible_pressure,
+                "pressure_score": pressure_score,
                 "pressure_class": pressure_class,
                 "recommended_next_group": (
                     "generated-cd-setup"
@@ -596,6 +667,14 @@ def build_read_cost_profiles(summary_paths: list[Path]) -> list[dict[str, Any]]:
                 },
             }
         )
+    profiles.sort(
+        key=lambda profile: (
+            profile["pressure_score"],
+            profile["visible_pressure_vb"],
+            profile["due_misses"],
+        ),
+        reverse=True,
+    )
     return profiles
 
 
@@ -718,6 +797,7 @@ def build_manifest(args: argparse.Namespace) -> dict[str, Any]:
             "by_disposition": dict(Counter(row["disposition"] for row in rows)),
             "by_group": dict(Counter(row["group"] for row in rows)),
             "by_scope": dict(Counter(row["scope"] for row in rows)),
+            "by_phase_risk": dict(Counter(row["phase_risk"] for row in rows)),
         },
         "top_queue": top_queue[: args.top],
         "groups": {group: items[: args.top] for group, items in sorted(grouped.items())},
@@ -752,16 +832,18 @@ def write_markdown(path: Path, manifest: dict[str, Any]) -> None:
     lines.append(f"- By disposition: `{json.dumps(summary['by_disposition'], sort_keys=True)}`")
     lines.append(f"- By group: `{json.dumps(summary['by_group'], sort_keys=True)}`")
     lines.append(f"- By scope: `{json.dumps(summary['by_scope'], sort_keys=True)}`")
+    lines.append(f"- By phase risk: `{json.dumps(summary['by_phase_risk'], sort_keys=True)}`")
     lines.append("")
     lines.append("## Top Queue")
     lines.append("")
-    lines.append("| Scope | Group | ID | Disposition | Retry condition | Positive signals | Negative signals |")
-    lines.append("|---|---|---|---|---|---|---|")
+    lines.append("| Scope | Group | Phase risk | ID | Disposition | Retry condition | Positive signals | Negative signals |")
+    lines.append("|---|---|---|---|---|---|---|---|")
     for row in manifest["top_queue"]:
         condition = row.get("retry_condition") or "-"
         lines.append(
             "| "
-            f"{row['scope']} | {row['group']} | `{row['id']}` | {row['disposition']} | "
+            f"{row['scope']} | {row['group']} | {row['phase_risk']} | "
+            f"`{row['id']}` | {row['disposition']} | "
             f"{condition} | {metric_brief(row['top_positive_metrics'])} | "
             f"{metric_brief(row['top_negative_metrics'])} |"
         )
@@ -769,12 +851,13 @@ def write_markdown(path: Path, manifest: dict[str, Any]) -> None:
     if manifest["read_cost_profiles"]:
         lines.append("## Read Cost Profiles")
         lines.append("")
-        lines.append("| Label | Class | Loop | Target | Visible pressure | Reads | Avg read VBlank | Due misses | Next group |")
-        lines.append("|---|---|---|---|---|---|---|---|---|")
+        lines.append("| Label | Class | Score | Loop | Target | Visible pressure | Reads | Avg read VBlank | Due misses | Next group |")
+        lines.append("|---|---|---|---|---|---|---|---|---|---|")
         for profile in manifest["read_cost_profiles"]:
             lines.append(
                 "| "
                 f"{profile.get('label')} | {profile.get('pressure_class')} | "
+                f"{profile.get('pressure_score')} | "
                 f"{profile.get('loop_vb')} | {profile.get('target_vb')} | "
                 f"{profile.get('visible_pressure_vb')} | {profile.get('loop_reads')} | "
                 f"{profile.get('avg_loop_read_vb')} | {profile.get('due_misses')} | "
@@ -809,11 +892,13 @@ def print_human(manifest: dict[str, Any]) -> None:
     print(f"By disposition: {json.dumps(summary['by_disposition'], sort_keys=True)}")
     print(f"By group: {json.dumps(summary['by_group'], sort_keys=True)}")
     print(f"By scope: {json.dumps(summary['by_scope'], sort_keys=True)}")
+    print(f"By phase risk: {json.dumps(summary['by_phase_risk'], sort_keys=True)}")
     print("\nTop queue:")
     for row in manifest["top_queue"][:12]:
         print(
             f"  {row['scope']:19s} {row['group']:24s} {row['id']:42s} "
-            f"{row['disposition']:18s} +[{metric_brief(row['top_positive_metrics'])}] "
+            f"{row['disposition']:18s} phase={row['phase_risk']:24s} "
+            f"+[{metric_brief(row['top_positive_metrics'])}] "
             f"-[{metric_brief(row['top_negative_metrics'])}]"
         )
     if manifest["read_cost_profiles"]:
@@ -823,6 +908,7 @@ def print_human(manifest: dict[str, Any]) -> None:
                 f"  {profile.get('label')}: {profile.get('pressure_class')} "
                 f"loop={profile.get('loop_vb')} target={profile.get('target_vb')} "
                 f"visible={profile.get('visible_pressure_vb')} "
+                f"score={profile.get('pressure_score')} "
                 f"reads={profile.get('loop_reads')} "
                 f"avg_read_vb={profile.get('avg_loop_read_vb')}"
             )
