@@ -103,7 +103,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/lab/' | relative_url }}">Magazine-length Lab</a>
-    <p>Feature essays on the dunking bird loop, LLM development, hallucination control, build farm, and regression practice.</p>
+    <p>Feature essays on LLM-assisted development, hallucination control, build farm, and regression practice.</p>
   </li>
   <li>
     <a href="{{ '/hack/' | relative_url }}">Curious hacker path</a>

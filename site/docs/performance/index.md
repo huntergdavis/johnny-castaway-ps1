@@ -80,7 +80,7 @@ At the time of writing it contains roughly 130 experiments going back to
 
 The full scene/tide battle card is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
-and is rendered at [Current testing status]({{ '/docs/testing-status/' | relative_url }}).
+and is rendered as the perf battle card section of the [scene ledger]({{ '/scenes/' | relative_url }}).
 It is not the human scene-promotion ledger; it is the timing sheet for
 headless performance work.
 

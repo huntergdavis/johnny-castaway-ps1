@@ -43,10 +43,6 @@ If you paid for this, you were cheated. Open source and free.
     <p>Headless DuckStation in Docker. Frame PNGs every <em>N</em> frames, SHA256 state hashes, telemetry overlay decode, and the per-scene wrapper.</p>
   </li>
   <li>
-    <a href="{{ '/docs/testing-status/' | relative_url }}">Current testing status</a>
-    <p>The live 63-scene / 126-variant battle card: visual signoff count, measured timing coverage, target-speed percentages, blocking, prefetch, and due-miss counters.</p>
-  </li>
-  <li>
     <a href="{{ '/docs/api/' | relative_url }}">API mapping (SDL2 → PSn00bSDK)</a>
     <p>Every SDL2 symbol the upstream engine called, mapped to the PSn00bSDK call that replaced it. The bridge between the host-capture build and the PS1 build.</p>
   </li>
