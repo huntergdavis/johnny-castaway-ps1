@@ -1354,16 +1354,30 @@ Host preprocessing and multi-step idea backlog:
 | `HP-059` | Generate blog/archeology annotations for interesting failures as the retry manifest is built. | Keeps the journey searchable without polluting the active optimization queue. |
 | `HP-060` | After each accepted multi-step win, auto-promote newly eligible failed classes into the next queue. | The foreground `-Os` and holiday/resource retries proved eligibility changes over time. |
 
-Highest-priority next bets from this triage:
+Grouped priority queue from this triage:
 
-| Priority | Bet | Why this comes first |
+| Group | Priority | Included IDs | Execution rule | Expected payoff |
+|---|---|---|---|---|
+| Evidence and ranking foundation | 1 | `RT-001`, `HP-001`, `HP-002`, `HP-007`, `HP-009`, `HP-028`, `HP-049`, `HP-050`, `HP-058`, `HP-060` | Do first. These are host-side or documentation/tooling changes and should not perturb the PS1 speed binary. | Produces a ranked retry manifest, read-cost classes, and map/layout evidence so the next code experiments are not guesses. |
+| Offset-stable metadata enablers | 2 | `RT-006`, `HP-006`, `HP-008`, `HP-011`, `HP-012`, `HP-015`, `HP-020`, `HP-052`, `HP-053` | Do before adding more runtime read heuristics. Metadata must be sidecar/footer or otherwise payload-offset stable. | Unlocks generated groups, setup segments, safe direct-stage windows, and scene-local policy without repeating prefix-phase failures. |
+| Generated CD/setup pressure wins | 3 | `RT-002`, `RT-003`, `RT-007`, `RT-010`, `HP-003`, `HP-004`, `HP-005`, `HP-018`, `HP-019`, `HP-054` | Start with FISHING3 high because it still has visible pressure and several near-miss groups/segments. Promote only if FISHING1 and FISHING3 low stay clean. | Best near-term VBlank reduction path; turns one-off successful groups and setup segments into generated policy. |
+| Scheduler/read-policy retries | 4 | `RT-004`, `RT-005`, `HP-021`, `HP-022`, `HP-023`, `HP-024`, `HP-025`, `HP-055`, `HP-056`, `HP-057` | Do after metadata/read-cost work. Threshold-only retries are still banned until the runtime can prove read cost and payload coverage. | Reopens old direct-stage, short-slack refill, two-entry queue, async, and prepared-present failures under a real ownership model. |
+| Scene-transition and setup hiding | 5 | `HP-010`, `HP-016`, `HP-017`, `HP-026` | Run beside generated setup-prime work, but judge by `scene_vb`, not only active `loop_vb`. | Converts existing active-loop setup-prime wins into real end-to-end screensaver speed by hiding setup between scenes. |
+| Pack-time graphics preprocessing | 6 | `RT-009`, `HP-032`, `HP-033`, `HP-034`, `HP-035`, `HP-036`, `HP-037`, `HP-038`, `HP-039`, `HP-040`, `HP-041`, `HP-042`, `HP-043` | Do after the CD/setup queue unless a non-fishing canary shows graphics dominates. Prefer generated data or assembly over runtime branches. | Moves restore, compose, upload, and dirty-state work off the PS1 hot path without repeating runtime parser/scratch-packing failures. |
+| Layout, binary size, and diagnostic cleanup | 7 | `RT-008`, `HP-027`, `HP-029`, `HP-030`, `HP-031`, `HP-051` | Run when a phase-control harness exists or when a current baseline makes a prior failure phase-safe. Require exact cadence if it is not a speed experiment. | Recovers binary size and public-readiness cleanup without paying the recurring one-visible-VBlank phase tax. |
+| Validation and expansion guardrails | 8 | `HP-045`, `HP-046`, `HP-047`, `HP-048`, `HP-059` | Run continuously around promotions, especially when expanding beyond FISHING scenes. | Prevents false wins, keeps no-fallback cleanup honest, and preserves archeology/blog traceability. |
+| Architectural branch | 9 | `HP-013`, `HP-014`, `HP-044` | Branch separately after generated metadata and validation are stable. Treat as high-risk, high-upside work, not a quick loop test. | Possible larger gains through payload duplication/reorder or GPU-sprite foreground compositing if incremental wins plateau. |
+
+Near-term execution order:
+
+| Order | Work item | Why now |
 |---|---|---|
-| 1 | Host read-cost simulator plus generated setup/read metadata for FISHING3 high. | It attacks the current visible CD pressure with evidence from the failed near misses. |
-| 2 | Offset-preserving metadata sidecar/footer. | Many better policies need metadata, and prefix shifts have already failed. |
-| 3 | Generated segment-plus-group planner. | The one-off fishing3 segment and read-group results show small wins stack when coverage is correct. |
-| 4 | First-class scheduler ownership for prep, present, and CD. | Threshold experiments are exhausted until ownership is explicit. |
-| 5 | Pack-time upload/restore bands for one dense residual scene. | Runtime parsing/packing failed, but generated data still has a plausible work-reduction path. |
-| 6 | Cold-section/layout harness for old diagnostic and size cleanups. | It can recover binary size while controlling the phase sensitivity that made earlier cleanup risky. |
+| 1 | Build the host retry manifest and read-cost simulator. | It is the cheapest way to stop repeating failed scalar probes and identify which near misses are now eligible. |
+| 2 | Add offset-stable metadata sidecar/footer support for generated policies. | Most valuable retries need metadata, and prefix changes have repeatedly broken CD phase. |
+| 3 | Generate FISHING3 high segment-plus-group candidates from delivered-sector logs. | FISHING3 high still has measurable visible pressure, and existing manual probes already found useful regions. |
+| 4 | Promote one generated read/segment policy only if FISHING1, FISHING3 high, and FISHING3 low all pass. | This proves the grouped methodology before broadening to every scene. |
+| 5 | Retry direct-stage-to-window and short-slack refill only with generated cost/coverage tags. | These old failures had useful signals but need the metadata from the previous steps. |
+| 6 | Start scene-transition preload/hiding once generated setup segments are reliable. | This is how setup-prime wins become real `scene_vb` wins instead of accounting shifts. |
 
 ## Phase 6: Scene Startup And Backdrop Cost
 
