@@ -166,6 +166,13 @@ def parse_boot(boot: str) -> tuple[str | None, int]:
     return scene, 1 if lowtide else 0
 
 
+def repo_relative(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, str]]:
     metrics: dict[tuple[str, str], dict[str, str]] = {}
     metric_mtimes: dict[tuple[str, str], float] = {}
@@ -198,7 +205,7 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
                 over_target = str(loop_vb - target_vb)
                 over_percent = f"{((loop_vb - target_vb) * 100.0 / target_vb):.2f}"
             metrics[metric_key] = {
-                "last_summary": str(path),
+                "last_summary": repo_relative(path),
                 "loop_vb": str(loop_vb) if isinstance(loop_vb, int) else "",
                 "target_vb": str(target_vb) if isinstance(target_vb, int) else "",
                 "over_target_vb": over_target,
