@@ -22,7 +22,7 @@ A perpetual Saturday-morning Johnny Castaway: the player drives Johnny around th
 |---|---:|
 | Source path | `docs/ps1/freeplay-mode-design.md` |
 | Lines | 708 |
-| Approx. words | 4573 |
+| Approx. words | 4596 |
 | Code fences | 7 |
 
 ## Outline

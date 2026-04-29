@@ -21,8 +21,8 @@ Date: 2026-04-29 Status: planned, not started Owner: PS1 perf branch
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/walk-implementation-plan.md` |
-| Lines | 1117 |
-| Approx. words | 7227 |
+| Lines | 1135 |
+| Approx. words | 7333 |
 | Code fences | 18 |
 
 ## Outline
