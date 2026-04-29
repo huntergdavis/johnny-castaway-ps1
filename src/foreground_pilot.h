@@ -29,4 +29,10 @@ void foregroundPilotRuntimeEnd(void);
 struct TTtmSlot;
 struct TTtmSlot *fgBackdropGetSlot(void);
 
+/* Stamp the active holiday overlay on top of the current frame. Called
+ * from walk_pilot's frame loop so holidays persist across walk
+ * transitions (the emblem belongs to the island, not to a specific
+ * scene). Existing foregroundPilotPlay frame loop calls this too. */
+void fgBackdropStampHolidayPublic(void);
+
 #endif

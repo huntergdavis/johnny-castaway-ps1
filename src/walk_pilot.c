@@ -63,12 +63,16 @@ void fgWalkRenderTeardown(void)
 
 /* Single VBlank of redraw using the kernel's last-frame cache.
  * Used during the inter-tick frames (when walkAnimate hasn't ticked
- * yet but we still need to present a frame so VSync stays honest). */
+ * yet but we still need to present a frame so VSync stays honest).
+ * Holiday overlay is stamped after the walk sprite so the active
+ * holiday emblem persists across scene→walk→scene transitions
+ * (Phase 6 of the walk plan). */
 static void walkPilotPresentInterTick(struct TTtmSlot *bgSlot)
 {
     grBeginFrame();
     grRestoreBgTiles();
     walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
+    fgBackdropStampHolidayPublic();
     grUpdateDisplay(NULL, NULL, NULL);
 }
 

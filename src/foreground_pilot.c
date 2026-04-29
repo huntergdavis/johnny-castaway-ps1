@@ -253,6 +253,15 @@ struct TTtmSlot *fgBackdropGetSlot(void)
     return &gFgBackdropSlot;
 }
 
+/* Public wrapper around the file-static fgBackdropStampHoliday().
+ * Used by walk_pilot.c during walk transitions so the holiday
+ * emblem persists. Defined below where the actual stamp logic is;
+ * forward decl already exists at file top (line 243). */
+void fgBackdropStampHolidayPublic(void)
+{
+    fgBackdropStampHoliday();
+}
+
 struct TFgPilotReadGroup {
     uint16 startSector;
     uint16 endSector;
