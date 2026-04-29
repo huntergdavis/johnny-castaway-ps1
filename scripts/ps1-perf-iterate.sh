@@ -581,6 +581,7 @@ emit_foreground_read_plan() {
 
     if ! pack_file="$(python3 - "$summary_file" "$PROJECT_ROOT" <<'PY'
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -593,6 +594,19 @@ pack_name = Path(pack).name
 if not pack_name:
     raise SystemExit(1)
 pack_path = project_root / "generated" / "ps1" / "foreground" / pack_name
+if not pack_path.is_file():
+    scene_name = scene.get("scene")
+    lowtide = scene.get("lowtide") == 1
+    manifest_path = project_root / "scripts" / "ps1-foreground-scene-manifest.py"
+    manifest = json.loads(subprocess.check_output([str(manifest_path)], text=True))
+    for record in manifest:
+        if record.get("slug") != scene_name:
+            continue
+        source_name = record.get("low_source" if lowtide else "high_source", "")
+        source_path = project_root / "generated" / "ps1" / "foreground" / source_name
+        if source_path.is_file():
+            pack_path = source_path
+            break
 if not pack_path.is_file():
     raise SystemExit(1)
 print(pack_path)
