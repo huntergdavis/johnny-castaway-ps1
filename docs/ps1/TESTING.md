@@ -55,6 +55,24 @@ coverage, not the legacy regtest certification scripts:
 The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
 mean no current headless perf summary has been recorded for that scene/tide.
 
+Current battle-card rollup as of 2026-04-29:
+
+| Metric | Value |
+|---|---:|
+| Scene/tide variants measured | `56 / 126` |
+| Scenes with at least one timed variant | `34 / 63` |
+| Scenes with both high/low variants timed | `22 / 63` |
+| Blocked variants | `2 / 126` |
+| Measured average over target | `+12.0%` |
+| Measured average target speed | `89.8%` |
+| FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
+
+Reporting rule: after every accepted perf optimization, or every rejected
+experiment worth preserving, update `performance-scene-matrix.csv`,
+`performance-experiment-log.md`, the README status table, and the rendered
+website performance page. The CSV is the durable numeric source; prose
+surfaces should summarize it, not invent independent numbers.
+
 ## Secondary (historical): headless regtest harness
 
 The headless regtest harness runs DuckStation's regtest binary in Docker

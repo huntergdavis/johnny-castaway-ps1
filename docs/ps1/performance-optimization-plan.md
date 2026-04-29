@@ -153,14 +153,20 @@ because it adds duplicate RAM restore/compose work (`restore_calls 156 -> 192`,
 some of that duplicate work with flat key timing, but the larger present-wait
 fix still needs a scheduler with separate render-prep and CD-prefetch budgets.
 
-Current post-cleanup Detail-tier attribution on `20260426-234118` confirms the
-same priority more sharply: `loop_vb=1221`, `overrun_vb=150`,
-`render_vb=179`, `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`,
-`blocking_vb=5`, and `prefetch.overrun_vb=5`. The remaining gap is dominated
-by present wait, not visible CD. A direct prepared-present event-poll removal
-was rejected because it regressed visible CD pressure and weakens pause/input
-semantics; the present fix needs a real scheduler/presentation design, not a
-local poll deletion.
+Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
+`loop_vb=1221`, `overrun_vb=150`, `render_vb=179`,
+`present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
+and `prefetch.overrun_vb=5`. That is now historical context, not the current
+canary. As of the 2026-04-29 battle-card refresh, FISHING 1 high is
+`loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
+`prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
+56/126 scene/tide variants are timed and average `+12.0%` over target /
+`89.8%` target speed. The remaining optimization target is therefore
+matrix-wide: some scenes are now canary-clean, while others still have large
+CD/payload and render/restore pressure. A direct prepared-present event-poll
+removal was rejected because it regressed visible CD pressure and weakens
+pause/input semantics; the present fix needs a real scheduler/presentation
+design, not a local poll deletion.
 
 The first scheduler ownership pass on `20260427-105900` adds the missing
 Summary-tier ownership surface without changing fishing1 timing or PS-EXE
@@ -1310,6 +1316,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-165` | Done: convert VISITOR7 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop VISITOR7 high FGP2 baseline and converting `VISITOR7.FG2` to padded FGP3 improves `loop_vb 1837 -> 1777`, `blocking_vb 83 -> 15`, `prefetch_overrun_vb 83 -> 15`, `loop_reads 79 -> 26`, and payload `1034782 -> 367617`, while preserving `FG\\VISITOR7.FG2` LBA `166535` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with STAND4 high, BUILDING1 high, or the next large v1 PAL4 pending row. |
 | `P5-166` | Done: convert STAND4 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop STAND4 high FGP2 baseline and converting `STAND4.FG2` to padded FGP3 improves `loop_vb 1405 -> 1365`, `blocking_vb 71 -> 12`, `prefetch_overrun_vb 71 -> 12`, `loop_reads 89 -> 16`, and payload `994023 -> 241352`, while preserving `FG\\STAND4.FG2` LBA `121433` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with BUILDING1 high, WALKSTUF3 low, or the next large v1 PAL4 pending row. |
 | `P5-167` | Done: convert BUILDING1 high to padded FGP3 via loop validation. | Capturing a clean explicit-loop BUILDING1 high FGP2 baseline and converting `BUILDING1.FG2` to padded FGP3 improves `loop_vb 1019 -> 966`, `blocking_vb 184 -> 76`, `due_misses 27 -> 6`, `loop_reads 80 -> 44`, and payload `951375 -> 526376`, while preserving `FG\\BUIL1.FG2` LBA `39531` and PS-EXE `147456`. `prefetch_overrun_vb` regresses slightly `50 -> 52`; this is accepted with bounded tolerance because the scene still saves `53` loop VBlanks and removes most due misses. FISHING1 high stayed exact-flat. Continue with WALKSTUF3 low, low-tide pairs for accepted high scenes, or the next large v1 PAL4 pending row. |
+| `P5-168` | Rejected: plain padded FGP3 for WALKSTUF3 low. | Capturing a clean explicit-loop WALKSTUF3 low FGP2 baseline and converting `WALK3LOW.FG2` to padded FGP3 only improves `loop_vb 2494 -> 2485` and `blocking_vb 97 -> 86`, while `prefetch_overrun_vb` regresses `65 -> 69` and fails the default gate. Payload only drops `986873 -> 811444`. The original FGP2 pack was restored; retry this scene only with generated grouping/direct16/residual metadata or scheduler changes. Continue with STAND5 low, STAND6 low, STAND4 low, or another eligible v1 PAL4 pending row. |
 
 ## Failed Experiment Triage After P5-90
 
