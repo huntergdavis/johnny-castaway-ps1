@@ -112,8 +112,8 @@ A few things this project is deliberately not trying to be:
   restore-pilot era, and other paths that did not become the
   active methodology.
 - [/lab/]({{ '/lab/' | relative_url }}) -- feature-length essays on
-  the dunking bird, LLM-assisted development, hallucination control,
-  build infrastructure, and regression practice.
+  LLM-assisted development, hallucination control, build
+  infrastructure, and regression practice.
 - [/hack/]({{ '/hack/' | relative_url }}) -- a learning path for
   hackers who want to read the C, port to another machine, or
   understand the debugging loops.

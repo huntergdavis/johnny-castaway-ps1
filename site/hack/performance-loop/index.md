@@ -11,12 +11,10 @@ Run the same scene. Capture the same frames. Record the same counters. Change
 one thing. Run it again. Leave it running long enough for rare failures to show
 up.
 
-The funny version is the dunking bird app: a physical novelty bird tapping a
-keyboard to keep a long-running performance improvement loop alive for days.
-The serious version is that the project needed unattended repetition before
-it could distinguish a real stability improvement from one good boot.
-
-Read the full story in [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }}).
+The project needed unattended repetition before it could distinguish a real
+stability improvement from one good boot. The loops have to run long enough
+for the rare failures to surface, which means leaving them running for days
+on end without a person at the keyboard.
 
 ## Why Printf Mattered
 

@@ -119,5 +119,5 @@ the taste, the release bar, the legal posture, or the Credits screen.
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
 - [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }})
 - [The voice anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
-- [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }})
+- [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }}) — what keeps the parallel agents alive between human review passes
 - [Source library]({{ '/source/' | relative_url }})

@@ -32,7 +32,7 @@ pack-format or scheduler change.
 
 ## Pointers
 
-- [Current testing status]({{ '/docs/testing-status/' | relative_url }})
+- [Scene ledger + perf battle card]({{ '/scenes/' | relative_url }})
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
 - [Scene performance matrix]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)

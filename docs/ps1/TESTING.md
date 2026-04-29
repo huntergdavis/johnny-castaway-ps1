@@ -55,7 +55,7 @@ coverage, not the legacy regtest certification scripts:
 The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
 mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
-[/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/).
+[/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
 Current battle-card rollup as of 2026-04-29:
 

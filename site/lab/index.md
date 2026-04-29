@@ -50,7 +50,7 @@ second six are the companion craft retrospectives.
 <ul class="doc-grid">
   <li>
     <a href="{{ '/lab/dunking-bird/' | relative_url }}">The dunking bird</a>
-    <p>How a fifty-cent novelty toy kept a Johnny Castaway performance experiment alive for nine days. The hack, the science, the coda.</p>
+    <p>A dumb hack the author wrote that pokes multiple LLM agents in parallel so they keep working instead of going idle. Used a lot during the perf branch's long unattended runs.</p>
   </li>
   <li>
     <a href="{{ '/lab/llm-pass/' | relative_url }}">The LLM pass</a>

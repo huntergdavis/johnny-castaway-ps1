@@ -46,8 +46,7 @@ written.
 ## The Hunter shape
 
 The source samples are my project posts: Dreamcast, embedded Linux live CD,
-text edition, weird one-off tools, the dunking bird. The pattern is pretty
-consistent:
+text edition, weird one-off tools. The pattern is pretty consistent:
 
 - first person
 - specific numbers
