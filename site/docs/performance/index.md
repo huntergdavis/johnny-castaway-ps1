@@ -234,13 +234,13 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-measured battle-card rows, the average is **+12.4% over target / 89.5%
+measured battle-card rows, the average is **+12.6% over target / 89.3%
 target speed**.
 
 ## Scene Battle Card
 
-As of 2026-04-29, 65 of 126 scene/tide variants have current headless
-perf measurements. 40 of 63 scenes have at least one timed variant; 25
+As of 2026-04-29, 66 of 126 scene/tide variants have current headless
+perf measurements. 40 of 63 scenes have at least one timed variant; 26
 scenes have both high- and low-tide variants timed. The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due`
 called out when nonzero.
@@ -257,7 +257,7 @@ called out when nonzero.
 | `activity10` | +12.3% / 89.1% (1408/1254); due 1, blk 18 | +12.2% / 89.1% (1408/1255); due 2, blk 23 |
 | `activity11` | +8.1% / 92.5% (1864/1724); due 1, blk 9 | +8.3% / 92.3% (1866/1723); due 1, blk 10 |
 | `activity12` | +9.9% / 91.0% (1551/1411); blk 12 | +10.2% / 90.8% (1551/1408); due 1, blk 20 |
-| `building1` | +25.6% / 79.6% (966/769); due 6, blk 76 | pending |
+| `building1` | +25.6% / 79.6% (966/769); due 6, blk 76 | +24.2% / 80.5% (953/767); due 4, blk 62 |
 | `building2` | +21.8% / 82.1% (1572/1291); due 20, blk 173 | +21.4% / 82.4% (1570/1293); due 20, blk 172 |
 | `building3` | +9.4% / 91.4% (1565/1431); blk 4 | pending |
 | `building4` | +12.5% / 88.9% (3141/2792); due 39, blk 326 | +12.4% / 89.0% (3135/2790); due 40, blk 335 |
