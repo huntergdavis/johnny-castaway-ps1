@@ -248,10 +248,6 @@ struct TFgPilotReadGroup {
     uint16 endSector;
 };
 
-static const struct TFgPilotReadGroup kFishing1HighReadGroups12[] = {
-    {396, 406}
-};
-
 static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
     {223, 234},
     {234, 246},
@@ -2042,14 +2038,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     windowCapacityBytes < gFgRuntime.setupPrimeWindowBytes)
                     windowCapacityBytes = gFgRuntime.setupPrimeWindowBytes;
                 if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                    islandState.lowTide == 0 &&
-                    fgSceneEquals(sceneName, "fishing1")) {
-                    gFgRuntime.streamReadGroups = kFishing1HighReadGroups12;
-                    gFgRuntime.streamReadGroupCount =
-                        (uint8)(sizeof(kFishing1HighReadGroups12) /
-                                sizeof(kFishing1HighReadGroups12[0]));
-                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                           fgSceneEquals(sceneName, "fishing3")) {
+                    fgSceneEquals(sceneName, "fishing3")) {
                     if (islandState.lowTide) {
                         gFgRuntime.streamReadGroups = kFishing3LowReadGroups12;
                         gFgRuntime.streamReadGroupCount =
