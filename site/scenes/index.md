@@ -106,13 +106,13 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `68 / 126` |
+| Scene/tide variants timed | `69 / 126` |
 | Scenes with at least one timed variant | `41 / 63` |
-| Scenes with both high/low variants timed | `27 / 63` |
-| Pending variants | `57 / 126` |
+| Scenes with both high/low variants timed | `28 / 63` |
+| Pending variants | `55 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.7%` |
-| Measured average target speed | `89.3%` |
+| Measured average over target | `+12.8%` |
+| Measured average target speed | `89.2%` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -187,7 +187,7 @@ and this page.
 | `fishing5` | high | pending | - | - | - | - | - | - |  |
 | `fishing5` | low | pending | - | - | - | - | - | - |  |
 | `fishing6` | high | measured | +19.2% | 83.9% | 893/749 | 7 | 7 | 0 | padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam |
-| `fishing6` | low | pending | - | - | - | - | - | - |  |
+| `fishing6` | low | measured | +19.6% | 83.6% | 897/750 | 10 | 10 | 0 | padded FGP3 |
 | `fishing7` | high | measured | +19.4% | 83.8% | 863/723 | 7 | 7 | 0 | padded FGP3 |
 | `fishing7` | low | pending | - | - | - | - | - | - |  |
 | `fishing8` | high | measured | +12.4% | 88.9% | 1400/1245 | 21 | 21 | 0 | padded FGP3 |
