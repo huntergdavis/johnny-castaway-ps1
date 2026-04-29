@@ -21,8 +21,8 @@ Date: 2026-04-25
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-optimization-plan.md` |
-| Lines | 1468 |
-| Approx. words | 21848 |
+| Lines | 2355 |
+| Approx. words | 45572 |
 | Code fences | 3 |
 
 ## Outline
@@ -40,7 +40,7 @@ Date: 2026-04-25
 -   Phase 3: Specialized FG2 Compositors
 -   Phase 4: FG2 Streaming, Prefetch, And CD Access
 -   Phase 5: Pack Format Improvements
--   Phase 6: Scene Startup And Backdrop Cost
+-   Failed Experiment Triage After P5-90
 
 ## Read it in context
 

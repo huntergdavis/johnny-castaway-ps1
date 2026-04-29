@@ -15,6 +15,10 @@ struct TTtmThread;
 #define PS1_PERF_PHASE_CLEANUP 2
 #define PS1_PERF_UNKNOWN_LBA 0xffffffffUL
 #define PS1_PERF_CD_SECTOR_SIZE 2048UL
+#if PS1_PERF_DEEP_TRACE
+#define PS1_PERF_SCHED_EVENT_COUNT 10
+#define PS1_PERF_SCHED_SLACK_BUCKET_COUNT 5
+#endif
 
 volatile uint8 ps1PerfEnabled = 0;
 volatile uint8 ps1PerfLevel = PS1_PERF_LEVEL_OFF;
@@ -144,6 +148,23 @@ struct TPs1PerfCounters {
     uint32 prefetchDuplicate;
     uint32 prefetchWastedBytes;
 
+    uint32 schedWait;
+    uint32 schedPresent;
+    uint32 schedCdStage;
+    uint32 schedCdWindow;
+    uint32 schedVisualPrepare;
+    uint32 schedCdReserved;
+    uint32 schedPrepareBlockedCd;
+    uint32 schedPreparedReady;
+    uint32 schedPreparedUsed;
+    uint32 schedPreparedWasted;
+    uint32 schedSlackVBlanks;
+    uint16 schedSlackMin;
+    uint16 schedSlackMax;
+#if PS1_PERF_DEEP_TRACE
+    uint32 schedSlackBuckets[PS1_PERF_SCHED_EVENT_COUNT][PS1_PERF_SCHED_SLACK_BUCKET_COUNT];
+#endif
+
     uint32 restoreCalls;
     uint32 restoreBytes;
     uint32 maxRestoreBytes;
@@ -180,6 +201,52 @@ struct TPs1PerfCounters {
     uint32 crossedCompose;
     uint32 crossedUpload;
     uint32 crossedAdvance;
+
+#if PS1_PERF_DEEP_TRACE
+    uint8 pipelinePath;
+    uint32 pipeDueFrames;
+    uint32 pipePrepareFrames;
+    uint32 pipePreparedPresentFrames;
+    uint32 pipeDueVBlanks;
+    uint32 pipePrepareVBlanks;
+    uint32 pipePreparedPresentVBlanks;
+    uint16 pipeDueMaxVBlanks;
+    uint16 pipePrepareMaxVBlanks;
+    uint16 pipePreparedPresentMaxVBlanks;
+    uint16 pipeDueMaxFrameIndex;
+    uint16 pipePrepareMaxFrameIndex;
+    uint16 pipePreparedPresentMaxFrameIndex;
+    uint32 pipeDueRestoreVBlanks;
+    uint32 pipePrepareRestoreVBlanks;
+    uint32 pipePreparedPresentRestoreVBlanks;
+    uint32 pipeDueComposeVBlanks;
+    uint32 pipePrepareComposeVBlanks;
+    uint32 pipePreparedPresentComposeVBlanks;
+    uint32 pipeDuePresentWaitVBlanks;
+    uint32 pipePreparedPresentWaitVBlanks;
+    uint32 pipeDueUploadVBlanks;
+    uint32 pipePreparedPresentUploadVBlanks;
+    uint32 pipeDueEventWaitVBlanks;
+    uint32 pipePreparedPresentEventWaitVBlanks;
+    uint32 pipeDueRestoreBytes;
+    uint32 pipePrepareRestoreBytes;
+    uint32 pipePreparedPresentRestoreBytes;
+    uint32 pipeDueComposeRows;
+    uint32 pipePrepareComposeRows;
+    uint32 pipePreparedPresentComposeRows;
+    uint32 pipeDueComposeSpans;
+    uint32 pipePrepareComposeSpans;
+    uint32 pipePreparedPresentComposeSpans;
+    uint32 pipeDueComposePixels;
+    uint32 pipePrepareComposePixels;
+    uint32 pipePreparedPresentComposePixels;
+    uint32 pipeDueUploadCalls;
+    uint32 pipePreparedPresentUploadCalls;
+    uint32 pipeDueUploadRects;
+    uint32 pipePreparedPresentUploadRects;
+    uint32 pipeDueUploadBytes;
+    uint32 pipePreparedPresentUploadBytes;
+#endif
 
     uint32 frameBufferBytes;
     uint32 scratchBytes;
@@ -235,6 +302,8 @@ static const char *ps1PerfFormatName(void)
         return "fgp2_pal4";
     if (gPs1Perf.packFormat == 3)
         return "fgp2_indexed8";
+    if (gPs1Perf.packFormat == 4)
+        return "fgp3_pal4_residual";
     return "unknown";
 }
 
@@ -404,11 +473,10 @@ void ps1PerfMarkHeldLoop(void)
         gPs1Perf.heldLoops++;
 }
 
-void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks)
+void ps1PerfMarkAdvance(uint16 elapsedVBlanks)
 {
     if (!ps1PerfEnabled)
         return;
-    (void)targetVBlanks;
     gPs1Perf.advances++;
     gPs1Perf.elapsedVBlanks += elapsedVBlanks;
     if (elapsedVBlanks > 1)
@@ -669,6 +737,162 @@ void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit)
         gPs1Perf.prefetchHits++;
 }
 
+#if PS1_PERF_DEEP_TRACE
+static uint8 ps1PerfSlackBucket(uint16 slackVBlanks);
+#endif
+
+void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks)
+{
+    if (!ps1PerfEnabled)
+        return;
+
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL &&
+        event < PS1_PERF_SCHED_EVENT_COUNT) {
+        gPs1Perf.schedSlackBuckets[event][ps1PerfSlackBucket(slackVBlanks)]++;
+    }
+#endif
+
+    switch (event) {
+        case PS1_PERF_SCHED_WAIT:
+            gPs1Perf.schedWait++;
+            break;
+        case PS1_PERF_SCHED_PRESENT:
+            gPs1Perf.schedPresent++;
+            break;
+        case PS1_PERF_SCHED_CD_STAGE:
+            gPs1Perf.schedCdStage++;
+            break;
+        case PS1_PERF_SCHED_CD_WINDOW:
+            gPs1Perf.schedCdWindow++;
+            break;
+        case PS1_PERF_SCHED_VISUAL_PREPARE:
+            gPs1Perf.schedVisualPrepare++;
+            break;
+        case PS1_PERF_SCHED_CD_RESERVED:
+            gPs1Perf.schedCdReserved++;
+            return;
+        case PS1_PERF_SCHED_PREP_BLOCKED_CD:
+            gPs1Perf.schedPrepareBlockedCd++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_READY:
+            gPs1Perf.schedPreparedReady++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_USED:
+            gPs1Perf.schedPreparedUsed++;
+            return;
+        case PS1_PERF_SCHED_PREPARED_WASTED:
+            gPs1Perf.schedPreparedWasted++;
+            return;
+        default:
+            return;
+    }
+
+    gPs1Perf.schedSlackVBlanks += slackVBlanks;
+    if (gPs1Perf.schedSlackMin == 0 || slackVBlanks < gPs1Perf.schedSlackMin)
+        gPs1Perf.schedSlackMin = slackVBlanks;
+    if (slackVBlanks > gPs1Perf.schedSlackMax)
+        gPs1Perf.schedSlackMax = slackVBlanks;
+}
+
+#if PS1_PERF_DEEP_TRACE
+static uint8 ps1PerfSlackBucket(uint16 slackVBlanks)
+{
+    if (slackVBlanks <= 1)
+        return 0;
+    if (slackVBlanks <= 3)
+        return 1;
+    if (slackVBlanks == 4)
+        return 2;
+    if (slackVBlanks <= 8)
+        return 3;
+    return 4;
+}
+
+void ps1PerfBeginPipeline(uint8 path)
+{
+    if (ps1PerfLevel < PS1_PERF_LEVEL_DETAIL)
+        return;
+    gPs1Perf.pipelinePath = path;
+}
+
+void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks)
+{
+    if (ps1PerfLevel < PS1_PERF_LEVEL_DETAIL)
+        return;
+
+    switch (path) {
+        case PS1_PERF_PIPE_DUE_RENDER:
+            gPs1Perf.pipeDueFrames++;
+            gPs1Perf.pipeDueVBlanks += elapsedVBlanks;
+            if (elapsedVBlanks > gPs1Perf.pipeDueMaxVBlanks) {
+                gPs1Perf.pipeDueMaxVBlanks = elapsedVBlanks;
+                gPs1Perf.pipeDueMaxFrameIndex = gPs1Perf.currentFrameIndex;
+            }
+            break;
+        case PS1_PERF_PIPE_PREPARE:
+            gPs1Perf.pipePrepareFrames++;
+            gPs1Perf.pipePrepareVBlanks += elapsedVBlanks;
+            if (elapsedVBlanks > gPs1Perf.pipePrepareMaxVBlanks) {
+                gPs1Perf.pipePrepareMaxVBlanks = elapsedVBlanks;
+                gPs1Perf.pipePrepareMaxFrameIndex = gPs1Perf.currentFrameIndex;
+            }
+            break;
+        case PS1_PERF_PIPE_PREPARED_PRESENT:
+            gPs1Perf.pipePreparedPresentFrames++;
+            gPs1Perf.pipePreparedPresentVBlanks += elapsedVBlanks;
+            if (elapsedVBlanks > gPs1Perf.pipePreparedPresentMaxVBlanks) {
+                gPs1Perf.pipePreparedPresentMaxVBlanks = elapsedVBlanks;
+                gPs1Perf.pipePreparedPresentMaxFrameIndex = gPs1Perf.currentFrameIndex;
+            }
+            break;
+        default:
+            break;
+    }
+
+    if (gPs1Perf.pipelinePath == path)
+        gPs1Perf.pipelinePath = PS1_PERF_PIPE_NONE;
+}
+
+static void ps1PerfMarkPipelinePhase(uint8 phase, uint16 elapsedVBlanks)
+{
+    switch (gPs1Perf.pipelinePath) {
+        case PS1_PERF_PIPE_DUE_RENDER:
+            if (phase == PS1_PERF_RENDER_RESTORE)
+                gPs1Perf.pipeDueRestoreVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_COMPOSE)
+                gPs1Perf.pipeDueComposeVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_PRESENT_WAIT)
+                gPs1Perf.pipeDuePresentWaitVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_UPLOAD)
+                gPs1Perf.pipeDueUploadVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_EVENT_WAIT)
+                gPs1Perf.pipeDueEventWaitVBlanks += elapsedVBlanks;
+            break;
+        case PS1_PERF_PIPE_PREPARE:
+            if (phase == PS1_PERF_RENDER_RESTORE)
+                gPs1Perf.pipePrepareRestoreVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_COMPOSE)
+                gPs1Perf.pipePrepareComposeVBlanks += elapsedVBlanks;
+            break;
+        case PS1_PERF_PIPE_PREPARED_PRESENT:
+            if (phase == PS1_PERF_RENDER_RESTORE)
+                gPs1Perf.pipePreparedPresentRestoreVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_COMPOSE)
+                gPs1Perf.pipePreparedPresentComposeVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_PRESENT_WAIT)
+                gPs1Perf.pipePreparedPresentWaitVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_UPLOAD)
+                gPs1Perf.pipePreparedPresentUploadVBlanks += elapsedVBlanks;
+            else if (phase == PS1_PERF_RENDER_EVENT_WAIT)
+                gPs1Perf.pipePreparedPresentEventWaitVBlanks += elapsedVBlanks;
+            break;
+        default:
+            break;
+    }
+}
+#endif
+
 void ps1PerfMarkRestore(uint32 bytes)
 {
     if (!ps1PerfEnabled)
@@ -677,6 +901,16 @@ void ps1PerfMarkRestore(uint32 bytes)
     gPs1Perf.restoreBytes += bytes;
     if (bytes > gPs1Perf.maxRestoreBytes)
         gPs1Perf.maxRestoreBytes = bytes;
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL) {
+        if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_DUE_RENDER)
+            gPs1Perf.pipeDueRestoreBytes += bytes;
+        else if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_PREPARE)
+            gPs1Perf.pipePrepareRestoreBytes += bytes;
+        else if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_PREPARED_PRESENT)
+            gPs1Perf.pipePreparedPresentRestoreBytes += bytes;
+    }
+#endif
 }
 
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes)
@@ -688,9 +922,26 @@ void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payload
     gPs1Perf.composeSpans += spans;
     gPs1Perf.composePixels += pixels;
     gPs1Perf.composePayloadBytes += payloadBytes;
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL) {
+        if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_DUE_RENDER) {
+            gPs1Perf.pipeDueComposeRows += rows;
+            gPs1Perf.pipeDueComposeSpans += spans;
+            gPs1Perf.pipeDueComposePixels += pixels;
+        } else if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_PREPARE) {
+            gPs1Perf.pipePrepareComposeRows += rows;
+            gPs1Perf.pipePrepareComposeSpans += spans;
+            gPs1Perf.pipePrepareComposePixels += pixels;
+        } else if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_PREPARED_PRESENT) {
+            gPs1Perf.pipePreparedPresentComposeRows += rows;
+            gPs1Perf.pipePreparedPresentComposeSpans += spans;
+            gPs1Perf.pipePreparedPresentComposePixels += pixels;
+        }
+    }
+#endif
 }
 
-void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks)
+void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks)
 {
     if (!ps1PerfEnabled)
         return;
@@ -707,18 +958,25 @@ void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks)
         gPs1Perf.maxUploadRects = rects;
     if (bytes > gPs1Perf.dirtyMaxRoundedBytes)
         gPs1Perf.dirtyMaxRoundedBytes = bytes;
-}
-
-void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes)
-{
-    if (!ps1PerfEnabled)
-        return;
     gPs1Perf.dirtyRows += rows;
-    gPs1Perf.dirtyExactBytes += exactBytes;
+    gPs1Perf.dirtyExactBytes += bytes;
     if (rows > gPs1Perf.dirtyMaxRows)
         gPs1Perf.dirtyMaxRows = rows;
-    if (exactBytes > gPs1Perf.dirtyMaxExactBytes)
-        gPs1Perf.dirtyMaxExactBytes = exactBytes;
+    if (bytes > gPs1Perf.dirtyMaxExactBytes)
+        gPs1Perf.dirtyMaxExactBytes = bytes;
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL) {
+        if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_DUE_RENDER) {
+            gPs1Perf.pipeDueUploadCalls++;
+            gPs1Perf.pipeDueUploadRects += rects;
+            gPs1Perf.pipeDueUploadBytes += bytes;
+        } else if (gPs1Perf.pipelinePath == PS1_PERF_PIPE_PREPARED_PRESENT) {
+            gPs1Perf.pipePreparedPresentUploadCalls++;
+            gPs1Perf.pipePreparedPresentUploadRects += rects;
+            gPs1Perf.pipePreparedPresentUploadBytes += bytes;
+        }
+    }
+#endif
 }
 
 void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks)
@@ -736,6 +994,10 @@ void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks)
 {
     if (ps1PerfLevel < PS1_PERF_LEVEL_DETAIL)
         return;
+
+#if PS1_PERF_DEEP_TRACE
+    ps1PerfMarkPipelinePhase(phase, elapsedVBlanks);
+#endif
 
     switch (phase) {
         case PS1_PERF_RENDER_RESTORE:
@@ -837,13 +1099,13 @@ static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
     );
     printf(
         "JCPERF cd reads=%lu fail=%lu bytes=%lu sectors=%lu max_sectors=%u cd_vb=%lu max_cd_vb=%u\n",
-        (unsigned long)gPs1Perf.legacyCdReads,
-        (unsigned long)gPs1Perf.legacyCdReadFailures,
-        (unsigned long)gPs1Perf.legacyCdBytes,
-        (unsigned long)gPs1Perf.legacyCdSectors,
-        (unsigned int)gPs1Perf.legacyMaxCdSectors,
-        (unsigned long)gPs1Perf.legacyCdElapsedVBlanks,
-        (unsigned int)gPs1Perf.legacyMaxCdElapsedVBlanks
+        (unsigned long)gPs1Perf.cdReads,
+        (unsigned long)gPs1Perf.cdReadFailures,
+        (unsigned long)gPs1Perf.cdBytes,
+        (unsigned long)gPs1Perf.cdSectors,
+        (unsigned int)gPs1Perf.maxCdSectors,
+        (unsigned long)gPs1Perf.cdElapsedVBlanks,
+        (unsigned int)gPs1Perf.maxCdElapsedVBlanks
     );
     printf(
         "JCPERF gfx restore_calls=%lu restore_bytes=%lu compose_calls=%lu rows=%lu spans=%lu pixels=%lu payload=%lu uploads=%lu rects=%lu upload_bytes=%lu upload_vb=%lu max_upload_vb=%u\n",
@@ -861,6 +1123,21 @@ static void ps1PerfPrintLegacy(uint16 totalSceneVBlanks)
         (unsigned int)gPs1Perf.maxUploadElapsedVBlanks
     );
 }
+
+#if PS1_PERF_DEEP_TRACE
+static void ps1PerfPrintSchedBucket(const char *section, uint8 event)
+{
+    printf(
+        "JCPERF2 %s b1=%lu b2_3=%lu b4=%lu b5_8=%lu b9p=%lu\n",
+        section,
+        (unsigned long)gPs1Perf.schedSlackBuckets[event][0],
+        (unsigned long)gPs1Perf.schedSlackBuckets[event][1],
+        (unsigned long)gPs1Perf.schedSlackBuckets[event][2],
+        (unsigned long)gPs1Perf.schedSlackBuckets[event][3],
+        (unsigned long)gPs1Perf.schedSlackBuckets[event][4]
+    );
+}
+#endif
 
 static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
                                 uint32 setupVBlanks, uint32 cleanupVBlanks)
@@ -1000,6 +1277,33 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.prefetchWastedBytes
     );
     printf(
+        "JCPERF2 sched present=%lu cd_stage=%lu cd_window=%lu visual_prepare=%lu wait=%lu cd_reserved=%lu prep_blocked_cd=%lu prepared_ready=%lu prepared_used=%lu prepared_wasted=%lu slack_vb=%lu slack_min=%u slack_max=%u\n",
+        (unsigned long)gPs1Perf.schedPresent,
+        (unsigned long)gPs1Perf.schedCdStage,
+        (unsigned long)gPs1Perf.schedCdWindow,
+        (unsigned long)gPs1Perf.schedVisualPrepare,
+        (unsigned long)gPs1Perf.schedWait,
+        (unsigned long)gPs1Perf.schedCdReserved,
+        (unsigned long)gPs1Perf.schedPrepareBlockedCd,
+        (unsigned long)gPs1Perf.schedPreparedReady,
+        (unsigned long)gPs1Perf.schedPreparedUsed,
+        (unsigned long)gPs1Perf.schedPreparedWasted,
+        (unsigned long)gPs1Perf.schedSlackVBlanks,
+        (unsigned int)gPs1Perf.schedSlackMin,
+        (unsigned int)gPs1Perf.schedSlackMax
+    );
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL) {
+        ps1PerfPrintSchedBucket("sched_wait_bucket", PS1_PERF_SCHED_WAIT);
+        ps1PerfPrintSchedBucket("sched_visual_prepare_bucket", PS1_PERF_SCHED_VISUAL_PREPARE);
+        ps1PerfPrintSchedBucket("sched_present_bucket", PS1_PERF_SCHED_PRESENT);
+        ps1PerfPrintSchedBucket("sched_cd_stage_bucket", PS1_PERF_SCHED_CD_STAGE);
+        ps1PerfPrintSchedBucket("sched_cd_window_bucket", PS1_PERF_SCHED_CD_WINDOW);
+        ps1PerfPrintSchedBucket("sched_cd_reserved_bucket", PS1_PERF_SCHED_CD_RESERVED);
+        ps1PerfPrintSchedBucket("sched_prep_blocked_bucket", PS1_PERF_SCHED_PREP_BLOCKED_CD);
+    }
+#endif
+    printf(
         "JCPERF2 async async_start=0 async_poll=0 async_done=0 async_timeout=0 async_cancel=0 async_blocking_vb=0\n"
     );
     printf(
@@ -1018,6 +1322,64 @@ static void ps1PerfPrintSchema2(uint32 sceneVBlanks, uint32 loopVBlanks,
         (unsigned long)gPs1Perf.crossedUpload,
         (unsigned long)gPs1Perf.crossedAdvance
     );
+#if PS1_PERF_DEEP_TRACE
+    if (ps1PerfLevel >= PS1_PERF_LEVEL_DETAIL) {
+        printf(
+            "JCPERF2 pipeline due_frames=%lu prepare_frames=%lu prepared_present_frames=%lu due_vb=%lu prepare_vb=%lu prepared_present_vb=%lu due_max_vb=%u due_max_idx=%u prepare_max_vb=%u prepare_max_idx=%u prepared_present_max_vb=%u prepared_present_max_idx=%u\n",
+            (unsigned long)gPs1Perf.pipeDueFrames,
+            (unsigned long)gPs1Perf.pipePrepareFrames,
+            (unsigned long)gPs1Perf.pipePreparedPresentFrames,
+            (unsigned long)gPs1Perf.pipeDueVBlanks,
+            (unsigned long)gPs1Perf.pipePrepareVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentVBlanks,
+            (unsigned int)gPs1Perf.pipeDueMaxVBlanks,
+            (unsigned int)gPs1Perf.pipeDueMaxFrameIndex,
+            (unsigned int)gPs1Perf.pipePrepareMaxVBlanks,
+            (unsigned int)gPs1Perf.pipePrepareMaxFrameIndex,
+            (unsigned int)gPs1Perf.pipePreparedPresentMaxVBlanks,
+            (unsigned int)gPs1Perf.pipePreparedPresentMaxFrameIndex
+        );
+        printf(
+            "JCPERF2 pipeline_vb due_restore=%lu due_compose=%lu due_present_wait=%lu due_upload=%lu due_event_wait=%lu prepare_restore=%lu prepare_compose=%lu prepared_restore=%lu prepared_compose=%lu prepared_present_wait=%lu prepared_upload=%lu prepared_event_wait=%lu\n",
+            (unsigned long)gPs1Perf.pipeDueRestoreVBlanks,
+            (unsigned long)gPs1Perf.pipeDueComposeVBlanks,
+            (unsigned long)gPs1Perf.pipeDuePresentWaitVBlanks,
+            (unsigned long)gPs1Perf.pipeDueUploadVBlanks,
+            (unsigned long)gPs1Perf.pipeDueEventWaitVBlanks,
+            (unsigned long)gPs1Perf.pipePrepareRestoreVBlanks,
+            (unsigned long)gPs1Perf.pipePrepareComposeVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentRestoreVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentComposeVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentWaitVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentUploadVBlanks,
+            (unsigned long)gPs1Perf.pipePreparedPresentEventWaitVBlanks
+        );
+        printf(
+            "JCPERF2 pipeline_work due_restore_bytes=%lu prepare_restore_bytes=%lu prepared_restore_bytes=%lu due_rows=%lu prepare_rows=%lu prepared_rows=%lu due_spans=%lu prepare_spans=%lu prepared_spans=%lu due_pixels=%lu prepare_pixels=%lu prepared_pixels=%lu\n",
+            (unsigned long)gPs1Perf.pipeDueRestoreBytes,
+            (unsigned long)gPs1Perf.pipePrepareRestoreBytes,
+            (unsigned long)gPs1Perf.pipePreparedPresentRestoreBytes,
+            (unsigned long)gPs1Perf.pipeDueComposeRows,
+            (unsigned long)gPs1Perf.pipePrepareComposeRows,
+            (unsigned long)gPs1Perf.pipePreparedPresentComposeRows,
+            (unsigned long)gPs1Perf.pipeDueComposeSpans,
+            (unsigned long)gPs1Perf.pipePrepareComposeSpans,
+            (unsigned long)gPs1Perf.pipePreparedPresentComposeSpans,
+            (unsigned long)gPs1Perf.pipeDueComposePixels,
+            (unsigned long)gPs1Perf.pipePrepareComposePixels,
+            (unsigned long)gPs1Perf.pipePreparedPresentComposePixels
+        );
+        printf(
+            "JCPERF2 pipeline_upload due_upload_calls=%lu prepared_upload_calls=%lu due_upload_rects=%lu prepared_upload_rects=%lu due_upload_bytes=%lu prepared_upload_bytes=%lu\n",
+            (unsigned long)gPs1Perf.pipeDueUploadCalls,
+            (unsigned long)gPs1Perf.pipePreparedPresentUploadCalls,
+            (unsigned long)gPs1Perf.pipeDueUploadRects,
+            (unsigned long)gPs1Perf.pipePreparedPresentUploadRects,
+            (unsigned long)gPs1Perf.pipeDueUploadBytes,
+            (unsigned long)gPs1Perf.pipePreparedPresentUploadBytes
+        );
+    }
+#endif
     printf(
         "JCPERF2 gfx restore_calls=%lu restore_bytes=%lu max_restore_bytes=%lu compose_calls=%lu upload_calls=%lu upload_rects=%lu upload_bytes=%lu max_upload_bytes=%lu max_upload_rects=%u dirty_rows=%lu dirty_exact_bytes=%lu dirty_rounded_bytes=%lu dirty_max_rows=%lu dirty_max_exact=%lu dirty_max_rounded=%lu cap_hits=%lu full_fallbacks=%lu\n",
         (unsigned long)gPs1Perf.restoreCalls,

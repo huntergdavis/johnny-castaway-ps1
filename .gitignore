@@ -15,10 +15,9 @@ scratch/
 # that ship on the CD are committed under generated/ps1/foreground/.
 host-results/
 
-# Exception: release directory contains milestone builds
-!release/
-!release/*.bin
-!release/*.cue
+# Release ISO files are uploaded as GitHub Release assets, not Git blobs.
+release/*.bin
+release/*.cue
 
 # Compiled binaries at root
 /analyze_resources

@@ -200,12 +200,36 @@ static const char *fgLoopNextScene(const char *explicitScene)
     return kProvenScenes[rand() % NUM_PROVEN_SCENES];
 }
 
+static int fgLoopSceneMatchesPrefixNumber(const char *sceneName,
+                                          const char *prefix)
+{
+    if (sceneName == NULL)
+        return 0;
+    while (*prefix != '\0') {
+        if (*sceneName != *prefix)
+            return 0;
+        sceneName++;
+        prefix++;
+    }
+    if (*sceneName < '0' || *sceneName > '9')
+        return 0;
+    while (*sceneName >= '0' && *sceneName <= '9')
+        sceneName++;
+    return *sceneName == '\0';
+}
+
 static int fgLoopSceneUsesVarPos(const char *sceneName)
 {
-    return sceneName != NULL &&
-           (!strcmp(sceneName, "fishing1") ||
-            !strcmp(sceneName, "fishing2") ||
-            !strcmp(sceneName, "fishing3"));
+    return fgLoopSceneMatchesPrefixNumber(sceneName, "activity") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "building") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "fishing") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "johnny") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "mary") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "miscgag") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "stand") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "suzy") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "visitor") ||
+           fgLoopSceneMatchesPrefixNumber(sceneName, "walkstuf");
 }
 
 static void fgLoopRandomVarPos(int *outX, int *outY)

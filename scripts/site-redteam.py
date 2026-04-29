@@ -15,6 +15,7 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
+from fnmatch import fnmatch
 
 
 LINK_ATTRS = {
@@ -103,17 +104,24 @@ def resolve_target(root: Path, page: Path, raw_path: str, baseurls: list[str]) -
     return None
 
 
-def check_build(root: Path, baseurls: list[str], require_relative: bool) -> list[str]:
+def is_excluded(path: Path, patterns: list[str]) -> bool:
+    rel = path.as_posix()
+    return any(fnmatch(rel, pattern) for pattern in patterns)
+
+
+def check_build(root: Path, baseurls: list[str], require_relative: bool, excludes: list[str]) -> list[str]:
     errors: list[str] = []
     pages: dict[Path, PageParser] = {}
 
     for html in sorted(root.rglob("*.html")):
+        rel = html.relative_to(root)
+        if is_excluded(rel, excludes):
+            continue
         text = html.read_text(encoding="utf-8", errors="replace")
         parser = PageParser()
         parser.feed(text)
         pages[html] = parser
 
-        rel = html.relative_to(root)
         if "{{" in text or "{%" in text:
             errors.append(f"{rel}: raw Liquid tag leaked into output")
         if "/home/" in text or "/Users/" in text:
@@ -153,6 +161,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("root", type=Path, help="Generated site root, for example site/_site or www")
     ap.add_argument("--baseurl", action="append", default=[], help="Base URL prefix to strip before resolving local links")
+    ap.add_argument("--exclude", action="append", default=[], help="Relative glob to skip inside the generated root")
     ap.add_argument("--require-relative", action="store_true", help="Fail root-relative local links")
     args = ap.parse_args()
 
@@ -161,7 +170,7 @@ def main() -> int:
         print(f"site-redteam: missing build root {root}", file=sys.stderr)
         return 2
 
-    errors = check_build(root, args.baseurl, args.require_relative)
+    errors = check_build(root, args.baseurl, args.require_relative, args.exclude)
     if errors:
         for err in errors[:200]:
             print(f"FAIL {err}")

@@ -127,6 +127,7 @@ static int grPresentDuringScreenLoad = 1;
 static void grDrawRectColor15(sint16 x, sint16 y, uint16 width, uint16 height, uint16 bgColor);
 static void grRestoreRectFromCleanBg(int x, int y, int width, int height);
 static void grCommitRectToCleanBg(int x, int y, int width, int height);
+static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width);
 
 void grSetPresentDuringScreenLoad(int enabled)
 {
@@ -154,16 +155,79 @@ static void grEnsureDirtyRowState(void)
     dirtyRowStateInitialized = 1;
 }
 
+static void grClearDirtyRowRange(sint16 rowsMinX[4][BG_TILE_HEIGHT],
+                                 sint16 rowsMaxX[4][BG_TILE_HEIGHT],
+                                 int idx,
+                                 int minY,
+                                 int maxY)
+{
+    if (idx < 0 || idx >= 4)
+        return;
+    if (minY < 0)
+        minY = 0;
+    if (maxY >= BG_TILE_HEIGHT)
+        maxY = BG_TILE_HEIGHT - 1;
+    if (minY > maxY)
+        return;
+
+    for (int y = minY; y <= maxY; y++) {
+        rowsMinX[idx][y] = -1;
+        rowsMaxX[idx][y] = -1;
+    }
+}
+
 static void grClearCurrDirtyState(void)
 {
     grEnsureDirtyRowState();
     for (int i = 0; i < 4; i++) {
+        grClearDirtyRowRange(currDirtyRowMinX, currDirtyRowMaxX,
+                             i, currDirtyMinY[i], currDirtyMaxY[i]);
         currDirtyMinX[i] = -1;
         currDirtyMaxX[i] = -1;
         currDirtyMinY[i] = -1;
         currDirtyMaxY[i] = -1;
     }
-    grClearDirtyRows(currDirtyRowMinX, currDirtyRowMaxX);
+}
+
+static void grPromoteCurrDirtyToPrev(void)
+{
+    grEnsureDirtyRowState();
+    for (int i = 0; i < 4; i++) {
+        int minY;
+        int maxY;
+
+        grClearDirtyRowRange(prevDirtyRowMinX, prevDirtyRowMaxX,
+                             i, prevDirtyMinY[i], prevDirtyMaxY[i]);
+
+        prevDirtyMinX[i] = currDirtyMinX[i];
+        prevDirtyMaxX[i] = currDirtyMaxX[i];
+        prevDirtyMinY[i] = currDirtyMinY[i];
+        prevDirtyMaxY[i] = currDirtyMaxY[i];
+
+        minY = currDirtyMinY[i];
+        maxY = currDirtyMaxY[i];
+        if (minY < 0)
+            continue;
+        if (maxY >= BG_TILE_HEIGHT)
+            maxY = BG_TILE_HEIGHT - 1;
+        for (int y = minY; y <= maxY; y++) {
+            prevDirtyRowMinX[i][y] = currDirtyRowMinX[i][y];
+            prevDirtyRowMaxX[i][y] = currDirtyRowMaxX[i][y];
+        }
+    }
+}
+
+static void grClearPrevDirtyState(void)
+{
+    grEnsureDirtyRowState();
+    for (int i = 0; i < 4; i++) {
+        grClearDirtyRowRange(prevDirtyRowMinX, prevDirtyRowMaxX,
+                             i, prevDirtyMinY[i], prevDirtyMaxY[i]);
+        prevDirtyMinX[i] = -1;
+        prevDirtyMaxX[i] = -1;
+        prevDirtyMinY[i] = -1;
+        prevDirtyMaxY[i] = -1;
+    }
 }
 
 static void grMarkDirtyRows(sint16 rowsMinX[4][BG_TILE_HEIGHT],
@@ -760,6 +824,7 @@ void grReplaySprite(struct TDrawnSprite *ds)
 /*
  * Update display with all layers
  */
+__attribute__((optimize("Os")))
 void grUpdateDisplay(struct TTtmThread *ttmBackgroundThread,
                      struct TTtmThread *ttmThreads,
                      struct TTtmThread *ttmHolidayThread)
@@ -1992,6 +2057,67 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
+void grBeginResidualCleanBgFrame(void)
+{
+    grClearCurrDirtyState();
+    grClearPrevDirtyState();
+}
+
+void grBeginResidualCleanBgFirstFrame(void)
+{
+    grClearCurrDirtyState();
+}
+
+void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                                    const uint16 *palette,
+                                                    sint16 screenX, sint16 screenY)
+{
+    uint32 offset = 0;
+    uint32 restoredBytes = 0;
+    uint16 cleanupRows;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    cleanupRows = grReadPackedSpanU16(spanData);
+    offset = 2;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (offset + 4u > spanDataSize)
+            return;
+        relY = grReadPackedSpanU16(spanData + offset);
+        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+        offset += 4u;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (offset + 4u > spanDataSize)
+                return;
+            relX = grReadPackedSpanU16(spanData + offset);
+            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkRestore(restoredBytes);
+    if (offset < spanDataSize)
+        grCompositePacked4SpansToBackground(spanData + offset,
+                                            spanDataSize - offset,
+                                            palette,
+                                            screenX,
+                                            screenY);
+}
+
 static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
                                                 uint16 pixelCount,
                                                 const uint16 *palette,
@@ -2846,6 +2972,86 @@ static void grCleanRectCopyIn(const struct TGrCleanRect *r)
         ps1PerfMarkRestore(copiedBytes);
 }
 
+static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width)
+{
+    int xEnd;
+    uint32 copiedBytes = 0;
+
+    if (width <= 0 || y < 0 || y >= 480)
+        return 0;
+    xEnd = x + width;
+    if (x < 0)
+        x = 0;
+    if (xEnd > 640)
+        xEnd = 640;
+    if (x >= xEnd)
+        return 0;
+
+    for (int i = 0; i < gGrCleanRectCount; i++) {
+        const struct TGrCleanRect *r = &gGrCleanRects[i];
+        int rx0;
+        int rx1;
+        int sy;
+
+        if (r->pixels == NULL || r->width == 0 || r->height == 0)
+            continue;
+        if (y < r->y || y >= r->y + (int)r->height)
+            continue;
+
+        rx0 = x;
+        rx1 = xEnd;
+        if (rx0 < r->x)
+            rx0 = r->x;
+        if (rx1 > r->x + (int)r->width)
+            rx1 = r->x + (int)r->width;
+        if (rx0 >= rx1)
+            continue;
+
+        sy = y - r->y;
+        {
+            PS1Surface *tileLeft;
+            PS1Surface *tileRight;
+            int tileLocalY;
+            const uint16 *srcRow = r->pixels + (uint32)sy * (uint32)r->width;
+
+            if (y < 240) {
+                tileLocalY = y;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = y - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+
+            if (tileLeft != NULL && tileLeft->pixels != NULL && rx0 < 320) {
+                int lx0 = rx0;
+                int lx1 = (rx1 < 320) ? rx1 : 320;
+                if (lx0 < lx1) {
+                    uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
+                    size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+                    memcpy(dst, srcRow + (lx0 - r->x), bytes);
+                    grMarkRectDirty(lx0, y, lx1, y + 1);
+                    copiedBytes += (uint32)bytes;
+                }
+            }
+            if (tileRight != NULL && tileRight->pixels != NULL && rx1 > 320) {
+                int rxLocal0 = (rx0 > 320) ? (rx0 - 320) : 0;
+                int rxLocal1 = rx1 - 320;
+                if (rxLocal0 < rxLocal1) {
+                    uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + rxLocal0;
+                    size_t bytes = (size_t)(rxLocal1 - rxLocal0) * sizeof(uint16);
+                    memcpy(dst, srcRow + ((rxLocal0 + 320) - r->x), bytes);
+                    grMarkRectDirty(rxLocal0 + 320, y, rxLocal1 + 320, y + 1);
+                    copiedBytes += (uint32)bytes;
+                }
+            }
+        }
+    }
+
+    return copiedBytes;
+}
+
 static void grResetCleanBgRects(int releasePixels)
 {
     int i;
@@ -2941,7 +3147,8 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     }
     gGrCleanRectCount = n;
 
-    /* Force a full first-frame upload. */
+    /* Force a full first-frame upload. FG2 restores clean rects after setup,
+     * but static pixels outside those rects still need an initial refresh. */
     grMarkAllTilesDirty();
     grMarkPrevAllTilesDirty();
     return gGrCleanRectCount;
@@ -3474,28 +3681,26 @@ void grClearScreen(PS1Surface *sfc)
  * Re-LoadImages all tiles to framebuffer to restore background each frame.
  * Required when isbg=0 to erase previous frame's sprites.
  */
+__attribute__((optimize("Os")))
 void grDrawBackground(void)
 {
     enum {
         GR_MAX_UPLOAD_RECTS = 8,
-        GR_UPLOAD_BAND_MERGE_GAP = 1
+        GR_UPLOAD_BAND_MERGE_GAP = 0
     };
     /* Upload only dirty rows: union(prevDirty, currDirty) per tile.
      * prevDirty = rows restored at frame start (framebuffer still has old content).
      * currDirty = rows composited this frame (framebuffer has clean/old content). */
     PS1Surface *tiles[4] = { bgTile0, bgTile1, bgTile3, bgTile4 };
-    int screenX[4] = { 0, 320, 0, 320 };
-    int screenY[4] = { 0, 0, 240, 240 };
-    RECT rects[GR_MAX_UPLOAD_RECTS];
+    RECT rect;
     int minYs[4];
     int maxYs[4];
     int bandTile[GR_MAX_UPLOAD_RECTS];
     int bandMinY[GR_MAX_UPLOAD_RECTS];
     int bandMaxY[GR_MAX_UPLOAD_RECTS];
     int bandCount = 0;
-    int useBands = 0;
+    int capped = 0;
     int dirtyCount = 0;
-    int singleIndex = -1;
     uint16 uploadRects = 0;
     uint16 uploadRows = 0;
     uint32 uploadBytes = 0;
@@ -3529,96 +3734,76 @@ void grDrawBackground(void)
         minYs[i] = minY;
         maxYs[i] = maxY;
         dirtyCount++;
-        singleIndex = i;
     }
 
-    if (dirtyCount > 0) {
-        int capped = 0;
+    for (int i = 0; i < 4 && !capped; i++) {
+        int y;
 
-        for (int i = 0; i < 4 && !capped; i++) {
-            int y;
+        if (minYs[i] < 0)
+            continue;
 
-            if (minYs[i] < 0)
-                continue;
+        y = minYs[i];
+        while (y <= maxYs[i]) {
+            int startY;
 
-            y = minYs[i];
-            while (y <= maxYs[i]) {
-                int startY;
-
-                while (y <= maxYs[i] &&
-                       prevDirtyRowMinX[i][y] < 0 &&
-                       currDirtyRowMinX[i][y] < 0) {
-                    y++;
-                }
-                if (y > maxYs[i])
-                    break;
-
-                startY = y;
-                {
-                    int scanY = y + 1;
-                    int lastDirtyY = y;
-                    int cleanGap = 0;
-
-                    while (scanY <= maxYs[i]) {
-                        if (prevDirtyRowMinX[i][scanY] >= 0 ||
-                            currDirtyRowMinX[i][scanY] >= 0) {
-                            lastDirtyY = scanY;
-                            cleanGap = 0;
-                        } else {
-                            cleanGap++;
-                            if (cleanGap > GR_UPLOAD_BAND_MERGE_GAP)
-                                break;
-                        }
-                        scanY++;
-                    }
-                    y = lastDirtyY;
-                }
-
-                if (bandCount >= GR_MAX_UPLOAD_RECTS) {
-                    capped = 1;
-                    break;
-                }
-                bandTile[bandCount] = i;
-                bandMinY[bandCount] = startY;
-                bandMaxY[bandCount] = y;
-                bandCount++;
+            while (y <= maxYs[i] &&
+                   prevDirtyRowMinX[i][y] < 0 &&
+                   currDirtyRowMinX[i][y] < 0) {
                 y++;
             }
-        }
+            if (y > maxYs[i])
+                break;
 
-        useBands = (!capped && bandCount > 0) ? 1 : 0;
+            startY = y;
+            {
+                int scanY = y + 1;
+                int lastDirtyY = y;
+                int cleanGap = 0;
+
+                while (scanY <= maxYs[i]) {
+                    if (prevDirtyRowMinX[i][scanY] >= 0 ||
+                        currDirtyRowMinX[i][scanY] >= 0) {
+                        lastDirtyY = scanY;
+                        cleanGap = 0;
+                    } else {
+                        cleanGap++;
+                        if (cleanGap > GR_UPLOAD_BAND_MERGE_GAP)
+                            break;
+                    }
+                    scanY++;
+                }
+                y = lastDirtyY;
+            }
+
+            if (bandCount >= GR_MAX_UPLOAD_RECTS) {
+                capped = 1;
+                break;
+            }
+            bandTile[bandCount] = i;
+            bandMinY[bandCount] = startY;
+            bandMaxY[bandCount] = y;
+            bandCount++;
+            y++;
+        }
     }
 
     if (ps1PerfEnabled && dirtyCount > 0)
         perfStartTick = ps1PerfTick();
 
-    if (useBands) {
+    if (!capped && bandCount > 0) {
         for (int b = 0; b < bandCount; b++) {
             int i = bandTile[b];
             int minY = bandMinY[b];
             int h = bandMaxY[b] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rects[b], screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, (i & 1) ? 320 : 0, ((i & 2) ? 240 : 0) + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
-            LoadImage(&rects[b], (uint32 *)(tiles[i]->pixels + minY * w));
+            LoadImage(&rect, (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
-        if (uploadRects > 0)
-            DrawSync(0);
-    } else if (dirtyCount == 1) {
-        PS1Surface *tile = tiles[singleIndex];
-        uint32 w = tile->width;
-        int minY = minYs[singleIndex];
-        int h = maxYs[singleIndex] - minY + 1;
-
-        setRECT(&rects[0], screenX[singleIndex], screenY[singleIndex] + minY, w, h);
-        uploadRects = 1;
-        uploadRows = (uint16)h;
-        uploadBytes = (uint32)w * (uint32)h * sizeof(uint16);
-        LoadImage(&rects[0], (uint32 *)(tile->pixels + minY * w));
         DrawSync(0);
     } else {
         for (int i = 0; i < 4; i++) {
@@ -3629,31 +3814,24 @@ void grDrawBackground(void)
             int h = maxYs[i] - minY + 1;
             uint32 w = tiles[i]->width;
 
-            setRECT(&rects[i], screenX[i], screenY[i] + minY, w, h);
+            setRECT(&rect, (i & 1) ? 320 : 0, ((i & 2) ? 240 : 0) + minY, w, h);
             uploadRects++;
             uploadRows = (uint16)(uploadRows + (uint16)h);
             uploadBytes += (uint32)w * (uint32)h * sizeof(uint16);
-            LoadImage(&rects[i], (uint32 *)(tiles[i]->pixels + minY * w));
+            LoadImage(&rect, (uint32 *)(tiles[i]->pixels + minY * w));
         }
 
         if (dirtyCount > 0)
             DrawSync(0);
     }
 
-    if (ps1PerfEnabled && dirtyCount > 0)
-        ps1PerfMarkUpload(uploadRects, uploadBytes, ps1PerfElapsedVBlanks(perfStartTick));
-    if (ps1PerfEnabled && dirtyCount > 0)
-        ps1PerfMarkDirtyRect(uploadRows, uploadBytes);
-
-    /* Advance dirty state: this frame's compositing becomes next frame's restore set */
-    for (int i = 0; i < 4; i++) {
-        prevDirtyMinX[i] = currDirtyMinX[i];
-        prevDirtyMaxX[i] = currDirtyMaxX[i];
-        prevDirtyMinY[i] = currDirtyMinY[i];
-        prevDirtyMaxY[i] = currDirtyMaxY[i];
+    if (ps1PerfEnabled && dirtyCount > 0) {
+        ps1PerfMarkUploadDirty(uploadRects, uploadRows, uploadBytes,
+                               ps1PerfElapsedVBlanks(perfStartTick));
     }
-    memcpy(prevDirtyRowMinX, currDirtyRowMinX, sizeof(prevDirtyRowMinX));
-    memcpy(prevDirtyRowMaxX, currDirtyRowMaxX, sizeof(prevDirtyRowMaxX));
+
+    /* Advance dirty state: this frame's compositing becomes next frame's restore set. */
+    grPromoteCurrDirtyToPrev();
 }
 
 /*

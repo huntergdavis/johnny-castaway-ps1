@@ -3,6 +3,10 @@
 
 #include "mytypes.h"
 
+#ifndef PS1_PERF_DEEP_TRACE
+#define PS1_PERF_DEEP_TRACE 0
+#endif
+
 #ifdef PS1_BUILD
 
 enum {
@@ -36,6 +40,26 @@ enum {
     PS1_PERF_PREFETCH_STAGE1_WINDOW = 3
 };
 
+enum {
+    PS1_PERF_SCHED_WAIT = 0,
+    PS1_PERF_SCHED_PRESENT = 1,
+    PS1_PERF_SCHED_CD_STAGE = 2,
+    PS1_PERF_SCHED_CD_WINDOW = 3,
+    PS1_PERF_SCHED_VISUAL_PREPARE = 4,
+    PS1_PERF_SCHED_CD_RESERVED = 5,
+    PS1_PERF_SCHED_PREP_BLOCKED_CD = 6,
+    PS1_PERF_SCHED_PREPARED_READY = 7,
+    PS1_PERF_SCHED_PREPARED_USED = 8,
+    PS1_PERF_SCHED_PREPARED_WASTED = 9
+};
+
+enum {
+    PS1_PERF_PIPE_NONE = 0,
+    PS1_PERF_PIPE_DUE_RENDER = 1,
+    PS1_PERF_PIPE_PREPARE = 2,
+    PS1_PERF_PIPE_PREPARED_PRESENT = 3
+};
+
 extern volatile uint8 ps1PerfEnabled;
 extern volatile uint8 ps1PerfLevel;
 
@@ -60,7 +84,7 @@ void ps1PerfSetCurrentFrame(uint16 frameIndex, uint16 sourceFrame,
                             uint32 dataOffset);
 void ps1PerfMarkRenderedLoop(void);
 void ps1PerfMarkHeldLoop(void);
-void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks);
+void ps1PerfMarkAdvance(uint16 elapsedVBlanks);
 void ps1PerfMarkEntry(uint32 payloadBytes, uint16 holdVBlanks,
                       uint8 emptyEntry, uint16 sourceFrame,
                       uint32 dataOffset);
@@ -78,12 +102,19 @@ void ps1PerfBeginPrefetchRead(uint16 slackVBlanks);
 void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok);
 void ps1PerfMarkPrefetchHit(void);
 void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit);
+void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks);
 void ps1PerfMarkRestore(uint32 bytes);
 void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes);
-void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks);
-void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes);
+void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks);
 void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks);
 void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks);
+#if PS1_PERF_DEEP_TRACE
+void ps1PerfBeginPipeline(uint8 path);
+void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks);
+#else
+static inline void ps1PerfBeginPipeline(uint8 path) { (void)path; }
+static inline void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks) { (void)path; (void)elapsedVBlanks; }
+#endif
 void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes);
 void ps1PerfMarkAllocFail(uint32 bytes);
 void ps1PerfMarkSoundEvent(void);
@@ -123,7 +154,7 @@ static inline void ps1PerfSetCurrentFrame(uint16 frameIndex, uint16 sourceFrame,
 }
 static inline void ps1PerfMarkRenderedLoop(void) {}
 static inline void ps1PerfMarkHeldLoop(void) {}
-static inline void ps1PerfMarkAdvance(uint16 elapsedVBlanks, uint16 targetVBlanks) { (void)elapsedVBlanks; (void)targetVBlanks; }
+static inline void ps1PerfMarkAdvance(uint16 elapsedVBlanks) { (void)elapsedVBlanks; }
 static inline void ps1PerfMarkEntry(uint32 payloadBytes, uint16 holdVBlanks,
                                     uint8 emptyEntry, uint16 sourceFrame,
                                     uint32 dataOffset) {
@@ -149,12 +180,14 @@ static inline void ps1PerfBeginPrefetchRead(uint16 slackVBlanks) { (void)slackVB
 static inline void ps1PerfEndPrefetchRead(uint16 elapsedVBlanks, uint32 bytes, int ok) { (void)elapsedVBlanks; (void)bytes; (void)ok; }
 static inline void ps1PerfMarkPrefetchHit(void) {}
 static inline void ps1PerfMarkPrefetchWindowHit(uint8 countsAsDueHit) { (void)countsAsDueHit; }
+static inline void ps1PerfMarkScheduler(uint8 event, uint16 slackVBlanks) { (void)event; (void)slackVBlanks; }
 static inline void ps1PerfMarkRestore(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkCompose(uint16 rows, uint16 spans, uint32 pixels, uint32 payloadBytes) { (void)rows; (void)spans; (void)pixels; (void)payloadBytes; }
-static inline void ps1PerfMarkUpload(uint16 rects, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)bytes; (void)elapsedVBlanks; }
-static inline void ps1PerfMarkDirtyRect(uint16 rows, uint32 exactBytes) { (void)rows; (void)exactBytes; }
+static inline void ps1PerfMarkUploadDirty(uint16 rects, uint16 rows, uint32 bytes, uint16 elapsedVBlanks) { (void)rects; (void)rows; (void)bytes; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderTotal(uint16 elapsedVBlanks) { (void)elapsedVBlanks; }
 static inline void ps1PerfMarkRenderPhase(uint8 phase, uint16 elapsedVBlanks) { (void)phase; (void)elapsedVBlanks; }
+static inline void ps1PerfBeginPipeline(uint8 path) { (void)path; }
+static inline void ps1PerfEndPipeline(uint8 path, uint16 elapsedVBlanks) { (void)path; (void)elapsedVBlanks; }
 static inline void ps1PerfMarkBufferSizes(uint32 frameBufferBytes, uint32 scratchBytes) { (void)frameBufferBytes; (void)scratchBytes; }
 static inline void ps1PerfMarkAllocFail(uint32 bytes) { (void)bytes; }
 static inline void ps1PerfMarkSoundEvent(void) {}

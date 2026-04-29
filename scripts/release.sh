@@ -8,9 +8,9 @@
 # This script:
 #   1. Runs the full rebuild
 #   2. Increments the patch version (e.g., 0.3.0 -> 0.3.1)
-#   3. Copies build artifacts to release/ folder
+#   3. Copies build artifacts to release/ folder for GitHub Release upload
 #   4. Updates VERSION and website release metadata
-#   5. Rebuilds the portable website under www/
+#   5. Rebuilds the portable website under docs/
 #   6. Commits changes and creates a git tag
 #   7. Pushes to GitHub
 
@@ -145,55 +145,28 @@ echo "Updated site release metadata to $TAG_NAME"
 echo ""
 echo -e "${YELLOW}=== Step 5: Rebuilding website ===${NC}"
 "$SITE_BUILD_SCRIPT"
-python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/www" --require-relative
+python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/docs" \
+    --require-relative \
+    --exclude 'ps1/archaeology/**'
 
 # Step 6: Git commit
 echo ""
 echo -e "${YELLOW}=== Step 6: Committing changes ===${NC}"
-git add VERSION release/jcreborn.bin release/jcreborn.cue \
-    site/_config.yml site/source site/archaeology/regtest-references/cases \
-    site/resources www index.html .nojekyll
+git add VERSION site/_config.yml site/source site/archaeology/regtest-references/cases \
+    site/resources docs
 
 git commit -m "$(cat <<EOF
 release: $TAG_NAME - $RELEASE_MSG
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 
-# Step 7: Create tag pointing at a minimal orphan commit whose TREE
-# contains only jcreborn.bin + jcreborn.cue. Pure git — no GitHub CLI
-# required. GitHub's auto-generated "Source code (zip|tar.gz)" download
-# for the tag is built from the tag-commit's tree, so with this approach
-# downloading the release = downloading just the two ISO files.
+# Step 7: Create a normal annotated source tag. The ISO is larger than
+# GitHub's 100 MB Git blob limit, so jcreborn.bin/cue are uploaded as
+# GitHub Release assets in Step 9 instead of being placed in the tag tree.
 echo ""
-echo -e "${YELLOW}=== Step 7: Creating minimal-tree release tag ===${NC}"
-BIN_BLOB=$(git hash-object -w "$RELEASE_DIR/jcreborn.bin")
-CUE_BLOB=$(git hash-object -w "$RELEASE_DIR/jcreborn.cue")
-TAG_TREE_SHA=$(printf '100644 blob %s\tjcreborn.bin\n100644 blob %s\tjcreborn.cue\n' \
-    "$BIN_BLOB" "$CUE_BLOB" | git mktree)
-# Record the main-branch release commit as the tag commit's parent so
-# provenance is preserved (git log --all, tag -> commit -> parent chain).
-MAIN_RELEASE_SHA=$(git rev-parse HEAD)
-REPO_SLUG="$(git remote get-url origin 2>/dev/null | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|')"
-RAW_BASE="https://github.com/${REPO_SLUG:-huntergdavis/johnny-castaway-ps1}/raw/$TAG_NAME"
-TAG_COMMIT_MSG="$TAG_NAME: $RELEASE_MSG
-
-Direct downloads (no zip):
-  $RAW_BASE/jcreborn.bin
-  $RAW_BASE/jcreborn.cue
-
-Tree = jcreborn.bin + jcreborn.cue only.
-Full source at parent commit $MAIN_RELEASE_SHA."
-TAG_COMMIT_SHA=$(printf '%s' "$TAG_COMMIT_MSG" | git commit-tree "$TAG_TREE_SHA" -p "$MAIN_RELEASE_SHA")
-git tag -a "$TAG_NAME" -m "$RELEASE_MSG
-
-Direct downloads:
-  $RAW_BASE/jcreborn.bin
-  $RAW_BASE/jcreborn.cue" "$TAG_COMMIT_SHA"
-echo "Created tag: $TAG_NAME -> $TAG_COMMIT_SHA (tree has 2 files)"
+echo -e "${YELLOW}=== Step 7: Creating source release tag ===${NC}"
+git tag -a "$TAG_NAME" -m "$RELEASE_MSG" HEAD
+echo "Created tag: $TAG_NAME"
 
 # Step 8: Push to GitHub
 echo ""
@@ -203,22 +176,17 @@ git push origin "$CURRENT_BRANCH"
 git push origin "$TAG_NAME"
 
 # Step 9: Publish a GitHub Release with jcreborn.bin + jcreborn.cue as
-# direct-download assets. Skipped if gh is missing or unauthenticated —
-# the tag is already pushed and the raw URLs in the tag message still
-# work as direct downloads, this step just adds the polished Release UI.
+# direct-download assets. The release assets are the canonical binary
+# distribution because the ISO is too large to store as a Git blob.
 echo ""
 echo -e "${YELLOW}=== Step 9: Publishing GitHub Release ===${NC}"
 GH_BIN="$(command -v gh 2>/dev/null || echo "$HOME/bin/gh")"
 if [ -x "$GH_BIN" ] && "$GH_BIN" auth status >/dev/null 2>&1; then
     RELEASE_NOTES="$RELEASE_MSG
 
-**Direct downloads**
-- [jcreborn.bin]($RAW_BASE/jcreborn.bin)
-- [jcreborn.cue]($RAW_BASE/jcreborn.cue)
-
-Load \`jcreborn.cue\` in DuckStation (or any PS1 emulator). The
-auto-generated \"Source code\" zips below contain the same two files
-(the tag tree is minimal); use the direct links above to skip the zip."
+Download \`jcreborn.bin\` and \`jcreborn.cue\` from this release's
+attached assets, then load \`jcreborn.cue\` in DuckStation or another
+PS1 emulator."
     "$GH_BIN" release create "$TAG_NAME" \
         "$RELEASE_DIR/jcreborn.bin" \
         "$RELEASE_DIR/jcreborn.cue" \
@@ -226,7 +194,7 @@ auto-generated \"Source code\" zips below contain the same two files
         --notes "$RELEASE_NOTES"
 else
     echo -e "${YELLOW}gh not available or not authed — skipping GitHub Release.${NC}"
-    echo -e "${YELLOW}Tag + raw URLs already work; to add a Release later:${NC}"
+    echo -e "${YELLOW}The tag was pushed, but the large ISO assets still need a GitHub Release upload:${NC}"
     echo -e "${YELLOW}  gh release create $TAG_NAME $RELEASE_DIR/jcreborn.bin $RELEASE_DIR/jcreborn.cue --title \"$TAG_NAME\" --notes \"$RELEASE_MSG\"${NC}"
 fi
 
