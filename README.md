@@ -77,8 +77,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
-| Headless perf battle card | **77 / 126** scene/tide variants measured; **47 / 63** scenes have at least one timed variant; measured average is **+13.0% over target / 89.1% target speed** |
-| Latest perf matrix run | **`2026-04-29T14:18:31`** (`last_run_at` in the CSV) |
+| Headless perf battle card | **78 / 126** scene/tide variants measured; **48 / 63** scenes have at least one timed variant; measured average is **+13.1% over target / 88.9% target speed** |
+| Latest perf matrix run | **`2026-04-29T14:56:28`** (`last_run_at` in the CSV) |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
