@@ -106,14 +106,14 @@ Current battle-card rollup as of 2026-04-29:
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `76 / 126` |
-| Scenes with at least one timed variant | `46 / 63` |
+| Scene/tide variants timed | `77 / 126` |
+| Scenes with at least one timed variant | `47 / 63` |
 | Scenes with both high/low variants timed | `30 / 63` |
-| Pending variants | `48 / 126` |
+| Pending variants | `47 / 126` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.8%` |
-| Measured average target speed | `89.2%` |
-| Latest perf matrix run | `2026-04-29T13:36:18` |
+| Measured average over target | `+13.0%` |
+| Measured average target speed | `89.1%` |
+| Latest perf matrix run | `2026-04-29T14:18:31` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -180,7 +180,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T01:29:52 | +12.9% | 88.6% | 2746/2433 | 312 | 55 | 38 | padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam |
 | `building7` | high | measured | 2026-04-29T02:04:56 | +5.5% | 94.8% | 3861/3659 | 66 | 47 | 3 | padded FGP3 |
 | `building7` | low | measured | 2026-04-29T02:13:58 | +4.5% | 95.7% | 3837/3672 | 23 | 23 | 0 | padded FGP3 |
-| `fishing1` | high | measured | 2026-04-29T13:36:18 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-29T14:18:31 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-27T17:40:04 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-28T17:40:29 | +7.5% | 93.0% | 1898/1765 | 2 | 2 | 0 |  |
 | `fishing2` | low | measured | 2026-04-27T18:50:02 | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
@@ -238,7 +238,7 @@ and this page.
 | `stand7` | low | pending | - | - | - | - | - | - | - |  |
 | `stand8` | high | pending | - | - | - | - | - | - | - |  |
 | `stand8` | low | pending | - | - | - | - | - | - | - |  |
-| `stand9` | high | pending | - | - | - | - | - | - | - |  |
+| `stand9` | high | measured | 2026-04-29T14:13:53 | +25.8% | 79.5% | 673/535 | 3 | 3 | 0 | padded FGP3 |
 | `stand9` | low | pending | - | - | - | - | - | - | - |  |
 | `stand10` | high | pending | - | - | - | - | - | - | - |  |
 | `stand10` | low | pending | - | - | - | - | - | - | - |  |

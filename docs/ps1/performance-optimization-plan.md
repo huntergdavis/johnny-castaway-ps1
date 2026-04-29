@@ -1339,6 +1339,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-188` | Rejected: plain padded FGP3 for MARY4 high, but kept baseline coverage. | MARY4 high is now measured from the FGP2 baseline (`loop_vb=1969`, `target_vb=2019`, `blocking_vb=27`, `prefetch_overrun_vb=10`, `due_misses=4`). Plain padded FGP3 only reduced payload `547571 -> 541622`, improved `loop_vb 1969 -> 1960` and `blocking_vb 27 -> 20`, but regressed `prefetch_overrun_vb 10 -> 15`; the FGP2 pack was restored. Retry MARY4 with grouped-read/direct16 metadata, not plain FGP3. |
 | `P5-189` | Done: convert STAND7 high to padded FGP3. | Host-side residual-size scanning picked STAND7 high as a high-savings untouched scene. Converting `STAND7.FG2` to padded FGP3 improves `loop_vb 684 -> 676`, `blocking_vb 15 -> 5`, `prefetch_overrun_vb 15 -> 5`, `loop_reads 28 -> 6`, `loop_read_vb 155 -> 36`, and payload `386843 -> 94333`, while preserving `FG\\STAND7.FG2` LBA `123747` and PS-EXE `147456`. FISHING1 high stayed exact-flat, and visual signoff passed. |
 | `P5-190` | Done: convert STAND3 high to padded FGP3. | Converting `STAND3.FG2` to padded FGP3 continues the high-savings stand-family lane and improves `loop_vb 713 -> 693`, `blocking_vb 28 -> 2`, `prefetch_overrun_vb 28 -> 2`, `loop_reads 29 -> 6`, `loop_read_vb 167 -> 38`, and payload `393898 -> 96203`, while preserving `FG\\STAND3.FG2` LBA `121156` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Continue with another high-savings untouched scene to expand 63-scene coverage. |
+| `P5-191` | Done: convert STAND9 high to padded FGP3. | Converting `STAND9.FG2` to padded FGP3 continues the high-savings stand-family lane and improves `loop_vb 684 -> 673`, `blocking_vb 15 -> 3`, `prefetch_overrun_vb 15 -> 3`, `loop_reads 27 -> 6`, `loop_read_vb 148 -> 36`, and payload `382132 -> 94439`, while preserving `FG\\STAND9.FG2` LBA `124262` and PS-EXE `147456`. FISHING1 high stayed exact-flat. Keep this lane padded until `P6-08` deliberately compacts the ISO and re-gates layout timing. |
 
 ## Failed Experiment Triage After P5-90
 
@@ -1513,6 +1514,7 @@ Goal: keep per-scene setup from stealing heap and causing long transitions.
 | `P6-05` | Build a minimal palette/metadata table to replace `RESOURCE.001` dependence. | Potential CD size and startup simplification. |
 | `P6-06` | Track scene-start heap largest allocation in bounded `JCPERF` setup summaries. | Catch fragmentation before long soaks without visual debug overlays. |
 | `P6-07` | Validate all scene cleanup paths with overnight loop. | Screensaver stability remains non-negotiable. |
+| `P6-08` | Run a dedicated ISO compaction/layout pass after the padded-FGP3 lane stabilizes. | Remove zero padding from accepted FGP3 packs only after per-scene format wins are proven; then rebuild the ISO, update `pack_bytes`, and gate broad scene/canary timing because shorter files shift later LBAs and can change CD phase. |
 
 ## Phase 7: Build And Binary-Level Optimizations
 
