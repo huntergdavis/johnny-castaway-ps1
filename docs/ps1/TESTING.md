@@ -61,13 +61,13 @@ Current battle-card rollup as of 2026-04-29:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `72 / 126` |
-| Scenes with at least one timed variant | `42 / 63` |
+| Scene/tide variants measured | `73 / 126` |
+| Scenes with at least one timed variant | `43 / 63` |
 | Scenes with both high/low variants timed | `30 / 63` |
 | Blocked variants | `2 / 126` |
-| Measured average over target | `+12.6%` |
+| Measured average over target | `+12.7%` |
 | Measured average target speed | `89.3%` |
-| Latest perf matrix run | `2026-04-29T12:19:41` |
+| Latest perf matrix run | `2026-04-29T12:33:29` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
