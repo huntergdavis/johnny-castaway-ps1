@@ -234,13 +234,13 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-measured battle-card rows, the average is **+12.2% over target / 89.7%
+measured battle-card rows, the average is **+12.4% over target / 89.6%
 target speed**.
 
 ## Scene Battle Card
 
-As of 2026-04-29, 58 of 126 scene/tide variants have current headless
-perf measurements. 35 of 63 scenes have at least one timed variant; 23
+As of 2026-04-29, 59 of 126 scene/tide variants have current headless
+perf measurements. 36 of 63 scenes have at least one timed variant; 23
 scenes have both high- and low-tide variants timed. The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due`
 called out when nonzero.
@@ -270,7 +270,7 @@ called out when nonzero.
 | `fishing4` | pending | pending |
 | `fishing5` | pending | pending |
 | `fishing6` | pending | pending |
-| `fishing7` | pending | pending |
+| `fishing7` | +19.4% / 83.8% (863/723); blk 7 | pending |
 | `fishing8` | +12.4% / 88.9% (1400/1245); blk 21 | pending |
 | `johnny1` | +9.5% / 91.3% (2128/1943); blk 31 | +9.8% / 91.1% (2132/1942); blk 37 |
 | `johnny2` | pending | pending |
