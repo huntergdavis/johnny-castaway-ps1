@@ -79,7 +79,8 @@ At the time of writing it contains roughly 130 experiments going back to
 2026-04-25. Most of them failed.
 
 The full scene/tide battle card is
-[`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
+[`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
+and is rendered at [Current testing status]({{ '/docs/testing-status/' | relative_url }}).
 It is not the human scene-promotion ledger; it is the timing sheet for
 headless performance work.
 

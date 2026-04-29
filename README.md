@@ -78,7 +78,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **57 / 126** scene/tide variants measured; **34 / 63** scenes have at least one timed variant; measured average is **+12.1% over target / 89.8% target speed** |
-| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/docs/performance/](https://hunterdavis.com/johnny-castaway-ps1/docs/performance/) (rendered) |
+| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
 One scene at a time is promoted to the "fully validated" bar. Older
@@ -269,7 +269,7 @@ prefer.
 - [current-status.md](docs/ps1/current-status.md) ↔ [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)
 - [development-workflow.md](docs/ps1/development-workflow.md) ↔ [/docs/dev-workflow/](https://hunterdavis.com/johnny-castaway-ps1/docs/dev-workflow/)
 - [TESTING.md](docs/ps1/TESTING.md) — validation strategy
-- [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) — 63-scene / 126-variant perf battle card
+- [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) ↔ [/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/) — 63-scene / 126-variant perf battle card
 - [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) — accepted and rejected optimization history
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
 

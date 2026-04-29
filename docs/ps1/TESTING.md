@@ -54,6 +54,8 @@ coverage, not the legacy regtest certification scripts:
 
 The durable sheet is `docs/ps1/performance-scene-matrix.csv`. Pending rows
 mean no current headless perf summary has been recorded for that scene/tide.
+The rendered website battle card is
+[/docs/testing-status/](https://hunterdavis.com/johnny-castaway-ps1/docs/testing-status/).
 
 Current battle-card rollup as of 2026-04-29:
 
@@ -70,7 +72,7 @@ Current battle-card rollup as of 2026-04-29:
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
 `performance-experiment-log.md`, the README status table, and the rendered
-website performance page. The CSV is the durable numeric source; prose
+website testing-status page. The CSV is the durable numeric source; prose
 surfaces should summarize it, not invent independent numbers.
 
 ## Secondary (historical): headless regtest harness
