@@ -241,9 +241,11 @@ target speed**.
 
 As of 2026-04-29, 72 of 126 scene/tide variants have current headless
 perf measurements. 42 of 63 scenes have at least one timed variant; 30
-scenes have both high- and low-tide variants timed. The values below are
-`over target / target speed (loop_vb/target_vb)`, with `blk` and `due`
-called out when nonzero.
+scenes have both high- and low-tide variants timed. The latest matrix
+run is `2026-04-29T12:19:41`; per-row freshness is shown on the
+[scene ledger]({{ '/scenes/' | relative_url }}). The values below are `over
+target / target speed (loop_vb/target_vb)`, with `blk` and `due` called out
+when nonzero.
 
 | Scene | High tide | Low tide |
 |---|---:|---:|
