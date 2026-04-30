@@ -210,6 +210,20 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
     return 0, [], "none"
 
 
+def fg_pack_payload_end(header: dict[str, Any], entries: list[dict[str, Any]]) -> int:
+    payload_end = 0
+    for entry in entries:
+        data_size = int(entry.get("data_size", 0) or 0)
+        if data_size > 0:
+            entry_end = int(entry.get("data_offset", 0) or 0) + data_size
+            payload_end = max(payload_end, entry_end)
+    sound_offset = int(header.get("sound_events_offset", 0) or 0)
+    sound_count = int(header.get("sound_event_count", 0) or 0)
+    if sound_offset and sound_count:
+        payload_end = max(payload_end, sound_offset + sound_count * 4)
+    return payload_end
+
+
 def entry_is_payload(entry: dict[str, Any]) -> bool:
     return (
         entry.get("data_size", 0) > 0 and
@@ -356,7 +370,22 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     if pack_sectors is None:
         pack_sectors = int(math.ceil(int(pack.get("bytes", 0)) / SECTOR_SIZE))
 
+    source_policy = parse_source_setup_policy()
+    data_offset = int(header.get("data_offset", 0))
+
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
+    if pack.get("magic") == "FGP3":
+        small_pack_limit = int(
+            source_policy.get("symbols", {}).get("FG_SETUP_PRIME_SMALL_PACK_BYTES") or
+            64 * 1024
+        )
+        payload_end = fg_pack_payload_end(header, entries)
+        window_start = (data_offset // SECTOR_SIZE) * SECTOR_SIZE
+        if payload_end > window_start:
+            window_bytes = int(math.ceil((payload_end - window_start) / SECTOR_SIZE)) * SECTOR_SIZE
+            if 0 < window_bytes <= small_pack_limit:
+                auto_prime_bytes = window_bytes
+                auto_policy = "auto:fgp3-small-pack"
     setup_prime_bytes = args.setup_prime_bytes
     setup_policy = "explicit"
     if setup_prime_bytes is None:
@@ -366,7 +395,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     segment_ranges = list(auto_segments if args.use_default_segments else [])
     segment_ranges.extend(args.setup_segment or [])
 
-    data_offset = int(header.get("data_offset", 0))
     prime_start = data_offset // SECTOR_SIZE
     prime_end = prime_start
     if setup_prime_bytes > 0:

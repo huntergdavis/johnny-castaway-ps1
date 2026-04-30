@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-04-30:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+17.0%` |
 | Timing-bearing average target speed | `87.3%` |
-| Latest perf matrix run | `2026-04-30T05:07:22` |
-| Stats version | mixed: latest rows use `compact-fgp3-v28-fishing5`; earlier follow-up rows use `compact-fgp3-v27-miscgag2` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-30T05:35:49` |
+| Stats version | mixed: latest rows use `compact-fgp3-v29-smallprime`; earlier follow-up rows use `compact-fgp3-v28-fishing5` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -92,8 +92,8 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and accepted follow-up rows now use
-`compact-fgp3-v28-fishing5`; earlier follow-up rows use
-`compact-fgp3-v27-miscgag2` through `compact-fgp3-v3-stand12low`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
+`compact-fgp3-v29-smallprime`; earlier follow-up rows use
+`compact-fgp3-v28-fishing5` through `compact-fgp3-v3-stand12low`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
 high/low) complete without active-loop timing and are excluded from speed
 averages even though the route/gate itself passes.
 

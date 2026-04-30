@@ -241,20 +241,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v28-fishing5`; earlier follow-up rows use
-`compact-fgp3-v27-miscgag2` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v29-smallprime`; earlier follow-up rows use
+`compact-fgp3-v28-fishing5` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T05:07:22`; per-row freshness and stats version are shown on
+run is `2026-04-30T05:35:49`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v28-fishing5`; earlier follow-up rows use
-`compact-fgp3-v27-miscgag2` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v29-smallprime`; earlier follow-up rows use
+`compact-fgp3-v28-fishing5` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -297,19 +297,19 @@ rows are historical only.
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
 | `miscgag1` | +15.5% / 86.6% (1105/957); blk 13 | +14.8% / 87.1% (1101/959); blk 7 |
 | `miscgag2` | -0.3% / 100.3% (1350/1354) | -0.4% / 100.4% (1350/1355) |
-| `stand1` | +69.0% / 59.2% (343/203) | +69.0% / 59.2% (343/203) |
+| `stand1` | +69.3% / 59.1% (342/202) | +69.3% / 59.1% (342/202) |
 | `stand10` | +25.5% / 79.7% (674/537); blk 2 | +25.1% / 79.9% (673/538) |
 | `stand11` | +25.7% / 79.6% (675/537); blk 3 | +25.1% / 79.9% (673/538) |
 | `stand12` | +10.1% / 90.9% (1599/1453); blk 12 | +9.3% / 91.5% (1595/1459); blk 3 |
 | `stand15` | +14.3% / 87.5% (1127/986); blk 7 | +14.1% / 87.6% (1125/986); blk 6 |
 | `stand16` | +11.7% / 89.5% (1327/1188); blk 8 | +11.3% / 89.8% (1326/1191); blk 3 |
-| `stand2` | +27.6% / 78.4% (625/490) | +27.6% / 78.4% (625/490) |
-| `stand3` | +24.4% / 80.4% (693/557) | +25.1% / 79.9% (697/557) |
+| `stand2` | +27.6% / 78.4% (625/490) | +27.5% / 78.4% (626/491) |
+| `stand3` | +24.4% / 80.4% (693/557) | +24.4% / 80.4% (694/558) |
 | `stand4` | +11.8% / 89.4% (1361/1217); blk 7 | +11.9% / 89.3% (1361/1216); blk 7 |
 | `stand5` | +9.2% / 91.5% (1595/1460); blk 2 | +9.4% / 91.4% (1595/1458); blk 4 |
 | `stand6` | +10.2% / 90.7% (1501/1362); blk 4 | +10.1% / 90.8% (1500/1362); blk 3 |
 | `stand7` | +25.6% / 79.6% (676/538); blk 3 | +25.1% / 79.9% (673/538) |
-| `stand8` | +27.0% / 78.7% (635/500) | +27.3% / 78.6% (635/499); blk 1 |
+| `stand8` | +27.0% / 78.7% (635/500) | +27.0% / 78.7% (635/500) |
 | `stand9` | +25.5% / 79.7% (674/537); blk 2 | +25.1% / 79.9% (673/538) |
 | `suzy1` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
 | `suzy2` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |

@@ -487,7 +487,7 @@ for the practical porting path.
 <tr><td><code>STND16L.FG2</code></td><td>176,275</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND16L.FG2">source</a></td></tr>
 <tr><td><code>STND1LOW.FG2</code></td><td>19,187</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND1LOW.FG2">source</a></td></tr>
 <tr><td><code>STND2LOW.FG2</code></td><td>50,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND2LOW.FG2">source</a></td></tr>
-<tr><td><code>STND3LOW.FG2</code></td><td>168,834</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND3LOW.FG2">source</a></td></tr>
+<tr><td><code>STND3LOW.FG2</code></td><td>48,775</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND3LOW.FG2">source</a></td></tr>
 <tr><td><code>STND4LOW.FG2</code></td><td>140,888</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND4LOW.FG2">source</a></td></tr>
 <tr><td><code>STND5LOW.FG2</code></td><td>143,472</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND5LOW.FG2">source</a></td></tr>
 <tr><td><code>STND6LOW.FG2</code></td><td>152,213</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND6LOW.FG2">source</a></td></tr>
