@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.8%` over target /
-`88.0%` target speed as of `compact-fgp3-v44-walkstuf1-high-window54`. The remaining optimization target is therefore
+`88.0%` target speed as of `compact-fgp3-v45-activity8-auto-prime`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1407,6 +1407,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-256` | Failed: promote WALKSTUF1 high `53 KiB` window. | The boot-override sweep looked better than `54 KiB`, but the default-source build hit invalid reads, log cap, and missing `JCPERF2`. Keep `54 KiB` as the accepted source baseline until a later binary-layout change makes `53 KiB` pass as compiled default. |
 | `P5-257` | Failed: WALKSTUF1 high append group `256..320`. | The one-group probe was structurally valid but timing and CD counters stayed flat (`loop_vb=2024`, `blocking_vb=449`, `prefetch_overrun_vb=133`, `loop_reads=43`, `due_misses=25`) while the retained prefetch buffer grew to `147964` bytes. Do not hand-code more observed-sector groups for WALKSTUF1 until host simulation can model append starts and retained-window ownership. |
 | `P5-258` | Failed: WALKSTUF3 `24 KiB`/`32 KiB` stream-window sweep. | Both high and low tide worsened under larger raw windows. High tide moved from `2460/2276` to `2518/2273` at `24 KiB` and `2523/2283` at `32 KiB`; low tide moved from `2466/2285` to `2495/2280` and `2539/2284`. The next WALKSTUF3 path needs generated grouping/direct16/selective preprocessing or scheduler ownership, not scalar window growth. |
+| `P5-259` | Done: convert ACTIVITY8 high/low to auto-primed FGP3. | Retrying the earlier rejected plain-FGP3 ACTIVITY8 path became valid after setup-resident auto-prime landed. Both `ACTIVITY8.FG2` and `ACTV8LOW.FG2` drop from `414077` to `173564` bytes and fit under the auto-prime ceiling. High improves `loop_vb 1058 -> 1043`, `target_vb 902 -> 905`, `blocking_vb 22 -> 0`, `prefetch_overrun_vb 2 -> 0`, `loop_reads 35 -> 0`, and `due_misses 5 -> 0`; low improves `1053 -> 1043`, `901 -> 905`, `14 -> 0`, `2 -> 0`, `35 -> 0`, and `4 -> 0`. FISHING1 high stays exact-flat at `1207/1076` with zero blocking/refill pressure. Latest rows now use `compact-fgp3-v45-activity8-auto-prime`; exact timing-bearing average is down to `14.8002%` over target / `87.9974%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 

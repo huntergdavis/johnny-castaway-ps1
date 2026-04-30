@@ -398,7 +398,7 @@ for the practical porting path.
 <tr><td><code>ACTIVITY5.FG2</code></td><td>638,384</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY5.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY6.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY6.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY7.FG2</code></td><td>147,625</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY7.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY8.FG2</code></td><td>414,077</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY8.FG2</code></td><td>173,564</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY9.FG2</code></td><td>1,752,713</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY9.FG2">source</a></td></tr>
 <tr><td><code>ACTV10L.FG2</code></td><td>302,878</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
 <tr><td><code>ACTV11L.FG2</code></td><td>201,945</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
@@ -408,7 +408,7 @@ for the practical porting path.
 <tr><td><code>ACTV5LOW.FG2</code></td><td>486,136</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV5LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV6LOW.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV6LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV7LOW.FG2</code></td><td>92,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV7LOW.FG2">source</a></td></tr>
-<tr><td><code>ACTV8LOW.FG2</code></td><td>414,077</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV8LOW.FG2">source</a></td></tr>
+<tr><td><code>ACTV8LOW.FG2</code></td><td>173,564</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV8LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV9LOW.FG2</code></td><td>1,672,165</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV9LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL1LOW.FG2</code></td><td>460,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL1LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL2LOW.FG2</code></td><td>868,961</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL2LOW.FG2">source</a></td></tr>

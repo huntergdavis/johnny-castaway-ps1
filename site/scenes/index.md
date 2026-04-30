@@ -114,8 +114,8 @@ Current battle-card rollup as of 2026-04-30:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+14.8%` |
 | Timing-bearing average target speed | `88.0%` |
-| Latest perf matrix run | `2026-04-30T12:26:37` |
-| Stats version | mixed: latest rows use `compact-fgp3-v44-walkstuf1-high-window54`; earlier follow-up rows use `compact-fgp3-v43-walkstuf1-split-window` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-30T13:08:55` |
+| Stats version | mixed: latest rows use `compact-fgp3-v45-activity8-auto-prime`; earlier follow-up rows use `compact-fgp3-v44-walkstuf1-high-window54` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  rows use `compact-fgp3-v44-walkstuf1-high-window54`; earlier follow-up rows use
-  `compact-fgp3-v43-walkstuf1-split-window` through `compact-fgp3-v3-stand12low`; the
+  rows use `compact-fgp3-v45-activity8-auto-prime`; earlier follow-up rows use
+  `compact-fgp3-v44-walkstuf1-high-window54` through `compact-fgp3-v3-stand12low`; the
   complete full-matrix baseline remains `compact-fgp3-v2-fullmatrix` for
   rows not rerun since that pass.
 
@@ -163,8 +163,8 @@ and this page.
 | `activity6` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +14.5% | 87.3% | 1043/911 | 0 | 0 | 0 |  |
 | `activity7` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +21.3% | 82.4% | 746/615 | 0 | 0 | 0 |  |
 | `activity7` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +21.3% | 82.4% | 746/615 | 0 | 0 | 0 |  |
-| `activity8` | high | measured | 2026-04-29T16:58:44 | compact-fgp3-v2-fullmatrix | +17.3% | 85.3% | 1058/902 | 21 | 2 | 5 |  |
-| `activity8` | low | measured | 2026-04-29T16:59:35 | compact-fgp3-v2-fullmatrix | +16.4% | 85.9% | 1050/902 | 12 | 2 | 4 |  |
+| `activity8` | high | measured | 2026-04-30T13:07:10 | compact-fgp3-v45-activity8-auto-prime | +15.2% | 86.8% | 1043/905 | 0 | 0 | 0 |  |
+| `activity8` | low | measured | 2026-04-30T13:07:10 | compact-fgp3-v45-activity8-auto-prime | +15.2% | 86.8% | 1043/905 | 0 | 0 | 0 |  |
 | `activity9` | high | measured | 2026-04-29T17:00:26 | compact-fgp3-v2-fullmatrix | +11.0% | 90.1% | 2267/2042 | 96 | 59 | 10 |  |
 | `activity9` | low | measured | 2026-04-29T17:01:37 | compact-fgp3-v2-fullmatrix | +11.2% | 90.0% | 2272/2044 | 94 | 58 | 8 |  |
 | `activity10` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.9% | 90.2% | 1399/1262 | 0 | 0 | 0 |  |
@@ -187,7 +187,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T17:25:44 | compact-fgp3-v2-fullmatrix | +12.9% | 88.6% | 2747/2433 | 343 | 11 | 49 |  |
 | `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
 | `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
-| `fishing1` | high | measured | 2026-04-30T12:26:37 | compact-fgp3-v44-walkstuf1-high-window54 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-30T13:08:55 | compact-fgp3-v45-activity8-auto-prime | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
 | `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
