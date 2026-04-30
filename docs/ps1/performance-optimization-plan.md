@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
-`88.1%` target speed as of `compact-fgp3-v51-building6-window`. The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v52-visitor3high-prime`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1420,6 +1420,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-269` | Failed: BUILDING5 scalar stream-window sweep. | High tide regresses total loop for every measured raw window (`3506 -> 3509/3515/3524/3566`) while low tide also regresses (`3498 -> 3499/3510/3524`) and `48 KiB` fails before metrics. Do not retry BUILDING5 as another scalar window; the row needs generated grouping or host-side preprocessing if it is to reduce CD work without stealing loop time. |
 | `P5-270` | Failed: resident-pack full late-catch-up. | A setup-resident-only catch-up branch that advanced host-deadline accounting by the full late `frameVBlank` instead of only `hold + 1` was exact-flat on STAND1 high (`342/202`), WALKSTUF2 high (`593/462`), FISHING1 high (`1207/1076`), and VISITOR3 high (`1504/1014`). The over-target gap on zero-CD resident rows is not caused by the existing one-VBlank catch-up clamp; retry this area only with a broader present/input scheduler, pack-time frame coalescing, or direct16/upload-ready rendering work. |
 | `P5-271` | Failed: resident-only no-slack advance. | Restricting the old no-slack wait-skip idea to fully setup-resident packs was exact-flat on STAND1 high/low (`342/202`), WALKSTUF2 high/low (`593/462`), FISHING1 high (`1207/1076`), and VISITOR3 high (`1504/1014`). The high-over-target resident rows are not losing VBlanks in a zero-slack idle loop; the next zero-CD work should be pack-time frame coalescing, upload-ready/direct16 rendering, or a first-class present/input scheduler rather than another local held-loop branch. |
+| `P5-272` | Done: setup-prime VISITOR3 high with a targeted `216 KiB` budget. | A targeted VISITOR3 high contiguous-prime sweep found the safe knee below the `224 KiB` structural-failure point. `128 KiB` was valid but flat (`1504/1007`), `192 KiB` improved (`1496/1009`), `208 KiB` improved further (`1485/1011`), `216 KiB` was best (`1484/1013`, `blocking_vb=321`, `prefetch_overrun_vb=88`, `loop_reads=52`), `220 KiB` regressed, and `224 KiB` failed before complete metrics. FISHING1 high, FISHING3 high/low, and VISITOR3 low stayed within the current gate baselines. Latest rows now use `compact-fgp3-v52-visitor3high-prime`; exact timing-bearing average is down to `14.6579%` over target / `88.0942%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 

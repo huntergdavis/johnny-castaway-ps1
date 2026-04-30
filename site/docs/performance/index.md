@@ -241,20 +241,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v51-building6-window`; earlier follow-up rows use
-`compact-fgp3-v50-building4-window` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v52-visitor3high-prime`; earlier follow-up rows use
+`compact-fgp3-v51-building6-window` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T15:15:13`; per-row freshness and stats version are shown on
+run is `2026-04-30T16:55:34`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v51-building6-window`; earlier follow-up rows use
-`compact-fgp3-v50-building4-window` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v52-visitor3high-prime`; earlier follow-up rows use
+`compact-fgp3-v51-building6-window` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -278,7 +278,7 @@ rows are historical only.
 | `building7` | +4.8% / 95.4% (3843/3668); due 4; blk 43 | +4.2% / 96.0% (3830/3676); blk 12 |
 | `fishing1` | +12.2% / 89.1% (1207/1076) | +12.2% / 89.1% (1207/1076) |
 | `fishing2` | +7.6% / 92.9% (1899/1765); blk 3 | +7.4% / 93.1% (1898/1767) |
-| `fishing3` | +7.3% / 93.2% (2095/1952); due 1; blk 20 | +6.6% / 93.8% (2090/1960); blk 3 |
+| `fishing3` | +7.6% / 92.9% (2098/1950); due 1; blk 23 | +6.8% / 93.6% (2091/1958); blk 6 |
 | `fishing4` | +14.7% / 87.2% (967/843) | +14.7% / 87.2% (967/843) |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
 | `fishing6` | +18.2% / 84.6% (890/753) | +18.2% / 84.6% (890/753) |
@@ -314,7 +314,7 @@ rows are historical only.
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
 | `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
-| `visitor3` | +50.5% / 66.4% (1526/1014); due 23; blk 368 | +51.4% / 66.1% (1547/1022); due 22; blk 332 |
+| `visitor3` | +46.5% / 68.3% (1484/1013); due 23; blk 321 | +50.9% / 66.3% (1536/1018); due 23; blk 332 |
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
