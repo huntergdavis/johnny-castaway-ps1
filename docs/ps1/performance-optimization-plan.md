@@ -160,8 +160,8 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+16.9%` over target /
-`87.4%` target speed as of `compact-fgp3-v33-auto288`. The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+16.8%` over target /
+`87.4%` target speed as of `compact-fgp3-v35-fishing6high-prime`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1387,6 +1387,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-236` | Done: raise automatic FGP3 setup-prime coverage to `288 KiB`. | The next threshold band covers eight more compact FGP3 rows while FISHING1/FISHING3 stay exact-flat. Aggregate newly covered-row deltas are `loop_vb -28`, `blocking_vb -55`, `prefetch_overrun_vb -49`, `loop_reads -149`, and `loop_read_vb -752`. ACTIVITY10 high improves `1406/1257 -> 1399/1262`, FISHING8 low `1388/1248 -> 1380/1253`, STAND12 high `1599/1453 -> 1594/1461`, and VISITOR6 low `2190/2048 -> 2188/2048`; all newly covered rows now have zero loop reads and zero visible pressure. Latest battle-card rows now use `compact-fgp3-v33-auto288`; exact timing-bearing average is down to `16.8301%` over target / `87.4251%` target speed. |
 | `P5-237` | Failed: blind automatic FGP3 setup-prime coverage at `320 KiB`. | ACTIVITY4 high locally improved to zero loop reads/pressure, but ACTIVITY10 low emitted invalid timing (`loop_start=0`, `loop_vb=0`, `advances=0`, `entries=2` of `256`). The threshold was reverted to `288 KiB`; retry this band only through generated per-scene setup metadata and after adding a harness gate for missing active-loop timing on expected timing-bearing rows. |
 | `P5-238` | Done: setup-prime VISITOR1 high with a targeted `296 KiB` budget. | VISITOR1 high is the highest-pressure non-ACTIVITY10 row in the next setup-prime band. A single high-tide budget improves `loop_vb 812 -> 804`, `overrun_vb 141 -> 127`, `blocking_vb/prefetch_overrun_vb 13 -> 0`, and `loop_reads 23 -> 0`, while FISHING1 high and FISHING3 high stay exact-flat. ACTIVITY4 high was also refreshed and now shows the accepted `288 KiB` auto-resident result. Latest battle-card rows now use `compact-fgp3-v34-visitor1high-prime`; exact timing-bearing average is down to `16.8055%` over target / `87.4427%` target speed. |
+| `P5-239` | Done: setup-prime FISHING6 high with a targeted `312 KiB` budget. | FISHING6 high is another safe row in the rejected `320 KiB` band. A single high-tide budget improves `loop_vb 892 -> 890`, `overrun_vb 141 -> 137`, `blocking_vb/prefetch_overrun_vb 4 -> 0`, and `loop_reads 22 -> 0`, while FISHING1 high and FISHING3 high stay exact-flat. Latest battle-card rows now use `compact-fgp3-v35-fishing6high-prime`; exact timing-bearing average is down to `16.7982%` over target / `87.4479%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 
