@@ -922,40 +922,44 @@ optimization battle card for “how fast does this scene/tide variant run.”</l
       <td style="text-align: right"><code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code></td>
     </tr>
     <tr>
-      <td>Scene/tide variants timed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">80 / 126</code></td>
+      <td>Scene/tide variants routed through headless perf</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">126 / 126</code></td>
+    </tr>
+    <tr>
+      <td>Timing-bearing variants</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">120 / 126</code></td>
     </tr>
     <tr>
       <td>Scenes with at least one timed variant</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">50 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">63 / 63</code></td>
     </tr>
     <tr>
       <td>Scenes with both high/low variants timed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">30 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">63 / 63</code></td>
     </tr>
     <tr>
       <td>Pending variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">44 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code></td>
     </tr>
     <tr>
       <td>Blocked variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code></td>
     </tr>
     <tr>
-      <td>Measured average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+13.5%</code></td>
+      <td>Timing-bearing average over target</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+17.4%</code></td>
     </tr>
     <tr>
-      <td>Measured average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">88.7%</code></td>
+      <td>Timing-bearing average target speed</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">87.1%</code></td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-04-29T15:31:39</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-04-29T18:13:13</code></td>
     </tr>
     <tr>
-      <td>Stats versions</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code> rows are post-compaction; <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> rows are backfilled pre-compaction stats</td>
+      <td>Stats version</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code> for every row</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -990,9 +994,9 @@ Lower is better.</li>
   <li><strong>Latest Run</strong>: ISO timestamp derived from the headless summary path
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
-  <li><strong>Stats Version</strong>: performance/layout version for that row. Existing rows
-were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code>; compacted-pack reruns use
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>.</li>
+  <li><strong>Stats Version</strong>: performance/layout version for that row. The current
+full matrix is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> and
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code> rows are historical only.</li>
 </ul>
 
 <h3 id="126-variant-battle-card">126-variant battle card</h3>
@@ -1019,517 +1023,517 @@ were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp
       <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-28T21:34:02</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+3.0%</td>
-      <td style="text-align: right">97.1%</td>
-      <td style="text-align: right">4373/4244</td>
+      <td>2026-04-29T16:47:26</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+3.1%</td>
+      <td style="text-align: right">97.0%</td>
+      <td style="text-align: right">4373/4243</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
       <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-28T22:15:22</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T16:49:09</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+3.1%</td>
       <td style="text-align: right">97.0%</td>
-      <td style="text-align: right">4373/4242</td>
-      <td style="text-align: right">2</td>
-      <td style="text-align: right">2</td>
+      <td style="text-align: right">4373/4243</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-28T21:27:47</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.9%</td>
-      <td style="text-align: right">88.5%</td>
-      <td style="text-align: right">1205/1067</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T22:06:21</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.5%</td>
-      <td style="text-align: right">88.9%</td>
-      <td style="text-align: right">1203/1069</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T21:11:41</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.3%</td>
-      <td style="text-align: right">91.5%</td>
-      <td style="text-align: right">1866/1707</td>
-      <td style="text-align: right">25</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">4</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T21:57:32</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.1%</td>
-      <td style="text-align: right">91.7%</td>
-      <td style="text-align: right">1861/1706</td>
-      <td style="text-align: right">29</td>
-      <td style="text-align: right">16</td>
-      <td style="text-align: right">3</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T21:20:58</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+14.5%</td>
-      <td style="text-align: right">87.3%</td>
-      <td style="text-align: right">1043/911</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T23:00:11</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+14.5%</td>
-      <td style="text-align: right">87.3%</td>
-      <td style="text-align: right">1043/911</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T20:54:38</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+22.7%</td>
-      <td style="text-align: right">81.5%</td>
-      <td style="text-align: right">751/612</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T21:43:07</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+21.7%</td>
-      <td style="text-align: right">82.2%</td>
-      <td style="text-align: right">747/614</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T22:50:08</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+11.2%</td>
-      <td style="text-align: right">89.9%</td>
-      <td style="text-align: right">2268/2039</td>
-      <td style="text-align: right">97</td>
-      <td style="text-align: right">60</td>
-      <td style="text-align: right">9</td>
-      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T23:13:29</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+11.1%</td>
-      <td style="text-align: right">90.0%</td>
-      <td style="text-align: right">2271/2044</td>
-      <td style="text-align: right">92</td>
-      <td style="text-align: right">56</td>
-      <td style="text-align: right">8</td>
-      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene artifact</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T05:10:31</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.3%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1408/1254</td>
-      <td style="text-align: right">18</td>
-      <td style="text-align: right">13</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T03:28:40</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.2%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1408/1255</td>
-      <td style="text-align: right">23</td>
-      <td style="text-align: right">14</td>
-      <td style="text-align: right">2</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T10:34:38</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+8.1%</td>
-      <td style="text-align: right">92.5%</td>
-      <td style="text-align: right">1864/1724</td>
-      <td style="text-align: right">9</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T10:48:17</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+8.3%</td>
-      <td style="text-align: right">92.3%</td>
-      <td style="text-align: right">1866/1723</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T05:25:38</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.9%</td>
-      <td style="text-align: right">91.0%</td>
-      <td style="text-align: right">1551/1411</td>
-      <td style="text-align: right">12</td>
-      <td style="text-align: right">12</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T03:39:20</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+10.2%</td>
-      <td style="text-align: right">90.8%</td>
-      <td style="text-align: right">1551/1408</td>
-      <td style="text-align: right">20</td>
-      <td style="text-align: right">14</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T07:52:19</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+25.6%</td>
-      <td style="text-align: right">79.6%</td>
-      <td style="text-align: right">966/769</td>
-      <td style="text-align: right">76</td>
-      <td style="text-align: right">52</td>
-      <td style="text-align: right">6</td>
-      <td>padded FGP3; prefetch_overrun tradeoff +2 accepted</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T11:16:06</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+24.2%</td>
-      <td style="text-align: right">80.5%</td>
-      <td style="text-align: right">953/767</td>
-      <td style="text-align: right">62</td>
-      <td style="text-align: right">46</td>
-      <td style="text-align: right">4</td>
-      <td>padded FGP3; loop-validated; due_misses tradeoff 2-&gt;4 accepted</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T00:51:42</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+21.8%</td>
-      <td style="text-align: right">82.1%</td>
-      <td style="text-align: right">1572/1291</td>
-      <td style="text-align: right">173</td>
-      <td style="text-align: right">66</td>
-      <td style="text-align: right">20</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T01:03:17</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+21.4%</td>
-      <td style="text-align: right">82.4%</td>
-      <td style="text-align: right">1570/1293</td>
-      <td style="text-align: right">172</td>
-      <td style="text-align: right">62</td>
-      <td style="text-align: right">20</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T06:29:00</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.4%</td>
-      <td style="text-align: right">91.4%</td>
-      <td style="text-align: right">1565/1431</td>
-      <td style="text-align: right">4</td>
-      <td style="text-align: right">4</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T23:31:51</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.5%</td>
-      <td style="text-align: right">88.9%</td>
-      <td style="text-align: right">3141/2792</td>
-      <td style="text-align: right">326</td>
-      <td style="text-align: right">43</td>
-      <td style="text-align: right">39</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-28T23:43:30</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.4%</td>
-      <td style="text-align: right">89.0%</td>
-      <td style="text-align: right">3135/2790</td>
-      <td style="text-align: right">335</td>
-      <td style="text-align: right">46</td>
-      <td style="text-align: right">40</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T02:23:18</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+5.4%</td>
-      <td style="text-align: right">94.9%</td>
-      <td style="text-align: right">3514/3334</td>
-      <td style="text-align: right">65</td>
-      <td style="text-align: right">36</td>
-      <td style="text-align: right">6</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T02:32:45</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+4.8%</td>
-      <td style="text-align: right">95.4%</td>
-      <td style="text-align: right">3508/3346</td>
-      <td style="text-align: right">33</td>
-      <td style="text-align: right">23</td>
-      <td style="text-align: right">2</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T01:15:17</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T16:50:59</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+13.1%</td>
       <td style="text-align: right">88.4%</td>
-      <td style="text-align: right">2754/2435</td>
-      <td style="text-align: right">317</td>
-      <td style="text-align: right">43</td>
-      <td style="text-align: right">39</td>
-      <td>padded FGP3</td>
+      <td style="text-align: right">1206/1066</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T16:51:54</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.6%</td>
+      <td style="text-align: right">88.8%</td>
+      <td style="text-align: right">1204/1069</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T16:52:48</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.4%</td>
+      <td style="text-align: right">91.4%</td>
+      <td style="text-align: right">1867/1707</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">4</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T16:53:53</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.0%</td>
+      <td style="text-align: right">91.8%</td>
+      <td style="text-align: right">1860/1707</td>
+      <td style="text-align: right">26</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">3</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T16:55:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.5%</td>
+      <td style="text-align: right">87.3%</td>
+      <td style="text-align: right">1043/911</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T16:56:19</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.5%</td>
+      <td style="text-align: right">87.3%</td>
+      <td style="text-align: right">1043/911</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T16:57:09</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+22.6%</td>
+      <td style="text-align: right">81.6%</td>
+      <td style="text-align: right">750/612</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T16:57:55</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+21.3%</td>
+      <td style="text-align: right">82.5%</td>
+      <td style="text-align: right">747/616</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T16:58:44</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+17.3%</td>
+      <td style="text-align: right">85.3%</td>
+      <td style="text-align: right">1058/902</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">5</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T16:59:35</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+16.4%</td>
+      <td style="text-align: right">85.9%</td>
+      <td style="text-align: right">1050/902</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">4</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:00:26</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.0%</td>
+      <td style="text-align: right">90.1%</td>
+      <td style="text-align: right">2267/2042</td>
+      <td style="text-align: right">96</td>
+      <td style="text-align: right">59</td>
+      <td style="text-align: right">10</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:01:37</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.2%</td>
+      <td style="text-align: right">90.0%</td>
+      <td style="text-align: right">2272/2044</td>
+      <td style="text-align: right">94</td>
+      <td style="text-align: right">58</td>
+      <td style="text-align: right">8</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:02:47</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.8%</td>
+      <td style="text-align: right">89.4%</td>
+      <td style="text-align: right">1406/1257</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:03:48</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.4%</td>
+      <td style="text-align: right">89.8%</td>
+      <td style="text-align: right">1401/1258</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:04:47</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+8.0%</td>
+      <td style="text-align: right">92.6%</td>
+      <td style="text-align: right">1862/1724</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:05:52</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+8.0%</td>
+      <td style="text-align: right">92.6%</td>
+      <td style="text-align: right">1862/1724</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:07:45</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.5%</td>
+      <td style="text-align: right">91.3%</td>
+      <td style="text-align: right">1548/1414</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:08:49</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.4%</td>
+      <td style="text-align: right">91.4%</td>
+      <td style="text-align: right">1543/1411</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:09:55</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+23.4%</td>
+      <td style="text-align: right">81.1%</td>
+      <td style="text-align: right">951/771</td>
+      <td style="text-align: right">63</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">8</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:10:45</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+19.9%</td>
+      <td style="text-align: right">83.4%</td>
+      <td style="text-align: right">935/780</td>
+      <td style="text-align: right">37</td>
+      <td style="text-align: right">18</td>
+      <td style="text-align: right">4</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:11:35</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+20.2%</td>
+      <td style="text-align: right">83.2%</td>
+      <td style="text-align: right">1559/1297</td>
+      <td style="text-align: right">150</td>
+      <td style="text-align: right">45</td>
+      <td style="text-align: right">19</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:12:34</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+20.1%</td>
+      <td style="text-align: right">83.3%</td>
+      <td style="text-align: right">1556/1296</td>
+      <td style="text-align: right">150</td>
+      <td style="text-align: right">42</td>
+      <td style="text-align: right">20</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:13:36</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.4%</td>
+      <td style="text-align: right">91.4%</td>
+      <td style="text-align: right">1565/1430</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:14:35</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.6%</td>
+      <td style="text-align: right">91.3%</td>
+      <td style="text-align: right">1571/1434</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:15:34</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.2%</td>
+      <td style="text-align: right">3128/2789</td>
+      <td style="text-align: right">355</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">49</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:20:47</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.1%</td>
+      <td style="text-align: right">89.2%</td>
+      <td style="text-align: right">3126/2788</td>
+      <td style="text-align: right">353</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">49</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:20:47</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+5.0%</td>
+      <td style="text-align: right">95.2%</td>
+      <td style="text-align: right">3504/3336</td>
+      <td style="text-align: right">52</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">6</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:24:22</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+4.5%</td>
+      <td style="text-align: right">95.7%</td>
+      <td style="text-align: right">3498/3348</td>
+      <td style="text-align: right">16</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:24:22</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.9%</td>
+      <td style="text-align: right">88.6%</td>
+      <td style="text-align: right">2744/2431</td>
+      <td style="text-align: right">342</td>
+      <td style="text-align: right">9</td>
+      <td style="text-align: right">49</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T01:29:52</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T17:25:44</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+12.9%</td>
       <td style="text-align: right">88.6%</td>
-      <td style="text-align: right">2746/2433</td>
-      <td style="text-align: right">312</td>
-      <td style="text-align: right">55</td>
-      <td style="text-align: right">38</td>
-      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam</td>
+      <td style="text-align: right">2747/2433</td>
+      <td style="text-align: right">343</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">49</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T02:04:56</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+5.5%</td>
-      <td style="text-align: right">94.8%</td>
-      <td style="text-align: right">3861/3659</td>
-      <td style="text-align: right">66</td>
-      <td style="text-align: right">47</td>
+      <td>2026-04-29T17:25:59</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+4.8%</td>
+      <td style="text-align: right">95.4%</td>
+      <td style="text-align: right">3843/3668</td>
+      <td style="text-align: right">43</td>
+      <td style="text-align: right">24</td>
+      <td style="text-align: right">4</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:27:03</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+4.2%</td>
+      <td style="text-align: right">96.0%</td>
+      <td style="text-align: right">3830/3676</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:27:40</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1207/1076</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:28:34</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.2%</td>
+      <td style="text-align: right">89.1%</td>
+      <td style="text-align: right">1207/1076</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:28:52</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+7.6%</td>
+      <td style="text-align: right">92.9%</td>
+      <td style="text-align: right">1899/1765</td>
       <td style="text-align: right">3</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T02:13:58</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+4.5%</td>
-      <td style="text-align: right">95.7%</td>
-      <td style="text-align: right">3837/3672</td>
-      <td style="text-align: right">23</td>
-      <td style="text-align: right">23</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T15:29:13</td>
-      <td>compact-fgp3-v1</td>
-      <td style="text-align: right">+12.2%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1207/1076</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-27T17:40:04</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.2%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1207/1076</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td style="text-align: right">0</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-28T17:40:29</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.5%</td>
-      <td style="text-align: right">93.0%</td>
-      <td style="text-align: right">1898/1765</td>
-      <td style="text-align: right">2</td>
-      <td style="text-align: right">2</td>
+      <td style="text-align: right">3</td>
       <td style="text-align: right">0</td>
       <td> </td>
     </tr>
@@ -1537,8 +1541,8 @@ were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp
       <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-27T18:50:02</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T17:29:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+7.4%</td>
       <td style="text-align: right">93.1%</td>
       <td style="text-align: right">1898/1767</td>
@@ -1551,13 +1555,13 @@ were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-28T17:36:58</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.1%</td>
-      <td style="text-align: right">93.4%</td>
-      <td style="text-align: right">2093/1955</td>
-      <td style="text-align: right">15</td>
-      <td style="text-align: right">10</td>
+      <td>2026-04-29T17:29:56</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+7.4%</td>
+      <td style="text-align: right">93.1%</td>
+      <td style="text-align: right">2095/1951</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">16</td>
       <td style="text-align: right">1</td>
       <td> </td>
     </tr>
@@ -1565,8 +1569,8 @@ were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-28T16:50:36</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T17:30:34</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+6.6%</td>
       <td style="text-align: right">93.8%</td>
       <td style="text-align: right">2090/1960</td>
@@ -1579,1204 +1583,1204 @@ were backfilled as <code class="language-plaintext highlighter-rouge">padded-fgp
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T10:23:32</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+16.7%</td>
-      <td style="text-align: right">85.7%</td>
-      <td style="text-align: right">978/838</td>
-      <td style="text-align: right">15</td>
-      <td style="text-align: right">15</td>
+      <td>2026-04-29T17:31:06</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+15.0%</td>
+      <td style="text-align: right">87.0%</td>
+      <td style="text-align: right">968/842</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:31:46</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+15.7%</td>
+      <td style="text-align: right">86.5%</td>
+      <td style="text-align: right">975/843</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:32:00</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-9.3%</td>
+      <td style="text-align: right">110.3%</td>
+      <td style="text-align: right">807/890</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:32:38</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-9.2%</td>
+      <td style="text-align: right">110.1%</td>
+      <td style="text-align: right">808/890</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T11:07:36</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T17:33:00</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+19.1%</td>
+      <td style="text-align: right">84.0%</td>
+      <td style="text-align: right">893/750</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:33:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+18.7%</td>
+      <td style="text-align: right">84.2%</td>
+      <td style="text-align: right">894/753</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:33:50</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+19.2%</td>
       <td style="text-align: right">83.9%</td>
-      <td style="text-align: right">893/749</td>
-      <td style="text-align: right">7</td>
-      <td style="text-align: right">7</td>
+      <td style="text-align: right">863/724</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">6</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T11:44:20</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+19.6%</td>
-      <td style="text-align: right">83.6%</td>
-      <td style="text-align: right">897/750</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
-      <td>high</td>
+      <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T10:04:49</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T17:34:20</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+19.4%</td>
-      <td style="text-align: right">83.8%</td>
-      <td style="text-align: right">863/723</td>
-      <td style="text-align: right">7</td>
-      <td style="text-align: right">7</td>
+      <td style="text-align: right">83.7%</td>
+      <td style="text-align: right">866/725</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T04:19:49</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.4%</td>
-      <td style="text-align: right">88.9%</td>
-      <td style="text-align: right">1400/1245</td>
-      <td style="text-align: right">21</td>
-      <td style="text-align: right">21</td>
+      <td>2026-04-29T17:34:39</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.9%</td>
+      <td style="text-align: right">89.4%</td>
+      <td style="text-align: right">1393/1245</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">14</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T12:00:44</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+11.1%</td>
-      <td style="text-align: right">90.1%</td>
-      <td style="text-align: right">1387/1249</td>
-      <td style="text-align: right">11</td>
-      <td style="text-align: right">11</td>
+      <td>2026-04-29T17:35:10</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.2%</td>
+      <td style="text-align: right">89.9%</td>
+      <td style="text-align: right">1388/1248</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">13</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-28T23:54:52</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.5%</td>
-      <td style="text-align: right">91.3%</td>
-      <td style="text-align: right">2128/1943</td>
+      <td>2026-04-29T17:35:40</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.4%</td>
+      <td style="text-align: right">91.4%</td>
+      <td style="text-align: right">2125/1942</td>
       <td style="text-align: right">31</td>
       <td style="text-align: right">31</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T00:05:46</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.8%</td>
-      <td style="text-align: right">91.1%</td>
-      <td style="text-align: right">2132/1942</td>
-      <td style="text-align: right">37</td>
-      <td style="text-align: right">37</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T12:09:01</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.3%</td>
-      <td style="text-align: right">93.2%</td>
-      <td style="text-align: right">1878/1750</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T12:17:15</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.3%</td>
-      <td style="text-align: right">93.2%</td>
-      <td style="text-align: right">1878/1750</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">1</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T05:42:22</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.8%</td>
-      <td style="text-align: right">88.7%</td>
-      <td style="text-align: right">1308/1160</td>
-      <td style="text-align: right">20</td>
-      <td style="text-align: right">16</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T08:55:48</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.2%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1305/1163</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T01:46:20</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+3.6%</td>
-      <td style="text-align: right">96.5%</td>
-      <td style="text-align: right">2901/2799</td>
-      <td style="text-align: right">33</td>
-      <td style="text-align: right">33</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T01:55:45</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+3.8%</td>
-      <td style="text-align: right">96.3%</td>
-      <td style="text-align: right">2905/2798</td>
-      <td style="text-align: right">37</td>
-      <td style="text-align: right">37</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T00:18:38</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+4.5%</td>
-      <td style="text-align: right">95.7%</td>
-      <td style="text-align: right">5028/4813</td>
-      <td style="text-align: right">87</td>
-      <td style="text-align: right">75</td>
-      <td style="text-align: right">2</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T00:30:11</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+3.8%</td>
-      <td style="text-align: right">96.4%</td>
-      <td style="text-align: right">5011/4830</td>
-      <td style="text-align: right">50</td>
-      <td style="text-align: right">45</td>
-      <td style="text-align: right">1</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T04:40:25</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+1.7%</td>
-      <td style="text-align: right">98.3%</td>
-      <td style="text-align: right">2286/2248</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T04:55:27</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+1.7%</td>
-      <td style="text-align: right">98.3%</td>
-      <td style="text-align: right">2286/2248</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T12:37:06</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">-2.5%</td>
-      <td style="text-align: right">102.5%</td>
-      <td style="text-align: right">1969/2019</td>
-      <td style="text-align: right">27</td>
-      <td style="text-align: right">10</td>
-      <td style="text-align: right">4</td>
-      <td>FGP2 baseline; plain padded FGP3 rejected due prefetch-overrun regression</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T03:50:10</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.4%</td>
-      <td style="text-align: right">93.1%</td>
-      <td style="text-align: right">1698/1581</td>
-      <td style="text-align: right">20</td>
-      <td style="text-align: right">20</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T04:00:29</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+7.0%</td>
-      <td style="text-align: right">93.4%</td>
-      <td style="text-align: right">1694/1583</td>
-      <td style="text-align: right">14</td>
-      <td style="text-align: right">14</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T11:24:47</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+16.9%</td>
-      <td style="text-align: right">85.6%</td>
-      <td style="text-align: right">1115/954</td>
-      <td style="text-align: right">26</td>
-      <td style="text-align: right">26</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
-      <td>low</td>
-      <td>measured</td>
-      <td>2026-04-29T11:35:00</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+14.6%</td>
-      <td style="text-align: right">87.3%</td>
-      <td style="text-align: right">1099/959</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T13:33:50</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+24.9%</td>
-      <td style="text-align: right">80.1%</td>
-      <td style="text-align: right">693/555</td>
-      <td style="text-align: right">2</td>
-      <td style="text-align: right">2</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T07:31:30</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+12.2%</td>
-      <td style="text-align: right">89.1%</td>
-      <td style="text-align: right">1365/1216</td>
-      <td style="text-align: right">12</td>
-      <td style="text-align: right">12</td>
-      <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
-      <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
-      <td>high</td>
-      <td>measured</td>
-      <td>2026-04-29T06:44:33</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.7%</td>
+      <td>2026-04-29T17:36:10</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.6%</td>
       <td style="text-align: right">91.2%</td>
-      <td style="text-align: right">1600/1459</td>
+      <td style="text-align: right">2129/1942</td>
+      <td style="text-align: right">33</td>
+      <td style="text-align: right">33</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:36:49</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+7.2%</td>
+      <td style="text-align: right">93.2%</td>
+      <td style="text-align: right">1878/1751</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:37:20</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+7.3%</td>
+      <td style="text-align: right">93.2%</td>
+      <td style="text-align: right">1878/1750</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:37:59</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.3%</td>
+      <td style="text-align: right">89.8%</td>
+      <td style="text-align: right">1299/1167</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:38:24</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.8%</td>
+      <td style="text-align: right">89.4%</td>
+      <td style="text-align: right">1303/1165</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:38:54</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.1%</td>
+      <td style="text-align: right">90.0%</td>
+      <td style="text-align: right">1349/1214</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:39:19</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.1%</td>
+      <td style="text-align: right">90.0%</td>
+      <td style="text-align: right">1349/1214</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:39:50</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+16.5%</td>
+      <td style="text-align: right">85.8%</td>
+      <td style="text-align: right">954/819</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:40:14</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+16.3%</td>
+      <td style="text-align: right">86.0%</td>
+      <td style="text-align: right">954/820</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:40:45</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+3.4%</td>
+      <td style="text-align: right">96.7%</td>
+      <td style="text-align: right">2895/2800</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:41:03</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+3.4%</td>
+      <td style="text-align: right">96.7%</td>
+      <td style="text-align: right">2896/2800</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">27</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:42:09</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+3.7%</td>
+      <td style="text-align: right">96.4%</td>
+      <td style="text-align: right">5004/4826</td>
+      <td style="text-align: right">49</td>
+      <td style="text-align: right">40</td>
+      <td style="text-align: right">2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:42:28</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+3.2%</td>
+      <td style="text-align: right">96.9%</td>
+      <td style="text-align: right">4994/4839</td>
+      <td style="text-align: right">26</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:44:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+1.6%</td>
+      <td style="text-align: right">98.4%</td>
+      <td style="text-align: right">2284/2247</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:44:28</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+1.6%</td>
+      <td style="text-align: right">98.4%</td>
+      <td style="text-align: right">2285/2249</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">6</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:45:25</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">0/0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:45:37</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">0/0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:46:07</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-2.4%</td>
+      <td style="text-align: right">102.4%</td>
+      <td style="text-align: right">1968/2016</td>
+      <td style="text-align: right">28</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">3</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:46:13</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-2.6%</td>
+      <td style="text-align: right">102.7%</td>
+      <td style="text-align: right">1966/2019</td>
+      <td style="text-align: right">24</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">3</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:47:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+6.6%</td>
+      <td style="text-align: right">93.8%</td>
+      <td style="text-align: right">1687/1583</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:47:23</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+6.6%</td>
+      <td style="text-align: right">93.8%</td>
+      <td style="text-align: right">1688/1583</td>
       <td style="text-align: right">8</td>
       <td style="text-align: right">8</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:48:17</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+15.5%</td>
+      <td style="text-align: right">86.6%</td>
+      <td style="text-align: right">1105/957</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:48:28</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.8%</td>
+      <td style="text-align: right">87.1%</td>
+      <td style="text-align: right">1101/959</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:49:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+0.1%</td>
+      <td style="text-align: right">99.9%</td>
+      <td style="text-align: right">1356/1355</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:49:23</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+0.1%</td>
+      <td style="text-align: right">99.9%</td>
+      <td style="text-align: right">1356/1355</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:50:05</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+73.6%</td>
+      <td style="text-align: right">57.6%</td>
+      <td style="text-align: right">349/201</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:50:21</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+70.9%</td>
+      <td style="text-align: right">58.5%</td>
+      <td style="text-align: right">347/203</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:50:44</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+30.5%</td>
+      <td style="text-align: right">76.6%</td>
+      <td style="text-align: right">633/485</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:51:01</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+30.3%</td>
+      <td style="text-align: right">76.7%</td>
+      <td style="text-align: right">632/485</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:51:33</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+24.4%</td>
+      <td style="text-align: right">80.4%</td>
+      <td style="text-align: right">693/557</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:51:46</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+25.1%</td>
+      <td style="text-align: right">79.9%</td>
+      <td style="text-align: right">697/557</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:52:17</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.8%</td>
+      <td style="text-align: right">89.4%</td>
+      <td style="text-align: right">1361/1217</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:52:31</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.3%</td>
+      <td style="text-align: right">89.0%</td>
+      <td style="text-align: right">1366/1216</td>
+      <td style="text-align: right">9</td>
+      <td style="text-align: right">9</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:53:13</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.2%</td>
+      <td style="text-align: right">91.5%</td>
+      <td style="text-align: right">1595/1460</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:53:25</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+10.8%</td>
+      <td style="text-align: right">90.3%</td>
+      <td style="text-align: right">1606/1450</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T07:00:48</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+10.5%</td>
-      <td style="text-align: right">90.5%</td>
-      <td style="text-align: right">1503/1360</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">8</td>
+      <td>2026-04-29T17:54:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+10.2%</td>
+      <td style="text-align: right">90.7%</td>
+      <td style="text-align: right">1501/1362</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: right">4</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:54:26</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+10.7%</td>
+      <td style="text-align: right">90.3%</td>
+      <td style="text-align: right">1505/1359</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T12:54:14</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+26.1%</td>
-      <td style="text-align: right">79.3%</td>
-      <td style="text-align: right">676/536</td>
-      <td style="text-align: right">5</td>
-      <td style="text-align: right">5</td>
+      <td>2026-04-29T17:55:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+25.6%</td>
+      <td style="text-align: right">79.6%</td>
+      <td style="text-align: right">676/538</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">3</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:55:25</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+26.9%</td>
+      <td style="text-align: right">78.8%</td>
+      <td style="text-align: right">680/536</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T15:31:39</td>
-      <td>compact-fgp3-v1</td>
+      <td>2026-04-29T17:56:01</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+27.0%</td>
       <td style="text-align: right">78.7%</td>
       <td style="text-align: right">635/500</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
-      <td>compact FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:56:10</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+28.5%</td>
+      <td style="text-align: right">77.8%</td>
+      <td style="text-align: right">640/498</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T14:13:53</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+25.8%</td>
-      <td style="text-align: right">79.5%</td>
-      <td style="text-align: right">673/535</td>
-      <td style="text-align: right">3</td>
-      <td style="text-align: right">3</td>
+      <td>2026-04-29T17:56:47</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+25.5%</td>
+      <td style="text-align: right">79.7%</td>
+      <td style="text-align: right">674/537</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:56:55</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+26.3%</td>
+      <td style="text-align: right">79.2%</td>
+      <td style="text-align: right">678/537</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T14:54:05</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+25.8%</td>
-      <td style="text-align: right">79.5%</td>
-      <td style="text-align: right">673/535</td>
-      <td style="text-align: right">3</td>
-      <td style="text-align: right">3</td>
+      <td>2026-04-29T17:57:31</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+25.5%</td>
+      <td style="text-align: right">79.7%</td>
+      <td style="text-align: right">674/537</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:57:39</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+26.5%</td>
+      <td style="text-align: right">79.1%</td>
+      <td style="text-align: right">678/536</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T15:04:03</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+25.8%</td>
-      <td style="text-align: right">79.5%</td>
-      <td style="text-align: right">674/536</td>
+      <td>2026-04-29T17:58:16</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+25.7%</td>
+      <td style="text-align: right">79.6%</td>
+      <td style="text-align: right">675/537</td>
       <td style="text-align: right">3</td>
       <td style="text-align: right">3</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:58:23</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+27.4%</td>
+      <td style="text-align: right">78.5%</td>
+      <td style="text-align: right">683/536</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T06:13:45</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.7%</td>
-      <td style="text-align: right">91.2%</td>
-      <td style="text-align: right">1597/1456</td>
-      <td style="text-align: right">8</td>
-      <td style="text-align: right">8</td>
+      <td>2026-04-29T17:59:01</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+10.1%</td>
+      <td style="text-align: right">90.9%</td>
+      <td style="text-align: right">1599/1453</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">12</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T17:59:08</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+11.9%</td>
+      <td style="text-align: right">89.4%</td>
+      <td style="text-align: right">1622/1450</td>
+      <td style="text-align: right">35</td>
+      <td style="text-align: right">35</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T12:30:59</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+15.2%</td>
-      <td style="text-align: right">86.8%</td>
-      <td style="text-align: right">1135/985</td>
-      <td style="text-align: right">17</td>
-      <td style="text-align: right">17</td>
+      <td>2026-04-29T18:00:00</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.3%</td>
+      <td style="text-align: right">87.5%</td>
+      <td style="text-align: right">1127/986</td>
+      <td style="text-align: right">7</td>
+      <td style="text-align: right">7</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:00:08</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.9%</td>
+      <td style="text-align: right">87.0%</td>
+      <td style="text-align: right">1135/988</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T10:13:31</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T18:00:55</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+11.7%</td>
       <td style="text-align: right">89.5%</td>
-      <td style="text-align: right">1328/1189</td>
-      <td style="text-align: right">7</td>
-      <td style="text-align: right">7</td>
+      <td style="text-align: right">1327/1188</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">8</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:01:04</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+12.1%</td>
+      <td style="text-align: right">89.2%</td>
+      <td style="text-align: right">1333/1189</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">1</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
       <td>high</td>
-      <td>blocked</td>
-      <td>2026-04-28T23:20:55</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+0.0%</td>
+      <td>measured</td>
+      <td>2026-04-29T18:01:51</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">0/6</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
-      <td>baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:01:58</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
-      <td>high</td>
-      <td>blocked</td>
-      <td>2026-04-29T02:57:54</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+0.0%</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">0/6</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
       <td style="text-align: right">0</td>
-      <td>fgpilot coverage gap; pack loads but foreground loop never starts</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T18:02:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">-</td>
+      <td style="text-align: right">0/6</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:02:35</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">-</td>
       <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
+      <td style="text-align: right">0/6</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td style="text-align: right">0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T09:38:48</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+22.5%</td>
-      <td style="text-align: right">81.6%</td>
-      <td style="text-align: right">822/671</td>
-      <td style="text-align: right">22</td>
-      <td style="text-align: right">22</td>
+      <td>2026-04-29T18:03:05</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+21.0%</td>
+      <td style="text-align: right">82.6%</td>
+      <td style="text-align: right">812/671</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">13</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:03:11</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+20.4%</td>
+      <td style="text-align: right">83.1%</td>
+      <td style="text-align: right">809/672</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">14</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T02:42:08</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+56.1%</td>
-      <td style="text-align: right">64.1%</td>
-      <td style="text-align: right">1581/1013</td>
-      <td style="text-align: right">424</td>
-      <td style="text-align: right">145</td>
-      <td style="text-align: right">24</td>
-      <td>padded FGP3; still CD-bound</td>
+      <td>2026-04-29T18:04:12</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+50.5%</td>
+      <td style="text-align: right">66.4%</td>
+      <td style="text-align: right">1526/1014</td>
+      <td style="text-align: right">368</td>
+      <td style="text-align: right">133</td>
+      <td style="text-align: right">23</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T02:51:12</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+58.4%</td>
-      <td style="text-align: right">63.1%</td>
-      <td style="text-align: right">1611/1017</td>
-      <td style="text-align: right">404</td>
-      <td style="text-align: right">99</td>
+      <td>2026-04-29T18:04:14</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+51.4%</td>
+      <td style="text-align: right">66.1%</td>
+      <td style="text-align: right">1547/1022</td>
+      <td style="text-align: right">332</td>
+      <td style="text-align: right">111</td>
+      <td style="text-align: right">22</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T18:05:12</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+39.8%</td>
+      <td style="text-align: right">71.5%</td>
+      <td style="text-align: right">590/422</td>
       <td style="text-align: right">26</td>
-      <td>padded FGP3; still CD-bound</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
-      <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td style="text-align: right">19</td>
+      <td style="text-align: right">1</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:05:15</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+37.7%</td>
+      <td style="text-align: right">72.6%</td>
+      <td style="text-align: right">584/424</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">11</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T03:18:33</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+20.0%</td>
-      <td style="text-align: right">83.3%</td>
-      <td style="text-align: right">1295/1079</td>
-      <td style="text-align: right">107</td>
-      <td style="text-align: right">52</td>
+      <td>2026-04-29T18:06:00</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+17.6%</td>
+      <td style="text-align: right">85.0%</td>
+      <td style="text-align: right">1274/1083</td>
+      <td style="text-align: right">79</td>
+      <td style="text-align: right">34</td>
       <td style="text-align: right">9</td>
-      <td>padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T10:57:15</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+15.2%</td>
-      <td style="text-align: right">86.8%</td>
-      <td style="text-align: right">1250/1085</td>
-      <td style="text-align: right">62</td>
-      <td style="text-align: right">27</td>
+      <td>2026-04-29T18:06:05</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+14.3%</td>
+      <td style="text-align: right">87.5%</td>
+      <td style="text-align: right">1244/1088</td>
+      <td style="text-align: right">49</td>
+      <td style="text-align: right">14</td>
       <td style="text-align: right">6</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T05:58:39</td>
-      <td>padded-fgp3-v1</td>
+      <td>2026-04-29T18:08:18</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
       <td style="text-align: right">+7.5%</td>
       <td style="text-align: right">93.0%</td>
-      <td style="text-align: right">2198/2044</td>
-      <td style="text-align: right">14</td>
-      <td style="text-align: right">14</td>
+      <td style="text-align: right">2195/2042</td>
+      <td style="text-align: right">13</td>
+      <td style="text-align: right">13</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
-      <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T07:16:36</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+9.6%</td>
-      <td style="text-align: right">91.2%</td>
-      <td style="text-align: right">1777/1621</td>
-      <td style="text-align: right">15</td>
-      <td style="text-align: right">15</td>
+      <td>2026-04-29T18:08:23</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+8.3%</td>
+      <td style="text-align: right">92.3%</td>
+      <td style="text-align: right">2209/2040</td>
+      <td style="text-align: right">22</td>
+      <td style="text-align: right">22</td>
       <td style="text-align: right">0</td>
-      <td>padded FGP3</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T18:09:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+8.9%</td>
+      <td style="text-align: right">91.9%</td>
+      <td style="text-align: right">1768/1624</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">3</td>
+      <td style="text-align: right">0</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:09:33</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+9.7%</td>
+      <td style="text-align: right">91.1%</td>
+      <td style="text-align: right">1780/1622</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">10</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:10:36</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+144.8%</td>
+      <td style="text-align: right">40.8%</td>
+      <td style="text-align: right">3320/1356</td>
+      <td style="text-align: right">1800</td>
+      <td style="text-align: right">17</td>
+      <td style="text-align: right">318</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:10:43</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+177.3%</td>
+      <td style="text-align: right">36.1%</td>
+      <td style="text-align: right">3755/1354</td>
+      <td style="text-align: right">2195</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">328</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
       <td>high</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:12:10</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+29.6%</td>
+      <td style="text-align: right">77.2%</td>
+      <td style="text-align: right">596/460</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:12:28</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+29.6%</td>
+      <td style="text-align: right">77.2%</td>
+      <td style="text-align: right">596/460</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">0</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T03:08:07</td>
-      <td>padded-fgp3-v1</td>
-      <td style="text-align: right">+10.4%</td>
-      <td style="text-align: right">90.6%</td>
-      <td style="text-align: right">2512/2275</td>
-      <td style="text-align: right">130</td>
-      <td style="text-align: right">90</td>
+      <td>2026-04-29T18:12:55</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+8.1%</td>
+      <td style="text-align: right">92.5%</td>
+      <td style="text-align: right">2460/2276</td>
+      <td style="text-align: right">79</td>
+      <td style="text-align: right">45</td>
       <td style="text-align: right">6</td>
-      <td>padded FGP3</td>
+      <td> </td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
       <td>low</td>
-      <td>pending</td>
-      <td>-</td>
-      <td>-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
-      <td style="text-align: right">-</td>
+      <td>measured</td>
+      <td>2026-04-29T18:13:13</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td style="text-align: right">+7.9%</td>
+      <td style="text-align: right">92.7%</td>
+      <td style="text-align: right">2466/2285</td>
+      <td style="text-align: right">66</td>
+      <td style="text-align: right">38</td>
+      <td style="text-align: right">5</td>
       <td> </td>
     </tr>
   </tbody>

@@ -77,9 +77,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
-| Headless perf battle card | **80 / 126** scene/tide variants measured; **50 / 63** scenes have at least one timed variant; measured average is **+13.5% over target / 88.7% target speed** |
-| Latest perf matrix run | **`2026-04-29T15:31:39`** (`last_run_at` in the CSV) |
-| Perf stats versions | `compact-fgp3-v1` rows are post-compaction; remaining measured rows are backfilled as `padded-fgp3-v1` until rerun |
+| Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+17.4% over target / 87.1% target speed** |
+| Latest perf matrix run | **`2026-04-29T18:13:13`** (`last_run_at` in the CSV) |
+| Perf stats version | `compact-fgp3-v2-fullmatrix` for every current row |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -91,7 +91,9 @@ harness-and-restore-pilot eras are preserved as history in
 Headless perf timing is a separate battle card, not the scene-promotion
 bar. The current FISHING 1 canary is `loop_vb=1207` against
 `target_vb=1076` (**+12.2% over target / 89.1% target speed**) with
-`blocking_vb=0`, `prefetch_overrun_vb=0`, and `due_misses=0`.
+`blocking_vb=0`, `prefetch_overrun_vb=0`, and `due_misses=0`. Six routed
+rows (`mary3`, `suzy1`, `suzy2`, high/low) currently complete without
+active-loop timing and are excluded from speed averages.
 
 ## Method
 

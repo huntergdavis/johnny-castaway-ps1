@@ -18,6 +18,10 @@ SHEET="$PROJECT_ROOT/docs/ps1/performance-scene-matrix.csv"
 STATS_VERSION="${PS1_PERF_STATS_VERSION:-}"
 UPDATE_SHEET=1
 SKIP_MEASURED=0
+CONTINUE_ON_FAIL=0
+CASE_RETRIES="${PS1_PERF_CASE_RETRIES:-1}"
+JOBS="${PS1_PERF_JOBS:-1}"
+RESUME_OUTPUT=0
 
 PERF_ARGS=()
 
@@ -43,6 +47,17 @@ Options:
   --no-sheet                 Do not refresh the CSV sheet.
   --skip-measured            Skip rows already marked measured in the sheet.
   --only-pending             Alias for --skip-measured.
+  --skip-build               Pass --skip-build to each ps1-perf-iterate case.
+                             The executable is reused; each case still stages
+                             BOOTMODE.TXT and remakes the CD image.
+  --retries N                Retry a failed case up to N times before marking
+                             it failed (default: PS1_PERF_CASE_RETRIES or 1).
+  --jobs N                   Run up to N cases in parallel. Values greater
+                             than 1 use --skip-build --case-local-cd so cases
+                             do not share root BOOTMODE.TXT or jcreborn.cue.
+  --resume-output            Skip cases that already have a passing
+                             perf-summary.json under --output.
+  --continue-on-fail         Keep running later cases if one case fails.
   -h, --help                 Show this help.
 
 Any arguments after -- are passed through to ps1-perf-iterate.sh.
@@ -75,6 +90,16 @@ while [ $# -gt 0 ]; do
             UPDATE_SHEET=0; shift ;;
         --skip-measured|--only-pending)
             SKIP_MEASURED=1; shift ;;
+        --skip-build)
+            PERF_ARGS+=(--skip-build); shift ;;
+        --retries)
+            CASE_RETRIES="$2"; shift 2 ;;
+        --jobs)
+            JOBS="$2"; shift 2 ;;
+        --resume-output)
+            RESUME_OUTPUT=1; shift ;;
+        --continue-on-fail)
+            CONTINUE_ON_FAIL=1; shift ;;
         --)
             shift
             PERF_ARGS+=("$@")
@@ -96,6 +121,17 @@ if [ "$ORDER" != "list" ] && [ "$ORDER" != "random" ]; then
     echo "ERROR: --order must be list or random." >&2
     exit 1
 fi
+if ! [[ "$CASE_RETRIES" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: --retries must be a non-negative integer." >&2
+    exit 1
+fi
+if ! [[ "$JOBS" =~ ^[0-9]+$ ]] || [ "$JOBS" -lt 1 ]; then
+    echo "ERROR: --jobs must be a positive integer." >&2
+    exit 1
+fi
+if [ "$JOBS" -gt 1 ]; then
+    PERF_ARGS+=(--skip-build --case-local-cd)
+fi
 
 MANIFEST_ARGS=(--print-cases --tides "$TIDES" --order "$ORDER" --seed "$SEED")
 if [ -n "$LIMIT" ]; then
@@ -111,19 +147,170 @@ while IFS=$'\t' read -r label boot; do
     CASE_ARGS+=(--case "${label}::${boot}")
 done < <("$SCRIPT_DIR/ps1-foreground-scene-manifest.py" "${MANIFEST_ARGS[@]}")
 
+if [ "$RESUME_OUTPUT" -eq 1 ]; then
+    declare -A RESUME_LABELS=()
+    while IFS= read -r label; do
+        [ -n "$label" ] || continue
+        RESUME_LABELS["$label"]=1
+    done < <(python3 - "$OUTPUT_ROOT" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+if not root.exists():
+    raise SystemExit(0)
+
+labels = set()
+for path in root.glob("*/**/perf-summary.json"):
+    try:
+        summary = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        continue
+    if not summary.get("gate", {}).get("pass"):
+        continue
+    boot = str(summary.get("boot", "")).split()
+    try:
+        scene = boot[boot.index("fgpilot") + 1]
+    except (ValueError, IndexError):
+        continue
+    tide = "high"
+    if "lowtide" in boot:
+        try:
+            tide = "low" if boot[boot.index("lowtide") + 1] == "1" else "high"
+        except IndexError:
+            pass
+    labels.add(f"{scene}-{tide}")
+
+for label in sorted(labels):
+    print(label)
+PY
+)
+    FILTERED_CASE_ARGS=()
+    SKIPPED_EXISTING=0
+    for ((i = 0; i < ${#CASE_ARGS[@]}; i += 2)); do
+        case_value="${CASE_ARGS[$((i + 1))]}"
+        label="${case_value%%::*}"
+        if [ "${RESUME_LABELS[$label]+x}" ]; then
+            SKIPPED_EXISTING=$((SKIPPED_EXISTING + 1))
+            continue
+        fi
+        FILTERED_CASE_ARGS+=("${CASE_ARGS[$i]}" "$case_value")
+    done
+    CASE_ARGS=("${FILTERED_CASE_ARGS[@]}")
+    echo "Resume output: skipped $SKIPPED_EXISTING already-passing cases from $OUTPUT_ROOT"
+fi
+
 if [ "${#CASE_ARGS[@]}" -eq 0 ]; then
     echo "ERROR: no perf cases generated." >&2
     exit 1
 fi
 
+run_case_with_retries() {
+    local case_flag="$1"
+    local case_value="$2"
+    local case_status=1
+    local attempt
+
+    for ((attempt = 0; attempt <= CASE_RETRIES; attempt += 1)); do
+        if [ "$attempt" -gt 0 ]; then
+            echo "WARN: retrying case attempt $((attempt + 1))/$((CASE_RETRIES + 1)): $case_value" >&2
+        fi
+        "$SCRIPT_DIR/ps1-perf-iterate.sh" \
+            "$case_flag" "$case_value" \
+            --frames "$FRAMES" \
+            --timeout "$TIMEOUT" \
+            --output "$OUTPUT_ROOT" \
+            "${PERF_ARGS[@]}"
+        case_status=$?
+        if [ "$case_status" -eq 0 ]; then
+            break
+        fi
+    done
+    return "$case_status"
+}
+
 set +e
-"$SCRIPT_DIR/ps1-perf-iterate.sh" \
-    "${CASE_ARGS[@]}" \
-    --frames "$FRAMES" \
-    --timeout "$TIMEOUT" \
-    --output "$OUTPUT_ROOT" \
-    "${PERF_ARGS[@]}"
-PERF_STATUS=$?
+if [ "$JOBS" -gt 1 ]; then
+    PERF_STATUS=0
+    FAILED_CASES=()
+    JOB_LOG_DIR="$OUTPUT_ROOT/job-logs"
+    JOB_STATUS_DIR="$OUTPUT_ROOT/job-status"
+    mkdir -p "$JOB_LOG_DIR" "$JOB_STATUS_DIR"
+
+    for ((i = 0; i < ${#CASE_ARGS[@]}; i += 2)); do
+        case_value="${CASE_ARGS[$((i + 1))]}"
+        label="${case_value%%::*}"
+        echo "Launching perf case ($((i / 2 + 1))/$(( ${#CASE_ARGS[@]} / 2 ))): $label"
+        (
+            run_case_with_retries "${CASE_ARGS[$i]}" "$case_value"
+            status=$?
+            printf '%s\n' "$status" > "$JOB_STATUS_DIR/$label.status"
+            exit "$status"
+        ) > "$JOB_LOG_DIR/$label.log" 2>&1 &
+
+        while [ "$(jobs -rp | wc -l)" -ge "$JOBS" ]; do
+            wait -n || true
+        done
+    done
+    wait || true
+
+    for ((i = 0; i < ${#CASE_ARGS[@]}; i += 2)); do
+        case_value="${CASE_ARGS[$((i + 1))]}"
+        label="${case_value%%::*}"
+        status_file="$JOB_STATUS_DIR/$label.status"
+        if [ ! -f "$status_file" ]; then
+            PERF_STATUS=1
+            FAILED_CASES+=("$case_value status=missing")
+            continue
+        fi
+        CASE_STATUS="$(cat "$status_file")"
+        if [ "$CASE_STATUS" -ne 0 ]; then
+            PERF_STATUS=1
+            FAILED_CASES+=("$case_value status=$CASE_STATUS log=$JOB_LOG_DIR/$label.log")
+            if [ "$CONTINUE_ON_FAIL" -eq 0 ]; then
+                :
+            fi
+        fi
+    done
+    if [ "${#FAILED_CASES[@]}" -gt 0 ]; then
+        printf 'Failed cases:\n' >&2
+        printf '  %s\n' "${FAILED_CASES[@]}" >&2
+    fi
+elif [ "$CONTINUE_ON_FAIL" -eq 1 ]; then
+    PERF_STATUS=0
+    FAILED_CASES=()
+    for ((i = 0; i < ${#CASE_ARGS[@]}; i += 2)); do
+        run_case_with_retries "${CASE_ARGS[$i]}" "${CASE_ARGS[$((i + 1))]}"
+        CASE_STATUS=$?
+        if [ "$CASE_STATUS" -ne 0 ]; then
+            PERF_STATUS=1
+            FAILED_CASES+=("${CASE_ARGS[$((i + 1))]} status=$CASE_STATUS")
+            echo "WARN: continuing after failed case: ${CASE_ARGS[$((i + 1))]} status=$CASE_STATUS" >&2
+        fi
+    done
+    if [ "${#FAILED_CASES[@]}" -gt 0 ]; then
+        printf 'Failed cases:\n' >&2
+        printf '  %s\n' "${FAILED_CASES[@]}" >&2
+    fi
+else
+    PERF_STATUS=1
+    for ((attempt = 0; attempt <= CASE_RETRIES; attempt += 1)); do
+        if [ "$attempt" -gt 0 ]; then
+            echo "WARN: retrying full case batch attempt $((attempt + 1))/$((CASE_RETRIES + 1))" >&2
+        fi
+        "$SCRIPT_DIR/ps1-perf-iterate.sh" \
+            "${CASE_ARGS[@]}" \
+            --frames "$FRAMES" \
+            --timeout "$TIMEOUT" \
+            --output "$OUTPUT_ROOT" \
+            "${PERF_ARGS[@]}"
+        PERF_STATUS=$?
+        if [ "$PERF_STATUS" -eq 0 ]; then
+            break
+        fi
+    done
+fi
 set -e
 
 if [ "$UPDATE_SHEET" -eq 1 ]; then
@@ -133,10 +320,11 @@ if [ "$UPDATE_SHEET" -eq 1 ]; then
     SUMMARY_ARGS=()
     while IFS= read -r summary; do
         SUMMARY_ARGS+=(--summary "$summary")
-    done < <(find "$OUTPUT_ROOT" -maxdepth 2 \
-        \( -name 'summary.json' -o -name 'current-*.json' \) -print | sort)
+    done < <(find "$OUTPUT_ROOT" -maxdepth 3 \
+        \( -name 'summary.json' -o -name 'perf-summary.json' -o -name 'current-*.json' \) -print | sort)
     "$SCRIPT_DIR/ps1-foreground-scene-manifest.py" \
         --write-sheet "$SHEET" \
+        --merge-existing-sheet "$SHEET" \
         --stats-version "$STATS_VERSION" \
         "${SUMMARY_ARGS[@]}"
     echo "Updated sheet: $SHEET"

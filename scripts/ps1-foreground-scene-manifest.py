@@ -189,6 +189,16 @@ def run_timestamp_from_summary(path: Path, path_mtime: float | None = None) -> s
     return datetime.fromtimestamp(path_mtime).isoformat(timespec="seconds")
 
 
+def load_summary_cases(path: Path) -> list[dict]:
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    cases = summary.get("cases")
+    if isinstance(cases, list):
+        return [case for case in cases if isinstance(case, dict)]
+    if "boot" in summary and "sections" in summary:
+        return [summary]
+    return []
+
+
 def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, str]]:
     metrics: dict[tuple[str, str], dict[str, str]] = {}
     metric_mtimes: dict[tuple[str, str], float] = {}
@@ -196,8 +206,7 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
         if not path.is_file():
             continue
         path_mtime = path.stat().st_mtime
-        summary = json.loads(path.read_text(encoding="utf-8"))
-        for case in summary.get("cases", []):
+        for case in load_summary_cases(path):
             if case.get("gate", {}).get("pass") is False:
                 continue
             boot = str(case.get("boot", ""))
@@ -217,9 +226,12 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
             target_vb = timing.get("target_vb")
             over_target = ""
             over_percent = ""
-            if isinstance(loop_vb, int) and isinstance(target_vb, int) and target_vb > 0:
+            if isinstance(loop_vb, int) and isinstance(target_vb, int) and loop_vb > 0 and target_vb > 0:
                 over_target = str(loop_vb - target_vb)
                 over_percent = f"{((loop_vb - target_vb) * 100.0 / target_vb):.2f}"
+            notes = ""
+            if not isinstance(loop_vb, int) or not isinstance(target_vb, int) or loop_vb <= 0 or target_vb <= 0:
+                notes = "metadata-only; no active-loop timing; excluded from speed averages"
             metrics[metric_key] = {
                 "pack_bytes": str(scene_info.get("pack_bytes", "")),
                 "last_summary": repo_relative(path),
@@ -236,8 +248,50 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
                 "pack_lba": str(scene_info.get("pack_lba", "")),
                 "pack_sectors": str(scene_info.get("pack_sectors", "")),
                 "status": "measured",
+                "notes": notes,
             }
             metric_mtimes[metric_key] = path_mtime
+    return metrics
+
+
+def load_existing_sheet_metrics(path: Path | None) -> dict[tuple[str, str], dict[str, str]]:
+    if path is None or not path.is_file():
+        return {}
+
+    metrics: dict[tuple[str, str], dict[str, str]] = {}
+    preserved_fields = {
+        "pack_bytes",
+        "last_summary",
+        "last_run_at",
+        "stats_version",
+        "loop_vb",
+        "target_vb",
+        "over_target_vb",
+        "over_target_percent",
+        "blocking_vb",
+        "prefetch_overrun_vb",
+        "loop_reads",
+        "loop_read_vb",
+        "due_misses",
+        "pack_lba",
+        "pack_sectors",
+        "status",
+        "notes",
+    }
+    with path.open("r", encoding="utf-8", newline="") as fh:
+        for row in csv.DictReader(fh):
+            status = row.get("status", "")
+            if status == "pending":
+                continue
+            scene = row.get("scene_slug", "")
+            tide = row.get("tide", "")
+            if not scene or not tide:
+                continue
+            metrics[(scene, tide)] = {
+                key: row.get(key, "")
+                for key in preserved_fields
+                if key in row
+            }
     return metrics
 
 
@@ -310,8 +364,11 @@ def sheet_rows(
 
 
 def write_sheet(path: Path, records: list[SceneRecord], summaries: list[Path],
-                pack_dir: Path, stats_version: str) -> None:
-    rows = sheet_rows(records, load_summary_metrics(summaries), pack_dir, stats_version)
+                pack_dir: Path, stats_version: str,
+                merge_existing_sheet: Path | None = None) -> None:
+    metrics = load_existing_sheet_metrics(merge_existing_sheet)
+    metrics.update(load_summary_metrics(summaries))
+    rows = sheet_rows(records, metrics, pack_dir, stats_version)
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0].keys()) if rows else []
     with path.open("w", encoding="utf-8", newline="") as fh:
@@ -367,6 +424,11 @@ def main() -> int:
     parser.add_argument("--pack-dir", type=Path, default=DEFAULT_PACK_DIR)
     parser.add_argument("--write-cd-layout", type=Path)
     parser.add_argument("--write-sheet", type=Path)
+    parser.add_argument(
+        "--merge-existing-sheet",
+        type=Path,
+        help="Preserve measured/blocked rows from this sheet unless a newer summary replaces them.",
+    )
     parser.add_argument("--summary", action="append", type=Path, default=[])
     parser.add_argument("--stats-version", default=default_stats_version())
     parser.add_argument("--print-cases", action="store_true")
@@ -381,7 +443,14 @@ def main() -> int:
     if args.write_cd_layout:
         update_cd_layout(args.write_cd_layout, records, args.pack_dir)
     if args.write_sheet:
-        write_sheet(args.write_sheet, records, args.summary, args.pack_dir, args.stats_version)
+        write_sheet(
+            args.write_sheet,
+            records,
+            args.summary,
+            args.pack_dir,
+            args.stats_version,
+            args.merge_existing_sheet,
+        )
     if args.print_cases:
         print_cases(records, args.tides, args.order, args.limit, args.seed, args.skip_measured_from)
     if not (args.write_cd_layout or args.write_sheet or args.print_cases):
