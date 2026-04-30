@@ -114,8 +114,8 @@ Current battle-card rollup as of 2026-04-30:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+14.8%` |
 | Timing-bearing average target speed | `88.0%` |
-| Latest perf matrix run | `2026-04-30T12:06:54` |
-| Stats version | mixed: latest rows use `compact-fgp3-v43-walkstuf1-split-window`; earlier follow-up rows use `compact-fgp3-v42-walkstuf1-window32` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-30T12:26:37` |
+| Stats version | mixed: latest rows use `compact-fgp3-v44-walkstuf1-high-window54`; earlier follow-up rows use `compact-fgp3-v43-walkstuf1-split-window` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  rows use `compact-fgp3-v43-walkstuf1-split-window`; earlier follow-up rows use
-  `compact-fgp3-v42-walkstuf1-window32` through `compact-fgp3-v3-stand12low`; the
+  rows use `compact-fgp3-v44-walkstuf1-high-window54`; earlier follow-up rows use
+  `compact-fgp3-v43-walkstuf1-split-window` through `compact-fgp3-v3-stand12low`; the
   complete full-matrix baseline remains `compact-fgp3-v2-fullmatrix` for
   rows not rerun since that pass.
 
@@ -187,7 +187,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T17:25:44 | compact-fgp3-v2-fullmatrix | +12.9% | 88.6% | 2747/2433 | 343 | 11 | 49 |  |
 | `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
 | `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
-| `fishing1` | high | measured | 2026-04-30T12:06:54 | compact-fgp3-v43-walkstuf1-split-window | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-30T12:26:37 | compact-fgp3-v44-walkstuf1-high-window54 | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
 | `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
@@ -273,8 +273,8 @@ and this page.
 | `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
 | `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
 | `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
-| `walkstuf1` | high | measured | 2026-04-30T12:05:07 | compact-fgp3-v43-walkstuf1-split-window | +42.9% | 70.0% | 2030/1421 | 457 | 108 | 31 |  |
-| `walkstuf1` | low | measured | 2026-04-30T12:02:55 | compact-fgp3-v43-walkstuf1-split-window | +44.8% | 69.0% | 2048/1414 | 460 | 139 | 34 |  |
+| `walkstuf1` | high | measured | 2026-04-30T12:25:17 | compact-fgp3-v44-walkstuf1-high-window54 | +42.2% | 70.3% | 2024/1423 | 449 | 133 | 25 |  |
+| `walkstuf1` | low | measured | 2026-04-30T12:26:37 | compact-fgp3-v44-walkstuf1-high-window54 | +44.8% | 69.0% | 2048/1414 | 460 | 139 | 34 |  |
 | `walkstuf2` | high | measured | 2026-04-29T18:12:10 | compact-fgp3-v2-fullmatrix | +29.6% | 77.2% | 596/460 | 1 | 1 | 0 |  |
 | `walkstuf2` | low | measured | 2026-04-29T18:12:28 | compact-fgp3-v2-fullmatrix | +29.6% | 77.2% | 596/460 | 1 | 1 | 0 |  |
 | `walkstuf3` | high | measured | 2026-04-29T18:12:55 | compact-fgp3-v2-fullmatrix | +8.1% | 92.5% | 2460/2276 | 79 | 45 | 6 |  |
