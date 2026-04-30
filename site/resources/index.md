@@ -430,7 +430,7 @@ for the practical porting path.
 <tr><td><code>FISH4LOW.FG2</code></td><td>238,608</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH4LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH5LOW.FG2</code></td><td>185,593</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH5LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH6LOW.FG2</code></td><td>252,624</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH6LOW.FG2">source</a></td></tr>
-<tr><td><code>FISH7LOW.FG2</code></td><td>287,021</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH7LOW.FG2">source</a></td></tr>
+<tr><td><code>FISH7LOW.FG2</code></td><td>224,046</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH7LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH8LOW.FG2</code></td><td>285,278</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH8LOW.FG2">source</a></td></tr>
 <tr><td><code>FISHING1.FG2</code></td><td>398,433</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING1.FG2">source</a></td></tr>
 <tr><td><code>FISHING2.FG2</code></td><td>542,743</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING2.FG2">source</a></td></tr>
