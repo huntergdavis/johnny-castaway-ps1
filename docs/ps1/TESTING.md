@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-04-30:
 | Scenes with at least one timed variant | `63 / 63` |
 | Scenes with both high/low variants timed | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+17.2%` |
+| Timing-bearing average over target | `+17.1%` |
 | Timing-bearing average target speed | `87.2%` |
-| Latest perf matrix run | `2026-04-30T00:47:55` |
-| Stats version | mixed: latest rows use `compact-fgp3-v16-stand7low`; recent follow-up rows include `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-30T01:27:09` |
+| Stats version | mixed: latest rows use `compact-fgp3-v17-visitor4low`; recent follow-up rows include `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -92,7 +92,7 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and accepted follow-up rows now use
-`compact-fgp3-v16-stand7low`; recent follow-up rows include `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and `compact-fgp3-v3-stand12low`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
+`compact-fgp3-v17-visitor4low`; recent follow-up rows include `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and `compact-fgp3-v3-stand12low`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
 high/low) complete without active-loop timing and are excluded from speed
 averages even though the route/gate itself passes.
 

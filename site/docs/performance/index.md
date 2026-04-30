@@ -234,15 +234,15 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+17.2% over target /
+120 timing-bearing battle-card rows, the average is **+17.1% over target /
 87.2% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v16-stand7low`, recent follow-up rows include
-`compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+`compact-fgp3-v17-visitor4low`, recent follow-up rows include
+`compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -251,14 +251,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T00:47:55`; per-row freshness and stats version are shown on
+run is `2026-04-30T01:27:09`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v16-stand7low`; recent follow-up rows include
-`compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+rows now use `compact-fgp3-v17-visitor4low`; recent follow-up rows include
+`compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -323,7 +323,7 @@ rows are historical only.
 | `suzy2` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | +21.0% / 82.6% (812/671); blk 13 | +18.4% / 84.5% (798/674); blk 7 |
 | `visitor3` | +50.5% / 66.4% (1526/1014); due 23; blk 368 | +51.4% / 66.1% (1547/1022); due 22; blk 332 |
-| `visitor4` | +33.3% / 75.0% (569/427); blk 2 | +37.7% / 72.6% (584/424); blk 11 |
+| `visitor4` | +33.3% / 75.0% (569/427); blk 2 | +32.6% / 75.4% (569/429) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.9% / 93.5% (2190/2048); blk 1 |
 | `visitor7` | +8.9% / 91.9% (1768/1624); blk 3 | +8.7% / 92.0% (1768/1626); blk 1 |
@@ -382,7 +382,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +17.2% over target, with several much worse CD-bound
+  average is still +17.1% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
