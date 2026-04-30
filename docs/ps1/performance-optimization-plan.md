@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+16.8%` over target /
-`87.5%` target speed as of `compact-fgp3-v37-fishing7high-prime`. The remaining optimization target is therefore
+`87.5%` target speed as of `compact-fgp3-v38-activity12high-prime`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1391,6 +1391,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-240` | Done: setup-prime JOHNNY3 high with a targeted `312 KiB` budget. | JOHNNY3 high is another safe row just above the generic `288 KiB` ceiling. A single high-tide budget improves `loop_vb 1299 -> 1298`, `overrun_vb 134 -> 132`, `blocking_vb 7 -> 0`, `prefetch_overrun_vb 1 -> 0`, `loop_reads 23 -> 0`, and `due_misses 1 -> 0`, while FISHING1/FISHING3 stay exact-flat and FISHING6 high remains zero-pressure. Latest battle-card rows now use `compact-fgp3-v36-johnny3high-prime`; exact timing-bearing average is `16.7983%` over target / `87.4478%` target speed after refreshing the stale row. |
 | `P5-241` | Done: setup-prime FISHING7 high with a targeted `328 KiB` budget. | FISHING7 high needed more than the rejected global `320 KiB` threshold to cover its tail reads safely. A single high-tide budget improves `loop_vb 863 -> 858`, `overrun_vb 138 -> 133`, `blocking_vb/prefetch_overrun_vb 5 -> 0`, `loop_reads 26 -> 0`, and `loop_read_vb 124 -> 0`, while FISHING1/FISHING3 stay exact-flat and FISHING6/JOHNNY3 remain zero-pressure. Latest battle-card rows now use `compact-fgp3-v37-fishing7high-prime`; exact timing-bearing average is down to `16.7912%` over target / `87.4529%` target speed. |
 | `P5-242` | Failed: setup-prime VISITOR5 low with a targeted `396 KiB` budget. | VISITOR5 low is a high-pressure row, but full resident setup coverage reproduced the zero-loop failure shape (`loop_start=0`, `advances=0`, `entries=2/204`). The source probe was reverted. Retry this row with segmented setup coverage, inter-scene preload, or a diagnosis of why full-pack residency exits before active playback. |
+| `P5-243` | Done: setup-prime ACTIVITY12 high with a targeted `328 KiB` budget. | ACTIVITY12 high is a safer post-VISITOR5 target in the lower setup-prime size band. A single high-tide budget improves `loop_vb 1549 -> 1543`, `overrun_vb 137 -> 128`, `blocking_vb/prefetch_overrun_vb 9 -> 0`, `loop_reads 23 -> 0`, and `loop_read_vb 110 -> 0`, while the canary set stayed stable. Latest battle-card rows now use `compact-fgp3-v38-activity12high-prime`; exact timing-bearing average is down to `16.7876%` over target / `87.4559%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 

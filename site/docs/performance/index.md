@@ -241,20 +241,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v37-fishing7high-prime`; earlier follow-up rows use
-`compact-fgp3-v36-johnny3high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v38-activity12high-prime`; earlier follow-up rows use
+`compact-fgp3-v37-fishing7high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T08:42:40`; per-row freshness and stats version are shown on
+run is `2026-04-30T09:00:55`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v37-fishing7high-prime`; earlier follow-up rows use
-`compact-fgp3-v36-johnny3high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v38-activity12high-prime`; earlier follow-up rows use
+`compact-fgp3-v37-fishing7high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -262,7 +262,7 @@ rows are historical only.
 | `activity1` | +3.1% / 97.0% (4373/4243); blk 1 | +3.1% / 97.0% (4373/4243); blk 1 |
 | `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
-| `activity12` | +9.5% / 91.3% (1548/1414); blk 5 | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
+| `activity12` | +9.1% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
 | `activity4` | +12.4% / 88.9% (1202/1069) | +12.4% / 88.9% (1202/1069) |
 | `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |

@@ -155,6 +155,7 @@ enum {
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
+#define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
 #define FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
@@ -1533,6 +1534,8 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         return islandState.lowTide ?
             (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
             FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
+    if (!islandState.lowTide && fgSceneEquals(sceneName, "activity12"))
+        return FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES;
     if (fgSceneEquals(sceneName, "fishing3"))
         return islandState.lowTide ?
             (FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)) :

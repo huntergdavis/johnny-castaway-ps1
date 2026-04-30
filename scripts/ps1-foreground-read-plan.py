@@ -174,6 +174,10 @@ def parse_source_setup_policy() -> dict[str, Any]:
 
     if "FG_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["fishing1_prime_bytes"] = symbols["FG_SETUP_PRIME_WINDOW_BYTES"]
+    if "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["activity12_high_prime_bytes"] = symbols[
+            "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
     if "FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["visitor1_high_prime_bytes"] = symbols[
             "FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES"
@@ -215,6 +219,9 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
             return int(prime or 256 * 1024), [], "auto:fishing2-low"
         prime = source_policy.get("fishing2_high_prime_bytes")
         return int(prime or 352 * 1024), [], "auto:fishing2-high"
+    if scene_name == "activity12" and not lowtide:
+        prime = source_policy.get("activity12_high_prime_bytes")
+        return int(prime or 328 * 1024), [], "auto:activity12-high"
     if scene_name == "fishing3":
         if lowtide:
             prime = source_policy.get("fishing3_low_prime_bytes")
