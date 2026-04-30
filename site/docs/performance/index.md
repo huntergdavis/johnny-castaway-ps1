@@ -241,20 +241,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v48-building3low-auto-prime`; earlier follow-up rows use
-`compact-fgp3-v47-fishing4low-auto-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use
+`compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T13:33:14`; per-row freshness and stats version are shown on
+run is `2026-04-30T13:41:28`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v48-building3low-auto-prime`; earlier follow-up rows use
-`compact-fgp3-v47-fishing4low-auto-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use
+`compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -320,7 +320,7 @@ rows are historical only.
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
 | `walkstuf1` | +42.2% / 70.3% (2024/1423); due 25; blk 449 | +44.8% / 69.0% (2048/1414); due 34; blk 460 |
-| `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
+| `walkstuf2` | +28.4% / 77.9% (593/462) | +28.4% / 77.9% (593/462) |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
 Detail-tier attribution for the canary currently points at render and

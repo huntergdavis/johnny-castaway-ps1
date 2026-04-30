@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.8%` over target /
-`88.0%` target speed as of `compact-fgp3-v48-building3low-auto-prime`. The remaining optimization target is therefore
+`88.0%` target speed as of `compact-fgp3-v49-walkstuf2-auto-prime`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1411,6 +1411,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-260` | Done: convert JOHNNY4 low to auto-primed FGP3. | Pair-complete the JOHNNY4 route under the setup-resident FGP3 lane. `JOHN4LOW.FG2` drops from `369195` to `173803` bytes and becomes setup-resident. Low improves `loop_vb 1349 -> 1341`, `target_vb 1213 -> 1214`, `blocking_vb 1 -> 0`, `prefetch_overrun_vb 1 -> 0`, and `loop_reads 27 -> 0`; high tide stays flat at `1341/1214`, and FISHING1 high stays exact-flat at `1207/1076`. Latest rows now use `compact-fgp3-v46-johnny4low-auto-prime`; exact timing-bearing average is down to `14.7947%` over target / `88.0019%` target speed. |
 | `P5-261` | Done: convert FISHING4 low to auto-primed FGP3. | Continue pair-completing small FGP2 rows that shrink into the setup-resident band. `FISH4LOW.FG2` drops from `238608` to `169264` bytes. Low improves `loop_vb 975 -> 967`, `blocking_vb 1 -> 0`, `prefetch_overrun_vb 1 -> 0`, and `loop_reads 17 -> 0`; high tide stays flat at `967/843`, and FISHING1 high stays exact-flat at `1207/1076`. Latest rows now use `compact-fgp3-v47-fishing4low-auto-prime`; exact timing-bearing average is down to `14.7868%` over target / `88.0079%` target speed. |
 | `P5-262` | Done: convert BUILDING3 low to auto-primed FGP3. | `BUIL3LOW.FG2` was the last clear shrink-and-resident FGP2 candidate in the small-pack scan. It drops from `537821` to `263908` bytes and improves low tide `loop_vb 1571 -> 1564`, `target_vb 1433 -> 1434`, `blocking_vb 1 -> 0`, `prefetch_overrun_vb 1 -> 0`, and `loop_reads 39 -> 0`. BUILDING3 high stays at `1565/1430`, and FISHING1 high stays exact-flat at `1207/1076`. Latest rows now use `compact-fgp3-v48-building3low-auto-prime`; exact timing-bearing average is down to `14.7827%` over target / `88.0113%` target speed. |
+| `P5-263` | Done: convert WALKSTUF2 high/low to auto-primed FGP3. | This is an explicit speed-over-size tradeoff: both packs grow from `138609` to `163167` bytes, but the auto-resident conversion removes active-loop CD work. High improves `loop_vb 596 -> 593`, `target_vb 459 -> 462`, `blocking_vb 1 -> 0`, `prefetch_overrun_vb 1 -> 0`, and `loop_reads 9 -> 0`; low improves `596 -> 593`, `460 -> 462`, `1 -> 0`, `1 -> 0`, and `9 -> 0`. FISHING1 high stays exact-flat at `1207/1076`. Latest rows now use `compact-fgp3-v49-walkstuf2-auto-prime`; exact timing-bearing average is down to `14.7626%` over target / `88.0234%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 
