@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
-`88.1%` target speed as of `compact-fgp3-v50-building4-window`. The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v51-building6-window`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1415,6 +1415,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-264` | Failed: ACTIVITY10 low contiguous setup-prime budgets. | `304 KiB` and `288 KiB` reproduce the zero-loop failure shape, while `256 KiB` is structurally valid but only trades CD pressure down (`blocking_vb 18 -> 10`, `loop_reads 22 -> 3`) while regressing `loop_vb 1404 -> 1405` and shifting the FISHING3 high canary to `2098/1950`. Source was reverted. Retry ACTIVITY10 low through generated segmented coverage or inter-scene preload, not another contiguous setup-prime branch. |
 | `P5-265` | Failed: VISITOR3 raw stream-window sweep. | Parameter-only high-tide sweeps at `20/22/24/26/28/32/48 KiB` and a low-tide `24 KiB` check did not produce a promotable source policy. A fresh high baseline was already `1504/1014`, and the best raw high result only matched loop pressure while failing to prove a default-source win; low `24 KiB` regressed `1536/1018 -> 1541/1021`. Retry VISITOR3 with generated grouping, direct16/selective preprocessing, or scheduler ownership, not another scalar window probe. |
 | `P5-266` | Done: tune BUILDING4 stream windows by tide. | BUILDING4 proved that raw windows can still pay when scoped to a scene/tide with a fresh baseline. High tide uses `24 KiB` and improves `loop_vb 3126 -> 3073`, `target_vb 2790 -> 2793`, `overrun_vb 336 -> 280`, `blocking_vb 351 -> 240`, `loop_reads 78 -> 63`, and `due_misses 49 -> 34`, with `prefetch_overrun_vb 19 -> 27`. Low tide uses `32 KiB` and improves `3126 -> 3080`, `2789 -> 2795`, `337 -> 285`, `349 -> 168`, `78 -> 51`, and `48 -> 18`, with `prefetch_overrun_vb 25 -> 63`. FISHING1 remains exact-flat; FISHING3 high's current-layout drift reproduced without the BUILDING4 patch. Latest rows now use `compact-fgp3-v50-building4-window`; exact timing-bearing average is down to `14.7288%` over target / `88.0508%` target speed. |
+| `P5-267` | Done: tune BUILDING6 stream windows by tide. | BUILDING6 follows the BUILDING4 pattern and uses a `24 KiB` scene-local window for both tides. High improves `loop_vb 2746 -> 2687`, `target_vb 2432 -> 2431`, `overrun_vb 314 -> 256`, `blocking_vb 341 -> 215`, `prefetch_overrun_vb 12 -> 17`, `loop_reads 72 -> 59`, and `due_misses 49 -> 32`. Low improves `2747 -> 2697`, `2431 -> 2434`, `316 -> 263`, `337 -> 226`, `16 -> 15`, `72 -> 59`, and `48 -> 33`. FISHING1/FISHING3 and BUILDING4 canaries stay stable. Latest rows now use `compact-fgp3-v51-building6-window`; exact timing-bearing average is down to `14.6917%` over target / `88.0804%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 
