@@ -114,8 +114,8 @@ Current battle-card rollup as of 2026-04-29:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+17.4%` |
 | Timing-bearing average target speed | `87.1%` |
-| Latest perf matrix run | `2026-04-29T18:13:13` |
-| Stats version | `compact-fgp3-v2-fullmatrix` for every row |
+| Latest perf matrix run | `2026-04-29T18:46:45` |
+| Stats version | mixed: `compact-fgp3-v3-stand12low` for updated STAND12-low/canary rows; `compact-fgp3-v2-fullmatrix` for the full-matrix baseline rows |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -143,9 +143,10 @@ and this page.
 - **Latest Run**: ISO timestamp derived from the headless summary path
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
-- **Stats Version**: performance/layout version for that row. The current
-  full matrix is `compact-fgp3-v2-fullmatrix`; older `padded-fgp3-v1` and
-  `compact-fgp3-v1` rows are historical only.
+- **Stats Version**: performance/layout version for that row. The latest
+  updated rows use `compact-fgp3-v3-stand12low`; the complete full-matrix
+  baseline remains `compact-fgp3-v2-fullmatrix` for rows not rerun since
+  that pass.
 
 ### 126-variant battle card
 
@@ -185,7 +186,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T17:25:44 | compact-fgp3-v2-fullmatrix | +12.9% | 88.6% | 2747/2433 | 343 | 11 | 49 |  |
 | `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
 | `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
-| `fishing1` | high | measured | 2026-04-29T17:27:40 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-29T18:46:45 | compact-fgp3-v3-stand12low | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
 | `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
@@ -217,8 +218,8 @@ and this page.
 | `mary1` | low | measured | 2026-04-29T17:42:28 | compact-fgp3-v2-fullmatrix | +3.2% | 96.9% | 4994/4839 | 26 | 20 | 1 |  |
 | `mary2` | high | measured | 2026-04-29T17:44:11 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2284/2247 | 7 | 7 | 0 |  |
 | `mary2` | low | measured | 2026-04-29T17:44:28 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2285/2249 | 6 | 6 | 0 |  |
-| `mary3` | high | measured | 2026-04-29T17:45:25 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `mary3` | high | measured | 2026-04-29T17:45:25 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `mary4` | high | measured | 2026-04-29T17:46:07 | compact-fgp3-v2-fullmatrix | -2.4% | 102.4% | 1968/2016 | 28 | 12 | 3 |  |
 | `mary4` | low | measured | 2026-04-29T17:46:13 | compact-fgp3-v2-fullmatrix | -2.6% | 102.7% | 1966/2019 | 24 | 10 | 3 |  |
 | `mary5` | high | measured | 2026-04-29T17:47:11 | compact-fgp3-v2-fullmatrix | +6.6% | 93.8% | 1687/1583 | 7 | 7 | 0 |  |
@@ -250,15 +251,15 @@ and this page.
 | `stand11` | high | measured | 2026-04-29T17:58:16 | compact-fgp3-v2-fullmatrix | +25.7% | 79.6% | 675/537 | 3 | 3 | 0 |  |
 | `stand11` | low | measured | 2026-04-29T17:58:23 | compact-fgp3-v2-fullmatrix | +27.4% | 78.5% | 683/536 | 7 | 7 | 0 |  |
 | `stand12` | high | measured | 2026-04-29T17:59:01 | compact-fgp3-v2-fullmatrix | +10.1% | 90.9% | 1599/1453 | 12 | 12 | 0 |  |
-| `stand12` | low | measured | 2026-04-29T17:59:08 | compact-fgp3-v2-fullmatrix | +11.9% | 89.4% | 1622/1450 | 35 | 35 | 0 |  |
+| `stand12` | low | measured | 2026-04-29T18:45:29 | compact-fgp3-v3-stand12low | +9.3% | 91.5% | 1595/1459 | 3 | 3 | 0 |  |
 | `stand15` | high | measured | 2026-04-29T18:00:00 | compact-fgp3-v2-fullmatrix | +14.3% | 87.5% | 1127/986 | 7 | 7 | 0 |  |
 | `stand15` | low | measured | 2026-04-29T18:00:08 | compact-fgp3-v2-fullmatrix | +14.9% | 87.0% | 1135/988 | 11 | 11 | 0 |  |
 | `stand16` | high | measured | 2026-04-29T18:00:55 | compact-fgp3-v2-fullmatrix | +11.7% | 89.5% | 1327/1188 | 8 | 8 | 0 |  |
 | `stand16` | low | measured | 2026-04-29T18:01:04 | compact-fgp3-v2-fullmatrix | +12.1% | 89.2% | 1333/1189 | 13 | 8 | 1 |  |
-| `suzy1` | high | measured | 2026-04-29T18:01:51 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy1` | low | measured | 2026-04-29T18:01:58 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy1` | high | measured | 2026-04-29T18:01:51 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy1` | low | measured | 2026-04-29T18:01:58 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | high | measured | 2026-04-29T18:03:05 | compact-fgp3-v2-fullmatrix | +21.0% | 82.6% | 812/671 | 13 | 13 | 0 |  |
 | `visitor1` | low | measured | 2026-04-29T18:03:11 | compact-fgp3-v2-fullmatrix | +20.4% | 83.1% | 809/672 | 14 | 14 | 0 |  |
 | `visitor3` | high | measured | 2026-04-29T18:04:12 | compact-fgp3-v2-fullmatrix | +50.5% | 66.4% | 1526/1014 | 368 | 133 | 23 |  |

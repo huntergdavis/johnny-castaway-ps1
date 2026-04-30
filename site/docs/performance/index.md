@@ -240,18 +240,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 ## Scene Battle Card
 
 As of 2026-04-29, all 126 scene/tide variants have current headless
-perf measurements under `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have
-at least one routed variant, and 63 scenes have both high- and low-tide
-variants routed. 120 rows carry active-loop timing; `mary3`, `suzy1`, and
-`suzy2` high/low complete as metadata-only routes and are excluded from
-speed averages. The latest matrix run is `2026-04-29T18:13:13`; per-row freshness and stats version are shown on the
-[scene ledger]({{ '/scenes/' | relative_url }}). The values below are `over
-target / target speed (loop_vb/target_vb)`, with `blk` and `due` called out
-when nonzero.
+perf measurements. The latest updated rows are stamped
+`compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
+variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
+carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
+metadata-only routes and are excluded from speed averages. The latest matrix
+run is `2026-04-29T18:46:45`; per-row freshness and stats version are shown on
+the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
+`over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
+out when nonzero.
 
-Every current row is stamped `compact-fgp3-v2-fullmatrix`, produced after
-FGP3 padding removal with the parallel, case-local CD harness. Older
-`padded-fgp3-v1` / `compact-fgp3-v1` rows are historical only.
+The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
+rows now use `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` /
+`compact-fgp3-v1` rows are historical only.
 
 | Scene | High tide | Low tide |
 |---|---:|---:|
@@ -288,7 +290,7 @@ FGP3 padding removal with the parallel, case-local CD harness. Older
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
 | `mary1` | +3.7% / 96.4% (5004/4826); due 2; blk 49 | +3.2% / 96.9% (4994/4839); due 1; blk 26 |
 | `mary2` | +1.6% / 98.4% (2284/2247); blk 7 | +1.6% / 98.4% (2285/2249); blk 6 |
-| `mary3` | metadata-only (0/0) | metadata-only (0/0) |
+| `mary3` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
 | `miscgag1` | +15.5% / 86.6% (1105/957); blk 13 | +14.8% / 87.1% (1101/959); blk 7 |
@@ -296,7 +298,7 @@ FGP3 padding removal with the parallel, case-local CD harness. Older
 | `stand1` | +73.6% / 57.6% (349/201); blk 5 | +70.9% / 58.5% (347/203) |
 | `stand10` | +25.5% / 79.7% (674/537); blk 2 | +26.5% / 79.1% (678/536); blk 1 |
 | `stand11` | +25.7% / 79.6% (675/537); blk 3 | +27.4% / 78.5% (683/536); blk 7 |
-| `stand12` | +10.1% / 90.9% (1599/1453); blk 12 | +11.9% / 89.4% (1622/1450); blk 35 |
+| `stand12` | +10.1% / 90.9% (1599/1453); blk 12 | +9.3% / 91.5% (1595/1459); blk 3 |
 | `stand15` | +14.3% / 87.5% (1127/986); blk 7 | +14.9% / 87.0% (1135/988); blk 11 |
 | `stand16` | +11.7% / 89.5% (1327/1188); blk 8 | +12.1% / 89.2% (1333/1189); due 1; blk 13 |
 | `stand2` | +30.5% / 76.6% (633/485); blk 10 | +30.3% / 76.7% (632/485); blk 8 |
@@ -307,8 +309,8 @@ FGP3 padding removal with the parallel, case-local CD harness. Older
 | `stand7` | +25.6% / 79.6% (676/538); blk 3 | +26.9% / 78.8% (680/536); blk 5 |
 | `stand8` | +27.0% / 78.7% (635/500) | +28.5% / 77.8% (640/498); blk 3 |
 | `stand9` | +25.5% / 79.7% (674/537); blk 2 | +26.3% / 79.2% (678/537); blk 1 |
-| `suzy1` | metadata-only (0/6) | metadata-only (0/6) |
-| `suzy2` | metadata-only (0/6) | metadata-only (0/6) |
+| `suzy1` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy2` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | +21.0% / 82.6% (812/671); blk 13 | +20.4% / 83.1% (809/672); blk 14 |
 | `visitor3` | +50.5% / 66.4% (1526/1014); due 23; blk 368 | +51.4% / 66.1% (1547/1022); due 22; blk 332 |
 | `visitor4` | +39.8% / 71.5% (590/422); due 1; blk 26 | +37.7% / 72.6% (584/424); blk 11 |
