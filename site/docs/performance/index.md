@@ -241,8 +241,8 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-29, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v13-stand15low`, recent follow-up rows include
-`compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+`compact-fgp3-v14-visitor7low`, recent follow-up rows include
+`compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -251,14 +251,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-29T22:47:23`; per-row freshness and stats version are shown on
+run is `2026-04-29T23:27:08`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v13-stand15low`; recent follow-up rows include
-`compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+rows now use `compact-fgp3-v14-visitor7low`; recent follow-up rows include
+`compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -326,7 +326,7 @@ rows are historical only.
 | `visitor4` | +33.3% / 75.0% (569/427); blk 2 | +37.7% / 72.6% (584/424); blk 11 |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.9% / 93.5% (2190/2048); blk 1 |
-| `visitor7` | +8.9% / 91.9% (1768/1624); blk 3 | +9.7% / 91.1% (1780/1622); blk 10 |
+| `visitor7` | +8.9% / 91.9% (1768/1624); blk 3 | +8.7% / 92.0% (1768/1626); blk 1 |
 | `walkstuf1` | +144.8% / 40.8% (3320/1356); due 318; blk 1800 | +177.3% / 36.1% (3755/1354); due 328; blk 2195 |
 | `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
