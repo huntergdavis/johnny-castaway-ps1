@@ -412,7 +412,7 @@ for the practical porting path.
 <tr><td><code>ACTV9LOW.FG2</code></td><td>1,672,165</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV9LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL1LOW.FG2</code></td><td>460,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL1LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL2LOW.FG2</code></td><td>868,961</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL2LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL3LOW.FG2</code></td><td>537,821</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL3LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL3LOW.FG2</code></td><td>263,908</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL3LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL4LOW.FG2</code></td><td>1,147,327</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL4LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL5LOW.FG2</code></td><td>683,697</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL5LOW.FG2">source</a></td></tr>
 <tr><td><code>BUIL6LOW.FG2</code></td><td>1,058,595</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL6LOW.FG2">source</a></td></tr>
