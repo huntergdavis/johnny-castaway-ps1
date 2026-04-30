@@ -48,6 +48,16 @@ coverage, not the legacy regtest certification scripts:
 # Walk the full 126-variant matrix. This is intentionally long-running.
 ./scripts/ps1-perf-all-scenes.sh --tides both --frames 7200
 
+# Current full-matrix pass: reuse the built PS-EXE, build case-local CDs,
+# stop once JCPERF2 has emitted, retry transient wrapper kills, and run two
+# cases at a time.
+PS1_PERF_STATS_VERSION=compact-fgp3-v2-fullmatrix \
+  ./scripts/ps1-perf-all-scenes.sh --tides both --order list \
+  --frames 7200 --timeout 220 \
+  --output scratch/ps1-perf-iterate/compact-fgp3-v2-fullmatrix \
+  --stats-version compact-fgp3-v2-fullmatrix \
+  --continue-on-fail --skip-build --retries 2 --resume-output --jobs 2
+
 # Resume from rows not yet measured in the CSV sheet.
 ./scripts/ps1-perf-all-scenes.sh --only-pending --limit 8 --tides high
 ```
@@ -57,17 +67,19 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-04-29:
+Current battle-card rollup as of 2026-04-30:
 
 | Metric | Value |
 |---|---:|
-| Scene/tide variants measured | `75 / 126` |
-| Scenes with at least one timed variant | `45 / 63` |
-| Scenes with both high/low variants timed | `30 / 63` |
-| Blocked variants | `2 / 126` |
-| Measured average over target | `+12.6%` |
-| Measured average target speed | `89.3%` |
-| Latest perf matrix run | `2026-04-29T12:56:40` |
+| Scene/tide variants routed through headless perf | `126 / 126` |
+| Timing-bearing variants | `120 / 126` |
+| Scenes with at least one active-loop timed variant | `60 / 63` |
+| Scenes with both high/low variants measured | `63 / 63` |
+| Blocked variants | `0 / 126` |
+| Timing-bearing average over target | `+16.9%` |
+| Timing-bearing average target speed | `87.4%` |
+| Latest perf matrix run | `2026-04-30T07:23:55` |
+| Stats version | mixed: latest rows use `compact-fgp3-v33-auto288`; earlier follow-up rows use `compact-fgp3-v32-auto256` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -78,6 +90,12 @@ surfaces should summarize it, not invent independent numbers.
 Each measured or blocked CSV row carries `last_run_at`, derived from the
 headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
+Rows also carry `stats_version`; the current full matrix baseline is
+`compact-fgp3-v2-fullmatrix`, and accepted follow-up rows now use
+`compact-fgp3-v33-auto288`; earlier follow-up rows use
+`compact-fgp3-v32-auto256` through `compact-fgp3-v3-stand12low`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
+high/low) complete without active-loop timing and are excluded from speed
+averages even though the route/gate itself passes.
 
 ## Secondary (historical): headless regtest harness
 
