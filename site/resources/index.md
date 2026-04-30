@@ -510,7 +510,7 @@ for the practical porting path.
 <tr><td><code>VIST5LOW.FG2</code></td><td>404,778</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST5LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST6LOW.FG2</code></td><td>276,622</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST6LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST7LOW.FG2</code></td><td>227,643</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST7LOW.FG2">source</a></td></tr>
-<tr><td><code>WALK1LOW.FG2</code></td><td>5,698,737</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
+<tr><td><code>WALK1LOW.FG2</code></td><td>2,157,403</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK2LOW.FG2</code></td><td>138,609</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK2LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK3LOW.FG2</code></td><td>994,669</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK3LOW.FG2">source</a></td></tr>
 <tr><td><code>WALKSTUF1.FG2</code></td><td>2,128,856</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF1.FG2">source</a></td></tr>

@@ -160,8 +160,8 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+16.0%` over target /
-`87.7%` target speed as of `compact-fgp3-v40-walkstuf1-indexed8-fgp3`. The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+15.0%` over target /
+`87.9%` target speed as of `compact-fgp3-v41-walkstuf1low-indexed8-fgp3`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1399,6 +1399,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-248` | Failed: setup-prime JOHNNY6 high with a smaller `384 KiB` budget. | The smaller contiguous budget still zero-looped (`loop_start=0`, `advances=0`, `entries=2/82`), so the failure is not only full-pack coverage. Broad contiguous JOHNNY6 high setup-prime is exhausted until a startup-safe generated preload shape exists. |
 | `P5-249` | Failed: one-shot setup segment for JOHNNY6 high sectors `168..174`. | A narrow `12 KiB` setup segment stayed structurally valid but did not move timing or read metrics (`loop_vb=2896`, `blocking_vb=29`, `loop_reads=12`). Retry JOHNNY6 with generated multi-segment or persistent segment ownership, not this one-shot segment. |
 | `P5-250` | Done: add indexed8 FGP3 temporal residual support and convert WALKSTUF1 high. | The remaining PAL4 plain-FGP3/setup-prime lane was yielding smaller wins, so this pivots to a host-side format win for the largest timing-bearing indexed8 row. `FGP3/v2` keeps the residual cleanup/draw shape but writes indexed8 spans, and WALKSTUF1 high improves `loop_vb 3337 -> 2115`, `blocking_vb 1829 -> 724`, `loop_reads 330 -> 177`, and pack bytes `5210316 -> 2128856`; FISHING1 high stays exact-flat. Latest battle-card rows now use `compact-fgp3-v40-walkstuf1-indexed8-fgp3`; exact timing-bearing average is down to `16.0128%` over target / `87.6649%` target speed. Next follow-up: test WALKSTUF1 low with the same format, then attack residual indexed8 CD pressure with grouping, setup segmentation, or compositor work. |
+| `P5-251` | Done: convert WALKSTUF1 low to indexed8 FGP3 residual. | Completing the pair gives another large host-side pack-format win. WALKSTUF1 low improves `loop_vb 3740 -> 2090`, `blocking_vb 2171 -> 697`, `loop_reads 341 -> 177`, and pack bytes `5698737 -> 2157403`; `prefetch_overrun_vb` rises `9 -> 38`, but due misses and visible blocking drop massively and FISHING1 stays exact-flat. WALKSTUF1 high/low are now both `FGP3/v2`; exact timing-bearing average is down to `14.9511%` over target / `87.9202%` target speed. Next follow-up: generated read grouping/setup segmentation for indexed8 residual packs, because both rows still have hundreds of blocking VBlanks. |
 
 ## Failed Experiment Triage After P5-90
 

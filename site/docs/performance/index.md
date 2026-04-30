@@ -234,27 +234,27 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+16.0% over target /
-87.7% target speed**.
+120 timing-bearing battle-card rows, the average is **+15.0% over target /
+87.9% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v40-walkstuf1-indexed8-fgp3`; earlier follow-up rows use
-`compact-fgp3-v39-visitor7high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v41-walkstuf1low-indexed8-fgp3`; earlier follow-up rows use
+`compact-fgp3-v40-walkstuf1-indexed8-fgp3` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T10:33:00`; per-row freshness and stats version are shown on
+run is `2026-04-30T10:51:52`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v40-walkstuf1-indexed8-fgp3`; earlier follow-up rows use
-`compact-fgp3-v39-visitor7high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v41-walkstuf1low-indexed8-fgp3`; earlier follow-up rows use
+`compact-fgp3-v40-walkstuf1-indexed8-fgp3` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -319,7 +319,7 @@ rows are historical only.
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +52.0% / 65.8% (2115/1391); due 147; blk 724 | +177.3% / 36.1% (3755/1354); due 328; blk 2195 |
+| `walkstuf1` | +51.8% / 65.9% (2115/1393); due 147; blk 712 | +50.1% / 66.6% (2090/1392); due 145; blk 697 |
 | `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
@@ -337,26 +337,26 @@ gfx.upload_bytes  = 8,533,120
 
 The canary now has no visible CD stall, but the full battle card still has
 CD-heavy scenes (`walkstuf1`, `walkstuf3`, `visitor3`, `building4`,
-`building6`). The `FGP3/v2` indexed8 result proves host-side pack
-preprocessing can move a major outlier, but it also leaves enough residual
+`building6`). The `FGP3/v2` indexed8 results prove host-side pack
+preprocessing can move major outliers, but they also leave enough residual
 pressure to keep the next experiments matrix-aware.
 
 Next plausible wins, in priority order:
 
-1. **Convert WALKSTUF1 low to indexed8 FGP3 residual.** The high-tide
-   conversion cut loop time by more than a thousand VBlanks; the low-tide
-   sibling is now the obvious same-family test.
-2. **Generated read grouping or setup segmentation for residual indexed8
-   packs.** WALKSTUF1 high still has `blocking_vb=724`, so the format win
+1. **Generated read grouping or setup segmentation for residual indexed8
+   packs.** WALKSTUF1 high still has `blocking_vb=712`, so the format win
    needs a second CD-shape pass.
-3. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
+2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.
-4. **X-aware dirty upload and rect-pressure control.** The FISHING 1 canary
+3. **X-aware dirty upload and rect-pressure control.** The FISHING 1 canary
    still restores 251 KB and uploads 8.5 MB; larger scenes carry more upload
    pressure.
-5. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
+4. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
    bytes, but dense scenes still pay per-span/per-pixel runtime costs.
+5. **Indexed8 metadata-only scene diagnosis.** `mary3`, `suzy1`, and `suzy2`
+   still complete without active-loop timing, so their indexed8 packs are not
+   yet part of the speed average.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
@@ -370,7 +370,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +16.0% over target, with several much worse CD-bound
+  average is still +15.0% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
