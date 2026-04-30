@@ -241,21 +241,21 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-29, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v5-visitor4high`, VISITOR6-low follow-up rows are stamped
-`compact-fgp3-v4-visitor6low`, STAND12-low follow-up rows are stamped
+`compact-fgp3-v6-stand5low`, recent follow-up rows include
+`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
 `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-29T19:26:21`; per-row freshness and stats version are shown on
+run is `2026-04-29T19:34:26`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v5-visitor4high`; VISITOR6-low remains
-`compact-fgp3-v4-visitor6low`; STAND12-low remains
+rows now use `compact-fgp3-v6-stand5low`; recent follow-up rows include
+`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
 `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
@@ -308,7 +308,7 @@ rows are historical only.
 | `stand2` | +30.5% / 76.6% (633/485); blk 10 | +30.3% / 76.7% (632/485); blk 8 |
 | `stand3` | +24.4% / 80.4% (693/557) | +25.1% / 79.9% (697/557) |
 | `stand4` | +11.8% / 89.4% (1361/1217); blk 7 | +12.3% / 89.0% (1366/1216); blk 9 |
-| `stand5` | +9.2% / 91.5% (1595/1460); blk 2 | +10.8% / 90.3% (1606/1450); blk 20 |
+| `stand5` | +9.2% / 91.5% (1595/1460); blk 2 | +9.4% / 91.4% (1595/1458); blk 4 |
 | `stand6` | +10.2% / 90.7% (1501/1362); blk 4 | +10.7% / 90.3% (1505/1359); blk 8 |
 | `stand7` | +25.6% / 79.6% (676/538); blk 3 | +26.9% / 78.8% (680/536); blk 5 |
 | `stand8` | +27.0% / 78.7% (635/500) | +28.5% / 77.8% (640/498); blk 3 |
