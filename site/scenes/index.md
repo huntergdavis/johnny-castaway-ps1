@@ -114,8 +114,8 @@ Current battle-card rollup as of 2026-04-29:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+17.3%` |
 | Timing-bearing average target speed | `87.1%` |
-| Latest perf matrix run | `2026-04-29T20:45:41` |
-| Stats version | mixed: latest rows use `compact-fgp3-v9-stand2high`; recent follow-up rows include `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-29T21:26:07` |
+| Stats version | mixed: latest rows use `compact-fgp3-v10-visitor1low`; recent follow-up rows include `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,12 +144,12 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  rows use `compact-fgp3-v9-stand2high`; recent follow-up rows include
-  `compact-fgp3-v8-stand6low`, `compact-fgp3-v7-stand4low`,
-  `compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`,
-  `compact-fgp3-v4-visitor6low`, and `compact-fgp3-v3-stand12low`; the
-  complete full-matrix baseline remains `compact-fgp3-v2-fullmatrix` for rows
-  not rerun since that pass.
+  rows use `compact-fgp3-v10-visitor1low`; recent follow-up rows include
+  `compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`,
+  `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
+  `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
+  `compact-fgp3-v3-stand12low`; the complete full-matrix baseline remains
+  `compact-fgp3-v2-fullmatrix` for rows not rerun since that pass.
 
 ### 126-variant battle card
 
@@ -189,7 +189,7 @@ and this page.
 | `building6` | low | measured | 2026-04-29T17:25:44 | compact-fgp3-v2-fullmatrix | +12.9% | 88.6% | 2747/2433 | 343 | 11 | 49 |  |
 | `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
 | `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
-| `fishing1` | high | measured | 2026-04-29T20:45:41 | compact-fgp3-v9-stand2high | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-04-29T21:26:07 | compact-fgp3-v10-visitor1low | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
 | `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
@@ -264,7 +264,7 @@ and this page.
 | `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | - | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | high | measured | 2026-04-29T18:03:05 | compact-fgp3-v2-fullmatrix | +21.0% | 82.6% | 812/671 | 13 | 13 | 0 |  |
-| `visitor1` | low | measured | 2026-04-29T18:03:11 | compact-fgp3-v2-fullmatrix | +20.4% | 83.1% | 809/672 | 14 | 14 | 0 |  |
+| `visitor1` | low | measured | 2026-04-29T21:25:08 | compact-fgp3-v10-visitor1low | +18.4% | 84.5% | 798/674 | 7 | 7 | 0 |  |
 | `visitor3` | high | measured | 2026-04-29T18:04:12 | compact-fgp3-v2-fullmatrix | +50.5% | 66.4% | 1526/1014 | 368 | 133 | 23 |  |
 | `visitor3` | low | measured | 2026-04-29T18:04:14 | compact-fgp3-v2-fullmatrix | +51.4% | 66.1% | 1547/1022 | 332 | 111 | 22 |  |
 | `visitor4` | high | measured | 2026-04-29T19:25:25 | compact-fgp3-v5-visitor4high | +33.3% | 75.0% | 569/427 | 2 | 2 | 0 |  |

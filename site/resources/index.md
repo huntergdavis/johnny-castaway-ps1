@@ -504,7 +504,7 @@ for the practical porting path.
 <tr><td><code>VISITOR5.FG2</code></td><td>581,660</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR5.FG2">source</a></td></tr>
 <tr><td><code>VISITOR6.FG2</code></td><td>458,550</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR6.FG2">source</a></td></tr>
 <tr><td><code>VISITOR7.FG2</code></td><td>372,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR7.FG2">source</a></td></tr>
-<tr><td><code>VIST1LOW.FG2</code></td><td>479,873</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST1LOW.FG2">source</a></td></tr>
+<tr><td><code>VIST1LOW.FG2</code></td><td>248,441</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST1LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST3LOW.FG2</code></td><td>1,456,504</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST3LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST4LOW.FG2</code></td><td>163,580</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST4LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST5LOW.FG2</code></td><td>404,778</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST5LOW.FG2">source</a></td></tr>
