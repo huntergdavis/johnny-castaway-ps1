@@ -241,8 +241,8 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v24-johnny5low`, recent follow-up rows include
-`compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+`compact-fgp3-v25-johnny4high`, recent follow-up rows include
+`compact-fgp3-v24-johnny5low`, `compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -251,14 +251,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T03:35:48`; per-row freshness and stats version are shown on
+run is `2026-04-30T04:19:16`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v24-johnny5low`; recent follow-up rows include
-`compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+rows now use `compact-fgp3-v25-johnny4high`; recent follow-up rows include
+`compact-fgp3-v24-johnny5low`, `compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
 `compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
@@ -295,7 +295,7 @@ rows are historical only.
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
 | `johnny2` | +7.2% / 93.2% (1878/1751) | +7.3% / 93.2% (1878/1750); blk 1 |
 | `johnny3` | +11.3% / 89.8% (1299/1167); due 1; blk 6 | +11.8% / 89.4% (1303/1165); blk 6 |
-| `johnny4` | +11.1% / 90.0% (1349/1214) | +11.1% / 90.0% (1349/1214) |
+| `johnny4` | +10.5% / 90.5% (1342/1214); blk 1 | +11.1% / 90.0% (1349/1214) |
 | `johnny5` | +15.5% / 86.6% (947/820) | +15.5% / 86.6% (947/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
 | `mary1` | +3.7% / 96.4% (5004/4826); due 2; blk 49 | +3.2% / 96.9% (4994/4839); due 1; blk 26 |
