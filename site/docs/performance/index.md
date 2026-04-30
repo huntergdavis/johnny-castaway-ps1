@@ -241,29 +241,29 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v30-mediumprime`; earlier follow-up rows use
-`compact-fgp3-v29-smallprime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v31-auto224`; earlier follow-up rows use
+`compact-fgp3-v30-mediumprime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T06:13:51`; per-row freshness and stats version are shown on
+run is `2026-04-30T06:58:15`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v30-mediumprime`; earlier follow-up rows use
-`compact-fgp3-v29-smallprime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v31-auto224`; earlier follow-up rows use
+`compact-fgp3-v30-mediumprime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
 |---|---:|---:|
 | `activity1` | +3.1% / 97.0% (4373/4243); blk 1 | +3.1% / 97.0% (4373/4243); blk 1 |
 | `activity10` | +11.8% / 89.4% (1406/1257); due 1; blk 13 | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
-| `activity11` | +8.0% / 92.6% (1862/1724); due 1; blk 7 | +8.0% / 92.6% (1862/1724); due 1; blk 7 |
+| `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.5% / 91.3% (1548/1414); blk 5 | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
-| `activity4` | +13.1% / 88.4% (1206/1066); blk 6 | +12.6% / 88.8% (1204/1069); blk 2 |
+| `activity4` | +13.1% / 88.4% (1206/1066); blk 6 | +12.4% / 88.9% (1202/1069) |
 | `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
 | `activity7` | +21.3% / 82.4% (746/615) | +21.3% / 82.4% (746/615) |
@@ -282,11 +282,11 @@ rows are historical only.
 | `fishing4` | +15.0% / 87.0% (968/842); blk 2 | +15.7% / 86.5% (975/843); blk 1 |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
 | `fishing6` | +19.1% / 84.0% (893/750); blk 6 | +18.7% / 84.2% (894/753); blk 4 |
-| `fishing7` | +19.2% / 83.9% (863/724); blk 6 | +18.5% / 84.4% (859/725); blk 1 |
+| `fishing7` | +19.2% / 83.9% (863/724); blk 6 | +18.3% / 84.5% (858/725) |
 | `fishing8` | +11.9% / 89.4% (1393/1245); blk 13 | +11.2% / 89.9% (1388/1248); blk 13 |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
 | `johnny2` | +7.2% / 93.2% (1878/1751) | +7.2% / 93.2% (1878/1751) |
-| `johnny3` | +11.3% / 89.8% (1299/1167); due 1; blk 6 | +11.8% / 89.4% (1303/1165); blk 6 |
+| `johnny3` | +11.3% / 89.8% (1299/1167); due 1; blk 6 | +11.3% / 89.8% (1298/1166) |
 | `johnny4` | +10.5% / 90.5% (1341/1214) | +11.1% / 90.0% (1349/1214) |
 | `johnny5` | +15.5% / 86.6% (947/820) | +15.5% / 86.6% (947/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
@@ -296,12 +296,12 @@ rows are historical only.
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
 | `miscgag1` | +15.5% / 86.6% (1105/957); blk 13 | +14.1% / 87.7% (1096/961) |
-| `miscgag2` | -0.3% / 100.3% (1350/1354) | -0.4% / 100.4% (1350/1355) |
+| `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
 | `stand1` | +69.3% / 59.1% (342/202) | +69.3% / 59.1% (342/202) |
 | `stand10` | +25.1% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
 | `stand11` | +25.1% / 79.9% (673/538) | +25.1% / 79.9% (673/538) |
 | `stand12` | +10.1% / 90.9% (1599/1453); blk 12 | +9.1% / 91.7% (1593/1460) |
-| `stand15` | +14.3% / 87.5% (1127/986); blk 7 | +13.4% / 88.1% (1122/989) |
+| `stand15` | +13.4% / 88.2% (1123/990) | +13.4% / 88.1% (1122/989) |
 | `stand16` | +11.7% / 89.5% (1327/1188); blk 8 | +11.1% / 90.0% (1323/1191) |
 | `stand2` | +27.5% / 78.4% (626/491) | +27.5% / 78.4% (626/491) |
 | `stand3` | +24.4% / 80.4% (694/558) | +24.4% / 80.4% (694/558) |
@@ -318,7 +318,7 @@ rows are historical only.
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.9% / 93.5% (2190/2048); blk 1 |
-| `visitor7` | +8.9% / 91.9% (1768/1624); blk 3 | +8.7% / 92.0% (1768/1626); blk 1 |
+| `visitor7` | +8.9% / 91.9% (1768/1624); blk 3 | +8.7% / 92.0% (1766/1625) |
 | `walkstuf1` | +144.8% / 40.8% (3320/1356); due 318; blk 1800 | +177.3% / 36.1% (3755/1354); due 328; blk 2195 |
 | `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
