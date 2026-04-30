@@ -123,6 +123,9 @@ Options:
 
 Gate rules:
   - JCPERF2 must be present.
+  - routed active scenes must report nonzero loop_start, loop_vb, advances,
+    complete entry coverage, and final-frame coverage. Known metadata-only
+    coverage gaps are warnings, not accepted speed evidence.
   - correctness trip/fallback/stale/frame/sound/CD counters must be zero.
   - gfx full_fallbacks must be zero.
   - with --baseline, loop_vb, timing overrun_vb, blocking_vb, and prefetch
@@ -607,6 +610,35 @@ blocking_vb = get("cd", "blocking_vb", 0)
 upload_bytes = get("gfx", "upload_bytes", 0)
 restore_bytes = get("gfx", "restore_bytes", 0)
 compose_pixels = get("gfx", "compose_pixels", get("frame", "pixels", 0))
+
+scene_name = str(sections.get("scene", {}).get("scene", "")).lower()
+scene_entries = get("scene", "entries", 0)
+loop_start = get("timing", "loop_start", 0)
+advances = get("timing", "advances", 0)
+timing_entries = get("timing", "entries", 0)
+known_metadata_only_scenes = {"mary3", "suzy1", "suzy2"}
+if sections and scene_entries > 0:
+    active_loop_failures = []
+    if loop_start <= 0:
+        active_loop_failures.append(f"timing.loop_start={loop_start}")
+    if loop_vb <= 0:
+        active_loop_failures.append(f"timing.loop_vb={loop_vb}")
+    if advances <= 0:
+        active_loop_failures.append(f"timing.advances={advances}")
+    if timing_entries < scene_entries:
+        active_loop_failures.append(
+            f"timing.entries={timing_entries} scene.entries={scene_entries}"
+        )
+    if expected_frames > 0 and last_frame < expected_frames - 1:
+        active_loop_failures.append(
+            f"last_frame={last_frame} expected_final={expected_frames - 1}"
+        )
+    if active_loop_failures:
+        message = "active-loop incomplete: " + ", ".join(active_loop_failures)
+        if scene_name in known_metadata_only_scenes:
+            warnings.append(message + " (known metadata-only coverage gap)")
+        else:
+            failures.append(message)
 
 suggestions = []
 if blocking_vb > 0:
