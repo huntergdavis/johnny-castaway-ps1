@@ -234,27 +234,27 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+14.8% over target /
-88.0% target speed**.
+120 timing-bearing battle-card rows, the average is **+14.7% over target /
+88.1% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use
-`compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v50-building4-window`; earlier follow-up rows use
+`compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T13:41:28`; per-row freshness and stats version are shown on
+run is `2026-04-30T14:45:56`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use
-`compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v50-building4-window`; earlier follow-up rows use
+`compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -272,7 +272,7 @@ rows are historical only.
 | `building1` | +23.3% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
 | `building2` | +20.2% / 83.2% (1559/1297); due 19; blk 150 | +20.1% / 83.3% (1556/1296); due 20; blk 150 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
-| `building4` | +12.2% / 89.2% (3128/2789); due 49; blk 355 | +12.1% / 89.2% (3126/2788); due 49; blk 353 |
+| `building4` | +10.0% / 90.9% (3073/2793); due 34; blk 240 | +10.2% / 90.7% (3080/2795); due 18; blk 168 |
 | `building5` | +5.0% / 95.2% (3504/3336); due 6; blk 52 | +4.5% / 95.7% (3498/3348); due 2; blk 16 |
 | `building6` | +12.9% / 88.6% (2744/2431); due 49; blk 342 | +12.9% / 88.6% (2747/2433); due 49; blk 343 |
 | `building7` | +4.8% / 95.4% (3843/3668); due 4; blk 43 | +4.2% / 96.0% (3830/3676); blk 12 |
@@ -371,7 +371,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +14.8% over target, with several much worse CD-bound
+  average is still +14.7% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

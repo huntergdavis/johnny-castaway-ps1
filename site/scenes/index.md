@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-04-30:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.8%` |
-| Timing-bearing average target speed | `88.0%` |
-| Latest perf matrix run | `2026-04-30T13:41:28` |
-| Stats version | mixed: latest rows use `compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use `compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.7%` |
+| Timing-bearing average target speed | `88.1%` |
+| Latest perf matrix run | `2026-04-30T14:45:56` |
+| Stats version | mixed: latest rows use `compact-fgp3-v50-building4-window`; earlier follow-up rows use `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  rows use `compact-fgp3-v49-walkstuf2-auto-prime`; earlier follow-up rows use
-  `compact-fgp3-v48-building3low-auto-prime` through `compact-fgp3-v3-stand12low`; the
+  rows use `compact-fgp3-v50-building4-window`; earlier follow-up rows use
+  `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v3-stand12low`; the
   complete full-matrix baseline remains `compact-fgp3-v2-fullmatrix` for
   rows not rerun since that pass.
 
@@ -179,8 +179,8 @@ and this page.
 | `building2` | low | measured | 2026-04-29T17:12:34 | compact-fgp3-v2-fullmatrix | +20.1% | 83.3% | 1556/1296 | 150 | 42 | 20 |  |
 | `building3` | high | measured | 2026-04-30T13:33:14 | compact-fgp3-v48-building3low-auto-prime | +9.4% | 91.4% | 1565/1430 | 5 | 5 | 0 |  |
 | `building3` | low | measured | 2026-04-30T13:32:08 | compact-fgp3-v48-building3low-auto-prime | +9.1% | 91.7% | 1564/1434 | 0 | 0 | 0 |  |
-| `building4` | high | measured | 2026-04-29T17:15:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.2% | 3128/2789 | 355 | 21 | 49 |  |
-| `building4` | low | measured | 2026-04-29T17:20:47 | compact-fgp3-v2-fullmatrix | +12.1% | 89.2% | 3126/2788 | 353 | 21 | 49 |  |
+| `building4` | high | measured | 2026-04-30T14:45:56 | compact-fgp3-v50-building4-window | +10.0% | 90.9% | 3073/2793 | 240 | 27 | 34 |  |
+| `building4` | low | measured | 2026-04-30T14:44:23 | compact-fgp3-v50-building4-window | +10.2% | 90.7% | 3080/2795 | 168 | 63 | 18 |  |
 | `building5` | high | measured | 2026-04-29T17:20:47 | compact-fgp3-v2-fullmatrix | +5.0% | 95.2% | 3504/3336 | 52 | 25 | 6 |  |
 | `building5` | low | measured | 2026-04-29T17:24:22 | compact-fgp3-v2-fullmatrix | +4.5% | 95.7% | 3498/3348 | 16 | 11 | 2 |  |
 | `building6` | high | measured | 2026-04-29T17:24:22 | compact-fgp3-v2-fullmatrix | +12.9% | 88.6% | 2744/2431 | 342 | 9 | 49 |  |
