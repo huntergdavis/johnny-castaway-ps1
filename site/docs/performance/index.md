@@ -234,27 +234,27 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+16.9% over target /
+120 timing-bearing battle-card rows, the average is **+16.8% over target /
 87.4% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v33-auto288`; earlier follow-up rows use
-`compact-fgp3-v32-auto256` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v34-visitor1high-prime`; earlier follow-up rows use
+`compact-fgp3-v33-auto288` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T07:23:55`; per-row freshness and stats version are shown on
+run is `2026-04-30T08:12:21`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v33-auto288`; earlier follow-up rows use
-`compact-fgp3-v32-auto256` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v34-visitor1high-prime`; earlier follow-up rows use
+`compact-fgp3-v33-auto288` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -263,7 +263,7 @@ rows are historical only.
 | `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.5% / 91.3% (1548/1414); blk 5 | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
-| `activity4` | +13.1% / 88.4% (1206/1066); blk 6 | +12.4% / 88.9% (1202/1069) |
+| `activity4` | +12.4% / 88.9% (1202/1069) | +12.4% / 88.9% (1202/1069) |
 | `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
 | `activity7` | +21.3% / 82.4% (746/615) | +21.3% / 82.4% (746/615) |
@@ -313,7 +313,7 @@ rows are historical only.
 | `stand9` | +25.1% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
 | `suzy1` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
 | `suzy2` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
-| `visitor1` | +21.0% / 82.6% (812/671); blk 13 | +17.3% / 85.3% (794/677) |
+| `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
 | `visitor3` | +50.5% / 66.4% (1526/1014); due 23; blk 368 | +51.4% / 66.1% (1547/1022); due 22; blk 332 |
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
@@ -374,7 +374,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +16.9% over target, with several much worse CD-bound
+  average is still +16.8% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

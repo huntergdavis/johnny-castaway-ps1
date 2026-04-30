@@ -156,6 +156,7 @@ enum {
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
+#define FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES (296UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
@@ -1533,6 +1534,8 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         return islandState.lowTide ?
             (FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)) :
             (128UL * 1024UL);
+    if (!islandState.lowTide && fgSceneEquals(sceneName, "visitor1"))
+        return FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES;
     return 0;
 }
 
