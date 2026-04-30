@@ -241,24 +241,24 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-29, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v7-stand4low`, recent follow-up rows include
-`compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`,
-`compact-fgp3-v4-visitor6low`, and `compact-fgp3-v3-stand12low`, and the
-full-matrix baseline rows are stamped
+`compact-fgp3-v8-stand6low`, recent follow-up rows include
+`compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
+`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
+`compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-29T20:13:43`; per-row freshness and stats version are shown on
+run is `2026-04-29T20:22:47`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v7-stand4low`; recent follow-up rows include
-`compact-fgp3-v6-stand5low`, `compact-fgp3-v5-visitor4high`,
-`compact-fgp3-v4-visitor6low`, and `compact-fgp3-v3-stand12low`.
-Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v8-stand6low`; recent follow-up rows include
+`compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
+`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
+`compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -311,7 +311,7 @@ rows are historical only.
 | `stand3` | +24.4% / 80.4% (693/557) | +25.1% / 79.9% (697/557) |
 | `stand4` | +11.8% / 89.4% (1361/1217); blk 7 | +11.9% / 89.3% (1361/1216); blk 7 |
 | `stand5` | +9.2% / 91.5% (1595/1460); blk 2 | +9.4% / 91.4% (1595/1458); blk 4 |
-| `stand6` | +10.2% / 90.7% (1501/1362); blk 4 | +10.7% / 90.3% (1505/1359); blk 8 |
+| `stand6` | +10.2% / 90.7% (1501/1362); blk 4 | +10.1% / 90.8% (1500/1362); blk 3 |
 | `stand7` | +25.6% / 79.6% (676/538); blk 3 | +26.9% / 78.8% (680/536); blk 5 |
 | `stand8` | +27.0% / 78.7% (635/500) | +28.5% / 77.8% (640/498); blk 3 |
 | `stand9` | +25.5% / 79.7% (674/537); blk 2 | +26.3% / 79.2% (678/537); blk 1 |
