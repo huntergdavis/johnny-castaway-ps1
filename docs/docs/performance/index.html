@@ -313,26 +313,28 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>+12.2% over target</strong>, or <strong>89.1% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+17.4% over target /
+120 timing-bearing battle-card rows, the average is <strong>+17.3% over target /
 87.1% target speed</strong>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-04-29, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v4-visitor6low</code>, STAND12-low follow-up rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>, and the full-matrix baseline rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-04-29T18:46:45</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-04-29T19:08:18</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> /
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code> rows are historical only.</p>
+rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v4-visitor6low</code>; STAND12-low remains
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> / <code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>
+rows are historical only.</p>
 
 <table>
   <thead>
@@ -450,8 +452,8 @@ rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
-      <td style="text-align: right">-9.3% / 110.3% (807/890)</td>
-      <td style="text-align: right">-9.2% / 110.1% (808/890)</td>
+      <td style="text-align: right">+-9.3% / 110.3% (807/890)</td>
+      <td style="text-align: right">+-9.2% / 110.1% (808/890)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
@@ -515,8 +517,8 @@ rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
-      <td style="text-align: right">-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
-      <td style="text-align: right">-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
+      <td style="text-align: right">+-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
+      <td style="text-align: right">+-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
@@ -636,7 +638,7 @@ rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
       <td style="text-align: right">+7.5% / 93.0% (2195/2042); blk 13</td>
-      <td style="text-align: right">+8.3% / 92.3% (2209/2040); blk 22</td>
+      <td style="text-align: right">+6.9% / 93.5% (2190/2048); blk 1</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
@@ -714,7 +716,7 @@ matrix-aware instead of only optimizing FISHING 1.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-average is still +17.4% over target, with several much worse CD-bound
+average is still +17.3% over target, with several much worse CD-bound
 outliers; compressing the timing files would expose the same throughput
 bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired
