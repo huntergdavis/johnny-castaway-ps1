@@ -156,7 +156,7 @@ enum {
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
-#define FG_SETUP_PRIME_SMALL_PACK_BYTES (64UL * 1024UL)
+#define FG_SETUP_PRIME_AUTO_PACK_BYTES (192UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
@@ -1517,7 +1517,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
         if (payloadEnd > windowStart) {
             uint32 windowBytes = fgSectorAlignUp(payloadEnd - windowStart);
-            if (windowBytes <= FG_SETUP_PRIME_SMALL_PACK_BYTES)
+            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES)
                 return windowBytes;
         }
     }

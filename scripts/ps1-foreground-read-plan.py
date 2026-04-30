@@ -375,7 +375,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
     if pack.get("magic") == "FGP3":
-        small_pack_limit = int(
+        auto_pack_limit = int(
+            source_policy.get("symbols", {}).get("FG_SETUP_PRIME_AUTO_PACK_BYTES") or
             source_policy.get("symbols", {}).get("FG_SETUP_PRIME_SMALL_PACK_BYTES") or
             64 * 1024
         )
@@ -383,9 +384,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         window_start = (data_offset // SECTOR_SIZE) * SECTOR_SIZE
         if payload_end > window_start:
             window_bytes = int(math.ceil((payload_end - window_start) / SECTOR_SIZE)) * SECTOR_SIZE
-            if 0 < window_bytes <= small_pack_limit:
+            if 0 < window_bytes <= auto_pack_limit:
                 auto_prime_bytes = window_bytes
-                auto_policy = "auto:fgp3-small-pack"
+                auto_policy = "auto:fgp3-resident-pack"
     setup_prime_bytes = args.setup_prime_bytes
     setup_policy = "explicit"
     if setup_prime_bytes is None:
