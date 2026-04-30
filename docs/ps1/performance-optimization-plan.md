@@ -157,10 +157,10 @@ Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
 `loop_vb=1221`, `overrun_vb=150`, `render_vb=179`,
 `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
 and `prefetch.overrun_vb=5`. That is now historical context, not the current
-canary. As of the 2026-04-29 battle-card refresh, FISHING 1 high is
+canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+17.1%` over target /
+120/126 scene/tide variants carry active-loop timing and average `+17.0%` over target /
 `87.3%` target speed. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
@@ -1373,6 +1373,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-222` | Done: convert JOHNNY5 high to compact FGP3. | JOHNNY5 high still had mild CD/refill pressure and enough residual savings to test. Converting `JOHNNY5.FG2` to compact FGP3 improves fresh current-layout metrics `loop_vb 955 -> 947`, `overrun_vb 136 -> 127`, `blocking_vb/prefetch_overrun_vb 2 -> 0`, `loop_reads 19 -> 10`, and `loop_read_vb 90 -> 48`, while shrinking the pack `271369 -> 150172` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v23-johnny5high`; exact timing-bearing average is down to `17.0161%` over target / `87.2864%` target speed. |
 | `P5-223` | Failed: retry plain compact FGP3 for FISHING4 low. | FISHING4 low compact FGP3 improves total loop shape (`loop_vb 976 -> 970`, `overrun_vb 134 -> 127`, `loop_reads 17 -> 12`) and shrinks payload `236700 -> 167356`, but it regresses visible refill pressure (`blocking_vb/prefetch_overrun_vb 2 -> 3`). The FGP2 pack was restored. Revisit only with setup/group coverage or direct16/grouped layout that keeps refill pressure flat or lower. |
 | `P5-224` | Failed: retry plain compact FGP3 for WALKSTUF2 high/low. | `WALKSTUF2.FG2` and `WALK2LOW.FG2` are byte-identical FGP2 packs, so the retry tested them as a paired conversion. Plain compact FGP3 slightly improves timing (`high loop_vb 596 -> 593`, `low 596 -> 595`; low refill pressure `1 -> 0`) but grows payload `137337 -> 161895`, grows each pack `138609 -> 163167`, raises reads `9 -> 12`, leaves high visible refill pressure at `1`, and shifts the low-tide pack LBA `95847 -> 95859`. Both packs were restored. Revisit WALKSTUF2 only with generated grouping/direct16 or a residual policy that first proves a size/read-shape win. |
+| `P5-225` | Done: convert JOHNNY5 low to compact FGP3. | JOHNNY5 low matched the high-tide residual profile but still had current-layout refill pressure. Converting `JOHN5LOW.FG2` to compact FGP3 improves fresh metrics `loop_vb 955 -> 947`, `overrun_vb 136 -> 127`, `blocking_vb/prefetch_overrun_vb 2 -> 0`, `loop_reads 19 -> 10`, and `loop_read_vb 53 -> 44`, while shrinking the pack `271369 -> 150172` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v24-johnny5low`; exact timing-bearing average is down to `17.0090%` over target / `87.2917%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 
