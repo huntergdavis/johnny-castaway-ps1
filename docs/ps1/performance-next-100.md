@@ -544,6 +544,7 @@ near misses:
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
 | VISITOR3 raw stream windows | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. Use generated grouping, direct16/selective preprocessing, or scheduler ownership. |
+| BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
 | BUILDING-family raw stream windows | BUILDING4 and BUILDING6 high/low are accepted; retry only scene-locally with fresh baselines and bounded CD tradeoff rules, starting with remaining high-pressure building rows. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
