@@ -234,27 +234,27 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+14.9% over target /
+120 timing-bearing battle-card rows, the average is **+14.8% over target /
 88.0% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v42-walkstuf1-window32`; earlier follow-up rows use
-`compact-fgp3-v41-walkstuf1low-indexed8-fgp3` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v43-walkstuf1-split-window`; earlier follow-up rows use
+`compact-fgp3-v42-walkstuf1-window32` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T11:46:36`; per-row freshness and stats version are shown on
+run is `2026-04-30T12:06:54`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v42-walkstuf1-window32`; earlier follow-up rows use
-`compact-fgp3-v41-walkstuf1low-indexed8-fgp3` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v43-walkstuf1-split-window`; earlier follow-up rows use
+`compact-fgp3-v42-walkstuf1-window32` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -319,7 +319,7 @@ rows are historical only.
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +46.1% / 68.5% (2064/1413); due 54; blk 530 | +46.7% / 68.2% (2054/1400); due 56; blk 532 |
+| `walkstuf1` | +42.9% / 70.0% (2030/1421); due 31; blk 457 | +44.8% / 69.0% (2048/1414); due 34; blk 460 |
 | `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
@@ -337,15 +337,15 @@ gfx.upload_bytes  = 8,533,120
 
 The canary now has no visible CD stall, but the full battle card still has
 CD-heavy scenes (`walkstuf1`, `walkstuf3`, `visitor3`, `building4`,
-`building6`). The `FGP3/v2` indexed8 results and WALKSTUF1-local 32 KiB
-window prove host-side pack preprocessing plus scene-local CD policy can move
+`building6`). The `FGP3/v2` indexed8 results and WALKSTUF1 split-window
+policy prove host-side pack preprocessing plus scene-local CD policy can move
 major outliers, but they also leave enough residual pressure to keep the next
 experiments matrix-aware.
 
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup segmentation for residual indexed8
-   packs.** WALKSTUF1 high still has `blocking_vb=530`, so the format/window
+   packs.** WALKSTUF1 high still has `blocking_vb=457`, so the format/window
    wins need a second CD-shape pass.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
@@ -371,7 +371,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +14.9% over target, with several much worse CD-bound
+  average is still +14.8% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
