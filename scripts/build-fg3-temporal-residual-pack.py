@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-"""Build an experimental FGP3 temporal-residual pack from an existing PAL4 FG2.
+"""Build an experimental FGP3 temporal-residual pack from an existing FG2.
 
-FGP3 version 1 keeps the FG2 header/table/palette shape, but each payload is:
+FGP3 keeps the FG2 header/table/palette shape, but each payload is:
 
   u16 cleanup_row_count
     u16 rel_y, u16 span_count
       u16 rel_x, u16 pixel_count
-  FG2 PAL4 span payload for pixels that differ from the previous frame
+  FG2 span payload for pixels that differ from the previous frame
+
+FGP3 version 1 carries PAL4 draw spans.
+FGP3 version 2 carries indexed8 draw spans.
 
 The cleanup spans restore old foreground pixels that disappeared or changed.
 The draw payload then writes only new/changed pixels. This prototype is
-intended for fishing1 validation before the normal pack builder owns FGP3.
+intended for validation before the normal pack builder owns FGP3.
 """
 
 from __future__ import annotations
@@ -29,6 +32,7 @@ ENTRY_SIZE = struct.calcsize(ENTRY)
 
 @dataclass
 class Header:
+    version: int
     frame_count: int
     display_vblanks: int
     flags: int
@@ -86,9 +90,10 @@ def parse_fg2(path: Path) -> tuple[bytes, Header, list[int], list[Entry], bytes]
         sound_event_count,
         reserved1,
     ) = struct.unpack_from(HEADER, data, 0)
-    if magic != b"FGP2" or version != 1:
-        raise SystemExit(f"{path} is not a PAL4 FGP2 pack")
+    if magic != b"FGP2" or version not in (1, 2):
+        raise SystemExit(f"{path} is not a supported FGP2 pack")
     header = Header(
+        version=version,
         frame_count=frame_count,
         display_vblanks=display_vblanks,
         flags=flags,
@@ -119,7 +124,7 @@ def parse_fg2(path: Path) -> tuple[bytes, Header, list[int], list[Entry], bytes]
     return data, header, palette, entries, sound_events
 
 
-def decode_pixels(pack: bytes, entry: Entry) -> dict[tuple[int, int], int]:
+def decode_pixels(pack: bytes, entry: Entry, version: int) -> dict[tuple[int, int], int]:
     pixels: dict[tuple[int, int], int] = {}
     if entry.data_size == 0 or entry.width == 0 or entry.height == 0:
         return pixels
@@ -142,11 +147,17 @@ def decode_pixels(pack: bytes, entry: Entry) -> dict[tuple[int, int], int]:
             rel_x = u16(data, offset)
             pixel_count = u16(data, offset + 2)
             offset += 4
-            packed_bytes = (pixel_count + 1) // 2
-            span = data[offset:offset + packed_bytes]
-            for i in range(pixel_count):
-                pixels[(entry.x + rel_x + i, y)] = pal4_index(span, i)
-            offset += packed_bytes
+            if version == 1:
+                span_bytes = (pixel_count + 1) // 2
+                span = data[offset:offset + span_bytes]
+                for i in range(pixel_count):
+                    pixels[(entry.x + rel_x + i, y)] = pal4_index(span, i)
+            else:
+                span_bytes = pixel_count
+                span = data[offset:offset + span_bytes]
+                for i, value in enumerate(span):
+                    pixels[(entry.x + rel_x + i, y)] = value
+            offset += span_bytes
     return pixels
 
 
@@ -176,7 +187,7 @@ def spans_from_points(points: set[tuple[int, int]], origin_x: int, origin_y: int
 
 
 def draw_payload_from_pixels(pixels: dict[tuple[int, int], int],
-                             origin_x: int, origin_y: int) -> bytes:
+                             origin_x: int, origin_y: int, version: int) -> bytes:
     rows: dict[int, list[tuple[int, int]]] = {}
     for (x, y), value in pixels.items():
         rows.setdefault(y, []).append((x, value))
@@ -195,14 +206,19 @@ def draw_payload_from_pixels(pixels: dict[tuple[int, int], int],
         spans.append(current)
         out += struct.pack("<HH", y - origin_y, len(spans))
         for span in spans:
-            packed = bytearray((len(span) + 1) // 2)
-            for i, (_x, value) in enumerate(span):
-                if i & 1:
-                    packed[i >> 1] |= value & 0x0F
-                else:
-                    packed[i >> 1] = (value & 0x0F) << 4
+            if version == 1:
+                encoded = bytearray((len(span) + 1) // 2)
+                for i, (_x, value) in enumerate(span):
+                    if i & 1:
+                        encoded[i >> 1] |= value & 0x0F
+                    else:
+                        encoded[i >> 1] = (value & 0x0F) << 4
+            else:
+                encoded = bytearray(len(span))
+                for i, (_x, value) in enumerate(span):
+                    encoded[i] = value & 0xFF
             out += struct.pack("<HH", span[0][0] - origin_x, len(span))
-            out += packed
+            out += encoded
     return bytes(out)
 
 
@@ -228,7 +244,7 @@ def main() -> None:
     prev_pixels: dict[tuple[int, int], int] = {}
 
     for entry in entries:
-        current = decode_pixels(pack, entry)
+        current = decode_pixels(pack, entry, header.version)
         if not current and not prev_pixels:
             out_entries.append(Entry(entry.source_frame, 0, 0, 0, 0,
                                      entry.hold_vblanks, 0, 0))
@@ -255,7 +271,7 @@ def main() -> None:
 
         x, y, width, height = dirty_bbox
         cleanup_payload = spans_from_points(cleanup, x, y)
-        draw_payload = draw_payload_from_pixels(draw, x, y)
+        draw_payload = draw_payload_from_pixels(draw, x, y, header.version)
         chunk = cleanup_payload + draw_payload
         out_entries.append(Entry(entry.source_frame, x, y, width, height,
                                  entry.hold_vblanks, 0, len(chunk)))
@@ -278,7 +294,7 @@ def main() -> None:
         f.write(struct.pack(
             HEADER,
             b"FGP3",
-            1,
+            header.version,
             len(out_entries),
             header.display_vblanks,
             header.flags,
@@ -314,9 +330,13 @@ def main() -> None:
 
     original_payload = sum(entry.data_size for entry in entries)
     residual_payload = sum(entry.data_size for entry in out_entries)
+    if original_payload:
+        saved_percent = (original_payload - residual_payload) * 100.0 / original_payload
+    else:
+        saved_percent = 0.0
     print(
-        f"{args.output_fg3}: payload {original_payload} -> {residual_payload} "
-        f"({(original_payload - residual_payload) * 100.0 / original_payload:.2f}% saved)"
+        f"{args.output_fg3}: FGP3/v{header.version} payload "
+        f"{original_payload} -> {residual_payload} ({saved_percent:.2f}% saved)"
     )
 
 

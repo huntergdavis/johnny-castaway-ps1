@@ -147,6 +147,7 @@ static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 static const uint8 kFgPilotPackFormatPal4TemporalResidual = 4;
+static const uint8 kFgPilotPackFormatIndexed8TemporalResidual = 5;
 enum {
     FG_PACK_HEADER_SIZE = 40,
     FG_PACK_ENTRY_SIZE = 20,
@@ -183,6 +184,9 @@ enum {
       (entry)->dataSize > 0 && \
       (entry)->width > 0 && \
       (entry)->height > 0) ? 1 : 0)
+#define fgRuntimeUsesTemporalResidual() \
+    ((gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual || \
+      gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) ? 1 : 0)
 #define fgRuntimeHeldSlackBeforeWait() \
     ((uint16)((!gFgRuntime.active || \
                gFgRuntime.displayVBlanks == 0 || \
@@ -525,11 +529,18 @@ static int fgHeaderIsPal4TemporalResidual(const struct TFgPilotHeader *header)
             header->version == 1) ? 1 : 0;
 }
 
+static int fgHeaderIsIndexed8TemporalResidual(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP3", 4) == 0 &&
+            header->version == 2) ? 1 : 0;
+}
+
 static uint32 fgPaletteByteCount(const struct TFgPilotHeader *header)
 {
     if (fgHeaderIsPal4Spans(header) || fgHeaderIsPal4TemporalResidual(header))
         return 32;
-    if (fgHeaderIsIndexed8Spans(header))
+    if (fgHeaderIsIndexed8Spans(header) || fgHeaderIsIndexed8TemporalResidual(header))
         return 512;
     return 0;
 }
@@ -598,7 +609,8 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
     fgParseHeader(metadata, outHeader);
     if ((!fgHeaderIsPal4Spans(outHeader) &&
          !fgHeaderIsIndexed8Spans(outHeader) &&
-         !fgHeaderIsPal4TemporalResidual(outHeader)) ||
+         !fgHeaderIsPal4TemporalResidual(outHeader) &&
+         !fgHeaderIsIndexed8TemporalResidual(outHeader)) ||
         outHeader->frameCount == 0) {
         free(metadata);
         return 0;
@@ -1518,7 +1530,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;
 
-    if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual) {
+    if (fgRuntimeUsesTemporalResidual()) {
         uint32 payloadEnd = fgRuntimePackPayloadEndBytes();
         uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
         if (payloadEnd > windowStart) {
@@ -1958,6 +1970,12 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
                                                        gFgRuntime.palette,
                                                        entry->x,
                                                        entry->y);
+    } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) {
+        grCompositeIndexed8TemporalResidualToBackground(frameData,
+                                                        entry->dataSize,
+                                                        gFgRuntime.palette,
+                                                        entry->x,
+                                                        entry->y);
     } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
         grCompositeIndexed8SpansToBackground(frameData,
                                              entry->dataSize,
@@ -1985,7 +2003,7 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
 
     if (perfDetail)
         perfTick = ps1PerfTick();
-    if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual)
+    if (fgRuntimeUsesTemporalResidual())
         grBeginResidualCleanBgFrame();
     else
         grRestoreBgFromRects();
@@ -2166,6 +2184,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else if (fgHeaderIsPal4TemporalResidual(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4TemporalResidual;
+            else if (fgHeaderIsIndexed8TemporalResidual(&gFgRuntime.header))
+                gFgRuntime.packFormat = kFgPilotPackFormatIndexed8TemporalResidual;
             else
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
             if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) == 0) {
@@ -2764,7 +2784,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                 perfRenderTick = ps1PerfTick();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
-            if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual) {
+            if (fgRuntimeUsesTemporalResidual()) {
                 if (gFgRuntime.frameRendered)
                     grBeginResidualCleanBgFrame();
                 else

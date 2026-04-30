@@ -234,42 +234,42 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+16.8% over target /
-87.5% target speed**.
+120 timing-bearing battle-card rows, the average is **+16.0% over target /
+87.7% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v39-visitor7high-prime`; earlier follow-up rows use
-`compact-fgp3-v38-activity12high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v40-walkstuf1-indexed8-fgp3`; earlier follow-up rows use
+`compact-fgp3-v39-visitor7high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T09:33:43`; per-row freshness and stats version are shown on
+run is `2026-04-30T10:33:00`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v39-visitor7high-prime`; earlier follow-up rows use
-`compact-fgp3-v38-activity12high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v40-walkstuf1-indexed8-fgp3`; earlier follow-up rows use
+`compact-fgp3-v39-visitor7high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
 |---|---:|---:|
 | `activity1` | +3.1% / 97.0% (4373/4243); blk 1 | +3.1% / 97.0% (4373/4243); blk 1 |
-| `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
-| `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
-| `activity12` | +9.1% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
 | `activity4` | +12.4% / 88.9% (1202/1069) | +12.4% / 88.9% (1202/1069) |
 | `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
 | `activity7` | +21.3% / 82.4% (746/615) | +21.3% / 82.4% (746/615) |
 | `activity8` | +17.3% / 85.3% (1058/902); due 5; blk 21 | +16.4% / 85.9% (1050/902); due 4; blk 12 |
 | `activity9` | +11.0% / 90.1% (2267/2042); due 10; blk 96 | +11.2% / 90.0% (2272/2044); due 8; blk 94 |
-| `building1` | +23.4% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
+| `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
+| `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
+| `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
+| `building1` | +23.3% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
 | `building2` | +20.2% / 83.2% (1559/1297); due 19; blk 150 | +20.1% / 83.3% (1556/1296); due 20; blk 150 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.6% / 91.3% (1571/1434) |
 | `building4` | +12.2% / 89.2% (3128/2789); due 49; blk 355 | +12.1% / 89.2% (3126/2788); due 49; blk 353 |
@@ -285,41 +285,41 @@ rows are historical only.
 | `fishing7` | +18.3% / 84.5% (858/725) | +18.3% / 84.5% (858/725) |
 | `fishing8` | +11.9% / 89.4% (1393/1245); blk 13 | +10.1% / 90.8% (1380/1253) |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
-| `johnny2` | +7.2% / 93.2% (1878/1751) | +7.2% / 93.2% (1878/1751) |
+| `johnny2` | +7.3% / 93.2% (1878/1751) | +7.3% / 93.2% (1878/1751) |
 | `johnny3` | +11.3% / 89.8% (1298/1166) | +11.3% / 89.8% (1298/1166) |
 | `johnny4` | +10.5% / 90.5% (1341/1214) | +11.1% / 90.0% (1349/1214) |
 | `johnny5` | +15.5% / 86.6% (947/820) | +15.5% / 86.6% (947/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
 | `mary1` | +3.7% / 96.4% (5004/4826); due 2; blk 49 | +3.2% / 96.9% (4994/4839); due 1; blk 26 |
 | `mary2` | +1.6% / 98.4% (2284/2247); blk 7 | +1.6% / 98.4% (2285/2249); blk 6 |
-| `mary3` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
+| `mary3` | metadata-only | metadata-only |
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
-| `miscgag1` | +14.2% / 87.6% (1097/961) | +14.1% / 87.7% (1096/961) |
+| `miscgag1` | +14.2% / 87.6% (1097/961) | +14.0% / 87.7% (1096/961) |
 | `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
 | `stand1` | +69.3% / 59.1% (342/202) | +69.3% / 59.1% (342/202) |
-| `stand10` | +25.1% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
-| `stand11` | +25.1% / 79.9% (673/538) | +25.1% / 79.9% (673/538) |
-| `stand12` | +9.1% / 91.7% (1594/1461) | +9.1% / 91.7% (1593/1460) |
-| `stand15` | +13.4% / 88.2% (1123/990) | +13.4% / 88.1% (1122/989) |
-| `stand16` | +11.0% / 90.1% (1322/1191) | +11.1% / 90.0% (1323/1191) |
 | `stand2` | +27.5% / 78.4% (626/491) | +27.5% / 78.4% (626/491) |
 | `stand3` | +24.4% / 80.4% (694/558) | +24.4% / 80.4% (694/558) |
 | `stand4` | +11.3% / 89.8% (1359/1221) | +11.2% / 89.9% (1358/1221) |
 | `stand5` | +9.2% / 91.6% (1595/1461) | +9.1% / 91.7% (1594/1461) |
 | `stand6` | +10.0% / 90.9% (1501/1365) | +9.9% / 91.0% (1500/1365) |
-| `stand7` | +25.1% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
+| `stand7` | +25.0% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
 | `stand8` | +26.9% / 78.8% (636/501) | +27.0% / 78.7% (635/500) |
-| `stand9` | +25.1% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
-| `suzy1` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy2` | -; metadata-only; no active-loop timing; excluded from speed averages | -; metadata-only; no active-loop timing; excluded from speed averages |
+| `stand9` | +25.0% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
+| `stand10` | +25.0% / 80.0% (674/539) | +25.1% / 79.9% (673/538) |
+| `stand11` | +25.1% / 79.9% (673/538) | +25.1% / 79.9% (673/538) |
+| `stand12` | +9.1% / 91.7% (1594/1461) | +9.1% / 91.7% (1593/1460) |
+| `stand15` | +13.4% / 88.2% (1123/990) | +13.4% / 88.1% (1122/989) |
+| `stand16` | +11.0% / 90.1% (1322/1191) | +11.1% / 90.0% (1323/1191) |
+| `suzy1` | metadata-only | metadata-only |
+| `suzy2` | metadata-only | metadata-only |
 | `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
 | `visitor3` | +50.5% / 66.4% (1526/1014); due 23; blk 368 | +51.4% / 66.1% (1547/1022); due 22; blk 332 |
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +144.8% / 40.8% (3320/1356); due 318; blk 1800 | +177.3% / 36.1% (3755/1354); due 328; blk 2195 |
+| `walkstuf1` | +52.0% / 65.8% (2115/1391); due 147; blk 724 | +177.3% / 36.1% (3755/1354); due 328; blk 2195 |
 | `walkstuf2` | +29.6% / 77.2% (596/460); blk 1 | +29.6% / 77.2% (596/460); blk 1 |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
@@ -336,36 +336,32 @@ gfx.upload_bytes  = 8,533,120
 ```
 
 The canary now has no visible CD stall, but the full battle card still has
-CD-heavy scenes (`walkstuf1`, `visitor3`, `building4`, `building6`, `walkstuf3`). The
-next plausible wins, in priority order:
+CD-heavy scenes (`walkstuf1`, `walkstuf3`, `visitor3`, `building4`,
+`building6`). The `FGP3/v2` indexed8 result proves host-side pack
+preprocessing can move a major outlier, but it also leaves enough residual
+pressure to keep the next experiments matrix-aware.
 
-1. **FG2-specific present pipeline with explicit slack budgeting.**
-   Earlier detail counters showed present/wait ownership as a real
-   scheduling surface, but the first attempt at a staged-present
-   scheduler regressed loop time by disrupting CD prefetch. The next
-   design needs separate render-prep and CD-prefetch slack budgets —
-   stealing held-frame prefetch cadence is what the first attempt got
-   wrong.
-2. **CD stall hiding beyond the current direct-stage / window path.**
-   Fishing1 is already at `blocking_vb=0`, but the broader scene matrix
-   still has large blocking counts. Every saved read still compounds.
-3. **X-aware dirty upload and rect-pressure control.** Upload still
-   restores 251 KB and uploads 8.5 MB in the FISHING 1 canary; larger
-   scenes have much more pressure. Getting that down without changing
-   pixels is still a clean win.
-4. **Pack-emitted read groups and sector layout.** Current raw-window
-   reads still leave large blocking counts in non-canary scenes; grouped
-   metadata is the likely next CD breakthrough.
-5. **Specialized PAL4 FG2 compositor.** Fishing frames are modest;
-   larger scenes will make span/tile split and PAL4 conversion overhead
-   more important.
+Next plausible wins, in priority order:
 
-The author considers the current build comfortable for the validated
-scenes, not yet headroom-clean. The canary bottleneck is no longer raw CD
-stall; the matrix bottleneck is uneven per-scene payload/read shape plus
-render/restore pressure. Those are different bugs from the ones the perf
-work was chasing early in the loop, and each new experiment needs to stay
-matrix-aware instead of only optimizing FISHING 1.
+1. **Convert WALKSTUF1 low to indexed8 FGP3 residual.** The high-tide
+   conversion cut loop time by more than a thousand VBlanks; the low-tide
+   sibling is now the obvious same-family test.
+2. **Generated read grouping or setup segmentation for residual indexed8
+   packs.** WALKSTUF1 high still has `blocking_vb=724`, so the format win
+   needs a second CD-shape pass.
+3. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
+   present-prep experiments regressed because they stole CD prefetch slack;
+   the next scheduler needs separate render-prep and CD-prefetch budgets.
+4. **X-aware dirty upload and rect-pressure control.** The FISHING 1 canary
+   still restores 251 KB and uploads 8.5 MB; larger scenes carry more upload
+   pressure.
+5. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
+   bytes, but dense scenes still pay per-span/per-pixel runtime costs.
+
+The author considers the current build comfortable for the validated scenes,
+not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
+matrix bottleneck is uneven per-scene payload/read shape plus render/restore
+pressure.
 
 ## Non-goals
 
@@ -374,7 +370,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +16.8% over target, with several much worse CD-bound
+  average is still +16.0% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

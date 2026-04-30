@@ -2218,6 +2218,56 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
+void grCompositeIndexed8TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                                     const uint16 *palette,
+                                                     sint16 screenX, sint16 screenY)
+{
+    uint32 offset = 0;
+    uint32 restoredBytes = 0;
+    uint16 cleanupRows;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    cleanupRows = grReadPackedSpanU16(spanData);
+    offset = 2;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (offset + 4u > spanDataSize)
+            return;
+        relY = grReadPackedSpanU16(spanData + offset);
+        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+        offset += 4u;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (offset + 4u > spanDataSize)
+                return;
+            relX = grReadPackedSpanU16(spanData + offset);
+            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkRestore(restoredBytes);
+    if (offset < spanDataSize)
+        grCompositeIndexed8SpansToBackground(spanData + offset,
+                                             spanDataSize - offset,
+                                             palette,
+                                             screenX,
+                                             screenY);
+}
+
 /*
  * Set clipping rectangle
  */
