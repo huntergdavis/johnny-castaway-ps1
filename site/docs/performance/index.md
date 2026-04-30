@@ -241,28 +241,20 @@ That is **+12.2% over target**, or **89.1% of target speed**. Across the
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v26-stand1low`, recent follow-up rows include
-`compact-fgp3-v25-johnny4high`, `compact-fgp3-v24-johnny5low`, `compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
-`compact-fgp3-v8-stand6low`,
-`compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
-`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
-`compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v27-miscgag2`; earlier follow-up rows use
+`compact-fgp3-v26-stand1low` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T04:31:22`; per-row freshness and stats version are shown on
+run is `2026-04-30T04:53:44`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v26-stand1low`; recent follow-up rows include
-`compact-fgp3-v25-johnny4high`, `compact-fgp3-v24-johnny5low`, `compact-fgp3-v23-johnny5high`, `compact-fgp3-v22-fishing7low`, `compact-fgp3-v21-stand10low`, `compact-fgp3-v20-stand9low`, `compact-fgp3-v19-stand8low`, `compact-fgp3-v18-stand1high`, `compact-fgp3-v17-visitor4low`, `compact-fgp3-v16-stand7low`, `compact-fgp3-v15-stand11low`, `compact-fgp3-v14-visitor7low`, `compact-fgp3-v13-stand15low`, `compact-fgp3-v12-stand16low`, `compact-fgp3-v11-stand2low`, `compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
-`compact-fgp3-v8-stand6low`,
-`compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
-`compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
-`compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v27-miscgag2`; earlier follow-up rows use
+`compact-fgp3-v26-stand1low` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -304,7 +296,7 @@ rows are historical only.
 | `mary4` | +-2.4% / 102.4% (1968/2016); due 3; blk 28 | +-2.6% / 102.7% (1966/2019); due 3; blk 24 |
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
 | `miscgag1` | +15.5% / 86.6% (1105/957); blk 13 | +14.8% / 87.1% (1101/959); blk 7 |
-| `miscgag2` | +0.1% / 99.9% (1356/1355) | +0.1% / 99.9% (1356/1355) |
+| `miscgag2` | -0.3% / 100.3% (1350/1354) | -0.4% / 100.4% (1350/1355) |
 | `stand1` | +69.0% / 59.2% (343/203) | +69.0% / 59.2% (343/203) |
 | `stand10` | +25.5% / 79.7% (674/537); blk 2 | +25.1% / 79.9% (673/538) |
 | `stand11` | +25.7% / 79.6% (675/537); blk 3 | +25.1% / 79.9% (673/538) |

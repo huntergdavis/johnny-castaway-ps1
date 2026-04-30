@@ -49,10 +49,10 @@ read group `396..406` with 11-sector retained capacity, reported
 `policy=stage1_window`, `buf=333656`, `hits=155`, `due_misses=0`,
 `blocking_vb=0`, `prefetch.overrun_vb=0`, `loop_vb=1207`,
 `overrun_vb=131`, `target_vb=1076`, `restore_bytes=251144`,
-`upload_bytes=6690560`, `dirty_rows=10454`, `upload_rects=290`, `trip=0`,
+`upload_bytes=8533120`, `dirty_rows=13333`, `upload_rects=436`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=41`,
-`setup_read_vb=169`, `loop_reads=6`, `loop_read_vb=26`, and `scene_vb=1447`.
+The same run also reports `setup_reads=6`, `pack_start_vb=129`,
+`setup_read_vb=173`, `loop_reads=6`, `loop_read_vb=29`, and `scene_vb=1490`.
 This is the current baseline for the next experiment. The accepted FGP3
 temporal-residual pack intentionally changes layout (`FISHING1.FG2 LBA
 396 -> 397`, PS-EXE `143360 -> 145408`) while cutting high-tide pack bytes
@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+17.0%` over target /
-`87.3%` target speed. The remaining optimization target is therefore
+`87.3%` target speed as of `compact-fgp3-v27-miscgag2`. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1378,6 +1378,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-227` | Done: convert JOHNNY4 high to compact FGP3. | The paired JOHNNY4 conversion proved low-tide plain FGP3 would add one visible refill VBlank, so only `JOHNNY4.FG2` was promoted while `JOHN4LOW.FG2` stayed FGP2. High tide improves `loop_vb 1349 -> 1342`, `overrun_vb 136 -> 128`, `loop_reads 27 -> 12`, and `loop_read_vb 125 -> 50`, while keeping `blocking_vb/prefetch_overrun_vb=1` and shrinking the high pack `369195 -> 173803` bytes. The dependent low-tide route was rerun under the shifted layout and stayed flat (`1349/1214`, zero pressure). FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v25-johnny4high`; exact timing-bearing average is down to `17.0042%` over target / `87.2956%` target speed. |
 | `P5-228` | Failed: retry plain compact FGP3 for STAND3 low. | STAND3 low had a strong host residual ratio and the stand-family pattern had often promoted cleanly, but this specific row starts from zero visible pressure. Compact FGP3 improves `loop_vb 697 -> 693`, `overrun_vb 140 -> 137`, `loop_reads 11 -> 3`, and `loop_read_vb 64 -> 12`, while shrinking the pack `168834 -> 48775`, but it introduces visible refill pressure (`blocking_vb/prefetch_overrun_vb 0 -> 1`). The FGP2 pack was restored. Retry only with generated group/setup coverage that keeps zero-pressure rows zero. |
 | `P5-229` | Done: convert STAND1 low to compact FGP3. | STAND1 low was a small zero-pressure row, so the acceptance bar required pressure to stay zero. Converting `STND1LOW.FG2` to compact FGP3 improves `loop_vb 347 -> 343`, `overrun_vb 144 -> 140`, `loop_reads 4 -> 1`, and `loop_read_vb 20 -> 5`, while preserving zero `blocking_vb` / `prefetch_overrun_vb` and shrinking the pack `69358 -> 19187` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v26-stand1low`; exact timing-bearing average is down to `16.9877%` over target / `87.3013%` target speed. |
+| `P5-230` | Done: convert MISCGAG2 high/low to compact FGP3. | The paired MISCGAG2 packs were byte-identical FGP2 rows with strong residual savings and near-target timing. Converting both to compact FGP3 improves high tide `loop_vb 1358 -> 1350`, `overrun_vb 4 -> 0`, `blocking_vb 1 -> 0`, `prefetch_overrun_vb 2 -> 0`, `loop_reads 36 -> 16`, and `loop_read_vb 168 -> 91`; low tide improves `loop_vb 1356 -> 1350`, `overrun_vb 1 -> 0`, `loop_reads 36 -> 16`, and `loop_read_vb 164 -> 74` while preserving zero visible pressure. Both packs shrink `394112 -> 226762` bytes. The low-tide LBA shifts `51762 -> 51680` because the high-tide pack shrank in front of it, so the acceptance run used `--allow-layout-change`; FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v27-miscgag2`; exact timing-bearing average is down to `16.9810%` over target / `87.3085%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 
