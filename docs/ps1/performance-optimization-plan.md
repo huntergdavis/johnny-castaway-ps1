@@ -160,8 +160,8 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-04-29 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+17.3%` over target /
-`87.1%` target speed. The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+17.2%` over target /
+`87.2%` target speed. The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1357,6 +1357,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-206` | Done: convert STAND6 low to compact FGP3. | STAND6 low still had visible CD/refill pressure and a strong residual ratio. Converting `STND6LOW.FG2` to compact FGP3 improves `loop_vb 1505 -> 1500`, `overrun_vb 146 -> 138`, `blocking_vb/prefetch_overrun_vb 8 -> 3`, `loop_reads 36 -> 10`, and `loop_read_vb 191 -> 46`, while shrinking the pack `515866 -> 152213` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v8-stand6low`. |
 | `P5-207` | Done: convert STAND2 high to compact FGP3. | STAND2 high had visible CD/refill pressure and a strong residual ratio. Converting `STAND2.FG2` to compact FGP3 improves `loop_vb 633 -> 625`, `overrun_vb 148 -> 135`, `blocking_vb/prefetch_overrun_vb 10 -> 0`, `loop_reads 24 -> 6`, and `loop_read_vb 140 -> 31`, while shrinking the pack `330657 -> 93181` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v9-stand2high`. |
 | `P5-208` | Done: convert VISITOR1 low to compact FGP3. | VISITOR1 low still had visible CD/refill pressure after high tide had already moved to FGP3. Converting `VIST1LOW.FG2` to compact FGP3 improves `loop_vb 809 -> 798`, `overrun_vb 138 -> 124`, `blocking_vb/prefetch_overrun_vb 15 -> 7`, `loop_reads 38 -> 19`, and `loop_read_vb 189 -> 99`, while shrinking the pack `479873 -> 248441` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v10-visitor1low`. |
+| `P5-209` | Done: convert STAND2 low to compact FGP3. | STAND2 low still had visible CD/refill pressure and a strong residual ratio after the high-tide pair promoted. Converting `STND2LOW.FG2` to compact FGP3 improves `loop_vb 632 -> 625`, `overrun_vb 147 -> 135`, `blocking_vb/prefetch_overrun_vb 8 -> 0`, `loop_reads 9 -> 3`, and `loop_read_vb 50 -> 13`, while shrinking the pack `140295 -> 50081` bytes. FISHING1 high stayed exact-flat. Latest battle-card rows now use `compact-fgp3-v11-stand2low`; exact timing-bearing average is down to `17.2014%` over target / `87.1794%` target speed. |
 
 ## Failed Experiment Triage After P5-90
 

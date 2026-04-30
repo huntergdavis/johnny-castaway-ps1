@@ -234,15 +234,16 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+17.3% over target /
-87.1% target speed**.
+120 timing-bearing battle-card rows, the average is **+17.2% over target /
+87.2% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-29, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v10-visitor1low`, recent follow-up rows include
-`compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`,
+`compact-fgp3-v11-stand2low`, recent follow-up rows include
+`compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+`compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
 `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
@@ -250,14 +251,15 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-29T21:26:07`; per-row freshness and stats version are shown on
+run is `2026-04-29T21:33:35`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v10-visitor1low`; recent follow-up rows include
-`compact-fgp3-v9-stand2high`, `compact-fgp3-v8-stand6low`,
+rows now use `compact-fgp3-v11-stand2low`; recent follow-up rows include
+`compact-fgp3-v10-visitor1low`, `compact-fgp3-v9-stand2high`,
+`compact-fgp3-v8-stand6low`,
 `compact-fgp3-v7-stand4low`, `compact-fgp3-v6-stand5low`,
 `compact-fgp3-v5-visitor4high`, `compact-fgp3-v4-visitor6low`, and
 `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
@@ -309,7 +311,7 @@ rows are historical only.
 | `stand12` | +10.1% / 90.9% (1599/1453); blk 12 | +9.3% / 91.5% (1595/1459); blk 3 |
 | `stand15` | +14.3% / 87.5% (1127/986); blk 7 | +14.9% / 87.0% (1135/988); blk 11 |
 | `stand16` | +11.7% / 89.5% (1327/1188); blk 8 | +12.1% / 89.2% (1333/1189); due 1; blk 13 |
-| `stand2` | +27.6% / 78.4% (625/490) | +30.3% / 76.7% (632/485); blk 8 |
+| `stand2` | +27.6% / 78.4% (625/490) | +27.6% / 78.4% (625/490) |
 | `stand3` | +24.4% / 80.4% (693/557) | +25.1% / 79.9% (697/557) |
 | `stand4` | +11.8% / 89.4% (1361/1217); blk 7 | +11.9% / 89.3% (1361/1216); blk 7 |
 | `stand5` | +9.2% / 91.5% (1595/1460); blk 2 | +9.4% / 91.4% (1595/1458); blk 4 |
@@ -380,7 +382,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +17.3% over target, with several much worse CD-bound
+  average is still +17.2% over target, with several much worse CD-bound
   outliers; compressing the timing files would expose the same throughput
   bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
