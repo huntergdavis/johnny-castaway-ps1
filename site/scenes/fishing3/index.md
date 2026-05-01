@@ -4,19 +4,19 @@ title: FISHING 3 — An octopus interlude
 ads: FISHING
 tag: 3
 slug: fishing3
-status: in-bringup
-description: "FISHING.ADS scene 3: An octopus interlude. In bring-up — loop-stable, not yet signed off."
+status: validated
+description: "FISHING.ADS scene 3: An octopus interlude. Validated under the FISHING 1 bar."
 ---
 
 ## What happens
 
 Johnny fishes; an octopus comes up out of the water and wraps a tentacle around him. There's a brief struggle, and then the octopus disappears back under and Johnny goes back to fishing as if nothing happened.
 
-Currently in bring-up. The loop holds together — frames don't drop, the tide-state variant draws the right water line — but it has not yet been signed off as fishing-1-bar-equivalent. Likely the next scene to graduate.
+Third scene to clear the FISHING 1 bar. The loop holds together, the tide-state variant draws the right water line, and the octopus sequence was visually and audibly signed off on PS1/DuckStation on 2026-05-01.
 
-## In bring-up
+## Validation
 
-What's working: the FG2 pack loops cleanly and the tide-state variant draws the right shoreline. What's not: this scene has not yet been signed off as fishing-1-bar-equivalent. Specifically, the SFX-cue diff and the night/holiday/raft-stage cross-product are still pending review.
+This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) — pixel-perfect visuals plus synced SFX across every applicable variant.
 
 ## Pack identifiers
 

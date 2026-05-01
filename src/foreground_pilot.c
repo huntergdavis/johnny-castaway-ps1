@@ -134,6 +134,8 @@ struct TFgPilotRuntime {
 };
 
 static char gForegroundPilotScene[16] = "";
+static sint16 gFgSceneDrawOffsetX = 0;
+static sint16 gFgSceneDrawOffsetY = 0;
 #ifndef FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 #define FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES 0
 #endif
@@ -485,8 +487,8 @@ static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
         return;
 
     for (i = 0; i < table->count; i++) {
-        table->entries[i].x = (sint16)(table->entries[i].x + islandState.xPos);
-        table->entries[i].y = (sint16)(table->entries[i].y + islandState.yPos);
+        table->entries[i].x = (sint16)(table->entries[i].x + gFgSceneDrawOffsetX);
+        table->entries[i].y = (sint16)(table->entries[i].y + gFgSceneDrawOffsetY);
     }
     header->reserved0 = (uint16)(header->reserved0 & ~kFgPilotHeaderFlagSceneRelative);
 }
@@ -3243,6 +3245,12 @@ void foregroundPilotSetScene(const char *sceneName)
     gForegroundPilotScene[i] = '\0';
 }
 
+void foregroundPilotSetSceneDrawOffset(int x, int y)
+{
+    gFgSceneDrawOffsetX = (sint16)x;
+    gFgSceneDrawOffsetY = (sint16)y;
+}
+
 void foregroundPilotSetHeapProbe(int enabled)
 {
 #if FG_HEAP_PROBE_LOGS
@@ -3326,6 +3334,12 @@ void foregroundPilotSetScene(const char *sceneName)
     }
     strncpy(gForegroundPilotScene, sceneName, sizeof(gForegroundPilotScene) - 1);
     gForegroundPilotScene[sizeof(gForegroundPilotScene) - 1] = '\0';
+}
+
+void foregroundPilotSetSceneDrawOffset(int x, int y)
+{
+    (void)x;
+    (void)y;
 }
 
 void foregroundPilotSetHeapProbe(int enabled)

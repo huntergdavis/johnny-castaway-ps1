@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 2 / 63 (next: fishing3)
+## Progress: 4 / 63 (next: fishing5)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.3.9-ps1`.
+current public release is `v0.6.1-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -39,9 +39,9 @@ current public release is `v0.3.9-ps1`.
 | BUILDING | 7 | building7 | ⏳ | ⏳ | — | — |  |
 | FISHING | 1 | fishing1 | ✅ | ✅ | night · low-tide · holiday · raft-stage | v0.3.6-ps1 | reference scene; template for remaining |
 | FISHING | 2 | fishing2 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-04-23 |  |
-| FISHING | 3 | fishing3 | ⏳ | ⏳ | night · low-tide · holiday · raft-stage | — | **NEXT**; loop-stable and tide-correct on FG2, not yet signed off |
-| FISHING | 4 | fishing4 | ⏳ | ⏳ | — | — |  |
-| FISHING | 5 | fishing5 | ⏳ | ⏳ | — | — |  |
+| FISHING | 3 | fishing3 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline |
+| FISHING | 4 | fishing4 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix |
+| FISHING | 5 | fishing5 | ⏳ | ⏳ | — | — | **NEXT** |
 | FISHING | 6 | fishing6 | ⏳ | ⏳ | — | — | blocked in regtest |
 | FISHING | 7 | fishing7 | ⏳ | ⏳ | — | — |  |
 | FISHING | 8 | fishing8 | ⏳ | ⏳ | — | — |  |

@@ -2,6 +2,7 @@
 #define FOREGROUND_PILOT_H
 
 void foregroundPilotSetScene(const char *sceneName);
+void foregroundPilotSetSceneDrawOffset(int x, int y);
 void foregroundPilotSetHeapProbe(int enabled);
 void foregroundPilotResetPrefetchDefaults(void);
 void foregroundPilotSetPrefetchStage1(int enabled);

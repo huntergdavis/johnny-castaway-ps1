@@ -414,6 +414,11 @@ static int fgLoopSceneMatchesPrefixNumber(const char *sceneName,
 
 static int fgLoopSceneUsesVarPos(const char *sceneName)
 {
+#ifdef PS1_BUILD
+    const struct TStoryScene *scene = fgLoopFindStorySceneBySlug(sceneName);
+    if (scene != NULL)
+        return (scene->flags & VARPOS_OK) != 0;
+#endif
     return fgLoopSceneMatchesPrefixNumber(sceneName, "activity") ||
            fgLoopSceneMatchesPrefixNumber(sceneName, "building") ||
            fgLoopSceneMatchesPrefixNumber(sceneName, "fishing") ||
@@ -424,6 +429,17 @@ static int fgLoopSceneUsesVarPos(const char *sceneName)
            fgLoopSceneMatchesPrefixNumber(sceneName, "suzy") ||
            fgLoopSceneMatchesPrefixNumber(sceneName, "visitor") ||
            fgLoopSceneMatchesPrefixNumber(sceneName, "walkstuf");
+}
+
+static int fgLoopSceneUsesLeftIsland(const char *sceneName)
+{
+#ifdef PS1_BUILD
+    const struct TStoryScene *scene = fgLoopFindStorySceneBySlug(sceneName);
+    return (scene != NULL && (scene->flags & LEFT_ISLAND) != 0) ? 1 : 0;
+#else
+    (void)sceneName;
+    return 0;
+#endif
 }
 
 static void fgLoopRandomVarPos(int *outX, int *outY)
@@ -497,6 +513,9 @@ static void fgLoopApplyVariant(const char *sceneName)
         seqRaft    = (rand() % 6);
         if (fgLoopSceneUsesVarPos(sceneName)) {
             fgLoopRandomVarPos(&seqXPos, &seqYPos);
+        } else if (fgLoopSceneUsesLeftIsland(sceneName)) {
+            seqXPos = -272;
+            seqYPos = 0;
         } else {
             seqXPos = 0;
             seqYPos = 0;
@@ -535,7 +554,8 @@ static void fgLoopApplyVariant(const char *sceneName)
     if (hostForcedIslandPosValid) {
         islandState.xPos = hostForcedIslandX;
         islandState.yPos = hostForcedIslandY;
-    } else if (fgLoopSceneUsesVarPos(sceneName)) {
+    } else if (fgLoopSceneUsesVarPos(sceneName) ||
+               fgLoopSceneUsesLeftIsland(sceneName)) {
         islandState.xPos = seqXPos;
         islandState.yPos = seqYPos;
     } else {
@@ -1535,6 +1555,9 @@ int main(int argc, char **argv)
          * scene's FG2 pack still owns the actual scene visuals. */
         const struct TStoryScene *storyScene =
             fgLoopFindStorySceneBySlug(loopScene);
+        foregroundPilotSetSceneDrawOffset(
+            islandState.xPos + ((storyScene && (storyScene->flags & LEFT_ISLAND)) ? 272 : 0),
+            islandState.yPos);
         int playedScene = 0;
         /* Story-day filter: scenes with non-zero dayNo only fire on
          * the matching day. None of the currently-validated scenes
