@@ -2599,7 +2599,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             gFgRuntime.mode = FG_RUNTIME_SCENE_PACK;
             strncpy(gFgRuntime.sceneName, sceneName, sizeof(gFgRuntime.sceneName) - 1);
             gFgRuntime.displayVBlanks = 1;
-            gFgRuntime.holdFrames = 150;
+            gFgRuntime.holdFrames = 0;
             gFgRuntime.sceneClockTick = fgReadTickCounter();
             {
                 uint32 perfFirstFrameTick = 0;
@@ -2737,17 +2737,6 @@ void foregroundPilotRuntimeAdvance(void)
     if (gFgRuntime.mode == FG_RUNTIME_SCENE_PACK) {
         uint16 frameHoldVBlanks = gFgRuntime.displayVBlanks;
 
-        if (gFgRuntime.frameIndex + 1 >= gFgRuntime.header.frameCount) {
-            if (gFgRuntime.holdFrames > elapsedVBlanks)
-                gFgRuntime.holdFrames = (uint16)(gFgRuntime.holdFrames - elapsedVBlanks);
-            else
-                gFgRuntime.holdFrames = 0;
-            if (gFgRuntime.holdFrames == 0)
-                gFgRuntime.active = 0;
-            fgTelemetryUpdate();
-            return;
-        }
-
         gFgRuntime.frameVBlank = (uint16)(gFgRuntime.frameVBlank + elapsedVBlanks);
         if (gFgRuntime.frameVBlank < frameHoldVBlanks) {
             gFgRuntime.displayVBlanks = frameHoldVBlanks;
@@ -2765,6 +2754,12 @@ void foregroundPilotRuntimeAdvance(void)
                 presentedAdvance = (uint16)(frameHoldVBlanks + 1);
             gFgRuntime.presentedVBlanks = (uint16)(gFgRuntime.presentedVBlanks +
                                                    presentedAdvance);
+        }
+        if (gFgRuntime.frameIndex + 1 >= gFgRuntime.header.frameCount) {
+            gFgRuntime.frameVBlank = 0;
+            gFgRuntime.active = 0;
+            fgTelemetryUpdate();
+            return;
         }
         gFgRuntime.frameVBlank = 0;
         gFgRuntime.frameIndex++;

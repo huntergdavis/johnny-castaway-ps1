@@ -6,10 +6,10 @@ Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1207` |
+| `loop_vb` | `1067` |
 | `target_vb` | `1074` |
-| `remaining_overrun_vb` | `133` |
-| `remaining_over_target` | `12.38%` |
+| `remaining_overrun_vb` | `0` |
+| `remaining_over_target` | `-0.65%` |
 | `blocking_vb` | `2` |
 | `prefetch_overrun_vb` | `2` |
 | `loop_reads` | `20` |
@@ -17,13 +17,13 @@ Current accepted fishing1 high-tide canary baseline:
 | `restore_bytes` | `251144` |
 | `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
 | `jcreborn.exe` | `169984` bytes |
-| `jcreborn.elf` | `796300` bytes |
+| `jcreborn.elf` | `796312` bytes |
 
-Goal: close `133` remaining loop VBlanks without changing pixels, sound event
-timing, scene identity, or long-run heap stability. A 1% win at the current
-baseline is about `12` VBlanks, so the practical target is roughly twelve to
-fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
-stack of flat-timing cleanup wins.
+Goal: keep the FISHING1 canary at or under target while reducing the remaining
+matrix-wide gaps without changing pixels, sound event timing, scene identity,
+or long-run heap stability. The current all-scene battle card is `13.8440%`
+over target / `88.6688%` target speed across `120` timing-bearing rows. The
+largest remaining absolute gaps are now WALKSTUF1 and VISITOR3, not FISHING1.
 
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
@@ -68,9 +68,13 @@ and spend more catch-up. Future work should hide these primes during
 inter-scene/loading time or generate scene/tide-specific segmented coverage,
 rather than treating setup time as free.
 
-Current note: the fishing1 high-tide tail read group `396..406` is accepted as
-a work-reduction checkpoint, not a VBlank speed win. It kept that era's
-remaining VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
+Current note: the final-frame-hold correction is the new broad timing baseline.
+It removes the artificial post-final `150` VBlank scene-pack tail while still
+displaying the captured final frame for its own hold. The refreshed 11-case
+canary set saves `1455` active-loop VBlanks total and moves FISHING1 high under
+target (`1207/1074 -> 1067/1074`). The older fishing1 high-tide tail read group
+`396..406` remains a work-reduction checkpoint, not a VBlank speed win. It kept
+that era's remaining VBlank gap unchanged while dropping `loop_reads 68 -> 67`,
 `setloc 74 -> 73`, `loop_read_vb 284 -> 283`, and `seek_back 5 -> 4`; the
 follow-up retained-capacity pass kept that saved read while reducing the
 runtime prefetch buffer `31760 -> 29712` bytes. The first two narrow cold-TU
@@ -532,12 +536,12 @@ hot `-O3` attempts expanded executable layout, moved FG2 placement, and raised
 visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
-The current speed binary reports a remaining `133` VBlank FISHING1 high-tide
-active-loop overrun with only `2` visible CD/refill VBlanks. Historical
-detail/trace builds showed large present-wait ownership, but those counters
-are not compiled into the accepted speed binary. The next major win still has
-to reduce or hide present/render/upload cost and move setup/preload work out
-of visible scene startup without early display, tearing, frame drops, or
+The current speed binary reports FISHING1 high under target with only `2`
+visible CD/refill VBlanks. Historical detail/trace builds showed large
+present-wait ownership, but those counters are not compiled into the accepted
+speed binary. The next major win now needs to reduce the matrix-wide offenders:
+WALKSTUF1/VISITOR3 CD ownership, BUILDING-family residual gaps, and zero-CD
+fixed-overhead rows. Do this without early display, tearing, frame drops, or
 weakened pause input.
 
 | # | Target | Test Shape | Expected Signal |

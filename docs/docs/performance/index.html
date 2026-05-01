@@ -300,10 +300,10 @@ boot tokens still enable them on demand.</li>
 </ul>
 
 <p>The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1207</code> against a target of
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1067</code> against a target of
 <code class="language-plaintext highlighter-rouge">target_vb=1074</code>. The original headless perf-loop baseline was
-<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">219</code> VBlanks
-(<code class="language-plaintext highlighter-rouge">15.36%</code> loop reduction).</p>
+<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">359</code> VBlanks
+(<code class="language-plaintext highlighter-rouge">25.18%</code> loop reduction).</p>
 
 <h2 id="where-it-sits-at-v0420-ps1">Where it sits at v0.4.20-ps1</h2>
 
@@ -315,8 +315,8 @@ hits   = 155
 due_misses = 0
 blocking_vb = 2
 prefetch.overrun_vb = 2
-loop_vb = 1207
-overrun_vb = 133
+loop_vb = 1067
+overrun_vb = 0
 target_vb = 1074
 restore_bytes = 251,144
 upload_bytes  = 8,643,840
@@ -326,15 +326,15 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>+12.4% over target</strong>, or <strong>89.0% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+14.6% over target /
-88.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">14.5886%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.1348%</code> exact target speed).</p>
+<p>That is <strong>-0.7% over target</strong>, or <strong>100.7% of target speed</strong>. Across the
+120 timing-bearing battle-card rows, the average is <strong>+13.8% over target /
+88.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">13.8440%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.6688%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v65-building4low-window36</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
 <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
@@ -347,13 +347,13 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-01T06:14:57</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-01T07:57:42</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v65-building4low-window36</code>,
+rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
 <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
@@ -440,8 +440,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td style="text-align: right">+10.0% / 90.9% (3071/2792); due 34; blk 234</td>
-      <td style="text-align: right">+9.7% / 91.2% (3068/2797); due 2; blk 96</td>
+      <td style="text-align: right">+4.9% / 95.4% (2928/2792); due 34; blk 234</td>
+      <td style="text-align: right">+4.6% / 95.6% (2925/2797); due 2; blk 96</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building5</code></td>
@@ -450,8 +450,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
-      <td style="text-align: right">+10.7% / 90.4% (2692/2433); due 33; blk 223</td>
-      <td style="text-align: right">+10.6% / 90.4% (2695/2436); due 33; blk 217</td>
+      <td style="text-align: right">+5.3% / 95.0% (2561/2433); due 33; blk 223</td>
+      <td style="text-align: right">+5.3% / 95.0% (2564/2436); due 33; blk 217</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
@@ -460,7 +460,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
-      <td style="text-align: right">+12.4% / 89.0% (1207/1074); blk 2</td>
+      <td style="text-align: right">-0.7% / 100.7% (1067/1074); blk 2</td>
       <td style="text-align: right">+12.2% / 89.1% (1207/1076)</td>
     </tr>
     <tr>
@@ -470,8 +470,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
-      <td style="text-align: right">+7.4% / 93.1% (2096/1952); due 1; blk 18</td>
-      <td style="text-align: right">+7.1% / 93.4% (2092/1954); blk 6</td>
+      <td style="text-align: right">+0.4% / 99.6% (1960/1952); due 1; blk 18</td>
+      <td style="text-align: right">+0.1% / 99.9% (1956/1954); blk 6</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
@@ -650,8 +650,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
-      <td style="text-align: right">+48.6% / 67.3% (1496/1007); due 24; blk 345</td>
-      <td style="text-align: right">+50.9% / 66.3% (1532/1015); due 22; blk 314</td>
+      <td style="text-align: right">+40.5% / 71.2% (1416/1008); due 26; blk 356</td>
+      <td style="text-align: right">+37.2% / 72.9% (1393/1015); due 22; blk 314</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
@@ -675,8 +675,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
-      <td style="text-align: right">+39.3% / 71.8% (1971/1415); due 23; blk 423</td>
-      <td style="text-align: right">+40.0% / 71.5% (1958/1399); due 34; blk 452</td>
+      <td style="text-align: right">+29.5% / 77.2% (1833/1415); due 23; blk 423</td>
+      <td style="text-align: right">+30.1% / 76.9% (1820/1399); due 34; blk 452</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
