@@ -546,7 +546,7 @@ input.
 | 89 | Compose | Test LUT-per-palette direct two-pixel writes in generated code. | Runtime LUT attempt was not enough. | Compose detail improves with no branch growth. |
 | 90 | Compose | Test row-level span coalescing at pack time. | PAL4 four-pixel unroll was no-op alone. | Fewer commands/spans or lower compose detail. |
 | 91 | Toolchain | Test `-O2` on every currently `-Os` source file before more `-Os` shrinking. | Speed beats shrink if the map/layout gate passes; accepted `-Os` wins should be revalidated now that phase and pack formats changed. | Free performance if loop/setup/render counters improve; otherwise log exact-flat/no-promotion and keep current `-Os`. |
-| 92 | Toolchain | In progress: confirm graphics whole-TU `-O2` is already active, then test scoped `-O2` on graphics helpers that are currently forced to `-Os`. | `grDrawBackground()` scoped `-O2` was rejected because it stayed exact-flat but grew the helper by `504` bytes. Continue the same one-helper-at-a-time gate with `grUpdateDisplay()`. | Free performance if render counters improve; otherwise log exact-flat/no-promotion and keep current scoped `-Os`. |
+| 92 | Toolchain | Done/no promotion: confirm graphics whole-TU `-O2` is already active, then test scoped `-O2` on graphics helpers that are currently forced to `-Os`. | `grDrawBackground()` and `grUpdateDisplay()` scoped `-O2` both stayed exact-flat while growing code. Keep the scoped `-Os` attributes. | Searchable no-promotion evidence is recorded; continue the `-O2` sweep on hot/semi-hot `-Os` translation units. |
 | 93 | Toolchain | Do not retry whole-TU `-O3` on `foreground_pilot.c`; only test function-scoped/generated shapes with map padding. | Prior foreground `-O3` grew `foregroundPilotPlay` by about `5 KB`, moved pack layout, and did not improve key timing. | Accepted only if loop improves without CD pressure and hot symbol growth is explained. |
 | 94 | Toolchain | Do not retry whole-TU `-O3` on `cdrom_ps1.c`; use helper-scoped `-O2`/`-Os`, generated read metadata, or assembly only under map/layout gates. | CD helper `-O3` grew the executable and worsened visible CD pressure; the feasibility note supports narrower targets, not broad flags. | `loop_read_vb` or helper size improves without layout/cadence regression. |
 | 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Done: exact-flat timing/work with PS-EXE `149504 -> 145408` and ELF `739900 -> 727716`. | Keep as a size/code-shape win; do not count as VBlank speed. |
@@ -564,8 +564,8 @@ near misses:
 | Order | Test # | Reason |
 |---:|---:|---|
 | 1 | 78 | Done: `scripts/ps1-o2-audit.py` emits the current `-O2` candidate queue and map/symbol evidence. Re-run it after each build-system or optimization-flag change. |
-| 2 | 92 | Continue the graphics scoped-helper `-O2` probe with `grUpdateDisplay()`; `grDrawBackground()` default `-O2` was measured and rejected. |
-| 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code. |
+| 2 | 92 | Done/no promotion: both scoped graphics helper `-O2` probes were measured and rejected. |
+| 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code; start with `foreground_pilot.c`. |
 | 4 | 79 | Test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
 | 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
 | 6 | 85 | Test scratchpad palette in compose after the C compose path has a measured baseline. |
@@ -636,6 +636,7 @@ near misses:
 | Foreground pilot TU `-O3` | Do not retry as a whole-TU flag; it grew `foregroundPilotPlay` by about `5 KB`, moved the foreground pack three LBAs, and produced no key speed gain. |
 | Graphics whole-TU `-O3` | Do not retry; `grDrawBackground`/restore code grew and cadence regressed to `blocking_vb=11`. |
 | `grDrawBackground()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `504` bytes and the ELF grew by `568` bytes. |
+| `grUpdateDisplay()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `40` bytes and the ELF grew by `168` bytes. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
 | Perf TU `-O3` | Do not retry as a whole-TU flag; it bloated `ps1PerfMarkCdReadDetailed` and regressed the exact gate. |
 | Perf TU `-Os` | Do not promote just for ELF shrink; it left `jcreborn.exe` flat and grew hot perf functions. |
