@@ -173,6 +173,12 @@ A VISITOR3-only `192 KiB` setup-prime cap is rejected. High tide traded lower
 blocking for worse loop/refill, and low tide regressed across all key metrics.
 Do not retry larger contiguous setup residency for VISITOR3; any preload work
 there needs segmented/costed ownership rather than a bigger startup window.
+BUILDING2 low is the next accepted setup-prime proof point. A shared high/low
+`128 KiB` window failed because high tide regressed, but narrowing the policy
+to low tide only improves `loop_vb 1559 -> 1542`, `overrun_vb 262 -> 252`,
+`blocking_vb 150 -> 139`, and `prefetch_overrun_vb 44 -> 32` while high tide
+stays exact-flat. Continue BUILDING-family work as per-tide policy, not broad
+scene-family defaults.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload

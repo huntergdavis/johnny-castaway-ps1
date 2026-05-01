@@ -242,12 +242,13 @@ sound_late = 0   cd_fail = 0
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+14.6% over target /
-88.1% target speed** (`14.6068%` exact over target / `88.1213%` exact target speed).
+88.1% target speed** (`14.6030%` exact over target / `88.1239%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`compact-fgp3-v63-building2low-prime` and
 `indexed8-row-local-dirty-v1`; other refreshed rows include
 `compact-fgp3-v62-fishing3low-group253-265`,
 `compact-fgp3-v61-fishing3low-group163-175`,
@@ -258,13 +259,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-05-01T03:43:20`; per-row freshness and stats version are shown on
+run is `2026-05-01T04:38:50`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `indexed8-row-local-dirty-v1`; other refreshed rows include
+rows now use `compact-fgp3-v63-building2low-prime` and
+`indexed8-row-local-dirty-v1`; other refreshed rows include
 `compact-fgp3-v62-fishing3low-group253-265`,
 `compact-fgp3-v61-fishing3low-group163-175`,
 `compact-fgp3-v60-visitor3high-group230-242`,
@@ -285,7 +287,7 @@ rows are historical only.
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
 | `building1` | +23.3% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
-| `building2` | +20.2% / 83.2% (1559/1297); due 19; blk 150 | +20.1% / 83.3% (1556/1296); due 20; blk 150 |
+| `building2` | +20.3% / 83.1% (1560/1297); due 21; blk 156 | +19.5% / 83.7% (1542/1290); due 20; blk 139 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
 | `building4` | +10.0% / 90.9% (3073/2793); due 34; blk 240 | +10.2% / 90.7% (3080/2795); due 18; blk 168 |
 | `building5` | +5.0% / 95.2% (3504/3336); due 6; blk 52 | +4.5% / 95.7% (3498/3348); due 2; blk 16 |

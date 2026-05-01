@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-01:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.6%` (`14.6068%` exact) |
-| Timing-bearing average target speed | `88.1%` (`88.1213%` exact) |
-| Latest perf matrix run | `2026-05-01T03:43:20` |
-| Stats version | mixed: latest refreshed rows use `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.6%` (`14.6030%` exact) |
+| Timing-bearing average target speed | `88.1%` (`88.1239%` exact) |
+| Latest perf matrix run | `2026-05-01T04:38:50` |
+| Stats version | mixed: latest refreshed rows use `compact-fgp3-v63-building2low-prime` and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1074 VBlanks`, `+12.4%`, `89.0% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -144,7 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `indexed8-row-local-dirty-v1`; other refreshed rows
+  refreshed rows use `compact-fgp3-v63-building2low-prime` and
+  `indexed8-row-local-dirty-v1`; other refreshed rows
   include `compact-fgp3-v62-fishing3low-group253-265`,
   `compact-fgp3-v61-fishing3low-group163-175`,
   `compact-fgp3-v60-visitor3high-group230-242`,
@@ -180,8 +181,8 @@ and this page.
 | `activity12` | low | measured | 2026-04-29T17:08:49 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 1543/1411 | 8 | 4 | 1 |  |
 | `building1` | high | measured | 2026-04-29T17:09:55 | compact-fgp3-v2-fullmatrix | +23.3% | 81.1% | 951/771 | 63 | 25 | 8 |  |
 | `building1` | low | measured | 2026-04-29T17:10:45 | compact-fgp3-v2-fullmatrix | +19.9% | 83.4% | 935/780 | 37 | 18 | 4 |  |
-| `building2` | high | measured | 2026-04-29T17:11:35 | compact-fgp3-v2-fullmatrix | +20.2% | 83.2% | 1559/1297 | 150 | 45 | 19 |  |
-| `building2` | low | measured | 2026-04-29T17:12:34 | compact-fgp3-v2-fullmatrix | +20.1% | 83.3% | 1556/1296 | 150 | 42 | 20 |  |
+| `building2` | high | measured | 2026-05-01T04:38:50 | compact-fgp3-v63-building2low-prime | +20.3% | 83.1% | 1560/1297 | 156 | 43 | 21 |  |
+| `building2` | low | measured | 2026-05-01T04:37:51 | compact-fgp3-v63-building2low-prime | +19.5% | 83.7% | 1542/1290 | 139 | 32 | 20 |  |
 | `building3` | high | measured | 2026-04-30T13:33:14 | compact-fgp3-v48-building3low-auto-prime | +9.4% | 91.4% | 1565/1430 | 5 | 5 | 0 |  |
 | `building3` | low | measured | 2026-04-30T13:32:08 | compact-fgp3-v48-building3low-auto-prime | +9.1% | 91.7% | 1564/1434 | 0 | 0 | 0 |  |
 | `building4` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +10.0% | 90.9% | 3073/2793 | 240 | 27 | 34 |  |

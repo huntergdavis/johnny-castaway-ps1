@@ -372,6 +372,7 @@ static const struct TFgRuntimeSetupPrimePolicy kFgRuntimeSetupPrimePolicies[] = 
         FG_FISHING2_SETUP_PRIME_WINDOW_BYTES,
         FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)
     },
+    {"building2", 0, 128UL * 1024UL},
     {"activity12", FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
     {"fishing3", 128UL * 1024UL, FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)},
     {"fishing6", FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},

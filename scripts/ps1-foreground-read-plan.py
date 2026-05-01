@@ -132,6 +132,93 @@ def eval_c_int_expr(expr: str, symbols: dict[str, int]) -> int | None:
     return int(value) if isinstance(value, int) and value >= 0 else None
 
 
+def split_top_level_commas(text: str) -> list[str]:
+    parts: list[str] = []
+    start = 0
+    paren_depth = 0
+    brace_depth = 0
+    for index, char in enumerate(text):
+        if char == "(":
+            paren_depth += 1
+        elif char == ")" and paren_depth > 0:
+            paren_depth -= 1
+        elif char == "{":
+            brace_depth += 1
+        elif char == "}" and brace_depth > 0:
+            brace_depth -= 1
+        elif char == "," and paren_depth == 0 and brace_depth == 0:
+            parts.append(text[start:index].strip())
+            start = index + 1
+    tail = text[start:].strip()
+    if tail:
+        parts.append(tail)
+    return parts
+
+
+def parse_initializer_entries(source: str, table_name: str) -> list[str]:
+    match = re.search(rf"\b{re.escape(table_name)}\[\]\s*=\s*\{{", source)
+    if match is None:
+        return []
+
+    table_start = source.find("{", match.end() - 1)
+    if table_start < 0:
+        return []
+
+    table_body_start = table_start + 1
+    depth = 1
+    table_end = table_body_start
+    while table_end < len(source):
+        char = source[table_end]
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        table_end += 1
+    if depth != 0:
+        return []
+
+    body = source[table_body_start:table_end]
+    entries: list[str] = []
+    index = 0
+    while index < len(body):
+        if body[index] != "{":
+            index += 1
+            continue
+        start = index + 1
+        depth = 1
+        index = start
+        while index < len(body):
+            char = body[index]
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    entries.append(body[start:index].strip())
+                    break
+            index += 1
+        index += 1
+    return entries
+
+
+def parse_runtime_setup_prime_table(source: str, symbols: dict[str, int]) -> dict[str, dict[str, int | None]]:
+    policies: dict[str, dict[str, int | None]] = {}
+    for entry in parse_initializer_entries(source, "kFgRuntimeSetupPrimePolicies"):
+        fields = split_top_level_commas(entry)
+        if len(fields) < 3:
+            continue
+        scene_match = re.fullmatch(r'"([^"]+)"', fields[0].strip())
+        if scene_match is None:
+            continue
+        policies[scene_match.group(1)] = {
+            "high": eval_c_int_expr(fields[1], symbols),
+            "low": eval_c_int_expr(fields[2], symbols),
+        }
+    return policies
+
+
 def parse_source_setup_policy() -> dict[str, Any]:
     source_path = REPO_ROOT / "src" / "foreground_pilot.c"
     try:
@@ -157,7 +244,10 @@ def parse_source_setup_policy() -> dict[str, Any]:
         if not changed:
             break
 
-    policy: dict[str, Any] = {"symbols": symbols}
+    policy: dict[str, Any] = {
+        "symbols": symbols,
+        "runtime_setup_prime": parse_runtime_setup_prime_table(source, symbols),
+    }
     fishing3 = re.search(
         r'if\s*\(fgSceneEquals\(sceneName,\s*"fishing3"\)\)\s*'
         r"return\s+islandState\.lowTide\s*\?\s*(.*?)\s*:\s*(.*?);",
@@ -255,36 +345,72 @@ def clamp_setup_prime_bytes(source_policy: dict[str, Any], requested: int | None
     return int(requested)
 
 
+def runtime_setup_prime_bytes(source_policy: dict[str, Any], scene_name: str | None,
+                              lowtide: bool) -> int | None:
+    if scene_name is None:
+        return None
+    table = source_policy.get("runtime_setup_prime")
+    if not isinstance(table, dict):
+        return None
+    entry = table.get(scene_name)
+    if not isinstance(entry, dict):
+        return None
+    key = "low" if lowtide else "high"
+    value = entry.get(key)
+    return value if isinstance(value, int) else None
+
+
 def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int]], str]:
     scene = case.get("sections", {}).get("scene", {})
     scene_name = scene.get("scene")
     lowtide = scene.get("lowtide") == 1
     source_policy = parse_source_setup_policy()
     if scene_name == "fishing1":
-        prime = source_policy.get("fishing1_prime_bytes") or 320 * 1024
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("fishing1_prime_bytes") or 320 * 1024
         return clamp_setup_prime_bytes(source_policy, prime), [], "auto:fishing1"
     if scene_name == "fishing2":
         if lowtide:
-            prime = source_policy.get("fishing2_low_prime_bytes")
+            prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+            if prime is None:
+                prime = source_policy.get("fishing2_low_prime_bytes")
             return clamp_setup_prime_bytes(source_policy, prime or 256 * 1024), [], "auto:fishing2-low"
-        prime = source_policy.get("fishing2_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("fishing2_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 352 * 1024), [], "auto:fishing2-high"
+    if scene_name == "building2":
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is not None:
+            policy_name = "auto:building2-low" if lowtide else "auto:building2-high"
+            return clamp_setup_prime_bytes(source_policy, prime), [], policy_name
     if scene_name == "activity12" and not lowtide:
-        prime = source_policy.get("activity12_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("activity12_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 328 * 1024), [], "auto:activity12-high"
     if scene_name == "fishing3":
         if lowtide:
-            prime = source_policy.get("fishing3_low_prime_bytes")
+            prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+            if prime is None:
+                prime = source_policy.get("fishing3_low_prime_bytes")
             segments = source_policy.get("fishing3_low_segments") or [(146, 152)]
             return clamp_setup_prime_bytes(source_policy, prime or 288 * 1024), list(segments), "auto:fishing3-low"
-        prime = source_policy.get("fishing3_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("fishing3_high_prime_bytes")
         segments = source_policy.get("fishing3_high_segments") or [(67, 73)]
         return clamp_setup_prime_bytes(source_policy, prime or 128 * 1024), list(segments), "auto:fishing3-high"
     if scene_name == "visitor3":
         if lowtide:
-            prime = source_policy.get("visitor3_low_prime_bytes")
+            prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+            if prime is None:
+                prime = source_policy.get("visitor3_low_prime_bytes")
             return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024), [], "auto:visitor3-low"
-        prime = source_policy.get("visitor3_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("visitor3_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024), [], "auto:visitor3-high"
     if scene_name == "walkstuf1" and scene.get("fmt") == "fgp3_indexed8_residual":
         normal = source_policy.get(
@@ -298,19 +424,29 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
                 "auto:walkstuf1-low" if lowtide else "auto:walkstuf1-high"
             )
     if scene_name == "visitor1" and not lowtide:
-        prime = source_policy.get("visitor1_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("visitor1_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 296 * 1024), [], "auto:visitor1-high"
     if scene_name == "visitor7" and not lowtide:
-        prime = source_policy.get("visitor7_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("visitor7_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 368 * 1024), [], "auto:visitor7-high"
     if scene_name == "fishing6" and not lowtide:
-        prime = source_policy.get("fishing6_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("fishing6_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 312 * 1024), [], "auto:fishing6-high"
     if scene_name == "fishing7" and not lowtide:
-        prime = source_policy.get("fishing7_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("fishing7_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 328 * 1024), [], "auto:fishing7-high"
     if scene_name == "johnny3" and not lowtide:
-        prime = source_policy.get("johnny3_high_prime_bytes")
+        prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
+        if prime is None:
+            prime = source_policy.get("johnny3_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 312 * 1024), [], "auto:johnny3-high"
     return 0, [], "none"
 
