@@ -148,6 +148,11 @@ ELF, shifted hot symbols by `+296` bytes, left loop time flat, and traded small
 blocking improvements for refill/overrun regressions on WALKSTUF1. Do not spend
 more time on local indexed8 loop unrolls; the next indexed8 wins need data-shape
 or scheduler changes.
+A same-index run detector inside the indexed8 opaque helper is also rejected.
+It helped WALKSTUF1 high by `5` VBlanks but made low tide `16` VBlanks slower,
+matching the host-side warning that average byte runs are only about `1.8`.
+Do not spend more time on runtime indexed8 branch tricks; use pack-time
+direct16/upload-ready data or generated CD metadata instead.
 The per-compose PAL4 scratchpad palette probe is rejected: it shrank the
 compositor and ELF but did not move loop time safely, and VISITOR3 low regressed
 hard. Do not spend more time on local scratchpad palette copies; scratchpad work
