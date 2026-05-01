@@ -114,8 +114,8 @@ Current battle-card rollup as of 2026-04-30:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+14.6%` |
 | Timing-bearing average target speed | `88.1%` |
-| Latest perf matrix run | `2026-04-30T18:12:13` |
-| Stats version | mixed: latest rows use `compact-fgp3-v55-walkstuf1high-derived-prime`; earlier follow-up rows use `compact-fgp3-v54-walkstuf1low-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-04-30T18:54:48` |
+| Stats version | mixed: latest rows use `compact-fgp3-v56-walkstuf1high-base84`; earlier follow-up rows use `compact-fgp3-v55-walkstuf1high-derived-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  rows use `compact-fgp3-v55-walkstuf1high-derived-prime`; earlier follow-up rows use
-  `compact-fgp3-v54-walkstuf1low-prime` through `compact-fgp3-v3-stand12low`; the
+  rows use `compact-fgp3-v56-walkstuf1high-base84`; earlier follow-up rows use
+  `compact-fgp3-v55-walkstuf1high-derived-prime` through `compact-fgp3-v3-stand12low`; the
   complete full-matrix baseline remains `compact-fgp3-v2-fullmatrix` for
   rows not rerun since that pass.
 
@@ -273,7 +273,7 @@ and this page.
 | `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
 | `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
 | `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
-| `walkstuf1` | high | measured | 2026-04-30T18:12:13 | compact-fgp3-v55-walkstuf1high-derived-prime | +40.3% | 71.3% | 1970/1404 | 400 | 128 | 21 |  |
+| `walkstuf1` | high | measured | 2026-04-30T18:54:48 | compact-fgp3-v56-walkstuf1high-base84 | +40.3% | 71.3% | 1965/1401 | 400 | 130 | 21 |  |
 | `walkstuf1` | low | measured | 2026-04-30T18:12:13 | compact-fgp3-v55-walkstuf1high-derived-prime | +43.4% | 69.7% | 2001/1395 | 450 | 134 | 31 |  |
 | `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf2` | low | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |

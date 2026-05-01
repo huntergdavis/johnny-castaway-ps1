@@ -160,6 +160,7 @@ enum {
 #define FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES (54UL * 1024UL)
 #define FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES (40UL * 1024UL)
 #define FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES (88UL * 1024UL)
+#define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
@@ -1537,7 +1538,8 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
 {
     if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
         fgSceneEquals(sceneName, "walkstuf1"))
-        return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES;
+        return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
+            (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
 
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;

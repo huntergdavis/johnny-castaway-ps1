@@ -21,8 +21,8 @@ Date: 2026-04-25
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-optimization-plan.md` |
-| Lines | 2465 |
-| Approx. words | 54156 |
+| Lines | 2466 |
+| Approx. words | 54260 |
 | Code fences | 3 |
 
 ## Outline
