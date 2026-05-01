@@ -182,9 +182,37 @@ def parse_source_setup_policy() -> dict[str, Any]:
 
     if "FG_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["fishing1_prime_bytes"] = symbols["FG_SETUP_PRIME_WINDOW_BYTES"]
+    if "FG_SETUP_PRIME_MAX_RESIDENT_BYTES" in symbols:
+        policy["setup_prime_max_resident_bytes"] = symbols[
+            "FG_SETUP_PRIME_MAX_RESIDENT_BYTES"
+        ]
+    if "FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES" in symbols:
+        policy["walkstuf1_high_window_bytes"] = symbols[
+            "FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES"
+        ]
+    if "FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES" in symbols:
+        policy["walkstuf1_low_window_bytes"] = symbols[
+            "FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES"
+        ]
+    if "FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES" in symbols:
+        policy["walkstuf1_setup_prime_base_bytes"] = symbols[
+            "FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES"
+        ]
+    if "FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES" in symbols:
+        policy["walkstuf1_high_setup_prime_trim_bytes"] = symbols[
+            "FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES"
+        ]
     if "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["activity12_high_prime_bytes"] = symbols[
             "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["visitor3_high_prime_bytes"] = symbols[
+            "FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["visitor3_low_prime_bytes"] = symbols[
+            "FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES"
         ]
     if "FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["visitor1_high_prime_bytes"] = symbols[
@@ -218,45 +246,72 @@ def parse_source_setup_policy() -> dict[str, Any]:
     return policy
 
 
+def clamp_setup_prime_bytes(source_policy: dict[str, Any], requested: int | None) -> int:
+    if requested is None or requested <= 0:
+        return 0
+    cap = source_policy.get("setup_prime_max_resident_bytes")
+    if isinstance(cap, int) and cap > 0 and requested > cap:
+        return cap
+    return int(requested)
+
+
 def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int]], str]:
     scene = case.get("sections", {}).get("scene", {})
     scene_name = scene.get("scene")
     lowtide = scene.get("lowtide") == 1
     source_policy = parse_source_setup_policy()
     if scene_name == "fishing1":
-        return int(source_policy.get("fishing1_prime_bytes") or 320 * 1024), [], "auto:fishing1"
+        prime = source_policy.get("fishing1_prime_bytes") or 320 * 1024
+        return clamp_setup_prime_bytes(source_policy, prime), [], "auto:fishing1"
     if scene_name == "fishing2":
         if lowtide:
             prime = source_policy.get("fishing2_low_prime_bytes")
-            return int(prime or 256 * 1024), [], "auto:fishing2-low"
+            return clamp_setup_prime_bytes(source_policy, prime or 256 * 1024), [], "auto:fishing2-low"
         prime = source_policy.get("fishing2_high_prime_bytes")
-        return int(prime or 352 * 1024), [], "auto:fishing2-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 352 * 1024), [], "auto:fishing2-high"
     if scene_name == "activity12" and not lowtide:
         prime = source_policy.get("activity12_high_prime_bytes")
-        return int(prime or 328 * 1024), [], "auto:activity12-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 328 * 1024), [], "auto:activity12-high"
     if scene_name == "fishing3":
         if lowtide:
             prime = source_policy.get("fishing3_low_prime_bytes")
             segments = source_policy.get("fishing3_low_segments") or [(146, 152)]
-            return int(prime or 288 * 1024), list(segments), "auto:fishing3-low"
+            return clamp_setup_prime_bytes(source_policy, prime or 288 * 1024), list(segments), "auto:fishing3-low"
         prime = source_policy.get("fishing3_high_prime_bytes")
         segments = source_policy.get("fishing3_high_segments") or [(67, 73)]
-        return int(prime or 128 * 1024), list(segments), "auto:fishing3-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 128 * 1024), list(segments), "auto:fishing3-high"
+    if scene_name == "visitor3":
+        if lowtide:
+            prime = source_policy.get("visitor3_low_prime_bytes")
+            return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024), [], "auto:visitor3-low"
+        prime = source_policy.get("visitor3_high_prime_bytes")
+        return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024), [], "auto:visitor3-high"
+    if scene_name == "walkstuf1" and scene.get("fmt") == "fgp3_indexed8_residual":
+        normal = source_policy.get(
+            "walkstuf1_low_window_bytes" if lowtide else "walkstuf1_high_window_bytes"
+        )
+        base = source_policy.get("walkstuf1_setup_prime_base_bytes")
+        trim = 0 if lowtide else source_policy.get("walkstuf1_high_setup_prime_trim_bytes")
+        if isinstance(normal, int) and isinstance(base, int) and isinstance(trim, int):
+            prime = (normal << 2) + base - trim
+            return clamp_setup_prime_bytes(source_policy, prime), [], (
+                "auto:walkstuf1-low" if lowtide else "auto:walkstuf1-high"
+            )
     if scene_name == "visitor1" and not lowtide:
         prime = source_policy.get("visitor1_high_prime_bytes")
-        return int(prime or 296 * 1024), [], "auto:visitor1-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 296 * 1024), [], "auto:visitor1-high"
     if scene_name == "visitor7" and not lowtide:
         prime = source_policy.get("visitor7_high_prime_bytes")
-        return int(prime or 368 * 1024), [], "auto:visitor7-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 368 * 1024), [], "auto:visitor7-high"
     if scene_name == "fishing6" and not lowtide:
         prime = source_policy.get("fishing6_high_prime_bytes")
-        return int(prime or 312 * 1024), [], "auto:fishing6-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 312 * 1024), [], "auto:fishing6-high"
     if scene_name == "fishing7" and not lowtide:
         prime = source_policy.get("fishing7_high_prime_bytes")
-        return int(prime or 328 * 1024), [], "auto:fishing7-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 328 * 1024), [], "auto:fishing7-high"
     if scene_name == "johnny3" and not lowtide:
         prime = source_policy.get("johnny3_high_prime_bytes")
-        return int(prime or 312 * 1024), [], "auto:johnny3-high"
+        return clamp_setup_prime_bytes(source_policy, prime or 312 * 1024), [], "auto:johnny3-high"
     return 0, [], "none"
 
 
@@ -435,7 +490,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         if payload_end > window_start:
             window_bytes = int(math.ceil((payload_end - window_start) / SECTOR_SIZE)) * SECTOR_SIZE
             if 0 < window_bytes <= auto_pack_limit:
-                auto_prime_bytes = window_bytes
+                auto_prime_bytes = clamp_setup_prime_bytes(source_policy, window_bytes)
                 auto_policy = "auto:fgp3-resident-pack"
     setup_prime_bytes = args.setup_prime_bytes
     setup_policy = "explicit"
