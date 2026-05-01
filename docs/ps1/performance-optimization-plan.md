@@ -158,11 +158,11 @@ Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
 `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
 and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
-`loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
-`prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
+`loop_vb=1207` against `target_vb=1074`, with `blocking_vb=2`,
+`prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
-`88.1%` target speed as of `compact-fgp3-v60-visitor3high-group230-242` (`14.6532%` exact over target /
-`88.0982%` exact target speed). The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v61-fishing3low-group163-175` (`14.6669%` exact over target /
+`88.0913%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1456,14 +1456,15 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-293` | Failed: keep setup segments alive after first copy. | Removing the single-use segment invalidation looked memory-safe, but the source-shape change regressed VISITOR3 high even though that row does not use setup segments: `1496/1007 -> 1507/1008`, `blocking_vb 345 -> 356`, while `prefetch_overrun_vb 102 -> 83`. Do not retry setup-segment lifetime cleanup alone; only revisit with generated segment metadata and a visible loop/blocking win large enough to dominate layout sensitivity. |
 | `P5-294` | Failed: detect same-index runs in indexed8 compose. | WALKSTUF1 high moved in the useful direction (`loop_vb 2002 -> 1997`, `blocking_vb 438 -> 431`) but regressed refill pressure (`prefetch_overrun_vb 101 -> 108`), and low tide regressed materially (`loop_vb 2014 -> 2030`, `overrun_vb 621 -> 640`). The host run-length scan was right: indexed8 bytes are not run-heavy enough for runtime branchy detection. Do not retry runtime same-index detection; move indexed8 work to pack-time direct16/upload-ready spans or generated CD/read metadata. |
 | `P5-295` | Failed: prerender the first scene frame during setup. | The zero-CD STAND1 rows stayed exact-flat even when the first foreground render moved before `loop_start`, and the no-clock variant regressed FISHING1 visible CD pressure (`blocking_vb 2 -> 4`). This proves the current zero-CD overhead is distributed across per-frame restore/compose/upload/present work, not just the first frame. Next scheduler work must be first-class present/upload ownership or pack-time upload-ready data, not setup-time render relocation. |
+| `P5-296` | Done: add FISHING3 low read group `163..175`. | The cap-aware read plan identified a later 12-sector cluster after the accepted low-tide `{159,171}` group. Adding `{163,175}` improves FISHING3 low `loop_vb 2093 -> 2092`, `target_vb 1952 -> 1954`, `overrun_vb 141 -> 138`, `blocking_vb 11 -> 7`, `prefetch_overrun_vb 11 -> 7`, and `loop_reads 33 -> 32`; FISHING1 high, FISHING3 high, VISITOR3 high/low, and WALKSTUF1 high/low stay exact-flat against the accepted seven-case baseline. Latest refreshed rows now use `compact-fgp3-v61-fishing3low-group163-175`; exact matrix average is `14.6669%` over target / `88.0913%` target speed because the same refresh replaces stale canary rows with current measurements. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v60-visitor3high-group230-242`: the matrix is now
-`120` timing-bearing rows at `14.6532%` exact average over target / `88.0982%`
-exact target speed. The accepted `230..242` group proves VISITOR3 can still
-benefit from selective, start-aligned CD grouping when the group is placed in a
-later slack window. The next loop should prioritize changes that can move multiple large
+Checkpoint after `compact-fgp3-v61-fishing3low-group163-175`: the matrix is now
+`120` timing-bearing rows at `14.6669%` exact average over target / `88.0913%`
+exact target speed. The accepted FISHING3 low `163..175` group proves selective
+later CD grouping can still pay when the group is start-aligned and slack-safe.
+The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
 tuning unless a fresh local sweep shows a clear knee.
 

@@ -408,6 +408,15 @@ FISHING3 high relative sectors `67..73` read into scratch during setup moves
 lower `blocking_vb` yet, and it costs one setup read, so the next version needs
 generated segment metadata or inter-scene preload that can target multiple
 ranges without adding more hard-coded hot source logic.
+Fishing3 low tide now has a second promoted retained read group, `{163,175}`,
+after the accepted `{159,171}` group. It improves `loop_vb 2093 -> 2092`,
+`target_vb 1952 -> 1954`, `overrun_vb 141 -> 138`,
+`blocking_vb/prefetch_overrun_vb 11 -> 7`, and `loop_reads 33 -> 32` with
+stable PS-EXE bucket and pack LBA. This confirms medium-later, start-aligned,
+slack-safe read groups can still pay. Next FISHING3 low group candidates should
+come from the cap-aware planner and avoid tight early clusters such as
+`174..186` unless the generated cost model predicts lower loop/blocking, not
+just fewer reads.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
