@@ -68,7 +68,7 @@
     <header class="page-header">
       <p class="eyebrow">Lab . Retrospective</p>
       <h1>The 63-scene grind</h1>
-      <p class="subtitle">Two scenes signed off, sixty-one to go. That is not failure. That is a ledger.</p>
+      <p class="subtitle">Five scenes signed off, fifty-eight to go. That is not failure. That is a ledger.</p>
       <hr class="rule" />
     </header>
 
@@ -86,14 +86,18 @@ avoid stomping pixels. Some are mostly standing animation and some are little
 movies. They all eventually need the same thing: watch the PS1 output, compare
 against reference, fix what is wrong, mark the row.</p>
 
-<h2 id="why-only-two-validated">Why only two validated</h2>
+<h2 id="why-only-five-validated">Why only five validated</h2>
 
-<p>At this release, two scenes are validated: <code class="language-plaintext highlighter-rouge">FISHING 1</code> and <code class="language-plaintext highlighter-rouge">FISHING 2</code>.</p>
+<p>At this release, five scenes are validated: <code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>,
+<code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, and <code class="language-plaintext highlighter-rouge">FISHING 6</code>. <code class="language-plaintext highlighter-rouge">FISHING 5</code> is intentionally
+blocked until its shark cleanup residue is gone.</p>
 
 <p>That can sound small if you treat the scene count like a progress bar. It is
 not the right read. The first validated scene built the pipeline. The second
-proved the pipeline was not a one-off accident. The remaining sixty-one are
-work, but they are work inside a known frame.</p>
+proved the pipeline was not a one-off accident. The next three proved the
+loop could survive placement bugs, residual cleanup bugs, and real variant
+checks. The remaining fifty-eight are work, but they are work inside a known
+frame.</p>
 
 <p>The difference between “nothing is known” and “the loop is known” is enormous.</p>
 
@@ -120,7 +124,7 @@ uneventful.</p>
 
 <h2 id="the-grind-is-the-project">The grind is the project</h2>
 
-<p>There is no grand final algorithm that validates the other sixty-one. There
+<p>There is no grand final algorithm that validates the other fifty-eight. There
 will be tricks. There will be pack improvements. There will be more codegen.
 But the work is still one scene at a time.</p>
 
@@ -162,8 +166,8 @@ If a holiday has an emblem, it deserves a page.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          2 / 63 scenes validated
-          (v0.6.1-ps1)
+          5 / 63 scenes validated
+          (v0.6.2-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

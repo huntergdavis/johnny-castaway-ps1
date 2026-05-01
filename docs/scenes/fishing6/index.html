@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FISHING 6 — Big green fish — Johnny Castaway PS1</title>
-  <meta name="description" content="FISHING.ADS scene 6: Big green fish." />
+  <meta name="description" content="FISHING.ADS scene 6: Big green fish. Validated under the FISHING 1 bar." />
 
   <meta property="og:title"        content="FISHING 6 — Big green fish — Johnny Castaway PS1" />
-  <meta property="og:description"  content="FISHING.ADS scene 6: Big green fish." />
+  <meta property="og:description"  content="FISHING.ADS scene 6: Big green fish. Validated under the FISHING 1 bar." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · FISHING 6
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>FISHING 6 — Big green fish</h1>
@@ -77,22 +77,31 @@
   </header>
 
   <div class="page-body">
-    <h2 id="blocked-in-regtest">Blocked in regtest</h2>
+    <h2 id="validated">Validated</h2>
 
-<p>This scene currently can’t even be brought up for evaluation — the regtest harness fails before frame-diff comparison runs. Until that block is lifted, the scene can’t be validated under the FISHING 1 bar.</p>
+<p>Validated on PS1/DuckStation on 2026-05-01 after a terminal FGP3 cleanup fix removed the last splash and fishing-pole residue from the final frame.</p>
 
-<p>Source-table note: <em>blocked in regtest</em>.</p>
+<p>This scene clears the <a href="../../about/method/">FISHING 1 bar</a> — pixel-perfect visuals plus synced SFX across every applicable variant.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
 <ul>
   <li>ADS dispatch: <code>FISHING.ADS scene 6</code></li>
   <li>Slug: <code>fishing6</code></li>
+  <li>High-tide pack: <code>FG/FISHING6.FG2</code></li>
+  <li>Low-tide pack: <code>FG/FISH6LOW.FG2</code></li>
 </ul>
 
 <h2 id="what-this-scene-probably-is">What this scene probably is</h2>
 
 <p>(Guess.) Johnny catches a big green fish that spits water in his face. He throws it back.</p>
+
+<h2 id="validation-note">Validation note</h2>
+
+<p>The blocker was not placement or tide selection. The high/low FGP3 packs
+kept a tiny final splash and the top pixels of the fishing pole alive in
+the residual state. The fix narrows the final cleanup entry for both
+packs so those pixels restore to the clean background before scene end.</p>
 
   </div>
 
@@ -118,8 +127,8 @@
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          2 / 63 scenes validated
-          (v0.6.1-ps1)
+          5 / 63 scenes validated
+          (v0.6.2-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
