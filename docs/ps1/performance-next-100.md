@@ -134,6 +134,11 @@ ELF and map with no restore, loop, CD, or work-counter benefit. Do not retry thi
 local `grCleanRectCopyIn()` row-copy shape unless finer counters prove a
 sub-VBlank restore bottleneck; prefer generated restore bands or switchable ASM
 after data-shape changes.
+The first PAL4 compose-width probe is rejected too. An aligned 32-bit pair-store
+branch inside `grCompositePacked4OpaqueRun()` shrank ELF by `444` bytes, but
+BUILDING4 high regressed `loop_vb 3071 -> 3077` and `blocking_vb 234 -> 237`
+with unchanged read/work counts. Do not retry local PAL4 pair stores without
+generated aligned command classes or a pack/runtime-owned pair LUT.
 The upload path now reuses one stack `RECT` for immediate `LoadImage()` calls,
 shrinking `grDrawBackground` by 8 bytes and ELF to `712272` while keeping every
 timing, CD, upload, and correctness counter exact.
@@ -681,7 +686,7 @@ weakened pause input.
 | 81 | Compose | Generate pack-time tile-split spans. | Runtime cross-tile splitting regressed; pack-time can remove hot branches. | Compose work falls and spans remain exact. |
 | 82 | Compose | Generate per-row destination offsets in FG2 payload. | Runtime computes tile/row address repeatedly. | Compositor code/time shrinks. |
 | 83 | Compose | Generate span command classes by alignment and length. | Dynamic aligned pair store regressed from branching. | Fast path uses branch-free classes. |
-| 84 | Compose | Test word-stride C PAL4/indexed compose before ASM: `uint32` packed loads, aligned pair stores, and generated opaque/aligned classes. | Feasibility research estimates most ASM benefit comes from data width and branch removal, not assembly syntax. | Compose detail improves without CD pressure. |
+| 84 | Compose | Partial/no promotion: PAL4 local aligned pair-store branch regressed BUILDING4 high; continue only with generated opaque/aligned command classes, pack/runtime-owned pair LUTs, or isolated indexed8 tests. | Feasibility research still points at data width and branch removal, but runtime branch selection alone hurt cadence. | Compose detail improves without CD pressure. |
 | 85 | Compose | Test scratchpad palette for compose, then hand-written MIPS PAL4/transparent loops only if measured compose cost remains high. | Scratchpad can remove palette-load stalls with less risk than inline ASM; ASM stays last because visual failure surface is large. | Compose detail improves and exact visual output survives cross-scene validation. |
 | 86 | Compose | Test PAL4 direct16 pack option for fishing1. | Pack size may grow, but CPU could fall sharply. | Loop improves enough to justify pack-size budget. |
 | 87 | Compose | Test direct16 only for hot/large frames. | Avoid full pack-size explosion. | Worst frames get faster with bounded pack growth. |
@@ -709,8 +714,8 @@ near misses:
 | 1 | 78 | Done: `scripts/ps1-o2-audit.py` emits the current `-O2` candidate queue and map/symbol evidence. Re-run it after each build-system or optimization-flag change. |
 | 2 | 92 | Done/no promotion: both scoped graphics helper `-O2` probes were measured and rejected. |
 | 3 | 91 | Done/no promotion: the hot/semi-hot whole-TU `-O2` sweep is now recorded and should not be retried blindly. |
-| 4 | 79 | Next active speed test: test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
-| 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
+| 4 | 79 | Done/no promotion: C word-stride restore-row copy stayed timing-flat and grew artifacts. |
+| 5 | 84 | PAL4 local pair-store branch is rejected. Continue the compose-width lane only through generated classes, pack/runtime-owned pair LUTs, or indexed8-only probes before MIPS ASM. |
 | 6 | 85 | Done/no promotion: the per-compose scratchpad palette probe shrank code but regressed VISITOR3 low, so retry scratchpad only inside generated/assembly compositor ownership. |
 | 7 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 8 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
@@ -727,6 +732,7 @@ near misses:
 | BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
 | BUILDING-family raw stream windows | BUILDING4 low `36 KiB` is accepted; BUILDING6 `20/28 KiB`, BUILDING4 high `20/28 KiB`, and broad setup-prime are rejected. Retry only scene/tide-locally with fresh baselines and bounded visible-CD/refill tradeoff rules. |
 | BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
+| PAL4 aligned pair stores | Do not retry as a local branch in `grCompositePacked4OpaqueRun()`. It shrank ELF but regressed BUILDING4 high cadence; retry only after pack-generated aligned command classes or a pair LUT removes the hot-path branch/packing cost. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
