@@ -21,13 +21,14 @@ Date: 2026-04-27
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 617 |
-| Approx. words | 9417 |
+| Lines | 642 |
+| Approx. words | 9979 |
 | Code fences | 0 |
 
 ## Outline
 
 - PS1 Performance Next 100
+-   2026-04-30 ASM And Toolchain Feasibility Intake
 -   Highest-Leverage Thesis
 -   Fresh Targets From The Latest Misses
 -   Impact-Prioritized Order

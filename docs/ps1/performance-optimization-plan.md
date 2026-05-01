@@ -218,11 +218,12 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
+| 0 | Graphics codegen audit and `-O2` confirmation | Low to medium | The sandbox ASM feasibility pass says graphics `-O2` is the cheapest possible win if graphics was size-optimized. In this repo `graphics_ps1.c` appears to inherit default `-O2`, while two graphics helpers are scoped `-Os`; verify the compile flags and test scoped helper `-O2` before any assembly. If it wins, it is a near-free change. |
 | 1 | Generated setup-prime and inter-scene preload | High | The promoted `320 KB` prime cuts active-loop overrun `147 -> 140` and visible CD/refill `5 -> 1`, but currently pays setup cost. Hiding or generating the prime can turn this into a full-scene win. |
 | 2 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`; the next design must reduce or hide present latency while preserving CD lookahead and pause/input safety. |
 | 3 | Pack-emitted read groups and sector layout | Medium | Current setup-primed high tide still has `43` active-loop reads and `3` backward seeks; selective generated metadata is safer than one-off group tables. |
 | 4 | X-aware dirty upload and rect-pressure control | Medium | Latest default run restores `2.51 MB` after prepared-wait prefetch removes duplicate prep, and vertical bands plus a 1-row gap keep upload near `16.3 MB`; upload volume and rect pressure are still measurable dirty targets. |
-| 5 | Specialized PAL4 FG2 compositor | Medium | Fishing frames are modest, but larger scenes will make span/tile split and PAL4 conversion overhead more important. |
+| 5 | C-first PAL4/restore data-width ladder, ASM last | Medium | Hand-written MIPS is viable, but the feasibility pass says most of the gain comes from wider loads/stores, scratchpad palette placement, and bounded row-copy shape. Test word-stride C restore/compose and scratchpad palette before a switchable MIPS implementation. |
 
 Latest red-team note: local CD/runtime tweaks are hitting a hard determinism
 wall. `384..396` did not fire, `307..317` was exact-flat with code growth,
@@ -1439,6 +1440,7 @@ not one-off scalar byte tuning unless a fresh local sweep shows a clear knee.
 
 | Priority | Target class | Current signal | Next experiment shape |
 |---:|---|---|---|
+| 0 | Graphics codegen and data-width quick wins | Sandbox research says `graphics_ps1.c -O2` could be free performance if graphics was compiled `-Os`; current CMake already leaves the graphics TU at default `-O2`, but scoped helper attributes still need an audit. | First run a map/flag-controlled `graphics_ps1.c` audit, then test scoped helper `-O2`, word-stride restore copy, word-stride compose, and scratchpad palette before any hand-written MIPS. |
 | 1 | `walkstuf1` high/low and `visitor3` high/low | The four largest absolute gaps remain `+606`, `+564`, `+505`, and `+471` VBlanks, with the highest visible CD pressure (`blocking_vb=450/400/306/321`). | Host-side pack/layout work first: generated read metadata, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more broad scalar window tuning unless the generated metadata needs a local window knee. |
 | 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts; scalar windows helped `building4/6` but failed `building2` as compiled source. | Move to generated read groups or host-side preprocessing that changes read placement/format. Do not keep hand-coding BUILDING2 window variants without a source-shape-neutral metadata path. |
 | 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
@@ -1533,8 +1535,12 @@ Host preprocessing and multi-step idea backlog:
 | `HP-029` | Add cold-section isolation for default-off diagnostics and old test modes. | Retires ballast without perturbing the hot executable phase. |
 | `HP-030` | Sweep function ordering with a linker-map harness after each large code-size win. | Some old `-Os` failures became safe only after the phase moved. |
 | `HP-031` | Continue per-TU `-Os` retries, but require exact cadence and no hot-helper growth. | Several old size failures are now phase-safe, while CD/compositor TUs still are not. |
-| `HP-032` | Try helper-scoped hand-written MIPS for PAL4 residual compose. | Compiler `O3` and branchy C variants lost; assembly can avoid runtime decision cost. |
-| `HP-033` | Generate PAL4 scene-specialized compositor loops from pack statistics. | Scene-known alignment/length classes can replace hot runtime branches. |
+| `HP-061` | Audit graphics codegen before ASM: confirm `graphics_ps1.c` is default `-O2`, then test scoped helper `-O2` only where the current source forces `-Os`. | The ASM feasibility pass calls graphics `-O2` the cheapest win if graphics is size-optimized; current CMake says whole-TU graphics is already `-O2`, so the real target is scoped helper codegen. |
+| `HP-062` | Try word-stride C restore copy for `grCleanRectCopyIn`: halfword edges plus word-body copies. | The feasibility pass ranks bounded restore row copy as the best hand-ASM target, but C word loops should capture much of the gain with less risk. |
+| `HP-063` | Try word-stride C PAL4/indexed compose loops before assembly. | Wider packed loads and aligned 16bpp pair stores are the main expected win; keep it portable until measured data says ASM is required. |
+| `HP-064` | Put the active compose palette in scratchpad during compose. | The 32-byte palette fits in the PS1 scratchpad and may cut palette-load stalls without target-specific assembly. |
+| `HP-065` | Try helper-scoped hand-written MIPS for restore row copy first, then PAL4 residual compose only if C/data-placement leaves a measured gap. | Assembly is viable but should stay switchable against the C implementation because pixel-perfect regressions are high-risk. |
+| `HP-066` | Generate PAL4 scene-specialized compositor loops from pack statistics. | Scene-known alignment/length classes can replace hot runtime branches. |
 | `HP-034` | Emit same-pair PAL4 command streams for uniform byte pairs. | Avoids runtime detection while exploiting a real pack-side pattern. |
 | `HP-035` | Emit direct16 chunks only for dense frames where doubled pack bytes beat runtime CLUT work. | Direct16 should be selective, not a blanket format pivot. |
 | `HP-036` | Generate per-tile command streams for FGP3 residuals. | Removes runtime cross-tile splitting and dirty marking branches. |
@@ -1572,7 +1578,7 @@ Grouped priority queue from this triage:
 | Generated CD/setup pressure wins | 3 | `RT-002`, `RT-003`, `RT-007`, `RT-010`, `HP-003`, `HP-004`, `HP-005`, `HP-018`, `HP-019`, `HP-054` | Start with FISHING3 high because it still has visible pressure and several near-miss groups/segments. Promote only if FISHING1 and FISHING3 low stay clean. | Best near-term VBlank reduction path; turns one-off successful groups and setup segments into generated policy. |
 | Scheduler/read-policy retries | 4 | `RT-004`, `RT-005`, `HP-021`, `HP-022`, `HP-023`, `HP-024`, `HP-025`, `HP-055`, `HP-056`, `HP-057` | Do after metadata/read-cost work. Threshold-only retries are still banned until the runtime can prove read cost and payload coverage. | Reopens old direct-stage, short-slack refill, two-entry queue, async, and prepared-present failures under a real ownership model. |
 | Scene-transition and setup hiding | 5 | `HP-010`, `HP-016`, `HP-017`, `HP-026` | Run beside generated setup-prime work, but judge by `scene_vb`, not only active `loop_vb`. | Converts existing active-loop setup-prime wins into real end-to-end screensaver speed by hiding setup between scenes. |
-| Pack-time graphics preprocessing | 6 | `RT-009`, `HP-032`, `HP-033`, `HP-034`, `HP-035`, `HP-036`, `HP-037`, `HP-038`, `HP-039`, `HP-040`, `HP-041`, `HP-042`, `HP-043` | Do after the CD/setup queue unless a non-fishing canary shows graphics dominates. Prefer generated data or assembly over runtime branches. | Moves restore, compose, upload, and dirty-state work off the PS1 hot path without repeating runtime parser/scratch-packing failures. |
+| Pack-time graphics preprocessing | 6 | `RT-009`, `HP-032`, `HP-033`, `HP-034`, `HP-035`, `HP-036`, `HP-037`, `HP-038`, `HP-039`, `HP-040`, `HP-041`, `HP-042`, `HP-043`, `HP-061`, `HP-062`, `HP-063`, `HP-064`, `HP-065`, `HP-066` | Do after the CD/setup queue unless a non-fishing canary shows graphics dominates. Prefer generated data or assembly over runtime branches; for ASM-feasibility items, run codegen audit and C word-stride tests before hand-written MIPS. | Moves restore, compose, upload, and dirty-state work off the PS1 hot path without repeating runtime parser/scratch-packing failures. |
 | Layout, binary size, and diagnostic cleanup | 7 | `RT-008`, `HP-027`, `HP-029`, `HP-030`, `HP-031`, `HP-051` | Run when a phase-control harness exists or when a current baseline makes a prior failure phase-safe. Require exact cadence if it is not a speed experiment. | Recovers binary size and public-readiness cleanup without paying the recurring one-visible-VBlank phase tax. |
 | Validation and expansion guardrails | 8 | `HP-045`, `HP-046`, `HP-047`, `HP-048`, `HP-059` | Run continuously around promotions, especially when expanding beyond FISHING scenes. | Prevents false wins, keeps no-fallback cleanup honest, and preserves archeology/blog traceability. |
 | Architectural branch | 9 | `HP-013`, `HP-014`, `HP-044` | Branch separately after generated metadata and validation are stable. Treat as high-risk, high-upside work, not a quick loop test. | Possible larger gains through payload duplication/reorder or GPU-sprite foreground compositing if incremental wins plateau. |
@@ -1626,15 +1632,16 @@ Goal: keep the executable small and hot code friendly.
 | ID | Task | Rationale |
 |---|---|---|
 | `P7-01` | Keep `-O2`, `-G8`, and function/data sections as the baseline. | Current flags are already sensible. |
-| `P7-02` | Test `-O3` only on hot compositor files. | Whole-program `-O3` may grow code and hurt I-cache. |
-| `P7-03` | Split hot compositor code into a small translation unit if needed. | Easier to test flags per file. |
-| `P7-04` | Consider MIPS assembly only after C fast paths are measured. | Assembly should target proven hot loops. |
+| `P7-02` | Audit graphics `-O2` before broader ASM work. | `graphics_ps1.c` appears to already inherit default `-O2`; verify with build/map output, then test scoped helper `-O2` only where the current source forces `-Os`. |
+| `P7-03` | Split hot compositor/restore code into small translation units if scoped flags need isolation. | Easier to test `-O2`/`-Os` per helper without moving foreground/CD scheduler code. |
+| `P7-04` | Consider MIPS assembly only after C word-stride and scratchpad-palette fast paths are measured. | Assembly is viable, but the cheapest wins are wider loads/stores and better data placement; ASM should target proven hot loops and stay switchable against C. |
 | `P7-05` | Remove or compile-gate unused debug/text formatting in release builds. | `vsnprintf` and debug paths are visible in the map. |
 | `P7-06` | Skip `ClearOTagR` in pure FG2 software-background frames if safe. | Active playback often does not emit GPU primitives. |
 | `P7-07` | Keep the primitive path available for debug/other scenes. | Avoid breaking future sandbox work. |
 | `P7-08` | Run a toolchain flag matrix under exact layout gates. | Test `-Os`, per-file `-O2/-O3`, function alignment, section ordering, and code-address padding as first-class experiments. |
 | `P7-09` | Separate hot FG2/CD code from cold menu/debug code by translation unit or section. | Prevent valid cold-code cleanup from perturbing hot scheduler/code phase. |
 | `P7-10` | Done: table-drive foreground runtime policies. | `policy-table-refactor` moved accepted stream-window and setup-prime exceptions into compact tables. The targeted 11-row gate stayed exact-flat while `foregroundPilotPlay` shrank `10108 -> 9576` bytes and the ELF shrank `732872 -> 731568` bytes without crossing the `147456` PS-EXE bucket. This is the safer surface for future generated metadata experiments. |
+| `P7-11` | Add a map/flag report to the perf harness for hot graphics functions. | The `-O2`/ASM ladder needs a cheap way to prove symbol size, address, PS-EXE bucket, and foreground-pack LBA stayed inside the acceptance envelope. |
 
 Detailed current experiment queue: [performance-next-100.md](performance-next-100.md).
 It uses the accepted fishing1 exact baseline as of 2026-04-26 and expands the
