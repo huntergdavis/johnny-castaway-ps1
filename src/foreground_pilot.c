@@ -268,6 +268,47 @@ struct TFgPilotReadGroup {
     uint16 endSector;
 };
 
+struct TFgRuntimeWindowPolicy {
+    const char *sceneName;
+    uint32 highWindowBytes;
+    uint32 lowWindowBytes;
+    uint8 requiredPackFormat;
+};
+
+struct TFgRuntimeSetupPrimePolicy {
+    const char *sceneName;
+    uint32 highWindowBytes;
+    uint32 lowWindowBytes;
+};
+
+static const struct TFgRuntimeWindowPolicy kFgRuntimeWindowPolicies[] = {
+    {"building4", FG_BUILDING4_HIGH_WINDOW_BYTES, FG_BUILDING4_LOW_WINDOW_BYTES, 0},
+    {"building6", FG_BUILDING6_WINDOW_BYTES, FG_BUILDING6_WINDOW_BYTES, 0},
+    {
+        "walkstuf1",
+        FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES,
+        FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES,
+        kFgPilotPackFormatIndexed8TemporalResidual
+    }
+};
+
+static const struct TFgRuntimeSetupPrimePolicy kFgRuntimeSetupPrimePolicies[] = {
+    {"fishing1", FG_SETUP_PRIME_WINDOW_BYTES, FG_SETUP_PRIME_WINDOW_BYTES},
+    {
+        "fishing2",
+        FG_FISHING2_SETUP_PRIME_WINDOW_BYTES,
+        FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)
+    },
+    {"activity12", FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"fishing3", 128UL * 1024UL, FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)},
+    {"fishing6", FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"fishing7", FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"johnny3", FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"visitor3", FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES, FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES},
+    {"visitor1", FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"visitor7", FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES, 0}
+};
+
 struct TFgPilotSceneFamily {
     const char *scenePrefix;
     const char *adsName;
@@ -1533,9 +1574,34 @@ static uint32 fgRuntimePackPayloadEndBytes(void)
     return payloadEnd;
 }
 
+static uint32 fgRuntimeStreamWindowBytes(const char *sceneName,
+                                         uint32 requestedWindowBytes)
+{
+    uint8 i;
+
+    if (requestedWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
+        return requestedWindowBytes;
+
+    for (i = 0;
+         i < sizeof(kFgRuntimeWindowPolicies) / sizeof(kFgRuntimeWindowPolicies[0]);
+         i++) {
+        if (kFgRuntimeWindowPolicies[i].requiredPackFormat != 0 &&
+            kFgRuntimeWindowPolicies[i].requiredPackFormat != gFgRuntime.packFormat)
+            continue;
+        if (fgSceneEquals(sceneName, kFgRuntimeWindowPolicies[i].sceneName))
+            return islandState.lowTide ?
+                kFgRuntimeWindowPolicies[i].lowWindowBytes :
+                kFgRuntimeWindowPolicies[i].highWindowBytes;
+    }
+
+    return requestedWindowBytes;
+}
+
 static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
                                              uint32 normalWindowBytes)
 {
+    uint8 i;
+
     if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
         fgSceneEquals(sceneName, "walkstuf1"))
         return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
@@ -1555,32 +1621,14 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     }
 
     /* Scene-specific until generated prime budgets exist for all variants. */
-    if (fgSceneEquals(sceneName, "fishing1"))
-        return FG_SETUP_PRIME_WINDOW_BYTES;
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return islandState.lowTide ?
-            (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
-            FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "activity12"))
-        return FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return islandState.lowTide ?
-            (FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)) :
-            (128UL * 1024UL);
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "fishing6"))
-        return FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "fishing7"))
-        return FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "johnny3"))
-        return FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "visitor3"))
-        return FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (islandState.lowTide && fgSceneEquals(sceneName, "visitor3"))
-        return FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "visitor1"))
-        return FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES;
-    if (!islandState.lowTide && fgSceneEquals(sceneName, "visitor7"))
-        return FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES;
+    for (i = 0;
+         i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
+         i++) {
+        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName))
+            return islandState.lowTide ?
+                kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
+                kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
+    }
     return 0;
 }
 
@@ -2257,24 +2305,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchWindowBytes > 0) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
-                if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                    fgSceneEquals(sceneName, "building4")) {
-                    windowBytes = islandState.lowTide ?
-                        FG_BUILDING4_LOW_WINDOW_BYTES :
-                        FG_BUILDING4_HIGH_WINDOW_BYTES;
-                    windowCapacityBytes = windowBytes;
-                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                    fgSceneEquals(sceneName, "building6")) {
-                    windowBytes = FG_BUILDING6_WINDOW_BYTES;
-                    windowCapacityBytes = windowBytes;
-                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
-                    gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
-                    fgSceneEquals(sceneName, "walkstuf1")) {
-                    windowBytes = islandState.lowTide ?
-                        FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES :
-                        FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES;
-                    windowCapacityBytes = windowBytes;
-                }
+                windowBytes = fgRuntimeStreamWindowBytes(sceneName, windowBytes);
+                windowCapacityBytes = windowBytes;
                 gFgRuntime.setupPrimeWindowBytes =
                     fgRuntimeSetupPrimeWindowBytes(sceneName, windowBytes);
                 if (gFgRuntime.setupPrimeWindowBytes > 0 &&

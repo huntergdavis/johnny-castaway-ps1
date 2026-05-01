@@ -161,7 +161,7 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
-`88.1%` target speed as of `compact-fgp3-v56-walkstuf1high-base84` (`14.6187%` exact over target /
+`88.1%` target speed as of `compact-fgp3-v57-policy-table-refactor` (`14.6187%` exact over target /
 `88.1130%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
@@ -1619,6 +1619,7 @@ Goal: keep the executable small and hot code friendly.
 | `P7-07` | Keep the primitive path available for debug/other scenes. | Avoid breaking future sandbox work. |
 | `P7-08` | Run a toolchain flag matrix under exact layout gates. | Test `-Os`, per-file `-O2/-O3`, function alignment, section ordering, and code-address padding as first-class experiments. |
 | `P7-09` | Separate hot FG2/CD code from cold menu/debug code by translation unit or section. | Prevent valid cold-code cleanup from perturbing hot scheduler/code phase. |
+| `P7-10` | Done: table-drive foreground runtime policies. | `policy-table-refactor` moved accepted stream-window and setup-prime exceptions into compact tables. The targeted 11-row gate stayed exact-flat while `foregroundPilotPlay` shrank `10108 -> 9576` bytes and the ELF shrank `732872 -> 731568` bytes without crossing the `147456` PS-EXE bucket. This is the safer surface for future generated metadata experiments. |
 
 Detailed current experiment queue: [performance-next-100.md](performance-next-100.md).
 It uses the accepted fishing1 exact baseline as of 2026-04-26 and expands the
