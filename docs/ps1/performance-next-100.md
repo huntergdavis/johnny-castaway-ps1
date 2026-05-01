@@ -171,6 +171,12 @@ small but clean CD-pressure win against the fresh current baseline:
 `due_misses 25 -> 24`, with the six canary rows exact-flat. Continue VISITOR3
 through generated/costed groups such as `110..122` or `110..126`, not scalar
 window changes.
+The first `110..122` hand-coded follow-up is rejected: the seven-case gate was
+exact-flat and VISITOR3 high reported `group_hits=0`. This does not disprove
+the sector cluster; it says the runtime did not request the append start the
+manual table expected. The next grouped-read attempt needs append-start
+simulation or generated metadata, not another raw table entry from the same
+candidate list.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
