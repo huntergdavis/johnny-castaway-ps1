@@ -148,6 +148,11 @@ ELF, shifted hot symbols by `+296` bytes, left loop time flat, and traded small
 blocking improvements for refill/overrun regressions on WALKSTUF1. Do not spend
 more time on local indexed8 loop unrolls; the next indexed8 wins need data-shape
 or scheduler changes.
+The per-compose PAL4 scratchpad palette probe is rejected: it shrank the
+compositor and ELF but did not move loop time safely, and VISITOR3 low regressed
+hard. Do not spend more time on local scratchpad palette copies; scratchpad work
+needs a generated or assembly compositor that owns layout and proves cross-scene
+cadence.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -585,7 +590,7 @@ near misses:
 | 3 | 91 | Done/no promotion: the hot/semi-hot whole-TU `-O2` sweep is now recorded and should not be retried blindly. |
 | 4 | 79 | Next active speed test: test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
 | 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
-| 6 | 85 | Test scratchpad palette in compose after the C compose path has a measured baseline. |
+| 6 | 85 | Done/no promotion: the per-compose scratchpad palette probe shrank code but regressed VISITOR3 low, so retry scratchpad only inside generated/assembly compositor ownership. |
 | 7 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 8 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
 | 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
