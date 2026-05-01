@@ -94,6 +94,7 @@ extern uint8 pad_buff[2][34];
  * runtime engines stay out of the PS1 build. */
 #include "story_data.h"
 #ifdef PS1_BUILD
+#include "walk_render.h"
 #include "walk_pilot.h"
 #endif
 

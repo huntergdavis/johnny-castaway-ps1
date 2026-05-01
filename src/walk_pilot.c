@@ -48,29 +48,33 @@ static int gWalkBmpLoaded = 0;
 static struct TTtmThread gWalkThread;
 
 /* Persistent walk-area pristine buffer (Option B in the architecture
- * discussion). Holds the bgTile pixels in the walk bbox at a known-clean
- * moment (right after fgBackdropEnableWaveBackdrop, before scene playback
- * dirties them). Reused across all walks until islandState changes —
- * i.e. once per "sequence" boundary. ~187KB locked allocation, swapped
- * in cheap memcpy form per walk frame to clear the previous pose. */
-/* Walk-area bbox. Sized to cover spots SPOT_A..SPOT_F with a 60-tall
- * sprite, padded modestly for grDx/grDy variation across observed
- * islandState combinations. Earlier we extended this to y=140..360 to
- * absorb feet residue at the +grDy extreme; the larger buffer ate
- * enough heap that fishing1's per-scene streaming alloc started failing
- * with only 226 KB largest free. Reverting to 150..330 recovers ~42 KB
- * — feet residue is back in the rare highest-grDy state, but real
- * scenes load. The proper fix is pre-allocating the per-scene streaming
- * buffers at boot too, which is the next step.
+ * discussion). Holds bgTile pixels at a known-clean moment (right after
+ * fgBackdropEnableWaveBackdrop, before scene playback dirties them).
+ * Reused across all walks until islandState changes — i.e. once per
+ * "sequence" boundary.
  *
- * Size: 520 × 180 × 2 = ~187KB. */
-#define WALK_CLEAN_X      80
-#define WALK_CLEAN_Y      150
-#define WALK_CLEAN_W      520
-#define WALK_CLEAN_H      180
+ * The old buffer was a fixed screen-space rect (80,150,520,180). That
+ * missed Johnny whenever the randomized island y offset pushed the walk
+ * path down: walk_data top-left y can reach 257 + islandState.yPos, and
+ * JOHNWALK frames are up to 78 px tall. The result was lower-body residue
+ * from every previous walking pose. Keep roughly the same allocation size,
+ * but anchor the rect to the island so it always follows the path.
+ *
+ * Relative bbox covers walkData x=284..526/y=209..257 plus the largest
+ * JOHNWALK frame (48x78), with padding for turn frames. Scene clean rects
+ * still handle waves and FG2 leftovers; this buffer only owns walking
+ * Johnny's erase area.
+ *
+ * Size: 380 x 250 x 2 = ~186KB. */
+#define WALK_CLEAN_REL_X  240
+#define WALK_CLEAN_REL_Y  120
+#define WALK_CLEAN_W      380
+#define WALK_CLEAN_H      250
 
 static uint16 *gWalkCleanBuf  = NULL;
 static int     gWalkCleanValid = 0;
+static sint16  gWalkCleanX = 0;
+static sint16  gWalkCleanY = 0;
 /* State key — any field changing means the buffer's pixels are stale. */
 static int gWalkCleanRaft     = -1;
 static int gWalkCleanLowTide  = -1;
@@ -112,7 +116,10 @@ void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
         }
     }
 
-    grCaptureBgRect(gWalkCleanBuf, WALK_CLEAN_X, WALK_CLEAN_Y,
+    gWalkCleanX = (sint16)(xPos + WALK_CLEAN_REL_X);
+    gWalkCleanY = (sint16)(yPos + WALK_CLEAN_REL_Y);
+
+    grCaptureBgRect(gWalkCleanBuf, gWalkCleanX, gWalkCleanY,
                     WALK_CLEAN_W, WALK_CLEAN_H);
 
     gWalkCleanValid    = 1;
@@ -194,7 +201,7 @@ int walkPilotInit(void)
 static void walkPilotRestoreClean(void)
 {
     if (!gWalkCleanValid || gWalkCleanBuf == NULL) return;
-    grRestoreBgRect(gWalkCleanBuf, WALK_CLEAN_X, WALK_CLEAN_Y,
+    grRestoreBgRect(gWalkCleanBuf, gWalkCleanX, gWalkCleanY,
                     WALK_CLEAN_W, WALK_CLEAN_H);
 }
 
@@ -279,6 +286,11 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 
     while (!walkDone) {
         grBeginFrame();
+        /* Start from the previous scene's clean rects first. This clears
+         * foreground leftovers and shoreline wave residue, and mirrors the
+         * normal frame-start path's currDirty reset before the walk-specific
+         * restore below handles Johnny's full route. */
+        grRestoreBgFromRects();
         /* Clear the previous walk pose by restoring pixels from the
          * persistent walk-area pristine buffer. Falls through (no-op)
          * if the capture hasn't been done yet — only the first scene
@@ -321,6 +333,7 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
     int holdFrames = (fromSpot == toSpot) ? 0 : 12;
     for (int hold = 0; hold < holdFrames; hold++) {
         grBeginFrame();
+        grRestoreBgFromRects();
         walkPilotRestoreClean();
         fgBackdropTickWavesPublic();
         walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
