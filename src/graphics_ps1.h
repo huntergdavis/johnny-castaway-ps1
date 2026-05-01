@@ -192,6 +192,9 @@ void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint3
 void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanDataSize,
                                           const uint16 *palette,
                                           sint16 screenX, sint16 screenY);
+void grCompositeIndexed8TemporalResidualToBackground(const uint8 *spanData, uint32 spanDataSize,
+                                                     const uint16 *palette,
+                                                     sint16 screenX, sint16 screenY);
 
 void grSetClipZone(PS1Surface *sfc, sint16 x1, sint16 y1, sint16 x2, sint16 y2);
 void grCopyZoneToBg(PS1Surface *sfc, uint16 arg0, uint16 arg1, uint16 arg2, uint16 arg3);

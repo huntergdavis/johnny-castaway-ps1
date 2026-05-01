@@ -100,19 +100,22 @@ A scene can be timed here without being visually certified.
 
 ### Rollup
 
-Current battle-card rollup as of 2026-04-29:
+Current battle-card rollup as of 2026-04-30:
 
 | Metric | Value |
 |---|---:|
 | Scenes visually validated | `2 / 63` |
 | Validated scenes | `fishing1`, `fishing2` |
-| Scene/tide variants timed | `57 / 126` |
-| Scenes with at least one timed variant | `34 / 63` |
-| Scenes with both high/low variants timed | `23 / 63` |
-| Pending variants | `67 / 126` |
-| Blocked variants | `2 / 126` |
-| Measured average over target | `+12.1%` |
-| Measured average target speed | `89.8%` |
+| Scene/tide variants routed through headless perf | `126 / 126` |
+| Timing-bearing variants | `120 / 126` |
+| Scenes with at least one active-loop timed variant | `60 / 63` |
+| Scenes with both high/low variants measured | `63 / 63` |
+| Pending variants | `0 / 126` |
+| Blocked variants | `0 / 126` |
+| Timing-bearing average over target | `+14.6%` |
+| Timing-bearing average target speed | `88.1%` |
+| Latest perf matrix run | `2026-04-30T19:38:49` |
+| Stats version | mixed: latest refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -137,137 +140,145 @@ and this page.
 - **Blocking**: visible CD/blocking VBlanks.
 - **Prefetch**: prefetch overrun VBlanks.
 - **Due**: due-frame misses.
+- **Latest Run**: ISO timestamp derived from the headless summary path
+  (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
+  matrix run has been recorded for that variant.
+- **Stats Version**: performance/layout version for that row. The latest
+  refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up
+  rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through
+  `compact-fgp3-v29-smallprime`; the complete full-matrix baseline remains
+  `compact-fgp3-v2-fullmatrix` for rows not rerun since that pass.
 
 ### 126-variant battle card
 
-| Scene | Tide | Status | Over Target | Target Speed | VBlanks | Blocking | Prefetch | Due | Notes |
-|---|---|---|---:|---:|---:|---:|---:|---:|---|
-| `activity1` | high | measured | +3.0% | 97.1% | 4373/4244 | 0 | 0 | 0 | padded FGP3 |
-| `activity1` | low | measured | +3.1% | 97.0% | 4373/4242 | 2 | 2 | 0 | padded FGP3 |
-| `activity4` | high | measured | +12.9% | 88.5% | 1205/1067 | 5 | 5 | 0 | padded FGP3 |
-| `activity4` | low | measured | +12.5% | 88.9% | 1203/1069 | 1 | 1 | 0 | padded FGP3 |
-| `activity5` | high | measured | +9.3% | 91.5% | 1866/1707 | 25 | 8 | 4 | padded FGP3 |
-| `activity5` | low | measured | +9.1% | 91.7% | 1861/1706 | 29 | 16 | 3 | padded FGP3 |
-| `activity6` | high | measured | +14.5% | 87.3% | 1043/911 | 0 | 0 | 0 | padded FGP3 |
-| `activity6` | low | measured | +14.5% | 87.3% | 1043/911 | 0 | 0 | 0 | padded FGP3; loop-validated because noloop shutdown hits post-scene artifact |
-| `activity7` | high | measured | +22.7% | 81.5% | 751/612 | 8 | 8 | 0 | padded FGP3 |
-| `activity7` | low | measured | +21.7% | 82.2% | 747/614 | 1 | 1 | 0 | padded FGP3 |
-| `activity8` | high | pending | - | - | - | - | - | - |  |
-| `activity8` | low | pending | - | - | - | - | - | - |  |
-| `activity9` | high | measured | +11.2% | 89.9% | 2268/2039 | 97 | 60 | 9 | padded FGP3; loop-validated because noloop shutdown hits post-scene artifact |
-| `activity9` | low | measured | +11.1% | 90.0% | 2271/2044 | 92 | 56 | 8 | padded FGP3; loop-validated because noloop shutdown hits post-scene artifact |
-| `activity10` | high | measured | +12.3% | 89.1% | 1408/1254 | 18 | 13 | 1 | padded FGP3 |
-| `activity10` | low | measured | +12.2% | 89.1% | 1408/1255 | 23 | 14 | 2 | padded FGP3 |
-| `activity11` | high | pending | - | - | - | - | - | - |  |
-| `activity11` | low | pending | - | - | - | - | - | - |  |
-| `activity12` | high | measured | +9.9% | 91.0% | 1551/1411 | 12 | 12 | 0 | padded FGP3 |
-| `activity12` | low | measured | +10.2% | 90.8% | 1551/1408 | 20 | 14 | 1 | padded FGP3 |
-| `building1` | high | measured | +25.6% | 79.6% | 966/769 | 76 | 52 | 6 | padded FGP3; prefetch_overrun tradeoff +2 accepted |
-| `building1` | low | pending | - | - | - | - | - | - |  |
-| `building2` | high | measured | +21.8% | 82.1% | 1572/1291 | 173 | 66 | 20 | padded FGP3 |
-| `building2` | low | measured | +21.4% | 82.4% | 1570/1293 | 172 | 62 | 20 | padded FGP3 |
-| `building3` | high | measured | +9.4% | 91.4% | 1565/1431 | 4 | 4 | 0 | padded FGP3 |
-| `building3` | low | pending | - | - | - | - | - | - |  |
-| `building4` | high | measured | +12.5% | 88.9% | 3141/2792 | 326 | 43 | 39 | padded FGP3 |
-| `building4` | low | measured | +12.4% | 89.0% | 3135/2790 | 335 | 46 | 40 | padded FGP3 |
-| `building5` | high | measured | +5.4% | 94.9% | 3514/3334 | 65 | 36 | 6 | padded FGP3 |
-| `building5` | low | measured | +4.8% | 95.4% | 3508/3346 | 33 | 23 | 2 | padded FGP3 |
-| `building6` | high | measured | +13.1% | 88.4% | 2754/2435 | 317 | 43 | 39 | padded FGP3 |
-| `building6` | low | measured | +12.9% | 88.6% | 2746/2433 | 312 | 55 | 38 | padded FGP3; loop-validated because noloop shutdown hits post-scene invalid-read spam |
-| `building7` | high | measured | +5.5% | 94.8% | 3861/3659 | 66 | 47 | 3 | padded FGP3 |
-| `building7` | low | measured | +4.5% | 95.7% | 3837/3672 | 23 | 23 | 0 | padded FGP3 |
-| `fishing1` | high | measured | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
-| `fishing1` | low | measured | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
-| `fishing2` | high | measured | +7.5% | 93.0% | 1898/1765 | 2 | 2 | 0 |  |
-| `fishing2` | low | measured | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
-| `fishing3` | high | measured | +7.1% | 93.4% | 2093/1955 | 15 | 10 | 1 |  |
-| `fishing3` | low | measured | +6.6% | 93.8% | 2090/1960 | 3 | 3 | 0 |  |
-| `fishing4` | high | pending | - | - | - | - | - | - |  |
-| `fishing4` | low | pending | - | - | - | - | - | - |  |
-| `fishing5` | high | pending | - | - | - | - | - | - |  |
-| `fishing5` | low | pending | - | - | - | - | - | - |  |
-| `fishing6` | high | pending | - | - | - | - | - | - |  |
-| `fishing6` | low | pending | - | - | - | - | - | - |  |
-| `fishing7` | high | pending | - | - | - | - | - | - |  |
-| `fishing7` | low | pending | - | - | - | - | - | - |  |
-| `fishing8` | high | measured | +12.4% | 88.9% | 1400/1245 | 21 | 21 | 0 | padded FGP3 |
-| `fishing8` | low | pending | - | - | - | - | - | - |  |
-| `johnny1` | high | measured | +9.5% | 91.3% | 2128/1943 | 31 | 31 | 0 | padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun |
-| `johnny1` | low | measured | +9.8% | 91.1% | 2132/1942 | 37 | 37 | 0 | padded FGP3; manual accept because strict gate only failed zero-baseline prefetch_overrun |
-| `johnny2` | high | pending | - | - | - | - | - | - |  |
-| `johnny2` | low | pending | - | - | - | - | - | - |  |
-| `johnny3` | high | measured | +12.8% | 88.7% | 1308/1160 | 20 | 16 | 1 | padded FGP3 |
-| `johnny3` | low | measured | +12.2% | 89.1% | 1305/1163 | 10 | 10 | 0 | padded FGP3 |
-| `johnny4` | high | pending | - | - | - | - | - | - |  |
-| `johnny4` | low | pending | - | - | - | - | - | - |  |
-| `johnny5` | high | pending | - | - | - | - | - | - |  |
-| `johnny5` | low | pending | - | - | - | - | - | - |  |
-| `johnny6` | high | measured | +3.6% | 96.5% | 2901/2799 | 33 | 33 | 0 | padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially |
-| `johnny6` | low | measured | +3.8% | 96.3% | 2905/2798 | 37 | 37 | 0 | padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially |
-| `mary1` | high | measured | +4.5% | 95.7% | 5028/4813 | 87 | 75 | 2 | padded FGP3 |
-| `mary1` | low | measured | +3.7% | 96.4% | 5011/4830 | 50 | 45 | 1 | padded FGP3 |
-| `mary2` | high | measured | +1.7% | 98.3% | 2286/2248 | 8 | 8 | 0 | padded FGP3 |
-| `mary2` | low | measured | +1.7% | 98.3% | 2286/2248 | 8 | 8 | 0 | padded FGP3 |
-| `mary3` | high | pending | - | - | - | - | - | - |  |
-| `mary3` | low | pending | - | - | - | - | - | - |  |
-| `mary4` | high | pending | - | - | - | - | - | - |  |
-| `mary4` | low | pending | - | - | - | - | - | - |  |
-| `mary5` | high | measured | +7.4% | 93.1% | 1698/1581 | 20 | 20 | 0 | padded FGP3 |
-| `mary5` | low | measured | +7.0% | 93.4% | 1694/1583 | 14 | 14 | 0 | padded FGP3 |
-| `miscgag1` | high | pending | - | - | - | - | - | - |  |
-| `miscgag1` | low | pending | - | - | - | - | - | - |  |
-| `miscgag2` | high | pending | - | - | - | - | - | - |  |
-| `miscgag2` | low | pending | - | - | - | - | - | - |  |
-| `stand1` | high | pending | - | - | - | - | - | - |  |
-| `stand1` | low | pending | - | - | - | - | - | - |  |
-| `stand2` | high | pending | - | - | - | - | - | - |  |
-| `stand2` | low | pending | - | - | - | - | - | - |  |
-| `stand3` | high | pending | - | - | - | - | - | - |  |
-| `stand3` | low | pending | - | - | - | - | - | - |  |
-| `stand4` | high | measured | +12.3% | 89.1% | 1365/1216 | 12 | 12 | 0 | padded FGP3 |
-| `stand4` | low | pending | - | - | - | - | - | - |  |
-| `stand5` | high | measured | +9.7% | 91.2% | 1600/1459 | 8 | 8 | 0 | padded FGP3 |
-| `stand5` | low | pending | - | - | - | - | - | - |  |
-| `stand6` | high | measured | +10.5% | 90.5% | 1503/1360 | 8 | 8 | 0 | padded FGP3 |
-| `stand6` | low | pending | - | - | - | - | - | - |  |
-| `stand7` | high | pending | - | - | - | - | - | - |  |
-| `stand7` | low | pending | - | - | - | - | - | - |  |
-| `stand8` | high | pending | - | - | - | - | - | - |  |
-| `stand8` | low | pending | - | - | - | - | - | - |  |
-| `stand9` | high | pending | - | - | - | - | - | - |  |
-| `stand9` | low | pending | - | - | - | - | - | - |  |
-| `stand10` | high | pending | - | - | - | - | - | - |  |
-| `stand10` | low | pending | - | - | - | - | - | - |  |
-| `stand11` | high | pending | - | - | - | - | - | - |  |
-| `stand11` | low | pending | - | - | - | - | - | - |  |
-| `stand12` | high | measured | +9.7% | 91.2% | 1597/1456 | 8 | 8 | 0 | padded FGP3 |
-| `stand12` | low | pending | - | - | - | - | - | - |  |
-| `stand15` | high | pending | - | - | - | - | - | - |  |
-| `stand15` | low | pending | - | - | - | - | - | - |  |
-| `stand16` | high | pending | - | - | - | - | - | - |  |
-| `stand16` | low | pending | - | - | - | - | - | - |  |
-| `suzy1` | high | blocked | - | - | - | - | - | - | baseline coverage gap: pack loads but loop_vb=0/last_frame=0; do not convert until fgpilot SUZY playback is understood |
-| `suzy1` | low | pending | - | - | - | - | - | - |  |
-| `suzy2` | high | blocked | - | - | - | - | - | - | fgpilot coverage gap; pack loads but foreground loop never starts |
-| `suzy2` | low | pending | - | - | - | - | - | - |  |
-| `visitor1` | high | pending | - | - | - | - | - | - |  |
-| `visitor1` | low | pending | - | - | - | - | - | - |  |
-| `visitor3` | high | measured | +56.1% | 64.1% | 1581/1013 | 424 | 145 | 24 | padded FGP3; still CD-bound |
-| `visitor3` | low | measured | +58.4% | 63.1% | 1611/1017 | 404 | 99 | 26 | padded FGP3; still CD-bound |
-| `visitor4` | high | pending | - | - | - | - | - | - |  |
-| `visitor4` | low | pending | - | - | - | - | - | - |  |
-| `visitor5` | high | measured | +20.0% | 83.3% | 1295/1079 | 107 | 52 | 9 | padded FGP3; manually accepted because only prefetch_overrun_vb regressed while loop and blocking improved materially |
-| `visitor5` | low | pending | - | - | - | - | - | - |  |
-| `visitor6` | high | measured | +7.5% | 93.0% | 2198/2044 | 14 | 14 | 0 | padded FGP3 |
-| `visitor6` | low | pending | - | - | - | - | - | - |  |
-| `visitor7` | high | measured | +9.6% | 91.2% | 1777/1621 | 15 | 15 | 0 | padded FGP3 |
-| `visitor7` | low | pending | - | - | - | - | - | - |  |
-| `walkstuf1` | high | pending | - | - | - | - | - | - |  |
-| `walkstuf1` | low | pending | - | - | - | - | - | - |  |
-| `walkstuf2` | high | pending | - | - | - | - | - | - |  |
-| `walkstuf2` | low | pending | - | - | - | - | - | - |  |
-| `walkstuf3` | high | measured | +10.4% | 90.6% | 2512/2275 | 130 | 90 | 6 | padded FGP3 |
-| `walkstuf3` | low | pending | - | - | - | - | - | - |  |
+| Scene | Tide | Status | Latest Run | Stats Version | Over Target | Target Speed | VBlanks | Blocking | Prefetch | Due | Notes |
+|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| `activity1` | high | measured | 2026-04-29T16:47:26 | compact-fgp3-v2-fullmatrix | +3.1% | 97.0% | 4373/4243 | 1 | 1 | 0 |  |
+| `activity1` | low | measured | 2026-04-29T16:49:09 | compact-fgp3-v2-fullmatrix | +3.1% | 97.0% | 4373/4243 | 1 | 1 | 0 |  |
+| `activity4` | high | measured | 2026-04-30T08:08:06 | compact-fgp3-v34-visitor1high-prime | +12.4% | 88.9% | 1202/1069 | 0 | 0 | 0 |  |
+| `activity4` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +12.4% | 88.9% | 1202/1069 | 0 | 0 | 0 |  |
+| `activity5` | high | measured | 2026-04-29T16:52:48 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 1867/1707 | 27 | 10 | 4 |  |
+| `activity5` | low | measured | 2026-04-29T16:53:53 | compact-fgp3-v2-fullmatrix | +9.0% | 91.8% | 1860/1707 | 26 | 12 | 3 |  |
+| `activity6` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +14.5% | 87.3% | 1043/911 | 0 | 0 | 0 |  |
+| `activity6` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +14.5% | 87.3% | 1043/911 | 0 | 0 | 0 |  |
+| `activity7` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +21.3% | 82.4% | 746/615 | 0 | 0 | 0 |  |
+| `activity7` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +21.3% | 82.4% | 746/615 | 0 | 0 | 0 |  |
+| `activity8` | high | measured | 2026-04-30T13:07:10 | compact-fgp3-v45-activity8-auto-prime | +15.2% | 86.8% | 1043/905 | 0 | 0 | 0 |  |
+| `activity8` | low | measured | 2026-04-30T13:07:10 | compact-fgp3-v45-activity8-auto-prime | +15.2% | 86.8% | 1043/905 | 0 | 0 | 0 |  |
+| `activity9` | high | measured | 2026-04-30T19:37:06 | compact-fgp3-v58-activity9high-window20-table | +10.4% | 90.6% | 2259/2047 | 84 | 53 | 6 |  |
+| `activity9` | low | measured | 2026-04-29T17:01:37 | compact-fgp3-v2-fullmatrix | +11.2% | 90.0% | 2272/2044 | 94 | 58 | 8 |  |
+| `activity10` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.9% | 90.2% | 1399/1262 | 0 | 0 | 0 |  |
+| `activity10` | low | measured | 2026-04-29T17:03:48 | compact-fgp3-v2-fullmatrix | +11.4% | 89.8% | 1401/1258 | 14 | 4 | 2 |  |
+| `activity11` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
+| `activity11` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
+| `activity12` | high | measured | 2026-04-30T08:59:42 | compact-fgp3-v38-activity12high-prime | +9.0% | 91.7% | 1543/1415 | 0 | 0 | 0 |  |
+| `activity12` | low | measured | 2026-04-29T17:08:49 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 1543/1411 | 8 | 4 | 1 |  |
+| `building1` | high | measured | 2026-04-29T17:09:55 | compact-fgp3-v2-fullmatrix | +23.3% | 81.1% | 951/771 | 63 | 25 | 8 |  |
+| `building1` | low | measured | 2026-04-29T17:10:45 | compact-fgp3-v2-fullmatrix | +19.9% | 83.4% | 935/780 | 37 | 18 | 4 |  |
+| `building2` | high | measured | 2026-04-29T17:11:35 | compact-fgp3-v2-fullmatrix | +20.2% | 83.2% | 1559/1297 | 150 | 45 | 19 |  |
+| `building2` | low | measured | 2026-04-29T17:12:34 | compact-fgp3-v2-fullmatrix | +20.1% | 83.3% | 1556/1296 | 150 | 42 | 20 |  |
+| `building3` | high | measured | 2026-04-30T13:33:14 | compact-fgp3-v48-building3low-auto-prime | +9.4% | 91.4% | 1565/1430 | 5 | 5 | 0 |  |
+| `building3` | low | measured | 2026-04-30T13:32:08 | compact-fgp3-v48-building3low-auto-prime | +9.1% | 91.7% | 1564/1434 | 0 | 0 | 0 |  |
+| `building4` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +10.0% | 90.9% | 3073/2793 | 240 | 27 | 34 |  |
+| `building4` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +10.2% | 90.7% | 3080/2795 | 168 | 63 | 18 |  |
+| `building5` | high | measured | 2026-04-29T17:20:47 | compact-fgp3-v2-fullmatrix | +5.0% | 95.2% | 3504/3336 | 52 | 25 | 6 |  |
+| `building5` | low | measured | 2026-04-29T17:24:22 | compact-fgp3-v2-fullmatrix | +4.5% | 95.7% | 3498/3348 | 16 | 11 | 2 |  |
+| `building6` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +10.5% | 90.5% | 2687/2431 | 215 | 17 | 32 |  |
+| `building6` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +10.8% | 90.2% | 2697/2434 | 226 | 15 | 33 |  |
+| `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
+| `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
+| `fishing1` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
+| `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
+| `fishing3` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +7.6% | 92.9% | 2098/1950 | 23 | 18 | 1 |  |
+| `fishing3` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +6.8% | 93.6% | 2091/1958 | 6 | 6 | 0 |  |
+| `fishing4` | high | measured | 2026-04-30T13:25:26 | compact-fgp3-v47-fishing4low-auto-prime | +14.7% | 87.2% | 967/843 | 0 | 0 | 0 |  |
+| `fishing4` | low | measured | 2026-04-30T13:24:28 | compact-fgp3-v47-fishing4low-auto-prime | +14.7% | 87.2% | 967/843 | 0 | 0 | 0 |  |
+| `fishing5` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | -9.4% | 110.4% | 807/891 | 0 | 0 | 0 |  |
+| `fishing5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | -9.5% | 110.5% | 806/891 | 0 | 0 | 0 |  |
+| `fishing6` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +18.2% | 84.6% | 890/753 | 0 | 0 | 0 |  |
+| `fishing6` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +18.2% | 84.6% | 890/753 | 0 | 0 | 0 |  |
+| `fishing7` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +18.3% | 84.5% | 858/725 | 0 | 0 | 0 |  |
+| `fishing7` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +18.3% | 84.5% | 858/725 | 0 | 0 | 0 |  |
+| `fishing8` | high | measured | 2026-04-29T17:34:39 | compact-fgp3-v2-fullmatrix | +11.9% | 89.4% | 1393/1245 | 13 | 14 | 0 |  |
+| `fishing8` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.1% | 90.8% | 1380/1253 | 0 | 0 | 0 |  |
+| `johnny1` | high | measured | 2026-04-29T17:35:40 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 2125/1942 | 31 | 31 | 0 |  |
+| `johnny1` | low | measured | 2026-04-29T17:36:10 | compact-fgp3-v2-fullmatrix | +9.6% | 91.2% | 2129/1942 | 33 | 33 | 0 |  |
+| `johnny2` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +7.3% | 93.2% | 1878/1751 | 0 | 0 | 0 |  |
+| `johnny2` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +7.3% | 93.2% | 1878/1751 | 0 | 0 | 0 |  |
+| `johnny3` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
+| `johnny3` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
+| `johnny4` | high | measured | 2026-04-30T13:18:41 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
+| `johnny4` | low | measured | 2026-04-30T13:17:30 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
+| `johnny5` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 |  |
+| `johnny5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 |  |
+| `johnny6` | high | measured | 2026-04-29T17:40:45 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2895/2800 | 27 | 27 | 0 |  |
+| `johnny6` | low | measured | 2026-04-29T17:41:03 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2896/2800 | 27 | 27 | 0 |  |
+| `mary1` | high | measured | 2026-04-29T17:42:09 | compact-fgp3-v2-fullmatrix | +3.7% | 96.4% | 5004/4826 | 49 | 40 | 2 |  |
+| `mary1` | low | measured | 2026-04-29T17:42:28 | compact-fgp3-v2-fullmatrix | +3.2% | 96.9% | 4994/4839 | 26 | 20 | 1 |  |
+| `mary2` | high | measured | 2026-04-29T17:44:11 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2284/2247 | 7 | 7 | 0 |  |
+| `mary2` | low | measured | 2026-04-29T17:44:28 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2285/2249 | 6 | 6 | 0 |  |
+| `mary3` | high | measured | 2026-04-29T17:45:25 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `mary4` | high | measured | 2026-04-29T17:46:07 | compact-fgp3-v2-fullmatrix | -2.4% | 102.4% | 1968/2016 | 28 | 12 | 3 |  |
+| `mary4` | low | measured | 2026-04-29T17:46:13 | compact-fgp3-v2-fullmatrix | -2.6% | 102.7% | 1966/2019 | 24 | 10 | 3 |  |
+| `mary5` | high | measured | 2026-04-29T17:47:11 | compact-fgp3-v2-fullmatrix | +6.6% | 93.8% | 1687/1583 | 7 | 7 | 0 |  |
+| `mary5` | low | measured | 2026-04-29T17:47:23 | compact-fgp3-v2-fullmatrix | +6.6% | 93.8% | 1688/1583 | 8 | 8 | 0 |  |
+| `miscgag1` | high | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +14.2% | 87.6% | 1097/961 | 0 | 0 | 0 |  |
+| `miscgag1` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +14.0% | 87.7% | 1096/961 | 0 | 0 | 0 |  |
+| `miscgag2` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | -0.3% | 100.3% | 1352/1356 | 0 | 0 | 0 |  |
+| `miscgag2` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | -0.3% | 100.3% | 1352/1356 | 0 | 0 | 0 |  |
+| `stand1` | high | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +69.3% | 59.1% | 342/202 | 0 | 0 | 0 |  |
+| `stand1` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +69.3% | 59.1% | 342/202 | 0 | 0 | 0 |  |
+| `stand2` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +27.5% | 78.4% | 626/491 | 0 | 0 | 0 |  |
+| `stand2` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +27.5% | 78.4% | 626/491 | 0 | 0 | 0 |  |
+| `stand3` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +24.4% | 80.4% | 694/558 | 0 | 0 | 0 |  |
+| `stand3` | low | measured | 2026-04-30T05:33:36 | compact-fgp3-v29-smallprime | +24.4% | 80.4% | 694/558 | 0 | 0 | 0 |  |
+| `stand4` | high | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +11.3% | 89.8% | 1359/1221 | 0 | 0 | 0 |  |
+| `stand4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.2% | 89.9% | 1358/1221 | 0 | 0 | 0 |  |
+| `stand5` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +9.2% | 91.6% | 1595/1461 | 0 | 0 | 0 |  |
+| `stand5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.1% | 91.7% | 1594/1461 | 0 | 0 | 0 |  |
+| `stand6` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.0% | 90.9% | 1501/1365 | 0 | 0 | 0 |  |
+| `stand6` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.9% | 91.0% | 1500/1365 | 0 | 0 | 0 |  |
+| `stand7` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +25.0% | 80.0% | 674/539 | 0 | 0 | 0 |  |
+| `stand7` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +25.1% | 79.9% | 673/538 | 0 | 0 | 0 |  |
+| `stand8` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +26.9% | 78.8% | 636/501 | 0 | 0 | 0 |  |
+| `stand8` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +27.0% | 78.7% | 635/500 | 0 | 0 | 0 |  |
+| `stand9` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +25.0% | 80.0% | 674/539 | 0 | 0 | 0 |  |
+| `stand9` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +25.1% | 79.9% | 673/538 | 0 | 0 | 0 |  |
+| `stand10` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +25.0% | 80.0% | 674/539 | 0 | 0 | 0 |  |
+| `stand10` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +25.1% | 79.9% | 673/538 | 0 | 0 | 0 |  |
+| `stand11` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +25.1% | 79.9% | 673/538 | 0 | 0 | 0 |  |
+| `stand11` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +25.1% | 79.9% | 673/538 | 0 | 0 | 0 |  |
+| `stand12` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +9.1% | 91.7% | 1594/1461 | 0 | 0 | 0 |  |
+| `stand12` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.1% | 91.7% | 1593/1460 | 0 | 0 | 0 |  |
+| `stand15` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +13.4% | 88.2% | 1123/990 | 0 | 0 | 0 |  |
+| `stand15` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +13.4% | 88.1% | 1122/989 | 0 | 0 | 0 |  |
+| `stand16` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +11.0% | 90.1% | 1322/1191 | 0 | 0 | 0 |  |
+| `stand16` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.1% | 90.0% | 1323/1191 | 0 | 0 | 0 |  |
+| `suzy1` | high | measured | 2026-04-29T18:01:51 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy1` | low | measured | 2026-04-29T18:01:58 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
+| `visitor1` | high | measured | 2026-04-30T08:11:17 | compact-fgp3-v34-visitor1high-prime | +18.8% | 84.2% | 804/677 | 0 | 0 | 0 |  |
+| `visitor1` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +17.3% | 85.3% | 794/677 | 0 | 0 | 0 |  |
+| `visitor3` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +46.5% | 68.3% | 1484/1013 | 321 | 88 | 23 |  |
+| `visitor3` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +49.6% | 66.9% | 1524/1019 | 306 | 76 | 22 |  |
+| `visitor4` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
+| `visitor4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
+| `visitor5` | high | measured | 2026-04-29T18:06:00 | compact-fgp3-v2-fullmatrix | +17.6% | 85.0% | 1274/1083 | 79 | 34 | 9 |  |
+| `visitor5` | low | measured | 2026-04-29T18:06:05 | compact-fgp3-v2-fullmatrix | +14.3% | 87.5% | 1244/1088 | 49 | 14 | 6 |  |
+| `visitor6` | high | measured | 2026-04-29T18:08:18 | compact-fgp3-v2-fullmatrix | +7.5% | 93.0% | 2195/2042 | 13 | 13 | 0 |  |
+| `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
+| `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
+| `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
+| `walkstuf1` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +40.3% | 71.3% | 1965/1401 | 400 | 130 | 21 |  |
+| `walkstuf1` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +43.4% | 69.7% | 2001/1395 | 450 | 134 | 31 |  |
+| `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
+| `walkstuf2` | low | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
+| `walkstuf3` | high | measured | 2026-04-29T18:12:55 | compact-fgp3-v2-fullmatrix | +8.1% | 92.5% | 2460/2276 | 79 | 45 | 6 |  |
+| `walkstuf3` | low | measured | 2026-04-29T18:13:13 | compact-fgp3-v2-fullmatrix | +7.9% | 92.7% | 2466/2285 | 66 | 38 | 5 |  |
 
 ## How to read this
 

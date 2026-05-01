@@ -149,15 +149,33 @@ static const uint16 kFgPilotHeaderFlagBaseDiff = 0x0010;
 static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 static const uint8 kFgPilotPackFormatPal4TemporalResidual = 4;
+static const uint8 kFgPilotPackFormatIndexed8TemporalResidual = 5;
 enum {
     FG_PACK_HEADER_SIZE = 40,
     FG_PACK_ENTRY_SIZE = 20,
     FG_PACK_METADATA_PREFIX_BYTES = 8192
 };
 #define FG_PREFETCH_DEFAULT_WINDOW_BYTES (16UL * 1024UL)
+#define FG_ACTIVITY9_HIGH_WINDOW_BYTES (20UL * 1024UL)
+#define FG_BUILDING4_HIGH_WINDOW_BYTES (24UL * 1024UL)
+#define FG_BUILDING4_LOW_WINDOW_BYTES (32UL * 1024UL)
+#define FG_BUILDING6_WINDOW_BYTES (24UL * 1024UL)
+#define FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES (54UL * 1024UL)
+#define FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES (40UL * 1024UL)
+#define FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES (88UL * 1024UL)
+#define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
+#define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
+#define FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
+#define FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
+#define FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
+#define FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES (216UL * 1024UL)
+#define FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES (208UL * 1024UL)
+#define FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES (296UL * 1024UL)
+#define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
+#define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
 #define FG_CD_SECTOR_SIZE 2048UL
 #define fgSectorAlignDown(offset) ((uint32)((offset) & ~(FG_CD_SECTOR_SIZE - 1UL)))
 #define fgSectorAlignUp(offset) ((uint32)(((offset) + FG_CD_SECTOR_SIZE - 1UL) & ~(FG_CD_SECTOR_SIZE - 1UL)))
@@ -178,6 +196,9 @@ enum {
       (entry)->dataSize > 0 && \
       (entry)->width > 0 && \
       (entry)->height > 0) ? 1 : 0)
+#define fgRuntimeUsesTemporalResidual() \
+    ((gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual || \
+      gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) ? 1 : 0)
 #define fgRuntimeHeldSlackBeforeWait() \
     ((uint16)((!gFgRuntime.active || \
                gFgRuntime.displayVBlanks == 0 || \
@@ -316,6 +337,48 @@ void fgBackdropEndWalk(void)
 struct TFgPilotReadGroup {
     uint16 startSector;
     uint16 endSector;
+};
+
+struct TFgRuntimeWindowPolicy {
+    const char *sceneName;
+    uint32 highWindowBytes;
+    uint32 lowWindowBytes;
+    uint8 requiredPackFormat;
+};
+
+struct TFgRuntimeSetupPrimePolicy {
+    const char *sceneName;
+    uint32 highWindowBytes;
+    uint32 lowWindowBytes;
+};
+
+static const struct TFgRuntimeWindowPolicy kFgRuntimeWindowPolicies[] = {
+    {"activity9", FG_ACTIVITY9_HIGH_WINDOW_BYTES, FG_PREFETCH_DEFAULT_WINDOW_BYTES, 0},
+    {"building4", FG_BUILDING4_HIGH_WINDOW_BYTES, FG_BUILDING4_LOW_WINDOW_BYTES, 0},
+    {"building6", FG_BUILDING6_WINDOW_BYTES, FG_BUILDING6_WINDOW_BYTES, 0},
+    {
+        "walkstuf1",
+        FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES,
+        FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES,
+        kFgPilotPackFormatIndexed8TemporalResidual
+    }
+};
+
+static const struct TFgRuntimeSetupPrimePolicy kFgRuntimeSetupPrimePolicies[] = {
+    {"fishing1", FG_SETUP_PRIME_WINDOW_BYTES, FG_SETUP_PRIME_WINDOW_BYTES},
+    {
+        "fishing2",
+        FG_FISHING2_SETUP_PRIME_WINDOW_BYTES,
+        FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)
+    },
+    {"activity12", FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"fishing3", 128UL * 1024UL, FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)},
+    {"fishing6", FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"fishing7", FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"johnny3", FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"visitor3", FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES, FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES},
+    {"visitor1", FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES, 0},
+    {"visitor7", FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES, 0}
 };
 
 struct TFgPilotSceneFamily {
@@ -588,11 +651,18 @@ static int fgHeaderIsPal4TemporalResidual(const struct TFgPilotHeader *header)
             header->version == 1) ? 1 : 0;
 }
 
+static int fgHeaderIsIndexed8TemporalResidual(const struct TFgPilotHeader *header)
+{
+    return (header != NULL &&
+            memcmp(header->magic, "FGP3", 4) == 0 &&
+            header->version == 2) ? 1 : 0;
+}
+
 static uint32 fgPaletteByteCount(const struct TFgPilotHeader *header)
 {
     if (fgHeaderIsPal4Spans(header) || fgHeaderIsPal4TemporalResidual(header))
         return 32;
-    if (fgHeaderIsIndexed8Spans(header))
+    if (fgHeaderIsIndexed8Spans(header) || fgHeaderIsIndexed8TemporalResidual(header))
         return 512;
     return 0;
 }
@@ -661,7 +731,8 @@ static int fgLoadMetadataPrefix(const char *path, struct TFgPilotHeader *outHead
     fgParseHeader(metadata, outHeader);
     if ((!fgHeaderIsPal4Spans(outHeader) &&
          !fgHeaderIsIndexed8Spans(outHeader) &&
-         !fgHeaderIsPal4TemporalResidual(outHeader)) ||
+         !fgHeaderIsPal4TemporalResidual(outHeader) &&
+         !fgHeaderIsIndexed8TemporalResidual(outHeader)) ||
         outHeader->frameCount == 0) {
         free(metadata);
         return 0;
@@ -1598,23 +1669,85 @@ static int fgRuntimePrimeNextFrameForSetup(void)
     return 1;
 }
 
+static uint32 fgRuntimePackPayloadEndBytes(void)
+{
+    uint16 i;
+    uint32 payloadEnd = 0;
+
+    for (i = 0; i < gFgRuntime.entryTable.count; i++) {
+        const struct TFgPilotEntry *entry = &gFgRuntime.entryTable.entries[i];
+        if (entry->dataSize > 0) {
+            uint32 entryEnd = entry->dataOffset + entry->dataSize;
+            if (entryEnd > payloadEnd)
+                payloadEnd = entryEnd;
+        }
+    }
+
+    if (gFgRuntime.header.soundEventsOffset != 0) {
+        uint32 soundEnd = gFgRuntime.header.soundEventsOffset +
+            ((uint32)gFgRuntime.header.soundEventCount * 4UL);
+        if (soundEnd > payloadEnd)
+            payloadEnd = soundEnd;
+    }
+
+    return payloadEnd;
+}
+
+static uint32 fgRuntimeStreamWindowBytes(const char *sceneName,
+                                         uint32 requestedWindowBytes)
+{
+    uint8 i;
+
+    if (requestedWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
+        return requestedWindowBytes;
+
+    for (i = 0;
+         i < sizeof(kFgRuntimeWindowPolicies) / sizeof(kFgRuntimeWindowPolicies[0]);
+         i++) {
+        if (kFgRuntimeWindowPolicies[i].requiredPackFormat != 0 &&
+            kFgRuntimeWindowPolicies[i].requiredPackFormat != gFgRuntime.packFormat)
+            continue;
+        if (fgSceneEquals(sceneName, kFgRuntimeWindowPolicies[i].sceneName))
+            return islandState.lowTide ?
+                kFgRuntimeWindowPolicies[i].lowWindowBytes :
+                kFgRuntimeWindowPolicies[i].highWindowBytes;
+    }
+
+    return requestedWindowBytes;
+}
+
 static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
                                              uint32 normalWindowBytes)
 {
+    uint8 i;
+
+    if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
+        fgSceneEquals(sceneName, "walkstuf1"))
+        return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
+            (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
+
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;
 
+    if (fgRuntimeUsesTemporalResidual()) {
+        uint32 payloadEnd = fgRuntimePackPayloadEndBytes();
+        uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
+        if (payloadEnd > windowStart) {
+            uint32 windowBytes = fgSectorAlignUp(payloadEnd - windowStart);
+            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES)
+                return windowBytes;
+        }
+    }
+
     /* Scene-specific until generated prime budgets exist for all variants. */
-    if (fgSceneEquals(sceneName, "fishing1"))
-        return FG_SETUP_PRIME_WINDOW_BYTES;
-    if (fgSceneEquals(sceneName, "fishing2"))
-        return islandState.lowTide ?
-            (FG_FISHING2_SETUP_PRIME_WINDOW_BYTES - (96UL * 1024UL)) :
-            FG_FISHING2_SETUP_PRIME_WINDOW_BYTES;
-    if (fgSceneEquals(sceneName, "fishing3"))
-        return islandState.lowTide ?
-            (FG_SETUP_PRIME_WINDOW_BYTES - (32UL * 1024UL)) :
-            (128UL * 1024UL);
+    for (i = 0;
+         i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
+         i++) {
+        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName))
+            return islandState.lowTide ?
+                kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
+                kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
+    }
     return 0;
 }
 
@@ -2022,6 +2155,12 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
                                                        gFgRuntime.palette,
                                                        entry->x,
                                                        entry->y);
+    } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) {
+        grCompositeIndexed8TemporalResidualToBackground(frameData,
+                                                        entry->dataSize,
+                                                        gFgRuntime.palette,
+                                                        entry->x,
+                                                        entry->y);
     } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8Spans) {
         grCompositeIndexed8SpansToBackground(frameData,
                                              entry->dataSize,
@@ -2049,7 +2188,7 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
 
     if (perfDetail)
         perfTick = ps1PerfTick();
-    if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual)
+    if (fgRuntimeUsesTemporalResidual())
         grBeginResidualCleanBgFrame();
     else
         grRestoreBgFromRects();
@@ -2230,6 +2369,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else if (fgHeaderIsPal4TemporalResidual(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4TemporalResidual;
+            else if (fgHeaderIsIndexed8TemporalResidual(&gFgRuntime.header))
+                gFgRuntime.packFormat = kFgPilotPackFormatIndexed8TemporalResidual;
             else
                 gFgRuntime.packFormat = kFgPilotPackFormatPal4Spans;
             if ((gFgRuntime.header.reserved0 & kFgPilotHeaderFlagBaseDiff) == 0) {
@@ -2283,6 +2424,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchWindowBytes > 0) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
+                windowBytes = fgRuntimeStreamWindowBytes(sceneName, windowBytes);
+                windowCapacityBytes = windowBytes;
                 gFgRuntime.setupPrimeWindowBytes =
                     fgRuntimeSetupPrimeWindowBytes(sceneName, windowBytes);
                 if (gFgRuntime.setupPrimeWindowBytes > 0 &&
@@ -2886,7 +3029,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                 perfRenderTick = ps1PerfTick();
             if (perfDetail)
                 perfDetailTick = ps1PerfTick();
-            if (gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual) {
+            if (fgRuntimeUsesTemporalResidual()) {
                 if (gFgRuntime.frameRendered)
                     grBeginResidualCleanBgFrame();
                 else

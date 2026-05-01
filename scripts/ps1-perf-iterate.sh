@@ -31,6 +31,9 @@ INTERVAL="${PS1_PERF_INTERVAL:-999999}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-${REGTEST_TIMEOUT:-180}}"
 LOG_LEVEL="${PS1_PERF_LOG_LEVEL:-Warning}"
 MAX_LOG_BYTES="${PS1_PERF_MAX_LOG_BYTES:-536870912}"
+EARLY_STOP_ON_JCPERF2="${PS1_PERF_EARLY_STOP:-1}"
+EARLY_STOP_SETTLE_SECONDS="${PS1_PERF_EARLY_STOP_SETTLE_SECONDS:-2}"
+HEADLESS_POLL_SECONDS="${PS1_PERF_POLL_SECONDS:-5}"
 PERF_TOKEN="perf-log"
 BUILD_MODE="incremental"
 BASELINE_FILE=""
@@ -45,6 +48,7 @@ REQUIRE_IMPROVEMENT=0
 CHECK_ENV_ONLY=0
 NO_SEED=0
 SEED="${REGTEST_SEED:-1}"
+CASE_LOCAL_CD=0
 
 CASE_LABELS=()
 CASE_BOOTS=()
@@ -80,10 +84,24 @@ Options:
   --max-log-bytes N        Fail early if headless log exceeds N bytes
                            (default: PS1_PERF_MAX_LOG_BYTES or 536870912;
                            set 0 to disable).
+  --no-early-stop          Do not stop headless DuckStation when JCPERF2
+                           correctness has been emitted. By default perf runs
+                           stop at that point to avoid burning the remaining
+                           artificial frame budget.
   --output DIR             Output root (default: scratch/ps1-perf-iterate).
   --experiment-log FILE    Append one JSONL record per attempted case
                            (default: <output>/experiments.jsonl).
   --clean                  Clean PS1 build before each case.
+  --skip-build             Reuse the existing PS1 executable and only remake
+                           the CD image after staging BOOTMODE.TXT. This is
+                           valid for perf matrix passes because the runtime
+                           reads BOOTMODE.TXT from the disc before the
+                           embedded fallback.
+  --case-local-cd          Build the case CD image under the case output
+                           directory instead of mutating root jcreborn.bin/cue
+                           and config/ps1/BOOTMODE.TXT. Implies --skip-build
+                           and skips the global perf lock, so parallel matrix
+                           jobs can run safely.
   --baseline FILE          Compare against a prior summary JSON.
   --write-baseline FILE    Also copy this run summary to FILE.
   --allow-regression PCT   Fail if key metrics regress by more than PCT (default: 2).
@@ -105,6 +123,9 @@ Options:
 
 Gate rules:
   - JCPERF2 must be present.
+  - routed active scenes must report nonzero loop_start, loop_vb, advances,
+    complete entry coverage, and final-frame coverage. Known metadata-only
+    coverage gaps are warnings, not accepted speed evidence.
   - correctness trip/fallback/stale/frame/sound/CD counters must be zero.
   - gfx full_fallbacks must be zero.
   - with --baseline, loop_vb, timing overrun_vb, blocking_vb, and prefetch
@@ -232,12 +253,18 @@ while [ $# -gt 0 ]; do
             LOG_LEVEL="$2"; shift 2 ;;
         --max-log-bytes)
             MAX_LOG_BYTES="$2"; shift 2 ;;
+        --no-early-stop)
+            EARLY_STOP_ON_JCPERF2=0; shift ;;
         --output)
             OUTPUT_ROOT="$2"; shift 2 ;;
         --experiment-log)
             EXPERIMENT_LOG="$2"; shift 2 ;;
         --clean)
             BUILD_MODE="clean"; shift ;;
+        --skip-build)
+            BUILD_MODE="skip"; shift ;;
+        --case-local-cd)
+            CASE_LOCAL_CD=1; BUILD_MODE="skip"; shift ;;
         --baseline)
             BASELINE_FILE="$2"; shift 2 ;;
         --write-baseline)
@@ -296,6 +323,18 @@ if ! [[ "$MAX_LOG_BYTES" =~ ^[0-9]+$ ]]; then
     echo "ERROR: --max-log-bytes must be a non-negative integer." >&2
     exit 1
 fi
+if ! [[ "$EARLY_STOP_ON_JCPERF2" =~ ^[01]$ ]]; then
+    echo "ERROR: PS1_PERF_EARLY_STOP must be 0 or 1." >&2
+    exit 1
+fi
+if ! [[ "$EARLY_STOP_SETTLE_SECONDS" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: PS1_PERF_EARLY_STOP_SETTLE_SECONDS must be a non-negative integer." >&2
+    exit 1
+fi
+if ! [[ "$HEADLESS_POLL_SECONDS" =~ ^[0-9]+$ ]] || [ "$HEADLESS_POLL_SECONDS" -lt 1 ]; then
+    echo "ERROR: PS1_PERF_POLL_SECONDS must be a positive integer." >&2
+    exit 1
+fi
 if [ -n "$BASELINE_FILE" ] && [ ! -f "$BASELINE_FILE" ]; then
     echo "ERROR: baseline file not found: $BASELINE_FILE" >&2
     exit 1
@@ -312,7 +351,7 @@ fi
 
 check_env
 
-RUN_ID="$(date +%Y%m%d-%H%M%S)"
+RUN_ID="$(date +%Y%m%d-%H%M%S)-$$"
 RUN_ROOT="$OUTPUT_ROOT/$RUN_ID"
 mkdir -p "$RUN_ROOT"
 mkdir -p "$(dirname "$EXPERIMENT_LOG")"
@@ -325,21 +364,27 @@ else
     GIT_DIRTY=1
 fi
 
-BOOTMODE_BACKUP="$(mktemp /tmp/ps1-perf-bootmode-XXXXXX.txt)"
+BOOTMODE_BACKUP=""
 BOOTMODE_WAS_PRESENT=0
-if [ -f "$BOOTMODE_FILE" ]; then
-    cp "$BOOTMODE_FILE" "$BOOTMODE_BACKUP"
-    BOOTMODE_WAS_PRESENT=1
-fi
-
-HEADER_BACKUP="$(mktemp /tmp/ps1-perf-bootheader-XXXXXX.h)"
+HEADER_BACKUP=""
 HEADER_WAS_PRESENT=0
-if [ -f "$EMBEDDED_BOOTMODE_HEADER" ]; then
-    cp "$EMBEDDED_BOOTMODE_HEADER" "$HEADER_BACKUP"
-    HEADER_WAS_PRESENT=1
+RESTORED_BOOT_FILES=1
+
+if [ "$CASE_LOCAL_CD" -eq 0 ]; then
+    BOOTMODE_BACKUP="$(mktemp /tmp/ps1-perf-bootmode-XXXXXX.txt)"
+    if [ -f "$BOOTMODE_FILE" ]; then
+        cp "$BOOTMODE_FILE" "$BOOTMODE_BACKUP"
+        BOOTMODE_WAS_PRESENT=1
+    fi
+
+    HEADER_BACKUP="$(mktemp /tmp/ps1-perf-bootheader-XXXXXX.h)"
+    if [ -f "$EMBEDDED_BOOTMODE_HEADER" ]; then
+        cp "$EMBEDDED_BOOTMODE_HEADER" "$HEADER_BACKUP"
+        HEADER_WAS_PRESENT=1
+    fi
+    RESTORED_BOOT_FILES=0
 fi
 
-RESTORED_BOOT_FILES=0
 restore_boot_files() {
     if [ "$RESTORED_BOOT_FILES" -eq 1 ]; then
         return
@@ -363,14 +408,55 @@ cleanup() {
 }
 trap cleanup EXIT
 
-exec 9>"$LOCK_FILE"
-if command -v flock >/dev/null 2>&1; then
-    echo "Waiting for PS1 perf lock: $LOCK_FILE"
-    flock 9
-else
-    echo "ERROR: flock is required." >&2
-    exit 1
+if [ "$CASE_LOCAL_CD" -eq 0 ]; then
+    exec 9>"$LOCK_FILE"
+    if command -v flock >/dev/null 2>&1; then
+        echo "Waiting for PS1 perf lock: $LOCK_FILE"
+        flock 9
+    else
+        echo "ERROR: flock is required." >&2
+        exit 1
+    fi
 fi
+
+make_case_cd_image() {
+    local cd_dir="$1"
+    local boot="$2"
+    local build_log="$3"
+
+    mkdir -p "$cd_dir"
+    printf '%s\n' "$boot" > "$cd_dir/BOOTMODE.TXT"
+    python3 - "$PROJECT_ROOT" "$cd_dir" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+cd_dir = Path(sys.argv[2])
+layout = (root / "config/ps1/cd_layout.xml").read_text(encoding="utf-8")
+layout = layout.replace(
+    'source="../../config/ps1/BOOTMODE.TXT"',
+    'source="/work/BOOTMODE.TXT"',
+)
+layout = re.sub(
+    r'source="../../([^"]+)"',
+    lambda match: f'source="/project/{match.group(1)}"',
+    layout,
+)
+(cd_dir / "cd_layout.xml").write_text(layout, encoding="utf-8")
+PY
+
+    {
+        echo "=== Creating case-local PS1 CD image ==="
+        echo "BOOTMODE.TXT => $boot"
+        "${DOCKER_CMD[@]}" run --rm --platform linux/amd64 \
+            -v "$PROJECT_ROOT:/project:ro" \
+            -v "$(realpath "$cd_dir"):/work" \
+            -w /work \
+            jc-reborn-ps1-dev:amd64 \
+            mkpsxiso -y /work/cd_layout.xml
+    } >> "$build_log" 2>&1
+}
 
 parse_case_metrics() {
     local label="$1"
@@ -524,6 +610,35 @@ blocking_vb = get("cd", "blocking_vb", 0)
 upload_bytes = get("gfx", "upload_bytes", 0)
 restore_bytes = get("gfx", "restore_bytes", 0)
 compose_pixels = get("gfx", "compose_pixels", get("frame", "pixels", 0))
+
+scene_name = str(sections.get("scene", {}).get("scene", "")).lower()
+scene_entries = get("scene", "entries", 0)
+loop_start = get("timing", "loop_start", 0)
+advances = get("timing", "advances", 0)
+timing_entries = get("timing", "entries", 0)
+known_metadata_only_scenes = {"mary3", "suzy1", "suzy2"}
+if sections and scene_entries > 0:
+    active_loop_failures = []
+    if loop_start <= 0:
+        active_loop_failures.append(f"timing.loop_start={loop_start}")
+    if loop_vb <= 0:
+        active_loop_failures.append(f"timing.loop_vb={loop_vb}")
+    if advances <= 0:
+        active_loop_failures.append(f"timing.advances={advances}")
+    if timing_entries < scene_entries:
+        active_loop_failures.append(
+            f"timing.entries={timing_entries} scene.entries={scene_entries}"
+        )
+    if expected_frames > 0 and last_frame < expected_frames - 1:
+        active_loop_failures.append(
+            f"last_frame={last_frame} expected_final={expected_frames - 1}"
+        )
+    if active_loop_failures:
+        message = "active-loop incomplete: " + ", ".join(active_loop_failures)
+        if scene_name in known_metadata_only_scenes:
+            warnings.append(message + " (known metadata-only coverage gap)")
+        else:
+            failures.append(message)
 
 suggestions = []
 if blocking_vb > 0:
@@ -809,6 +924,16 @@ duckstation_exited_successfully() {
     [ -f "$log_file" ] && grep -q "Exiting with success" "$log_file"
 }
 
+jcperf2_correctness_emitted() {
+    local log_file="$1"
+    [ -f "$log_file" ] && grep -q "JCPERF2 correctness" "$log_file"
+}
+
+headless_early_stopped() {
+    local out_dir="$1"
+    [ -f "$out_dir/early-stop.txt" ]
+}
+
 run_headless_regtest() {
     local cue_file="$1"
     local out_dir="$2"
@@ -827,7 +952,7 @@ run_headless_regtest() {
     container_name="$(printf 'jc-ps1-perf-%s-%s-%s' "$RUN_ID" "$case_slug" "$$" | tr -c 'A-Za-z0-9_.-' '-')"
     cid_file="$out_dir/container.cid"
     mkdir -p "$out_dir/frames"
-    rm -f "$cid_file"
+    rm -f "$cid_file" "$out_dir/early-stop.txt"
     "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
 
     if bios_dir="$(find_bios_dir)"; then
@@ -844,6 +969,9 @@ run_headless_regtest() {
         echo "timeout=$TIMEOUT"
         echo "log_level=$LOG_LEVEL"
         echo "max_log_bytes=$MAX_LOG_BYTES"
+        echo "early_stop_on_jcperf2=$EARLY_STOP_ON_JCPERF2"
+        echo "early_stop_settle_seconds=$EARLY_STOP_SETTLE_SECONDS"
+        echo "poll_seconds=$HEADLESS_POLL_SECONDS"
         echo "bios_dir=${bios_dir:-<not-found>}"
         echo "renderer=Software"
         echo "container_name=$container_name"
@@ -886,13 +1014,25 @@ run_headless_regtest() {
     start_time="$(date +%s)"
 
     while kill -0 "$pid" >/dev/null 2>&1; do
-        sleep 15
+        sleep "$HEADLESS_POLL_SECONDS"
         if kill -0 "$pid" >/dev/null 2>&1; then
             local now elapsed size
             now="$(date +%s)"
             elapsed=$((now - start_time))
             size="$(wc -c < "$log_file" 2>/dev/null || printf '0')"
             echo "  headless still running: ${elapsed}s elapsed, ${size} log bytes"
+            if [ "$EARLY_STOP_ON_JCPERF2" -eq 1 ] && grep -q "JCPERF2 correctness" "$log_file"; then
+                {
+                    echo "reason=jcperf2_correctness"
+                    echo "elapsed_seconds=$elapsed"
+                    echo "log_bytes=$size"
+                } > "$out_dir/early-stop.txt"
+                echo "  headless early-stop: JCPERF2 correctness emitted; stopping $container_name"
+                sleep "$EARLY_STOP_SETTLE_SECONDS"
+                "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
+                kill "$pid" >/dev/null 2>&1 || true
+                break
+            fi
             if [ "$MAX_LOG_BYTES" -gt 0 ] && [ "$size" -gt "$MAX_LOG_BYTES" ]; then
                 echo "ERROR: headless log exceeded ${MAX_LOG_BYTES} bytes; stopping $container_name" >&2
                 "${DOCKER_CMD[@]}" rm -f "$container_name" >/dev/null 2>&1 || true
@@ -929,14 +1069,41 @@ for i in "${!CASE_LABELS[@]}"; do
     echo "BOOTMODE: $boot"
     echo "======================================"
 
-    printf '%s\n' "$boot" > "$BOOTMODE_FILE"
+    cue_for_case="$PROJECT_ROOT/jcreborn.cue"
+    build_log="$case_dir/build.log"
 
-    if [ "$BUILD_MODE" = "clean" ]; then
-        ./scripts/build-ps1.sh clean > "$case_dir/build.log" 2>&1
+    if [ "$CASE_LOCAL_CD" -eq 1 ]; then
+        if [ ! -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
+            echo "ERROR: --case-local-cd requires build-ps1/jcreborn.exe. Run ./scripts/build-ps1.sh once first." >&2
+            exit 1
+        fi
+        : > "$build_log"
+        make_case_cd_image "$case_dir/cd" "$boot" "$build_log"
+        cue_for_case="$case_dir/cd/jcreborn.cue"
     else
-        ./scripts/build-ps1.sh > "$case_dir/build.log" 2>&1
+        printf '%s\n' "$boot" > "$BOOTMODE_FILE"
     fi
-    ./scripts/make-cd-image.sh >> "$case_dir/build.log" 2>&1
+
+    if [ "$CASE_LOCAL_CD" -eq 1 ]; then
+        :
+    elif [ "$BUILD_MODE" = "skip" ]; then
+        if [ ! -f "$PROJECT_ROOT/build-ps1/jcreborn.exe" ]; then
+            echo "ERROR: --skip-build requires build-ps1/jcreborn.exe. Run ./scripts/build-ps1.sh once first." >&2
+            exit 1
+        fi
+        {
+            echo "=== Skipping PS1 executable build ==="
+            echo "BOOTMODE.TXT is refreshed on the CD image for this case."
+        } > "$build_log"
+    elif [ "$BUILD_MODE" = "clean" ]; then
+        ./scripts/build-ps1.sh clean > "$build_log" 2>&1
+    else
+        ./scripts/build-ps1.sh > "$build_log" 2>&1
+    fi
+
+    if [ "$CASE_LOCAL_CD" -eq 0 ]; then
+        ./scripts/make-cd-image.sh >> "$build_log" 2>&1
+    fi
 
     ps_exe_bytes=0
     ps_exe_bucket_bytes=0
@@ -960,9 +1127,12 @@ for i in "${!CASE_LABELS[@]}"; do
     log_file="$case_dir/headless-regtest.log"
 
     set +e
-    run_headless_regtest "$PROJECT_ROOT/jcreborn.cue" "$headless_root" "$log_file"
+    run_headless_regtest "$cue_for_case" "$headless_root" "$log_file"
     regtest_exit=$?
     set -e
+    if [ "$CASE_LOCAL_CD" -eq 1 ]; then
+        rm -rf "$case_dir/cd"
+    fi
 
     summary_file="$case_dir/perf-summary.json"
     parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
@@ -972,6 +1142,14 @@ for i in "${!CASE_LABELS[@]}"; do
     SUMMARY_PATHS+=("$summary_file")
 
     if [ "$regtest_exit" -ne 0 ]; then
+        if case_summary_passed "$summary_file" &&
+           { headless_early_stopped "$headless_root" || jcperf2_correctness_emitted "$log_file"; }; then
+            REGTEST_EXITS+=("$regtest_exit")
+            ATTEMPT_STATUSES+=("regtest_passed_after_early_stop")
+            FAILURE_REASONS+=("wrapper_exit_${regtest_exit}_after_jcperf2_complete")
+            echo "WARN: regtest wrapper exited $regtest_exit after complete JCPERF2 metrics; accepting parsed metrics." >&2
+            continue
+        fi
         if case_summary_passed "$summary_file" && duckstation_exited_successfully "$log_file"; then
             REGTEST_EXITS+=("$regtest_exit")
             ATTEMPT_STATUSES+=("regtest_passed_after_wrapper_exit")

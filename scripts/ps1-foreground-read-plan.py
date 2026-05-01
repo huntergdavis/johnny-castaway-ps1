@@ -174,6 +174,30 @@ def parse_source_setup_policy() -> dict[str, Any]:
 
     if "FG_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["fishing1_prime_bytes"] = symbols["FG_SETUP_PRIME_WINDOW_BYTES"]
+    if "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["activity12_high_prime_bytes"] = symbols[
+            "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["visitor1_high_prime_bytes"] = symbols[
+            "FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["visitor7_high_prime_bytes"] = symbols[
+            "FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["fishing6_high_prime_bytes"] = symbols[
+            "FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["fishing7_high_prime_bytes"] = symbols[
+            "FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
+    if "FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
+        policy["johnny3_high_prime_bytes"] = symbols[
+            "FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES"
+        ]
 
     for tide in ("HIGH", "LOW"):
         start = symbols.get(f"FG_FISHING3_{tide}_SETUP_SEGMENT_START")
@@ -199,6 +223,9 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
             return int(prime or 256 * 1024), [], "auto:fishing2-low"
         prime = source_policy.get("fishing2_high_prime_bytes")
         return int(prime or 352 * 1024), [], "auto:fishing2-high"
+    if scene_name == "activity12" and not lowtide:
+        prime = source_policy.get("activity12_high_prime_bytes")
+        return int(prime or 328 * 1024), [], "auto:activity12-high"
     if scene_name == "fishing3":
         if lowtide:
             prime = source_policy.get("fishing3_low_prime_bytes")
@@ -207,7 +234,36 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
         prime = source_policy.get("fishing3_high_prime_bytes")
         segments = source_policy.get("fishing3_high_segments") or [(67, 73)]
         return int(prime or 128 * 1024), list(segments), "auto:fishing3-high"
+    if scene_name == "visitor1" and not lowtide:
+        prime = source_policy.get("visitor1_high_prime_bytes")
+        return int(prime or 296 * 1024), [], "auto:visitor1-high"
+    if scene_name == "visitor7" and not lowtide:
+        prime = source_policy.get("visitor7_high_prime_bytes")
+        return int(prime or 368 * 1024), [], "auto:visitor7-high"
+    if scene_name == "fishing6" and not lowtide:
+        prime = source_policy.get("fishing6_high_prime_bytes")
+        return int(prime or 312 * 1024), [], "auto:fishing6-high"
+    if scene_name == "fishing7" and not lowtide:
+        prime = source_policy.get("fishing7_high_prime_bytes")
+        return int(prime or 328 * 1024), [], "auto:fishing7-high"
+    if scene_name == "johnny3" and not lowtide:
+        prime = source_policy.get("johnny3_high_prime_bytes")
+        return int(prime or 312 * 1024), [], "auto:johnny3-high"
     return 0, [], "none"
+
+
+def fg_pack_payload_end(header: dict[str, Any], entries: list[dict[str, Any]]) -> int:
+    payload_end = 0
+    for entry in entries:
+        data_size = int(entry.get("data_size", 0) or 0)
+        if data_size > 0:
+            entry_end = int(entry.get("data_offset", 0) or 0) + data_size
+            payload_end = max(payload_end, entry_end)
+    sound_offset = int(header.get("sound_events_offset", 0) or 0)
+    sound_count = int(header.get("sound_event_count", 0) or 0)
+    if sound_offset and sound_count:
+        payload_end = max(payload_end, sound_offset + sound_count * 4)
+    return payload_end
 
 
 def entry_is_payload(entry: dict[str, Any]) -> bool:
@@ -356,7 +412,23 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     if pack_sectors is None:
         pack_sectors = int(math.ceil(int(pack.get("bytes", 0)) / SECTOR_SIZE))
 
+    source_policy = parse_source_setup_policy()
+    data_offset = int(header.get("data_offset", 0))
+
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
+    if pack.get("magic") == "FGP3":
+        auto_pack_limit = int(
+            source_policy.get("symbols", {}).get("FG_SETUP_PRIME_AUTO_PACK_BYTES") or
+            source_policy.get("symbols", {}).get("FG_SETUP_PRIME_SMALL_PACK_BYTES") or
+            64 * 1024
+        )
+        payload_end = fg_pack_payload_end(header, entries)
+        window_start = (data_offset // SECTOR_SIZE) * SECTOR_SIZE
+        if payload_end > window_start:
+            window_bytes = int(math.ceil((payload_end - window_start) / SECTOR_SIZE)) * SECTOR_SIZE
+            if 0 < window_bytes <= auto_pack_limit:
+                auto_prime_bytes = window_bytes
+                auto_policy = "auto:fgp3-resident-pack"
     setup_prime_bytes = args.setup_prime_bytes
     setup_policy = "explicit"
     if setup_prime_bytes is None:
@@ -366,7 +438,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     segment_ranges = list(auto_segments if args.use_default_segments else [])
     segment_ranges.extend(args.setup_segment or [])
 
-    data_offset = int(header.get("data_offset", 0))
     prime_start = data_offset // SECTOR_SIZE
     prime_end = prime_start
     if setup_prime_bytes > 0:

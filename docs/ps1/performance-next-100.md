@@ -543,9 +543,14 @@ near misses:
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
+| VISITOR3 raw stream windows | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. Use generated grouping, direct16/selective preprocessing, or scheduler ownership. |
+| BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
+| BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
+| BUILDING-family raw stream windows | BUILDING4 and BUILDING6 high/low are accepted; retry only scene-locally with fresh baselines and bounded CD tradeoff rules, starting with remaining high-pressure building rows. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
+| ACTIVITY10 low contiguous setup-prime | Generated segmented coverage or inter-scene preload exists; `304 KiB`/`288 KiB` zero-loop and `256 KiB` regresses loop/canary timing. |
 | Debug/code-size compile gates | Text/CD phase padding or hot/cold section isolation exists. |
 | Audio TU `-Os` | Done under the foreground/resource-size baseline; keep accepted unless cross-scene sound validation regresses. |
 | Resource TU `-Os` | Done under the foreground-size baseline; keep accepted unless a cross-scene setup regression appears. |
