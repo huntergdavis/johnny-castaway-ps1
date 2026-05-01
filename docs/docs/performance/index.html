@@ -294,7 +294,7 @@ boot tokens still enable them on demand.</li>
 
 <p>The cumulative effect is visible in the current accepted baseline:
 fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1207</code> against a target of
-<code class="language-plaintext highlighter-rouge">target_vb=1076</code>. The original headless perf-loop baseline was
+<code class="language-plaintext highlighter-rouge">target_vb=1074</code>. The original headless perf-loop baseline was
 <code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">219</code> VBlanks
 (<code class="language-plaintext highlighter-rouge">15.36%</code> loop reduction).</p>
 
@@ -303,30 +303,31 @@ fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge
 <p>The current accepted fishing1 high-tide run, captured in the perf log:</p>
 
 <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>policy = stage1_window
-buf    = 333656
+buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 0
-prefetch.overrun_vb = 0
+blocking_vb = 2
+prefetch.overrun_vb = 2
 loop_vb = 1207
-overrun_vb = 131
-target_vb = 1076
+overrun_vb = 133
+target_vb = 1074
 restore_bytes = 251,144
-upload_bytes  = 8,533,120
-dirty_rows    = 13,333
-upload_rects  = 436
+upload_bytes  = 8,643,840
+dirty_rows    = 13,506
+upload_rects  = 439
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>+12.2% over target</strong>, or <strong>89.1% of target speed</strong>. Across the
+<p>That is <strong>+12.4% over target</strong>, or <strong>89.0% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+14.6% over target /
-88.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">14.5936%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.1307%</code> exact target speed).</p>
+88.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">14.5886%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.1348%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v65-building4low-window36</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
 <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
@@ -339,13 +340,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-01T04:54:07</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-01T06:14:57</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
+rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v65-building4low-window36</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
 <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fishing3low-group253-265</code>,
@@ -431,8 +433,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td style="text-align: right">+10.0% / 90.9% (3073/2793); due 34; blk 240</td>
-      <td style="text-align: right">+10.2% / 90.7% (3080/2795); due 18; blk 168</td>
+      <td style="text-align: right">+10.0% / 90.9% (3071/2792); due 34; blk 234</td>
+      <td style="text-align: right">+9.7% / 91.2% (3068/2797); due 2; blk 96</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building5</code></td>
@@ -441,8 +443,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
-      <td style="text-align: right">+10.5% / 90.5% (2687/2431); due 32; blk 215</td>
-      <td style="text-align: right">+10.8% / 90.2% (2697/2434); due 33; blk 226</td>
+      <td style="text-align: right">+10.7% / 90.4% (2692/2433); due 33; blk 223</td>
+      <td style="text-align: right">+10.6% / 90.4% (2695/2436); due 33; blk 217</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
@@ -685,15 +687,15 @@ rows are historical only.</p>
 <p>Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:</p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sched.wait       = 769
-sched.present    = 105
-sched.cd_stage   = 146
-sched.cd_window  =   6
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sched.wait       = 722
+sched.present    = 99
+sched.cd_stage   = 137
+sched.cd_window  = 19
 gfx.restore_bytes = 251,144
-gfx.upload_bytes  = 8,533,120
+gfx.upload_bytes  = 8,643,840
 </code></pre></div></div>
 
-<p>The canary now has no visible CD stall, but the full battle card still has
+<p>The canary now has only two visible CD/refill VBlanks, but the full battle card still has
 CD-heavy scenes (<code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">walkstuf3</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">building4</code>,
 <code class="language-plaintext highlighter-rouge">building6</code>). The <code class="language-plaintext highlighter-rouge">FGP3/v2</code> indexed8 results, WALKSTUF1 split-window policy,
 and the derived high/low setup-prime budgets prove host-side pack preprocessing plus

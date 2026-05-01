@@ -2,24 +2,24 @@
 
 Date: 2026-04-27
 
-Current accepted fishing1 exact baseline:
+Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
 | `loop_vb` | `1207` |
-| `target_vb` | `1076` |
-| `remaining_overrun_vb` | `131` |
-| `remaining_over_target` | `12.17%` |
-| `blocking_vb` | `0` |
-| `prefetch_overrun_vb` | `0` |
-| `loop_reads` | `6` |
-| `upload_bytes` | `6690560` |
+| `target_vb` | `1074` |
+| `remaining_overrun_vb` | `133` |
+| `remaining_over_target` | `12.38%` |
+| `blocking_vb` | `2` |
+| `prefetch_overrun_vb` | `2` |
+| `loop_reads` | `20` |
+| `upload_bytes` | `8643840` |
 | `restore_bytes` | `251144` |
-| `prefetch_buffer` | `333656` bytes for fishing1 high-tide FGP3 setup-prime, `366841` bytes for fishing2 high-tide FGP3 setup-prime, smaller variants otherwise |
+| `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
 | `jcreborn.exe` | `169984` bytes |
-| `jcreborn.elf` | `792892` bytes |
+| `jcreborn.elf` | `796300` bytes |
 
-Goal: close `131` remaining loop VBlanks without changing pixels, sound event
+Goal: close `133` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
 baseline is about `12` VBlanks, so the practical target is roughly twelve to
 fourteen 1% wins, thirty 0.5% wins, or one structural CD/render breakthrough plus a
@@ -185,6 +185,16 @@ The group keeps low-tide `loop_vb=1542` while reducing `overrun_vb`,
 under the same fixed source layout and the broad FISHING/VISITOR/WALKSTUF
 canary set stays exact-flat. Treat this as a layout-sensitive read-metadata
 win, not proof that arbitrary BUILDING groups are safe.
+BUILDING4 low now has its own accepted stream-window knee at `36 KiB`.
+It improves `loop_vb 3083 -> 3068`, `blocking_vb 180 -> 96`,
+`loop_reads 51 -> 40`, and `due_misses 20 -> 2`, while raising hidden refill
+overrun `60 -> 90`. BUILDING4 high, BUILDING6 high/low, and the FISHING,
+VISITOR3, and WALKSTUF1 canaries stayed stable. Treat this as the current
+model for BUILDING-family work: scene/tide-specific, fresh-baseline only, and
+accepted only when visible loop/blocking wins justify any refill tradeoff.
+Broad BUILDING4/6 setup-prime at `64 KiB` or `128 KiB` and family-wide
+window retunes are rejected; retry preload for these scenes only with generated
+segment coverage or scheduler-owned setup/preload budgeting.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload
@@ -498,12 +508,13 @@ hot `-O3` attempts expanded executable layout, moved FG2 placement, and raised
 visible CD pressure. The next useful tests should control phase first, then
 retry promising source/toolchain ideas inside that controlled envelope.
 
-The current detail/trace samples shift priority again: `present_wait_vb=155`
-against a remaining `131` VBlank active-loop overrun, while the FGP3 canary
-has driven high-tide visible CD pressure to `0` VBlanks. The next major win
-has to reduce or hide present wait and move setup-prime cost out of visible
-scene startup without early display, tearing, frame drops, or weakened pause
-input.
+The current speed binary reports a remaining `133` VBlank FISHING1 high-tide
+active-loop overrun with only `2` visible CD/refill VBlanks. Historical
+detail/trace builds showed large present-wait ownership, but those counters
+are not compiled into the accepted speed binary. The next major win still has
+to reduce or hide present/render/upload cost and move setup/preload work out
+of visible scene startup without early display, tearing, frame drops, or
+weakened pause input.
 
 | # | Target | Test Shape | Expected Signal |
 |---:|---|---|---|
@@ -714,7 +725,7 @@ near misses:
 | VISITOR3 raw stream windows | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. VISITOR3 high `72..84` proves selective grouping can still pay, so continue with generated/costed groups, direct16/selective preprocessing, or scheduler ownership. |
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
 | BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
-| BUILDING-family raw stream windows | BUILDING4 and BUILDING6 high/low are accepted; retry only scene-locally with fresh baselines and bounded CD tradeoff rules, starting with remaining high-pressure building rows. |
+| BUILDING-family raw stream windows | BUILDING4 low `36 KiB` is accepted; BUILDING6 `20/28 KiB`, BUILDING4 high `20/28 KiB`, and broad setup-prime are rejected. Retry only scene/tide-locally with fresh baselines and bounded visible-CD/refill tradeoff rules. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |

@@ -214,7 +214,7 @@ They cluster into a few themes.
 
 The cumulative effect is visible in the current accepted baseline:
 fishing1 high-tide playback at `loop_vb=1207` against a target of
-`target_vb=1076`. The original headless perf-loop baseline was
+`target_vb=1074`. The original headless perf-loop baseline was
 `loop_vb=1426`, so the FISHING 1 canary is down `219` VBlanks
 (`15.36%` loop reduction).
 
@@ -224,30 +224,31 @@ The current accepted fishing1 high-tide run, captured in the perf log:
 
 ```text
 policy = stage1_window
-buf    = 333656
+buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 0
-prefetch.overrun_vb = 0
+blocking_vb = 2
+prefetch.overrun_vb = 2
 loop_vb = 1207
-overrun_vb = 131
-target_vb = 1076
+overrun_vb = 133
+target_vb = 1074
 restore_bytes = 251,144
-upload_bytes  = 8,533,120
-dirty_rows    = 13,333
-upload_rects  = 436
+upload_bytes  = 8,643,840
+dirty_rows    = 13,506
+upload_rects  = 439
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **+12.2% over target**, or **89.1% of target speed**. Across the
+That is **+12.4% over target**, or **89.0% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+14.6% over target /
-88.1% target speed** (`14.5936%` exact over target / `88.1307%` exact target speed).
+88.1% target speed** (`14.5886%` exact over target / `88.1348%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`compact-fgp3-v65-building4low-window36`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
 `indexed8-row-local-dirty-v1`; other refreshed rows include
@@ -260,13 +261,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-05-01T04:54:07`; per-row freshness and stats version are shown on
+run is `2026-05-01T06:14:57`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v64-building2-group318-330`,
+rows now use `compact-fgp3-v65-building4low-window36`,
+`compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
 `indexed8-row-local-dirty-v1`; other refreshed rows include
 `compact-fgp3-v62-fishing3low-group253-265`,
@@ -291,9 +293,9 @@ rows are historical only.
 | `building1` | +23.3% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
 | `building2` | +19.8% / 83.5% (1552/1296); due 19; blk 144 | +18.9% / 84.1% (1542/1297); due 20; blk 138 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
-| `building4` | +10.0% / 90.9% (3073/2793); due 34; blk 240 | +10.2% / 90.7% (3080/2795); due 18; blk 168 |
+| `building4` | +10.0% / 90.9% (3071/2792); due 34; blk 234 | +9.7% / 91.2% (3068/2797); due 2; blk 96 |
 | `building5` | +5.0% / 95.2% (3504/3336); due 6; blk 52 | +4.5% / 95.7% (3498/3348); due 2; blk 16 |
-| `building6` | +10.5% / 90.5% (2687/2431); due 32; blk 215 | +10.8% / 90.2% (2697/2434); due 33; blk 226 |
+| `building6` | +10.7% / 90.4% (2692/2433); due 33; blk 223 | +10.6% / 90.4% (2695/2436); due 33; blk 217 |
 | `building7` | +4.8% / 95.4% (3843/3668); due 4; blk 43 | +4.2% / 96.0% (3830/3676); blk 12 |
 | `fishing1` | +12.4% / 89.0% (1207/1074); blk 2 | +12.2% / 89.1% (1207/1076) |
 | `fishing2` | +7.6% / 92.9% (1899/1765); blk 3 | +7.4% / 93.1% (1898/1767) |
@@ -346,15 +348,15 @@ Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:
 
 ```text
-sched.wait       = 769
-sched.present    = 105
-sched.cd_stage   = 146
-sched.cd_window  =   6
+sched.wait       = 722
+sched.present    = 99
+sched.cd_stage   = 137
+sched.cd_window  = 19
 gfx.restore_bytes = 251,144
-gfx.upload_bytes  = 8,533,120
+gfx.upload_bytes  = 8,643,840
 ```
 
-The canary now has no visible CD stall, but the full battle card still has
+The canary now has only two visible CD/refill VBlanks, but the full battle card still has
 CD-heavy scenes (`walkstuf1`, `walkstuf3`, `visitor3`, `building4`,
 `building6`). The `FGP3/v2` indexed8 results, WALKSTUF1 split-window policy,
 and the derived high/low setup-prime budgets prove host-side pack preprocessing plus

@@ -45,28 +45,27 @@ base-diff foreground pack enforcement, startup pre-application of
 scene-relative FG2 offsets, direct reads of those pre-applied entry offsets,
 collapsed held-loop prefetch branch shape, duplicate compose active-guard
 removal, simplified runtime-active accessor, and the fishing1 high-tide tail
-read group `396..406` with 11-sector retained capacity, reported
-`policy=stage1_window`, `buf=333656`, `hits=155`, `due_misses=0`,
-`blocking_vb=0`, `prefetch.overrun_vb=0`, `loop_vb=1207`,
-`overrun_vb=131`, `target_vb=1076`, `restore_bytes=251144`,
-`upload_bytes=8533120`, `dirty_rows=13333`, `upload_rects=436`, `trip=0`,
+read group `396..406` with 11-sector retained capacity, and the current
+`compact-fgp3-v65-building4low-window36` source shape, reported
+`policy=stage1_window`, `buf=137048`, `hits=155`, `due_misses=0`,
+`blocking_vb=2`, `prefetch.overrun_vb=2`, `loop_vb=1207`,
+`overrun_vb=133`, `target_vb=1074`, `restore_bytes=251144`,
+`upload_bytes=8643840`, `dirty_rows=13506`, `upload_rects=439`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=129`,
-`setup_read_vb=173`, `loop_reads=6`, `loop_read_vb=29`, and `scene_vb=1490`.
-This is the current baseline for the next experiment. The accepted FGP3
-temporal-residual pack intentionally changes layout (`FISHING1.FG2 LBA
-396 -> 397`, PS-EXE `143360 -> 145408`) while cutting high-tide pack bytes
-`829851 -> 398433`, restore bytes `2510092 -> 251144`, and upload bytes
-`15888640 -> 6690560`.
+The same run also reports `setup_reads=6`, `pack_start_vb=90`,
+`setup_read_vb=137`, `loop_reads=20`, `loop_read_vb=89`, and `scene_vb=1459`.
+This is the current baseline for the next experiment. The earlier accepted FGP3
+temporal-residual transition intentionally changed layout while cutting
+high-tide pack bytes `829851 -> 398433` and restore bytes
+`2510092 -> 251144`; later compact-layout and policy-table work moved the
+current pack to LBA `412` and PS-EXE to `169984`.
 The first-upload clean-rect pass removed the stale full-screen forced upload
-from FG2 setup (`max_upload_bytes 614400 -> 221440`) and improved active
-playback by two VBlanks without changing setup timing, restore bytes, CD
-pressure, or layout identity. The later FGP3 pass is the first accepted
-pack-format runtime win and supersedes the FG2 high-tide baseline for fishing1.
-The FGP3 red-team pass changes the next bottleneck. `perf-detail` on the
-accepted canary shows `present_wait_vb=155`, while `compose_vb=2`,
-`restore_vb=0`, `upload_vb=0`, `blocking_vb=0`, and
-`prefetch.overrun_vb=0`. Local retries after FGP3 did not promote:
+from FG2 setup and the later FGP3 pass became the first accepted pack-format
+runtime win, superseding the FG2 high-tide baseline for fishing1.
+The FGP3 red-team pass changed the next bottleneck. Historical `perf-detail`
+builds showed large present-wait ownership, while the current speed binary
+keeps detail render counters compiled out and reports only `2` visible CD/refill
+VBlanks. Local retries after FGP3 did not promote:
 prepared-present slack `3` and `2`, setup-prime catch-up `3`, previous-dirty
 bounds discard, due-frame precompose-before-present, FGP3 helper `-Os`, and
 no-holiday call-site guarding all stayed timing-flat or worsened accounting.
@@ -161,8 +160,8 @@ canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
-`88.1%` target speed as of `compact-fgp3-v64-building2-group318-330` (`14.5936%` exact over target /
-`88.1307%` exact target speed). The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v65-building4low-window36` (`14.5886%` exact over target /
+`88.1348%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -783,10 +782,10 @@ exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 the exact no-holiday fishing1 high-tide variant now uses the FGP3
 zero-shift temporal-residual pack and reports
-`loop_vb=1207`, `target_vb=1076`, `overrun_vb=131`, `blocking_vb=0`,
-`due_misses=0`, and prefetch `overrun_vb=0`, with
-`upload_bytes=8533120`, `restore_bytes=251144`, `upload_rects=436`,
-`loop_reads=6`, `setup_reads=6`, and `scene_vb=1447`.
+`loop_vb=1207`, `target_vb=1074`, `overrun_vb=133`, `blocking_vb=2`,
+`due_misses=0`, and prefetch `overrun_vb=2`, with
+`upload_bytes=8643840`, `restore_bytes=251144`, `upload_rects=439`,
+`loop_reads=20`, `setup_reads=6`, and `scene_vb=1459`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage,
@@ -1468,13 +1467,16 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-305` | Done: add BUILDING2 low read group `318..330`. | The first strict probe failed only because the small table shifted hot symbols by `+56` bytes; a repeat with bounded address allowance passed and broad FISHING/VISITOR/WALKSTUF canaries stayed exact-flat. BUILDING2 low keeps `loop_vb=1542` while improving `target_vb 1290 -> 1297`, `overrun_vb 252 -> 245`, `blocking_vb 139 -> 138`, `prefetch_overrun_vb 32 -> 31`, and `loop_reads 60 -> 59`. BUILDING2 high also improves under the same fixed layout (`loop_vb 1560 -> 1552`, `blocking_vb 156 -> 144`, `prefetch_overrun_vb 43 -> 39`). Latest rows now use `compact-fgp3-v64-building2-group318-330`; exact matrix average improves to `14.5936%` over target / `88.1307%` target speed. |
 | `P5-306` | Failed: share BUILDING2 `318..330` read group with high tide. | Removing the low-tide guard kept BUILDING2 high exact-flat against the accepted high baseline (`1552/1296`, `blocking_vb=144`, `prefetch_overrun_vb=39`, `loop_reads=69`) and only shifted foreground-pilot code shape by `-24` bytes. Do not infer high-side grouping from the low-side win; test distinct high clusters or generated visible-cost metadata instead. |
 | `P5-307` | Failed: add BUILDING2 high read group `325..331`. | The top narrower high-side cluster was also exact-flat (`1552/1296`, `blocking_vb=144`, `prefetch_overrun_vb=39`, `loop_reads=69`) and only moved hot symbols by `+4` bytes. Current BUILDING2 high read-count candidates are exhausted unless a generated visible-cost model can explain a non-flat target. |
+| `P5-308` | Failed: add broad BUILDING4/6 setup-prime windows. | Both `128 KiB` and `64 KiB` setup-prime policies saved some reads but generally worsened visible cadence. BUILDING4 high regressed under both sizes, BUILDING6 low regressed, and BUILDING6 high's small `64 KiB` loop/blocking hint came with higher refill pressure. Do not add raw setup-prime for non-default BUILDING windows; retry only with generated segment coverage or scheduler-owned setup/preload budgeting. |
+| `P5-309` | Failed: retune BUILDING4/6 windows as a family. | Window sweeps found that BUILDING6 `20 KiB`/`28 KiB` shapes and BUILDING4 high `20 KiB`/`28 KiB` shapes trade lower read counts or blocking for worse total loop/refill. BUILDING4 low `36 KiB` was the only strong scene/tide knee. Keep future BUILDING window work scene/tide-local with fresh baselines, not family-wide. |
+| `P5-310` | Done: retune BUILDING4 low stream window to `36 KiB`. | Increasing only `FG_BUILDING4_LOW_WINDOW_BYTES` from `32 KiB` to `36 KiB` improves the fresh low-tide baseline `loop_vb 3083 -> 3068`, `overrun_vb 287 -> 271`, `blocking_vb 180 -> 96`, `loop_reads 51 -> 40`, and `due_misses 20 -> 2`; `prefetch_overrun_vb` rises `60 -> 90` as an accepted hidden-refill tradeoff. BUILDING4 high, BUILDING6 high/low, FISHING1, FISHING3 high/low, VISITOR3 high/low, and WALKSTUF1 high/low stayed stable in the canary gate. Latest rows now use `compact-fgp3-v65-building4low-window36`; exact matrix average improves to `14.5886%` over target / `88.1348%` target speed. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v64-building2-group318-330`: the matrix is now
-`120` timing-bearing rows at `14.5936%` exact average over target / `88.1307%`
-exact target speed. The accepted FISHING3 low groups and the indexed8 row-local
-dirty pass, plus BUILDING2 low setup-prime/read grouping, prove small wins still compound, but WALKSTUF1's higher refill
+Checkpoint after `compact-fgp3-v65-building4low-window36`: the matrix is now
+`120` timing-bearing rows at `14.5886%` exact average over target / `88.1348%`
+exact target speed. The accepted FISHING3 low groups, indexed8 row-local
+dirty pass, BUILDING2 low setup-prime/read grouping, and BUILDING4 low window knee prove small wins still compound, but WALKSTUF1's higher refill
 overrun shows local compositor changes are now trading against CD ownership.
 The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
@@ -1484,7 +1486,7 @@ tuning unless a fresh local sweep shows a clear knee.
 |---:|---|---|---|
 | 0 | Generated data/metadata wins | The broad `-O2` audit and hot/scoped helper probes produced no promotions under the current source shape. The active wins are now coming from generated read/layout policy and pack/compositor data shape. | Prioritize generated read metadata with a visible-cost model, upload-ready/direct16 pack data, and scheduler-owned CD/render budgets before another one-off source-shape or compiler-flag probe. Revisit `-O2`/toolchain only with a scripted multi-target harness and map-address accounting. |
 | 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain about `+559`, `+556`, `+517`, and `+489` VBlanks, with the highest visible CD pressure (`blocking_vb=452/423/314/345`). Cap-aware read plans now show only the first `128 KiB` of setup coverage is truly resident, and the indexed8 row-local win reduced WALKSTUF1 loop/blocking while raising refill overrun. | Host-side pack/layout work first: generated read metadata with a visible-cost model, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more local compositor/read-group tweaks unless the generated model predicts lower loop/blocking and acceptable refill ownership. |
-| 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts. BUILDING2 low now has a proven `128 KiB` setup-prime win plus one safe grouped-read window; high improved under the same fixed source layout even though the group is low-only. | Continue per-tide generated setup/read policy, but treat BUILDING2's latest win as layout-sensitive. Move to generated read groups or host-side preprocessing that changes read placement/format; do not assume high/low pairs share a safe setup-prime knee. |
+| 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large absolute gaps. BUILDING2 low has a proven `128 KiB` setup-prime win plus one safe grouped-read window; BUILDING4 low now has a proven `36 KiB` stream-window knee; raw BUILDING4/6 setup-prime and family-wide window sweeps regressed. | Continue per-tide generated setup/read policy, but treat every BUILDING win as layout- and tide-sensitive. Move to generated read groups or host-side preprocessing that changes read placement/format; do not assume high/low pairs share a safe setup-prime or window knee. |
 | 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
 
 ## Failed Experiment Triage After P5-90
@@ -1639,11 +1641,12 @@ variants. Do not spend the main optimization loop on hand-authored FISHING3
 patches that cannot generalize.
 
 Current measured canary gaps are not uniformly `12%`: FISHING1 high/low are
-`12.17%` over target, FISHING2 high/low are `7.54%` and `7.41%`, and FISHING3
-high/low are `7.06%` and `6.63%`. The all-scene sheet now exists at
-`docs/ps1/performance-scene-matrix.csv`; rows not yet measured remain
-`pending`. All-scene speed claims must come from that generated matrix rather
-than extrapolation from FISHING canaries.
+`12.38%` and `12.17%` over target, FISHING2 high/low are `7.59%` and `7.41%`,
+and FISHING3 high/low are `7.38%` and `7.06%`. The all-scene sheet now exists
+at `docs/ps1/performance-scene-matrix.csv`; all `126` routed scene/tide
+variants are measured, and `120` carry active-loop timing. All-scene speed
+claims must come from that generated matrix rather than extrapolation from
+FISHING canaries.
 
 Near-term execution order:
 
