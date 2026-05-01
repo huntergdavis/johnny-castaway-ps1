@@ -1,10 +1,26 @@
 # Ocean Ambience — PS1 Implementation Plan
 
 Date: 2026-05-01
-Branch context: `input-harness-menu-docs-20260501`.
-Status: research complete, asset shipped at
-`jc_resources/extracted/snd/OCEAN.VAG`. Pause-menu wiring + boot
-loader extension still pending.
+Branch context: `ocean-ambience-20260501`, shipped as `v0.6.0-ps1`.
+Status: **shipped**. Asset, boot loader, pause-menu toggle, memcard
+persistence, and CD-image embedding are all live.
+
+## Shipped state (v0.6.0-ps1)
+
+| Layer | Where | Status |
+|---|---|---|
+| Asset | `jc_resources/extracted/snd/OCEAN.VAG` (123 KB, 20-sec seamless loop) | Shipped |
+| CD layout | `config/ps1/cd_layout.xml` adds OCEAN.VAG under `SND/` | Shipped |
+| Boot loader | `src/sound_ps1.c::soundInit` uploads VAG to SPU RAM after the SFX block; auto-keys voice 23 if `oceanAmbientEnabled` | Shipped |
+| Start/Stop API | `oceanAmbientStart()` / `oceanAmbientStop()` / `oceanAmbientLoaded()` in `src/sound_ps1.h` | Shipped |
+| Pause-menu toggle | `ACCESS_OCEAN` row on the Accessibility page; LEFT/RIGHT/X flips the toggle and immediately starts/stops the SPU voice | Shipped |
+| Memcard persistence | `MC_VERSION` 2 → 3; `oceanAmbientEnabled` field; v2 saves load gracefully with the new field defaulted ON | Shipped |
+| Frame impact | Per-VBlank cost zero (SPU mixes + auto-loops in hardware); JCPERF2 unchanged | Verified |
+| Source license | BigSoundBank.com sound 0266 ("Sea: Waves") — CC0 / public domain. Attributed in `docs/credits/index.html`. | Shipped |
+
+The rest of this document is the original plan + research, retained
+for the design rationale, the multi-slot architecture (which the
+123 KB ship leaves room for), and the red-team review.
 
 ## Goal
 
