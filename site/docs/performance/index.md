@@ -234,27 +234,27 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+14.7% over target /
+120 timing-bearing battle-card rows, the average is **+14.6% over target /
 88.1% target speed**.
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v52-visitor3high-prime`; earlier follow-up rows use
-`compact-fgp3-v51-building6-window` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
+`compact-fgp3-v53-visitor3low-prime`; earlier follow-up rows use
+`compact-fgp3-v52-visitor3high-prime` through `compact-fgp3-v3-stand12low`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T16:55:34`; per-row freshness and stats version are shown on
+run is `2026-04-30T17:15:06`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v52-visitor3high-prime`; earlier follow-up rows use
-`compact-fgp3-v51-building6-window` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `compact-fgp3-v53-visitor3low-prime`; earlier follow-up rows use
+`compact-fgp3-v52-visitor3high-prime` through `compact-fgp3-v3-stand12low`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -314,7 +314,7 @@ rows are historical only.
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
 | `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
-| `visitor3` | +46.5% / 68.3% (1484/1013); due 23; blk 321 | +50.9% / 66.3% (1536/1018); due 23; blk 332 |
+| `visitor3` | +46.5% / 68.3% (1484/1013); due 23; blk 321 | +49.6% / 66.9% (1524/1019); due 22; blk 306 |
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
