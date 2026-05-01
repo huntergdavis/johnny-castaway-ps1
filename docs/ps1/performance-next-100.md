@@ -128,6 +128,12 @@ result, so local prepared-payload decoupling is exhausted for this baseline.
 The `102..110` FG2 read-group probe is rejected even though it saved one
 transaction: visible CD pressure rose from `5` to `8` VBlanks, confirming that
 new groups need a read-duration/slack cost model before promotion.
+The first C restore-row word-copy probe is also rejected. The compatible
+alignment helper kept FISHING1/FISHING2/FISHING3 timing exact-flat, but grew the
+ELF and map with no restore, loop, CD, or work-counter benefit. Do not retry this
+local `grCleanRectCopyIn()` row-copy shape unless finer counters prove a
+sub-VBlank restore bottleneck; prefer generated restore bands or switchable ASM
+after data-shape changes.
 The upload path now reuses one stack `RECT` for immediate `LoadImage()` calls,
 shrinking `grDrawBackground` by 8 bytes and ELF to `712272` while keeping every
 timing, CD, upload, and correctness counter exact.
@@ -533,7 +539,7 @@ input.
 | 76 | Graphics | Test max upload rect cap `7` after cross-scene proof. | Fishing1 max is `6`; cap `6` had no win but no headroom. | Cap `7` shrinks or remains safe across fishing scenes. |
 | 77 | Graphics | Cache clean-rect row source pointers. | Restore bytes are stable but pointer math may be hot. | Restore helper shrinks or `restore_vb` drops in detail runs. |
 | 78 | Toolchain | Done: add the build-wide `-O2` audit report and candidate CSV. | `scripts/ps1-o2-audit.py` now identifies every current `-Os` override from `compile_commands.json`, maps hot symbols from `jcreborn.map`, and writes `performance-o2-audit.md/.csv`. | Next concrete probe is test `92`: graphics scoped-helper `-O2`, one helper at a time. |
-| 79 | Graphics | Test halfword-edge plus word-body restore copy in C for `grCleanRectCopyIn`. | Feasibility research says bounded aligned restore rows are the best win-per-risk ASM candidate; C word-stride should be tried first. | Restore detail counters improve without CD phase loss. |
+| 79 | Graphics | Done/no promotion: tested halfword-edge plus word-body restore copy in C for `grCleanRectCopyIn`. | The helper kept timing exact-flat but grew `jcreborn.elf 791808 -> 793372` and `jcreborn.map 45253 -> 45327`. | Do not retry this exact local C row-copy shape; use generated restore metadata, finer restore counters, or switchable ASM after data-shape changes. |
 | 80 | Graphics | Test persistent clean-rect buffer reuse across same tide/background. | Memory leak fixes release per scene, but some buffers may be safely persistent. | Setup/restore improves without long-run heap drift. |
 | 81 | Compose | Generate pack-time tile-split spans. | Runtime cross-tile splitting regressed; pack-time can remove hot branches. | Compose work falls and spans remain exact. |
 | 82 | Compose | Generate per-row destination offsets in FG2 payload. | Runtime computes tile/row address repeatedly. | Compositor code/time shrinks. |
