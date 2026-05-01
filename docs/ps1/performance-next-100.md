@@ -169,6 +169,10 @@ palette lookups did not matter enough to offset the pack growth
 (`2.16 MB -> 2.92 MB`) and extra CD pressure (`loop_reads 62 -> 85`,
 `blocking_vb 452 -> 712`). Future upload-ready work must be selective or
 compressed, not whole-payload 16bpp expansion.
+A VISITOR3-only `192 KiB` setup-prime cap is rejected. High tide traded lower
+blocking for worse loop/refill, and low tide regressed across all key metrics.
+Do not retry larger contiguous setup residency for VISITOR3; any preload work
+there needs segmented/costed ownership rather than a bigger startup window.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload
