@@ -433,7 +433,8 @@ static const struct TFgPilotReadGroup kFishing3LowReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kVisitor3HighReadGroups12[] = {
-    {72, 84}
+    {72, 84},
+    {230, 242}
 };
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,

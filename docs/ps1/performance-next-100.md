@@ -181,6 +181,12 @@ The start-aligned `112..124` retry is also rejected: it changed the cadence but
 regressed `loop_vb`, `blocking_vb`, `loop_reads`, and `due_misses` while only
 reducing `prefetch_overrun_vb`. The next CD grouping path must score visible
 blocking cost, not just saved transactions.
+The later VISITOR3 high `230..242` group is accepted: it keeps the same PS-EXE
+bucket and pack LBA, improves `loop_vb 1503 -> 1496`, `blocking_vb 350 -> 345`,
+`prefetch_overrun_vb 103 -> 102`, `loop_reads 58 -> 57`, and `loop_read_vb 468 -> 458`,
+while the six canary rows stay exact-flat. Treat this as evidence that selective
+late groups can pay when they are both start-aligned and slack-safe; do not
+generalize it to tight early clusters without a cost model.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:

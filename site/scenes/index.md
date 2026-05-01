@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-01:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.7%` (`14.6590%` exact) |
-| Timing-bearing average target speed | `88.1%` (`88.0956%` exact) |
-| Latest perf matrix run | `2026-05-01T00:32:01` |
-| Stats version | mixed: latest refreshed row uses `compact-fgp3-v59-visitor3high-group72-84`; other refreshed rows include `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.7%` (`14.6532%` exact) |
+| Timing-bearing average target speed | `88.1%` (`88.0982%` exact) |
+| Latest perf matrix run | `2026-05-01T01:06:20` |
+| Stats version | mixed: latest refreshed row uses `compact-fgp3-v60-visitor3high-group230-242`; other refreshed rows include `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed row uses `compact-fgp3-v59-visitor3high-group72-84`; other
-  refreshed rows include `indexed8-tile-local-compose-v1`,
+  refreshed row uses `compact-fgp3-v60-visitor3high-group230-242`; other
+  refreshed rows include `compact-fgp3-v59-visitor3high-group72-84`,
+  `indexed8-tile-local-compose-v1`,
   `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through
   `compact-fgp3-v29-smallprime`; the complete full-matrix baseline remains
   `compact-fgp3-v2-fullmatrix` for rows not rerun since that pass.
@@ -264,7 +265,7 @@ and this page.
 | `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | high | measured | 2026-04-30T08:11:17 | compact-fgp3-v34-visitor1high-prime | +18.8% | 84.2% | 804/677 | 0 | 0 | 0 |  |
 | `visitor1` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +17.3% | 85.3% | 794/677 | 0 | 0 | 0 |  |
-| `visitor3` | high | measured | 2026-05-01T00:32:01 | compact-fgp3-v59-visitor3high-group72-84 | +49.3% | 67.0% | 1503/1007 | 350 | 103 | 24 |  |
+| `visitor3` | high | measured | 2026-05-01T01:06:20 | compact-fgp3-v60-visitor3high-group230-242 | +48.6% | 67.3% | 1496/1007 | 345 | 102 | 24 |  |
 | `visitor3` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +49.6% | 66.9% | 1524/1019 | 306 | 76 | 22 |  |
 | `visitor4` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
 | `visitor4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |

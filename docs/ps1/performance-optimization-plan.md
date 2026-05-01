@@ -161,8 +161,8 @@ canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
-`88.1%` target speed as of `compact-fgp3-v59-visitor3high-group72-84` (`14.6590%` exact over target /
-`88.0956%` exact target speed). The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v60-visitor3high-group230-242` (`14.6532%` exact over target /
+`88.0982%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1447,14 +1447,15 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-284` | Done: group VISITOR3 high sectors `72..84`. | The read-plan tool now accepts `--case-label`, so multi-case summaries no longer accidentally plan against the first case. Adding the VISITOR3 high `{72,84}` group improves the fresh current baseline `loop_vb 1505 -> 1503`, `overrun_vb 500 -> 496`, `blocking_vb 357 -> 350`, `prefetch_overrun_vb 109 -> 103`, `loop_reads 61 -> 58`, and `due_misses 25 -> 24`, while FISHING1, FISHING3 high/low, VISITOR3 low, and WALKSTUF1 high/low stay exact-flat. Latest refreshed row uses `compact-fgp3-v59-visitor3high-group72-84`; exact matrix average is `14.6590%` over target / `88.0956%` target speed because the stale VISITOR3 high row was refreshed under the current source shape. |
 | `P5-285` | Failed: add VISITOR3 high read group `110..122`. | The planner ranked the group highly, but the seven-case probe stayed exact-flat and reported `group_hits=0`: VISITOR3 high remained `1503/1007`, `blocking_vb=350`, `prefetch_overrun_vb=103`, `loop_reads=58`, and `due_misses=24`. This is append-start eligibility evidence, not a runtime speed win. Do not retry the same one-off group until generated metadata or the host simulator predicts the actual runtime read start that can fire. |
 | `P5-286` | Failed: start-align VISITOR3 high read group to `112..124`. | Aligning the group to a real runtime read start made the group affect cadence, but in the wrong direction: VISITOR3 high regressed `1503/1007 -> 1509/1007`, `blocking_vb 350 -> 357`, `loop_reads 58 -> 60`, and `due_misses 24 -> 25`, while only `prefetch_overrun_vb` improved `103 -> 96`. This proves append-start eligibility is necessary but not sufficient; generated grouping must model visible-read cost before promotion. |
+| `P5-287` | Done: group VISITOR3 high sectors `230..242`. | A later start-aligned group avoids the tight early cluster that regressed. VISITOR3 high improves `loop_vb 1503 -> 1496`, `overrun_vb 496 -> 489`, `blocking_vb 350 -> 345`, `prefetch_overrun_vb 103 -> 102`, `loop_reads 58 -> 57`, and `loop_read_vb 468 -> 458`; due misses stay `24`. FISHING1, FISHING3 high/low, VISITOR3 low, and WALKSTUF1 high/low stayed exact-flat in the seven-case gate. Latest refreshed row uses `compact-fgp3-v60-visitor3high-group230-242`; exact matrix average is `14.6532%` over target / `88.0982%` target speed. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v59-visitor3high-group72-84`: the matrix is now
-`120` timing-bearing rows at `14.6590%` exact average over target / `88.0956%`
-exact target speed. This checkpoint refreshes VISITOR3 high under the current
-source shape; the source change itself improves it versus a fresh same-build
-baseline. The next loop should prioritize changes that can move multiple large
+Checkpoint after `compact-fgp3-v60-visitor3high-group230-242`: the matrix is now
+`120` timing-bearing rows at `14.6532%` exact average over target / `88.0982%`
+exact target speed. The accepted `230..242` group proves VISITOR3 can still
+benefit from selective, start-aligned CD grouping when the group is placed in a
+later slack window. The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
 tuning unless a fresh local sweep shows a clear knee.
 
