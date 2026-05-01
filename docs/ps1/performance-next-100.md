@@ -179,6 +179,12 @@ to low tide only improves `loop_vb 1559 -> 1542`, `overrun_vb 262 -> 252`,
 `blocking_vb 150 -> 139`, and `prefetch_overrun_vb 44 -> 32` while high tide
 stays exact-flat. Continue BUILDING-family work as per-tide policy, not broad
 scene-family defaults.
+BUILDING2 low also has one accepted grouped-read follow-up at `318..330`.
+The group keeps low-tide `loop_vb=1542` while reducing `overrun_vb`,
+`blocking_vb`, `prefetch_overrun_vb`, and `loop_reads`; high tide improves
+under the same fixed source layout and the broad FISHING/VISITOR/WALKSTUF
+canary set stays exact-flat. Treat this as a layout-sensitive read-metadata
+win, not proof that arbitrary BUILDING groups are safe.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload

@@ -161,8 +161,8 @@ canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
-`88.1%` target speed as of `compact-fgp3-v63-building2low-prime` (`14.6030%` exact over target /
-`88.1239%` exact target speed). The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v64-building2-group318-330` (`14.5936%` exact over target /
+`88.1307%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1465,13 +1465,14 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-302` | Failed: prototype WALKSTUF1 low direct16 FGP3/v3. | Whole-payload direct16 removed palette lookup work in theory, but pack size grew `2,157,403 -> 2,919,466` bytes and active CD pressure dominated: `loop_vb 1958 -> 2144`, `blocking_vb 452 -> 712`, `loop_reads 62 -> 85`, and `due_misses 34 -> 61`. Retry upload-ready data only as selective/compressed spans or resident segments. |
 | `P5-303` | Failed: raise VISITOR3-only setup-prime cap to `192 KiB`. | High tide improved `blocking_vb 345 -> 342` but regressed loop/refill, while low tide regressed across all key metrics (`loop_vb 1532 -> 1549`, `blocking_vb 314 -> 341`). VISITOR3 needs segmented/costed preload, not a larger contiguous setup-prime window. |
 | `P5-304` | Done: setup-prime BUILDING2 low tide. | A fresh BUILDING2 high/low baseline showed high and low have different setup-prime knees. A shared `128 KiB` policy regressed high, but low-only `128 KiB` improves `loop_vb 1559 -> 1542`, `overrun_vb 262 -> 252`, `blocking_vb 150 -> 139`, `prefetch_overrun_vb 44 -> 32`, and `loop_reads 70 -> 60`; high stays exact-flat. Latest rows now use `compact-fgp3-v63-building2low-prime`; exact matrix average improves to `14.6030%` over target / `88.1239%` target speed. |
+| `P5-305` | Done: add BUILDING2 low read group `318..330`. | The first strict probe failed only because the small table shifted hot symbols by `+56` bytes; a repeat with bounded address allowance passed and broad FISHING/VISITOR/WALKSTUF canaries stayed exact-flat. BUILDING2 low keeps `loop_vb=1542` while improving `target_vb 1290 -> 1297`, `overrun_vb 252 -> 245`, `blocking_vb 139 -> 138`, `prefetch_overrun_vb 32 -> 31`, and `loop_reads 60 -> 59`. BUILDING2 high also improves under the same fixed layout (`loop_vb 1560 -> 1552`, `blocking_vb 156 -> 144`, `prefetch_overrun_vb 43 -> 39`). Latest rows now use `compact-fgp3-v64-building2-group318-330`; exact matrix average improves to `14.5936%` over target / `88.1307%` target speed. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v63-building2low-prime`: the matrix is now
-`120` timing-bearing rows at `14.6030%` exact average over target / `88.1239%`
+Checkpoint after `compact-fgp3-v64-building2-group318-330`: the matrix is now
+`120` timing-bearing rows at `14.5936%` exact average over target / `88.1307%`
 exact target speed. The accepted FISHING3 low groups and the indexed8 row-local
-dirty pass, plus BUILDING2 low setup-prime, prove small wins still compound, but WALKSTUF1's higher refill
+dirty pass, plus BUILDING2 low setup-prime/read grouping, prove small wins still compound, but WALKSTUF1's higher refill
 overrun shows local compositor changes are now trading against CD ownership.
 The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
@@ -1481,7 +1482,7 @@ tuning unless a fresh local sweep shows a clear knee.
 |---:|---|---|---|
 | 0 | Generated data/metadata wins | The broad `-O2` audit and hot/scoped helper probes produced no promotions under the current source shape. The active wins are now coming from generated read/layout policy and pack/compositor data shape. | Prioritize generated read metadata with a visible-cost model, upload-ready/direct16 pack data, and scheduler-owned CD/render budgets before another one-off source-shape or compiler-flag probe. Revisit `-O2`/toolchain only with a scripted multi-target harness and map-address accounting. |
 | 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain about `+559`, `+556`, `+517`, and `+489` VBlanks, with the highest visible CD pressure (`blocking_vb=452/423/314/345`). Cap-aware read plans now show only the first `128 KiB` of setup coverage is truly resident, and the indexed8 row-local win reduced WALKSTUF1 loop/blocking while raising refill overrun. | Host-side pack/layout work first: generated read metadata with a visible-cost model, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more local compositor/read-group tweaks unless the generated model predicts lower loop/blocking and acceptable refill ownership. |
-| 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts. BUILDING2 low now has a proven `128 KiB` setup-prime win, while BUILDING2 high regresses under the same policy. | Continue per-tide generated setup/read policy. Move to generated read groups or host-side preprocessing that changes read placement/format; do not assume high/low pairs share a safe setup-prime knee. |
+| 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts. BUILDING2 low now has a proven `128 KiB` setup-prime win plus one safe grouped-read window; high improved under the same fixed source layout even though the group is low-only. | Continue per-tide generated setup/read policy, but treat BUILDING2's latest win as layout-sensitive. Move to generated read groups or host-side preprocessing that changes read placement/format; do not assume high/low pairs share a safe setup-prime knee. |
 | 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
 
 ## Failed Experiment Triage After P5-90

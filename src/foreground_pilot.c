@@ -440,6 +440,10 @@ static const struct TFgPilotReadGroup kVisitor3HighReadGroups12[] = {
     {230, 242}
 };
 
+static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
+    {318, 330}
+};
+
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
                                         struct TFgPilotEntryTable *table)
 {
@@ -2470,6 +2474,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgRuntime.streamReadGroupCount =
                         (uint8)(sizeof(kVisitor3HighReadGroups12) /
                                 sizeof(kVisitor3HighReadGroups12[0]));
+                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
+                           islandState.lowTide &&
+                           fgSceneEquals(sceneName, "building2")) {
+                    gFgRuntime.streamReadGroups = kBuilding2LowReadGroups12;
+                    gFgRuntime.streamReadGroupCount =
+                        (uint8)(sizeof(kBuilding2LowReadGroups12) /
+                                sizeof(kBuilding2LowReadGroups12[0]));
                 } else {
                     gFgRuntime.streamReadGroups = NULL;
                     gFgRuntime.streamReadGroupCount = 0;
