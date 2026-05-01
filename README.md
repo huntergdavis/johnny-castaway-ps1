@@ -78,8 +78,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+14.6% over target / 88.1% target speed** |
-| Latest perf matrix run | **`2026-04-30T17:15:06`** (`last_run_at` in the CSV) |
-| Perf stats version | Latest rows use `compact-fgp3-v53-visitor3low-prime`; earlier follow-up rows use `compact-fgp3-v52-visitor3high-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | **`2026-04-30T17:34:47`** (`last_run_at` in the CSV) |
+| Perf stats version | Latest rows use `compact-fgp3-v54-walkstuf1low-prime`; earlier follow-up rows use `compact-fgp3-v53-visitor3low-prime` through `compact-fgp3-v3-stand12low`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
