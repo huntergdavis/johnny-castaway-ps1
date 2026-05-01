@@ -377,6 +377,7 @@ enum {
     OPT_RAFT,
     OPT_HOLIDAY,
     OPT_CAPTIONS,
+    OPT_FOOTSTEPS,
     OPT_PERF,
     OPT_LAUNCHER_FIRST,           /* sentinel — same value as the next */
     OPT_SET_TIME = OPT_LAUNCHER_FIRST,
@@ -1073,6 +1074,12 @@ static void drawOptions(void)
     }
     pmPrintf(" %s Captions:  %s\n",
              optionsCursor == OPT_CAPTIONS ? ">" : " ", captionsLabel());
+    {
+        extern int footstepsEnabled;
+        const char *footLabel = footstepsEnabled ? "ON" : "OFF";
+        pmPrintf(" %s Footsteps: %s\n",
+                 optionsCursor == OPT_FOOTSTEPS ? ">" : " ", footLabel);
+    }
     pmPrintf(" %s Perf Log:  %s\n",
              optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
 
@@ -1169,6 +1176,14 @@ static void optionsCycle(int dir)
     case OPT_RAFT:     cycleRaft(dir);     break;
     case OPT_HOLIDAY:  cycleHoliday(dir);  break;
     case OPT_CAPTIONS: cycleCaptions(dir); break;
+    case OPT_FOOTSTEPS: {
+        /* Two-state toggle. Default ON; flips to OFF; persists via
+         * memcard alongside the other options. */
+        extern int footstepsEnabled;
+        footstepsEnabled = !footstepsEnabled;
+        (void)dir;
+        break;
+    }
     case OPT_PERF:     cyclePerf(dir);     break;
     default: break;
     }

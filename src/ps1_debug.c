@@ -206,3 +206,156 @@ void ps1DebugError(const char *fmt, ...)
     bgG = 0;
     bgB = 64;
 }
+
+
+/*
+ * Windows-3.1-style fatal-error screen. Solid blue background with white
+ * BIOS-font diagnostic info. Halts forever — caller must never return.
+ *
+ * Tries hard to surface enough state to diagnose:
+ *   - the scene slug that was loading
+ *   - a short human reason
+ *   - file:line of the call site
+ *   - heap state (largest contiguous malloc available right now)
+ *
+ * The intent is "should never fire in production but if it does, give
+ * the developer everything they'd ask for next". On a deterministic
+ * test build any BSOD = code/data bug — fail loud and stop.
+ */
+extern unsigned long fgProbeLargestAlloc(void);
+
+__attribute__((noreturn))
+void ps1Bsod(const char *scene, const char *reason,
+             const char *file, int line)
+{
+    /* Log to TTY first. ps1Bsod halts forever, so this is the last
+     * chance for an external observer (DuckStation TTY console,
+     * regtest harness, perf-trace agent) to capture the failure.
+     *
+     * Log-tag scheme — designed to be grep-friendly for test scripts
+     * that want to detect the fatal end state and bail out of a long
+     * run:
+     *   JCBSOD-FATAL  — single-line sentinel for "trip the alarm".
+     *                   Match this once and you know a BSOD fired.
+     *   JCBSOD <k>=<v> — detail lines, one key/value per line, for
+     *                   collecting heap state, scene name, etc.
+     *   JCBSOD-HALT   — single-line sentinel for "log block complete".
+     *                   Match this to know all detail has flushed
+     *                   before tearing down the test process. */
+    {
+        extern int printf(const char *, ...);
+        extern unsigned long fgGetFrameBufferBytes(void);
+        extern unsigned long fgGetPrefetchFrameBufferBytes(void);
+        extern int           walkPilotCleanBufferAllocated(void);
+        extern unsigned long walkPilotCleanBufferBytes(void);
+        extern int           walkPilotJohnwalkSlotLoaded(void);
+
+        /* Probe heap before any further state mutation. */
+        unsigned long heapKBProbe = fgProbeLargestAlloc() / 1024UL;
+        unsigned long fbBytes      = fgGetFrameBufferBytes();
+        unsigned long pfBytes      = fgGetPrefetchFrameBufferBytes();
+        unsigned long walkCleanKB  = walkPilotCleanBufferBytes() / 1024UL;
+        int walkCleanOK            = walkPilotCleanBufferAllocated();
+        int johnwalkOK             = walkPilotJohnwalkSlotLoaded();
+
+        /* Strip the build-tree directory prefix from __FILE__ for the
+         * log line — same treatment the on-screen panel does. */
+        const char *fileBase = file ? file : "(nofile)";
+        if (file) {
+            for (const char *p = file; *p; p++) {
+                if (*p == '/' || *p == '\\') fileBase = p + 1;
+            }
+        }
+
+        printf("\n");
+        printf("JCBSOD-FATAL %s\n", reason ? reason : "(unspecified)");
+        printf("JCBSOD scene=%s\n",
+               (scene && scene[0]) ? scene : "(unknown)");
+        printf("JCBSOD where=%s:%d\n", fileBase, line);
+        printf("JCBSOD heapKB=%lu\n", heapKBProbe);
+        printf("JCBSOD frameBufBytes=%lu\n", fbBytes);
+        printf("JCBSOD prefetchBufBytes=%lu\n", pfBytes);
+        printf("JCBSOD walkCleanAlloc=%d walkCleanKB=%lu\n",
+               walkCleanOK, walkCleanKB);
+        printf("JCBSOD johnwalkSlotLoaded=%d\n", johnwalkOK);
+        printf("JCBSOD note=Reset console to recover.\n");
+        printf("JCBSOD-HALT\n");
+    }
+
+    /* Reinit GPU. The game has been mutating display + VRAM and may have
+     * been in 640x480 interlaced mode, but the BIOS font helper reads
+     * cleanest at standard 320x240 NTSC — and at that resolution PSn00bSDK
+     * shows ~40 columns of the 8x8 BIOS font, which lines up with our
+     * panel design. Set an explicit display + draw env so we don't
+     * inherit anything weird from whatever crashed. */
+    #define BSOD_W 320
+    #define BSOD_H 240
+    ResetGraph(0);
+    SetVideoMode(MODE_NTSC);
+
+    DISPENV disp;
+    DRAWENV draw;
+    SetDefDispEnv(&disp, 0, 0, BSOD_W, BSOD_H);
+    disp.isinter = 0;
+    SetDefDrawEnv(&draw, 0, 0, BSOD_W, BSOD_H);
+    setRGB0(&draw, 0, 0, 168);   /* Win 3.1 BSOD blue */
+    draw.isbg = 1;               /* solid-fill the framebuffer */
+    PutDispEnv(&disp);
+    PutDrawEnv(&draw);
+    SetDispMask(1);
+
+    /* Open a font stream that fits inside the 320x240 viewport with a
+     * comfortable margin. 304x224 inset by 8 px — gives ~38 columns,
+     * 28 rows. */
+    FntLoad(960, 0);
+    fontID = FntOpen(8, 8, BSOD_W - 16, BSOD_H - 16, 0, 1024);
+
+    if (scene == NULL || scene[0] == '\0') scene = "(unknown)";
+    if (reason == NULL || reason[0] == '\0') reason = "(unspecified)";
+    if (file == NULL) file = "(no file)";
+
+    /* Probe heap. fgProbeLargestAlloc walks malloc sizes by binary search;
+     * each tested alloc is freed, so the heap state isn't disturbed. */
+    unsigned long heapLargest = fgProbeLargestAlloc();
+    unsigned long heapKB = heapLargest / 1024UL;
+
+    /* Strip directory prefix from __FILE__ — keeps the on-screen line
+     * tight (the build path is usually long enough to wrap on its own). */
+    const char *fileBase = file;
+    for (const char *p = file; *p; p++) {
+        if (*p == '/' || *p == '\\') fileBase = p + 1;
+    }
+
+    /* 38-column layout. The Win 3.1 BSOD's voice was direct, slightly
+     * punctilious, and assumed an adult audience — match that tone. */
+    FntPrint(fontID,
+        " JOHNNY CASTAWAY  SYSTEM ERROR\n"
+        " ==============================\n"
+        "\n"
+        " A fatal error has occurred.\n"
+        " The screensaver has halted to\n"
+        " prevent further problems.\n"
+        "\n"
+        " Reason:\n"
+        "   %s\n"
+        "\n"
+        " Scene:  %s\n"
+        " At:     %s:%d\n"
+        "\n"
+        " Diagnostics:\n"
+        "   Largest free block: %lu KB\n"
+        "\n"
+        " Reset the console to recover.\n"
+        " (Photograph this screen for\n"
+        "  the bug report.)\n",
+        reason, scene, fileBase, line, heapKB);
+
+    FntFlush(fontID);
+    DrawSync(0);
+    VSync(0);
+
+    /* Park forever. The user must reset to recover. */
+    for (;;) {
+        VSync(0);
+    }
+}
