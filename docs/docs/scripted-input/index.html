@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Scripted input harness — Johnny Castaway PS1</title>
+  <meta name="description" content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." />
+
+  <meta property="og:title"        content="Scripted input harness — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Scripted input harness</h1>
+      <p class="subtitle">Headless controller routes for menu testing, screenshot capture, and repeatable PS1 bug repros.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. This is the harness that lets the PS1 build
+press its own controller buttons. It is small, but it changes the kind of bugs
+that can be chased: instead of saying “open the menu and go down twice,” the
+project can write that route down, boot the disc, run DuckStation headlessly,
+and collect the exact framebuffer that appeared half a second after the input.</p>
+
+<p>This is not a desktop macro. The script lives on the disc image. The PS1
+runtime parses it and merges those buttons into the same active-high pad mask
+used by a real controller. The pause menu does not know it is being tested.
+Freeplay does not know it is being tested. That is the point.</p>
+
+<h2 id="the-fast-path">The fast path</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/ps1-menu-input-harness.sh
+</code></pre></div></div>
+
+<p>That command stages a temporary boot mode and pad script, rebuilds the disc,
+runs <code class="language-plaintext highlighter-rouge">duckstation-regtest</code>, captures the major pause-menu screens, rewrites
+<a href="../../help/menu/">the menu help guide</a>, and restores the
+staged files when it exits.</p>
+
+<p>Useful variants:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/ps1-menu-input-harness.sh <span class="nt">--settle-frames</span> 30
+./scripts/ps1-menu-input-harness.sh <span class="nt">--verbose</span>
+./scripts/ps1-menu-input-harness.sh <span class="nt">--skip-build</span>
+./scripts/ps1-menu-input-harness.sh <span class="nt">--frames</span> 15000 <span class="nt">--interval</span> 2
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--verbose</code> switches the boot token from <code class="language-plaintext highlighter-rouge">pad-script</code> to <code class="language-plaintext highlighter-rouge">pad-script-log</code>,
+which prints parsed events and merged button masks. <code class="language-plaintext highlighter-rouge">--settle-frames</code> controls
+how long the route waits after a transition before emitting a screenshot
+marker. <code class="language-plaintext highlighter-rouge">--interval</code> controls how often DuckStation dumps frames.</p>
+
+<h2 id="script-language">Script language</h2>
+
+<p><code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> is embedded at build time by
+<code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code>. Blank lines and comments are stripped. Commands are
+case-insensitive.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wait 30s
+tap START
+tap DOWN
+tap DOWN
+tap CROSS
+shot freeplay-options 30
+</code></pre></div></div>
+
+<p>Durations are frames unless they end in <code class="language-plaintext highlighter-rouge">s</code>, which means seconds at 60 Hz.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Example</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">wait</code></td>
+      <td><code class="language-plaintext highlighter-rouge">wait 30s</code></td>
+      <td>Advances the script clock with no input.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tap</code> / <code class="language-plaintext highlighter-rouge">press</code></td>
+      <td><code class="language-plaintext highlighter-rouge">tap CROSS 12</code></td>
+      <td>Holds a button mask briefly, then inserts an 8-frame gap.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">hold</code></td>
+      <td><code class="language-plaintext highlighter-rouge">hold R1+RIGHT 45</code></td>
+      <td>Holds a mask without adding the tap gap afterward.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">shot</code> / <code class="language-plaintext highlighter-rouge">screenshot</code> / <code class="language-plaintext highlighter-rouge">mark</code></td>
+      <td><code class="language-plaintext highlighter-rouge">shot system 30</code></td>
+      <td>Prints a labeled <code class="language-plaintext highlighter-rouge">JCPADSHOT</code> marker after an optional settle delay.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Supported buttons are <code class="language-plaintext highlighter-rouge">START</code>, <code class="language-plaintext highlighter-rouge">SELECT</code>, D-pad directions, <code class="language-plaintext highlighter-rouge">CROSS</code> / <code class="language-plaintext highlighter-rouge">X</code>,
+<code class="language-plaintext highlighter-rouge">CIRCLE</code> / <code class="language-plaintext highlighter-rouge">O</code>, <code class="language-plaintext highlighter-rouge">TRIANGLE</code>, <code class="language-plaintext highlighter-rouge">SQUARE</code>, <code class="language-plaintext highlighter-rouge">L1</code>, <code class="language-plaintext highlighter-rouge">R1</code>, <code class="language-plaintext highlighter-rouge">L2</code>, and <code class="language-plaintext highlighter-rouge">R2</code>.
+Combinations use <code class="language-plaintext highlighter-rouge">+</code> or <code class="language-plaintext highlighter-rouge">,</code>.</p>
+
+<h2 id="why-shot-exists">Why <code class="language-plaintext highlighter-rouge">shot</code> exists</h2>
+
+<p>DuckStation regtest captures frames at an interval. The PS1 script cannot
+force DuckStation to dump a PNG on that exact VBlank, so it does the next best
+thing: it prints a sparse marker into TTY.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JCPADSHOT label=world-options frame=5875 tick=5875
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">scripts/ps1-menu-harness-report.py</code> reads those markers, finds the first
+captured PNG at or after each marker, copies it into
+<code class="language-plaintext highlighter-rouge">site/assets/img/help/menu/</code>, and records the frame delta in the generated
+page. If the nearest capture is too far away, the reporter fails. Wrong
+screenshots are worse than missing screenshots.</p>
+
+<h2 id="when-to-use-it">When to use it</h2>
+
+<p>Use scripted input for problems that are really input paths:</p>
+
+<ul>
+  <li>Start no longer opens the pause menu.</li>
+  <li>Circle no longer backs out from one submenu.</li>
+  <li>A pause-menu refactor moved a row and a scripted route lands on the wrong
+page.</li>
+  <li>Freeplay enters, exits, and then fails to enter on the second attempt.</li>
+  <li>A world option applies from <code class="language-plaintext highlighter-rouge">R1 + D-pad</code> but not from the menu.</li>
+  <li>A bug report needs exact timing: boot, wait 30 seconds, Start, Down, Down,
+Cross, wait, Circle.</li>
+</ul>
+
+<p>Use scene regtest or the perf matrix for scene timing. Use host capture when
+the question is “what did the original scene draw?” Use human visual + audible
+signoff for scene certification. The pad harness is for deterministic input
+routes and the screenshots those routes produce.</p>
+
+<h2 id="files-worth-reading">Files worth reading</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_pad_script.c"><code class="language-plaintext highlighter-rouge">src/ps1_pad_script.c</code></a></td>
+      <td>Parser, scheduler, TTY markers, button-mask merge.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_pad_input.h"><code class="language-plaintext highlighter-rouge">src/ps1_pad_input.h</code></a></td>
+      <td>Shared helper that folds analog stick into D-pad and calls the script merger.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/PADSCRIPT.TXT"><code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code></a></td>
+      <td>Empty normal-build script source.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-menu-input-harness.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-menu-input-harness.sh</code></a></td>
+      <td>End-to-end menu route runner.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-menu-harness-report.py"><code class="language-plaintext highlighter-rouge">scripts/ps1-menu-harness-report.py</code></a></td>
+      <td>Marker-aligned screenshot extraction and help-page generator.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scripted-input-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scripted-input-harness.md</code></a></td>
+      <td>Full source runbook.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="the-discipline">The discipline</h2>
+
+<p>Keep <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> empty for normal builds. Keep routes deterministic. Avoid
+per-frame logging. Put custom output under <code class="language-plaintext highlighter-rouge">scratch/</code>. Give screenshot labels
+boring names that can become page IDs or bug IDs.</p>
+
+<p>This harness is useful because it is boring. It takes the kind of manual
+testing that usually disappears into memory and turns it into a file, a log,
+a screenshot, and a page on the website.</p>
+
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.6.0-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

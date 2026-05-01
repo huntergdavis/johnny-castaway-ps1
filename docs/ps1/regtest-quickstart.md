@@ -33,7 +33,7 @@ Minimal example — run a late-window capture and keep only frames at or after t
 docker run --rm \
   -v "$PWD":/game:ro \
   -v ~/.var/app/org.duckstation.DuckStation/config/duckstation/bios:/root/.local/share/duckstation/bios:ro \
-  -v /tmp/regtest-out:/output \
+  -v "$PWD/scratch/regtest-out":/output \
   --entrypoint duckstation-regtest \
   jc-reborn-regtest:latest \
   -renderer Software -console -frames 3600 -dumpdir /output -dumpinterval 60 \
@@ -42,7 +42,14 @@ docker run --rm \
 
 Or use the wrapper script:
 ```bash
-./scripts/run-regtest.sh --frames 3600 --start-frame 2400 --dumpinterval 60 --dumpdir /tmp/regtest-out
+./scripts/run-regtest.sh --frames 3600 --start-frame 2400 --dumpinterval 60 --dumpdir scratch/regtest-out
+```
+
+For controller/menu routes, use the scripted input harness:
+
+```bash
+./scripts/ps1-menu-input-harness.sh
+./scripts/ps1-menu-input-harness.sh --settle-frames 30 --verbose
 ```
 
 ## What It Captures
@@ -93,6 +100,8 @@ docker run --rm --platform linux/amd64 \
 | `scripts/run-regtest.sh` | Run single test via Docker with full option set |
 | `scripts/regtest-scene.sh` | Test one scene: rebuilds CD with boot override, uses reviewed scene windows, decodes telemetry, outputs JSON |
 | `scripts/regtest-all-scenes.sh` | Parallel runner for multiple scenes (`--parallel 2`, `--verified-only`) |
+| `scripts/ps1-menu-input-harness.sh` | Script the PS1 controller path, capture pause-menu screenshots, and regenerate the website menu guide |
+| `scripts/ps1-menu-harness-report.py` | Copy marker-aligned frames from a scripted input run |
 | `scripts/analyze-regtest.py` | Post-run analysis: frame inspection, telemetry decode, HTML report, regression detection |
 | `scripts/regtest-compare.sh` | Diff two test runs for before/after comparison |
 
@@ -122,9 +131,12 @@ config/ps1/regtest-scenes.txt          -- All 63 scenes with status
 scripts/run-regtest.sh                 -- Docker wrapper
 scripts/regtest-scene.sh               -- Single-scene test runner
 scripts/regtest-all-scenes.sh          -- Parallel orchestrator
+scripts/ps1-menu-input-harness.sh      -- Scripted controller/menu screenshot harness
+scripts/ps1-menu-harness-report.py     -- Marker-aligned menu screenshot reporter
 scripts/analyze-regtest.py             -- Results analyzer + HTML report
 scripts/regtest-compare.sh             -- Diff two runs
 scripts/decode-ps1-bars.py             -- Telemetry bar decoder (existing)
 ps1_test.h                             -- Test instrumentation macros
 docs/ps1/regtest-harness.md            -- Full architecture documentation
+docs/ps1/scripted-input-harness.md     -- Pad-script syntax and runbook
 ```

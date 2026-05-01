@@ -12,6 +12,7 @@
 #include <psxpad.h>
 
 #include "mytypes.h"
+#include "ps1_pad_script.h"
 
 #define PS1_PAD_ANALOG_LOW_DEADZONE  96
 #define PS1_PAD_ANALOG_HIGH_DEADZONE 160
@@ -37,7 +38,7 @@ static inline uint16 ps1PadButtonsWithAnalog(const PADTYPE *pad)
             buttons |= PAD_DOWN;
     }
 
-    return buttons;
+    return ps1PadScriptMergeButtons(buttons);
 }
 
 #endif /* PS1_PAD_INPUT_H */

@@ -45,6 +45,7 @@
       <ul>
         <li><a href="../../">Home</a></li>
         <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
         <li><a href="../../about/">About</a></li>
         <li><a href="../../scenes/">Scenes</a></li>
         <li><a href="../../devlog/">Devlog</a></li>
@@ -171,6 +172,54 @@ build is 15–30 minutes; rebuilds are fully cached. Image tag:
 <p>Or specify explicitly with <code class="language-plaintext highlighter-rouge">--bios /path/to/bios/</code>.</p>
 
 <h2 id="running-tests">Running tests</h2>
+
+<h3 id="scripted-controller-input">Scripted controller input</h3>
+
+<p><code class="language-plaintext highlighter-rouge">v0.5.x</code> adds an opt-in pad-script layer for headless menu and flow tests.
+The canonical runbook is <a href="../scripted-input/">Scripted input harness</a>.
+The PS1 build embeds <code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> at compile time and only
+uses it when <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> includes <code class="language-plaintext highlighter-rouge">pad-script</code> or <code class="language-plaintext highlighter-rouge">pad-script-log</code>.
+Scripted buttons are merged into the same active-high pad mask as the real
+controller, after analog-stick folding, so the pause menu and Freeplay code
+do not know whether a human or a test script pressed Start.</p>
+
+<p>The menu documentation harness is the first user:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./scripts/ps1-menu-input-harness.sh
+</code></pre></div></div>
+
+<p>It stages a temporary boot mode, waits 30 seconds, presses Start, walks the
+major pause-menu screens, emits delayed
+<code class="language-plaintext highlighter-rouge">JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code> markers, runs DuckStation
+regtest headlessly, copies the first captured PNG at or after each marker
+into <code class="language-plaintext highlighter-rouge">site/assets/img/help/menu/</code>, and rewrites
+<a href="../../help/menu/">Menu help guide</a>. The staged boot files
+are restored before the script exits.</p>
+
+<p>Pad-script commands are deliberately small:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wait 30s
+tap START
+tap DOWN
+hold R1+RIGHT 12
+shot pause-main 30
+</code></pre></div></div>
+
+<p>Durations are frames by default; a trailing <code class="language-plaintext highlighter-rouge">s</code> means seconds at 60 Hz.
+The optional number after <code class="language-plaintext highlighter-rouge">shot</code> is the settle delay; <code class="language-plaintext highlighter-rouge">shot pause-main 30</code>
+marks the screenshot point about half a second after the preceding input.
+The menu-guide harness uses a more conservative default settle window
+because this pause-menu path has real framebuffer and polling latency, but
+<code class="language-plaintext highlighter-rouge">--settle-frames 30</code> is available for targeted timing diagnostics.
+<code class="language-plaintext highlighter-rouge">pad-script-log</code> prints parsed events for debugging. Plain <code class="language-plaintext highlighter-rouge">pad-script</code>
+keeps the extra logs off while still printing screenshot markers; the menu
+harness defaults to the quiet path and accepts <code class="language-plaintext highlighter-rouge">--verbose</code> when the route
+itself needs debugging.</p>
+
+<p>Use this when the question is input-driven rather than scene-driven: Start
+opening the pause menu, Circle backing out, Freeplay enter/exit recovery,
+world-option menu changes, or a bug report that can be written as button
+presses.</p>
 
 <h3 id="single-scene">Single scene</h3>
 
@@ -528,6 +577,7 @@ surface the regtest binary is exercising.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
+          <li><a href="../../help/">Help</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

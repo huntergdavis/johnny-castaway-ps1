@@ -1,0 +1,10 @@
+# Optional scripted controller input for headless PS1 tests.
+#
+# Enable with BOOTMODE token `pad-script` or `pad-script-log`.
+# Supported commands:
+#   wait 30s
+#   tap START
+#   hold R1+RIGHT 12
+#   shot pause-main 30
+#
+# This file is intentionally empty for normal builds.

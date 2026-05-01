@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Docs — Johnny Castaway PS1</title>
-  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, API mapping, and the per-scene workflow." />
+  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, and the per-scene workflow." />
 
   <meta property="og:title"        content="Docs — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, API mapping, and the per-scene workflow." />
+  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, and the per-scene workflow." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../assets/img/branding/og-image.png" />
@@ -45,6 +45,7 @@
       <ul>
         <li><a href="../">Home</a></li>
         <li><a href="../play/">Play</a></li>
+        <li><a href="../help/">Help</a></li>
         <li><a href="../about/">About</a></li>
         <li><a href="../scenes/">Scenes</a></li>
         <li><a href="../devlog/">Devlog</a></li>
@@ -67,7 +68,7 @@
     <header class="page-header">
       <p class="eyebrow">Reference manuals</p>
       <h1>Docs</h1>
-      <p class="subtitle">Build, captions, holidays, regtest, API mapping. The technical surface of the PS1 port.</p>
+      <p class="subtitle">Build, captions, holidays, scripted input, regtest, API mapping. The technical surface of the PS1 port.</p>
       <hr class="rule" />
     </header>
 
@@ -107,6 +108,10 @@ the project’s stance on contributions.</p>
   <li>
     <a href="./regtest/">Regression testing</a>
     <p>Headless DuckStation in Docker. Frame PNGs every <em>N</em> frames, SHA256 state hashes, telemetry overlay decode, and the per-scene wrapper.</p>
+  </li>
+  <li>
+    <a href="./scripted-input/">Scripted input harness</a>
+    <p>Pad scripts embedded into the PS1 build: deterministic menu routes, Freeplay repros, marker-aligned screenshots, and the generated menu help guide.</p>
   </li>
   <li>
     <a href="./api/">API mapping (SDL2 → PSn00bSDK)</a>
@@ -186,6 +191,7 @@ the <a href="../lab/">Lab</a>.</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
+          <li><a href="../help/">Help</a></li>
           <li><a href="../faq/">FAQ</a></li>
           <li><a href="../credits/">Credits</a></li>
           <li><a href="../hack/">Hack</a></li>

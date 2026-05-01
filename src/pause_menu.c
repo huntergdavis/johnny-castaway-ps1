@@ -529,6 +529,10 @@ void pauseMenuShow(void)
            (unsigned)ps1PerfLevel,
            soundMuted);
 #endif
+    if (ps1PadScriptVerboseLogEnabled()) {
+        printf("JCPAUSE show state=%d cursor=%d\n",
+               (int)menuState, menuCursor);
+    }
 
     /* Refresh the heap-free cache once per pause-show. fgProbeLargestAlloc
      * does ~9 malloc/free cycles which fragments the heap if called every
@@ -538,6 +542,10 @@ void pauseMenuShow(void)
 
 void pauseMenuHide(void)
 {
+    if (ps1PadScriptVerboseLogEnabled()) {
+        printf("JCPAUSE hide state=%d cursor=%d\n",
+               (int)menuState, menuCursor);
+    }
     menuVisible = 0;
     menuFramebufferPrimed = 0;
     /* Sound stays in user's chosen state — no auto-restore. */
@@ -2081,6 +2089,12 @@ int pauseMenuUpdate(void)
     prevButtons = cur;
 
     /* Dispatch to current sub-screen input handler. */
+    enum PauseMenuState oldState = menuState;
+    int oldMenuCursor = menuCursor;
+    int oldOptionsCursor = optionsCursor;
+    int oldFreeplayOptionsCursor = freeplayOptionsCursor;
+    int oldAccessCursor = accessCursor;
+    int oldSystemCursor = systemCursor;
     int keepOpen = 1;
     switch (menuState) {
     case PAUSE_MENU_MAIN:
@@ -2124,6 +2138,27 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_CREDITS:
         keepOpen = handleSubInput(pressed);
         break;
+    }
+
+    if (ps1PadScriptVerboseLogEnabled() &&
+        (pressed ||
+         oldState != menuState ||
+         oldMenuCursor != menuCursor ||
+         oldOptionsCursor != optionsCursor ||
+         oldFreeplayOptionsCursor != freeplayOptionsCursor ||
+         oldAccessCursor != accessCursor ||
+         oldSystemCursor != systemCursor ||
+         !keepOpen)) {
+        printf("JCPAUSE input state=%d->%d main=%d->%d opt=%d->%d fp=%d->%d acc=%d->%d sys=%d->%d cur=%04x pressed=%04x keep=%d\n",
+               (int)oldState, (int)menuState,
+               oldMenuCursor, menuCursor,
+               oldOptionsCursor, optionsCursor,
+               oldFreeplayOptionsCursor, freeplayOptionsCursor,
+               oldAccessCursor, accessCursor,
+               oldSystemCursor, systemCursor,
+               (unsigned)cur,
+               (unsigned)pressed,
+               keepOpen);
     }
 
     if (!keepOpen) {

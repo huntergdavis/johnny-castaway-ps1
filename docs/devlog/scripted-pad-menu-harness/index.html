@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Scripted pad input, menu screenshots, and testing the UI like a player — Johnny Castaway PS1</title>
+  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+
+  <meta property="og:title"        content="Scripted pad input, menu screenshots, and testing the UI like a player — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-05-01">
+        May 1, 2026
+      </time>
+    </p>
+    <h1>Scripted pad input, menu screenshots, and testing the UI like a player</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+
+  <div class="page-body">
+    <p>Freeplay made the pause menu important enough that screenshots are no
+longer decoration. The menu is now a piece of the machine: it enters and
+exits Freeplay, opens the gag and visitor catalogs, changes the island’s
+world state, plays sound effects, edits date and RNG seed, and turns
+captions on and off.</p>
+
+<p>So the test harness grew a controller.</p>
+
+<p>The PS1 build now has an opt-in pad-script layer. At build time,
+<code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> is embedded beside <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>. At runtime it
+does nothing unless the boot string includes <code class="language-plaintext highlighter-rouge">pad-script</code> or
+<code class="language-plaintext highlighter-rouge">pad-script-log</code>. When enabled, it merges scripted button masks into the
+same active-high controller value that the real pad uses. Start is still
+Start. Cross is still Cross. The menu code does not get a fake API.</p>
+
+<p>That small choice matters. A host-side key injector would test DuckStation
+window focus. This tests Johnny.</p>
+
+<p>The first harness script boots a normal foreground scene, waits 30 seconds,
+presses Start, walks the major pause-menu screens, and drops <code class="language-plaintext highlighter-rouge">JCPADSHOT</code>
+markers into the PS1 TTY log. DuckStation regtest captures frames every few
+VBlanks. Each marker is delayed until the target menu has had time to draw,
+and the reporter copies the first dumped frame at or after that point before
+rewriting the <a href="../../help/menu/">menu help guide</a>.</p>
+
+<p>That gives the project a new kind of documentation: generated from the
+running disc, checked by the same deterministic tooling we use for
+regression work, and useful to a human who just wants to know what the
+System menu does.</p>
+
+<p>The loop is deliberately boring:</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wait 30s
+tap START
+tap DOWN
+tap DOWN
+tap CROSS
+shot freeplay-options 30
+</code></pre></div></div>
+
+<p>The power is in the boring part. Once a menu path can be written down as
+button presses, it can become a test case, a screenshot, and a release
+artifact. If a future refactor breaks Circle as Back, the harness gets
+stuck. If a sub-screen grows too tall, the screenshot makes it obvious. If
+Start stops working on the SPI pad path again, no guide page gets produced.</p>
+
+<p>That is the whole philosophy of this port in miniature: make the PlayStation
+do the thing, make it repeatable, and then let the artifact tell the truth.</p>
+
+<p>The full operational reference is now
+<a href="../../docs/scripted-input/">Scripted input harness</a>.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.6.0-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

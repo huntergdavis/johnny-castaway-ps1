@@ -48,13 +48,14 @@ The website is the canonical surface — most of what's below is mirrored
 there with proper cross-linking, prose context, and per-section depth:
 
 - **[/play/](https://hunterdavis.com/johnny-castaway-ps1/play/)** — download + DuckStation quickstart + controls.
+- **[/help/](https://hunterdavis.com/johnny-castaway-ps1/help/)** — player help, menu screenshots, and the generated menu guide.
 - **[/about/method/](https://hunterdavis.com/johnny-castaway-ps1/about/method/)** — hybrid pipeline deep-dive.
 - **[/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/)** — live ledger of all 63 scenes + per-scene case studies.
 - **[/archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)** — the full 5-chapter project story.
 - **[/devlog/](https://hunterdavis.com/johnny-castaway-ps1/devlog/)** — dated worklogs preserved verbatim.
 - **[/lab/](https://hunterdavis.com/johnny-castaway-ps1/lab/)** — magazine-length essays on methodology (LLM-assisted dev, hallucination control, build farm, regression practice).
 - **[/hack/](https://hunterdavis.com/johnny-castaway-ps1/hack/)** — for curious hackers: learning C from this codebase, porting Johnny to a new platform, the printf-driven perf loop, the visual-debug script catalog.
-- **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
+- **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
 - **[/credits/](https://hunterdavis.com/johnny-castaway-ps1/credits/)** — the labor-of-love list.
 
 ## Download and play
@@ -105,6 +106,14 @@ bar. The current FISHING 1 canary is `loop_vb=1067` against
 `blocking_vb=2`, `prefetch_overrun_vb=2`, and `due_misses=0`. Six routed
 rows (`mary3`, `suzy1`, `suzy2`, high/low) currently complete without
 active-loop timing and are excluded from speed averages.
+
+The headless harness now has opt-in scripted controller input. Run
+`./scripts/ps1-menu-input-harness.sh` to build a temporary pad-script disc,
+press through the pause menu under DuckStation regtest, capture every major
+menu screen, and regenerate the website's
+[`/help/menu/`](https://hunterdavis.com/johnny-castaway-ps1/help/menu/)
+guide from real PS1 screenshots. The detailed runbook lives in
+[`docs/ps1/scripted-input-harness.md`](docs/ps1/scripted-input-harness.md).
 
 ## Method
 
@@ -314,6 +323,7 @@ prefer.
 - [pause-menu-design.md](docs/ps1/pause-menu-design.md) ↔ [/docs/pause-menu/](https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/)
 - [freeplay-mode-design.md](docs/ps1/freeplay-mode-design.md) ↔ [/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)
 - [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)
+- [scripted-input-harness.md](docs/ps1/scripted-input-harness.md) ↔ [/docs/scripted-input/](https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/)
 - [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/) (with [algorithm](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/emblems/) + 36 per-holiday pages)
 - [walk-implementation-plan.md](docs/ps1/walk-implementation-plan.md) — implemented story-loop walking design and memory-stability notes for `v0.4.20-ps1`
 - [release-notes-0.5.0.md](docs/ps1/release-notes-0.5.0.md) — release notes for freeplay/debug mode

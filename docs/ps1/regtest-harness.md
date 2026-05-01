@@ -124,7 +124,7 @@ game. This matters for families such as `ACTIVITY`, `MARY`, `VISITOR`, and
 valid certification routes.
 
 The generated scene list at
-[config/ps1/regtest-scenes.txt](/home/hunter/workspace/jc_reborn/config/ps1/regtest-scenes.txt)
+[config/ps1/regtest-scenes.txt](../../config/ps1/regtest-scenes.txt)
 is derived from the current rollout manifest and records:
 
 ```text
@@ -150,6 +150,43 @@ than a hand-maintained list.
   --dumpinterval 30 \
   --bios ~/ps1-bios/
 ```
+
+### Scripted Controller Input
+
+The active menu/input test path is the scripted pad harness. It embeds
+`config/ps1/PADSCRIPT.TXT` into the PS1 executable, enables it with
+`pad-script` or `pad-script-log` in `BOOTMODE.TXT`, and merges scripted
+button masks into the same active-high controller value used by the physical
+pad.
+
+```bash
+# Rebuild, run DuckStation regtest, capture every major pause-menu page,
+# and regenerate the website menu guide from PS1 screenshots.
+./scripts/ps1-menu-input-harness.sh
+
+# Tune route timing while debugging a menu page.
+./scripts/ps1-menu-input-harness.sh --settle-frames 30 --verbose
+```
+
+Pad scripts are deliberately small:
+
+```text
+wait 30s
+tap START
+tap DOWN
+hold R1+RIGHT 12
+shot world-options 30
+```
+
+Use this when the question is input-driven rather than scene-driven:
+
+- Does Start still open the pause menu after a normal boot?
+- Does Circle back out from every submenu?
+- Does a menu refactor still leave every top-level page reachable?
+- Does a Freeplay enter/exit route still recover after a full teardown?
+- Can a bug report be reduced to a deterministic sequence of button presses?
+
+Full runbook: [scripted-input-harness.md](scripted-input-harness.md).
 
 ### Command-Line Options
 
