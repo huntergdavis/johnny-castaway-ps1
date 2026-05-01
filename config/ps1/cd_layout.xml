@@ -160,6 +160,7 @@
                 <file name="BACKGRND.PSB" type="data" source="../../jc_resources/transcoded/BACKGRND.PSB"/>
                 <file name="HOLIDAY.PSB" type="data" source="../../jc_resources/transcoded/HOLIDAY.PSB"/>
                 <file name="MRAFT.PSB" type="data" source="../../jc_resources/transcoded/MRAFT.PSB"/>
+                <file name="JOHNWALK.PSB" type="data" source="../../jc_resources/transcoded/JOHNWALK.PSB"/>
             </dir>
 
             <!-- sound11 and sound13 do not exist in the original game data. -->

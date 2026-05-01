@@ -14,21 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Date: 2026-04-29 Status: planned, not started Owner: PS1 perf branch
+Date: 2026-04-29 Status: implemented in v0.4.20-ps1; freeplay-specific phases remain future work Owner: PS1 perf branch
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/walk-implementation-plan.md` |
-| Lines | 1135 |
-| Approx. words | 7333 |
+| Lines | 1168 |
+| Approx. words | 7576 |
 | Code fences | 18 |
 
 ## Outline
 
 - Walk-Connected Story Loop — Implementation Plan
 -   Executive Summary
+-   Release 0.4.20 Implementation Notes
 -   1. Background — how the original engine does it
 -     1.1 Scene metadata is pre-declared
 -     1.2 The walking system is a self-contained module
@@ -40,7 +41,6 @@ Date: 2026-04-29 Status: planned, not started Owner: PS1 perf branch
 -     3.5.2 Shared position type
 -     3.5.3 Spot ↔ coord mapping (extracted from walkdata.h)
 -     3.5.4 Per-mode ownership
--     3.5.5 Behind-tree compositing is a kernel parameter
 
 ## Read it in context
 

@@ -2230,12 +2230,16 @@ void adsPlayWalk(int fromSpot, int fromHdg, int toSpot, int toHdg)
     ttmThreads[0].numDrawnSprites = 0;
     ttmThreads[0].replayWriteCursor = 0;
     ttmThreads[0].lastActorReplayValid = 0;
+    /* Capture the clean island baseline before the first walking pose
+     * composites into bgTile. The older order saved a "clean" copy after
+     * Johnny had already been drawn, so restore preserved the first pose
+     * for the whole route in legacy ADS walks. */
+    grEnsureCleanBgTiles();
     grCurrentThread = &ttmThreads[0];
 #endif
     ttmThreads[0].delay = walkAnimate(&ttmThreads[0], ttmBackgroundThread.ttmSlot);
 #ifdef PS1_BUILD
     grCurrentThread = NULL;
-    grEnsureCleanBgTiles();
 #endif
 
     while (ttmThreads[0].delay) {

@@ -54,6 +54,15 @@ set(SOURCES
     # Holiday table + date-algorithm core (36 holidays, codegen from holidays.yml).
     src/holidays.c
     src/holidays_table.c
+    # Walk subsystem — story-loop walks between scenes + freeplay walking.
+    # walk.c + walk_data.h came from upstream jc_reborn; calcpath.c is
+    # the small Dijkstra over the 6-spot graph. walk_render.c is the
+    # shared draw kernel both story-loop and freeplay call. See
+    # docs/ps1/walk-implementation-plan.md.
+    src/walk.c
+    src/calcpath.c
+    src/walk_render.c
+    src/walk_pilot.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )

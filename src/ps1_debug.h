@@ -50,4 +50,27 @@ void ps1DebugWait(void);
  */
 void ps1DebugError(const char *fmt, ...);
 
+/*
+ * Windows-3.1-flavoured "blue screen of death" — full-screen blue +
+ * white BIOS-font diagnostic for fatal asset / allocation failures
+ * during scene loading. NEVER fires in production; while we're testing
+ * a deterministic build any failure here is a code or data bug we
+ * want surfaced immediately rather than papered over.
+ *
+ * Halts forever (no return). The console must be reset to recover.
+ *
+ * scene:  human-readable scene slug (e.g. "fishing1") or NULL
+ * reason: short one-line failure description (e.g. "drawBounds failed")
+ * file/line: __FILE__/__LINE__ of the call site for grep-ability
+ *
+ * Use the JC_BSOD(scene, reason) macro below to capture file/line
+ * automatically.
+ */
+__attribute__((noreturn))
+void ps1Bsod(const char *scene, const char *reason,
+             const char *file, int line);
+
+#define JC_BSOD(scene, reason) \
+    ps1Bsod((scene), (reason), __FILE__, __LINE__)
+
 #endif /* PS1_DEBUG_H */

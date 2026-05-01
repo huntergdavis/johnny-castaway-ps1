@@ -18,6 +18,8 @@
 #include "sound_ps1.h"
 #include "utils.h"
 #include "ps1_perf.h"
+#include "walk_pilot.h"
+#include "ps1_debug.h"
 
 uint16 ps1AdsDbgActiveThreads = 0;
 uint16 ps1AdsDbgMini = 0;
@@ -164,6 +166,7 @@ enum {
 #define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
+#define FG_SETUP_PRIME_MAX_RESIDENT_BYTES (128UL * 1024UL)
 #define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
@@ -244,6 +247,13 @@ static struct TFgPilotRuntime gFgRuntime = {0};
 #if FG_HEAP_PROBE_LOGS
 static uint8 gFgHeapProbeEnabled = 0;
 #endif
+/* Prefetch is required for scenes to play at full speed — without it
+ * each frame is a synchronous CD read, dropping playback to ~1/10
+ * speed. Earlier we defaulted this OFF to free heap during scene setup
+ * (the boot pre-alloc strategy was over-budget). Now that the boot
+ * pre-allocs are gone and the prefetch buffer is grow-only via
+ * fgReleaseStreamBuffers (we keep gFgPrefetchFrameBuffer alive across
+ * scenes once allocated), prefetch is back on by default. */
 static uint8 gFgPrefetchStage1Enabled = 1;
 static uint32 gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 static struct TTtmSlot gFgBackdropSlot;
@@ -263,6 +273,67 @@ static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
+
+/* Public accessor for walk_pilot — returns the slot holding
+ * BACKGRND.PSB sprites (used for behind-tree trunk + leaf cover-up
+ * during walk transitions). NULL if backdrop isn't loaded yet. */
+struct TTtmSlot *fgBackdropGetSlot(void)
+{
+    if (gFgBackdropSlot.numSprites[0] == 0)
+        return NULL;
+    return &gFgBackdropSlot;
+}
+
+/* Public wrapper around the file-static fgBackdropStampHoliday().
+ * Used by walk_pilot.c during walk transitions so the holiday
+ * emblem persists. Defined below where the actual stamp logic is;
+ * forward decl already exists at file top (line 243). */
+void fgBackdropStampHolidayPublic(void)
+{
+    fgBackdropStampHoliday();
+}
+
+/* Public wrapper for the wave animation tick. walk_pilot calls this
+ * each frame so the ocean keeps moving during walks. Mirrors what
+ * the FG2 frame loop does at line 1062. */
+void fgBackdropTickWavesPublic(void)
+{
+    if (gFgBackdropThread.isRunning) {
+        islandAnimate(&gFgBackdropThread);
+    }
+}
+
+/* No-op kept for ABI compatibility; walk_pilot now reuses the FG2 scene's
+ * pre-playback rect snapshot rather than rebuilding bg at walk-time. The
+ * earlier grLoadScreen approach worked but cost ~600KB malloc/free + a
+ * CD reload per walk, fragmenting the heap so the *next* scene's bg load
+ * stalled after a handful of transitions. */
+void fgBackdropRebuildIslandBg(void)
+{
+}
+
+/* Snapshot a walk-area bounding rect as clean. Spots A-F live in
+ * approximately X∈[300..522], Y∈[213..255]. With Johnny's sprite
+ * size (~40 wide × 60 tall) factored in, the walk's true draw area
+ * is closer to X∈[240..580], Y∈[170..320]. Use a single generous
+ * rect that covers all walk poses; the rect-clean machinery handles
+ * the wave region separately via the same call shape used by
+ * fgBackdropSaveCleanBgRectsForPack. */
+int fgBackdropSaveCleanBgRectsForWalk(void)
+{
+    /* Generous walk bbox + the wave region merged. Same shape FG2
+     * scenes use (see fgBackdropSaveCleanBgRectsForPack). */
+    return fgBackdropSaveCleanBgRectsForPack(
+        /* fgX  */ 240,
+        /* fgY  */ 170,
+        /* fgW  */ 340,
+        /* fgH  */ 160);
+}
+
+void fgBackdropEndWalk(void)
+{
+    grFreeCleanBgRects();
+}
 
 struct TFgPilotReadGroup {
     uint16 startSector;
@@ -869,30 +940,66 @@ static uint8 *gFgSetupSegmentBuffer = NULL;
 
 static void fgReleaseStreamBuffers(void)
 {
-    if (gFgFrameBuffer != NULL) {
-        free(gFgFrameBuffer);
-        gFgFrameBuffer = NULL;
-    }
-    gFgFrameBufferSize = 0;
-    if (gFgPrefetchFrameBuffer != NULL) {
-        free(gFgPrefetchFrameBuffer);
-        gFgPrefetchFrameBuffer = NULL;
-    }
-    gFgPrefetchFrameBufferSize = 0;
-    if (gFgStreamWindowBuffer != NULL) {
-        free(gFgStreamWindowBuffer);
-        gFgStreamWindowBuffer = NULL;
-    }
-    gFgStreamWindowBufferSize = 0;
-    if (gFgStreamScratch != NULL) {
-        free(gFgStreamScratch);
-        gFgStreamScratch = NULL;
-    }
-    gFgStreamScratchSize = 0;
+    /* Grow-only buffers — DO NOT free here. The free+malloc cycle is
+     * what fragmented the heap and starved scene N+1 around minute 11
+     * of an organic session. The size fields stay set, so
+     * foregroundPilotRuntimeStart's "capacity sufficient?" check skips
+     * the alloc on every subsequent scene unless a bigger pack comes
+     * along. Buffers grow over the first few scenes, then stabilize.
+     *
+     *   gFgFrameBuffer           — grow-only (per-frame payload)
+     *   gFgPrefetchFrameBuffer   — grow-only (prefetch payload)
+     *   gFgStreamWindowBuffer    — grow-only (prefetch read window)
+     *   gFgStreamScratch         — grow-only (alignment scratch)
+     *
+     * gFgSetupSegmentBuffer is fishing3-specific and small; we still
+     * cycle it because it's zero-cost and makes the failure path
+     * easier to read. */
     if (gFgSetupSegmentBuffer != NULL) {
         free(gFgSetupSegmentBuffer);
         gFgSetupSegmentBuffer = NULL;
     }
+}
+
+unsigned long fgGetFrameBufferBytes(void)
+{
+    return (unsigned long)gFgFrameBufferSize;
+}
+
+unsigned long fgGetPrefetchFrameBufferBytes(void)
+{
+    return (unsigned long)gFgPrefetchFrameBufferSize;
+}
+
+int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
+                            unsigned long scratchMaxBytes)
+{
+    extern int printf(const char *, ...);
+    int ok = 1;
+
+    if (frameMaxBytes > 0 && gFgFrameBuffer == NULL) {
+        gFgFrameBuffer = (uint8 *)malloc((size_t)frameMaxBytes);
+        if (gFgFrameBuffer == NULL) {
+            printf("JCSTREAM frameBuffer prealloc failed (need %lu)\n",
+                   frameMaxBytes);
+            ok = 0;
+        } else {
+            gFgFrameBufferSize = (uint32)frameMaxBytes;
+        }
+    }
+
+    if (scratchMaxBytes > 0 && gFgStreamScratch == NULL) {
+        gFgStreamScratch = (uint8 *)malloc((size_t)scratchMaxBytes);
+        if (gFgStreamScratch == NULL) {
+            printf("JCSTREAM streamScratch prealloc failed (need %lu)\n",
+                   scratchMaxBytes);
+            ok = 0;
+        } else {
+            gFgStreamScratchSize = (uint32)scratchMaxBytes;
+        }
+    }
+
+    return ok;
 }
 
 unsigned long fgProbeLargestAlloc(void)
@@ -1173,7 +1280,13 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[1] = upperMinY;
         ws[1] = (uint16)(upperEndX - upperMinX);
         hs[1] = (uint16)(upperEndY - upperMinY);
-        return grSaveCleanBgRects(xs, ys, ws, hs, 2) == 2;
+        printf("JCRECT 2-rect lower=(%d,%d,%u,%u) upper=(%d,%d,%u,%u) heapKB=%lu\n",
+               (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
+               (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1],
+               fgProbeLargestAlloc() / 1024UL);
+        int rc = grSaveCleanBgRects(xs, ys, ws, hs, 2);
+        printf("JCRECT 2-rect grSaveCleanBgRects=%d (need 2)\n", rc);
+        return rc == 2;
     } else {
         sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
         if (lowerEndX <= lowerMinX || lowerEndY <= lowerMinY)
@@ -1182,7 +1295,12 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[0] = lowerMinY;
         ws[0] = (uint16)(lowerEndX - lowerMinX);
         hs[0] = (uint16)(lowerEndY - lowerMinY);
-        return grSaveCleanBgRects(xs, ys, ws, hs, 1) == 1;
+        printf("JCRECT 1-rect lower=(%d,%d,%u,%u) heapKB=%lu\n",
+               (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
+               fgProbeLargestAlloc() / 1024UL);
+        int rc = grSaveCleanBgRects(xs, ys, ws, hs, 1);
+        printf("JCRECT 1-rect grSaveCleanBgRects=%d (need 1)\n", rc);
+        return rc == 1;
     }
 }
 
@@ -1603,11 +1721,15 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
                                              uint32 normalWindowBytes)
 {
     uint8 i;
+    uint32 requested = 0;
 
     if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
-        fgSceneEquals(sceneName, "walkstuf1"))
-        return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
+        fgSceneEquals(sceneName, "walkstuf1")) {
+        requested = (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
             (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
+        return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+            FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+    }
 
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;
@@ -1617,8 +1739,11 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
         if (payloadEnd > windowStart) {
             uint32 windowBytes = fgSectorAlignUp(payloadEnd - windowStart);
-            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES)
-                return windowBytes;
+            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES) {
+                requested = windowBytes;
+                return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+                    FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+            }
         }
     }
 
@@ -1626,10 +1751,13 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     for (i = 0;
          i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
          i++) {
-        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName))
-            return islandState.lowTide ?
+        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName)) {
+            requested = islandState.lowTide ?
                 kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
                 kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
+            return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+                FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+        }
     }
     return 0;
 }
@@ -2335,17 +2463,37 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
-                    if (gFgStreamWindowBuffer != NULL)
-                        free(gFgStreamWindowBuffer);
-                    gFgStreamWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
-                    if (gFgStreamWindowBuffer == NULL) {
-                        if (ps1PerfEnabled)
-                            ps1PerfMarkAllocFail(windowCapacityBytes);
-                        gFgStreamWindowBufferSize = 0;
-                        fgRuntimeReset();
-                        return 0;
+                    uint8 *newWindowBuffer;
+
+                    /* Setup-prime is a startup cache, not scene state.
+                     * If the larger cache allocation ever fails, keep the
+                     * scene deterministic by falling back to the normal
+                     * streaming window. The small window remains mandatory:
+                     * if that allocation fails, the scene really cannot run. */
+                    newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                    if (newWindowBuffer == NULL &&
+                        gFgRuntime.setupPrimeWindowBytes > 0 &&
+                        windowCapacityBytes > windowBytes) {
+                        gFgRuntime.setupPrimeWindowBytes = 0;
+                        windowCapacityBytes = windowBytes;
+                        if (windowCapacityBytes > gFgStreamWindowBufferSize)
+                            newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
                     }
-                    gFgStreamWindowBufferSize = windowCapacityBytes;
+                    if (windowCapacityBytes > gFgStreamWindowBufferSize) {
+                        if (newWindowBuffer == NULL) {
+                            if (ps1PerfEnabled)
+                                ps1PerfMarkAllocFail(windowCapacityBytes);
+                            gFgStreamWindowBufferSize = 0;
+                            fgRuntimeReset();
+                            return 0;
+                        }
+                        if (gFgStreamWindowBuffer != NULL)
+                            free(gFgStreamWindowBuffer);
+                        gFgStreamWindowBuffer = newWindowBuffer;
+                        gFgStreamWindowBufferSize = windowCapacityBytes;
+                    } else if (newWindowBuffer != NULL) {
+                        free(newWindowBuffer);
+                    }
                 }
                 gFgRuntime.streamWindowReadSize = windowBytes;
             }
@@ -2478,8 +2626,22 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
     return 0;
 }
 
+/* Walk-time suppression. grUpdateDisplay calls runtimeCompose every frame,
+ * which composes the previous FG2 scene's frame data (incl. baked-in Johnny)
+ * onto bg. During walks that races with walk_pilot's own per-frame composite
+ * and yields two Johnnies. walk_pilot sets this on for the duration of the
+ * walk loop (incl. hold frames). */
+static int gFgComposeSuppressed = 0;
+
+void foregroundPilotSuppressCompose(int suppressed)
+{
+    gFgComposeSuppressed = suppressed ? 1 : 0;
+}
+
 void foregroundPilotRuntimeCompose(void)
 {
+    if (gFgComposeSuppressed)
+        return;
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     const uint16 rectW = 120;
     const uint16 rectH = 80;
@@ -2659,10 +2821,11 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
     fgHeapProbe("before_scene", sceneName);
-    /* Clean-rect snapshots are tied to the current backdrop contents. Carrying
-     * their large buffers into the next backdrop load starves the second scene
-     * start on PS1, so release them before any new SCR/BMP loads. */
-    grFreeCleanBgRects();
+    /* Clean-rect snapshots are tied to the current backdrop contents. Deactivate
+     * (don't free) so the boot-prealloc'd buffers stay at their fixed addresses
+     * across scenes — eliminates the per-scene fragmentation that built up to a
+     * 200 KB lower-rect alloc failure around minute 11 of a free-running session. */
+    grDeactivateCleanBgRects();
     fgReleaseStreamBuffers();
 
     /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
@@ -2708,10 +2871,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (!foregroundPilotRuntimeStart(sceneName)) {
         fgRuntimeReset();
         fgReleaseStreamBuffers();
-        grFreeCleanBgRects();
+        grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("start_failed_cleanup", sceneName);
-        return;
+        /* On a deterministic test build any pack-start failure is a
+         * code/data bug we want surfaced loudly. The BSOD does not
+         * return — caller must reset to recover. */
+        JC_BSOD(sceneName, "foregroundPilotRuntimeStart returned 0 "
+                          "(pack header / streaming buffer alloc failed)");
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_PACK_START,
@@ -2725,20 +2892,59 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (!fgRuntimeComputeDrawBounds(&fgBoundsX, &fgBoundsY,
-                                    &fgBoundsW, &fgBoundsH) ||
-        !fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
+                                    &fgBoundsW, &fgBoundsH)) {
+        fgRuntimeReset();
+        fgReleaseStreamBuffers();
+        grDeactivateCleanBgRects();
+        fgBackdropRelease(0);
+        fgHeapProbe("draw_bounds_failed_cleanup", sceneName);
+        JC_BSOD(sceneName, "fgRuntimeComputeDrawBounds returned 0 "
+                          "(scene metadata missing or pack header malformed)");
+    }
+    if (!fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
                                            fgBoundsW, fgBoundsH)) {
         fgRuntimeReset();
         fgReleaseStreamBuffers();
-        grFreeCleanBgRects();
+        grDeactivateCleanBgRects();
         fgBackdropRelease(0);
         fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-        return;
+        JC_BSOD(sceneName, "fgBackdropSaveCleanBgRectsForPack returned 0 "
+                          "(clean-rect alloc failed — heap fragmented?)");
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_CLEAN_RECT,
                               ps1PerfElapsedVBlanks(perfPhaseTick));
     fgHeapProbe("after_clean_rect_save", sceneName);
+
+    /* Stamp the holiday emblem into bgTile NOW so it's part of the
+     * pristine baseline the walk-area buffer captures. Without this the
+     * captured pixels lack holiday — walk_pilot does re-stamp each frame,
+     * but the order (restore → composite Johnny → stamp holiday) means
+     * the previous pose's holiday region briefly flashes during scene
+     * transitions. With holiday baked in, restore alone shows it. */
+    fgBackdropStampHoliday();
+
+    /* Capture the pristine walk-area pixels into walk_pilot's persistent
+     * buffer, gated on islandState change. bgTile here is ocean + island
+     * sprites + raft + holiday — the same baseline a follow-up walk
+     * needs to wipe its previous pose against. The function is a no-op
+     * when the state key matches the last capture, so it's cheap to
+     * call every scene setup. */
+    walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
+                                         islandState.lowTide,
+                                         islandState.night,
+                                         islandState.holiday,
+                                         islandState.xPos,
+                                         islandState.yPos);
+
+    /* Force a full-tile framebuffer upload on the FIRST scene-frame
+     * upload. Without this, scene N+1's first grDrawBackground only
+     * uploads its dirty-row union, so any framebuffer pixels left from
+     * walk_pilot's last frame (e.g. walk Johnny's feet at y > 330 when
+     * grDy is high) stay on screen until something else dirties them.
+     * Showed up as "feet residue at bottom-left tile" after a
+     * scene→walk→scene transition. */
+    grForceFullRedrawNextFrame();
 
     if (ps1PerfEnabled)
         ps1PerfMarkLoopStart();
@@ -2896,7 +3102,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * ~93 KB) fails silently after 2-3 iterations. */
     fgRuntimeReset();
     fgReleaseStreamBuffers();
-    grFreeCleanBgRects();
+    /* Deactivate the rect-snapshot — keep the buffer alive at its boot-prealloc
+     * address so we don't fragment the heap across hundreds of scene cycles. */
+    grDeactivateCleanBgRects();
     /* Keep BACKGRND.BMP in slot 0 across scenes; release only
      * variant-dependent overlay slots to avoid needless PSB churn. */
     fgBackdropRelease(1);
@@ -2957,6 +3165,8 @@ void foregroundPilotSetHeapProbe(int enabled)
 
 void foregroundPilotResetPrefetchDefaults(void)
 {
+    /* Match the file-static default: prefetch is ON. Scenes need it for
+     * full-speed playback. See gFgPrefetchStage1Enabled rationale. */
     gFgPrefetchStage1Enabled = 1;
     gFgPrefetchWindowBytes = FG_PREFETCH_DEFAULT_WINDOW_BYTES;
 }

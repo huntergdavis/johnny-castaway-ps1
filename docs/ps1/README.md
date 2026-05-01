@@ -12,11 +12,20 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.3.9-ps1` (commit `111efa9f`) |
+| Release | `v0.4.20-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
+
+`v0.4.20-ps1` promotes the story-loop walk connector from branch
+prototype to release build. Johnny now walks from one scene endpoint to
+the next instead of teleporting between FG2 packs. The runtime keeps the
+ocean moving, re-stamps holiday overlays, handles palm-tree cover-up,
+and uses a persistent tight walk-erase buffer so repeated scene loops do
+not fragment away the clean baseline. The release candidate survived a
+~10-minute DuckStation soak with no `JCBSOD` and no `JCWALK` allocation
+failures; see [release-notes-0.4.20.md](release-notes-0.4.20.md).
 
 "Fully validated" means human visual + audible signoff on the scene-playback
 path. Older counts (`25/63`, `60/63`, etc.) belong to earlier validation
@@ -117,6 +126,8 @@ holiday overlay, SPU playback, input).
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes
+- [release-notes-0.4.20.md](release-notes-0.4.20.md) — release notes and soak evidence for the walking-loop milestone
 
 **Platform reference**
 - [hardware-specs.md](hardware-specs.md) — PS1 hardware

@@ -1021,10 +1021,9 @@ static int grTryLoadPsb(struct TTtmSlot *ttmSlot, uint16 slotNo,
     int framesLoaded;
     uint32 frameTableEnd;
 
-    /* Diagnostic guard: keep JOHNWALK on the legacy BMP path until the
-     * new PSB-backed sprite route is proven correct across ACTIVITY/MISCGAG. */
-    if (strcmp(strArg, "JOHNWALK.BMP") == 0)
-        return 0;
+    /* JOHNWALK.BMP — Phase 1+ of the walk plan promotes this to the
+     * PSB-backed sprite route. Earlier guard removed 2026-04-29; the
+     * registry lookup below pulls JOHNWALK.PSB's size from cd_layout. */
 
     /* Fast registry lookup — avoids any CD access for unknown BMPs. */
     psbSize = psbRegistryLookup(strArg);
@@ -3129,6 +3128,44 @@ void grDeactivateCleanBgRects(void)
     grResetCleanBgRects(0);
 }
 
+void grPreallocCleanBgRects(const uint32 *capBytes, int n)
+{
+    int i;
+    if (capBytes == NULL || n <= 0)
+        return;
+    if (n > GR_MAX_CLEAN_RECTS)
+        n = GR_MAX_CLEAN_RECTS;
+
+    for (i = 0; i < n; i++) {
+        uint32 want = capBytes[i];
+        if (want == 0) continue;
+        /* Skip if already at-or-above the requested capacity. Idempotent
+         * — safe to call multiple times during boot. */
+        if (gGrCleanRects[i].capacityBytes >= want)
+            continue;
+        if (gGrCleanRects[i].pixels != NULL) {
+            free(gGrCleanRects[i].pixels);
+            gGrCleanRects[i].pixels = NULL;
+            gGrCleanRects[i].capacityBytes = 0;
+        }
+        gGrCleanRects[i].pixels = (uint16 *)malloc((size_t)want);
+        if (gGrCleanRects[i].pixels == NULL) {
+            /* Pre-alloc failure at boot is itself a fatal-class problem,
+             * but ps1Bsod isn't safe to call before graphicsInit completes
+             * the GPU bring-up. The caller (boot path) checks heap state
+             * after this returns and decides how to surface failure. */
+            extern int printf(const char *, ...);
+            printf("JCRECT prealloc[%d] failed (need %lu bytes)\n",
+                   i, (unsigned long)want);
+            continue;
+        }
+        gGrCleanRects[i].capacityBytes = want;
+        /* Leave x/y/width/height = 0 and gGrCleanRectCount = 0 — the
+         * buffer is dormant until the first per-scene grSaveCleanBgRects
+         * activates it. */
+    }
+}
+
 int grCleanBgRectsCount(void)
 {
     return gGrCleanRectCount;
@@ -3143,6 +3180,39 @@ unsigned long grCleanBgRectsBytes(void)
                  (unsigned long)gGrCleanRects[i].height *
                  (unsigned long)sizeof(uint16);
     return total;
+}
+
+/* Caller-owned rect copy wrappers. Used by walk_pilot's persistent
+ * walk-area buffer — same per-tile splitting logic as the gGrCleanRects
+ * snapshots, but the buffer is owned outside of graphics_ps1's rect
+ * machinery (so grSaveCleanBgRects/grFreeCleanBgRects don't touch it).
+ * The dst/src buffer must be sized w * h * sizeof(uint16). */
+void grCaptureBgRect(uint16 *dst, sint16 x, sint16 y, uint16 w, uint16 h)
+{
+    struct TGrCleanRect r;
+    if (dst == NULL || w == 0 || h == 0)
+        return;
+    r.x = x;
+    r.y = y;
+    r.width = w;
+    r.height = h;
+    r.pixels = dst;
+    r.capacityBytes = (uint32)w * (uint32)h * sizeof(uint16);
+    grCleanRectCopyOut(&r);
+}
+
+void grRestoreBgRect(const uint16 *src, sint16 x, sint16 y, uint16 w, uint16 h)
+{
+    struct TGrCleanRect r;
+    if (src == NULL || w == 0 || h == 0)
+        return;
+    r.x = x;
+    r.y = y;
+    r.width = w;
+    r.height = h;
+    r.pixels = (uint16 *)src;
+    r.capacityBytes = (uint32)w * (uint32)h * sizeof(uint16);
+    grCleanRectCopyIn(&r);
 }
 
 /* Set up rect-based clean backup. Drops any existing rects first (also any
