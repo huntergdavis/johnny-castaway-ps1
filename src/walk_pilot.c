@@ -50,8 +50,10 @@ static struct TTtmThread gWalkThread;
 /* Persistent walk-area pristine buffer (Option B in the architecture
  * discussion). Holds bgTile pixels at a known-clean moment (right after
  * fgBackdropEnableWaveBackdrop, before scene playback dirties them).
- * Reused across all walks until islandState changes — i.e. once per
- * "sequence" boundary.
+ * Reused for the next walk out of that scene, then released before the
+ * following FG2 scene starts. Keeping it resident across the scene-load
+ * boundary starves large setup-prime windows (notably fishing1's 320 KB
+ * window) after the walk has also loaded JOHNWALK.
  *
  * The old buffer was a fixed screen-space rect (80,150,520,180). That
  * missed Johnny whenever the randomized island y offset pushed the walk
@@ -342,6 +344,8 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
     }
 
     walkRenderResetCache();
+    fgWalkRenderTeardown();
+    walkPilotReleaseCleanWalkArea();
     foregroundPilotSuppressCompose(0);
     return 0;
 }

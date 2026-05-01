@@ -37,12 +37,12 @@
  */
 int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg);
 
-/* Free the JOHNWALK.PSB slot. Call at scene-loop teardown if you
- * want the VRAM back; safe to skip and let the slot persist across
- * walks. */
+/* Free the JOHNWALK.PSB slot. The story-loop walk driver releases it
+ * at the end of each walk so the next FG2 scene can claim large setup
+ * buffers; this remains exposed for shutdown and abort paths. */
 void fgWalkRenderTeardown(void);
 
-/* Persistent walk-area pristine buffer.
+/* Walk-area pristine buffer.
  *
  * walk_pilot needs to clear bgTile back to a known-clean baseline each
  * walk frame so the previous Johnny pose's pixels don't bleed through.
@@ -51,19 +51,16 @@ void fgWalkRenderTeardown(void);
  * at walk start (caused empty-water flash + ~600KB malloc churn that
  * starved the next scene's bg load).
  *
- * The persistent design: allocate ONE walk-area-sized buffer at boot,
- * hold it across scenes for the lifetime of the run, and refresh its
- * pixels (in-place memcpy, no realloc) only when islandState changes.
- * Cost: a single ~229KB locked allocation; gain: no per-walk alloc/free,
- * no heap fragmentation, walks always have a clean source to restore. */
+ * The current design: capture one walk-area-sized buffer during scene
+ * setup, use it for the walk that leaves that scene, then release it
+ * before the next FG2 pack starts. That avoids carrying ~185KB of walk
+ * pixels across the exact boundary where large scene setup-prime windows
+ * need contiguous heap. */
 
-/* Pre-allocate the persistent buffer at boot. Call AFTER graphicsInit()
- * but BEFORE the screensaver-loop's first scene plays — at that point
- * the heap is mostly fresh (resource-table parses have run but no
- * per-scene churn yet), so the 229KB block lands in a contiguous chunk
- * and stays put for the run. Calling later still works (lazy alloc on
- * first capture) but risks the chunk fragmenting after several scenes.
- * Returns 1 on success, 0 if malloc failed. */
+/* Optional early allocation hook. Current story-loop playback can rely on
+ * lazy allocation in walkPilotCaptureCleanWalkAreaIfStale; retaining this
+ * API keeps boot/debug callers source-compatible. Returns 1 on success,
+ * 0 if malloc failed. */
 int walkPilotInit(void);
 
 /* walkPilotCaptureCleanWalkAreaIfStale — call from the scene-setup path
@@ -75,7 +72,8 @@ int walkPilotInit(void);
 void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
                                           int holidayId, int xPos, int yPos);
 
-/* Release the persistent buffer (call at app shutdown / loop teardown). */
+/* Release the walk clean buffer. Safe after a walk completes; the next
+ * scene setup captures a fresh buffer before another walk can run. */
 void walkPilotReleaseCleanWalkArea(void);
 
 /* Diagnostic accessors — used by the BSOD log snapshot to print
