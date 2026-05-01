@@ -4,11 +4,12 @@ title: FISHING 5 — Eaten by a shark
 ads: FISHING
 tag: 5
 slug: fishing5
-status: pending
-description: "FISHING.ADS scene 5: Eaten by a shark. Not yet validated."
+status: blocked
+description: "FISHING.ADS scene 5: Eaten by a shark. Blocked by visible shark cleanup residue."
 ---
 
-Not yet validated.
+Blocked on 2026-05-01 verification: the shark leaves visible leftover
+sprites/frames instead of fully wiping between animation frames.
 
 ## Pack identifiers
 
@@ -21,21 +22,12 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Current blocker
 
-The same way every scene does: under the FISHING 1 bar.
+This is not an old FG2-pack issue: the current high/low packs are already
+FGP3 temporal-residual packs and contain cleanup spans. The remaining
+failure is likely in the residual cleanup/runtime contract or in the
+generated cleanup coverage for this scene.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Do not sign this scene off until the shark residue is gone under the
+same FISHING 1 bar used by the validated scenes.
