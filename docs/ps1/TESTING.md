@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-04-30:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.6%` |
-| Timing-bearing average target speed | `88.1%` |
-| Latest perf matrix run | `2026-04-30T19:38:49` |
-| Stats version | mixed: latest refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.6%` (`14.6360%` exact) |
+| Timing-bearing average target speed | `88.1%` (`88.1061%` exact) |
+| Latest perf matrix run | `2026-04-30T23:02:41` |
+| Stats version | mixed: latest refreshed rows use `indexed8-tile-local-compose-v1`; earlier follow-up rows include `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -92,8 +92,8 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
-`compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include
-`compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
+`indexed8-tile-local-compose-v1`; earlier follow-up rows include
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
 high/low) complete without active-loop timing and are excluded from speed
 averages even though the route/gate itself passes.
 

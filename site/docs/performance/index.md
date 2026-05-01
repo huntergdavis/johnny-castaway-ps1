@@ -242,26 +242,26 @@ sound_late = 0   cd_fail = 0
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+14.6% over target /
-88.1% target speed** (`14.6132%` exact over target / `88.1175%` exact target speed).
+88.1% target speed** (`14.6360%` exact over target / `88.1061%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include
-`compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`, and the full-matrix baseline rows are stamped
+`indexed8-tile-local-compose-v1`; earlier follow-up rows include
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-04-30T19:38:49`; per-row freshness and stats version are shown on
+run is `2026-04-30T23:02:41`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include
-`compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
+rows now use `indexed8-tile-local-compose-v1`; earlier follow-up rows include
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
 | Scene | High tide | Low tide |
@@ -326,7 +326,7 @@ rows are historical only.
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +40.3% / 71.3% (1970/1404); due 21; blk 400 | +43.4% / 69.7% (2001/1395); due 31; blk 450 |
+| `walkstuf1` | +41.9% / 70.5% (2002/1411); due 27; blk 438 | +44.6% / 69.2% (2014/1393); due 40; blk 494 |
 | `walkstuf2` | +28.4% / 77.9% (593/462) | +28.4% / 77.9% (593/462) |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 

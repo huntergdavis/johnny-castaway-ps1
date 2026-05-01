@@ -16,8 +16,8 @@ Current accepted fishing1 exact baseline:
 | `upload_bytes` | `6690560` |
 | `restore_bytes` | `251144` |
 | `prefetch_buffer` | `333656` bytes for fishing1 high-tide FGP3 setup-prime, `366841` bytes for fishing2 high-tide FGP3 setup-prime, smaller variants otherwise |
-| `jcreborn.exe` | `145408` bytes |
-| `jcreborn.elf` | `726432` bytes |
+| `jcreborn.exe` | `169984` bytes |
+| `jcreborn.elf` | `792892` bytes |
 
 Goal: close `131` remaining loop VBlanks without changing pixels, sound event
 timing, scene identity, or long-run heap stability. A 1% win at the current
@@ -137,6 +137,12 @@ after data-shape changes.
 The upload path now reuses one stack `RECT` for immediate `LoadImage()` calls,
 shrinking `grDrawBackground` by 8 bytes and ELF to `712272` while keeping every
 timing, CD, upload, and correctness counter exact.
+The indexed8 compositor now treats generated indexed8 spans as opaque visible
+runs and selects the RAM background tile once per left/right run. This is
+accepted for the WALKSTUF1 indexed8 rows: high improves `2013 -> 2002` and low
+improves `2028 -> 2014`, with PAL4 canaries exact-flat. The blocking increase
+means follow-up work should target scheduler/CD ownership or host-side
+preprocessing, not another local indexed8 pixel-loop branch.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:

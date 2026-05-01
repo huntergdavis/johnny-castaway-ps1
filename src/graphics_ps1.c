@@ -2117,6 +2117,15 @@ void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint3
                                             screenY);
 }
 
+static inline void grCompositeIndexed8OpaqueRun(uint16 *dst,
+                                                const uint8 *indexedPixels,
+                                                int count,
+                                                const uint16 *palette)
+{
+    for (int i = 0; i < count; i++)
+        dst[i] = palette[indexedPixels[i]];
+}
+
 static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
                                                 uint16 pixelCount,
                                                 const uint16 *palette,
@@ -2125,6 +2134,11 @@ static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
 {
     int start = 0;
     int end = (int)pixelCount;
+    int destStartX;
+    int destEndX;
+    int tileLocalY;
+    PS1Surface *tileLeft;
+    PS1Surface *tileRight;
 
     if (indexedPixels == NULL || palette == NULL || pixelCount == 0)
         return;
@@ -2137,28 +2151,34 @@ static void grCompositeIndexed8SpanToBackground(const uint8 *indexedPixels,
     if (start >= end)
         return;
 
-    grMarkRectDirty(destX + start, destY, destX + end, destY + 1);
+    destStartX = destX + start;
+    destEndX = destX + end;
+    grMarkRectDirty(destStartX, destY, destEndX, destY + 1);
 
-    for (int i = start; i < end; i++) {
-        int x = destX + i;
-        PS1Surface *tile;
-        int localY;
-        int localX;
-        uint8 index = indexedPixels[i];
+    if (destY < 240) {
+        tileLocalY = destY;
+        tileLeft = bgTile0;
+        tileRight = bgTile1;
+    } else {
+        tileLocalY = destY - 240;
+        tileLeft = bgTile3;
+        tileRight = bgTile4;
+    }
 
-        if (index == 0)
-            continue;
+    if (tileLeft != NULL && tileLeft->pixels != NULL && destStartX < 320) {
+        int lx0 = destStartX;
+        int lx1 = (destEndX < 320) ? destEndX : 320;
+        int srcStart = start + (lx0 - destStartX);
+        uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
+        grCompositeIndexed8OpaqueRun(dst, indexedPixels + srcStart, lx1 - lx0, palette);
+    }
 
-        if (destY < 240) {
-            localY = destY;
-            tile = (x < 320) ? bgTile0 : bgTile1;
-        } else {
-            localY = destY - 240;
-            tile = (x < 320) ? bgTile3 : bgTile4;
-        }
-        localX = (x < 320) ? x : (x - 320);
-        if (tile != NULL && tile->pixels != NULL)
-            tile->pixels[(localY * (int)tile->width) + localX] = palette[index];
+    if (tileRight != NULL && tileRight->pixels != NULL && destEndX > 320) {
+        int rx0 = (destStartX > 320) ? destStartX : 320;
+        int rx1 = destEndX;
+        int srcStart = start + (rx0 - destStartX);
+        uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + (rx0 - 320);
+        grCompositeIndexed8OpaqueRun(dst, indexedPixels + srcStart, rx1 - rx0, palette);
     }
 }
 

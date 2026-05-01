@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-04-30:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.6%` |
-| Timing-bearing average target speed | `88.1%` |
-| Latest perf matrix run | `2026-04-30T19:38:49` |
-| Stats version | mixed: latest refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.6%` (`14.6360%` exact) |
+| Timing-bearing average target speed | `88.1%` (`88.1061%` exact) |
+| Latest perf matrix run | `2026-04-30T23:02:41` |
+| Stats version | mixed: latest refreshed rows use `indexed8-tile-local-compose-v1`; earlier follow-up rows include `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1076 VBlanks`, `+12.2%`, `89.1% target speed`, `blocking_vb=0` |
 
 The durable numeric source is
@@ -144,8 +144,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up
-  rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through
+  refreshed rows use `indexed8-tile-local-compose-v1`; earlier follow-up
+  rows include `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through
   `compact-fgp3-v29-smallprime`; the complete full-matrix baseline remains
   `compact-fgp3-v2-fullmatrix` for rows not rerun since that pass.
 
@@ -273,8 +273,8 @@ and this page.
 | `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
 | `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
 | `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
-| `walkstuf1` | high | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +40.3% | 71.3% | 1965/1401 | 400 | 130 | 21 |  |
-| `walkstuf1` | low | measured | 2026-04-30T19:38:49 | compact-fgp3-v58-activity9high-window20-table | +43.4% | 69.7% | 2001/1395 | 450 | 134 | 31 |  |
+| `walkstuf1` | high | measured | 2026-04-30T23:02:41 | indexed8-tile-local-compose-v1 | +41.9% | 70.5% | 2002/1411 | 438 | 101 | 27 |  |
+| `walkstuf1` | low | measured | 2026-04-30T23:02:41 | indexed8-tile-local-compose-v1 | +44.6% | 69.2% | 2014/1393 | 494 | 95 | 40 |  |
 | `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf2` | low | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf3` | high | measured | 2026-04-29T18:12:55 | compact-fgp3-v2-fullmatrix | +8.1% | 92.5% | 2460/2276 | 79 | 45 | 6 |  |
