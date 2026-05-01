@@ -617,7 +617,7 @@ These are non-negotiable; the build fails without them.
 4. **Single-source assertions.** Pre-commit / CI rule fails the build if
    any hard-coded `v0\.[0-9]+\.[0-9]+-ps1` shows up outside `VERSION`,
    `release.sh`, `CHANGELOG`, and the auto-rewritten stanzas. Same for the
-   `2 / 63` count outside `scene-status.md`.
+   current validated-scene count outside `scene-status.md`.
 5. **Caption tables generated, not edited.** Forbid hand-edits to the FISHING
    captions table in `README.md` once the YAML is canonical — the site builds
    it; humans edit `caption-audit-2026-04-26.yaml`.

@@ -99,7 +99,7 @@ second six are the companion craft retrospectives.
   </li>
   <li>
     <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">The 63-scene grind</a>
-    <p>Two scenes signed off, sixty-one to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
+    <p>Five scenes signed off, fifty-eight to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
   </li>
 </ul>
 

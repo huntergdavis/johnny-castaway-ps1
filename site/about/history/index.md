@@ -173,10 +173,16 @@ reference for that work.
 That was the second scene; the project's count of "fully validated"
 became **2 / 63**.
 
+On **2026-05-01**, `FISHING 3`, `FISHING 4`, and `FISHING 6` joined the
+validated ledger. `FISHING 4` needed the original `LEFT_ISLAND` draw
+offset restored in the fgpilot path; `FISHING 6` needed a terminal FGP3
+cleanup repair for the final splash and pole residue. `FISHING 5`
+remained blocked on shark cleanup residue. The current count became
+**5 / 63**.
+
 ## The 63-scene grind
 
-`FISHING 3` is in bring-up at the time of writing -- loop-stable
-and tide-correct on FG2, but not yet promoted. The remaining 60 are
+`FISHING 7` is next in bring-up. The remaining unvalidated scenes are
 queued. The per-scene workflow is the same loop, repeated:
 
 ```
@@ -246,8 +252,9 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`).
-- Next scene in bring-up: **`FISHING 3`**.
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`).
+- Next scene in bring-up: **`FISHING 7`**. `FISHING 5` remains blocked
+  on shark cleanup residue.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

@@ -193,7 +193,33 @@
 - ads: FISHING
   tag: 3
   slug: fishing3
-  status: in-bringup
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+  last_verified: 2026-05-01
+  notes: visual + audible signoff on PS1/DuckStation from v0.6.1-ps1 baseline
+- ads: FISHING
+  tag: 4
+  slug: fishing4
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+  last_verified: 2026-05-01
+  notes: visual + audible signoff after LEFT_ISLAND fgpilot draw-offset fix
+- ads: FISHING
+  tag: 5
+  slug: fishing5
+  status: blocked
   visuals: wip
   sfx: wip
   variants:
@@ -201,35 +227,21 @@
     - low-tide
     - holiday
     - raft-stage
-  last_verified: ""
-  notes: "**NEXT**; loop-stable and tide-correct on FG2, not yet signed off"
-- ads: FISHING
-  tag: 4
-  slug: fishing4
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
-- ads: FISHING
-  tag: 5
-  slug: fishing5
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: 2026-05-01 attempt
+  notes: "blocked: visible leftover shark sprites/frames; pack is already FGP3, so investigate residual cleanup contract"
 - ads: FISHING
   tag: 6
   slug: fishing6
-  status: blocked
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: blocked in regtest
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+  last_verified: 2026-05-01
+  notes: visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue
 - ads: FISHING
   tag: 7
   slug: fishing7

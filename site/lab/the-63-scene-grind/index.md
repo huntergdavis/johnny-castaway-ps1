@@ -2,7 +2,7 @@
 layout: page
 title: The 63-scene grind
 eyebrow: Lab . Retrospective
-subtitle: Two scenes signed off, sixty-one to go. That is not failure. That is a ledger.
+subtitle: Five scenes signed off, fifty-eight to go. That is not failure. That is a ledger.
 description: A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.
 date: 2026-04-26
 ---
@@ -20,14 +20,18 @@ avoid stomping pixels. Some are mostly standing animation and some are little
 movies. They all eventually need the same thing: watch the PS1 output, compare
 against reference, fix what is wrong, mark the row.
 
-## Why only two validated
+## Why only five validated
 
-At this release, two scenes are validated: `FISHING 1` and `FISHING 2`.
+At this release, five scenes are validated: `FISHING 1`, `FISHING 2`,
+`FISHING 3`, `FISHING 4`, and `FISHING 6`. `FISHING 5` is intentionally
+blocked until its shark cleanup residue is gone.
 
 That can sound small if you treat the scene count like a progress bar. It is
 not the right read. The first validated scene built the pipeline. The second
-proved the pipeline was not a one-off accident. The remaining sixty-one are
-work, but they are work inside a known frame.
+proved the pipeline was not a one-off accident. The next three proved the
+loop could survive placement bugs, residual cleanup bugs, and real variant
+checks. The remaining fifty-eight are work, but they are work inside a known
+frame.
 
 The difference between "nothing is known" and "the loop is known" is enormous.
 
@@ -52,7 +56,7 @@ uneventful.
 
 ## The grind is the project
 
-There is no grand final algorithm that validates the other sixty-one. There
+There is no grand final algorithm that validates the other fifty-eight. There
 will be tricks. There will be pack improvements. There will be more codegen.
 But the work is still one scene at a time.
 

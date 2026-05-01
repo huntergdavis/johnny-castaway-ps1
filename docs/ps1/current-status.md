@@ -3,18 +3,18 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-01 (release `v0.5.0-ps1`; freeplay/debug
-mode release with direct-control Johnny).
+**Last updated:** 2026-05-01 (release `v0.6.2-ps1`; FISHING 6
+scene-validation bugfix).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
-animations. `FISHING 1` and `FISHING 2` have been validated under the
-project's current acceptance bar: pixel-perfect visuals plus synced SFX,
-across every applicable variant (night / low-tide / holiday /
-raft-stage), signed off by human visual + audible review. `FISHING 3`
-is in bring-up: loop-stable and tide-correct on FG2, but not yet
-promoted to the validated ledger.
+animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, and
+`FISHING 6` have been validated under the project's current acceptance
+bar: pixel-perfect visuals plus synced SFX, across every applicable
+variant (night / low-tide / holiday / raft-stage), signed off by human
+visual + audible review. `FISHING 5` remains blocked on visible shark
+cleanup residue and is intentionally not promoted.
 
 | Component | Status |
 |---|---|
@@ -23,7 +23,7 @@ promoted to the validated ledger.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 2/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 5/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -33,13 +33,22 @@ promoted to the validated ledger.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 2 / 63 fully validated
+## Scenes: 5 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.6.2-ps1` — scene-validation bugfix release; promotes `FISHING 6`
+  after terminal FGP3 cleanup repair removes the final splash and
+  fishing-pole residue.
+- `v0.6.1-ps1` — freeplay clean-rect bugfix release; clean rects now
+  follow randomized island placement, fixing bottom-edge Johnny foot
+  cleanup and freeplay return stability.
+- `v0.6.0-ps1` — ocean ambience release; optional CC0 ocean loop on a
+  dedicated SPU voice, pause-menu toggle, and memcard-persisted
+  preference.
 - `v0.5.0-ps1` — freeplay/debug release; promotes direct-control Johnny,
   pause-menu gag/visitor catalogs, sound test, immediate world toggles,
   frog-clock loading transitions, Select clear-screen rebuild, and
@@ -136,7 +145,8 @@ searchability — **do not cite them as current progress**:
 | 57 / 63 | 2026-04-04 | Scenes rendering with island content | `docs/ps1/TESTING.md` (older) |
 | 60 / 63 | 2026-04-04..07 | Bringup in the headless regtest surface | `docs/ps1/TESTING.md` (older), `config/ps1/regtest-scenes.txt` |
 | **1 / 63** | **2026-04-22** | **Human-signed reference scene under the full visual + SFX bar** | **this doc, `scene-status.md`** |
-| **2 / 63** | **2026-04-24** | **Current scene ledger after `FISHING 2` promotion; `FISHING 3` remains bring-up** | **this doc, `scene-status.md`** |
+| **2 / 63** | **2026-04-24** | **Scene ledger after `FISHING 2` promotion; `FISHING 3` remained bring-up** | **this doc, `scene-status.md`** |
+| **5 / 63** | **2026-05-01** | **Current scene ledger after `FISHING 3`, `FISHING 4`, and `FISHING 6` promotion; `FISHING 5` remains blocked** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current

@@ -12,19 +12,19 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.5.0-ps1` |
+| Release | `v0.6.2-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
+| Scenes fully validated under the reference bar | **5 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.5.0-ps1` promotes freeplay/debug mode from branch prototype to
-release build. Johnny can now be driven around the island directly from
-the pause menu, with analog/D-pad walking, slow/fast shoulder modifiers,
-fishing, immediate world toggles, debug catalogs for gags and visitors,
-a sound-test page, clear-screen rebuild, and frog-clock loading
-transitions. See [release-notes-0.5.0.md](release-notes-0.5.0.md) and
-[freeplay-mode-design.md](freeplay-mode-design.md).
+`v0.6.2-ps1` is a scene-validation bugfix release: `FISHING 6` now
+clears the reference bar after terminal FGP3 cleanup removed the last
+splash and pole residue. It builds on `v0.6.1-ps1` (freeplay clean-rect
+placement fix), `v0.6.0-ps1` (ocean ambience), and `v0.5.0-ps1`
+(freeplay/debug mode). See [release-notes-0.5.0.md](release-notes-0.5.0.md)
+and [freeplay-mode-design.md](freeplay-mode-design.md) for the freeplay
+milestone.
 
 The previous `v0.4.20-ps1` release promoted the story-loop walk connector:
 Johnny walks from one scene endpoint to the next instead of teleporting

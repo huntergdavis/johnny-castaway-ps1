@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.5.0-ps1
+eyebrow: Component-level state at v0.6.2-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,9 +13,9 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-The two signed-off scenes are `FISHING 1` and `FISHING 2`.
-`FISHING 3` is in bring-up: loop-stable and tide-correct on FG2, not
-yet promoted. The live per-scene ledger is at
+The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
+`FISHING 4`, and `FISHING 6`. `FISHING 5` remains blocked on visible
+shark cleanup residue. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -52,15 +52,13 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past `FISHING 2`.** `FISHING 3` is loop-stable and
-  tide-correct on FG2 but has not cleared the pixel-perfect +
-  audible bar. The remaining 60 scenes in
+- **Scene coverage past the validated FISHING run.** `FISHING 5` is
+  blocked on visible shark cleanup residue, and the other 57 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
   evidence.
-- **`FISHING 6`** is currently flagged blocked in regtest. **`MARY 1`,
-  `MARY 2`, `MARY 4`** are untested in regtest. Those rows in
+- **`MARY 1`, `MARY 2`, `MARY 4`** are untested in regtest. Those rows in
   `scene-status.md` are the SoT.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
@@ -92,7 +90,7 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **`FISHING 3` promotion.** Next scene in the queue. Bring-up
+- **`FISHING 7` promotion.** Next scene in the queue. Bring-up
   loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

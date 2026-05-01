@@ -73,9 +73,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.6.0-ps1`** |
+| Current release | **`v0.6.2-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
+| Scenes fully validated under the reference bar | **5 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.8% over target / 88.7% target speed** |
@@ -84,16 +84,20 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-`v0.6.0-ps1` is the ocean-ambience release. The screensaver now ships
-a CC0-sourced 20-second ocean loop on a dedicated SPU voice, with a
-pause-menu toggle (Pause → Accessibility → Ocean) and memcard-persisted
-preference. The audio runs at zero CPU cost: the SPU plays the ADPCM
+`v0.6.2-ps1` is a scene-validation bugfix release: `FISHING 6` now
+clears the reference bar after a terminal FGP3 cleanup fix removed the
+last splash and pole residue. It builds on `v0.6.1-ps1` (freeplay
+clean-rects follow randomized island placement) and `v0.6.0-ps1`
+(ocean ambience: a CC0-sourced 20-second ocean loop on a dedicated SPU
+voice, pause-menu toggle, and memcard-persisted preference).
+
+The ocean ambience audio runs at zero CPU cost: the SPU plays the ADPCM
 loop in hardware via sample-defined loop flags, so JCPERF2 timing is
 unchanged. ~123 KB of SPU RAM used, ~257 KB still free for future
-ambience or music slots. It builds on `v0.5.0-ps1` (freeplay/debug
-mode — direct-control Johnny, sound test, scene catalogs) and
-`v0.4.20-ps1` (walking-loop — Johnny walks between story scene
-endpoints instead of teleporting).
+ambience or music slots. The release line also builds on `v0.5.0-ps1`
+(freeplay/debug mode — direct-control Johnny, sound test, scene
+catalogs) and `v0.4.20-ps1` (walking-loop — Johnny walks between story
+scene endpoints instead of teleporting).
 
 One scene at a time is promoted to the "fully validated" bar. Older
 count-based validation models (`25/63`, `60/63`, `63/63` etc.) from the
@@ -131,9 +135,9 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Two scenes (`fishing1`, `fishing2`) validated end-to-end anchor the
-scene-by-scene bring-up loop. `fishing3` is in bring-up and loop-stable,
-but not yet promoted to the pixel-perfect bar.
+Five scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`)
+validated end-to-end anchor the scene-by-scene bring-up loop. `fishing5`
+is still blocked on shark residue and remains intentionally unpromoted.
 
 The full pipeline — pack format byte layout, hardware constraints hit
 on the way, the SPI pad-poll fix, dirty-rect bookkeeping — is detailed

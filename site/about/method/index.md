@@ -263,7 +263,7 @@ runtime no longer carries the state that those bugs lived in.
 The cost is that every scene needs a verified host capture before
 it joins the validated count, and that count is currently
 `{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}`.
-Two scenes pixel-perfect plus synced SFX is not 63. But the path
-from one to two was the same as the path from two to three will
-be, and the path from three to thirty will be the same again. That
-is the property the project was reaching for.
+Five scenes pixel-perfect plus synced SFX is not 63. But the path
+from one to five is now a repeatable scene-by-scene loop, including
+small pack-level fixes when the residual cleanup contract misses a
+few pixels. That is the property the project was reaching for.
