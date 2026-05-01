@@ -153,6 +153,11 @@ compositor and ELF but did not move loop time safely, and VISITOR3 low regressed
 hard. Do not spend more time on local scratchpad palette copies; scratchpad work
 needs a generated or assembly compositor that owns layout and proves cross-scene
 cadence.
+The one-off 16-byte alignment probe for `fgRuntimeFillWindowForEntry()` is also
+rejected: it kept the PS-EXE bucket stable but left every key seven-case metric
+flat while growing ELF. Future address-bucket work should be scripted across
+multiple functions and alignments so it can find a real phase knee instead of
+testing one helper by hand.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -573,7 +578,7 @@ input.
 | 94 | Toolchain | Do not retry whole-TU `-O3` on `cdrom_ps1.c`; use helper-scoped `-O2`/`-Os`, generated read metadata, or assembly only under map/layout gates. | CD helper `-O3` grew the executable and worsened visible CD pressure; the feasibility note supports narrower targets, not broad flags. | `loop_read_vb` or helper size improves without layout/cadence regression. |
 | 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Done: exact-flat timing/work with PS-EXE `149504 -> 145408` and ELF `739900 -> 727716`. | Keep as a size/code-shape win; do not count as VBlank speed. |
 | 96 | Toolchain | Sweep `-G0`, `-G4`, `-G8`, `-G16`/GP-relative small-data thresholds. | Current `GPREL` likely implies a default small-data tradeoff. | Loop or binary size improves without heap/data regressions. |
-| 97 | Toolchain | Sweep hot-function alignment: default, 4, 8, 16, 32 bytes. | Code-address phase is proven important. | A phase bucket improves loop or CD pressure. |
+| 97 | Toolchain | Sweep hot-function alignment: default, 4, 8, 16, 32 bytes. | A one-off 16-byte alignment of `fgRuntimeFillWindowForEntry()` was exact-flat, so any retry must be scripted across several hot foreground/CD functions. | A phase bucket improves loop or CD pressure with map-address evidence. |
 | 98 | Toolchain | Link hot FG2/CD sections first. | Keep scheduler/CD code contiguous and stable while cold code changes. | Hot symbol addresses stabilize and timing improves or becomes less fragile. |
 | 99 | Toolchain | Split cold menu/debug/caption code into a cold archive or section. | Valid cold-code cleanup currently perturbs hot phase. | Cold shrink passes exact gate. |
 | 100 | Toolchain | Add deterministic text padding around hot functions, then retry failed valid cleanups. | Active-guard removals and diagnostic gates were semantically valid but phase-sensitive. | At least one old size win becomes timing-flat or faster. |
