@@ -488,15 +488,28 @@ static void fpRestampTreeIfNeeded(void)
 static int fpSaveCleanRects(void)
 {
     const uint32 kMaxCleanRectBytes = 96UL * 1024UL;
+    sint16 islandX = (sint16)islandState.xPos;
+    sint16 islandY = (sint16)islandState.yPos;
     sint16 xs[FP_CLEAN_RECT_COUNT];
     sint16 ys[FP_CLEAN_RECT_COUNT];
     uint16 ws[FP_CLEAN_RECT_COUNT];
     uint16 hs[FP_CLEAN_RECT_COUNT];
     int rc;
 
-    xs[0] = 129; ys[0] = 180; ws[0] = 479; hs[0] = 220; /* island, Johnny, surf */
-    xs[1] = 240; ys[1] =  80; ws[1] = 400; hs[1] = 128; /* sky/summons */
-    xs[2] =   0; ys[2] = 120; ws[2] = 260; hs[2] =  96; /* upper-left Johnny smear */
+    xs[0] = (sint16)(islandX + 129);
+    ys[0] = (sint16)(islandY + 180);
+    ws[0] = 479;
+    hs[0] = 220; /* island, Johnny, surf */
+
+    xs[1] = (sint16)(islandX + 240);
+    ys[1] = (sint16)(islandY + 80);
+    ws[1] = 400;
+    hs[1] = 128; /* sky/summons */
+
+    xs[2] = (sint16)(islandX + 0);
+    ys[2] = (sint16)(islandY + 120);
+    ws[2] = 260;
+    hs[2] = 96; /* upper-left Johnny smear */
 
     rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, FP_CLEAN_RECT_COUNT,
                                  kMaxCleanRectBytes);
