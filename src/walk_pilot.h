@@ -51,11 +51,10 @@ void fgWalkRenderTeardown(void);
  * at walk start (caused empty-water flash + ~600KB malloc churn that
  * starved the next scene's bg load).
  *
- * The current design: capture one walk-area-sized buffer during scene
- * setup, use it for the walk that leaves that scene, then release it
- * before the next FG2 pack starts. That avoids carrying ~185KB of walk
- * pixels across the exact boundary where large scene setup-prime windows
- * need contiguous heap. */
+ * The current design: capture one tight walk-area buffer during scene
+ * setup, keep that allocation resident, and refresh its pixels only when
+ * the island state changes. This avoids repeated free/malloc churn, which
+ * fragmented the heap and made later walks lose their erase baseline. */
 
 /* Optional early allocation hook. Current story-loop playback can rely on
  * lazy allocation in walkPilotCaptureCleanWalkAreaIfStale; retaining this
@@ -72,8 +71,8 @@ int walkPilotInit(void);
 void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
                                           int holidayId, int xPos, int yPos);
 
-/* Release the walk clean buffer. Safe after a walk completes; the next
- * scene setup captures a fresh buffer before another walk can run. */
+/* Release the walk clean buffer. Intended for shutdown/debug paths; normal
+ * story-loop playback keeps the buffer resident to preserve heap layout. */
 void walkPilotReleaseCleanWalkArea(void);
 
 /* Diagnostic accessors — used by the BSOD log snapshot to print

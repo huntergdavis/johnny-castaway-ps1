@@ -166,6 +166,7 @@ enum {
 #define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
+#define FG_SETUP_PRIME_MAX_RESIDENT_BYTES (128UL * 1024UL)
 #define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
 #define FG_FISHING2_SETUP_PRIME_WINDOW_BYTES (352UL * 1024UL)
 #define FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
@@ -1720,11 +1721,15 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
                                              uint32 normalWindowBytes)
 {
     uint8 i;
+    uint32 requested = 0;
 
     if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
-        fgSceneEquals(sceneName, "walkstuf1"))
-        return (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
+        fgSceneEquals(sceneName, "walkstuf1")) {
+        requested = (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
             (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
+        return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+            FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+    }
 
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;
@@ -1734,8 +1739,11 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
         uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
         if (payloadEnd > windowStart) {
             uint32 windowBytes = fgSectorAlignUp(payloadEnd - windowStart);
-            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES)
-                return windowBytes;
+            if (windowBytes <= FG_SETUP_PRIME_AUTO_PACK_BYTES) {
+                requested = windowBytes;
+                return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+                    FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+            }
         }
     }
 
@@ -1743,10 +1751,13 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     for (i = 0;
          i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
          i++) {
-        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName))
-            return islandState.lowTide ?
+        if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName)) {
+            requested = islandState.lowTide ?
                 kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
                 kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
+            return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
+                FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+        }
     }
     return 0;
 }
@@ -2452,17 +2463,37 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
-                    if (gFgStreamWindowBuffer != NULL)
-                        free(gFgStreamWindowBuffer);
-                    gFgStreamWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
-                    if (gFgStreamWindowBuffer == NULL) {
-                        if (ps1PerfEnabled)
-                            ps1PerfMarkAllocFail(windowCapacityBytes);
-                        gFgStreamWindowBufferSize = 0;
-                        fgRuntimeReset();
-                        return 0;
+                    uint8 *newWindowBuffer;
+
+                    /* Setup-prime is a startup cache, not scene state.
+                     * If the larger cache allocation ever fails, keep the
+                     * scene deterministic by falling back to the normal
+                     * streaming window. The small window remains mandatory:
+                     * if that allocation fails, the scene really cannot run. */
+                    newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
+                    if (newWindowBuffer == NULL &&
+                        gFgRuntime.setupPrimeWindowBytes > 0 &&
+                        windowCapacityBytes > windowBytes) {
+                        gFgRuntime.setupPrimeWindowBytes = 0;
+                        windowCapacityBytes = windowBytes;
+                        if (windowCapacityBytes > gFgStreamWindowBufferSize)
+                            newWindowBuffer = (uint8 *)malloc(windowCapacityBytes);
                     }
-                    gFgStreamWindowBufferSize = windowCapacityBytes;
+                    if (windowCapacityBytes > gFgStreamWindowBufferSize) {
+                        if (newWindowBuffer == NULL) {
+                            if (ps1PerfEnabled)
+                                ps1PerfMarkAllocFail(windowCapacityBytes);
+                            gFgStreamWindowBufferSize = 0;
+                            fgRuntimeReset();
+                            return 0;
+                        }
+                        if (gFgStreamWindowBuffer != NULL)
+                            free(gFgStreamWindowBuffer);
+                        gFgStreamWindowBuffer = newWindowBuffer;
+                        gFgStreamWindowBufferSize = windowCapacityBytes;
+                    } else if (newWindowBuffer != NULL) {
+                        free(newWindowBuffer);
+                    }
                 }
                 gFgRuntime.streamWindowReadSize = windowBytes;
             }

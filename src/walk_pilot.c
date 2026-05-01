@@ -47,13 +47,12 @@ static int gWalkBmpLoaded = 0;
  * field, NULL on PS1 since the kernel doesn't dereference it. */
 static struct TTtmThread gWalkThread;
 
-/* Persistent walk-area pristine buffer (Option B in the architecture
- * discussion). Holds bgTile pixels at a known-clean moment (right after
- * fgBackdropEnableWaveBackdrop, before scene playback dirties them).
- * Reused for the next walk out of that scene, then released before the
- * following FG2 scene starts. Keeping it resident across the scene-load
- * boundary starves large setup-prime windows (notably fishing1's 320 KB
- * window) after the walk has also loaded JOHNWALK.
+/* Persistent walk-area pristine buffer. Holds bgTile pixels at a
+ * known-clean moment (right after fgBackdropEnableWaveBackdrop, before
+ * scene playback dirties them). Keep the allocation resident once it
+ * succeeds: repeated free/malloc cycles were fragmenting the heap, and
+ * later walks lost their erase baseline when this buffer could no longer
+ * be reallocated.
  *
  * The old buffer was a fixed screen-space rect (80,150,520,180). That
  * missed Johnny whenever the randomized island y offset pushed the walk
@@ -63,15 +62,16 @@ static struct TTtmThread gWalkThread;
  * but anchor the rect to the island so it always follows the path.
  *
  * Relative bbox covers walkData x=284..526/y=209..257 plus the largest
- * JOHNWALK frame (48x78), with padding for turn frames. Scene clean rects
- * still handle waves and FG2 leftovers; this buffer only owns walking
- * Johnny's erase area.
+ * JOHNWALK frame (48x78), plus the behind-tree cover-up sprites
+ * (leaves 365,122 152x69; trunk 442,148 24x145). It is deliberately
+ * tighter than the earlier 380x250 allocation so the required resident
+ * footprint is small enough to coexist with FG2 clean rects.
  *
- * Size: 380 x 250 x 2 = ~186KB. */
-#define WALK_CLEAN_REL_X  240
+ * Size: 340 x 224 x 2 = ~149KB. */
+#define WALK_CLEAN_REL_X  260
 #define WALK_CLEAN_REL_Y  120
-#define WALK_CLEAN_W      380
-#define WALK_CLEAN_H      250
+#define WALK_CLEAN_W      340
+#define WALK_CLEAN_H      224
 
 static uint16 *gWalkCleanBuf  = NULL;
 static int     gWalkCleanValid = 0;
@@ -345,7 +345,6 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 
     walkRenderResetCache();
     fgWalkRenderTeardown();
-    walkPilotReleaseCleanWalkArea();
     foregroundPilotSuppressCompose(0);
     return 0;
 }
