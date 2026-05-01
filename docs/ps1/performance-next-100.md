@@ -687,6 +687,7 @@ near misses:
 | Fallthrough slack `5` after CD helper cleanup | Do not retry as a local guard change; it regressed `blocking_vb` and `prefetch_overrun_vb` to `10`. |
 | Fallthrough slack `7` after CD helper cleanup | Do not retry as a local guard change; it failed before metrics with log overflow/regtest `137`. |
 | Cap-aware foreground read plans | Done; use regenerated read-plan artifacts before choosing new groups or setup segments. Older plans overstated setup residency for FISHING1, VISITOR3, and WALKSTUF1. |
+| VISITOR3 low read group `182..194` | Do not promote or retry as a hand-coded group. It saved one read and lowered refill overrun, but regressed loop/blocking; require generated visible-cost scoring before more VISITOR3 groups. |
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | Unbuffered CD file-LBA cache | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | `fgRuntimeFillWindowForEntry()` function-scoped `Os` | Do not retry alone; it was exact no-op on timing, size, and tracked symbols. |
