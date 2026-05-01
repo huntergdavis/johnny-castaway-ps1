@@ -143,6 +143,11 @@ accepted for the WALKSTUF1 indexed8 rows: high improves `2013 -> 2002` and low
 improves `2028 -> 2014`, with PAL4 canaries exact-flat. The blocking increase
 means follow-up work should target scheduler/CD ownership or host-side
 preprocessing, not another local indexed8 pixel-loop branch.
+A 4-pixel manual unroll of that indexed8 opaque helper is rejected: it grew the
+ELF, shifted hot symbols by `+296` bytes, left loop time flat, and traded small
+blocking improvements for refill/overrun regressions on WALKSTUF1. Do not spend
+more time on local indexed8 loop unrolls; the next indexed8 wins need data-shape
+or scheduler changes.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
