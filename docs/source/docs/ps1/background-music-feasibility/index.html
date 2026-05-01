@@ -80,7 +80,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>Date: 2026-05-01 Branch context: read-only research; no code changes. Author: research pass for the active perf iteration.</p>
+<p>Date: 2026-05-01 Branch context: ocean-ambience-20260501, shipped as v0.6.0-ps1. Status: shipped. Asset, boot loader, pause-menu toggle, memcard persistence, and CD-image embedding are all live.</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -98,15 +98,15 @@ should not pretend the interesting work only happened in the polished essays.</p
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">560</td>
+      <td style="text-align: right">490</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">3535</td>
+      <td style="text-align: right">2876</td>
     </tr>
     <tr>
       <td>Code fences</td>
-      <td style="text-align: right">4</td>
+      <td style="text-align: right">8</td>
     </tr>
   </tbody>
 </table>
@@ -115,17 +115,17 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <ul>
   <li>Ocean Ambience — PS1 Implementation Plan</li>
+  <li>Shipped state (v0.6.0-ps1)</li>
   <li>Goal</li>
   <li>What “zero CPU” rules out</li>
-  <li>Why Ocean Ambience Is a Special Case</li>
   <li>Mechanism Choice: Pre-loaded ADPCM Loop in SPU RAM</li>
-  <li>Public-Domain Audio Sourcing</li>
-  <li>Verified CC0 Candidates (researched 2026-05-01)</li>
-  <li>Primary recommendation: amholma — “Gentle Waves - Quiet Beach”</li>
-  <li>Backup: INNORECORDS — “Zen Ocean Waves, Ocean Waves Ambience”</li>
-  <li>Notes on candidates we considered and didn’t pick</li>
-  <li>Sizing the Loop</li>
-  <li>Authoring Pipeline</li>
+  <li>Source: BigSoundBank “Sea: Waves” (CC0)</li>
+  <li>Loop Construction: 20-Second Crossfade-Replace Seam</li>
+  <li>How the crossfade-replace works</li>
+  <li>Loop seam audibility</li>
+  <li>Final VAG specs</li>
+  <li>Encoding Pipeline (Reproducible)</li>
+  <li>SPU RAM Map</li>
   <li>Pause-Menu Toggle: oceanAmbientEnabled</li>
   <li>Global state</li>
 </ul>
@@ -156,7 +156,7 @@ should not pretend the interesting work only happened in the polished essays.</p
           Code: <a href="../../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.5.0-ps1)
+          (v0.6.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
