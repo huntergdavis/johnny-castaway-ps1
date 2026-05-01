@@ -187,6 +187,10 @@ bucket and pack LBA, improves `loop_vb 1503 -> 1496`, `blocking_vb 350 -> 345`,
 while the six canary rows stay exact-flat. Treat this as evidence that selective
 late groups can pay when they are both start-aligned and slack-safe; do not
 generalize it to tight early clusters without a cost model.
+The adjacent `242..254` group is rejected: despite matching an actual read
+start, it regressed VISITOR3 high to `1507/1007`, raised `blocking_vb 345 -> 357`,
+and raised `prefetch_overrun_vb 102 -> 109` with no read-count win. Adjacent
+post-win grouping needs per-read cost modeling before more hand-coded trials.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
