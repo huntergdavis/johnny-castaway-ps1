@@ -34,4 +34,23 @@ int soundEffectLoaded(int nb);
 unsigned long soundEffectSizeBytes(int nb);
 int soundEffectSampleRate(int nb);
 
+/* Ocean ambience — looping background audio.
+ *
+ * One CC0 ocean loop (~123 KB ADPCM, ~20 sec) loaded into SPU RAM at
+ * boot, played on a dedicated voice with sample-defined loop flags so
+ * playback runs forever at zero CPU cost. See
+ * docs/ps1/background-music-feasibility.md for the full plan.
+ *
+ * oceanAmbientEnabled is the user-visible toggle (pause-menu +
+ * memcard-persisted). Default ON. Toggling at runtime starts or
+ * stops the SPU voice on the spot.
+ *
+ * Start / Stop are usually called via the toggle path, but the API
+ * is exposed for boot-time auto-start. */
+extern int oceanAmbientEnabled;
+
+void oceanAmbientStart(void);
+void oceanAmbientStop(void);
+int  oceanAmbientLoaded(void);   /* 1 if VAG was uploaded to SPU RAM */
+
 #endif /* SOUND_PS1_H */
