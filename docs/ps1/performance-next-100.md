@@ -417,6 +417,12 @@ slack-safe read groups can still pay. Next FISHING3 low group candidates should
 come from the cap-aware planner and avoid tight early clusters such as
 `174..186` unless the generated cost model predicts lower loop/blocking, not
 just fewer reads.
+The wider FISHING3 low `{253,269}` follow-up is rejected even though it saved
+two reads (`loop_reads 32 -> 30`): it regressed `loop_vb 2092 -> 2093` and
+`blocking_vb/prefetch_overrun_vb 7 -> 8` with layout fixed. Keep this exact
+range off the queue. If the `253` cluster is retried, test the narrower
+`253..265` shape or generated metadata with a visible-cost model, not another
+larger read-count-only group.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
