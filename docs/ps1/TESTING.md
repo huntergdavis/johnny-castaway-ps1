@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-01:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+14.7%` (`14.6669%` exact) |
 | Timing-bearing average target speed | `88.1%` (`88.0913%` exact) |
-| Latest perf matrix run | `2026-05-01T02:42:10` |
-| Stats version | mixed: latest refreshed rows use `compact-fgp3-v61-fishing3low-group163-175`; other refreshed rows include `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | `2026-05-01T03:02:24` |
+| Stats version | mixed: latest refreshed rows use `compact-fgp3-v62-fishing3low-group253-265`; other refreshed rows include `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1074 VBlanks`, `+12.4%`, `89.0% target speed`, `blocking_vb=2` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -92,7 +92,8 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
-`compact-fgp3-v61-fishing3low-group163-175`; other refreshed rows include
+`compact-fgp3-v62-fishing3low-group253-265`; other refreshed rows include
+`compact-fgp3-v61-fishing3low-group163-175`,
 `compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Six routed rows (`mary3`, `suzy1`, `suzy2`,

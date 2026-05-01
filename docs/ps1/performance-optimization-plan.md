@@ -1458,13 +1458,15 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-295` | Failed: prerender the first scene frame during setup. | The zero-CD STAND1 rows stayed exact-flat even when the first foreground render moved before `loop_start`, and the no-clock variant regressed FISHING1 visible CD pressure (`blocking_vb 2 -> 4`). This proves the current zero-CD overhead is distributed across per-frame restore/compose/upload/present work, not just the first frame. Next scheduler work must be first-class present/upload ownership or pack-time upload-ready data, not setup-time render relocation. |
 | `P5-296` | Done: add FISHING3 low read group `163..175`. | The cap-aware read plan identified a later 12-sector cluster after the accepted low-tide `{159,171}` group. Adding `{163,175}` improves FISHING3 low `loop_vb 2093 -> 2092`, `target_vb 1952 -> 1954`, `overrun_vb 141 -> 138`, `blocking_vb 11 -> 7`, `prefetch_overrun_vb 11 -> 7`, and `loop_reads 33 -> 32`; FISHING1 high, FISHING3 high, VISITOR3 high/low, and WALKSTUF1 high/low stay exact-flat against the accepted seven-case baseline. Latest refreshed rows now use `compact-fgp3-v61-fishing3low-group163-175`; exact matrix average is `14.6669%` over target / `88.0913%` target speed because the same refresh replaces stale canary rows with current measurements. |
 | `P5-297` | Failed: add FISHING3 low read group `253..269`. | The planner's largest remaining medium-risk group did save read volume (`loop_reads 32 -> 30`) and kept layout fixed, but it worsened the accepted visible loop: `loop_vb 2092 -> 2093`, `overrun_vb 138 -> 139`, and `blocking_vb/prefetch_overrun_vb 7 -> 8`. Do not promote broad later groups on read savings alone; the next read-group attempt needs a visible-cost model or a narrower candidate such as `253..265` only if the gate shows loop/blocking improvement. |
+| `P5-298` | Done: add narrower FISHING3 low read group `253..265`. | Retesting the same later cluster with the narrower group keeps `loop_vb=2092`, `target_vb=1954`, and `overrun_vb=138` while improving visible CD pressure (`blocking_vb/prefetch_overrun_vb 7 -> 6`) and reducing `loop_reads 32 -> 31`. FISHING1 high, FISHING3 high, VISITOR3 high/low, and WALKSTUF1 high/low stay exact-flat. Latest refreshed rows now use `compact-fgp3-v62-fishing3low-group253-265`; exact matrix average remains `14.6669%` over target / `88.0913%` target speed because target-relative loop time is flat. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v61-fishing3low-group163-175`: the matrix is now
+Checkpoint after `compact-fgp3-v62-fishing3low-group253-265`: the matrix is now
 `120` timing-bearing rows at `14.6669%` exact average over target / `88.0913%`
-exact target speed. The accepted FISHING3 low `163..175` group proves selective
-later CD grouping can still pay when the group is start-aligned and slack-safe.
+exact target speed. The accepted FISHING3 low `163..175` and `253..265` groups
+prove selective later CD grouping can still pay when the group is start-aligned
+and narrow enough not to steal visible cadence.
 The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
 tuning unless a fresh local sweep shows a clear knee.

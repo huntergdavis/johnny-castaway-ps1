@@ -423,6 +423,12 @@ two reads (`loop_reads 32 -> 30`): it regressed `loop_vb 2092 -> 2093` and
 range off the queue. If the `253` cluster is retried, test the narrower
 `253..265` shape or generated metadata with a visible-cost model, not another
 larger read-count-only group.
+The narrower `{253,265}` retry is accepted. It keeps `loop_vb=2092` and
+`overrun_vb=138` while improving `blocking_vb/prefetch_overrun_vb 7 -> 6` and
+`loop_reads 32 -> 31`; all seven canaries stay flat. This is a useful pattern:
+when a broad group saves more reads but adds visible pressure, split it down to
+the smallest range that removes one read cleanly before trying any adjacent
+cluster.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
