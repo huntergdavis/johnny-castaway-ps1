@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Ocean Ambience — v0.6.0-ps1 — May 1, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state." />
+
+  <meta property="og:title"        content="Ocean Ambience — v0.6.0-ps1 — May 1, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-05-01">
+        May 1, 2026
+      </time>
+    </p>
+    <h1>Ocean Ambience — v0.6.0-ps1 — May 1, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> A CC0-sourced 20-second ocean loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state. The screensaver's per-VBlank budget is unchanged; the SPU plays + auto-loops in hardware while the screensaver loop runs as before.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Sierra’s <em>Johnny Castaway</em> never had continuous music. The 1992 PC release
+drove a few PC-speaker tones and short Sound-Blaster digital effects but
+ran in silence the rest of the time. <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> adds an optional
+looping ocean track — the sound of the place we’re showing — without
+touching the screensaver loop’s per-VBlank cost.</p>
+
+<h2 id="why-ocean-and-not-music">Why ocean, and not music</h2>
+
+<p>The PS1 has three independent audio paths: the SPU (dedicated coprocessor
+with 24 voices, 512 KB of its own RAM, and hardware loop flags built into
+the ADPCM block format), CD-DA (Red Book audio decoded by the drive), and
+CD-XA ADPCM (decoded by the drive too, interleaved with data sectors).
+Each has trade-offs; all of them <em>could</em> play music. The reasons we
+picked ocean ambience as the v0.6 ship instead of “background music” in
+general:</p>
+
+<ul>
+  <li><strong>Spectrum.</strong> Ocean recordings live below ~1 kHz. Sony 4-bit ADPCM’s
+quantization noise is loudest above ~4 kHz. On ocean material the
+compression is essentially transparent at 11.025 kHz mono — the
+tradeoff that <em>would</em> hurt a music track is invisible on this
+material.</li>
+  <li><strong>Loop forgiveness.</strong> Wave patterns are aperiodic. A loop seam on
+music with a clear meter is obvious; on ocean it disappears under the
+broadband noise. We didn’t need the seamless-loop acrobatics that a
+music track would demand.</li>
+  <li><strong>Reverb is the recording.</strong> The SPU has a hardware reverb unit. Music
+typically benefits from it. Ocean ambience already <em>is</em> the spatial
+sound — we don’t apply reverb on top, and we get the SPU RAM the
+reverb workspace would have used back.</li>
+  <li><strong>Mood matches the screensaver.</strong> A castaway on a tiny island, ocean
+playing quietly underneath. That’s the fiction. Anything else would
+have been music laid on top of it.</li>
+</ul>
+
+<h2 id="the-mechanism-pre-loaded-adpcm-in-spu-ram">The mechanism: pre-loaded ADPCM in SPU RAM</h2>
+
+<p>Of the five PS1 audio paths, exactly one delivers <strong>strict zero CPU per
+frame</strong>: pre-load an ADPCM-encoded sample into SPU RAM at boot, set the
+loop flags on the first and last data blocks of the sample, key on a
+dedicated voice. The SPU plays it forever in hardware. The CPU never
+sees another byte of audio work.</p>
+
+<p>Compared to the alternatives:</p>
+
+<ul>
+  <li><strong>SPU streaming from CD</strong> would let us fit hours of music in 16 KB of
+SPU RAM, but it costs ~10-20 cycles per chunk-finish IRQ plus steady
+CD bandwidth competing with the FG2 prefetch the screensaver loop
+already uses. Not zero CPU.</li>
+  <li><strong>CD-DA (Red Book)</strong> is gorgeous and free of CPU cost but the PS1
+drive can’t read data and play CD-DA at the same time. Enabling it
+would kill the FG2 prefetch and break scene playback. Wrong fit for
+our streaming pipeline.</li>
+  <li><strong>XA-ADPCM</strong> interleaves audio with data sectors — hardware decode,
+zero CPU, compatible with prefetch. The right answer for “many
+tracks”, but it adds <code class="language-plaintext highlighter-rouge">mkpsxiso</code> XA-track authoring complexity for
+capability v0.6 doesn’t need.</li>
+  <li><strong>Sequenced (SEQ/VAB / MOD)</strong> gives the deepest expression but a
+sequencer ticks the CPU 1-3 ms per VBlank. Real per-frame cost.</li>
+</ul>
+
+<p>Pre-loaded ADPCM in SPU RAM was the only choice that delivered the
+zero-CPU contract without changing the disc authoring pipeline.</p>
+
+<h2 id="the-loop-20-seconds-crossfade-replace-at-the-seam">The loop: 20 seconds, crossfade-replace at the seam</h2>
+
+<p>The ocean recording is from <a href="https://bigsoundbank.com/sea-waves-s0266.html">BigSoundBank sound 0266 — “Sea: Waves”</a>,
+CC0 public domain. Moderate waves, swirls, no birds, no breakers. 57
+seconds of source material at 44.1 kHz stereo.</p>
+
+<p>The naive plan was a 60-90 second loop with a fade-in/fade-out at the
+seam. That was clean but had audibly-quiet silence at the wraparound —
+the listener could hear the loop boundary even if the seam was
+click-free. We swapped to a 20-second loop with a 1-second equal-power
+crossfade hidden at the start of the body:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Source S (continuous waveform):
+    ... A A A B B B C C C D D D E E E F F F ...
+                |---------- 20 sec body -----------|--- 1s tail ---|
+
+loop[i] = body[i] * sin(πi/2N) + tail[i] * cos(πi/2N)   for i in [0..N)
+loop[i] = body[i]                                       for i in [N..]
+</code></pre></div></div>
+
+<p>When the SPU loops <code class="language-plaintext highlighter-rouge">loop[end] → loop[0]</code>, the listener hears: end of
+body → tail fading out (which is what would naturally have come next in
+the source) → body fading in. By the time the crossfade has fully
+exposed the body, we’re past the seam. For ocean material this is
+functionally invisible — the seam buries itself in broadband noise.</p>
+
+<p>Bonus: a 20-second loop is ~123 KB instead of the original sketch’s
+~370 KB. That ~250 KB savings in SPU RAM is enough room for 2-3
+additional ambience tracks under the same toggle mechanism if we ever
+want them (calmer, stormier, holiday-tagged). The encoding pipeline
+(<code class="language-plaintext highlighter-rouge">scratch/ocean-ambience/make_tight_loop.py</code> + <code class="language-plaintext highlighter-rouge">encode_vag_loop.py</code>) is
+already general-purpose — drop any mono 16-bit WAV in, get a tight loop
+VAG out.</p>
+
+<h2 id="the-toggle-pause-menu-memcard-zero-flicker">The toggle: pause-menu, memcard, zero-flicker</h2>
+
+<p>Pause → Accessibility → <strong>Ocean: ON / OFF</strong>. LEFT, RIGHT, or X on the
+row toggles <code class="language-plaintext highlighter-rouge">oceanAmbientEnabled</code> and immediately calls
+<code class="language-plaintext highlighter-rouge">oceanAmbientStart()</code> / <code class="language-plaintext highlighter-rouge">oceanAmbientStop()</code>. The SPU voice keys on or
+off in one register write — no fade, no clicking, no audible delay.
+The Save Settings to Memcard option persists the choice (<code class="language-plaintext highlighter-rouge">MC_VERSION</code>
+bumped 2 → 3, with a graceful v2-load fallback that defaults the new
+field to ON). On the next boot <code class="language-plaintext highlighter-rouge">soundInit</code> reads the saved value and
+either auto-keys the voice or leaves it silent.</p>
+
+<p>The wiring mirrors the existing <code class="language-plaintext highlighter-rouge">footstepsEnabled</code> toggle (added in
+<code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> for the walking loop) almost exactly — same accessor
+pattern, same memcard schema bump, same register-write toggle. About
+200 lines net across five files.</p>
+
+<h2 id="frame-impact-zero-verified">Frame impact: zero, verified</h2>
+
+<p>The screensaver’s <code class="language-plaintext highlighter-rouge">JCPERF2</code> per-scene metrics (<code class="language-plaintext highlighter-rouge">loop_vb</code>,
+<code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">overrun_vb</code>, <code class="language-plaintext highlighter-rouge">compose_calls</code>, etc.) are identical with
+the ambience on or off. The SPU mixes its 24 voices in hardware
+regardless of how many are active; an additional voice costs nothing.
+The loop wraparound is a single bit-flag check the SPU hardware does
+at the end of each ADPCM block; no IRQ, no DMA, no CPU.</p>
+
+<p>The total cost is ~123 KB of SPU RAM + ~30-60 ms of additional boot
+time (the extra CD read and DMA upload of <code class="language-plaintext highlighter-rouge">OCEAN.VAG</code> into SPU RAM).
+After boot, no impact at all.</p>
+
+<h2 id="what-the-headroom-leaves">What the headroom leaves</h2>
+
+<p>The SPU has 512 KB of RAM. Existing SFX uses ~94 KB. The ocean loop
+uses ~123 KB. After both, ~257 KB is still free — enough for 2-3
+additional 20-second ambience tracks under the same pause-menu toggle,
+switching tracks via a single <code class="language-plaintext highlighter-rouge">SPU_KEY_OFF</code>/<code class="language-plaintext highlighter-rouge">SPU_KEY_ON</code> pair. The
+pause-menu toggle could naturally extend from <strong>ON / OFF</strong> to a short
+list (<strong>Off / Ocean / Calm / Stormy</strong>) without changing the
+underlying mechanism. Nothing in v0.6 forces that direction; the
+headroom is just present if we want it.</p>
+
+<p>Alternately, the same SPU RAM budget supports holiday-tagged ambience
+(the holiday system already carries per-holiday metadata in
+<code class="language-plaintext highlighter-rouge">gHolidays[]</code>; an optional ambience index per holiday would swap loops
+at scene boundaries) or short scene-start stings on spare voices.
+These are future work; <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> ships exactly one CC0 ocean loop
+and a binary toggle.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/background-music-feasibility.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.6.0-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

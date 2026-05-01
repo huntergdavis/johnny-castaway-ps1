@@ -88,6 +88,7 @@ debugging artifacts became historical evidence.</p>
 <ul>
   <li>A telemetry overlay drawn by the runtime for frame counters, pack state, resource state, and perf flags.</li>
   <li>Headless DuckStation captures driven by the <a href="../../docs/regtest/">regtest harness</a>.</li>
+  <li>Scripted PS1 controller routes driven by the <a href="../../docs/scripted-input/">scripted input harness</a>, which can open menus, enter Freeplay, and drop screenshot markers without a human at the keyboard.</li>
   <li>Frozen host references under <a href="../../archaeology/regtest-references/cases/">regtest reference cases</a>.</li>
   <li>Side-by-side review HTML that makes frame drift reviewable by a human.</li>
   <li>The <a href="../../scenes/">scene ledger</a>, where each scene’s status is explained in public.</li>
@@ -109,6 +110,14 @@ not dishonest; it is worse than that, because it is useful-looking.</p>
 
 <p>Run the scene. Capture frames. Diff the frames. Open the review page. Decide
 what changed. Only then change code.</p>
+
+<p>For input bugs, replace “run the scene” with “write the controller route.”
+<code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> can say <code class="language-plaintext highlighter-rouge">wait 30s</code>, <code class="language-plaintext highlighter-rouge">tap START</code>, <code class="language-plaintext highlighter-rouge">tap DOWN</code>, <code class="language-plaintext highlighter-rouge">tap CROSS</code>, and
+<code class="language-plaintext highlighter-rouge">shot freeplay-options 30</code>. The PS1 runtime presses those buttons through its
+real pad path, DuckStation captures frames, and the reporter pulls the first
+PNG at or after each <code class="language-plaintext highlighter-rouge">JCPADSHOT</code> marker. That is how the menu help page is
+made, and it is also how a flaky “I pressed this and it crashed” report turns
+into a repeatable artifact.</p>
 
 <p>That workflow is slower than “try a fix and squint.” It is also how the project
 found dirty-rectangle errors, tide-state mistakes, SPU timing offsets, and
@@ -137,7 +146,7 @@ and <a href="../../lab/the-63-scene-grind/">The 63-scene grind</a>.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.5.0-ps1)
+          (v0.6.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

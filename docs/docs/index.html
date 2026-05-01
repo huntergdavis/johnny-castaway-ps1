@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Docs — Johnny Castaway PS1</title>
-  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, API mapping, and the per-scene workflow." />
+  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, and the per-scene workflow." />
 
   <meta property="og:title"        content="Docs — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, API mapping, and the per-scene workflow." />
+  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, and the per-scene workflow." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <header class="page-header">
       <p class="eyebrow">Reference manuals</p>
       <h1>Docs</h1>
-      <p class="subtitle">Build, captions, holidays, regtest, API mapping. The technical surface of the PS1 port.</p>
+      <p class="subtitle">Build, captions, holidays, scripted input, regtest, API mapping. The technical surface of the PS1 port.</p>
       <hr class="rule" />
     </header>
 
@@ -108,6 +108,10 @@ the project’s stance on contributions.</p>
   <li>
     <a href="./regtest/">Regression testing</a>
     <p>Headless DuckStation in Docker. Frame PNGs every <em>N</em> frames, SHA256 state hashes, telemetry overlay decode, and the per-scene wrapper.</p>
+  </li>
+  <li>
+    <a href="./scripted-input/">Scripted input harness</a>
+    <p>Pad scripts embedded into the PS1 build: deterministic menu routes, Freeplay repros, marker-aligned screenshots, and the generated menu help guide.</p>
   </li>
   <li>
     <a href="./api/">API mapping (SDL2 → PSn00bSDK)</a>
@@ -175,7 +179,7 @@ the <a href="../lab/">Lab</a>.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.5.0-ps1)
+          (v0.6.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

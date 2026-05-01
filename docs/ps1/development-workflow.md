@@ -153,6 +153,11 @@ tag `vX.Y.Z-ps1`, and pushes.
 - **Per-scene capture diffs**: the host-capture frames + frame-meta
   JSONs are a useful ground truth when a replay mismatches. Point
   `compare-scene-reference.py` at them.
+- **Scripted controller repros**: use
+  `./scripts/ps1-menu-input-harness.sh` or a custom `PADSCRIPT.TXT` route
+  when a bug depends on menu navigation or Freeplay input. The script drives
+  the actual PS1 pad path and can emit `JCPADSHOT` markers for screenshot
+  alignment; see [scripted-input-harness.md](scripted-input-harness.md).
 - **Keep scratch files in `scratch/`**, never `/tmp`. DuckStation
   logs grow fast and `/tmp` has filled and broken the shell before.
 

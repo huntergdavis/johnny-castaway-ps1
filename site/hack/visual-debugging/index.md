@@ -20,6 +20,7 @@ The visual stack has several layers:
 
 - A telemetry overlay drawn by the runtime for frame counters, pack state, resource state, and perf flags.
 - Headless DuckStation captures driven by the [regtest harness]({{ '/docs/regtest/' | relative_url }}).
+- Scripted PS1 controller routes driven by the [scripted input harness]({{ '/docs/scripted-input/' | relative_url }}), which can open menus, enter Freeplay, and drop screenshot markers without a human at the keyboard.
 - Frozen host references under [regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }}).
 - Side-by-side review HTML that makes frame drift reviewable by a human.
 - The [scene ledger]({{ '/scenes/' | relative_url }}), where each scene's status is explained in public.
@@ -40,6 +41,14 @@ not dishonest; it is worse than that, because it is useful-looking.
 
 Run the scene. Capture frames. Diff the frames. Open the review page. Decide
 what changed. Only then change code.
+
+For input bugs, replace "run the scene" with "write the controller route."
+`PADSCRIPT.TXT` can say `wait 30s`, `tap START`, `tap DOWN`, `tap CROSS`, and
+`shot freeplay-options 30`. The PS1 runtime presses those buttons through its
+real pad path, DuckStation captures frames, and the reporter pulls the first
+PNG at or after each `JCPADSHOT` marker. That is how the menu help page is
+made, and it is also how a flaky "I pressed this and it crashed" report turns
+into a repeatable artifact.
 
 That workflow is slower than "try a fix and squint." It is also how the project
 found dirty-rectangle errors, tide-state mistakes, SPU timing offsets, and

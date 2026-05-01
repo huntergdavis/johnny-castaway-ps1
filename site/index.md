@@ -119,7 +119,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Build, captions, holidays, pause menu, regtest, the SDL2 → PSn00bSDK API mapping.</p>
+    <p>Build, captions, holidays, pause menu, scripted input, regtest, the SDL2 → PSn00bSDK API mapping.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>

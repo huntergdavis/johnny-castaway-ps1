@@ -74,6 +74,13 @@ restore, present wait, prefetch overrun, and blocking CD reads.
 
 That is when the project stopped arguing by vibe.
 
+The next unlock was scripted controller input. Menus are not validated by
+hoping a human remembers the route. A pad script boots the disc, waits,
+presses Start, walks the menu, and drops `JCPADSHOT` markers where the
+screenshots should land. The result is documentation that is also a test:
+the [menu help guide]({{ '/help/menu/' | relative_url }}) is made from real
+PS1 framebuffer captures, not a hand-maintained diagram.
+
 ## The lifestyle part
 
 Regression testing is usually presented as something you add after the
@@ -87,6 +94,7 @@ pretending.
 ## Cross-links
 
 - [Regression testing docs]({{ '/docs/regtest/' | relative_url }})
+- [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }})
 - [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Vision-classifier work]({{ '/docs/vision/' | relative_url }})
 - [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})

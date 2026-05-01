@@ -45,12 +45,22 @@
 /* Global variables */
 int soundDisabled = 0;
 int soundMuted = 0;
+/* Default ON; memcard load may overwrite at boot. The default lives in
+ * memory as a uint8 0/1 mirror of int 0/1; see oceanAmbientEnabled
+ * doc in sound_ps1.h. */
+int oceanAmbientEnabled = 1;
 
 /* SPU configuration */
 #define MAX_SOUND_EFFECTS 25
 #define SPU_DATA_START 0x1010  /* After SPU capture buffers + dummy block */
 #define VAG_HEADER_SIZE 48    /* Standard Sony VAG header size */
 #define NUM_CHANNELS 8        /* Use 8 channels for round-robin */
+/* Dedicated SPU voice for the ambience loop. Voice 23 is the highest
+ * available; SFX uses voices 0..7 round-robin so 23 is well clear. */
+#define OCEAN_AMBIENT_VOICE 23
+/* Volume sits slightly under SFX so SFX cuts through the ambience.
+ * 0x2400 ≈ 56% of full scale; SFX uses 0x3FFF (full). */
+#define OCEAN_AMBIENT_VOLUME 0x2400
 
 /* Sound effect data loaded into SPU RAM */
 static uint32_t soundAddresses[MAX_SOUND_EFFECTS];
@@ -59,6 +69,13 @@ static uint16_t soundSampleRates[MAX_SOUND_EFFECTS];
 static uint16_t soundPitches[MAX_SOUND_EFFECTS];  /* Pre-computed pitch values */
 static int soundsLoaded = 0;
 static int nextChannel = 0;
+
+/* Ocean ambience — single loop in SPU RAM after the SFX block. */
+static uint32_t oceanSpuAddr  = 0;
+static uint32_t oceanAdpcmSize = 0;
+static uint16_t oceanPitch    = 0;
+static int      oceanLoaded   = 0;
+static int      oceanPlaying  = 0;
 
 static void soundStopAllVoices(void)
 {
@@ -165,6 +182,107 @@ void soundInit()
     } else {
         SOUND_DIAG_PRINTF("SPU: no VAG files found\n");
     }
+
+    /* Load OCEAN.VAG for the looping background ambience. Same DMA
+     * pattern as the SFX loader; placed in SPU RAM right after the
+     * last SFX. The VAG carries its own loop flags (0x06 on first
+     * data block, 0x03 on last) so the SPU loops in hardware with
+     * no need to set SPU_CH_LOOP_ADDR from the C side. */
+    do {
+        uint32_t vagSize = 0;
+        uint8_t *vagData = ps1_loadRawFile("\\SND\\OCEAN.VAG;1", &vagSize);
+        if (!vagData) {
+            SOUND_DIAG_PRINTF("SPU: OCEAN.VAG not found\n");
+            break;
+        }
+        if (vagSize <= VAG_HEADER_SIZE) {
+            free(vagData);
+            break;
+        }
+        uint16_t sampleRate = (uint16_t)readBE32(vagData + 16);
+        uint32_t adpcmSize = vagSize - VAG_HEADER_SIZE;
+        uint32_t dmaSize = (adpcmSize + 63u) & ~63u;
+
+        if (spuAddr + dmaSize > 512 * 1024) {
+            printf("SPU: out of RAM for OCEAN.VAG (need %lu, have %lu)\n",
+                   (unsigned long)dmaSize,
+                   (unsigned long)(512u * 1024u - spuAddr));
+            free(vagData);
+            break;
+        }
+
+        uint8_t *dmaBuf = (uint8_t *)malloc(dmaSize);
+        if (!dmaBuf) { free(vagData); break; }
+        memcpy(dmaBuf, vagData + VAG_HEADER_SIZE, adpcmSize);
+        if (dmaSize > adpcmSize)
+            memset(dmaBuf + adpcmSize, 0, dmaSize - adpcmSize);
+
+        SpuSetTransferMode(SPU_TRANSFER_BY_DMA);
+        SpuSetTransferStartAddr(spuAddr);
+        SpuWrite((uint32_t *)dmaBuf, dmaSize);
+        SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
+        free(dmaBuf);
+
+        oceanSpuAddr   = spuAddr;
+        oceanAdpcmSize = adpcmSize;
+        oceanPitch     = getSPUSampleRate(sampleRate);
+        oceanLoaded    = 1;
+        spuAddr += dmaSize;
+
+        free(vagData);
+        SOUND_DIAG_PRINTF("SPU: OCEAN.VAG loaded (%lu bytes ADPCM @ 0x%lx, %u Hz)\n",
+                          (unsigned long)adpcmSize, (unsigned long)oceanSpuAddr,
+                          (unsigned)sampleRate);
+    } while (0);
+
+    /* Auto-start ambience if the toggle is on. memcardLoadSettings runs
+     * later in main() and may flip oceanAmbientEnabled — if it does,
+     * the menu's start/stop will sync state on the next user toggle. */
+    if (oceanLoaded && oceanAmbientEnabled)
+        oceanAmbientStart();
+}
+
+
+void oceanAmbientStart(void)
+{
+    if (!oceanLoaded || oceanPlaying)
+        return;
+    int ch = OCEAN_AMBIENT_VOICE;
+
+    /* Key-off first so a re-keyed channel stops cleanly before the
+     * new program write. (Mirrors the SFX path's pre-key-off
+     * convention.) */
+    SpuSetKey(0, 1 << ch);
+
+    SPU_CH_FREQ(ch)  = oceanPitch;
+    SPU_CH_ADDR(ch)  = getSPUAddr(oceanSpuAddr);
+    SPU_CH_VOL_L(ch) = OCEAN_AMBIENT_VOLUME;
+    SPU_CH_VOL_R(ch) = OCEAN_AMBIENT_VOLUME;
+    /* ADSR1=0x00FF: attack 0 (instant), no decay. Same envelope as SFX
+     * for now — a slow attack via ADSR1's AR field would soften the
+     * key-on, but on ocean material the audible difference is
+     * negligible because the loop's first sec is itself a crossfade
+     * tail with low amplitude. */
+    SPU_CH_ADSR1(ch) = 0x00FF;
+    SPU_CH_ADSR2(ch) = 0x0000;
+
+    SpuSetKey(1, 1 << ch);
+    oceanPlaying = 1;
+}
+
+
+void oceanAmbientStop(void)
+{
+    if (!oceanPlaying)
+        return;
+    SpuSetKey(0, 1 << OCEAN_AMBIENT_VOICE);
+    oceanPlaying = 0;
+}
+
+
+int oceanAmbientLoaded(void)
+{
+    return oceanLoaded;
 }
 
 /*

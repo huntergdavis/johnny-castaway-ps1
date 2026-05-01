@@ -176,6 +176,7 @@ build is 15–30 minutes; rebuilds are fully cached. Image tag:
 <h3 id="scripted-controller-input">Scripted controller input</h3>
 
 <p><code class="language-plaintext highlighter-rouge">v0.5.x</code> adds an opt-in pad-script layer for headless menu and flow tests.
+The canonical runbook is <a href="../scripted-input/">Scripted input harness</a>.
 The PS1 build embeds <code class="language-plaintext highlighter-rouge">config/ps1/PADSCRIPT.TXT</code> at compile time and only
 uses it when <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code> includes <code class="language-plaintext highlighter-rouge">pad-script</code> or <code class="language-plaintext highlighter-rouge">pad-script-log</code>.
 Scripted buttons are merged into the same active-high pad mask as the real
@@ -214,6 +215,11 @@ because this pause-menu path has real framebuffer and polling latency, but
 keeps the extra logs off while still printing screenshot markers; the menu
 harness defaults to the quiet path and accepts <code class="language-plaintext highlighter-rouge">--verbose</code> when the route
 itself needs debugging.</p>
+
+<p>Use this when the question is input-driven rather than scene-driven: Start
+opening the pause menu, Circle backing out, Freeplay enter/exit recovery,
+world-option menu changes, or a bug report that can be written as button
+presses.</p>
 
 <h3 id="single-scene">Single scene</h3>
 
@@ -559,7 +565,7 @@ surface the regtest binary is exercising.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.5.0-ps1)
+          (v0.6.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

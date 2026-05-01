@@ -168,4 +168,4 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 
 The runner temporarily writes `BOOTMODE.TXT` and `PADSCRIPT.TXT`, rebuilds the PS1 image, runs DuckStation regtest headlessly, copies the first captured frame at or after every delayed `JCPADSHOT` marker into `site/assets/img/help/menu/`, and rewrites this page.
 
-Related references: [Pause menu]({{ '/docs/pause-menu/' | relative_url }}), [Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}), and [Regression testing]({{ '/docs/regtest/' | relative_url }}).
+Related references: [Pause menu]({{ '/docs/pause-menu/' | relative_url }}), [Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}), [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}), and [Regression testing]({{ '/docs/regtest/' | relative_url }}).

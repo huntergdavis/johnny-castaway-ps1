@@ -2,8 +2,8 @@
 layout: page
 title: Docs
 eyebrow: Reference manuals
-subtitle: Build, captions, holidays, regtest, API mapping. The technical surface of the PS1 port.
-description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, API mapping, and the per-scene workflow.
+subtitle: Build, captions, holidays, scripted input, regtest, API mapping. The technical surface of the PS1 port.
+description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, and the per-scene workflow.
 ---
 
 A labor of love by Hunter Davis. The pages below are reference manuals for the
@@ -41,6 +41,10 @@ If you paid for this, you were cheated. Open source and free.
   <li>
     <a href="{{ '/docs/regtest/' | relative_url }}">Regression testing</a>
     <p>Headless DuckStation in Docker. Frame PNGs every <em>N</em> frames, SHA256 state hashes, telemetry overlay decode, and the per-scene wrapper.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/scripted-input/' | relative_url }}">Scripted input harness</a>
+    <p>Pad scripts embedded into the PS1 build: deterministic menu routes, Freeplay repros, marker-aligned screenshots, and the generated menu help guide.</p>
   </li>
   <li>
     <a href="{{ '/docs/api/' | relative_url }}">API mapping (SDL2 → PSn00bSDK)</a>

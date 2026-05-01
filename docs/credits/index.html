@@ -138,6 +138,19 @@ movable holidays.</li>
 content, not lifted from any prior corpus. The <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml">caption audit</a>
 shows the confidence level of every ADS-tag → caption mapping.</p>
 
+<h2 id="ocean-ambience">Ocean ambience</h2>
+
+<p>The looping background ocean track shipped with <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code>
+(toggle: <strong>Pause → Accessibility → Ocean</strong>) is sourced from
+<a href="https://bigsoundbank.com/sea-waves-s0266.html"><strong>BigSoundBank.com</strong> sound 0266 — “Sea: Waves”</a>,
+released under <strong>CC0 / public domain</strong>. The on-disc <code class="language-plaintext highlighter-rouge">OCEAN.VAG</code> is a
+20-second seamless loop derived from that recording, downsampled to
+11.025 kHz mono and encoded to Sony VAG ADPCM. The seam is hidden by
+an equal-power crossfade with the recording’s natural continuation,
+so the SPU’s hardware loop reads as unbroken ocean rather than a
+wraparound. Encoding pipeline lives in <code class="language-plaintext highlighter-rouge">scratch/ocean-ambience/</code>;
+design rationale in <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/background-music-feasibility.md">background-music-feasibility.md</a>.</p>
+
 <hr />
 
 <p>The site is text-only on purpose — no portraits, no contributor
@@ -162,7 +175,7 @@ matches.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.5.0-ps1)
+          (v0.6.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

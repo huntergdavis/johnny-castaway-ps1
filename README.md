@@ -55,7 +55,7 @@ there with proper cross-linking, prose context, and per-section depth:
 - **[/devlog/](https://hunterdavis.com/johnny-castaway-ps1/devlog/)** — dated worklogs preserved verbatim.
 - **[/lab/](https://hunterdavis.com/johnny-castaway-ps1/lab/)** — magazine-length essays on methodology (LLM-assisted dev, hallucination control, build farm, regression practice).
 - **[/hack/](https://hunterdavis.com/johnny-castaway-ps1/hack/)** — for curious hackers: learning C from this codebase, porting Johnny to a new platform, the printf-driven perf loop, the visual-debug script catalog.
-- **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
+- **[/docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)** — every reference manual: build, captions, holidays, pause menu, freeplay, scripted input, regtest, API mapping, the SDL2-compat shim, FG2 pack format, dirty-region template.
 - **[/credits/](https://hunterdavis.com/johnny-castaway-ps1/credits/)** — the labor-of-love list.
 
 ## Download and play
@@ -73,7 +73,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.5.0-ps1`** |
+| Current release | **`v0.6.0-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -84,13 +84,16 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-`v0.5.0-ps1` is the freeplay/debug release. Johnny can now be driven
-directly around the island from the pause menu, with analog/D-pad walking,
-slow/fast shoulder modifiers, fishing, immediate world toggles, a sound
-test, gag and visitor debug catalogs, clear-screen rebuild, frog-clock
-loading transitions, and stricter no-allocation rules for the live frame
-loop. It builds on the `v0.4.20-ps1` walking-loop release, where Johnny
-started walking between story scene endpoints instead of teleporting.
+`v0.6.0-ps1` is the ocean-ambience release. The screensaver now ships
+a CC0-sourced 20-second ocean loop on a dedicated SPU voice, with a
+pause-menu toggle (Pause → Accessibility → Ocean) and memcard-persisted
+preference. The audio runs at zero CPU cost: the SPU plays the ADPCM
+loop in hardware via sample-defined loop flags, so JCPERF2 timing is
+unchanged. ~123 KB of SPU RAM used, ~257 KB still free for future
+ambience or music slots. It builds on `v0.5.0-ps1` (freeplay/debug
+mode — direct-control Johnny, sound test, scene catalogs) and
+`v0.4.20-ps1` (walking-loop — Johnny walks between story scene
+endpoints instead of teleporting).
 
 One scene at a time is promoted to the "fully validated" bar. Older
 count-based validation models (`25/63`, `60/63`, `63/63` etc.) from the
@@ -109,7 +112,8 @@ The headless harness now has opt-in scripted controller input. Run
 press through the pause menu under DuckStation regtest, capture every major
 menu screen, and regenerate the website's
 [`/help/menu/`](https://hunterdavis.com/johnny-castaway-ps1/help/menu/)
-guide from real PS1 screenshots.
+guide from real PS1 screenshots. The detailed runbook lives in
+[`docs/ps1/scripted-input-harness.md`](docs/ps1/scripted-input-harness.md).
 
 ## Method
 
@@ -319,6 +323,7 @@ prefer.
 - [pause-menu-design.md](docs/ps1/pause-menu-design.md) ↔ [/docs/pause-menu/](https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/)
 - [freeplay-mode-design.md](docs/ps1/freeplay-mode-design.md) ↔ [/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)
 - [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)
+- [scripted-input-harness.md](docs/ps1/scripted-input-harness.md) ↔ [/docs/scripted-input/](https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/)
 - [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/) (with [algorithm](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/emblems/) + 36 per-holiday pages)
 - [walk-implementation-plan.md](docs/ps1/walk-implementation-plan.md) — implemented story-loop walking design and memory-stability notes for `v0.4.20-ps1`
 - [release-notes-0.5.0.md](docs/ps1/release-notes-0.5.0.md) — release notes for freeplay/debug mode

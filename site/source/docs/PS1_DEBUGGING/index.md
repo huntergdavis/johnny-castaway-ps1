@@ -21,9 +21,9 @@ This document captures lessons learned while debugging the PlayStation 1 port of
 | Field | Value |
 |---|---:|
 | Source path | `docs/PS1_DEBUGGING.md` |
-| Lines | 278 |
-| Approx. words | 1346 |
-| Code fences | 10 |
+| Lines | 309 |
+| Approx. words | 1488 |
+| Code fences | 12 |
 
 ## Outline
 
