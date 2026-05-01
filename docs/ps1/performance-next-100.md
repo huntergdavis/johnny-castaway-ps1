@@ -191,6 +191,10 @@ The adjacent `242..254` group is rejected: despite matching an actual read
 start, it regressed VISITOR3 high to `1507/1007`, raised `blocking_vb 345 -> 357`,
 and raised `prefetch_overrun_vb 102 -> 109` with no read-count win. Adjacent
 post-win grouping needs per-read cost modeling before more hand-coded trials.
+The tail `738..749` group is also rejected: it reduced `prefetch_overrun_vb`
+but regressed `loop_vb 1496 -> 1507`, `blocking_vb 345 -> 356`, and
+`due_misses 24 -> 26`. Stop hand-coding VISITOR3 groups after `230..242` until
+the planner can score visible blocking and due-frame risk, not just read count.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
