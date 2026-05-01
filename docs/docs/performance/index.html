@@ -320,20 +320,20 @@ sound_late = 0   cd_fail = 0
 
 <p>As of 2026-04-30, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v54-walkstuf1low-prime</code>; earlier follow-up rows use
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v53-visitor3low-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>, and the full-matrix baseline rows are stamped
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v55-walkstuf1high-derived-prime</code>; earlier follow-up rows use
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v54-walkstuf1low-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>, and the full-matrix baseline rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-04-30T17:34:47</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-04-30T18:12:13</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v54-walkstuf1low-prime</code>; earlier follow-up rows use
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v53-visitor3low-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> / <code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>
+rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v55-walkstuf1high-derived-prime</code>; earlier follow-up rows use
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v54-walkstuf1low-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v3-stand12low</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> / <code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>
 rows are historical only.</p>
 
 <table>
@@ -647,7 +647,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
-      <td style="text-align: right">+42.2% / 70.3% (2024/1423); due 25; blk 449</td>
+      <td style="text-align: right">+40.3% / 71.3% (1970/1404); due 21; blk 400</td>
       <td style="text-align: right">+43.4% / 69.7% (2001/1395); due 31; blk 450</td>
     </tr>
     <tr>
@@ -677,7 +677,7 @@ gfx.upload_bytes  = 8,533,120
 <p>The canary now has no visible CD stall, but the full battle card still has
 CD-heavy scenes (<code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">walkstuf3</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">building4</code>,
 <code class="language-plaintext highlighter-rouge">building6</code>). The <code class="language-plaintext highlighter-rouge">FGP3/v2</code> indexed8 results, WALKSTUF1 split-window policy,
-and the low-tide setup-prime knee prove host-side pack preprocessing plus
+and the derived high/low setup-prime budgets prove host-side pack preprocessing plus
 scene-local CD policy can move major outliers, but they also leave enough
 residual pressure to keep the next experiments matrix-aware.</p>
 
@@ -685,7 +685,7 @@ residual pressure to keep the next experiments matrix-aware.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup segmentation for residual indexed8
-packs.</strong> WALKSTUF1 high/low still have <code class="language-plaintext highlighter-rouge">blocking_vb=449/450</code>, so the
+packs.</strong> WALKSTUF1 high/low still have <code class="language-plaintext highlighter-rouge">blocking_vb=400/450</code>, so the
 format/window/setup-prime wins need a second CD-shape pass.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
