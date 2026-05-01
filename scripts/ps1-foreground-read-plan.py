@@ -115,6 +115,89 @@ def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
     return "medium-validate-phase"
 
 
+def candidate_visible_cost(start: int, end: int,
+                           fully_covered_reads: list[dict[str, Any]],
+                           touched_reads: list[dict[str, Any]]) -> dict[str, Any]:
+    read_count = len(fully_covered_reads)
+    saved_reads = max(0, read_count - 1)
+    touched_count = len(touched_reads)
+    partial_touch_count = max(0, touched_count - read_count)
+    read_gaps = numeric_values([
+        segment.get("prev_time_delta_s")
+        for segment in fully_covered_reads
+    ])
+    internal_gaps = read_gaps[1:] if len(read_gaps) > 1 else []
+    first_gap = read_gaps[0] if read_gaps else None
+    min_gap = min(read_gaps) if read_gaps else None
+    max_gap = max(read_gaps) if read_gaps else None
+    min_internal_gap = min(internal_gaps) if internal_gaps else None
+    max_internal_gap = max(internal_gaps) if internal_gaps else None
+    observed_sectors = sum(
+        max(0, int(segment.get("file_sector_end", 0)) -
+             int(segment.get("file_sector_start", 0)))
+        for segment in fully_covered_reads
+    )
+    group_sectors = end - start
+    overread_sectors = max(0, group_sectors - observed_sectors)
+
+    risk = 0
+    reasons: list[str] = []
+    if saved_reads <= 0:
+        risk += 120
+        reasons.append("no-saved-read")
+    if partial_touch_count > 0:
+        risk += partial_touch_count * 35
+        reasons.append("partial-read-overlap")
+    if overread_sectors > 0:
+        risk += min(40, overread_sectors * 4)
+        reasons.append("group-overread")
+    if first_gap is not None:
+        if first_gap < 0.20:
+            risk += 55
+            reasons.append("tight-first-gap")
+        elif first_gap < 0.50:
+            risk += 25
+            reasons.append("short-first-gap")
+    if min_internal_gap is not None:
+        if min_internal_gap < 0.20:
+            risk += 45
+            reasons.append("tight-internal-gap")
+        elif min_internal_gap < 0.50:
+            risk += 20
+            reasons.append("short-internal-gap")
+
+    safety_score = (
+        saved_reads * 1000 -
+        risk * 10 +
+        int(round((first_gap or 0.0) * 60.0)) +
+        min(120, int(round((max_gap or 0.0) * 10.0))) -
+        partial_touch_count * 25 -
+        overread_sectors * 4
+    )
+
+    if saved_reads <= 0:
+        hint = "reject:no-saved-read"
+    elif risk >= 100:
+        hint = "high-risk:visible-cadence"
+    elif risk >= 50:
+        hint = "medium-risk:validate-phase"
+    else:
+        hint = "candidate:low-visible-risk"
+
+    return {
+        "visible_safety_score": safety_score,
+        "visible_risk_score": risk,
+        "visible_risk_hint": hint,
+        "visible_risk_reasons": reasons,
+        "partial_touch_count": partial_touch_count,
+        "observed_read_sectors": observed_sectors,
+        "group_overread_sectors": overread_sectors,
+        "first_prev_gap_s": round(first_gap, 4) if first_gap is not None else None,
+        "min_internal_gap_s": round(min_internal_gap, 4) if min_internal_gap is not None else None,
+        "max_internal_gap_s": round(max_internal_gap, 4) if max_internal_gap is not None else None,
+    }
+
+
 def eval_c_int_expr(expr: str, symbols: dict[str, int]) -> int | None:
     text = re.sub(r"/\*.*?\*/", "", expr)
     text = re.sub(r"//.*", "", text)
@@ -558,6 +641,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             payload_bytes +
             hold_vblanks
         )
+        visible_cost = candidate_visible_cost(start, end, fully_covered_reads, touched_reads)
         candidates.append({
             "start_sector": start,
             "end_sector": end,
@@ -577,6 +661,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "avg_prev_gap_s": round(sum(read_gaps) / len(read_gaps), 4) if read_gaps else None,
             "phase_risk_hint": phase_risk_hint(fully_covered_reads),
             "source_read_indices": [segment.get("index") for segment in fully_covered_reads],
+            **visible_cost,
         })
 
     candidates.sort(
@@ -586,6 +671,29 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             item["touched_read_count"],
             item["covered_entry_count"],
             item["covered_payload_bytes"],
+        ),
+        reverse=True,
+    )
+    return candidates[:top]
+
+
+def visible_candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, Any]],
+                           coverage_ranges: list[tuple[int, int]], pack_sectors: int,
+                           window_sectors: int, top: int) -> list[dict[str, Any]]:
+    candidates = candidate_rows(
+        entries,
+        read_segments,
+        coverage_ranges,
+        pack_sectors,
+        window_sectors,
+        top=max(top * 8, top),
+    )
+    candidates.sort(
+        key=lambda item: (
+            item["visible_safety_score"],
+            item["estimated_saved_reads"],
+            -item["visible_risk_score"],
+            item["estimated_read_vblanks"],
         ),
         reverse=True,
     )
@@ -667,6 +775,11 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                                     pack_sectors, window, args.top)
         for window in args.candidate_sectors
     }
+    visible_candidate_sets = {
+        str(window): visible_candidate_rows(entries, read_segments, coverage_ranges,
+                                            pack_sectors, window, args.top)
+        for window in args.candidate_sectors
+    }
 
     return {
         "schema": "ps1-foreground-read-plan/v1",
@@ -721,6 +834,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             ],
         },
         "candidate_sets": candidate_sets,
+        "visible_candidate_sets": visible_candidate_sets,
     }
 
 
@@ -772,6 +886,33 @@ def print_human(report: dict[str, Any]) -> None:
                 f"risk={item['phase_risk_hint']} "
                 f"entries={item['covered_entry_count']}({entry_span}) "
                 f"bytes={item['covered_payload_bytes']}"
+            )
+    for sectors, candidates in report.get("visible_candidate_sets", {}).items():
+        print(f"\nTop visible-cost {sectors}-sector candidates:")
+        if not candidates:
+            print("  none")
+            continue
+        for item in candidates:
+            first_gap = (
+                f"{item['first_prev_gap_s']}s"
+                if item["first_prev_gap_s"] is not None else "-"
+            )
+            internal_min = (
+                f"{item['min_internal_gap_s']}s"
+                if item["min_internal_gap_s"] is not None else "-"
+            )
+            print(
+                "  "
+                f"{item['start_sector']}:{item['end_sector']} "
+                f"score={item['visible_safety_score']} "
+                f"hint={item['visible_risk_hint']} "
+                f"saved={item['estimated_saved_reads']} "
+                f"risk={item['visible_risk_score']} "
+                f"partial={item['partial_touch_count']} "
+                f"overread={item['group_overread_sectors']} "
+                f"first_gap={first_gap} "
+                f"internal_min={internal_min} "
+                f"reads={item['source_read_indices']}"
             )
 
 
