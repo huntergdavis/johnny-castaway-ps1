@@ -158,6 +158,11 @@ rejected: it kept the PS-EXE bucket stable but left every key seven-case metric
 flat while growing ELF. Future address-bucket work should be scripted across
 multiple functions and alignments so it can find a real phase knee instead of
 testing one helper by hand.
+The SDK-supported `NOGPREL` / `-G0` executable mode is rejected: it grew the
+PS-EXE by two sectors, shifted FG pack LBAs, and regressed WALKSTUF1 high despite
+a small VISITOR3-high blocking-only improvement. Keep `GPREL` / `-G8`; `-G4` or
+`-G16` would require custom toolchain plumbing and should wait behind generated
+read metadata and upload-ready/direct16 work.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -577,7 +582,7 @@ input.
 | 93 | Toolchain | Do not retry whole-TU `-O3` on `foreground_pilot.c`; only test function-scoped/generated shapes with map padding. | Prior foreground `-O3` grew `foregroundPilotPlay` by about `5 KB`, moved pack layout, and did not improve key timing. | Accepted only if loop improves without CD pressure and hot symbol growth is explained. |
 | 94 | Toolchain | Do not retry whole-TU `-O3` on `cdrom_ps1.c`; use helper-scoped `-O2`/`-Os`, generated read metadata, or assembly only under map/layout gates. | CD helper `-O3` grew the executable and worsened visible CD pressure; the feasibility note supports narrower targets, not broad flags. | `loop_read_vb` or helper size improves without layout/cadence regression. |
 | 95 | Toolchain | Run per-file `-Os` only on `foreground_pilot.c`. | Done: exact-flat timing/work with PS-EXE `149504 -> 145408` and ELF `739900 -> 727716`. | Keep as a size/code-shape win; do not count as VBlank speed. |
-| 96 | Toolchain | Sweep `-G0`, `-G4`, `-G8`, `-G16`/GP-relative small-data thresholds. | Current `GPREL` likely implies a default small-data tradeoff. | Loop or binary size improves without heap/data regressions. |
+| 96 | Toolchain | Done/no promotion for SDK-supported `-G0`: keep `GPREL` / `-G8`. Only test `-G4` or `-G16` after adding a custom build harness. | `NOGPREL` / `-G0` grew the PS-EXE by `4096` bytes and regressed WALKSTUF1 high. | Lower priority than generated read metadata and upload-ready/direct16 work. |
 | 97 | Toolchain | Sweep hot-function alignment: default, 4, 8, 16, 32 bytes. | A one-off 16-byte alignment of `fgRuntimeFillWindowForEntry()` was exact-flat, so any retry must be scripted across several hot foreground/CD functions. | A phase bucket improves loop or CD pressure with map-address evidence. |
 | 98 | Toolchain | Link hot FG2/CD sections first. | Keep scheduler/CD code contiguous and stable while cold code changes. | Hot symbol addresses stabilize and timing improves or becomes less fragile. |
 | 99 | Toolchain | Split cold menu/debug/caption code into a cold archive or section. | Valid cold-code cleanup currently perturbs hot phase. | Cold shrink passes exact gate. |
