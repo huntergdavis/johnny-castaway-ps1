@@ -726,6 +726,7 @@ near misses:
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
 | BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
 | BUILDING-family raw stream windows | BUILDING4 low `36 KiB` is accepted; BUILDING6 `20/28 KiB`, BUILDING4 high `20/28 KiB`, and broad setup-prime are rejected. Retry only scene/tide-locally with fresh baselines and bounded visible-CD/refill tradeoff rules. |
+| BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
