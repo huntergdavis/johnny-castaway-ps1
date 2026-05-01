@@ -545,7 +545,7 @@ input.
 | 88 | Compose | Test per-scene generated fishing1 compositor. | One validated scene can justify bespoke codegen. | Fishing1 loop improves and generated output remains auditable. |
 | 89 | Compose | Test LUT-per-palette direct two-pixel writes in generated code. | Runtime LUT attempt was not enough. | Compose detail improves with no branch growth. |
 | 90 | Compose | Test row-level span coalescing at pack time. | PAL4 four-pixel unroll was no-op alone. | Fewer commands/spans or lower compose detail. |
-| 91 | Toolchain | Continue testing `-O2` on currently `-Os` source files, but do not retry whole-TU `foreground_pilot.c`. | `foreground_pilot.c -O2` grew the PS-EXE by one sector and failed before `JCPERF2`; remaining whole-TU candidates are `jc_reborn.c`, `resource.c`, `sound_ps1.c`, and `events_ps1.c`, one at a time. | Free performance if loop/setup/render counters improve; otherwise log exact-flat/no-promotion and keep current `-Os`. |
+| 91 | Toolchain | Continue testing `-O2` on currently `-Os` source files, but do not retry whole-TU `foreground_pilot.c` or `jc_reborn.c`. | `foreground_pilot.c -O2` failed structurally and `jc_reborn.c -O2` stayed exact-flat while growing ELF; remaining whole-TU candidates are `resource.c`, `sound_ps1.c`, and `events_ps1.c`, one at a time. | Free performance if loop/setup/render counters improve; otherwise log exact-flat/no-promotion and keep current `-Os`. |
 | 92 | Toolchain | Done/no promotion: confirm graphics whole-TU `-O2` is already active, then test scoped `-O2` on graphics helpers that are currently forced to `-Os`. | `grDrawBackground()` and `grUpdateDisplay()` scoped `-O2` both stayed exact-flat while growing code. Keep the scoped `-Os` attributes. | Searchable no-promotion evidence is recorded; continue the `-O2` sweep on hot/semi-hot `-Os` translation units. |
 | 93 | Toolchain | Do not retry whole-TU `-O3` on `foreground_pilot.c`; only test function-scoped/generated shapes with map padding. | Prior foreground `-O3` grew `foregroundPilotPlay` by about `5 KB`, moved pack layout, and did not improve key timing. | Accepted only if loop improves without CD pressure and hot symbol growth is explained. |
 | 94 | Toolchain | Do not retry whole-TU `-O3` on `cdrom_ps1.c`; use helper-scoped `-O2`/`-Os`, generated read metadata, or assembly only under map/layout gates. | CD helper `-O3` grew the executable and worsened visible CD pressure; the feasibility note supports narrower targets, not broad flags. | `loop_read_vb` or helper size improves without layout/cadence regression. |
@@ -565,7 +565,7 @@ near misses:
 |---:|---:|---|
 | 1 | 78 | Done: `scripts/ps1-o2-audit.py` emits the current `-O2` candidate queue and map/symbol evidence. Re-run it after each build-system or optimization-flag change. |
 | 2 | 92 | Done/no promotion: both scoped graphics helper `-O2` probes were measured and rejected. |
-| 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code; `foreground_pilot.c` whole-TU is rejected, so move to the next file candidate. |
+| 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code; `foreground_pilot.c` and `jc_reborn.c` whole-TU probes are rejected, so move to `resource.c`. |
 | 4 | 79 | Test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
 | 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
 | 6 | 85 | Test scratchpad palette in compose after the C compose path has a measured baseline. |
@@ -638,6 +638,7 @@ near misses:
 | `grDrawBackground()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `504` bytes and the ELF grew by `568` bytes. |
 | `grUpdateDisplay()` scoped `O2` | Do not promote alone; the four-case gate stayed exact-flat but the helper grew by `40` bytes and the ELF grew by `168` bytes. |
 | `foreground_pilot.c` whole-TU `O2` | Do not retry as a whole-TU flag. It grew the PS-EXE by one sector, grew `foregroundPilotPlay 0x252c -> 0x3114`, and failed before `JCPERF2` on repeated `fishing1-high` runs. Retry foreground codegen only as function-scoped, split-TU, or layout-padded probes. |
+| `jc_reborn.c` whole-TU `O2` | Do not promote alone; the four-case gate stayed exact-flat, PS-EXE stayed flat, ELF grew by `4188` bytes, and hot symbols shifted by `+1300` bytes. Retry only through function-scoped or split cold/boot code shapes. |
 | PAL4 compositor function-scoped `O3` | Do not retry; it shrank `grCompositePacked4SpansToBackground` by `28` bytes but still regressed cadence with `FISHING1.FG2` LBA restored. |
 | Perf TU `-O3` | Do not retry as a whole-TU flag; it bloated `ps1PerfMarkCdReadDetailed` and regressed the exact gate. |
 | Perf TU `-Os` | Do not promote just for ELF shrink; it left `jcreborn.exe` flat and grew hot perf functions. |
