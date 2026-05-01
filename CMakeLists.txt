@@ -39,6 +39,7 @@ set(SOURCES
     src/graphics_ps1.c
     src/sound_ps1.c
     src/events_ps1.c
+    src/ps1_pad_script.c
     src/cdrom_ps1.c
     src/ps1_debug.c
     src/pause_menu.c
@@ -80,6 +81,7 @@ set_source_files_properties(
     src/resource.c
     src/sound_ps1.c
     src/events_ps1.c
+    src/ps1_pad_script.c
     src/pause_menu.c
     src/ps1_stubs.c
     src/ps1_captions.c

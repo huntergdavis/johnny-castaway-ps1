@@ -81,6 +81,50 @@ Or specify explicitly with `--bios /path/to/bios/`.
 
 ## Running tests
 
+### Scripted controller input
+
+`v0.5.x` adds an opt-in pad-script layer for headless menu and flow tests.
+The PS1 build embeds `config/ps1/PADSCRIPT.TXT` at compile time and only
+uses it when `BOOTMODE.TXT` includes `pad-script` or `pad-script-log`.
+Scripted buttons are merged into the same active-high pad mask as the real
+controller, after analog-stick folding, so the pause menu and Freeplay code
+do not know whether a human or a test script pressed Start.
+
+The menu documentation harness is the first user:
+
+```bash
+./scripts/ps1-menu-input-harness.sh
+```
+
+It stages a temporary boot mode, waits 30 seconds, presses Start, walks the
+major pause-menu screens, emits delayed
+`JCPADSHOT label=<name> frame=<n> tick=<n>` markers, runs DuckStation
+regtest headlessly, copies the first captured PNG at or after each marker
+into `site/assets/img/help/menu/`, and rewrites
+[Menu help guide]({{ '/help/menu/' | relative_url }}). The staged boot files
+are restored before the script exits.
+
+Pad-script commands are deliberately small:
+
+```text
+wait 30s
+tap START
+tap DOWN
+hold R1+RIGHT 12
+shot pause-main 30
+```
+
+Durations are frames by default; a trailing `s` means seconds at 60 Hz.
+The optional number after `shot` is the settle delay; `shot pause-main 30`
+marks the screenshot point about half a second after the preceding input.
+The menu-guide harness uses a more conservative default settle window
+because this pause-menu path has real framebuffer and polling latency, but
+`--settle-frames 30` is available for targeted timing diagnostics.
+`pad-script-log` prints parsed events for debugging. Plain `pad-script`
+keeps the extra logs off while still printing screenshot markers; the menu
+harness defaults to the quiet path and accepts `--verbose` when the route
+itself needs debugging.
+
 ### Single scene
 
 ```bash

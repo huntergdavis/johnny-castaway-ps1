@@ -48,6 +48,7 @@ The website is the canonical surface — most of what's below is mirrored
 there with proper cross-linking, prose context, and per-section depth:
 
 - **[/play/](https://hunterdavis.com/johnny-castaway-ps1/play/)** — download + DuckStation quickstart + controls.
+- **[/help/](https://hunterdavis.com/johnny-castaway-ps1/help/)** — player help, menu screenshots, and the generated menu guide.
 - **[/about/method/](https://hunterdavis.com/johnny-castaway-ps1/about/method/)** — hybrid pipeline deep-dive.
 - **[/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/)** — live ledger of all 63 scenes + per-scene case studies.
 - **[/archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)** — the full 5-chapter project story.
@@ -102,6 +103,13 @@ bar. The current FISHING 1 canary is `loop_vb=1067` against
 `blocking_vb=2`, `prefetch_overrun_vb=2`, and `due_misses=0`. Six routed
 rows (`mary3`, `suzy1`, `suzy2`, high/low) currently complete without
 active-loop timing and are excluded from speed averages.
+
+The headless harness now has opt-in scripted controller input. Run
+`./scripts/ps1-menu-input-harness.sh` to build a temporary pad-script disc,
+press through the pause menu under DuckStation regtest, capture every major
+menu screen, and regenerate the website's
+[`/help/menu/`](https://hunterdavis.com/johnny-castaway-ps1/help/menu/)
+guide from real PS1 screenshots.
 
 ## Method
 

@@ -8,6 +8,7 @@
       <ul>
         <li><a href="{{ '/'             | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Home</a></li>
         <li><a href="{{ '/play/'        | relative_url }}"{% if page.url contains '/play/'        %} aria-current="page"{% endif %}>Play</a></li>
+        <li><a href="{{ '/help/'        | relative_url }}"{% if page.url contains '/help/'        %} aria-current="page"{% endif %}>Help</a></li>
         <li><a href="{{ '/about/'       | relative_url }}"{% if page.url contains '/about/'       %} aria-current="page"{% endif %}>About</a></li>
         <li><a href="{{ '/scenes/'      | relative_url }}"{% if page.url contains '/scenes/'      %} aria-current="page"{% endif %}>Scenes</a></li>
         <li><a href="{{ '/devlog/'      | relative_url }}"{% if page.url contains '/devlog/'      %} aria-current="page"{% endif %}>Devlog</a></li>

@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 444 source and generated runtime assets indexed for the site.
+subtitle: 445 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -234,6 +234,7 @@ for the practical porting path.
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
+<tr><td><code>OCEAN.VAG</code></td><td>126,064</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/OCEAN.VAG">source</a></td></tr>
 <tr><td><code>SOUND00.VAG</code></td><td>5,952</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/SOUND00.VAG">source</a></td></tr>
 <tr><td><code>SOUND01.VAG</code></td><td>6,416</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/SOUND01.VAG">source</a></td></tr>
 <tr><td><code>SOUND02.VAG</code></td><td>944</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/SOUND02.VAG">source</a></td></tr>

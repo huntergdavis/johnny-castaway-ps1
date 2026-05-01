@@ -29,6 +29,7 @@
 #include "pause_menu.h"
 #include "config.h"
 #include "spi.h"
+#include "ps1_pad_input.h"
 
 /* Global variables */
 int evHotKeysEnabled = 0;
@@ -672,7 +673,7 @@ void eventsWaitTick(uint16 delay)
      * pad reads as 0xFFFF which inverts to no-buttons-pressed — safe. */
     {
         PADTYPE *pad = (PADTYPE*)pad_buff[0];
-        uint16 buttons = ~(pad->btn);  /* active low — invert */
+        uint16 buttons = ps1PadButtonsWithAnalog(pad);
 
         if (buttons & PAD_START) {
             if (evPadDiagnosticsEnabled)
@@ -683,7 +684,7 @@ void eventsWaitTick(uint16 delay)
             /* Debounce: hold the loop until Start is released so we
              * don't immediately reopen the menu the next time
              * eventsWaitTick fires. */
-            while ((~((PADTYPE*)pad_buff[0])->btn) & PAD_START) {
+            while (ps1PadButtonsWithAnalog((PADTYPE*)pad_buff[0]) & PAD_START) {
                 VSync(0);
             }
             /* Reset the frame-pacing anchor so the missed VBlanks
