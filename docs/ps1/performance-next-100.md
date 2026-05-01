@@ -153,6 +153,11 @@ It helped WALKSTUF1 high by `5` VBlanks but made low tide `16` VBlanks slower,
 matching the host-side warning that average byte runs are only about `1.8`.
 Do not spend more time on runtime indexed8 branch tricks; use pack-time
 direct16/upload-ready data or generated CD metadata instead.
+Setup-time first-frame prerendering is rejected. The clock-reset variant left
+STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
+pressure. Treat zero-CD overrun as distributed per-frame render/present/upload
+cost, not first-frame placement; future work should use upload-ready pack data
+or a first-class present/upload scheduler.
 The per-compose PAL4 scratchpad palette probe is rejected: it shrank the
 compositor and ELF but did not move loop time safely, and VISITOR3 low regressed
 hard. Do not spend more time on local scratchpad palette copies; scratchpad work
