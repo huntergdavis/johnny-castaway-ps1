@@ -21,6 +21,9 @@
  *
  */
 
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
+
 #include <SDL2/SDL.h>
 
 /* Forward declaration for LRU cache */
@@ -164,3 +167,5 @@ void grLoadScreen(char *strArg);
 int grCaptureFrame(const char *filename);
 void grCaptureSetSceneLabel(const char *sceneLabel);
 void grCaptureSoundEvent(int sampleNo);
+
+#endif /* GRAPHICS_H */

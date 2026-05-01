@@ -90,7 +90,7 @@ static void _spi_next_req(void) {
 	// Copy the contents of the first request in the queue into the TX buffer.
 	memcpy(
 		(void *) _context.tx_buff,
-		(void *) _current_req->data,
+		(void *) _current_req->payload.data,
 		_current_req->len
 	);
 

@@ -37,6 +37,7 @@
 #include "cdrom_ps1.h"
 #include "psb_format.h"
 #include "psb_registry.h"
+#include "ps1_gpu_ot.h"
 #include "ps1_captions.h"
 
 #ifndef GRAPHICS_PS1_DIAG_LOGS
@@ -2497,7 +2498,7 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
         uint16 tpageX = tile->x / 64;
         uint16 tpageY = tile->y / 256;
         setDrawTPage(tpage, 0, 0, getTPage(0, 0, tpageX * 64, tpageY * 256));
-        addPrim(&ot[db][0], tpage);
+        ps1GpuOtAddPrim(&ot[db][0], tpage);
 
         SPRT *sprt = (SPRT*)nextPrimitive[db];
         nextPrimitive[db] += sizeof(SPRT);
@@ -2515,7 +2516,7 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
         setRGB0(sprt, 128, 128, 128);  /* Normal brightness */
 
         /* Add to ordering table */
-        addPrim(&ot[db][0], sprt);
+        ps1GpuOtAddPrim(&ot[db][0], sprt);
 
         GR_DIAG_PRINTF("Draw tile: pos=(%d,%d) size=%dx%d VRAM=(%d,%d)\n",
                        tileX, tileY, tile->width, tile->height, tile->x, tile->y);
@@ -2732,7 +2733,7 @@ void grDrawSpriteFlip(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint1
         setRGB0(poly, 128, 128, 128);  /* Normal brightness */
 
         /* Add to ordering table */
-        addPrim(&ot[db][0], poly);
+        ps1GpuOtAddPrim(&ot[db][0], poly);
 
         GR_DIAG_PRINTF("Draw flipped tile: pos=(%d,%d) size=%dx%d\n",
                        tileX, tileY, tile->width, tile->height);
@@ -2797,8 +2798,8 @@ int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, si
 
         /* Add to ordering table - sprt FIRST so tpage renders BEFORE it
          * (addPrim adds to HEAD, so last added = first rendered) */
-        addPrim(extOT, sprt);
-        addPrim(extOT, tpage);
+        ps1GpuOtAddPrim(extOT, sprt);
+        ps1GpuOtAddPrim(extOT, tpage);
 
         tile = tile->nextTile;
     }

@@ -63,6 +63,7 @@ set(SOURCES
     src/calcpath.c
     src/walk_render.c
     src/walk_pilot.c
+    src/scene_freeplay.c
     # LibC stubs for missing functions
     src/ps1_stubs.c
 )
@@ -83,6 +84,7 @@ set_source_files_properties(
     src/ps1_stubs.c
     src/ps1_captions.c
     src/memcard.c
+    src/scene_freeplay.c
     PROPERTIES COMPILE_OPTIONS "-Os"
 )
 
@@ -107,7 +109,7 @@ endif()
 # - src/ for the main translation units' own headers
 # - project root so `#include "config/ps1/bootmode_embedded.h"` still resolves
 target_include_directories(jcreborn
-    PRIVATE
+    BEFORE PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}
 )

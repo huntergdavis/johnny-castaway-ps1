@@ -20,6 +20,7 @@
 #include "ps1_perf.h"
 #include "walk_pilot.h"
 #include "ps1_debug.h"
+#include "scene_freeplay.h"
 
 uint16 ps1AdsDbgActiveThreads = 0;
 uint16 ps1AdsDbgMini = 0;
@@ -273,6 +274,8 @@ static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
+static void fgReleaseStreamBuffers(void);
+static void fgInitVisiblePipeline(void);
 
 /* Public accessor for walk_pilot — returns the slot holding
  * BACKGRND.PSB sprites (used for behind-tree trunk + leaf cover-up
@@ -301,6 +304,29 @@ void fgBackdropTickWavesPublic(void)
     if (gFgBackdropThread.isRunning) {
         islandAnimate(&gFgBackdropThread);
     }
+}
+
+void fgBackdropPrepareIslandRuntimePublic(void)
+{
+    fgReleaseStreamBuffers();
+    fgBackdropPreloadBackgrndBmp();
+
+    fgInitVisiblePipeline();
+    grSetPresentDuringScreenLoad(0);
+    if (islandState.night) {
+        grLoadScreen("NIGHT.SCR");
+    } else {
+        grLoadScreen("OCEAN00.SCR");
+    }
+    grFreeCleanBgTiles();
+    fgBackdropEnableWaveBackdrop();
+    grSetPresentDuringScreenLoad(1);
+    grForceFullRedrawNextFrame();
+}
+
+void fgBackdropReleasePublic(int keepBackgrnd)
+{
+    fgBackdropRelease(keepBackgrnd);
 }
 
 /* No-op kept for ABI compatibility; walk_pilot now reuses the FG2 scene's
@@ -2954,7 +2980,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         /* Pause-menu request: break out so jc_reborn's outer loop can
          * advance to next scene or restart the loop. The flag is
          * cleared by the consumer in jc_reborn.c. */
-        if (pauseMenuRequestNextScene || pauseMenuRequestResetLoop) {
+        if (pauseMenuRequestNextScene ||
+            pauseMenuRequestResetLoop ||
+            pauseMenuRequestFreeplay) {
             break;
         }
         if (fgRuntimeCanHoldDisplayedFrame()) {
@@ -3183,6 +3211,11 @@ void foregroundPilotSetPrefetchWindow(unsigned long bytes)
 
 void foregroundPilotPlay(void)
 {
+    if (fgSceneEquals(gForegroundPilotScene, "freeplay")) {
+        freeplayRun();
+        return;
+    }
+
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(gForegroundPilotScene, "testcard")) {
         fgPlayTestCard();

@@ -87,15 +87,16 @@ extern uint8 pad_buff[2][34];
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
 
+#ifdef PS1_BUILD
 /* story_data.h is platform-independent — it's just a const struct
  * array. Pulling it into the PS1 build gives the screensaver-loop
  * picker access to per-scene start/end spot/heading metadata so it
  * can call fgWalkRender between scenes. The story.c / ads.c / ttm.c
  * runtime engines stay out of the PS1 build. */
 #include "story_data.h"
-#ifdef PS1_BUILD
 #include "walk_render.h"
 #include "walk_pilot.h"
+#include "scene_freeplay.h"
 #endif
 
 #ifndef PS1_BUILD
@@ -114,14 +115,18 @@ unsigned int ps1LastSeedApplied = 0;
 int          ps1LastSeedKnown   = 0;
 
 #ifdef PS1_BUILD
+#define PS1_RCNT_CNT0_SPEC ((int)0xf2000000u)
+#define PS1_RCNT_CNT1_SPEC ((int)0xf2000001u)
+#define PS1_RCNT_CNT2_SPEC ((int)0xf2000002u)
+
 void ps1SeedRandom(void)
 {
     uint32 seed = 0x9e3779b9u;
 
     for (int i = 0; i < 32; i++) {
-        uint32 t0 = (uint32)GetRCnt(RCntCNT0);
-        uint32 t1 = (uint32)GetRCnt(RCntCNT1);
-        uint32 t2 = (uint32)GetRCnt(RCntCNT2);
+        uint32 t0 = (uint32)GetRCnt(PS1_RCNT_CNT0_SPEC);
+        uint32 t1 = (uint32)GetRCnt(PS1_RCNT_CNT1_SPEC);
+        uint32 t2 = (uint32)GetRCnt(PS1_RCNT_CNT2_SPEC);
         seed ^= (t0 << (i & 7)) ^ (t1 << ((i + 3) & 7)) ^ (t2 << ((i + 5) & 7));
         seed = (seed << 5) | (seed >> 27);
         seed += 0x7f4a7c15u + (uint32)i;
@@ -231,6 +236,13 @@ static const char *fgLoopNextScene(const char *explicitScene)
     return kProvenScenes[rand() % NUM_PROVEN_SCENES];
 }
 
+/* Set by fgLoopApplyVariant when the story-sequence counter expires
+ * and a new island position is randomized. The PS1 screensaver loop
+ * consumes this to suppress the walk-between-scenes for the iteration
+ * where position changed. Host fgpilot shares the variant picker, so
+ * keep the flag in shared scope even though only PS1 reads it. */
+static int fgLoopSequenceJustReset = 1;   /* iter 0: treat as new sequence */
+
 #ifdef PS1_BUILD
 /* Walk subsystem state — Johnny's last known spot/heading. -1 means
  * "no defined position" (LEFT_ISLAND scene set the sentinel, or this
@@ -248,12 +260,6 @@ static int storyCurrentHdg  = -1;
 int storyCurrentDay      = 1;       /* extern; memcard load writes it */
 int storyLastSeenDayOfYr = 0;       /* initialised from memcard */
 
-/* Set by fgLoopApplyVariant when the story-sequence counter expires
- * and a new island position is randomized. The screensaver loop
- * consumes this to suppress the walk-between-scenes for the
- * iteration where position changed (otherwise Johnny appears at
- * the new island center before the new scene's bg loads). */
-static int fgLoopSequenceJustReset = 1;   /* iter 0: treat as new sequence */
 extern int getDayOfYear(void);
 
 /* Advance storyCurrentDay if the ps1Soft date has rolled over since
@@ -570,6 +576,7 @@ static void ps1ResetBootArgs(void)
     foregroundPilotSetHeapProbe(0);
     foregroundPilotResetPrefetchDefaults();
     ps1PerfSetEnabled(0);
+    freeplaySetTelemetryLevel(0);
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
     ps1BootPrintfTest = 0;
@@ -761,6 +768,12 @@ static void ps1ApplyBootOverride(char *buffer)
             ps1PerfSetLevel(PS1_PERF_LEVEL_DETAIL);
         } else if (!strcmp(tokens[i], "perf-debug")) {
             ps1PerfSetLevel(PS1_PERF_LEVEL_DEBUG);
+        } else if (!strcmp(tokens[i], "freeplay-log")) {
+            freeplaySetTelemetryLevel(1);
+        } else if (!strcmp(tokens[i], "freeplay-detail")) {
+            freeplaySetTelemetryLevel(2);
+        } else if (!strcmp(tokens[i], "freeplay-debug")) {
+            freeplaySetTelemetryLevel(3);
         } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
             eventsSetPadDiagnostics(1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
@@ -1538,6 +1551,17 @@ int main(int argc, char **argv)
         ps1PerfEndScene(loopScene);
         ps1PrintfProbe("scene-end", loopScene);
 
+        if (freeplayExitRequested()) {
+            freeplayClearExitRequest();
+            explicitScene = NULL;       /* return to random story rotation */
+            storyCurrentSpot = -1;
+            storyCurrentHdg  = -1;
+            fgLoopSequenceJustReset = 1;
+#if JC_PAUSE_REQUEST_DIAG_LOGS
+            printf("JCFREE consume freeplay-exit\n");
+#endif
+        }
+
         /* BOOTMODE bsod-test: synthesize a fatal-error after the first
          * scene completes so the BSOD UI can be verified visually. */
         if (ps1BootBsodAfterFirstScene) {
@@ -1557,6 +1581,16 @@ int main(int argc, char **argv)
             pauseMenuRequestNextScene = 0;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume next-scene\n");
+#endif
+        }
+        if (pauseMenuRequestFreeplay) {
+            pauseMenuRequestFreeplay = 0;
+            explicitScene = "freeplay";
+            storyCurrentSpot = -1;
+            storyCurrentHdg  = -1;
+            fgLoopSequenceJustReset = 1;
+#if JC_PAUSE_REQUEST_DIAG_LOGS
+            printf("JCPAUSE consume freeplay\n");
 #endif
         }
         if (pauseMenuRequestResetLoop) {

@@ -32,6 +32,7 @@
 #include "resource.h"
 #include "foreground_pilot.h"
 #include "ps1_perf.h"
+#include "ps1_gpu_ot.h"
 #include "memcard.h"
 #include "holidays.h"
 #include "ps1_captions.h"
@@ -88,6 +89,10 @@ int pauseMenuRequestNextScene = 0;
 /* "Reset loop" flag — foreground pilot loop checks this and exits
  * early so jc_reborn's outer loop can restart from scene 0. */
 int pauseMenuRequestResetLoop = 0;
+
+/* "Freeplay Mode" flag — foreground pilot loop checks this and exits
+ * early so jc_reborn's outer loop can dispatch `fgpilot freeplay`. */
+int pauseMenuRequestFreeplay = 0;
 
 /* Did pauseMenuShow itself toggle the mute? If yes, pauseMenuHide
  * undoes it. If the user manually toggled mute via the menu item
@@ -358,6 +363,7 @@ enum {
     MENU_RESUME,
     MENU_OPTIONS,
     MENU_SAVE,
+    MENU_FREEPLAY,
     MENU_RESET_LOOP,
     MENU_NEXT_SCENE,
     MENU_DEBUG_INFO,
@@ -566,7 +572,7 @@ static void pmTextDrawChar(uint8 **nextp, uint32 *otSlot, char c)
     setUV0(sprt, col * PM_DRAW_W, row * PM_DRAW_H);
     setClut(sprt, PM_CLUT_VRAM_X, PM_CLUT_VRAM_Y);
     setRGB0(sprt, 128, 128, 128);
-    addPrim(otSlot, sprt);
+    ps1GpuOtAddPrim(otSlot, sprt);
     pmTextX += PM_DRAW_W;
 }
 
@@ -625,7 +631,7 @@ static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
                     640,   0,
                       0, 480,
                     640, 480);
-        addPrim(otDim, dim);
+        ps1GpuOtAddPrim(otDim, dim);
     }
 
     /* Panel: 3 rectangles. Middle full width, top/bottom narrower so
@@ -641,7 +647,7 @@ static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
     setPolyF4(p1);
     setRGB0(p1, r, g, b);
     setXY4(p1, x0, y0 + c, x1, y0 + c, x0, y1 - c, x1, y1 - c);
-    addPrim(otPanel, p1);
+    ps1GpuOtAddPrim(otPanel, p1);
 
     /* Top edge (narrower). */
     POLY_F4 *p2 = (POLY_F4*)*nextp;
@@ -649,7 +655,7 @@ static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
     setPolyF4(p2);
     setRGB0(p2, r, g, b);
     setXY4(p2, x0 + c, y0, x1 - c, y0, x0 + c, y0 + c, x1 - c, y0 + c);
-    addPrim(otPanel, p2);
+    ps1GpuOtAddPrim(otPanel, p2);
 
     /* Bottom edge (narrower). */
     POLY_F4 *p3 = (POLY_F4*)*nextp;
@@ -657,7 +663,7 @@ static void pmBuildPanelQuads(uint8 **nextp, uint32 *otDim, uint32 *otPanel)
     setPolyF4(p3);
     setRGB0(p3, r, g, b);
     setXY4(p3, x0 + c, y1 - c, x1 - c, y1 - c, x0 + c, y1, x1 - c, y1);
-    addPrim(otPanel, p3);
+    ps1GpuOtAddPrim(otPanel, p3);
 }
 
 static void drawSeparator(void)
@@ -1027,6 +1033,8 @@ static void drawMainMenu(void)
              menuCursor == MENU_OPTIONS ? ">" : " ");
     pmPrintf(" %s Save Settings to Memcard\n",
              menuCursor == MENU_SAVE ? ">" : " ");
+    pmPrintf(" %s Freeplay Mode\n",
+             menuCursor == MENU_FREEPLAY ? ">" : " ");
     pmPrintf(" %s Reset Current Scene\n",
              menuCursor == MENU_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
@@ -1131,6 +1139,10 @@ static int handleMainInput(uint16 pressed)
         case MENU_SAVE:
             memcardSaveSettings();
             break;
+
+        case MENU_FREEPLAY:
+            pauseMenuRequestFreeplay = 1;
+            return 0;
 
         case MENU_RESET_LOOP:
             pauseMenuRequestResetLoop = 1;
@@ -1483,7 +1495,7 @@ int pauseMenuUpdate(void)
     DR_TPAGE *tp = (DR_TPAGE*)next;
     next += sizeof(DR_TPAGE);
     setDrawTPage(tp, 0, 1, getTPage(0, 0, PM_FONT_VRAM_X, PM_FONT_VRAM_Y));
-    addPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
+    ps1GpuOtAddPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
 
     pmBuildPanelQuads(&next,
                       drawDim ? &pauseOt[PAUSE_OT_LEN - 2] : NULL,

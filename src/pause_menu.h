@@ -81,4 +81,9 @@ extern int pauseMenuRequestNextScene;
  * jc_reborn's outer loop can restart from the first scene. */
 extern int pauseMenuRequestResetLoop;
 
+/* Flag: set to 1 by the menu when "Freeplay Mode" is chosen.
+ * Foreground pilot exits the current scene; jc_reborn consumes this
+ * and dispatches the next loop iteration to the PS1-only freeplay scene. */
+extern int pauseMenuRequestFreeplay;
+
 #endif /* PAUSE_MENU_H */

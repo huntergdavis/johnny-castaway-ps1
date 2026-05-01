@@ -60,6 +60,18 @@ void fgBackdropStampHolidayPublic(void);
  * looks seamed. Wraps islandAnimate(&gFgBackdropThread). */
 void fgBackdropTickWavesPublic(void);
 
+/* Runtime-scene backdrop setup for PS1-only modes that do not stream an
+ * FG2 pack, such as freeplay. This prepares OCEAN00/NIGHT + island
+ * sprites + wave thread using the current islandState, but deliberately
+ * does not save clean rects. The caller stamps its own persistent state
+ * first, then calls grSaveCleanBgRects with its chosen rect set. */
+void fgBackdropPrepareIslandRuntimePublic(void);
+
+/* Release non-sticky island backdrop slots from runtime-scene code.
+ * keepBackgrnd follows the internal fgBackdropRelease convention:
+ * non-zero keeps BACKGRND.BMP slot 0 resident for the next scene. */
+void fgBackdropReleasePublic(int keepBackgrnd);
+
 /* Re-stamp the island bg sprites (raft, palm, beach decor) from
  * BACKGRND.PSB into the bg mirror. Wipes any leftover Johnny pixels
  * the previous FG2 scene's last frame baked in. Idempotent — safe

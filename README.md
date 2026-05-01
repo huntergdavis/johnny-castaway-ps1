@@ -2,7 +2,7 @@
 
 **Website: [hunterdavis.com/johnny-castaway-ps1](https://hunterdavis.com/johnny-castaway-ps1/)** — the full project site, with screenshots, scene ledger, deep dives, devlog, and history. *This README is the short version.*
 
-A ground-up PS1 port of Sierra's classic *Johnny Castaway* screen saver,
+A PS1 port of Sierra's classic *Johnny Castaway* screen saver,
 using a hybrid scene-playback pipeline: desktop host is the authoritative
 renderer and capture source; the PS1 runtime replays authored foreground
 packs + captured SFX and owns only the narrow surface it must (background,

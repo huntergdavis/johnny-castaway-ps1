@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Status**: design locked, implementation ready to begin
+**Status**: implementation in progress on branch `freeplay-mode-20260501`
 **Slug**: `freeplay` (boot via `fgpilot freeplay`; later via pause menu)
 **Audience**: PS1 hardware target (DuckStation for primary testing, real PS1 hardware compatibility is a hard requirement)
-**Implementation branch**: `freeplay-mode` (to be created at start of work)
+**Implementation branch**: `freeplay-mode-20260501` (branched from `main` after `v0.4.20-ps1`)
 
 ---
 
@@ -60,6 +60,40 @@ Key implications:
   - `fgBackdropStampHoliday()`
   - `fgBackdropRelease(int keepBackgrnd)`
   - `grSaveCleanBgRects()`, `grRestoreBgFromRects()`
+
+### Implementation revision: 2026-05-01
+
+The `v0.4.20-ps1` walking release proved the shared walk renderer and
+the persistent erase-buffer strategy. Freeplay now builds on that rather
+than inventing another renderer:
+
+- `scene_freeplay.c` is a PS1 runtime scene, dispatched by
+  `foregroundPilotPlay()` when the scene slug is `freeplay`.
+- Direct-control walking calls `walkRenderFrame()` every VBlank with
+  live D-pad coordinates. Story-loop walking still stays in
+  `walk_pilot.c`.
+- Freeplay owns its clean-rect set. The static island baseline includes
+  the current tide, raft, holiday, sandcastles, and coconut piles before
+  `grSaveCleanBgRects()` snapshots it.
+- Animated state (Johnny, fire, summons, help/debug overlays) is redrawn
+  after the clean restore every frame.
+- The first branch target is a fully playtestable mode: walk, exit,
+  help, context actions, gag cycle, summon cycle, environment toggles,
+  persistent props, simple secrets, and diagnostic telemetry.
+- Expensive polish, exact per-asset frame curation, and multi-summon
+  carnival layering remain tuneable without changing the architecture.
+
+Red-team constraints for this pass:
+
+- Never call the foreground FG2 streaming path from freeplay.
+- Do not let Start fall through to the global pause-menu hot path while
+  freeplay owns input; tap Start exits freeplay deterministically.
+- Treat every optional BMP as fail-soft. `JOHNWALK.BMP` is mandatory;
+  everything else may skip if allocation or resource loading fails.
+- Avoid new heap churn in the frame loop. Asset swaps only happen on
+  button-triggered actions, not every VBlank.
+- Keep debug telemetry level-gated. PS1 TTY logging is useful but can
+  destroy frame cadence if it prints every frame.
 
 ---
 

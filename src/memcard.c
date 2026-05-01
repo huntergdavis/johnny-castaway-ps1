@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <psxapi.h>
+#include <psxgpu.h>
 
 #include "mytypes.h"
 #include "memcard.h"
@@ -115,7 +116,7 @@ static int mcardSpiReadSector(int sector, uint8_t *out128)
     if (!req) { ExitCriticalSection(); return 0; }
     /* Build TX bytes raw (PSn00bSDK's MemCardRequest struct doesn't
      * match the actual wire protocol). */
-    uint8_t *tx = (uint8_t*)req->data;
+    uint8_t *tx = (uint8_t*)req->payload.data;
     memset(tx, 0, SPI_BUFF_LEN);
     tx[0] = 0x81;             /* addr — memcard slot 1 */
     tx[1] = CMD_READ;         /* 0x52 */
@@ -167,7 +168,7 @@ static int mcardSpiWriteSector(int sector, const uint8_t *data128)
     EnterCriticalSection();
     SPI_Request *req = SPI_CreateRequest();
     if (!req) { ExitCriticalSection(); return 0; }
-    uint8_t *tx = (uint8_t*)req->data;
+    uint8_t *tx = (uint8_t*)req->payload.data;
     memset(tx, 0, SPI_BUFF_LEN);
     tx[0] = 0x81;
     tx[1] = CMD_WRITE;

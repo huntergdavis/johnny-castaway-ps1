@@ -55,6 +55,7 @@ SOURCES=(
     src/story.c
     src/walk.c
     src/calcpath.c
+    src/walk_render.c
     src/ads.c
     src/foreground_pilot.c
     src/ttm.c
@@ -64,6 +65,7 @@ SOURCES=(
     src/sound.c
     src/events.c
     src/config.c
+    src/scene_freeplay.c
 )
 
 pushd "$PROJECT_ROOT" >/dev/null

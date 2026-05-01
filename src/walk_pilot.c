@@ -14,7 +14,6 @@
 #include "foreground_pilot.h"
 #include "island.h"
 #include "walk.h"
-#include "walk_data.h"
 #include "walk_render.h"
 #include "walk_pilot.h"
 
