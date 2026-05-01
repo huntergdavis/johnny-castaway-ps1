@@ -481,6 +481,13 @@ it preserved `2096/1952`, `blocking_vb=18`, `prefetch_overrun_vb=13`, and
 `loop_reads=41` while shifting hot symbols by `+4` bytes. Do not keep
 hand-coding high-tide groups from estimated slack alone; this route now needs a
 generated cost model that predicts an actual key-metric change.
+A current-baseline retry of the older FISHING3 high `{246,258}` candidate is
+also rejected. Under `compact-fgp3-v65-building4low-window36` it still saved
+one nominal read (`loop_reads 41 -> 40`) but regressed all key pressure metrics:
+`loop_vb 2096 -> 2100`, `blocking_vb 18 -> 19`, and
+`prefetch_overrun_vb 13 -> 14`. Treat this exact range as a do-not-retry
+standalone sector group; it belongs only in a generated setup/preload or
+scheduler-owned experiment that changes cadence more deeply.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
