@@ -1,0 +1,119 @@
+{
+  "accessibility": {
+    "distance": 1,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/accessibility.png",
+    "marker_frame": 7649,
+    "script_frame": 7502,
+    "source_frame": 7650,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_07650.png",
+    "title": "Accessibility"
+  },
+  "controls": {
+    "distance": 3,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/controls.png",
+    "marker_frame": 5247,
+    "script_frame": 5100,
+    "source_frame": 5250,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_05250.png",
+    "title": "Controls"
+  },
+  "freeplay-gags": {
+    "distance": 4,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/freeplay-gags.png",
+    "marker_frame": 4091,
+    "script_frame": 3944,
+    "source_frame": 4095,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_04095.png",
+    "title": "Freeplay Gags"
+  },
+  "freeplay-options": {
+    "distance": 2,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/freeplay-options.png",
+    "marker_frame": 3583,
+    "script_frame": 3436,
+    "source_frame": 3585,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_03585.png",
+    "title": "Freeplay Options"
+  },
+  "freeplay-visitors": {
+    "distance": 1,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/freeplay-visitors.png",
+    "marker_frame": 4669,
+    "script_frame": 4522,
+    "source_frame": 4670,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_04670.png",
+    "title": "Freeplay Visitors"
+  },
+  "holidays": {
+    "distance": 2,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/holidays.png",
+    "marker_frame": 6443,
+    "script_frame": 6296,
+    "source_frame": 6445,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_06445.png",
+    "title": "Holidays"
+  },
+  "island-position": {
+    "distance": 4,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/island-position.png",
+    "marker_frame": 7021,
+    "script_frame": 6874,
+    "source_frame": 7025,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_07025.png",
+    "title": "Set Island Position"
+  },
+  "pause-main": {
+    "distance": 0,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/pause-main.png",
+    "marker_frame": 3035,
+    "script_frame": 2888,
+    "source_frame": 3035,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_03035.png",
+    "title": "Pause Menu"
+  },
+  "set-rng-seed": {
+    "distance": 4,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/set-rng-seed.png",
+    "marker_frame": 9951,
+    "script_frame": 9804,
+    "source_frame": 9955,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_09955.png",
+    "title": "Set RNG Seed"
+  },
+  "set-time-date": {
+    "distance": 2,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/set-time-date.png",
+    "marker_frame": 9373,
+    "script_frame": 9226,
+    "source_frame": 9375,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_09375.png",
+    "title": "Set Time And Date"
+  },
+  "sound-test": {
+    "distance": 3,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/sound-test.png",
+    "marker_frame": 8217,
+    "script_frame": 8070,
+    "source_frame": 8220,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_08220.png",
+    "title": "Sound Test"
+  },
+  "system": {
+    "distance": 0,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/system.png",
+    "marker_frame": 8845,
+    "script_frame": 8698,
+    "source_frame": 8845,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_08845.png",
+    "title": "System"
+  },
+  "world-options": {
+    "distance": 0,
+    "image": "/home/hunter/workspace/jc_ps1_sandbox/site/assets/img/help/menu/world-options.png",
+    "marker_frame": 5875,
+    "script_frame": 5728,
+    "source_frame": 5875,
+    "source_path": "/home/hunter/workspace/jc_ps1_sandbox/scratch/menu-input-harness/20260501-124747/frames/jcreborn/frame_05875.png",
+    "title": "World Options"
+  }
+}

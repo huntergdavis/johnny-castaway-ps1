@@ -86,6 +86,10 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
 
 <ul class="doc-grid">
   <li>
+    <a href="{{ '/help/' | relative_url }}">Help guide</a>
+    <p>Controls, menu screenshots, and the scripted-input test path that proves the menu still works headlessly.</p>
+  </li>
+  <li>
     <a href="{{ '/play/' | relative_url }}">Just play it</a>
     <p>Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart, controller map. Five minutes.</p>
   </li>

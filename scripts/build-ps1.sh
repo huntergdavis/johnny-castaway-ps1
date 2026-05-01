@@ -17,10 +17,21 @@ from pathlib import Path
 
 root = Path.cwd()
 bootmode_path = root / "config/ps1/BOOTMODE.TXT"
-header_path = root / "config/ps1/bootmode_embedded.h"
+bootmode_header_path = root / "config/ps1/bootmode_embedded.h"
+padscript_path = root / "config/ps1/PADSCRIPT.TXT"
+padscript_header_path = root / "config/ps1/padscript_embedded.h"
 bootmode = ""
 if bootmode_path.is_file():
     bootmode = bootmode_path.read_text(encoding="utf-8").strip()
+padscript = ""
+if padscript_path.is_file():
+    padscript_lines = []
+    for raw_line in padscript_path.read_text(encoding="utf-8").splitlines():
+        stripped = raw_line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        padscript_lines.append(raw_line.rstrip())
+    padscript = "\n".join(padscript_lines)
 
 header = (
     "#ifndef PS1_BOOTMODE_EMBEDDED_H\n"
@@ -28,7 +39,15 @@ header = (
     f"#define PS1_EMBEDDED_BOOT_OVERRIDE {json.dumps(bootmode)}\n\n"
     "#endif\n"
 )
-header_path.write_text(header, encoding="utf-8")
+bootmode_header_path.write_text(header, encoding="utf-8")
+
+padscript_header = (
+    "#ifndef PS1_PADSCRIPT_EMBEDDED_H\n"
+    "#define PS1_PADSCRIPT_EMBEDDED_H\n\n"
+    f"#define PS1_EMBEDDED_PAD_SCRIPT {json.dumps(padscript)}\n\n"
+    "#endif\n"
+)
+padscript_header_path.write_text(padscript_header, encoding="utf-8")
 PY
 
 if [ "${1:-}" = "clean" ]; then

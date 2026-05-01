@@ -1,0 +1,6 @@
+#ifndef PS1_PADSCRIPT_EMBEDDED_H
+#define PS1_PADSCRIPT_EMBEDDED_H
+
+#define PS1_EMBEDDED_PAD_SCRIPT ""
+
+#endif

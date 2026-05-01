@@ -44,7 +44,7 @@ For the PS1 build, **everything you need is on the disc image** —
 the host pipeline pre-bakes the playback packs. End users do not
 need any Sierra files to play the .bin/.cue.
 
-## Controls
+## Controls {#controls}
 
 The game runs without any input by default. The pause menu is
 optional and reachable with **Start**.
@@ -80,7 +80,8 @@ mode added in `{{ site.release.tag }}`.
 | Start | Open pause menu. |
 
 The full implementation notes live at
-[Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}) and
+[Menu help guide]({{ '/help/menu/' | relative_url }}),
+[Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}), and
 [Pause menu]({{ '/docs/pause-menu/' | relative_url }}).
 
 ## Real PS1 hardware

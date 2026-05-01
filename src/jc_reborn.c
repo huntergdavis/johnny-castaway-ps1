@@ -71,6 +71,7 @@ int fclose(FILE *stream);
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
 #include "pause_menu.h"
+#include "ps1_pad_script.h"
 #include "config/ps1/bootmode_embedded.h"
 
 /* Shared with events_ps1.c — populated by InitPAD(). Padtest path
@@ -782,6 +783,10 @@ static void ps1ApplyBootOverride(char *buffer)
             freeplaySetTelemetryLevel(3);
         } else if (!strcmp(tokens[i], "pad-diag") || !strcmp(tokens[i], "pad-debug")) {
             eventsSetPadDiagnostics(1);
+        } else if (!strcmp(tokens[i], "pad-script")) {
+            ps1PadScriptConfigureFromEmbedded(1, 0);
+        } else if (!strcmp(tokens[i], "pad-script-log")) {
+            ps1PadScriptConfigureFromEmbedded(1, 1);
         } else if (!strcmp(tokens[i], "printf-test") || !strcmp(tokens[i], "logtest")) {
             ps1BootPrintfTest = 1;
         } else if (!strcmp(tokens[i], "padtest")) {
@@ -1161,6 +1166,12 @@ static void parseArgs(int argc, char **argv)
 #ifdef PS1_BUILD
             else if (!strcmp(argv[i], "pad-diag") || !strcmp(argv[i], "pad-debug")) {
                 eventsSetPadDiagnostics(1);
+            }
+            else if (!strcmp(argv[i], "pad-script")) {
+                ps1PadScriptConfigureFromEmbedded(1, 0);
+            }
+            else if (!strcmp(argv[i], "pad-script-log")) {
+                ps1PadScriptConfigureFromEmbedded(1, 1);
             }
 #endif
             else if (!strcmp(argv[i], "window")) {

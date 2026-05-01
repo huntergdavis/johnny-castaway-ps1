@@ -656,6 +656,47 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   font-size: 0.95rem;
 }
 
+/* ---------- Menu help guide ---------- */
+.menu-guide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.6rem;
+  margin: 1.8rem 0;
+}
+.menu-shot {
+  border-top: 3px solid var(--jc-cyan-dim);
+  padding-top: 1.2rem;
+}
+.menu-shot h2 { margin-top: 0; }
+.menu-shot figure {
+  margin: 1rem 0;
+  border: 3px solid var(--frame-out);
+  outline: 1px solid var(--frame-in);
+  background: var(--jc-blue-deep);
+}
+.menu-shot img {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+.menu-shot figcaption,
+.menu-route,
+.menu-missing {
+  font-family: var(--font-display);
+  color: var(--fg-mute);
+  font-size: 0.93rem;
+}
+.menu-shot figcaption {
+  padding: 0.45em 0.7em;
+  background: var(--bg-alt);
+  border-top: 1px solid var(--frame-in);
+}
+.menu-missing {
+  padding: 0.8em 1em;
+  border: 2px dashed var(--jc-red);
+  background: var(--bg-alt);
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
