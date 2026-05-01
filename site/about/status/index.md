@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.3.10-ps1
+eyebrow: Component-level state at v0.4.20-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -36,7 +36,8 @@ done."
 | Audio (`sound_ps1.c`, ~184 lines) + SPU | Working | All 23 VAG SFX preloaded into SPU RAM at boot. Round-robin over 8 voices. Captured `0xC051 PLAY_SAMPLE` events ship in the FG2 pack and fire from `foreground_pilot.c` with a 3-frame key-on delay. Mute writes the SPU master-volume registers directly because `SpuSetCommonMasterVolume` is not honored by DuckStation HLE. The VAG encoder (`scripts/wav2vag.py`) was extensively debugged during the `v0.3.6-ps1` milestone (commit `355227fa`); see that commit for the full bug list. |
 | Input (`events_ps1.c` + `src/spi.c`) | Complete | Direct SPI driver, timer-2 + SIO0 IRQ at 250 Hz, lifted from spicyjpeg's `pads` example. The BIOS pad path (`InitPAD`/`StartPAD`) is unusable in PSn00bSDK 0.24 + DuckStation. Poll TX is `tx_len=5`, not 4 -- DuckStation only delivers button bytes when the full 5-byte sequence comes from the TX buffer. |
 | Closed captions (`src/ps1_captions.{c,h}`) | Working | On/off via Pause -> Options -> Captions. Dark band at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text. Glyph atlas shared with the pause menu. Caption corpus from the upstream `closed_captions` branch of `jc_reborn`; the original sequential ADS-tag map had ~20 mismatches and was re-audited (`docs/ps1/caption-audit-2026-04-26.yaml`). HIGH-confidence matches dominate; LOW-confidence slots remain on STAND idles and a few VISITOR / WALKSTUF edges. |
-| Holidays (35 of them, code-generated) | Working | Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -> Options -> Holiday and `BOOTMODE.TXT`. Generation is offline; design notes in `docs/ps1/holidays-expansion-design.md`. |
+| Holidays (36 of them, code-generated) | Working | Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -> Options -> Holiday and `BOOTMODE.TXT`. Generation is offline; design notes in `docs/ps1/holidays-expansion-design.md`. |
+| Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays, and covers Johnny behind the palm trunk/leaves. `v0.4.20-ps1` soak evidence: about 599 seconds in DuckStation, no `JCBSOD`, no `JCWALK` allocation failures. |
 | Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Items: Resume, Options (Sound, Day/Night, Tide, Raft, Holiday, Captions, Perf log, Set Time/Date, Set Island Pos, Set RNG Seed), Save Settings to Memcard, Reset Current Scene, Next Scene, Debug Info, Credits. |
 | Memcard persistence (`memcard.c`) | In progress | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. Edge cases on a fresh / formatted memcard are still under iteration. |
 | Telemetry / debug overlay | Complete | Five-panel overlay; gated by `debugMode`. Toggle with Select. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state. |
@@ -108,9 +109,8 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** One stability release per
-  ~10 newly validated scenes; smaller stability releases between
-  milestones. `v0.3.9-ps1` was the fishing3-loop-stability
+- **Milestone release cadence.** `v0.4.20-ps1` is the walking-loop
+  stability release. `v0.3.9-ps1` was the fishing3-loop-stability
   release; `v0.3.6-ps1` was fishing1 with full SFX across all
   variants.
 

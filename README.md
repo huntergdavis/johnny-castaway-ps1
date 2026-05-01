@@ -72,7 +72,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.3.11-ps1`** |
+| Current release | **`v0.4.20-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -82,6 +82,12 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf stats version | Latest refreshed rows use `compact-fgp3-v58-activity9high-window20-table`; earlier follow-up rows include `compact-fgp3-v57-policy-table-refactor` and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.4.20-ps1` is the walking-loop release: Johnny now walks between
+scene endpoints instead of teleporting, including palm-tree occlusion,
+holiday restamping, wave motion during transitions, and a stabilized
+walk erase buffer that survived a ~10-minute DuckStation soak without
+`JCBSOD` or walk-clean allocation failures.
 
 One scene at a time is promoted to the "fully validated" bar. Older
 count-based validation models (`25/63`, `60/63`, `63/63` etc.) from the
@@ -285,6 +291,8 @@ prefer.
 - [freeplay-mode-design.md](docs/ps1/freeplay-mode-design.md) ↔ [/docs/freeplay/](https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/)
 - [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)
 - [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/) (with [algorithm](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/emblems/) + 36 per-holiday pages)
+- [walk-implementation-plan.md](docs/ps1/walk-implementation-plan.md) — implemented story-loop walking design and memory-stability notes for `v0.4.20-ps1`
+- [release-notes-0.4.20.md](docs/ps1/release-notes-0.4.20.md) — release notes and soak evidence for the walking-loop milestone
 
 **History + archaeology** — [website /archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)
 - [project-history.md](docs/ps1/project-history.md) ↔ [/about/history/](https://hunterdavis.com/johnny-castaway-ps1/about/history/) and the 5-chapter [/archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/) narrative

@@ -3,8 +3,8 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-04-25 (release `v0.3.9-ps1`, commit `111efa9f`;
-plus the 2026-04-25 batch — see [milestones-2026-04-25.md](milestones-2026-04-25.md)).
+**Last updated:** 2026-04-30 (release `v0.4.20-ps1`; walking-loop
+release with stabilized walk erase memory).
 
 ## Overall
 
@@ -24,6 +24,7 @@ promoted to the validated ledger.
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
 | Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 2/63 scenes fully validated |
+| Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
 | Telemetry / debug overlay | Complete |
 | Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF`/`JCPERF2` TTY lines (OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel`) |
@@ -38,6 +39,9 @@ file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.4.20-ps1` — walking-loop release; promotes story-loop Johnny
+  walking, palm-tree occlusion, holiday persistence during transitions,
+  and deterministic walk erase memory into the main release build.
 - `v0.3.9-ps1` (commit `111efa9f`) — fishing3 overnight loop-stability
   release; confirms the current runtime can run long sessions without
   the previous scene-to-scene leak.
@@ -172,7 +176,9 @@ baseline.
   perf module, pause menu, holiday expansion, SPI driver, memcard
 - [scene-status.md](scene-status.md) — per-scene ledger
 - [pause-menu-design.md](pause-menu-design.md) — locked design
-- [holidays-expansion-design.md](holidays-expansion-design.md) — 35-holiday plan
+- [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
+- [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
+- [release-notes-0.4.20.md](release-notes-0.4.20.md) — walking-loop release notes
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
 - [development-workflow.md](development-workflow.md) — bring-up loop
 - [TESTING.md](TESTING.md) — validation strategy

@@ -3,12 +3,12 @@
 > 🌐 **Rendered version:** **[/source/docs/ps1/walk-implementation-plan/](https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/walk-implementation-plan/)** — this doc rendered on the project website's source library. The GitHub copy here is the source.
 
 Date: 2026-04-29
-Status: planned, not started
+Status: implemented in `v0.4.20-ps1`; freeplay-specific phases remain future work
 Owner: PS1 perf branch
 
 ## Executive Summary
 
-The PS1 build currently picks each scene at random and teleports Johnny
+The PS1 build used to pick each scene at random and teleport Johnny
 between them. The original Sierra screensaver instead chains scenes together
 visibly: Johnny ends one scene at a known spot and heading, then walks
 across the island to the next scene's start. The walks are part of what
@@ -32,6 +32,39 @@ hybrid available:
 The story.c / ads.c / ttm.c bytecode interpreters stay out. The host build
 keeps using them for capture; the PS1 keeps using FG2 packs for replay.
 Only the walk-and-pick subset crosses over.
+
+## Release 0.4.20 Implementation Notes
+
+The `v0.4.20-ps1` implementation keeps the hybrid FG2 scene replay path
+intact and adds a sprite-driven connector between scenes:
+
+- `walk_pilot.c` owns story-loop walks, loads `JOHNWALK.PSB` lazily,
+  drives `walk.c` / `walk_data.h`, and suppresses prior-scene FG2
+  recomposition while Johnny is walking.
+- `walk_render.c` draws the current walk pose and re-stamps the palm
+  trunk/leaves when Johnny is behind the tree, preserving the original
+  occlusion rule.
+- `foreground_pilot.c` captures a clean island baseline before scene
+  playback dirties it; walk frames restore from that baseline, tick the
+  waves, re-stamp active holiday emblems, and then draw Johnny.
+- The walk erase buffer is now a tight, persistent 340x224 region
+  (about 149 KB) instead of a larger free/realloc buffer. Repeated
+  allocation churn was the source of later-session paint trails.
+- Setup-prime foreground streaming windows are capped to a deterministic
+  resident budget. Large prime windows are treated as caches, not as
+  mandatory scene-start allocations, so a scene cannot BSOD just because
+  a cache-sized contiguous block is unavailable.
+
+Validation evidence for the release candidate:
+
+- Visual signoff: Johnny walks correctly between scenes, including
+  crossing in front of the palm tree without painting every pose into
+  the background.
+- Runtime soak: DuckStation reached roughly 599 seconds of organic
+  screensaver-loop playback, repeatedly crossing the prior `fishing1`
+  crash point.
+- TTY log: no `JCBSOD` lines and no `JCWALK: walkClean buffer alloc
+  failed` lines in `scratch/walk-soak/duckstation-final-0.4.20-candidate.log`.
 
 ## 1. Background — how the original engine does it
 

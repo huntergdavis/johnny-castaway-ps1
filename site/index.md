@@ -41,7 +41,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   <span class="pill pill--ok">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</span>
   <span class="pill pill--info">PSn00bSDK 0.24</span>
   <span class="pill pill--info">DuckStation</span>
-  <span class="pill pill--info">35 holidays</span>
+  <span class="pill pill--info">36 holidays</span>
   <span class="pill pill--info">GPL-3.0</span>
 </aside>
 
@@ -139,7 +139,7 @@ Halloween, St. Patrick's Day) keep their original sprites.
 **Added on top.** Closed captions for every scene (off by default, in a
 [fresh-authored corpus]({{ '/docs/captions/' | relative_url }}) from
 scene content — not lifted from any prior project). A holiday calendar
-expanded from 4 to **35 US holidays** with movable feasts computed by
+expanded from 4 to **36 holidays** with movable feasts computed by
 pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
 no expiring date tables. A pause menu with options toggles
 (sound / day-night / tide / raft / captions / perf), a Set Time editor,
