@@ -398,6 +398,7 @@ enum {
     ACCESS_CAPTIONS,
     ACCESS_SOUND,
     ACCESS_FOOTSTEPS,
+    ACCESS_OCEAN,
     ACCESS_SOUND_TEST,
     ACCESS_BACK,
     ACCESS_COUNT
@@ -1317,8 +1318,10 @@ static void drawHolidayMenu(void)
 static void drawAccessibilityMenu(void)
 {
     extern int footstepsEnabled;
+    extern int oceanAmbientEnabled;
     const char *soundLabel = soundMuted ? "MUTED" : "ON";
     const char *footLabel = footstepsEnabled ? "ON" : "OFF";
+    const char *oceanLabel = oceanAmbientEnabled ? "ON" : "OFF";
 
     pmPrintf("     ACCESSIBILITY\n");
     drawSeparator();
@@ -1328,6 +1331,8 @@ static void drawAccessibilityMenu(void)
              accessCursor == ACCESS_SOUND ? ">" : " ", soundLabel);
     pmPrintf(" %s Footsteps: %s\n",
              accessCursor == ACCESS_FOOTSTEPS ? ">" : " ", footLabel);
+    pmPrintf(" %s Ocean:     %s\n",
+             accessCursor == ACCESS_OCEAN ? ">" : " ", oceanLabel);
     pmPrintf(" %s Sound Test...\n",
              accessCursor == ACCESS_SOUND_TEST ? ">" : " ");
     pmPrintf(" %s Back\n",
@@ -1705,6 +1710,15 @@ static int handleAccessibilityInput(uint16 pressed)
         case ACCESS_FOOTSTEPS: {
             extern int footstepsEnabled;
             footstepsEnabled = !footstepsEnabled;
+            break;
+        }
+        case ACCESS_OCEAN: {
+            extern int oceanAmbientEnabled;
+            extern void oceanAmbientStart(void);
+            extern void oceanAmbientStop(void);
+            oceanAmbientEnabled = !oceanAmbientEnabled;
+            if (oceanAmbientEnabled) oceanAmbientStart();
+            else                     oceanAmbientStop();
             break;
         }
         case ACCESS_SOUND_TEST:

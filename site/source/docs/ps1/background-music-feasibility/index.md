@@ -14,31 +14,31 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Date: 2026-05-01 Branch context: read-only research; no code changes. Author: research pass for the active perf iteration.
+Date: 2026-05-01 Branch context: ocean-ambience-20260501, shipped as v0.6.0-ps1. Status: shipped. Asset, boot loader, pause-menu toggle, memcard persistence, and CD-image embedding are all live.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/background-music-feasibility.md` |
-| Lines | 560 |
-| Approx. words | 3535 |
-| Code fences | 4 |
+| Lines | 490 |
+| Approx. words | 2876 |
+| Code fences | 8 |
 
 ## Outline
 
 - Ocean Ambience — PS1 Implementation Plan
+-   Shipped state (v0.6.0-ps1)
 -   Goal
 -     What "zero CPU" rules out
--   Why Ocean Ambience Is a Special Case
 -   Mechanism Choice: Pre-loaded ADPCM Loop in SPU RAM
--   Public-Domain Audio Sourcing
--     Verified CC0 Candidates (researched 2026-05-01)
--       Primary recommendation: amholma — "Gentle Waves - Quiet Beach"
--       Backup: INNORECORDS — "Zen Ocean Waves, Ocean Waves Ambience"
--       Notes on candidates we considered and didn't pick
--   Sizing the Loop
--   Authoring Pipeline
+-   Source: BigSoundBank "Sea: Waves" (CC0)
+-   Loop Construction: 20-Second Crossfade-Replace Seam
+-     How the crossfade-replace works
+-     Loop seam audibility
+-     Final VAG specs
+-   Encoding Pipeline (Reproducible)
+-   SPU RAM Map
 -   Pause-Menu Toggle: oceanAmbientEnabled
 -     Global state
 

@@ -220,6 +220,7 @@
                 <file name="SOUND22.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND22.VAG"/>
                 <file name="SOUND23.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND23.VAG"/>
                 <file name="SOUND24.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND24.VAG"/>
+                <file name="OCEAN.VAG"   type="data" source="../../jc_resources/extracted/snd/OCEAN.VAG"/>
             </dir>
         </directory_tree>
     </track>

@@ -73,7 +73,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.5.0-ps1`** |
+| Current release | **`v0.6.0-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -84,13 +84,16 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-`v0.5.0-ps1` is the freeplay/debug release. Johnny can now be driven
-directly around the island from the pause menu, with analog/D-pad walking,
-slow/fast shoulder modifiers, fishing, immediate world toggles, a sound
-test, gag and visitor debug catalogs, clear-screen rebuild, frog-clock
-loading transitions, and stricter no-allocation rules for the live frame
-loop. It builds on the `v0.4.20-ps1` walking-loop release, where Johnny
-started walking between story scene endpoints instead of teleporting.
+`v0.6.0-ps1` is the ocean-ambience release. The screensaver now ships
+a CC0-sourced 20-second ocean loop on a dedicated SPU voice, with a
+pause-menu toggle (Pause → Accessibility → Ocean) and memcard-persisted
+preference. The audio runs at zero CPU cost: the SPU plays the ADPCM
+loop in hardware via sample-defined loop flags, so JCPERF2 timing is
+unchanged. ~123 KB of SPU RAM used, ~257 KB still free for future
+ambience or music slots. It builds on `v0.5.0-ps1` (freeplay/debug
+mode — direct-control Johnny, sound test, scene catalogs) and
+`v0.4.20-ps1` (walking-loop — Johnny walks between story scene
+endpoints instead of teleporting).
 
 One scene at a time is promoted to the "fully validated" bar. Older
 count-based validation models (`25/63`, `60/63`, `63/63` etc.) from the

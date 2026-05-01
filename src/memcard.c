@@ -34,6 +34,7 @@
 
 extern int soundMuted;
 extern int footstepsEnabled;  /* walk_render.c — pause-menu Footsteps */
+extern int oceanAmbientEnabled; /* sound_ps1.c — pause-menu Ocean toggle */
 extern int storyCurrentDay;   /* jc_reborn.c — 11-day story calendar */
 extern int hostForcedNight;
 extern int hostForcedHoliday;
@@ -44,10 +45,16 @@ extern int ps1SoftMonth;
 extern int ps1SoftDay;
 extern int ps1SoftYear;
 extern void eventsSpiPollCallback(uint32_t port, const volatile uint8_t *buff, size_t rx_len);
+extern void oceanAmbientStart(void);
+extern void oceanAmbientStop(void);
+extern int  oceanAmbientLoaded(void);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     2  /* v2 adds footstepsEnabled (Phase 4 of walks).
-                           * v1 saves load with defaults (footsteps ON). */
+#define MC_VERSION     3  /* v3 adds oceanAmbientEnabled (CC0 ocean ambience).
+                           * v2 added footstepsEnabled + storyCurrentDay.
+                           * v1 had no walk fields. Older versions load with
+                           * defaults for missing fields (ocean ON, footsteps
+                           * ON). */
 #define MC_BLOCK       1            /* memcard block we own (1..15) */
 #define MC_FIRST_SECT  (MC_BLOCK * 64)
 #define MC_FRAME_SIZE  8192
@@ -249,7 +256,8 @@ typedef struct {
     uint8  softMinute;
     uint8  footstepsEnabled;   /* added in MC_VERSION 2 — walk plan Phase 4.3 */
     uint8  storyCurrentDay;    /* added in MC_VERSION 2 — walk plan Phase 8 */
-    uint8  reserved[2];
+    uint8  oceanAmbientEnabled;/* added in MC_VERSION 3 — CC0 ocean ambience */
+    uint8  reserved[1];
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -346,13 +354,25 @@ int memcardLoadSettings(void)
         printf("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
         return 0;
     }
-    if (s->version != MC_VERSION) {
+    /* Accept v2 (footsteps + storyDay) through v3 (adds ocean ambience).
+     * Older versions miss fields; default them in the per-version logic
+     * below so users don't lose their saved sound/footsteps preferences
+     * when the schema bumps. Reject v < 2 — those were transient and
+     * never released. */
+    if (s->version != MC_VERSION && s->version != 2) {
         memcardLastStatus = "version mismatch";
         return 0;
     }
+    int loadedVersion = s->version;
 
     soundMuted        = s->soundMuted ? 1 : 0;
     footstepsEnabled  = s->footstepsEnabled ? 1 : 0;
+    /* oceanAmbientEnabled is field-of-record in v3 only; older versions
+     * default to ON (so users opting in via the new toggle don't have
+     * to migrate their save manually). */
+    oceanAmbientEnabled = (loadedVersion >= 3)
+                          ? (s->oceanAmbientEnabled ? 1 : 0)
+                          : 1;
     storyCurrentDay   = (s->storyCurrentDay >= 1 && s->storyCurrentDay <= 11)
                           ? s->storyCurrentDay : 1;
     hostForcedNight   = s->dayNightOverride;
@@ -375,11 +395,21 @@ int memcardLoadSettings(void)
     if (ps1SoftYear < 1583)
         ps1SoftYear = 2026;
 
+    /* Sync the ocean ambience SPU voice to the loaded toggle value.
+     * soundInit auto-started the voice at boot based on the in-RAM
+     * default; if the memcard says OFF, stop it now. If the memcard
+     * says ON and we somehow weren't started, start now. Either is a
+     * single register write — cheap. */
+    if (oceanAmbientLoaded()) {
+        if (oceanAmbientEnabled) oceanAmbientStart();
+        else                     oceanAmbientStop();
+    }
+
     memcardLastStatus = "loaded";
-    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d\n",
+    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d\n",
            soundMuted, hostForcedNight, hostForcedHoliday,
            ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMinute,
-           ps1SoftMonth, ps1SoftDay, ps1SoftYear);
+           ps1SoftMonth, ps1SoftDay, ps1SoftYear, oceanAmbientEnabled);
     return 1;
 }
 
@@ -392,13 +422,14 @@ int memcardSaveSettings(void)
     mcardWriteIconBitmap(mcardFrame);
 
     JCMCSettings *s = (JCMCSettings *)&mcardFrame[DATA_OFFSET];
-    s->magic            = MC_MAGIC;
-    s->version          = MC_VERSION;
-    s->soundMuted       = (uint8)(soundMuted ? 1 : 0);
-    s->footstepsEnabled = (uint8)(footstepsEnabled ? 1 : 0);
-    s->storyCurrentDay  = (uint8)((storyCurrentDay >= 1
-                                   && storyCurrentDay <= 11)
-                                  ? storyCurrentDay : 1);
+    s->magic              = MC_MAGIC;
+    s->version            = MC_VERSION;
+    s->soundMuted         = (uint8)(soundMuted ? 1 : 0);
+    s->footstepsEnabled   = (uint8)(footstepsEnabled ? 1 : 0);
+    s->oceanAmbientEnabled = (uint8)(oceanAmbientEnabled ? 1 : 0);
+    s->storyCurrentDay    = (uint8)((storyCurrentDay >= 1
+                                    && storyCurrentDay <= 11)
+                                   ? storyCurrentDay : 1);
     s->dayNightOverride = (sint8)hostForcedNight;
     s->holidayOverride  = (sint8)hostForcedHoliday;
     s->softTimeEnabled  = (uint8)(ps1SoftTimeEnabled ? 1 : 0);
