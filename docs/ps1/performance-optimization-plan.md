@@ -218,7 +218,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 0 | Build-wide `-O2` audit and sweep | Low to medium | Treat `-O2` as the first total-queue experiment family. The scoped graphics helpers plus whole-TU `foreground_pilot.c`, `jc_reborn.c`, `resource.c`, and `sound_ps1.c` have now been rejected, so the remaining useful sweep is one hot/semi-hot `-Os` translation unit at a time with strict structural gates before C rewrites or MIPS assembly. |
+| 0 | Build-wide `-O2` audit and sweep | Low | Treat `-O2` as the first total-queue experiment family, but keep it evidence-gated. The scoped graphics helpers plus hot/semi-hot whole-TU probes have now produced no promotions, so any remaining cold/default-off `-O2` probes are lower priority than the C data-width and generated-metadata speed paths. |
 | 1 | Generated setup-prime and inter-scene preload | High | The promoted `320 KB` prime cuts active-loop overrun `147 -> 140` and visible CD/refill `5 -> 1`, but currently pays setup cost. Hiding or generating the prime can turn this into a full-scene win. |
 | 2 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`; the next design must reduce or hide present latency while preserving CD lookahead and pause/input safety. |
 | 3 | Pack-emitted read groups and sector layout | Medium | Current setup-primed high tide still has `43` active-loop reads and `3` backward seeks; selective generated metadata is safer than one-off group tables. |
@@ -238,10 +238,12 @@ threshold is safe.
 Current `-O2` sweep note: `grDrawBackground()` and `grUpdateDisplay()` scoped
 `-O2` were exact-flat but grew code, whole-TU `foreground_pilot.c -O2` failed
 structurally before `JCPERF2`, and whole-TU
-`jc_reborn.c`/`resource.c`/`sound_ps1.c -O2` stayed exact-flat while growing
-ELF. Keep foreground playback, app dispatch, resource lookup, and sound setup at
-`-Os` unless the next attempt is function-scoped, split-TU, or layout-padded.
-Continue the sweep with `events_ps1.c`.
+`jc_reborn.c`/`resource.c`/`sound_ps1.c`/`events_ps1.c -O2` stayed exact-flat
+while growing ELF. Keep foreground playback, app dispatch, resource lookup,
+sound setup, and event polling at `-Os` unless the next attempt is
+function-scoped, split-TU, or layout-padded. HP-063 is complete with no runtime
+speed promotion; resume the higher-payoff C restore/compose and generated
+metadata queue before cold/default-off `-O2` probes.
 
 Non-goals:
 
@@ -1545,7 +1547,7 @@ Host preprocessing and multi-step idea backlog:
 | `HP-031` | Continue per-TU `-Os` retries, but require exact cadence and no hot-helper growth. | Several old size failures are now phase-safe, while CD/compositor TUs still are not. |
 | `HP-061` | Done: build a `-O2` audit report for all current `-Os` overrides: source-file flags, function attributes, hot symbol sizes, PS-EXE bucket, foreground LBA, and baseline metrics. | `scripts/ps1-o2-audit.py` writes `docs/ps1/performance-o2-audit.md` and `.csv`; current audit shows `10` TUs at `-O2`, `13` TUs at `-Os`, and `4` function-scoped `optimize("Os")` helpers. |
 | `HP-062` | Done/no promotion: test scoped graphics helper `-O2`: confirm `graphics_ps1.c` is default `-O2`, then remove or override current helper-level `-Os` one helper at a time. | Both scoped graphics helpers were rejected. `grDrawBackground()` stayed exact-flat but grew by `504` bytes; `grUpdateDisplay()` stayed exact-flat but grew by `40` bytes. Keep both scoped `-Os` attributes. |
-| `HP-063` | Test hot/semi-hot `-Os` TUs back at default `-O2`, one per commit candidate: `foreground_pilot.c`, `sound_ps1.c`, `events_ps1.c`, `resource.c`, and `jc_reborn.c`. | Speed wins here would be cheaper than C rewrites or ASM, but each must pass exact timing/layout and visual/audio gates. |
+| `HP-063` | Done/no promotion: test hot/semi-hot `-Os` TUs back at default `-O2`, one per commit candidate: `foreground_pilot.c`, `sound_ps1.c`, `events_ps1.c`, `resource.c`, and `jc_reborn.c`. | `foreground_pilot.c` failed structurally before scene-end metrics, and `jc_reborn.c`/`resource.c`/`sound_ps1.c`/`events_ps1.c` stayed exact-flat while growing ELF; keep them at `-Os` unless retrying function-scoped, split-TU, or layout-padded shapes. |
 | `HP-064` | Test cold/default-off `-Os` TUs back at default `-O2`, one per log row: pause/menu/captions/memcard/holidays/debug/stubs/utils/island. | Lower expected speed payoff, but the map/phase effects are worth recording and may unlock old cleanups. |
 | `HP-065` | Try word-stride C restore copy for `grCleanRectCopyIn`: halfword edges plus word-body copies. | The feasibility pass ranks bounded restore row copy as the best hand-ASM target, but C word loops should capture much of the gain with less risk. |
 | `HP-066` | Try word-stride C PAL4/indexed compose loops before assembly. | Wider packed loads and aligned 16bpp pair stores are the main expected win; keep it portable until measured data says ASM is required. |
@@ -1584,7 +1586,7 @@ Grouped priority queue from this triage:
 
 | Group | Priority | Included IDs | Execution rule | Expected payoff |
 |---|---|---|---|---|
-| `-O2` compiler sweep | 0 | `HP-061`, `HP-062`, `HP-063`, `HP-064` | HP-061 is complete and HP-062 produced no promotions. Continue with HP-063 hot/semi-hot `-Os` TUs, starting with `foreground_pilot.c` from `performance-o2-audit.csv`. Each follow-up row is one isolated flag/codegen experiment with map/layout evidence and the normal visual/perf gate. | Finds free compiler wins first, or produces searchable no-promotion evidence before we spend time on riskier rewrites. |
+| `-O2` compiler sweep | 0 | `HP-061`, `HP-062`, `HP-063`, `HP-064` | HP-061 is complete, HP-062 produced no promotions, and HP-063 produced no hot/semi-hot whole-TU promotions. HP-064 remains available for cold/default-off TUs, but it should not block higher-upside restore/compose/generated-metadata experiments. | Finds free compiler wins first, or produces searchable no-promotion evidence before we spend time on riskier rewrites. |
 | Evidence and ranking foundation | 1 | `RT-001`, `HP-001`, `HP-002`, `HP-007`, `HP-009`, `HP-028`, `HP-049`, `HP-050`, `HP-058`, `HP-060` | Do immediately after or alongside the `-O2` audit report. These are host-side or documentation/tooling changes and should not perturb the PS1 speed binary. | Produces a ranked retry manifest, read-cost classes, and map/layout evidence so the next code experiments are not guesses. |
 | Offset-stable metadata enablers | 2 | `RT-006`, `HP-006`, `HP-008`, `HP-011`, `HP-012`, `HP-015`, `HP-020`, `HP-052`, `HP-053` | Do before adding more runtime read heuristics. Metadata must be sidecar/footer or otherwise payload-offset stable. | Unlocks generated groups, setup segments, safe direct-stage windows, and scene-local policy without repeating prefix-phase failures. |
 | Generated CD/setup pressure wins | 3 | `RT-002`, `RT-003`, `RT-007`, `RT-010`, `HP-003`, `HP-004`, `HP-005`, `HP-018`, `HP-019`, `HP-054` | Start with FISHING3 high because it still has visible pressure and several near-miss groups/segments. Promote only if FISHING1 and FISHING3 low stay clean. | Best near-term VBlank reduction path; turns one-off successful groups and setup segments into generated policy. |
