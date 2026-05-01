@@ -187,8 +187,28 @@ static int hostBootForcedHolidayValid = 0;
 static int screensaverLoopDisabled = 0;
 
 /* Scenes that have reached the "fully validated" bar in
- * docs/ps1/scene-status.md. Expand as scenes are signed off. */
-static const char *kProvenScenes[] = { "fishing1", "fishing2" };
+ * docs/ps1/scene-status.md, plus a small set used for walk testing.
+ *
+ * fishing1/fishing2 are visually-validated (FISHING-bar) and both
+ * have spotStart/End at SPOT_D — walks between them are turn-in-place.
+ * To exercise the walk subsystem against actual spot-to-spot
+ * traversal, the picker also includes building1 (SPOT_F→SPOT_A) and
+ * walkstuf3 (SPOT_D→SPOT_E). Their FG2 packs render but their scene
+ * content isn't visually-signed-off; they're here for walk-system
+ * verification on the walk-implementation-20260429 branch only.
+ * Trim the list back to the validated pair before merging to main. */
+static const char *kProvenScenes[] = {
+    /* Variety hand-picked to exercise different walk endpoints — Johnny
+     * ends at SPOT_A / C / D / E / F across the set, so the next-scene
+     * walk fires from a meaningful range of positions instead of just
+     * repeatedly turning at SPOT_D. */
+    "fishing1",   /* end: SPOT_D HDG_E */
+    "fishing2",   /* end: SPOT_D HDG_E */
+    "building1",  /* end: SPOT_A HDG_W (long walk in: SPOT_F→SPOT_A) */
+    "building3",  /* end: SPOT_C HDG_SE (medium walk in: SPOT_A→SPOT_C) */
+    "walkstuf2",  /* end: SPOT_D HDG_SE (medium walk in: SPOT_E→SPOT_D) */
+    "walkstuf3",  /* end: SPOT_E HDG_W */
+};
 #define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 
 #ifndef PS1_BUILD
@@ -226,6 +246,13 @@ static int storyCurrentHdg  = -1;
  * gating in storyApplySceneDay/storyPickScene. */
 int storyCurrentDay      = 1;       /* extern; memcard load writes it */
 int storyLastSeenDayOfYr = 0;       /* initialised from memcard */
+
+/* Set by fgLoopApplyVariant when the story-sequence counter expires
+ * and a new island position is randomized. The screensaver loop
+ * consumes this to suppress the walk-between-scenes for the
+ * iteration where position changed (otherwise Johnny appears at
+ * the new island center before the new scene's bg loads). */
+static int fgLoopSequenceJustReset = 1;   /* iter 0: treat as new sequence */
 extern int getDayOfYear(void);
 
 /* Advance storyCurrentDay if the ps1Soft date has rolled over since
@@ -412,17 +439,75 @@ static void fgLoopApplyVariant(const char *sceneName)
     extern int ps1SoftDay;
     extern int ps1HolidayFromDate(int month, int day);
 
-    islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : (rand() & 1);
-    islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : (rand() % 6);
+    /* Two pools of pinned state:
+     *
+     *   SESSION pool — night, holiday. Rolled ONCE at first call,
+     *     never re-rolled. The "date" of the screensaver world stays
+     *     consistent so users don't see the holiday emblem flip or
+     *     day↔night flip mid-run. (Effectively: we pretend the soft
+     *     date is fixed at a random day-of-year for the run.)
+     *
+     *   SEQUENCE pool — lowTide, raft, position. Pinned for 8-12
+     *     consecutive scenes (mirrors the original engine's "story
+     *     sequence" of 6-19 intermediates per src/story.c:576),
+     *     re-rolled at sequence boundary. fgLoopSequenceJustReset
+     *     is consumed by the screensaver loop to suppress the
+     *     inter-scene walk on the iteration that re-randomized.
+     *
+     * Pause-menu overrides (hostForced*) and soft-time overrides
+     * (ps1SoftTimeEnabled) still win per-field where set. */
 
-    /* Priority for night/holiday: explicit menu override (hostForced*)
-     * wins, then time-of-day override (ps1SoftTimeEnabled), then random. */
+    static int sessionValid = 0;
+    static int sessionNight = 0;
+    static int sessionHoliday = 0;
+
+    static int sequenceScenesRemaining = 0;
+    static int seqLowTide = 0;
+    static int seqRaft    = 0;
+    static int seqXPos    = 0;
+    static int seqYPos    = 0;
+    static int seqValid   = 0;
+
+    if (!sessionValid) {
+        sessionNight = (rand() & 1);
+        {
+            int roll = rand() % (gHolidayCount + 1);
+            sessionHoliday = (roll == 0) ? 0 : gHolidays[roll - 1].id;
+        }
+        sessionValid = 1;
+    }
+
+    int needNewSequence = (sequenceScenesRemaining <= 0) || !seqValid;
+    if (needNewSequence) {
+        seqLowTide = (rand() & 1);
+        seqRaft    = (rand() % 6);
+        if (fgLoopSceneUsesVarPos(sceneName)) {
+            fgLoopRandomVarPos(&seqXPos, &seqYPos);
+        } else {
+            seqXPos = 0;
+            seqYPos = 0;
+        }
+        sequenceScenesRemaining = 8 + (rand() % 5);   /* 8..12 — long enough that
+                                                       * the user feels Johnny is
+                                                       * "spending time" at this
+                                                       * island position before
+                                                       * the next randomization */
+        seqValid = 1;
+        fgLoopSequenceJustReset = 1;
+    } else {
+        fgLoopSequenceJustReset = 0;
+    }
+    sequenceScenesRemaining--;
+
+    islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : seqLowTide;
+    islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : seqRaft;
+
     if (hostForcedNight >= 0) {
         islandState.night = hostForcedNight;
     } else if (ps1SoftTimeEnabled) {
         islandState.night = (ps1SoftHour < 6 || ps1SoftHour >= 20) ? 1 : 0;
     } else {
-        islandState.night = (rand() & 1);
+        islandState.night = sessionNight;
     }
 
     if (hostForcedHoliday >= 0) {
@@ -430,15 +515,15 @@ static void fgLoopApplyVariant(const char *sceneName)
     } else if (ps1SoftTimeEnabled) {
         islandState.holiday = ps1HolidayFromDate(ps1SoftMonth, ps1SoftDay);
     } else {
-        int roll = rand() % (gHolidayCount + 1);
-        islandState.holiday = (roll == 0) ? 0 : gHolidays[roll - 1].id;
+        islandState.holiday = sessionHoliday;
     }
 
     if (hostForcedIslandPosValid) {
         islandState.xPos = hostForcedIslandX;
         islandState.yPos = hostForcedIslandY;
     } else if (fgLoopSceneUsesVarPos(sceneName)) {
-        fgLoopRandomVarPos(&islandState.xPos, &islandState.yPos);
+        islandState.xPos = seqXPos;
+        islandState.yPos = seqYPos;
     } else {
         islandState.xPos = 0;
         islandState.yPos = 0;
@@ -455,6 +540,9 @@ static char ps1BootCaptureMetaDirStorage[32];
 static char ps1BootCaptureSceneLabelStorage[64];
 volatile uint16 ps1BootDbgCaptureMode = 0;
 static int ps1BootPrintfTest = 0;
+/* When set, fire JC_BSOD synthetically right after the first scene
+ * completes — used to verify the BSOD UI without a real failure. */
+static int ps1BootBsodAfterFirstScene = 0;
 
 static int ps1IsSpace(char c)
 {
@@ -484,6 +572,7 @@ static void ps1ResetBootArgs(void)
     ps1BootDbgCaptureMode = 0;
     ps1BootForcedSeed = -1;
     ps1BootPrintfTest = 0;
+    ps1BootBsodAfterFirstScene = 0;
     hostForcedIslandPosValid = 0;
     hostForcedIslandX = 0;
     hostForcedIslandY = 0;
@@ -643,6 +732,10 @@ static void ps1ApplyBootOverride(char *buffer)
             i++;
         } else if (!strcmp(tokens[i], "noloop")) {
             screensaverLoopDisabled = 1;
+        } else if (!strcmp(tokens[i], "bsod-test")) {
+            /* Force a synthetic BSOD after the first scene plays so we
+             * can sanity-check the fatal-error UI. */
+            ps1BootBsodAfterFirstScene = 1;
         } else if (!strcmp(tokens[i], "heap-probe")) {
             foregroundPilotSetHeapProbe(1);
         } else if (!strcmp(tokens[i], "prefetch-off") || !strcmp(tokens[i], "no-prefetch")) {
@@ -1341,6 +1434,19 @@ int main(int argc, char **argv)
 
     graphicsInit();
     ps1PrintfProbe("graphics-init", NULL);
+    /* NOTE on pre-allocation: an earlier iteration tried to pre-allocate
+     * the walk-area clean buffer, the FG2 clean-rect snapshot buffers,
+     * and the FG2 streaming buffers all at boot — together ~700 KB of
+     * persistent allocation. That blew through PS1's boot heap budget
+     * (the first scene's 600 KB bgTile alloc returned NULL with a fatal
+     * error). Boot heap is tighter than application-loop heap because
+     * resource-table parses + title-screen state are still resident.
+     *
+     * Current strategy: lazy-allocate everything on first use. The
+     * `grDeactivateCleanBgRects` cleanup path keeps grown buffers alive
+     * across scenes, so once a buffer reaches its peak size it stops
+     * fragmenting the heap. Trade-off: a few scene cycles of
+     * fragmentation during the growth phase, but no boot-heap squeeze. */
     pauseMenuInit();
     soundInit();
     ps1PrintfProbe("sound-init", NULL);
@@ -1402,17 +1508,27 @@ int main(int argc, char **argv)
          * the matching day. None of the currently-validated scenes
          * have a dayNo > 0, so this is a no-op for the active set;
          * the gate is in place for future validations of JOHNNY 2/3,
-         * MARY 1-5, SUZY 1-2 (all dayNo-gated in story_data.h). When
-         * a future picker iteration would skip the scene, we bail to
-         * the no-op walk path and play the scene anyway — the picker
-         * will be told to skip day-mismatched scenes properly once
-         * the validated set includes any. */
+         * MARY 1-5, SUZY 1-2 (all dayNo-gated in story_data.h). */
         if (storyScene && storyScene->dayNo > 0
             && storyScene->dayNo != storyCurrentDay) {
             /* Pick a different scene on the next iteration; for now
              * just play this one anyway since fishing1/2 are dayNo=0. */
         }
-        fgLoopWalkToScene(storyScene);
+
+        /* Walk only when the story-sequence is continuing (same
+         * island position as the previous scene). On the iteration
+         * where position randomized, skip the walk — otherwise
+         * Johnny appears at the new island center before the new
+         * scene's bg has been loaded, producing a "teleport into
+         * water" visual followed by the bg redraw. */
+        if (!fgLoopSequenceJustReset) {
+            fgLoopWalkToScene(storyScene);
+        } else {
+            /* New sequence: don't walk, but still need Johnny's
+             * position state to align with the upcoming scene's
+             * spotStart so the NEXT iteration walks correctly. */
+            walkRenderResetCache();
+        }
 
         foregroundPilotSetScene(loopScene);
         ps1PerfBeginScene(loopScene);
@@ -1420,6 +1536,13 @@ int main(int argc, char **argv)
         foregroundPilotPlay();
         ps1PerfEndScene(loopScene);
         ps1PrintfProbe("scene-end", loopScene);
+
+        /* BOOTMODE bsod-test: synthesize a fatal-error after the first
+         * scene completes so the BSOD UI can be verified visually. */
+        if (ps1BootBsodAfterFirstScene) {
+            JC_BSOD(loopScene, "bsod-test bootmode flag — synthetic fatal "
+                              "after first scene to validate BSOD rendering");
+        }
 
         /* After the scene played, update Johnny's spot/heading so the
          * next loop iteration knows where to walk from. */

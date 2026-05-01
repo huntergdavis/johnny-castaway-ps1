@@ -42,4 +42,46 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg);
  * walks. */
 void fgWalkRenderTeardown(void);
 
+/* Persistent walk-area pristine buffer.
+ *
+ * walk_pilot needs to clear bgTile back to a known-clean baseline each
+ * walk frame so the previous Johnny pose's pixels don't bleed through.
+ * Earlier approaches tried to (a) reuse the FG2 scene's per-scene clean
+ * rect (heap-fragility — sometimes failed to allocate; b) re-grLoadScreen
+ * at walk start (caused empty-water flash + ~600KB malloc churn that
+ * starved the next scene's bg load).
+ *
+ * The persistent design: allocate ONE walk-area-sized buffer at boot,
+ * hold it across scenes for the lifetime of the run, and refresh its
+ * pixels (in-place memcpy, no realloc) only when islandState changes.
+ * Cost: a single ~229KB locked allocation; gain: no per-walk alloc/free,
+ * no heap fragmentation, walks always have a clean source to restore. */
+
+/* Pre-allocate the persistent buffer at boot. Call AFTER graphicsInit()
+ * but BEFORE the screensaver-loop's first scene plays — at that point
+ * the heap is mostly fresh (resource-table parses have run but no
+ * per-scene churn yet), so the 229KB block lands in a contiguous chunk
+ * and stays put for the run. Calling later still works (lazy alloc on
+ * first capture) but risks the chunk fragmenting after several scenes.
+ * Returns 1 on success, 0 if malloc failed. */
+int walkPilotInit(void);
+
+/* walkPilotCaptureCleanWalkAreaIfStale — call from the scene-setup path
+ * AFTER fgBackdropEnableWaveBackdrop (when bgTile is freshly painted
+ * with ocean+island sprites and no FG2 composite has run yet) and
+ * BEFORE the FG2 pack's first frame composite. The function compares
+ * the supplied state key to the last capture and re-snapshots only if
+ * something changed; it's cheap to call every scene setup. */
+void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
+                                          int holidayId, int xPos, int yPos);
+
+/* Release the persistent buffer (call at app shutdown / loop teardown). */
+void walkPilotReleaseCleanWalkArea(void);
+
+/* Diagnostic accessors — used by the BSOD log snapshot to print
+ * the walk subsystem's state at the moment of failure. */
+int           walkPilotCleanBufferAllocated(void);  /* 0 / 1 */
+unsigned long walkPilotCleanBufferBytes(void);      /* 0 if not alloc'd */
+int           walkPilotJohnwalkSlotLoaded(void);    /* 0 / 1 */
+
 #endif /* WALK_PILOT_H */

@@ -24,6 +24,21 @@
  * is harmlessly a no-op even with this flag ON — see Phase 4.1 audit. */
 int footstepsEnabled = 1;
 
+/* Compile-gated diagnostic — emits one printf per kernel call. Off by
+ * default to keep the runtime code phase stable. Flip to 1 when
+ * debugging overdraw / sprite-index / position.
+ *
+ * Each printf to PS1 TTY is ~1ms/char via SIO; with a ~70-char message
+ * per frame the loop slows from 60 Hz to ~8 Hz, which by itself looks
+ * indistinguishable from "walk is stuck" / "Johnny is painting trails"
+ * in the visual. KEEP THIS OFF for any visual-correctness debugging. */
+#define WALK_RENDER_DIAG 0
+
+#if WALK_RENDER_DIAG
+extern int printf(const char *, ...);
+static unsigned long sDiagFrameNo = 0;
+#endif
+
 /* Last-frame cache: stores the most recent walkRenderFrame() params
  * so the story-loop driver can re-draw the same pose against a new
  * frame envelope without ticking walkAnimate(). This is a redraw
@@ -90,6 +105,13 @@ void walkRenderFrame(SDL_Surface *sfc,
     sCacheSpriteIdx = spriteIdx;
     sCacheFlip      = flip;
     sCacheBehindTree = behindTree;
+
+#if WALK_RENDER_DIAG
+    printf("JCWALK frame=%lu kind=tick x=%d y=%d sprite=%u flip=%d behind=%d slot_n=%u\n",
+           sDiagFrameNo++, (int)x, (int)y, (unsigned)spriteIdx,
+           flip, behindTree,
+           johnwalkSlot ? (unsigned)johnwalkSlot->numSprites[0] : 0u);
+#endif
 }
 
 
@@ -109,4 +131,10 @@ void walkRedrawLastFrame(SDL_Surface *sfc,
         grDrawSprite(sfc, islandBgSlot, 365, 122, 12, 0);  /* leaves */
     }
     /* No footstep on redraw — that's a once-per-step trigger. */
+
+#if WALK_RENDER_DIAG
+    printf("JCWALK frame=%lu kind=redraw x=%d y=%d sprite=%u flip=%d behind=%d\n",
+           sDiagFrameNo++, (int)sCacheX, (int)sCacheY,
+           (unsigned)sCacheSpriteIdx, sCacheFlip, sCacheBehindTree);
+#endif
 }

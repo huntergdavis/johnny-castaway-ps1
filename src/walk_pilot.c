@@ -7,6 +7,7 @@
  */
 
 #include <stddef.h>
+#include <stdlib.h>
 #include "mytypes.h"
 #include "graphics_ps1.h"
 #include "events_ps1.h"
@@ -28,9 +29,12 @@ extern int eventsWaitTick(int n);
 #endif
 
 /* Per-walk frame cadence. walkAnimate() returns delays in this many
- * VBlanks between pose advances. Original walk.c sets timer=delay=6
- * (matches original Sierra game pacing). */
-#define WALK_VBLANKS_PER_POSE 6
+ * VBlanks between pose advances. Original walk.c sets timer=delay=6,
+ * but that was tuned to PC clock-tick semantics; on PS1 at 60Hz it
+ * works out to ~100ms/pose and a long SPOT_A→SPOT_F walk runs ~3s,
+ * which the user reads as "very slow". 3 VBlanks (~50ms/pose) keeps
+ * the leg-swing readable but cuts walk duration roughly in half. */
+#define WALK_VBLANKS_PER_POSE 3
 
 /* JOHNWALK.PSB slot — owned by walk_pilot, lazy-loaded on first walk,
  * persists across walks for the lifetime of a screensaver-loop
@@ -42,6 +46,157 @@ static int gWalkBmpLoaded = 0;
  * walk.c reads ttmSlot + ttmLayer; ttmLayer is the SDL_Surface (= PS1Surface)
  * field, NULL on PS1 since the kernel doesn't dereference it. */
 static struct TTtmThread gWalkThread;
+
+/* Persistent walk-area pristine buffer (Option B in the architecture
+ * discussion). Holds the bgTile pixels in the walk bbox at a known-clean
+ * moment (right after fgBackdropEnableWaveBackdrop, before scene playback
+ * dirties them). Reused across all walks until islandState changes —
+ * i.e. once per "sequence" boundary. ~187KB locked allocation, swapped
+ * in cheap memcpy form per walk frame to clear the previous pose. */
+/* Walk-area bbox. Sized to cover spots SPOT_A..SPOT_F with a 60-tall
+ * sprite, padded modestly for grDx/grDy variation across observed
+ * islandState combinations. Earlier we extended this to y=140..360 to
+ * absorb feet residue at the +grDy extreme; the larger buffer ate
+ * enough heap that fishing1's per-scene streaming alloc started failing
+ * with only 226 KB largest free. Reverting to 150..330 recovers ~42 KB
+ * — feet residue is back in the rare highest-grDy state, but real
+ * scenes load. The proper fix is pre-allocating the per-scene streaming
+ * buffers at boot too, which is the next step.
+ *
+ * Size: 520 × 180 × 2 = ~187KB. */
+#define WALK_CLEAN_X      80
+#define WALK_CLEAN_Y      150
+#define WALK_CLEAN_W      520
+#define WALK_CLEAN_H      180
+
+static uint16 *gWalkCleanBuf  = NULL;
+static int     gWalkCleanValid = 0;
+/* State key — any field changing means the buffer's pixels are stale. */
+static int gWalkCleanRaft     = -1;
+static int gWalkCleanLowTide  = -1;
+static int gWalkCleanNight    = -1;
+static int gWalkCleanHoliday  = -1;
+static int gWalkCleanXPos     = -32768;
+static int gWalkCleanYPos     = -32768;
+
+
+static int walkPilotCleanStateMatches(int raft, int lowTide, int night,
+                                      int holidayId, int xPos, int yPos)
+{
+    return gWalkCleanRaft == raft &&
+           gWalkCleanLowTide == lowTide &&
+           gWalkCleanNight == night &&
+           gWalkCleanHoliday == holidayId &&
+           gWalkCleanXPos == xPos &&
+           gWalkCleanYPos == yPos;
+}
+
+
+void walkPilotCaptureCleanWalkAreaIfStale(int raft, int lowTide, int night,
+                                          int holidayId, int xPos, int yPos)
+{
+    if (gWalkCleanValid &&
+        walkPilotCleanStateMatches(raft, lowTide, night, holidayId, xPos, yPos))
+        return;
+
+    if (gWalkCleanBuf == NULL) {
+        gWalkCleanBuf = (uint16 *)malloc(
+            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
+        if (gWalkCleanBuf == NULL) {
+            /* Out of memory — leave invalid; walks will skip clean-area
+             * restore and fall back to whatever bgTile contains. Visual
+             * artifact (overpaint) but no crash. */
+            extern int printf(const char *, ...);
+            printf("JCWALK: walkClean buffer alloc failed\n");
+            return;
+        }
+    }
+
+    grCaptureBgRect(gWalkCleanBuf, WALK_CLEAN_X, WALK_CLEAN_Y,
+                    WALK_CLEAN_W, WALK_CLEAN_H);
+
+    gWalkCleanValid    = 1;
+    gWalkCleanRaft     = raft;
+    gWalkCleanLowTide  = lowTide;
+    gWalkCleanNight    = night;
+    gWalkCleanHoliday  = holidayId;
+    gWalkCleanXPos     = xPos;
+    gWalkCleanYPos     = yPos;
+}
+
+
+void walkPilotReleaseCleanWalkArea(void)
+{
+    if (gWalkCleanBuf) {
+        free(gWalkCleanBuf);
+        gWalkCleanBuf = NULL;
+    }
+    gWalkCleanValid = 0;
+}
+
+
+int walkPilotCleanBufferAllocated(void)
+{
+    return gWalkCleanBuf != NULL ? 1 : 0;
+}
+
+unsigned long walkPilotCleanBufferBytes(void)
+{
+    if (gWalkCleanBuf == NULL) return 0;
+    return (unsigned long)WALK_CLEAN_W *
+           (unsigned long)WALK_CLEAN_H *
+           (unsigned long)sizeof(uint16);
+}
+
+int walkPilotJohnwalkSlotLoaded(void)
+{
+    return gWalkBmpLoaded ? 1 : 0;
+}
+
+
+int walkPilotInit(void)
+{
+    int ok = 1;
+
+    if (gWalkCleanBuf == NULL) {
+        gWalkCleanBuf = (uint16 *)malloc(
+            (size_t)WALK_CLEAN_W * (size_t)WALK_CLEAN_H * sizeof(uint16));
+        if (gWalkCleanBuf == NULL) {
+            extern int printf(const char *, ...);
+            printf("JCWALK: walkPilotInit clean-buf alloc failed (%u bytes)\n",
+                   (unsigned)((unsigned long)WALK_CLEAN_W *
+                              (unsigned long)WALK_CLEAN_H * sizeof(uint16)));
+            ok = 0;
+        }
+        /* Mark invalid until the first scene's setup captures real
+         * pristine pixels. walkPilotRestoreClean checks gWalkCleanValid
+         * before copying, so an early-walk attempt is a safe no-op. */
+        gWalkCleanValid = 0;
+    }
+
+    /* JOHNWALK.PSB is NOT pre-loaded at boot — the ~100KB sprite atlas
+     * combined with the clean-rect/stream pre-allocs blew through PS1's
+     * boot heap budget when the first scene tried to alloc its 600KB
+     * bgTile (153 KB per tile, malloc returned NULL). Lazy-load on first
+     * walk via walkPilotEnsureBmp instead. By the time a walk fires the
+     * first scene has already played and bgTile is steady-state, so
+     * the JOHNWALK alloc lands cleanly. Trade-off: ~50ms one-time CD
+     * seek delay on the first walk; previously we paid that at boot. */
+    return ok;
+}
+
+
+/* Per-walk-frame: copy persistent clean pixels back into bgTile so the
+ * previous pose's Johnny is wiped before the new pose composites. The
+ * underlying grRestoreBgRect respects prevDirty, so on every frame after
+ * the first only Johnny's previously-touched rows actually get copied
+ * — same dirty-rect economy as grRestoreBgFromRects. */
+static void walkPilotRestoreClean(void)
+{
+    if (!gWalkCleanValid || gWalkCleanBuf == NULL) return;
+    grRestoreBgRect(gWalkCleanBuf, WALK_CLEAN_X, WALK_CLEAN_Y,
+                    WALK_CLEAN_W, WALK_CLEAN_H);
+}
 
 
 static void walkPilotEnsureBmp(void)
@@ -61,22 +216,6 @@ void fgWalkRenderTeardown(void)
 }
 
 
-/* Single VBlank of redraw using the kernel's last-frame cache.
- * Used during the inter-tick frames (when walkAnimate hasn't ticked
- * yet but we still need to present a frame so VSync stays honest).
- * Holiday overlay is stamped after the walk sprite so the active
- * holiday emblem persists across scene→walk→scene transitions
- * (Phase 6 of the walk plan). */
-static void walkPilotPresentInterTick(struct TTtmSlot *bgSlot)
-{
-    grBeginFrame();
-    grRestoreBgTiles();
-    walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
-    fgBackdropStampHolidayPublic();
-    grUpdateDisplay(NULL, NULL, NULL);
-}
-
-
 int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 {
     /* No-op walks: invalid prev (LEFT_ISLAND scenes set prevSpot=-1)
@@ -89,6 +228,17 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 
     walkPilotEnsureBmp();
     walkRenderResetCache();
+
+    /* Suppress runtime compose for the entire walk. Without this, every
+     * frame's grUpdateDisplay call re-stamps the previous FG2 scene's
+     * baked-in Johnny on top of the walking sprite, looking exactly
+     * like Johnny painting over himself. */
+    foregroundPilotSuppressCompose(1);
+
+    /* Force a full-tile dirty so the first walk frame's clean-area
+     * restore copies the entire walk-area buffer (not just the rows
+     * scene N's last composite happened to dirty). */
+    grForceFullRedrawNextFrame();
 
     /* Match the original engine's island-offset wiring (ads.c:2222). */
     grDx = (int)islandState.xPos;
@@ -103,33 +253,82 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
 
     /* The island background slot for behind-tree cover-up. May be
      * NULL during very early scene-loop init; cover-up just degrades
-     * to "Johnny visible through tree" until the slot is populated.
-     * Phase 5 of the walk plan tightens this; for now NULL is safe. */
+     * to "Johnny visible through tree" until the slot is populated. */
     struct TTtmSlot *bgSlot = fgBackdropGetSlot();
 
     /* Set walk.c's static state up for this transition. */
     walkInit(fromSpot, fromHdg, toSpot, toHdg);
 
-    /* Initial pose tick: walkAnimate computes the first pose, calls
-     * the kernel (populates the redraw cache), and returns the next
-     * delay. We then present that pose for `delay` VBlanks before
-     * ticking again. */
-    grCurrentThread = NULL;     /* walk_pilot doesn't use the thread
-                                 * replay-sprites mechanism; redraw
-                                 * cache covers inter-tick frames. */
-    int delay = walkAnimate(&gWalkThread, bgSlot);
+    grCurrentThread = NULL;     /* kernel's redraw cache covers
+                                 * inter-tick frames; thread replay
+                                 * mechanism not used. */
 
-    while (delay > 0) {
-        /* Present the current pose for `delay` VBlanks. */
-        for (int i = 0; i < delay; i++) {
-            walkPilotPresentInterTick(bgSlot);
-            VSync(0);
+    /* Pre-walk dwell: hold scene N's last frame for ~12 VBlanks (~200ms)
+     * before the walk's first composite. The framebuffer already shows
+     * scene N's final pose at this point, so all we need is to wait
+     * VSyncs without redrawing — that lets the eye register the scene's
+     * end state before Johnny "switches" into walking pose. Without the
+     * dwell, a turn-in-place walk reads as a hard pose-swap at the same
+     * spot ("teleported into a new position"). */
+    for (int dwell = 0; dwell < 12; dwell++) {
+        VSync(0);
+    }
+
+    int timerLeft = 1;
+    int walkDone  = 0;
+
+    while (!walkDone) {
+        grBeginFrame();
+        /* Clear the previous walk pose by restoring pixels from the
+         * persistent walk-area pristine buffer. Falls through (no-op)
+         * if the capture hasn't been done yet — only the first scene
+         * before its setup runs is in this state, which can't have
+         * fired a walk anyway. */
+        walkPilotRestoreClean();
+
+        /* Wave animation — keep the ocean moving during walks so
+         * scene→walk→scene looks seamless. */
+        fgBackdropTickWavesPublic();
+
+        if (timerLeft <= 0) {
+            /* Tick: walkAnimate advances pose + calls walkRenderFrame
+             * (which stamps Johnny + updates the redraw cache). */
+            int next = walkAnimate(&gWalkThread, bgSlot);
+            if (next <= 0) {
+                walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
+                walkDone = 1;
+                timerLeft = 0;
+            } else {
+                timerLeft = next - 1;   /* current frame counts as 1 */
+            }
+        } else {
+            /* Inter-tick frame: redraw the cached pose. */
+            walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
+            timerLeft--;
         }
-        /* Tick walkAnimate to compute the next pose. The kernel call
-         * inside walkAnimate updates the redraw cache. */
-        delay = walkAnimate(&gWalkThread, bgSlot);
+
+        fgBackdropStampHolidayPublic();
+        grUpdateDisplay(NULL, NULL, NULL);
+    }
+
+    /* Hold-frame: keep the final pose visible briefly before yielding
+     * to the next scene. 12 VBlanks ≈ 200ms for actual position changes.
+     *
+     * Turn-in-place walks (same spot, just rotating) don't benefit from
+     * the hold — Johnny was already at this position, the visible change
+     * is just heading. Cut the hold to 0 so back-to-back same-spot
+     * scenes feel snappy. */
+    int holdFrames = (fromSpot == toSpot) ? 0 : 12;
+    for (int hold = 0; hold < holdFrames; hold++) {
+        grBeginFrame();
+        walkPilotRestoreClean();
+        fgBackdropTickWavesPublic();
+        walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
+        fgBackdropStampHolidayPublic();
+        grUpdateDisplay(NULL, NULL, NULL);
     }
 
     walkRenderResetCache();
+    foregroundPilotSuppressCompose(0);
     return 0;
 }

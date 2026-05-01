@@ -18,6 +18,25 @@ unsigned short foregroundPilotRuntimeFrameCount(void);
  * contiguous malloc that succeeds right now. Used by the pause menu's
  * Debug Info to show real free RAM. */
 unsigned long fgProbeLargestAlloc(void);
+
+/* Per-scene streaming-buffer sizes for the BSOD snapshot. 0 = not
+ * currently allocated; otherwise the byte size of the buffer last
+ * sized (current pack's maxDataSize). */
+unsigned long fgGetFrameBufferBytes(void);
+unsigned long fgGetPrefetchFrameBufferBytes(void);
+
+/* Pre-allocate the per-scene streaming buffers at boot to a worst-case
+ * size. Same rationale as grPreallocCleanBgRects: per-scene free+malloc
+ * cycles fragment the heap, and after ~10 minutes a wide pack alloc
+ * fails. Pre-alloc'd buffers stay at fixed addresses and are reused
+ * forever — fgReleaseStreamBuffers no longer frees them once primed.
+ *
+ * frameMaxBytes:    worst-case per-frame payload (covers all packs)
+ * scratchMaxBytes:  worst-case stream-scratch (frameMax + 2KB rounded)
+ *
+ * Returns 1 on success, 0 if any malloc failed. */
+int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
+                            unsigned long scratchMaxBytes);
 void foregroundPilotRuntimeEnd(void);
 
 /* Access to the island-background TTtmSlot that fg_pilot owns.
@@ -34,5 +53,41 @@ struct TTtmSlot *fgBackdropGetSlot(void);
  * transitions (the emblem belongs to the island, not to a specific
  * scene). Existing foregroundPilotPlay frame loop calls this too. */
 void fgBackdropStampHolidayPublic(void);
+
+/* Tick the wave animation by one frame. Used by walk_pilot's frame
+ * loop so the ocean keeps moving while Johnny walks between scenes
+ * — without this, the surf freezes during transitions and the loop
+ * looks seamed. Wraps islandAnimate(&gFgBackdropThread). */
+void fgBackdropTickWavesPublic(void);
+
+/* Re-stamp the island bg sprites (raft, palm, beach decor) from
+ * BACKGRND.PSB into the bg mirror. Wipes any leftover Johnny pixels
+ * the previous FG2 scene's last frame baked in. Idempotent — safe
+ * to call between scenes. Without this, the walk-time clean snapshot
+ * captures the scene's last-frame Johnny as part of "clean" and
+ * every walk frame pastes him back. */
+void fgBackdropRebuildIslandBg(void);
+
+/* Snapshot a generous walk-area bounding rect (plus the wave region)
+ * as clean. walk_pilot calls grRestoreBgFromRects() each frame to
+ * erase the previous walk-sprite stamp before the next pose. Mirrors
+ * the rect-based pattern fgBackdropSaveCleanBgRectsForPack uses for
+ * FG2 scene playback — same mechanism, walk-sized bounding rect.
+ * Call AFTER fgBackdropRebuildIslandBg so the snapshot is pure
+ * island, not island+Johnny. Returns 1 on success, 0 on failure. */
+int fgBackdropSaveCleanBgRectsForWalk(void);
+
+/* Release the rect snapshots taken by fgBackdropSaveCleanBgRectsForWalk.
+ * Call when the walk completes so the next FG2 scene's setup can claim
+ * its own clean rects. */
+void fgBackdropEndWalk(void);
+
+/* Suppress foregroundPilotRuntimeCompose for the duration of a walk. The
+ * runtime compose path stamps the prior FG2 scene frame (with Johnny baked
+ * in) onto bg every frame; without suppression, walk_pilot's own composite
+ * lands UNDER that stamp and gets overwritten — yielding the previous
+ * scene's Johnny on top of the walking sprite. Pair every (1) call with
+ * a (0) call before exit. */
+void foregroundPilotSuppressCompose(int suppressed);
 
 #endif

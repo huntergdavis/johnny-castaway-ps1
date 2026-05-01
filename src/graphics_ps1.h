@@ -217,8 +217,26 @@ int  grSaveCleanBgRects(const sint16 *x, const sint16 *y,
 void grRestoreBgFromRects(void);
 void grFreeCleanBgRects(void);
 void grDeactivateCleanBgRects(void);
+/* Pre-allocate clean-rect pixel buffers at the supplied worst-case
+ * capacities (in bytes per slot, n slots). Call once at boot, before
+ * the screensaver loop starts cycling scenes. Subsequent
+ * grSaveCleanBgRects calls find existing capacity sufficient and reuse
+ * the same buffer instead of free+malloc — eliminates the heap
+ * fragmentation that builds up across hundreds of scene transitions
+ * and eventually starves a wide lower-rect alloc.
+ *
+ * Per-scene cleanup paths must use grDeactivateCleanBgRects (not
+ * grFreeCleanBgRects) for the pre-alloc to stick. */
+void grPreallocCleanBgRects(const uint32 *capBytes, int n);
 int  grCleanBgRectsCount(void);
 unsigned long grCleanBgRectsBytes(void);
+/* Capture/restore rectangles into a caller-owned buffer (dst/src sized
+ * w*h*sizeof(uint16)). Same per-tile splitting + dirty-rect gating as
+ * the grSaveCleanBgRects snapshots — but independent of that machinery,
+ * so multiple concurrent buffers can coexist (e.g. FG2 scene clean +
+ * walk_pilot's persistent walk-area buffer). */
+void grCaptureBgRect(uint16 *dst, sint16 x, sint16 y, uint16 w, uint16 h);
+void grRestoreBgRect(const uint16 *src, sint16 x, sint16 y, uint16 w, uint16 h);
 void grRestoreBgTiles(void);
 void grRestoreBackgroundRectForFrame(int x, int y, int width, int height);
 void grRestoreAndCompositeDirect16BackgroundRectForFrame(int x, int y, int width, int height,
