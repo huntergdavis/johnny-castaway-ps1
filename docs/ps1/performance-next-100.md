@@ -159,6 +159,11 @@ blocking and due misses improve, and PAL4 canaries stay exact-flat. The
 tradeoff is refill overrun (`101 -> 139` high, `95 -> 140` low), so the next
 indexed8 work should be scheduler/CD ownership, generated read metadata, or
 pack-time direct16/upload-ready spans rather than more pixel-loop branching.
+The first post-row-local WALKSTUF1 low read-group probe `{180,204}` is rejected:
+it lowered hidden refill overrun but regressed visible loop and blocking
+(`1958 -> 1998`, `452 -> 477`). Do not spend more time on raw saved-read
+groups for WALKSTUF1 low unless the generator can model visible cadence; move
+that lane toward scheduler ownership or upload-ready/direct16 pack data.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload
