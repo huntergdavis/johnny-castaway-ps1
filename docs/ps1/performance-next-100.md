@@ -695,6 +695,7 @@ near misses:
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | FG2 read group `102..110` | Do not retry as a raw hard-coded group; it saved one read but regressed visible CD pressure to `8` VBlanks. Retry only with group-cost prediction or CD-first slack ownership. |
 | FG2 read groups `384..396` and `307..317` | Do not retry as raw hard-coded groups. `384..396` did not fit/fire; `307..317` was exact-flat with code growth. Generated metadata must prove append fit and read-count movement first. |
+| Global setup-prime resident cap above `128 KiB` | Do not retry as a raw cap raise. The `192 KiB` probe saved FISHING1 reads but regressed visible loop/CD pressure and increased retained prefetch heap. |
 | Direct stage into stream window | Do not retry as a local helper swap; it preserved reads but raised visible CD pressure by one VBlank. Retry only when group/tail metadata proves the direct-stage window stays hidden. |
 | Hot whole-TU `-O3` | Function-scoped codegen or address padding preserves hot layout first. |
 | Foreground pilot TU `-O3` | Do not retry as a whole-TU flag; it grew `foregroundPilotPlay` by about `5 KB`, moved the foreground pack three LBAs, and produced no key speed gain. |
