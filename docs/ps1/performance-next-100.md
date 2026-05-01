@@ -177,6 +177,10 @@ the sector cluster; it says the runtime did not request the append start the
 manual table expected. The next grouped-read attempt needs append-start
 simulation or generated metadata, not another raw table entry from the same
 candidate list.
+The start-aligned `112..124` retry is also rejected: it changed the cadence but
+regressed `loop_vb`, `blocking_vb`, `loop_reads`, and `due_misses` while only
+reducing `prefetch_overrun_vb`. The next CD grouping path must score visible
+blocking cost, not just saved transactions.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
