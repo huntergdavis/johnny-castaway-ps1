@@ -218,7 +218,7 @@ Top likely wins, in order:
 
 | Rank | Optimization | Expected impact | Reason |
 |---|---|---|---|
-| 0 | Build-wide `-O2` audit and sweep | Low to medium | Treat `-O2` as the first total-queue experiment family. The scoped graphics helpers plus whole-TU `foreground_pilot.c`, `jc_reborn.c`, and `resource.c` have now been rejected, so the remaining useful sweep is one hot/semi-hot `-Os` translation unit at a time with strict structural gates before C rewrites or MIPS assembly. |
+| 0 | Build-wide `-O2` audit and sweep | Low to medium | Treat `-O2` as the first total-queue experiment family. The scoped graphics helpers plus whole-TU `foreground_pilot.c`, `jc_reborn.c`, `resource.c`, and `sound_ps1.c` have now been rejected, so the remaining useful sweep is one hot/semi-hot `-Os` translation unit at a time with strict structural gates before C rewrites or MIPS assembly. |
 | 1 | Generated setup-prime and inter-scene preload | High | The promoted `320 KB` prime cuts active-loop overrun `147 -> 140` and visible CD/refill `5 -> 1`, but currently pays setup cost. Hiding or generating the prime can turn this into a full-scene win. |
 | 2 | FG2-specific present pipeline with explicit slack budgeting | High | Detail counters show `present_wait_vb=157`; the next design must reduce or hide present latency while preserving CD lookahead and pause/input safety. |
 | 3 | Pack-emitted read groups and sector layout | Medium | Current setup-primed high tide still has `43` active-loop reads and `3` backward seeks; selective generated metadata is safer than one-off group tables. |
@@ -237,10 +237,11 @@ threshold is safe.
 
 Current `-O2` sweep note: `grDrawBackground()` and `grUpdateDisplay()` scoped
 `-O2` were exact-flat but grew code, whole-TU `foreground_pilot.c -O2` failed
-structurally before `JCPERF2`, and whole-TU `jc_reborn.c`/`resource.c -O2`
-stayed exact-flat while growing ELF. Keep foreground playback, app dispatch, and
-resource lookup at `-Os` unless the next attempt is function-scoped, split-TU, or
-layout-padded. Continue the sweep with `sound_ps1.c` and `events_ps1.c`.
+structurally before `JCPERF2`, and whole-TU
+`jc_reborn.c`/`resource.c`/`sound_ps1.c -O2` stayed exact-flat while growing
+ELF. Keep foreground playback, app dispatch, resource lookup, and sound setup at
+`-Os` unless the next attempt is function-scoped, split-TU, or layout-padded.
+Continue the sweep with `events_ps1.c`.
 
 Non-goals:
 
