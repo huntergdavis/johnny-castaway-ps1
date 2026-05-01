@@ -488,6 +488,11 @@ one nominal read (`loop_reads 41 -> 40`) but regressed all key pressure metrics:
 `prefetch_overrun_vb 13 -> 14`. Treat this exact range as a do-not-retry
 standalone sector group; it belongs only in a generated setup/preload or
 scheduler-owned experiment that changes cadence more deeply.
+VISITOR3 low `{182,194}` is rejected for the same reason at larger scale. It
+lowered hidden refill (`prefetch_overrun_vb 83 -> 77`) and one loop read, but
+regressed active playback (`loop_vb 1532 -> 1539`, `blocking_vb 314 -> 324`)
+and added one due miss. VISITOR3 low should move to generated cost/coverage
+metadata or scheduler ownership before more one-off group appends.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,

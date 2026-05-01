@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 324 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 325 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -390,6 +390,7 @@ for a guided learning path through the machinery.
 
 <ul class="doc-grid">
 <li><a href="{{ '/source/scratch/ps1-perf-iterate/current-retry-manifest/' | relative_url }}">PS1 Perf Retry Manifest</a><p><code>scratch/ps1-perf-iterate/current-retry-manifest.md</code></p></li>
+<li><a href="{{ '/source/scratch/ps1-perf-iterate/retry-manifest-v65/' | relative_url }}">PS1 Perf Retry Manifest</a><p><code>scratch/ps1-perf-iterate/retry-manifest-v65.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>
