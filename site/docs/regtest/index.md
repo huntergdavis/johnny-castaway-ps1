@@ -84,6 +84,7 @@ Or specify explicitly with `--bios /path/to/bios/`.
 ### Scripted controller input
 
 `v0.5.x` adds an opt-in pad-script layer for headless menu and flow tests.
+The canonical runbook is [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}).
 The PS1 build embeds `config/ps1/PADSCRIPT.TXT` at compile time and only
 uses it when `BOOTMODE.TXT` includes `pad-script` or `pad-script-log`.
 Scripted buttons are merged into the same active-high pad mask as the real
@@ -124,6 +125,11 @@ because this pause-menu path has real framebuffer and polling latency, but
 keeps the extra logs off while still printing screenshot markers; the menu
 harness defaults to the quiet path and accepts `--verbose` when the route
 itself needs debugging.
+
+Use this when the question is input-driven rather than scene-driven: Start
+opening the pause menu, Circle backing out, Freeplay enter/exit recovery,
+world-option menu changes, or a bug report that can be written as button
+presses.
 
 ### Single scene
 

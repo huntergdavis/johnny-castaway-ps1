@@ -89,6 +89,22 @@ cd tests
 make test-visual-regression
 ```
 
+### PS1 Scripted Input Tests
+
+For the PS1 port, controller and menu regressions are tested by scripting the
+actual pad path inside the PS1 executable:
+
+```bash
+./scripts/ps1-menu-input-harness.sh
+```
+
+The harness writes a temporary `PADSCRIPT.TXT`, enables `pad-script` in
+`BOOTMODE.TXT`, rebuilds the disc, runs DuckStation regtest headlessly, and
+captures every major pause-menu screen after a labeled `JCPADSHOT` marker.
+It is the preferred way to turn "press Start, go down twice, press Cross" bug
+reports into repeatable artifacts. See
+`docs/ps1/scripted-input-harness.md`.
+
 ## Test Coverage
 
 **Current Status**: 46 passing tests

@@ -137,6 +137,26 @@ regtest-results/<ads>-<tag>/
   printf.log                # PS1 TTY output when TTY logging is enabled
 ```
 
+## Secondary: scripted controller input
+
+The pad-script harness is the active way to test menu and controller flows
+headlessly. It embeds `config/ps1/PADSCRIPT.TXT` into the PS1 executable,
+enables it with `pad-script` or `pad-script-log` in `BOOTMODE.TXT`, and merges
+scripted button masks into the same active-high pad value used by real input.
+
+```bash
+# Rebuild, run DuckStation regtest, capture every major pause-menu page,
+# and regenerate the website menu guide from real PS1 screenshots.
+./scripts/ps1-menu-input-harness.sh
+
+# Tune route timing while debugging a menu page.
+./scripts/ps1-menu-input-harness.sh --settle-frames 30 --verbose
+```
+
+The harness emits sparse `JCPADSHOT` markers instead of per-frame logs, so it
+can drive screenshots without flooding DuckStation's TTY output. Full details:
+[scripted-input-harness.md](scripted-input-harness.md).
+
 ## Secondary (historical): binary library
 
 The binary-library stack builds a PS1 executable + CD image for every

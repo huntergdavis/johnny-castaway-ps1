@@ -21,9 +21,9 @@ scene-playback (fgpilot) path. Everything else in this document is secondary too
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/TESTING.md` |
-| Lines | 233 |
-| Approx. words | 1261 |
-| Code fences | 7 |
+| Lines | 253 |
+| Approx. words | 1376 |
+| Code fences | 8 |
 
 ## Outline
 
@@ -32,6 +32,7 @@ scene-playback (fgpilot) path. Everything else in this document is secondary too
 -     Variant tokens
 -   Headless Performance Matrix
 -   Secondary (historical): headless regtest harness
+-   Secondary: scripted controller input
 -   Secondary (historical): binary library
 -   Boot modes
 -   PS1 printf / TTY logging

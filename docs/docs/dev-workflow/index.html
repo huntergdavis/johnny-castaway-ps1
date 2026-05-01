@@ -321,6 +321,12 @@ Text I/O is too noisy for timing-sensitive screensaver playback.</li>
   <li><strong>Per-scene capture diffs</strong>: the host-capture frames + frame-meta JSONs
 are useful ground truth when a replay mismatches. Point
 <code class="language-plaintext highlighter-rouge">compare-scene-reference.py</code> at them.</li>
+  <li><strong>Scripted controller repros</strong>: use
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-menu-input-harness.sh"><code class="language-plaintext highlighter-rouge">ps1-menu-input-harness.sh</code></a>
+or a custom <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> route when a bug depends on menu navigation or
+Freeplay input. The script drives the actual PS1 pad path and emits
+<code class="language-plaintext highlighter-rouge">JCPADSHOT</code> markers for screenshot alignment; see
+<a href="../scripted-input/">Scripted input harness</a>.</li>
   <li><strong>Scratch files go in <code class="language-plaintext highlighter-rouge">scratch/</code></strong>, never <code class="language-plaintext highlighter-rouge">/tmp</code>. DuckStation logs
 grow fast and <code class="language-plaintext highlighter-rouge">/tmp</code> has filled and broken the shell before.</li>
 </ul>

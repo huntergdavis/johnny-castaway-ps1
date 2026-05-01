@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
-  <title>PS1 Port Testing Guide — Johnny Castaway PS1</title>
-  <meta name="description" content="Generated source-library page for docs/ps1/TESTING.md" />
+  <title>PS1 Scripted Input Harness — Johnny Castaway PS1</title>
+  <meta name="description" content="Generated source-library page for docs/ps1/scripted-input-harness.md" />
 
-  <meta property="og:title"        content="PS1 Port Testing Guide — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Generated source-library page for docs/ps1/TESTING.md" />
+  <meta property="og:title"        content="PS1 Scripted Input Harness — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Generated source-library page for docs/ps1/scripted-input-harness.md" />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../../../assets/img/branding/og-image.png" />
@@ -67,13 +67,13 @@
 
     <header class="page-header">
       <p class="eyebrow">Source library</p>
-      <h1>PS1 Port Testing Guide</h1>
-      <p class="subtitle">docs/ps1/TESTING.md</p>
+      <h1>PS1 Scripted Input Harness</h1>
+      <p class="subtitle">docs/ps1/scripted-input-harness.md</p>
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>This is the website shelf page for <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a>.
+    <p>This is the website shelf page for <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scripted-input-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scripted-input-harness.md</code></a>.
 It exists because the project has hundreds of Markdown files and the website
 should not pretend the interesting work only happened in the polished essays.</p>
 
@@ -81,7 +81,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>scene-playback (fgpilot) path. Everything else in this document is secondary tooling: useful for targeted questions, not for certifying a scene as done.</p>
+<p>The scripted input harness lets the PS1 build press its own controller buttons during a headless DuckStation run. It is used first for the pause menu screenshot guide, but the useful idea is broader: any reproducible controller route can become a test script, a TTY trace, and a set of captured frames.</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -95,19 +95,19 @@ should not pretend the interesting work only happened in the polished essays.</p
   <tbody>
     <tr>
       <td>Source path</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">docs/ps1/scripted-input-harness.md</code></td>
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">253</td>
+      <td style="text-align: right">256</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">1376</td>
+      <td style="text-align: right">1245</td>
     </tr>
     <tr>
       <td>Code fences</td>
-      <td style="text-align: right">8</td>
+      <td style="text-align: right">12</td>
     </tr>
   </tbody>
 </table>
@@ -115,24 +115,23 @@ should not pretend the interesting work only happened in the polished essays.</p
 <h2 id="outline">Outline</h2>
 
 <ul>
-  <li>PS1 Port Testing Guide</li>
-  <li>Primary: scene-playback validation</li>
-  <li>Variant tokens</li>
-  <li>Headless Performance Matrix</li>
-  <li>Secondary (historical): headless regtest harness</li>
-  <li>Secondary: scripted controller input</li>
-  <li>Secondary (historical): binary library</li>
-  <li>Boot modes</li>
-  <li>PS1 printf / TTY logging</li>
-  <li>Known runtime pitfalls</li>
-  <li>Docker images</li>
-  <li>Do not cite</li>
+  <li>PS1 Scripted Input Harness</li>
+  <li>Why it exists</li>
+  <li>Runtime model</li>
+  <li>Key files</li>
+  <li>Running the menu harness</li>
+  <li>Script syntax</li>
+  <li>Screenshot markers</li>
+  <li>Direct custom route</li>
+  <li>Debugging failures</li>
+  <li>Guardrails</li>
+  <li>Current generated artifacts</li>
 </ul>
 
 <h2 id="read-it-in-context">Read it in context</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md">Open the source file on GitHub</a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scripted-input-harness.md">Open the source file on GitHub</a></li>
   <li><a href="../../../">Back to the source library index</a></li>
   <li><a href="../../../../docs/">Main docs index</a></li>
 </ul>

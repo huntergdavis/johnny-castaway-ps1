@@ -209,6 +209,37 @@ Each tile is 320x240 pixels, stored in RAM as 16-bit direct color (not VRAM).
 Screenshots are saved to:
 `~/.var/app/org.duckstation.DuckStation/config/duckstation/screenshots/`
 
+### Scripted Controller Repros
+
+For bugs that depend on controller navigation, prefer a pad script over a
+hand-timed emulator session. The script is embedded into the PS1 build from
+`config/ps1/PADSCRIPT.TXT`, enabled with `pad-script` or `pad-script-log` in
+`BOOTMODE.TXT`, and merged into the same active-high controller mask as a real
+pad read.
+
+```bash
+./scripts/ps1-menu-input-harness.sh --settle-frames 30 --verbose
+```
+
+That route boots a normal scene, opens the pause menu, walks the major
+subscreens, emits `JCPADSHOT` markers, and writes marker-aligned screenshots
+for the website menu guide. For a one-off crash repro, write a smaller route:
+
+```text
+wait 30s
+tap START
+tap DOWN
+tap DOWN
+tap CROSS
+shot freeplay-options 30
+tap CIRCLE
+shot pause-main-return 30
+```
+
+Then run with a `pad-script-log` boot token so the TTY output shows parsed
+events and merged masks. See `docs/ps1/scripted-input-harness.md` for the
+full syntax and guardrails.
+
 ### Overlay-Backed Screenshot Checks
 
 For controlled PS1 bug runs, prefer the headless regtest harness with overlay-backed screenshots over manual visual comparison.

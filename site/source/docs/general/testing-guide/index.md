@@ -21,9 +21,9 @@ This document explains the testing infrastructure for Johnny Reborn.
 | Field | Value |
 |---|---:|
 | Source path | `docs/general/testing-guide.md` |
-| Lines | 223 |
-| Approx. words | 729 |
-| Code fences | 8 |
+| Lines | 239 |
+| Approx. words | 811 |
+| Code fences | 9 |
 
 ## Outline
 
@@ -34,13 +34,13 @@ This document explains the testing infrastructure for Johnny Reborn.
 -     Core Functionality Tests
 -     Memory Optimization Tests
 -     Visual Regression Tests
+-     PS1 Scripted Input Tests
 -   Test Coverage
 -   Adding New Tests
 -   Development Workflow
 -     General Development (main branch)
 -     PS1 Development
 -   Memory Profiling
--   Continuous Integration
 
 ## Read it in context
 

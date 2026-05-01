@@ -54,3 +54,6 @@ Start stops working on the SPI pad path again, no guide page gets produced.
 
 That is the whole philosophy of this port in miniature: make the PlayStation
 do the thing, make it repeatable, and then let the artifact tell the truth.
+
+The full operational reference is now
+[Scripted input harness]({{ '/docs/scripted-input/' | relative_url }}).
