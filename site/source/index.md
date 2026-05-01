@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 333 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 335 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -29,6 +29,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/current-status/' | relative_url }}">PS1 Port — Current Status</a><p><code>docs/ps1/current-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/development-workflow/' | relative_url }}">PS1 Development Workflow</a><p><code>docs/ps1/development-workflow.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/freeplay-mode-design/' | relative_url }}">Castaway Freeplay — Direct-Control Johnny Mode</a><p><code>docs/ps1/freeplay-mode-design.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/hand-rolled-asm-feasibility/' | relative_url }}">Hand-Rolled MIPS Assembly — Feasibility Research</a><p><code>docs/ps1/hand-rolled-asm-feasibility.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/hardware-specs/' | relative_url }}">PlayStation 1 - Hardware Specifications</a><p><code>docs/ps1/hardware-specs.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-expansion-design/' | relative_url }}">Holiday Expansion Design</a><p><code>docs/ps1/holidays-expansion-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-implementation-plan/' | relative_url }}">Holiday Art Implementation Plan</a><p><code>docs/ps1/holidays-implementation-plan.md</code></p></li>
@@ -43,6 +44,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/README/' | relative_url }}">Johnny Reborn — PlayStation 1 Port</a><p><code>docs/ps1/README.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-quickstart/' | relative_url }}">PS1 Headless Regression Testing Harness</a><p><code>docs/ps1/regtest-quickstart.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.4.20/' | relative_url }}">v0.4.20-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.4.20.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-status/' | relative_url }}">PS1 Scene Pipeline Status</a><p><code>docs/ps1/scene-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TESTING/' | relative_url }}">PS1 Port Testing Guide</a><p><code>docs/ps1/TESTING.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TODO/' | relative_url }}">PS1 Port TODO</a><p><code>docs/ps1/TODO.md</code></p></li>
