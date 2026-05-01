@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Johnny Castaway PS1 — fan port</title>
-  <meta name="description" content="A PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
+  <meta name="description" content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
 
   <meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
-  <meta property="og:description"  content="A PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
+  <meta property="og:description"  content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="./assets/img/branding/og-image.png" />
@@ -67,9 +67,9 @@
     <img src="./assets/img/fishing1-ps1-cast.png" alt="Johnny stands on a small island casting a fishing line while a Sierra-style cloud drifts past, rendered on a PS1." />
   </div>
   <div class="hero-text">
-    <p class="hero-eyebrow">A fan port · v0.4.20</p>
+    <p class="hero-eyebrow">A fan port · v0.5.0</p>
     <h1>Johnny Castaway PS1</h1>
-    <p class="tagline">A PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
+    <p class="tagline">A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
     <div class="hero-cta">
       <a class="btn btn--primary" href="./play/">Download &amp; play</a>
       <a class="btn" href="./about/">How it works</a>
@@ -94,7 +94,7 @@
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> v0.4.20-ps1</span>
+  <span><strong>Latest:</strong> v0.5.0-ps1</span>
   <span class="pill pill--ok">2 / 63 scenes validated</span>
   <span class="pill pill--info">PSn00bSDK 0.24</span>
   <span class="pill pill--info">DuckStation</span>
@@ -193,15 +193,18 @@ order, with the same variants the original randomized between. The art
 is unchanged. The 4 original holiday decorations (Christmas, New Year,
 Halloween, St. Patrick’s Day) keep their original sprites.</p>
 
-  <p><strong>Added on top.</strong> Closed captions for every scene (off by default, in a
+  <p><strong>Added on top.</strong> Freeplay/debug mode, where Johnny can be walked around
+the island directly with the controller and debug-selected gags, visitors,
+sound effects, holidays, tide, raft, and day/night state. Closed captions
+for every scene (off by default, in a
 <a href="./docs/captions/">fresh-authored corpus</a> from
 scene content — not lifted from any prior project). A holiday calendar
 expanded from 4 to <strong>36 holidays</strong> with movable feasts computed by
 pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
 no expiring date tables. A pause menu with options toggles
-(sound / day-night / tide / raft / captions / perf), a Set Time editor,
-a Set Island Position nudger, a Set RNG Seed override, and a Credits
-screen that names exactly what’s owed to whom.</p>
+split into Freeplay Options, World Options, Accessibility, Sound Test,
+System, date/time editing, island-position nudging, and RNG seed override.
+The website credits and legal pages name exactly what’s owed to whom.</p>
 
   <p>The full menu of what’s added vs preserved lives at
 <a href="./about/">/about/</a>. The implementations live at
@@ -211,7 +214,7 @@ at <a href="./resources/">/resources/</a>.</p>
 
   <h2 id="the-shortest-possible-welcome">The shortest possible welcome</h2>
 
-  <p>The pause menu’s Credits screen reads, verbatim:</p>
+  <p>The project’s credits text reads, verbatim:</p>
 
   <blockquote>
     <p>A labor of love by Hunter Davis.</p>
@@ -224,8 +227,8 @@ Open source and free.
 github.com/huntergdavis/johnny-castaway-ps1</p>
   </blockquote>
 
-  <p>That text is the voice of the in-game credits. It is also the voice of
-this whole site. There’s no marketing cope, no “experience the magic,”
+  <p>That text is the voice of the project credits. It is also the voice of
+this whole site. There’s no marketing copy, no “experience the magic,”
 no Patreon banner above the fold. It’s a small project about a small
 man on a small island. The disc plays. That’s what mattered.</p>
 
@@ -234,6 +237,14 @@ man on a small island. The disc plays. That’s what mattered.</p>
 <h2 id="latest-from-the-devlog">Latest from the devlog</h2>
 
 <ul class="devlog-list">
+
+  <li>
+    <time datetime="2026-05-01">2026-05-01</time>
+    <div>
+      <a href="./devlog/freeplay-debug-mode/">Freeplay debug mode — May 1, 2026</a>
+      <span class="summary">Direct-control Johnny moved from design sketch to a playtestable PS1 mode: analog walking, fishing, menu-driven gag/visitor catalogs, immediate world toggles, frog loading transitions, and a stricter no-per-frame-allocation rule.</span>
+    </div>
+  </li>
 
   <li>
     <time datetime="2026-04-25">2026-04-25</time>
@@ -264,14 +275,6 @@ man on a small island. The disc plays. That’s what mattered.</p>
     <div>
       <a href="./devlog/fishing1-pixel-perfect-plan/">Fishing 1 Pixel-Perfect Plan — April 21, 2026</a>
       <span class="summary">The plan written the day work started on getting fishing1 visually identical to the original PC version across every islandState variation.</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-04-16">2026-04-16</time>
-    <div>
-      <a href="./devlog/ocean-restore-plan/">Ocean Restore Plan — April 16, 2026</a>
-      <span class="summary">Short-term plan for restoring the ocean draw path on the prerender pilot, with the title -&gt; fgpilot fishing1 path locked in as the safe baseline.</span>
     </div>
   </li>
 
@@ -313,7 +316,7 @@ the user supplies themselves.</p>
           Code: <a href="./legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.4.20-ps1)
+          (v0.5.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

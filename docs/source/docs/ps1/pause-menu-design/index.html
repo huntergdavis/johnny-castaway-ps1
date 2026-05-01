@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
-  <title>Pause Menu — Design — Johnny Castaway PS1</title>
+  <title>Pause Menu Design — Johnny Castaway PS1</title>
   <meta name="description" content="Generated source-library page for docs/ps1/pause-menu-design.md" />
 
-  <meta property="og:title"        content="Pause Menu — Design — Johnny Castaway PS1" />
+  <meta property="og:title"        content="Pause Menu Design — Johnny Castaway PS1" />
   <meta property="og:description"  content="Generated source-library page for docs/ps1/pause-menu-design.md" />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
@@ -66,7 +66,7 @@
 
     <header class="page-header">
       <p class="eyebrow">Source library</p>
-      <h1>Pause Menu — Design</h1>
+      <h1>Pause Menu Design</h1>
       <p class="subtitle">docs/ps1/pause-menu-design.md</p>
       <hr class="rule" />
     </header>
@@ -80,7 +80,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>Two compounding findings from the audit:</p>
+<p>The pause menu is the PS1 port’s in-game control room. It opens with Start, draws a translucent dim quad and compact panel over the current framebuffer, and renders text with the embedded 8x8 ASCII font atlas shared with closed captions.</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -98,15 +98,15 @@ should not pretend the interesting work only happened in the polished essays.</p
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">375</td>
+      <td style="text-align: right">131</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">2541</td>
+      <td style="text-align: right">564</td>
     </tr>
     <tr>
       <td>Code fences</td>
-      <td style="text-align: right">3</td>
+      <td style="text-align: right">1</td>
     </tr>
   </tbody>
 </table>
@@ -114,48 +114,15 @@ should not pretend the interesting work only happened in the polished essays.</p
 <h2 id="outline">Outline</h2>
 
 <ul>
-  <li>Pause Menu — Design</li>
-  <li>
-    <ol>
-      <li>Why the current pause never worked</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Decisions locked</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Final menu structure</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Debug Info sub-screen — single dense page</li>
-    </ol>
-  </li>
-  <li>Data sources</li>
-  <li>
-    <ol>
-      <li>Render pipeline (locked)</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Visual approach — why POLYF4 not pixel-modify</li>
-    </ol>
-  </li>
-  <li>Bug A: doesn’t mark dirty</li>
-  <li>Bug B: no clean copy in rect-mode</li>
-  <li>Why POLYF4 wins</li>
-  <li>
-    <ol>
-      <li>Source-level red-team — preflight blockers</li>
-    </ol>
-  </li>
-  <li>Blocker 1: pausemenu.c not in CMakeLists.txt</li>
-  <li>Blocker 2: three undefined externs</li>
+  <li>Pause Menu Design</li>
+  <li>Controller Contract</li>
+  <li>Menu Structure</li>
+  <li>State Enum</li>
+  <li>Freeplay Integration</li>
+  <li>World Options</li>
+  <li>Accessibility And Sound Test</li>
+  <li>Render Pipeline</li>
+  <li>Memory Rules</li>
 </ul>
 
 <h2 id="read-it-in-context">Read it in context</h2>
@@ -184,7 +151,7 @@ should not pretend the interesting work only happened in the polished essays.</p
           Code: <a href="../../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.4.20-ps1)
+          (v0.5.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Freeplay debug mode — May 1, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Implementation notes for freeplay/debug mode in the Johnny Castaway PS1 port." />
+
+  <meta property="og:title"        content="Freeplay debug mode — May 1, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Implementation notes for freeplay/debug mode in the Johnny Castaway PS1 port." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-05-01">
+        May 1, 2026
+      </time>
+    </p>
+    <h1>Freeplay debug mode — May 1, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Direct-control Johnny moved from design sketch to a playtestable PS1 mode: analog walking, fishing, menu-driven gag/visitor catalogs, immediate world toggles, frog loading transitions, and a stricter no-per-frame-allocation rule.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>Freeplay changed the project from a passive screensaver port into something
+you can touch.</p>
+
+<p>That sounds small until you look at what the PS1 runtime had become by this
+point. The ordinary scenes are carefully captured foreground streams. They
+are deterministic, measurable, and repeatable. Freeplay is none of those
+things. It reads the controller every frame, moves Johnny around the island,
+lets the player fish, opens debug catalogs, changes the tide and holidays,
+and then has to cleanly hand the whole machine back to the normal random
+screensaver loop.</p>
+
+<p>The breakthrough was not making the controller move a sprite. The
+breakthrough was refusing to make a second engine. Freeplay reuses the same
+pieces that made walking safe in <code class="language-plaintext highlighter-rouge">v0.4.20</code>: a known island backdrop, sparse
+clean rects, the shared walk renderer, holiday stamping, captions, SPU sound,
+and the pause menu. It is live C code, but it stands on the replay runtime
+instead of fighting it.</p>
+
+<h2 id="the-control-scheme-got-smaller">The control scheme got smaller</h2>
+
+<p>The early builds tried to use the whole controller. Gags on face buttons.
+Summons on face buttons. L1 shortcuts. R1 shortcuts. Context-sensitive Cross.
+Combos. It was technically cute and practically awful.</p>
+
+<p>The current version is deliberately simpler:</p>
+
+<ul>
+  <li>D-pad or analog walks Johnny.</li>
+  <li>L2 slows him down.</li>
+  <li>R2 speeds him up.</li>
+  <li>Circle fishes.</li>
+  <li>Select clears and rebuilds the freeplay screen.</li>
+  <li>R1 plus D-pad changes the four world states: day/night, tide, raft, and
+holiday.</li>
+  <li>Start opens the pause menu.</li>
+</ul>
+
+<p>Everything else moved into menu catalogs. That was the right split. The
+controller is for the things a player does while looking at Johnny. Catalogs
+are for actions that need names, descriptions, source asset filenames, frame
+counts, and memory notes.</p>
+
+<h2 id="the-pause-menu-became-a-debug-cockpit">The pause menu became a debug cockpit</h2>
+
+<p>Freeplay Options now owns Gags, Visitors, Controls, and Clear. Gags and
+Visitors are selector pages: title, BMP, frame count, rough memory cost,
+description, and “X spawn now.”</p>
+
+<p>That sounds like UI polish, but it is also engineering leverage. A failed
+visitor load can skip cleanly instead of crashing. A bad frame range can be
+identified by name instead of by button folklore. A sound can be tested from
+the sound-test menu without needing to stumble into the one original scene
+that plays it.</p>
+
+<p>Circle is Back everywhere. That rule matters more than it sounds. A debug
+mode that needs a handwritten controller legend every time you open it is
+not finished.</p>
+
+<h2 id="the-frog-clock-became-the-transition-contract">The frog clock became the transition contract</h2>
+
+<p>Freeplay has several expensive boundaries:</p>
+
+<ul>
+  <li>enter from an arbitrary screensaver scene;</li>
+  <li>exit back to the normal loop;</li>
+  <li>clear the freeplay screen;</li>
+  <li>apply world options from the pause menu.</li>
+</ul>
+
+<p>Those boundaries now show the original meanwhile frog clock. It is the
+right visual language for Johnny, and it also tells the tester that the
+runtime is doing real teardown/rebuild work rather than freezing.</p>
+
+<p>The memory rule is strict: the frog frame uses a temporary <code class="language-plaintext highlighter-rouge">TTtmSlot</code>, draws
+one frame, and releases <code class="language-plaintext highlighter-rouge">MEANWHIL.BMP</code> unconditionally. It is a loading
+frame, not a permanent resident.</p>
+
+<h2 id="memory-was-the-real-feature">Memory was the real feature</h2>
+
+<p>The freeplay bug reports were exactly the kind of bug a forever-running PS1
+program deserves: black pixels left by an overlay, a delayed second entry
+that looked like a freeze, and a crash after leaving freeplay once.</p>
+
+<p>The fixes tightened the shape of the mode:</p>
+
+<ul>
+  <li>overlays mark their screen-space rows dirty before present, so captions
+and banners do not leave stale pixels behind;</li>
+  <li>freeplay hard-frees its clean-rect snapshot on exit instead of leaving a
+dormant 300+ KB allocation parked in the heap;</li>
+  <li>default entry/exit no longer runs largest-heap probes, because probes are
+malloc/free cycles and therefore part of the thing being tested;</li>
+  <li>heap probes remain behind <code class="language-plaintext highlighter-rouge">freeplay-log</code>, <code class="language-plaintext highlighter-rouge">freeplay-detail</code>, and
+<code class="language-plaintext highlighter-rouge">freeplay-debug</code>;</li>
+  <li>movement, ticking, and drawing do no allocation in the steady-state frame
+loop.</li>
+</ul>
+
+<p>That is the bar for this project now. If a feature only works for five
+minutes, it does not work.</p>
+
+<h2 id="what-got-signed-off">What got signed off</h2>
+
+<p>The last visual pass was the important one because the remaining bugs were
+all “forever program” bugs, not feature-checkbox bugs:</p>
+
+<ul>
+  <li>entry from the normal pause menu shows the frog immediately;</li>
+  <li>exit from freeplay shows the frog before the screensaver loop resumes;</li>
+  <li>second entry no longer has a dead pause that reads as a freeze;</li>
+  <li>world options apply immediately in freeplay;</li>
+  <li>R1 plus D-pad changes day/night, tide, raft, and holidays immediately;</li>
+  <li>Select clears the screen and rebuilds the island;</li>
+  <li>waves run at the same visual cadence as the screensaver path;</li>
+  <li>the frame loop stays allocation-free unless telemetry is explicitly enabled.</li>
+</ul>
+
+<p>That is the <code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> milestone: the first version where Johnny
+Castaway on PS1 is not just watching the island, but walking around on it.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/freeplay-mode-design.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          2 / 63 scenes validated
+          (v0.5.0-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

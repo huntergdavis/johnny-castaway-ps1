@@ -74,11 +74,11 @@
   <div class="page-body">
     <h2 id="latest-build">Latest build</h2>
 
-<p><strong>v0.4.20-ps1</strong> — see <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.4.20-ps1">release notes</a>.</p>
+<p><strong>v0.5.0-ps1</strong> — see <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.5.0-ps1">release notes</a>.</p>
 
 <p class="hero-cta">
-  <a class="btn btn--primary" href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/download/v0.4.20-ps1/jcreborn.bin">Download .bin</a>
-  <a class="btn" href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/download/v0.4.20-ps1/jcreborn.cue">Download .cue</a>
+  <a class="btn btn--primary" href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/download/v0.5.0-ps1/jcreborn.bin">Download .bin</a>
+  <a class="btn" href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/download/v0.5.0-ps1/jcreborn.cue">Download .cue</a>
   <a class="btn btn--small" href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">All releases</a>
 </p>
 
@@ -143,32 +143,87 @@ optional and reachable with <strong>Start</strong>.</p>
   <tbody>
     <tr>
       <td>Start</td>
-      <td>Open / close pause menu</td>
+      <td>Open pause menu / resume</td>
     </tr>
     <tr>
-      <td>D-Pad ↑/↓</td>
-      <td>Move cursor in menu</td>
+      <td>D-pad / left analog</td>
+      <td>Move cursor or adjust values</td>
     </tr>
     <tr>
-      <td>D-Pad ←/→</td>
-      <td>Cycle a toggle (sound, captions, holiday, …)</td>
-    </tr>
-    <tr>
-      <td>X</td>
+      <td>Cross</td>
       <td>Confirm / select</td>
     </tr>
     <tr>
-      <td>Triangle</td>
-      <td>Back / cancel</td>
+      <td>Circle</td>
+      <td>Back from any menu or submenu</td>
     </tr>
   </tbody>
 </table>
 
-<p>Inside the pause menu you can: mute sound, toggle closed captions,
-force a holiday, advance to the next scene, set the in-game date,
-move the island anchor, set the RNG seed, and read the credits.
-The full controller map and pause-menu walkthrough lands at
-<code class="language-plaintext highlighter-rouge">/play/controls/</code> in P2.</p>
+<p>Inside the pause menu you can: enter or exit Freeplay, mute sound,
+toggle closed captions, force day/night, tide, raft, and holidays,
+advance to the next scene, set the in-game date, move the island
+anchor, set the RNG seed, and open the sound test.</p>
+
+<h2 id="freeplay-controls">Freeplay controls</h2>
+
+<p>Freeplay launches from the pause menu. It is the direct-control Johnny
+mode added in <code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Button</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>D-pad / left analog</td>
+      <td>Walk Johnny. Movement cancels the current action immediately.</td>
+    </tr>
+    <tr>
+      <td>L2 held</td>
+      <td>Slow walk.</td>
+    </tr>
+    <tr>
+      <td>R2 held</td>
+      <td>Fast walk.</td>
+    </tr>
+    <tr>
+      <td>Circle</td>
+      <td>Fish from the nearest side of the island.</td>
+    </tr>
+    <tr>
+      <td>Select</td>
+      <td>Clear the screen, cancel transient actions, and rebuild the island.</td>
+    </tr>
+    <tr>
+      <td>R1 + Up</td>
+      <td>Toggle day/night.</td>
+    </tr>
+    <tr>
+      <td>R1 + Down</td>
+      <td>Toggle high/low tide.</td>
+    </tr>
+    <tr>
+      <td>R1 + Left</td>
+      <td>Cycle raft stage.</td>
+    </tr>
+    <tr>
+      <td>R1 + Right</td>
+      <td>Cycle holiday overlay.</td>
+    </tr>
+    <tr>
+      <td>Start</td>
+      <td>Open pause menu.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The full implementation notes live at
+<a href="../docs/freeplay/">Freeplay and debug mode</a> and
+<a href="../docs/pause-menu/">Pause menu</a>.</p>
 
 <h2 id="real-ps1-hardware">Real PS1 hardware</h2>
 
@@ -201,7 +256,7 @@ just one author and a tip jar that doesn’t exist. See the <a href="../faq/">FA
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.4.20-ps1)
+          (v0.5.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

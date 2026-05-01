@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
-  <title>Castaway Freeplay — Direct-Control Johnny Mode — Johnny Castaway PS1</title>
+  <title>Castaway Freeplay And Debug Mode — Johnny Castaway PS1</title>
   <meta name="description" content="Generated source-library page for docs/ps1/freeplay-mode-design.md" />
 
-  <meta property="og:title"        content="Castaway Freeplay — Direct-Control Johnny Mode — Johnny Castaway PS1" />
+  <meta property="og:title"        content="Castaway Freeplay And Debug Mode — Johnny Castaway PS1" />
   <meta property="og:description"  content="Generated source-library page for docs/ps1/freeplay-mode-design.md" />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
@@ -66,7 +66,7 @@
 
     <header class="page-header">
       <p class="eyebrow">Source library</p>
-      <h1>Castaway Freeplay — Direct-Control Johnny Mode</h1>
+      <h1>Castaway Freeplay And Debug Mode</h1>
       <p class="subtitle">docs/ps1/freeplay-mode-design.md</p>
       <hr class="rule" />
     </header>
@@ -80,7 +80,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>A perpetual Saturday-morning Johnny Castaway: the player drives Johnny around the island and the world responds. Walking, fishing, building, summoning visitors, surviving cosmic moments. Every press reveals something — sometimes a gag you’ve seen, sometimes one you haven’t. The sandcastle you built two minutes ago is still there. The fire you lit is still flickering. Friday remembers your previous visits. King Kong might appear on the horizon if you ask…</p>
+<p>Freeplay is the direct-control Johnny mode. It is also the debugging cockpit for interactive asset tests that do not fit into the passive screensaver loop.</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -98,15 +98,15 @@ should not pretend the interesting work only happened in the polished essays.</p
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">708</td>
+      <td style="text-align: right">244</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">4596</td>
+      <td style="text-align: right">1143</td>
     </tr>
     <tr>
       <td>Code fences</td>
-      <td style="text-align: right">7</td>
+      <td style="text-align: right">2</td>
     </tr>
   </tbody>
 </table>
@@ -114,40 +114,18 @@ should not pretend the interesting work only happened in the polished essays.</p
 <h2 id="outline">Outline</h2>
 
 <ul>
-  <li>Castaway Freeplay — Direct-Control Johnny Mode</li>
-  <li>
-    <ol>
-      <li>Vision</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Scope &amp; non-goals</li>
-    </ol>
-  </li>
-  <li>In scope</li>
-  <li>Non-goals</li>
-  <li>
-    <ol>
-      <li>Architectural decision</li>
-    </ol>
-  </li>
-  <li>
-    <ol>
-      <li>Control surface</li>
-    </ol>
-  </li>
-  <li>Tier A — always active</li>
-  <li>Tier B — self-expression (no modifier)</li>
-  <li>Tier C — outside world (no modifier)</li>
-  <li>Tier D — modifier combos</li>
-  <li>Tier E — held / continuous</li>
-  <li>Tier F — hidden (Konami code &amp; friends)</li>
-  <li>
-    <ol>
-      <li>Self-gag catalog (Square cycle)</li>
-    </ol>
-  </li>
+  <li>Castaway Freeplay And Debug Mode</li>
+  <li>Purpose</li>
+  <li>Entry And Exit</li>
+  <li>Final Controller Contract</li>
+  <li>Pause Menu Structure</li>
+  <li>Runtime Architecture</li>
+  <li>Fishing</li>
+  <li>World State</li>
+  <li>Loading Indicator</li>
+  <li>Memory And Long-Run Rules</li>
+  <li>Telemetry</li>
+  <li>Signoff Checklist</li>
 </ul>
 
 <h2 id="read-it-in-context">Read it in context</h2>
@@ -176,7 +154,7 @@ should not pretend the interesting work only happened in the polished essays.</p
           Code: <a href="../../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.4.20-ps1)
+          (v0.5.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

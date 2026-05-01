@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.4.20-ps1." />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1." />
 
   <meta property="og:title"        content="History — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.4.20-ps1." />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -65,7 +65,7 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">2025-10 to v0.4.20-ps1</p>
+      <p class="eyebrow">2025-10 to v0.5.0-ps1</p>
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.</p>
       <hr class="rule" />
@@ -266,7 +266,7 @@ between milestones.</p>
 component-completeness phases:</p>
 
 <ul>
-  <li><strong>Closed captions.</strong> Pause -&gt; Options -&gt; Captions: ON. A dark
+  <li><strong>Closed captions.</strong> Pause -&gt; Accessibility -&gt; Captions: ON. A dark
 band at the bottom of the frame for ~5 seconds at scene start
 with descriptive subtitle text. Corpus from the upstream
 <code class="language-plaintext highlighter-rouge">closed_captions</code> branch of <code class="language-plaintext highlighter-rouge">jc_reborn</code>. The original sequential
@@ -280,10 +280,9 @@ from <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>. Des
   <li><strong>Pause menu locked design.</strong> Start opens an overlay mid-scene,
 custom embedded 8x8 ASCII font (because PSn00bSDK’s <code class="language-plaintext highlighter-rouge">FntFlush</code>
 is empirically broken in the scene-runtime context),
-<code class="language-plaintext highlighter-rouge">POLY_F4</code> dim quad. Items: Resume, Options (Sound, Day/Night,
-Tide, Raft, Holiday, Captions, Perf log, Set Time/Date, Set
-Island Pos, Set RNG Seed), Save Settings to Memcard, Reset
-Current Scene, Next Scene, Debug Info, Credits.</li>
+<code class="language-plaintext highlighter-rouge">POLY_F4</code> dim quad. By <code class="language-plaintext highlighter-rouge">v0.5.0</code>, the menu is split into compact
+sub-screens: Freeplay Options, World Options, Accessibility,
+Sound Test, System, and the date/island/seed editors.</li>
   <li><strong>Memcard persistence.</strong> Pause-menu choices save to <code class="language-plaintext highlighter-rouge">bu00:</code>
 block 0; restore on boot. Edge cases on a fresh / formatted
 card are still under iteration.</li>
@@ -297,16 +296,34 @@ unusable in PSn00bSDK 0.24 + DuckStation. One change from the
 reference: poll <code class="language-plaintext highlighter-rouge">tx_len</code> is <strong>5</strong>, not 4. DuckStation only
 delivers button bytes when the full 5-byte sequence comes
 from the TX buffer.</li>
+  <li><strong>Story-loop walking.</strong> <code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> made Johnny walk between
+scene endpoints instead of teleporting, with palm-tree occlusion,
+wave motion, holiday restamping, and a persistent walk-erase buffer
+that survived a long DuckStation soak.</li>
+  <li><strong>Freeplay/debug mode.</strong> <code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> made Johnny controllable.
+The mode launches from the pause menu, shows the original meanwhile
+frog during teardown/rebuild, lets the player walk with D-pad or
+analog, fish, clear the screen, and change world state immediately.
+The rest of the debug surface moved into menu catalogs: gags,
+visitors, sound effects, controls, world options, accessibility,
+and system pages. The important engineering rule was the same as
+the walking release: the steady-state frame loop does not allocate.</li>
 </ul>
 
-<h2 id="where-it-stands-at-v0420-ps1">Where it stands at v0.4.20-ps1</h2>
+<h2 id="where-it-stands-at-v050-ps1">Where it stands at v0.5.0-ps1</h2>
 
 <ul>
-  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></strong>.</li>
+  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong>.</li>
   <li>Validated scenes: <strong>2 / 63</strong>
 (<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>).</li>
   <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">FISHING 3</code></strong>.</li>
-  <li>Last loop-stability release: <strong><code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code></strong> (commit
+  <li>Freeplay/debug release: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong> – direct-control Johnny,
+pause-menu debug catalogs, frog loading transitions, and a
+no-allocation steady-state freeplay loop.</li>
+  <li>Walking release: <strong><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></strong> – story-loop Johnny walking
+between scene endpoints.</li>
+  <li>Last loop-stability release before the walking/freeplay milestones:
+<strong><code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code></strong> (commit
 <code class="language-plaintext highlighter-rouge">111efa9f</code>) – the fishing3 overnight loop-stability release;
 confirms the current runtime can run long sessions without the
 prior scene-to-scene leak.</li>
@@ -341,7 +358,7 @@ you were cheated. Open source and free.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           2 / 63 scenes validated
-          (v0.4.20-ps1)
+          (v0.5.0-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
