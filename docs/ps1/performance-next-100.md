@@ -429,6 +429,11 @@ The narrower `{253,265}` retry is accepted. It keeps `loop_vb=2092` and
 when a broad group saves more reads but adds visible pressure, split it down to
 the smallest range that removes one read cleanly before trying any adjacent
 cluster.
+The FISHING3 high `{79,95}` medium-phase candidate is rejected as exact-flat:
+it preserved `2096/1952`, `blocking_vb=18`, `prefetch_overrun_vb=13`, and
+`loop_reads=41` while shifting hot symbols by `+4` bytes. Do not keep
+hand-coding high-tide groups from estimated slack alone; this route now needs a
+generated cost model that predicts an actual key-metric change.
 
 Acceptance rule: use the exact fishing1 headless gate first. Promote only if a
 key VBlank metric improves without regressing `blocking_vb`,
