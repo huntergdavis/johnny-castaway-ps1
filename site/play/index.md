@@ -51,17 +51,37 @@ optional and reachable with **Start**.
 
 | Button            | Action                                           |
 |-------------------|--------------------------------------------------|
-| Start             | Open / close pause menu                          |
-| D-Pad ↑/↓         | Move cursor in menu                              |
-| D-Pad ←/→         | Cycle a toggle (sound, captions, holiday, …)    |
-| X                 | Confirm / select                                 |
-| Triangle          | Back / cancel                                    |
+| Start             | Open pause menu / resume                         |
+| D-pad / left analog | Move cursor or adjust values                   |
+| Cross             | Confirm / select                                 |
+| Circle            | Back from any menu or submenu                    |
 
-Inside the pause menu you can: mute sound, toggle closed captions,
-force a holiday, advance to the next scene, set the in-game date,
-move the island anchor, set the RNG seed, and read the credits.
-The full controller map and pause-menu walkthrough lands at
-`/play/controls/` in P2.
+Inside the pause menu you can: enter or exit Freeplay, mute sound,
+toggle closed captions, force day/night, tide, raft, and holidays,
+advance to the next scene, set the in-game date, move the island
+anchor, set the RNG seed, and open the sound test.
+
+## Freeplay controls
+
+Freeplay launches from the pause menu. It is the direct-control Johnny
+mode added in `{{ site.release.tag }}`.
+
+| Button | Action |
+|---|---|
+| D-pad / left analog | Walk Johnny. Movement cancels the current action immediately. |
+| L2 held | Slow walk. |
+| R2 held | Fast walk. |
+| Circle | Fish from the nearest side of the island. |
+| Select | Clear the screen, cancel transient actions, and rebuild the island. |
+| R1 + Up | Toggle day/night. |
+| R1 + Down | Toggle high/low tide. |
+| R1 + Left | Cycle raft stage. |
+| R1 + Right | Cycle holiday overlay. |
+| Start | Open pause menu. |
+
+The full implementation notes live at
+[Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}) and
+[Pause menu]({{ '/docs/pause-menu/' | relative_url }}).
 
 ## Real PS1 hardware
 

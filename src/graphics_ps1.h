@@ -159,6 +159,7 @@ void grToggleFullScreen();
  * Sets currDirty only — caller is responsible for prevDirty if they
  * need the upload to survive grRestoreBgTiles. */
 void grMarkAllTilesDirty(void);
+void grMarkScreenRectDirty(int x0, int y0, int x1, int y1);
 
 /* Force the next grDrawBackground call to upload all 4 tiles in full.
  * Sets BOTH currDirty AND prevDirty so the upload survives
@@ -211,12 +212,18 @@ void grDrawSpriteFlip(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint1
 /* Extended sprite drawing - allows caller to provide their own OT and primitive buffer */
 int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, sint16 x, sint16 y);
 void grInitEmptyBackground();
+void grShowMeanwhileLoadingFrame(uint16 tick);
 void grSaveCleanBgTiles(void);
+void grSetSaveCleanOnScreenLoad(int enabled);
 void grFreeCleanBgTiles(void);
+void grReleaseBackgroundTiles(void);
 void grEnsureCleanBgTiles(void);
 /* Rect-based clean backup (option B): scenes declare small dynamic regions. */
 int  grSaveCleanBgRects(const sint16 *x, const sint16 *y,
                         const uint16 *w, const uint16 *h, int n);
+int  grSaveCleanBgRectsSplit(const sint16 *x, const sint16 *y,
+                             const uint16 *w, const uint16 *h, int n,
+                             uint32 maxBytesPerRect);
 void grRestoreBgFromRects(void);
 void grFreeCleanBgRects(void);
 void grDeactivateCleanBgRects(void);

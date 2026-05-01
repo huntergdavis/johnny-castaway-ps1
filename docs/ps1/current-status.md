@@ -3,8 +3,8 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-04-30 (release `v0.4.20-ps1`; walking-loop
-release with stabilized walk erase memory).
+**Last updated:** 2026-05-01 (release `v0.5.0-ps1`; freeplay/debug
+mode release with direct-control Johnny).
 
 ## Overall
 
@@ -25,6 +25,7 @@ promoted to the validated ledger.
 | Resource system (hashed + LRU) | Complete |
 | Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 2/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
+| Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
 | Telemetry / debug overlay | Complete |
 | Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF`/`JCPERF2` TTY lines (OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel`) |
@@ -39,6 +40,10 @@ file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.5.0-ps1` — freeplay/debug release; promotes direct-control Johnny,
+  pause-menu gag/visitor catalogs, sound test, immediate world toggles,
+  frog-clock loading transitions, Select clear-screen rebuild, and
+  freeplay memory rules into the main release build.
 - `v0.4.20-ps1` — walking-loop release; promotes story-loop Johnny
   walking, palm-tree occlusion, holiday persistence during transitions,
   and deterministic walk erase memory into the main release build.
@@ -178,6 +183,8 @@ baseline.
 - [pause-menu-design.md](pause-menu-design.md) — locked design
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 36-holiday plan
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walking notes
+- [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.5.0.md](release-notes-0.5.0.md) — freeplay/debug release notes
 - [release-notes-0.4.20.md](release-notes-0.4.20.md) — walking-loop release notes
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
 - [development-workflow.md](development-workflow.md) — bring-up loop

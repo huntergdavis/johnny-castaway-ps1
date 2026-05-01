@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.4.20-ps1
+eyebrow: 2025-10 to v0.5.0-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.4.20-ps1.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1.
 ---
 
 ## The pre-port era
@@ -199,7 +199,7 @@ between milestones.
 The phases that lived alongside the grind, recently, are the
 component-completeness phases:
 
-- **Closed captions.** Pause -> Options -> Captions: ON. A dark
+- **Closed captions.** Pause -> Accessibility -> Captions: ON. A dark
   band at the bottom of the frame for ~5 seconds at scene start
   with descriptive subtitle text. Corpus from the upstream
   `closed_captions` branch of `jc_reborn`. The original sequential
@@ -213,10 +213,9 @@ component-completeness phases:
 - **Pause menu locked design.** Start opens an overlay mid-scene,
   custom embedded 8x8 ASCII font (because PSn00bSDK's `FntFlush`
   is empirically broken in the scene-runtime context),
-  `POLY_F4` dim quad. Items: Resume, Options (Sound, Day/Night,
-  Tide, Raft, Holiday, Captions, Perf log, Set Time/Date, Set
-  Island Pos, Set RNG Seed), Save Settings to Memcard, Reset
-  Current Scene, Next Scene, Debug Info, Credits.
+  `POLY_F4` dim quad. By `v0.5.0`, the menu is split into compact
+  sub-screens: Freeplay Options, World Options, Accessibility,
+  Sound Test, System, and the date/island/seed editors.
 - **Memcard persistence.** Pause-menu choices save to `bu00:`
   block 0; restore on boot. Edge cases on a fresh / formatted
   card are still under iteration.
@@ -230,6 +229,18 @@ component-completeness phases:
   reference: poll `tx_len` is **5**, not 4. DuckStation only
   delivers button bytes when the full 5-byte sequence comes
   from the TX buffer.
+- **Story-loop walking.** `v0.4.20-ps1` made Johnny walk between
+  scene endpoints instead of teleporting, with palm-tree occlusion,
+  wave motion, holiday restamping, and a persistent walk-erase buffer
+  that survived a long DuckStation soak.
+- **Freeplay/debug mode.** `v0.5.0-ps1` made Johnny controllable.
+  The mode launches from the pause menu, shows the original meanwhile
+  frog during teardown/rebuild, lets the player walk with D-pad or
+  analog, fish, clear the screen, and change world state immediately.
+  The rest of the debug surface moved into menu catalogs: gags,
+  visitors, sound effects, controls, world options, accessibility,
+  and system pages. The important engineering rule was the same as
+  the walking release: the steady-state frame loop does not allocate.
 
 ## Where it stands at {{ site.release.tag }}
 
@@ -237,7 +248,13 @@ component-completeness phases:
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
   (`FISHING 1`, `FISHING 2`).
 - Next scene in bring-up: **`FISHING 3`**.
-- Last loop-stability release: **`v0.3.9-ps1`** (commit
+- Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
+  pause-menu debug catalogs, frog loading transitions, and a
+  no-allocation steady-state freeplay loop.
+- Walking release: **`v0.4.20-ps1`** -- story-loop Johnny walking
+  between scene endpoints.
+- Last loop-stability release before the walking/freeplay milestones:
+  **`v0.3.9-ps1`** (commit
   `111efa9f`) -- the fishing3 overnight loop-stability release;
   confirms the current runtime can run long sessions without the
   prior scene-to-scene leak.

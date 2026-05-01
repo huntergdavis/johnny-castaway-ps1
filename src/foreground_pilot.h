@@ -38,6 +38,7 @@ unsigned long fgGetPrefetchFrameBufferBytes(void);
 int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
                             unsigned long scratchMaxBytes);
 void foregroundPilotRuntimeEnd(void);
+void foregroundPilotTeardownForFreeplay(void);
 
 /* Access to the island-background TTtmSlot that fg_pilot owns.
  * Used by walk_pilot.c (and freeplay) to source the trunk + leaf
@@ -60,6 +61,18 @@ void fgBackdropStampHolidayPublic(void);
  * looks seamed. Wraps islandAnimate(&gFgBackdropThread). */
 void fgBackdropTickWavesPublic(void);
 
+/* Runtime-scene backdrop setup for PS1-only modes that do not stream an
+ * FG2 pack, such as freeplay. This prepares OCEAN00/NIGHT + island
+ * sprites + wave thread using the current islandState, but deliberately
+ * does not save clean rects. The caller stamps its own persistent state
+ * first, then calls grSaveCleanBgRects with its chosen rect set. */
+void fgBackdropPrepareIslandRuntimePublic(void);
+
+/* Release non-sticky island backdrop slots from runtime-scene code.
+ * keepBackgrnd follows the internal fgBackdropRelease convention:
+ * non-zero keeps BACKGRND.BMP slot 0 resident for the next scene. */
+void fgBackdropReleasePublic(int keepBackgrnd);
+
 /* Re-stamp the island bg sprites (raft, palm, beach decor) from
  * BACKGRND.PSB into the bg mirror. Wipes any leftover Johnny pixels
  * the previous FG2 scene's last frame baked in. Idempotent — safe
@@ -77,9 +90,9 @@ void fgBackdropRebuildIslandBg(void);
  * island, not island+Johnny. Returns 1 on success, 0 on failure. */
 int fgBackdropSaveCleanBgRectsForWalk(void);
 
-/* Release the rect snapshots taken by fgBackdropSaveCleanBgRectsForWalk.
+/* Deactivate the rect snapshots taken by fgBackdropSaveCleanBgRectsForWalk.
  * Call when the walk completes so the next FG2 scene's setup can claim
- * its own clean rects. */
+ * the clean-rect slots while retaining their grown buffers. */
 void fgBackdropEndWalk(void);
 
 /* Suppress foregroundPilotRuntimeCompose for the duration of a walk. The

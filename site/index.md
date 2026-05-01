@@ -136,15 +136,18 @@ order, with the same variants the original randomized between. The art
 is unchanged. The 4 original holiday decorations (Christmas, New Year,
 Halloween, St. Patrick's Day) keep their original sprites.
 
-**Added on top.** Closed captions for every scene (off by default, in a
+**Added on top.** Freeplay/debug mode, where Johnny can be walked around
+the island directly with the controller and debug-selected gags, visitors,
+sound effects, holidays, tide, raft, and day/night state. Closed captions
+for every scene (off by default, in a
 [fresh-authored corpus]({{ '/docs/captions/' | relative_url }}) from
 scene content — not lifted from any prior project). A holiday calendar
 expanded from 4 to **36 holidays** with movable feasts computed by
 pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
 no expiring date tables. A pause menu with options toggles
-(sound / day-night / tide / raft / captions / perf), a Set Time editor,
-a Set Island Position nudger, a Set RNG Seed override, and a Credits
-screen that names exactly what's owed to whom.
+split into Freeplay Options, World Options, Accessibility, Sound Test,
+System, date/time editing, island-position nudging, and RNG seed override.
+The website credits and legal pages name exactly what's owed to whom.
 
 The full menu of what's added vs preserved lives at
 [/about/]({{ '/about/' | relative_url }}). The implementations live at
@@ -154,7 +157,7 @@ at [/resources/]({{ '/resources/' | relative_url }}).
 
 ## The shortest possible welcome
 
-The pause menu's Credits screen reads, verbatim:
+The project's credits text reads, verbatim:
 
 > A labor of love by Hunter Davis.
 >
@@ -165,8 +168,8 @@ The pause menu's Credits screen reads, verbatim:
 > Open source and free.
 > github.com/huntergdavis/johnny-castaway-ps1
 
-That text is the voice of the in-game credits. It is also the voice of
-this whole site. There's no marketing cope, no "experience the magic,"
+That text is the voice of the project credits. It is also the voice of
+this whole site. There's no marketing copy, no "experience the magic,"
 no Patreon banner above the fold. It's a small project about a small
 man on a small island. The disc plays. That's what mattered.
 

@@ -1,285 +1,158 @@
 ---
 layout: page
-title: Freeplay mode
+title: Freeplay and debug mode
 eyebrow: Reference
-subtitle: A runtime-driven scene where the player drives Johnny instead of watching him.
-description: Freeplay mode in the Johnny Castaway PS1 port — a runtime-driven scene with 4-way walking, 8 self-gags, 10 summons, persistent island state, and Konami-style secrets.
+subtitle: Direct-control Johnny, plus the runtime debug menus that make it safe to test.
+description: "Freeplay and debug mode in the Johnny Castaway PS1 port: controls, pause-menu catalogs, world toggles, loading transitions, and long-run memory rules."
 ---
 
-A labor of love by Hunter Davis. *Freeplay* is the only PS1 scene where
-the player drives Johnny instead of watching him. Every other scene
-(`fishing1`, `fishing2`, `fishing3`, etc.) is a captured `.FG2` pack
-played back as a pre-rendered foreground stream. Freeplay can't work that
-way — there's no canonical frame stream because gameplay branches with
-input. So freeplay lives entirely in C on the PS1, sharing the ocean-runtime
-surface (background SCR, wave tick, clean-rect restore, present) but
-computing the per-frame foreground sprite live from a state machine.
+Freeplay is the first mode in the PS1 port where Johnny is not just being
+replayed from a captured foreground pack. The player walks him around the
+island directly. The rest of the world still uses the same hard-won PS1
+runtime pieces: the ocean backdrop, sparse clean-rect restoration, holiday
+overlays, SPU sounds, captions, and the pause-menu UI.
 
-If you paid for this, you were cheated. Open source and free.
+The important distinction is architectural. `fishing1`, `fishing2`, and
+the other story scenes are `.FG2` playback. Freeplay is live C code. Every
+frame reads the controller, updates a small state machine, restores the
+background from clean rects, draws Johnny and any active prop, and presents
+the frame. That makes it useful as a play mode and as a debugging cockpit.
 
-## Vision
+## How to enter and leave
 
-A perpetual Saturday-morning Johnny Castaway: walking, fishing, building,
-summoning visitors, surviving cosmic moments. The sandcastle you built
-two minutes ago is still there. The fire you lit is still flickering.
-Friday remembers your previous visits. King Kong might appear on the
-horizon if you ask politely.
+The normal boot still starts in screensaver mode. Press **Start**, choose
+**Freeplay: OFF**, and the game tears the current scene down, shows the
+`MEANWHIL.BMP` frog clock, builds the freeplay island, and hands control
+to the player.
 
-Goal: someone watching a friend play it should say "wait, I want to try"
-within thirty seconds.
+Inside freeplay, press **Start** again to open the same pause menu. Choose
+**Freeplay: ON** to exit back to the screensaver loop. Exit also shows the
+frog clock while freeplay releases sprite slots, clean-rect memory, captions,
+and its live island backdrop.
 
-## Boot-token CLI
-
-Freeplay is a foreground-pilot scene like any other, dispatched from
-`foreground_pilot.c`. The boot tokens are written to
-[`config/ps1/BOOTMODE.TXT`]({{ site.github_url }}/blob/main/config/ps1/BOOTMODE.TXT)
-on the disc. The simplest invocation:
+Boot-token entry remains available for test discs:
 
 ```text
 fgpilot freeplay
 ```
 
-That boots straight into freeplay at scene start. To launch it from a
-live development run:
+The default release path is menu-driven because that is the real player
+flow we need to test.
 
-```bash
-./scripts/rebuild-and-let-run.sh fgpilot freeplay
-```
+## Final controller map
 
-Variant tokens that work in other scenes also work here:
+Freeplay deliberately keeps live controls small. Anything uncertain or
+catalog-like belongs in the pause-menu debug pages, where it can be named,
+described, and selected without memorizing button chords.
 
-| Token                     | Effect |
-|---------------------------|--------|
-| `night 1`                 | Force night palette at boot. R1 + ↑ toggles it inside freeplay. |
-| `lowtide 1`               | Force low-tide state at boot. R1 + ↓ toggles inside. |
-| `holiday <N>`             | Pin a holiday overlay (1..36). R1 + → cycles inside. |
-| `raft-stage <N>`          | Pin raft-build state (0..5). R1 + ← cycles inside. |
-| `island-pos <x> <y>`      | Force a specific island position. |
+| Control | Action |
+|---|---|
+| D-pad / left analog | Walk Johnny 4-way around the island. Any movement cancels the current gag/action immediately. |
+| L2 held | Slow walk. Useful for lining Johnny up by the water or tree. |
+| R2 held | Fast walk. |
+| Circle | Fish from the nearest side. Right-side fishing mirrors the left-facing sprite sequence horizontally. |
+| Select | Clear the freeplay screen, rebuild the clean background, and return to idle. This is both a player escape hatch and a heap/fragmentation safety valve. |
+| R1 + Up | Toggle day/night immediately. |
+| R1 + Down | Toggle high tide/low tide immediately. |
+| R1 + Left | Cycle raft stage 0..5 immediately. |
+| R1 + Right | Cycle holiday overlay immediately. |
+| Start | Open pause menu. |
 
-Inside `foreground_pilot.c::foregroundPilotPlay()`, the dispatch is a
-single equality test:
+In menus, **Circle** is always Back. **Cross** is Select. That rule is now
+global; no freeplay submenu is allowed to invent a second meaning for Circle.
 
-```c
-if (fgSceneEquals(gForegroundPilotScene, "freeplay")) {
-    freeplayRun();
-    return;
-}
-```
+## Pause-menu debug pages
 
-`freeplayRun()` lives in `src/scene_freeplay.c`. It mirrors
-`fgPlayOceanRuntimeScene`: preload `BACKGRND.BMP`, enable the wave
-backdrop, save clean rects, run the main loop, tear down via
-`fgBackdropRelease(1)` (keep `BACKGRND` for the next scene).
+The pause menu carries the rest of freeplay/debug mode:
 
-The "do not add this slug to `kProvenScenes`" rule is deliberate —
-freeplay should never be picked at random by the screensaver rotation.
-It's an opt-in scene only.
+| Menu | Purpose |
+|---|---|
+| Freeplay Options | Entry point for gag catalog, visitor catalog, controls, and clear screen. |
+| Freeplay Gags | Named one-shot Johnny actions with source BMP, frame count, and rough memory cost. |
+| Freeplay Visitors | Named outside-world events with source BMP, frame count, and rough memory cost. |
+| World Options | Day/night, tide, raft, holidays, and island position. In freeplay, changing a value closes the menu, shows the frog clock, rebuilds the island, and applies immediately. |
+| Sound Test | Selector-style SPU test page for individual sound effects. |
+| Accessibility | Closed captions and footstep/sound accessibility toggles. |
+| Controls | On-device reference for the freeplay controls above. |
 
-## Control surface
+This split is intentional. The joypad is for walking, fishing, clearing,
+and the four immediate world toggles. Everything with a catalog or
+metadata lives in a menu.
 
-PS1 has D-pad + 4 face buttons + L1 / L2 / R1 / R2 + Select + Start.
-Both pads are polled.
+## What the debug catalogs expose
 
-### Always active
+Gags and visitors are fail-soft. If an optional BMP cannot load, freeplay
+prints the skip banner instead of crashing. The catalog pages make that
+visible by showing the asset filename and frame count before you spawn it.
 
-| Control                  | Action |
-|--------------------------|--------|
-| D-pad / left analog      | 4-way walk. Analog has ~32-unit dead-zone. |
-| Cross (✕)                | Context verb — does the right thing for Johnny's current zone. |
-| Start (tap)              | Exit freeplay → return to screensaver random rotation. |
-| Select                   | Toggle help overlay (3-sec auto-fade or until pressed again). |
+The current gag catalog includes simple Johnny actions such as eating,
+wiping his brow, getting angry, bonking his head, strutting, and running.
+The visitor catalog includes seagulls, the tiny parade, biplane, canoe,
+boat, King Kong, Mary, pirate/fisherman cameo, flock, clouds, and the
+meanwhile panel. These are debug-selectable first; we can tune frame ranges
+and coordinates without changing the player-facing control scheme.
 
-### Self-expression (no modifier)
+## Fishing
 
-| Control      | Action |
-|--------------|--------|
-| Square (□)   | Cycle through 8 self-gags (see below). |
-| Circle (○)   | Re-fire the gag Square just did. |
+Fishing is the only direct action button because it is the core Johnny
+fantasy. Circle starts the fishing sequence from Johnny's current side of
+the island. The right-side version is not a separate Sierra asset; freeplay
+draws the same fishing frames flipped horizontally.
 
-### Outside world
+The fishing sequence is intentionally sourced from the `MJFISH` sprite
+banks rather than the old catch-only prop sheets. The target is the classic
+"standing by the water with the pole, casting, then scratching" gag. The
+frame range can still be tuned, but the architecture is now pointed at the
+right source family.
 
-| Control       | Action |
-|---------------|--------|
-| Triangle (△)  | Cycle through 10 summons (see below). |
+## Rendering and memory rules
 
-### Modifier combos
+Freeplay has to run forever. That means the frame loop is boring on
+purpose:
 
-| Combo            | Action |
-|------------------|--------|
-| L1 + Square      | Bonk-head. |
-| L1 + Triangle    | Summon Mary. |
-| L1 + Circle      | Summon King Kong. |
-| L1 + Cross       | Knock coconut on Johnny's head. |
-| R1 + ↑           | Toggle day / night. |
-| R1 + ↓           | Toggle low-tide / high-tide. |
-| R1 + →           | Cycle holiday overlay (none → Halloween → St. Patrick → Christmas → New Year). |
-| R1 + ←           | Cycle raft-build progress (0 → 1 → 2 → 3 → 4 → 5 → 0). |
-| R1 + Cross       | Light / extinguish fire at Johnny's position. |
-| R1 + Square      | Drop coconut. |
-| R1 + Triangle    | Spawn seagull flock. |
-| R1 + Circle      | Spawn cloud drift. |
-| L1 + R1          | Combo prefix for easter eggs. |
+- no malloc/free in the normal per-frame path;
+- no BMP load in the normal per-frame path;
+- clean-rect restore, sprite draw, overlay dirty marking, present;
+- optional sprite loads only on menu/action boundaries;
+- all optional action assets release their slot before replacement;
+- freeplay exit hard-frees its clean-rect snapshot instead of leaving a
+  dormant 300+ KB allocation behind;
+- the frog loader uses a local `TTtmSlot` and releases `MEANWHIL.BMP`
+  unconditionally after drawing the loading frame.
 
-### Held / continuous
+The overlay system has a separate dirty-rect hook for captions and banners.
+That matters because those overlays draw straight to the framebuffer. When
+they disappear, the underlying island rows must be marked dirty or the
+bottom of a caption/banner can leave black pixels behind.
 
-| Held         | Effect |
-|--------------|--------|
-| L2 (held)    | Sprint: walk speed 2 px / frame. |
-| R2 (held)    | Tiptoe: walk speed 0.5 px / frame. |
+Wave animation is intentionally throttled in freeplay. The shared island
+wave routine advances every fourth freeplay frame now, not every second
+frame, because the live-control loop was making the surf read too fast
+compared with the normal screensaver cadence.
 
-## Self-gag catalog (Square cycle)
+## Telemetry
 
-Mundane → escalating, so first impressions feel chill and discovery
-rewards repetition.
+Freeplay has level-gated telemetry:
 
-| # | Gag           | Sprite source                  | Vibe        | Duration |
-|--:|---------------|--------------------------------|-------------|----------|
-| 1 | Eat           | `GJFFFOOD.BMP`                 | domestic    | 90 vb |
-| 2 | Wipe brow     | `GJHOT.BMP`                    | domestic    | 90 vb |
-| 3 | Idea          | `LITEBULB.BMP` over idle Johnny | first "aha" | 120 vb |
-| 4 | Angry         | `GJANGRY.BMP`                  | first emote | 90 vb |
-| 5 | Bonk head     | `JOHNWALK.BMP`                 | slapstick   | 75 vb |
-| 6 | Drunk toggle  | `DRUNKJON.BMP`                 | silly state | sticky |
-| 7 | Snazzy strut  | `MEXCWALK.BMP`                 | charm       | 5 sec auto-revert |
-| 8 | Run away      | `GJRUNAWA.BMP`                 | action peak | 3-sec dash |
+| Boot token | Effect |
+|---|---|
+| `freeplay-log` | periodic summaries: frame count, mode, action count, summon count, clean-rect count, failures, largest heap probe |
+| `freeplay-detail` | asset load details and clean-rect rebuild detail |
+| `freeplay-debug` | on-screen debug line with mode, position, rebuild count, and asset-failure count |
 
-Cycle wraps. Drunk is a flag, not a mode — it modifies all subsequent
-walking. Circle re-fires whatever Square just did. The original sprite
-filename `MEXCWALK.BMP` is retained from the Sierra assets; the gag name
-was renamed from "Mexican walk" to "Snazzy strut" so the gag name is
-decoupled from any nationality.
-
-## Summon catalog (Triangle cycle)
-
-Ten summons, one slot at a time. Pressing Triangle during an active
-summon either queues or interrupts (tuneable).
-
-| # | Summon              | Behavior                                                    | Duration |
-|--:|---------------------|-------------------------------------------------------------|----------|
-| 1 | Seagull (single)    | Figure-8 across upper sky. SFX: distant cry.                | 6 sec |
-| 2 | Liliput parade      | 5 tiny natives cross beach in single file.                  | 8 sec |
-| 3 | Biplane fly-by      | Plane banks across sky; banner reads "JOHNNY".              | 6 sec |
-| 4 | Native canoe        | Friday paddles past. After friendship counter ≥ 1 he lands. After ≥ 3, full greeting. | 10 sec |
-| 5 | Visitor boat        | Boat lands at right shore, visitor disembarks, leaves.      | 12 sec |
-| 6 | King Kong           | Massive sprite on top-left horizon. Auto-triggers `GJRUNAWA`. | 8 sec |
-| 7 | Mary the mermaid    | Surfaces at left shore; if Johnny walks within 50 px, hearts. | 10 sec |
-| 8 | Pirate cameo        | Walks across upper beach, plants flag, leaves.              | 8 sec |
-| 9 | Seagull flock       | 3 birds on independent figure-8s.                            | 10 sec |
-|10 | "Meanwhile…" panel  | Full-screen comic panel flashes (~600 ms), dismisses.       | 1.5 sec |
-
-L1 + button shortcuts skip directly to specific summons without disturbing
-the cycle pointer. Summons do **not** lock input — Johnny stays
-controllable while seagulls / Mary / King Kong play out.
-
-## Persistent island state
-
-Once placed, things stay until the player exits freeplay. State resets on
-each fresh entry into freeplay (no memory-card persistence).
-
-| Object        | Trigger                        | Limit                        | Restore handling |
-|---------------|--------------------------------|------------------------------|------------------|
-| Sandcastle    | Cross on beach center, 5th press finalizes | Up to 3 simultaneous | Stamped into clean baseline at place time. Sub-rect re-snapshot. |
-| Lit fire      | R1 + Cross                     | One at a time               | Animated `FIRE1-5.BMP` cycle, redrawn per frame. |
-| Raft stage    | R1 + ←                         | Stage 0..5                  | Stamped at canonical raft position. Re-snapshot on change. |
-| Coconut pile  | knocked from tree              | Up to 5 piled                | Stamped at impact position. 6th triggers explosion easter egg. |
-| Day / night   | R1 + ↑                         | Either                       | Re-stamps all persistents into new clean baseline, then re-snapshots. |
-| Holiday       | R1 + →                         | One of 5                     | Loads `HOLIDAY.BMP` lazily; stamped per-frame. |
-| Friday-friendship | Native Canoe summon counter | 0..3 sticky during session   | Affects Native Canoe summon behavior. |
-
-The "freeplay-owned clean-rect array" is the core implementation pattern.
-Freeplay maintains `gFreeplayOwnedRects[]` (up to 8 entries). When
-persistent state changes, freeplay rebuilds the list, stamps new state
-into the bg tiles, then calls `grSaveCleanBgRects(...)` with the full
-set. This is the same pattern the ocean runtime uses for its wave +
-Johnny rect.
-
-## Ambient life
-
-The island has a heartbeat. These tick continuously regardless of input:
-
-| Event           | Cadence                       | What |
-|-----------------|-------------------------------|------|
-| Cloud drift     | every 25–45 sec (random)      | A `CLOUDS.BMP` cloud crosses sky. |
-| Solo seagull    | every 30–90 sec               | One bird crosses (silent, low-key). |
-| Random coconut  | every 60–180 sec, low chance  | Coconut drops from tree. |
-| Auto-thirst     | after 90 sec of walking       | Johnny auto-fires the "hot" gag once. |
-| Auto-fish-bite  | after 30 sec fishing          | Auto-triggers the catch sequence with kingfish. |
-| Auto-sleep      | 60 sec idle                   | Johnny yawns, sits down, "Z" sprite. Wakes on any input. |
-
-Auto-events only fire while Johnny is in `IDLE` mode (or `WALK`, for
-thirst). They never interrupt cinematics, gag cycles, or active summons.
-
-## Konami code & secrets
-
-**↑ ↑ ↓ ↓ ← → ← → Square Cross** within 4 seconds triggers the **Castaway
-Cove Carnival**: every summon spawns simultaneously, banner reads "PARTY!",
-King Kong roars, layered SFX (capped at 8 simultaneous SPU voices). Lasts
-~12 seconds; input is locked. After: everyone exits in their normal
-patterns and Johnny does one celebratory snazzy-strut.
-
-Other secrets include "The Big One" (Cross 7 times within 2 sec at fishing
-shore), Sleep walker, Coconut stack-pocalypse, Friday's friend, The
-Tornado, Holiday speedrun, Strut forever, and Drunken master. Easter-egg
-combo detection is data-driven — a struct array of
-`{ buttonSequence, callback, lockMs }` so adding new secrets later
-doesn't touch input code.
-
-## Memory budget
-
-Comfortably under the 2 MB ceiling.
-
-| Item                                | Size   | Notes |
-|-------------------------------------|--------|-------|
-| `BACKGRND.BMP` slot 0               | ~93 KB | Sticky across screensaver loops. |
-| `HOLIDAY.BMP` variant slot          | ~30 KB | Lazy on first holiday-toggle. |
-| `JOHNWALK.BMP` slot 1               | ~100 KB | Always loaded. |
-| Active gag BMP, slot 2              | ≤ 50 KB | LRU; one at a time. |
-| Active summon BMP, slot 3           | ≤ 80 KB | LRU; King Kong is the largest. |
-| Persistent BMPs (FIRE, COCONUTS, MRAFT, GJCASTLE) | ≤ 60 KB | Concat where possible. |
-| `LITEBULB` overlay                  | ≤ 5 KB | tiny |
-| bg tiles (4)                        | 614 KB | |
-| Clean rects                         | ~280 KB | Slightly larger than fishing3 due to summon corridors. |
-| Freeplay state struct + arrays      | < 4 KB | |
-| **Total**                           | **~1.3 MB** | |
-
-If memory pressure surfaces: drop a couple of summons or aggressively
-LRU more slots.
-
-## Real-hardware constraints
-
-- Only PSn00bSDK APIs. No DuckStation-specific shortcuts. No emulator-only
-  behavior.
-- VRAM addressing strict — freeplay reuses the existing infrastructure
-  and introduces no new VRAM math.
-- No CD streaming per-frame (no `.FG2`); all BMPs load once at scene
-  start. Safer than fishing scenes from a CD-timing standpoint.
-- No interrupt blocking; long animations advance frame-by-frame.
-- Cap simultaneous SPU voices at 8 (PS1 SPU has 24, headroom reserved).
-- Standard digital + analog pad reads only.
-
-## Pause-menu integration
-
-Freeplay is also reachable from the [pause menu]({{ '/docs/pause-menu/' | relative_url }}).
-Selecting "Freeplay Mode" sets a scene-switch flag which the current
-scene's main loop checks via `sceneSwitchRequested()`; the loop exits
-cleanly and the screensaver outer loop calls `foregroundPilotPlay()` again,
-which dispatches to freeplay.
-
-Inside freeplay:
-
-- Start (tap) = exit to screensaver random rotation.
-- Long-press Start (>1 sec) = open pause menu inside freeplay.
+The default path keeps heap probes out of entry/exit and out of the frame
+loop. Heap probing is still available when debugging a crash, but it is not
+part of the forever-run player build.
 
 ## Related pages
 
-- [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — entry point
-  from in-screensaver.
-- [Holidays]({{ '/docs/holidays/' | relative_url }}) — the holiday
-  overlay cycle uses `gHolidays[]`.
-- [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — how
-  freeplay differs from a captured-pack scene during bring-up.
+- [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — menu structure and persistence.
+- [Holidays]({{ '/docs/holidays/' | relative_url }}) — holiday overlays used by the world toggle.
+- [Performance]({{ '/docs/performance/' | relative_url }}) — why heap shape and VBlank cadence matter.
+- [Devlog: freeplay debug mode]({{ '/devlog/freeplay-debug-mode/' | relative_url }}) — the implementation narrative.
 
-## View source on GitHub
+## Source
 
-- [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md) — locked design.
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c) — dispatch entry point.
+- [`src/scene_freeplay.c`]({{ site.github_url }}/blob/main/src/scene_freeplay.c)
+- [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c)
+- [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md)

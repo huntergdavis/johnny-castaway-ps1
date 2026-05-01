@@ -2,7 +2,7 @@
 
 **Website: [hunterdavis.com/johnny-castaway-ps1](https://hunterdavis.com/johnny-castaway-ps1/)** — the full project site, with screenshots, scene ledger, deep dives, devlog, and history. *This README is the short version.*
 
-A ground-up PS1 port of Sierra's classic *Johnny Castaway* screen saver,
+A PS1 port of Sierra's classic *Johnny Castaway* screen saver,
 using a hybrid scene-playback pipeline: desktop host is the authoritative
 renderer and capture source; the PS1 runtime replays authored foreground
 packs + captured SFX and owns only the narrow surface it must (background,
@@ -23,7 +23,7 @@ wave animation, holiday overlay, input, SPU).
 </p>
 
 <p align="center">
-  Press <strong>START</strong> mid-scene for the pause menu — Resume, Options (sound, day/night, tide, raft, holiday, captions, perf log, plus Set Time/Date · Set Island Pos · Set RNG Seed editors), Save Settings to Memcard, Reset Current Scene, Next Scene, Debug Info.
+  Press <strong>START</strong> mid-scene for the pause menu — Resume, Freeplay ON/OFF, Freeplay Options, World Options, Accessibility, and System. Freeplay Options carries gags, visitors, controls, and clear-screen; World Options carries day/night, tide, raft, holidays, and island position; Accessibility carries captions, sound, footsteps, and Sound Test; System carries save, time/date, RNG seed, perf log, reset scene, and next scene.
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@ wave animation, holiday overlay, input, SPU).
 </p>
 
 <p align="center">
-  Closed captions toggle from <strong>Pause → Options → Captions: ON</strong>. A dark band appears at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text — accessibility-first and tied to the original Sierra scene-by-scene caption corpus.
+  Closed captions toggle from <strong>Pause → Accessibility → Captions: ON</strong>. A dark band appears at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text — accessibility-first and tied to the original Sierra scene-by-scene caption corpus.
 </p>
 
 ## Where to read more
@@ -72,7 +72,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.4.20-ps1`** |
+| Current release | **`v0.5.0-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -83,11 +83,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-`v0.4.20-ps1` is the walking-loop release: Johnny now walks between
-scene endpoints instead of teleporting, including palm-tree occlusion,
-holiday restamping, wave motion during transitions, and a stabilized
-walk erase buffer that survived a ~10-minute DuckStation soak without
-`JCBSOD` or walk-clean allocation failures.
+`v0.5.0-ps1` is the freeplay/debug release. Johnny can now be driven
+directly around the island from the pause menu, with analog/D-pad walking,
+slow/fast shoulder modifiers, fishing, immediate world toggles, a sound
+test, gag and visitor debug catalogs, clear-screen rebuild, frog-clock
+loading transitions, and stricter no-allocation rules for the live frame
+loop. It builds on the `v0.4.20-ps1` walking-loop release, where Johnny
+started walking between story scene endpoints instead of teleporting.
 
 One scene at a time is promoted to the "fully validated" bar. Older
 count-based validation models (`25/63`, `60/63`, `63/63` etc.) from the
@@ -219,17 +221,34 @@ Full hardware reference + the gotchas hit in practice: [/docs/hardware/](https:/
 
 ## Controller mapping
 
-| PSX Button | Action |
+Normal screensaver mode needs no input. Press **Start** to open the pause
+menu.
+
+| Control | Action |
 |---|---|
-| Start | Pause / Unpause |
-| Select | Toggle debug |
-| Triangle | Advance frame (paused) |
-| Circle | Toggle max speed |
-| X / L1 / L2 / R1 / R2 | Reserved |
+| Start | Open pause menu / resume |
+| D-pad / left analog | Move cursor or adjust values in menus |
+| Cross | Select / apply |
+| Circle | Back from any menu or submenu |
+
+Freeplay mode is launched from the pause menu. While freeplay is active:
+
+| Control | Action |
+|---|---|
+| D-pad / left analog | Walk Johnny; movement cancels the current action |
+| L2 held | Slow walk |
+| R2 held | Fast walk |
+| Circle | Fish from the nearest side of the island |
+| Select | Clear screen, cancel transient actions, and rebuild the island |
+| R1 + Up | Toggle day/night |
+| R1 + Down | Toggle high/low tide |
+| R1 + Left | Cycle raft stage |
+| R1 + Right | Cycle holiday overlay |
+| Start | Open pause menu |
 
 ## Closed captions
 
-Pause → **Options** → **Captions: ON** turns on closed captions. While
+Pause → **Accessibility** → **Captions: ON** turns on closed captions. While
 playing, a dark semi-transparent band appears at the bottom of the
 frame for ~5 seconds at each scene start with descriptive subtitle
 text. Off by default; toggle is per-session unless saved to memcard.
@@ -294,6 +313,7 @@ prefer.
 - [regtest-harness.md](docs/ps1/regtest-harness.md) + [regtest-quickstart.md](docs/ps1/regtest-quickstart.md) ↔ [/docs/regtest/](https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/)
 - [holidays-*.md](docs/ps1/) (4 files) ↔ [/docs/holidays/](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/) (with [algorithm](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/) + [emblem gallery](https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/emblems/) + 36 per-holiday pages)
 - [walk-implementation-plan.md](docs/ps1/walk-implementation-plan.md) — implemented story-loop walking design and memory-stability notes for `v0.4.20-ps1`
+- [release-notes-0.5.0.md](docs/ps1/release-notes-0.5.0.md) — release notes for freeplay/debug mode
 - [release-notes-0.4.20.md](docs/ps1/release-notes-0.4.20.md) — release notes and soak evidence for the walking-loop milestone
 
 **History + archaeology** — [website /archaeology/](https://hunterdavis.com/johnny-castaway-ps1/archaeology/)

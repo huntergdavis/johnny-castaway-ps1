@@ -2,40 +2,32 @@
 layout: page
 title: Pause menu
 eyebrow: Reference
-subtitle: State machine, Options sub-screen, three editors, Credits screen, and the shared font atlas.
-description: How the Johnny Castaway PS1 pause menu works — state machine, Options toggles, Set Time / Island Pos / Seed editors, the Credits screen, and font sharing with captions.
+subtitle: Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.
+description: "How the Johnny Castaway PS1 pause menu works in v0.5.0: controls, sub-screens, freeplay/debug integration, world options, sound test, and font sharing with captions."
 ---
 
-A labor of love by Hunter Davis. The pause menu is the PS1 build's only
-in-game UI. It opens with **Start**, dims the framebuffer with a translucent
-quad, draws a solid panel, and renders text using an embedded 8x8 ASCII
-font that lives in VRAM. The same font atlas is shared with the
-[closed-captions]({{ '/docs/captions/' | relative_url }}) module, which
-is why the captions module calls `pauseMenuEnsureFontUploaded()` on first
-use rather than waiting for the user to ever open the pause menu.
+A labor of love by Hunter Davis. The pause menu is the PS1 build's in-game
+control room. It opens with **Start**, dims the framebuffer with a translucent
+quad, draws a compact panel, and renders text using the embedded 8x8 ASCII
+font that also powers [closed captions]({{ '/docs/captions/' | relative_url }}).
 
-Earlier versions of `pause_menu.c` were 540 lines of fully-written,
-link-broken, never-called code with three undefined externs and no entry
-in the CMake source list. The current implementation is wired up properly,
-exits the rect-mode `dimBackground` pixel-modify trap by drawing the dim
-as a `POLY_F4` quad, and shares the OT carefully with `FntFlush` so font
-rendering and the quads don't fight.
-
-If you paid for this, you were cheated. Open source and free.
+`v0.5.0-ps1` made the menu more important because it is now the front door
+for [Freeplay and debug mode]({{ '/docs/freeplay/' | relative_url }}). The
+design rule is simple: no submenu should need more than a handful of rows on
+the PS1 screen. Anything that grows into a catalog becomes a selector page
+with a title, description, source asset, frame count, and memory note.
 
 ## Controller mapping
 
-| Button       | Action |
-|--------------|--------|
-| **Start**    | Open the pause menu. While inside, Start backs out of any sub-screen and resumes play. |
-| **D-pad ↑↓** | Move selection in the active list. |
-| **D-pad ←→** | In editors, change the field under the cursor. In the Options screen, toggle the highlighted setting. |
-| **Cross (✕)** | Confirm / enter the highlighted entry. |
-| **Triangle (△)** | Back out one level. |
-| **Select**   | Reserved (no current binding). |
+| Button | Action |
+|---|---|
+| **Start** | Open the pause menu. Inside the menu, resume or back out depending on depth. |
+| **D-pad / left analog** | Move the cursor, change selector values, or edit numeric fields. |
+| **Cross** | Select / apply. |
+| **Circle** | Back everywhere. This is the global cancel rule. |
 
-Navigation debounces via the menu's own `prevButtons` cache so a long-press
-doesn't autorepeat unintentionally.
+Navigation debounces through the menu's own `prevButtons` cache so a
+long-press does not accidentally rip through a selector.
 
 ## State machine
 
@@ -45,9 +37,16 @@ doesn't autorepeat unintentionally.
 ```c
 enum PauseMenuState {
     PAUSE_MENU_MAIN,
-    PAUSE_MENU_OPTIONS,
+    PAUSE_MENU_FREEPLAY_OPTIONS,
+    PAUSE_MENU_FREEPLAY_GAGS,
+    PAUSE_MENU_FREEPLAY_VISITORS,
+    PAUSE_MENU_OPTIONS,     /* world options */
+    PAUSE_MENU_HOLIDAYS,
+    PAUSE_MENU_ACCESSIBILITY,
+    PAUSE_MENU_SOUND_TEST,
+    PAUSE_MENU_SYSTEM,
     PAUSE_MENU_SCENE_INFO,
-    PAUSE_MENU_CONTROLS,    /* legacy / no longer surfaced from main */
+    PAUSE_MENU_CONTROLS,
     PAUSE_MENU_SET_TIME,
     PAUSE_MENU_ISLAND_POS,
     PAUSE_MENU_SET_SEED,
@@ -55,183 +54,104 @@ enum PauseMenuState {
 };
 ```
 
-- **`PAUSE_MENU_MAIN`** is the entry screen. It's the surface the player
-  sees when Start is first pressed.
-- **`PAUSE_MENU_OPTIONS`** is a flat toggle list; see below.
-- **`PAUSE_MENU_SCENE_INFO`** is a single dense diagnostic page reading
-  from `gPs1Perf` via the `ps1PerfGet*` accessors. Live: scene name, loop
-  iteration, variant flags, pilot mode, pack name + frame index, free RAM,
-  uptime, build date, and (when perf is enabled) the full counter block.
-- **`PAUSE_MENU_SET_TIME`**, **`PAUSE_MENU_ISLAND_POS`**, and
-  **`PAUSE_MENU_SET_SEED`** are editors — see *Editors* below.
-- **`PAUSE_MENU_CREDITS`** is the four-line drawCredits screen. Voice
-  anchor for the entire site.
-- **`PAUSE_MENU_CONTROLS`** is a legacy reference card kept around but
-  not surfaced from the main menu in current builds.
+## Main screen
 
-`pauseMenuGetState()` / `pauseMenuSetState()` expose the current state to
-external callers; `pauseMenuShow()` / `pauseMenuHide()` are the open /
-close hooks; `pauseMenuUpdate()` runs one frame and returns 1 while the
-menu should stay open or 0 when the user resumes.
+The main screen is intentionally short. It points to small sub-screens
+instead of trying to carry every toggle in one tall list:
 
-## Options sub-screen
+| Entry | Purpose |
+|---|---|
+| Resume | Close the menu and continue. |
+| Freeplay ON/OFF | Enter freeplay from normal mode, or exit freeplay back to the screensaver loop. |
+| Freeplay Options | Gags, visitors, controls, and clear-screen tools. |
+| World Options | Day/night, tide, raft, holiday, date/time, island position. |
+| Accessibility | Captions and sound/accessibility toggles. |
+| System | Save settings, set time/date, set RNG seed, perf log, reset current scene, next scene. |
 
-Flat list of toggles. Each flips with D-pad ←/→ or Cross.
+The `Freeplay ON/OFF` row is a mode switch, not a cosmetic toggle. Starting
+freeplay tears down the current scene, shows the meanwhile frog clock, builds
+the freeplay island, and hands control to `scene_freeplay.c`. Exiting freeplay
+does the same in reverse before the screensaver loop resumes.
 
-| Setting    | States | Persists | Notes |
-|------------|--------|----------|-------|
-| Sound      | ON / OFF | session | Toggles `soundDisabled`. On switching to OFF, freeplay-style `soundMuteAll()` calls `SpuSetKey(0, 0xFFFFFF)` so any in-flight SFX stop. |
-| DayNight   | DAY / NIGHT | session | Forces the palette state used by background rendering. |
-| Tide       | HIGH / LOW | session | Mirrors `islandState.lowTide`. Affects pack selection in `fgCompactOverlayPackPathForScene`. |
-| Raft       | 0..5 | session | Cumulative raft-build stage. |
-| Holiday    | none / 1..36 | session | Cycles through `gHolidays[]` via `holidayNextId` / `holidayPrevId`. See [Holidays]({{ '/docs/holidays/' | relative_url }}). |
-| Captions   | ON / OFF | session | Toggles `captionsSetEnabled`. See [Closed captions]({{ '/docs/captions/' | relative_url }}). |
-| Perf       | ON / OFF | session | Calls `ps1PerfSetEnabled(0/1)`. When OFF, the Scene Info page's perf block shows zeros + a `[perf disabled — boot with 'perf' to enable]` hint. |
+## Freeplay pages
 
-Nothing persists across power cycles — there's no memory-card surface for
-settings. Boot tokens (e.g. `perf`, `night 1`, `lowtide 1`, `holiday N`,
-`raft-stage N`) are how persistent variants are pinned across runs.
+| Page | What it does |
+|---|---|
+| Freeplay Options | Entry page for Gags, Visitors, Controls, and Clear. |
+| Freeplay Gags | Selector for Johnny one-shot actions. Each row shows a name, description, BMP, frame count, and rough memory cost. |
+| Freeplay Visitors | Selector for outside-world events, with the same metadata. |
+| Controls | On-device reminder for the final freeplay controls. |
+| Clear | Cancels transient actions, shows the frog clock, rebuilds the clean island backdrop, and returns Johnny to idle. |
 
-## Editors
+Gags and visitors are fail-soft. If an optional BMP cannot load, freeplay
+shows the skip text and keeps running.
 
-Three editors share a five-field cursor pattern. D-pad ←/→ moves the cursor
-between fields, ↑/↓ increments / decrements, Cross commits, Triangle
-backs out.
+## World Options
 
-### Set Time / Date
+World Options is the home for visual state:
 
-Edits `ps1SoftHour`, `ps1SoftMonth`, `ps1SoftDay` (defined in `utils.c`,
-default 12 / 6 / 30). The PS1 has no real-time clock — these are the
-software-side date inputs that decide which holiday (if any) is in
-effect, whether the night palette applies, etc. Editing them lets the
-author force any date for visual testing without rebuilding the disc.
+| Setting | Behavior |
+|---|---|
+| Day/Night | Force day or night. In freeplay this applies immediately after a frog-clock rebuild. |
+| Tide | Force high or low tide. |
+| Raft | Cycle raft stage 0..5. |
+| Holidays | Open the holiday selector: Auto Date, None, Original 4, Expanded, then selected holiday inside the active set. |
+| Set Time/Date | Edit the software date used by the holiday/date system. |
+| Set Island Pos | Nudge the island anchor for placement testing. |
 
-### Set Island Pos
+The live freeplay shortcuts are the same state changes: **R1 + Up** toggles
+day/night, **R1 + Down** toggles tide, **R1 + Left** cycles raft, and
+**R1 + Right** cycles holiday. Menu edits and live shortcuts share the same
+backdrop-rebuild path so the visible island changes immediately.
 
-Edits the island position offset (the same surface that responds to
-`island-pos <x> <y>` boot tokens — see [Development workflow]({{ '/docs/dev-workflow/' | relative_url }})).
-Useful when validating that scenes still composite correctly at non-default
-island offsets.
+## Sound Test
 
-### Set RNG Seed
+The Sound Test page is a selector for the PS1 SPU effects. It exists because
+audio bugs are easier to chase when a tester can play a specific sample on
+command instead of waiting for one scene to reach one frame. It uses the same
+`soundPlay()` path as scene playback and freeplay actions.
 
-Edits the seed used to drive screensaver scene rotation and per-scene
-variant choices. Pinning a seed is how a specific scene ordering gets
-reproduced run-to-run for screenshot comparison.
+## Accessibility
 
-## Credits
+The Accessibility page owns player-facing readability/audio controls:
 
-The credits screen is the voice anchor for the project. Four lines:
+- closed captions on/off;
+- sound/accessibility toggles used by freeplay;
+- the shared text path that uses the pause-menu font atlas.
 
-> A labor of love by Hunter Davis.
->
-> Hunter does not own or have a license to the Johnny Castaway character. The original creator generously allows fan ports.
->
-> If you paid for this, you were cheated.
->
-> Open source and free.
+Captions call `pauseMenuEnsureFontUploaded()` before drawing, so subtitles
+work even if the player has never opened the menu in the current boot.
 
-It is the same text that appears on
-[the home page]({{ '/' | relative_url }}),
-[the about page]({{ '/about/' | relative_url }}), and at the bottom of
-the [credits page]({{ '/credits/' | relative_url }}). When the in-game
-text and the website text drift, the website is wrong.
+## System pages
 
-## Render pipeline (per pause frame)
+System keeps the less frequent operations away from the high-use screens:
 
-The pause menu renders into the runtime's existing OT (`ot[0]`), then
-calls its own `DrawSync` and `VSync` because the runtime's main loop is
-suspended while the menu is up. Order:
+| Page | Purpose |
+|---|---|
+| Save Settings | Writes supported options to memcard. |
+| Reset Current Scene | Restart the current story loop. |
+| Next Scene | Ask the screensaver loop to pick another scene. |
+| Set RNG Seed | Pin the random sequence for repeatable testing. |
 
-1. `ClearOTagR(ot[0], OT_LENGTH)` — claim the runtime's OT.
-2. Build the dim quad at OT priority N (back) — `POLY_F4`, semi-trans 50%,
-   RGB(0,0,0), full screen.
-3. Build the panel quad at priority N-1 (in front of dim, behind text) —
-   `POLY_F4`, no semi-trans, RGB(0x10, 0x18, 0x40), centered ~520x320.
-4. `DrawOTag(&ot[0][OT_LENGTH-1])` — render the quads.
-5. `DrawSync(0)` — wait for GPU.
-6. `FntPrint` text content (PSn00bSDK BIOS font path uses its own
-   primitive list, separate from `ot[0]`).
-7. `FntFlush(fontID)` — composites text on top.
-8. `VSync(0)` — pace at 60 Hz.
+The `PAUSE_MENU_SCENE_INFO` and `PAUSE_MENU_CREDITS` states still exist in
+the source tree from the previous menu generation. They are not surfaced from
+the compact `v0.5.0` System page; scene diagnostics moved to telemetry and the
+public credits/legal text lives on the website.
 
-The framebuffer-priming detail: bgTile pixels are *never* modified by the
-pause menu. On resume, the runtime's next `grDrawBackground` re-uploads
-the bg from the dirty-row record — the bg state has been correct in tile
-RAM the whole time. The earlier pixel-modify approach was broken because
-(a) it never marked tiles dirty, so nothing actually re-uploaded, and
-(b) rect-mode scenes have `bgTileNClean` arrays set to NULL, so even with
-the dirty mark there was no clean copy to restore from.
+## Render pipeline
 
-## Font sharing with captions
+The pause menu does not modify the background tiles. It draws a dimming
+`POLY_F4`, a panel quad, then text. On resume, the scene renderer restores
+from its clean background and continues.
 
-```c
-#define PAUSE_FONT_VRAM_X  640
-#define PAUSE_FONT_VRAM_Y  256
-#define PAUSE_CLUT_VRAM_X  640
-#define PAUSE_CLUT_VRAM_Y  360
-#define PAUSE_GLYPH_FIRST  0x20
-#define PAUSE_GLYPH_COUNT  96
-#define PAUSE_GLYPH_DRAW_W 16
-#define PAUSE_GLYPH_DRAW_H 16
+`FntFlush` was empirically unreliable in the scene-runtime context, so the
+menu uses a custom embedded 8x8 font atlas in VRAM. The same atlas is shared
+with captions and other small text overlays.
 
-void pauseMenuEnsureFontUploaded(void);
-```
+## Source
 
-Both the captions module and any other text overlay want the same 8x8
-ASCII font. `pauseMenuEnsureFontUploaded()` is idempotent: first call
-uploads the atlas + CLUT to VRAM at the constants above, every subsequent
-call is a no-op. The captions module (`captionsRender`) calls it before
-building its `SPRT` primitives so subtitle rendering works even if the
-player has never opened the pause menu in the current session.
-
-## Mute on pause-show
-
-When `pauseMenuShow()` is called, the menu calls `soundMuteAll()` —
-`SpuSetKey(0, 0xFFFFFF)` — to silence any in-flight SPU voices. Otherwise
-SFX that were already key-on'd at the moment of pause keep playing through
-the menu. This is one-shot; resuming does not re-key any voices.
-
-The menu also emits a one-shot `JCPAUSE` TTY snapshot on show — never
-per-frame, never on resume. Per-frame `printf` is forbidden in this
-codebase because text I/O alters timing and fills the DuckStation log
-file.
-
-## Scene-switch flags
-
-```c
-extern int pauseMenuRequestNextScene;
-extern int pauseMenuRequestResetLoop;
-```
-
-Both flags are one-shot. Set by the menu, consumed by the foreground
-pilot's runtime loop, cleared after consumption.
-`pauseMenuRequestResetLoop` triggers a fresh random pick from
-`kProvenScenes` plus re-randomized variants — the "give me a different
-scene" button. The foreground pilot's ocean-runtime while-loop checks the
-flag every frame and exits early so the outer screensaver loop can pick
-again.
-
-## Real-hardware notes
-
-- No DuckStation-specific shortcuts. Only PSn00bSDK APIs.
-- `POLY_F4` + `setSemiTrans(p, 1)` is a standard PSn00bSDK pattern that
-  works identically on hardware and emulator.
-- No new VRAM math; the pause menu reuses the existing pause-font region.
-- No allocations during pause; quad primitives are <32 bytes each in the
-  primitive buffer, font rendering uses its own buffer.
-
-## Related pages
-
-- [Closed captions]({{ '/docs/captions/' | relative_url }}) — shares the
-  font atlas; toggled from the Options sub-screen.
-- [Holidays]({{ '/docs/holidays/' | relative_url }}) — the Holiday
-  cycler walks `gHolidays[]`.
-- [Freeplay mode]({{ '/docs/freeplay/' | relative_url }}) — the Freeplay
-  Mode entry on the main menu launches the runtime-driven scene.
-
-## View source on GitHub
-
-- [`docs/ps1/pause-menu-design.md`]({{ site.github_url }}/blob/main/docs/ps1/pause-menu-design.md) — locked design and risk register.
-- [`src/pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu.h) — public API.
-- [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c) — implementation.
+- [`src/pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu.h)
+- [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c)
+- [`src/scene_freeplay.c`]({{ site.github_url }}/blob/main/src/scene_freeplay.c)
+- [`docs/ps1/pause-menu-design.md`]({{ site.github_url }}/blob/main/docs/ps1/pause-menu-design.md)
+- [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md)

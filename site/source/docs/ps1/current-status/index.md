@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-release with stabilized walk erase memory).
+mode release with direct-control Johnny).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 189 |
-| Approx. words | 1264 |
+| Lines | 196 |
+| Approx. words | 1361 |
 | Code fences | 1 |
 
 ## Outline

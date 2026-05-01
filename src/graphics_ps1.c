@@ -37,6 +37,7 @@
 #include "cdrom_ps1.h"
 #include "psb_format.h"
 #include "psb_registry.h"
+#include "ps1_gpu_ot.h"
 #include "ps1_captions.h"
 
 #ifndef GRAPHICS_PS1_DIAG_LOGS
@@ -97,6 +98,7 @@ static uint16 *bgTile0Clean = NULL;
 static uint16 *bgTile1Clean = NULL;
 static uint16 *bgTile3Clean = NULL;
 static uint16 *bgTile4Clean = NULL;
+static int grSaveCleanOnScreenLoad = 1;
 
 /* Dirty-rect tracking: per-tile row-granularity restore/upload.
  * Index: 0=bgTile0, 1=bgTile1, 2=bgTile3, 3=bgTile4.
@@ -418,6 +420,11 @@ static void grMarkRectDirty(int x0, int y0, int x1, int y1)
             markTileDirtyRect(3, tx0, tx1, ty0, ty1);
         }
     }
+}
+
+void grMarkScreenRectDirty(int x0, int y0, int x1, int y1)
+{
+    grMarkRectDirty(x0, y0, x1, y1);
 }
 
 static void grRebuildPaletteLuts(void)
@@ -2573,7 +2580,7 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
         uint16 tpageX = tile->x / 64;
         uint16 tpageY = tile->y / 256;
         setDrawTPage(tpage, 0, 0, getTPage(0, 0, tpageX * 64, tpageY * 256));
-        addPrim(&ot[db][0], tpage);
+        ps1GpuOtAddPrim(&ot[db][0], tpage);
 
         SPRT *sprt = (SPRT*)nextPrimitive[db];
         nextPrimitive[db] += sizeof(SPRT);
@@ -2591,7 +2598,7 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
         setRGB0(sprt, 128, 128, 128);  /* Normal brightness */
 
         /* Add to ordering table */
-        addPrim(&ot[db][0], sprt);
+        ps1GpuOtAddPrim(&ot[db][0], sprt);
 
         GR_DIAG_PRINTF("Draw tile: pos=(%d,%d) size=%dx%d VRAM=(%d,%d)\n",
                        tileX, tileY, tile->width, tile->height, tile->x, tile->y);
@@ -2808,7 +2815,7 @@ void grDrawSpriteFlip(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint1
         setRGB0(poly, 128, 128, 128);  /* Normal brightness */
 
         /* Add to ordering table */
-        addPrim(&ot[db][0], poly);
+        ps1GpuOtAddPrim(&ot[db][0], poly);
 
         GR_DIAG_PRINTF("Draw flipped tile: pos=(%d,%d) size=%dx%d\n",
                        tileX, tileY, tile->width, tile->height);
@@ -2873,8 +2880,8 @@ int grDrawSpriteExt(unsigned long *extOT, char **nextPri, PS1Surface *sprite, si
 
         /* Add to ordering table - sprt FIRST so tpage renders BEFORE it
          * (addPrim adds to HEAD, so last added = first rendered) */
-        addPrim(extOT, sprt);
-        addPrim(extOT, tpage);
+        ps1GpuOtAddPrim(extOT, sprt);
+        ps1GpuOtAddPrim(extOT, tpage);
 
         tile = tile->nextTile;
     }
@@ -2939,6 +2946,31 @@ void grInitEmptyBackground()
     else memset(bgTile4->pixels, 0, 320 * 240 * 2);
 }
 
+void grShowMeanwhileLoadingFrame(uint16 tick)
+{
+    struct TTtmSlot slot;
+    uint16 handFrame;
+
+    memset(&slot, 0, sizeof(slot));
+    grInitEmptyBackground();
+    grDx = 0;
+    grDy = 0;
+    grLoadBmp(&slot, 0, "MEANWHIL.BMP");
+    if (slot.numSprites[0] > 0) {
+        grDrawSprite(grBackgroundSfc, &slot, 254, 100, 0, 0);
+        if (slot.numSprites[0] > 1) {
+            handFrame = (uint16)(1 + (tick % (slot.numSprites[0] - 1)));
+            grDrawSprite(grBackgroundSfc, &slot, 287, 141, handFrame, 0);
+        }
+    }
+
+    grForceFullRedrawNextFrame();
+    VSync(0);
+    grDrawBackground();
+    DrawSync(0);
+    grReleaseBmp(&slot, 0);
+}
+
 /*
  * Save clean copies of background tiles (after loading background, before any sprite compositing).
  * Used by composite pattern to restore pristine background each frame.
@@ -2978,6 +3010,11 @@ void grSaveCleanBgTiles(void)
      * Set prevDirty too since the framebuffer may not match the new background. */
     grMarkAllTilesDirty();
     grMarkPrevAllTilesDirty();
+}
+
+void grSetSaveCleanOnScreenLoad(int enabled)
+{
+    grSaveCleanOnScreenLoad = enabled ? 1 : 0;
 }
 
 /* ---- Rect-based clean-pixel backup (option B). Alternative to full-tile
@@ -3359,6 +3396,57 @@ fail:
     }
     grDeactivateCleanBgRects();
     return 0;
+}
+
+int grSaveCleanBgRectsSplit(const sint16 *xArr, const sint16 *yArr,
+                            const uint16 *wArr, const uint16 *hArr, int n,
+                            uint32 maxBytesPerRect)
+{
+    sint16 sx[GR_MAX_CLEAN_RECTS];
+    sint16 sy[GR_MAX_CLEAN_RECTS];
+    uint16 sw[GR_MAX_CLEAN_RECTS];
+    uint16 sh[GR_MAX_CLEAN_RECTS];
+    int outCount = 0;
+    int i;
+
+    if (maxBytesPerRect == 0)
+        return grSaveCleanBgRects(xArr, yArr, wArr, hArr, n);
+    if (xArr == NULL || yArr == NULL || wArr == NULL || hArr == NULL || n <= 0)
+        return 0;
+
+    for (i = 0; i < n; i++) {
+        uint16 remaining;
+        sint16 curY;
+        uint32 bytesPerRow;
+        uint16 maxRows;
+
+        if (wArr[i] == 0 || hArr[i] == 0)
+            return 0;
+
+        bytesPerRow = (uint32)wArr[i] * (uint32)sizeof(uint16);
+        maxRows = (uint16)(maxBytesPerRect / bytesPerRow);
+        if (maxRows == 0)
+            maxRows = 1;
+
+        remaining = hArr[i];
+        curY = yArr[i];
+        while (remaining > 0) {
+            uint16 stripH = remaining;
+            if (stripH > maxRows)
+                stripH = maxRows;
+            if (outCount >= GR_MAX_CLEAN_RECTS)
+                return 0;
+            sx[outCount] = xArr[i];
+            sy[outCount] = curY;
+            sw[outCount] = wArr[i];
+            sh[outCount] = stripH;
+            outCount++;
+            curY = (sint16)(curY + stripH);
+            remaining = (uint16)(remaining - stripH);
+        }
+    }
+
+    return grSaveCleanBgRects(sx, sy, sw, sh, outCount);
 }
 
 /* Per-frame: restore each clean rect from its saved buffer into bg tiles.
@@ -4075,6 +4163,30 @@ static void freeBgTile(PS1Surface **tile)
     }
 }
 
+void grReleaseBackgroundTiles(void)
+{
+    grFreeCleanBgTiles();
+    grFreeCleanBgRects();
+
+    freeBgTile(&bgTile0);
+    freeBgTile(&bgTile1);
+    freeBgTile(&bgTile2a);
+    freeBgTile(&bgTile2b);
+    freeBgTile(&bgTile3);
+    freeBgTile(&bgTile4);
+    freeBgTile(&bgTile5a);
+    freeBgTile(&bgTile5b);
+
+    grBackgroundSfc = NULL;
+
+    if (grSavedZonesLayer != NULL) {
+        grFreeLayer(grSavedZonesLayer);
+        grSavedZonesLayer = NULL;
+    }
+
+    grForceFullRedrawNextFrame();
+}
+
 /*
  * Helper: Create a background tile stored in RAM only (no VRAM upload)
  * For use with LoadImage directly to framebuffer
@@ -4338,11 +4450,12 @@ void grLoadScreen(char *strArg)
         scrResource->uncompressedData = NULL;
     }
 
-    /* Save clean background tiles immediately after loading.
-     * This ensures the clean copies don't have any sprites baked in.
-     * IMPORTANT: For partial height images, we save top tiles immediately
-     * but preserve any existing bottom tile clean copies (ocean base). */
-    grSaveCleanBgTiles();
+    /* Save clean background tiles immediately after loading unless the
+     * caller is about to use rect-mode snapshots. Freeplay loads an island
+     * backdrop and then saves its own sparse clean rects; allocating four
+     * full-tile backups here can exhaust the contiguous PS1 heap. */
+    if (grSaveCleanOnScreenLoad)
+        grSaveCleanBgTiles();
 }
 
 /*

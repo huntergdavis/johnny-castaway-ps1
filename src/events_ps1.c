@@ -690,6 +690,11 @@ void eventsWaitTick(uint16 delay)
              * during pause aren't counted against the next frame's
              * timing budget. */
             lastFrameTick = (uint32)VSync(-1);
+            if (pauseMenuRequestFreeplay ||
+                pauseMenuRequestNextScene ||
+                pauseMenuRequestResetLoop) {
+                return;
+            }
             if (evPadDiagnosticsEnabled)
                 printf("JCPAD START PATH EXITED\n");
         }

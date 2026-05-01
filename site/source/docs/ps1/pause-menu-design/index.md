@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Pause Menu — Design"
+title: "Pause Menu Design"
 eyebrow: Source library
 subtitle: "docs/ps1/pause-menu-design.md"
 description: "Generated source-library page for docs/ps1/pause-menu-design.md"
@@ -14,33 +14,28 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Two compounding findings from the audit:
+The pause menu is the PS1 port's in-game control room. It opens with Start, draws a translucent dim quad and compact panel over the current framebuffer, and renders text with the embedded 8x8 ASCII font atlas shared with closed captions.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/pause-menu-design.md` |
-| Lines | 375 |
-| Approx. words | 2541 |
-| Code fences | 3 |
+| Lines | 131 |
+| Approx. words | 564 |
+| Code fences | 1 |
 
 ## Outline
 
-- Pause Menu — Design
--   1. Why the current pause never worked
--   2. Decisions locked
--   3. Final menu structure
--   4. Debug Info sub-screen — single dense page
--     Data sources
--   5. Render pipeline (locked)
--   6. Visual approach — why POLYF4 not pixel-modify
--     Bug A: doesn't mark dirty
--     Bug B: no clean copy in rect-mode
--     Why POLYF4 wins
--   7. Source-level red-team — preflight blockers
--     Blocker 1: pausemenu.c not in CMakeLists.txt
--     Blocker 2: three undefined externs
+- Pause Menu Design
+-   Controller Contract
+-   Menu Structure
+-   State Enum
+-   Freeplay Integration
+-   World Options
+-   Accessibility And Sound Test
+-   Render Pipeline
+-   Memory Rules
 
 ## Read it in context
 

@@ -263,8 +263,8 @@ struct TPs1ActivePack {
     uint32 cachedFileSize;     /* Pack file size in bytes */
 };
 
-static struct TPs1ActivePack ps1PilotActivePack = {"", "", "", {0}, 0, 0, 0, NULL, 0, 0};
-static struct TPs1ActivePack ps1PilotPrefetchPack = {"", "", "", {0}, 0, 0, 0, NULL, 0, 0};
+static struct TPs1ActivePack ps1PilotActivePack = {0};
+static struct TPs1ActivePack ps1PilotPrefetchPack = {0};
 uint16 ps1PilotDbgActivePack = 0;
 uint16 ps1PilotDbgHits = 0;
 uint16 ps1PilotDbgFallbacks = 0;

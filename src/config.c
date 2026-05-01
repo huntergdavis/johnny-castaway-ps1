@@ -124,18 +124,13 @@ void cfgFileRead(struct TConfig *cfg)
 
     if (f != NULL) {
 
-        while (!feof(f)) {
+        while (fgets(buf, BUFFER_LEN, f) != NULL) {
 
-            fgets(buf, BUFFER_LEN, f);
+            if(strstr(buf, "currentDay=") == buf)
+                cfg->currentDay = atoi(buf + 11);
 
-            if (!feof(f)) {
-
-                if(strstr(buf, "currentDay=") == buf)
-                    cfg->currentDay = atoi(buf + 11);
-
-                if(strstr(buf, "date=") == buf)
-                    cfg->date = atoi(buf + 5);
-            }
+            if(strstr(buf, "date=") == buf)
+                cfg->date = atoi(buf + 5);
         }
 
         fclose(f);

@@ -551,7 +551,7 @@ void ttmPlay(struct TTtmThread *ttmThread)     // TODO
 {
     uint8 *data;
     uint32 offset;
-    uint32 opcodeOffset;
+    uint32 opcodeOffset = 0;
     uint16 opcode;
     uint8 numArgs;
     uint16 args[10];
@@ -629,6 +629,9 @@ void ttmPlay(struct TTtmThread *ttmThread)     // TODO
                     offset++;
             }
             strArg[i] = '\0';
+#ifndef PS1_BUILD
+            (void)overflow;
+#endif
 #ifdef PS1_BUILD
             if (overflow)
                 ttmDiagStringOverflow(ttmThread, opcode, opcodeOffset, i);
@@ -880,6 +883,9 @@ void ttmPlay(struct TTtmThread *ttmThread)     // TODO
         }
     }
 
+#ifndef PS1_BUILD
+    (void)opcodeOffset;
+#endif
     ttmThread->ip = offset;
 }
 

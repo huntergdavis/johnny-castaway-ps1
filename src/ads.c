@@ -67,6 +67,12 @@ extern int strcmp(const char *s1, const char *s2);
 #include "ps1_restore_pilots.h"
 #endif
 
+#ifndef PS1_BUILD
+#define ADS_HOST_UNUSED __attribute__((unused))
+#else
+#define ADS_HOST_UNUSED
+#endif
+
 extern int grCaptureSequenceComplete(void);
 
 
@@ -192,7 +198,7 @@ extern uint16 ps1AdsDbgLastAddThread;
 extern uint16 ps1AdsDbgLastAddSceneSig;
 #endif
 
-static void adsSetCurrentScene(char *adsName, uint16 adsTag)
+static ADS_HOST_UNUSED void adsSetCurrentScene(char *adsName, uint16 adsTag)
 {
     int i;
 
@@ -207,7 +213,7 @@ static void adsSetCurrentScene(char *adsName, uint16 adsTag)
 #endif
 }
 
-static int adsStringEquals(const char *a, const char *b)
+static ADS_HOST_UNUSED int adsStringEquals(const char *a, const char *b)
 {
     if (!a || !b) return 0;
     return strcmp(a, b) == 0;
@@ -260,22 +266,22 @@ static const struct TPs1RestorePilot *adsFindActiveRestorePilot(void)
     return NULL;
 }
 
-static int adsUseRestorePilotReplayPolicy(void)
+static ADS_HOST_UNUSED int adsUseRestorePilotReplayPolicy(void)
 {
     return adsFindActiveRestorePilot() != NULL;
 }
 
-static int adsUseReplayRecovery(void)
+static ADS_HOST_UNUSED int adsUseReplayRecovery(void)
 {
     return 0;
 }
 #else
-static int adsUseRestorePilotReplayPolicy(void)
+static ADS_HOST_UNUSED int adsUseRestorePilotReplayPolicy(void)
 {
     return 0;
 }
 
-static int adsUseReplayRecovery(void)
+static ADS_HOST_UNUSED int adsUseReplayRecovery(void)
 {
     return 0;
 }
@@ -296,7 +302,7 @@ static uint16 adsDiagSceneSigFor(uint16 sceneSlot, uint16 sceneTag)
     return (uint16)((((sceneSlot & 0x7) << 3) | (sceneTag & 0x7)) & 0x3F);
 }
 
-static void adsDiagNoteStop(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
+static ADS_HOST_UNUSED void adsDiagNoteStop(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
 {
     if (!adsDiagTrackCurrentTtmPlay())
         return;
@@ -304,7 +310,7 @@ static void adsDiagNoteStop(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
     ps1AdsDbgLastStopSceneSig = adsDiagSceneSigFor(sceneSlot, sceneTag);
 }
 
-static void adsDiagNoteReap(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
+static ADS_HOST_UNUSED void adsDiagNoteReap(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
 {
     if (!adsDiagTrackCurrentTtmPlay())
         return;
@@ -358,7 +364,7 @@ static void adsDiagStoreDispatch(int phase, int threadIndex, struct TTtmThread *
                                        ((sceneSig & 0x03) << 5)) & 0x3F));
 }
 
-static void adsDiagTtmDispatch(const char *phase, int threadIndex, struct TTtmThread *ttmThread)
+static ADS_HOST_UNUSED void adsDiagTtmDispatch(const char *phase, int threadIndex, struct TTtmThread *ttmThread)
 {
     static int diagCount = 0;
     const char *ttmName = NULL;
@@ -395,28 +401,28 @@ static void adsDiagTtmDispatch(const char *phase, int threadIndex, struct TTtmTh
            (unsigned int)(ttmThread ? ttmThread->numDrawnSprites : 0));
 }
 #else
-static void adsDiagNoteStop(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
+static ADS_HOST_UNUSED void adsDiagNoteStop(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
 {
     (void)threadIndex;
     (void)sceneSlot;
     (void)sceneTag;
 }
 
-static void adsDiagNoteReap(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
+static ADS_HOST_UNUSED void adsDiagNoteReap(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
 {
     (void)threadIndex;
     (void)sceneSlot;
     (void)sceneTag;
 }
 
-static void adsDiagNoteAdd(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
+static ADS_HOST_UNUSED void adsDiagNoteAdd(int threadIndex, uint16 sceneSlot, uint16 sceneTag)
 {
     (void)threadIndex;
     (void)sceneSlot;
     (void)sceneTag;
 }
 
-static void adsDiagTtmDispatch(const char *phase, int threadIndex, struct TTtmThread *ttmThread)
+static ADS_HOST_UNUSED void adsDiagTtmDispatch(const char *phase, int threadIndex, struct TTtmThread *ttmThread)
 {
     (void)phase;
     (void)threadIndex;

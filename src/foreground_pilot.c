@@ -20,6 +20,7 @@
 #include "ps1_perf.h"
 #include "walk_pilot.h"
 #include "ps1_debug.h"
+#include "scene_freeplay.h"
 
 uint16 ps1AdsDbgActiveThreads = 0;
 uint16 ps1AdsDbgMini = 0;
@@ -273,6 +274,9 @@ static void fgBackdropEnableWaveBackdrop(void);
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH);
 static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
+static void fgReleaseStreamBuffers(void);
+static void fgReleaseStreamBuffersHard(void);
+static void fgInitVisiblePipeline(void);
 
 /* Public accessor for walk_pilot — returns the slot holding
  * BACKGRND.PSB sprites (used for behind-tree trunk + leaf cover-up
@@ -301,6 +305,31 @@ void fgBackdropTickWavesPublic(void)
     if (gFgBackdropThread.isRunning) {
         islandAnimate(&gFgBackdropThread);
     }
+}
+
+void fgBackdropPrepareIslandRuntimePublic(void)
+{
+    fgReleaseStreamBuffers();
+    fgBackdropPreloadBackgrndBmp();
+
+    fgInitVisiblePipeline();
+    grSetPresentDuringScreenLoad(0);
+    grSetSaveCleanOnScreenLoad(0);
+    if (islandState.night) {
+        grLoadScreen("NIGHT.SCR");
+    } else {
+        grLoadScreen("OCEAN00.SCR");
+    }
+    grSetSaveCleanOnScreenLoad(1);
+    grFreeCleanBgTiles();
+    fgBackdropEnableWaveBackdrop();
+    grSetPresentDuringScreenLoad(1);
+    grForceFullRedrawNextFrame();
+}
+
+void fgBackdropReleasePublic(int keepBackgrnd)
+{
+    fgBackdropRelease(keepBackgrnd);
 }
 
 /* No-op kept for ABI compatibility; walk_pilot now reuses the FG2 scene's
@@ -332,7 +361,7 @@ int fgBackdropSaveCleanBgRectsForWalk(void)
 
 void fgBackdropEndWalk(void)
 {
-    grFreeCleanBgRects();
+    grDeactivateCleanBgRects();
 }
 
 struct TFgPilotReadGroup {
@@ -973,6 +1002,31 @@ static void fgReleaseStreamBuffers(void)
     }
 }
 
+static void fgReleaseStreamBuffersHard(void)
+{
+    if (gFgFrameBuffer != NULL) {
+        free(gFgFrameBuffer);
+        gFgFrameBuffer = NULL;
+        gFgFrameBufferSize = 0;
+    }
+    if (gFgPrefetchFrameBuffer != NULL) {
+        free(gFgPrefetchFrameBuffer);
+        gFgPrefetchFrameBuffer = NULL;
+        gFgPrefetchFrameBufferSize = 0;
+    }
+    if (gFgStreamWindowBuffer != NULL) {
+        free(gFgStreamWindowBuffer);
+        gFgStreamWindowBuffer = NULL;
+        gFgStreamWindowBufferSize = 0;
+    }
+    if (gFgStreamScratch != NULL) {
+        free(gFgStreamScratch);
+        gFgStreamScratch = NULL;
+        gFgStreamScratchSize = 0;
+    }
+    fgReleaseStreamBuffers();
+}
+
 unsigned long fgGetFrameBufferBytes(void)
 {
     return (unsigned long)gFgFrameBufferSize;
@@ -1235,6 +1289,7 @@ static void fgBackdropEnableWaveBackdrop(void)
 
 static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW, uint16 fgH)
 {
+    const uint32 kMaxCleanRectBytes = 96UL * 1024UL;
     const sint16 kWaveMinX = 129;
     const sint16 kWaveMinY = 303;
     const sint16 kWaveEndX = 608;
@@ -1250,7 +1305,8 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[0] = kWaveMinY;
         ws[0] = (uint16)(kWaveEndX - kWaveMinX);
         hs[0] = (uint16)(kWaveEndY - kWaveMinY);
-        return grSaveCleanBgRects(xs, ys, ws, hs, 1) == 1;
+        return grSaveCleanBgRectsSplit(xs, ys, ws, hs, 1,
+                                       kMaxCleanRectBytes) > 0;
     }
 
     sint16 lowerMinX = fgX;
@@ -1296,9 +1352,10 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
                (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
                (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1],
                fgProbeLargestAlloc() / 1024UL);
-        int rc = grSaveCleanBgRects(xs, ys, ws, hs, 2);
-        printf("JCRECT 2-rect grSaveCleanBgRects=%d (need 2)\n", rc);
-        return rc == 2;
+        int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 2,
+                                         kMaxCleanRectBytes);
+        printf("JCRECT 2-rect split grSaveCleanBgRects=%d\n", rc);
+        return rc > 0;
     } else {
         sint16 xs[1]; sint16 ys[1]; uint16 ws[1]; uint16 hs[1];
         if (lowerEndX <= lowerMinX || lowerEndY <= lowerMinY)
@@ -1310,9 +1367,10 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         printf("JCRECT 1-rect lower=(%d,%d,%u,%u) heapKB=%lu\n",
                (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
                fgProbeLargestAlloc() / 1024UL);
-        int rc = grSaveCleanBgRects(xs, ys, ws, hs, 1);
-        printf("JCRECT 1-rect grSaveCleanBgRects=%d (need 1)\n", rc);
-        return rc == 1;
+        int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 1,
+                                         kMaxCleanRectBytes);
+        printf("JCRECT 1-rect split grSaveCleanBgRects=%d\n", rc);
+        return rc > 0;
     }
 }
 
@@ -2805,6 +2863,14 @@ void foregroundPilotRuntimeEnd(void)
     fgRuntimeReset();
 }
 
+void foregroundPilotTeardownForFreeplay(void)
+{
+    fgRuntimeReset();
+    fgReleaseStreamBuffersHard();
+    fgBackdropRelease(0);
+    grReleaseBackgroundTiles();
+}
+
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
 static void fgPlayTitleCopy(void)
 {
@@ -2975,7 +3041,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         /* Pause-menu request: break out so jc_reborn's outer loop can
          * advance to next scene or restart the loop. The flag is
          * cleared by the consumer in jc_reborn.c. */
-        if (pauseMenuRequestNextScene || pauseMenuRequestResetLoop) {
+        if (pauseMenuRequestNextScene ||
+            pauseMenuRequestResetLoop ||
+            pauseMenuRequestFreeplay) {
             break;
         }
         if (fgRuntimeCanHoldDisplayedFrame()) {
@@ -3204,6 +3272,11 @@ void foregroundPilotSetPrefetchWindow(unsigned long bytes)
 
 void foregroundPilotPlay(void)
 {
+    if (fgSceneEquals(gForegroundPilotScene, "freeplay")) {
+        freeplayRun();
+        return;
+    }
+
 #if FG_ENABLE_LEGACY_DIAGNOSTIC_SCENES
     if (fgSceneEquals(gForegroundPilotScene, "testcard")) {
         fgPlayTestCard();

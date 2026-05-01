@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "Castaway Freeplay — Direct-Control Johnny Mode"
+title: "Castaway Freeplay And Debug Mode"
 eyebrow: Source library
 subtitle: "docs/ps1/freeplay-mode-design.md"
 description: "Generated source-library page for docs/ps1/freeplay-mode-design.md"
@@ -14,33 +14,31 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-A perpetual Saturday-morning Johnny Castaway: the player drives Johnny around the island and the world responds. Walking, fishing, building, summoning visitors, surviving cosmic moments. Every press reveals something — sometimes a gag you've seen, sometimes one you haven't. The sandcastle you built two minutes ago is still there. The fire you lit is still flickering. Friday remembers your previous visits. King Kong might appear on the horizon if you ask...
+Freeplay is the direct-control Johnny mode. It is also the debugging cockpit for interactive asset tests that do not fit into the passive screensaver loop.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/freeplay-mode-design.md` |
-| Lines | 708 |
-| Approx. words | 4596 |
-| Code fences | 7 |
+| Lines | 244 |
+| Approx. words | 1143 |
+| Code fences | 2 |
 
 ## Outline
 
-- Castaway Freeplay — Direct-Control Johnny Mode
--   1. Vision
--   2. Scope & non-goals
--     In scope
--     Non-goals
--   3. Architectural decision
--   4. Control surface
--     Tier A — always active
--     Tier B — self-expression (no modifier)
--     Tier C — outside world (no modifier)
--     Tier D — modifier combos
--     Tier E — held / continuous
--     Tier F — hidden (Konami code & friends)
--   5. Self-gag catalog (Square cycle)
+- Castaway Freeplay And Debug Mode
+-   Purpose
+-   Entry And Exit
+-   Final Controller Contract
+-   Pause Menu Structure
+-   Runtime Architecture
+-   Fishing
+-   World State
+-   Loading Indicator
+-   Memory And Long-Run Rules
+-   Telemetry
+-   Signoff Checklist
 
 ## Read it in context
 

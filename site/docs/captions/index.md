@@ -61,7 +61,7 @@ const char *captionsGetCurrent(void);
 void  captionsRender(void);
 ```
 
-The toggle is reachable from the pause menu's Options sub-screen
+The toggle is reachable from the pause menu's Accessibility sub-screen
 (`Captions: ON / OFF`).
 
 ## The 2026-04-26 audit

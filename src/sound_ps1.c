@@ -60,6 +60,14 @@ static uint16_t soundPitches[MAX_SOUND_EFFECTS];  /* Pre-computed pitch values *
 static int soundsLoaded = 0;
 static int nextChannel = 0;
 
+static void soundStopAllVoices(void)
+{
+    volatile uint16_t *keyOff1 = (volatile uint16_t *)0xBF801D8C;
+    volatile uint16_t *keyOff2 = (volatile uint16_t *)0xBF801D8E;
+    *keyOff1 = 0xFFFFu;
+    *keyOff2 = 0x00FFu;
+}
+
 /* Read big-endian uint32 from VAG header */
 static uint32_t readBE32(const uint8_t *p)
 {
@@ -169,7 +177,7 @@ void soundEnd()
     }
 
     /* Stop all SPU channels (0xFFFFFF = all 24 channels) */
-    SpuSetKey(0, 0xFFFFFF);
+    soundStopAllVoices();
 }
 
 /*
@@ -224,6 +232,32 @@ void soundStop(int nb)
     }
 }
 
+int soundEffectCount(void)
+{
+    return MAX_SOUND_EFFECTS;
+}
+
+int soundEffectLoaded(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return soundAddresses[nb] != 0 ? 1 : 0;
+}
+
+unsigned long soundEffectSizeBytes(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return (unsigned long)soundSizes[nb];
+}
+
+int soundEffectSampleRate(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return (int)soundSampleRates[nb];
+}
+
 /*
  * Toggle sound mute on/off. PSn00bSDK's SpuSetCommonMasterVolume isn't
  * honored by DuckStation HLE; even direct master-vol register writes
@@ -250,7 +284,7 @@ void soundMuteToggle(void)
 
     soundMuted = !soundMuted;
     if (soundMuted) {
-        SpuSetKey(0, 0xFFFFFF);
+        soundStopAllVoices();
         for (int v = 0; v < 24; v++) {
             volatile uint16_t *volL = (volatile uint16_t *)(0xBF801C00 + v * 0x10 + 0);
             volatile uint16_t *volR = (volatile uint16_t *)(0xBF801C00 + v * 0x10 + 2);

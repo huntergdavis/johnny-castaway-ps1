@@ -21,6 +21,7 @@
 #ifdef PS1_BUILD
 #include <psxgpu.h>
 #include "pause_menu.h"
+#include "ps1_gpu_ot.h"
 #endif
 
 /* ------------------------------------------------------------------ */
@@ -567,6 +568,18 @@ int captionsGetEnabled(void)
     return ps1CaptionsEnabled;
 }
 
+int captionsIsVisible(void)
+{
+    return ps1CaptionsEnabled && captionDisplayTimer > 0 &&
+           currentCaption != NULL;
+}
+
+void captionsClear(void)
+{
+    currentCaption = NULL;
+    captionDisplayTimer = 0;
+}
+
 
 /* ------------------------------------------------------------------ */
 /*  Scene start — lookup by scene ID string (e.g. "scene05")          */
@@ -621,6 +634,13 @@ void captionsOnAdsStart(const char *adsName, uint16 adsTag)
     /* No mapping found — clear any previous caption. */
     currentCaption = NULL;
     captionDisplayTimer = 0;
+}
+
+void captionsShowText(const char *text, int frames)
+{
+    if (!ps1CaptionsEnabled || text == NULL || text[0] == '\0') return;
+    currentCaption = text;
+    captionDisplayTimer = (frames > 0) ? frames : CAPTION_DURATION_FRAMES;
 }
 
 
@@ -711,7 +731,7 @@ static int capDrawChar(uint8 **nextp, uint32 *otSlot,
     setUV0(sprt, col * PAUSE_GLYPH_DRAW_W, row * PAUSE_GLYPH_DRAW_H);
     setClut(sprt, PAUSE_CLUT_VRAM_X, PAUSE_CLUT_VRAM_Y);
     setRGB0(sprt, 128, 128, 128);   /* white via mid-gray (PS1 doubles) */
-    addPrim(otSlot, sprt);
+    ps1GpuOtAddPrim(otSlot, sprt);
     return PAUSE_GLYPH_DRAW_W;
 }
 
@@ -734,7 +754,7 @@ void captionsRender(void)
     next += sizeof(DR_TPAGE);
     setDrawTPage(tp, 0, 1,
                  getTPage(0, 0, PAUSE_FONT_VRAM_X, PAUSE_FONT_VRAM_Y));
-    addPrim(&capOt[CAP_OT_LEN - 1], tp);
+    ps1GpuOtAddPrim(&capOt[CAP_OT_LEN - 1], tp);
 
     /* Slot N-2: dark semi-transparent band behind the text. Sized to
      * fit up to 3 caption lines; collapses to the actual line count.
@@ -755,7 +775,7 @@ void captionsRender(void)
            CAP_BAND_X1,  bandY0,
            CAP_BAND_X0,  CAP_BAND_Y1,
            CAP_BAND_X1,  CAP_BAND_Y1);
-    addPrim(&capOt[CAP_OT_LEN - 2], band);
+    ps1GpuOtAddPrim(&capOt[CAP_OT_LEN - 2], band);
 
     /* Slot N-3: text SPRTs, line by line. Center each line in the band. */
     const char *p = currentCaption;
@@ -777,6 +797,11 @@ void captionsRender(void)
     }
 
     DrawOTag(&capOt[CAP_OT_LEN - 1]);
+
+    if (captionDisplayTimer > 0)
+        captionDisplayTimer--;
+    if (captionDisplayTimer <= 0)
+        currentCaption = NULL;
 }
 
 #else  /* host build — no PS1 GPU; render is a no-op */

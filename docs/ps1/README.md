@@ -12,20 +12,23 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.4.20-ps1` |
+| Release | `v0.5.0-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.4.20-ps1` promotes the story-loop walk connector from branch
-prototype to release build. Johnny now walks from one scene endpoint to
-the next instead of teleporting between FG2 packs. The runtime keeps the
-ocean moving, re-stamps holiday overlays, handles palm-tree cover-up,
-and uses a persistent tight walk-erase buffer so repeated scene loops do
-not fragment away the clean baseline. The release candidate survived a
-~10-minute DuckStation soak with no `JCBSOD` and no `JCWALK` allocation
-failures; see [release-notes-0.4.20.md](release-notes-0.4.20.md).
+`v0.5.0-ps1` promotes freeplay/debug mode from branch prototype to
+release build. Johnny can now be driven around the island directly from
+the pause menu, with analog/D-pad walking, slow/fast shoulder modifiers,
+fishing, immediate world toggles, debug catalogs for gags and visitors,
+a sound-test page, clear-screen rebuild, and frog-clock loading
+transitions. See [release-notes-0.5.0.md](release-notes-0.5.0.md) and
+[freeplay-mode-design.md](freeplay-mode-design.md).
+
+The previous `v0.4.20-ps1` release promoted the story-loop walk connector:
+Johnny walks from one scene endpoint to the next instead of teleporting
+between FG2 packs. See [release-notes-0.4.20.md](release-notes-0.4.20.md).
 
 "Fully validated" means human visual + audible signoff on the scene-playback
 path. Older counts (`25/63`, `60/63`, etc.) belong to earlier validation
@@ -107,13 +110,30 @@ holiday overlay, SPU playback, input).
 
 ## Controller mapping
 
-| PSX Button | Action |
+Normal screensaver mode needs no input. Press **Start** for the pause
+menu.
+
+| Control | Action |
 |---|---|
-| Start | Pause / Unpause |
-| Select | Toggle debug |
-| Triangle | Advance frame (paused) |
-| Circle | Toggle max speed |
-| X / L1 / L2 / R1 / R2 | Reserved |
+| Start | Open pause menu / resume |
+| D-pad / left analog | Move cursor or adjust values in menus |
+| Cross | Select / apply |
+| Circle | Back from any menu or submenu |
+
+Freeplay mode is launched from the pause menu:
+
+| Control | Action |
+|---|---|
+| D-pad / left analog | Walk Johnny; movement cancels the current action |
+| L2 held | Slow walk |
+| R2 held | Fast walk |
+| Circle | Fish from the nearest side |
+| Select | Clear screen and rebuild the island |
+| R1 + Up | Toggle day/night |
+| R1 + Down | Toggle high/low tide |
+| R1 + Left | Cycle raft stage |
+| R1 + Right | Cycle holiday overlay |
+| Start | Open pause menu |
 
 ## Documentation
 
@@ -129,6 +149,8 @@ holiday overlay, SPU playback, input).
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes
+- [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
+- [release-notes-0.5.0.md](release-notes-0.5.0.md) — release notes for the freeplay/debug milestone
 - [release-notes-0.4.20.md](release-notes-0.4.20.md) — release notes and soak evidence for the walking-loop milestone
 
 **Platform reference**

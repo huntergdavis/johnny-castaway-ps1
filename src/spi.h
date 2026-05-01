@@ -47,11 +47,11 @@
 typedef void (*SPI_Callback)(uint32_t port, const volatile uint8_t *buff, size_t rx_len);
 
 typedef struct _SPI_Request {
-	union {
+	union TSpiRequestPayload {
 		uint8_t			data[SPI_BUFF_LEN];
 		PadRequest		pad_req;
 		MemCardRequest	mcd_req;
-	};
+	} payload;
 	uint32_t			len, port;
 	SPI_Callback		callback;
 	struct _SPI_Request	*next;
