@@ -30,25 +30,36 @@ stack of flat-timing cleanup wins.
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
 
 The feasibility pass says hand-written MIPS is viable, but it should not be the
-first move. The cheaper, higher-confidence ladder is: verify hot graphics
-codegen, use word-stride C in restore/compose loops, try scratchpad palette
-storage, then write small assembly only for a measured hot loop. Current
-`CMakeLists.txt` already leaves `src/graphics_ps1.c` out of the whole-TU `-Os`
-list, so the immediate `-O2` idea becomes an audit/gate: confirm the active
-graphics TU is actually compiling at default `-O2`, then test whether the two
-scoped graphics `-Os` attributes should stay, move to `-O2`, or be isolated in
-a hot helper TU. Do not retry broad `-O3` for graphics/foreground/CD; those
-failures are still valid.
+first move. The cheaper, higher-confidence ladder is: make `-O2` tests the top
+priority across the whole build, use word-stride C in restore/compose loops,
+try scratchpad palette storage, then write small assembly only for a measured
+hot loop. Current `CMakeLists.txt` already leaves `src/graphics_ps1.c` out of
+the whole-TU `-Os` list, so the immediate `-O2` idea becomes a build-wide
+audit/gate: confirm which files/helpers are actually compiled at default
+`-O2`, then test every accepted `-Os` override back at `-O2` one at a time
+before trying harder code changes. Do not retry broad `-O3` for
+graphics/foreground/CD; those failures are still valid.
+
+`-O2`-first sweep order:
+
+| Order | Target | Why first |
+|---:|---|---|
+| 1 | Verify build flags and map output for all hot/cold TUs. | Avoid guessing. The default SDK build is already `-O2`; the test is identifying where accepted `-Os` overrides are now costing speed. |
+| 2 | Scoped graphics helpers currently forced to `-Os`. | Graphics/restore/compose are the closest thing to free performance if the smaller helper shape is slower. |
+| 3 | Hot or semi-hot whole TUs currently forced to `-Os`: `foreground_pilot.c`, `sound_ps1.c`, `events_ps1.c`, `resource.c`, and `jc_reborn.c`. | These can affect active playback, setup, input, or sound cadence; test individually with exact visual/audio/perf gates. |
+| 4 | Cold/default-off TUs currently forced to `-Os`: pause/menu/captions/memcard/holidays/debug/stubs/utils/island. | Lower probability of speed wins, but they can still perturb hot phase or shrink/grow the executable; record outcomes. |
+| 5 | Only after the `-O2` sweep: word-stride C restore/compose, scratchpad palette, then switchable hand-written MIPS. | Keeps the high-risk work behind the low-risk compiler flag matrix. |
 
 Prioritized intake from that research:
 
 | Priority | Experiment | Acceptance signal |
 |---:|---|---|
-| 1 | Graphics codegen audit: prove `graphics_ps1.c` is default `-O2`, dump per-function sizes, then test scoped `-O2` versus accepted scoped `-Os` only on the graphics helpers that currently override codegen. | Same pixels/sound, no PS-EXE bucket regression, and either lower loop/render counters or a smaller hot symbol with flat timing. |
-| 2 | Word-stride C restore copy for `grCleanRectCopyIn`: halfword edges, word-body loop, bounded row widths. | Restore detail counters or total loop improve without CD pressure or stale pixels. |
-| 3 | Word-stride C compose helpers: decode 8 PAL4/indexed pixels per `uint32` load and store aligned 16bpp pairs as `uint32` where opaque/aligned. | Compose detail counters improve on WALKSTUF1/VISITOR3 or another sprite-heavy route with exact visual output. |
-| 4 | Scratchpad palette copy for compose: copy the active 16-color palette to `0x1F800000` for the compose pass. | Compose counters improve without memory ownership conflicts; scratchpad layout is documented before promotion. |
-| 5 | Hand-written MIPS only after the C/data-placement versions leave a measured gap. Start with the restore row copy before transparent compose loops. | ASM and C implementations remain switchable for A/B runs; accepted only with visual hashes/human signoff plus perf improvement. |
+| 1 | Build-wide `-O2` audit and sweep: prove defaults, then test every currently accepted `-Os` TU/helper as `-O2`, one target per experiment. | Same pixels/sound, no PS-EXE bucket regression unless explicitly accepted, and either lower loop/render/setup counters or a documented no-promotion result. |
+| 2 | Graphics-specific `-O2` pass: prove `graphics_ps1.c` is default `-O2`, dump per-function sizes, then test scoped `-O2` versus accepted scoped `-Os` only on the graphics helpers that currently override codegen. | Same pixels/sound, no PS-EXE bucket regression, and either lower loop/render counters or a smaller hot symbol with flat timing. |
+| 3 | Word-stride C restore copy for `grCleanRectCopyIn`: halfword edges, word-body loop, bounded row widths. | Restore detail counters or total loop improve without CD pressure or stale pixels. |
+| 4 | Word-stride C compose helpers: decode 8 PAL4/indexed pixels per `uint32` load and store aligned 16bpp pairs as `uint32` where opaque/aligned. | Compose detail counters improve on WALKSTUF1/VISITOR3 or another sprite-heavy route with exact visual output. |
+| 5 | Scratchpad palette copy for compose: copy the active 16-color palette to `0x1F800000` for the compose pass. | Compose counters improve without memory ownership conflicts; scratchpad layout is documented before promotion. |
+| 6 | Hand-written MIPS only after the C/data-placement versions leave a measured gap. Start with the restore row copy before transparent compose loops. | ASM and C implementations remain switchable for A/B runs; accepted only with visual hashes/human signoff plus perf improvement. |
 
 Red-team caveat: setup-prime passes are active-loop wins, not end-to-end
 scene-time wins. The latest fishing2/fishing3 budgets move `128-352 KB` of
@@ -521,7 +532,7 @@ input.
 | 75 | Graphics | Batch `LoadImage` rect setup data in a persistent small array. | Rect count is high at `502`. | Stack/code shrinks or upload work falls. |
 | 76 | Graphics | Test max upload rect cap `7` after cross-scene proof. | Fishing1 max is `6`; cap `6` had no win but no headroom. | Cap `7` shrinks or remains safe across fishing scenes. |
 | 77 | Graphics | Cache clean-rect row source pointers. | Restore bytes are stable but pointer math may be hot. | Restore helper shrinks or `restore_vb` drops in detail runs. |
-| 78 | Graphics | Audit `graphics_ps1.c` codegen: prove default `-O2`, compare scoped graphics `-Os` helpers against scoped `-O2`, and record symbol-size deltas. | ASM feasibility says this is the cheapest possible win; current CMake suggests the whole TU is already `-O2`, so verify before changing anything. | Loop/render counters improve or hot graphics symbols shrink with exact timing. |
+| 78 | Toolchain | Run the build-wide `-O2` audit/sweep: identify every `-Os` override, test reverting each to default `-O2`, and log accepted/no-promotion outcomes. | The user explicitly wants `-O2` tests at the top of the total queue; this is lower risk than ASM and may be free performance. | Loop/render/setup counters improve, or exact-flat/no-promotion rows are recorded with map/layout evidence. |
 | 79 | Graphics | Test halfword-edge plus word-body restore copy in C for `grCleanRectCopyIn`. | Feasibility research says bounded aligned restore rows are the best win-per-risk ASM candidate; C word-stride should be tried first. | Restore detail counters improve without CD phase loss. |
 | 80 | Graphics | Test persistent clean-rect buffer reuse across same tide/background. | Memory leak fixes release per scene, but some buffers may be safely persistent. | Setup/restore improves without long-run heap drift. |
 | 81 | Compose | Generate pack-time tile-split spans. | Runtime cross-tile splitting regressed; pack-time can remove hot branches. | Compose work falls and spans remain exact. |
@@ -534,7 +545,7 @@ input.
 | 88 | Compose | Test per-scene generated fishing1 compositor. | One validated scene can justify bespoke codegen. | Fishing1 loop improves and generated output remains auditable. |
 | 89 | Compose | Test LUT-per-palette direct two-pixel writes in generated code. | Runtime LUT attempt was not enough. | Compose detail improves with no branch growth. |
 | 90 | Compose | Test row-level span coalescing at pack time. | PAL4 four-pixel unroll was no-op alone. | Fewer commands/spans or lower compose detail. |
-| 91 | Toolchain | Run per-file `-Os` on cold files: pause, captions, memcard, holidays, debug. | Holidays now passes under the foreground-size baseline; pause/resource/sound/stubs remain phase-sensitive retries. | EXE/ELF shrinks and exact cadence passes. |
+| 91 | Toolchain | Test `-O2` on every currently `-Os` source file before more `-Os` shrinking. | Speed beats shrink if the map/layout gate passes; accepted `-Os` wins should be revalidated now that phase and pack formats changed. | Free performance if loop/setup/render counters improve; otherwise log exact-flat/no-promotion and keep current `-Os`. |
 | 92 | Toolchain | Confirm graphics whole-TU `-O2` is already active, then test scoped `-O2` on graphics helpers that are currently forced to `-Os`. | The sandbox ASM research flagged graphics `-O2` as a cheap win if graphics was size-optimized; in this repo the whole TU appears to be default `-O2`, so the real test is helper-scoped codegen. | Free performance if render counters improve; otherwise log exact-flat/no-promotion and keep current scoped `-Os`. |
 | 93 | Toolchain | Do not retry whole-TU `-O3` on `foreground_pilot.c`; only test function-scoped/generated shapes with map padding. | Prior foreground `-O3` grew `foregroundPilotPlay` by about `5 KB`, moved pack layout, and did not improve key timing. | Accepted only if loop improves without CD pressure and hot symbol growth is explained. |
 | 94 | Toolchain | Do not retry whole-TU `-O3` on `cdrom_ps1.c`; use helper-scoped `-O2`/`-Os`, generated read metadata, or assembly only under map/layout gates. | CD helper `-O3` grew the executable and worsened visible CD pressure; the feasibility note supports narrower targets, not broad flags. | `loop_read_vb` or helper size improves without layout/cadence regression. |
@@ -552,16 +563,16 @@ near misses:
 
 | Order | Test # | Reason |
 |---:|---:|---|
-| 1 | 92 | Run the graphics `-O2` audit first because it is the closest thing to free performance: verify whole-TU flags, then test scoped helper `-O2` versus accepted scoped `-Os`. |
-| 2 | 79 | Test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
-| 3 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
-| 4 | 85 | Test scratchpad palette in compose after the C compose path has a measured baseline. |
-| 5 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
-| 6 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
-| 7 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
-| 8 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
-| 9 | 126 | Build present-wait frame-class tracing in a diagnostic binary. |
-| 10 | 145 | Redesign prepared-present ownership as an explicit state machine. |
+| 1 | 78 | Run the build-wide `-O2` audit/sweep first: enumerate current `-Os` overrides, then test default `-O2` per TU/helper with map/layout gates. |
+| 2 | 92 | Run the graphics scoped-helper `-O2` audit immediately after the build-wide inventory because graphics/restore/compose are the best chance of free speed. |
+| 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code. |
+| 4 | 79 | Test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
+| 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |
+| 6 | 85 | Test scratchpad palette in compose after the C compose path has a measured baseline. |
+| 7 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
+| 8 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
+| 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
+| 10 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 
 ## Retest Rules For Old Failures
 
