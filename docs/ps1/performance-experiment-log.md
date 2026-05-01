@@ -35,28 +35,28 @@ Current accepted baseline for the next experiment:
 
 | Field | Value |
 |---|---|
-| Commit | `ps1: trim walkstuf1 high setup-prime` |
-| Run ID | `20260430-185448-1699775` |
-| Scene | `walkstuf1 high + low/canaries` |
+| Commit | `ps1: aggregate indexed8 dirty rows` |
+| Run ID | `20260501-034320-456410` |
+| Scene | `walkstuf1 high + low acceptance` |
 | Boot | `fgpilot walkstuf1 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 perf-log noloop seed 1` |
 | Policy | `stage1_window` |
 | Window | `FGP3 zero-shift temporal-residual fishing1 high-tide pack, WALKSTUF1 indexed8 residual split stream reads plus derived high/low setup-prime budgets, VISITOR7 high 368 KiB setup-prime, ACTIVITY12 high 328 KiB setup-prime, FISHING5 high/low compact FGP3 packs, FGP3 setup-prime for payload windows <=288 KiB, 16 KB default reads, 333656-byte setup-primed runtime buffer for fishing1 high tide, first 320 KB foreground payload window primed during setup, setup-primed 4 VBlank host-deadline catch-up, full first-frame foreground upload preserved before FGP3 residual dirty-state reset, fishing1 high-tide tail read group 396..406 with 11-sector retained capacity, coalesced FG2 metadata prefix read, section-GC PS1 link, foreground visual telemetry removed from hot path, legacy foreground diagnostic scenes compiled out of default PS1 build, unused foreground ever diagnostics removed, unused ADS foreground start hook removed, obsolete FGPILOT ADS dispatch removed, unused foreground status accessors removed, dead foreground requested-mode state removed, base-diff foreground packs required, leading-empty setup consume with one setup settle VBlank, tight-slack direct staging up to 8 KB, direct-stage scratch window seeding, prepared-wait future prefetch, scheduler ownership counters with explicit CD/prep ownership markers, deep-trace pipeline counters compile-gated off by default, 3 VBlank refill guard, 6 VBlank fallthrough guard, exact-4 VBlank held-slack staged-frame prep, per-tile PAL4 row dirty marking, base-diff foreground OT-clear skip, tile-local PAL4 span fast path, vertical dirty-row upload bands, 1-row upload band gap byte trim, upload rect cap lowered to 8, touched-only current dirty-row clearing, touched-only dirty-row promotion, scene-relative foreground offsets pre-applied at startup, foreground draw offsets inlined after startup pre-apply, held prefetch branch collapsed, duplicate compose active guard removed, upload perf guards and markers combined, grDrawBackground and grUpdateDisplay optimized for size, aligned and unbuffered CD file-LBA caches, aligned and unbuffered CD helpers optimized for size, runtime active accessor simplified, legacy JCPERF CD accumulators skipped for modern foreground reads, long-hold host-deadline catch-up, main pause-menu credits/captions merge accepted as new baseline, pause-menu diagnostics compile-gated, graphics diagnostics compile-gated, sound diagnostics compile-gated, boot diagnostics compile-gated, pause request diagnostics compile-gated, disabled caption renderer skipped through inline flag, disabled caption ADS scene lookup skipped, jc_reborn, island, utils, ps1_debug, captions, memcard, foreground_pilot, holidays, resource, sound_ps1, pause_menu, ps1_stubs, and events_ps1 TUs compiled for size` |
-| Added in latest baseline | `WALKSTUF1 high trims the derived setup-prime by 4 KiB: low remains 248 KiB, high uses the 300 KiB knee without changing the PS-EXE sector bucket or pack LBAs` |
-| `loop_vb` | `1207` |
-| `target_vb` | `1076` |
-| `overrun_vb` | `131` |
-| `blocking_vb` | `0` |
-| `loop_reads` | `6` |
-| `prefetch_hits` | `155` |
-| `prefetch_due_misses` | `0` |
-| `prefetch_overrun_vb` | `0` |
-| `restore_bytes` | `251144` |
-| `upload_bytes` | `8533120` |
-| `dirty_rows` | `13333` |
-| `upload_rects` | `436` |
-| PS1 EXE size | `147456` |
-| PS1 ELF size | `733080` |
-| Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0 full_fallbacks=0` |
+| Added in latest baseline | `Indexed8 row-local tile pointers and row/tile dirty aggregation for WALKSTUF1 residual packs; PAL4 canaries stayed exact-flat, and the PS-EXE sector bucket and pack LBAs stayed fixed` |
+| `loop_vb` | `1971` |
+| `target_vb` | `1415` |
+| `overrun_vb` | `556` |
+| `blocking_vb` | `423` |
+| `loop_reads` | `42` |
+| `prefetch_hits` | `330` |
+| `prefetch_due_misses` | `23` |
+| `prefetch_overrun_vb` | `139` |
+| `restore_bytes` | `1305750` |
+| `upload_bytes` | `26852480` |
+| `dirty_rows` | `41957` |
+| `upload_rects` | `1356` |
+| PS1 EXE size | `169984` |
+| PS1 ELF size | `796028` |
+| Correctness | `trip=0 fallback=0 frame_mismatch=0 sound_late=0 cd_fail=0` |
 
 ## Experiments
 
@@ -929,6 +929,7 @@ Current accepted baseline for the next experiment:
 | 2026-05-01 | `fishing3-low-group253-269` | `docs: log fishing3 low group253 rejection` | Test the highest-impact remaining medium-risk FISHING3 low group after `{163,175}`. The cap-aware planner ranked `{253,269}` as a later cluster that could replace three reads with one retained-window read while keeping layout stable. | Temporarily added `{253,269}` to `kFishing3LowReadGroups12`, rebuilt clean, then ran focused FISHING3 low with `--require-improvement` against `scratch/ps1-perf-iterate/fishing3-low-group163-175-canaries-noregress/20260501-024210-111686/summary.json`. Source was restored after the gate failed. | Rejected. The group reduced read volume (`loop_reads 32 -> 30`) but worsened accepted timing and visible CD pressure: `loop_vb 2092 -> 2093`, `overrun_vb 138 -> 139`, `blocking_vb 7 -> 8`, and `prefetch_overrun_vb 7 -> 8`. Layout stayed fixed (`pack_lba=1564`, PS-EXE bucket `169984`), so the regression is read cadence/cost rather than a layout shift. Artifact: `scratch/ps1-perf-iterate/fishing3-low-group253-269-probe/20260501-025751-200430/summary.json`. | Do not promote. This is another proof that read-count reduction alone is not enough; future FISHING3 low groups need a visible-cost model or should try narrower/later ranges only if they can improve loop/blocking, not just `loop_reads`. |
 | 2026-05-01 | `fishing3-low-group253-265` | `ps1: group later fishing3 low foreground reads` | Retry the same later FISHING3 low cluster with the narrower `{253,265}` shape after `{253,269}` proved too broad. The hypothesis was that a one-read reduction could lower visible CD pressure without stealing the extra cadence that made the wide group regress. | Added `{253,265}` to `kFishing3LowReadGroups12`, rebuilt clean, ran focused FISHING3 low with `--require-improvement`, then ran the seven-case canary aggregate against `scratch/ps1-perf-iterate/fishing3-low-group163-175-canaries-noregress/20260501-024210-111686/summary.json`. | Promoted. FISHING3 low keeps `loop_vb=2092`, `target_vb=1954`, and `overrun_vb=138` while improving `blocking_vb 7 -> 6`, `prefetch_overrun_vb 7 -> 6`, and `loop_reads 32 -> 31`. FISHING1 high, FISHING3 high, VISITOR3 high/low, and WALKSTUF1 high/low stayed exact-flat; pack LBAs and PS-EXE sector bucket stayed fixed. Artifacts: focused `scratch/ps1-perf-iterate/fishing3-low-group253-265-probe/20260501-030100-218850/summary.json`; canaries `scratch/ps1-perf-iterate/fishing3-low-group253-265-canaries-noregress/20260501-030224-227085/summary.json`. | Promote. The CSV now stamps the refreshed canary rows as `compact-fgp3-v62-fishing3low-group253-265`. Exact matrix rollup remains `14.6669%` over target / `88.0913%` target speed because this is a visible-CD/work reduction with flat target-relative loop time. |
 | 2026-05-01 | `fishing3-high-group79-95` | `docs: log fishing3 high group79 rejection` | Test the highest-ranked medium-phase FISHING3 high read group, `{79,95}`. The plan predicted one saved read across a roughly `1.3s` gap, outside the setup segment and away from the rejected tight later clusters. | Temporarily added `{79,95}` to `kFishing3HighReadGroups12`, rebuilt clean, then ran focused FISHING3 high with `--require-improvement` against `scratch/ps1-perf-iterate/fishing3-low-group253-265-canaries-noregress/20260501-030224-227085/summary.json`. Source was restored after the gate failed. | Rejected as exact-flat. FISHING3 high stayed `loop_vb=2096`, `target_vb=1952`, `overrun_vb=144`, `blocking_vb=18`, `prefetch_overrun_vb=13`, `loop_reads=41`, and `due_misses=1`. Layout stayed fixed, but hot symbols shifted by `+4` bytes with no measured work or speed benefit. Artifact: `scratch/ps1-perf-iterate/fishing3-high-group79-95-probe/20260501-031316-289871/summary.json`. | Do not promote. The medium-phase candidate did not fire in a useful way; future FISHING3 high work should move to generated cost modeling, segmented preload, or another candidate only when the planner can explain an actual key-metric improvement path. |
+| 2026-05-01 | `indexed8-row-local-dirty-v1` | `ps1: aggregate indexed8 dirty rows` | Indexed8 FGP3 spans are generated from visible nonzero pixels like PAL4 spans, so row-local tile pointers plus one dirty mark per row/tile should reduce per-span overhead for WALKSTUF1 without changing PAL4 rows. | Changed `grCompositeIndexed8SpansToBackground()` to mirror the PAL4 row-local fast path, rebuilt, ran the seven-case canary (PAL4/VISITOR3 rows exact-flat; strict gate failed only because unchanged rows did not improve and WALKSTUF1 refill overrun exceeded the tight tolerance), then ran focused WALKSTUF1 high/low acceptance with `--allow-regression 50`. | Promoted. WALKSTUF1 high improves `loop_vb 2002 -> 1971`, `overrun_vb 591 -> 556`, `blocking_vb 438 -> 423`, and `due_misses 27 -> 23`; `prefetch_overrun_vb` rises `101 -> 139`. WALKSTUF1 low improves `loop_vb 2014 -> 1958`, `overrun_vb 621 -> 559`, `blocking_vb 494 -> 452`, and `due_misses 40 -> 34`; `prefetch_overrun_vb` rises `95 -> 140`. Pack LBAs and the PS-EXE sector bucket stayed fixed. Artifacts: strict canary `scratch/ps1-perf-iterate/indexed8-row-local-dirty-probe/20260501-033519-410157/summary.json`; focused acceptance `scratch/ps1-perf-iterate/indexed8-row-local-dirty-acceptance/20260501-034320-456410/summary.json`. | Promote as an indexed8-specific loop/blocking/due-miss win with an explicit refill-overrun tradeoff. The matrix rows now use `indexed8-row-local-dirty-v1`; exact timing-bearing rollup improves from `14.6669%` to `14.6068%` over target and target speed improves from `88.0913%` to `88.1213%`. Next WALKSTUF1 work should attack hidden refill ownership, generated read metadata, or upload-ready/direct16 data rather than more local pixel-loop branching. |
 
 ## Harness Notes
 

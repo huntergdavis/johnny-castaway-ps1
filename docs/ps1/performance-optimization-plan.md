@@ -160,9 +160,9 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
-`88.1%` target speed as of `compact-fgp3-v61-fishing3low-group163-175` (`14.6669%` exact over target /
-`88.0913%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
+`88.1%` target speed as of `indexed8-row-local-dirty-v1` (`14.6068%` exact over target /
+`88.1213%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1460,22 +1460,23 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-297` | Failed: add FISHING3 low read group `253..269`. | The planner's largest remaining medium-risk group did save read volume (`loop_reads 32 -> 30`) and kept layout fixed, but it worsened the accepted visible loop: `loop_vb 2092 -> 2093`, `overrun_vb 138 -> 139`, and `blocking_vb/prefetch_overrun_vb 7 -> 8`. Do not promote broad later groups on read savings alone; the next read-group attempt needs a visible-cost model or a narrower candidate such as `253..265` only if the gate shows loop/blocking improvement. |
 | `P5-298` | Done: add narrower FISHING3 low read group `253..265`. | Retesting the same later cluster with the narrower group keeps `loop_vb=2092`, `target_vb=1954`, and `overrun_vb=138` while improving visible CD pressure (`blocking_vb/prefetch_overrun_vb 7 -> 6`) and reducing `loop_reads 32 -> 31`. FISHING1 high, FISHING3 high, VISITOR3 high/low, and WALKSTUF1 high/low stay exact-flat. Latest refreshed rows now use `compact-fgp3-v62-fishing3low-group253-265`; exact matrix average remains `14.6669%` over target / `88.0913%` target speed because target-relative loop time is flat. |
 | `P5-299` | Failed: add FISHING3 high read group `79..95`. | The highest-ranked medium-phase high-tide candidate kept layout fixed but stayed exact-flat: `loop_vb=2096`, `overrun_vb=144`, `blocking_vb=18`, `prefetch_overrun_vb=13`, `loop_reads=41`, and `due_misses=1`. It only shifted hot symbols by `+4` bytes. Do not promote exact-flat read groups; next high-tide grouping needs generated cost modeling or a candidate that proves a key-metric change. |
+| `P5-300` | Done: aggregate indexed8 dirty rows. | `grCompositeIndexed8SpansToBackground()` now mirrors the PAL4 row-local fast path: it selects the RAM background tile once per row/tile and emits one dirty mark per touched row/tile instead of one per span. WALKSTUF1 high improves `loop_vb 2002 -> 1971`, `overrun_vb 591 -> 556`, `blocking_vb 438 -> 423`, and `due_misses 27 -> 23`; low improves `loop_vb 2014 -> 1958`, `overrun_vb 621 -> 559`, `blocking_vb 494 -> 452`, and `due_misses 40 -> 34`. The tradeoff is higher refill overrun (`101 -> 139` high, `95 -> 140` low), so this is accepted as an indexed8 loop/blocking win and not as a scheduler fix. Latest rows now use `indexed8-row-local-dirty-v1`; exact matrix average improves to `14.6068%` over target / `88.1213%` target speed. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v62-fishing3low-group253-265`: the matrix is now
-`120` timing-bearing rows at `14.6669%` exact average over target / `88.0913%`
-exact target speed. The accepted FISHING3 low `163..175` and `253..265` groups
-prove selective later CD grouping can still pay when the group is start-aligned
-and narrow enough not to steal visible cadence.
+Checkpoint after `indexed8-row-local-dirty-v1`: the matrix is now
+`120` timing-bearing rows at `14.6068%` exact average over target / `88.1213%`
+exact target speed. The accepted FISHING3 low groups and the indexed8 row-local
+dirty pass prove small wins still compound, but WALKSTUF1's higher refill
+overrun shows local compositor changes are now trading against CD ownership.
 The next loop should prioritize changes that can move multiple large
 rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
 tuning unless a fresh local sweep shows a clear knee.
 
 | Priority | Target class | Current signal | Next experiment shape |
 |---:|---|---|---|
-| 0 | Build-wide `-O2` quick wins | Sandbox research says `graphics_ps1.c -O2` could be free performance if graphics was compiled `-Os`; current CMake already leaves the graphics TU at default `-O2`, but multiple source files and helper functions are intentionally forced to `-Os`. | First run a map/flag-controlled `-O2` audit across all current `-Os` overrides. Test scoped graphics helper `-O2`, then each `-Os` TU back at default `-O2`, one experiment at a time. Only after that move to word-stride restore/compose, scratchpad palette, or hand-written MIPS. |
-| 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain about `+621`, `+591`, `+505`, and `+496` VBlanks, with the highest visible CD pressure (`blocking_vb=494/438/306/350`). Cap-aware read plans now show only the first `128 KiB` of setup coverage is truly resident, and VISITOR3 low `182..194` proves read savings alone can worsen visible blocking. | Host-side pack/layout work first: generated read metadata with a visible-cost model, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more hand-coded read groups unless the generated model predicts lower loop/blocking, not just fewer reads. |
+| 0 | Generated data/metadata wins | The broad `-O2` audit and hot/scoped helper probes produced no promotions under the current source shape. The active wins are now coming from generated read/layout policy and pack/compositor data shape. | Prioritize generated read metadata with a visible-cost model, upload-ready/direct16 pack data, and scheduler-owned CD/render budgets before another one-off source-shape or compiler-flag probe. Revisit `-O2`/toolchain only with a scripted multi-target harness and map-address accounting. |
+| 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain about `+559`, `+556`, `+517`, and `+489` VBlanks, with the highest visible CD pressure (`blocking_vb=452/423/314/345`). Cap-aware read plans now show only the first `128 KiB` of setup coverage is truly resident, and the indexed8 row-local win reduced WALKSTUF1 loop/blocking while raising refill overrun. | Host-side pack/layout work first: generated read metadata with a visible-cost model, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more local compositor/read-group tweaks unless the generated model predicts lower loop/blocking and acceptable refill ownership. |
 | 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts; scalar windows helped `building4/6` but failed `building2` as compiled source. | Move to generated read groups or host-side preprocessing that changes read placement/format. Do not keep hand-coding BUILDING2 window variants without a source-shape-neutral metadata path. |
 | 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
 

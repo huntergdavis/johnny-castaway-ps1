@@ -2201,16 +2201,46 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
     for (uint16 row = 0; row < rowCount; row++) {
         uint16 relY;
         uint16 spanCount;
+        int rowScreenY;
+        uint16 *rowLeftPixels = NULL;
+        uint16 *rowRightPixels = NULL;
+        /* Dirty rows are tracked per 320px tile; keep indexed8 aligned with PAL4. */
+        int rowLeftDirtyStart = 320;
+        int rowLeftDirtyEnd = -1;
+        int rowRightDirtyStart = 640;
+        int rowRightDirtyEnd = 319;
 
         if (offset + 4u > spanDataSize)
             return;
         relY = grReadPackedSpanU16(spanData + offset);
         spanCount = grReadPackedSpanU16(spanData + offset + 2u);
         offset += 4u;
+        rowScreenY = (int)screenY + (int)relY;
+        if (rowScreenY >= 0 && rowScreenY < 480) {
+            int tileLocalY;
+            PS1Surface *tileLeft;
+            PS1Surface *tileRight;
+
+            if (rowScreenY < 240) {
+                tileLocalY = rowScreenY;
+                tileLeft = bgTile0;
+                tileRight = bgTile1;
+            } else {
+                tileLocalY = rowScreenY - 240;
+                tileLeft = bgTile3;
+                tileRight = bgTile4;
+            }
+            if (tileLeft != NULL && tileLeft->pixels != NULL)
+                rowLeftPixels = tileLeft->pixels + (tileLocalY * (int)tileLeft->width);
+            if (tileRight != NULL && tileRight->pixels != NULL)
+                rowRightPixels = tileRight->pixels + (tileLocalY * (int)tileRight->width);
+        }
 
         for (uint16 span = 0; span < spanCount; span++) {
             uint16 relX;
             uint16 pixelCount;
+            int spanX;
+            int spanEndX;
 
             if (offset + 4u > spanDataSize)
                 return;
@@ -2225,13 +2255,39 @@ void grCompositeIndexed8SpansToBackground(const uint8 *spanData, uint32 spanData
             if (offset + (uint32)pixelCount > spanDataSize)
                 return;
 
-            grCompositeIndexed8SpanToBackground(spanData + offset,
-                                                pixelCount,
-                                                palette,
-                                                (int)screenX + (int)relX,
-                                                (int)screenY + (int)relY);
+            spanX = (int)screenX + (int)relX;
+            spanEndX = spanX + (int)pixelCount;
+            if (spanX >= 0 && spanEndX <= 320 && rowLeftPixels != NULL) {
+                if (spanX < rowLeftDirtyStart)
+                    rowLeftDirtyStart = spanX;
+                if (spanEndX > rowLeftDirtyEnd)
+                    rowLeftDirtyEnd = spanEndX;
+                grCompositeIndexed8OpaqueRun(rowLeftPixels + spanX,
+                                             spanData + offset,
+                                             pixelCount,
+                                             palette);
+            } else if (spanX >= 320 && spanEndX <= 640 && rowRightPixels != NULL) {
+                if (spanX < rowRightDirtyStart)
+                    rowRightDirtyStart = spanX;
+                if (spanEndX > rowRightDirtyEnd)
+                    rowRightDirtyEnd = spanEndX;
+                grCompositeIndexed8OpaqueRun(rowRightPixels + (spanX - 320),
+                                             spanData + offset,
+                                             pixelCount,
+                                             palette);
+            } else {
+                grCompositeIndexed8SpanToBackground(spanData + offset,
+                                                    pixelCount,
+                                                    palette,
+                                                    spanX,
+                                                    rowScreenY);
+            }
             offset += (uint32)pixelCount;
         }
+        if (rowLeftDirtyStart < rowLeftDirtyEnd)
+            grMarkRectDirty(rowLeftDirtyStart, rowScreenY, rowLeftDirtyEnd, rowScreenY + 1);
+        if (rowRightDirtyStart < rowRightDirtyEnd)
+            grMarkRectDirty(rowRightDirtyStart, rowScreenY, rowRightDirtyEnd, rowScreenY + 1);
     }
     if (perfTrack)
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);

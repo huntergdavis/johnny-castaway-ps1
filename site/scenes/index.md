@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-01:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+14.7%` (`14.6669%` exact) |
-| Timing-bearing average target speed | `88.1%` (`88.0913%` exact) |
-| Latest perf matrix run | `2026-05-01T03:02:24` |
-| Stats version | mixed: latest refreshed rows use `compact-fgp3-v62-fishing3low-group253-265`; other refreshed rows include `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+14.6%` (`14.6068%` exact) |
+| Timing-bearing average target speed | `88.1%` (`88.1213%` exact) |
+| Latest perf matrix run | `2026-05-01T03:43:20` |
+| Stats version | mixed: latest refreshed rows use `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1207 / 1074 VBlanks`, `+12.4%`, `89.0% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -144,8 +144,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `compact-fgp3-v62-fishing3low-group253-265`; other
-  refreshed rows include `compact-fgp3-v61-fishing3low-group163-175`,
+  refreshed rows use `indexed8-row-local-dirty-v1`; other refreshed rows
+  include `compact-fgp3-v62-fishing3low-group253-265`,
+  `compact-fgp3-v61-fishing3low-group163-175`,
   `compact-fgp3-v60-visitor3high-group230-242`,
   `compact-fgp3-v59-visitor3high-group72-84`,
   `indexed8-tile-local-compose-v1`,
@@ -277,8 +278,8 @@ and this page.
 | `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
 | `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
 | `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
-| `walkstuf1` | high | measured | 2026-05-01T03:02:24 | compact-fgp3-v62-fishing3low-group253-265 | +41.9% | 70.5% | 2002/1411 | 438 | 101 | 27 |  |
-| `walkstuf1` | low | measured | 2026-05-01T03:02:24 | compact-fgp3-v62-fishing3low-group253-265 | +44.6% | 69.2% | 2014/1393 | 494 | 95 | 40 |  |
+| `walkstuf1` | high | measured | 2026-05-01T03:43:20 | indexed8-row-local-dirty-v1 | +39.3% | 71.8% | 1971/1415 | 423 | 139 | 23 |  |
+| `walkstuf1` | low | measured | 2026-05-01T03:43:20 | indexed8-row-local-dirty-v1 | +40.0% | 71.5% | 1958/1399 | 452 | 140 | 34 |  |
 | `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf2` | low | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf3` | high | measured | 2026-04-29T18:12:55 | compact-fgp3-v2-fullmatrix | +8.1% | 92.5% | 2460/2276 | 79 | 45 | 6 |  |

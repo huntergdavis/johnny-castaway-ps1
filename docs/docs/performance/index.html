@@ -320,27 +320,33 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>+12.2% over target</strong>, or <strong>89.1% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+14.7% over target /
-88.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">14.6532%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.0982%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+14.6% over target /
+88.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">14.6068%</code> exact over target / <code class="language-plaintext highlighter-rouge">88.1213%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">compact-fgp3-v60-visitor3high-group230-242</code>; other refreshed rows include
+<code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fishing3low-group253-265</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v61-fishing3low-group163-175</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v60-visitor3high-group230-242</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v59-visitor3high-group72-84</code>, <code class="language-plaintext highlighter-rouge">indexed8-tile-local-compose-v1</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v58-activity9high-window20-table</code>, <code class="language-plaintext highlighter-rouge">compact-fgp3-v57-policy-table-refactor</code>, and <code class="language-plaintext highlighter-rouge">compact-fgp3-v49-walkstuf2-auto-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v29-smallprime</code>, and the full-matrix baseline rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-01T01:06:20</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-01T03:43:20</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">compact-fgp3-v60-visitor3high-group230-242</code>; other refreshed rows include
+rows now use <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fishing3low-group253-265</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v61-fishing3low-group163-175</code>,
+<code class="language-plaintext highlighter-rouge">compact-fgp3-v60-visitor3high-group230-242</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v59-visitor3high-group72-84</code>, <code class="language-plaintext highlighter-rouge">indexed8-tile-local-compose-v1</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v58-activity9high-window20-table</code>, <code class="language-plaintext highlighter-rouge">compact-fgp3-v57-policy-table-refactor</code>, and <code class="language-plaintext highlighter-rouge">compact-fgp3-v49-walkstuf2-auto-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v29-smallprime</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> / <code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>
 rows are historical only.</p>
@@ -441,7 +447,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
-      <td style="text-align: right">+12.2% / 89.1% (1207/1076)</td>
+      <td style="text-align: right">+12.4% / 89.0% (1207/1074); blk 2</td>
       <td style="text-align: right">+12.2% / 89.1% (1207/1076)</td>
     </tr>
     <tr>
@@ -451,8 +457,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
-      <td style="text-align: right">+7.6% / 92.9% (2098/1950); due 1; blk 23</td>
-      <td style="text-align: right">+6.8% / 93.6% (2091/1958); blk 6</td>
+      <td style="text-align: right">+7.4% / 93.1% (2096/1952); due 1; blk 18</td>
+      <td style="text-align: right">+7.1% / 93.4% (2092/1954); blk 6</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
@@ -632,7 +638,7 @@ rows are historical only.</p>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
       <td style="text-align: right">+48.6% / 67.3% (1496/1007); due 24; blk 345</td>
-      <td style="text-align: right">+49.6% / 66.9% (1524/1019); due 22; blk 306</td>
+      <td style="text-align: right">+50.9% / 66.3% (1532/1015); due 22; blk 314</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
@@ -656,8 +662,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
-      <td style="text-align: right">+41.9% / 70.5% (2002/1411); due 27; blk 438</td>
-      <td style="text-align: right">+44.6% / 69.2% (2014/1393); due 40; blk 494</td>
+      <td style="text-align: right">+39.3% / 71.8% (1971/1415); due 23; blk 423</td>
+      <td style="text-align: right">+40.0% / 71.5% (1958/1399); due 34; blk 452</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
@@ -694,8 +700,8 @@ residual pressure to keep the next experiments matrix-aware.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup segmentation for residual indexed8
-packs.</strong> WALKSTUF1 high/low still have <code class="language-plaintext highlighter-rouge">blocking_vb=400/450</code>, so the
-format/window/setup-prime wins need a second CD-shape pass.</li>
+packs.</strong> WALKSTUF1 high/low still have <code class="language-plaintext highlighter-rouge">blocking_vb=423/452</code>, so the
+format/window/setup-prime/compositor wins need a second CD-shape pass.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

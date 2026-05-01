@@ -153,6 +153,12 @@ It helped WALKSTUF1 high by `5` VBlanks but made low tide `16` VBlanks slower,
 matching the host-side warning that average byte runs are only about `1.8`.
 Do not spend more time on runtime indexed8 branch tricks; use pack-time
 direct16/upload-ready data or generated CD metadata instead.
+The accepted indexed8 row-local dirty pass is the safe boundary of this local
+compositor lane: WALKSTUF1 high moves `2002 -> 1971`, low moves `2014 -> 1958`,
+blocking and due misses improve, and PAL4 canaries stay exact-flat. The
+tradeoff is refill overrun (`101 -> 139` high, `95 -> 140` low), so the next
+indexed8 work should be scheduler/CD ownership, generated read metadata, or
+pack-time direct16/upload-ready spans rather than more pixel-loop branching.
 Setup-time first-frame prerendering is rejected. The clock-reset variant left
 STAND1 exact-flat, and the no-clock variant regressed FISHING1 visible CD
 pressure. Treat zero-CD overrun as distributed per-frame render/present/upload

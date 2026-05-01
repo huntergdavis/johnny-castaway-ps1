@@ -241,27 +241,33 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **+12.2% over target**, or **89.1% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+14.7% over target /
-88.1% target speed** (`14.6532%` exact over target / `88.0982%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+14.6% over target /
+88.1% target speed** (`14.6068%` exact over target / `88.1213%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-01, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`compact-fgp3-v60-visitor3high-group230-242`; other refreshed rows include
+`indexed8-row-local-dirty-v1`; other refreshed rows include
+`compact-fgp3-v62-fishing3low-group253-265`,
+`compact-fgp3-v61-fishing3low-group163-175`,
+`compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-05-01T01:06:20`; per-row freshness and stats version are shown on
+run is `2026-05-01T03:43:20`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v60-visitor3high-group230-242`; other refreshed rows include
+rows now use `indexed8-row-local-dirty-v1`; other refreshed rows include
+`compact-fgp3-v62-fishing3low-group253-265`,
+`compact-fgp3-v61-fishing3low-group163-175`,
+`compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
@@ -285,9 +291,9 @@ rows are historical only.
 | `building5` | +5.0% / 95.2% (3504/3336); due 6; blk 52 | +4.5% / 95.7% (3498/3348); due 2; blk 16 |
 | `building6` | +10.5% / 90.5% (2687/2431); due 32; blk 215 | +10.8% / 90.2% (2697/2434); due 33; blk 226 |
 | `building7` | +4.8% / 95.4% (3843/3668); due 4; blk 43 | +4.2% / 96.0% (3830/3676); blk 12 |
-| `fishing1` | +12.2% / 89.1% (1207/1076) | +12.2% / 89.1% (1207/1076) |
+| `fishing1` | +12.4% / 89.0% (1207/1074); blk 2 | +12.2% / 89.1% (1207/1076) |
 | `fishing2` | +7.6% / 92.9% (1899/1765); blk 3 | +7.4% / 93.1% (1898/1767) |
-| `fishing3` | +7.6% / 92.9% (2098/1950); due 1; blk 23 | +6.8% / 93.6% (2091/1958); blk 6 |
+| `fishing3` | +7.4% / 93.1% (2096/1952); due 1; blk 18 | +7.1% / 93.4% (2092/1954); blk 6 |
 | `fishing4` | +14.7% / 87.2% (967/843) | +14.7% / 87.2% (967/843) |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
 | `fishing6` | +18.2% / 84.6% (890/753) | +18.2% / 84.6% (890/753) |
@@ -323,12 +329,12 @@ rows are historical only.
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
 | `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
-| `visitor3` | +48.6% / 67.3% (1496/1007); due 24; blk 345 | +49.6% / 66.9% (1524/1019); due 22; blk 306 |
+| `visitor3` | +48.6% / 67.3% (1496/1007); due 24; blk 345 | +50.9% / 66.3% (1532/1015); due 22; blk 314 |
 | `visitor4` | +32.7% / 75.4% (568/428) | +32.7% / 75.4% (568/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +41.9% / 70.5% (2002/1411); due 27; blk 438 | +44.6% / 69.2% (2014/1393); due 40; blk 494 |
+| `walkstuf1` | +39.3% / 71.8% (1971/1415); due 23; blk 423 | +40.0% / 71.5% (1958/1399); due 34; blk 452 |
 | `walkstuf2` | +28.4% / 77.9% (593/462) | +28.4% / 77.9% (593/462) |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
@@ -354,8 +360,8 @@ residual pressure to keep the next experiments matrix-aware.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup segmentation for residual indexed8
-   packs.** WALKSTUF1 high/low still have `blocking_vb=400/450`, so the
-   format/window/setup-prime wins need a second CD-shape pass.
+   packs.** WALKSTUF1 high/low still have `blocking_vb=423/452`, so the
+   format/window/setup-prime/compositor wins need a second CD-shape pass.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.
