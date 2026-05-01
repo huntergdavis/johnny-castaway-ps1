@@ -36,6 +36,8 @@
 #include "memcard.h"
 #include "holidays.h"
 #include "ps1_captions.h"
+#include "ps1_pad_input.h"
+#include "scene_freeplay.h"
 
 #ifndef PAUSE_MENU_DIAG_LOGS
 #define PAUSE_MENU_DIAG_LOGS 0
@@ -93,6 +95,12 @@ int pauseMenuRequestResetLoop = 0;
 /* "Freeplay Mode" flag — foreground pilot loop checks this and exits
  * early so jc_reborn's outer loop can dispatch `fgpilot freeplay`. */
 int pauseMenuRequestFreeplay = 0;
+int pauseMenuRequestExitFreeplay = 0;
+int pauseMenuRequestFreeplayGag = -1;
+int pauseMenuRequestFreeplayVisitor = -1;
+int pauseMenuRequestFreeplayClear = 0;
+int pauseMenuRequestFreeplayWorldRefresh = 0;
+static int menuFreeplayActive = 0;
 
 /* Did pauseMenuShow itself toggle the mute? If yes, pauseMenuHide
  * undoes it. If the user manually toggled mute via the menu item
@@ -356,45 +364,72 @@ static int          editSeedField = 0;     /* 0 = mode, 1 = value */
 static uint16 prevButtons = 0;
 
 /* ---------------------------------------------------------------------------
- *  Main menu item descriptors. Environment toggles (sound / day-night /
- *  tide / raft / holiday / captions / perf log) live behind Options now.
+ *  Main menu item descriptors. Deeper controls live behind small
+ *  sub-screens so no pause page grows past the fixed panel.
  * ------------------------------------------------------------------------- */
 enum {
     MENU_RESUME,
-    MENU_OPTIONS,
-    MENU_SAVE,
     MENU_FREEPLAY,
-    MENU_RESET_LOOP,
-    MENU_NEXT_SCENE,
-    MENU_DEBUG_INFO,
-    MENU_CREDITS,
+    MENU_FREEPLAY_OPTIONS,
+    MENU_WORLD,
+    MENU_ACCESSIBILITY,
+    MENU_SYSTEM,
     MENU_COUNT
 };
 
-/* Options sub-screen items.
- *  - "Cycle" rows (Sound..Perf) flip values with LEFT / RIGHT / X.
- *  - "Launcher" rows (Set Time/Date and below) open a dedicated edit
- *    sub-screen on X. LEFT/RIGHT do nothing on launcher rows.
- * The split is by index: anything < OPT_LAUNCHER_FIRST cycles. */
 enum {
-    OPT_SOUND,
-    OPT_DAYNIGHT,
-    OPT_TIDE,
-    OPT_RAFT,
-    OPT_HOLIDAY,
-    OPT_CAPTIONS,
-    OPT_FOOTSTEPS,
-    OPT_PERF,
-    OPT_LAUNCHER_FIRST,           /* sentinel — same value as the next */
-    OPT_SET_TIME = OPT_LAUNCHER_FIRST,
-    OPT_SET_ISLAND_POS,
-    OPT_SET_SEED,
-    OPT_COUNT
+    WORLD_DAYNIGHT,
+    WORLD_TIDE,
+    WORLD_RAFT,
+    WORLD_HOLIDAYS,
+    WORLD_ISLAND_POS,
+    WORLD_BACK,
+    WORLD_COUNT
 };
 
-/* Cursor for the Options sub-screen (separate from main-menu cursor so
- * we resume Options on the same row when the user toggles back to it). */
+enum {
+    HOLIDAY_SET,
+    HOLIDAY_SELECT,
+    HOLIDAY_BACK,
+    HOLIDAY_COUNT
+};
+
+enum {
+    ACCESS_CAPTIONS,
+    ACCESS_SOUND,
+    ACCESS_FOOTSTEPS,
+    ACCESS_SOUND_TEST,
+    ACCESS_BACK,
+    ACCESS_COUNT
+};
+
+enum {
+    FPO_GAGS,
+    FPO_VISITORS,
+    FPO_CONTROLS,
+    FPO_CLEAR,
+    FPO_BACK,
+    FPO_COUNT
+};
+
+enum {
+    SYSTEM_SAVE,
+    SYSTEM_SET_TIME,
+    SYSTEM_SET_SEED,
+    SYSTEM_PERF,
+    SYSTEM_RESET_LOOP,
+    SYSTEM_NEXT_SCENE,
+    SYSTEM_COUNT
+};
+
 static int optionsCursor = 0;
+static int freeplayOptionsCursor = 0;
+static int freeplayGagCursor = 0;
+static int freeplayVisitorCursor = 0;
+static int soundTestCursor = 0;
+static int holidayCursor = 0;
+static int accessCursor = 0;
+static int systemCursor = 0;
 
 /* Forward decls. */
 static const char *perfLevelLabel(void);
@@ -456,6 +491,11 @@ void pauseMenuInit(void)
     menuFramebufferPrimed = 0;
 }
 
+void pauseMenuSetFreeplayActive(int active)
+{
+    menuFreeplayActive = active ? 1 : 0;
+}
+
 void pauseMenuShow(void)
 {
     /* Reload font VRAM each time we enter the menu -- the game's
@@ -465,6 +505,9 @@ void pauseMenuShow(void)
     menuVisible           = 1;
     menuCursor            = 0;
     optionsCursor         = 0;
+    holidayCursor         = 0;
+    accessCursor          = 0;
+    systemCursor          = 0;
     menuState             = PAUSE_MENU_MAIN;
     menuFramebufferPrimed = 0;
     prevButtons           = 0xFFFF;  /* Treat all buttons as "held" so the
@@ -695,7 +738,7 @@ static void drawSceneInfo(void)
     pmPrintf(" Sound:  %s", soundMuted ? "MUTED" : "ON");
     pmPrintf(" Save:   %s", memcardLastStatus ? memcardLastStatus : "(none)");
     drawSeparator();
-    pmPrintf(" START = BACK");
+    pmPrintf(" O/START = BACK");
 }
 
 /* ---------------------------------------------------------------------------
@@ -703,18 +746,90 @@ static void drawSceneInfo(void)
  * ------------------------------------------------------------------------- */
 static void drawControls(void)
 {
-    pmPrintf("\n");
+    pmPrintf("       CONTROLS\n");
     drawSeparator();
-    pmPrintf("     CONTROLS\n");
+    pmPrintf(" D-PAD/L-STICK  Walk\n");
+    pmPrintf(" L2 / R2        Slow / Fast\n");
+    pmPrintf(" CIRCLE         Fish\n");
+    pmPrintf(" R1+UP          Day/Night\n");
+    pmPrintf(" R1+DOWN        Tide\n");
+    pmPrintf(" R1+LEFT        Raft\n");
+    pmPrintf(" R1+RIGHT       Holiday\n");
+    pmPrintf(" START          Pause\n");
     drawSeparator();
-    pmPrintf("\n");
-    pmPrintf(" START      Pause / Resume\n");
-    pmPrintf(" X          Next Scene\n");
-    pmPrintf(" CIRCLE     Max Speed\n");
-    pmPrintf(" TRIANGLE   Frame Advance\n");
-    pmPrintf(" SELECT     Quit\n");
-    pmPrintf("\n");
-    pmPrintf(" (START to go back)\n");
+    pmPrintf(" O/START = back\n");
+}
+
+static void drawFreeplayOptions(void)
+{
+    pmPrintf("    FREEPLAY OPTIONS\n");
+    drawSeparator();
+    pmPrintf(" %s Gags...\n",
+             freeplayOptionsCursor == FPO_GAGS ? ">" : " ");
+    pmPrintf(" %s Visitors...\n",
+             freeplayOptionsCursor == FPO_VISITORS ? ">" : " ");
+    pmPrintf(" %s Controls\n",
+             freeplayOptionsCursor == FPO_CONTROLS ? ">" : " ");
+    pmPrintf(" %s Clear Screen\n",
+             freeplayOptionsCursor == FPO_CLEAR ? ">" : " ");
+    pmPrintf(" %s Back\n",
+             freeplayOptionsCursor == FPO_BACK ? ">" : " ");
+    drawSeparator();
+    if (!menuFreeplayActive)
+        pmPrintf(" Start freeplay to spawn.\n");
+    pmPrintf(" X = select   O/START = back\n");
+}
+
+static void drawFreeplayGagCatalog(void)
+{
+    int count = freeplayGagCount();
+    if (count <= 0)
+        count = 1;
+    if (freeplayGagCursor >= count)
+        freeplayGagCursor = 0;
+    if (freeplayGagCursor < 0)
+        freeplayGagCursor = count - 1;
+
+    pmPrintf("      FREEPLAY GAG\n");
+    drawSeparator();
+    pmPrintf(" %02d/%02d  %.22s\n",
+             freeplayGagCursor + 1, count,
+             freeplayGagTitle(freeplayGagCursor));
+    pmPrintf(" BMP: %.18s\n", freeplayGagBmp(freeplayGagCursor));
+    pmPrintf(" Frames: %-3d  RAM: ~%d KB\n",
+             freeplayGagFrames(freeplayGagCursor),
+             freeplayGagMemoryKB(freeplayGagCursor));
+    pmPrintf(" %.28s\n", freeplayGagDescription(freeplayGagCursor));
+    drawSeparator();
+    pmPrintf(" UP/DOWN choose\n");
+    pmPrintf(menuFreeplayActive ? " X spawn now\n" : " Start freeplay first\n");
+    pmPrintf(" O/START = back\n");
+}
+
+static void drawFreeplayVisitorCatalog(void)
+{
+    int count = freeplayVisitorCount();
+    if (count <= 0)
+        count = 1;
+    if (freeplayVisitorCursor >= count)
+        freeplayVisitorCursor = 0;
+    if (freeplayVisitorCursor < 0)
+        freeplayVisitorCursor = count - 1;
+
+    pmPrintf("    FREEPLAY VISITOR\n");
+    drawSeparator();
+    pmPrintf(" %02d/%02d  %.22s\n",
+             freeplayVisitorCursor + 1, count,
+             freeplayVisitorTitle(freeplayVisitorCursor));
+    pmPrintf(" BMP: %.18s\n", freeplayVisitorBmp(freeplayVisitorCursor));
+    pmPrintf(" Frames: %-3d  RAM: ~%d KB\n",
+             freeplayVisitorFrames(freeplayVisitorCursor),
+             freeplayVisitorMemoryKB(freeplayVisitorCursor));
+    pmPrintf(" %.28s\n", freeplayVisitorDescription(freeplayVisitorCursor));
+    drawSeparator();
+    pmPrintf(" UP/DOWN choose\n");
+    pmPrintf(menuFreeplayActive ? " X spawn now\n" : " Start freeplay first\n");
+    pmPrintf(" O/START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -776,7 +891,7 @@ static void drawSetTime(void)
     pmPrintf("\n");
     pmPrintf(" UP/DOWN select field\n");
     pmPrintf(" LEFT/RIGHT adjust value\n");
-    pmPrintf(" X to confirm, START back\n");
+    pmPrintf(" X to confirm, O/START back\n");
 
     (void)fieldNames;
 }
@@ -790,7 +905,7 @@ static void drawSetTime(void)
  *  MANUAL = use the X/Y values from this screen on every scene.
  *  Range guards: X clamped to -250..+250, Y to -100..+200. Real
  *  observed varpos from fgLoopRandomVarPos lives well inside that.
- *  X confirms back to main; START goes back without applying.
+ *  X confirms back to main; Circle/START goes back without applying.
  * ------------------------------------------------------------------------- */
 static void drawIslandPos(void)
 {
@@ -820,7 +935,7 @@ static void drawIslandPos(void)
     pmPrintf(" UP/DOWN  select field\n");
     pmPrintf(" LEFT/RIGHT adjust X/Y by 4\n");
     pmPrintf("           toggle mode\n");
-    pmPrintf(" X = confirm   START = back\n");
+    pmPrintf(" X = confirm   O/START = back\n");
 
     if (!editIslandValid && (editIslandX != 0 || editIslandY != 0)) {
         pmPrintf("\n");
@@ -835,7 +950,7 @@ static void drawIslandPos(void)
  *  AUTO  = on confirm, re-seed via ps1SeedRandom() (root counters).
  *  FIXED = on confirm, srand(value).
  *  LEFT/RIGHT on the value field nudges by 1; L1/R1 by 100; L2/R2 by 10000.
- *  X = confirm, START = back without applying.
+ *  X = confirm, Circle/START = back without applying.
  * ------------------------------------------------------------------------- */
 static void drawSetSeed(void)
 {
@@ -869,19 +984,19 @@ static void drawSetSeed(void)
     pmPrintf(" LEFT/RIGHT  +/-1\n");
     pmPrintf(" L1/R1       +/-100\n");
     pmPrintf(" L2/R2       +/-10000\n");
-    pmPrintf(" X = confirm   START = back\n");
+    pmPrintf(" X = confirm   O/START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
  *  Sub-screen: Credits
  * ---------------------------------------------------------------------------
  *  A labor-of-love attribution + open-source notice + the "if you paid
- *  you were cheated" disclaimer + the upstream URL. START = back.
+ *  you were cheated" disclaimer + the upstream URL. Circle/START = back.
  *  Lines are tuned to ~30 chars max so they fit the panel width.
  * ------------------------------------------------------------------------- */
 static void drawCredits(void)
 {
-    pmPrintf(" CREDITS  (START to return)\n");
+    pmPrintf(" CREDITS  (O/START to return)\n");
     drawSeparator();
     pmPrintf(" A labor of love by\n");
     pmPrintf(" Hunter Davis.\n");
@@ -945,22 +1060,116 @@ static const char *holidayLabel(void)
     return holidayShortName(hostForcedHoliday);
 }
 
+static int holidaySetMode(void)
+{
+    if (hostForcedHoliday < 0) return 0;  /* date/auto */
+    if (hostForcedHoliday == 0) return 1; /* none */
+    if (hostForcedHoliday <= 4) return 2; /* original four */
+    return 3;                             /* expanded set */
+}
+
+static const char *holidaySetLabel(void)
+{
+    switch (holidaySetMode()) {
+    case 0: return "AUTO DATE";
+    case 1: return "NONE";
+    case 2: return "ORIGINAL 4";
+    case 3: return "EXPANDED";
+    default: return "?";
+    }
+}
+
+static int firstExpandedHoliday(void)
+{
+    for (int i = 0; i < gHolidayCount; i++) {
+        if (gHolidays[i].id > 4)
+            return gHolidays[i].id;
+    }
+    return 0;
+}
+
+static int nextHolidayInRange(int current, int minId, int maxId, int dir)
+{
+    int best = 0;
+    int found = 0;
+    if (dir >= 0) {
+        for (int i = 0; i < gHolidayCount; i++) {
+            int id = gHolidays[i].id;
+            if (id < minId || id > maxId)
+                continue;
+            if (!best)
+                best = id;
+            if (found)
+                return id;
+            if (id == current)
+                found = 1;
+        }
+        return best;
+    }
+
+    for (int i = gHolidayCount - 1; i >= 0; i--) {
+        int id = gHolidays[i].id;
+        if (id < minId || id > maxId)
+            continue;
+        if (!best)
+            best = id;
+        if (found)
+            return id;
+        if (id == current)
+            found = 1;
+    }
+    return best;
+}
+
+static void cycleHolidaySet(int dir)
+{
+    int mode = holidaySetMode();
+    mode += (dir >= 0) ? 1 : -1;
+    if (mode > 3) mode = 0;
+    if (mode < 0) mode = 3;
+
+    switch (mode) {
+    case 0: hostForcedHoliday = -1; break;
+    case 1: hostForcedHoliday = 0; break;
+    case 2:
+        if (hostForcedHoliday < 1 || hostForcedHoliday > 4)
+            hostForcedHoliday = 1;
+        break;
+    case 3:
+        if (hostForcedHoliday <= 4)
+            hostForcedHoliday = firstExpandedHoliday();
+        break;
+    }
+    if (menuFreeplayActive)
+        pauseMenuRequestFreeplayWorldRefresh = 1;
+}
+
+static void cycleHolidaySelection(int dir)
+{
+    int oldHoliday = hostForcedHoliday;
+    if (hostForcedHoliday >= 1 && hostForcedHoliday <= 4) {
+        hostForcedHoliday = nextHolidayInRange(hostForcedHoliday, 1, 4, dir);
+    } else if (hostForcedHoliday > 4) {
+        hostForcedHoliday = nextHolidayInRange(hostForcedHoliday, 5,
+                                               holidayMaxId(), dir);
+    }
+    if (menuFreeplayActive && hostForcedHoliday != oldHoliday)
+        pauseMenuRequestFreeplayWorldRefresh = 1;
+}
+
 static void cycleDaynight(int dir)
 {
     /* AUTO(-1) -> DAY(0) -> NIGHT(1) -> AUTO */
     hostForcedNight += dir;
     if (hostForcedNight > 1)  hostForcedNight = -1;
     if (hostForcedNight < -1) hostForcedNight = 1;
+    if (menuFreeplayActive)
+        pauseMenuRequestFreeplayWorldRefresh = 1;
 }
 
 static void cycleHoliday(int dir)
 {
-    /* AUTO(-1) -> NONE(0) -> holidays in YAML/calendar order -> AUTO.
-     * holidayPrevId / holidayNextId expose the inverse step. */
-    if (dir > 0)
-        hostForcedHoliday = holidayNextId(hostForcedHoliday);
-    else
-        hostForcedHoliday = holidayPrevId(hostForcedHoliday);
+    cycleHolidaySelection(dir);
 }
 
 static const char *tideLabel(void)
@@ -979,6 +1188,8 @@ static void cycleTide(int dir)
     hostForcedLowTide += dir;
     if (hostForcedLowTide > 1)  hostForcedLowTide = -1;
     if (hostForcedLowTide < -1) hostForcedLowTide = 1;
+    if (menuFreeplayActive)
+        pauseMenuRequestFreeplayWorldRefresh = 1;
 }
 
 static const char *raftLabel(void)
@@ -1001,6 +1212,8 @@ static void cycleRaft(int dir)
     hostForcedRaftStage += dir;
     if (hostForcedRaftStage > 5)  hostForcedRaftStage = -1;
     if (hostForcedRaftStage < -1) hostForcedRaftStage = 5;
+    if (menuFreeplayActive)
+        pauseMenuRequestFreeplayWorldRefresh = 1;
 }
 
 static void cyclePerf(int dir)
@@ -1029,23 +1242,20 @@ static void drawMainMenu(void)
 
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
-    pmPrintf(" %s Options\n",
-             menuCursor == MENU_OPTIONS ? ">" : " ");
-    pmPrintf(" %s Save Settings to Memcard\n",
-             menuCursor == MENU_SAVE ? ">" : " ");
-    pmPrintf(" %s Freeplay Mode\n",
-             menuCursor == MENU_FREEPLAY ? ">" : " ");
-    pmPrintf(" %s Reset Current Scene\n",
-             menuCursor == MENU_RESET_LOOP ? ">" : " ");
-    pmPrintf(" %s Next Scene\n",
-             menuCursor == MENU_NEXT_SCENE ? ">" : " ");
-    pmPrintf(" %s Debug Info\n",
-             menuCursor == MENU_DEBUG_INFO ? ">" : " ");
-    pmPrintf(" %s Credits\n",
-             menuCursor == MENU_CREDITS ? ">" : " ");
+    pmPrintf(" %s Freeplay: %s\n",
+             menuCursor == MENU_FREEPLAY ? ">" : " ",
+             menuFreeplayActive ? "ON" : "OFF");
+    pmPrintf(" %s Freeplay Options\n",
+             menuCursor == MENU_FREEPLAY_OPTIONS ? ">" : " ");
+    pmPrintf(" %s World Options\n",
+             menuCursor == MENU_WORLD ? ">" : " ");
+    pmPrintf(" %s Accessibility\n",
+             menuCursor == MENU_ACCESSIBILITY ? ">" : " ");
+    pmPrintf(" %s System\n",
+             menuCursor == MENU_SYSTEM ? ">" : " ");
 
     drawSeparator();
-    pmPrintf("  X = select   START = resume\n");
+    pmPrintf("  X = select   O/START = resume\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -1053,60 +1263,130 @@ static void drawMainMenu(void)
  * ------------------------------------------------------------------------- */
 static void drawOptions(void)
 {
-    const char *soundLabel = soundMuted ? "MUTED" : "ON";
-
-    pmPrintf("       OPTIONS\n");
+    pmPrintf("     WORLD OPTIONS\n");
     drawSeparator();
 
-    pmPrintf(" %s Sound:     %s\n",
-             optionsCursor == OPT_SOUND ? ">" : " ", soundLabel);
     pmPrintf(" %s Day/Night: %s\n",
-             optionsCursor == OPT_DAYNIGHT ? ">" : " ", daynightLabel());
+             optionsCursor == WORLD_DAYNIGHT ? ">" : " ", daynightLabel());
     pmPrintf(" %s Tide:      %s\n",
-             optionsCursor == OPT_TIDE ? ">" : " ", tideLabel());
+             optionsCursor == WORLD_TIDE ? ">" : " ", tideLabel());
     pmPrintf(" %s Raft:      %s\n",
-             optionsCursor == OPT_RAFT ? ">" : " ", raftLabel());
-    pmPrintf(" %s Holiday:   %s\n",
-             optionsCursor == OPT_HOLIDAY ? ">" : " ", holidayLabel());
-    if (optionsCursor == OPT_HOLIDAY) {
-        if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
-            pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
-            pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
-        } else if (hostForcedHoliday < 0 && ps1SoftTimeEnabled) {
-            int dateHoliday = holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
-            pmPrintf("   Date picker: %s\n",
-                     dateHoliday ? holidayShortName(dateHoliday) : "NONE");
-        } else if (hostForcedHoliday < 0) {
-            pmPrintf("   Random each scene\n");
-        }
-    }
-    pmPrintf(" %s Captions:  %s\n",
-             optionsCursor == OPT_CAPTIONS ? ">" : " ", captionsLabel());
-    {
-        extern int footstepsEnabled;
-        const char *footLabel = footstepsEnabled ? "ON" : "OFF";
-        pmPrintf(" %s Footsteps: %s\n",
-                 optionsCursor == OPT_FOOTSTEPS ? ">" : " ", footLabel);
-    }
-    pmPrintf(" %s Perf Log:  %s\n",
-             optionsCursor == OPT_PERF ? ">" : " ", perfLevelLabel());
-
-    drawSeparator();
-    pmPrintf(" %s Set Time/Date...\n",
-             optionsCursor == OPT_SET_TIME ? ">" : " ");
+             optionsCursor == WORLD_RAFT ? ">" : " ", raftLabel());
+    pmPrintf(" %s Holidays...\n",
+             optionsCursor == WORLD_HOLIDAYS ? ">" : " ");
     pmPrintf(" %s Set Island Pos...\n",
-             optionsCursor == OPT_SET_ISLAND_POS ? ">" : " ");
-    pmPrintf(" %s Set RNG Seed...\n",
-             optionsCursor == OPT_SET_SEED ? ">" : " ");
+             optionsCursor == WORLD_ISLAND_POS ? ">" : " ");
+    pmPrintf(" %s Back\n",
+             optionsCursor == WORLD_BACK ? ">" : " ");
 
     drawSeparator();
-    pmPrintf(" UP/DOWN  select field\n");
-    if (optionsCursor < OPT_LAUNCHER_FIRST) {
-        pmPrintf(" LEFT/RIGHT or X cycle\n");
-    } else {
-        pmPrintf(" X = open editor\n");
+    pmPrintf(" LEFT/RIGHT or X adjust\n");
+    pmPrintf(" O/START = back\n");
+}
+
+static void drawHolidayMenu(void)
+{
+    pmPrintf("        HOLIDAYS\n");
+    drawSeparator();
+    pmPrintf(" %s Set:     %s\n",
+             holidayCursor == HOLIDAY_SET ? ">" : " ", holidaySetLabel());
+    pmPrintf(" %s Holiday: %s\n",
+             holidayCursor == HOLIDAY_SELECT ? ">" : " ", holidayLabel());
+    pmPrintf(" %s Back\n",
+             holidayCursor == HOLIDAY_BACK ? ">" : " ");
+    drawSeparator();
+    if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
+        pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
+        pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
+    } else if (hostForcedHoliday < 0 && ps1SoftTimeEnabled) {
+        int dateHoliday = holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
+        pmPrintf("   Date picker: %s\n",
+                 dateHoliday ? holidayShortName(dateHoliday) : "NONE");
     }
-    pmPrintf(" START = back\n");
+    pmPrintf(" O/START = back\n");
+}
+
+static void drawAccessibilityMenu(void)
+{
+    extern int footstepsEnabled;
+    const char *soundLabel = soundMuted ? "MUTED" : "ON";
+    const char *footLabel = footstepsEnabled ? "ON" : "OFF";
+
+    pmPrintf("     ACCESSIBILITY\n");
+    drawSeparator();
+    pmPrintf(" %s Captions:  %s\n",
+             accessCursor == ACCESS_CAPTIONS ? ">" : " ", captionsLabel());
+    pmPrintf(" %s Sound:     %s\n",
+             accessCursor == ACCESS_SOUND ? ">" : " ", soundLabel);
+    pmPrintf(" %s Footsteps: %s\n",
+             accessCursor == ACCESS_FOOTSTEPS ? ">" : " ", footLabel);
+    pmPrintf(" %s Sound Test...\n",
+             accessCursor == ACCESS_SOUND_TEST ? ">" : " ");
+    pmPrintf(" %s Back\n",
+             accessCursor == ACCESS_BACK ? ">" : " ");
+    drawSeparator();
+    pmPrintf(" LEFT/RIGHT or X adjust\n");
+    pmPrintf(" O/START = back\n");
+}
+
+static const char *soundTestName(int index)
+{
+    static const char *const names[] = {
+        "SOUND00", "SOUND01", "SOUND02", "SOUND03", "SOUND04",
+        "SOUND05", "SOUND06", "SOUND07", "SOUND08", "SOUND09",
+        "SOUND10", "SOUND11", "SOUND12", "SOUND13", "SOUND14",
+        "SOUND15", "SOUND16", "SOUND17", "SOUND18", "SOUND19",
+        "SOUND20", "SOUND21", "SOUND22", "SOUND23", "SOUND24"
+    };
+    if (index < 0 || index >= (int)(sizeof(names) / sizeof(names[0])))
+        return "SOUND??";
+    return names[index];
+}
+
+static void drawSoundTestMenu(void)
+{
+    int count = soundEffectCount();
+    if (count <= 0)
+        count = 1;
+    if (soundTestCursor < 0)
+        soundTestCursor = count - 1;
+    if (soundTestCursor >= count)
+        soundTestCursor = 0;
+
+    pmPrintf("       SOUND TEST\n");
+    drawSeparator();
+    pmPrintf(" %02d/%02d  %s\n",
+             soundTestCursor + 1, count, soundTestName(soundTestCursor));
+    pmPrintf(" Status: %s\n",
+             soundEffectLoaded(soundTestCursor) ? "READY" : "MISSING");
+    pmPrintf(" Size:   %lu KB\n",
+             (soundEffectSizeBytes(soundTestCursor) + 1023UL) / 1024UL);
+    pmPrintf(" Rate:   %d Hz\n",
+             soundEffectSampleRate(soundTestCursor));
+    pmPrintf(" Output: %s\n", soundMuted ? "MUTED" : "ON");
+    drawSeparator();
+    pmPrintf(" UP/DOWN choose\n");
+    pmPrintf(" X play   O/START back\n");
+}
+
+static void drawSystemMenu(void)
+{
+    pmPrintf("        SYSTEM\n");
+    drawSeparator();
+    pmPrintf(" %s Save Settings\n",
+             systemCursor == SYSTEM_SAVE ? ">" : " ");
+    pmPrintf(" %s Set Time/Date...\n",
+             systemCursor == SYSTEM_SET_TIME ? ">" : " ");
+    pmPrintf(" %s Set RNG Seed...\n",
+             systemCursor == SYSTEM_SET_SEED ? ">" : " ");
+    pmPrintf(" %s Perf Log: %s\n",
+             systemCursor == SYSTEM_PERF ? ">" : " ", perfLevelLabel());
+    pmPrintf(" %s Reset Scene\n",
+             systemCursor == SYSTEM_RESET_LOOP ? ">" : " ");
+    pmPrintf(" %s Next Scene\n",
+             systemCursor == SYSTEM_NEXT_SCENE ? ">" : " ");
+    drawSeparator();
+    pmPrintf(" O/START = back\n");
 }
 
 /* ---------------------------------------------------------------------------
@@ -1131,34 +1411,31 @@ static int handleMainInput(uint16 pressed)
         case MENU_RESUME:
             return 0;  /* close menu */
 
-        case MENU_OPTIONS:
+        case MENU_FREEPLAY:
+            if (menuFreeplayActive) {
+                pauseMenuRequestExitFreeplay = 1;
+            } else {
+                pauseMenuRequestFreeplay = 1;
+            }
+            return 0;
+
+        case MENU_FREEPLAY_OPTIONS:
+            menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
+            prevButtons = 0xFFFF;
+            break;
+
+        case MENU_WORLD:
             menuState = PAUSE_MENU_OPTIONS;
             prevButtons = 0xFFFF;
             break;
 
-        case MENU_SAVE:
-            memcardSaveSettings();
-            break;
-
-        case MENU_FREEPLAY:
-            pauseMenuRequestFreeplay = 1;
-            return 0;
-
-        case MENU_RESET_LOOP:
-            pauseMenuRequestResetLoop = 1;
-            return 0;  /* close menu so the foreground pilot loop sees it */
-
-        case MENU_NEXT_SCENE:
-            pauseMenuRequestNextScene = 1;
-            return 0;
-
-        case MENU_DEBUG_INFO:
-            menuState = PAUSE_MENU_SCENE_INFO;
+        case MENU_ACCESSIBILITY:
+            menuState = PAUSE_MENU_ACCESSIBILITY;
             prevButtons = 0xFFFF;
             break;
 
-        case MENU_CREDITS:
-            menuState = PAUSE_MENU_CREDITS;
+        case MENU_SYSTEM:
+            menuState = PAUSE_MENU_SYSTEM;
             prevButtons = 0xFFFF;
             break;
 
@@ -1167,112 +1444,373 @@ static int handleMainInput(uint16 pressed)
         }
     }
 
-    /* START on main menu = resume */
-    if (pressed & PAD_START)
+    /* START or Circle on main menu = resume */
+    if (pressed & (PAD_START | PAD_CIRCLE))
         return 0;
 
     return 1;  /* keep menu open */
+}
+
+static int handleFreeplayOptionsInput(uint16 pressed)
+{
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_FREEPLAY_OPTIONS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & PAD_UP) {
+        freeplayOptionsCursor--;
+        if (freeplayOptionsCursor < 0) freeplayOptionsCursor = FPO_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        freeplayOptionsCursor++;
+        if (freeplayOptionsCursor >= FPO_COUNT) freeplayOptionsCursor = 0;
+    }
+    if (pressed & PAD_CROSS) {
+        switch (freeplayOptionsCursor) {
+        case FPO_GAGS:
+            menuState = PAUSE_MENU_FREEPLAY_GAGS;
+            prevButtons = 0xFFFF;
+            break;
+        case FPO_VISITORS:
+            menuState = PAUSE_MENU_FREEPLAY_VISITORS;
+            prevButtons = 0xFFFF;
+            break;
+        case FPO_CONTROLS:
+            menuState = PAUSE_MENU_CONTROLS;
+            prevButtons = 0xFFFF;
+            break;
+        case FPO_CLEAR:
+            if (menuFreeplayActive) {
+                pauseMenuRequestFreeplayClear = 1;
+                return 0;
+            }
+            break;
+        case FPO_BACK:
+            menuState = PAUSE_MENU_MAIN;
+            menuCursor = MENU_FREEPLAY_OPTIONS;
+            prevButtons = 0xFFFF;
+            break;
+        }
+    }
+    return 1;
+}
+
+static int handleFreeplayGagInput(uint16 pressed)
+{
+    int count = freeplayGagCount();
+    if (count <= 0)
+        count = 1;
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
+        freeplayOptionsCursor = FPO_GAGS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & (PAD_UP | PAD_LEFT)) {
+        freeplayGagCursor--;
+        if (freeplayGagCursor < 0) freeplayGagCursor = count - 1;
+    }
+    if (pressed & (PAD_DOWN | PAD_RIGHT)) {
+        freeplayGagCursor++;
+        if (freeplayGagCursor >= count) freeplayGagCursor = 0;
+    }
+    if ((pressed & PAD_CROSS) && menuFreeplayActive) {
+        pauseMenuRequestFreeplayGag = freeplayGagCursor;
+        return 0;
+    }
+    return 1;
+}
+
+static int handleFreeplayVisitorInput(uint16 pressed)
+{
+    int count = freeplayVisitorCount();
+    if (count <= 0)
+        count = 1;
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
+        freeplayOptionsCursor = FPO_VISITORS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & (PAD_UP | PAD_LEFT)) {
+        freeplayVisitorCursor--;
+        if (freeplayVisitorCursor < 0) freeplayVisitorCursor = count - 1;
+    }
+    if (pressed & (PAD_DOWN | PAD_RIGHT)) {
+        freeplayVisitorCursor++;
+        if (freeplayVisitorCursor >= count) freeplayVisitorCursor = 0;
+    }
+    if ((pressed & PAD_CROSS) && menuFreeplayActive) {
+        pauseMenuRequestFreeplayVisitor = freeplayVisitorCursor;
+        return 0;
+    }
+    return 1;
 }
 
 /* Apply a +1 / -1 cycle to the field at `optionsCursor`. */
 static void optionsCycle(int dir)
 {
     switch (optionsCursor) {
-    case OPT_SOUND:
-        /* Sound only has 2 states; treat any cycle as toggle. */
-        soundMuteToggle();
-        pauseMutedSound = 0;  /* user-driven choice — don't auto-undo */
-        break;
-    case OPT_DAYNIGHT: cycleDaynight(dir); break;
-    case OPT_TIDE:     cycleTide(dir);     break;
-    case OPT_RAFT:     cycleRaft(dir);     break;
-    case OPT_HOLIDAY:  cycleHoliday(dir);  break;
-    case OPT_CAPTIONS: cycleCaptions(dir); break;
-    case OPT_FOOTSTEPS: {
-        /* Two-state toggle. Default ON; flips to OFF; persists via
-         * memcard alongside the other options. */
-        extern int footstepsEnabled;
-        footstepsEnabled = !footstepsEnabled;
-        (void)dir;
-        break;
-    }
-    case OPT_PERF:     cyclePerf(dir);     break;
+    case WORLD_DAYNIGHT: cycleDaynight(dir); break;
+    case WORLD_TIDE:     cycleTide(dir);     break;
+    case WORLD_RAFT:     cycleRaft(dir);     break;
     default: break;
     }
 }
 
 /* Options sub-screen input. UP/DOWN move cursor; on cycle rows
  * LEFT/RIGHT or X cycle the value; on launcher rows X opens the
- * editor sub-screen. START goes back to the main menu. */
+ * editor sub-screen. Circle/START goes back to the main menu. */
 static int handleOptionsInput(uint16 pressed)
 {
-    if (pressed & PAD_START) {
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
         menuState = PAUSE_MENU_MAIN;
-        menuCursor = MENU_OPTIONS;   /* return cursor to where we came from */
+        menuCursor = MENU_WORLD;   /* return cursor to where we came from */
         prevButtons = 0xFFFF;
         return 1;
     }
 
     if (pressed & PAD_UP) {
         optionsCursor--;
-        if (optionsCursor < 0) optionsCursor = OPT_COUNT - 1;
+        if (optionsCursor < 0) optionsCursor = WORLD_COUNT - 1;
     }
     if (pressed & PAD_DOWN) {
         optionsCursor++;
-        if (optionsCursor >= OPT_COUNT) optionsCursor = 0;
+        if (optionsCursor >= WORLD_COUNT) optionsCursor = 0;
     }
 
-    int isLauncher = (optionsCursor >= OPT_LAUNCHER_FIRST);
-
-    if (isLauncher) {
-        /* X opens the chosen editor; LEFT/RIGHT do nothing. */
-        if (pressed & PAD_CROSS) {
-            switch (optionsCursor) {
-            case OPT_SET_TIME:
-                editMonth  = ps1SoftMonth;
-                editDay    = ps1SoftDay;
-                editYear   = ps1SoftYear;
-                editHour   = ps1SoftHour;
-                editMinute = ps1SoftMinute;
-                editField  = 0;
-                menuState   = PAUSE_MENU_SET_TIME;
-                prevButtons = 0xFFFF;
-                break;
-            case OPT_SET_ISLAND_POS:
-                editIslandX     = hostForcedIslandX;
-                editIslandY     = hostForcedIslandY;
-                editIslandValid = hostForcedIslandPosValid;
-                editIslandField = 0;
-                menuState   = PAUSE_MENU_ISLAND_POS;
-                prevButtons = 0xFFFF;
-                break;
-            case OPT_SET_SEED:
-                editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
-                editSeedFixed = 0;
-                editSeedField = 0;
-                menuState   = PAUSE_MENU_SET_SEED;
-                prevButtons = 0xFFFF;
-                break;
-            }
-        }
-    } else {
-        /* Cycle row: LEFT / RIGHT / X all step the value. */
-        if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+    if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+        switch (optionsCursor) {
+        case WORLD_DAYNIGHT:
+        case WORLD_TIDE:
+        case WORLD_RAFT:
             optionsCycle(+1);
-        } else if (pressed & PAD_LEFT) {
+            if (menuFreeplayActive)
+                return 0;
+            break;
+        case WORLD_HOLIDAYS:
+            menuState = PAUSE_MENU_HOLIDAYS;
+            prevButtons = 0xFFFF;
+            break;
+        case WORLD_ISLAND_POS:
+            editIslandX     = hostForcedIslandX;
+            editIslandY     = hostForcedIslandY;
+            editIslandValid = hostForcedIslandPosValid;
+            editIslandField = 0;
+            menuState   = PAUSE_MENU_ISLAND_POS;
+            prevButtons = 0xFFFF;
+            break;
+        case WORLD_BACK:
+            menuState = PAUSE_MENU_MAIN;
+            menuCursor = MENU_WORLD;
+            prevButtons = 0xFFFF;
+            break;
+        }
+    } else if (pressed & PAD_LEFT) {
+        switch (optionsCursor) {
+        case WORLD_DAYNIGHT:
+        case WORLD_TIDE:
+        case WORLD_RAFT:
             optionsCycle(-1);
+            if (menuFreeplayActive)
+                return 0;
+            break;
+        default:
+            break;
         }
     }
 
     return 1;
 }
 
+static int handleHolidayInput(uint16 pressed)
+{
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_OPTIONS;
+        optionsCursor = WORLD_HOLIDAYS;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & PAD_UP) {
+        holidayCursor--;
+        if (holidayCursor < 0) holidayCursor = HOLIDAY_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        holidayCursor++;
+        if (holidayCursor >= HOLIDAY_COUNT) holidayCursor = 0;
+    }
+    if (pressed & (PAD_RIGHT | PAD_CROSS)) {
+        if (holidayCursor == HOLIDAY_SET) {
+            cycleHolidaySet(+1);
+            if (menuFreeplayActive)
+                return 0;
+        } else if (holidayCursor == HOLIDAY_SELECT) {
+            cycleHoliday(+1);
+            if (menuFreeplayActive && pauseMenuRequestFreeplayWorldRefresh)
+                return 0;
+        } else if (holidayCursor == HOLIDAY_BACK) {
+            menuState = PAUSE_MENU_OPTIONS;
+            optionsCursor = WORLD_HOLIDAYS;
+            prevButtons = 0xFFFF;
+        }
+    } else if (pressed & PAD_LEFT) {
+        if (holidayCursor == HOLIDAY_SET) {
+            cycleHolidaySet(-1);
+            if (menuFreeplayActive)
+                return 0;
+        } else if (holidayCursor == HOLIDAY_SELECT) {
+            cycleHoliday(-1);
+            if (menuFreeplayActive && pauseMenuRequestFreeplayWorldRefresh)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+static int handleAccessibilityInput(uint16 pressed)
+{
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_ACCESSIBILITY;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & PAD_UP) {
+        accessCursor--;
+        if (accessCursor < 0) accessCursor = ACCESS_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        accessCursor++;
+        if (accessCursor >= ACCESS_COUNT) accessCursor = 0;
+    }
+    if (pressed & (PAD_LEFT | PAD_RIGHT | PAD_CROSS)) {
+        switch (accessCursor) {
+        case ACCESS_CAPTIONS:
+            cycleCaptions(+1);
+            break;
+        case ACCESS_SOUND:
+            soundMuteToggle();
+            pauseMutedSound = 0;
+            break;
+        case ACCESS_FOOTSTEPS: {
+            extern int footstepsEnabled;
+            footstepsEnabled = !footstepsEnabled;
+            break;
+        }
+        case ACCESS_SOUND_TEST:
+            menuState = PAUSE_MENU_SOUND_TEST;
+            prevButtons = 0xFFFF;
+            break;
+        case ACCESS_BACK:
+            menuState = PAUSE_MENU_MAIN;
+            menuCursor = MENU_ACCESSIBILITY;
+            prevButtons = 0xFFFF;
+            break;
+        }
+    }
+    return 1;
+}
+
+static int handleSoundTestInput(uint16 pressed)
+{
+    int count = soundEffectCount();
+    if (count <= 0)
+        count = 1;
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_ACCESSIBILITY;
+        accessCursor = ACCESS_SOUND_TEST;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & (PAD_UP | PAD_LEFT)) {
+        soundTestCursor--;
+        if (soundTestCursor < 0) soundTestCursor = count - 1;
+    }
+    if (pressed & (PAD_DOWN | PAD_RIGHT)) {
+        soundTestCursor++;
+        if (soundTestCursor >= count) soundTestCursor = 0;
+    }
+    if (pressed & PAD_CROSS)
+        soundPlay(soundTestCursor);
+    return 1;
+}
+
+static int handleSystemInput(uint16 pressed)
+{
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_SYSTEM;
+        prevButtons = 0xFFFF;
+        return 1;
+    }
+    if (pressed & PAD_UP) {
+        systemCursor--;
+        if (systemCursor < 0) systemCursor = SYSTEM_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        systemCursor++;
+        if (systemCursor >= SYSTEM_COUNT) systemCursor = 0;
+    }
+    if (pressed & PAD_RIGHT) {
+        if (systemCursor == SYSTEM_PERF)
+            cyclePerf(+1);
+    } else if (pressed & PAD_LEFT) {
+        if (systemCursor == SYSTEM_PERF)
+            cyclePerf(-1);
+    } else if (pressed & PAD_CROSS) {
+        switch (systemCursor) {
+        case SYSTEM_SAVE:
+            memcardSaveSettings();
+            break;
+        case SYSTEM_SET_TIME:
+            editMonth  = ps1SoftMonth;
+            editDay    = ps1SoftDay;
+            editYear   = ps1SoftYear;
+            editHour   = ps1SoftHour;
+            editMinute = ps1SoftMinute;
+            editField  = 0;
+            menuState   = PAUSE_MENU_SET_TIME;
+            prevButtons = 0xFFFF;
+            break;
+        case SYSTEM_SET_SEED:
+            editSeedValue = ps1LastSeedKnown ? ps1LastSeedApplied : 1u;
+            editSeedFixed = 0;
+            editSeedField = 0;
+            menuState   = PAUSE_MENU_SET_SEED;
+            prevButtons = 0xFFFF;
+            break;
+        case SYSTEM_PERF:
+            cyclePerf(+1);
+            break;
+        case SYSTEM_RESET_LOOP:
+            pauseMenuRequestResetLoop = 1;
+            return 0;
+        case SYSTEM_NEXT_SCENE:
+            pauseMenuRequestNextScene = 1;
+            return 0;
+        }
+    }
+    return 1;
+}
+
 /* Returns 0 if user goes back to main. */
 static int handleSubInput(uint16 pressed)
 {
-    if (pressed & PAD_START) {
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        enum PauseMenuState fromState = menuState;
+        if (fromState == PAUSE_MENU_CONTROLS) {
+            menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
+            freeplayOptionsCursor = FPO_CONTROLS;
+            prevButtons = 0xFFFF;
+            return 1;
+        }
         menuState = PAUSE_MENU_MAIN;
-        menuCursor = 0;
+        if (fromState == PAUSE_MENU_CREDITS)
+            menuCursor = MENU_SYSTEM;
+        else
+            menuCursor = MENU_RESUME;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1282,9 +1820,9 @@ static int handleSubInput(uint16 pressed)
 /* Set Time input -- LEFT/RIGHT adjust value, UP/DOWN change field. */
 static int handleSetTimeInput(uint16 pressed)
 {
-    if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_TIME;
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_SYSTEM;
+        systemCursor = SYSTEM_SET_TIME;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1333,23 +1871,27 @@ static int handleSetTimeInput(uint16 pressed)
         hostForcedHoliday = -1;  /* date picker drives holiday while in AUTO */
         /* getDayOfYear() in utils.c computes from ps1SoftMonth/ps1SoftDay */
 
-        /* Return to Options sub-screen after confirming. */
-        menuState = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_TIME;
+        /* Return to System after confirming. */
+        menuState = PAUSE_MENU_SYSTEM;
+        systemCursor = SYSTEM_SET_TIME;
         prevButtons = 0xFFFF;
+        if (menuFreeplayActive) {
+            pauseMenuRequestFreeplayWorldRefresh = 1;
+            return 0;
+        }
     }
 
     return 1;
 }
 
 /* Set Island Pos input. UP/DOWN selects field; LEFT/RIGHT adjusts;
- * X confirms (write through to host overrides) and goes back; START
+ * X confirms (write through to host overrides) and goes back; Circle/START
  * goes back without applying changes. */
 static int handleIslandPosInput(uint16 pressed)
 {
-    if (pressed & PAD_START) {
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
         menuState = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_ISLAND_POS;
+        optionsCursor = WORLD_ISLAND_POS;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1388,8 +1930,12 @@ static int handleIslandPosInput(uint16 pressed)
         hostForcedIslandX        = editIslandX;
         hostForcedIslandY        = editIslandY;
         menuState  = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_ISLAND_POS;
+        optionsCursor = WORLD_ISLAND_POS;
         prevButtons = 0xFFFF;
+        if (menuFreeplayActive) {
+            pauseMenuRequestFreeplayWorldRefresh = 1;
+            return 0;
+        }
     }
 
     return 1;
@@ -1398,9 +1944,9 @@ static int handleIslandPosInput(uint16 pressed)
 /* Set RNG Seed input. */
 static int handleSetSeedInput(uint16 pressed)
 {
-    if (pressed & PAD_START) {
-        menuState = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_SEED;
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        menuState = PAUSE_MENU_SYSTEM;
+        systemCursor = SYSTEM_SET_SEED;
         prevButtons = 0xFFFF;
         return 1;
     }
@@ -1442,8 +1988,8 @@ static int handleSetSeedInput(uint16 pressed)
         } else {
             ps1SeedRandom();   /* re-seed via root counters */
         }
-        menuState   = PAUSE_MENU_OPTIONS;
-        optionsCursor = OPT_SET_SEED;
+        menuState   = PAUSE_MENU_SYSTEM;
+        systemCursor = SYSTEM_SET_SEED;
         prevButtons = 0xFFFF;
     }
 
@@ -1511,11 +2057,11 @@ int pauseMenuUpdate(void)
      * InitPAD, so we just peek at its buffer via the extern). */
     extern uint8 pad_buff[2][34];
     uint16 cur = 0;
-    {
-        PADTYPE *pad = (PADTYPE *)pad_buff[0];
+    for (int i = 0; i < 2; i++) {
+        PADTYPE *pad = (PADTYPE *)pad_buff[i];
         /* Don't gate on pad->stat — DualShock analog reports non-zero
          * stat values in some modes and pad->btn is still valid. */
-        cur = ~(pad->btn);
+        cur |= ps1PadButtonsWithAnalog(pad);
     }
     uint16 pressed = pmNewPress(cur);
     prevButtons = cur;
@@ -1526,8 +2072,29 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_MAIN:
         keepOpen = handleMainInput(pressed);
         break;
+    case PAUSE_MENU_FREEPLAY_OPTIONS:
+        keepOpen = handleFreeplayOptionsInput(pressed);
+        break;
+    case PAUSE_MENU_FREEPLAY_GAGS:
+        keepOpen = handleFreeplayGagInput(pressed);
+        break;
+    case PAUSE_MENU_FREEPLAY_VISITORS:
+        keepOpen = handleFreeplayVisitorInput(pressed);
+        break;
     case PAUSE_MENU_OPTIONS:
         keepOpen = handleOptionsInput(pressed);
+        break;
+    case PAUSE_MENU_HOLIDAYS:
+        keepOpen = handleHolidayInput(pressed);
+        break;
+    case PAUSE_MENU_ACCESSIBILITY:
+        keepOpen = handleAccessibilityInput(pressed);
+        break;
+    case PAUSE_MENU_SOUND_TEST:
+        keepOpen = handleSoundTestInput(pressed);
+        break;
+    case PAUSE_MENU_SYSTEM:
+        keepOpen = handleSystemInput(pressed);
         break;
     case PAUSE_MENU_SET_TIME:
         keepOpen = handleSetTimeInput(pressed);
@@ -1560,7 +2127,14 @@ int pauseMenuUpdate(void)
      * pauseOt via the pmFrame* globals. */
     switch (menuState) {
     case PAUSE_MENU_MAIN:       drawMainMenu();  break;
+    case PAUSE_MENU_FREEPLAY_OPTIONS: drawFreeplayOptions(); break;
+    case PAUSE_MENU_FREEPLAY_GAGS: drawFreeplayGagCatalog(); break;
+    case PAUSE_MENU_FREEPLAY_VISITORS: drawFreeplayVisitorCatalog(); break;
     case PAUSE_MENU_OPTIONS:    drawOptions();   break;
+    case PAUSE_MENU_HOLIDAYS:   drawHolidayMenu(); break;
+    case PAUSE_MENU_ACCESSIBILITY: drawAccessibilityMenu(); break;
+    case PAUSE_MENU_SOUND_TEST: drawSoundTestMenu(); break;
+    case PAUSE_MENU_SYSTEM:     drawSystemMenu(); break;
     case PAUSE_MENU_SCENE_INFO: drawSceneInfo(); break;
     case PAUSE_MENU_CONTROLS:   drawControls();  break;
     case PAUSE_MENU_SET_TIME:   drawSetTime();   break;

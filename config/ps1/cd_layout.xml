@@ -158,9 +158,41 @@
 
             <dir name="PSB">
                 <file name="BACKGRND.PSB" type="data" source="../../jc_resources/transcoded/BACKGRND.PSB"/>
+                <file name="BOAT.PSB" type="data" source="../../jc_resources/transcoded/BOAT.PSB"/>
+                <file name="CLOUDS.PSB" type="data" source="../../jc_resources/transcoded/CLOUDS.PSB"/>
+                <file name="COCOHEAD.PSB" type="data" source="../../jc_resources/transcoded/COCOHEAD.PSB"/>
+                <file name="COCONUTS.PSB" type="data" source="../../jc_resources/transcoded/COCONUTS.PSB"/>
+                <file name="DRUNKJON.PSB" type="data" source="../../jc_resources/transcoded/DRUNKJON.PSB"/>
+                <file name="FIRE1.PSB" type="data" source="../../jc_resources/transcoded/FIRE1.PSB"/>
+                <file name="FIRE2.PSB" type="data" source="../../jc_resources/transcoded/FIRE2.PSB"/>
+                <file name="FIRE3.PSB" type="data" source="../../jc_resources/transcoded/FIRE3.PSB"/>
+                <file name="FIRE4.PSB" type="data" source="../../jc_resources/transcoded/FIRE4.PSB"/>
+                <file name="FIRE5.PSB" type="data" source="../../jc_resources/transcoded/FIRE5.PSB"/>
+                <file name="FISHMAN.PSB" type="data" source="../../jc_resources/transcoded/FISHMAN.PSB"/>
+                <file name="GJANGRY.PSB" type="data" source="../../jc_resources/transcoded/GJANGRY.PSB"/>
+                <file name="GJBIPLAN.PSB" type="data" source="../../jc_resources/transcoded/GJBIPLAN.PSB"/>
+                <file name="GJCASTLE.PSB" type="data" source="../../jc_resources/transcoded/GJCASTLE.PSB"/>
+                <file name="GJCATCH1.PSB" type="data" source="../../jc_resources/transcoded/GJCATCH1.PSB"/>
+                <file name="GJCATCH3.PSB" type="data" source="../../jc_resources/transcoded/GJCATCH3.PSB"/>
+                <file name="GJDIVE.PSB" type="data" source="../../jc_resources/transcoded/GJDIVE.PSB"/>
+                <file name="GJFFFOOD.PSB" type="data" source="../../jc_resources/transcoded/GJFFFOOD.PSB"/>
+                <file name="GJGULL1.PSB" type="data" source="../../jc_resources/transcoded/GJGULL1.PSB"/>
+                <file name="GJGULL3.PSB" type="data" source="../../jc_resources/transcoded/GJGULL3.PSB"/>
+                <file name="GJHOT.PSB" type="data" source="../../jc_resources/transcoded/GJHOT.PSB"/>
+                <file name="GJKINGKO.PSB" type="data" source="../../jc_resources/transcoded/GJKINGKO.PSB"/>
+                <file name="GJNAT1.PSB" type="data" source="../../jc_resources/transcoded/GJNAT1.PSB"/>
+                <file name="GJRUNAWA.PSB" type="data" source="../../jc_resources/transcoded/GJRUNAWA.PSB"/>
                 <file name="HOLIDAY.PSB" type="data" source="../../jc_resources/transcoded/HOLIDAY.PSB"/>
-                <file name="MRAFT.PSB" type="data" source="../../jc_resources/transcoded/MRAFT.PSB"/>
                 <file name="JOHNWALK.PSB" type="data" source="../../jc_resources/transcoded/JOHNWALK.PSB"/>
+                <file name="LILIPUTS.PSB" type="data" source="../../jc_resources/transcoded/LILIPUTS.PSB"/>
+                <file name="LITEBULB.PSB" type="data" source="../../jc_resources/transcoded/LITEBULB.PSB"/>
+                <file name="MEANWHIL.PSB" type="data" source="../../jc_resources/transcoded/MEANWHIL.PSB"/>
+                <file name="MEXCWALK.PSB" type="data" source="../../jc_resources/transcoded/MEXCWALK.PSB"/>
+                <file name="MJFISH1.PSB" type="data" source="../../jc_resources/transcoded/MJFISH1.PSB"/>
+                <file name="MJFISH2.PSB" type="data" source="../../jc_resources/transcoded/MJFISH2.PSB"/>
+                <file name="MJBATH.PSB" type="data" source="../../jc_resources/transcoded/MJBATH.PSB"/>
+                <file name="MRAFT.PSB" type="data" source="../../jc_resources/transcoded/MRAFT.PSB"/>
+                <file name="ZZZZS.PSB" type="data" source="../../jc_resources/transcoded/ZZZZS.PSB"/>
             </dir>
 
             <!-- sound11 and sound13 do not exist in the original game data. -->

@@ -38,6 +38,7 @@ unsigned long fgGetPrefetchFrameBufferBytes(void);
 int fgPrePrimeStreamBuffers(unsigned long frameMaxBytes,
                             unsigned long scratchMaxBytes);
 void foregroundPilotRuntimeEnd(void);
+void foregroundPilotTeardownForFreeplay(void);
 
 /* Access to the island-background TTtmSlot that fg_pilot owns.
  * Used by walk_pilot.c (and freeplay) to source the trunk + leaf
@@ -89,9 +90,9 @@ void fgBackdropRebuildIslandBg(void);
  * island, not island+Johnny. Returns 1 on success, 0 on failure. */
 int fgBackdropSaveCleanBgRectsForWalk(void);
 
-/* Release the rect snapshots taken by fgBackdropSaveCleanBgRectsForWalk.
+/* Deactivate the rect snapshots taken by fgBackdropSaveCleanBgRectsForWalk.
  * Call when the walk completes so the next FG2 scene's setup can claim
- * its own clean rects. */
+ * the clean-rect slots while retaining their grown buffers. */
 void fgBackdropEndWalk(void);
 
 /* Suppress foregroundPilotRuntimeCompose for the duration of a walk. The

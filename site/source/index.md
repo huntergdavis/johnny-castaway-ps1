@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 335 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 325 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -25,10 +25,11 @@ for a guided learning path through the machinery.
 <ul class="doc-grid">
 <li><a href="{{ '/source/docs/ps1/api-mapping/' | relative_url }}">PS1 Port - API Mapping Reference</a><p><code>docs/ps1/api-mapping.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/audio-optimization-spec/' | relative_url }}">PS1 Audio Implementation Spec</a><p><code>docs/ps1/audio-optimization-spec.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/background-music-feasibility/' | relative_url }}">Ocean Ambience — PS1 Implementation Plan</a><p><code>docs/ps1/background-music-feasibility.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/build-system/' | relative_url }}">PS1 Build System</a><p><code>docs/ps1/build-system.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/current-status/' | relative_url }}">PS1 Port — Current Status</a><p><code>docs/ps1/current-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/development-workflow/' | relative_url }}">PS1 Development Workflow</a><p><code>docs/ps1/development-workflow.md</code></p></li>
-<li><a href="{{ '/source/docs/ps1/freeplay-mode-design/' | relative_url }}">Castaway Freeplay — Direct-Control Johnny Mode</a><p><code>docs/ps1/freeplay-mode-design.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/freeplay-mode-design/' | relative_url }}">Castaway Freeplay And Debug Mode</a><p><code>docs/ps1/freeplay-mode-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/hand-rolled-asm-feasibility/' | relative_url }}">Hand-Rolled MIPS Assembly — Feasibility Research</a><p><code>docs/ps1/hand-rolled-asm-feasibility.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/hardware-specs/' | relative_url }}">PlayStation 1 - Hardware Specifications</a><p><code>docs/ps1/hardware-specs.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-expansion-design/' | relative_url }}">Holiday Expansion Design</a><p><code>docs/ps1/holidays-expansion-design.md</code></p></li>
@@ -36,7 +37,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/holidays-pipeline/' | relative_url }}">Holiday emblem sheet pipeline</a><p><code>docs/ps1/holidays-pipeline.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/holidays-style-guide/' | relative_url }}">Holiday Emblem Style Guide</a><p><code>docs/ps1/holidays-style-guide.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/milestones-2026-04-25/' | relative_url }}">Milestones — 2026-04-25</a><p><code>docs/ps1/milestones-2026-04-25.md</code></p></li>
-<li><a href="{{ '/source/docs/ps1/pause-menu-design/' | relative_url }}">Pause Menu — Design</a><p><code>docs/ps1/pause-menu-design.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/pause-menu-design/' | relative_url }}">Pause Menu Design</a><p><code>docs/ps1/pause-menu-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-experiment-log/' | relative_url }}">PS1 Performance Experiment Log</a><p><code>docs/ps1/performance-experiment-log.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-next-100/' | relative_url }}">PS1 Performance Next 100</a><p><code>docs/ps1/performance-next-100.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-optimization-plan/' | relative_url }}">PS1 Scene Playback Performance Optimization Plan</a><p><code>docs/ps1/performance-optimization-plan.md</code></p></li>
@@ -45,6 +46,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-quickstart/' | relative_url }}">PS1 Headless Regression Testing Harness</a><p><code>docs/ps1/regtest-quickstart.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.4.20/' | relative_url }}">v0.4.20-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.4.20.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.5.0/' | relative_url }}">v0.5.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.5.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-status/' | relative_url }}">PS1 Scene Pipeline Status</a><p><code>docs/ps1/scene-status.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TESTING/' | relative_url }}">PS1 Port Testing Guide</a><p><code>docs/ps1/TESTING.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TODO/' | relative_url }}">PS1 Port TODO</a><p><code>docs/ps1/TODO.md</code></p></li>
@@ -389,18 +391,6 @@ for a guided learning path through the machinery.
 
 <ul class="doc-grid">
 <li><a href="{{ '/source/models/Qwen2.5-VL-3B-Instruct-ov-int4/README/' | relative_url }}">Choose GPU instead of CPU in the line below to run the model on Intel integrated or discrete GPU</a><p><code>models/Qwen2.5-VL-3B-Instruct-ov-int4/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/cmake_reference/' | relative_url }}">PSn00bSDK CMake reference</a><p><code>scratch/psn00b-src/doc/cmake_reference.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/dev_notes/' | relative_url }}">Development notes</a><p><code>scratch/psn00b-src/doc/dev_notes.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/drawing_queue/' | relative_url }}">GPU drawing queue</a><p><code>scratch/psn00b-src/doc/drawing_queue.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/installation/' | relative_url }}">Getting started with PSn00bSDK</a><p><code>scratch/psn00b-src/doc/installation.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/known_bugs/' | relative_url }}">Known PSn00bSDK bugs</a><p><code>scratch/psn00b-src/doc/known_bugs.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/old/old_changelog/' | relative_url }}">PSn00bSDK changelog (archived)</a><p><code>scratch/psn00b-src/doc/old/old_changelog.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/doc/toolchain/' | relative_url }}">Building the GCC toolchain</a><p><code>scratch/psn00b-src/doc/toolchain.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/examples/README/' | relative_url }}">PSn00bSDK Example Programs</a><p><code>scratch/psn00b-src/examples/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/indev/README/' | relative_url }}">The indev directory</a><p><code>scratch/psn00b-src/indev/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/libpsn00b/psxpress/README/' | relative_url }}">PSn00bSDK MDEC library</a><p><code>scratch/psn00b-src/libpsn00b/psxpress/README.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/LICENSE/' | relative_url }}">PSn00bSDK licenses</a><p><code>scratch/psn00b-src/LICENSE.md</code></p></li>
-<li><a href="{{ '/source/scratch/psn00b-src/README/' | relative_url }}">PSn00bSDK</a><p><code>scratch/psn00b-src/README.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>

@@ -15,11 +15,13 @@ SCRATCH_DIR="$PWD/scratch"
 mkdir -p "$SCRATCH_DIR"
 
 BOOTMODE_FILE="$PWD/config/ps1/BOOTMODE.TXT"
+BOOTMODE_HEADER="$PWD/config/ps1/bootmode_embedded.h"
 DUCK_SETTINGS="$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/settings.ini"
 DUCK_LOG_FILE="${DUCKSTATION_LOG_FILE:-$HOME/.var/app/org.duckstation.DuckStation/config/duckstation/duckstation.log}"
 DUCK_LOG_MAX_BYTES="${DUCKSTATION_LOG_MAX_BYTES:-2147483648}"
 DUCK_SETTINGS_BACKUP=""
 BOOTMODE_BACKUP=""
+BOOTMODE_HEADER_BACKUP=""
 BOOT_OVERRIDE=""
 LOG_WATCHDOG_PID=""
 
@@ -112,6 +114,10 @@ stage_boot_override() {
 
     BOOTMODE_BACKUP="$SCRATCH_DIR/ps1-bootmode-$$.txt"
     cp "$BOOTMODE_FILE" "$BOOTMODE_BACKUP"
+    if [ -f "$BOOTMODE_HEADER" ]; then
+        BOOTMODE_HEADER_BACKUP="$SCRATCH_DIR/ps1-bootmode-embedded-$$.h"
+        cp "$BOOTMODE_HEADER" "$BOOTMODE_HEADER_BACKUP"
+    fi
 
     printf '%s\n' "$BOOT_OVERRIDE" > "$BOOTMODE_FILE"
     echo "=== Boot override ==="
@@ -123,6 +129,10 @@ restore_boot_override() {
     if [ -n "$BOOTMODE_BACKUP" ] && [ -f "$BOOTMODE_BACKUP" ]; then
         cp "$BOOTMODE_BACKUP" "$BOOTMODE_FILE"
         rm -f "$BOOTMODE_BACKUP"
+    fi
+    if [ -n "$BOOTMODE_HEADER_BACKUP" ] && [ -f "$BOOTMODE_HEADER_BACKUP" ]; then
+        cp "$BOOTMODE_HEADER_BACKUP" "$BOOTMODE_HEADER"
+        rm -f "$BOOTMODE_HEADER_BACKUP"
     fi
 }
 
@@ -146,10 +156,16 @@ echo ""
 
 echo ""
 
-# Step 3: Kill any existing DuckStation instances
-echo "=== Cleaning up old DuckStation instances ==="
-pkill -9 -f "duckstation" 2>/dev/null || true
-sleep 1
+# Step 3: Leave existing DuckStation instances alone by default. Set
+# KILL_EXISTING_DUCKSTATION=1 when a deliberately clean emulator session is
+# needed for a capture run.
+if [ "${KILL_EXISTING_DUCKSTATION:-0}" = "1" ]; then
+    echo "=== Cleaning up old DuckStation instances ==="
+    pkill -9 -f "[d]uckstation" 2>/dev/null || true
+    sleep 1
+else
+    echo "=== Leaving existing DuckStation instances running ==="
+fi
 
 # Step 4: Launch DuckStation and let it run
 echo "=== Launching DuckStation (will keep running) ==="
@@ -243,9 +259,9 @@ done
 
 # Emergency timeout so a forgotten DuckStation session can't run overnight
 # and fill the disk with log / screenshot artifacts. Override via env:
-#   RUN_TIMEOUT_SECONDS=0       -> disable (old behavior)
+#   RUN_TIMEOUT_SECONDS=0       -> disable
 #   RUN_TIMEOUT_SECONDS=1800    -> 30 min, etc.
-RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-300}"
+RUN_TIMEOUT_SECONDS="${RUN_TIMEOUT_SECONDS:-0}"
 
 echo ""
 echo "======================================"

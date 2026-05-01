@@ -167,6 +167,7 @@ def generate_source_library() -> None:
         p for p in ROOT.rglob("*.md")
         if "site" not in p.relative_to(ROOT).parts
         and ".git" not in p.relative_to(ROOT).parts
+        and "scratch" not in p.relative_to(ROOT).parts
         and not any(part.startswith(".") for part in p.relative_to(ROOT).parts)
         and "vendor" not in p.relative_to(ROOT).parts
         and "build-host" not in p.relative_to(ROOT).parts

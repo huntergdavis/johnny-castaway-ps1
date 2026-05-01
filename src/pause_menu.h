@@ -23,9 +23,16 @@
 
 enum PauseMenuState {
     PAUSE_MENU_MAIN,
-    PAUSE_MENU_OPTIONS,
+    PAUSE_MENU_FREEPLAY_OPTIONS,
+    PAUSE_MENU_FREEPLAY_GAGS,
+    PAUSE_MENU_FREEPLAY_VISITORS,
+    PAUSE_MENU_OPTIONS,     /* world options */
+    PAUSE_MENU_HOLIDAYS,
+    PAUSE_MENU_ACCESSIBILITY,
+    PAUSE_MENU_SOUND_TEST,
+    PAUSE_MENU_SYSTEM,
     PAUSE_MENU_SCENE_INFO,
-    PAUSE_MENU_CONTROLS,    /* legacy / no longer surfaced from main */
+    PAUSE_MENU_CONTROLS,
     PAUSE_MENU_SET_TIME,
     PAUSE_MENU_ISLAND_POS,
     PAUSE_MENU_SET_SEED,
@@ -85,5 +92,13 @@ extern int pauseMenuRequestResetLoop;
  * Foreground pilot exits the current scene; jc_reborn consumes this
  * and dispatches the next loop iteration to the PS1-only freeplay scene. */
 extern int pauseMenuRequestFreeplay;
+extern int pauseMenuRequestExitFreeplay;
+extern int pauseMenuRequestFreeplayGag;
+extern int pauseMenuRequestFreeplayVisitor;
+extern int pauseMenuRequestFreeplayClear;
+extern int pauseMenuRequestFreeplayWorldRefresh;
+
+/* Freeplay sets this while running so the menu can show an ON/OFF toggle. */
+void pauseMenuSetFreeplayActive(int active);
 
 #endif /* PAUSE_MENU_H */

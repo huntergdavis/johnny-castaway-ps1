@@ -232,6 +232,32 @@ void soundStop(int nb)
     }
 }
 
+int soundEffectCount(void)
+{
+    return MAX_SOUND_EFFECTS;
+}
+
+int soundEffectLoaded(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return soundAddresses[nb] != 0 ? 1 : 0;
+}
+
+unsigned long soundEffectSizeBytes(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return (unsigned long)soundSizes[nb];
+}
+
+int soundEffectSampleRate(int nb)
+{
+    if (nb < 0 || nb >= MAX_SOUND_EFFECTS)
+        return 0;
+    return (int)soundSampleRates[nb];
+}
+
 /*
  * Toggle sound mute on/off. PSn00bSDK's SpuSetCommonMasterVolume isn't
  * honored by DuckStation HLE; even direct master-vol register writes

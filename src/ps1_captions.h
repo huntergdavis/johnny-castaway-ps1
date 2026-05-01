@@ -47,6 +47,8 @@ struct TCaptionSceneMap {
 
 void captionsSetEnabled(int enabled);
 int  captionsGetEnabled(void);
+int  captionsIsVisible(void);
+void captionsClear(void);
 extern int ps1CaptionsEnabled;
 
 /* Call when a scene starts — looks up caption by scene ID. */
@@ -54,6 +56,9 @@ void captionsOnSceneStart(const char *sceneId);
 
 /* Call when an ADS scene starts — looks up caption by ADS name + tag. */
 void captionsOnAdsStart(const char *adsName, uint16 adsTag);
+
+/* Direct caption injection for runtime-only modes such as freeplay. */
+void captionsShowText(const char *text, int frames);
 
 /* Call each frame. Returns current caption text, or NULL if none. */
 const char *captionsGetCurrent(void);

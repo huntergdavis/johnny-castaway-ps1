@@ -568,6 +568,18 @@ int captionsGetEnabled(void)
     return ps1CaptionsEnabled;
 }
 
+int captionsIsVisible(void)
+{
+    return ps1CaptionsEnabled && captionDisplayTimer > 0 &&
+           currentCaption != NULL;
+}
+
+void captionsClear(void)
+{
+    currentCaption = NULL;
+    captionDisplayTimer = 0;
+}
+
 
 /* ------------------------------------------------------------------ */
 /*  Scene start — lookup by scene ID string (e.g. "scene05")          */
@@ -622,6 +634,13 @@ void captionsOnAdsStart(const char *adsName, uint16 adsTag)
     /* No mapping found — clear any previous caption. */
     currentCaption = NULL;
     captionDisplayTimer = 0;
+}
+
+void captionsShowText(const char *text, int frames)
+{
+    if (!ps1CaptionsEnabled || text == NULL || text[0] == '\0') return;
+    currentCaption = text;
+    captionDisplayTimer = (frames > 0) ? frames : CAPTION_DURATION_FRAMES;
 }
 
 
@@ -778,6 +797,11 @@ void captionsRender(void)
     }
 
     DrawOTag(&capOt[CAP_OT_LEN - 1]);
+
+    if (captionDisplayTimer > 0)
+        captionDisplayTimer--;
+    if (captionDisplayTimer <= 0)
+        currentCaption = NULL;
 }
 
 #else  /* host build — no PS1 GPU; render is a no-op */

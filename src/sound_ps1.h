@@ -29,5 +29,9 @@ void soundEnd(void);
 void soundPlay(int nb);
 void soundStop(int nb);
 void soundMuteToggle(void);
+int soundEffectCount(void);
+int soundEffectLoaded(int nb);
+unsigned long soundEffectSizeBytes(int nb);
+int soundEffectSampleRate(int nb);
 
 #endif /* SOUND_PS1_H */

@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Project front door.** This is the README: the public landing document for the repository. The site links to it because it is still the shortest way to see what the project promises at the source level.
 
-A ground-up PS1 port of Sierra's classic Johnny Castaway screen saver, using a hybrid scene-playback pipeline: desktop host is the authoritative renderer and capture source; the PS1 runtime replays authored foreground packs + captured SFX and owns only the narrow surface it must (background, wave animation, holiday overlay, input, SPU).
+A PS1 port of Sierra's classic Johnny Castaway screen saver, using a hybrid scene-playback pipeline: desktop host is the authoritative renderer and capture source; the PS1 runtime replays authored foreground packs + captured SFX and owns only the narrow surface it must (background, wave animation, holiday overlay, input, SPU).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `README.md` |
-| Lines | 336 |
-| Approx. words | 2457 |
+| Lines | 356 |
+| Approx. words | 2616 |
 | Code fences | 1 |
 
 ## Outline

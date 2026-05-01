@@ -88,6 +88,12 @@ extern uint8 pad_buff[2][34];
 #include "ps1_perf.h"
 
 #ifdef PS1_BUILD
+static void ps1ShowFreeplayLoadingFrame(const char *phase, int tick)
+{
+    (void)phase;
+    grShowMeanwhileLoadingFrame((uint16)tick);
+}
+
 /* story_data.h is platform-independent — it's just a const struct
  * array. Pulling it into the PS1 build gives the screensaver-loop
  * picker access to per-scene start/end spot/heading metadata so it
@@ -1518,6 +1524,7 @@ int main(int argc, char **argv)
          * scene's FG2 pack still owns the actual scene visuals. */
         const struct TStoryScene *storyScene =
             fgLoopFindStorySceneBySlug(loopScene);
+        int playedScene = 0;
         /* Story-day filter: scenes with non-zero dayNo only fire on
          * the matching day. None of the currently-validated scenes
          * have a dayNo > 0, so this is a no-op for the active set;
@@ -1544,12 +1551,18 @@ int main(int argc, char **argv)
             walkRenderResetCache();
         }
 
-        foregroundPilotSetScene(loopScene);
-        ps1PerfBeginScene(loopScene);
-        ps1PrintfProbe("scene-start", loopScene);
-        foregroundPilotPlay();
-        ps1PerfEndScene(loopScene);
-        ps1PrintfProbe("scene-end", loopScene);
+        if (!pauseMenuRequestNextScene &&
+            !pauseMenuRequestFreeplay &&
+            !pauseMenuRequestResetLoop) {
+            fgWalkRenderTeardown();
+            foregroundPilotSetScene(loopScene);
+            ps1PerfBeginScene(loopScene);
+            ps1PrintfProbe("scene-start", loopScene);
+            foregroundPilotPlay();
+            ps1PerfEndScene(loopScene);
+            ps1PrintfProbe("scene-end", loopScene);
+            playedScene = 1;
+        }
 
         if (freeplayExitRequested()) {
             freeplayClearExitRequest();
@@ -1571,7 +1584,12 @@ int main(int argc, char **argv)
 
         /* After the scene played, update Johnny's spot/heading so the
          * next loop iteration knows where to walk from. */
-        fgLoopUpdatePosFromScene(storyScene);
+        if (playedScene &&
+            !pauseMenuRequestNextScene &&
+            !pauseMenuRequestFreeplay &&
+            !pauseMenuRequestResetLoop) {
+            fgLoopUpdatePosFromScene(storyScene);
+        }
 
         /* Consume pause-menu requests. NextScene = let the next loop
          * iteration pick a fresh scene (already happens). ResetLoop =
@@ -1585,13 +1603,25 @@ int main(int argc, char **argv)
         }
         if (pauseMenuRequestFreeplay) {
             pauseMenuRequestFreeplay = 0;
-            explicitScene = "freeplay";
             storyCurrentSpot = -1;
             storyCurrentHdg  = -1;
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
-            printf("JCPAUSE consume freeplay\n");
+            printf("JCPAUSE consume freeplay direct\n");
 #endif
+            fgWalkRenderTeardown();
+            foregroundPilotTeardownForFreeplay();
+            walkRenderResetCache();
+            ps1ShowFreeplayLoadingFrame("building freeplay island", 0);
+#if JC_PAUSE_REQUEST_DIAG_LOGS
+            printf("JCPAUSE freeplay teardown done\n");
+#endif
+            foregroundPilotSetScene("freeplay");
+            ps1PerfBeginScene("freeplay");
+            freeplayRun();
+            ps1PerfEndScene("freeplay");
+            freeplayClearExitRequest();
+            explicitScene = NULL;
         }
         if (pauseMenuRequestResetLoop) {
             pauseMenuRequestResetLoop = 0;

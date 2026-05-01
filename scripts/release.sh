@@ -2,12 +2,14 @@
 #
 # release.sh - Build, version bump, and release PS1 build
 #
-# Usage: ./scripts/release.sh [message]
+# Usage: ./scripts/release.sh [--version X.Y.Z] [message]
+#        RELEASE_VERSION=X.Y.Z ./scripts/release.sh [message]
 #   message: Optional release message (default: "PS1 release")
 #
 # This script:
 #   1. Runs the full rebuild
-#   2. Increments the patch version (e.g., 0.3.0 -> 0.3.1)
+#   2. Increments the patch version (e.g., 0.3.0 -> 0.3.1), or uses
+#      an explicit --version / RELEASE_VERSION value
 #   3. Copies build artifacts to release/ folder for GitHub Release upload
 #   4. Updates VERSION and website release metadata
 #   5. Rebuilds the portable website under docs/
@@ -39,8 +41,35 @@ echo -e "${GREEN}======================================"
 echo "PS1 Release Script"
 echo -e "======================================${NC}"
 
-# Get release message
-RELEASE_MSG="${1:-PS1 release}"
+# Parse release arguments.
+REQUESTED_VERSION="${RELEASE_VERSION:-}"
+RELEASE_MSG_PARTS=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --version)
+            if [[ $# -lt 2 ]]; then
+                echo -e "${RED}ERROR: --version requires X.Y.Z${NC}"
+                exit 1
+            fi
+            REQUESTED_VERSION="$2"
+            shift 2
+            ;;
+        --version=*)
+            REQUESTED_VERSION="${1#--version=}"
+            shift
+            ;;
+        *)
+            RELEASE_MSG_PARTS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+if [[ ${#RELEASE_MSG_PARTS[@]} -gt 0 ]]; then
+    RELEASE_MSG="${RELEASE_MSG_PARTS[*]}"
+else
+    RELEASE_MSG="PS1 release"
+fi
 
 # Read current version
 if [[ ! -f "$VERSION_FILE" ]]; then
@@ -54,9 +83,17 @@ echo -e "${YELLOW}Current version: $CURRENT_VERSION${NC}"
 # Parse version components (MAJOR.MINOR.PATCH)
 IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
 
-# Increment patch version
-NEW_PATCH=$((PATCH + 1))
-NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+if [[ -n "$REQUESTED_VERSION" ]]; then
+    if [[ ! "$REQUESTED_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo -e "${RED}ERROR: --version must be X.Y.Z, got '$REQUESTED_VERSION'${NC}"
+        exit 1
+    fi
+    NEW_VERSION="$REQUESTED_VERSION"
+else
+    # Increment patch version
+    NEW_PATCH=$((PATCH + 1))
+    NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+fi
 TAG_NAME="v${NEW_VERSION}-ps1"
 
 echo -e "${GREEN}New version: $NEW_VERSION${NC}"
