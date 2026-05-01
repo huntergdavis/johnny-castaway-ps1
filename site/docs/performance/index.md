@@ -91,6 +91,13 @@ and its machine-readable
 That report is regenerated from `build-ps1/compile_commands.json` and
 `build-ps1/jcreborn.map` before each `-O2` probe.
 
+The current pack-time graphics preprocessing target sheet is
+[`docs/ps1/performance-preprocess-opportunities.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-opportunities.md)
+and its machine-readable
+[`performance-preprocess-opportunities.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-opportunities.csv).
+It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
+work without changing the runtime baseline.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't

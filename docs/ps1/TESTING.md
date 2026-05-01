@@ -85,8 +85,10 @@ Current battle-card rollup as of 2026-05-01:
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
 `performance-experiment-log.md`, the README status table, and the rendered
-website scene/performance battle card. The CSV is the durable numeric source; prose
-surfaces should summarize it, not invent independent numbers.
+website scene/performance battle card. Pack-format/preprocessing planning
+passes also refresh `performance-preprocess-opportunities.csv` and its
+markdown summary. The CSVs are the durable numeric sources; prose surfaces
+should summarize them, not invent independent numbers.
 Each measured or blocked CSV row carries `last_run_at`, derived from the
 headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.

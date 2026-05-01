@@ -124,6 +124,7 @@ holiday overlay, SPU playback, input).
 - [pause-menu-design.md](pause-menu-design.md) — locked pause-menu design
 - [holidays-expansion-design.md](holidays-expansion-design.md) — 35-holiday plan
 - [performance-optimization-plan.md](performance-optimization-plan.md) — perf backlog
+- [performance-preprocess-opportunities.md](performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)

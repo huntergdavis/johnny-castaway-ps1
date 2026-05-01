@@ -287,6 +287,13 @@ the byte savings but failed as an implementation path: the best variant reduced
 `restore_bytes` to `2222854`, yet regressed `loop_vb 1219 -> 1221`, visible CD
 pressure `5 -> 6`, and moved `FISHING1.FG2` from LBA `396` to `397`. Treat
 restore-skip as an FGP3/side-metadata problem, not a runtime reparse problem.
+The all-scene preprocessing opportunity matrix is now the pack-format targeting
+surface. It parses current `FGP2`/`FGP3` packs and ranks selective upload-ready
+or cleanup-metadata experiments against the measured battle card. The first
+pass says the highest-upside generated graphics targets are WALKSTUF1 low/high,
+VISITOR3 low/high, BUILDING4 high/low, BUILDING6 high/low, and BUILDING2
+high/low. Do not retry whole-payload direct16; use selective/compressed bands
+or setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired
 under the retained 11-sector capacity, and `307..317` kept every timing/read
 counter exact while growing `foregroundPilotPlay` by `432` bytes. The direct
