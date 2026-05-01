@@ -77,9 +77,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Scenes fully validated under the reference bar | **2 / 63** (`FISHING 1`, `FISHING 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
-| Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+14.6% over target / 88.1% target speed** |
-| Latest perf matrix run | **`2026-04-30T23:02:41`** (`last_run_at` in the CSV) |
-| Perf stats version | Latest refreshed rows use `indexed8-tile-local-compose-v1`; earlier follow-up rows include `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+14.7% over target / 88.1% target speed** |
+| Latest perf matrix run | **`2026-05-01T00:32:01`** (`last_run_at` in the CSV) |
+| Perf stats version | Latest refreshed row uses `compact-fgp3-v59-visitor3high-group72-84`; other refreshed rows include `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 

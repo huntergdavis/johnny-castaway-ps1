@@ -163,6 +163,14 @@ PS-EXE by two sectors, shifted FG pack LBAs, and regressed WALKSTUF1 high despit
 a small VISITOR3-high blocking-only improvement. Keep `GPREL` / `-G8`; `-G4` or
 `-G16` would require custom toolchain plumbing and should wait behind generated
 read metadata and upload-ready/direct16 work.
+The VISITOR3 high `72..84` 12-sector group is accepted after fixing the
+read-plan tool to select the intended case from multi-case summaries. It is a
+small but clean CD-pressure win against the fresh current baseline:
+`loop_vb 1505 -> 1503`, `overrun_vb 500 -> 496`, `blocking_vb 357 -> 350`,
+`prefetch_overrun_vb 109 -> 103`, `loop_reads 61 -> 58`, and
+`due_misses 25 -> 24`, with the six canary rows exact-flat. Continue VISITOR3
+through generated/costed groups such as `110..122` or `110..126`, not scalar
+window changes.
 Function-scoped `-Os` on the buffered CD helper is rejected: it kept timing
 flat but grew the ELF and did not shrink the helper.
 Retesting the staged-copy fallthrough guard at `5` held VBlanks is rejected:
@@ -603,7 +611,7 @@ near misses:
 | 6 | 85 | Done/no promotion: the per-compose scratchpad palette probe shrank code but regressed VISITOR3 low, so retry scratchpad only inside generated/assembly compositor ownership. |
 | 7 | 10 | Done; use the host-side comparison output to target sector-specific CD/read-cost work. |
 | 8 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
-| 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` is accepted. |
+| 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` and VISITOR3 high `72..84` are accepted. |
 | 10 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 
 ## Retest Rules For Old Failures
@@ -611,7 +619,7 @@ near misses:
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
-| VISITOR3 raw stream windows | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. Use generated grouping, direct16/selective preprocessing, or scheduler ownership. |
+| VISITOR3 raw stream windows | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. VISITOR3 high `72..84` proves selective grouping can still pay, so continue with generated/costed groups, direct16/selective preprocessing, or scheduler ownership. |
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
 | BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
 | BUILDING-family raw stream windows | BUILDING4 and BUILDING6 high/low are accepted; retry only scene-locally with fresh baselines and bounded CD tradeoff rules, starting with remaining high-pressure building rows. |

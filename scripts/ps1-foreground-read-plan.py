@@ -37,10 +37,18 @@ def load_summary(path: Path | None) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def first_case(summary: dict[str, Any]) -> dict[str, Any]:
+def select_case(summary: dict[str, Any], case_label: str | None) -> dict[str, Any]:
     cases = summary.get("cases")
     if isinstance(cases, list) and cases:
+        if case_label is not None:
+            for case in cases:
+                if case.get("label") == case_label:
+                    return case
+            labels = ", ".join(str(case.get("label", "<unnamed>")) for case in cases)
+            raise SystemExit(f"--case-label {case_label!r} not found; available: {labels}")
         return cases[0]
+    if case_label is not None and summary.get("label") != case_label:
+        raise SystemExit(f"--case-label {case_label!r} requested but summary is not a matching multi-case run")
     return summary
 
 
@@ -396,7 +404,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
     cdlog = load_cdlog_module()
     summary = load_summary(args.summary)
-    case = first_case(summary)
+    case = select_case(summary, args.case_label)
     pack = cdlog.parse_fg2_pack(args.pack)
     header = pack.get("header", {})
     entries = pack.get("entries", [])
@@ -579,6 +587,7 @@ def print_human(report: dict[str, Any]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--summary", type=Path, help="ps1-perf-iterate summary JSON")
+    parser.add_argument("--case-label", help="case label to select from a multi-case summary JSON")
     parser.add_argument("--log", type=Path, help="DuckStation headless log; defaults to summary case log_file")
     parser.add_argument("--pack", type=Path, required=True, help="FG2/FGP3 pack file")
     parser.add_argument("--pack-lba", type=int, help="pack LBA override")

@@ -157,12 +157,12 @@ Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
 `loop_vb=1221`, `overrun_vb=150`, `render_vb=179`,
 `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
 and `prefetch.overrun_vb=5`. That is now historical context, not the current
-canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
+canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
-`88.1%` target speed as of `indexed8-tile-local-compose-v1` (`14.6360%` exact over target /
-`88.1061%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+14.7%` over target /
+`88.1%` target speed as of `compact-fgp3-v59-visitor3high-group72-84` (`14.6590%` exact over target /
+`88.0956%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1444,21 +1444,22 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-281` | Failed: copy PAL4 palette to scratchpad during compose. | The per-compose scratchpad palette copy shrank the PAL4 compositor by `24` bytes and ELF `792892 -> 792624`, but did not create a dependable speed win. FISHING1/FISHING3/WALKSTUF1 were loop-flat, FISHING3 low only improved through `target_vb` accounting, VISITOR3 high traded lower `prefetch_overrun_vb` for worse `blocking_vb`, and VISITOR3 low regressed badly (`loop_vb 1532 -> 1541`, `overrun_vb 517 -> 530`, `blocking_vb 314 -> 334`). Do not retry scratchpad palette as a local copy; only revisit scratchpad ownership inside a generated/assembly compositor with explicit layout and cross-scene cadence proof. |
 | `P5-282` | Failed: align `fgRuntimeFillWindowForEntry()` to 16 bytes. | The helper moved from `0x800125a4` to `0x800125b0`, downstream foreground/CD hot symbols shifted by `+24` bytes, and the ELF grew `792892 -> 792940`, but all seven canary rows stayed exact-flat against the accepted baseline. Do not promote one-off function alignment; if address buckets are revisited, run a scripted multi-function/multi-alignment sweep with map-address reporting. |
 | `P5-283` | Failed: switch the PS1 executable from `GPREL` / `-G8` to `NOGPREL` / `-G0`. | `NOGPREL` grew the PS-EXE by `4096` bytes, grew ELF `792892 -> 799148`, moved foreground pack LBAs by `+2` sectors, and regressed WALKSTUF1 high (`loop_vb 2002 -> 2008`, `prefetch_overrun_vb 101 -> 109`). VISITOR3 high had a small blocking-only improvement (`357 -> 353`) but no loop/overrun gain. Keep `GPREL`; future small-data-threshold work needs a custom `-G4`/`-G16` harness and is lower priority than generated metadata/direct16 work. |
+| `P5-284` | Done: group VISITOR3 high sectors `72..84`. | The read-plan tool now accepts `--case-label`, so multi-case summaries no longer accidentally plan against the first case. Adding the VISITOR3 high `{72,84}` group improves the fresh current baseline `loop_vb 1505 -> 1503`, `overrun_vb 500 -> 496`, `blocking_vb 357 -> 350`, `prefetch_overrun_vb 109 -> 103`, `loop_reads 61 -> 58`, and `due_misses 25 -> 24`, while FISHING1, FISHING3 high/low, VISITOR3 low, and WALKSTUF1 high/low stay exact-flat. Latest refreshed row uses `compact-fgp3-v59-visitor3high-group72-84`; exact matrix average is `14.6590%` over target / `88.0956%` target speed because the stale VISITOR3 high row was refreshed under the current source shape. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `indexed8-tile-local-compose-v1`: the matrix is now `120`
-timing-bearing rows at `14.6360%` exact average over target / `88.1061%`
-exact target speed. This checkpoint refreshes the two WALKSTUF1 rows under the
-current source shape; the source change itself improves them versus a fresh
-same-build baseline. The next loop should prioritize changes that
-can move multiple large rows or remove hundreds of VBlanks from a single row,
-not one-off scalar byte tuning unless a fresh local sweep shows a clear knee.
+Checkpoint after `compact-fgp3-v59-visitor3high-group72-84`: the matrix is now
+`120` timing-bearing rows at `14.6590%` exact average over target / `88.0956%`
+exact target speed. This checkpoint refreshes VISITOR3 high under the current
+source shape; the source change itself improves it versus a fresh same-build
+baseline. The next loop should prioritize changes that can move multiple large
+rows or remove hundreds of VBlanks from a single row, not one-off scalar byte
+tuning unless a fresh local sweep shows a clear knee.
 
 | Priority | Target class | Current signal | Next experiment shape |
 |---:|---|---|---|
 | 0 | Build-wide `-O2` quick wins | Sandbox research says `graphics_ps1.c -O2` could be free performance if graphics was compiled `-Os`; current CMake already leaves the graphics TU at default `-O2`, but multiple source files and helper functions are intentionally forced to `-Os`. | First run a map/flag-controlled `-O2` audit across all current `-Os` overrides. Test scoped graphics helper `-O2`, then each `-Os` TU back at default `-O2`, one experiment at a time. Only after that move to word-stride restore/compose, scratchpad palette, or hand-written MIPS. |
-| 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain `+621`, `+591`, `+505`, and `+471` VBlanks, with the highest visible CD pressure (`blocking_vb=494/438/306/321`). | Host-side pack/layout work first: generated read metadata, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more broad scalar window tuning unless the generated metadata needs a local window knee. |
+| 1 | `walkstuf1` low/high and `visitor3` low/high | The four largest absolute gaps remain about `+621`, `+591`, `+505`, and `+496` VBlanks, with the highest visible CD pressure (`blocking_vb=494/438/306/350`). | Host-side pack/layout work first: generated read metadata, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more broad scalar window tuning unless the generated metadata needs a local window knee. |
 | 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts; scalar windows helped `building4/6` but failed `building2` as compiled source. | Move to generated read groups or host-side preprocessing that changes read placement/format. Do not keep hand-coding BUILDING2 window variants without a source-shape-neutral metadata path. |
 | 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
 
