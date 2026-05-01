@@ -59,6 +59,19 @@ The caption text was authored fresh for this port from scene
 content, not lifted from any prior corpus. The [caption audit]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
 shows the confidence level of every ADS-tag → caption mapping.
 
+## Ocean ambience
+
+The looping background ocean track shipped with `v0.6.0-ps1`
+(toggle: **Pause → Accessibility → Ocean**) is sourced from
+[**BigSoundBank.com** sound 0266 — "Sea: Waves"](https://bigsoundbank.com/sea-waves-s0266.html),
+released under **CC0 / public domain**. The on-disc `OCEAN.VAG` is a
+20-second seamless loop derived from that recording, downsampled to
+11.025 kHz mono and encoded to Sony VAG ADPCM. The seam is hidden by
+an equal-power crossfade with the recording's natural continuation,
+so the SPU's hardware loop reads as unbroken ocean rather than a
+wraparound. Encoding pipeline lives in `scratch/ocean-ambience/`;
+design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob/main/docs/ps1/background-music-feasibility.md).
+
 ---
 
 The site is text-only on purpose — no portraits, no contributor
