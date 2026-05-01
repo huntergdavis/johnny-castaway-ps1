@@ -1,0 +1,18 @@
+priority,target_type,target,source,current_opt,symbol_address,symbol_size_bytes,source_text_bytes,next_action,reason
+10,function,grDrawBackground,src/graphics_ps1.c,"optimize(""Os"")",0x8001e4a0,1300,28372,Test scoped helper at default -O2,Graphics helpers are the first free-speed candidate before C rewrites.
+10,function,grUpdateDisplay,src/graphics_ps1.c,"optimize(""Os"")",0x8001e9b4,412,28372,Test scoped helper at default -O2,Graphics helpers are the first free-speed candidate before C rewrites.
+20,translation_unit,src/foreground_pilot.c,src/foreground_pilot.c,-Os,,0,17044,Test whole TU at default -O2,Hot or semi-hot TU is currently forced to -Os; speed may beat size.
+21,translation_unit,src/jc_reborn.c,src/jc_reborn.c,-Os,,0,6808,Test whole TU at default -O2,Hot or semi-hot TU is currently forced to -Os; speed may beat size.
+22,translation_unit,src/resource.c,src/resource.c,-Os,,0,1520,Test whole TU at default -O2,Hot or semi-hot TU is currently forced to -Os; speed may beat size.
+23,translation_unit,src/sound_ps1.c,src/sound_ps1.c,-Os,,0,1036,Test whole TU at default -O2,Hot or semi-hot TU is currently forced to -Os; speed may beat size.
+24,translation_unit,src/events_ps1.c,src/events_ps1.c,-Os,,0,3964,Test whole TU at default -O2,Hot or semi-hot TU is currently forced to -Os; speed may beat size.
+40,function,ps1_streamReadAlignedFromCdFileInto,src/cdrom_ps1.c,"optimize(""Os"")",0x80020aa0,484,9360,Retest only after graphics helper sweep,CD helper codegen is phase-sensitive; keep behind graphics scoped probes.
+40,function,ps1_streamReadFromCdFile,src/cdrom_ps1.c,"optimize(""Os"")",0x800205f4,592,9360,Retest only after graphics helper sweep,CD helper codegen is phase-sensitive; keep behind graphics scoped probes.
+65,translation_unit,src/pause_menu.c,src/pause_menu.c,-Os,,0,8092,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+66,translation_unit,src/ps1_captions.c,src/ps1_captions.c,-Os,,0,1160,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+67,translation_unit,src/memcard.c,src/memcard.c,-Os,,0,2532,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+68,translation_unit,src/holidays.c,src/holidays.c,-Os,,0,2292,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+69,translation_unit,src/ps1_debug.c,src/ps1_debug.c,-Os,,0,1752,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+70,translation_unit,src/ps1_stubs.c,src/ps1_stubs.c,-Os,,0,240,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+71,translation_unit,src/utils.c,src/utils.c,-Os,,0,416,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
+72,translation_unit,src/island.c,src/island.c,-Os,,0,572,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.

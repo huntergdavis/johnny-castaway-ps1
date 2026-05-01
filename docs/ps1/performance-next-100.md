@@ -532,7 +532,7 @@ input.
 | 75 | Graphics | Batch `LoadImage` rect setup data in a persistent small array. | Rect count is high at `502`. | Stack/code shrinks or upload work falls. |
 | 76 | Graphics | Test max upload rect cap `7` after cross-scene proof. | Fishing1 max is `6`; cap `6` had no win but no headroom. | Cap `7` shrinks or remains safe across fishing scenes. |
 | 77 | Graphics | Cache clean-rect row source pointers. | Restore bytes are stable but pointer math may be hot. | Restore helper shrinks or `restore_vb` drops in detail runs. |
-| 78 | Toolchain | Run the build-wide `-O2` audit/sweep: identify every `-Os` override, test reverting each to default `-O2`, and log accepted/no-promotion outcomes. | The user explicitly wants `-O2` tests at the top of the total queue; this is lower risk than ASM and may be free performance. | Loop/render/setup counters improve, or exact-flat/no-promotion rows are recorded with map/layout evidence. |
+| 78 | Toolchain | Done: add the build-wide `-O2` audit report and candidate CSV. | `scripts/ps1-o2-audit.py` now identifies every current `-Os` override from `compile_commands.json`, maps hot symbols from `jcreborn.map`, and writes `performance-o2-audit.md/.csv`. | Next concrete probe is test `92`: graphics scoped-helper `-O2`, one helper at a time. |
 | 79 | Graphics | Test halfword-edge plus word-body restore copy in C for `grCleanRectCopyIn`. | Feasibility research says bounded aligned restore rows are the best win-per-risk ASM candidate; C word-stride should be tried first. | Restore detail counters improve without CD phase loss. |
 | 80 | Graphics | Test persistent clean-rect buffer reuse across same tide/background. | Memory leak fixes release per scene, but some buffers may be safely persistent. | Setup/restore improves without long-run heap drift. |
 | 81 | Compose | Generate pack-time tile-split spans. | Runtime cross-tile splitting regressed; pack-time can remove hot branches. | Compose work falls and spans remain exact. |
@@ -563,8 +563,8 @@ near misses:
 
 | Order | Test # | Reason |
 |---:|---:|---|
-| 1 | 78 | Run the build-wide `-O2` audit/sweep first: enumerate current `-Os` overrides, then test default `-O2` per TU/helper with map/layout gates. |
-| 2 | 92 | Run the graphics scoped-helper `-O2` audit immediately after the build-wide inventory because graphics/restore/compose are the best chance of free speed. |
+| 1 | 78 | Done: `scripts/ps1-o2-audit.py` emits the current `-O2` candidate queue and map/symbol evidence. Re-run it after each build-system or optimization-flag change. |
+| 2 | 92 | Run the graphics scoped-helper `-O2` probe next because `grDrawBackground()` and `grUpdateDisplay()` are the first two candidates in `performance-o2-audit.csv`. |
 | 3 | 91 | Continue the `-O2` sweep across currently `-Os` hot/semi-hot TUs before any new hand-rolled code. |
 | 4 | 79 | Test the C word-stride restore-row copy before writing assembly; it has the best win-per-risk in the ASM feasibility pass. |
 | 5 | 84 | Test word-stride C compose classes before MIPS ASM; most expected gain is wider loads/stores and branch removal. |

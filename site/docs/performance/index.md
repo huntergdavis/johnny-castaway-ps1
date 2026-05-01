@@ -84,6 +84,13 @@ and is rendered as the perf battle card section of the [scene ledger]({{ '/scene
 It is not the human scene-promotion ledger; it is the timing sheet for
 headless performance work.
 
+The current compiler-flag sweep is tracked in
+[`docs/ps1/performance-o2-audit.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.md)
+and its machine-readable
+[`performance-o2-audit.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.csv).
+That report is regenerated from `build-ps1/compile_commands.json` and
+`build-ps1/jcreborn.map` before each `-O2` probe.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't
