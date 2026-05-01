@@ -161,8 +161,8 @@ canary. As of the 2026-04-30 battle-card refresh, FISHING 1 high is
 `loop_vb=1207` against `target_vb=1076`, with `blocking_vb=0`,
 `prefetch_overrun_vb=0`, and `due_misses=0`; across the measured matrix,
 120/126 scene/tide variants carry active-loop timing and average `+14.6%` over target /
-`88.1%` target speed as of `compact-fgp3-v57-policy-table-refactor` (`14.6187%` exact over target /
-`88.1130%` exact target speed). The remaining optimization target is therefore
+`88.1%` target speed as of `compact-fgp3-v58-activity9high-window20-table` (`14.6132%` exact over target /
+`88.1175%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1427,6 +1427,21 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-275` | Done: setup-prime WALKSTUF1 low indexed8 residual with a targeted `248 KiB` budget. | Contiguous setup-prime is normally disabled for non-default stream windows, but WALKSTUF1 low remains the largest CD-pressure row after indexed8 FGP3 and split-window tuning. A bounded sweep found `768 KiB` allocation failure, `512/288 KiB` zero-loop structural failures, `224 KiB` worse target-relative speed, `256 KiB` lower raw loop with worse blocking, and `248 KiB` as the stable knee. Low improves `loop_vb 2048 -> 2001`, `target_vb 1414 -> 1395`, `overrun_vb 634 -> 606`, `blocking_vb 460 -> 450`, `prefetch_overrun_vb 139 -> 134`, `loop_reads 63 -> 57`, and `due_misses 34 -> 31`. WALKSTUF1 high, FISHING1, FISHING3, and VISITOR3 stayed stable in the gate. Latest rows now use `compact-fgp3-v54-walkstuf1low-prime`; exact timing-bearing average is down to `14.6352%` over target / `88.1047%` target speed. |
 | `P5-276` | Done: derive WALKSTUF1 high setup-prime from indexed8 residual window. | High-tide contiguous setup-prime was useful but phase-sensitive. A direct high/low branch found valid points at `248`, `256`, `272`, `288`, and `304 KiB`, with `304 KiB` best (`2024 -> 1971`), but the extra branch crossed the PS-EXE `147456 -> 149504` byte bucket and regressed FISHING3/VISITOR3 canaries. Rewriting the policy as `(normalWindowBytes << 2) + 88 KiB` preserves low tide's existing `248 KiB`, gives high tide `304 KiB`, keeps the PS-EXE bucket and pack LBAs fixed, and passes the full canary gate. WALKSTUF1 high improves `loop_vb 2024 -> 1970`, `target_vb 1423 -> 1404`, `overrun_vb 601 -> 566`, `blocking_vb 449 -> 400`, `prefetch_overrun_vb 133 -> 128`, `loop_reads 43 -> 39`, and `due_misses 25 -> 21`; WALKSTUF1 low, FISHING1, FISHING3, and VISITOR3 stay exact-flat. Latest rows now use `compact-fgp3-v55-walkstuf1high-derived-prime`; exact timing-bearing average is down to `14.6192%` over target / `88.1128%` target speed. |
 | `P5-277` | Done: trim WALKSTUF1 high setup-prime to the lower high-tide knee. | The shared `84 KiB` derived-base probe improved high tide but regressed low tide, so the promoted source keeps the accepted low-tide `248 KiB` budget and subtracts `4 KiB` only for high tide. WALKSTUF1 high improves `loop_vb 1970 -> 1965`, `target_vb 1404 -> 1401`, and `overrun_vb 566 -> 564`; `blocking_vb` stays `400`, `prefetch_overrun_vb` rises within tolerance `128 -> 130`, `loop_reads` rises `39 -> 41`, and `due_misses` stays `21`. Low tide, FISHING1, FISHING3, and VISITOR3 stayed flat in the same run. Latest rows now use `compact-fgp3-v56-walkstuf1high-base84`; exact timing-bearing average is down to `14.6187%` over target / `88.1130%` target speed. |
+| `P5-278` | Done: table-driven ACTIVITY9 high stream window. | Retrying the earlier rejected ACTIVITY9 `20 KiB` high-tide window through the compact policy table keeps the PS-EXE bucket stable and avoids the prior FISHING3/WALKSTUF1 canary regression. ACTIVITY9 high improves `loop_vb 2270 -> 2259` against the fresh table baseline, `blocking_vb 100 -> 84`, `loop_reads 144 -> 108`, and `due_misses 10 -> 6`; `prefetch_overrun_vb` rises only `51 -> 53`. FISHING1, FISHING3 high/low, BUILDING4/6 high/low, VISITOR3 high/low, and WALKSTUF1 high/low stayed exact-flat in the zero-regression canary run. Latest rows now use `compact-fgp3-v58-activity9high-window20-table`; exact timing-bearing average is down to `14.6132%` over target / `88.1175%` target speed. |
+
+## Current Highest-Leverage Targets
+
+Checkpoint after `compact-fgp3-v58-activity9high-window20-table`: the matrix is
+now `120` timing-bearing rows at `14.6132%` exact average over target /
+`88.1175%` exact target speed. The next loop should prioritize changes that
+can move multiple large rows or remove hundreds of VBlanks from a single row,
+not one-off scalar byte tuning unless a fresh local sweep shows a clear knee.
+
+| Priority | Target class | Current signal | Next experiment shape |
+|---:|---|---|---|
+| 1 | `walkstuf1` high/low and `visitor3` high/low | The four largest absolute gaps remain `+606`, `+564`, `+505`, and `+471` VBlanks, with the highest visible CD pressure (`blocking_vb=450/400/306/321`). | Host-side pack/layout work first: generated read metadata, segmented preload with scheduler ownership, direct16/upload-ready spans, or a stronger first-class CD/render scheduler. Avoid more broad scalar window tuning unless the generated metadata needs a local window knee. |
+| 2 | BUILDING-family CD pressure | `building4`, `building6`, and `building2` still have large blocking/due counts; scalar windows helped `building4/6` but failed `building2` as compiled source. | Move to generated read groups or host-side preprocessing that changes read placement/format. Do not keep hand-coding BUILDING2 window variants without a source-shape-neutral metadata path. |
+| 3 | Zero-CD fixed overhead rows | `stand1`, `visitor4`, `walkstuf2`, and `stand2` are high percent-over-target with `blocking_vb=0`, `loop_reads=0`, and `due_misses=0`. | Treat these as render/present/upload/loop overhead problems: pack-time frame coalescing, upload-ready/direct16 bands, resident-pack fast paths, or a real present/input scheduler. CD policies cannot explain these rows. |
 
 ## Failed Experiment Triage After P5-90
 
