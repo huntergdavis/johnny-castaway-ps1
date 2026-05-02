@@ -4,11 +4,15 @@ title: FISHING 7 — Octopus chokes Johnny
 ads: FISHING
 tag: 7
 slug: fishing7
-status: pending
-description: "FISHING.ADS scene 7: Octopus chokes Johnny. Not yet validated."
+status: validated
+description: "FISHING.ADS scene 7: Octopus chokes Johnny. Validated on PS1 with captured-position foreground replay."
 ---
 
-Not yet validated.
+Validated on PS1 under the current scene bar. This scene uses a
+single-position FG2 pack pinned to the host-captured island position
+`x=3,y=9`; at that placement the foreground fills the 640-pixel
+reference viewport and the right-edge pole/line clipping matches the
+original capture.
 
 ## Pack identifiers
 
@@ -21,21 +25,13 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
-
-The same way every scene does: under the FISHING 1 bar.
+### Validation Notes
 
 A pixel-perfect host capture (ScummVM via the export script) produces a
 base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
 build replays that pack at native resolution through every variant the
 original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+raft-stage progress where applicable). `FISHING 7` is position-sensitive:
+the current pack is pixel-perfect for its captured viewport, not for
+arbitrary random island positions. The runtime therefore pins this scene
+to the captured position unless an explicit debug boot overrides it.

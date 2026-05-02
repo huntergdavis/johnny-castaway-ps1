@@ -3,18 +3,21 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-01 (release `v0.6.2-ps1`; FISHING 6
-scene-validation bugfix).
+**Last updated:** 2026-05-01 (scene ledger at 6/63; `FISHING 7`
+validated after captured-position pin).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, and
-`FISHING 6` have been validated under the project's current acceptance
-bar: pixel-perfect visuals plus synced SFX, across every applicable
-variant (night / low-tide / holiday / raft-stage), signed off by human
-visual + audible review. `FISHING 5` remains blocked on visible shark
-cleanup residue and is intentionally not promoted.
+`FISHING 6`, and `FISHING 7` have been validated under the project's
+current acceptance bar: pixel-perfect visuals plus synced SFX, across
+every applicable variant (night / low-tide / holiday / raft-stage),
+signed off by human visual + audible review. `FISHING 7` uses a
+scene-specific captured island position (`x=3,y=9`) because its current
+single-position FG2 pack fills the full 640-pixel reference viewport.
+`FISHING 5` remains blocked on visible shark cleanup residue and is
+intentionally not promoted.
 
 | Component | Status |
 |---|---|
@@ -23,7 +26,7 @@ cleanup residue and is intentionally not promoted.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 5/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 6/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -33,7 +36,7 @@ cleanup residue and is intentionally not promoted.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 5 / 63 fully validated
+## Scenes: 6 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -146,7 +149,8 @@ searchability — **do not cite them as current progress**:
 | 60 / 63 | 2026-04-04..07 | Bringup in the headless regtest surface | `docs/ps1/TESTING.md` (older), `config/ps1/regtest-scenes.txt` |
 | **1 / 63** | **2026-04-22** | **Human-signed reference scene under the full visual + SFX bar** | **this doc, `scene-status.md`** |
 | **2 / 63** | **2026-04-24** | **Scene ledger after `FISHING 2` promotion; `FISHING 3` remained bring-up** | **this doc, `scene-status.md`** |
-| **5 / 63** | **2026-05-01** | **Current scene ledger after `FISHING 3`, `FISHING 4`, and `FISHING 6` promotion; `FISHING 5` remains blocked** | **this doc, `scene-status.md`** |
+| **5 / 63** | **2026-05-01** | **Scene ledger after `FISHING 3`, `FISHING 4`, and `FISHING 6` promotion; `FISHING 5` remains blocked** | **this doc, `scene-status.md`** |
+| **6 / 63** | **2026-05-01** | **Current scene ledger after `FISHING 7` promotion; single-position FG2 replay is pinned to the host-captured island position `x=3,y=9`** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current

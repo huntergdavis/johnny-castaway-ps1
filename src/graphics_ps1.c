@@ -79,6 +79,8 @@ PS1Surface *grBackgroundSfc = NULL;
  * Top row: 3 tiles (256+256+128 = 640 pixels wide, 240 tall)
  * Bottom row will be added later */
 #define BG_TILE_HEIGHT 240
+#define SCR_STREAM_ROWS 64
+#define SCR_STREAM_ROW_BYTES 320  /* 640 packed 4bpp pixels */
 /* Top row tiles (stored in VRAM texture area) - exported for dirty rectangle wiping */
 PS1Surface *bgTile0 = NULL;  /* x=0-255,   srcX=0 */
 PS1Surface *bgTile1 = NULL;  /* x=256-511, srcX=256 */
@@ -99,6 +101,7 @@ static uint16 *bgTile1Clean = NULL;
 static uint16 *bgTile3Clean = NULL;
 static uint16 *bgTile4Clean = NULL;
 static int grSaveCleanOnScreenLoad = 1;
+static uint8 gScrStreamRows[SCR_STREAM_ROWS * SCR_STREAM_ROW_BYTES];
 
 /* Dirty-rect tracking: per-tile row-granularity restore/upload.
  * Index: 0=bgTile0, 1=bgTile1, 2=bgTile3, 3=bgTile4.
@@ -129,6 +132,7 @@ static int grPresentDuringScreenLoad = 1;
 static void grDrawRectColor15(sint16 x, sint16 y, uint16 width, uint16 height, uint16 bgColor);
 static void grRestoreRectFromCleanBg(int x, int y, int width, int height);
 static void grCommitRectToCleanBg(int x, int y, int width, int height);
+static void freeBgTile(PS1Surface **tile);
 static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width);
 
 void grSetPresentDuringScreenLoad(int enabled)
@@ -2911,6 +2915,49 @@ static PS1Surface *createEmptyBgTileRAM(uint16 width, uint16 height)
     return tile;
 }
 
+static void resetBgTileRAMFields(PS1Surface *tile, uint16 width, uint16 height)
+{
+    tile->width = width;
+    tile->height = height;
+    tile->x = 0;
+    tile->y = 0;
+    tile->indexedPixels = NULL;
+    tile->indexedOwned = 0;
+    tile->psbNibbles = 0;
+    tile->nextTile = NULL;
+}
+
+static PS1Surface *ensureEmptyBgTileRAM(PS1Surface **slot, uint16 width, uint16 height)
+{
+    uint32 pixelCount = (uint32)width * (uint32)height;
+
+    if (*slot == NULL || (*slot)->pixels == NULL ||
+        (*slot)->width != width || (*slot)->height != height) {
+        freeBgTile(slot);
+        *slot = createEmptyBgTileRAM(width, height);
+        return *slot;
+    }
+
+    resetBgTileRAMFields(*slot, width, height);
+    memset((*slot)->pixels, 0, pixelCount * sizeof(uint16));
+    return *slot;
+}
+
+static PS1Surface *ensureBgTileRAM(PS1Surface **slot, uint16 width, uint16 height)
+{
+    if (*slot == NULL || (*slot)->pixels == NULL ||
+        (*slot)->width != width || (*slot)->height != height) {
+        freeBgTile(slot);
+        *slot = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
+        resetBgTileRAMFields(*slot, width, height);
+        (*slot)->pixels = (uint16*)safe_malloc((uint32)width * height * 2);
+    } else {
+        resetBgTileRAMFields(*slot, width, height);
+    }
+
+    return *slot;
+}
+
 /*
  * Initialize empty background
  */
@@ -4192,24 +4239,11 @@ void grReleaseBackgroundTiles(void)
  * For use with LoadImage directly to framebuffer
  * srcHeight parameter allows partial source data (rest filled with black)
  */
-static PS1Surface *createBgTileRAMPartial(uint8 *src, uint16 srcWidth, uint16 srcHeight,
-                                           uint16 srcStartX, uint16 srcStartY,
-                                           uint16 tileWidth)
+static void fillBgTileRAMPartial(PS1Surface *tile, uint8 *src,
+                                 uint16 srcWidth, uint16 srcHeight,
+                                 uint16 srcStartX, uint16 srcStartY,
+                                 uint16 tileWidth)
 {
-    PS1Surface *tile = (PS1Surface*)safe_malloc(sizeof(PS1Surface));
-    tile->width = tileWidth;
-    tile->height = BG_TILE_HEIGHT;
-    tile->x = 0;  /* Not in VRAM - just RAM */
-    tile->y = 0;
-    tile->indexedPixels = NULL;
-    tile->indexedOwned = 0;
-    tile->psbNibbles = 0;
-    tile->nextTile = NULL;
-
-    /* Allocate pixel buffer for 15-bit direct color */
-    uint32 pixelDataSize = tileWidth * BG_TILE_HEIGHT * 2;
-    tile->pixels = (uint16*)safe_malloc(pixelDataSize);
-
     uint16 *dst = tile->pixels;
 
     /* Process 2 pixels per byte using palette LUT, with bounds checking.
@@ -4252,22 +4286,86 @@ static PS1Surface *createBgTileRAMPartial(uint8 *src, uint16 srcWidth, uint16 sr
         }
     }
 
-    /* Don't upload to VRAM - keep in RAM for LoadImage to framebuffer */
-    return tile;
 }
 
-/*
- * Helper: Create a background tile stored in RAM only (no VRAM upload)
- * For use with LoadImage directly to framebuffer
- * Legacy wrapper - assumes source has enough data
- */
-static PS1Surface *createBgTileRAM(uint8 *src, uint16 srcWidth,
-                                    uint16 srcStartX, uint16 srcStartY,
-                                    uint16 tileWidth)
+static PS1Surface *ensureBgTileRAMPartial(PS1Surface **slot, uint8 *src,
+                                           uint16 srcWidth, uint16 srcHeight,
+                                           uint16 srcStartX, uint16 srcStartY,
+                                           uint16 tileWidth)
 {
-    /* Assume source has enough height for legacy callers */
-    return createBgTileRAMPartial(src, srcWidth, srcStartY + BG_TILE_HEIGHT,
-                                   srcStartX, srcStartY, tileWidth);
+    if (*slot == NULL || (*slot)->pixels == NULL ||
+        (*slot)->width != tileWidth || (*slot)->height != BG_TILE_HEIGHT) {
+        ensureBgTileRAM(slot, tileWidth, BG_TILE_HEIGHT);
+    } else {
+        resetBgTileRAMFields(*slot, tileWidth, BG_TILE_HEIGHT);
+    }
+
+    fillBgTileRAMPartial(*slot, src, srcWidth, srcHeight,
+                         srcStartX, srcStartY, tileWidth);
+    return *slot;
+}
+
+static void grExpandScrPackedRow(uint16 *dst, const uint8 *src, uint16 byteCount)
+{
+    uint16 x = 0;
+    for (uint16 i = 0; i < byteCount; i++, x += 2) {
+        uint32 pair = palLutSierra[src[i]];
+        dst[x] = (uint16)pair;
+        dst[x + 1] = (uint16)(pair >> 16);
+    }
+}
+
+static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
+{
+    CdlFILE cdfile;
+    char path[32];
+    uint16 y;
+
+    if (scrResource == NULL ||
+        scrResource->width != 640 ||
+        scrResource->height != 480 ||
+        scrResource->uncompressedSize != 153600UL) {
+        return 0;
+    }
+
+    snprintf(path, sizeof(path), "SCR\\%s", scrResource->resName);
+    if (!ps1_streamResolveFile(path, &cdfile))
+        return 0;
+
+    ensureBgTileRAM(&bgTile0, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile1, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile3, 320, BG_TILE_HEIGHT);
+    ensureBgTileRAM(&bgTile4, 320, BG_TILE_HEIGHT);
+    bgTile2a = NULL;
+    bgTile2b = NULL;
+    bgTile5a = NULL;
+    bgTile5b = NULL;
+
+    for (y = 0; y < 480; y = (uint16)(y + SCR_STREAM_ROWS)) {
+        uint16 rows = (uint16)((480 - y) > SCR_STREAM_ROWS ? SCR_STREAM_ROWS : (480 - y));
+        uint32 offset = (uint32)y * SCR_STREAM_ROW_BYTES;
+        uint32 bytes = (uint32)rows * SCR_STREAM_ROW_BYTES;
+
+        if (!ps1_streamReadAlignedIntoFile(&cdfile, offset, bytes,
+                                           gScrStreamRows)) {
+            return 0;
+        }
+
+        for (uint16 row = 0; row < rows; row++) {
+            uint16 screenY = (uint16)(y + row);
+            const uint8 *srcRow = gScrStreamRows + ((uint32)row * SCR_STREAM_ROW_BYTES);
+            if (screenY < BG_TILE_HEIGHT) {
+                grExpandScrPackedRow(bgTile0->pixels + ((uint32)screenY * 320), srcRow, 160);
+                grExpandScrPackedRow(bgTile1->pixels + ((uint32)screenY * 320), srcRow + 160, 160);
+            } else {
+                uint16 tileY = (uint16)(screenY - BG_TILE_HEIGHT);
+                grExpandScrPackedRow(bgTile3->pixels + ((uint32)tileY * 320), srcRow, 160);
+                grExpandScrPackedRow(bgTile4->pixels + ((uint32)tileY * 320), srcRow + 160, 160);
+            }
+        }
+    }
+
+    return 1;
 }
 
 /*
@@ -4282,25 +4380,18 @@ void grLoadScreen(char *strArg)
     uint16 srcHeight = scrResource->height;
     int isPartialHeight = (srcHeight < 480);
 
-    /* Free tiles and clean copies BEFORE loading SCR data to ensure
-     * enough RAM is available. On PS1 (2MB), tiles+clean copies use ~1.2MB,
-     * and the SCR load needs ~300KB temporarily. */
+    /* Drop clean copies before loading SCR data. Keep the 320x240 bg tile
+     * buffers resident and refill them in place; repeated 153600-byte
+     * free+malloc cycles fragment the PS1 heap during long screensaver runs. */
     grFreeCleanBgTiles();
 
-    /* Free top tiles always */
-    freeBgTile(&bgTile0);
-    freeBgTile(&bgTile1);
+    /* Retired split-tile layout; release any stale remnants but preserve the
+     * active 320px tiles (bgTile0/1/3/4) for reuse. */
     freeBgTile(&bgTile2a);
     freeBgTile(&bgTile2b);
 
-    /* Only free bottom tiles if new image is full height
-     * This preserves ocean background for scenes like ISLETEMP (640x350) */
-    if (!isPartialHeight) {
-        freeBgTile(&bgTile3);
-        freeBgTile(&bgTile4);
-        freeBgTile(&bgTile5a);
-        freeBgTile(&bgTile5b);
-    }
+    freeBgTile(&bgTile5a);
+    freeBgTile(&bgTile5b);
 
     grBackgroundSfc = NULL;
 
@@ -4309,17 +4400,59 @@ void grLoadScreen(char *strArg)
         grSavedZonesLayer = NULL;
     }
 
-    /* Now load SCR data with freed memory available */
+    /* Full-screen ocean/night SCR files are fixed-size raw 4bpp payloads.
+     * Stream them directly into bg tiles so the scene loop never needs a
+     * 153600-byte temporary SCR heap allocation. */
+    if (scrResource->uncompressedData == NULL &&
+        grLoadFullScreenScrStreamed(scrResource)) {
+        if (grPresentDuringScreenLoad) {
+            RECT rect0, rect1, rect3, rect4;
+            if (bgTile0 && bgTile0->pixels) {
+                setRECT(&rect0, 0, 0, bgTile0->width, bgTile0->height);
+                LoadImage(&rect0, (uint32*)bgTile0->pixels);
+            }
+            if (bgTile1 && bgTile1->pixels) {
+                setRECT(&rect1, 320, 0, bgTile1->width, bgTile1->height);
+                LoadImage(&rect1, (uint32*)bgTile1->pixels);
+            }
+            if (bgTile3 && bgTile3->pixels) {
+                setRECT(&rect3, 0, 240, bgTile3->width, bgTile3->height);
+                LoadImage(&rect3, (uint32*)bgTile3->pixels);
+            }
+            if (bgTile4 && bgTile4->pixels) {
+                setRECT(&rect4, 320, 240, bgTile4->width, bgTile4->height);
+                LoadImage(&rect4, (uint32*)bgTile4->pixels);
+            }
+            DrawSync(0);
+        }
+        grBackgroundSfc = bgTile0;
+        if (grSaveCleanOnScreenLoad)
+            grSaveCleanBgTiles();
+        return;
+    }
+
+    /* Partial/non-standard SCR files still use the legacy temporary load. */
     if (scrResource->uncompressedData == NULL) {
+        ps1_loadScrData(scrResource);
+    }
+    if (scrResource->uncompressedData == NULL &&
+        (bgTile0 != NULL || bgTile1 != NULL || bgTile3 != NULL || bgTile4 != NULL)) {
+        /* Boot/menu paths can be tighter than steady-state scene playback.
+         * Retry once with tile RAM released; steady-state FG2 should not
+         * normally take this path. */
+        freeBgTile(&bgTile0);
+        freeBgTile(&bgTile1);
+        freeBgTile(&bgTile3);
+        freeBgTile(&bgTile4);
         ps1_loadScrData(scrResource);
     }
     if (scrResource->uncompressedData == NULL) {
         /* Failed to load — recreate empty tiles so rendering doesn't crash */
-        bgTile0 = createEmptyBgTileRAM(320, 240);
-        bgTile1 = createEmptyBgTileRAM(320, 240);
+        ensureEmptyBgTileRAM(&bgTile0, 320, 240);
+        ensureEmptyBgTileRAM(&bgTile1, 320, 240);
         if (!isPartialHeight) {
-            bgTile3 = createEmptyBgTileRAM(320, 240);
-            bgTile4 = createEmptyBgTileRAM(320, 240);
+            ensureEmptyBgTileRAM(&bgTile3, 320, 240);
+            ensureEmptyBgTileRAM(&bgTile4, 320, 240);
         }
         grBackgroundSfc = bgTile0;
         return;
@@ -4344,8 +4477,8 @@ void grLoadScreen(char *strArg)
      */
     /* Top row: LoadImage directly to framebuffer at init
      * Use 2 tiles of 320px each to cover 640px total */
-    bgTile0  = createBgTileRAM(src, srcWidth, 0,   0, 320);   /* top row, x=0-319 */
-    bgTile1  = createBgTileRAM(src, srcWidth, 320, 0, 320);   /* top row, x=320-639 */
+    bgTile0  = ensureBgTileRAMPartial(&bgTile0, src, srcWidth, srcHeight, 0,   0, 320);   /* top row, x=0-319 */
+    bgTile1  = ensureBgTileRAMPartial(&bgTile1, src, srcWidth, srcHeight, 320, 0, 320);   /* top row, x=320-639 */
     bgTile2a = NULL;
     bgTile2b = NULL;
 
@@ -4372,11 +4505,13 @@ void grLoadScreen(char *strArg)
 
     if (bottomRowLines >= 240) {
         /* Full 640x480 image - create bottom row tiles (2x320 to match top row) */
-        bgTile3  = createBgTileRAMPartial(src, srcWidth, srcHeight, 0,   240, 320);
-        bgTile4  = createBgTileRAMPartial(src, srcWidth, srcHeight, 320, 240, 320);
+        bgTile3  = ensureBgTileRAMPartial(&bgTile3, src, srcWidth, srcHeight, 0,   240, 320);
+        bgTile4  = ensureBgTileRAMPartial(&bgTile4, src, srcWidth, srcHeight, 320, 240, 320);
         bgTile5a = NULL;
         bgTile5b = NULL;
-    } else if (isPartialHeight && bgTile3 != NULL && bgTile4 != NULL && bottomRowLines > 0) {
+    } else if (isPartialHeight && bgTile3 != NULL && bgTile4 != NULL &&
+               bgTile3->pixels != NULL && bgTile4->pixels != NULL &&
+               bottomRowLines > 0) {
         /* Partial height image with existing bottom tiles (ocean) - composite on top!
          * Copy the available rows (240 to srcHeight-1) onto existing tiles */
         uint16 *dst3 = bgTile3->pixels;
@@ -4408,14 +4543,14 @@ void grLoadScreen(char *strArg)
         }
     } else if (bottomRowLines > 0) {
         /* Partial bottom row with no existing tiles - create with partial data */
-        bgTile3  = createBgTileRAMPartial(src, srcWidth, srcHeight, 0,   240, 320);
-        bgTile4  = createBgTileRAMPartial(src, srcWidth, srcHeight, 320, 240, 320);
+        bgTile3  = ensureBgTileRAMPartial(&bgTile3, src, srcWidth, srcHeight, 0,   240, 320);
+        bgTile4  = ensureBgTileRAMPartial(&bgTile4, src, srcWidth, srcHeight, 320, 240, 320);
         bgTile5a = NULL;
         bgTile5b = NULL;
     } else {
         /* SCR is only 240 lines or less - create empty tiles for sprite compositing */
-        if (bgTile3 == NULL) bgTile3 = createEmptyBgTileRAM(320, 240);
-        if (bgTile4 == NULL) bgTile4 = createEmptyBgTileRAM(320, 240);
+        ensureEmptyBgTileRAM(&bgTile3, 320, 240);
+        ensureEmptyBgTileRAM(&bgTile4, 320, 240);
         bgTile5a = NULL;
         bgTile5b = NULL;
     }

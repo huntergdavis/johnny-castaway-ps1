@@ -1350,10 +1350,19 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[1] = upperMinY;
         ws[1] = (uint16)(upperEndX - upperMinX);
         hs[1] = (uint16)(upperEndY - upperMinY);
-        printf("JCRECT 2-rect lower=(%d,%d,%u,%u) upper=(%d,%d,%u,%u) heapKB=%lu\n",
-               (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
-               (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1],
-               fgProbeLargestAlloc() / 1024UL);
+#if FG_HEAP_PROBE_LOGS
+        if (gFgHeapProbeEnabled) {
+            printf("JCRECT 2-rect lower=(%d,%d,%u,%u) upper=(%d,%d,%u,%u) heapKB=%lu\n",
+                   (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
+                   (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1],
+                   fgProbeLargestAlloc() / 1024UL);
+        } else
+#endif
+        {
+            printf("JCRECT 2-rect lower=(%d,%d,%u,%u) upper=(%d,%d,%u,%u)\n",
+                   (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
+                   (int)xs[1], (int)ys[1], (unsigned)ws[1], (unsigned)hs[1]);
+        }
         int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 2,
                                          kMaxCleanRectBytes);
         printf("JCRECT 2-rect split grSaveCleanBgRects=%d\n", rc);
@@ -1366,9 +1375,17 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
         ys[0] = lowerMinY;
         ws[0] = (uint16)(lowerEndX - lowerMinX);
         hs[0] = (uint16)(lowerEndY - lowerMinY);
-        printf("JCRECT 1-rect lower=(%d,%d,%u,%u) heapKB=%lu\n",
-               (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
-               fgProbeLargestAlloc() / 1024UL);
+#if FG_HEAP_PROBE_LOGS
+        if (gFgHeapProbeEnabled) {
+            printf("JCRECT 1-rect lower=(%d,%d,%u,%u) heapKB=%lu\n",
+                   (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0],
+                   fgProbeLargestAlloc() / 1024UL);
+        } else
+#endif
+        {
+            printf("JCRECT 1-rect lower=(%d,%d,%u,%u)\n",
+                   (int)xs[0], (int)ys[0], (unsigned)ws[0], (unsigned)hs[0]);
+        }
         int rc = grSaveCleanBgRectsSplit(xs, ys, ws, hs, 1,
                                          kMaxCleanRectBytes);
         printf("JCRECT 1-rect split grSaveCleanBgRects=%d\n", rc);
@@ -2928,6 +2945,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
 
     fgInitVisiblePipeline();
     grSetPresentDuringScreenLoad(0);
+    grSetSaveCleanOnScreenLoad(0);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
     if (islandState.night) {
@@ -2940,12 +2958,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * randomized island placement. */
         grLoadScreen("OCEAN00.SCR");
     }
+    grSetSaveCleanOnScreenLoad(1);
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_SCREEN,
                               ps1PerfElapsedVBlanks(perfPhaseTick));
-    /* grLoadScreen saves full clean-tile copies. FG2 uses a smaller
-     * rect-mode backup instead, so free the full copies before the pack
-     * allocates its streaming buffer. */
+    /* FG2 disables grLoadScreen's full clean-tile snapshot and uses a smaller
+     * rect-mode backup instead. Keep this as a defensive cleanup in case a
+     * prior mode left full-tile clean buffers resident. */
     grFreeCleanBgTiles();
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();

@@ -180,9 +180,13 @@ cleanup repair for the final splash and pole residue. `FISHING 5`
 remained blocked on shark cleanup residue. The current count became
 **5 / 63**.
 
+Later on **2026-05-01**, `FISHING 7` joined the validated ledger after
+its single-position FG2 replay was pinned to the host-captured island
+position `x=3,y=9`. The current count became **6 / 63**.
+
 ## The 63-scene grind
 
-`FISHING 7` is next in bring-up. The remaining unvalidated scenes are
+`FISHING 8` is next in bring-up. The remaining unvalidated scenes are
 queued. The per-scene workflow is the same loop, repeated:
 
 ```
