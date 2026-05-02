@@ -75,7 +75,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 |---|---|
 | Current release | **`v0.6.2-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **6 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`) |
+| Scenes fully validated under the reference bar | **7 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.8% over target / 88.7% target speed** |
@@ -135,8 +135,8 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Six scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`,
-`fishing7`) validated end-to-end anchor the scene-by-scene bring-up loop.
+Seven scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`,
+`fishing7`, `fishing8`) validated end-to-end anchor the scene-by-scene bring-up loop.
 `fishing5` is still blocked on shark residue and remains intentionally
 unpromoted.
 

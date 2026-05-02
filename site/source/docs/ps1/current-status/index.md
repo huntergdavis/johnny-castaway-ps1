@@ -29,7 +29,7 @@ scene-validation bugfix).
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 6 / 63 fully validated
+-   Scenes: 7 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

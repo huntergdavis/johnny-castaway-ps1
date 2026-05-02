@@ -21,7 +21,7 @@ holiday overlays, input, and SPU playback.
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
 **Current release**: `v0.6.2-ps1`
-**Current validation bar**: 6 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`) signed off for pixel-perfect visuals + synced SFX
+**Current validation bar**: 7 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 

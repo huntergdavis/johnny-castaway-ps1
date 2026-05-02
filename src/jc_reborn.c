@@ -459,7 +459,9 @@ static void fgLoopRandomVarPos(int *outX, int *outY)
 static int fgLoopCapturedIslandPosition(const char *sceneName,
                                         int *outX, int *outY)
 {
-    if (sceneName != NULL && strcmp(sceneName, "fishing7") == 0) {
+    if (sceneName != NULL &&
+        (strcmp(sceneName, "fishing7") == 0 ||
+         strcmp(sceneName, "fishing8") == 0)) {
         *outX = 3;
         *outY = 9;
         return 1;
@@ -570,7 +572,7 @@ static void fgLoopApplyVariant(const char *sceneName)
     } else if (fgLoopCapturedIslandPosition(sceneName,
                                             &islandState.xPos,
                                             &islandState.yPos)) {
-        /* The current FISHING7 FG2 is a single-position capture whose
+        /* The current FISHING7/8 FG2s are single-position captures whose
          * full-width foreground lands correctly only at this host position. */
     } else if (fgLoopSceneUsesVarPos(sceneName) ||
                fgLoopSceneUsesLeftIsland(sceneName)) {

@@ -259,12 +259,17 @@
 - ads: FISHING
   tag: 8
   slug: fishing8
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - captured island position x=3,y=9
+  last_verified: 2026-05-01
+  notes: visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position
 - ads: JOHNNY
   tag: 1
   slug: johnny1

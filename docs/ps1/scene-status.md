@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 6 / 63 (next: fishing8)
+## Progress: 7 / 63 (next: johnny1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -44,7 +44,7 @@ current public release is `v0.6.2-ps1`.
 | FISHING | 5 | fishing5 | ⏳ | ⏳ | night · low-tide · holiday · raft-stage | 2026-05-01 attempt | blocked: visible leftover shark sprites/frames; pack is already FGP3, so investigate residual cleanup contract |
 | FISHING | 6 | fishing6 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue |
 | FISHING | 7 | fishing7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position; right-edge pole/line clipping matches the original capture |
-| FISHING | 8 | fishing8 | ⏳ | ⏳ | — | — |  |
+| FISHING | 8 | fishing8 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position |
 | JOHNNY | 1 | johnny1 | ⏳ | ⏳ | — | — |  |
 | JOHNNY | 2 | johnny2 | ⏳ | ⏳ | — | — |  |
 | JOHNNY | 3 | johnny3 | ⏳ | ⏳ | — | — |  |

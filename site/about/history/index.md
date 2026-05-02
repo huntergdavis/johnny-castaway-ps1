@@ -184,9 +184,12 @@ Later on **2026-05-01**, `FISHING 7` joined the validated ledger after
 its single-position FG2 replay was pinned to the host-captured island
 position `x=3,y=9`. The current count became **6 / 63**.
 
+`FISHING 8` followed with the same captured-position replay rule. The
+current count became **7 / 63**.
+
 ## The 63-scene grind
 
-`FISHING 8` is next in bring-up. The remaining unvalidated scenes are
+`JOHNNY 1` is next in bring-up. The remaining unvalidated scenes are
 queued. The per-scene workflow is the same loop, repeated:
 
 ```
