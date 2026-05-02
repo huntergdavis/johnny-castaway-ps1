@@ -274,7 +274,8 @@ void oceanAmbientStop(void)
 {
     if (!oceanPlaying)
         return;
-    SpuSetKey(0, 1 << OCEAN_AMBIENT_VOICE);
+    int ch = OCEAN_AMBIENT_VOICE;
+    SpuSetKey(0, 1 << ch);
     oceanPlaying = 0;
 }
 
