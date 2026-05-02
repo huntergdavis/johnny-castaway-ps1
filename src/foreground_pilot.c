@@ -841,6 +841,11 @@ static int fgSceneEquals(const char *a, const char *b)
     return a && b && strcmp(a, b) == 0;
 }
 
+static int fgSceneUsesBlackBackdrop(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "johnny1");
+}
+
 static void fgTelemetryUpdate(void)
 {
 }
@@ -1027,6 +1032,69 @@ static void fgReleaseStreamBuffersHard(void)
         gFgStreamScratchSize = 0;
     }
     fgReleaseStreamBuffers();
+}
+
+static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void)
+{
+    uint8 *keepFrameBuffer = gFgRuntime.frameBuffer;
+    uint32 keepFrameBufferSize = gFgRuntime.frameBufferSize;
+
+    if (keepFrameBuffer == NULL) {
+        keepFrameBuffer = gFgFrameBuffer;
+        keepFrameBufferSize = gFgFrameBufferSize;
+    }
+
+    if (gFgFrameBuffer != NULL && gFgFrameBuffer != keepFrameBuffer) {
+        free(gFgFrameBuffer);
+        gFgFrameBuffer = NULL;
+        gFgFrameBufferSize = 0;
+    }
+    if (gFgPrefetchFrameBuffer != NULL &&
+        gFgPrefetchFrameBuffer != keepFrameBuffer) {
+        free(gFgPrefetchFrameBuffer);
+        gFgPrefetchFrameBuffer = NULL;
+        gFgPrefetchFrameBufferSize = 0;
+    }
+    gFgFrameBuffer = keepFrameBuffer;
+    gFgFrameBufferSize = keepFrameBufferSize;
+    gFgPrefetchFrameBuffer = NULL;
+    gFgPrefetchFrameBufferSize = 0;
+
+    if (gFgStreamWindowBuffer != NULL) {
+        free(gFgStreamWindowBuffer);
+        gFgStreamWindowBuffer = NULL;
+        gFgStreamWindowBufferSize = 0;
+    }
+    if (gFgSetupSegmentBuffer != NULL) {
+        free(gFgSetupSegmentBuffer);
+        gFgSetupSegmentBuffer = NULL;
+    }
+
+    gFgRuntime.frameBuffer = keepFrameBuffer;
+    gFgRuntime.frameBufferSize = keepFrameBufferSize;
+    gFgRuntime.prefetchFrameBuffer = NULL;
+    gFgRuntime.prefetchFrameBufferSize = 0;
+    gFgRuntime.streamWindowBuffer = NULL;
+    gFgRuntime.streamWindowSize = 0;
+    gFgRuntime.streamWindowReadSize = 0;
+    gFgRuntime.streamWindowStart = 0;
+    gFgRuntime.streamWindowBytes = 0;
+    gFgRuntime.setupPrimeWindowBytes = 0;
+    gFgRuntime.setupSegmentBuffer = NULL;
+    gFgRuntime.setupSegmentStart = 0;
+    gFgRuntime.setupSegmentBytes = 0;
+    gFgRuntime.streamReadGroups = NULL;
+    gFgRuntime.streamReadGroupCount = 0;
+    gFgRuntime.streamWindowValid = 0;
+    gFgRuntime.setupWindowPrimed = 0;
+    gFgRuntime.setupSegmentPrimed = 0;
+    gFgRuntime.stagedFrameValid = 0;
+    gFgRuntime.preparedFrameValid = 0;
+
+    if (ps1PerfEnabled) {
+        ps1PerfSetPrefetchPolicy(PS1_PERF_PREFETCH_NONE, 0);
+        ps1PerfMarkBufferSizes(gFgFrameBufferSize, gFgStreamScratchSize);
+    }
 }
 
 unsigned long fgGetFrameBufferBytes(void)
@@ -2924,6 +2992,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     uint16 fgBoundsW = 0;
     uint16 fgBoundsH = 0;
     uint32 perfPhaseTick = 0;
+    int blackBackdrop = fgSceneUsesBlackBackdrop(sceneName);
+    int largeCleanSnapshot = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
     fgHeapProbe("before_scene", sceneName);
@@ -2932,23 +3002,32 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * across scenes — eliminates the per-scene fragmentation that built up to a
      * 200 KB lower-rect alloc failure around minute 11 of a free-running session. */
     grDeactivateCleanBgRects();
+    grSetCleanBgBlackMode(0);
+    if (blackBackdrop)
+        grFreeCleanBgRects();
     fgReleaseStreamBuffers();
 
-    /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
-     * this moment the heap is freshest and the ~93 KB PSB stream has room. */
-    if (ps1PerfEnabled)
-        perfPhaseTick = ps1PerfTick();
-    fgBackdropPreloadBackgrndBmp();
-    if (ps1PerfEnabled)
-        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
-                              ps1PerfElapsedVBlanks(perfPhaseTick));
+    if (!blackBackdrop) {
+        /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
+         * this moment the heap is freshest and the ~93 KB PSB stream has room. */
+        if (ps1PerfEnabled)
+            perfPhaseTick = ps1PerfTick();
+        fgBackdropPreloadBackgrndBmp();
+        if (ps1PerfEnabled)
+            ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
+                                  ps1PerfElapsedVBlanks(perfPhaseTick));
+    }
 
     fgInitVisiblePipeline();
     grSetPresentDuringScreenLoad(0);
     grSetSaveCleanOnScreenLoad(0);
     if (ps1PerfEnabled)
         perfPhaseTick = ps1PerfTick();
-    if (islandState.night) {
+    if (blackBackdrop) {
+        grInitEmptyBackground();
+        grFreeCleanBgTiles();
+        grSetCleanBgBlackMode(1);
+    } else if (islandState.night) {
         /* NIGHT.SCR is the full night-ocean backdrop, no island baked in.
          * The FG2 backdrop helper draws the island sprites on top. */
         grLoadScreen("NIGHT.SCR");
@@ -2966,12 +3045,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * rect-mode backup instead. Keep this as a defensive cleanup in case a
      * prior mode left full-tile clean buffers resident. */
     grFreeCleanBgTiles();
-    if (ps1PerfEnabled)
-        perfPhaseTick = ps1PerfTick();
-    fgBackdropEnableWaveBackdrop();
-    if (ps1PerfEnabled)
-        ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
-                              ps1PerfElapsedVBlanks(perfPhaseTick));
+    if (!blackBackdrop) {
+        if (ps1PerfEnabled)
+            perfPhaseTick = ps1PerfTick();
+        fgBackdropEnableWaveBackdrop();
+        if (ps1PerfEnabled)
+            ps1PerfMarkSetupPhase(PS1_PERF_SETUP_BACKDROP,
+                                  ps1PerfElapsedVBlanks(perfPhaseTick));
+    }
     grSetPresentDuringScreenLoad(1);
 
     if (ps1PerfEnabled)
@@ -3009,15 +3090,35 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         JC_BSOD(sceneName, "fgRuntimeComputeDrawBounds returned 0 "
                           "(scene metadata missing or pack header malformed)");
     }
-    if (!fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
-                                           fgBoundsW, fgBoundsH)) {
-        fgRuntimeReset();
-        fgReleaseStreamBuffers();
-        grDeactivateCleanBgRects();
-        fgBackdropRelease(0);
-        fgHeapProbe("clean_rect_failed_cleanup", sceneName);
-        JC_BSOD(sceneName, "fgBackdropSaveCleanBgRectsForPack returned 0 "
-                          "(clean-rect alloc failed — heap fragmented?)");
+    if (fgRuntimeUsesTemporalResidual()) {
+        uint32 cleanRectEstimate =
+            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
+        if (cleanRectEstimate >= (384UL * 1024UL)) {
+            largeCleanSnapshot = 1;
+            /* Full-frame residual scenes need the backdrop baseline more than
+             * optional prefetch. Dropping stage/window buffers here prevents a
+             * deterministic clean-rect BSOD on JOHNNY1-class packs. */
+            printf("JCMEM large-clean scene=%s bytes=%lu drop-prefetch\n",
+                   sceneName, (unsigned long)cleanRectEstimate);
+            fgDropOptionalPrefetchBuffersForCleanSnapshot();
+        }
+    }
+    if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {
+        printf("JCMEM black-clean scene=%s skip-clean-rects\n", sceneName);
+        grFreeCleanBgRects();
+        grSetCleanBgBlackMode(1);
+    } else {
+        if (!fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
+                                               fgBoundsW, fgBoundsH)) {
+            fgRuntimeReset();
+            fgReleaseStreamBuffers();
+            grFreeCleanBgRects();
+            grSetCleanBgBlackMode(0);
+            fgBackdropRelease(0);
+            fgHeapProbe("clean_rect_failed_cleanup", sceneName);
+            JC_BSOD(sceneName, "fgBackdropSaveCleanBgRectsForPack returned 0 "
+                              "(clean-rect alloc failed — heap fragmented?)");
+        }
     }
     if (ps1PerfEnabled)
         ps1PerfMarkSetupPhase(PS1_PERF_SETUP_CLEAN_RECT,
@@ -3030,7 +3131,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * but the order (restore → composite Johnny → stamp holiday) means
      * the previous pose's holiday region briefly flashes during scene
      * transitions. With holiday baked in, restore alone shows it. */
-    fgBackdropStampHoliday();
+    if (!blackBackdrop)
+        fgBackdropStampHoliday();
 
     /* Capture the pristine walk-area pixels into walk_pilot's persistent
      * buffer, gated on islandState change. bgTile here is ocean + island
@@ -3038,12 +3140,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * needs to wipe its previous pose against. The function is a no-op
      * when the state key matches the last capture, so it's cheap to
      * call every scene setup. */
-    walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
-                                         islandState.lowTide,
-                                         islandState.night,
-                                         islandState.holiday,
-                                         islandState.xPos,
-                                         islandState.yPos);
+    if (!blackBackdrop) {
+        walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
+                                             islandState.lowTide,
+                                             islandState.night,
+                                             islandState.holiday,
+                                             islandState.xPos,
+                                             islandState.yPos);
+    }
 
     /* Force a full-tile framebuffer upload on the FIRST scene-frame
      * upload. Without this, scene N+1's first grDrawBackground only
@@ -3212,12 +3316,17 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * ~93 KB) fails silently after 2-3 iterations. */
     fgRuntimeReset();
     fgReleaseStreamBuffers();
-    /* Deactivate the rect-snapshot — keep the buffer alive at its boot-prealloc
-     * address so we don't fragment the heap across hundreds of scene cycles. */
-    grDeactivateCleanBgRects();
+    if (blackBackdrop || largeCleanSnapshot) {
+        grFreeCleanBgRects();
+        grSetCleanBgBlackMode(0);
+    } else {
+        /* Deactivate the rect-snapshot — keep the buffer alive at its
+         * boot-prealloc address so we don't fragment normal island scenes. */
+        grDeactivateCleanBgRects();
+    }
     /* Keep BACKGRND.BMP in slot 0 across scenes; release only
      * variant-dependent overlay slots to avoid needless PSB churn. */
-    fgBackdropRelease(1);
+    fgBackdropRelease(blackBackdrop ? 0 : 1);
     fgHeapProbe("after_scene_cleanup", sceneName);
 }
 

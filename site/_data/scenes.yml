@@ -273,12 +273,14 @@
 - ads: JOHNNY
   tag: 1
   slug: johnny1
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - black backdrop
+    - high/low pack parity
+  last_verified: 2026-05-02
+  notes: full-screen black-backdrop playback; visual signoff after placement/scaling and clean-rect memory fixes
 - ads: JOHNNY
   tag: 2
   slug: johnny2

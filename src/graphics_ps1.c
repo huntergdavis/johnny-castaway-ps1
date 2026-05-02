@@ -3082,6 +3082,7 @@ struct TGrCleanRect {
 
 static struct TGrCleanRect gGrCleanRects[GR_MAX_CLEAN_RECTS];
 static int gGrCleanRectCount = 0;
+static int gGrCleanBgBlackMode = 0;
 
 /* Copy a rectangle's pixels out of the 4 bg tiles into a flat buffer. */
 static void grCleanRectCopyOut(struct TGrCleanRect *r)
@@ -3196,6 +3197,47 @@ static uint32 grRestoreCleanBgSpanFromRects(int x, int y, int width)
     if (x >= xEnd)
         return 0;
 
+    if (gGrCleanBgBlackMode) {
+        PS1Surface *tileLeft;
+        PS1Surface *tileRight;
+        int tileLocalY;
+
+        if (y < 240) {
+            tileLocalY = y;
+            tileLeft = bgTile0;
+            tileRight = bgTile1;
+        } else {
+            tileLocalY = y - 240;
+            tileLeft = bgTile3;
+            tileRight = bgTile4;
+        }
+
+        if (tileLeft != NULL && tileLeft->pixels != NULL && x < 320) {
+            int lx0 = x;
+            int lx1 = (xEnd < 320) ? xEnd : 320;
+            if (lx0 < lx1) {
+                uint16 *dst = tileLeft->pixels + (tileLocalY * (int)tileLeft->width) + lx0;
+                size_t bytes = (size_t)(lx1 - lx0) * sizeof(uint16);
+                memset(dst, 0, bytes);
+                grMarkRectDirty(lx0, y, lx1, y + 1);
+                copiedBytes += (uint32)bytes;
+            }
+        }
+        if (tileRight != NULL && tileRight->pixels != NULL && xEnd > 320) {
+            int rx0 = (x > 320) ? (x - 320) : 0;
+            int rx1 = xEnd - 320;
+            if (rx0 < rx1) {
+                uint16 *dst = tileRight->pixels + (tileLocalY * (int)tileRight->width) + rx0;
+                size_t bytes = (size_t)(rx1 - rx0) * sizeof(uint16);
+                memset(dst, 0, bytes);
+                grMarkRectDirty(rx0 + 320, y, rx1 + 320, y + 1);
+                copiedBytes += (uint32)bytes;
+            }
+        }
+
+        return copiedBytes;
+    }
+
     for (int i = 0; i < gGrCleanRectCount; i++) {
         const struct TGrCleanRect *r = &gGrCleanRects[i];
         int rx0;
@@ -3281,11 +3323,17 @@ static void grResetCleanBgRects(int releasePixels)
 void grFreeCleanBgRects(void)
 {
     grResetCleanBgRects(1);
+    gGrCleanBgBlackMode = 0;
 }
 
 void grDeactivateCleanBgRects(void)
 {
     grResetCleanBgRects(0);
+}
+
+void grSetCleanBgBlackMode(int enabled)
+{
+    gGrCleanBgBlackMode = enabled ? 1 : 0;
 }
 
 void grPreallocCleanBgRects(const uint32 *capBytes, int n)
@@ -3386,6 +3434,7 @@ int grSaveCleanBgRects(const sint16 *xArr, const sint16 *yArr,
     int allocatedThisCall[GR_MAX_CLEAN_RECTS];
 
     grDeactivateCleanBgRects();
+    gGrCleanBgBlackMode = 0;
     grFreeCleanBgTiles();  /* mutually exclusive: rect-mode replaces tile-mode */
 
     if (xArr == NULL || yArr == NULL || wArr == NULL || hArr == NULL || n <= 0)

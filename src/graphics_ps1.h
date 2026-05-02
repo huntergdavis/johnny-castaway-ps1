@@ -227,6 +227,7 @@ int  grSaveCleanBgRectsSplit(const sint16 *x, const sint16 *y,
 void grRestoreBgFromRects(void);
 void grFreeCleanBgRects(void);
 void grDeactivateCleanBgRects(void);
+void grSetCleanBgBlackMode(int enabled);
 /* Pre-allocate clean-rect pixel buffers at the supplied worst-case
  * capacities (in bytes per slot, n slots). Call once at boot, before
  * the screensaver loop starts cycling scenes. Subsequent

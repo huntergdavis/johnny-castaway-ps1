@@ -6,8 +6,8 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="hero">
   <div class="hero-frame">
-    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}"
-         alt="Johnny stands on a small island casting a fishing line while a Sierra-style cloud drifts past, rendered on a PS1." />
+    <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}"
+         alt="The End title card from JOHNNY 1, rendered on a PS1." />
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>
@@ -23,16 +23,16 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="trio">
   <figure>
+    <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" alt="The End title card with sunset, island silhouette, and script lettering." />
+    <figcaption>JOHNNY 1 · The End</figcaption>
+  </figure>
+  <figure>
+    <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" alt="The frog clock transition frame on a black background." />
+    <figcaption>frog clock</figcaption>
+  </figure>
+  <figure>
     <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption>FISHING 1 · cast</figcaption>
-  </figure>
-  <figure>
-    <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}" alt="A small life raft drifting past the island in the surf." />
-    <figcaption>FISHING 2 · raft</figcaption>
-  </figure>
-  <figure>
-    <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}" alt="The island at night under a starry sky with the moon overhead." />
-    <figcaption>night</figcaption>
+    <figcaption>FISHING 1 · reference</figcaption>
   </figure>
 </section>
 

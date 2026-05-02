@@ -1518,21 +1518,26 @@ int main(int argc, char **argv)
      * across scenes, so once a buffer reaches its peak size it stops
      * fragmenting the heap. Trade-off: a few scene cycles of
      * fragmentation during the growth phase, but no boot-heap squeeze. */
-    pauseMenuInit();
-    soundInit();
-    ps1PrintfProbe("sound-init", NULL);
-
-    /* Restore settings from memcard. memcard.c uses our own SPI driver
-     * (no BIOS card driver = no scene-rate regression). Explicit BOOTMODE
-     * parameters are launch-time intent and must win over saved defaults. */
     int bootNightValid = hostBootForcedNightValid;
     int bootHolidayValid = hostBootForcedHolidayValid;
     int bootNight = hostForcedNight;
     int bootHoliday = hostForcedHoliday;
-    if (memcardLoadSettings() && soundMuted) {
+    int memcardSettingsLoaded = 0;
+    int memcardRequestedMute = 0;
+
+    pauseMenuInit();
+
+    /* Restore settings before SPU init so saved mute/ocean state can prevent
+     * boot-time ambience from keying on. Explicit BOOTMODE parameters are
+     * launch-time intent and must win over saved defaults. */
+    memcardSettingsLoaded = memcardLoadSettings();
+    memcardRequestedMute = soundMuted;
+    soundInit();
+    if (memcardSettingsLoaded && memcardRequestedMute) {
         soundMuted = 0;
-        soundMuteToggle();  /* flip to muted */
+        soundMuteToggle();  /* apply saved mute to SPU registers */
     }
+    ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
         hostForcedNight = bootNight;
     if (bootHolidayValid)
@@ -1575,9 +1580,13 @@ int main(int argc, char **argv)
          * scene's FG2 pack still owns the actual scene visuals. */
         const struct TStoryScene *storyScene =
             fgLoopFindStorySceneBySlug(loopScene);
-        foregroundPilotSetSceneDrawOffset(
-            islandState.xPos + ((storyScene && (storyScene->flags & LEFT_ISLAND)) ? 272 : 0),
-            islandState.yPos);
+        if (storyScene && (storyScene->flags & ISLAND)) {
+            foregroundPilotSetSceneDrawOffset(
+                islandState.xPos + ((storyScene->flags & LEFT_ISLAND) ? 272 : 0),
+                islandState.yPos);
+        } else {
+            foregroundPilotSetSceneDrawOffset(0, 0);
+        }
         int playedScene = 0;
         /* Story-day filter: scenes with non-zero dayNo only fire on
          * the matching day. None of the currently-validated scenes

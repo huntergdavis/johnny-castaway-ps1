@@ -4,38 +4,46 @@ title: JOHNNY 1 — The End
 ads: JOHNNY
 tag: 1
 slug: johnny1
-status: pending
-description: "JOHNNY.ADS scene 1: The End. Not yet validated."
+status: validated
+description: "JOHNNY.ADS scene 1: The End. Validated on PS1 with full-screen black-backdrop playback."
 ---
 
-Not yet validated.
+## Validated
+
+Validated on PS1/DuckStation on 2026-05-02 after the scene moved to a
+full-screen black-backdrop playback path. That matches the source scene
+and removes the ocean/island clean-rect memory pressure that caused the
+previous JOHNNY1 loop BSOD.
+
+<figure>
+  <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" alt="JOHNNY 1 The End title card running on PS1." />
+  <figcaption>JOHNNY 1 · The End, captured from DuckStation.</figcaption>
+</figure>
+
+<figure>
+  <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" alt="Frog clock transition frame running on PS1." />
+  <figcaption>The frog clock transition frame from the same validation run.</figcaption>
+</figure>
 
 ## Pack identifiers
 
 - ADS dispatch: <code>JOHNNY.ADS scene 1</code>
 - Slug: <code>johnny1</code>
+- High-tide pack: <code>FG/JOHNNY1.FG2</code>
+- Low-tide pack: <code>FG/JOHN1LOW.FG2</code>
 
 ## What this scene probably is
 
-(Guess; day 11 final.) Clock spins, sunset silhouette, plane overhead, Johnny parachutes down — 'The End.'
+Day 11 final: frog clock, sunset silhouette, plane overhead, Johnny
+parachutes down, then the `The End` title card.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+## Validation Notes
 
-The same way every scene does: under the FISHING 1 bar.
-
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+This is not an island-relative scene. The source animation is drawn over
+black, so the PS1 runtime now skips ocean/island setup for `johnny1` and
+uses black cleanup for temporal residual spans instead of allocating a
+large clean-rect snapshot. The same pass also made saved memcard mute
+state load before `soundInit()`, so boot-time ambience does not start
+before user settings are applied.

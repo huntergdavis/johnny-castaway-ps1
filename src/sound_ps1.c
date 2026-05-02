@@ -83,6 +83,7 @@ static void soundStopAllVoices(void)
     volatile uint16_t *keyOff2 = (volatile uint16_t *)0xBF801D8E;
     *keyOff1 = 0xFFFFu;
     *keyOff2 = 0x00FFu;
+    oceanPlaying = 0;
 }
 
 /* Read big-endian uint32 from VAG header */
@@ -235,17 +236,15 @@ void soundInit()
                           (unsigned)sampleRate);
     } while (0);
 
-    /* Auto-start ambience if the toggle is on. memcardLoadSettings runs
-     * later in main() and may flip oceanAmbientEnabled — if it does,
-     * the menu's start/stop will sync state on the next user toggle. */
-    if (oceanLoaded && oceanAmbientEnabled)
+    /* Auto-start ambience only after saved settings have been loaded. */
+    if (oceanLoaded && oceanAmbientEnabled && !soundMuted)
         oceanAmbientStart();
 }
 
 
 void oceanAmbientStart(void)
 {
-    if (!oceanLoaded || oceanPlaying)
+    if (!oceanLoaded || oceanPlaying || soundMuted)
         return;
     int ch = OCEAN_AMBIENT_VOICE;
 
@@ -424,6 +423,8 @@ void soundMuteToggle(void)
         /* Voice volumes are reset by soundPlay on next playback;
          * we don't restore them here. Background loops that need to
          * resume must be re-keyed by their owner. */
+        if (oceanLoaded && oceanAmbientEnabled && !oceanPlaying)
+            oceanAmbientStart();
     }
 }
 

@@ -395,11 +395,9 @@ int memcardLoadSettings(void)
     if (ps1SoftYear < 1583)
         ps1SoftYear = 2026;
 
-    /* Sync the ocean ambience SPU voice to the loaded toggle value.
-     * soundInit auto-started the voice at boot based on the in-RAM
-     * default; if the memcard says OFF, stop it now. If the memcard
-     * says ON and we somehow weren't started, start now. Either is a
-     * single register write — cheap. */
+    /* Sync the ocean ambience SPU voice to the loaded toggle value when
+     * settings are loaded after SPU init. Normal boot loads memcard first,
+     * so this block is a no-op until soundInit has uploaded OCEAN.VAG. */
     if (oceanAmbientLoaded()) {
         if (oceanAmbientEnabled) oceanAmbientStart();
         else                     oceanAmbientStop();

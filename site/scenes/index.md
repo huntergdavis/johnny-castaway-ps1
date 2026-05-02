@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-01:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `7 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`, `fishing7`, `fishing8` |
+| Scenes visually validated | `8 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`, `fishing7`, `fishing8`, `johnny1` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
