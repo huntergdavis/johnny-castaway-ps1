@@ -21,8 +21,8 @@ validated after full-screen black-backdrop playback fix).
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 215 |
-| Approx. words | 1578 |
+| Lines | 219 |
+| Approx. words | 1608 |
 | Code fences | 1 |
 
 ## Outline

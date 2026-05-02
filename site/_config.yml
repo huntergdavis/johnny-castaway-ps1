@@ -13,8 +13,8 @@ baseurl: "/johnny-castaway-ps1"
 # Pinned values for P1. Phase P3 will replace these via _data/release.yml
 # written by the GitHub Actions workflow at build time.
 release:
-  version: "0.6.2"
-  tag: "v0.6.2-ps1"
+  version: "0.6.3"
+  tag: "v0.6.3-ps1"
   scenes_validated: 8
   scenes_total: 63
 
