@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.5.0-ps1
+eyebrow: 2025-10 to v0.6.4-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.4-ps1.
 ---
 
 ## The pre-port era
@@ -189,8 +189,16 @@ current count became **7 / 63**.
 
 ## The 63-scene grind
 
-`JOHNNY 1` is next in bring-up. The remaining unvalidated scenes are
-queued. The per-scene workflow is the same loop, repeated:
+`JOHNNY 1` then joined the ledger on **2026-05-02** after its
+full-screen black-backdrop playback path fixed placement, scaling, and
+clean-rect memory pressure. `JOHNNY 2` followed the same day after its
+first-SOS-bottle capture was rebuilt at a pinned island position
+(`x=-64,y=54`), lower-band keyed overlay cleanup removed bottle/feet
+residue, and the island/SOS thought-bubble holds were redistributed.
+The current count became **9 / 63**.
+
+The remaining unvalidated scenes are queued. The per-scene workflow is
+the same loop, repeated:
 
 ```
 1. capture-host-scene.sh          (host capture, high tide + low tide)
@@ -259,8 +267,8 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`).
-- Next scene in bring-up: **`FISHING 7`**. `FISHING 5` remains blocked
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`).
+- Next scene in bring-up: **`FISHING 5` blocker investigation**. It remains blocked
   on shark cleanup residue.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a

@@ -6,8 +6,8 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="hero">
   <div class="hero-frame">
-    <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}"
-         alt="The End title card from JOHNNY 1, rendered on a PS1." />
+    <img src="{{ '/assets/img/title-screen-ps1.png' | relative_url }}"
+         alt="Johnny Castaway title screen rendered on a PS1." />
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>

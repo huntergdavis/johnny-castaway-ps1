@@ -159,9 +159,9 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
 `loop_vb=1067` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+13.8%` over target /
-`88.7%` target speed as of `compact-fgp3-v66-final-frame-hold` (`13.8440%` exact over target /
-`88.6688%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+13.7%` over target /
+`88.8%` target speed as of `johnny2-v064-validation-refresh` (`13.7312%` exact over target /
+`88.7730%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1481,8 +1481,8 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `compact-fgp3-v66-final-frame-hold`: the matrix is now
-`120` timing-bearing rows at `13.8440%` exact average over target / `88.6688%`
+Checkpoint after `johnny2-v064-validation-refresh`: the matrix is now
+`120` timing-bearing rows at `13.7312%` exact average over target / `88.7730%`
 exact target speed. The final-frame hold correction proves broad timing
 semantics can still beat one-off read tuning: it removed an artificial final
 tail from every refreshed canary row while preserving work identity. The next

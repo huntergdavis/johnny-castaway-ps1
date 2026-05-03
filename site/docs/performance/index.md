@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+13.8% over target /
-88.7% target speed** (`13.8440%` exact over target / `88.6688%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+13.7% over target /
+88.8% target speed** (`13.7312%` exact over target / `88.7730%` exact target speed).
 
 ## Scene Battle Card
 
-As of 2026-05-01, all 126 scene/tide variants have current headless
+As of 2026-05-02, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`johnny2-v064-validation-refresh`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
@@ -268,13 +269,14 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-05-01T07:57:42`; per-row freshness and stats version are shown on
+run is `2026-05-02T19:06:01`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `compact-fgp3-v66-final-frame-hold`,
+`johnny2-v064-validation-refresh`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
 `indexed8-row-local-dirty-v1`; other refreshed rows include
@@ -313,7 +315,7 @@ rows are historical only.
 | `fishing7` | +18.3% / 84.5% (858/725) | +18.3% / 84.5% (858/725) |
 | `fishing8` | +11.9% / 89.4% (1393/1245); blk 13 | +10.1% / 90.8% (1380/1253) |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
-| `johnny2` | +7.3% / 93.2% (1878/1751) | +7.3% / 93.2% (1878/1751) |
+| `johnny2` | +0.6% / 99.4% (1761/1751); due 3; blk 16 | +0.5% / 99.5% (1758/1750); due 3; blk 16 |
 | `johnny3` | +11.3% / 89.8% (1298/1166) | +11.3% / 89.8% (1298/1166) |
 | `johnny4` | +10.5% / 90.5% (1341/1214) | +10.5% / 90.5% (1341/1214) |
 | `johnny5` | +15.5% / 86.6% (947/820) | +15.5% / 86.6% (947/820) |

@@ -17,11 +17,11 @@ scene-playback methodology: host-captured high/low FG2 foreground packs,
 captured SFX events, and a narrow PS1 runtime for background, waves,
 holiday overlays, input, and SPU playback.
 
-**Timeline**: Initial session (2025-10-18), ongoing development through 2026-04
+**Timeline**: Initial session (2025-10-18), ongoing development through 2026-05
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
-**Current release**: `v0.6.2-ps1`
-**Current validation bar**: 7 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`) signed off for pixel-perfect visuals + synced SFX
+**Current release**: `v0.6.4-ps1`
+**Current validation bar**: 9 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 
@@ -187,7 +187,7 @@ bar: pixel-perfect visuals plus synced sound effects across variants.
 desktop scene graph at runtime. The winning method is an authored
 foreground playback pack plus a narrow PS1 runtime surface.
 
-### Phase 9: FG2 Full-Diff Packs and Tide Routing (2026-04, current)
+### Phase 9: FG2 Full-Diff Packs and Tide Routing (2026-04 to 2026-05, current)
 
 **Goals**: Replace FG1 as the active pack path, prevent missed sprites,
 support high/low tide variants correctly, and generate a corpus for all
@@ -195,9 +195,11 @@ support high/low tide variants correctly, and generate a corpus for all
 
 **Achievements**:
 - High-tide and low-tide FG2 packs generated for all 63 scenes.
-- `FISHING 1` and `FISHING 2` are validated under the current bar.
-- `FISHING 3` is loop-stable and tide-correct on FG2, but not yet
-  promoted to the validated ledger.
+- Nine scenes are validated under the current bar: `FISHING 1`,
+  `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`,
+  `FISHING 8`, `JOHNNY 1`, and `JOHNNY 2`.
+- `FISHING 5` remains intentionally blocked while shark residue cleanup
+  is investigated.
 - FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
   and per-scene establishing RAWs were removed from the active PS1
   runtime/generation path.

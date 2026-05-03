@@ -25,6 +25,8 @@ fi
 
 HOST_CAPTURE_HIGH_DIR="$OUTPUT_DIR/host-capture-high"
 HOST_CAPTURE_LOW_DIR="$OUTPUT_DIR/host-capture-low"
+HOST_CAPTURE_HIGH_FGONLY_DIR="$OUTPUT_DIR/host-capture-high-fgonly"
+HOST_CAPTURE_LOW_FGONLY_DIR="$OUTPUT_DIR/host-capture-low-fgonly"
 PACK_PATH="$PROJECT_ROOT/generated/ps1/foreground/${PACK_BASENAME}.FG2"
 PACK_JSON="$OUTPUT_DIR/foreground-pack.json"
 if [ -z "$LOWTIDE_PACK_BASENAME" ]; then
@@ -39,8 +41,31 @@ if [ "${#LOWTIDE_PACK_BASENAME}" -gt 8 ]; then
 fi
 LOWTIDE_PACK_PATH="$PROJECT_ROOT/generated/ps1/foreground/${LOWTIDE_PACK_BASENAME}.FG2"
 LOWTIDE_PACK_JSON="$OUTPUT_DIR/foreground-pack-lowtide.json"
+CAPTURE_ISLAND_X="${FG_EXPORT_ISLAND_X:--154}"
+CAPTURE_ISLAND_Y="${FG_EXPORT_ISLAND_Y:-54}"
+CAPTURE_RAFT_STAGE="${FG_EXPORT_RAFT_STAGE:-4}"
+KEYED_OVERLAY_RECT="${FG_EXPORT_KEYED_OVERLAY_RECT:-}"
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
+  # JOHNNY 2's lower-left moving sprites can accumulate in full-frame
+  # captures. Keep the thought-bubble lane above y=320 on full base-diff
+  # pixels; foreground-only does not include those bubble pixels reliably.
+  KEYED_OVERLAY_RECT="0,320,320,160"
+fi
+HOLD_ADVANCE_WINDOW="${FG_EXPORT_HOLD_ADVANCE_WINDOW:-}"
+if [ -z "$HOLD_ADVANCE_WINDOW" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
+  # The captured frame pixels are now correct, but the deduped hold rows lag
+  # the visible island/SOS thought-bubble frames by a few source rows.
+  HOLD_ADVANCE_WINDOW="101:120:6"
+fi
+HOLD_ADJUSTMENTS="${FG_EXPORT_HOLD_ADJUSTMENTS:-}"
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
+  # Keep total duration fixed while making the repeated post-thought chain
+  # read as a quick three/two/one exit, with saved time on island/SOS.
+  HOLD_ADJUSTMENTS="101:+89 103:+112 104:+39 105:-3 106:-1 109:-1 113:-7 116:-7 120:-15 123:-23 127:-15 131:-23 135:-15 138:-23 142:-15 145:-23 149:-15 152:-15 156:-8 159:-16 163:-15"
+fi
 mkdir -p "$OUTPUT_DIR"
-rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR"
+rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
+  "$HOST_CAPTURE_HIGH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR"
 
 "$SCRIPT_DIR/capture-host-scene.sh" \
   --scene "$SCENE_NAME" \
@@ -51,6 +76,9 @@ rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR"
   --until-exit \
   --no-stamp \
   --lowtide 0 \
+  --raft-stage "$CAPTURE_RAFT_STAGE" \
+  --island-x "$CAPTURE_ISLAND_X" \
+  --island-y "$CAPTURE_ISLAND_Y" \
   --output "$HOST_CAPTURE_HIGH_DIR"
 
 "$SCRIPT_DIR/capture-host-scene.sh" \
@@ -62,7 +90,64 @@ rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR"
   --until-exit \
   --no-stamp \
   --lowtide 1 \
+  --raft-stage "$CAPTURE_RAFT_STAGE" \
+  --island-x "$CAPTURE_ISLAND_X" \
+  --island-y "$CAPTURE_ISLAND_Y" \
   --output "$HOST_CAPTURE_LOW_DIR"
+
+high_overlay_args=()
+low_overlay_args=()
+hold_advance_args=()
+if [ -n "$HOLD_ADVANCE_WINDOW" ]; then
+  hold_advance_args=(--hold-advance-window "$HOLD_ADVANCE_WINDOW")
+fi
+hold_adjust_args=()
+if [ -n "$HOLD_ADJUSTMENTS" ]; then
+  read -r -a hold_adjust_values <<< "$HOLD_ADJUSTMENTS"
+  for hold_adjust_value in "${hold_adjust_values[@]}"; do
+    hold_adjust_args+=(--hold-adjust "$hold_adjust_value")
+  done
+fi
+if [ -n "$KEYED_OVERLAY_RECT" ]; then
+  "$SCRIPT_DIR/capture-host-scene.sh" \
+    --scene "$SCENE_NAME" \
+    --mode story-single \
+    --seed 1 \
+    --start-frame "$START_FRAME" \
+    --interval 1 \
+    --until-exit \
+    --no-stamp \
+    --lowtide 0 \
+    --raft-stage "$CAPTURE_RAFT_STAGE" \
+    --island-x "$CAPTURE_ISLAND_X" \
+    --island-y "$CAPTURE_ISLAND_Y" \
+    --foreground-only \
+    --output "$HOST_CAPTURE_HIGH_FGONLY_DIR"
+
+  "$SCRIPT_DIR/capture-host-scene.sh" \
+    --scene "$SCENE_NAME" \
+    --mode story-single \
+    --seed 1 \
+    --start-frame "$START_FRAME" \
+    --interval 1 \
+    --until-exit \
+    --no-stamp \
+    --lowtide 1 \
+    --raft-stage "$CAPTURE_RAFT_STAGE" \
+    --island-x "$CAPTURE_ISLAND_X" \
+    --island-y "$CAPTURE_ISLAND_Y" \
+    --foreground-only \
+    --output "$HOST_CAPTURE_LOW_FGONLY_DIR"
+
+  high_overlay_args=(
+    --keyed-overlay-frames-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR/frames"
+    --keyed-overlay-rect "$KEYED_OVERLAY_RECT"
+  )
+  low_overlay_args=(
+    --keyed-overlay-frames-dir "$HOST_CAPTURE_LOW_FGONLY_DIR/frames"
+    --keyed-overlay-rect "$KEYED_OVERLAY_RECT"
+  )
+fi
 
 python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --scene-label "$SCENE_NAME" \
@@ -73,6 +158,9 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --pack-format fg2 \
   --base-diff \
   --scene-base-frame 0 \
+  "${high_overlay_args[@]}" \
+  "${hold_advance_args[@]}" \
+  "${hold_adjust_args[@]}" \
   --output-pack "$PACK_PATH" \
   --output-json "$PACK_JSON"
 
@@ -85,6 +173,9 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --pack-format fg2 \
   --base-diff \
   --scene-base-frame 0 \
+  "${low_overlay_args[@]}" \
+  "${hold_advance_args[@]}" \
+  "${hold_adjust_args[@]}" \
   --output-pack "$LOWTIDE_PACK_PATH" \
   --output-json "$LOWTIDE_PACK_JSON"
 

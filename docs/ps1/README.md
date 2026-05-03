@@ -12,16 +12,18 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.6.2-ps1` |
+| Release | `v0.6.4-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **7 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`) |
+| Scenes fully validated under the reference bar | **9 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.6.2-ps1` is a scene-validation bugfix release: `FISHING 6` now
-clears the reference bar after terminal FGP3 cleanup removed the last
-splash and pole residue. It builds on `v0.6.1-ps1` (freeplay clean-rect
-placement fix), `v0.6.0-ps1` (ocean ambience), and `v0.5.0-ps1`
+`v0.6.4-ps1` is a scene-validation bugfix release: `JOHNNY 2` now
+clears the reference bar after lower-band keyed overlay cleanup and
+thought-bubble hold timing fixes. It builds on `v0.6.3-ps1`
+(`FISHING 7`, `FISHING 8`, `JOHNNY 1`), `v0.6.2-ps1` (`FISHING 6`),
+`v0.6.1-ps1` (freeplay clean-rect placement fix), `v0.6.0-ps1`
+(ocean ambience), and `v0.5.0-ps1`
 (freeplay/debug mode). See [release-notes-0.5.0.md](release-notes-0.5.0.md)
 and [freeplay-mode-design.md](freeplay-mode-design.md) for the freeplay
 milestone.

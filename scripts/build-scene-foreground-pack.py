@@ -15,6 +15,50 @@ def parse_rgb(value: str) -> tuple[int, int, int]:
     return tuple(int(raw[i:i + 2], 16) for i in (0, 2, 4))
 
 
+def parse_rect(value: str) -> tuple[int, int, int, int]:
+    raw_parts = value.replace("x", ",").split(",")
+    if len(raw_parts) != 4:
+        raise argparse.ArgumentTypeError("expected x,y,width,height")
+    try:
+        x, y, width, height = (int(part.strip()) for part in raw_parts)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("rect values must be integers") from exc
+    if width <= 0 or height <= 0:
+        raise argparse.ArgumentTypeError("rect width and height must be > 0")
+    return x, y, width, height
+
+
+def parse_hold_advance_window(value: str) -> tuple[int, int, int]:
+    raw_parts = value.split(":")
+    if len(raw_parts) != 3:
+        raise argparse.ArgumentTypeError("expected start_source:end_source:rows")
+    try:
+        start_source, end_source, rows = (int(part.strip()) for part in raw_parts)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("hold advance values must be integers") from exc
+    if end_source < start_source:
+        raise argparse.ArgumentTypeError("end_source must be >= start_source")
+    if rows <= 0:
+        raise argparse.ArgumentTypeError("rows must be > 0")
+    return start_source, end_source, rows
+
+
+def parse_hold_adjust(value: str) -> tuple[int, int]:
+    raw_parts = value.split(":")
+    if len(raw_parts) != 2:
+        raise argparse.ArgumentTypeError("expected source_frame:delta_ticks")
+    try:
+        source_frame = int(raw_parts[0].strip())
+        delta_ticks = int(raw_parts[1].strip())
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("hold adjust values must be integers") from exc
+    if source_frame < 0:
+        raise argparse.ArgumentTypeError("source_frame must be >= 0")
+    if delta_ticks == 0:
+        raise argparse.ArgumentTypeError("delta_ticks must be non-zero")
+    return source_frame, delta_ticks
+
+
 def rgb888_to_ps1(rgb: tuple[int, int, int]) -> int:
     r, g, b = rgb
     value = (r >> 3) | ((g >> 3) << 5) | ((b >> 3) << 10)
@@ -35,13 +79,46 @@ def image_to_ps1_values(img: Image.Image) -> tuple[list[int], int, int]:
     return values, width, height
 
 
-def encode_base_diff_crop(base_values: list[int], img: Image.Image) -> tuple[dict | None, bytes]:
+def encode_base_diff_crop(
+    base_values: list[int],
+    img: Image.Image,
+    keyed_overlay_img: Image.Image | None = None,
+    key_rgb: tuple[int, int, int] = (255, 0, 255),
+    keyed_overlay_rect: tuple[int, int, int, int] | None = None,
+) -> tuple[dict | None, bytes]:
     cur_values, width, height = image_to_ps1_values(img)
     if len(base_values) != len(cur_values):
         raise SystemExit(
             f"base-diff size mismatch: base has {len(base_values)} pixels, "
             f"frame has {len(cur_values)} pixels"
         )
+
+    overlay_pixels = None
+    overlay_x = overlay_y = overlay_w = overlay_h = 0
+    if keyed_overlay_img is not None:
+        if keyed_overlay_rect is None:
+            raise SystemExit("--keyed-overlay-frames-dir requires --keyed-overlay-rect")
+        overlay_rgb = keyed_overlay_img.convert("RGB")
+        if overlay_rgb.size != (width, height):
+            raise SystemExit(
+                f"keyed-overlay size mismatch: overlay has {overlay_rgb.size}, "
+                f"frame has {(width, height)}"
+            )
+        overlay_x, overlay_y, overlay_w, overlay_h = keyed_overlay_rect
+        if overlay_x < 0 or overlay_y < 0 or overlay_x + overlay_w > width or overlay_y + overlay_h > height:
+            raise SystemExit(
+                f"--keyed-overlay-rect {keyed_overlay_rect} outside frame size {(width, height)}"
+            )
+        overlay_pixels = overlay_rgb.load()
+
+    def encoded_value_at(x: int, y: int, i: int) -> int:
+        if overlay_pixels is not None:
+            if overlay_x <= x < overlay_x + overlay_w and overlay_y <= y < overlay_y + overlay_h:
+                rgb = overlay_pixels[x, y]
+                if rgb == key_rgb:
+                    return 0
+                return rgb888_to_ps1(rgb)
+        return cur_values[i] if cur_values[i] != base_values[i] else 0
 
     min_x = width
     min_y = height
@@ -52,7 +129,7 @@ def encode_base_diff_crop(base_values: list[int], img: Image.Image) -> tuple[dic
         row_base = y * width
         for x in range(width):
             i = row_base + x
-            if cur_values[i] != base_values[i]:
+            if encoded_value_at(x, y, i) != 0:
                 if x < min_x:
                     min_x = x
                 if y < min_y:
@@ -77,7 +154,7 @@ def encode_base_diff_crop(base_values: list[int], img: Image.Image) -> tuple[dic
         row_base = y * width
         for x in range(bbox["x"], bbox["x"] + bbox["width"]):
             i = row_base + x
-            value = cur_values[i] if cur_values[i] != base_values[i] else 0
+            value = encoded_value_at(x, y, i)
             out[out_i:out_i + 2] = struct.pack("<H", value)
             out_i += 2
     return bbox, bytes(out)
@@ -240,6 +317,65 @@ def load_frame_delays(frame_meta_dir: Path | None) -> dict[str, int]:
     return delays
 
 
+def compute_frame_hold_ticks(frame_paths: list[Path],
+                             selected_indices: list[int],
+                             frame_delays: dict[str, int]) -> dict[str, int]:
+    """Return per-frame display holds from host capture metadata.
+
+    The host records `update_delay_ticks` on the frame it displays. Do not
+    shift this onto the following frame; JOHNNY 2's thought bubbles prove that
+    would hold the retract frames instead of the visible island/SOS frames.
+    """
+    holds: dict[str, int] = {}
+
+    for source_index in selected_indices:
+        hold_ticks = frame_delays.get(frame_paths[source_index].name, 1)
+        if hold_ticks <= 0:
+            hold_ticks = 1
+        holds[frame_paths[source_index].name] = hold_ticks
+
+    return holds
+
+
+def apply_hold_advance_windows(rows: list[dict],
+                               windows: list[tuple[int, int, int]]) -> None:
+    for start_source, end_source, advance_rows in windows:
+        row_indices = [
+            index for index, row in enumerate(rows)
+            if start_source <= int(row["source_frame"]) <= end_source
+        ]
+        if len(row_indices) < 2:
+            continue
+
+        old_holds = [int(rows[index]["hold_ticks"]) for index in row_indices]
+        shift = advance_rows % len(old_holds)
+        if shift == 0:
+            continue
+
+        new_holds = old_holds[shift:] + old_holds[:shift]
+        for row_index, hold_ticks in zip(row_indices, new_holds):
+            rows[row_index]["hold_ticks"] = hold_ticks
+
+
+def apply_hold_adjustments(rows: list[dict],
+                           adjustments: list[tuple[int, int]]) -> None:
+    for source_frame, delta_ticks in adjustments:
+        matched = False
+        for row in rows:
+            if int(row["source_frame"]) != source_frame:
+                continue
+            new_hold = int(row["hold_ticks"]) + delta_ticks
+            if new_hold <= 0:
+                raise SystemExit(
+                    f"--hold-adjust {source_frame}:{delta_ticks:+d} would make hold_ticks <= 0"
+                )
+            row["hold_ticks"] = new_hold
+            matched = True
+            break
+        if not matched:
+            raise SystemExit(f"--hold-adjust source frame not present after dedupe: {source_frame}")
+
+
 def load_sound_events(path: Path | None) -> list[tuple[int, int]]:
     """Parse a JSONL file of {"frame": N, "sample": M} entries.
 
@@ -330,6 +466,41 @@ def main():
         default=0,
         help="Index in frames-dir to treat as the pristine scene base (default 0).",
     )
+    parser.add_argument(
+        "--keyed-overlay-frames-dir",
+        help=(
+            "Optional foreground-only frame directory keyed by --key-rgb. "
+            "Pixels inside --keyed-overlay-rect replace base-diff pixels; "
+            "key pixels become transparent. Used for scene regions where "
+            "full-frame capture accumulates moving foreground as background."
+        ),
+    )
+    parser.add_argument(
+        "--keyed-overlay-rect",
+        type=parse_rect,
+        help="Screen rect x,y,width,height where keyed overlay frames replace base-diff pixels.",
+    )
+    parser.add_argument(
+        "--hold-advance-window",
+        type=parse_hold_advance_window,
+        action="append",
+        default=[],
+        help=(
+            "Rotate deduped row hold durations earlier inside a source-frame "
+            "window, formatted start_source:end_source:rows."
+        ),
+    )
+    parser.add_argument(
+        "--hold-adjust",
+        type=parse_hold_adjust,
+        action="append",
+        default=[],
+        help=(
+            "Adjust one deduped row hold by source frame, formatted "
+            "source_frame:delta_ticks. Use balanced positive/negative "
+            "adjustments to preserve total scene duration."
+        ),
+    )
     args = parser.parse_args()
 
     frames_dir = Path(args.frames_dir)
@@ -345,14 +516,27 @@ def main():
         raise SystemExit("--timeline-speed must be > 0")
     if not args.base_diff:
         raise SystemExit("FG2 scene packs must use --base-diff")
+    if bool(args.keyed_overlay_frames_dir) != bool(args.keyed_overlay_rect):
+        raise SystemExit("--keyed-overlay-frames-dir and --keyed-overlay-rect must be used together")
 
     selected_indices = list(range(0, len(frame_paths), args.frame_step))
     if selected_indices[-1] != (len(frame_paths) - 1):
         selected_indices.append(len(frame_paths) - 1)
+    keyed_overlay_paths: dict[str, Path] = {}
+    if args.keyed_overlay_frames_dir:
+        keyed_overlay_dir = Path(args.keyed_overlay_frames_dir)
+        if not keyed_overlay_dir.is_dir():
+            raise SystemExit(f"--keyed-overlay-frames-dir not found: {keyed_overlay_dir}")
+        keyed_overlay_paths = {
+            path.name: path
+            for path in keyed_overlay_dir.iterdir()
+            if path.is_file() and path.suffix.lower() in {".bmp", ".png"}
+        }
 
     rows = []
     data_chunks: list[bytes] = []
     frame_delays = load_frame_delays(Path(args.frame_meta_dir) if args.frame_meta_dir else None)
+    frame_holds = compute_frame_hold_ticks(frame_paths, selected_indices, frame_delays)
     frame_offsets = load_frame_offsets(Path(args.frame_meta_dir) if args.frame_meta_dir else None)
     union_min_x = None
     union_min_y = None
@@ -381,10 +565,23 @@ def main():
         frame_path = frame_paths[source_index]
         with Image.open(frame_path) as raw:
             rgb = raw.convert("RGB")
+        keyed_overlay_rgb = None
+        if keyed_overlay_paths:
+            keyed_overlay_path = keyed_overlay_paths.get(frame_path.name)
+            if keyed_overlay_path is None:
+                raise SystemExit(f"missing keyed overlay frame for {frame_path.name}")
+            with Image.open(keyed_overlay_path) as raw_overlay:
+                keyed_overlay_rgb = raw_overlay.convert("RGB")
 
         if scene_base_ps1_values is None:
             raise SystemExit("--base-diff missing scene base data")
-        bbox, payload = encode_base_diff_crop(scene_base_ps1_values, rgb)
+        bbox, payload = encode_base_diff_crop(
+            scene_base_ps1_values,
+            rgb,
+            keyed_overlay_img=keyed_overlay_rgb,
+            key_rgb=args.key_rgb,
+            keyed_overlay_rect=args.keyed_overlay_rect,
+        )
 
         if bbox is not None:
             x2 = bbox["x"] + bbox["width"] - 1
@@ -411,7 +608,7 @@ def main():
             "height": 0 if bbox is None else bbox["height"],
             "scene_offset_x": scene_offset_x,
             "scene_offset_y": scene_offset_y,
-            "hold_ticks": frame_delays.get(frame_path.name, 1),
+            "hold_ticks": frame_holds.get(frame_path.name, 1),
             "hold_frames": 1,
             "hold_vblanks": 1,
             "data_offset": 0,
@@ -435,6 +632,9 @@ def main():
 
         rows.append(row)
         data_chunks.append(payload)
+
+    apply_hold_advance_windows(rows, args.hold_advance_window)
+    apply_hold_adjustments(rows, args.hold_adjust)
 
     header_flags = 0
     if args.frame_meta_dir:
@@ -555,6 +755,28 @@ def main():
         "pack_magic": "FGP2",
         "fg2_encoding": fg2_encoding,
         "base_diff": args.base_diff,
+        "keyed_overlay_frames_dir": args.keyed_overlay_frames_dir,
+        "keyed_overlay_rect": None if args.keyed_overlay_rect is None else {
+            "x": args.keyed_overlay_rect[0],
+            "y": args.keyed_overlay_rect[1],
+            "width": args.keyed_overlay_rect[2],
+            "height": args.keyed_overlay_rect[3],
+        },
+        "hold_advance_windows": [
+            {
+                "start_source": start_source,
+                "end_source": end_source,
+                "rows": advance_rows,
+            }
+            for start_source, end_source, advance_rows in args.hold_advance_window
+        ],
+        "hold_adjustments": [
+            {
+                "source_frame": source_frame,
+                "delta_ticks": delta_ticks,
+            }
+            for source_frame, delta_ticks in args.hold_adjust
+        ],
         "fg2_palette": None if palette_values is None else [
             f"0x{value:04x}" for value in palette_values
         ],

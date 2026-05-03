@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 8 / 63 (next: johnny2)
+## Progress: 9 / 63 (next: fishing5 blocker investigation, then johnny3)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.3-ps1`.
+current public release is `v0.6.4-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -46,7 +46,7 @@ current public release is `v0.6.3-ps1`.
 | FISHING | 7 | fishing7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position; right-edge pole/line clipping matches the original capture |
 | FISHING | 8 | fishing8 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position |
 | JOHNNY | 1 | johnny1 | ✅ | ✅ | black backdrop · high/low pack parity | 2026-05-02 | visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init |
-| JOHNNY | 2 | johnny2 | ⏳ | ⏳ | — | — |  |
+| JOHNNY | 2 | johnny2 | ✅ | ✅ | captured island position `x=-64,y=54` · high/low pack parity | 2026-05-02 | visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles |
 | JOHNNY | 3 | johnny3 | ⏳ | ⏳ | — | — |  |
 | JOHNNY | 4 | johnny4 | ⏳ | ⏳ | — | — |  |
 | JOHNNY | 5 | johnny5 | ⏳ | ⏳ | — | — |  |

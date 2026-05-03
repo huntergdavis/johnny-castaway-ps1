@@ -284,12 +284,14 @@
 - ads: JOHNNY
   tag: 2
   slug: johnny2
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - captured island position x=-64,y=54
+    - high/low pack parity
+  last_verified: 2026-05-02
+  notes: visual + audible signoff after lower-band keyed overlay cleanup and thought-bubble hold timing fixes
 - ads: JOHNNY
   tag: 3
   slug: johnny3

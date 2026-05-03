@@ -442,13 +442,13 @@ for the practical porting path.
 <tr><td><code>FISHING7.FG2</code></td><td>337,714</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING7.FG2">source</a></td></tr>
 <tr><td><code>FISHING8.FG2</code></td><td>481,766</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING8.FG2">source</a></td></tr>
 <tr><td><code>JOHN1LOW.FG2</code></td><td>448,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN1LOW.FG2">source</a></td></tr>
-<tr><td><code>JOHN2LOW.FG2</code></td><td>190,470</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN2LOW.FG2">source</a></td></tr>
+<tr><td><code>JOHN2LOW.FG2</code></td><td>288,637</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN2LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN3LOW.FG2</code></td><td>217,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN3LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN4LOW.FG2</code></td><td>173,803</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN4LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN5LOW.FG2</code></td><td>150,172</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN5LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHN6LOW.FG2</code></td><td>402,498</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHN6LOW.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY1.FG2</code></td><td>448,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY1.FG2">source</a></td></tr>
-<tr><td><code>JOHNNY2.FG2</code></td><td>190,470</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY2.FG2">source</a></td></tr>
+<tr><td><code>JOHNNY2.FG2</code></td><td>288,637</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY2.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY3.FG2</code></td><td>321,686</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY3.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY4.FG2</code></td><td>173,803</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY4.FG2">source</a></td></tr>
 <tr><td><code>JOHNNY5.FG2</code></td><td>150,172</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/JOHNNY5.FG2">source</a></td></tr>

@@ -67,8 +67,8 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-`FISHING 1` and `FISHING 2` are signed off. `FISHING 3` is loop-stable
-and tide-correct on FG2 but not yet promoted. The other 60 are queued.
+Nine scenes are signed off; `FISHING 5` remains blocked on visible
+shark cleanup residue; the remaining scenes are queued.
 
 ## What this isn't
 

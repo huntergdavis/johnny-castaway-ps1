@@ -100,22 +100,22 @@ A scene can be timed here without being visually certified.
 
 ### Rollup
 
-Current battle-card rollup as of 2026-05-01:
+Current battle-card rollup as of 2026-05-02:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `8 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`, `fishing7`, `fishing8`, `johnny1` |
+| Scenes visually validated | `9 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+13.8%` (`13.8440%` exact) |
-| Timing-bearing average target speed | `88.7%` (`88.6688%` exact) |
-| Latest perf matrix run | `2026-05-01T07:57:42` |
-| Stats version | mixed: latest refreshed rows use `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+13.7%` (`13.7312%` exact) |
+| Timing-bearing average target speed | `88.8%` (`88.7730%` exact) |
+| Latest perf matrix run | `2026-05-02T19:06:01` |
+| Stats version | mixed: latest refreshed rows use `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -215,8 +215,8 @@ and this page.
 | `fishing8` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.1% | 90.8% | 1380/1253 | 0 | 0 | 0 |  |
 | `johnny1` | high | measured | 2026-04-29T17:35:40 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 2125/1942 | 31 | 31 | 0 |  |
 | `johnny1` | low | measured | 2026-04-29T17:36:10 | compact-fgp3-v2-fullmatrix | +9.6% | 91.2% | 2129/1942 | 33 | 33 | 0 |  |
-| `johnny2` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +7.3% | 93.2% | 1878/1751 | 0 | 0 | 0 |  |
-| `johnny2` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +7.3% | 93.2% | 1878/1751 | 0 | 0 | 0 |  |
+| `johnny2` | high | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.6% | 99.4% | 1761/1751 | 16 | 0 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
+| `johnny2` | low | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.5% | 99.5% | 1758/1750 | 16 | 1 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
 | `johnny3` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
 | `johnny3` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
 | `johnny4` | high | measured | 2026-04-30T13:18:41 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |

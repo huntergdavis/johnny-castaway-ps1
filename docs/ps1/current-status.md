@@ -3,14 +3,15 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-02 (scene ledger at 8/63; `JOHNNY 1`
-validated after full-screen black-backdrop playback fix).
+**Last updated:** 2026-05-02 (scene ledger at 9/63; `JOHNNY 2`
+validated after lower-band keyed overlay cleanup and thought-bubble
+hold timing fixes).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
-`FISHING 6`, `FISHING 7`, `FISHING 8`, and `JOHNNY 1` have been validated under the
+`FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, and `JOHNNY 2` have been validated under the
 project's current acceptance bar: pixel-perfect visuals plus synced SFX,
 across every applicable variant (night / low-tide / holiday /
 raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -19,6 +20,9 @@ and `FISHING 8` use a scene-specific captured island position
 640-pixel reference viewport. `JOHNNY 1` is a full-screen black-backdrop
 scene, so it bypasses the ocean/island setup path and uses black cleanup
 for temporal residual spans.
+`JOHNNY 2` is pinned to the host-captured island position
+(`x=-64,y=54`) and uses a keyed lower-band overlay plus explicit
+hold redistribution for the island/SOS thought bubbles.
 `FISHING 5` remains blocked on visible shark cleanup residue and is
 intentionally not promoted.
 
@@ -29,7 +33,7 @@ intentionally not promoted.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 8/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 9/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -39,13 +43,17 @@ intentionally not promoted.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 8 / 63 fully validated
+## Scenes: 9 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.6.4-ps1` — scene-validation bugfix release; promotes `JOHNNY 2`
+  after the first-SOS-bottle capture was rebuilt with pinned island
+  placement, keyed lower-band cleanup, and thought-bubble hold timing
+  for the island/SOS frames.
 - `v0.6.3-ps1` — scene-validation bugfix release; promotes `FISHING 7`,
   `FISHING 8`, and `JOHNNY 1`, adds the `JOHNNY 1` full-screen
   black-backdrop cleanup path, and applies saved mute settings before
@@ -159,7 +167,8 @@ searchability — **do not cite them as current progress**:
 | **5 / 63** | **2026-05-01** | **Scene ledger after `FISHING 3`, `FISHING 4`, and `FISHING 6` promotion; `FISHING 5` remains blocked** | **this doc, `scene-status.md`** |
 | **6 / 63** | **2026-05-01** | **Scene ledger after `FISHING 7` promotion; single-position FG2 replay is pinned to the host-captured island position `x=3,y=9`** | **this doc, `scene-status.md`** |
 | **7 / 63** | **2026-05-01** | **Scene ledger after `FISHING 8` promotion; it shares the same captured-position pin as `FISHING 7`** | **this doc, `scene-status.md`** |
-| **8 / 63** | **2026-05-02** | **Current scene ledger after `JOHNNY 1` promotion; full-screen black-backdrop playback avoids ocean/island clean-rect memory pressure** | **this doc, `scene-status.md`** |
+| **8 / 63** | **2026-05-02** | **Scene ledger after `JOHNNY 1` promotion; full-screen black-backdrop playback avoids ocean/island clean-rect memory pressure** | **this doc, `scene-status.md`** |
+| **9 / 63** | **2026-05-02** | **Current scene ledger after `JOHNNY 2` promotion; pinned capture plus keyed lower-band cleanup fixes bottle/feet residue and thought-bubble timing** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current
@@ -195,8 +204,8 @@ baseline.
   mute writes the SPU master-volume registers directly.
 - FG1/FOC and per-scene RAW paths are retired; do not add new docs,
   routes, generated artifacts, or CD entries for them.
-- Scene coverage beyond FISHING 1 and FISHING 2 is pending scene-by-scene bring-up
-  via the loop in [development-workflow.md](development-workflow.md).
+- Scene coverage beyond the 9 signed-off rows is pending scene-by-scene
+  bring-up via the loop in [development-workflow.md](development-workflow.md).
 
 ## See also
 
