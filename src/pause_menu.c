@@ -399,6 +399,11 @@ enum {
 static const char *kSceneSetNames[] = {
     "All Scenes",
     "Fishing Only",
+    "Johnny Stories",
+    "Mary Visits",
+    "Visitors",
+    "Activities",
+    "Misc & Suzy",
 };
 #define NUM_SCENE_SETS \
     ((int)(sizeof(kSceneSetNames) / sizeof(kSceneSetNames[0])))

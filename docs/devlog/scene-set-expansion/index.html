@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Scene Set lineup expands to seven categories — May 3, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="Pause menu Scene Set selector grows from two pools to seven; not-yet-validated scenes play today and self-upgrade as scenes get visually signed off." />
+
+  <meta property="og:title"        content="Scene Set lineup expands to seven categories — May 3, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Pause menu Scene Set selector grows from two pools to seven; not-yet-validated scenes play today and self-upgrade as scenes get visually signed off." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-05-03">
+        May 3, 2026
+      </time>
+    </p>
+    <h1>Scene Set lineup expands to seven categories — May 3, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Scene Set ships with the full categorical lineup: Johnny Stories, Mary Visits, Visitors, Activities, and Misc & Suzy on top of the existing All Scenes and Fishing Only. Pools point at real scenes whose FG2 packs are already on disc, so they play immediately and look better in place as visual signoff lands.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>The Scene Set menu item shipped two days ago with two pools: <em>All Scenes</em>
+(the catch-all proven rotation) and <em>Fishing Only</em>. The plan was always
+that more sets would follow as scene families validated. After looking
+at the actual catalog state, the right move turned out to be the
+opposite — ship the whole lineup right now, and let the pools improve
+in place as scenes get visually signed off.</p>
+
+<h2 id="whats-in-the-lineup">What’s in the lineup</h2>
+
+<p>Seven sets, all live as of v0.6.9-ps1:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Set</th>
+      <th>Pool</th>
+      <th>Validation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>All Scenes</td>
+      <td>catch-all (proven rotation)</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>Fishing Only</td>
+      <td><code class="language-plaintext highlighter-rouge">fishing1</code>..<code class="language-plaintext highlighter-rouge">fishing8</code></td>
+      <td>all ✅</td>
+    </tr>
+    <tr>
+      <td>Johnny Stories</td>
+      <td><code class="language-plaintext highlighter-rouge">johnny1</code>..<code class="language-plaintext highlighter-rouge">johnny6</code></td>
+      <td><code class="language-plaintext highlighter-rouge">1</code>..<code class="language-plaintext highlighter-rouge">4</code> ✅, <code class="language-plaintext highlighter-rouge">5</code>/<code class="language-plaintext highlighter-rouge">6</code> playing pre-validation</td>
+    </tr>
+    <tr>
+      <td>Mary Visits</td>
+      <td><code class="language-plaintext highlighter-rouge">mary1</code>..<code class="language-plaintext highlighter-rouge">mary5</code></td>
+      <td><code class="language-plaintext highlighter-rouge">mary2</code> ✅ as of v0.6.8, others playing pre-validation</td>
+    </tr>
+    <tr>
+      <td>Visitors</td>
+      <td><code class="language-plaintext highlighter-rouge">visitor1</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>..<code class="language-plaintext highlighter-rouge">visitor7</code></td>
+      <td>playing pre-validation</td>
+    </tr>
+    <tr>
+      <td>Activities</td>
+      <td><code class="language-plaintext highlighter-rouge">activity1</code>, <code class="language-plaintext highlighter-rouge">activity4</code>..<code class="language-plaintext highlighter-rouge">activity12</code></td>
+      <td>playing pre-validation</td>
+    </tr>
+    <tr>
+      <td>Misc &amp; Suzy</td>
+      <td><code class="language-plaintext highlighter-rouge">suzy1</code>, <code class="language-plaintext highlighter-rouge">suzy2</code>, <code class="language-plaintext highlighter-rouge">miscgag1</code>, <code class="language-plaintext highlighter-rouge">miscgag2</code></td>
+      <td>playing pre-validation</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Two scene names were left out on purpose. <code class="language-plaintext highlighter-rouge">visitor2</code>, <code class="language-plaintext highlighter-rouge">activity2</code>, and
+<code class="language-plaintext highlighter-rouge">activity3</code> have no FG2 packs on disc — including them in a pool would
+risk a pack-start failure on a random pick — so the pools follow the
+shape of the actual asset table. Suzy and Miscgag were combined
+because each family alone is only two scenes; combined they’re a
+believable rotation.</p>
+
+<h2 id="why-ship-pre-validation">Why ship pre-validation</h2>
+
+<p>Scene Set is a random-rotation pool selector, not a scene viewer. The
+runtime cost of a not-yet-validated scene is the same as a validated
+one: load the FG2 pack, play it, tick the calendar. The visuals may
+not be pixel-perfect, the SFX may need rework, but the scene plays. As
+soon as a scene moves from ⏳ to ✅ in the <a href="../../scenes/">scene
+ledger</a>, it looks right in whichever
+pool already contains it.</p>
+
+<p>The alternative was empty pools that fall back to <em>All Scenes</em> until
+their family validates. The selector framework supports this — the
+fallback already exists at <code class="language-plaintext highlighter-rouge">jc_reborn.c:281</code> — but the menu would have
+five rows that all played the same content, which is exactly the
+“why are we showing this option” UX problem we built the pool labels
+to avoid. Real scenes from day one is the better trade.</p>
+
+<h2 id="how-the-framework-holds-up">How the framework holds up</h2>
+
+<p>The original Scene Set design doc said adding a set should be a
+one-line entry in <code class="language-plaintext highlighter-rouge">gSceneSetPools</code> and a one-line entry in
+<code class="language-plaintext highlighter-rouge">kSceneSetNames</code>. That held. The expansion patch is 60 lines of
+diff: five <code class="language-plaintext highlighter-rouge">kSet&lt;Family&gt;Scenes</code> arrays, five new pool entries, five
+new label strings, and an updated table in the pause-menu reference.
+No engine changes, no new pipeline, no walk-or-frog-clock surgery
+needed.</p>
+
+<p>The on-disc FG2 catalog also held. Every scene named in any pool
+already had its pack shipped — there was nothing to bake, no asset
+re-work, no <code class="language-plaintext highlighter-rouge">cd_layout.xml</code> edit. That’s the dividend of the FG2 +
+pack-start design choice, and it pays off here: the <em>playable</em>
+catalog has been ahead of the <em>validated</em> catalog for a while, and
+the Scene Set framework is just the first feature that makes that
+gap user-visible in a useful way.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/pause-menu-design.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          17 / 63 scenes validated
+          (v0.6.9-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
