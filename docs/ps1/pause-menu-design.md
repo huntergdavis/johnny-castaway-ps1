@@ -32,11 +32,35 @@ visible PS1-safe panel.
 | Main entry | Purpose |
 |---|---|
 | Resume | Close the menu and continue. |
+| Scene Set | Constrain the screensaver-loop random pool. Left/right preview a pending value (`<All Scenes>`, `<Fishing Only>`, …); Cross or Start commits and fires a frog-clock transition. |
 | Freeplay ON/OFF | Enter freeplay from normal mode, or exit freeplay back to the screensaver loop. |
 | Freeplay Options | Gags, visitors, controls, and clear-screen tools. |
 | World Options | Day/night, tide, raft, holiday, and island position. |
-| Accessibility | Captions, sound mute, footsteps, and sound test. |
+| Accessibility | Captions, sound mute, ocean ambience, and sound test. |
 | System | Save settings, set time/date, set RNG seed, perf log, reset scene, next scene. |
+
+## Scene Set
+
+Scene Set is the only main-menu row that takes left/right input directly:
+the cursor position adjusts a *pending* preview, the committed value
+only changes on Cross or Start. An asterisk in the label marks an
+uncommitted preview, and navigating off the row discards it. The
+backing pools live in `src/jc_reborn.c` (`gSceneSetPools`); index 0 is
+the catch-all `kProvenScenes` pool, and additional sets append below.
+
+Committing a scene set fires `pauseMenuRequestSceneSetCycle`, which the
+screensaver loop in `jc_reborn.c` consumes by:
+
+1. clearing the pinned scene (so the old set's last pick doesn't carry
+   over),
+2. running `grShowMeanwhileLoadingFrame` for the frog-clock transition,
+3. surfacing the new set name as a caption (`Scene Set: <name>`), and
+4. forcing a sequence-reset (`storyCurrentSpot/Hdg = -1`,
+   `fgLoopSequenceJustReset = 1`) so the walk-between-scenes step is
+   skipped on this iteration. The frog-clock animation zeros bgTile\*,
+   which leaves the walk subsystem nothing to compose against; letting
+   the next scene's `foregroundPilotPlay` reload the bg is cheaper than
+   snapshotting/restoring 600 KB on PS1's heap.
 
 ## State Enum
 
@@ -99,7 +123,7 @@ screensaver mode, the settings affect the next applicable scene/variant path.
 
 ## Accessibility And Sound Test
 
-Accessibility owns captions, sound mute, footsteps, and Sound Test. Sound
+Accessibility owns captions, sound mute, ocean ambience, and Sound Test. Sound
 Test is a selector over the SPU effects. It calls the same `soundPlay()` path
 used by scene playback and freeplay actions, which makes individual samples
 testable without waiting for a scene to hit the correct frame.

@@ -3169,7 +3169,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
          * cleared by the consumer in jc_reborn.c. */
         if (pauseMenuRequestNextScene ||
             pauseMenuRequestResetLoop ||
-            pauseMenuRequestFreeplay) {
+            pauseMenuRequestFreeplay ||
+            pauseMenuRequestSceneSetCycle) {
             break;
         }
         if (fgRuntimeCanHoldDisplayedFrame()) {

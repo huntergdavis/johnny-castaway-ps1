@@ -33,7 +33,6 @@
 #include "spi.h"
 
 extern int soundMuted;
-extern int footstepsEnabled;  /* walk_render.c — pause-menu Footsteps */
 extern int oceanAmbientEnabled; /* sound_ps1.c — pause-menu Ocean toggle */
 extern int storyCurrentDay;   /* jc_reborn.c — 11-day story calendar */
 extern int hostForcedNight;
@@ -50,11 +49,13 @@ extern void oceanAmbientStop(void);
 extern int  oceanAmbientLoaded(void);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     3  /* v3 adds oceanAmbientEnabled (CC0 ocean ambience).
+#define MC_VERSION     4  /* v4 drops the unused footstepsEnabled toggle.
+                           * v3 added oceanAmbientEnabled.
                            * v2 added footstepsEnabled + storyCurrentDay.
-                           * v1 had no walk fields. Older versions load with
-                           * defaults for missing fields (ocean ON, footsteps
-                           * ON). */
+                           * v1 had no walk fields. v2 and v3 saves still
+                           * load (the old footsteps byte is ignored;
+                           * v2 saves get oceanAmbientEnabled defaulted
+                           * to ON). */
 #define MC_BLOCK       1            /* memcard block we own (1..15) */
 #define MC_FIRST_SECT  (MC_BLOCK * 64)
 #define MC_FRAME_SIZE  8192
@@ -254,7 +255,10 @@ typedef struct {
     uint8  softYearLo;
     uint8  softYearHi;
     uint8  softMinute;
-    uint8  footstepsEnabled;   /* added in MC_VERSION 2 — walk plan Phase 4.3 */
+    uint8  _obsoleteFootsteps; /* dropped in MC_VERSION 4. Position kept so
+                                * v2/v3 saves binary-compat: their stored
+                                * byte sits here but the runtime never
+                                * reads or writes it. */
     uint8  storyCurrentDay;    /* added in MC_VERSION 2 — walk plan Phase 8 */
     uint8  oceanAmbientEnabled;/* added in MC_VERSION 3 — CC0 ocean ambience */
     uint8  reserved[1];
@@ -354,20 +358,19 @@ int memcardLoadSettings(void)
         printf("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
         return 0;
     }
-    /* Accept v2 (footsteps + storyDay) through v3 (adds ocean ambience).
-     * Older versions miss fields; default them in the per-version logic
-     * below so users don't lose their saved sound/footsteps preferences
-     * when the schema bumps. Reject v < 2 — those were transient and
-     * never released. */
-    if (s->version != MC_VERSION && s->version != 2) {
+    /* Accept v2..v4. v4 drops the unused footstepsEnabled toggle but
+     * keeps its byte position for binary compatibility — the field is
+     * just ignored on load and zeroed on save. v3 added
+     * oceanAmbientEnabled; v2 saves get that defaulted to ON.
+     * Reject v < 2 — those were transient and never released. */
+    if (s->version != MC_VERSION && s->version != 2 && s->version != 3) {
         memcardLastStatus = "version mismatch";
         return 0;
     }
     int loadedVersion = s->version;
 
     soundMuted        = s->soundMuted ? 1 : 0;
-    footstepsEnabled  = s->footstepsEnabled ? 1 : 0;
-    /* oceanAmbientEnabled is field-of-record in v3 only; older versions
+    /* oceanAmbientEnabled is field-of-record in v3+ only; older versions
      * default to ON (so users opting in via the new toggle don't have
      * to migrate their save manually). */
     oceanAmbientEnabled = (loadedVersion >= 3)
@@ -423,7 +426,7 @@ int memcardSaveSettings(void)
     s->magic              = MC_MAGIC;
     s->version            = MC_VERSION;
     s->soundMuted         = (uint8)(soundMuted ? 1 : 0);
-    s->footstepsEnabled   = (uint8)(footstepsEnabled ? 1 : 0);
+    s->_obsoleteFootsteps = 0;   /* dropped in v4; byte zeroed on save */
     s->oceanAmbientEnabled = (uint8)(oceanAmbientEnabled ? 1 : 0);
     s->storyCurrentDay    = (uint8)((storyCurrentDay >= 1
                                     && storyCurrentDay <= 11)

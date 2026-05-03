@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Scene Set framework and an animated frog clock — May 3, 2026 — Johnny Castaway PS1</title>
+  <meta name="description" content="PS1 port pause menu adds a Scene Set selector and an animated frog-clock loading transition; sequence-reset on cycle keeps walks intact." />
+
+  <meta property="og:title"        content="Scene Set framework and an animated frog clock — May 3, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="PS1 port pause menu adds a Scene Set selector and an animated frog-clock loading transition; sequence-reset on cycle keeps walks intact." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../" aria-current="page">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+  <header class="page-header">
+    <p class="eyebrow">
+      Devlog ·
+      <time datetime="2026-05-03">
+        May 3, 2026
+      </time>
+    </p>
+    <h1>Scene Set framework and an animated frog clock — May 3, 2026</h1>
+
+    <hr class="rule" />
+  </header>
+
+
+  <aside class="editor-note">
+    <p><strong>Editor's note.</strong> Pause menu gains a Scene Set row that constrains the screensaver pool by category (All Scenes / Fishing Only / …); Left/Right preview, Cross or Start commits. The frog-clock loading frame goes from a static image to a 36-vblank animation with hour and minute hands placed from the original MEANWHIL.TTM script.</p>
+  </aside>
+
+
+  <div class="page-body">
+    <p>This post is about two small features that ended up tangled together
+because the PS1’s heap rules don’t let you treat them as separate
+problems.</p>
+
+<h2 id="scene-set-pool-by-category">Scene Set: pool-by-category</h2>
+
+<p>The screensaver loop has always picked from a pool called
+<code class="language-plaintext highlighter-rouge">kProvenScenes</code>. As more scenes get validated the pool grows, but the
+shape stays the same: one big bag, the loop draws a random scene out
+of it, the FG2 pack plays, the loop ticks the calendar, and around it
+goes. There was no way to say “I’d like the next half hour to be
+fishing scenes only” without forcing a pinned scene from the dev
+console — which then plays the same scene every iteration.</p>
+
+<p>Scene Set lifts that into a first-class menu item. The new item sits
+right under Resume, defaults to <strong>All Scenes</strong>, and the only other
+ship-quality alternative right now is <strong>Fishing Only</strong> — the eight
+validated <code class="language-plaintext highlighter-rouge">fishing1..fishing8</code> packs. As more scene families lock in,
+they get a one-line entry in <code class="language-plaintext highlighter-rouge">gSceneSetPools</code> and a label in
+<code class="language-plaintext highlighter-rouge">kSceneSetNames</code>, no other code changes needed. The picker reads
+<code class="language-plaintext highlighter-rouge">pauseMenuSceneSet</code> each iteration and indexes into the pool array.</p>
+
+<p>The interaction model is deliberately different from the rest of the
+main menu. Left and Right scroll a <em>pending</em> preview, which the row
+shows as <code class="language-plaintext highlighter-rouge">&lt;Fishing Only&gt;</code> with an asterisk if the preview hasn’t been
+committed yet. Cross or Start commits. Up or Down (which moves the
+cursor off the row) discards the preview. That separation matters
+because the alternative — “scrolling lands you in a new pool
+immediately” — felt like an accidental click hazard the first time
+the row got tested. The brackets are the visual cue that this row
+takes horizontal input; everything else still uses Cross-to-select.</p>
+
+<h2 id="frog-clock-as-a-real-animation">Frog clock as a real animation</h2>
+
+<p>The PS1 port has had a “meanwhile” frog-clock loading frame since the
+freeplay branch landed. Up to today it was a single static image: load
+<code class="language-plaintext highlighter-rouge">MEANWHIL.BMP</code>, draw the card sprite at <code class="language-plaintext highlighter-rouge">(254, 100)</code>, draw one fixed
+hand frame at <code class="language-plaintext highlighter-rouge">(287, 141)</code>, and call it done. It looked like a paused
+clock, which is exactly the wrong feel for a loading transition.</p>
+
+<p>Replacing the static draw with a hand-cycle was a one-line change in
+isolation. Replacing it with a hand-cycle that <em>looked right</em> needed
+the original script. <code class="language-plaintext highlighter-rouge">MEANWHIL.TTM</code> carries 16 hand sprites split
+between an hour-hand set (sprites 5–16) and a minute-hand set
+(sprites 1–4), and the script draws each frame at a sprite-specific
+<code class="language-plaintext highlighter-rouge">(x, y)</code> because the bounding box of a rotated hand changes per
+angle. Drawing every hand frame at the same top-left position made
+the hand visibly drift around the clock face on each frame.</p>
+
+<p>A short Python decoder over the TTM bytecode pulled out the per-sprite
+draw positions; they’re now a static <code class="language-plaintext highlighter-rouge">kMeanwhilePos[17][2]</code> table
+inside <code class="language-plaintext highlighter-rouge">grShowMeanwhileLoadingFrame</code>. The animation cycles the hour
+hand every four frames and the minute hand every frame, for a loop of
+36 vblanks (~0.6 s at 60 Hz). On each frame: stamp the card, then the
+current hour hand at its baked anchor, then the current minute hand
+at its baked anchor.</p>
+
+<h2 id="walk-vs-frog-clock-why-the-cycle-does-a-sequence-reset">Walk vs frog clock: why the cycle does a sequence reset</h2>
+
+<p>The honest part of this post is what happened when those two features
+met for the first time.</p>
+
+<p>Cycling Scene Set fires the frog clock as its loading transition. The
+frog clock calls <code class="language-plaintext highlighter-rouge">grInitEmptyBackground</code> to give the card a clean
+black backdrop — that zeros the four background tiles in RAM. That
+was always the case; the change is that the <em>next</em> thing now is a
+walk transition (the screensaver loop tries to walk Johnny from his
+last spot to the new scene’s start). And the walk subsystem composes
+Johnny over those background tiles. Black tiles → black borders
+around Johnny.</p>
+
+<p>The first attempt was to snapshot the tiles before the wipe and
+restore them after. On desktop that’s a nothing change. On PS1 it’s
+600 KB of memcpy across four <code class="language-plaintext highlighter-rouge">bgTile*</code> buffers, and the heap is
+already tight enough that the snapshot allocation introduced a
+noticeable hitch on the first cycle of the run. Restoring also didn’t
+fully solve the problem because the rect-mode clean buffers walk
+actually reads from are not the same set as the full-tile clean
+buffers <code class="language-plaintext highlighter-rouge">grSaveCleanBgTiles</code> populates.</p>
+
+<p>The fix that actually worked is structural. Cycling Scene Set is a
+sequence reset by definition: the user just told the loop to throw
+out its remembered context. So
+<code class="language-plaintext highlighter-rouge">pauseMenuRequestSceneSetCycle</code> consumers now also clear
+<code class="language-plaintext highlighter-rouge">storyCurrentSpot</code> and <code class="language-plaintext highlighter-rouge">storyCurrentHdg</code> and set
+<code class="language-plaintext highlighter-rouge">fgLoopSequenceJustReset = 1</code>. With the reset flag set, the existing
+guard at the top of the loop skips the walk for that iteration. The
+next scene’s <code class="language-plaintext highlighter-rouge">foregroundPilotPlay</code> does its own <code class="language-plaintext highlighter-rouge">grLoadScreen</code> and
+pulls the bg back to a known good state before any compositing
+happens. No 600 KB snapshot, no walk corruption, no extra moving
+pieces.</p>
+
+<p>Walks resume on the very next iteration because the next scene
+updates <code class="language-plaintext highlighter-rouge">storyCurrentSpot/Hdg</code> on completion, so the user-visible
+behavior is just: change the pool, see the frog clock, see “Scene
+Set: Fishing Only” caption, see a clean cut to the next fishing
+scene.</p>
+
+<h2 id="what-this-is-not">What this is not</h2>
+
+<p>This release does not add new scene sets beyond Fishing Only.
+Johnny-only, Mary-only, and Visitors-only sets are obvious next
+steps, but they need their own scenes validated under the Scene Set
+flow before they ship. The <code class="language-plaintext highlighter-rouge">gSceneSetPools</code> table is structured so
+that adding them is a label and an array literal, not a rewrite.
+This release also does not add a separate art asset for the
+animation; the frog clock uses Sierra’s existing 17-frame
+<code class="language-plaintext highlighter-rouge">MEANWHIL.BMP</code> exactly as shipped.</p>
+
+<p>The PS1 port keeps trying to make every player-visible feature land
+on top of the same handful of trusted runtime pieces. A new menu
+item and a smarter loading frame are exactly the kind of additions
+that should not need new pipelines, and after today they don’t.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <hr class="rule" />
+    <p>
+      <a href="../">← back to devlog index</a>
+
+      &nbsp;·&nbsp;
+      <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/pause-menu-design.md">view source on GitHub</a>
+
+    </p>
+  </footer>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          12 / 63 scenes validated
+          (v0.6.7-ps1)
+        </p>
+        <p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

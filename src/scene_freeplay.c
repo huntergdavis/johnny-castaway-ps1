@@ -54,7 +54,12 @@ extern int ps1SoftTimeEnabled;
 #define FP_CLEAN_RECT_COUNT 3
 #define FP_OVERLAY_OT_LEN  8
 #define FP_OVERLAY_PRIM_BYTES 24576
-#define FP_FISH_RIGHT_SIDE_X 440
+/* Flip threshold is the midpoint of the palm-tree trunk (the visual
+ * center of the island). The trunk sprite is drawn at (442, 148) and is
+ * 24 px wide (BACKGRND.BMP frame 13), so the trunk midpoint is x=454.
+ * Past that, draw the native sprite (Johnny faces right); before it,
+ * mirror so Johnny faces left. */
+#define FP_FISH_TRUNK_X 454
 #define FP_BANNER_X0 188
 #define FP_BANNER_Y0 28
 #define FP_BANNER_X1 452
@@ -126,6 +131,10 @@ struct TFpAsset {
     uint16 ttl;
     uint16 firstFrame;
     uint16 frameCount;
+    uint16 loopStart;     /* When loop=1, wrap to firstFrame+loopStart (not 0) */
+    sint16 bodyAnchorX;   /* If >0, asset->x is the body screen-x, not sprite top-left.
+                           * fpDrawAsset converts to top-left per-frame using sprite
+                           * fullWidth + this offset. Use 0 for legacy top-left mode. */
     uint8 flip;
     uint8 screenRelative;
     uint8 loop;
@@ -179,7 +188,6 @@ struct TFpState {
     sint16 fireY;
     uint8 fireFrame;
     uint8 fireTimer;
-    uint8 fishingPhase;
     uint8 overlayWasVisible;
     struct TFpAsset gag;
     struct TFpAsset summon;
@@ -625,7 +633,6 @@ static void fpCancelTransientAction(void)
     fpCancelAsset(&gFp.summon);
     gFp.mode = FP_MODE_IDLE;
     gFp.modeTimer = 0;
-    gFp.fishingPhase = 0;
     gFp.idleFrames = 0;
     grForceFullRedrawNextFrame();
 }
@@ -644,7 +651,6 @@ static void fpStartGag(enum TFpGag gag)
 {
     gFp.actionCount++;
     gFp.lastGag = (uint8)gag;
-    gFp.fishingPhase = 0;
 
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
@@ -688,8 +694,6 @@ static void fpStartAssetModeEx(const char *bmp, uint16 ttl, enum TFpMode mode,
     uint16 availableFrames;
 
     gFp.actionCount++;
-    if (mode != FP_MODE_FISH)
-        gFp.fishingPhase = 0;
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
     if (!fpLoadSlot(FP_SLOT_GAG, bmp)) {
@@ -716,37 +720,6 @@ static void fpStartAssetModeEx(const char *bmp, uint16 ttl, enum TFpMode mode,
     gFp.modeTimer = ttl;
     if (soundId >= 0)
         soundPlay(soundId);
-}
-
-static void fpStartFishing(void)
-{
-    int rightSide = (gFp.x >= FP_FISH_RIGHT_SIDE_X);
-    sint16 fx = rightSide ? (sint16)(gFp.x - 118) : (sint16)(gFp.x - 28);
-    sint16 fy = (sint16)(gFp.y - 42);
-
-    if (gFp.y < 260)
-        fy = 196;
-
-    gFp.face = rightSide ? FP_FACE_W : FP_FACE_E;
-    fpSetBanner("FISHING", 90);
-    captionsShowText(kFpCaptionFish, 150);
-    fpStartAssetModeEx("MJFISH1.BMP", 115, FP_MODE_FISH,
-                       fx, fy, 0, 19, 6, rightSide ? 1 : 0, 4);
-    gFp.fishingPhase = 1;
-}
-
-static void fpStartFishingScratch(void)
-{
-    int rightSide = (gFp.x >= FP_FISH_RIGHT_SIDE_X);
-    sint16 fx = rightSide ? (sint16)(gFp.x - 88) : (sint16)(gFp.x - 20);
-    sint16 fy = (sint16)(gFp.y - 32);
-
-    if (gFp.y < 260)
-        fy = 206;
-
-    fpStartAssetModeEx("MJFISH2.BMP", 90, FP_MODE_FISH,
-                       fx, fy, 10, 5, 8, rightSide ? 1 : 0, -1);
-    gFp.fishingPhase = 2;
 }
 
 static void fpStartSummon(enum TFpSummon kind)
@@ -776,7 +749,6 @@ static void fpStartSummon(enum TFpSummon kind)
 
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
-    gFp.fishingPhase = 0;
     if (!fpLoadSlot(FP_SLOT_SUMMON, bmp)) {
         fpSetBanner("SUMMON SKIPPED", 60);
         return;
@@ -916,7 +888,8 @@ static void fpOpenPauseMenu(void)
     }
     if (pauseMenuRequestExitFreeplay ||
         pauseMenuRequestNextScene ||
-        pauseMenuRequestResetLoop) {
+        pauseMenuRequestResetLoop ||
+        pauseMenuRequestSceneSetCycle) {
         pauseMenuRequestExitFreeplay = 0;
         pauseMenuRequestFreeplayWorldRefresh = 0;
         gFreeplayExitRequested = 1;
@@ -993,10 +966,10 @@ static void fpApplyInput(uint16 cur, uint16 pressed)
         return;
     }
 
-    if (pressed & PAD_CIRCLE) {
-        fpStartFishing();
-        return;
-    }
+    /* CIRCLE-button fishing was retired in favor of a top-level
+     * "fishing mode" (toggle from the pause menu). Freeplay no longer
+     * spawns a fishing animation directly. */
+    (void)pressed;
 }
 
 static void fpTickAsset(struct TFpAsset *asset)
@@ -1015,10 +988,14 @@ static void fpTickAsset(struct TFpAsset *asset)
     if (asset->frameTimer >= asset->frameDelay) {
         asset->frameTimer = 0;
         if (asset->frameCount > 1) {
-            if (asset->loop)
-                asset->frame = (uint16)((asset->frame + 1) % asset->frameCount);
-            else if (asset->frame + 1 < asset->frameCount)
+            if (asset->loop) {
+                if (asset->frame + 1 < asset->frameCount)
+                    asset->frame++;
+                else
+                    asset->frame = asset->loopStart;  /* skip intro on wrap */
+            } else if (asset->frame + 1 < asset->frameCount) {
                 asset->frame++;
+            }
         }
     }
 }
@@ -1026,11 +1003,6 @@ static void fpTickAsset(struct TFpAsset *asset)
 static void fpTick(void)
 {
     fpTickAsset(&gFp.gag);
-    if (gFp.fishingPhase == 1 && !gFp.gag.active) {
-        fpStartFishingScratch();
-    } else if (gFp.fishingPhase == 2 && !gFp.gag.active) {
-        gFp.fishingPhase = 0;
-    }
     fpTickAsset(&gFp.summon);
 
     if (gFp.modeTimer > 0) {
@@ -1074,13 +1046,38 @@ static void fpDrawAsset(const struct TFpAsset *asset)
         fpSetScreenDrawOffset();
     else
         fpSetIslandDrawOffset();
+
+    /* Resolve the sprite top-left x for this draw.
+     *
+     * Legacy mode (bodyAnchorX == 0): asset->x is the sprite top-left
+     * directly — caller pre-computed any anchor offset. This is what
+     * gags, summons, and the persistent fire all use.
+     *
+     * Width-aware mode (bodyAnchorX > 0): asset->x is the screen x
+     * where Johnny's *body* should land, and bodyAnchorX is how many
+     * pixels from sprite-left the body sits in the unflipped sprite.
+     * Different frames have different fullWidths, so we recompute the
+     * top-left per frame to pin the body in place. Used by fishing
+     * because MJFISH1 frame widths span 64..152 px and a single fixed
+     * fx makes the body drift visibly across the loop. */
+    sint16 drawX = asset->x;
+    if (asset->bodyAnchorX > 0) {
+        PS1Surface *spr = gFpSlot.sprites[asset->slot][drawFrame];
+        if (spr != NULL) {
+            if (asset->flip)
+                drawX = (sint16)(asset->x - (sint16)spr->fullWidth + asset->bodyAnchorX);
+            else
+                drawX = (sint16)(asset->x - asset->bodyAnchorX);
+        }
+    }
+
     if (asset->flip)
         grDrawSpriteFlip(grBackgroundSfc, &gFpSlot,
-                         asset->x, asset->y,
+                         drawX, asset->y,
                          drawFrame, asset->slot);
     else
         grDrawSprite(grBackgroundSfc, &gFpSlot,
-                     asset->x, asset->y,
+                     drawX, asset->y,
                      drawFrame, asset->slot);
 }
 
@@ -1110,7 +1107,7 @@ static void fpDrawJohnny(void)
         int flip = (gFp.face == FP_FACE_W) ? 1 : 0;
         walkRenderFrame(grBackgroundSfc, &gFpSlot, fgBackdropGetSlot(),
                         gFp.x, gFp.y, fpWalkFrame(), flip,
-                        fpBehindTree(gFp.x, gFp.y), 0);
+                        fpBehindTree(gFp.x, gFp.y));
     } else {
         int flip = (gFp.face == FP_FACE_W) ? 1 : 0;
         if (flip)
@@ -1249,7 +1246,10 @@ static void fpFrame(void)
 {
     grBeginFrame();
     grRestoreBgFromRects();
-    if ((gFp.frame & 3UL) == 0)
+    /* Wave tick rate matches the FG2 backdrop thread (delay=8 in
+     * islandInit), i.e. once every 8 frames. The previous & 3UL
+     * (every 4 frames) ran the ocean at 2x speed in freeplay. */
+    if ((gFp.frame & 7UL) == 0)
         fgBackdropTickWavesPublic();
     fpDrawFire();
     fpDrawAsset(&gFp.summon);
@@ -1392,6 +1392,7 @@ void freeplayClearExitRequest(void)
     gFreeplayExitRequested = 0;
 }
 
+
 void freeplaySetTelemetryLevel(int level)
 {
     if (level < 0) level = 0;
@@ -1418,6 +1419,7 @@ int freeplayExitRequested(void)
 void freeplayClearExitRequest(void)
 {
 }
+
 
 void freeplaySetTelemetryLevel(int level)
 {

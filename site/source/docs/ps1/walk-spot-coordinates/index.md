@@ -21,8 +21,8 @@ Date: 2026-04-29 Status: pre-flight audit complete (R6.1, R6.2, R6.3, R6.5) Bran
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/walk-spot-coordinates.md` |
-| Lines | 163 |
-| Approx. words | 923 |
+| Lines | 160 |
+| Approx. words | 896 |
 | Code fences | 2 |
 
 ## Outline
@@ -35,7 +35,7 @@ Date: 2026-04-29 Status: pre-flight audit complete (R6.1, R6.2, R6.3, R6.5) Bran
 -     Color depth
 -     Sprite count
 -   R6.3 — extractwalkdata.c lineage
--   R6.4 — footstep sample IDs (deferred)
+-   R6.4 — footstep sample IDs (removed)
 -   Pre-flight verdict
 -   Cross-references
 

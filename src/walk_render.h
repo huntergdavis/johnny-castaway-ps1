@@ -10,8 +10,8 @@
  *      D-pad input per VBlank)
  *
  *  The kernel owns no walk state. It's pure draw + optional behind-tree
- *  cover-up + optional footstep trigger. Callers manage their own
- *  position, sprite-frame index, heading, and timing.
+ *  cover-up. Callers manage their own position, sprite-frame index,
+ *  heading, and timing.
  *
  *  Architecture detail in docs/ps1/walk-implementation-plan.md § 3.5.
  */
@@ -27,10 +27,6 @@
 #endif
 
 struct TTtmSlot;
-
-/* Pause-menu Options "Footsteps" toggle. Default ON; persisted to
- * memcard in Phase 4.3. When 0, fireFootstep is a no-op. */
-extern int footstepsEnabled;
 
 /*
  * Draw one walking-frame sprite against the restored background.
@@ -52,21 +48,17 @@ extern int footstepsEnabled;
  *   behindTree    — 1 if Johnny is between SPOT_3 and SPOT_4 (tree
  *                   z-region). Stamps trunk+leaf cover-up after the
  *                   walking sprite so the tree visibly covers him.
- *   fireFootstep  — 1 when this frame is a foot-down step. Plays a
- *                   footstep sample if footstepsEnabled is also 1.
- *                   Phase 4.2 wires the actual sample id; until then
- *                   the trigger is a documented no-op.
  */
 void walkRenderFrame(SDL_Surface *sfc,
                      struct TTtmSlot *johnwalkSlot,
                      struct TTtmSlot *islandBgSlot,
                      sint16 x, sint16 y, uint16 spriteIdx,
-                     int flip, int behindTree, int fireFootstep);
+                     int flip, int behindTree);
 
 /* Re-draw the most recent walkRenderFrame() pose against a fresh
- * frame envelope, without firing a footstep. The story-loop driver
- * uses this between walkAnimate() advance ticks (typically every
- * 6 VBlanks) to keep Johnny visible during the in-between frames.
+ * frame envelope. The story-loop driver uses this between
+ * walkAnimate() advance ticks (typically every 6 VBlanks) to keep
+ * Johnny visible during the in-between frames.
  *
  * Freeplay does NOT use this — it calls walkRenderFrame every
  * VBlank with live D-pad-driven coords.
