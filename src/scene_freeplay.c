@@ -54,7 +54,10 @@ extern int ps1SoftTimeEnabled;
 #define FP_CLEAN_RECT_COUNT 3
 #define FP_OVERLAY_OT_LEN  8
 #define FP_OVERLAY_PRIM_BYTES 24576
-#define FP_FISH_RIGHT_SIDE_X 440
+/* Island x range is 245..535 (clamp in fpClampJohnny). The midpoint is
+ * 390. Past that, mirror the fishing sprite so Johnny faces the closer
+ * shore. */
+#define FP_FISH_CENTER_X 390
 #define FP_BANNER_X0 188
 #define FP_BANNER_Y0 28
 #define FP_BANNER_X1 452
@@ -179,7 +182,6 @@ struct TFpState {
     sint16 fireY;
     uint8 fireFrame;
     uint8 fireTimer;
-    uint8 fishingPhase;
     uint8 overlayWasVisible;
     struct TFpAsset gag;
     struct TFpAsset summon;
@@ -625,7 +627,6 @@ static void fpCancelTransientAction(void)
     fpCancelAsset(&gFp.summon);
     gFp.mode = FP_MODE_IDLE;
     gFp.modeTimer = 0;
-    gFp.fishingPhase = 0;
     gFp.idleFrames = 0;
     grForceFullRedrawNextFrame();
 }
@@ -644,7 +645,6 @@ static void fpStartGag(enum TFpGag gag)
 {
     gFp.actionCount++;
     gFp.lastGag = (uint8)gag;
-    gFp.fishingPhase = 0;
 
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
@@ -688,8 +688,6 @@ static void fpStartAssetModeEx(const char *bmp, uint16 ttl, enum TFpMode mode,
     uint16 availableFrames;
 
     gFp.actionCount++;
-    if (mode != FP_MODE_FISH)
-        gFp.fishingPhase = 0;
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
     if (!fpLoadSlot(FP_SLOT_GAG, bmp)) {
@@ -720,33 +718,31 @@ static void fpStartAssetModeEx(const char *bmp, uint16 ttl, enum TFpMode mode,
 
 static void fpStartFishing(void)
 {
-    int rightSide = (gFp.x >= FP_FISH_RIGHT_SIDE_X);
-    sint16 fx = rightSide ? (sint16)(gFp.x - 118) : (sint16)(gFp.x - 28);
-    sint16 fy = (sint16)(gFp.y - 42);
-
-    if (gFp.y < 260)
-        fy = 196;
-
-    gFp.face = rightSide ? FP_FACE_W : FP_FACE_E;
-    fpSetBanner("FISHING", 90);
-    captionsShowText(kFpCaptionFish, 150);
-    fpStartAssetModeEx("MJFISH1.BMP", 115, FP_MODE_FISH,
-                       fx, fy, 0, 19, 6, rightSide ? 1 : 0, 4);
-    gFp.fishingPhase = 1;
-}
-
-static void fpStartFishingScratch(void)
-{
-    int rightSide = (gFp.x >= FP_FISH_RIGHT_SIDE_X);
+    /* Boring fishing — Johnny stands with the rod in the long-fishing-scene
+     * idle loop (looking around, rod bobbing, occasional gestures). The
+     * MJFISH1 cast/get-pulled animation is intentionally skipped: users
+     * want the patient idle, not the frenetic catch.
+     *
+     * MJFISH2 frames 9-14 are the idle waiting poses. We loop them for 360
+     * ticks (~6 seconds) so the loop cycles 4-5 times before timing out.
+     * Walking interrupts via fpCancelTransientAction.
+     *
+     * Flip is decided by island midpoint (245..535 → 390). Past that x,
+     * mirror the sprite so Johnny faces the right-hand shore. */
+    int rightSide = (gFp.x >= FP_FISH_CENTER_X);
     sint16 fx = rightSide ? (sint16)(gFp.x - 88) : (sint16)(gFp.x - 20);
     sint16 fy = (sint16)(gFp.y - 32);
 
     if (gFp.y < 260)
         fy = 206;
 
-    fpStartAssetModeEx("MJFISH2.BMP", 90, FP_MODE_FISH,
-                       fx, fy, 10, 5, 8, rightSide ? 1 : 0, -1);
-    gFp.fishingPhase = 2;
+    gFp.face = rightSide ? FP_FACE_W : FP_FACE_E;
+    fpSetBanner("FISHING", 90);
+    captionsShowText(kFpCaptionFish, 150);
+    fpStartAssetModeEx("MJFISH2.BMP", 360, FP_MODE_FISH,
+                       fx, fy, 9, 6, 8, rightSide ? 1 : 0, -1);
+    /* fpStartAssetModeEx hardwires loop=0; flip it on so the idle cycles. */
+    gFp.gag.loop = 1;
 }
 
 static void fpStartSummon(enum TFpSummon kind)
@@ -776,7 +772,6 @@ static void fpStartSummon(enum TFpSummon kind)
 
     fpCancelAsset(&gFp.gag);
     fpCancelAsset(&gFp.summon);
-    gFp.fishingPhase = 0;
     if (!fpLoadSlot(FP_SLOT_SUMMON, bmp)) {
         fpSetBanner("SUMMON SKIPPED", 60);
         return;
@@ -1026,11 +1021,6 @@ static void fpTickAsset(struct TFpAsset *asset)
 static void fpTick(void)
 {
     fpTickAsset(&gFp.gag);
-    if (gFp.fishingPhase == 1 && !gFp.gag.active) {
-        fpStartFishingScratch();
-    } else if (gFp.fishingPhase == 2 && !gFp.gag.active) {
-        gFp.fishingPhase = 0;
-    }
     fpTickAsset(&gFp.summon);
 
     if (gFp.modeTimer > 0) {

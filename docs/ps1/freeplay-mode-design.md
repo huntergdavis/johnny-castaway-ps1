@@ -142,17 +142,22 @@ The frame path must not allocate memory.
 
 ## Fishing
 
-Circle is the dedicated fishing button. The implementation uses the
-`MJFISH1.BMP` and `MJFISH2.BMP` families rather than the catch-only prop
-sheets. The intended sequence is:
+Circle is the dedicated fishing button. The freeplay fishing animation is
+the **boring idle** from the long-fishing scene, not the cast/get-pulled
+sequence. Press Circle and Johnny stands with the rod, looking around and
+adjusting his pose, until you walk away or the timer expires.
 
-1. standing by the water with the pole;
-2. casting into the water;
-3. scratching / idle fishing beat.
+Implementation: `MJFISH2.BMP` frames 9-14 (six idle poses) looped for 360
+ticks (~6 s). The `MJFISH1.BMP` cast/pulled-by-fish animation is *not*
+played in freeplay — users found it too frenetic for an on-demand
+"fishing" press.
 
 There is no separate right-facing fishing asset. Right-side fishing uses
-the left-facing frames mirrored on the X axis. Coordinate and frame-range
-tuning is allowed, but the source family should stay `MJFISH`.
+the left-facing frames mirrored on the X axis. The mirror threshold is
+the island midpoint (`FP_FISH_CENTER_X = 390`, halfway between the 245
+and 535 clamp bounds). Past that x, Johnny is flipped so he faces the
+right-hand shore. Coordinate and frame-range tuning is allowed, but the
+source asset should stay `MJFISH2.BMP`.
 
 ## World State
 

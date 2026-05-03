@@ -21,8 +21,8 @@ Freeplay is the direct-control Johnny mode. It is also the debugging cockpit for
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/freeplay-mode-design.md` |
-| Lines | 244 |
-| Approx. words | 1143 |
+| Lines | 249 |
+| Approx. words | 1209 |
 | Code fences | 2 |
 
 ## Outline
