@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>JOHNNY 3 — His own SOS returns — Johnny Castaway PS1</title>
-  <meta name="description" content="JOHNNY.ADS scene 3: His own SOS returns. Not yet validated." />
+  <meta name="description" content="JOHNNY.ADS scene 3: His own SOS returns. Validated with variable island placement." />
 
   <meta property="og:title"        content="JOHNNY 3 — His own SOS returns — Johnny Castaway PS1" />
-  <meta property="og:description"  content="JOHNNY.ADS scene 3: His own SOS returns. Not yet validated." />
+  <meta property="og:description"  content="JOHNNY.ADS scene 3: His own SOS returns. Validated with variable island placement." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · JOHNNY 3
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>JOHNNY 3 — His own SOS returns</h1>
@@ -77,7 +77,10 @@
   </header>
 
   <div class="page-body">
-    <p>Not yet validated.</p>
+    <p>Validated on 2026-05-02 after visual and audible signoff. A right-shifted
+island-position probe confirmed the full source pixels are present in the
+pack; that was a diagnostic check only, not a runtime placement
+requirement.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -92,24 +95,12 @@
 
 <p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>HIGH</strong>.</p>
 
-<h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
+<h3 id="validation-note">Validation note</h3>
 
-<p>The same way every scene does: under the FISHING 1 bar.</p>
-
-<p>A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-<a href="../../docs/regtest/">regtest harness</a> checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
-<a href="../">ledger</a>.</p>
-
-<p>Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See <a href="../../about/method/">the method</a>
-for the longer version.</p>
+<p>Unlike <code class="language-plaintext highlighter-rouge">FISHING 7</code> and <code class="language-plaintext highlighter-rouge">FISHING 8</code>, this scene does not need a
+captured-position pin. The standard variable island placement remains
+the durable runtime policy unless a scene proves it was host-clipped or
+requires a specific original position.</p>
 
   </div>
 
@@ -135,7 +126,7 @@ for the longer version.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          10 / 63 scenes validated
+          12 / 63 scenes validated
           (v0.6.5-ps1)
         </p>
         <p class="footer-transparency">

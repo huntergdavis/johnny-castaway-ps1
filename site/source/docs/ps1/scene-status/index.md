@@ -22,13 +22,13 @@ Tracks per-scene readiness under the fishing1 bar: pixel-perfect visuals plus sy
 |---|---:|
 | Source path | `docs/ps1/scene-status.md` |
 | Lines | 110 |
-| Approx. words | 675 |
+| Approx. words | 751 |
 | Code fences | 0 |
 
 ## Outline
 
 - PS1 Scene Pipeline Status
--   Progress: 10 / 63 (next: johnny3)
+-   Progress: 12 / 63 (next: johnny5)
 -   Per-scene workflow
 -   Variant definitions
 
