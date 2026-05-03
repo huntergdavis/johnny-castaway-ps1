@@ -67,8 +67,8 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Nine scenes are signed off; `FISHING 5` remains blocked on visible
-shark cleanup residue; the remaining scenes are queued.
+Ten scenes are signed off; `FISHING 5` now clears the shark interaction
+after a host-capture overlay rebuild, and the remaining scenes are queued.
 
 ## What this isn't
 

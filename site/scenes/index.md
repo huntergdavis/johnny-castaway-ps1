@@ -104,18 +104,18 @@ Current battle-card rollup as of 2026-05-02:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `9 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2` |
+| Scenes visually validated | `10 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+13.7%` (`13.7312%` exact) |
-| Timing-bearing average target speed | `88.8%` (`88.7730%` exact) |
-| Latest perf matrix run | `2026-05-02T19:06:01` |
-| Stats version | mixed: latest refreshed rows use `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+13.9%` (`13.8803%` exact) |
+| Timing-bearing average target speed | `88.6%` (`88.6078%` exact) |
+| Latest perf matrix run | `2026-05-02T22:39:34` |
+| Stats version | mixed: latest refreshed rows use `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `compact-fgp3-v66-final-frame-hold`,
+  refreshed rows use `fishing5-v065-current-ledger-overlay`,
+  `compact-fgp3-v66-final-frame-hold`,
   `compact-fgp3-v64-building2-group318-330`,
   `compact-fgp3-v63-building2low-prime`, and
   `indexed8-row-local-dirty-v1`; other refreshed rows
@@ -205,8 +206,8 @@ and this page.
 | `fishing3` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.1% | 99.9% | 1956/1954 | 6 | 6 | 0 |  |
 | `fishing4` | high | measured | 2026-04-30T13:25:26 | compact-fgp3-v47-fishing4low-auto-prime | +14.7% | 87.2% | 967/843 | 0 | 0 | 0 |  |
 | `fishing4` | low | measured | 2026-04-30T13:24:28 | compact-fgp3-v47-fishing4low-auto-prime | +14.7% | 87.2% | 967/843 | 0 | 0 | 0 |  |
-| `fishing5` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | -9.4% | 110.4% | 807/891 | 0 | 0 | 0 |  |
-| `fishing5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | -9.5% | 110.5% | 806/891 | 0 | 0 | 0 |  |
+| `fishing5` | high | measured | 2026-05-02T22:39:34 | fishing5-v065-current-ledger-overlay | -0.6% | 100.6% | 885/890 | 0 | 0 | 0 |  |
+| `fishing5` | low | measured | 2026-05-02T22:39:34 | fishing5-v065-current-ledger-overlay | -0.6% | 100.6% | 885/890 | 0 | 0 | 0 |  |
 | `fishing6` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +18.2% | 84.6% | 890/753 | 0 | 0 | 0 |  |
 | `fishing6` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +18.2% | 84.6% | 890/753 | 0 | 0 | 0 |  |
 | `fishing7` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +18.3% | 84.5% | 858/725 | 0 | 0 | 0 |  |

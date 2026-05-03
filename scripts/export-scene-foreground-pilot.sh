@@ -45,11 +45,32 @@ CAPTURE_ISLAND_X="${FG_EXPORT_ISLAND_X:--154}"
 CAPTURE_ISLAND_Y="${FG_EXPORT_ISLAND_Y:-54}"
 CAPTURE_RAFT_STAGE="${FG_EXPORT_RAFT_STAGE:-4}"
 KEYED_OVERLAY_RECT="${FG_EXPORT_KEYED_OVERLAY_RECT:-}"
+KEYED_OVERLAY_INCLUDE_STATIC_BASE="${FG_EXPORT_KEYED_OVERLAY_INCLUDE_STATIC_BASE:-}"
+KEYED_OVERLAY_SKIP_VISIBILITY_MASK="${FG_EXPORT_KEYED_OVERLAY_SKIP_VISIBILITY_MASK:-}"
 if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
   # JOHNNY 2's lower-left moving sprites can accumulate in full-frame
   # captures. Keep the thought-bubble lane above y=320 on full base-diff
   # pixels; foreground-only does not include those bubble pixels reliably.
   KEYED_OVERLAY_RECT="0,320,320,160"
+fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
+  # FISHING 5's shark/Johnny interaction contaminates the full host surface
+  # with stale moving pixels. The current foreground ledger is the source of
+  # truth for this scene, so replace base-diff pixels with keyed foreground-only
+  # capture across the whole frame.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
+if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
+  # The shark waterline also uses current BACKGRND.BMP ledger draws. The
+  # default foreground-only capture excludes those for other scenes, but
+  # FISHING 5 needs them to avoid outline-only shark frames.
+  KEYED_OVERLAY_INCLUDE_STATIC_BASE="1"
+fi
+if [ -z "$KEYED_OVERLAY_SKIP_VISIBILITY_MASK" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
+  # FISHING 5's final full-host surface is contaminated, so exact final-frame
+  # masking can drop current shark/water pixels. Replay the current ledger
+  # directly for its keyed overlay captures.
+  KEYED_OVERLAY_SKIP_VISIBILITY_MASK="1"
 fi
 HOLD_ADVANCE_WINDOW="${FG_EXPORT_HOLD_ADVANCE_WINDOW:-}"
 if [ -z "$HOLD_ADVANCE_WINDOW" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
@@ -97,6 +118,13 @@ rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
 
 high_overlay_args=()
 low_overlay_args=()
+foreground_capture_args=()
+if [ "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" = "1" ]; then
+  foreground_capture_args=(--foreground-include-static-base)
+fi
+if [ "$KEYED_OVERLAY_SKIP_VISIBILITY_MASK" = "1" ]; then
+  foreground_capture_args+=(--foreground-skip-visibility-mask)
+fi
 hold_advance_args=()
 if [ -n "$HOLD_ADVANCE_WINDOW" ]; then
   hold_advance_args=(--hold-advance-window "$HOLD_ADVANCE_WINDOW")
@@ -122,6 +150,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
     --island-x "$CAPTURE_ISLAND_X" \
     --island-y "$CAPTURE_ISLAND_Y" \
     --foreground-only \
+    "${foreground_capture_args[@]}" \
     --output "$HOST_CAPTURE_HIGH_FGONLY_DIR"
 
   "$SCRIPT_DIR/capture-host-scene.sh" \
@@ -137,6 +166,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
     --island-x "$CAPTURE_ISLAND_X" \
     --island-y "$CAPTURE_ISLAND_Y" \
     --foreground-only \
+    "${foreground_capture_args[@]}" \
     --output "$HOST_CAPTURE_LOW_FGONLY_DIR"
 
   high_overlay_args=(

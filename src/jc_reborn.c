@@ -1081,6 +1081,8 @@ static void usage()
         printf("         capture-overlay - embed a machine-readable debug overlay in captures\n");
         printf("         capture-overlay-mask - draw overlay background only for paired baseline captures\n");
         printf("         capture-foreground-only - capture composited non-background layers over magenta key\n");
+        printf("         capture-foreground-include-static-base - include current base-BMP ledger draws in foreground-only captures\n");
+        printf("         capture-foreground-skip-visibility-mask - replay current foreground ledger without final-frame masking\n");
         printf("         noloop          - disable the fgpilot screensaver loop (single-shot play)\n");
         printf("         FG2 prefetch defaults to stage1 + 32KB stream window\n");
         printf("         prefetch-window32|48|64 or prefetch-window BYTES - override FG2 stream window size\n");
@@ -1295,6 +1297,12 @@ static void parseArgs(int argc, char **argv)
             }
             else if (!strcmp(argv[i], "capture-foreground-only")) {
                 grCaptureForegroundOnly = 1;
+            }
+            else if (!strcmp(argv[i], "capture-foreground-include-static-base")) {
+                grCaptureForegroundIncludeStaticBase = 1;
+            }
+            else if (!strcmp(argv[i], "capture-foreground-skip-visibility-mask")) {
+                grCaptureForegroundSkipVisibilityMask = 1;
             }
             else if (!strcmp(argv[i], "noloop")) {
                 screensaverLoopDisabled = 1;

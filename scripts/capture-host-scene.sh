@@ -39,6 +39,8 @@ STAMP_PREFIX=1
 UNTIL_EXIT=0
 CAPTURE_OVERLAY=0
 CAPTURE_FOREGROUND_ONLY=0
+CAPTURE_FOREGROUND_INCLUDE_STATIC_BASE=0
+CAPTURE_FOREGROUND_SKIP_VISIBILITY_MASK=0
 TIMEOUT_SECONDS=""
 
 usage() {
@@ -70,6 +72,10 @@ Options:
   --no-stamp           Do not prefix the output leaf with UTC timestamp
   --overlay            Embed debug overlay blocks in captured screenshots
   --foreground-only    Capture composited non-background layers over magenta key
+  --foreground-include-static-base
+                       Include current base-BMP ledger draws in foreground-only captures
+  --foreground-skip-visibility-mask
+                       Replay current foreground ledger without final-frame masking
   -h, --help           Show this help
 USAGE
     exit 0
@@ -101,6 +107,8 @@ while [ $# -gt 0 ]; do
         --no-stamp) STAMP_PREFIX=0; shift ;;
         --overlay) CAPTURE_OVERLAY=1; shift ;;
         --foreground-only) CAPTURE_FOREGROUND_ONLY=1; shift ;;
+        --foreground-include-static-base) CAPTURE_FOREGROUND_INCLUDE_STATIC_BASE=1; shift ;;
+        --foreground-skip-visibility-mask) CAPTURE_FOREGROUND_SKIP_VISIBILITY_MASK=1; shift ;;
         -h|--help) usage ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
@@ -356,6 +364,12 @@ if [ "$CAPTURE_OVERLAY" -eq 1 ]; then
 fi
 if [ "$CAPTURE_FOREGROUND_ONLY" -eq 1 ]; then
     capture_args+=(capture-foreground-only)
+fi
+if [ "$CAPTURE_FOREGROUND_INCLUDE_STATIC_BASE" -eq 1 ]; then
+    capture_args+=(capture-foreground-include-static-base)
+fi
+if [ "$CAPTURE_FOREGROUND_SKIP_VISIBILITY_MASK" -eq 1 ]; then
+    capture_args+=(capture-foreground-skip-visibility-mask)
 fi
 if [ "$UNTIL_EXIT" -eq 1 ]; then
     capture_args+=(capture-range "$START_FRAME" -1)

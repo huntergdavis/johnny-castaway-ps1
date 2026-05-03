@@ -64,6 +64,8 @@ int grCaptureEndFrame = -1;
 int grCaptureOverlay = 0;
 int grCaptureOverlayMaskOnly = 0;
 int grCaptureForegroundOnly = 0;
+int grCaptureForegroundIncludeStaticBase = 0;
+int grCaptureForegroundSkipVisibilityMask = 0;
 char *grCaptureSoundEventsPath = NULL;
 static int grCurrentFrame = 0;
 static char grCaptureSceneLabel[64] = "";
@@ -437,7 +439,8 @@ static void grCaptureBlitForegroundLedger(SDL_Surface *captureSurface,
 
         if (draw->kind != GR_CAPTURE_KIND_SPRITE)
             continue;
-        if (grCaptureIsStaticBaseBmp(draw->bmpName))
+        if (!grCaptureForegroundIncludeStaticBase &&
+            grCaptureIsStaticBaseBmp(draw->bmpName))
             continue;
 
         grCaptureBlitRecordedDraw(captureSurface, draw);
@@ -955,14 +958,16 @@ static SDL_Surface *grCaptureBuildSurface(struct TTtmThread *ttmThreads,
         grCaptureBlitForegroundLedger(captureSurface, ttmHolidayThread->ttmLayer);
     }
 
-    finalSurface = SDL_ConvertSurfaceFormat(windowSurface, SDL_PIXELFORMAT_ARGB8888, 0);
-    if (finalSurface == NULL) {
-        fprintf(stderr, "Error: Cannot convert final frame for foreground masking: %s\n", SDL_GetError());
-        SDL_FreeSurface(captureSurface);
-        return NULL;
+    if (!grCaptureForegroundSkipVisibilityMask) {
+        finalSurface = SDL_ConvertSurfaceFormat(windowSurface, SDL_PIXELFORMAT_ARGB8888, 0);
+        if (finalSurface == NULL) {
+            fprintf(stderr, "Error: Cannot convert final frame for foreground masking: %s\n", SDL_GetError());
+            SDL_FreeSurface(captureSurface);
+            return NULL;
+        }
+        grCaptureMaskVisiblePixels(captureSurface, finalSurface);
+        SDL_FreeSurface(finalSurface);
     }
-    grCaptureMaskVisiblePixels(captureSurface, finalSurface);
-    SDL_FreeSurface(finalSurface);
 
     /* Stamp line-draw ledger entries on top of the masked capture so
      * they aren't lost to finalSurface mismatch. See note on
