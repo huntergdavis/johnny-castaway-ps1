@@ -32,7 +32,7 @@ wave animation, holiday overlay, input, SPU).
 </p>
 
 <p align="center">
-  Press <strong>START</strong> mid-scene for the pause menu — Resume, Freeplay ON/OFF, Freeplay Options, World Options, Accessibility, and System. Freeplay Options carries gags, visitors, controls, and clear-screen; World Options carries day/night, tide, raft, holidays, and island position; Accessibility carries captions, sound, footsteps, and Sound Test; System carries save, time/date, RNG seed, perf log, reset scene, and next scene.
+  Press <strong>START</strong> mid-scene for the pause menu — Resume, Freeplay ON/OFF, Freeplay Options, World Options, Accessibility, and System. Freeplay Options carries gags, visitors, controls, and clear-screen; World Options carries day/night, tide, raft, holidays, and island position; Accessibility carries captions, sound, ocean ambience, and Sound Test; System carries save, time/date, RNG seed, perf log, reset scene, and next scene.
 </p>
 
 <p align="center">

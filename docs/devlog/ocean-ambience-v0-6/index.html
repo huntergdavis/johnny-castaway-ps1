@@ -193,10 +193,9 @@ bumped 2 → 3, with a graceful v2-load fallback that defaults the new
 field to ON). On the next boot <code class="language-plaintext highlighter-rouge">soundInit</code> reads the saved value and
 either auto-keys the voice or leaves it silent.</p>
 
-<p>The wiring mirrors the existing <code class="language-plaintext highlighter-rouge">footstepsEnabled</code> toggle (added in
-<code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> for the walking loop) almost exactly — same accessor
-pattern, same memcard schema bump, same register-write toggle. About
-200 lines net across five files.</p>
+<p>The wiring mirrors the existing <code class="language-plaintext highlighter-rouge">soundMuted</code> accessibility toggle —
+same accessor pattern, same memcard schema bump, same register-write
+toggle. About 200 lines net across five files.</p>
 
 <h2 id="frame-impact-zero-verified">Frame impact: zero, verified</h2>
 

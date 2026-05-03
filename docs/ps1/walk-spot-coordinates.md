@@ -129,17 +129,14 @@ that holds the walk-animation sequencer data outside `RESOURCE.001`.
 The extractor source is in the repo and can be re-run if the data
 ever needs to be regenerated.
 
-## R6.4 — footstep sample IDs (deferred)
+## R6.4 — footstep sample IDs (removed)
 
-This audit requires running the host SDL build through a walk
-sequence under audio capture, then identifying which `soundPlay()`
-calls fire during walking. Out of scope for this pre-flight pass;
-folded into Phase 4.1 of the walk implementation plan.
-
-The user's ruling (2026-04-29) is "if the original engine has them,
-play them, with a pause-menu toggle for opt-out." Phase 4 implements
-that without needing a runtime audit first — the pause-menu toggle
-ships regardless of whether samples exist.
+The footsteps feature was dropped on 2026-05-02 before any sample-ID
+audit ran. The walk render kernel ships without per-step audio; the
+pause-menu toggle and the `footstepsEnabled` global have been removed
+from the codebase. The audio coverage on walks is now limited to
+ambient sound (ocean loop on its dedicated SPU voice) plus the
+existing per-scene SFX.
 
 ## Pre-flight verdict
 
@@ -149,7 +146,7 @@ ships regardless of whether samples exist.
 | R6.2 JOHNWALK.PSB ready | done — already transcoded | none |
 | R6.3 extractor lineage | confirmed at `tools/src/extract_walk_data.c` | none |
 | R6.5 canonical coords | done — see table above | none |
-| R6.4 footstep sample IDs | deferred to Phase 4.1 | low — toggle ships either way |
+| R6.4 footstep sample IDs | removed 2026-05-02 — feature dropped | none |
 
 **Phase 1 is cleared to start.**
 

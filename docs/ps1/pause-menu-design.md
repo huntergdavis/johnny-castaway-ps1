@@ -35,7 +35,7 @@ visible PS1-safe panel.
 | Freeplay ON/OFF | Enter freeplay from normal mode, or exit freeplay back to the screensaver loop. |
 | Freeplay Options | Gags, visitors, controls, and clear-screen tools. |
 | World Options | Day/night, tide, raft, holiday, and island position. |
-| Accessibility | Captions, sound mute, footsteps, and sound test. |
+| Accessibility | Captions, sound mute, ocean ambience, and sound test. |
 | System | Save settings, set time/date, set RNG seed, perf log, reset scene, next scene. |
 
 ## State Enum
@@ -99,7 +99,7 @@ screensaver mode, the settings affect the next applicable scene/variant path.
 
 ## Accessibility And Sound Test
 
-Accessibility owns captions, sound mute, footsteps, and Sound Test. Sound
+Accessibility owns captions, sound mute, ocean ambience, and Sound Test. Sound
 Test is a selector over the SPU effects. It calls the same `soundPlay()` path
 used by scene playback and freeplay actions, which makes individual samples
 testable without waiting for a scene to hit the correct frame.

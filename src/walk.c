@@ -167,10 +167,9 @@ int walkAnimate(struct TTtmThread *ttmThread, struct TTtmSlot *ttmBgSlot)
         /* Delegate the per-frame draw to the shared kernel (walk_render).
          * Same code path used by freeplay direct-control mode (Phase 2.5+
          * of docs/ps1/walk-implementation-plan.md). The kernel handles
-         * the sprite draw, the behind-tree cover-up, and the footstep
-         * trigger gate — story-loop driver supplies the per-frame
-         * (spriteIdx, x, y, flip, behindTree, fireFootstep) and the
-         * kernel does the work. */
+         * the sprite draw and the behind-tree cover-up — story-loop
+         * driver supplies the per-frame (spriteIdx, x, y, flip,
+         * behindTree). */
         /* walkData layout: { flip, x+1, y, spriteIdx }
          * The original walk.c subtracted 1 from the second field to
          * recover the actual x. The kernel takes (x, y, spriteIdx) in
@@ -180,11 +179,7 @@ int walkAnimate(struct TTtmThread *ttmThread, struct TTtmSlot *ttmBgSlot)
                         (sint16)(*data)[2],         /* y */
                         (uint16)(*data)[3],         /* spriteIdx */
                         (int)(*data)[0],            /* flip */
-                        isBehindTree,
-                        /* fireFootstep — Phase 4 wires the per-edge
-                         * step-cadence trigger; pass 0 until then so
-                         * the kernel's footstep gate stays no-op. */
-                        0);
+                        isBehindTree);
 
         if (hasArrived)
             delay = 80;

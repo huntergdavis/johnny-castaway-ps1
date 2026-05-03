@@ -223,7 +223,7 @@ that we have ~257 KB free after the ocean loop.)
 
 ## Pause-Menu Toggle: `oceanAmbientEnabled`
 
-Wiring parallels existing `soundMuted` / `footstepsEnabled` toggles.
+Wiring parallels existing `soundMuted` / `closedCaptionsEnabled` toggles.
 Reuse the established pattern.
 
 ### Global state
@@ -295,22 +295,21 @@ void oceanAmbientStop(void)
 
 ### Pause-menu row
 
-In `src/pause_menu.c`, add an `OPT_OCEAN_AMBIENT` enum entry between
-`OPT_FOOTSTEPS` and `OPT_PERF` (or wherever fits the existing
-ordering). Add a row that:
+In `src/pause_menu.c`, add an `OPT_OCEAN_AMBIENT` enum entry near
+the other audio toggles in the Accessibility submenu. Add a row that:
 
 - displays "Ocean ambience: ON / OFF"
 - on toggle, flips `oceanAmbientEnabled` and calls
   `oceanAmbientStart()` / `oceanAmbientStop()`
 
-Same shape as the existing `OPT_FOOTSTEPS` row; ~20 lines of
+Same shape as the existing `OPT_SOUND` row; ~20 lines of
 copy-paste.
 
 ### Memcard persistence
 
 Bump `MC_VERSION` from 2 to 3 in `src/memcard.c`. Add
 `oceanAmbientEnabled` to `JCMCSettings`. Read/write alongside
-`soundMuted` and `footstepsEnabled`. Migration is the standard "field
+`soundMuted`. Migration is the standard "field
 not present in v2 → use default" path the codebase already has.
 
 ### Master mute interaction
@@ -475,7 +474,7 @@ finish wiring it in:
 ## Files Worth Reading Before Implementation
 
 - `src/sound_ps1.c` — existing SFX path, SpuInit, VAG loader, mute.
-- `src/pause_menu.c` — existing toggle rows (`OPT_FOOTSTEPS`,
+- `src/pause_menu.c` — existing toggle rows (`OPT_SOUND`,
   `OPT_CAPTIONS`); copy this pattern.
 - `src/memcard.c` — `JCMCSettings`, `MC_VERSION`, migration pattern.
 - `scratch/psn00b-src/examples/sound/vagsample/main.c` — minimal

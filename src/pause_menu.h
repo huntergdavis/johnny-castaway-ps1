@@ -98,6 +98,13 @@ extern int pauseMenuRequestFreeplayVisitor;
 extern int pauseMenuRequestFreeplayClear;
 extern int pauseMenuRequestFreeplayWorldRefresh;
 
+/* Scene Set — constrains the screensaver-loop random pool to a
+ * category (All, Fishing, Johnny, ...). Cycled from the pause menu;
+ * jc_reborn reads it via the picker. The "request" flag fires on a
+ * cycle so the consumer can re-randomize from the new pool. */
+extern int pauseMenuRequestSceneSetCycle;
+extern int pauseMenuSceneSet;            /* current set index, see jc_reborn.c */
+
 /* Freeplay sets this while running so the menu can show an ON/OFF toggle. */
 void pauseMenuSetFreeplayActive(int active);
 
