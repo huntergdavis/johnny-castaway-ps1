@@ -20,8 +20,8 @@ holiday overlays, input, and SPU playback.
 **Timeline**: Initial session (2025-10-18), ongoing development through 2026-05
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
-**Current release**: `v0.6.4-ps1`
-**Current validation bar**: 9 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`) signed off for pixel-perfect visuals + synced SFX
+**Current release**: `v0.6.5-ps1`
+**Current validation bar**: 10 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 
@@ -195,11 +195,12 @@ support high/low tide variants correctly, and generate a corpus for all
 
 **Achievements**:
 - High-tide and low-tide FG2 packs generated for all 63 scenes.
-- Nine scenes are validated under the current bar: `FISHING 1`,
-  `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 6`, `FISHING 7`,
-  `FISHING 8`, `JOHNNY 1`, and `JOHNNY 2`.
-- `FISHING 5` remains intentionally blocked while shark residue cleanup
-  is investigated.
+- Ten scenes are validated under the current bar: `FISHING 1`,
+  `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`,
+  `FISHING 7`, `FISHING 8`, `JOHNNY 1`, and `JOHNNY 2`.
+- `FISHING 5` cleared its shark-residue blocker after the host capture
+  path switched to a full-frame keyed current-ledger overlay for that
+  interaction.
 - FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
   and per-scene establishing RAWs were removed from the active PS1
   runtime/generation path.

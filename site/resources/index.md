@@ -429,7 +429,7 @@ for the practical porting path.
 <tr><td><code>FISH2LOW.FG2</code></td><td>385,436</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH2LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH3LOW.FG2</code></td><td>549,622</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH3LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH4LOW.FG2</code></td><td>169,264</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH4LOW.FG2">source</a></td></tr>
-<tr><td><code>FISH5LOW.FG2</code></td><td>130,636</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH5LOW.FG2">source</a></td></tr>
+<tr><td><code>FISH5LOW.FG2</code></td><td>190,765</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH5LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH6LOW.FG2</code></td><td>252,492</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH6LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH7LOW.FG2</code></td><td>224,046</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH7LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH8LOW.FG2</code></td><td>285,278</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH8LOW.FG2">source</a></td></tr>
@@ -437,7 +437,7 @@ for the practical porting path.
 <tr><td><code>FISHING2.FG2</code></td><td>542,743</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING2.FG2">source</a></td></tr>
 <tr><td><code>FISHING3.FG2</code></td><td>724,829</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING3.FG2">source</a></td></tr>
 <tr><td><code>FISHING4.FG2</code></td><td>264,083</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING4.FG2">source</a></td></tr>
-<tr><td><code>FISHING5.FG2</code></td><td>130,636</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING5.FG2">source</a></td></tr>
+<tr><td><code>FISHING5.FG2</code></td><td>190,765</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING5.FG2">source</a></td></tr>
 <tr><td><code>FISHING6.FG2</code></td><td>314,189</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING6.FG2">source</a></td></tr>
 <tr><td><code>FISHING7.FG2</code></td><td>337,714</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING7.FG2">source</a></td></tr>
 <tr><td><code>FISHING8.FG2</code></td><td>481,766</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISHING8.FG2">source</a></td></tr>

@@ -472,6 +472,8 @@ int grCaptureStartFrame = 0;
 int grCaptureEndFrame = -1;
 int grCaptureOverlay = 0;
 int grCaptureOverlayMaskOnly = 0;
+int grCaptureForegroundIncludeStaticBase = 0;
+int grCaptureForegroundSkipVisibilityMask = 0;
 char *grCaptureSoundEventsPath = NULL;
 
 /* Flag to track if GPU was already initialized (e.g., by loadTitleScreenEarly) */

@@ -2,7 +2,7 @@
 layout: page
 title: The 63-scene grind
 eyebrow: Lab . Retrospective
-subtitle: Five scenes signed off, fifty-eight to go. That is not failure. That is a ledger.
+subtitle: The scene-by-scene validation ledger, from five signed off to the current grind.
 description: A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.
 date: 2026-04-26
 ---
@@ -22,9 +22,10 @@ against reference, fix what is wrong, mark the row.
 
 ## Why only five validated
 
-At this release, five scenes are validated: `FISHING 1`, `FISHING 2`,
-`FISHING 3`, `FISHING 4`, and `FISHING 6`. `FISHING 5` is intentionally
-blocked until its shark cleanup residue is gone.
+At the time this essay was first drafted, five scenes were validated:
+`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, and `FISHING 6`.
+The live ledger has since moved on; `FISHING 5` is now validated after
+its shark cleanup capture was rebuilt.
 
 That can sound small if you treat the scene count like a progress bar. It is
 not the right read. The first validated scene built the pipeline. The second

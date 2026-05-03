@@ -4,12 +4,14 @@ title: FISHING 5 — Eaten by a shark
 ads: FISHING
 tag: 5
 slug: fishing5
-status: blocked
-description: "FISHING.ADS scene 5: Eaten by a shark. Blocked by visible shark cleanup residue."
+status: validated
+description: "FISHING.ADS scene 5: Eaten by a shark. Validated after shark capture cleanup."
 ---
 
-Blocked on 2026-05-01 verification: the shark leaves visible leftover
-sprites/frames instead of fully wiping between animation frames.
+Validated on 2026-05-02 after the shark interaction was rebuilt with a
+full-frame keyed current-ledger overlay for both tide packs. The final
+PS1/DuckStation signoff found no visible shark residue or missing shark
+pixels, and SFX timing remained aligned.
 
 ## Pack identifiers
 
@@ -22,12 +24,11 @@ sprites/frames instead of fully wiping between animation frames.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### Current blocker
+### Validation note
 
-This is not an old FG2-pack issue: the current high/low packs are already
-FGP3 temporal-residual packs and contain cleanup spans. The remaining
-failure is likely in the residual cleanup/runtime contract or in the
-generated cleanup coverage for this scene.
-
-Do not sign this scene off until the shark residue is gone under the
-same FISHING 1 bar used by the validated scenes.
+The defect was host-capture side. A full host capture contained stale
+shark/Johnny overpaint, while a final-surface-masked foreground-only
+capture could drop useful current shark pixels and leave outline-only
+frames. The validated pack path replays the current foreground ledger
+without the final-surface visibility mask and includes the current static
+base BMP ledger draws for this scene's overlay capture.

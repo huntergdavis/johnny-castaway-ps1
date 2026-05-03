@@ -123,6 +123,8 @@ extern int grCaptureEndFrame;
 extern int grCaptureOverlay;
 extern int grCaptureOverlayMaskOnly;
 extern int grCaptureForegroundOnly;
+extern int grCaptureForegroundIncludeStaticBase;
+extern int grCaptureForegroundSkipVisibilityMask;
 extern char *grCaptureSoundEventsPath;
 
 

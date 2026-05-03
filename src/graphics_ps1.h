@@ -142,6 +142,8 @@ extern int grCaptureStartFrame;
 extern int grCaptureEndFrame;
 extern int grCaptureOverlay;
 extern int grCaptureOverlayMaskOnly;
+extern int grCaptureForegroundIncludeStaticBase;
+extern int grCaptureForegroundSkipVisibilityMask;
 extern char *grCaptureSoundEventsPath;
 extern int grPs1TelemetryEnabled;
 void grCaptureSetSceneLabel(const char *sceneLabel);

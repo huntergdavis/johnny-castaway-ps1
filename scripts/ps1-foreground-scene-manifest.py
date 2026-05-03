@@ -233,6 +233,7 @@ def load_summary_metrics(paths: list[Path]) -> dict[tuple[str, str], dict[str, s
             if not isinstance(loop_vb, int) or not isinstance(target_vb, int) or loop_vb <= 0 or target_vb <= 0:
                 notes = "metadata-only; no active-loop timing; excluded from speed averages"
             metrics[metric_key] = {
+                "boot": boot,
                 "pack_bytes": str(scene_info.get("pack_bytes", "")),
                 "last_summary": repo_relative(path),
                 "last_run_at": run_timestamp_from_summary(path, path_mtime),
@@ -260,6 +261,7 @@ def load_existing_sheet_metrics(path: Path | None) -> dict[tuple[str, str], dict
 
     metrics: dict[tuple[str, str], dict[str, str]] = {}
     preserved_fields = {
+        "boot",
         "pack_bytes",
         "last_summary",
         "last_run_at",

@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 9 / 63 (next: fishing5 blocker investigation, then johnny3)
+## Progress: 10 / 63 (next: johnny3)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.4-ps1`.
+current public release is `v0.6.5-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -41,7 +41,7 @@ current public release is `v0.6.4-ps1`.
 | FISHING | 2 | fishing2 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-04-23 |  |
 | FISHING | 3 | fishing3 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline |
 | FISHING | 4 | fishing4 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix |
-| FISHING | 5 | fishing5 | ⏳ | ⏳ | night · low-tide · holiday · raft-stage | 2026-05-01 attempt | blocked: visible leftover shark sprites/frames; pack is already FGP3, so investigate residual cleanup contract |
+| FISHING | 5 | fishing5 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-02 | visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed |
 | FISHING | 6 | fishing6 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue |
 | FISHING | 7 | fishing7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position; right-edge pole/line clipping matches the original capture |
 | FISHING | 8 | fishing8 | ✅ | ✅ | night · low-tide · holiday · raft-stage · captured island position `x=3,y=9` | 2026-05-01 | visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position |
