@@ -232,6 +232,10 @@ same runtime classification as `JOHNNY 1`, so the PS1 does not paint
 ocean/island behind the office daydream. The current count became
 **14 / 63**.
 
+`MARY 1` followed on the historical validation route
+`x=-124,y=37`, raft-stage `5`. It passed visual and audible review
+without a pack or runtime change. The current count became **15 / 63**.
+
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
@@ -307,8 +311,8 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`).
-- Next scene in bring-up: **`MARY 1`**.
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`).
+- Next scene in bring-up: **`MARY 2`**.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

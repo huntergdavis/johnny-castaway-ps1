@@ -3,15 +3,16 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-03 (scene ledger at 14/63; `JOHNNY 6` is a
-black-backdrop scene and now bypasses ocean/island background painting).
+**Last updated:** 2026-05-03 (scene ledger at 15/63; `MARY 1` was
+validated on the legacy route `x=-124,y=37`, raft-stage `5`, with no
+pack or runtime changes required).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`,
-`JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, and `JOHNNY 6` have been validated
+`JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, and `MARY 1` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -22,6 +23,7 @@ full-screen black-backdrop scenes, so they bypass the ocean/island setup
 path and use black cleanup for temporal residual spans.
 `JOHNNY 2` is pinned to the host-captured island position
 (`x=-64,y=54`) and uses a keyed lower-band overlay plus explicit
+hold redistribution for the island/SOS thought bubbles.
 `FISHING 5` uses a full-frame keyed current-ledger overlay for its shark
 interaction so stale full-host overpaint is not replayed and useful
 current shark pixels are not masked out.
@@ -38,6 +40,9 @@ timing now pauses on the SOS note bubble instead of the blank
 post-bubble rows. Production placement remains variable.
 `JOHNNY 6` uses the same black-backdrop runtime classification as
 `JOHNNY 1`; no ocean/island background is painted for that scene.
+`MARY 1` was visually and audibly signed off on the historical MARY1
+validation route (`x=-124,y=37`, raft-stage `5`) without changing the
+pack or runtime.
 
 | Component | Status |
 |---|---|
@@ -46,7 +51,7 @@ post-bubble rows. Production placement remains variable.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 14/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 15/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -56,18 +61,18 @@ post-bubble rows. Production placement remains variable.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 14 / 63 fully validated
+## Scenes: 15 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
-- Current main after `v0.6.6-ps1` — promotes `JOHNNY 6` after routing
-  it through the full-screen black-backdrop runtime path; `JOHNNY 5`
-  was also promoted after rebuilding high/low packs from host/test
-  `x=80,y=54`, restoring the thrown-bottle splash, cleaning stale
-  lower-band overpaint, and moving hold time onto the SOS note bubble.
+- Current main after `v0.6.6-ps1` — promotes `MARY 1` after visual +
+  audible signoff on the legacy validation route (`x=-124,y=37`,
+  raft-stage `5`), with no pack or runtime changes required. It also
+  promotes `JOHNNY 6` through the full-screen black-backdrop runtime
+  path and `JOHNNY 5` after the splash-capture and SOS-note timing fixes.
 - `v0.6.6-ps1` — scene-validation bugfix release; revalidates
   `FISHING 7` and `FISHING 8` after rebuilding high/low packs from a
   far-left full-frame foreground-only capture, proving pack completeness
@@ -199,7 +204,8 @@ searchability — **do not cite them as current progress**:
 | **11 / 63** | **2026-05-02** | **Scene ledger after `JOHNNY 3` promotion; right-shift diagnostic run proves complete source pixels without adding a runtime island-position pin** | **this doc, `scene-status.md`** |
 | **12 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 4` promotion plus `FISHING 7`/`FISHING 8` revalidation; all three use capture/test positions only and production variable island placement** | **this doc, `scene-status.md`** |
 | **13 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 5` promotion; host/test `x=80,y=54` capture restores the thrown-bottle splash, but production island placement remains variable** | **this doc, `scene-status.md`** |
-| **14 / 63** | **2026-05-03** | **Current scene ledger after `JOHNNY 6` promotion; black-backdrop routing avoids painting ocean/island behind an all-black source scene** | **this doc, `scene-status.md`** |
+| **14 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 6` promotion; black-backdrop routing avoids painting ocean/island behind an all-black source scene** | **this doc, `scene-status.md`** |
+| **15 / 63** | **2026-05-03** | **Current scene ledger after `MARY 1` promotion; legacy validation route `x=-124,y=37`, raft-stage `5`, needed no pack/runtime changes** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current

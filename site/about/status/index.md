@@ -57,7 +57,7 @@ Honest list, narrowed to specifics:
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
   evidence.
-- **`MARY 1`, `MARY 2`, `MARY 4`** are untested in regtest. Those rows in
+- **`MARY 2`, `MARY 4`** are untested in regtest. Those rows in
   `scene-status.md` are the SoT.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
@@ -89,8 +89,8 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **`MARY 1` bring-up.** Next focus is continuing the signed
-  scene-by-scene ledger after the `JOHNNY 6` black-backdrop validation.
+- **`MARY 2` bring-up.** Next focus is continuing the signed
+  scene-by-scene ledger after the `MARY 1` validation-route signoff.
   The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

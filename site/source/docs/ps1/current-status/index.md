@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-black-backdrop scene and now bypasses ocean/island background painting).
+validated on the legacy route x=-124,y=37, raft-stage 5, with no pack or runtime changes required).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 259 |
-| Approx. words | 2114 |
+| Lines | 265 |
+| Approx. words | 2185 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 14 / 63 fully validated
+-   Scenes: 15 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
