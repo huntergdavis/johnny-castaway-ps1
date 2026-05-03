@@ -67,11 +67,10 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Thirteen scenes are signed off; `JOHNNY 5` now stays variable-position
-in production after an `x=80,y=54` host/test recapture restored the
-thrown-bottle splash, full-frame foreground-only overlay fixed lower-band
-overpaint, and SOS-note hold timing moved onto the note bubble. The
-remaining scenes are queued.
+Sixteen scenes are signed off; `MARY 2` now stays variable-position in
+production after a wide multi-view capture stitch restored edge-clipped
+foreground action and full-host bubble injection restored the fish
+thought-bubble shell. The remaining scenes are queued.
 
 ## What this isn't
 

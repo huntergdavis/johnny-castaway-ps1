@@ -100,22 +100,22 @@ A scene can be timed here without being visually certified.
 
 ### Rollup
 
-Current battle-card rollup as of 2026-05-02:
+Current battle-card rollup as of 2026-05-03:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `15 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1` |
+| Scenes visually validated | `16 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+13.9%` (`13.8803%` exact) |
-| Timing-bearing average target speed | `88.6%` (`88.6078%` exact) |
-| Latest perf matrix run | `2026-05-02T22:39:34` |
-| Stats version | mixed: latest refreshed rows use `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+13.9%` (`13.8570%` exact) |
+| Timing-bearing average target speed | `88.6%` (`88.6303%` exact) |
+| Latest perf matrix run | `2026-05-03T14:22:57` |
+| Stats version | mixed: latest refreshed rows use `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `fishing5-v065-current-ledger-overlay`,
+  refreshed rows use `mary2-v068-wide-stitch`,
+  `fishing5-v065-current-ledger-overlay`,
+  `johnny2-v064-validation-refresh`,
   `compact-fgp3-v66-final-frame-hold`,
   `compact-fgp3-v64-building2-group318-330`,
   `compact-fgp3-v63-building2low-prime`, and
@@ -228,8 +230,8 @@ and this page.
 | `johnny6` | low | measured | 2026-04-29T17:41:03 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2896/2800 | 27 | 27 | 0 |  |
 | `mary1` | high | measured | 2026-04-29T17:42:09 | compact-fgp3-v2-fullmatrix | +3.7% | 96.4% | 5004/4826 | 49 | 40 | 2 | validated 2026-05-03 on legacy visual route x=-124,y=37 raft-stage 5; timing row predates visual signoff |
 | `mary1` | low | measured | 2026-04-29T17:42:28 | compact-fgp3-v2-fullmatrix | +3.2% | 96.9% | 4994/4839 | 26 | 20 | 1 | validated 2026-05-03 on legacy visual route x=-124,y=37 raft-stage 5; timing row predates visual signoff |
-| `mary2` | high | measured | 2026-04-29T17:44:11 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2284/2247 | 7 | 7 | 0 |  |
-| `mary2` | low | measured | 2026-04-29T17:44:28 | compact-fgp3-v2-fullmatrix | +1.6% | 98.4% | 2285/2249 | 6 | 6 | 0 |  |
+| `mary2` | high | measured | 2026-05-03T14:22:57 | mary2-v068-wide-stitch | +0.2% | 99.8% | 2250/2246 | 4 | 4 | 0 | validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed |
+| `mary2` | low | measured | 2026-05-03T14:22:57 | mary2-v068-wide-stitch | +0.3% | 99.7% | 2253/2246 | 7 | 7 | 0 | validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed |
 | `mary3` | high | measured | 2026-04-29T17:45:25 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `mary4` | high | measured | 2026-04-29T17:46:07 | compact-fgp3-v2-fullmatrix | -2.4% | 102.4% | 1968/2016 | 28 | 12 | 3 |  |

@@ -361,12 +361,18 @@
 - ads: MARY
   tag: 2
   slug: mary2
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: untested in regtest
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54; x=80,y=54; x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after wide scene-relative multi-view stitch restored clipped line/mermaid/boot/splash pixels and full-host bubble injection restored the fish thought-bubble shell; far-right and true far-left stress playback passed
 - ads: MARY
   tag: 3
   slug: mary3

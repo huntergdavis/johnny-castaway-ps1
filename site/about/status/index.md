@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.6.6-ps1
+eyebrow: Component-level state at v0.6.8-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -15,7 +15,8 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
-`JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, and `JOHNNY 5`. The live per-scene ledger is at
+`JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
+`JOHNNY 6`, `MARY 1`, and `MARY 2`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -52,13 +53,13 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 50 scenes in
+- **Scene coverage past the signed-off set.** The other 47 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
   evidence.
-- **`MARY 2`, `MARY 4`** are untested in regtest. Those rows in
-  `scene-status.md` are the SoT.
+- **`MARY 4`** is untested in regtest. That row in
+  `scene-status.md` is the SoT.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
   formatted card or a card with a corrupted block is still being
@@ -89,8 +90,8 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **`MARY 2` bring-up.** Next focus is continuing the signed
-  scene-by-scene ledger after the `MARY 1` validation-route signoff.
+- **`MARY 3` bring-up.** Next focus is continuing the signed
+  scene-by-scene ledger after the `MARY 2` wide-stitch validation.
   The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
@@ -108,7 +109,9 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.6.6-ps1` removes the old
+- **Milestone release cadence.** `v0.6.8-ps1` validates `MARY 2`
+  after the wide multi-view stitch and fish thought-bubble repair.
+  `v0.6.6-ps1` removes the old
   FISHING7/FISHING8 runtime pins after far-left recapture proved both
   packs are random-position safe. `v0.5.0-ps1` is the freeplay/debug
   release. `v0.4.20-ps1` was the walking-loop stability release.
