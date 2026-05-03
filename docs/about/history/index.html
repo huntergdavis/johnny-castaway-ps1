@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1." />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.4-ps1." />
 
   <meta property="og:title"        content="History — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.5.0-ps1." />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.4-ps1." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -66,7 +66,7 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">2025-10 to v0.5.0-ps1</p>
+      <p class="eyebrow">2025-10 to v0.6.4-ps1</p>
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.</p>
       <hr class="rule" />
@@ -257,8 +257,16 @@ current count became <strong>7 / 63</strong>.</p>
 
 <h2 id="the-63-scene-grind">The 63-scene grind</h2>
 
-<p><code class="language-plaintext highlighter-rouge">JOHNNY 1</code> is next in bring-up. The remaining unvalidated scenes are
-queued. The per-scene workflow is the same loop, repeated:</p>
+<p><code class="language-plaintext highlighter-rouge">JOHNNY 1</code> then joined the ledger on <strong>2026-05-02</strong> after its
+full-screen black-backdrop playback path fixed placement, scaling, and
+clean-rect memory pressure. <code class="language-plaintext highlighter-rouge">JOHNNY 2</code> followed the same day after its
+first-SOS-bottle capture was rebuilt at a pinned island position
+(<code class="language-plaintext highlighter-rouge">x=-64,y=54</code>), lower-band keyed overlay cleanup removed bottle/feet
+residue, and the island/SOS thought-bubble holds were redistributed.
+The current count became <strong>9 / 63</strong>.</p>
+
+<p>The remaining unvalidated scenes are queued. The per-scene workflow is
+the same loop, repeated:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. capture-host-scene.sh          (host capture, high tide + low tide)
 2. export-scene-foreground-pilot  (build the FG2 pack from the capture)
@@ -324,13 +332,13 @@ and system pages. The important engineering rule was the same as
 the walking release: the steady-state frame loop does not allocate.</li>
 </ul>
 
-<h2 id="where-it-stands-at-v063-ps1">Where it stands at v0.6.3-ps1</h2>
+<h2 id="where-it-stands-at-v064-ps1">Where it stands at v0.6.4-ps1</h2>
 
 <ul>
-  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.6.3-ps1</code></strong>.</li>
-  <li>Validated scenes: <strong>8 / 63</strong>
-(<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, <code class="language-plaintext highlighter-rouge">FISHING 6</code>).</li>
-  <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">FISHING 7</code></strong>. <code class="language-plaintext highlighter-rouge">FISHING 5</code> remains blocked
+  <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.6.4-ps1</code></strong>.</li>
+  <li>Validated scenes: <strong>9 / 63</strong>
+(<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, <code class="language-plaintext highlighter-rouge">FISHING 6</code>, <code class="language-plaintext highlighter-rouge">FISHING 7</code>, <code class="language-plaintext highlighter-rouge">FISHING 8</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 1</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 2</code>).</li>
+  <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">FISHING 5</code> blocker investigation</strong>. It remains blocked
 on shark cleanup residue.</li>
   <li>Freeplay/debug release: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong> – direct-control Johnny,
 pause-menu debug catalogs, frog loading transitions, and a
@@ -372,8 +380,8 @@ you were cheated. Open source and free.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          8 / 63 scenes validated
-          (v0.6.3-ps1)
+          9 / 63 scenes validated
+          (v0.6.4-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
