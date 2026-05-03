@@ -44,7 +44,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <tr><td><code>Misc &amp; Suzy</code></td><td><code>suzy1</code>, <code>suzy2</code>, <code>miscgag1</code>, <code>miscgag2</code></td><td>All playing pre-validation; combined because each family alone is just two scenes</td></tr>
 </tbody>
 </table>
-<p>Sets that include not-yet-validated scenes still play — the FG2 packs ship on disc — but visuals or timing may need future fixes. As scenes graduate from ⏳ to ✅ in <a href="{{ '/docs/scene-status/' | relative_url }}">scene-status</a>, they look better in whichever pool already contains them; no further code change required.</p>
+<p>Sets that include not-yet-validated scenes still play — the FG2 packs ship on disc — but visuals or timing may need future fixes. As scenes graduate from ⏳ to ✅ in the <a href="{{ '/scenes/' | relative_url }}">scene ledger</a>, they look better in whichever pool already contains them; no further code change required.</p>
 </section>
 
 <section class="menu-shot" id="freeplay-options">

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Scene Set lineup expands to seven categories — May 3, 2026"
-date: 2026-05-03 18:00:00 -0700
+date: 2026-05-03
 editor_note: "Scene Set ships with the full categorical lineup: Johnny Stories, Mary Visits, Visitors, Activities, and Misc & Suzy on top of the existing All Scenes and Fishing Only. Pools point at real scenes whose FG2 packs are already on disc, so they play immediately and look better in place as visual signoff lands."
 source_path: docs/ps1/pause-menu-design.md
 description: "Pause menu Scene Set selector grows from two pools to seven; not-yet-validated scenes play today and self-upgrade as scenes get visually signed off."
