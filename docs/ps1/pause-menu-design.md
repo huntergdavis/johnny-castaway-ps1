@@ -48,6 +48,24 @@ uncommitted preview, and navigating off the row discards it. The
 backing pools live in `src/jc_reborn.c` (`gSceneSetPools`); index 0 is
 the catch-all `kProvenScenes` pool, and additional sets append below.
 
+### Active sets
+
+| # | Label | Pool | Notes |
+|---|---|---|---|
+| 0 | All Scenes | empty → falls back to `kProvenScenes` | the catch-all |
+| 1 | Fishing Only | `fishing1`..`fishing8` | all visually validated |
+| 2 | Johnny Stories | `johnny1`..`johnny6` | `johnny1`..`4` validated; `5`/`6` light up as validation lands |
+| 3 | Mary Visits | `mary1`..`mary5` | FG2 packs ship; visual signoff pending |
+| 4 | Visitors | `visitor1`, `visitor3`..`visitor7` | `visitor2` has no FG2 pack |
+| 5 | Activities | `activity1`, `activity4`..`activity12` | `activity2`/`3` have no FG2 pack |
+| 6 | Misc & Suzy | `suzy1`, `suzy2`, `miscgag1`, `miscgag2` | combined because each family alone is too small |
+
+Sets that include not-yet-validated scenes still play — the FG2 packs are
+on disc — but visuals or timing may need future fixes. The set framework
+is designed for forward compatibility: as a scene moves from ⏳ to ✅ in
+`docs/ps1/scene-status.md`, it just looks better in whichever pool already
+contains it.
+
 Committing a scene set fires `pauseMenuRequestSceneSetCycle`, which the
 screensaver loop in `jc_reborn.c` consumes by:
 

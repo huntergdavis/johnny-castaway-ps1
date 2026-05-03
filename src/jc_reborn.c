@@ -240,15 +240,50 @@ static const char *kSetFishingScenes[] = {
     "fishing1", "fishing2", "fishing3", "fishing4",
     "fishing5", "fishing6", "fishing7", "fishing8",
 };
+/* Johnny stories — johnny1..4 are visually signed off as of v0.6.7-ps1;
+ * johnny5/6 ride along (their FG2 packs ship on disc) and will look
+ * right as visual validation lands without any code change here. */
+static const char *kSetJohnnyScenes[] = {
+    "johnny1", "johnny2", "johnny3", "johnny4", "johnny5", "johnny6",
+};
+/* Mary visits — none visually signed off yet, but FG2 packs are on disc
+ * (MARY1..MARY5 + LOW variants), so the runtime can play them. As each
+ * scene gets a ✅ in scene-status.md the pool just lights up. */
+static const char *kSetMaryScenes[] = {
+    "mary1", "mary2", "mary3", "mary4", "mary5",
+};
+/* Visitors (gulls, biplane, canoe, etc.) — VISITOR2 has no FG2 on disc,
+ * so the pool skips it instead of risking a pack-start failure. */
+static const char *kSetVisitorScenes[] = {
+    "visitor1", "visitor3", "visitor4", "visitor5", "visitor6", "visitor7",
+};
+/* Activities — ACTIVITY2/3 have no FG2 on disc; the pool follows the
+ * scene-status.md table. */
+static const char *kSetActivityScenes[] = {
+    "activity1", "activity4", "activity5", "activity6", "activity7",
+    "activity8", "activity9", "activity10", "activity11", "activity12",
+};
+/* Misc & Suzy — combined because each family alone is just two scenes;
+ * together they're a usable 4-scene rotation. */
+static const char *kSetMiscSuzyScenes[] = {
+    "suzy1", "suzy2", "miscgag1", "miscgag2",
+};
 
 struct SceneSetPool {
     const char *const *scenes;
     int               count;
 };
 
+#define SCENE_SET_POOL(arr) { arr, (int)(sizeof(arr) / sizeof((arr)[0])) }
+
 static const struct SceneSetPool gSceneSetPools[] = {
-    { NULL, 0 },                                                                              /* All Scenes — uses kProvenScenes */
-    { kSetFishingScenes, (int)(sizeof(kSetFishingScenes) / sizeof(kSetFishingScenes[0])) },   /* Fishing Only */
+    { NULL, 0 },                              /* All Scenes — uses kProvenScenes */
+    SCENE_SET_POOL(kSetFishingScenes),        /* Fishing Only */
+    SCENE_SET_POOL(kSetJohnnyScenes),         /* Johnny Stories */
+    SCENE_SET_POOL(kSetMaryScenes),           /* Mary Visits */
+    SCENE_SET_POOL(kSetVisitorScenes),        /* Visitors */
+    SCENE_SET_POOL(kSetActivityScenes),       /* Activities */
+    SCENE_SET_POOL(kSetMiscSuzyScenes),       /* Misc & Suzy */
 };
 #define NUM_SCENE_SET_POOLS \
     ((int)(sizeof(gSceneSetPools) / sizeof(gSceneSetPools[0])))
