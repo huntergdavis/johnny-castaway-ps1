@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FISHING 5 — Eaten by a shark — Johnny Castaway PS1</title>
-  <meta name="description" content="FISHING.ADS scene 5: Eaten by a shark. Blocked by visible shark cleanup residue." />
+  <meta name="description" content="FISHING.ADS scene 5: Eaten by a shark. Validated after shark capture cleanup." />
 
   <meta property="og:title"        content="FISHING 5 — Eaten by a shark — Johnny Castaway PS1" />
-  <meta property="og:description"  content="FISHING.ADS scene 5: Eaten by a shark. Blocked by visible shark cleanup residue." />
+  <meta property="og:description"  content="FISHING.ADS scene 5: Eaten by a shark. Validated after shark capture cleanup." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · FISHING 5
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>FISHING 5 — Eaten by a shark</h1>
@@ -77,8 +77,10 @@
   </header>
 
   <div class="page-body">
-    <p>Blocked on 2026-05-01 verification: the shark leaves visible leftover
-sprites/frames instead of fully wiping between animation frames.</p>
+    <p>Validated on 2026-05-02 after the shark interaction was rebuilt with a
+full-frame keyed current-ledger overlay for both tide packs. The final
+PS1/DuckStation signoff found no visible shark residue or missing shark
+pixels, and SFX timing remained aligned.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -93,15 +95,14 @@ sprites/frames instead of fully wiping between animation frames.</p>
 
 <p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>HIGH</strong>.</p>
 
-<h3 id="current-blocker">Current blocker</h3>
+<h3 id="validation-note">Validation note</h3>
 
-<p>This is not an old FG2-pack issue: the current high/low packs are already
-FGP3 temporal-residual packs and contain cleanup spans. The remaining
-failure is likely in the residual cleanup/runtime contract or in the
-generated cleanup coverage for this scene.</p>
-
-<p>Do not sign this scene off until the shark residue is gone under the
-same FISHING 1 bar used by the validated scenes.</p>
+<p>The defect was host-capture side. A full host capture contained stale
+shark/Johnny overpaint, while a final-surface-masked foreground-only
+capture could drop useful current shark pixels and leave outline-only
+frames. The validated pack path replays the current foreground ledger
+without the final-surface visibility mask and includes the current static
+base BMP ledger draws for this scene’s overlay capture.</p>
 
   </div>
 
@@ -127,8 +128,8 @@ same FISHING 1 bar used by the validated scenes.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          9 / 63 scenes validated
-          (v0.6.4-ps1)
+          10 / 63 scenes validated
+          (v0.6.5-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

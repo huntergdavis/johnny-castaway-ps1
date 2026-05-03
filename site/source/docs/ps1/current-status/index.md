@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after lower-band keyed overlay cleanup and thought-bubble hold timing fixes).
+validated after the shark capture was rebuilt with a full-frame keyed current-ledger overlay).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 228 |
-| Approx. words | 1700 |
+| Lines | 234 |
+| Approx. words | 1774 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 9 / 63 fully validated
+-   Scenes: 10 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
