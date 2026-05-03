@@ -4,11 +4,11 @@ title: JOHNNY 4 — Writes a fresh SOS
 ads: JOHNNY
 tag: 4
 slug: johnny4
-status: pending
-description: "JOHNNY.ADS scene 4: Writes a fresh SOS. Not yet validated."
+status: validated
+description: "JOHNNY.ADS scene 4: Writes a fresh SOS. Validated after full-frame foreground-only capture cleanup."
 ---
 
-Not yet validated.
+Validated on 2026-05-03 after visual and audible signoff.
 
 ## Pack identifiers
 
@@ -21,21 +21,15 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Validation note
 
-The same way every scene does: under the FISHING 1 bar.
+This was another bottle-message capture bug. Host full-surface frames
+could carry stale bottle overpaint and a thin ocean-colored line through
+the SOS thought bubble. The clean foreground-only stream contained the
+correct bottle and bubble pixels, so `JOHNNY 4` now uses a full-frame
+keyed foreground-only overlay for both high and low tide packs.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+The scene was captured and tested at `island-pos -64 54` so the bottle
+message stayed fully in frame. That is not a production runtime pin:
+normal story/freeplay placement remains variable unless a future scene
+proves it genuinely requires a fixed island position.

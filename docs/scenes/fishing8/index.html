@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FISHING 8 — Another boot — Johnny Castaway PS1</title>
-  <meta name="description" content="FISHING.ADS scene 8: Another boot. Validated on PS1 with captured-position foreground replay." />
+  <meta name="description" content="FISHING.ADS scene 8: Another boot. Validated on PS1 with random-position-safe scene playback." />
 
   <meta property="og:title"        content="FISHING 8 — Another boot — Johnny Castaway PS1" />
-  <meta property="og:description"  content="FISHING.ADS scene 8: Another boot. Validated on PS1 with captured-position foreground replay." />
+  <meta property="og:description"  content="FISHING.ADS scene 8: Another boot. Validated on PS1 with random-position-safe scene playback." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -77,10 +77,11 @@
   </header>
 
   <div class="page-body">
-    <p>Validated on PS1 under the current scene bar. This scene uses a
-single-position FG2 pack pinned to the host-captured island position
-<code class="language-plaintext highlighter-rouge">x=3,y=9</code>, matching the full-width reference viewport used by the
-host capture.</p>
+    <p>Validated on PS1 under the current scene bar. The high/low packs were
+recaptured with the host island shifted far left (<code class="language-plaintext highlighter-rouge">x=-300,y=54</code>) so the
+complete scene-relative foreground stayed inside the capture viewport.
+That is a capture/test position only: production playback uses the
+normal random island placement.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -98,13 +99,13 @@ host capture.</p>
 <h3 id="validation-notes">Validation Notes</h3>
 
 <p>A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). <code class="language-plaintext highlighter-rouge">FISHING 8</code> is position-sensitive:
-the current pack is pixel-perfect for its captured viewport, not for
-arbitrary random island positions. The runtime therefore pins this scene
-to the captured position unless an explicit debug boot overrides it.</p>
+scene-relative <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The
+PS1 build replays that pack at native resolution through every variant
+the original game randomized between (night, low-tide, holiday overlays,
+raft-stage progress where applicable). <code class="language-plaintext highlighter-rouge">FISHING 8</code> uses the same
+full-frame foreground-only keyed overlay pattern as <code class="language-plaintext highlighter-rouge">FISHING 7</code>. A forced
+far-left PS1 stress run was clean, so production playback stays
+random-position safe.</p>
 
   </div>
 
@@ -130,8 +131,8 @@ to the captured position unless an explicit debug boot overrides it.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          10 / 63 scenes validated
-          (v0.6.5-ps1)
+          12 / 63 scenes validated
+          (v0.6.6-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

@@ -492,26 +492,11 @@ static void fgLoopRandomVarPos(int *outX, int *outY)
     }
 }
 
-static int fgLoopCapturedIslandPosition(const char *sceneName,
-                                        int *outX, int *outY)
-{
-    if (sceneName != NULL &&
-        (strcmp(sceneName, "fishing7") == 0 ||
-         strcmp(sceneName, "fishing8") == 0)) {
-        *outX = 3;
-        *outY = 9;
-        return 1;
-    }
-    return 0;
-}
-
 /* Set islandState variant fields for one iteration. Fields explicitly
  * forced via BOOTMODE (hostForced* >= 0) stay forced; unforced fields
  * get a fresh random value each call. Position policy is scene-specific:
  * current validated fgpilot scenes are VARPOS_OK in story_data.h, so their
- * FG2 scene-relative overlays must follow the original random island offset,
- * except for scenes whose current single-position pack is pinned to its
- * captured host island position. */
+ * FG2 scene-relative overlays must follow the original random island offset. */
 static void fgLoopApplyVariant(const char *sceneName)
 {
     extern int ps1SoftTimeEnabled;
@@ -605,11 +590,6 @@ static void fgLoopApplyVariant(const char *sceneName)
     if (hostForcedIslandPosValid) {
         islandState.xPos = hostForcedIslandX;
         islandState.yPos = hostForcedIslandY;
-    } else if (fgLoopCapturedIslandPosition(sceneName,
-                                            &islandState.xPos,
-                                            &islandState.yPos)) {
-        /* The current FISHING7/8 FG2s are single-position captures whose
-         * full-width foreground lands correctly only at this host position. */
     } else if (fgLoopSceneUsesVarPos(sceneName) ||
                fgLoopSceneUsesLeftIsland(sceneName)) {
         islandState.xPos = seqXPos;

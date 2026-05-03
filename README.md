@@ -82,9 +82,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.6.5-ps1`** |
+| Current release | **`v0.6.6-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **10 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`) |
+| Scenes fully validated under the reference bar | **12 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
@@ -93,10 +93,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-`v0.6.5-ps1` is a scene-validation bugfix release: `FISHING 5` now
-clears the reference bar after the shark capture was rebuilt with a
-full-frame keyed current-ledger overlay that avoids both stale host
-overpaint and outline-only shark frames. It builds on `v0.6.4-ps1`
+`v0.6.6-ps1` is a scene-validation bugfix release: `FISHING 7` and
+`FISHING 8` were rebuilt from far-left full-frame foreground-only host
+captures, then validated with far-left stress playback. The old runtime
+island-position pins are gone; both scenes now follow normal random
+island placement. It builds on `v0.6.5-ps1` (`FISHING 5` shark capture
+cleanup and `JOHNNY 4` variable-position bottle-message validation),
+`v0.6.4-ps1`
 (`JOHNNY 2` pinned lower-band cleanup and thought-bubble timing),
 `v0.6.3-ps1` (`FISHING 7`, `FISHING 8`, and `JOHNNY 1`), `v0.6.2-ps1`
 (`FISHING 6` terminal FGP3 cleanup), `v0.6.1-ps1` (freeplay clean-rects
@@ -148,8 +151,9 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Ten scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`,
-`fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`) validated
+Twelve scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`,
+`fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`,
+`johnny4`) validated
 end-to-end anchor the scene-by-scene bring-up loop.
 
 The full pipeline — pack format byte layout, hardware constraints hit

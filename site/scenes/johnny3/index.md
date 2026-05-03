@@ -4,11 +4,14 @@ title: JOHNNY 3 — His own SOS returns
 ads: JOHNNY
 tag: 3
 slug: johnny3
-status: pending
-description: "JOHNNY.ADS scene 3: His own SOS returns. Not yet validated."
+status: validated
+description: "JOHNNY.ADS scene 3: His own SOS returns. Validated with variable island placement."
 ---
 
-Not yet validated.
+Validated on 2026-05-02 after visual and audible signoff. A right-shifted
+island-position probe confirmed the full source pixels are present in the
+pack; that was a diagnostic check only, not a runtime placement
+requirement.
 
 ## Pack identifiers
 
@@ -21,21 +24,10 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Validation note
 
-The same way every scene does: under the FISHING 1 bar.
-
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Like the later `FISHING 7`/`FISHING 8` revalidation, this scene treats
+explicit island positions as capture/test evidence only. The standard
+variable island placement remains the durable runtime policy unless a
+scene proves it was host-clipped or requires a specific original
+position.

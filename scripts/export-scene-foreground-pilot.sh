@@ -41,8 +41,23 @@ if [ "${#LOWTIDE_PACK_BASENAME}" -gt 8 ]; then
 fi
 LOWTIDE_PACK_PATH="$PROJECT_ROOT/generated/ps1/foreground/${LOWTIDE_PACK_BASENAME}.FG2"
 LOWTIDE_PACK_JSON="$OUTPUT_DIR/foreground-pack-lowtide.json"
-CAPTURE_ISLAND_X="${FG_EXPORT_ISLAND_X:--154}"
+CAPTURE_ISLAND_X="${FG_EXPORT_ISLAND_X:-}"
 CAPTURE_ISLAND_Y="${FG_EXPORT_ISLAND_Y:-54}"
+if [ -z "$CAPTURE_ISLAND_X" ]; then
+  if [ "$SCENE_SLUG" = "johnny4" ]; then
+    # JOHNNY 4 is another bottle-message scene. Capture/test it at the
+    # same right-shifted host position used by JOHNNY 2 so the message
+    # pixels are not clipped; do not add a production runtime pin.
+    CAPTURE_ISLAND_X="-64"
+  elif [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; then
+    # FISHING 7/8 reach far to the right of Johnny. Capture them with the
+    # island shifted left so all scene-relative pixels are inside the host
+    # viewport; runtime playback can then follow normal island placement.
+    CAPTURE_ISLAND_X="-300"
+  else
+    CAPTURE_ISLAND_X="-154"
+  fi
+fi
 CAPTURE_RAFT_STAGE="${FG_EXPORT_RAFT_STAGE:-4}"
 KEYED_OVERLAY_RECT="${FG_EXPORT_KEYED_OVERLAY_RECT:-}"
 KEYED_OVERLAY_INCLUDE_STATIC_BASE="${FG_EXPORT_KEYED_OVERLAY_INCLUDE_STATIC_BASE:-}"
@@ -53,11 +68,24 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
   # pixels; foreground-only does not include those bubble pixels reliably.
   KEYED_OVERLAY_RECT="0,320,320,160"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny4" ]; then
+  # JOHNNY 4's full host surface can contaminate the SOS bubble with ocean
+  # pixels as well as stale lower-band bottles. Unlike JOHNNY 2, its
+  # foreground-only capture carries the bubble cleanly, so use it frame-wide.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # FISHING 5's shark/Johnny interaction contaminates the full host surface
   # with stale moving pixels. The current foreground ledger is the source of
   # truth for this scene, so replace base-diff pixels with keyed foreground-only
   # capture across the whole frame.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
+if [ -z "$KEYED_OVERLAY_RECT" ] &&
+   { [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; }; then
+  # The older full-host captures for these scenes were both full-width dirty
+  # and right-edge clipped. Foreground-only captures contain the moving action
+  # without the stale island/ocean pixels, so use them frame-wide.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
