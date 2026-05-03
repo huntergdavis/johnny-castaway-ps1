@@ -89,9 +89,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **`JOHNNY 6` bring-up.** Next focus is continuing the signed
-  scene-by-scene ledger after the `JOHNNY 5` splash-capture and
-  SOS-note timing validation. The bring-up loop is in
+- **`MARY 1` bring-up.** Next focus is continuing the signed
+  scene-by-scene ledger after the `JOHNNY 6` black-backdrop validation.
+  The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing

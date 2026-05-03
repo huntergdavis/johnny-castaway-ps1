@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-recaptured at host/test x=80,y=54 so the thrown-bottle splash is in frame, while production island placement remains variable).
+black-backdrop scene and now bypasses ocean/island background painting).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 258 |
-| Approx. words | 2083 |
+| Lines | 259 |
+| Approx. words | 2114 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 13 / 63 fully validated
+-   Scenes: 14 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

@@ -843,7 +843,8 @@ static int fgSceneEquals(const char *a, const char *b)
 
 static int fgSceneUsesBlackBackdrop(const char *sceneName)
 {
-    return fgSceneEquals(sceneName, "johnny1");
+    return fgSceneEquals(sceneName, "johnny1") ||
+           fgSceneEquals(sceneName, "johnny6");
 }
 
 static void fgTelemetryUpdate(void)

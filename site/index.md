@@ -6,8 +6,8 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="hero">
   <div class="hero-frame">
-    <img src="{{ '/assets/img/title-screen-ps1.png' | relative_url }}"
-         alt="Johnny Castaway title screen rendered on a PS1." />
+    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+         alt="JOHNNY 6 running on PS1: Johnny dreams about an island date." />
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>
@@ -23,12 +23,12 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="trio">
   <figure>
-    <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" alt="The End title card with sunset, island silhouette, and script lettering." />
-    <figcaption>JOHNNY 1 · The End</figcaption>
+    <img src="{{ '/assets/img/johnny6-ps1-office.png' | relative_url }}" alt="JOHNNY 6 running on PS1: Johnny working in an office." />
+    <figcaption>JOHNNY 6 · office</figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" alt="The frog clock transition frame on a black background." />
-    <figcaption>frog clock</figcaption>
+    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    <figcaption>JOHNNY 6 · daydream</figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />

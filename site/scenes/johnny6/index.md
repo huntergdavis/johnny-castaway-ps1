@@ -4,16 +4,33 @@ title: JOHNNY 6 — Office daydream
 ads: JOHNNY
 tag: 6
 slug: johnny6
-status: pending
-description: "JOHNNY.ADS scene 6: Office daydream. Not yet validated."
+status: validated
+description: "JOHNNY.ADS scene 6: Office daydream. Validated with black-backdrop playback."
 ---
 
-Not yet validated.
+## Validated
+
+Validated on PS1/DuckStation on 2026-05-03 after routing the scene
+through the full-screen black-backdrop runtime path. The source scene is
+drawn over black, so the PS1 path now avoids painting ocean/island
+background behind it.
+
+<figure>
+  <img src="{{ '/assets/img/johnny6-ps1-office.png' | relative_url }}" alt="JOHNNY 6 office daydream frame running on PS1." />
+  <figcaption>JOHNNY 6 · Johnny working in the office, captured from DuckStation.</figcaption>
+</figure>
+
+<figure>
+  <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" alt="JOHNNY 6 island date dream frame running on PS1." />
+  <figcaption>JOHNNY 6 · Johnny dreaming about his island date, captured from DuckStation.</figcaption>
+</figure>
 
 ## Pack identifiers
 
 - ADS dispatch: <code>JOHNNY.ADS scene 6</code>
 - Slug: <code>johnny6</code>
+- High-tide pack: <code>FG/JOHNNY6.FG2</code>
+- Low-tide pack: <code>FG/JOHN6LOW.FG2</code>
 
 ## What this scene probably is
 
@@ -21,21 +38,9 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+## Validation Notes
 
-The same way every scene does: under the FISHING 1 bar.
-
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+This is not an island-relative scene. It belongs to the same black
+backdrop class as `johnny1`: the foreground pack is replayed over a
+black base surface, and temporal residual cleanup restores to black
+instead of a saved ocean/island clean rect.

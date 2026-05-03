@@ -335,12 +335,14 @@
 - ads: JOHNNY
   tag: 6
   slug: johnny6
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - black backdrop
+    - high/low pack parity
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after routing through the full-screen black-backdrop runtime path; no ocean/island background is painted
 - ads: MARY
   tag: 1
   slug: mary1

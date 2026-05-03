@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 13 / 63 (next: johnny6)
+## Progress: 14 / 63 (next: mary1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -50,7 +50,7 @@ current public release is `v0.6.6-ps1`.
 | JOHNNY | 3 | johnny3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · variable island position | 2026-05-02 | visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required |
 | JOHNNY | 4 | johnny4 | ✅ | ✅ | host capture/test island position `x=-64,y=54` · high/low pack parity · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin |
 | JOHNNY | 5 | johnny5 | ✅ | ✅ | host capture/test island position `x=80,y=54` · high/low pack parity · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows |
-| JOHNNY | 6 | johnny6 | ⏳ | ⏳ | — | — |  |
+| JOHNNY | 6 | johnny6 | ✅ | ✅ | black backdrop · high/low pack parity | 2026-05-03 | visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted |
 | MARY | 1 | mary1 | ⏳ | ⏳ | — | — | untested in regtest |
 | MARY | 2 | mary2 | ⏳ | ⏳ | — | — | untested in regtest |
 | MARY | 3 | mary3 | ⏳ | ⏳ | — | — |  |
