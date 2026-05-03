@@ -248,11 +248,15 @@ cleanup repair for the final splash and pole residue. <code class="language-plai
 remained blocked on shark cleanup residue. The current count became
 <strong>5 / 63</strong>.</p>
 
-<p>Later on <strong>2026-05-01</strong>, <code class="language-plaintext highlighter-rouge">FISHING 7</code> joined the validated ledger after
-its single-position FG2 replay was pinned to the host-captured island
-position <code class="language-plaintext highlighter-rouge">x=3,y=9</code>. The current count became <strong>6 / 63</strong>.</p>
+<p>Later on <strong>2026-05-01</strong>, <code class="language-plaintext highlighter-rouge">FISHING 7</code> joined the validated ledger with a
+single-position FG2 replay pinned to the host-captured island position
+<code class="language-plaintext highlighter-rouge">x=3,y=9</code>. That was later superseded: on <strong>2026-05-03</strong> the pack was
+rebuilt from a far-left full-frame foreground-only capture, stress-tested
+at the far-left runtime position, and released back to normal random
+island placement. The current count became <strong>6 / 63</strong>.</p>
 
-<p><code class="language-plaintext highlighter-rouge">FISHING 8</code> followed with the same captured-position replay rule. The
+<p><code class="language-plaintext highlighter-rouge">FISHING 8</code> followed with the same initial captured-position replay rule,
+then got the same far-left recapture and runtime-unpin treatment. The
 current count became <strong>7 / 63</strong>.</p>
 
 <h2 id="the-63-scene-grind">The 63-scene grind</h2>
@@ -281,6 +285,11 @@ pixels stayed in frame, but production placement remains variable. The
 fix was capture-side: full-frame keyed foreground-only overlay removed
 stale bottle overpaint and the blue-line artifact through the SOS bubble.
 The current count became <strong>12 / 63</strong>.</p>
+
+<p>The same day, <code class="language-plaintext highlighter-rouge">FISHING 7</code> and <code class="language-plaintext highlighter-rouge">FISHING 8</code> were revalidated under the new
+capture-position rule: controlled host/test placement can prove pack
+completeness, but production runtime should stay random-position safe
+unless a scene proves otherwise.</p>
 
 <p>The remaining unvalidated scenes are queued. The per-scene workflow is
 the same loop, repeated:</p>

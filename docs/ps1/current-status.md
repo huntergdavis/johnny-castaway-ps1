@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-03 (scene ledger at 12/63; `JOHNNY 4`
-validated after full-frame foreground-only recapture fixed bottle
-overpaint and SOS bubble contamination without requiring a runtime
-island-position pin).
+**Last updated:** 2026-05-03 (scene ledger at 12/63; `FISHING 7` and
+`FISHING 8` were recaptured from a far-left foreground-only host pass and
+revalidated as production variable-position scenes, removing their old
+runtime island-position pin).
 
 ## Overall
 
@@ -17,11 +17,11 @@ animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 project's current acceptance bar: pixel-perfect visuals plus synced SFX,
 across every applicable variant (night / low-tide / holiday /
 raft-stage), signed off by human visual + audible review. `FISHING 7`
-and `FISHING 8` use a scene-specific captured island position
-(`x=3,y=9`) because their current single-position FG2 packs fill the full
-640-pixel reference viewport. `JOHNNY 1` is a full-screen black-backdrop
-scene, so it bypasses the ocean/island setup path and uses black cleanup
-for temporal residual spans.
+and `FISHING 8` were recaptured with a far-left host/test island position
+(`x=-300,y=54`) so all scene-relative pixels are present, but production
+runtime placement is now variable again. `JOHNNY 1` is a full-screen
+black-backdrop scene, so it bypasses the ocean/island setup path and uses
+black cleanup for temporal residual spans.
 `JOHNNY 2` is pinned to the host-captured island position
 (`x=-64,y=54`) and uses a keyed lower-band overlay plus explicit
 hold redistribution for the island/SOS thought bubbles.
@@ -59,6 +59,10 @@ file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.6.6-ps1` — scene-validation bugfix release; revalidates
+  `FISHING 7` and `FISHING 8` after rebuilding high/low packs from a
+  far-left full-frame foreground-only capture, proving pack completeness
+  and removing the old runtime island-position pin.
 - `v0.6.5-ps1` — scene-validation bugfix release; promotes `FISHING 5`
   after the shark capture was rebuilt with a full-frame keyed
   current-ledger overlay that removes stale host overpaint without
@@ -178,13 +182,13 @@ searchability — **do not cite them as current progress**:
 | **1 / 63** | **2026-04-22** | **Human-signed reference scene under the full visual + SFX bar** | **this doc, `scene-status.md`** |
 | **2 / 63** | **2026-04-24** | **Scene ledger after `FISHING 2` promotion; `FISHING 3` remained bring-up** | **this doc, `scene-status.md`** |
 | **5 / 63** | **2026-05-01** | **Scene ledger after `FISHING 3`, `FISHING 4`, and `FISHING 6` promotion; `FISHING 5` remains blocked** | **this doc, `scene-status.md`** |
-| **6 / 63** | **2026-05-01** | **Scene ledger after `FISHING 7` promotion; single-position FG2 replay is pinned to the host-captured island position `x=3,y=9`** | **this doc, `scene-status.md`** |
-| **7 / 63** | **2026-05-01** | **Scene ledger after `FISHING 8` promotion; it shares the same captured-position pin as `FISHING 7`** | **this doc, `scene-status.md`** |
+| **6 / 63** | **2026-05-01** | **Scene ledger after `FISHING 7` promotion; initially captured as a single-position replay, superseded on 2026-05-03 by far-left recapture plus variable-position runtime playback** | **this doc, `scene-status.md`** |
+| **7 / 63** | **2026-05-01** | **Scene ledger after `FISHING 8` promotion; initially shared the `FISHING 7` captured-position rule, superseded on 2026-05-03 by the same far-left recapture pattern** | **this doc, `scene-status.md`** |
 | **8 / 63** | **2026-05-02** | **Scene ledger after `JOHNNY 1` promotion; full-screen black-backdrop playback avoids ocean/island clean-rect memory pressure** | **this doc, `scene-status.md`** |
 | **9 / 63** | **2026-05-02** | **Scene ledger after `JOHNNY 2` promotion; pinned capture plus keyed lower-band cleanup fixes bottle/feet residue and thought-bubble timing** | **this doc, `scene-status.md`** |
 | **10 / 63** | **2026-05-02** | **Scene ledger after `FISHING 5` promotion; full-frame keyed current-ledger overlay fixes stale shark overpaint and outline-only shark frames** | **this doc, `scene-status.md`** |
 | **11 / 63** | **2026-05-02** | **Scene ledger after `JOHNNY 3` promotion; right-shift diagnostic run proves complete source pixels without adding a runtime island-position pin** | **this doc, `scene-status.md`** |
-| **12 / 63** | **2026-05-03** | **Current scene ledger after `JOHNNY 4` promotion; full-frame keyed foreground-only overlay fixes stale bottle overpaint and full-host SOS bubble blue-line contamination without adding a runtime island-position pin** | **this doc, `scene-status.md`** |
+| **12 / 63** | **2026-05-03** | **Current scene ledger after `JOHNNY 4` promotion plus `FISHING 7`/`FISHING 8` revalidation; all three use capture/test positions only and production variable island placement** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current

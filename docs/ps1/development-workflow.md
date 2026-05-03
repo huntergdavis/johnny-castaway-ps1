@@ -98,11 +98,13 @@ visual + audible review.
 `island-pos` is also a useful diagnostic probe. Use it to prove whether
 source pixels exist at a different placement, but do not turn that into
 a runtime hard pin unless the original scene or host capture genuinely
-requires one. Current hard pins should stay rare; as of 2026-05-03 the
-runtime-only hard-pin list is `FISHING 7` and `FISHING 8`.
-`JOHNNY 4` is the counterexample to document clearly: it was captured
-and tested at `x=-64,y=54` to keep bottle-message pixels in frame, but
-production runtime placement remains variable.
+requires one. Current hard pins should stay rare; as of 2026-05-03 there
+is no validated reason to pin `FISHING 7` or `FISHING 8` at runtime.
+They were captured and stress-tested at `x=-300,y=54`, but production
+runtime placement remains variable. `JOHNNY 4` is the same rule in a
+different scene: it was captured and tested at `x=-64,y=54` to keep
+bottle-message pixels in frame, but production runtime placement remains
+variable.
 
 ### 5. Tick the row and commit
 

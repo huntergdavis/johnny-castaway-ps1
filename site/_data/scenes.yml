@@ -253,9 +253,10 @@
     - low-tide
     - holiday
     - raft-stage
-    - captured island position x=3,y=9
-  last_verified: 2026-05-01
-  notes: visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position; right-edge pole/line clipping matches the original capture
+    - host capture/test island position x=-300,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
 - ads: FISHING
   tag: 8
   slug: fishing8
@@ -267,9 +268,10 @@
     - low-tide
     - holiday
     - raft-stage
-    - captured island position x=3,y=9
-  last_verified: 2026-05-01
-  notes: visual + audible signoff after pinning the single-position FG2 replay to the host-captured island position
+    - host capture/test island position x=-300,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after the same full-frame foreground-only recapture pattern as FISHING 7; pack completeness is proven at the far-left stress position and production playback stays random-position safe
 - ads: JOHNNY
   tag: 1
   slug: johnny1

@@ -49,6 +49,11 @@ if [ -z "$CAPTURE_ISLAND_X" ]; then
     # same right-shifted host position used by JOHNNY 2 so the message
     # pixels are not clipped; do not add a production runtime pin.
     CAPTURE_ISLAND_X="-64"
+  elif [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; then
+    # FISHING 7/8 reach far to the right of Johnny. Capture them with the
+    # island shifted left so all scene-relative pixels are inside the host
+    # viewport; runtime playback can then follow normal island placement.
+    CAPTURE_ISLAND_X="-300"
   else
     CAPTURE_ISLAND_X="-154"
   fi
@@ -74,6 +79,13 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # with stale moving pixels. The current foreground ledger is the source of
   # truth for this scene, so replace base-diff pixels with keyed foreground-only
   # capture across the whole frame.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
+if [ -z "$KEYED_OVERLAY_RECT" ] &&
+   { [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; }; then
+  # The older full-host captures for these scenes were both full-width dirty
+  # and right-edge clipped. Foreground-only captures contain the moving action
+  # without the stale island/ocean pixels, so use them frame-wide.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then

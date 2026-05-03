@@ -180,11 +180,15 @@ cleanup repair for the final splash and pole residue. `FISHING 5`
 remained blocked on shark cleanup residue. The current count became
 **5 / 63**.
 
-Later on **2026-05-01**, `FISHING 7` joined the validated ledger after
-its single-position FG2 replay was pinned to the host-captured island
-position `x=3,y=9`. The current count became **6 / 63**.
+Later on **2026-05-01**, `FISHING 7` joined the validated ledger with a
+single-position FG2 replay pinned to the host-captured island position
+`x=3,y=9`. That was later superseded: on **2026-05-03** the pack was
+rebuilt from a far-left full-frame foreground-only capture, stress-tested
+at the far-left runtime position, and released back to normal random
+island placement. The current count became **6 / 63**.
 
-`FISHING 8` followed with the same captured-position replay rule. The
+`FISHING 8` followed with the same initial captured-position replay rule,
+then got the same far-left recapture and runtime-unpin treatment. The
 current count became **7 / 63**.
 
 ## The 63-scene grind
@@ -213,6 +217,11 @@ pixels stayed in frame, but production placement remains variable. The
 fix was capture-side: full-frame keyed foreground-only overlay removed
 stale bottle overpaint and the blue-line artifact through the SOS bubble.
 The current count became **12 / 63**.
+
+The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
+capture-position rule: controlled host/test placement can prove pack
+completeness, but production runtime should stay random-position safe
+unless a scene proves otherwise.
 
 The remaining unvalidated scenes are queued. The per-scene workflow is
 the same loop, repeated:

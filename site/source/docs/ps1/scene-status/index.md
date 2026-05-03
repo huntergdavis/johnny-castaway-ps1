@@ -22,7 +22,7 @@ Tracks per-scene readiness under the fishing1 bar: pixel-perfect visuals plus sy
 |---|---:|
 | Source path | `docs/ps1/scene-status.md` |
 | Lines | 110 |
-| Approx. words | 751 |
+| Approx. words | 787 |
 | Code fences | 0 |
 
 ## Outline

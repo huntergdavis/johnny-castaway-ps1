@@ -26,7 +26,8 @@ Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}
 
 ### Validation note
 
-Unlike `FISHING 7` and `FISHING 8`, this scene does not need a
-captured-position pin. The standard variable island placement remains
-the durable runtime policy unless a scene proves it was host-clipped or
-requires a specific original position.
+Like the later `FISHING 7`/`FISHING 8` revalidation, this scene treats
+explicit island positions as capture/test evidence only. The standard
+variable island placement remains the durable runtime policy unless a
+scene proves it was host-clipped or requires a specific original
+position.

@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after full-frame foreground-only recapture fixed bottle overpaint and SOS bubble contamination without requiring a runtime island-position pin).
+FISHING 8 were recaptured from a far-left foreground-only host pass and revalidated as production variable-position scenes, removing their old runtime island-position pin).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 244 |
-| Approx. words | 1902 |
+| Lines | 248 |
+| Approx. words | 1952 |
 | Code fences | 1 |
 
 ## Outline

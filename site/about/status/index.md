@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.6.5-ps1
+eyebrow: Component-level state at v0.6.6-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -90,7 +90,8 @@ Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
 - **`JOHNNY 5` bring-up.** Next focus is continuing the signed
-  scene-by-scene ledger after the JOHNNY4 validation. The bring-up loop is in
+  scene-by-scene ledger after the FISHING7/FISHING8 recapture
+  revalidation. The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing
@@ -107,7 +108,9 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.5.0-ps1` is the freeplay/debug
+- **Milestone release cadence.** `v0.6.6-ps1` removes the old
+  FISHING7/FISHING8 runtime pins after far-left recapture proved both
+  packs are random-position safe. `v0.5.0-ps1` is the freeplay/debug
   release. `v0.4.20-ps1` was the walking-loop stability release.
   `v0.3.9-ps1` was the fishing3-loop-stability release; `v0.3.6-ps1`
   was fishing1 with full SFX across all variants.

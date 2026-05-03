@@ -12,19 +12,19 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.6.5-ps1` |
+| Release | `v0.6.6-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **12 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.6.5-ps1` is a scene-validation bugfix release: `FISHING 5` now
-clears the reference bar after the shark capture was rebuilt with a
-full-frame keyed current-ledger overlay that removes stale host
-overpaint without dropping shark pixels. `JOHNNY 4` is now also
-validated after a full-frame foreground-only recapture fixed bottle
-overpaint and SOS bubble contamination without adding a runtime island
-pin. It builds on `v0.6.4-ps1`
+`v0.6.6-ps1` is a scene-validation bugfix release: `FISHING 7` and
+`FISHING 8` were rebuilt from far-left full-frame foreground-only host
+captures, then validated with far-left stress playback. The old runtime
+island-position pins are gone; both scenes now follow normal random
+island placement. It builds on `v0.6.5-ps1` (`FISHING 5` shark capture
+cleanup and `JOHNNY 4` variable-position bottle-message validation),
+`v0.6.4-ps1`
 (`JOHNNY 2`), `v0.6.3-ps1` (`FISHING 7`, `FISHING 8`, `JOHNNY 1`),
 `v0.6.2-ps1` (`FISHING 6`), `v0.6.1-ps1` (freeplay clean-rect placement fix), `v0.6.0-ps1`
 (ocean ambience), and `v0.5.0-ps1`
