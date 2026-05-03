@@ -44,10 +44,15 @@ LOWTIDE_PACK_JSON="$OUTPUT_DIR/foreground-pack-lowtide.json"
 CAPTURE_ISLAND_X="${FG_EXPORT_ISLAND_X:-}"
 CAPTURE_ISLAND_Y="${FG_EXPORT_ISLAND_Y:-54}"
 if [ -z "$CAPTURE_ISLAND_X" ]; then
-  if [ "$SCENE_SLUG" = "johnny4" ]; then
-    # JOHNNY 4 is another bottle-message scene. Capture/test it at the
-    # same right-shifted host position used by JOHNNY 2 so the message
-    # pixels are not clipped; do not add a production runtime pin.
+  if [ "$SCENE_SLUG" = "johnny5" ]; then
+    # JOHNNY 5 throws the bottle far enough left that the splash is clipped in
+    # the old x=-64 capture. Capture at the validated current-position X so the
+    # splash is present in the source pack; do not add a production runtime pin.
+    CAPTURE_ISLAND_X="80"
+  elif [ "$SCENE_SLUG" = "johnny4" ]; then
+    # JOHNNY 4 is a bottle/letter-message scene. Capture/test it at the same
+    # right-shifted host position used by JOHNNY 2 so the message pixels are
+    # not clipped; do not add a production runtime pin.
     CAPTURE_ISLAND_X="-64"
   elif [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; then
     # FISHING 7/8 reach far to the right of Johnny. Capture them with the
@@ -68,10 +73,12 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
   # pixels; foreground-only does not include those bubble pixels reliably.
   KEYED_OVERLAY_RECT="0,320,320,160"
 fi
-if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny4" ]; then
-  # JOHNNY 4's full host surface can contaminate the SOS bubble with ocean
-  # pixels as well as stale lower-band bottles. Unlike JOHNNY 2, its
-  # foreground-only capture carries the bubble cleanly, so use it frame-wide.
+if [ -z "$KEYED_OVERLAY_RECT" ] &&
+   { [ "$SCENE_SLUG" = "johnny4" ] || [ "$SCENE_SLUG" = "johnny5" ]; }; then
+  # These letter-message full host surfaces can contaminate bubbles/letters
+  # and lower-left Johnny pixels with stale moving foreground. Unlike JOHNNY 2,
+  # their foreground-only captures carry the message lane cleanly, so use them
+  # frame-wide.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
@@ -111,6 +118,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
   # Keep total duration fixed while making the repeated post-thought chain
   # read as a quick three/two/one exit, with saved time on island/SOS.
   HOLD_ADJUSTMENTS="101:+89 103:+112 104:+39 105:-3 106:-1 109:-1 113:-7 116:-7 120:-15 123:-23 127:-15 131:-23 135:-15 138:-23 142:-15 145:-23 149:-15 152:-15 156:-8 159:-16 163:-15"
+fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "johnny5" ]; then
+  # The SOS thought bubble is source frame 74. The following blank rows were
+  # holding too long, so preserve total duration while pausing on the note.
+  HOLD_ADJUSTMENTS="74:+16 75:-12 78:-4"
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \

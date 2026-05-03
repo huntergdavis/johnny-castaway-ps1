@@ -20,8 +20,8 @@ holiday overlays, input, and SPU playback.
 **Timeline**: Initial session (2025-10-18), ongoing development through 2026-05
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
-**Current release**: `v0.6.5-ps1`
-**Current validation bar**: 12 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`) signed off for pixel-perfect visuals + synced SFX
+**Current release**: `v0.6.6-ps1`
+**Current validation bar**: 13 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 
@@ -195,10 +195,10 @@ support high/low tide variants correctly, and generate a corpus for all
 
 **Achievements**:
 - High-tide and low-tide FG2 packs generated for all 63 scenes.
-- Twelve scenes are validated under the current bar: `FISHING 1`,
+- Thirteen scenes are validated under the current bar: `FISHING 1`,
   `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`,
   `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`,
-  and `JOHNNY 4`.
+  `JOHNNY 4`, and `JOHNNY 5`.
 - `FISHING 5` cleared its shark-residue blocker after the host capture
   path switched to a full-frame keyed current-ledger overlay for that
   interaction.
@@ -209,6 +209,11 @@ support high/low tide variants correctly, and generate a corpus for all
   full-frame keyed foreground-only overlay, fixing stale bottle
   overpaint and a full-host SOS bubble blue-line artifact while keeping
   production island placement variable.
+- `JOHNNY 5` was validated after a host/test `x=80,y=54` recapture
+  restored the thrown-bottle splash, the full-frame keyed
+  foreground-only overlay removed stale lower-band overpaint, and SOS
+  note timing was moved onto the note bubble without adding a runtime
+  island-position pin.
 - FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
   and per-scene establishing RAWs were removed from the active PS1
   runtime/generation path.

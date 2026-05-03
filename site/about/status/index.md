@@ -15,7 +15,7 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
-`JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, and `JOHNNY 4`. The live per-scene ledger is at
+`JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, and `JOHNNY 5`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -52,7 +52,7 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 51 scenes in
+- **Scene coverage past the signed-off set.** The other 50 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
@@ -89,9 +89,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **`JOHNNY 5` bring-up.** Next focus is continuing the signed
-  scene-by-scene ledger after the FISHING7/FISHING8 recapture
-  revalidation. The bring-up loop is in
+- **`JOHNNY 6` bring-up.** Next focus is continuing the signed
+  scene-by-scene ledger after the `JOHNNY 5` splash-capture and
+  SOS-note timing validation. The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing

@@ -104,7 +104,9 @@ They were captured and stress-tested at `x=-300,y=54`, but production
 runtime placement remains variable. `JOHNNY 4` is the same rule in a
 different scene: it was captured and tested at `x=-64,y=54` to keep
 bottle-message pixels in frame, but production runtime placement remains
-variable.
+variable. `JOHNNY 5` extends that rule: it was captured and tested at
+`x=80,y=54` so the thrown-bottle splash is visible in the source pack,
+but production runtime placement remains variable.
 
 ### 5. Tick the row and commit
 

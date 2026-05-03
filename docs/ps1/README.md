@@ -14,9 +14,15 @@ background, waves, holiday overlay, and SFX playback.
 |---|---|
 | Release | `v0.6.6-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **12 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`) |
+| Scenes fully validated under the reference bar | **13 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
+
+Current main also validates `JOHNNY 5`: its high/low packs were
+recaptured at host/test `x=80,y=54` so the thrown-bottle splash is in
+frame, full-frame keyed foreground-only overlay removes stale lower-band
+overpaint, and SOS note timing now holds on the note bubble instead of
+blank post-bubble rows. Production island placement remains variable.
 
 `v0.6.6-ps1` is a scene-validation bugfix release: `FISHING 7` and
 `FISHING 8` were rebuilt from far-left full-frame foreground-only host

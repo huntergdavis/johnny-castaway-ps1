@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-FISHING 8 were recaptured from a far-left foreground-only host pass and revalidated as production variable-position scenes, removing their old runtime island-position pin).
+recaptured at host/test x=80,y=54 so the thrown-bottle splash is in frame, while production island placement remains variable).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 248 |
-| Approx. words | 1952 |
+| Lines | 258 |
+| Approx. words | 2083 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 12 / 63 fully validated
+-   Scenes: 13 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

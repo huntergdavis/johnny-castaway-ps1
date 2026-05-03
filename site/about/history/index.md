@@ -218,6 +218,15 @@ fix was capture-side: full-frame keyed foreground-only overlay removed
 stale bottle overpaint and the blue-line artifact through the SOS bubble.
 The current count became **12 / 63**.
 
+`JOHNNY 5` followed the same day. Its host/test capture moved to
+`x=80,y=54`, because the earlier bottle-message capture exposed the note
+but clipped the thrown-bottle splash back in the water. The scene kept
+normal production island placement: x=80 is capture evidence, not a
+runtime pin. The same full-frame keyed foreground-only overlay removed
+stale lower-band overpaint, and hold timing was moved onto the SOS note
+bubble instead of the blank post-bubble rows. The current count became
+**13 / 63**.
+
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
@@ -293,8 +302,8 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`).
-- Next scene in bring-up: **`JOHNNY 5`**.
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`).
+- Next scene in bring-up: **`JOHNNY 6`**.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

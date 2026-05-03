@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-02:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `12 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4` |
+| Scenes visually validated | `13 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
@@ -222,8 +222,8 @@ and this page.
 | `johnny3` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
 | `johnny4` | high | measured | 2026-04-30T13:18:41 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
 | `johnny4` | low | measured | 2026-04-30T13:17:30 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
-| `johnny5` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 |  |
-| `johnny5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 |  |
+| `johnny5` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 | validated 2026-05-03 after x=80 capture/timing refresh; timing metrics predate refreshed pack |
+| `johnny5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +15.5% | 86.6% | 947/820 | 0 | 0 | 0 | validated 2026-05-03 after x=80 capture/timing refresh; timing metrics predate refreshed pack |
 | `johnny6` | high | measured | 2026-04-29T17:40:45 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2895/2800 | 27 | 27 | 0 |  |
 | `johnny6` | low | measured | 2026-04-29T17:41:03 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2896/2800 | 27 | 27 | 0 |  |
 | `mary1` | high | measured | 2026-04-29T17:42:09 | compact-fgp3-v2-fullmatrix | +3.7% | 96.4% | 5004/4826 | 49 | 40 | 2 |  |

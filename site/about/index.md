@@ -67,10 +67,11 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Twelve scenes are signed off; `JOHNNY 4` now stays variable-position in
-production after a right-shift host/test recapture and full-frame
-foreground-only overlay fixed bottle overpaint and SOS bubble
-contamination, and the remaining scenes are queued.
+Thirteen scenes are signed off; `JOHNNY 5` now stays variable-position
+in production after an `x=80,y=54` host/test recapture restored the
+thrown-bottle splash, full-frame foreground-only overlay fixed lower-band
+overpaint, and SOS-note hold timing moved onto the note bubble. The
+remaining scenes are queued.
 
 ## What this isn't
 

@@ -21,8 +21,8 @@ The development journey, challenges, and lessons learned from porting Johnny Reb
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/project-history.md` |
-| Lines | 457 |
-| Approx. words | 2245 |
+| Lines | 462 |
+| Approx. words | 2291 |
 | Code fences | 3 |
 
 ## Outline

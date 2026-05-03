@@ -323,12 +323,15 @@
 - ads: JOHNNY
   tag: 5
   slug: johnny5
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - host capture/test island position x=80,y=54
+    - high/low pack parity
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after x=80 host capture restored the thrown-bottle splash, full-frame keyed foreground-only overlay fixed stale lower-band overpaint, and hold timing was redistributed onto the SOS note bubble without adding a runtime island-position pin
 - ads: JOHNNY
   tag: 6
   slug: johnny6

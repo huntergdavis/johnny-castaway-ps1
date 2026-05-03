@@ -4,11 +4,11 @@ title: JOHNNY 5 — Imagines a 3pm date
 ads: JOHNNY
 tag: 5
 slug: johnny5
-status: pending
-description: "JOHNNY.ADS scene 5: Imagines a 3pm date. Not yet validated."
+status: validated
+description: "JOHNNY.ADS scene 5: Imagines a 3pm date. Validated after splash capture and SOS-note timing repair."
 ---
 
-Not yet validated.
+Validated on 2026-05-03 after visual and audible signoff.
 
 ## Pack identifiers
 
@@ -21,21 +21,19 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Validation note
 
-The same way every scene does: under the FISHING 1 bar.
+This was another bottle-message capture bug, but the failing pixel was
+the splash back in the water. Capturing the host frames at `x=-64`
+kept the note visible, but clipped the thrown-bottle splash. The high
+and low packs now capture/test at `x=80,y=54`, where the splash is in
+frame, then replay scene-relative pixels through normal PS1 placement.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+The lower band also needed the same stale-overpaint treatment as the
+other bottle scenes: a full-frame keyed foreground-only overlay prevents
+old feet/bottle pixels from accumulating. The SOS note was already in
+the capture, but the hold timing was landing on the blank row after it;
+the pack now shifts that hold time onto the note bubble itself.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+The `x=80,y=54` value is a host/test capture position, not a production
+runtime pin. Story and freeplay placement remain variable.
