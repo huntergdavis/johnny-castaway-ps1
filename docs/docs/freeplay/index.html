@@ -132,10 +132,6 @@ described, and selected without memorizing button chords.</p>
       <td>Fast walk.</td>
     </tr>
     <tr>
-      <td>Circle</td>
-      <td>Fish from the nearest side. Right-side fishing mirrors the left-facing sprite sequence horizontally.</td>
-    </tr>
-    <tr>
       <td>Select</td>
       <td>Clear the freeplay screen, rebuild the clean background, and return to idle. This is both a player escape hatch and a heap/fragmentation safety valve.</td>
     </tr>
@@ -227,16 +223,14 @@ and coordinates without changing the player-facing control scheme.</p>
 
 <h2 id="fishing">Fishing</h2>
 
-<p>Fishing is the only direct action button because it is the core Johnny
-fantasy. Circle starts the fishing sequence from Johnny’s current side of
-the island. The right-side version is not a separate Sierra asset; freeplay
-draws the same fishing frames flipped horizontally.</p>
-
-<p>The fishing sequence is intentionally sourced from the <code class="language-plaintext highlighter-rouge">MJFISH</code> sprite
-banks rather than the old catch-only prop sheets. The target is the classic
-“standing by the water with the pole, casting, then scratching” gag. The
-frame range can still be tuned, but the architecture is now pointed at the
-right source family.</p>
+<p>Fishing in freeplay is reached through the <strong>Scene Set</strong> menu rather
+than a dedicated joypad button. Cycling Scene Set to <em>Fishing Only</em>
+constrains the screensaver-loop random pool to the validated fishing
+scenes (<code class="language-plaintext highlighter-rouge">fishing1</code>..<code class="language-plaintext highlighter-rouge">fishing8</code>) — the same captured <code class="language-plaintext highlighter-rouge">.FG2</code> packs the
+normal rotation already plays, so the visuals match the source frames
+exactly. The earlier Circle-as-fish freeplay action is gone; the live
+control surface is reserved for walking, clearing, world toggles, and
+the menu.</p>
 
 <h2 id="rendering-and-memory-rules">Rendering and memory rules</h2>
 
@@ -331,7 +325,7 @@ part of the forever-run player build.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           12 / 63 scenes validated
-          (v0.6.6-ps1)
+          (v0.6.7-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

@@ -68,7 +68,7 @@
     <img src="./assets/img/title-screen-ps1.png" alt="Johnny Castaway title screen rendered on a PS1." />
   </div>
   <div class="hero-text">
-    <p class="hero-eyebrow">A fan port · v0.6.6</p>
+    <p class="hero-eyebrow">A fan port · v0.6.7</p>
     <h1>Johnny Castaway PS1</h1>
     <p class="tagline">A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
     <div class="hero-cta">
@@ -95,7 +95,7 @@
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> v0.6.6-ps1</span>
+  <span><strong>Latest:</strong> v0.6.7-ps1</span>
   <span class="pill pill--ok">12 / 63 scenes validated</span>
   <span class="pill pill--info">PSn00bSDK 0.24</span>
   <span class="pill pill--info">DuckStation</span>
@@ -244,6 +244,14 @@ man on a small island. The disc plays. That’s what mattered.</p>
 <ul class="devlog-list">
 
   <li>
+    <time datetime="2026-05-03">2026-05-03</time>
+    <div>
+      <a href="./devlog/scene-set-and-frog-clock/">Scene Set framework and an animated frog clock — May 3, 2026</a>
+      <span class="summary">Pause menu gains a Scene Set row that constrains the screensaver pool by category (All Scenes / Fishing Only / …); Left/Right preview, Cross or Start commits. The frog-clock loading frame goes from a static image to a 36-vblank animation with hour and minute hands placed from the original MEANWHIL.TTM script.</span>
+    </div>
+  </li>
+
+  <li>
     <time datetime="2026-05-01">2026-05-01</time>
     <div>
       <a href="./devlog/ocean-ambience-v0-6/">Ocean Ambience — v0.6.0-ps1 — May 1, 2026</a>
@@ -272,14 +280,6 @@ man on a small island. The disc plays. That’s what mattered.</p>
     <div>
       <a href="./devlog/milestones-2026-04-25/">Milestones — April 25, 2026</a>
       <span class="summary">A status snapshot from a single-day batch that pushed the PS1 port across several long-standing unknowns: working TTY, an instrumentable perf module, an on-PS1 pause menu, a hand-rolled SPI controller driver, and memcard-backed user settings.</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-04-21">2026-04-21</time>
-    <div>
-      <a href="./devlog/water-animation-worklog/">PS1 Fishing 1 Water Animation — Session Worklog, April 21, 2026</a>
-      <span class="summary">Unedited session worklog from the day the missing-waves bug in fishing1 was traced to numSprites[0] == 0 after adsInitIsland. The dead ends are why this exists.</span>
     </div>
   </li>
 
@@ -321,7 +321,7 @@ the user supplies themselves.</p>
           Code: <a href="./legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           12 / 63 scenes validated
-          (v0.6.6-ps1)
+          (v0.6.7-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
