@@ -41,9 +41,9 @@ Scene Set is a random-rotation pool selector, not a scene viewer. The
 runtime cost of a not-yet-validated scene is the same as a validated
 one: load the FG2 pack, play it, tick the calendar. The visuals may
 not be pixel-perfect, the SFX may need rework, but the scene plays. As
-soon as a scene moves from ⏳ to ✅ in
-[scene-status](/johnny-castaway-ps1/docs/scene-status/), it looks
-right in whichever pool already contains it.
+soon as a scene moves from ⏳ to ✅ in the [scene
+ledger]({{ '/scenes/' | relative_url }}), it looks right in whichever
+pool already contains it.
 
 The alternative was empty pools that fall back to *All Scenes* until
 their family validates. The selector framework supports this — the
