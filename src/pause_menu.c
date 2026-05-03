@@ -397,7 +397,6 @@ enum {
 enum {
     ACCESS_CAPTIONS,
     ACCESS_SOUND,
-    ACCESS_FOOTSTEPS,
     ACCESS_OCEAN,
     ACCESS_SOUND_TEST,
     ACCESS_BACK,
@@ -1317,10 +1316,8 @@ static void drawHolidayMenu(void)
 
 static void drawAccessibilityMenu(void)
 {
-    extern int footstepsEnabled;
     extern int oceanAmbientEnabled;
     const char *soundLabel = soundMuted ? "MUTED" : "ON";
-    const char *footLabel = footstepsEnabled ? "ON" : "OFF";
     const char *oceanLabel = oceanAmbientEnabled ? "ON" : "OFF";
 
     pmPrintf("     ACCESSIBILITY\n");
@@ -1329,8 +1326,6 @@ static void drawAccessibilityMenu(void)
              accessCursor == ACCESS_CAPTIONS ? ">" : " ", captionsLabel());
     pmPrintf(" %s Sound:     %s\n",
              accessCursor == ACCESS_SOUND ? ">" : " ", soundLabel);
-    pmPrintf(" %s Footsteps: %s\n",
-             accessCursor == ACCESS_FOOTSTEPS ? ">" : " ", footLabel);
     pmPrintf(" %s Ocean:     %s\n",
              accessCursor == ACCESS_OCEAN ? ">" : " ", oceanLabel);
     pmPrintf(" %s Sound Test...\n",
@@ -1707,11 +1702,6 @@ static int handleAccessibilityInput(uint16 pressed)
             soundMuteToggle();
             pauseMutedSound = 0;
             break;
-        case ACCESS_FOOTSTEPS: {
-            extern int footstepsEnabled;
-            footstepsEnabled = !footstepsEnabled;
-            break;
-        }
         case ACCESS_OCEAN: {
             extern int oceanAmbientEnabled;
             extern void oceanAmbientStart(void);

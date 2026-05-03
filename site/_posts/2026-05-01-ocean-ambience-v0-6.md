@@ -118,10 +118,9 @@ bumped 2 → 3, with a graceful v2-load fallback that defaults the new
 field to ON). On the next boot `soundInit` reads the saved value and
 either auto-keys the voice or leaves it silent.
 
-The wiring mirrors the existing `footstepsEnabled` toggle (added in
-`v0.4.20-ps1` for the walking loop) almost exactly — same accessor
-pattern, same memcard schema bump, same register-write toggle. About
-200 lines net across five files.
+The wiring mirrors the existing `soundMuted` accessibility toggle —
+same accessor pattern, same memcard schema bump, same register-write
+toggle. About 200 lines net across five files.
 
 
 ## Frame impact: zero, verified

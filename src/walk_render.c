@@ -17,13 +17,6 @@
 
 #include "walk_render.h"
 
-/* Footsteps default ON. Pause-menu Options sub-screen flips this; the
- * setting is persisted to memcard alongside soundMuted etc. (Phase 4.3).
- *
- * If walkStepSamples table for the active edge is empty, fireFootstep
- * is harmlessly a no-op even with this flag ON — see Phase 4.1 audit. */
-int footstepsEnabled = 1;
-
 /* Compile-gated diagnostic — emits one printf per kernel call. Off by
  * default to keep the runtime code phase stable. Flip to 1 when
  * debugging overdraw / sprite-index / position.
@@ -62,7 +55,7 @@ void walkRenderFrame(SDL_Surface *sfc,
                      struct TTtmSlot *johnwalkSlot,
                      struct TTtmSlot *islandBgSlot,
                      sint16 x, sint16 y, uint16 spriteIdx,
-                     int flip, int behindTree, int fireFootstep)
+                     int flip, int behindTree)
 {
     /* The walking sprite. flip indicates the original walk_data row
      * stored a flipped pose (east-facing frames are reused for
@@ -81,19 +74,6 @@ void walkRenderFrame(SDL_Surface *sfc,
     if (behindTree && islandBgSlot != NULL) {
         grDrawSprite(sfc, islandBgSlot, 442, 148, 13, 0);  /* trunk    */
         grDrawSprite(sfc, islandBgSlot, 365, 122, 12, 0);  /* leaves   */
-    }
-
-    /* Footstep trigger. Phase 4.2 wires the actual soundPlay() call
-     * with a sample id resolved from walkStepSamples[fromSpot][toSpot]
-     * (or freeplay's per-step counter). Until then, the trigger is a
-     * documented no-op so the kernel API surface is stable for the
-     * driver code being written in parallel.
-     *
-     * The footstepsEnabled gate stays here — the kernel is the
-     * single point of audio policy enforcement, even when the actual
-     * playback call lands later. */
-    if (fireFootstep && footstepsEnabled) {
-        /* Phase 4.2: soundPlay(walkStepSampleId); */
     }
 
     /* Update redraw cache. Always — every fresh frame becomes the
@@ -130,7 +110,6 @@ void walkRedrawLastFrame(SDL_Surface *sfc,
         grDrawSprite(sfc, islandBgSlot, 442, 148, 13, 0);  /* trunk */
         grDrawSprite(sfc, islandBgSlot, 365, 122, 12, 0);  /* leaves */
     }
-    /* No footstep on redraw — that's a once-per-step trigger. */
 
 #if WALK_RENDER_DIAG
     printf("JCWALK frame=%lu kind=redraw x=%d y=%d sprite=%u flip=%d behind=%d\n",

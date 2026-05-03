@@ -6,6 +6,17 @@ Date: 2026-04-29
 Status: implemented in `v0.4.20-ps1`; freeplay-specific phases remain future work
 Owner: PS1 perf branch
 
+> **2026-05-02 update — footsteps removed.** Phase 4 of this plan
+> (footstep audio: pause-menu toggle, `footstepsEnabled` global,
+> `fireFootstep` kernel parameter, R2.3 sample audit, R7.4 contradiction
+> resolution) was reversed. The feature shipped in `v0.4.20-ps1` and was
+> removed wholesale before any sample-ID audit ran. The walk render
+> kernel no longer takes a footstep parameter, the pause-menu row is
+> gone, and the memcard byte is preserved at its old position but is no
+> longer read or written. The rest of this plan is preserved as the
+> historical record of the original walk port; ignore the Phase 4 / R2.3
+> / R7.4 sections below.
+
 ## Executive Summary
 
 The PS1 build used to pick each scene at random and teleport Johnny

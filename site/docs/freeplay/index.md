@@ -72,7 +72,7 @@ The pause menu carries the rest of freeplay/debug mode:
 | Freeplay Visitors | Named outside-world events with source BMP, frame count, and rough memory cost. |
 | World Options | Day/night, tide, raft, holidays, and island position. In freeplay, changing a value closes the menu, shows the frog clock, rebuilds the island, and applies immediately. |
 | Sound Test | Selector-style SPU test page for individual sound effects. |
-| Accessibility | Closed captions and footstep/sound accessibility toggles. |
+| Accessibility | Closed captions, sound mute, ocean ambience, and the Sound Test selector. |
 | Controls | On-device reference for the freeplay controls above. |
 
 This split is intentional. The joypad is for walking, fishing, clearing,

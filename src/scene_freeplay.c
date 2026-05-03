@@ -1110,7 +1110,7 @@ static void fpDrawJohnny(void)
         int flip = (gFp.face == FP_FACE_W) ? 1 : 0;
         walkRenderFrame(grBackgroundSfc, &gFpSlot, fgBackdropGetSlot(),
                         gFp.x, gFp.y, fpWalkFrame(), flip,
-                        fpBehindTree(gFp.x, gFp.y), 0);
+                        fpBehindTree(gFp.x, gFp.y));
     } else {
         int flip = (gFp.face == FP_FACE_W) ? 1 : 0;
         if (flip)
