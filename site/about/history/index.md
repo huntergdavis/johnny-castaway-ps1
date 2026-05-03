@@ -202,6 +202,18 @@ The fix was host-capture side: a full-frame keyed current-ledger overlay
 removed stale full-host shark overpaint without masking current shark
 pixels into outline-only frames. The current count became **10 / 63**.
 
+`JOHNNY 3` followed on **2026-05-02**. A right-shift island-position
+probe confirmed the full source pixels are present, so the scene stays
+variable-position rather than joining the rare runtime hard-pin list.
+The current count became **11 / 63**.
+
+`JOHNNY 4` followed on **2026-05-03**. It used the same right-shift
+host/test position as the first SOS-bottle scene so the bottle-message
+pixels stayed in frame, but production placement remains variable. The
+fix was capture-side: full-frame keyed foreground-only overlay removed
+stale bottle overpaint and the blue-line artifact through the SOS bubble.
+The current count became **12 / 63**.
+
 The remaining unvalidated scenes are queued. The per-scene workflow is
 the same loop, repeated:
 
@@ -272,8 +284,8 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`).
-- Next scene in bring-up: **`JOHNNY 3`**.
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`).
+- Next scene in bring-up: **`JOHNNY 5`**.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

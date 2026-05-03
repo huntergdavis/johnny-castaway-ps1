@@ -95,6 +95,15 @@ Strike through any variant that does not apply to the scene (see
 [scene-status.md](scene-status.md) legend). Sign off each by human
 visual + audible review.
 
+`island-pos` is also a useful diagnostic probe. Use it to prove whether
+source pixels exist at a different placement, but do not turn that into
+a runtime hard pin unless the original scene or host capture genuinely
+requires one. Current hard pins should stay rare; as of 2026-05-03 the
+runtime-only hard-pin list is `FISHING 7` and `FISHING 8`.
+`JOHNNY 4` is the counterexample to document clearly: it was captured
+and tested at `x=-64,y=54` to keep bottle-message pixels in frame, but
+production runtime placement remains variable.
+
 ### 5. Tick the row and commit
 
 In `docs/ps1/scene-status.md`:
