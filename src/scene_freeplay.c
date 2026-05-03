@@ -201,8 +201,6 @@ static int gFreeplayTelemetryLevel = 0;
 
 static const char kFpCaptionStart[] =
     "Freeplay mode is on.\nWalk Johnny around the island.";
-static const char kFpCaptionFish[] =
-    "Johnny fishes.";
 static const char kFpCaptionAction[] =
     "Johnny does a quick gag.";
 static const char kFpCaptionSummon[] =
@@ -684,42 +682,6 @@ static void fpStartGag(enum TFpGag gag)
     if (gag == FP_GAG_BONK) soundPlay(5);
     else if (gag == FP_GAG_EAT) soundPlay(8);
     else if (gag == FP_GAG_HOT) soundPlay(4);
-}
-
-static void fpStartAssetModeEx(const char *bmp, uint16 ttl, enum TFpMode mode,
-                               sint16 x, sint16 y, uint16 firstFrame,
-                               uint16 frameCount, uint16 frameDelay,
-                               uint8 flip, int soundId)
-{
-    uint16 availableFrames;
-
-    gFp.actionCount++;
-    fpCancelAsset(&gFp.gag);
-    fpCancelAsset(&gFp.summon);
-    if (!fpLoadSlot(FP_SLOT_GAG, bmp)) {
-        fpSetBanner("ACTION SKIPPED", 60);
-        return;
-    }
-    strncpy(gFp.gag.bmp, bmp, sizeof(gFp.gag.bmp) - 1);
-    gFp.gag.slot = FP_SLOT_GAG;
-    gFp.gag.active = 1;
-    gFp.gag.frameDelay = frameDelay ? frameDelay : 6;
-    gFp.gag.ttl = ttl;
-    gFp.gag.x = x;
-    gFp.gag.y = y;
-    availableFrames = gFpSlot.numSprites[FP_SLOT_GAG];
-    if (firstFrame >= availableFrames)
-        firstFrame = 0;
-    gFp.gag.firstFrame = firstFrame;
-    if (frameCount == 0 || firstFrame + frameCount > availableFrames)
-        frameCount = (uint16)(availableFrames - firstFrame);
-    gFp.gag.frameCount = frameCount ? frameCount : 1;
-    gFp.gag.flip = flip;
-    gFp.gag.loop = 0;
-    gFp.mode = mode;
-    gFp.modeTimer = ttl;
-    if (soundId >= 0)
-        soundPlay(soundId);
 }
 
 static void fpStartSummon(enum TFpSummon kind)
