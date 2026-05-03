@@ -143,21 +143,23 @@ The frame path must not allocate memory.
 ## Fishing
 
 Circle is the dedicated fishing button. The freeplay fishing animation is
-the **boring idle** from the long-fishing scene, not the cast/get-pulled
-sequence. Press Circle and Johnny stands with the rod, looking around and
-adjusting his pose, until you walk away or the timer expires.
+the **boring idle** — Johnny stands with the rod horizontal forward,
+holding the line and waiting. The cast windup and the
+get-pulled-by-fish frames are intentionally skipped: users want the
+patient idle, not the frenetic catch.
 
-Implementation: `MJFISH2.BMP` frames 9-14 (six idle poses) looped for 360
-ticks (~6 s). The `MJFISH1.BMP` cast/pulled-by-fish animation is *not*
-played in freeplay — users found it too frenetic for an on-demand
-"fishing" press.
+Implementation: `MJFISH1.BMP` frames 9-13 (five idle poses) looped for
+360 ticks (~6 s). Frames 0-8 are the cast windup; 14-19 are getting
+pulled. Neither plays in freeplay. `MJFISH2.BMP` (the post-catch /
+throw-fish-back reactions) is also unused.
 
-There is no separate right-facing fishing asset. Right-side fishing uses
-the left-facing frames mirrored on the X axis. The mirror threshold is
-the island midpoint (`FP_FISH_CENTER_X = 390`, halfway between the 245
-and 535 clamp bounds). Past that x, Johnny is flipped so he faces the
-right-hand shore. Coordinate and frame-range tuning is allowed, but the
-source asset should stay `MJFISH2.BMP`.
+There is no separate left-facing fishing asset. The native sprite has
+Johnny on the left of the frame with the rod extending right (facing
+right). The mirror threshold is the island midpoint
+(`FP_FISH_CENTER_X = 390`, halfway between the 245 and 535 clamp
+bounds). When Johnny is on the **left** half (`x < 390`), the sprite is
+mirrored so he faces left into the left-hand water. On the right half
+the native sprite is drawn unmodified.
 
 ## World State
 

@@ -2995,28 +2995,87 @@ void grInitEmptyBackground()
     else memset(bgTile4->pixels, 0, 320 * 240 * 2);
 }
 
+/* Frames the frog-clock animation runs for. The original single-call
+ * variant painted one frame and returned; looping here makes the hand
+ * fly around the way it does in JOHNNY 6 before the next load step
+ * takes over the screen. */
+#define MEANWHILE_ANIMATE_VBLANKS  36
+
+/* Per-sprite anchor table for MEANWHIL.BMP, lifted from MEANWHIL.TTM
+ * DRAW_SPRITE opcodes. Sprite 0 is the card; sprites 5..16 are the
+ * 12 hour-hand positions (one per hour); sprites 1..4 are the 4
+ * minute-hand positions. Each (x, y) is the script's draw position
+ * for that frame — the bounding boxes vary because each rotated hand
+ * has a different bbox, so a fixed top-left would visibly drift. */
+static const sint16 kMeanwhilePos[17][2] = {
+    {254, 100},  /* 0  card */
+    {300, 152},  /* 1  minute */
+    {275, 152},  /* 2  minute */
+    {291, 161},  /* 3  minute */
+    {290, 137},  /* 4  minute */
+    {297, 139},  /* 5  hour */
+    {301, 143},  /* 6  hour */
+    {301, 149},  /* 7  hour */
+    {299, 159},  /* 8  hour */
+    {299, 161},  /* 9  hour */
+    {300, 162},  /* 10 hour */
+    {294, 162},  /* 11 hour */
+    {285, 163},  /* 12 hour */
+    {278, 162},  /* 13 hour */
+    {278, 157},  /* 14 hour */
+    {281, 147},  /* 15 hour */
+    {287, 141},  /* 16 hour */
+};
+
 void grShowMeanwhileLoadingFrame(uint16 tick)
 {
     struct TTtmSlot slot;
-    uint16 handFrame;
+    int i;
 
     memset(&slot, 0, sizeof(slot));
-    grInitEmptyBackground();
+    grInitEmptyBackground();   /* once — fresh bg surface, zeros bgTile */
     grDx = 0;
     grDy = 0;
     grLoadBmp(&slot, 0, "MEANWHIL.BMP");
-    if (slot.numSprites[0] > 0) {
-        grDrawSprite(grBackgroundSfc, &slot, 254, 100, 0, 0);
-        if (slot.numSprites[0] > 1) {
-            handFrame = (uint16)(1 + (tick % (slot.numSprites[0] - 1)));
-            grDrawSprite(grBackgroundSfc, &slot, 287, 141, handFrame, 0);
+
+    /* Loop, painting card + hour hand + minute hand each VBlank. The
+     * MEANWHILE card is opaque enough that re-stamping it before the
+     * hands each frame covers the previous hands.
+     *
+     * NOTE: this leaves bgTile* zeroed when it returns. Callers that
+     * follow with code expecting a populated bg (e.g., the walk
+     * subsystem) must either reload the bg themselves or set
+     * fgLoopSequenceJustReset so the walk is skipped. */
+    for (i = 0; i < MEANWHILE_ANIMATE_VBLANKS; i++) {
+        if (slot.numSprites[0] > 0) {
+            int kf = (int)tick + i;
+            int hourSprite   = 5 + ((kf >> 2) % 12);   /* 5..16 */
+            int minuteSprite = 1 + (kf & 3);           /* 1..4 */
+
+            /* Card. */
+            grDrawSprite(grBackgroundSfc, &slot,
+                         kMeanwhilePos[0][0], kMeanwhilePos[0][1], 0, 0);
+            /* Hour hand (advances every 4 frames). */
+            if (hourSprite < slot.numSprites[0]) {
+                grDrawSprite(grBackgroundSfc, &slot,
+                             kMeanwhilePos[hourSprite][0],
+                             kMeanwhilePos[hourSprite][1],
+                             (uint16)hourSprite, 0);
+            }
+            /* Minute hand (cycles every frame). */
+            if (minuteSprite < slot.numSprites[0]) {
+                grDrawSprite(grBackgroundSfc, &slot,
+                             kMeanwhilePos[minuteSprite][0],
+                             kMeanwhilePos[minuteSprite][1],
+                             (uint16)minuteSprite, 0);
+            }
         }
+        grForceFullRedrawNextFrame();
+        VSync(0);
+        grDrawBackground();
+        DrawSync(0);
     }
 
-    grForceFullRedrawNextFrame();
-    VSync(0);
-    grDrawBackground();
-    DrawSync(0);
     grReleaseBmp(&slot, 0);
 }
 

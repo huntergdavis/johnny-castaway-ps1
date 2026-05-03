@@ -71,6 +71,7 @@ int fclose(FILE *stream);
 #include "cdrom_ps1.h"
 #include "ps1_debug.h"
 #include "pause_menu.h"
+#include "ps1_captions.h"
 #include "ps1_pad_script.h"
 #include "config/ps1/bootmode_embedded.h"
 
@@ -224,6 +225,34 @@ static const char *kProvenScenes[] = {
 };
 #define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
 
+/* Scene-set framework — the pause-menu "Scene Set" item cycles
+ * through these pools. Each set is a constrained slice of validated
+ * scenes; the screensaver loop draws from the current set's pool
+ * instead of the default kProvenScenes. Order MUST match the
+ * kSceneSetNames array in pause_menu.c.
+ *
+ * Adding a set: declare a kSet<Name>Scenes[] array, append it to
+ * gSceneSetPools, append the human-readable name to kSceneSetNames
+ * in pause_menu.c. If a set is empty (size 0), the picker silently
+ * falls back to kProvenScenes — useful for sets like "Mary" or
+ * "Visitors" that aren't fully validated yet. */
+static const char *kSetFishingScenes[] = {
+    "fishing1", "fishing2", "fishing3", "fishing4",
+    "fishing5", "fishing6", "fishing7", "fishing8",
+};
+
+struct SceneSetPool {
+    const char *const *scenes;
+    int               count;
+};
+
+static const struct SceneSetPool gSceneSetPools[] = {
+    { NULL, 0 },                                                                              /* All Scenes — uses kProvenScenes */
+    { kSetFishingScenes, (int)(sizeof(kSetFishingScenes) / sizeof(kSetFishingScenes[0])) },   /* Fishing Only */
+};
+#define NUM_SCENE_SET_POOLS \
+    ((int)(sizeof(gSceneSetPools) / sizeof(gSceneSetPools[0])))
+
 #ifndef PS1_BUILD
 static int hostForcedSceneOffsetValid = 0;
 static int hostForcedSceneOffsetX = 0;
@@ -236,10 +265,17 @@ static int hostCapturePreludeFrame = 0;
  * scene every iteration with random variants; if no scene was named we
  * free-select from the kProvenScenes array (so `fgpilot` alone cycles
  * through every validated scene). */
-static const char *fgLoopNextScene(const char *explicitScene)
+static const char *fgLoopNextScene(const char *explicitScene,
+                                   int sceneSetIdx)
 {
     if (explicitScene && explicitScene[0] != '\0')
         return explicitScene;
+    if (sceneSetIdx >= 0 && sceneSetIdx < NUM_SCENE_SET_POOLS) {
+        const struct SceneSetPool *p = &gSceneSetPools[sceneSetIdx];
+        if (p->scenes != NULL && p->count > 0)
+            return p->scenes[rand() % p->count];
+    }
+    /* "All" set or empty set → fall back to the default proven pool. */
     return kProvenScenes[rand() % NUM_PROVEN_SCENES];
 }
 
@@ -1574,12 +1610,44 @@ int main(int argc, char **argv)
     const char *explicitScene = (ps1BootForegroundOverlayScene[0] != '\0')
                                 ? ps1BootForegroundOverlayScene
                                 : ((numArgs >= 1) ? args[0] : NULL);
+
+
     do {
+        /* Scene-set cycling — when the pause menu cycles to a new
+         * set, drop any pinned scene, show the frog-clock transition,
+         * and surface the new set name as a caption. The actual pool
+         * is read from pauseMenuSceneSet by the picker each iteration.
+         *
+         * The frog-clock animation zeros bgTile* (it draws on a black
+         * backdrop). That leaves the walk subsystem nothing to compose
+         * against, so we treat scene-set cycling as a sequence reset:
+         * forget Johnny's last spot/heading and let the next scene
+         * load its bg fresh via foregroundPilotPlay. The walk is
+         * skipped this iteration; future iterations resume normal
+         * walk-between-scenes behaviour because the next scene will
+         * update storyCurrentSpot/Hdg on completion. */
+        if (pauseMenuRequestSceneSetCycle) {
+            extern const char *pauseMenuSceneSetName(int idx);
+            pauseMenuRequestSceneSetCycle = 0;
+            explicitScene = NULL;
+            ps1ShowFreeplayLoadingFrame("changing scene set", 0);
+            {
+                char banner[40];
+                snprintf(banner, sizeof(banner), "Scene Set: %s",
+                         pauseMenuSceneSetName(pauseMenuSceneSet));
+                captionsShowText(banner, 300);
+            }
+            storyCurrentSpot = -1;
+            storyCurrentHdg  = -1;
+            fgLoopSequenceJustReset = 1;
+        }
+
         /* Phase 8: tick the story-day calendar. Advances when the
          * ps1Soft date has rolled over since the last iteration. */
         fgLoopAdvanceStoryDayIfNeeded();
 
-        const char *loopScene = fgLoopNextScene(explicitScene);
+        const char *loopScene = fgLoopNextScene(explicitScene,
+                                                pauseMenuSceneSet);
         fgLoopApplyVariant(loopScene);
 
         /* Walk subsystem: walk Johnny from his last spot/heading to
@@ -1817,7 +1885,7 @@ int main(int argc, char **argv)
          * on the PS1 branch above. */
         const char *explicitScene = (numArgs >= 1) ? args[0] : NULL;
         do {
-            const char *loopScene = fgLoopNextScene(explicitScene);
+            const char *loopScene = fgLoopNextScene(explicitScene, 0);
             fgLoopApplyVariant(loopScene);
             foregroundPilotSetScene(loopScene);
             foregroundPilotPlay();

@@ -102,6 +102,20 @@ int pauseMenuRequestFreeplayClear = 0;
 int pauseMenuRequestFreeplayWorldRefresh = 0;
 static int menuFreeplayActive = 0;
 
+/* Scene-set framework — pause menu shows "Scene Set: <name>" and
+ * cycles the active pool when the user selects it. The actual pool
+ * mapping lives in jc_reborn.c. pauseMenuSceneSet is the current
+ * index and pauseMenuRequestSceneSetCycle fires on each cycle so the
+ * main loop knows to re-randomize. */
+int pauseMenuRequestSceneSetCycle = 0;
+int pauseMenuSceneSet = 0;
+
+/* Pending preview the user is scrolling through with left/right while on
+ * the Scene Set menu line. Becomes pauseMenuSceneSet only on X/START
+ * commit. Resets to pauseMenuSceneSet whenever the cursor leaves the
+ * Scene Set row, so unsubmitted previews never linger. */
+static int pendingSceneSet = 0;
+
 /* Did pauseMenuShow itself toggle the mute? If yes, pauseMenuHide
  * undoes it. If the user manually toggled mute via the menu item
  * while paused, this gets cleared so we don't fight them on hide. */
@@ -369,6 +383,7 @@ static uint16 prevButtons = 0;
  * ------------------------------------------------------------------------- */
 enum {
     MENU_RESUME,
+    MENU_SCENE_SET,
     MENU_FREEPLAY,
     MENU_FREEPLAY_OPTIONS,
     MENU_WORLD,
@@ -376,6 +391,24 @@ enum {
     MENU_SYSTEM,
     MENU_COUNT
 };
+
+/* Scene-set names. Order mirrors the gSceneSetPools array in
+ * jc_reborn.c. Empty pools still appear in the cycle — jc_reborn
+ * falls back to the All set when the picker is asked for a 0-size
+ * pool. */
+static const char *kSceneSetNames[] = {
+    "All Scenes",
+    "Fishing Only",
+};
+#define NUM_SCENE_SETS \
+    ((int)(sizeof(kSceneSetNames) / sizeof(kSceneSetNames[0])))
+
+const char *pauseMenuSceneSetName(int idx)
+{
+    if (idx < 0 || idx >= NUM_SCENE_SETS)
+        return "?";
+    return kSceneSetNames[idx];
+}
 
 enum {
     WORLD_DAYNIGHT,
@@ -508,6 +541,7 @@ void pauseMenuShow(void)
     holidayCursor         = 0;
     accessCursor          = 0;
     systemCursor          = 0;
+    pendingSceneSet       = pauseMenuSceneSet;  /* fresh preview each open */
     menuState             = PAUSE_MENU_MAIN;
     menuFramebufferPrimed = 0;
     prevButtons           = 0xFFFF;  /* Treat all buttons as "held" so the
@@ -1250,6 +1284,19 @@ static void drawMainMenu(void)
 
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
+    {
+        int showIdx = (menuCursor == MENU_SCENE_SET)
+                          ? pendingSceneSet : pauseMenuSceneSet;
+        int dirty   = (pendingSceneSet != pauseMenuSceneSet)
+                      && (menuCursor == MENU_SCENE_SET);
+        if (showIdx < 0 || showIdx >= NUM_SCENE_SETS) showIdx = 0;
+        pmPrintf(" %s Scene Set: %s%s%s%s\n",
+                 menuCursor == MENU_SCENE_SET ? ">" : " ",
+                 menuCursor == MENU_SCENE_SET ? "<" : " ",
+                 kSceneSetNames[showIdx],
+                 menuCursor == MENU_SCENE_SET ? ">" : " ",
+                 dirty ? "*" : "");
+    }
     pmPrintf(" %s Freeplay: %s\n",
              menuCursor == MENU_FREEPLAY ? ">" : " ",
              menuFreeplayActive ? "ON" : "OFF");
@@ -1413,6 +1460,23 @@ static int handleMainInput(uint16 pressed)
         if (menuCursor >= MENU_COUNT) menuCursor = 0;
     }
 
+    /* Scene Set: left/right scrolls a pending preview. The committed
+     * value only changes on X/START. Whenever the cursor isn't on the
+     * Scene Set row, pending mirrors the committed value so navigating
+     * away discards an un-applied preview. */
+    if (menuCursor == MENU_SCENE_SET) {
+        if (pressed & PAD_LEFT) {
+            pendingSceneSet--;
+            if (pendingSceneSet < 0) pendingSceneSet = NUM_SCENE_SETS - 1;
+        }
+        if (pressed & PAD_RIGHT) {
+            pendingSceneSet++;
+            if (pendingSceneSet >= NUM_SCENE_SETS) pendingSceneSet = 0;
+        }
+    } else {
+        pendingSceneSet = pauseMenuSceneSet;
+    }
+
     /* X = select current item */
     if (pressed & PAD_CROSS) {
         switch (menuCursor) {
@@ -1431,6 +1495,16 @@ static int handleMainInput(uint16 pressed)
             menuState = PAUSE_MENU_FREEPLAY_OPTIONS;
             prevButtons = 0xFFFF;
             break;
+
+        case MENU_SCENE_SET:
+            /* Commit the pending preview. If pending matches current
+             * (no-op press) we still close the menu — same UX as the
+             * old "X cycles" behaviour. */
+            if (pendingSceneSet != pauseMenuSceneSet) {
+                pauseMenuSceneSet = pendingSceneSet;
+                pauseMenuRequestSceneSetCycle = 1;
+            }
+            return 0;
 
         case MENU_WORLD:
             menuState = PAUSE_MENU_OPTIONS;
@@ -1452,8 +1526,17 @@ static int handleMainInput(uint16 pressed)
         }
     }
 
-    /* START or Circle on main menu = resume */
-    if (pressed & (PAD_START | PAD_CIRCLE))
+    /* START on Scene Set commits a pending preview (same as X);
+     * START elsewhere or Circle anywhere just closes the menu. */
+    if (pressed & PAD_START) {
+        if (menuCursor == MENU_SCENE_SET
+            && pendingSceneSet != pauseMenuSceneSet) {
+            pauseMenuSceneSet = pendingSceneSet;
+            pauseMenuRequestSceneSetCycle = 1;
+        }
+        return 0;
+    }
+    if (pressed & PAD_CIRCLE)
         return 0;
 
     return 1;  /* keep menu open */
