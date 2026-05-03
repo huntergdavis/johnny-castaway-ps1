@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after a wide multi-view stitch restored edge-clipped action pixels and full-host bubble injection restored the fish thought-bubble shell).
+validated after a far-right full-frame foreground recapture, host capture stale-surface invalidation, and low-memory clean-snapshot relief).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 276 |
-| Approx. words | 2290 |
+| Lines | 289 |
+| Approx. words | 2413 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 16 / 63 fully validated
+-   Scenes: 17 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

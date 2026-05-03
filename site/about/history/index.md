@@ -242,8 +242,12 @@ on where the island sits: line, mermaid splash, boot throw, and lower
 water cleanup all needed different host sightlines. The validated packs
 stitch multiple foreground-only views into one scene-relative foreground
 canvas, then inject the fish thought-bubble shell from full-host frames.
-Far-right and true far-left stress runs passed. The current count became
+Far-right and true far-left stress runs passed. The count became
 **16 / 63**.
+
+`MARY 3` followed with a different failure shape: a large foreground pack
+that needed far-right host capture, stale host capture surface invalidation,
+and low-memory clean-snapshot relief on PS1. The current count is **17 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

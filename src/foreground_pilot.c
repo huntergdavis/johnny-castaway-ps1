@@ -195,6 +195,9 @@ enum {
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
+#define FG_LARGE_CLEAN_SNAPSHOT_BYTES (384UL * 1024UL)
+#define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
+#define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
 #define fgEntryHasPayload(entry) \
     (((entry) != NULL && \
       (entry)->dataSize > 0 && \
@@ -845,6 +848,30 @@ static int fgSceneUsesBlackBackdrop(const char *sceneName)
 {
     return fgSceneEquals(sceneName, "johnny1") ||
            fgSceneEquals(sceneName, "johnny6");
+}
+
+static uint32 fgHeaderCleanSnapshotEstimate(const struct TFgPilotHeader *header)
+{
+    if (header == NULL)
+        return 0;
+    return (uint32)header->unionWidth *
+           (uint32)header->unionHeight *
+           (uint32)sizeof(uint16);
+}
+
+static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
+                                         uint32 cleanBytes,
+                                         uint32 maxFrameBytes)
+{
+    if (cleanBytes >= FG_LARGE_CLEAN_SNAPSHOT_BYTES &&
+        maxFrameBytes >= FG_LARGE_FRAME_PAYLOAD_BYTES)
+        return 1;
+
+    /* MARY3 is the first validated case of a wide indexed8 scene whose
+     * clean-background snapshot and max payload together exceed the normal
+     * prefetch budget. Keep this explicit so future archaeology knows why
+     * the low-memory path exists. */
+    return fgSceneEquals(sceneName, "mary3");
 }
 
 static void fgTelemetryUpdate(void)
@@ -2520,6 +2547,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             const struct TFgPilotSceneFamily *sceneFamily = NULL;
             uint16 sceneTag = 0;
             uint32 maxDataSize = 0;
+            uint32 cleanSnapshotEstimate = 0;
+            uint8 cleanMemoryRelief = 0;
             uint16 packFlags;
             uint16 i;
             /* Trigger closed-caption lookup only when captions are active.
@@ -2562,6 +2591,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (gFgRuntime.entryTable.entries[i].dataSize > maxDataSize)
                     maxDataSize = gFgRuntime.entryTable.entries[i].dataSize;
             }
+            cleanSnapshotEstimate = fgHeaderCleanSnapshotEstimate(&gFgRuntime.header);
+            cleanMemoryRelief = (uint8)fgSceneNeedsCleanMemoryRelief(
+                sceneName, cleanSnapshotEstimate, maxDataSize);
             if (maxDataSize > gFgFrameBufferSize) {
                 if (gFgFrameBuffer != NULL)
                     free(gFgFrameBuffer);
@@ -2575,7 +2607,14 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 }
                 gFgFrameBufferSize = maxDataSize;
             }
-            if (gFgPrefetchStage1Enabled) {
+            if (cleanMemoryRelief) {
+                printf("JCMEM clean-relief scene=%s clean=%lu maxFrame=%lu no-prefetch\n",
+                       sceneName,
+                       (unsigned long)cleanSnapshotEstimate,
+                       (unsigned long)maxDataSize);
+                fgDropOptionalPrefetchBuffersForCleanSnapshot();
+            }
+            if (gFgPrefetchStage1Enabled && !cleanMemoryRelief) {
                 if (maxDataSize > gFgPrefetchFrameBufferSize) {
                     if (gFgPrefetchFrameBuffer != NULL)
                         free(gFgPrefetchFrameBuffer);
@@ -2590,7 +2629,7 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                     gFgPrefetchFrameBufferSize = maxDataSize;
                 }
             }
-            if (gFgPrefetchWindowBytes > 0) {
+            if (gFgPrefetchWindowBytes > 0 && !cleanMemoryRelief) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
                 windowBytes = fgRuntimeStreamWindowBytes(sceneName, windowBytes);
@@ -2671,6 +2710,16 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             }
             {
                 uint32 requiredScratch = ((maxDataSize + 2047u) / 2048u) * 2048u + 2048u;
+                if (cleanMemoryRelief &&
+                    requiredScratch > FG_LOW_MEMORY_STREAM_SCRATCH_BYTES)
+                    requiredScratch = FG_LOW_MEMORY_STREAM_SCRATCH_BYTES;
+                if (cleanMemoryRelief &&
+                    gFgStreamScratch != NULL &&
+                    gFgStreamScratchSize > requiredScratch) {
+                    free(gFgStreamScratch);
+                    gFgStreamScratch = NULL;
+                    gFgStreamScratchSize = 0;
+                }
                 if (requiredScratch > gFgStreamScratchSize) {
                     if (gFgStreamScratch != NULL)
                         free(gFgStreamScratch);
@@ -2689,10 +2738,14 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 ps1PerfMarkBufferSizes(gFgFrameBufferSize, gFgStreamScratchSize);
             gFgRuntime.frameBuffer = gFgFrameBuffer;
             gFgRuntime.frameBufferSize = gFgFrameBufferSize;
-            gFgRuntime.prefetchFrameBuffer = gFgPrefetchFrameBuffer;
-            gFgRuntime.prefetchFrameBufferSize = gFgPrefetchFrameBufferSize;
-            gFgRuntime.streamWindowBuffer = gFgStreamWindowBuffer;
-            gFgRuntime.streamWindowSize = gFgStreamWindowBufferSize;
+            gFgRuntime.prefetchFrameBuffer = cleanMemoryRelief ?
+                NULL : gFgPrefetchFrameBuffer;
+            gFgRuntime.prefetchFrameBufferSize = cleanMemoryRelief ?
+                0 : gFgPrefetchFrameBufferSize;
+            gFgRuntime.streamWindowBuffer = cleanMemoryRelief ?
+                NULL : gFgStreamWindowBuffer;
+            gFgRuntime.streamWindowSize = cleanMemoryRelief ?
+                0 : gFgStreamWindowBufferSize;
             gFgRuntime.streamWindowStart = 0;
             gFgRuntime.streamWindowBytes = 0;
             gFgRuntime.streamWindowValid = 0;
@@ -3091,14 +3144,16 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         JC_BSOD(sceneName, "fgRuntimeComputeDrawBounds returned 0 "
                           "(scene metadata missing or pack header malformed)");
     }
-    if (fgRuntimeUsesTemporalResidual()) {
+    {
         uint32 cleanRectEstimate =
             (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
-        if (cleanRectEstimate >= (384UL * 1024UL)) {
+        if (cleanRectEstimate >= FG_LARGE_CLEAN_SNAPSHOT_BYTES ||
+            fgSceneNeedsCleanMemoryRelief(sceneName, cleanRectEstimate,
+                                          gFgRuntime.frameBufferSize)) {
             largeCleanSnapshot = 1;
-            /* Full-frame residual scenes need the backdrop baseline more than
-             * optional prefetch. Dropping stage/window buffers here prevents a
-             * deterministic clean-rect BSOD on JOHNNY1-class packs. */
+            /* Wide scenes need the backdrop baseline more than optional
+             * prefetch. The pixels stay exact; only the hidden-read cache is
+             * sacrificed for enough contiguous heap to save clean rects. */
             printf("JCMEM large-clean scene=%s bytes=%lu drop-prefetch\n",
                    sceneName, (unsigned long)cleanRectEstimate);
             fgDropOptionalPrefetchBuffersForCleanSnapshot();

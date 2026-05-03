@@ -71,6 +71,11 @@ if [ -z "$CAPTURE_ISLAND_X" ]; then
     # extra foreground views provide clipped left/right action pixels without a
     # production runtime pin.
     CAPTURE_ISLAND_X="-154"
+  elif [ "$SCENE_SLUG" = "mary3" ]; then
+    # MARY 3's action lives left of the island. Capture with the island shifted
+    # right so left-side Johnny/Mary pixels are not clipped; this is capture
+    # policy, not a production runtime pin.
+    CAPTURE_ISLAND_X="80"
   else
     CAPTURE_ISLAND_X="-154"
   fi
@@ -113,6 +118,12 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # capture across the whole frame.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "mary3" ]; then
+  # MARY 3's old full-host base-diff pack captured a wide island/ocean plate
+  # and double-painted it over the PS1 runtime island. Foreground-only replay
+  # keeps the live Johnny/Mary action without baking the backdrop into FG2.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] &&
    { [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; }; then
   # The older full-host captures for these scenes were both full-width dirty
@@ -148,6 +159,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "johnny5" ]; then
   # The SOS thought bubble is source frame 74. The following blank rows were
   # holding too long, so preserve total duration while pausing on the note.
   HOLD_ADJUSTMENTS="74:+16 75:-12 78:-4"
+fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "mary3" ]; then
+  # The dinner thought beat only survives for source frames 347-348. Move time
+  # from the following recovery rows so the gag is readable without length drift.
+  HOLD_ADJUSTMENTS="347:+24 348:+28 349:-1 351:-4 353:-2 354:-2 355:-5 358:-3 359:-1 360:-5 362:-1 363:-4 365:-2 366:-2 367:-5 369:-2 370:-3 371:-5 373:-1 374:-4"
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \

@@ -67,10 +67,9 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Sixteen scenes are signed off; `MARY 2` now stays variable-position in
-production after a wide multi-view capture stitch restored edge-clipped
-foreground action and full-host bubble injection restored the fish
-thought-bubble shell. The remaining scenes are queued.
+Seventeen scenes are signed off; `MARY 3` now runs after a far-right
+full-frame foreground recapture, host capture stale-surface invalidation,
+and low-memory clean-snapshot relief. The remaining scenes are queued.
 
 ## What this isn't
 
