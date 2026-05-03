@@ -21,8 +21,8 @@ The pause menu is the PS1 port's in-game control room. It opens with Start, draw
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/pause-menu-design.md` |
-| Lines | 155 |
-| Approx. words | 759 |
+| Lines | 173 |
+| Approx. words | 894 |
 | Code fences | 1 |
 
 ## Outline
@@ -31,6 +31,7 @@ The pause menu is the PS1 port's in-game control room. It opens with Start, draw
 -   Controller Contract
 -   Menu Structure
 -   Scene Set
+-     Active sets
 -   State Enum
 -   Freeplay Integration
 -   World Options
