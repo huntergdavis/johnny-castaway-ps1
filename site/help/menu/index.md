@@ -17,13 +17,21 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <div class="menu-guide">
 <section class="menu-shot" id="pause-main">
 <h2>Pause Menu</h2>
-<p>The top-level dispatch screen: resume, enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System.</p>
+<p>The top-level dispatch screen: resume, change the Scene Set, enter or exit Freeplay, open Freeplay Options, World Options, Accessibility, or System.</p>
 <p class="menu-route"><strong>Capture route:</strong> Start</p>
 <figure>
   <img src="{{ '/assets/img/help/menu/pause-main.png' | relative_url }}" alt="Captured PS1 screenshot of the Pause Menu screen." loading="lazy" />
   <figcaption>Marker frame 3035, captured frame 3035, delta 0.</figcaption>
 </figure>
 <p>This screen is intentionally short. Anything that grows past a few rows belongs on a sub-screen.</p>
+</section>
+
+<section class="menu-shot" id="scene-set">
+<h2>Scene Set</h2>
+<p>Constrains the screensaver-loop's random pool to a category. Defaults to <code>All Scenes</code> with <code>Fishing Only</code> as the currently-validated alternative; future sets (Johnny, Mary, Visitors, Office, …) drop in the same way.</p>
+<p class="menu-route"><strong>Capture route:</strong> Start, Down (line item is the second row of the pause menu)</p>
+<p>Scene Set is the only main-menu row that takes Left/Right input directly. Left and Right preview a pending value (the row shows it bracketed: <code>&lt;Fishing Only&gt;</code>); an asterisk marks the preview as un-applied. <strong>Cross</strong> or <strong>Start</strong> commits the change, fires a frog-clock loading transition, and the next scene comes from the new pool.</p>
+<p>Navigating away with Up/Down without committing discards the preview — you cannot accidentally change the pool just by scrolling past this row.</p>
 </section>
 
 <section class="menu-shot" id="freeplay-options">

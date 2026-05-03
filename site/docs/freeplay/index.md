@@ -50,7 +50,6 @@ described, and selected without memorizing button chords.
 | D-pad / left analog | Walk Johnny 4-way around the island. Any movement cancels the current gag/action immediately. |
 | L2 held | Slow walk. Useful for lining Johnny up by the water or tree. |
 | R2 held | Fast walk. |
-| Circle | Fish from the nearest side. Right-side fishing mirrors the left-facing sprite sequence horizontally. |
 | Select | Clear the freeplay screen, rebuild the clean background, and return to idle. This is both a player escape hatch and a heap/fragmentation safety valve. |
 | R1 + Up | Toggle day/night immediately. |
 | R1 + Down | Toggle high tide/low tide immediately. |
@@ -94,16 +93,14 @@ and coordinates without changing the player-facing control scheme.
 
 ## Fishing
 
-Fishing is the only direct action button because it is the core Johnny
-fantasy. Circle starts the fishing sequence from Johnny's current side of
-the island. The right-side version is not a separate Sierra asset; freeplay
-draws the same fishing frames flipped horizontally.
-
-The fishing sequence is intentionally sourced from the `MJFISH` sprite
-banks rather than the old catch-only prop sheets. The target is the classic
-"standing by the water with the pole, casting, then scratching" gag. The
-frame range can still be tuned, but the architecture is now pointed at the
-right source family.
+Fishing in freeplay is reached through the **Scene Set** menu rather
+than a dedicated joypad button. Cycling Scene Set to *Fishing Only*
+constrains the screensaver-loop random pool to the validated fishing
+scenes (`fishing1`..`fishing8`) — the same captured `.FG2` packs the
+normal rotation already plays, so the visuals match the source frames
+exactly. The earlier Circle-as-fish freeplay action is gone; the live
+control surface is reserved for walking, clearing, world toggles, and
+the menu.
 
 ## Rendering and memory rules
 
