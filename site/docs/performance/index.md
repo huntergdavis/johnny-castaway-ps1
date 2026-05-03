@@ -248,13 +248,15 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+13.7% over target /
-88.8% target speed** (`13.7312%` exact over target / `88.7730%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+13.9% over target /
+88.6% target speed** (`13.8570%` exact over target / `88.6303%` exact target speed).
 
 ## Scene Battle Card
 
-As of 2026-05-02, all 126 scene/tide variants have current headless
+As of 2026-05-03, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`mary2-v068-wide-stitch`,
+`fishing5-v065-current-ledger-overlay`,
 `johnny2-v064-validation-refresh`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,
@@ -269,13 +271,15 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `mary3`, `suzy1`, and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. The latest matrix
-run is `2026-05-02T19:06:01`; per-row freshness and stats version are shown on
+run is `2026-05-03T14:22:57`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `compact-fgp3-v66-final-frame-hold`,
+`mary2-v068-wide-stitch`,
+`fishing5-v065-current-ledger-overlay`,
 `johnny2-v064-validation-refresh`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
@@ -321,7 +325,7 @@ rows are historical only.
 | `johnny5` | +15.5% / 86.6% (947/820) | +15.5% / 86.6% (947/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
 | `mary1` | +3.7% / 96.4% (5004/4826); due 2; blk 49 | +3.2% / 96.9% (4994/4839); due 1; blk 26 |
-| `mary2` | +1.6% / 98.4% (2284/2247); blk 7 | +1.6% / 98.4% (2285/2249); blk 6 |
+| `mary2` | +0.2% / 99.8% (2250/2246); blk 4 | +0.3% / 99.7% (2253/2246); blk 7 |
 | `mary3` | metadata-only | metadata-only |
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |

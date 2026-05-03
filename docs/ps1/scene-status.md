@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 15 / 63 (next: mary2)
+## Progress: 16 / 63 (next: mary3)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.6-ps1`.
+current public release is `v0.6.8-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -52,7 +52,7 @@ current public release is `v0.6.6-ps1`.
 | JOHNNY | 5 | johnny5 | ✅ | ✅ | host capture/test island position `x=80,y=54` · high/low pack parity · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows |
 | JOHNNY | 6 | johnny6 | ✅ | ✅ | black backdrop · high/low pack parity | 2026-05-03 | visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted |
 | MARY | 1 | mary1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-124,y=37` · raft-stage `5` | 2026-05-03 | visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required |
-| MARY | 2 | mary2 | ⏳ | ⏳ | — | — | untested in regtest |
+| MARY | 2 | mary2 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed |
 | MARY | 3 | mary3 | ⏳ | ⏳ | — | — |  |
 | MARY | 4 | mary4 | ⏳ | ⏳ | — | — | untested in regtest |
 | MARY | 5 | mary5 | ⏳ | ⏳ | — | — |  |

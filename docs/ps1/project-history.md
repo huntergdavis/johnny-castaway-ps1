@@ -20,8 +20,8 @@ holiday overlays, input, and SPU playback.
 **Timeline**: Initial session (2025-10-18), ongoing development through 2026-05
 **Branch**: `ps1` (based on `4mb2025`)
 **Development Tools**: PSn00bSDK, Docker, DuckStation emulator
-**Current release**: `v0.6.6-ps1`
-**Current validation bar**: 15 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`) signed off for pixel-perfect visuals + synced SFX
+**Current release**: `v0.6.8-ps1`
+**Current validation bar**: 16 / 63 scenes (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`) signed off for pixel-perfect visuals + synced SFX
 
 ## Why PS1?
 
@@ -195,10 +195,10 @@ support high/low tide variants correctly, and generate a corpus for all
 
 **Achievements**:
 - High-tide and low-tide FG2 packs generated for all 63 scenes.
-- Thirteen scenes are validated under the current bar: `FISHING 1`,
+- Sixteen scenes are validated under the current bar: `FISHING 1`,
   `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`,
   `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`,
-  `JOHNNY 4`, and `JOHNNY 5`.
+  `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, and `MARY 2`.
 - `FISHING 5` cleared its shark-residue blocker after the host capture
   path switched to a full-frame keyed current-ledger overlay for that
   interaction.
@@ -214,6 +214,11 @@ support high/low tide variants correctly, and generate a corpus for all
   foreground-only overlay removed stale lower-band overpaint, and SOS
   note timing was moved onto the note bubble without adding a runtime
   island-position pin.
+- `MARY 2` was validated after the capture pipeline learned to stitch
+  multiple island-relative foreground-only views into one wide scene
+  pack. A full-host bubble injection restores the fish thought-bubble
+  shell that foreground-only capture omitted, and far-right plus true
+  far-left stress runs proved the result remains variable-position safe.
 - FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
   and per-scene establishing RAWs were removed from the active PS1
   runtime/generation path.

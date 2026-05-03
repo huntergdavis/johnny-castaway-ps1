@@ -82,22 +82,24 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.6.6-ps1`** |
+| Current release | **`v0.6.8-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **15 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`) |
+| Scenes fully validated under the reference bar | **16 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
-| Latest perf matrix run | **`2026-05-02T22:39:34`** (`last_run_at` in the CSV) |
-| Perf stats version | Latest refreshed rows use `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | **`2026-05-03T14:22:57`** (`last_run_at` in the CSV) |
+| Perf stats version | Latest refreshed rows use `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-Current main also validates `JOHNNY 5`: its high/low packs were
-recaptured at host/test `x=80,y=54` so the thrown-bottle splash is in
-frame, full-frame keyed foreground-only overlay removes stale lower-band
-overpaint, and SOS note timing now holds on the note bubble instead of
-blank post-bubble rows. Production island placement remains variable.
+`v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
+validated after rebuilding high/low packs from a wide scene-relative
+multi-view stitch. Foreground-only captures restore the fishing line,
+Mary splash, boot/splash, and lower-water cleanup across island
+placements; full-host bubble injection restores the fish thought-bubble
+shell that foreground-only capture omitted. Far-right and true far-left
+stress playback passed, and production island placement remains variable.
 
 `v0.6.6-ps1` is a scene-validation bugfix release: `FISHING 7` and
 `FISHING 8` were rebuilt from far-left full-frame foreground-only host
@@ -157,9 +159,9 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Fifteen scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
+Sixteen scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
 `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`,
-`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`) validated
+`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`) validated
 end-to-end anchor the scene-by-scene bring-up loop.
 
 The full pipeline — pack format byte layout, hardware constraints hit

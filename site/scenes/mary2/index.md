@@ -4,17 +4,17 @@ title: MARY 2 — First encounter
 ads: MARY
 tag: 2
 slug: mary2
-status: pending
-description: "MARY.ADS scene 2: First encounter. Not yet validated."
+status: validated
+description: "MARY.ADS scene 2: First encounter. Validated after wide multi-view stitch and fish thought-bubble repair."
 ---
 
-Not yet validated.
+Validated on 2026-05-03 after visual and audible signoff, including
+far-right and true far-left runtime stress playback.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>MARY.ADS scene 2</code>
 - Slug: <code>mary2</code>
-- Source-table note: untested in regtest
 
 ## What this scene probably is
 
@@ -22,21 +22,21 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Validation note
 
-The same way every scene does: under the FISHING 1 bar.
+This scene proved that one island-relative vignette can expose more than
+one screen width of source pixels. A single host position clipped useful
+action depending on where the island sat: the opening fishing line, Mary
+and her splash, the boot throw, and the lower-water cleanup all needed
+different sightlines.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+The validated high and low packs are built from a wide scene-relative
+multi-view stitch. Foreground-only captures at controlled host/test
+positions restore the edge-clipped action pixels and remove stale
+lower-band overpaint. The fish thought-bubble interval needed a separate
+full-host bubble injection because foreground-only capture kept the fish
+but dropped the white bubble shell.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Those host/test positions are capture evidence, not runtime pins.
+Production playback remains variable-position safe; visual stress runs
+passed at far-right and true far-left placement.

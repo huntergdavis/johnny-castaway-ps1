@@ -3,16 +3,17 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-03 (scene ledger at 15/63; `MARY 1` was
-validated on the legacy route `x=-124,y=37`, raft-stage `5`, with no
-pack or runtime changes required).
+**Last updated:** 2026-05-03 (scene ledger at 16/63; `MARY 2` was
+validated after a wide multi-view stitch restored edge-clipped action
+pixels and full-host bubble injection restored the fish thought-bubble
+shell).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`,
-`JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, and `MARY 1` have been validated
+`JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, and `MARY 2` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -43,6 +44,11 @@ post-bubble rows. Production placement remains variable.
 `MARY 1` was visually and audibly signed off on the historical MARY1
 validation route (`x=-124,y=37`, raft-stage `5`) without changing the
 pack or runtime.
+`MARY 2` uses a wide scene-relative multi-view capture stitch so one
+pack can carry more than one screen width of island-relative action:
+line, mermaid/splash, boot/splash, lower-water cleanup, and the fish
+thought-bubble shell are complete while production placement stays
+variable-position safe.
 
 | Component | Status |
 |---|---|
@@ -51,7 +57,7 @@ pack or runtime.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 15/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 16/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -61,13 +67,17 @@ pack or runtime.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 15 / 63 fully validated
+## Scenes: 16 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
+- `v0.6.8-ps1` — scene-validation bugfix release; promotes `MARY 2`
+  after the wide scene-relative multi-view stitch restored edge-clipped
+  line, mermaid, boot/splash, and lower-water pixels, and after
+  full-host bubble injection restored the fish thought-bubble shell.
 - Current main after `v0.6.6-ps1` — promotes `MARY 1` after visual +
   audible signoff on the legacy validation route (`x=-124,y=37`,
   raft-stage `5`), with no pack or runtime changes required. It also
@@ -205,7 +215,8 @@ searchability — **do not cite them as current progress**:
 | **12 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 4` promotion plus `FISHING 7`/`FISHING 8` revalidation; all three use capture/test positions only and production variable island placement** | **this doc, `scene-status.md`** |
 | **13 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 5` promotion; host/test `x=80,y=54` capture restores the thrown-bottle splash, but production island placement remains variable** | **this doc, `scene-status.md`** |
 | **14 / 63** | **2026-05-03** | **Scene ledger after `JOHNNY 6` promotion; black-backdrop routing avoids painting ocean/island behind an all-black source scene** | **this doc, `scene-status.md`** |
-| **15 / 63** | **2026-05-03** | **Current scene ledger after `MARY 1` promotion; legacy validation route `x=-124,y=37`, raft-stage `5`, needed no pack/runtime changes** | **this doc, `scene-status.md`** |
+| **15 / 63** | **2026-05-03** | **Scene ledger after `MARY 1` promotion; legacy validation route `x=-124,y=37`, raft-stage `5`, needed no pack/runtime changes** | **this doc, `scene-status.md`** |
+| **16 / 63** | **2026-05-03** | **Current scene ledger after `MARY 2` promotion; wide scene-relative multi-view stitch plus full-host thought-bubble injection makes the scene random-position safe** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current
@@ -241,7 +252,7 @@ baseline.
   mute writes the SPU master-volume registers directly.
 - FG1/FOC and per-scene RAW paths are retired; do not add new docs,
   routes, generated artifacts, or CD entries for them.
-- Scene coverage beyond the 13 signed-off rows is pending scene-by-scene
+- Scene coverage beyond the 16 signed-off rows is pending scene-by-scene
   bring-up via the loop in [development-workflow.md](development-workflow.md).
 
 ## See also

@@ -236,6 +236,15 @@ ocean/island behind the office daydream. The current count became
 `x=-124,y=37`, raft-stage `5`. It passed visual and audible review
 without a pack or runtime change. The current count became **15 / 63**.
 
+`MARY 2` followed after a more interesting capture fix. The scene can
+expose more than one screen width of island-relative action depending
+on where the island sits: line, mermaid splash, boot throw, and lower
+water cleanup all needed different host sightlines. The validated packs
+stitch multiple foreground-only views into one scene-relative foreground
+canvas, then inject the fish thought-bubble shell from full-host frames.
+Far-right and true far-left stress runs passed. The current count became
+**16 / 63**.
+
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
@@ -311,8 +320,8 @@ component-completeness phases:
 
 - Build: **`{{ site.release.tag }}`**.
 - Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`).
-- Next scene in bring-up: **`MARY 2`**.
+  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`).
+- Next scene in bring-up: **`MARY 3`**.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

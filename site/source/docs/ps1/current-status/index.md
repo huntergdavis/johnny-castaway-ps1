@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the legacy route x=-124,y=37, raft-stage 5, with no pack or runtime changes required).
+validated after a wide multi-view stitch restored edge-clipped action pixels and full-host bubble injection restored the fish thought-bubble shell).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 265 |
-| Approx. words | 2185 |
+| Lines | 276 |
+| Approx. words | 2290 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 15 / 63 fully validated
+-   Scenes: 16 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
