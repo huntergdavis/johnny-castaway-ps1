@@ -102,6 +102,12 @@ exactly. The earlier Circle-as-fish freeplay action is gone; the live
 control surface is reserved for walking, clearing, world toggles, and
 the menu.
 
+The Scene Set lineup also covers the rest of the catalog by family:
+*Johnny Stories*, *Mary Visits*, *Visitors*, *Activities*, and *Misc &
+Suzy*. Pools include scenes whose FG2 packs ship but whose visuals
+aren't fully signed off yet — they play as-is and improve in place as
+scenes are validated.
+
 ## Rendering and memory rules
 
 Freeplay has to run forever. That means the frame loop is boring on
