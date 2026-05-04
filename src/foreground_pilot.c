@@ -196,6 +196,7 @@ enum {
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
 #define FG_LARGE_CLEAN_SNAPSHOT_BYTES (384UL * 1024UL)
+#define FG_CLEAN_SNAPSHOT_PRESSURE_BYTES (256UL * 1024UL)
 #define FG_LARGE_FRAME_PAYLOAD_BYTES (128UL * 1024UL)
 #define FG_LOW_MEMORY_STREAM_SCRATCH_BYTES (16UL * 1024UL)
 #define fgEntryHasPayload(entry) \
@@ -281,6 +282,7 @@ static void fgBackdropStampHoliday(void);
 static void fgBackdropRelease(int keepBackgrnd);
 static void fgReleaseStreamBuffers(void);
 static void fgReleaseStreamBuffersHard(void);
+static void fgDropOptionalPrefetchBuffersForCleanSnapshot(void);
 static void fgInitVisiblePipeline(void);
 
 /* Public accessor for walk_pilot — returns the slot holding
@@ -863,6 +865,9 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
                                          uint32 cleanBytes,
                                          uint32 maxFrameBytes)
 {
+    if (cleanBytes >= FG_CLEAN_SNAPSHOT_PRESSURE_BYTES)
+        return 1;
+
     if (cleanBytes >= FG_LARGE_CLEAN_SNAPSHOT_BYTES &&
         maxFrameBytes >= FG_LARGE_FRAME_PAYLOAD_BYTES)
         return 1;
@@ -872,6 +877,19 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
      * prefetch budget. Keep this explicit so future archaeology knows why
      * the low-memory path exists. */
     return fgSceneEquals(sceneName, "mary3");
+}
+
+static void fgDropPressureCachesForCleanSnapshot(const char *sceneName,
+                                                 uint32 cleanBytes)
+{
+    fgDropOptionalPrefetchBuffersForCleanSnapshot();
+    if (walkPilotCleanBufferAllocated()) {
+        printf("JCMEM walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
+               sceneName != NULL ? sceneName : "?",
+               (unsigned long)cleanBytes,
+               walkPilotCleanBufferBytes() / 1024UL);
+        walkPilotReleaseCleanWalkArea();
+    }
 }
 
 static void fgTelemetryUpdate(void)
@@ -3156,7 +3174,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
              * sacrificed for enough contiguous heap to save clean rects. */
             printf("JCMEM large-clean scene=%s bytes=%lu drop-prefetch\n",
                    sceneName, (unsigned long)cleanRectEstimate);
-            fgDropOptionalPrefetchBuffersForCleanSnapshot();
+            fgDropPressureCachesForCleanSnapshot(sceneName, cleanRectEstimate);
         }
     }
     if (blackBackdrop && fgRuntimeUsesTemporalResidual()) {

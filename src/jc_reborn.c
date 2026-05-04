@@ -106,6 +106,20 @@ static void ps1ShowFreeplayLoadingFrame(const char *phase, int tick)
 #include "walk_render.h"
 #include "walk_pilot.h"
 #include "scene_freeplay.h"
+
+static void ps1PrepareSceneExplorerLaunch(void)
+{
+    /* Scene Explorer uses a full frog wipe and deliberately skips the
+     * inter-scene walk, so none of the current thumbnail/walk/FG caches are
+     * needed while the selected scene allocates its clean snapshot. Keeping
+     * normal story-loop buffers resident is still intentional; this is only
+     * for the manual direct-launch path. */
+    grFreeSceneExplorerThumbnailBuffer();
+    fgWalkRenderTeardown();
+    walkPilotReleaseCleanWalkArea();
+    foregroundPilotTeardownForFreeplay();
+    walkRenderResetCache();
+}
 #endif
 
 #ifndef PS1_BUILD
@@ -1649,6 +1663,8 @@ int main(int argc, char **argv)
 
 
     do {
+        int skipWalkThisIteration = 0;
+
         /* Scene-set cycling — when the pause menu cycles to a new
          * set, drop any pinned scene, show the frog-clock transition,
          * and surface the new set name as a caption. The actual pool
@@ -1676,6 +1692,7 @@ int main(int argc, char **argv)
             storyCurrentSpot = -1;
             storyCurrentHdg  = -1;
             fgLoopSequenceJustReset = 1;
+            skipWalkThisIteration = 1;
         }
 
         /* Scene Explorer pins — Cross plays once and reverts; Triangle
@@ -1698,6 +1715,8 @@ int main(int argc, char **argv)
                 storyCurrentSpot = -1;
                 storyCurrentHdg  = -1;
                 fgLoopSequenceJustReset = 1;
+                skipWalkThisIteration = 1;
+                ps1PrepareSceneExplorerLaunch();
                 ps1ShowFreeplayLoadingFrame(
                     oneShot ? "now playing" : "looping", 0);
                 {
@@ -1750,7 +1769,8 @@ int main(int argc, char **argv)
          * Johnny appears at the new island center before the new
          * scene's bg has been loaded, producing a "teleport into
          * water" visual followed by the bg redraw. */
-        if (!fgLoopSequenceJustReset &&
+        if (!skipWalkThisIteration &&
+            !fgLoopSequenceJustReset &&
             !(storyScene && (storyScene->flags & FIRST))) {
             fgLoopWalkToScene(storyScene);
         } else {
