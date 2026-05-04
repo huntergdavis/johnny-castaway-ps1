@@ -154,6 +154,39 @@
                 <file name="ISLETEMP.SCR" type="data" source="../../jc_resources/extracted/scr/ISLETEMP.SCR"/>
                 <file name="NIGHT.SCR" type="data" source="../../jc_resources/extracted/scr/NIGHT.SCR"/>
                 <file name="OCEAN00.SCR" type="data" source="../../jc_resources/extracted/scr/OCEAN00.SCR"/>
+                <!-- Scene Explorer thumbnails — 320x240 raw RGB555, one per scene.
+                     Loaded by grLoadSceneExplorerThumbnail on cursor change in
+                     the pause-menu Scene Explorer sub-screen. Names are 8.3:
+                     SX<FAM2><TAG>.SCR — must match the family-abbrev table
+                     in graphics_ps1.c grLoadSceneExplorerThumbnail and
+                     scripts/build-scene-explorer-thumbnails.py. -->
+                <file name="SXFI1.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI1.SCR"/>
+                <file name="SXFI2.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI2.SCR"/>
+                <file name="SXFI3.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI3.SCR"/>
+                <file name="SXFI4.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI4.SCR"/>
+                <file name="SXFI5.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI5.SCR"/>
+                <file name="SXFI6.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI6.SCR"/>
+                <file name="SXFI7.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI7.SCR"/>
+                <file name="SXFI8.SCR" type="data" source="../../jc_resources/extracted/scr/SXFI8.SCR"/>
+                <file name="SXJO1.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO1.SCR"/>
+                <file name="SXJO2.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO2.SCR"/>
+                <file name="SXJO3.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO3.SCR"/>
+                <file name="SXJO4.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO4.SCR"/>
+                <file name="SXJO5.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO5.SCR"/>
+                <file name="SXJO6.SCR" type="data" source="../../jc_resources/extracted/scr/SXJO6.SCR"/>
+                <file name="SXMA1.SCR" type="data" source="../../jc_resources/extracted/scr/SXMA1.SCR"/>
+                <file name="SXMA2.SCR" type="data" source="../../jc_resources/extracted/scr/SXMA2.SCR"/>
+                <file name="SXAC1.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC1.SCR"/>
+                <file name="SXAC4.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC4.SCR"/>
+                <file name="SXAC5.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC5.SCR"/>
+                <file name="SXAC6.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC6.SCR"/>
+                <file name="SXAC7.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC7.SCR"/>
+                <file name="SXAC8.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC8.SCR"/>
+                <file name="SXAC9.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC9.SCR"/>
+                <file name="SXAC10.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC10.SCR"/>
+                <file name="SXAC11.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC11.SCR"/>
+                <file name="SXAC12.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC12.SCR"/>
+                <file name="SXBL1.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL1.SCR"/>
             </dir>
 
             <dir name="PSB">

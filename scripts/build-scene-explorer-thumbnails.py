@@ -36,10 +36,13 @@ CAPTURE_ROOT = ROOT / "regtest-references"
 OVERRIDES_PATH = ROOT / "scripts/scene-explorer-overrides.json"
 OUT_DIR = ROOT / "jc_resources/extracted/scr"
 
+# PS1 framebuffer is 640x480 interlaced; thumbnails are 320x240 16-bit
+# RGB555 LE (153,600 bytes), centered in the framebuffer at (160, 120)
+# by the runtime loader. Menu chrome lives in the empty band below the
+# centered thumbnail (logical y=360..480), well clear of any image
+# pixels.
 THUMB_W = 320
-THUMB_H = 208
-SCR_W = 320
-SCR_H = 240
+THUMB_H = 240
 
 
 def parse_data_header():
@@ -65,6 +68,34 @@ def load_overrides():
     if not OVERRIDES_PATH.exists():
         return {}
     return json.loads(OVERRIDES_PATH.read_text())
+
+
+FAMILY_ABBREV = {
+    "fishing":  "FI",
+    "johnny":   "JO",
+    "mary":     "MA",
+    "visitor":  "VI",
+    "activity": "AC",
+    "suzy":     "SU",
+    "miscgag":  "MG",
+    "stand":    "ST",
+    "walkstuf": "WK",
+    "building": "BL",
+}
+
+
+def slug_to_short_name(slug):
+    """fishing1 -> SXFI1, activity12 -> SXAC12. Constrained to ISO 9660
+    8.3 naming so the file fits on the PS1 disc (12 chars including .SCR).
+    Must match grLoadSceneExplorerThumbnail's path-construction logic."""
+    m = re.match(r"^([a-z]+)(\d+)$", slug)
+    if not m:
+        return None
+    family, tag = m.group(1), m.group(2)
+    abbrev = FAMILY_ABBREV.get(family)
+    if abbrev is None:
+        return None
+    return f"SX{abbrev}{tag}"
 
 
 def list_capture_frames(scene_dir):
@@ -124,21 +155,21 @@ def encode_rgb555(r, g, b):
 
 def png_to_thumbnail_scr(png_path, out_path):
     img = Image.open(png_path).convert("RGB")
-    # 640x448 -> 320x208 (PS1-native size minus 32-row chrome strip)
+    # Source captures from DuckStation are 640x448; the PS1 framebuffer
+    # is 640x480 interlaced. We render at 320x240 (half framebuffer
+    # res) and center on the screen at runtime — that gives us natural
+    # margins for the chrome band below.
     img = img.resize((THUMB_W, THUMB_H), Image.LANCZOS)
 
     pixels = img.load()
-    # Build the 320x240 SCR buffer. Thumbnail in top THUMB_H rows; black chrome
-    # strip in the remaining (SCR_H - THUMB_H) rows.
-    buf = bytearray(SCR_W * SCR_H * 2)
+    buf = bytearray(THUMB_W * THUMB_H * 2)
     for y in range(THUMB_H):
-        row_off = y * SCR_W * 2
-        for x in range(SCR_W):
+        row_off = y * THUMB_W * 2
+        for x in range(THUMB_W):
             r, g, b = pixels[x, y]
             v = encode_rgb555(r, g, b)
             buf[row_off + x * 2] = v & 0xff
             buf[row_off + x * 2 + 1] = (v >> 8) & 0xff
-    # Bottom chrome strip stays zero (black) per buffer init.
     out_path.write_bytes(bytes(buf))
 
 
@@ -171,7 +202,11 @@ def main():
             continue
         override_idx = overrides.get(slug, {}).get("frame_idx")
         picked = pick_frame(frames, fg2_frames, override_idx)
-        out_path = OUT_DIR / f"SCEXPL_{slug.upper()}.SCR"
+        short = slug_to_short_name(slug)
+        if short is None:
+            misses.append(slug)
+            continue
+        out_path = OUT_DIR / f"{short}.SCR"
         png_to_thumbnail_scr(picked, out_path)
         written += 1
         if args.debug:

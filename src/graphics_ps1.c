@@ -4479,6 +4479,137 @@ static int grLoadFullScreenScrStreamed(struct TScrResource *scrResource)
 }
 
 /*
+ * Load a Scene Explorer thumbnail SCR — bypasses the Sierra
+ * scrResources registry so we don't have to register synthetic SCR
+ * resources for the 27 thumbnails (and grow as scenes validate).
+ *
+ * Format: raw 320x240 16-bit RGB555 LE, 153,600 bytes — pixel-format-
+ * compatible with bgTile* but written into a DEDICATED standalone
+ * buffer here so we don't disturb bgTile0/1/3/4 during a paused scene.
+ * Touching bgTile* mid-pause caused crashes when the live scene's
+ * bgTile size differed from 320x240 (ISLETEMP scenes, mostly): the
+ * realloc churn either fragmented the heap or invalidated pointers
+ * other paused-state code was still holding.
+ *
+ * The buffer is allocated lazily on first explorer entry and reclaimed
+ * by grFreeSceneExplorerThumbnailBuffer when the user backs out. The
+ * SCR is uploaded to the framebuffer directly via LoadImage; the menu
+ * chrome's OT primitives draw on top.
+ *
+ * Returns 1 on success, 0 if the file isn't on disc.
+ */
+static uint16 *gSceneExplorerThumbBuf = NULL;
+
+int grLoadSceneExplorerThumbnail(const char *slug)
+{
+    CdlFILE cdfile;
+    char path[24];
+    char family[16];
+    int i, fam_len;
+    const char *digits;
+    const char *abbrev;
+    RECT rect;
+
+    if (slug == NULL || slug[0] == '\0')
+        return 0;
+
+    /* Split slug into family prefix + numeric tag.
+     * "fishing1" -> family="fishing", digits="1" */
+    fam_len = 0;
+    while (slug[fam_len] >= 'a' && slug[fam_len] <= 'z'
+           && fam_len < (int)sizeof(family) - 1)
+        fam_len++;
+    if (fam_len == 0 || fam_len >= (int)sizeof(family))
+        return 0;
+    for (i = 0; i < fam_len; i++) family[i] = slug[i];
+    family[fam_len] = '\0';
+    digits = slug + fam_len;
+    if (*digits < '0' || *digits > '9')
+        return 0;
+
+    /* Family -> 2-letter abbrev. Must match FAMILY_ABBREV in
+     * scripts/build-scene-explorer-thumbnails.py. */
+    if      (!strcmp(family, "fishing"))  abbrev = "FI";
+    else if (!strcmp(family, "johnny"))   abbrev = "JO";
+    else if (!strcmp(family, "mary"))     abbrev = "MA";
+    else if (!strcmp(family, "visitor"))  abbrev = "VI";
+    else if (!strcmp(family, "activity")) abbrev = "AC";
+    else if (!strcmp(family, "suzy"))     abbrev = "SU";
+    else if (!strcmp(family, "miscgag"))  abbrev = "MG";
+    else if (!strcmp(family, "stand"))    abbrev = "ST";
+    else if (!strcmp(family, "walkstuf")) abbrev = "WK";
+    else if (!strcmp(family, "building")) abbrev = "BL";
+    else return 0;
+
+    snprintf(path, sizeof(path), "SCR\\SX%s%s.SCR", abbrev, digits);
+    if (!ps1_streamResolveFile(path, &cdfile))
+        return 0;
+
+    /* Lazy-allocate one 320x240 16-bit scratch buffer (153,600 bytes).
+     * malloc may fail under heap pressure — return 0 and let the menu
+     * fall back to its text-only layout. */
+    if (gSceneExplorerThumbBuf == NULL) {
+        gSceneExplorerThumbBuf = (uint16*)malloc(320UL * 240UL * 2UL);
+        if (gSceneExplorerThumbBuf == NULL)
+            return 0;
+    }
+
+    /* Clear the four bands around the centered thumbnail to black so
+     * the previous menu/scene pixels don't show through. We reuse the
+     * thumbnail scratch buffer (zero-filled below) as a generic source
+     * of zero bytes for each LoadImage; LoadImage reads only the rect's
+     * worth of bytes regardless of the buffer's nominal size, so the
+     * 153,600-byte buffer is enough for any band 153,600 bytes or smaller.
+     *
+     *      +------+------+------+
+     *      |  T   |  T   |  T   |   T = top band      (640 x 120)
+     *      +------+------+------+
+     *      |  L   | thumb|  R   |   L = left  (160 x 240)
+     *      |      |      |      |   R = right (160 x 240)
+     *      +------+------+------+
+     *      |  B   |  B   |  B   |   B = bottom band   (640 x 120)
+     *      +------+------+------+
+     */
+    memset(gSceneExplorerThumbBuf, 0, 320UL * 240UL * 2UL);
+    setRECT(&rect, 0, 0, 640, 120);
+    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
+    DrawSync(0);
+    setRECT(&rect, 0, 360, 640, 120);
+    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
+    DrawSync(0);
+    setRECT(&rect, 0, 120, 160, 240);
+    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
+    DrawSync(0);
+    setRECT(&rect, 480, 120, 160, 240);
+    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
+    DrawSync(0);
+
+    if (!ps1_streamReadAlignedIntoFile(&cdfile, 0, 320UL * 240UL * 2UL,
+                                        (uint8 *)gSceneExplorerThumbBuf))
+        return 0;
+
+    /* DMA the thumbnail to the centered rect. The menu chrome's OT
+     * primitives are submitted later via DrawOTag and draw in the
+     * bottom band — they don't paint over the thumbnail because the
+     * panel rect lives at y>=416 (clear of the thumbnail's y=360 edge
+     * and the resulting gap is intentionally wider than 32 native rows
+     * so the chrome reads as its own band, not as a sliver). */
+    setRECT(&rect, 160, 120, 320, 240);
+    LoadImage(&rect, (uint32 *)gSceneExplorerThumbBuf);
+    DrawSync(0);
+
+    return 1;
+}
+
+void grFreeSceneExplorerThumbnailBuffer(void)
+{
+    if (gSceneExplorerThumbBuf) {
+        free(gSceneExplorerThumbBuf);
+        gSceneExplorerThumbBuf = NULL;
+    }
+}
+
+/*
  * Load background screen
  */
 void grLoadScreen(char *strArg)

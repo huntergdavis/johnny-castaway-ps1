@@ -1479,28 +1479,81 @@ static int sceneExplorerFamilyForCursor(int cursor)
     return family;
 }
 
+/* Track which thumbnail is currently in VRAM. -1 forces a load on the
+ * next sceneExplorerEnsureThumbnail call. Reset to -1 on entry to the
+ * explorer state so the first cursor lands fresh; then advances on
+ * each cursor change. */
+static int sceneExplorerLoadedCursor = -1;
+
+static void sceneExplorerEnsureThumbnail(void)
+{
+    int cur = pauseMenuExplorerCursor;
+    if (cur < 0 || cur >= gSceneExplorerCount) return;
+    if (cur == sceneExplorerLoadedCursor) return;
+
+    /* grLoadSceneExplorerThumbnail LoadImages the new thumbnail to the
+     * framebuffer at (0,0,320,240). We do NOT touch menuFramebufferPrimed
+     * here — re-priming would have grDrawBackground repaint the paused
+     * scene's bgTile* over our thumbnail. The chrome strip's OT primitives
+     * draw on top of the LoadImage'd pixels each frame. */
+    if (grLoadSceneExplorerThumbnail(gSceneExplorer[cur].slug)) {
+        sceneExplorerLoadedCursor = cur;
+    }
+    /* If the load failed (missing thumbnail file on disc — e.g., a
+     * not-yet-captured scene), leave fb alone. The chrome strip + text
+     * still communicate the metadata; the previous thumbnail (or main
+     * menu's bg) shows above. */
+}
+
 static void drawSceneExplorer(void)
 {
     int cur = pauseMenuExplorerCursor;
     if (cur < 0) cur = 0;
     if (cur >= gSceneExplorerCount) cur = gSceneExplorerCount - 1;
 
+    /* Stream the current cursor's thumbnail SCR into the framebuffer
+     * if it isn't already there. The OT primitives below add the
+     * top + bottom chrome bands and the text. */
+    sceneExplorerEnsureThumbnail();
+
     const struct TSceneExplorerEntry *e = &gSceneExplorer[cur];
 
+    /* Truncate display name so it fits in the 38-char top-band budget
+     * (640 logical px / 16 logical per char ≈ 40 chars; we leave a
+     * small right margin). */
+    char title[40];
+    int max = 38;
+    int len = 0;
+    while (e->display_name[len] != '\0' && len < max) {
+        title[len] = e->display_name[len];
+        len++;
+    }
+    if (e->display_name[len] != '\0' && len > 3) {
+        title[len-3] = '.'; title[len-2] = '.'; title[len-1] = '.';
+    }
+    title[len] = '\0';
+
+    /* Top band — title + position + display name + family/frames.
+     * First line starts at y=24 logical so the title isn't clipped by
+     * NTSC overscan at the very top of the framebuffer. */
+    pmTextStart(pmPrintfX, 24);
     pmPrintf("       SCENE EXPLORER\n");
     drawSeparator();
     pmPrintf(" %d/%d   %s\n",
              cur + 1, gSceneExplorerCount,
-             e->validated ? "validated" : "(pending)");
-    pmPrintf(" %s\n", e->display_name);
-    pmPrintf(" Family : %s\n", e->family);
-    pmPrintf(" Frames : %u\n", (unsigned)e->frame_count);
-    pmPrintf(" Pack   : %s\n", e->pack);
+             e->validated ? "* validated" : "? pending");
+    pmPrintf(" %s\n", title);
+    pmPrintf(" Family: %s   Frames: %u\n",
+             e->family, (unsigned)e->frame_count);
+
+    /* Bottom band — pack name, separator, nav hints (X/△/O on one
+     * line so the band fits in 4 lines instead of 5 and we stay clear
+     * of bottom NTSC overscan). */
+    pmTextStart(pmPrintfX, 376);
+    pmPrintf(" Pack: %s\n", e->pack);
     drawSeparator();
-    pmPrintf(" <- ->  prev/next scene\n");
-    pmPrintf(" L1/R1  prev/next family\n");
-    pmPrintf(" X play once   /\\ loop\n");
-    pmPrintf(" O back\n");
+    pmPrintf(" <- -> scene     L1/R1 family\n");
+    pmPrintf(" X play  /\\ loop  O back\n");
 }
 
 static int handleSceneExplorerInput(uint16 pressed)
@@ -1535,17 +1588,26 @@ static int handleSceneExplorerInput(uint16 pressed)
     if (pressed & PAD_CROSS) {
         pauseMenuRequestPlayScene = pauseMenuExplorerCursor;
         pauseMenuRequestLoopScene = -1;
+        sceneExplorerLoadedCursor = -1;
+        grFreeSceneExplorerThumbnailBuffer();
         return 0;       /* close menu — scene plays on next iteration */
     }
     if (pressed & PAD_TRIANGLE) {
         pauseMenuRequestLoopScene = pauseMenuExplorerCursor;
         pauseMenuRequestPlayScene = -1;
+        sceneExplorerLoadedCursor = -1;
+        grFreeSceneExplorerThumbnailBuffer();
         return 0;
     }
     if (pressed & (PAD_CIRCLE | PAD_START)) {
         menuState = PAUSE_MENU_MAIN;
         menuCursor = MENU_SCENE_EXPLORER;
         prevButtons = 0xFFFF;
+        sceneExplorerLoadedCursor = -1;
+        grFreeSceneExplorerThumbnailBuffer();
+        /* Force the main menu to re-draw its dim+panel over whatever
+         * thumbnail pixels are sitting in the framebuffer. */
+        menuFramebufferPrimed = 0;
     }
     return 1;
 }
@@ -1614,6 +1676,7 @@ static int handleMainInput(uint16 pressed)
 
         case MENU_SCENE_EXPLORER:
             menuState = PAUSE_MENU_SCENE_EXPLORER;
+            sceneExplorerLoadedCursor = -1;  /* force load on first draw */
             prevButtons = 0xFFFF;
             break;
 
@@ -2249,15 +2312,11 @@ int pauseMenuUpdate(void)
     setDrawTPage(tp, 0, 1, getTPage(0, 0, PM_FONT_VRAM_X, PM_FONT_VRAM_Y));
     ps1GpuOtAddPrim(&pauseOt[PAUSE_OT_LEN - 1], tp);
 
-    pmBuildPanelQuads(&next,
-                      drawDim ? &pauseOt[PAUSE_OT_LEN - 2] : NULL,
-                      &pauseOt[PAUSE_OT_LEN - 3]);
-
-    /* Globals consumed by pmPrintf for text. */
-    pmFramePrimNext = next;
-    pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 4];
-    pmPrintfX       = PM_PANEL_X0 + 24;
-    pmTextStart(pmPrintfX, PM_PANEL_Y0 + 24);
+    /* Panel-quad build is intentionally deferred until AFTER the input
+     * handler runs (below) — it depends on the menu state the input
+     * handler may transition to. Otherwise the first-frame transition
+     * into Scene Explorer (or any sub-screen) would still build panels
+     * for the OUTGOING state and cover the new screen's content. */
 
     /* Read pad through the game's shared pad buffer (events_ps1.c owns
      * InitPAD, so we just peek at its buffer via the extern). */
@@ -2327,6 +2386,20 @@ int pauseMenuUpdate(void)
         break;
     }
 
+    /* If the state transitioned this frame (e.g. out of Scene Explorer
+     * back to main menu), the framebuffer is full of the OUTGOING
+     * screen's pixels. Re-prime now: re-upload the paused scene's bg
+     * tiles, then let the panel/text draws below paint chrome on top.
+     * Without this the main menu would draw over thumbnail+bands and
+     * leave bits of them peeking out around the panel edges. */
+    if (oldState != menuState && keepOpen) {
+        grForceFullRedrawNextFrame();
+        grDrawBackground();
+        DrawSync(0);
+        drawDim = 1;          /* re-dim on transition */
+        menuFramebufferPrimed = 0;
+    }
+
     if (ps1PadScriptVerboseLogEnabled() &&
         (pressed ||
          oldState != menuState ||
@@ -2357,6 +2430,54 @@ int pauseMenuUpdate(void)
          * standard pattern (see grFadeOut/grFreeCleanBgTiles). */
         grForceFullRedrawNextFrame();
         return 0;
+    }
+
+    /* Build panel quads NOW (post-input-handler) so the menu state we
+     * transition into this frame controls the panel layout, not the
+     * outgoing state. */
+    if (menuState == PAUSE_MENU_SCENE_EXPLORER) {
+        /* Scene Explorer chrome — two opaque dark-purple bands sitting
+         * ABOVE and BELOW the centered 320x240 thumbnail (which lives at
+         * fb (160, 120, 320, 240) per grLoadSceneExplorerThumbnail).
+         * The thumbnail rect is left untouched.
+         *
+         *      +------+------+------+
+         *      |    top band         |   y=0..120 logical, 5 lines
+         *      +------+------+------+
+         *      | left | thumb| rite |   y=120..360, image
+         *      +------+------+------+
+         *      |   bottom band       |   y=360..480, 5 lines
+         *      +------+------+------+
+         */
+        POLY_F4 *pTop = (POLY_F4*)next;
+        next += sizeof(POLY_F4);
+        setPolyF4(pTop);
+        setRGB0(pTop, 0x10, 0x08, 0x20);
+        setXY4(pTop,   0,   0, 640,   0,
+                       0, 120, 640, 120);
+        ps1GpuOtAddPrim(&pauseOt[PAUSE_OT_LEN - 3], pTop);
+
+        POLY_F4 *pBot = (POLY_F4*)next;
+        next += sizeof(POLY_F4);
+        setPolyF4(pBot);
+        setRGB0(pBot, 0x10, 0x08, 0x20);
+        setXY4(pBot,   0, 360, 640, 360,
+                       0, 480, 640, 480);
+        ps1GpuOtAddPrim(&pauseOt[PAUSE_OT_LEN - 3], pBot);
+
+        pmFramePrimNext = next;
+        pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 4];
+        pmPrintfX       = 8;
+        pmTextStart(pmPrintfX, 8);   /* first line lands in top band */
+    } else {
+        pmBuildPanelQuads(&next,
+                          drawDim ? &pauseOt[PAUSE_OT_LEN - 2] : NULL,
+                          &pauseOt[PAUSE_OT_LEN - 3]);
+
+        pmFramePrimNext = next;
+        pmFrameOtSlot   = &pauseOt[PAUSE_OT_LEN - 4];
+        pmPrintfX       = PM_PANEL_X0 + 24;
+        pmTextStart(pmPrintfX, PM_PANEL_Y0 + 24);
     }
 
     /* Draw the appropriate screen — pmPrintf adds SPRT primitives to

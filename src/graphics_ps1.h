@@ -276,6 +276,8 @@ void grPs1SetLastBmpTelemetry(uint16 slot, uint16 frames, uint16 status);
 
 void grLoadPalette();
 void grLoadScreen(char *strArg);
+int  grLoadSceneExplorerThumbnail(const char *slug);
+void grFreeSceneExplorerThumbnailBuffer(void);
 void grSetPresentDuringScreenLoad(int enabled);
 int grGetCurrentFrame(void);
 
