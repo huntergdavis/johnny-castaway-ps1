@@ -620,12 +620,19 @@
 - ads: STAND
   tag: 12
   slug: stand12
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - existing committed FG2 pack (host export quirk)
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route. Same host export quirk as STAND 10/STAND 11; the previously-committed 276 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 15
   slug: stand15

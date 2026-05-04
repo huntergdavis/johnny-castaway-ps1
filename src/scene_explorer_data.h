@@ -62,7 +62,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "stand1", "STAND 1  -  Edge of the island", "Standing", "FG/STAND1.FG2", "BMP/SCEXPL_STAND1.PSB", 18, 1, 0 },
     { "stand10", "STAND 10  -  Looks at his raft", "Standing", "FG/STAND10.FG2", "BMP/SCEXPL_STAND10.PSB", 87, 1, 0 },
     { "stand11", "STAND 11  -  Shades under the palm", "Standing", "FG/STAND11.FG2", "BMP/SCEXPL_STAND11.PSB", 87, 1, 0 },
-    { "stand12", "STAND 12  -  Looks out over the right water", "Standing", "FG/STAND12.FG2", "BMP/SCEXPL_STAND12.PSB", 238, 0, 0 },
+    { "stand12", "STAND 12  -  Looks out over the right water", "Standing", "FG/STAND12.FG2", "BMP/SCEXPL_STAND12.PSB", 238, 1, 0 },
     { "stand15", "STAND 15  -  Spyglass, left edge", "Standing", "FG/STAND15.FG2", "BMP/SCEXPL_STAND15.PSB", 140, 0, 0 },
     { "stand16", "STAND 16  -  Spyglass, center", "Standing", "FG/STAND16.FG2", "BMP/SCEXPL_STAND16.PSB", 154, 0, 0 },
     { "stand2", "STAND 2  -  Adjusts pants", "Standing", "FG/STAND2.FG2", "BMP/SCEXPL_STAND2.PSB", 78, 1, 0 },
