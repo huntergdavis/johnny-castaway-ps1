@@ -3225,7 +3225,9 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         if (pauseMenuRequestNextScene ||
             pauseMenuRequestResetLoop ||
             pauseMenuRequestFreeplay ||
-            pauseMenuRequestSceneSetCycle) {
+            pauseMenuRequestSceneSetCycle ||
+            pauseMenuRequestPlayScene >= 0 ||
+            pauseMenuRequestLoopScene >= 0) {
             break;
         }
         if (fgRuntimeCanHoldDisplayedFrame()) {
