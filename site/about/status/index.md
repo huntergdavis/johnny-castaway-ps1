@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.6.8-ps1
+eyebrow: Component-level state at v0.6.10-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -16,7 +16,7 @@ holiday, raft-stage):
 The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
 `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
-`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, and `MARY 4`. The live per-scene ledger is at
+`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, and `MARY 5`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -53,7 +53,7 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 45 scenes in
+- **Scene coverage past the signed-off set.** The other 44 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
@@ -88,9 +88,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **Scene-by-scene validation after `MARY 4`.** Next focus is continuing
-  the signed scene-by-scene ledger after the generic normal/far-left/
-  far-right foreground stitch made `MARY 4` random-position safe.
+- **Scene-by-scene validation after `MARY 5`.** Next focus is continuing
+  the signed scene-by-scene ledger after story-flag policy made `MARY 5`
+  honor its own raft art and full-wipe transition without a walk prelude.
   The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
@@ -108,8 +108,9 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.6.8-ps1` validates `MARY 2`
-  after the wide multi-view stitch and fish thought-bubble repair.
+- **Milestone release cadence.** `v0.6.10-ps1` validates `MARY 5`
+  after the `NORAFT` raft clamp and `FIRST` full-wipe transition fix.
+  `v0.6.8-ps1` validates `MARY 2` after the wide multi-view stitch and fish thought-bubble repair.
   `v0.6.6-ps1` removes the old
   FISHING7/FISHING8 runtime pins after far-left recapture proved both
   packs are random-position safe. `v0.5.0-ps1` is the freeplay/debug

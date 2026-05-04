@@ -513,6 +513,18 @@ static int fgLoopSceneUsesLeftIsland(const char *sceneName)
 #endif
 }
 
+static int fgLoopSceneUsesNoRaft(const char *sceneName)
+{
+#ifdef PS1_BUILD
+    const struct TStoryScene *scene = fgLoopFindStorySceneBySlug(sceneName);
+    if (scene != NULL)
+        return (scene->flags & NORAFT) != 0;
+#endif
+    /* Host fgpilot does not link story_data.h. Keep the known no-raft scene
+     * here so direct validation and PS1 story playback share the same policy. */
+    return sceneName != NULL && strcmp(sceneName, "mary5") == 0;
+}
+
 static void fgLoopRandomVarPos(int *outX, int *outY)
 {
     if (rand() % 2) {
@@ -605,6 +617,8 @@ static void fgLoopApplyVariant(const char *sceneName)
 
     islandState.lowTide = (hostForcedLowTide   >= 0) ? hostForcedLowTide   : seqLowTide;
     islandState.raft    = (hostForcedRaftStage >= 0) ? hostForcedRaftStage : seqRaft;
+    if (fgLoopSceneUsesNoRaft(sceneName))
+        islandState.raft = 0;
 
     if (hostForcedNight >= 0) {
         islandState.night = hostForcedNight;
@@ -1696,12 +1710,12 @@ int main(int argc, char **argv)
          * Johnny appears at the new island center before the new
          * scene's bg has been loaded, producing a "teleport into
          * water" visual followed by the bg redraw. */
-        if (!fgLoopSequenceJustReset) {
+        if (!fgLoopSequenceJustReset &&
+            !(storyScene && (storyScene->flags & FIRST))) {
             fgLoopWalkToScene(storyScene);
         } else {
-            /* New sequence: don't walk, but still need Johnny's
-             * position state to align with the upcoming scene's
-             * spotStart so the NEXT iteration walks correctly. */
+            /* New sequence or FIRST/full-wipe scene: don't walk, but still
+             * clear cached walk pixels before the FG2 scene owns the screen. */
             walkRenderResetCache();
         }
 

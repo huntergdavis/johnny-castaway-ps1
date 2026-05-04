@@ -86,6 +86,11 @@ if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary2" ]; then
   # same backdrop state so foreground pixels that cross the raft are complete.
   CAPTURE_RAFT_STAGE="5"
 fi
+if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
+  # MARY 5 is flagged NORAFT in story_data.h and carries its own raft art.
+  # Capture with the generic raft off so the pack/backdrop match runtime.
+  CAPTURE_RAFT_STAGE="0"
+fi
 KEYED_OVERLAY_RECT="${FG_EXPORT_KEYED_OVERLAY_RECT:-}"
 KEYED_OVERLAY_INCLUDE_STATIC_BASE="${FG_EXPORT_KEYED_OVERLAY_INCLUDE_STATIC_BASE:-}"
 KEYED_OVERLAY_SKIP_VISIBILITY_MASK="${FG_EXPORT_KEYED_OVERLAY_SKIP_VISIBILITY_MASK:-}"

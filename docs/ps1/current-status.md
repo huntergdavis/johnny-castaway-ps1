@@ -3,10 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-03 (scene ledger at 18/63; `MARY 4` was
-validated after generic multi-view scene-relative stitching restored
-action on both sides of the island without adding a production
-placement pin).
+**Last updated:** 2026-05-03 (scene ledger at 19/63; `MARY 5` was
+validated after generic multi-view scene-relative stitching and runtime
+story-flag policy fixes for `NORAFT` and `FIRST` scenes).
 
 ## Overall
 
@@ -14,7 +13,7 @@ The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`,
 `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
-`MARY 2`, `MARY 3`, and `MARY 4` have been validated
+`MARY 2`, `MARY 3`, `MARY 4`, and `MARY 5` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -58,6 +57,10 @@ clean-snapshot relief for this large pack.
 `MARY 4` uses the generic multi-view scene-relative stitch: normal,
 far-left, and far-right foreground-only host views are merged into one
 pack so island-relative action is complete across runtime placements.
+`MARY 5` uses the same generic multi-view stitch, but it is also a
+story-flag policy case: `NORAFT` suppresses the generic raft because the
+scene carries its own raft art, and `FIRST` skips the walk-in before the
+frog/full-wipe transition takes over.
 
 | Component | Status |
 |---|---|
@@ -66,7 +69,7 @@ pack so island-relative action is complete across runtime placements.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 18/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 19/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -76,14 +79,20 @@ pack so island-relative action is complete across runtime placements.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 18 / 63 fully validated
+## Scenes: 19 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
-- Current branch after `v0.6.9-ps1` — promotes `MARY 4` after the
+- `v0.6.10-ps1` — scene-validation bugfix release; promotes `MARY 5`
+  after generic multi-view stitching rebuilt high/low packs with the
+  generic raft off. Direct scene playback now honors story flags:
+  `NORAFT` clamps the external raft off even when a broad `raft-stage`
+  test token is present, and `FIRST` skips the walk prelude before
+  full-wipe scenes.
+- `v0.6.10-ps1` also carries the `MARY 4` promotion after the
   generic multi-view stitch rebuilt high/low packs from normal,
   far-left, and far-right foreground-only captures, restoring both
   sides of the island-relative action and passing far-right visual
@@ -238,7 +247,8 @@ searchability — **do not cite them as current progress**:
 | **15 / 63** | **2026-05-03** | **Scene ledger after `MARY 1` promotion; legacy validation route `x=-124,y=37`, raft-stage `5`, needed no pack/runtime changes** | **this doc, `scene-status.md`** |
 | **16 / 63** | **2026-05-03** | **Scene ledger after `MARY 2` promotion; wide scene-relative multi-view stitch plus full-host thought-bubble injection makes the scene random-position safe** | **this doc, `scene-status.md`** |
 | **17 / 63** | **2026-05-03** | **Scene ledger after `MARY 3` promotion; far-right foreground-only recapture, stale host-surface invalidation, and low-memory clean-snapshot relief make the scene stable and readable** | **this doc, `scene-status.md`** |
-| **18 / 63** | **2026-05-03** | **Current scene ledger after `MARY 4` promotion; generic normal/far-left/far-right foreground-only stitching restores both sides of island-relative action while production placement remains variable** | **this doc, `scene-status.md`** |
+| **19 / 63** | **2026-05-03** | **Current scene ledger after `MARY 5` promotion; story flags now clamp external raft state for `NORAFT` scenes and skip walk preludes for `FIRST` full-wipe scenes** | **this doc, `scene-status.md`** |
+| **18 / 63** | **2026-05-03** | **Scene ledger after `MARY 4` promotion; generic normal/far-left/far-right foreground-only stitching restores both sides of island-relative action while production placement remains variable** | **this doc, `scene-status.md`** |
 
 Each older count belongs to a different definition of "verified";
 they are not comparable to each other or to today's number. The current
