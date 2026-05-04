@@ -34,6 +34,7 @@
 #include "ps1_perf.h"
 #include "ps1_gpu_ot.h"
 #include "memcard.h"
+#include "scene_explorer_data.h"
 #include "holidays.h"
 #include "ps1_captions.h"
 #include "ps1_pad_input.h"
@@ -109,6 +110,14 @@ static int menuFreeplayActive = 0;
  * main loop knows to re-randomize. */
 int pauseMenuRequestSceneSetCycle = 0;
 int pauseMenuSceneSet = 0;
+
+/* Scene Explorer — pin a scene for one-shot play (Cross) or loop
+ * (Triangle). -1 = idle, 0..62 = index into gSceneExplorer[]. The
+ * jc_reborn screensaver loop consumes either flag at the top of each
+ * iteration. */
+int pauseMenuRequestPlayScene = -1;
+int pauseMenuRequestLoopScene = -1;
+static int pauseMenuExplorerCursor = 0;
 
 /* Pending preview the user is scrolling through with left/right while on
  * the Scene Set menu line. Becomes pauseMenuSceneSet only on X/START
@@ -384,6 +393,7 @@ static uint16 prevButtons = 0;
 enum {
     MENU_RESUME,
     MENU_SCENE_SET,
+    MENU_SCENE_EXPLORER,
     MENU_FREEPLAY,
     MENU_FREEPLAY_OPTIONS,
     MENU_WORLD,
@@ -1302,6 +1312,8 @@ static void drawMainMenu(void)
                  menuCursor == MENU_SCENE_SET ? ">" : " ",
                  dirty ? "*" : "");
     }
+    pmPrintf(" %s Scene Explorer\n",
+             menuCursor == MENU_SCENE_EXPLORER ? ">" : " ");
     pmPrintf(" %s Freeplay: %s\n",
              menuCursor == MENU_FREEPLAY ? ">" : " ",
              menuFreeplayActive ? "ON" : "OFF");
@@ -1450,6 +1462,95 @@ static void drawSystemMenu(void)
 }
 
 /* ---------------------------------------------------------------------------
+ *  Scene Explorer — text-only sub-screen for v1. Thumbnails (320x208 SCR
+ *  per scene) load on cursor change in a follow-up step. Layout fits on
+ *  the current 8x8 panel without a thumbnail by using all rows for text.
+ * ------------------------------------------------------------------------- */
+
+static int sceneExplorerFamilyForCursor(int cursor)
+{
+    int i;
+    int family = 0;
+    for (i = 0; i < gSceneExplorerFamilyCount; i++) {
+        if (gSceneExplorerFamilyStart[i] <= cursor) {
+            family = i;
+        }
+    }
+    return family;
+}
+
+static void drawSceneExplorer(void)
+{
+    int cur = pauseMenuExplorerCursor;
+    if (cur < 0) cur = 0;
+    if (cur >= gSceneExplorerCount) cur = gSceneExplorerCount - 1;
+
+    const struct TSceneExplorerEntry *e = &gSceneExplorer[cur];
+
+    pmPrintf("       SCENE EXPLORER\n");
+    drawSeparator();
+    pmPrintf(" %d/%d   %s\n",
+             cur + 1, gSceneExplorerCount,
+             e->validated ? "validated" : "(pending)");
+    pmPrintf(" %s\n", e->display_name);
+    pmPrintf(" Family : %s\n", e->family);
+    pmPrintf(" Frames : %u\n", (unsigned)e->frame_count);
+    pmPrintf(" Pack   : %s\n", e->pack);
+    drawSeparator();
+    pmPrintf(" <- ->  prev/next scene\n");
+    pmPrintf(" L1/R1  prev/next family\n");
+    pmPrintf(" X play once   /\\ loop\n");
+    pmPrintf(" O back\n");
+}
+
+static int handleSceneExplorerInput(uint16 pressed)
+{
+    if (pressed & PAD_LEFT) {
+        pauseMenuExplorerCursor--;
+        if (pauseMenuExplorerCursor < 0)
+            pauseMenuExplorerCursor = gSceneExplorerCount - 1;
+    }
+    if (pressed & PAD_RIGHT) {
+        pauseMenuExplorerCursor++;
+        if (pauseMenuExplorerCursor >= gSceneExplorerCount)
+            pauseMenuExplorerCursor = 0;
+    }
+    if (pressed & PAD_L1) {
+        int fam = sceneExplorerFamilyForCursor(pauseMenuExplorerCursor);
+        /* Jump to the start of the previous family. If we're already at
+         * a family boundary, go back one further. */
+        if (pauseMenuExplorerCursor == gSceneExplorerFamilyStart[fam] && fam > 0)
+            fam--;
+        else if (pauseMenuExplorerCursor == gSceneExplorerFamilyStart[fam])
+            fam = gSceneExplorerFamilyCount - 1;
+        else
+            ; /* fam already points at the current family's start */
+        pauseMenuExplorerCursor = gSceneExplorerFamilyStart[fam];
+    }
+    if (pressed & PAD_R1) {
+        int fam = sceneExplorerFamilyForCursor(pauseMenuExplorerCursor);
+        fam = (fam + 1) % gSceneExplorerFamilyCount;
+        pauseMenuExplorerCursor = gSceneExplorerFamilyStart[fam];
+    }
+    if (pressed & PAD_CROSS) {
+        pauseMenuRequestPlayScene = pauseMenuExplorerCursor;
+        pauseMenuRequestLoopScene = -1;
+        return 0;       /* close menu — scene plays on next iteration */
+    }
+    if (pressed & PAD_TRIANGLE) {
+        pauseMenuRequestLoopScene = pauseMenuExplorerCursor;
+        pauseMenuRequestPlayScene = -1;
+        return 0;
+    }
+    if (pressed & (PAD_CIRCLE | PAD_START)) {
+        menuState = PAUSE_MENU_MAIN;
+        menuCursor = MENU_SCENE_EXPLORER;
+        prevButtons = 0xFFFF;
+    }
+    return 1;
+}
+
+/* ---------------------------------------------------------------------------
  *  Input handling per sub-screen
  * ------------------------------------------------------------------------- */
 
@@ -1510,6 +1611,11 @@ static int handleMainInput(uint16 pressed)
                 pauseMenuRequestSceneSetCycle = 1;
             }
             return 0;
+
+        case MENU_SCENE_EXPLORER:
+            menuState = PAUSE_MENU_SCENE_EXPLORER;
+            prevButtons = 0xFFFF;
+            break;
 
         case MENU_WORLD:
             menuState = PAUSE_MENU_OPTIONS;
@@ -2216,6 +2322,9 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_CREDITS:
         keepOpen = handleSubInput(pressed);
         break;
+    case PAUSE_MENU_SCENE_EXPLORER:
+        keepOpen = handleSceneExplorerInput(pressed);
+        break;
     }
 
     if (ps1PadScriptVerboseLogEnabled() &&
@@ -2268,6 +2377,7 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_ISLAND_POS: drawIslandPos(); break;
     case PAUSE_MENU_SET_SEED:   drawSetSeed();   break;
     case PAUSE_MENU_CREDITS:    drawCredits();   break;
+    case PAUSE_MENU_SCENE_EXPLORER: drawSceneExplorer(); break;
     }
 
     /* Submit the OT to GPU. */

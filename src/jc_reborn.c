@@ -73,6 +73,7 @@ int fclose(FILE *stream);
 #include "pause_menu.h"
 #include "ps1_captions.h"
 #include "ps1_pad_script.h"
+#include "scene_explorer_data.h"
 #include "config/ps1/bootmode_embedded.h"
 
 /* Shared with events_ps1.c — populated by InitPAD(). Padtest path
@@ -320,6 +321,12 @@ static const char *fgLoopNextScene(const char *explicitScene,
  * where position changed. Host fgpilot shares the variant picker, so
  * keep the flag in shared scope even though only PS1 reads it. */
 static int fgLoopSequenceJustReset = 1;   /* iter 0: treat as new sequence */
+
+/* When set, the current explicitScene was pinned by Scene Explorer's
+ * Cross press and should clear after one play, so the loop returns to
+ * the active Scene Set's pool. Triangle (loop) leaves this 0, matching
+ * the legacy CLI fgpilot path. */
+static int sceneExplorerOneShot = 0;
 
 #ifdef PS1_BUILD
 /* Walk subsystem state — Johnny's last known spot/heading. -1 means
@@ -1657,6 +1664,39 @@ int main(int argc, char **argv)
             fgLoopSequenceJustReset = 1;
         }
 
+        /* Scene Explorer pins — Cross plays once and reverts; Triangle
+         * loops the scene every iteration until the user changes Scene
+         * Set or picks a different scene from the explorer. Mirrors the
+         * scene-set-cycle handler: clear Johnny's spot/heading, fire the
+         * frog clock, and let foregroundPilotPlay reload the bg. The
+         * sceneExplorerOneShot flag distinguishes one-shot from loop. */
+        if (pauseMenuRequestPlayScene >= 0
+            || pauseMenuRequestLoopScene >= 0) {
+            int idx = (pauseMenuRequestPlayScene >= 0)
+                          ? pauseMenuRequestPlayScene
+                          : pauseMenuRequestLoopScene;
+            int oneShot = (pauseMenuRequestPlayScene >= 0);
+            pauseMenuRequestPlayScene = -1;
+            pauseMenuRequestLoopScene = -1;
+            if (idx >= 0 && idx < gSceneExplorerCount) {
+                explicitScene = gSceneExplorer[idx].slug;
+                sceneExplorerOneShot = oneShot;
+                storyCurrentSpot = -1;
+                storyCurrentHdg  = -1;
+                fgLoopSequenceJustReset = 1;
+                ps1ShowFreeplayLoadingFrame(
+                    oneShot ? "now playing" : "looping", 0);
+                {
+                    char banner[64];
+                    snprintf(banner, sizeof(banner),
+                             "%s %s",
+                             oneShot ? "Now playing:" : "Looping:",
+                             gSceneExplorer[idx].display_name);
+                    captionsShowText(banner, 240);
+                }
+            }
+        }
+
         /* Phase 8: tick the story-day calendar. Advances when the
          * ps1Soft date has rolled over since the last iteration. */
         fgLoopAdvanceStoryDayIfNeeded();
@@ -1743,6 +1783,16 @@ int main(int argc, char **argv)
             !pauseMenuRequestFreeplay &&
             !pauseMenuRequestResetLoop) {
             fgLoopUpdatePosFromScene(storyScene);
+        }
+
+        /* Scene Explorer one-shot pin: if Cross was pressed (oneShot=1),
+         * clear explicitScene now so the next iteration falls back to
+         * the active Scene Set's pool. Triangle (loop) leaves this 0
+         * so the explicit scene keeps replaying until the user changes
+         * Scene Set or re-enters the explorer. */
+        if (sceneExplorerOneShot && playedScene) {
+            sceneExplorerOneShot = 0;
+            explicitScene = NULL;
         }
 
         /* Consume pause-menu requests. NextScene = let the next loop

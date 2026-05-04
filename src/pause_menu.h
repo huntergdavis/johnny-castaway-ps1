@@ -37,6 +37,7 @@ enum PauseMenuState {
     PAUSE_MENU_ISLAND_POS,
     PAUSE_MENU_SET_SEED,
     PAUSE_MENU_CREDITS,
+    PAUSE_MENU_SCENE_EXPLORER,
 };
 
 /* Initialize the pause menu system (call once during startup, after graphicsInit). */
@@ -104,6 +105,13 @@ extern int pauseMenuRequestFreeplayWorldRefresh;
  * cycle so the consumer can re-randomize from the new pool. */
 extern int pauseMenuRequestSceneSetCycle;
 extern int pauseMenuSceneSet;            /* current set index, see jc_reborn.c */
+
+/* Scene Explorer — pin a specific scene by index (0..62 into
+ * gSceneExplorer[]). PlayScene fires the scene once and reverts to the
+ * active Scene Set; LoopScene pins it permanently until the user
+ * changes Scene Set or selects a new scene. -1 means idle. */
+extern int pauseMenuRequestPlayScene;
+extern int pauseMenuRequestLoopScene;
 
 /* Freeplay sets this while running so the menu can show an ON/OFF toggle. */
 void pauseMenuSetFreeplayActive(int active);
