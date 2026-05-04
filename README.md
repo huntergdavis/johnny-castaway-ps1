@@ -82,9 +82,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.6.8-ps1`** |
+| Current release | **`v0.6.9-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **17 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`) |
+| Scenes fully validated under the reference bar | **18 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
@@ -93,11 +93,11 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
-Current branch progress after `v0.6.8-ps1`: `MARY 3` is now validated.
-The high/low packs were rebuilt from a far-right full-frame keyed
-foreground-only host capture, the host capture ledger now invalidates
-stale sprite-surface references before BMP/layer frees, and the PS1
-runtime uses low-memory clean-snapshot relief for the large MARY3 pack.
+Current branch progress after `v0.6.9-ps1`: `MARY 4` is now validated.
+The high/low packs were rebuilt through the generic multi-view
+scene-relative stitch: normal, far-left, and far-right foreground-only
+host views are merged so action on both sides of the runtime island is
+present without pinning production placement.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after rebuilding high/low packs from a wide scene-relative

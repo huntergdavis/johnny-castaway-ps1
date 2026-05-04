@@ -459,8 +459,8 @@ for the practical porting path.
 <tr><td><code>MARY2LOW.FG2</code></td><td>582,189</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY2LOW.FG2">source</a></td></tr>
 <tr><td><code>MARY3.FG2</code></td><td>609,063</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY3.FG2">source</a></td></tr>
 <tr><td><code>MARY3LOW.FG2</code></td><td>609,063</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY3LOW.FG2">source</a></td></tr>
-<tr><td><code>MARY4.FG2</code></td><td>550,831</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4.FG2">source</a></td></tr>
-<tr><td><code>MARY4LOW.FG2</code></td><td>550,831</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4LOW.FG2">source</a></td></tr>
+<tr><td><code>MARY4.FG2</code></td><td>440,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4.FG2">source</a></td></tr>
+<tr><td><code>MARY4LOW.FG2</code></td><td>440,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY4LOW.FG2">source</a></td></tr>
 <tr><td><code>MARY5.FG2</code></td><td>498,237</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5.FG2">source</a></td></tr>
 <tr><td><code>MARY5LOW.FG2</code></td><td>498,237</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MARY5LOW.FG2">source</a></td></tr>
 <tr><td><code>MISC1LOW.FG2</code></td><td>148,484</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/MISC1LOW.FG2">source</a></td></tr>

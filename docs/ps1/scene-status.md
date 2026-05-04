@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 17 / 63 (next: mary4)
+## Progress: 18 / 63 (next: mary5)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.8-ps1`.
+current public release is `v0.6.9-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -54,7 +54,7 @@ current public release is `v0.6.8-ps1`.
 | MARY | 1 | mary1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-124,y=37` · raft-stage `5` | 2026-05-03 | visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required |
 | MARY | 2 | mary2 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed |
 | MARY | 3 | mary3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island position `x=80,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames |
-| MARY | 4 | mary4 | ⏳ | ⏳ | — | — | untested in regtest |
+| MARY | 4 | mary4 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed |
 | MARY | 5 | mary5 | ⏳ | ⏳ | — | — |  |
 | MISCGAG | 1 | miscgag1 | ⏳ | ⏳ | — | — |  |
 | MISCGAG | 2 | miscgag2 | ⏳ | ⏳ | — | — |  |
@@ -89,7 +89,12 @@ current public release is `v0.6.8-ps1`.
 For each iteration:
 
 1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> 0 1.0 <LOW_PACK_BASENAME>`
-   to produce the high-tide and low-tide base-diff `.FG2` packs and sound-event JSONL.
+   to produce the high-tide and low-tide `.FG2` packs and sound-event JSONL.
+   The default export path captures normal, far-left, and far-right
+   foreground-only host views and stitches them into one scene-relative
+   foreground canvas, because island-relative content can extend beyond a
+   single screen-width capture. Opt out only for validated scene-specific
+   paths such as `JOHNNY 2`.
 2. Confirm both `<SCENE>.FG2` and low-tide `<LOW_PACK_BASENAME>.FG2` entries exist in `config/ps1/cd_layout.xml`.
 3. Confirm the scene's routing entries exist in `foreground_pilot.c`
    (`fgCompactOverlayPackPathForScene`).

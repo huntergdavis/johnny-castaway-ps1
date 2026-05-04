@@ -12,15 +12,16 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.6.8-ps1` |
+| Release | `v0.6.9-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **17 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`) |
+| Scenes fully validated under the reference bar | **18 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-Current branch progress after `v0.6.8-ps1`: `MARY 3` is now validated
-after far-right full-frame keyed foreground-only recapture,
-low-memory clean-snapshot relief, and late-gag hold redistribution.
+Current branch progress after `v0.6.9-ps1`: `MARY 4` is now validated
+after generic multi-view scene-relative stitching restored action on
+both sides of the island while keeping production island placement
+variable.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after a wide scene-relative multi-view stitch restored

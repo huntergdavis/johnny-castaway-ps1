@@ -16,7 +16,7 @@ holiday, raft-stage):
 The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
 `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
-`JOHNNY 6`, `MARY 1`, `MARY 2`, and `MARY 3`. The live per-scene ledger is at
+`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, and `MARY 4`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -46,20 +46,18 @@ done."
 | Perf instrumentation (`ps1_perf.c`) | Complete | Level-gated `JCPERF` / `JCPERF2` TTY lines. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Set via `ps1PerfSetLevel`. Off in normal operation; the user feeds `JCPERF` output to a perf-debug agent when chasing regressions. |
 | TTY printf | Reliable | Restored 2026-04-25 on PSn00bSDK 0.24 + DuckStation through bounded `vprintf` plus DuckStation TTY/file logging. Gated BOOTMODE probes (`printf-test`, `logtest`). Must not be called per-frame -- text I/O alters timing. |
 | Regtest harness | Working | `config/ps1/regtest-scenes.txt` + `scripts/run-regtest.sh` drive a headless DuckStation pass. Source of truth for "boots and renders something." Not the source of truth for "looks right" -- that's still human signoff. |
-| Host capture pipeline | Working | `scripts/capture-host-scene.sh` runs the desktop build under controlled boot state; emits high/low PNG frames, `frame-meta.json`, `sound-events.jsonl`. `scripts/export-scene-foreground-pilot.sh` then drives `scripts/build-scene-foreground-pack.py` to compile the FG2. |
+| Host capture pipeline | Working | `scripts/capture-host-scene.sh` runs the desktop build under controlled boot state; emits high/low PNG frames, `frame-meta.json`, `sound-events.jsonl`. `scripts/export-scene-foreground-pilot.sh` now defaults new scene bring-up to normal/far-left/far-right foreground-only multi-view stitching before compiling FG2. |
 | CD packaging (mkpsxiso) | Complete | `config/ps1/cd_layout.xml`. Routed scenes contribute high-tide + low-tide pack entries; routing is selective during bring-up because the full FG2 corpus is ~343&nbsp;MB. Build outputs `jcreborn.bin` + `jcreborn.cue`. CD image at the current routed set is ~9.9&nbsp;MB; PS-EXE is ~84&nbsp;KB after legacy ADS/TTM/FG1 paths were stripped. |
 
 ## What's currently broken
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 46 scenes in
+- **Scene coverage past the signed-off set.** The other 45 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
   evidence.
-- **`MARY 4`** is untested in regtest. That row in
-  `scene-status.md` is the SoT.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
   formatted card or a card with a corrupted block is still being
@@ -90,9 +88,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **Scene-by-scene validation after `MARY 3`.** Next focus is continuing
-  the signed scene-by-scene ledger after the `MARY 3` far-right
-  foreground-only recapture and low-memory clean-snapshot validation.
+- **Scene-by-scene validation after `MARY 4`.** Next focus is continuing
+  the signed scene-by-scene ledger after the generic normal/far-left/
+  far-right foreground stitch made `MARY 4` random-position safe.
   The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

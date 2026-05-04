@@ -247,7 +247,13 @@ Far-right and true far-left stress runs passed. The count became
 
 `MARY 3` followed with a different failure shape: a large foreground pack
 that needed far-right host capture, stale host capture surface invalidation,
-and low-memory clean-snapshot relief on PS1. The current count is **17 / 63**.
+and low-memory clean-snapshot relief on PS1.
+
+`MARY 4` promoted the multi-view stitch from scene-specific fix to default
+workflow. The exporter now captures normal, far-left, and far-right
+foreground-only host views for new scene bring-up, then merges them into a
+scene-relative canvas so action on both sides of the island survives random
+runtime placement. The current count is **18 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack
