@@ -100,7 +100,16 @@ For each iteration:
    (`fgCompactOverlayPackPathForScene`).
 4. `./scripts/make-cd-image.sh` then launch via `rebuild-and-let-run.sh noclean`.
 5. User verifies; iterate on bugs.
-6. Update this table, commit. Every 10 ✅/✅ rows → `./scripts/release.sh "<milestone message>"`.
+6. After ✅ visual+audible signoff, run
+   `./scripts/capture-scene-explorer-thumbnail.sh <slug>` to grab the
+   70%-mark frame as a Scene Explorer thumbnail. The script invokes the
+   headless DuckStation regtest pipeline, picks the 70th-percentile
+   frame from the captured sequence, and writes
+   `jc_resources/extracted/scr/SX<FAM2><TAG>.SCR` (320x240 RGB555).
+   Add a matching `<file name="SX<FAM2><TAG>.SCR" ...>` entry under
+   `<dir name="SCR">` in `config/ps1/cd_layout.xml` and commit the SCR
+   alongside the validation update.
+7. Update this table, commit. Every 10 ✅/✅ rows → `./scripts/release.sh "<milestone message>"`.
 
 FG1 packs, FOC packs, per-scene establishing RAWs, and direct/fallback
 FG1 runtime routes are retired. They are historical archaeology only, not
