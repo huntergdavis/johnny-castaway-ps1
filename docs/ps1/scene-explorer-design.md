@@ -333,6 +333,44 @@ omitted.
 All R-items are RESOLVED or ACCEPTED-RISK. Implementation cleared to
 begin.
 
+## v1 ship status (2026-05-03)
+
+| Phase | Status |
+|---|---|
+| 1 — Metadata pipeline | ✅ shipped (`scripts/build-scene-explorer-data.py` → `src/scene_explorer_data.h`) |
+| 2 — Thumbnail extractor | ✅ shipped (`scripts/build-scene-explorer-thumbnails.py`) |
+| 3 — Asset packaging (cd_layout entries) | ⏳ deferred to runtime-integration follow-up |
+| 4 — Menu state machine | ✅ shipped (text-only Scene Explorer sub-screen) |
+| 5 — Scene-pin playback | ✅ shipped (`pauseMenuRequestPlayScene`/`LoopScene`, `sceneExplorerOneShot`, FG2 break-out) |
+| 6 — Docs + site | ⏳ partial (this design doc + scene-status hook); README + help-menu + devlog deferred |
+
+**v1 covers**: navigation through all 63 scenes with text metadata,
+play-once/loop scene pinning with the same frog-clock transition Scene
+Set uses, immediate FG2 break-out so scenes fire on press without
+waiting for the current scene to finish.
+
+**Generated assets staged for follow-up**: 16 validated-scene SCR
+thumbnails (320×208 from PS1 captures, packed as 320×240 SCR with
+black 32-row chrome strip), plus 11 bonus unvalidated thumbnails from
+ACTIVITY/BUILDING captures the user already had on disc. Stored in
+`jc_resources/extracted/scr/SCEXPL_<SLUG>.SCR`. Ready for the
+runtime-integration PR to wire them into `grLoadScreen` on cursor
+change.
+
+**Validation hook (R7+R10 follow-up)**: when a scene moves from ⏳ to
+✅ in `docs/ps1/scene-status.md`, the recommended workflow is:
+
+```bash
+./scripts/capture-reference-frames.sh --scene "FAMILY N" --frames 1800 --interval 5
+python3 scripts/build-scene-explorer-thumbnails.py --slug familyN
+git add jc_resources/extracted/scr/SCEXPL_FAMILYN.SCR
+```
+
+That single 60-second loop produces a real PS1 thumbnail and stages
+it for the next release. As validated count climbs from 16 → 63, the
+explorer's thumbnail coverage climbs with it; nothing else has to
+change in code.
+
 ## Effort
 
 2–3 focused days. Phase 4 (menu rendering) is the largest single

@@ -68,19 +68,37 @@ def load_overrides():
 
 
 def list_capture_frames(scene_dir):
-    """Return sorted list of frame_*.png paths for a scene, top-level first then work-dir."""
+    """Return sorted list of frame_*.png paths for a scene, top-level first then work-dir.
+
+    For the unfiltered .regtest-work/**/frames/jcreborn/ fallback (used when
+    the capture script terminated before its post-processing step), drop
+    frames before regtest-scene.sh's default scene-start-frame (1680) so the
+    70%-mark math lands inside scene playback rather than inside the boot
+    sequence.
+    """
     if scene_dir is None or not scene_dir.exists():
         return []
     # Prefer post-processed top-level frames if the capture script finished cleanly.
     top = sorted(scene_dir.glob("frame_*.png"))
     if top:
         return top
-    # Otherwise pull from the .regtest-work tree (script terminated mid-copy).
+    # Pre-filtered scene-play frames (capture script's filtered-frames dir).
     nested = sorted(scene_dir.glob(".regtest-work/**/filtered-frames/frame_*.png"))
     if nested:
         return nested
-    nested = sorted(scene_dir.glob(".regtest-work/**/frames/jcreborn/frame_*.png"))
-    return nested
+    # Raw frames from boot through scene-end. Keep only the scene-play
+    # window (frame >= 1680) since the boot frames would skew the 70%-mark
+    # math toward the title screen.
+    raw = sorted(scene_dir.glob(".regtest-work/**/frames/jcreborn/frame_*.png"))
+    out = []
+    for p in raw:
+        try:
+            n = int(p.stem.split("_")[1])
+        except (IndexError, ValueError):
+            continue
+        if n >= 1680:
+            out.append(p)
+    return out
 
 
 def pick_frame(frames, fg2_frames, override_idx):

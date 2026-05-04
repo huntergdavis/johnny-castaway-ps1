@@ -15,6 +15,12 @@ scratch/
 # that ship on the CD are committed under generated/ps1/foreground/.
 host-results/
 
+# Per-scene PS1 regtest captures (large, regenerable via
+# scripts/capture-reference-frames.sh). The Scene Explorer thumbnails
+# distilled from these captures are committed under
+# jc_resources/extracted/scr/SCEXPL_*.SCR.
+regtest-references/
+
 # Release ISO files are uploaded as GitHub Release assets, not Git blobs.
 release/*.bin
 release/*.cue
