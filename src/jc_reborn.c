@@ -310,23 +310,52 @@ static int hostForcedSceneOffsetY = 0;
 static int hostCapturePreludeFrame = 0;
 #endif
 
-/* Pick the scene to play on this screensaver-loop iteration. If the user
- * explicitly named a scene on the fgpilot command line, we replay THAT
- * scene every iteration with random variants; if no scene was named we
- * free-select from the kProvenScenes array (so `fgpilot` alone cycles
- * through every validated scene). */
+/* Catalog accessors used by src/scene_picker.c so it doesn't need to
+ * know the layout of gSceneSetPools[] / kProvenScenes. The picker
+ * reads pool counts + slugs through these and chooses an entry per
+ * its active policy. Returning a count of 0 from
+ * fgLoopGetPoolCount signals an empty / placeholder set; callers fall
+ * back to the proven pool. */
+int fgLoopGetPoolCount(int sceneSetIdx)
+{
+    if (sceneSetIdx < 0 || sceneSetIdx >= NUM_SCENE_SET_POOLS)
+        return 0;
+    return gSceneSetPools[sceneSetIdx].count;
+}
+
+const char *fgLoopGetPoolSlug(int sceneSetIdx, int index)
+{
+    if (sceneSetIdx < 0 || sceneSetIdx >= NUM_SCENE_SET_POOLS)
+        return NULL;
+    const struct SceneSetPool *p = &gSceneSetPools[sceneSetIdx];
+    if (index < 0 || index >= p->count || p->scenes == NULL)
+        return NULL;
+    return p->scenes[index];
+}
+
+int fgLoopGetProvenCount(void)
+{
+    return NUM_PROVEN_SCENES;
+}
+
+const char *fgLoopGetProvenSlug(int index)
+{
+    if (index < 0 || index >= NUM_PROVEN_SCENES)
+        return NULL;
+    return kProvenScenes[index];
+}
+
+/* Pick the scene to play on this screensaver-loop iteration. Pinning
+ * (Scene Explorer Cross/Triangle, fgpilot CLI) wins, otherwise we
+ * delegate to the picker module which honours the user-selected
+ * policy (Random / Sequential / Original). The picker also emits the
+ * JCPICK telemetry line per pick. */
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
-    if (explicitScene && explicitScene[0] != '\0')
-        return explicitScene;
-    if (sceneSetIdx >= 0 && sceneSetIdx < NUM_SCENE_SET_POOLS) {
-        const struct SceneSetPool *p = &gSceneSetPools[sceneSetIdx];
-        if (p->scenes != NULL && p->count > 0)
-            return p->scenes[rand() % p->count];
-    }
-    /* "All" set or empty set → fall back to the default proven pool. */
-    return kProvenScenes[rand() % NUM_PROVEN_SCENES];
+    extern const char *pickerNextScene(const char *explicitScene,
+                                       int sceneSetIdx);
+    return pickerNextScene(explicitScene, sceneSetIdx);
 }
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
@@ -406,8 +435,11 @@ static int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
 
 /* Resolve a slug like "fishing1" to its storyScenes[] entry by parsing
  * the slug into (family, tag) and linear-searching the array. The
- * validated set is small; an O(N) scan over 63 entries is fine. */
-static const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug)
+ * validated set is small; an O(N) scan over 63 entries is fine.
+ *
+ * Non-static: src/scene_picker.c uses this via an extern declaration
+ * to map slugs back to (adsName, adsTagNo) for repeat-prevention. */
+const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug)
 {
     if (slug == NULL || slug[0] == '\0') return NULL;
 
@@ -1680,8 +1712,10 @@ int main(int argc, char **argv)
          * update storyCurrentSpot/Hdg on completion. */
         if (pauseMenuRequestSceneSetCycle) {
             extern const char *pauseMenuSceneSetName(int idx);
+            extern void pickerOnSceneSetCycle(void);
             pauseMenuRequestSceneSetCycle = 0;
             explicitScene = NULL;
+            pickerOnSceneSetCycle();   /* reset Sequential cursor + repeat-prevention */
             ps1ShowFreeplayLoadingFrame("changing scene set", 0);
             {
                 char banner[40];

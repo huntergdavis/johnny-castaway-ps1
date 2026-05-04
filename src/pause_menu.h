@@ -38,6 +38,7 @@ enum PauseMenuState {
     PAUSE_MENU_SET_SEED,
     PAUSE_MENU_CREDITS,
     PAUSE_MENU_SCENE_EXPLORER,
+    PAUSE_MENU_SCENE_SET_OPTIONS,   /* Scene Set + Scene Picker policy */
 };
 
 /* Initialize the pause menu system (call once during startup, after graphicsInit). */

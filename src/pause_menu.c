@@ -39,6 +39,7 @@
 #include "ps1_captions.h"
 #include "ps1_pad_input.h"
 #include "scene_freeplay.h"
+#include "scene_picker.h"
 
 #ifndef PAUSE_MENU_DIAG_LOGS
 #define PAUSE_MENU_DIAG_LOGS 0
@@ -470,6 +471,14 @@ enum {
     SYSTEM_COUNT
 };
 
+/* Scene Set Options sub-screen rows. */
+enum {
+    SSO_SCENE_SET,    /* cycle pool: All / Fishing / ... */
+    SSO_PICKER,       /* cycle policy: Random / Sequential / Original */
+    SSO_BACK,
+    SSO_COUNT
+};
+
 static int optionsCursor = 0;
 static int freeplayOptionsCursor = 0;
 static int freeplayGagCursor = 0;
@@ -478,6 +487,7 @@ static int soundTestCursor = 0;
 static int holidayCursor = 0;
 static int accessCursor = 0;
 static int systemCursor = 0;
+static int sceneSetOptionsCursor = 0;
 
 /* Forward decls. */
 static const char *perfLevelLabel(void);
@@ -835,6 +845,50 @@ static void drawFreeplayOptions(void)
     if (!menuFreeplayActive)
         pmPrintf(" Start freeplay to spawn.\n");
     pmPrintf(" X = select   O/START = back\n");
+}
+
+/* ---------------------------------------------------------------------------
+ *  Scene Set Options sub-screen — pool selector + picker policy in one
+ *  page. Up/Down navigates rows, Left/Right cycles values inline,
+ *  Cross commits any pending Scene Set change and backs out, Circle
+ *  backs out without committing.
+ * ------------------------------------------------------------------------- */
+static void drawSceneSetOptions(void)
+{
+    pmPrintf("   SCENE SET OPTIONS\n");
+    drawSeparator();
+
+    /* Scene Set row: shows pending value with arrows when focused. */
+    {
+        int showIdx = (sceneSetOptionsCursor == SSO_SCENE_SET)
+                          ? pendingSceneSet : pauseMenuSceneSet;
+        int dirty   = (pendingSceneSet != pauseMenuSceneSet);
+        if (showIdx < 0 || showIdx >= NUM_SCENE_SETS) showIdx = 0;
+        pmPrintf(" %s Set:    %s%s%s%s\n",
+                 sceneSetOptionsCursor == SSO_SCENE_SET ? ">" : " ",
+                 sceneSetOptionsCursor == SSO_SCENE_SET ? "<" : " ",
+                 kSceneSetNames[showIdx],
+                 sceneSetOptionsCursor == SSO_SCENE_SET ? ">" : " ",
+                 dirty ? "*" : "");
+    }
+
+    /* Picker policy row: cycles immediately on Left/Right (no commit
+     * step — the policy switch is cheap and reversible). */
+    {
+        int policy = pickerGetPolicy();
+        pmPrintf(" %s Picker: %s%s%s\n",
+                 sceneSetOptionsCursor == SSO_PICKER ? ">" : " ",
+                 sceneSetOptionsCursor == SSO_PICKER ? "<" : " ",
+                 pickerPolicyName(policy),
+                 sceneSetOptionsCursor == SSO_PICKER ? ">" : " ");
+    }
+
+    pmPrintf(" %s Back\n",
+             sceneSetOptionsCursor == SSO_BACK ? ">" : " ");
+
+    drawSeparator();
+    pmPrintf(" L/R cycle   X commit\n");
+    pmPrintf(" O/START = back\n");
 }
 
 static void drawFreeplayGagCatalog(void)
@@ -1299,18 +1353,16 @@ static void drawMainMenu(void)
 
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
+    /* Scene Set Options is a sub-screen; the inline cycler moved into
+     * it alongside the new Scene Picker policy selector. The row label
+     * shows the active set name so users see at a glance which pool
+     * is currently driving the loop without having to dive in. */
     {
-        int showIdx = (menuCursor == MENU_SCENE_SET)
-                          ? pendingSceneSet : pauseMenuSceneSet;
-        int dirty   = (pendingSceneSet != pauseMenuSceneSet)
-                      && (menuCursor == MENU_SCENE_SET);
-        if (showIdx < 0 || showIdx >= NUM_SCENE_SETS) showIdx = 0;
-        pmPrintf(" %s Scene Set: %s%s%s%s\n",
+        int activeIdx = pauseMenuSceneSet;
+        if (activeIdx < 0 || activeIdx >= NUM_SCENE_SETS) activeIdx = 0;
+        pmPrintf(" %s Scene Set Options... (%s)\n",
                  menuCursor == MENU_SCENE_SET ? ">" : " ",
-                 menuCursor == MENU_SCENE_SET ? "<" : " ",
-                 kSceneSetNames[showIdx],
-                 menuCursor == MENU_SCENE_SET ? ">" : " ",
-                 dirty ? "*" : "");
+                 kSceneSetNames[activeIdx]);
     }
     pmPrintf(" %s Scene Explorer\n",
              menuCursor == MENU_SCENE_EXPLORER ? ">" : " ");
@@ -1628,22 +1680,11 @@ static int handleMainInput(uint16 pressed)
         if (menuCursor >= MENU_COUNT) menuCursor = 0;
     }
 
-    /* Scene Set: left/right scrolls a pending preview. The committed
-     * value only changes on X/START. Whenever the cursor isn't on the
-     * Scene Set row, pending mirrors the committed value so navigating
-     * away discards an un-applied preview. */
-    if (menuCursor == MENU_SCENE_SET) {
-        if (pressed & PAD_LEFT) {
-            pendingSceneSet--;
-            if (pendingSceneSet < 0) pendingSceneSet = NUM_SCENE_SETS - 1;
-        }
-        if (pressed & PAD_RIGHT) {
-            pendingSceneSet++;
-            if (pendingSceneSet >= NUM_SCENE_SETS) pendingSceneSet = 0;
-        }
-    } else {
-        pendingSceneSet = pauseMenuSceneSet;
-    }
+    /* Scene Set inline cycling moved into the Scene Set Options
+     * sub-screen alongside the Scene Picker policy. Keep pending in
+     * sync with the committed value so the sub-screen starts on the
+     * current set, not a stale preview. */
+    pendingSceneSet = pauseMenuSceneSet;
 
     /* X = select current item */
     if (pressed & PAD_CROSS) {
@@ -1665,14 +1706,12 @@ static int handleMainInput(uint16 pressed)
             break;
 
         case MENU_SCENE_SET:
-            /* Commit the pending preview. If pending matches current
-             * (no-op press) we still close the menu — same UX as the
-             * old "X cycles" behaviour. */
-            if (pendingSceneSet != pauseMenuSceneSet) {
-                pauseMenuSceneSet = pendingSceneSet;
-                pauseMenuRequestSceneSetCycle = 1;
-            }
-            return 0;
+            /* Open the Scene Set Options sub-screen. Cursor lands on
+             * the Scene Set row (most-used) by default. */
+            menuState             = PAUSE_MENU_SCENE_SET_OPTIONS;
+            sceneSetOptionsCursor = SSO_SCENE_SET;
+            prevButtons           = 0xFFFF;
+            break;
 
         case MENU_SCENE_EXPLORER:
             menuState = PAUSE_MENU_SCENE_EXPLORER;
@@ -1700,16 +1739,10 @@ static int handleMainInput(uint16 pressed)
         }
     }
 
-    /* START on Scene Set commits a pending preview (same as X);
-     * START elsewhere or Circle anywhere just closes the menu. */
-    if (pressed & PAD_START) {
-        if (menuCursor == MENU_SCENE_SET
-            && pendingSceneSet != pauseMenuSceneSet) {
-            pauseMenuSceneSet = pendingSceneSet;
-            pauseMenuRequestSceneSetCycle = 1;
-        }
+    /* START / Circle close the menu — the sub-screen owns its own
+     * commit semantics now (X commits + leaves, Circle backs out). */
+    if (pressed & PAD_START)
         return 0;
-    }
     if (pressed & PAD_CIRCLE)
         return 0;
 
@@ -1759,6 +1792,74 @@ static int handleFreeplayOptionsInput(uint16 pressed)
             break;
         }
     }
+    return 1;
+}
+
+static int handleSceneSetOptionsInput(uint16 pressed)
+{
+    /* Circle / Start: back out. If a Scene Set preview was pending,
+     * silently drop it — Circle = "I changed my mind." */
+    if (pressed & (PAD_START | PAD_CIRCLE)) {
+        pendingSceneSet      = pauseMenuSceneSet;
+        menuState            = PAUSE_MENU_MAIN;
+        menuCursor           = MENU_SCENE_SET;
+        prevButtons          = 0xFFFF;
+        return 1;
+    }
+
+    if (pressed & PAD_UP) {
+        sceneSetOptionsCursor--;
+        if (sceneSetOptionsCursor < 0) sceneSetOptionsCursor = SSO_COUNT - 1;
+    }
+    if (pressed & PAD_DOWN) {
+        sceneSetOptionsCursor++;
+        if (sceneSetOptionsCursor >= SSO_COUNT) sceneSetOptionsCursor = 0;
+    }
+
+    /* Left/Right cycles the focused row's value. Scene Set uses the
+     * same pending-preview pattern as before; Picker commits inline
+     * because the policy switch is cheap and reversible. */
+    if (sceneSetOptionsCursor == SSO_SCENE_SET) {
+        if (pressed & PAD_LEFT) {
+            pendingSceneSet--;
+            if (pendingSceneSet < 0) pendingSceneSet = NUM_SCENE_SETS - 1;
+        }
+        if (pressed & PAD_RIGHT) {
+            pendingSceneSet++;
+            if (pendingSceneSet >= NUM_SCENE_SETS) pendingSceneSet = 0;
+        }
+    } else if (sceneSetOptionsCursor == SSO_PICKER) {
+        int policy = pickerGetPolicy();
+        if (pressed & PAD_LEFT) {
+            policy = (policy + SCENE_PICKER_COUNT - 1) % SCENE_PICKER_COUNT;
+            pickerSetPolicy(policy);
+        }
+        if (pressed & PAD_RIGHT) {
+            policy = (policy + 1) % SCENE_PICKER_COUNT;
+            pickerSetPolicy(policy);
+        }
+    }
+
+    /* X commits a pending Scene Set and returns to main; on Picker it
+     * just returns (policy is already applied); on Back it returns. */
+    if (pressed & PAD_CROSS) {
+        if (pendingSceneSet != pauseMenuSceneSet) {
+            pauseMenuSceneSet             = pendingSceneSet;
+            pauseMenuRequestSceneSetCycle = 1;
+        }
+        if (sceneSetOptionsCursor == SSO_BACK) {
+            menuState   = PAUSE_MENU_MAIN;
+            menuCursor  = MENU_SCENE_SET;
+            prevButtons = 0xFFFF;
+            return 1;
+        }
+        /* SSO_SCENE_SET commit: close the menu so the cycle banner
+         * shows immediately. SSO_PICKER X: also close — user picked,
+         * we're done. Mirrors the old "X commits Scene Set + closes"
+         * UX from the legacy main-menu inline cycler. */
+        return 0;
+    }
+
     return 1;
 }
 
@@ -2384,6 +2485,9 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SCENE_EXPLORER:
         keepOpen = handleSceneExplorerInput(pressed);
         break;
+    case PAUSE_MENU_SCENE_SET_OPTIONS:
+        keepOpen = handleSceneSetOptionsInput(pressed);
+        break;
     }
 
     /* If the state transitioned this frame (e.g. out of Scene Explorer
@@ -2499,6 +2603,7 @@ int pauseMenuUpdate(void)
     case PAUSE_MENU_SET_SEED:   drawSetSeed();   break;
     case PAUSE_MENU_CREDITS:    drawCredits();   break;
     case PAUSE_MENU_SCENE_EXPLORER: drawSceneExplorer(); break;
+    case PAUSE_MENU_SCENE_SET_OPTIONS: drawSceneSetOptions(); break;
     }
 
     /* Submit the OT to GPU. */

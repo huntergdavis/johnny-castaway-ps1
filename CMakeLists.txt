@@ -52,6 +52,10 @@ set(SOURCES
     src/spi.c
     # Memcard persistence for pause-menu settings.
     src/memcard.c
+    # Scene picker — Random / Sequential / Original (Sierra) policies.
+    # Net-zero heap; module-level statics only. See scene_picker.c head
+    # comment for the malloc-poison guard rationale.
+    src/scene_picker.c
     # Holiday table + date-algorithm core (36 holidays, codegen from holidays.yml).
     src/holidays.c
     src/holidays_table.c
@@ -87,6 +91,7 @@ set_source_files_properties(
     src/ps1_captions.c
     src/memcard.c
     src/scene_freeplay.c
+    src/scene_picker.c
     PROPERTIES COMPILE_OPTIONS "-Os"
 )
 
