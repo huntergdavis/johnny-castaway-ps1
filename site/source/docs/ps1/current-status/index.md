@@ -21,15 +21,15 @@ validated after confirming its short 169-vblank idle loop is expected).
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 321 |
-| Approx. words | 2838 |
+| Lines | 328 |
+| Approx. words | 2941 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 23 / 63 fully validated
+-   Scenes: 24 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 23 / 63 (next: stand3)
+## Progress: 24 / 63 (next: stand4)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -60,7 +60,7 @@ current public release is `v0.6.10-ps1`.
 | MISCGAG | 2 | miscgag2 | ✅ | ✅ | night · ~~low-tide~~ (not randomized by story flags; high/low packs regenerated) · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route |
 | STAND | 1 | stand1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected |
 | STAND | 2 | stand2 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` | 2026-05-04 | visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude |
-| STAND | 3 | stand3 | ⏳ | ⏳ | — | — |  |
+| STAND | 3 | stand3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` | 2026-05-04 | visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly |
 | STAND | 4 | stand4 | ⏳ | ⏳ | — | — |  |
 | STAND | 5 | stand5 | ⏳ | ⏳ | — | — |  |
 | STAND | 6 | stand6 | ⏳ | ⏳ | — | — |  |

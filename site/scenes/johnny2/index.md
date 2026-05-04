@@ -30,7 +30,7 @@ Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}
 
 The same way every scene does: under the FISHING 1 bar.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
+A host-side Johnny Reborn capture/export pass produces a
 base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
 build replays that pack at native resolution through every variant the
 original game randomized between (night, low-tide, holiday overlays,

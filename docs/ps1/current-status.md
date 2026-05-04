@@ -75,7 +75,7 @@ quickly enough that the restart is hard to see.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 23/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 24/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -85,18 +85,18 @@ quickly enough that the restart is hard to see.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 23 / 63 fully validated
+## Scenes: 24 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
-- Current main after `v0.6.11-ps1` — promotes `STAND 2` after visual
-  signoff on the normal high-tide/night route. The scene-loader direct
-  launch path now skips the stale story walk before the frog/full-wipe
-  transition, and high-pressure clean snapshots release optional caches
-  before allocation.
+- Current main after `v0.6.11-ps1` — promotes `STAND 2` and `STAND 3`
+  after visual signoff on the normal high-tide/night route. The
+  scene-loader direct launch path now skips the stale story walk before
+  the frog/full-wipe transition, and high-pressure clean snapshots
+  release optional caches before allocation.
 - `v0.6.11-ps1` — promotes `MISCGAG 1`, `MISCGAG 2`, and `STAND 1`
   after regenerating high/low packs through the generic multi-view
   stitch. `STAND 1` is a short 169-vblank idle loop with no captured SFX
@@ -264,6 +264,7 @@ searchability — **do not cite them as current progress**:
 | **17 / 63** | **2026-05-03** | **Scene ledger after `MARY 3` promotion; far-right foreground-only recapture, stale host-surface invalidation, and low-memory clean-snapshot relief make the scene stable and readable** | **this doc, `scene-status.md`** |
 | **22 / 63** | **2026-05-03** | **Current scene ledger after `STAND 1` promotion; current generic multi-view stitch regenerated high/low packs and the 35-frame / 169-vblank no-SFX idle loop passed human visual signoff** | **this doc, `scene-status.md`** |
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
+| **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **21 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 2` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **20 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 1` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **19 / 63** | **2026-05-03** | **Scene ledger after `MARY 5` promotion; story flags now clamp external raft state for `NORAFT` scenes and skip walk preludes for `FIRST` full-wipe scenes** | **this doc, `scene-status.md`** |
