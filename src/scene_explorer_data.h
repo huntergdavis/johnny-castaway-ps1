@@ -60,7 +60,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "suzy1", "SUZY 1  -  Sunbathing daydream", "Misc & Suzy", "FG/SUZY1.FG2", "BMP/SCEXPL_SUZY1.PSB", 177, 0, 0 },
     { "suzy2", "SUZY 2  -  Raft drifts to her", "Misc & Suzy", "FG/SUZY2.FG2", "BMP/SCEXPL_SUZY2.PSB", 133, 0, 0 },
     { "stand1", "STAND 1  -  Edge of the island", "Standing", "FG/STAND1.FG2", "BMP/SCEXPL_STAND1.PSB", 18, 1, 0 },
-    { "stand10", "STAND 10  -  Looks at his raft", "Standing", "FG/STAND10.FG2", "BMP/SCEXPL_STAND10.PSB", 87, 0, 0 },
+    { "stand10", "STAND 10  -  Looks at his raft", "Standing", "FG/STAND10.FG2", "BMP/SCEXPL_STAND10.PSB", 87, 1, 0 },
     { "stand11", "STAND 11  -  Shades under the palm", "Standing", "FG/STAND11.FG2", "BMP/SCEXPL_STAND11.PSB", 87, 0, 0 },
     { "stand12", "STAND 12  -  Looks out over the right water", "Standing", "FG/STAND12.FG2", "BMP/SCEXPL_STAND12.PSB", 238, 0, 0 },
     { "stand15", "STAND 15  -  Spyglass, left edge", "Standing", "FG/STAND15.FG2", "BMP/SCEXPL_STAND15.PSB", 140, 0, 0 },

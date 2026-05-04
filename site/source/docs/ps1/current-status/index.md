@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick STAND 8 introduced).
+validated as-is on the normal high-tide/night route — the host engine exits STAND.ADS:10 after only 2 frames so the no-stitch export collapses to an empty pack, and the previously-committed 96 KB FG2 pack was kept).
 
 ## File facts
 
@@ -22,14 +22,14 @@ validated on the normal high-tide/night route through the same STAND no-stitch f
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 353 |
-| Approx. words | 3390 |
+| Approx. words | 3417 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 30 / 63 fully validated
+-   Scenes: 31 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

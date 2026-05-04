@@ -588,12 +588,19 @@
 - ads: STAND
   tag: 10
   slug: stand10
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - existing committed FG2 pack (host export quirk)
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route. The host engine exits STAND.ADS:10 after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 11
   slug: stand11
