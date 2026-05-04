@@ -41,12 +41,24 @@ Produces:
 - `host-results/<slug>-foreground-pilot/host-capture-low/frames/*.bmp`
 - `host-results/<slug>-foreground-pilot/host-capture-low/frame-meta/*.json`
 - `host-results/<slug>-foreground-pilot/host-capture-low/sound-events.jsonl`
-- `generated/ps1/foreground/<PACK_BASENAME>.FG2` (high-tide full-render base-diff FG2 pack)
-- `generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2` (low-tide full-render base-diff FG2 pack)
+- `host-results/<slug>-foreground-pilot/host-capture-high-merged-fgonly/frames/*.bmp`
+  when the generic multi-view stitch path is active
+- `host-results/<slug>-foreground-pilot/host-capture-low-merged-fgonly/frames/*.bmp`
+  when the generic multi-view stitch path is active
+- `generated/ps1/foreground/<PACK_BASENAME>.FG2` (high-tide FG2 pack)
+- `generated/ps1/foreground/<LOW_PACK_BASENAME>.FG2` (low-tide FG2 pack)
 
 The `host-results/` tree is gitignored; only routed `.FG2` files needed
 by the PS1 CD are committed. FG1/FOC outputs and per-scene establishing
 `.RAW` files are retired and should not be regenerated or committed.
+
+The default exporter path for new scene bring-up is now multi-view:
+normal/reference capture plus far-left and far-right foreground-only
+captures, merged by scene-local coordinates. This avoids the repeated
+failure mode where a single host island position clips action that only
+appears when the runtime island is far left or far right. Use
+`FG_EXPORT_MULTIVIEW_STITCH=0` only for a scene with a validated custom
+path, such as `JOHNNY 2`'s partial lower-band overlay.
 
 ### 2. Wire the scene in
 

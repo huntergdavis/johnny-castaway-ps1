@@ -189,8 +189,7 @@ python3 "$SITE_REDTEAM_SCRIPT" "$PROJECT_DIR/docs" \
 # Step 6: Git commit
 echo ""
 echo -e "${YELLOW}=== Step 6: Committing changes ===${NC}"
-git add VERSION site/_config.yml site/source site/archaeology/regtest-references/cases \
-    site/resources docs
+git add VERSION site/_config.yml site/source site/resources docs
 
 git commit -m "$(cat <<EOF
 release: $TAG_NAME - $RELEASE_MSG

@@ -104,9 +104,10 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v61-fishing3low-group163-175`,
 `compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
-`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Six routed rows (`mary3`, `suzy1`, `suzy2`,
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Four routed rows (`suzy1`, `suzy2`,
 high/low) complete without active-loop timing and are excluded from speed
-averages even though the route/gate itself passes.
+averages even though the route/gate itself passes; `mary3` is visually
+validated but still needs a perf-matrix refresh.
 
 ## Secondary (historical): headless regtest harness
 

@@ -21,8 +21,8 @@ Operator loop for bringing up a new scene to the current acceptance bar (pixel-p
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/development-workflow.md` |
-| Lines | 207 |
-| Approx. words | 1125 |
+| Lines | 219 |
+| Approx. words | 1220 |
 | Code fences | 8 |
 
 ## Outline

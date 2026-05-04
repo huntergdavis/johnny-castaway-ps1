@@ -82,9 +82,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.6.8-ps1`** |
+| Current release | **`v0.6.10-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **16 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`) |
+| Scenes fully validated under the reference bar | **19 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
@@ -92,6 +92,12 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf stats version | Latest refreshed rows use `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.6.10-ps1` is a scene-validation bugfix release: `MARY 5` is now
+validated. The high/low packs were rebuilt through the generic multi-view
+scene-relative stitch with the generic raft off, and the runtime now applies
+story flags to direct scene playback: `NORAFT` suppresses the external raft
+and `FIRST` skips the walk prelude before full-wipe scenes.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after rebuilding high/low packs from a wide scene-relative
@@ -131,9 +137,10 @@ harness-and-restore-pilot eras are preserved as history in
 Headless perf timing is a separate battle card, not the scene-promotion
 bar. The current FISHING 1 canary is `loop_vb=1067` against
 `target_vb=1074` (**-0.7% over target / 100.7% target speed**) with
-`blocking_vb=2`, `prefetch_overrun_vb=2`, and `due_misses=0`. Six routed
-rows (`mary3`, `suzy1`, `suzy2`, high/low) currently complete without
-active-loop timing and are excluded from speed averages.
+`blocking_vb=2`, `prefetch_overrun_vb=2`, and `due_misses=0`. Four routed
+rows (`suzy1`, `suzy2`, high/low) currently complete without active-loop
+timing and are excluded from speed averages; `mary3` is visually validated
+but still needs a perf-matrix refresh.
 
 The headless harness now has opt-in scripted controller input. Run
 `./scripts/ps1-menu-input-harness.sh` to build a temporary pad-script disc,
@@ -159,10 +166,10 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Sixteen scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
+Seventeen scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
 `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`,
-`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`) validated
-end-to-end anchor the scene-by-scene bring-up loop.
+`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`)
+validated end-to-end anchor the scene-by-scene bring-up loop.
 
 The full pipeline — pack format byte layout, hardware constraints hit
 on the way, the SPI pad-poll fix, dirty-rect bookkeeping — is detailed

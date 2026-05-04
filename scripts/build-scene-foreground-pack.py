@@ -467,6 +467,15 @@ def main():
         help="Index in frames-dir to treat as the pristine scene base (default 0).",
     )
     parser.add_argument(
+        "--scene-base-color",
+        type=parse_rgb,
+        help=(
+            "Use a solid RGB color as the pristine scene base instead of "
+            "--scene-base-frame. This is used by stitched foreground-only "
+            "captures, where magenta key pixels are the transparent baseline."
+        ),
+    )
+    parser.add_argument(
         "--keyed-overlay-frames-dir",
         help=(
             "Optional foreground-only frame directory keyed by --key-rgb. "
@@ -553,13 +562,19 @@ def main():
         _first_abs_frame = 0
 
     scene_base_ps1_values: list[int] | None = None
-    base_index = args.scene_base_frame
-    if base_index < 0 or base_index >= len(frame_paths):
-        raise SystemExit(
-            f"--scene-base-frame {base_index} out of range (0..{len(frame_paths) - 1})"
-        )
-    with Image.open(frame_paths[base_index]) as raw:
-        scene_base_ps1_values, _, _ = image_to_ps1_values(raw)
+    if args.scene_base_color is not None:
+        with Image.open(frame_paths[0]) as raw:
+            base_width, base_height = raw.size
+        base_value = rgb888_to_ps1(args.scene_base_color)
+        scene_base_ps1_values = [base_value] * (base_width * base_height)
+    else:
+        base_index = args.scene_base_frame
+        if base_index < 0 or base_index >= len(frame_paths):
+            raise SystemExit(
+                f"--scene-base-frame {base_index} out of range (0..{len(frame_paths) - 1})"
+            )
+        with Image.open(frame_paths[base_index]) as raw:
+            scene_base_ps1_values, _, _ = image_to_ps1_values(raw)
 
     for source_index in selected_indices:
         frame_path = frame_paths[source_index]
@@ -750,6 +765,11 @@ def main():
         "scene_label": args.scene_label,
         "frames_dir": str(frames_dir),
         "scene_base_frame": args.scene_base_frame,
+        "scene_base_color": None if args.scene_base_color is None else {
+            "r": args.scene_base_color[0],
+            "g": args.scene_base_color[1],
+            "b": args.scene_base_color[2],
+        },
         "output_pack": str(output_pack),
         "pack_format": args.pack_format,
         "pack_magic": "FGP2",

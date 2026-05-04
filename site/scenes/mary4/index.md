@@ -4,17 +4,20 @@ title: MARY 4 — Heartbroken at the raft
 ads: MARY
 tag: 4
 slug: mary4
-status: pending
-description: "MARY.ADS scene 4: Heartbroken at the raft. Not yet validated."
+status: validated
+description: "MARY.ADS scene 4: Heartbroken at the raft. Validated with generic multi-view scene-relative stitching."
 ---
 
-Not yet validated.
+Validated 2026-05-03 under the FISHING 1 bar: pixel-perfect human
+visual signoff plus synced captured SFX.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>MARY.ADS scene 4</code>
 - Slug: <code>mary4</code>
-- Source-table note: untested in regtest
+- High-tide pack: <code>MARY4.FG2</code>
+- Low-tide pack: <code>MARY4LOW.FG2</code>
+- Source-table note: generic multi-view scene-relative stitch; production island placement remains variable
 
 ## What this scene probably is
 
@@ -22,21 +25,15 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+The single-position host capture clipped different island-relative
+pixels at different runtime placements. The validated pack uses the
+generic multi-view stitch: normal, far-left, and far-right
+foreground-only host views are merged into one scene-relative
+foreground canvas, with a magenta synthetic base so first-frame
+foreground pixels are retained.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Far-right PS1 stress playback at <code>island-pos 300 54</code> passed.
+That is evidence for pack completeness, not a production pin; normal
+story playback can keep randomized island placement.

@@ -16,14 +16,14 @@ in place as scenes get visually signed off.
 
 ## What's in the lineup
 
-Seven sets, all live as of v0.6.9-ps1:
+Seven sets, live since v0.6.9-ps1 and current as of v0.6.10-ps1:
 
 | Set | Pool | Validation |
 |---|---|---|
 | All Scenes | catch-all (proven rotation) | n/a |
 | Fishing Only | `fishing1`..`fishing8` | all ✅ |
 | Johnny Stories | `johnny1`..`johnny6` | `1`..`4` ✅, `5`/`6` playing pre-validation |
-| Mary Visits | `mary1`..`mary5` | `mary2` ✅ as of v0.6.8, others playing pre-validation |
+| Mary Visits | `mary1`..`mary5` | all ✅ as of v0.6.10 |
 | Visitors | `visitor1`, `visitor3`..`visitor7` | playing pre-validation |
 | Activities | `activity1`, `activity4`..`activity12` | playing pre-validation |
 | Misc & Suzy | `suzy1`, `suzy2`, `miscgag1`, `miscgag2` | playing pre-validation |

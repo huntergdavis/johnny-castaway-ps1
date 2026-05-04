@@ -965,6 +965,10 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     uint32_t endByte;
     uint32_t endSector;
     uint32_t numSectors;
+    uint32_t bufferSize;
+    uint32_t maxChunkSectors;
+    uint32_t requestStart;
+    uint32_t requestEnd;
     CdlLOC loc;
     uint32_t offsetInBuffer;
     int syncResult;
@@ -983,8 +987,16 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     endByte = offset + size;
     endSector = (endByte + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE;
     numSectors = endSector - startSector;
-    if (sectorBuffer == NULL || sectorBufferSize < (numSectors * CD_SECTOR_SIZE))
+    bufferSize = numSectors * CD_SECTOR_SIZE;
+    if (sectorBuffer == NULL || sectorBufferSize < CD_SECTOR_SIZE)
         return 0;
+    maxChunkSectors = sectorBufferSize / CD_SECTOR_SIZE;
+    if (maxChunkSectors == 0)
+        return 0;
+    if (maxChunkSectors > PS1_CD_READ_CHUNK_SECTORS)
+        maxChunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+    requestStart = offset;
+    requestEnd = offset + size;
 
     if (ps1PerfEnabled) {
         perfStartTick = ps1PerfTick();
@@ -995,10 +1007,16 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
     sectorsRead = 0;
     while (sectorsRead < numSectors) {
         uint32_t chunkSectors = numSectors - sectorsRead;
-        uint8_t *chunkDst = sectorBuffer + (sectorsRead * CD_SECTOR_SIZE);
+        uint8_t *chunkDst = sectorBufferSize >= bufferSize
+            ? sectorBuffer + (sectorsRead * CD_SECTOR_SIZE)
+            : sectorBuffer;
+        uint32_t chunkStart;
+        uint32_t chunkEnd;
+        uint32_t copyStart;
+        uint32_t copyEnd;
 
-        if (chunkSectors > PS1_CD_READ_CHUNK_SECTORS)
-            chunkSectors = PS1_CD_READ_CHUNK_SECTORS;
+        if (chunkSectors > maxChunkSectors)
+            chunkSectors = maxChunkSectors;
 
         CdIntToPos(CdPosToInt((CdlLOC *)&cdfile->pos) + startSector + sectorsRead, &loc);
 
@@ -1031,14 +1049,28 @@ static int ps1_streamReadFromCdFileIntoBuffered(const CdlFILE *cdfile, uint32_t 
             return 0;
         }
 
+        if (sectorBufferSize < bufferSize) {
+            chunkStart = (startSector + sectorsRead) * CD_SECTOR_SIZE;
+            chunkEnd = chunkStart + (chunkSectors * CD_SECTOR_SIZE);
+            copyStart = requestStart > chunkStart ? requestStart : chunkStart;
+            copyEnd = requestEnd < chunkEnd ? requestEnd : chunkEnd;
+            if (copyEnd > copyStart) {
+                memcpy(dstBuffer + (copyStart - requestStart),
+                       sectorBuffer + (copyStart - chunkStart),
+                       copyEnd - copyStart);
+            }
+        }
+
         sectorsRead += chunkSectors;
     }
 
-    offsetInBuffer = offset % CD_SECTOR_SIZE;
-    if (offsetInBuffer == 0) {
-        memcpy(dstBuffer, sectorBuffer, size);
-    } else {
-        memcpy(dstBuffer, sectorBuffer + offsetInBuffer, size);
+    if (sectorBufferSize >= bufferSize) {
+        offsetInBuffer = offset % CD_SECTOR_SIZE;
+        if (offsetInBuffer == 0) {
+            memcpy(dstBuffer, sectorBuffer, size);
+        } else {
+            memcpy(dstBuffer, sectorBuffer + offsetInBuffer, size);
+        }
     }
     if (perfTrack)
         ps1PerfMarkCdReadDetailed(size, numSectors,
