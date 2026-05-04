@@ -4,11 +4,15 @@ title: SUZY 1 — Sunbathing daydream
 ads: SUZY
 tag: 1
 slug: suzy1
-status: pending
-description: "SUZY.ADS scene 1: Sunbathing daydream. Not yet validated."
+status: validated
+description: "SUZY.ADS scene 1: Sunbathing daydream. Validated on 2026-05-04."
 ---
 
-Not yet validated.
+Validated on 2026-05-04 under the FISHING 1 bar.
+
+SUZY 1 is not an island/ocean scene. The PS1 runtime now loads the
+source `SUZBEACH.SCR` screen as the clean backdrop for SUZY scenes,
+then replays the foreground pack over that beach background.
 
 ## Pack identifiers
 
@@ -21,21 +25,10 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+### Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
-
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+High and low packs were regenerated with the current foreground exporter.
+The blocking defect was backdrop classification: the scene was correctly
+captured, but runtime playback still painted the normal island and water
+behind it. `SUZBEACH.SCR` is now included on disc and selected by the
+FG2 runtime for SUZY scenes.

@@ -154,6 +154,7 @@
                 <file name="ISLETEMP.SCR" type="data" source="../../jc_resources/extracted/scr/ISLETEMP.SCR"/>
                 <file name="NIGHT.SCR" type="data" source="../../jc_resources/extracted/scr/NIGHT.SCR"/>
                 <file name="OCEAN00.SCR" type="data" source="../../jc_resources/extracted/scr/OCEAN00.SCR"/>
+                <file name="SUZBEACH.SCR" type="data" source="../../jc_resources/extracted/scr/SUZBEACH.SCR"/>
                 <!-- Scene Explorer thumbnails — 320x240 raw RGB555, one per scene.
                      Loaded by grLoadSceneExplorerThumbnail on cursor change in
                      the pause-menu Scene Explorer sub-screen. Names are 8.3:

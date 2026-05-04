@@ -100,12 +100,12 @@ A scene can be timed here without being visually certified.
 
 ### Rollup
 
-Current battle-card rollup as of 2026-05-03:
+Current battle-card rollup as of 2026-05-04:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `35 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16` |
+| Scenes visually validated | `36 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |

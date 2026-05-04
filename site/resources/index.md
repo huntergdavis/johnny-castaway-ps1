@@ -534,8 +534,8 @@ for the practical porting path.
 <tr><td><code>STND7LOW.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND7LOW.FG2">source</a></td></tr>
 <tr><td><code>STND8LOW.FG2</code></td><td>54,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND8LOW.FG2">source</a></td></tr>
 <tr><td><code>STND9LOW.FG2</code></td><td>60,408</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND9LOW.FG2">source</a></td></tr>
-<tr><td><code>SUZY1.FG2</code></td><td>20,634,648</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1.FG2">source</a></td></tr>
-<tr><td><code>SUZY1LOW.FG2</code></td><td>20,634,648</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1LOW.FG2">source</a></td></tr>
+<tr><td><code>SUZY1.FG2</code></td><td>830,626</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1.FG2">source</a></td></tr>
+<tr><td><code>SUZY1LOW.FG2</code></td><td>830,626</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1LOW.FG2">source</a></td></tr>
 <tr><td><code>SUZY2.FG2</code></td><td>13,706,356</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY2.FG2">source</a></td></tr>
 <tr><td><code>SUZY2LOW.FG2</code></td><td>13,706,356</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY2LOW.FG2">source</a></td></tr>
 <tr><td><code>VISITOR1.FG2</code></td><td>303,714</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VISITOR1.FG2">source</a></td></tr>

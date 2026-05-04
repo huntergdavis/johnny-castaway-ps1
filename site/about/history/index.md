@@ -272,7 +272,12 @@ high-tide/night route passed human visual + audible review. The count became
 packs were regenerated through the same stitch, and the resulting 35-frame /
 169-vblank no-SFX loop matched the user's visual review. `STAND 2` through
 `STAND 12`, plus `STAND 15` and `STAND 16`, then passed the normal
-high-tide/night route on **2026-05-04**. The current count is **35 / 63**.
+high-tide/night route on **2026-05-04**.
+
+`SUZY 1` followed after a backdrop-classification fix. The source scene
+uses a separate beach screen, so the PS1 runtime now loads `SUZBEACH.SCR`
+for SUZY scenes instead of painting the standard island/ocean background
+behind the foreground pack. The current count is **36 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

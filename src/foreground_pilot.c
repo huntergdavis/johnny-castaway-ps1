@@ -852,6 +852,16 @@ static int fgSceneUsesBlackBackdrop(const char *sceneName)
            fgSceneEquals(sceneName, "johnny6");
 }
 
+static const char *fgSceneBackdropScreen(const char *sceneName)
+{
+    if (fgSceneEquals(sceneName, "suzy1") ||
+        fgSceneEquals(sceneName, "suzy2")) {
+        return "SUZBEACH.SCR";
+    }
+
+    return NULL;
+}
+
 static uint32 fgHeaderCleanSnapshotEstimate(const struct TFgPilotHeader *header)
 {
     if (header == NULL)
@@ -3083,6 +3093,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     uint16 fgBoundsH = 0;
     uint32 perfPhaseTick = 0;
     int blackBackdrop = fgSceneUsesBlackBackdrop(sceneName);
+    const char *sceneBackdropScreen = fgSceneBackdropScreen(sceneName);
+    int sceneSpecificBackdrop = sceneBackdropScreen != NULL;
     int largeCleanSnapshot = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
@@ -3097,7 +3109,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
     fgReleaseStreamBuffers();
 
-    if (!blackBackdrop) {
+    if (sceneSpecificBackdrop)
+        fgBackdropRelease(0);
+
+    if (!blackBackdrop && !sceneSpecificBackdrop) {
         /* Pre-load BACKGRND.BMP before any scene setup allocates bg tiles. At
          * this moment the heap is freshest and the ~93 KB PSB stream has room. */
         if (ps1PerfEnabled)
@@ -3117,6 +3132,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grInitEmptyBackground();
         grFreeCleanBgTiles();
         grSetCleanBgBlackMode(1);
+    } else if (sceneSpecificBackdrop) {
+        grLoadScreen((char *)sceneBackdropScreen);
     } else if (islandState.night) {
         /* NIGHT.SCR is the full night-ocean backdrop, no island baked in.
          * The FG2 backdrop helper draws the island sprites on top. */
@@ -3135,7 +3152,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * rect-mode backup instead. Keep this as a defensive cleanup in case a
      * prior mode left full-tile clean buffers resident. */
     grFreeCleanBgTiles();
-    if (!blackBackdrop) {
+    if (!blackBackdrop && !sceneSpecificBackdrop) {
         if (ps1PerfEnabled)
             perfPhaseTick = ps1PerfTick();
         fgBackdropEnableWaveBackdrop();
@@ -3223,7 +3240,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * but the order (restore → composite Johnny → stamp holiday) means
      * the previous pose's holiday region briefly flashes during scene
      * transitions. With holiday baked in, restore alone shows it. */
-    if (!blackBackdrop)
+    if (!blackBackdrop && !sceneSpecificBackdrop)
         fgBackdropStampHoliday();
 
     /* Capture the pristine walk-area pixels into walk_pilot's persistent
@@ -3232,7 +3249,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * needs to wipe its previous pose against. The function is a no-op
      * when the state key matches the last capture, so it's cheap to
      * call every scene setup. */
-    if (!blackBackdrop) {
+    if (!blackBackdrop && !sceneSpecificBackdrop) {
         walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
                                              islandState.lowTide,
                                              islandState.night,
@@ -3421,7 +3438,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     /* Keep BACKGRND.BMP in slot 0 across scenes; release only
      * variant-dependent overlay slots to avoid needless PSB churn. */
-    fgBackdropRelease(blackBackdrop ? 0 : 1);
+    fgBackdropRelease((blackBackdrop || sceneSpecificBackdrop) ? 0 : 1);
     fgHeapProbe("after_scene_cleanup", sceneName);
 }
 

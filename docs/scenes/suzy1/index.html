@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>SUZY 1 — Sunbathing daydream — Johnny Castaway PS1</title>
-  <meta name="description" content="SUZY.ADS scene 1: Sunbathing daydream. Not yet validated." />
+  <meta name="description" content="SUZY.ADS scene 1: Sunbathing daydream. Validated on 2026-05-04." />
 
   <meta property="og:title"        content="SUZY 1 — Sunbathing daydream — Johnny Castaway PS1" />
-  <meta property="og:description"  content="SUZY.ADS scene 1: Sunbathing daydream. Not yet validated." />
+  <meta property="og:description"  content="SUZY.ADS scene 1: Sunbathing daydream. Validated on 2026-05-04." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · SUZY 1
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>SUZY 1 — Sunbathing daydream</h1>
@@ -77,7 +77,11 @@
   </header>
 
   <div class="page-body">
-    <p>Not yet validated.</p>
+    <p>Validated on 2026-05-04 under the FISHING 1 bar.</p>
+
+<p>SUZY 1 is not an island/ocean scene. The PS1 runtime now loads the
+source <code class="language-plaintext highlighter-rouge">SUZBEACH.SCR</code> screen as the clean backdrop for SUZY scenes,
+then replays the foreground pack over that beach background.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -92,24 +96,13 @@
 
 <p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>HIGH</strong>.</p>
 
-<h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
+<h3 id="validation-notes">Validation notes</h3>
 
-<p>The same way every scene does: under the FISHING 1 bar.</p>
-
-<p>A host-side Johnny Reborn capture/export pass produces a
-base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-<a href="../../docs/regtest/">regtest harness</a> checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
-<a href="../">ledger</a>.</p>
-
-<p>Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See <a href="../../about/method/">the method</a>
-for the longer version.</p>
+<p>High and low packs were regenerated with the current foreground exporter.
+The blocking defect was backdrop classification: the scene was correctly
+captured, but runtime playback still painted the normal island and water
+behind it. <code class="language-plaintext highlighter-rouge">SUZBEACH.SCR</code> is now included on disc and selected by the
+FG2 runtime for SUZY scenes.</p>
 
   </div>
 
@@ -135,7 +128,7 @@ for the longer version.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          35 / 63 scenes validated
+          36 / 63 scenes validated
           (v0.6.11-ps1)
         </p>
         <p class="footer-transparency">

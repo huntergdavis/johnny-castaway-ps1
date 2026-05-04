@@ -668,12 +668,14 @@
 - ads: SUZY
   tag: 1
   slug: suzy1
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - scene-specific SUZBEACH.SCR backdrop
+    - high/low pack parity
+  last_verified: 2026-05-04
+  notes: visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
 - ads: SUZY
   tag: 2
   slug: suzy2

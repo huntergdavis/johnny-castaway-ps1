@@ -17,7 +17,8 @@ The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
 `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
 `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`,
-`MISCGAG 1`, `MISCGAG 2`, and `STAND 1`. The live per-scene ledger is at
+`MISCGAG 1`, `MISCGAG 2`, `STAND 1`-`STAND 12`, `STAND 15`,
+`STAND 16`, and `SUZY 1`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
