@@ -462,6 +462,12 @@ static void storyCalculateIslandFromScene(struct TStoryScene *scene)
     if (storyForcedRaftStageValid)
         islandState.raft = storyForcedRaftStage;
 
+    if (scene->flags & NORAFT) {
+        /* Scene-local raft art owns the area. Generic raft overrides must not
+         * draw a second raft unless the scene data itself allows one. */
+        islandState.raft = 0;
+    }
+
 
     // For scene VISITOR.ADS#3 (cargo), never display holiday items - or they
     // will be drawn over the hull when it fills the screen at the end. This

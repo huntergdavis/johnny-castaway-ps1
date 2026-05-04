@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>MARY 5 — Goodbye — Johnny Castaway PS1</title>
-  <meta name="description" content="MARY.ADS scene 5: Goodbye. Not yet validated." />
+  <meta name="description" content="MARY.ADS scene 5: Goodbye. Validated after multi-view stitch and story-flag policy fixes." />
 
   <meta property="og:title"        content="MARY 5 — Goodbye — Johnny Castaway PS1" />
-  <meta property="og:description"  content="MARY.ADS scene 5: Goodbye. Not yet validated." />
+  <meta property="og:description"  content="MARY.ADS scene 5: Goodbye. Validated after multi-view stitch and story-flag policy fixes." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · MARY 5
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>MARY 5 — Goodbye</h1>
@@ -77,7 +77,7 @@
   </header>
 
   <div class="page-body">
-    <p>Not yet validated.</p>
+    <p>Validated on <code class="language-plaintext highlighter-rouge">2026-05-03</code> under the FISHING 1 bar.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -86,30 +86,24 @@
   <li>Slug: <code>mary5</code></li>
 </ul>
 
-<h2 id="what-this-scene-probably-is">What this scene probably is</h2>
+<h2 id="what-this-scene-is">What This Scene Is</h2>
 
-<p>(Guess; day 8 final.) Mermaid and shark say goodbye; Johnny paddles away from the island.</p>
+<p>Mary’s day-8 goodbye scene. Johnny leaves on the scene’s own raft art,
+so the generic island raft is not applicable.</p>
 
 <p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>HIGH</strong>.</p>
 
-<h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
+<h2 id="validation-notes">Validation Notes</h2>
 
-<p>The same way every scene does: under the FISHING 1 bar.</p>
+<p>High/low packs were rebuilt through the generic normal/far-left/far-right
+foreground-only multi-view stitch, with the generic raft off during capture.</p>
 
-<p>A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-<a href="../../docs/regtest/">regtest harness</a> checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
-<a href="../">ledger</a>.</p>
+<p>Runtime policy now respects the source story flags for direct <code class="language-plaintext highlighter-rouge">fgpilot</code>
+playback too: <code class="language-plaintext highlighter-rouge">NORAFT</code> clamps the generic raft off even when broad test
+routes include <code class="language-plaintext highlighter-rouge">raft-stage</code>, and <code class="language-plaintext highlighter-rouge">FIRST</code> skips the walk prelude because the
+frog/full-wipe transition owns the screen.</p>
 
-<p>Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See <a href="../../about/method/">the method</a>
-for the longer version.</p>
+<p>Production island placement remains variable-position safe.</p>
 
   </div>
 
@@ -135,8 +129,8 @@ for the longer version.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          16 / 63 scenes validated
-          (v0.6.9-ps1)
+          19 / 63 scenes validated
+          (v0.6.10-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

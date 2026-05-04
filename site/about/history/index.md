@@ -242,8 +242,23 @@ on where the island sits: line, mermaid splash, boot throw, and lower
 water cleanup all needed different host sightlines. The validated packs
 stitch multiple foreground-only views into one scene-relative foreground
 canvas, then inject the fish thought-bubble shell from full-host frames.
-Far-right and true far-left stress runs passed. The current count became
+Far-right and true far-left stress runs passed. The count became
 **16 / 63**.
+
+`MARY 3` followed with a different failure shape: a large foreground pack
+that needed far-right host capture, stale host capture surface invalidation,
+and low-memory clean-snapshot relief on PS1.
+
+`MARY 4` promoted the multi-view stitch from scene-specific fix to default
+workflow. The exporter now captures normal, far-left, and far-right
+foreground-only host views for new scene bring-up, then merges them into a
+scene-relative canvas so action on both sides of the island survives random
+runtime placement. The count became **18 / 63**.
+
+`MARY 5` followed as a story-flag policy fix. The scene contains its own raft
+art and begins behind a frog-clock full wipe, so the PS1 route now clamps
+generic raft state off for `NORAFT` scenes and skips the walk prelude for
+`FIRST` full-wipe scenes. The current count is **19 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

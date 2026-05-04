@@ -71,6 +71,11 @@ if [ -z "$CAPTURE_ISLAND_X" ]; then
     # extra foreground views provide clipped left/right action pixels without a
     # production runtime pin.
     CAPTURE_ISLAND_X="-154"
+  elif [ "$SCENE_SLUG" = "mary3" ]; then
+    # MARY 3's action lives left of the island. Capture with the island shifted
+    # right so left-side Johnny/Mary pixels are not clipped; this is capture
+    # policy, not a production runtime pin.
+    CAPTURE_ISLAND_X="80"
   else
     CAPTURE_ISLAND_X="-154"
   fi
@@ -80,6 +85,11 @@ if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary2" ]; then
   # MARY 2 is a raft-stage-5 fishing scene in validation. Capture against the
   # same backdrop state so foreground pixels that cross the raft are complete.
   CAPTURE_RAFT_STAGE="5"
+fi
+if [ -z "${FG_EXPORT_RAFT_STAGE:-}" ] && [ "$SCENE_SLUG" = "mary5" ]; then
+  # MARY 5 is flagged NORAFT in story_data.h and carries its own raft art.
+  # Capture with the generic raft off so the pack/backdrop match runtime.
+  CAPTURE_RAFT_STAGE="0"
 fi
 KEYED_OVERLAY_RECT="${FG_EXPORT_KEYED_OVERLAY_RECT:-}"
 KEYED_OVERLAY_INCLUDE_STATIC_BASE="${FG_EXPORT_KEYED_OVERLAY_INCLUDE_STATIC_BASE:-}"
@@ -113,11 +123,35 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
   # capture across the whole frame.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "mary3" ]; then
+  # MARY 3's old full-host base-diff pack captured a wide island/ocean plate
+  # and double-painted it over the PS1 runtime island. Foreground-only replay
+  # keeps the live Johnny/Mary action without baking the backdrop into FG2.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] &&
    { [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; }; then
   # The older full-host captures for these scenes were both full-width dirty
   # and right-edge clipped. Foreground-only captures contain the moving action
   # without the stale island/ocean pixels, so use them frame-wide.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
+MULTIVIEW_STITCH="${FG_EXPORT_MULTIVIEW_STITCH:-}"
+if [ -z "$MULTIVIEW_STITCH" ]; then
+  if [ "$SCENE_SLUG" = "johnny2" ] || [ "$SCENE_SLUG" = "mary2" ]; then
+    # These scenes have validated custom capture paths: JOHNNY2 keeps a
+    # partial lower-band overlay so thought bubbles stay full-host, and MARY2
+    # has a bespoke multi-view + bubble-shell injection branch below.
+    MULTIVIEW_STITCH="0"
+  else
+    # New scene validation should start with a normal/reference capture plus
+    # far-left and far-right foreground-only views. Island-relative content can
+    # span more than one screen width, so single-position packs are now treated
+    # as an opt-out diagnostic path rather than the default.
+    MULTIVIEW_STITCH="1"
+  fi
+fi
+if [ "$MULTIVIEW_STITCH" = "1" ]; then
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
@@ -148,6 +182,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "johnny5" ]; then
   # The SOS thought bubble is source frame 74. The following blank rows were
   # holding too long, so preserve total duration while pausing on the note.
   HOLD_ADJUSTMENTS="74:+16 75:-12 78:-4"
+fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "mary3" ]; then
+  # The dinner thought beat only survives for source frames 347-348. Move time
+  # from the following recovery rows so the gag is readable without length drift.
+  HOLD_ADJUSTMENTS="347:+24 348:+28 349:-1 351:-4 353:-2 354:-2 355:-5 358:-3 359:-1 360:-5 362:-1 363:-4 365:-2 366:-2 367:-5 369:-2 370:-3 371:-5 373:-1 374:-4"
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
@@ -204,6 +243,7 @@ if [ -n "$HOLD_ADJUSTMENTS" ]; then
     hold_adjust_args+=(--hold-adjust "$hold_adjust_value")
   done
 fi
+scene_base_args=(--scene-base-frame 0)
 if [ -n "$KEYED_OVERLAY_RECT" ]; then
   "$SCRIPT_DIR/capture-host-scene.sh" \
     --scene "$SCENE_NAME" \
@@ -561,9 +601,98 @@ PY
     HOST_CAPTURE_HIGH_DIR="$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
     HOST_CAPTURE_LOW_DIR="$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     KEYED_OVERLAY_RECT=""
+    scene_base_args=(--scene-base-color ff00ff)
   fi
 
-  if [ "$SCENE_SLUG" != "mary2" ]; then
+  if [ "$SCENE_SLUG" != "mary2" ] && [ "$MULTIVIEW_STITCH" = "1" ]; then
+    STITCH_LEFT_ISLAND_X="${FG_EXPORT_STITCH_LEFT_ISLAND_X:--300}"
+    STITCH_RIGHT_ISLAND_X="${FG_EXPORT_STITCH_RIGHT_ISLAND_X:-300}"
+
+    "$SCRIPT_DIR/capture-host-scene.sh" \
+      --scene "$SCENE_NAME" \
+      --mode story-single \
+      --seed 1 \
+      --start-frame "$START_FRAME" \
+      --interval 1 \
+      --until-exit \
+      --no-stamp \
+      --lowtide 0 \
+      --raft-stage "$CAPTURE_RAFT_STAGE" \
+      --island-x "$STITCH_LEFT_ISLAND_X" \
+      --island-y "$CAPTURE_ISLAND_Y" \
+      --foreground-only \
+      "${foreground_capture_args[@]}" \
+      --output "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR"
+
+    "$SCRIPT_DIR/capture-host-scene.sh" \
+      --scene "$SCENE_NAME" \
+      --mode story-single \
+      --seed 1 \
+      --start-frame "$START_FRAME" \
+      --interval 1 \
+      --until-exit \
+      --no-stamp \
+      --lowtide 1 \
+      --raft-stage "$CAPTURE_RAFT_STAGE" \
+      --island-x "$STITCH_LEFT_ISLAND_X" \
+      --island-y "$CAPTURE_ISLAND_Y" \
+      --foreground-only \
+      "${foreground_capture_args[@]}" \
+      --output "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR"
+
+    "$SCRIPT_DIR/capture-host-scene.sh" \
+      --scene "$SCENE_NAME" \
+      --mode story-single \
+      --seed 1 \
+      --start-frame "$START_FRAME" \
+      --interval 1 \
+      --until-exit \
+      --no-stamp \
+      --lowtide 0 \
+      --raft-stage "$CAPTURE_RAFT_STAGE" \
+      --island-x "$STITCH_RIGHT_ISLAND_X" \
+      --island-y "$CAPTURE_ISLAND_Y" \
+      --foreground-only \
+      "${foreground_capture_args[@]}" \
+      --output "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR"
+
+    "$SCRIPT_DIR/capture-host-scene.sh" \
+      --scene "$SCENE_NAME" \
+      --mode story-single \
+      --seed 1 \
+      --start-frame "$START_FRAME" \
+      --interval 1 \
+      --until-exit \
+      --no-stamp \
+      --lowtide 1 \
+      --raft-stage "$CAPTURE_RAFT_STAGE" \
+      --island-x "$STITCH_RIGHT_ISLAND_X" \
+      --island-y "$CAPTURE_ISLAND_Y" \
+      --foreground-only \
+      "${foreground_capture_args[@]}" \
+      --output "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR"
+
+    python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
+      --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+      --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+
+    python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
+      --reference-capture "$HOST_CAPTURE_LOW_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
+      --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+      --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+
+    high_overlay_args=()
+    low_overlay_args=()
+    HOST_CAPTURE_HIGH_DIR="$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+    HOST_CAPTURE_LOW_DIR="$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+    KEYED_OVERLAY_RECT=""
+    scene_base_args=(--scene-base-color ff00ff)
+  elif [ "$SCENE_SLUG" != "mary2" ]; then
     high_overlay_args=(
       --keyed-overlay-frames-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR/frames"
       --keyed-overlay-rect "$KEYED_OVERLAY_RECT"
@@ -583,7 +712,7 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --timeline-speed "$TIMELINE_SPEED" \
   --pack-format fg2 \
   --base-diff \
-  --scene-base-frame 0 \
+  "${scene_base_args[@]}" \
   "${high_overlay_args[@]}" \
   "${hold_advance_args[@]}" \
   "${hold_adjust_args[@]}" \
@@ -598,7 +727,7 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   --timeline-speed "$TIMELINE_SPEED" \
   --pack-format fg2 \
   --base-diff \
-  --scene-base-frame 0 \
+  "${scene_base_args[@]}" \
   "${low_overlay_args[@]}" \
   "${hold_advance_args[@]}" \
   "${hold_adjust_args[@]}" \

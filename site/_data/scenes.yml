@@ -376,30 +376,49 @@
 - ads: MARY
   tag: 3
   slug: mary3
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island position x=80,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after far-right full-frame keyed foreground-only recapture; stale host capture sprite-surface references are invalidated before BMP/layer frees, low-memory clean-snapshot relief keeps the large pack stable, and the late dinner/thought beat now holds on the readable frames
 - ads: MARY
   tag: 4
   slug: mary4
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: untested in regtest
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs from normal, far-left, and far-right foreground-only captures; far-right stress playback passed without a production placement pin
 - ads: MARY
   tag: 5
   slug: mary5
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage not applicable; NORAFT story flag clamps generic raft off
+    - full-wipe FIRST scene; no walk prelude
+    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-03
+  notes: visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs with the generic raft off; runtime story-flag policy now clamps NORAFT scenes to no external raft and skips walk-in for FIRST full-wipe scenes
 - ads: MISCGAG
   tag: 1
   slug: miscgag1

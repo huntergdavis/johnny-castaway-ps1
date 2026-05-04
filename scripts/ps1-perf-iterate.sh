@@ -616,7 +616,7 @@ scene_entries = get("scene", "entries", 0)
 loop_start = get("timing", "loop_start", 0)
 advances = get("timing", "advances", 0)
 timing_entries = get("timing", "entries", 0)
-known_metadata_only_scenes = {"mary3", "suzy1", "suzy2"}
+known_metadata_only_scenes = {"suzy1", "suzy2"}
 if sections and scene_entries > 0:
     active_loop_failures = []
     if loop_start <= 0:

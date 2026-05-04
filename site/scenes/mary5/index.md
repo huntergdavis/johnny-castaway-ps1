@@ -4,38 +4,32 @@ title: MARY 5 — Goodbye
 ads: MARY
 tag: 5
 slug: mary5
-status: pending
-description: "MARY.ADS scene 5: Goodbye. Not yet validated."
+status: validated
+description: "MARY.ADS scene 5: Goodbye. Validated after multi-view stitch and story-flag policy fixes."
 ---
 
-Not yet validated.
+Validated on `2026-05-03` under the FISHING 1 bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>MARY.ADS scene 5</code>
 - Slug: <code>mary5</code>
 
-## What this scene probably is
+## What This Scene Is
 
-(Guess; day 8 final.) Mermaid and shark say goodbye; Johnny paddles away from the island.
+Mary's day-8 goodbye scene. Johnny leaves on the scene's own raft art,
+so the generic island raft is not applicable.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+## Validation Notes
 
-The same way every scene does: under the FISHING 1 bar.
+High/low packs were rebuilt through the generic normal/far-left/far-right
+foreground-only multi-view stitch, with the generic raft off during capture.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+Runtime policy now respects the source story flags for direct `fgpilot`
+playback too: `NORAFT` clamps the generic raft off even when broad test
+routes include `raft-stage`, and `FIRST` skips the walk prelude because the
+frog/full-wipe transition owns the screen.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Production island placement remains variable-position safe.

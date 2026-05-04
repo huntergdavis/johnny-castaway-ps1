@@ -179,6 +179,33 @@ static void grCaptureResetLedger(SDL_Surface *surface)
 }
 
 
+static void grCaptureInvalidateSpriteSurface(SDL_Surface *surface)
+{
+    int i;
+
+    if (surface == NULL)
+        return;
+
+    for (i = 0; i < grCapturedDrawCount; i++) {
+        if (grCapturedDraws[i].kind == GR_CAPTURE_KIND_SPRITE &&
+            grCapturedDraws[i].srcSfc == surface) {
+            grCapturedDraws[i].srcSfc = NULL;
+        }
+    }
+
+    for (i = 0; i < grCaptureLedgerCount; i++) {
+        int d;
+
+        for (d = 0; d < grCaptureLedgers[i].count; d++) {
+            if (grCaptureLedgers[i].draws[d].kind == GR_CAPTURE_KIND_SPRITE &&
+                grCaptureLedgers[i].draws[d].srcSfc == surface) {
+                grCaptureLedgers[i].draws[d].srcSfc = NULL;
+            }
+        }
+    }
+}
+
+
 static void grCaptureAppendLedgerDraw(SDL_Surface *surface,
                                       const struct TCapturedSpriteDraw *draw)
 {
@@ -1414,6 +1441,7 @@ void grFreeLayer(SDL_Surface *sfc)
     if (debugMode) {
         printf("Surface pool: freeing non-pooled surface\n");
     }
+    grCaptureResetLedger(sfc);
     SDL_FreeSurface(sfc);
 }
 
@@ -1877,6 +1905,7 @@ void grReleaseBmp(struct TTtmSlot *ttmSlot, uint16 bmpSlotNo)
     ttmSlot->spriteGen[bmpSlotNo]++;
     ttmSlot->loadedBmp[bmpSlotNo] = NULL;
     for (int i=0; i < ttmSlot->numSprites[bmpSlotNo]; i++) {
+        grCaptureInvalidateSpriteSurface(ttmSlot->sprites[bmpSlotNo][i]);
         free(ttmSlot->sprites[bmpSlotNo][i]->pixels);
         SDL_FreeSurface(ttmSlot->sprites[bmpSlotNo][i]);
     }
