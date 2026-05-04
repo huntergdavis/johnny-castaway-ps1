@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 25 / 63 (next: stand5)
+## Progress: 26 / 63 (next: stand6)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -62,7 +62,7 @@ current public release is `v0.6.10-ps1`.
 | STAND | 2 | stand2 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` | 2026-05-04 | visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude |
 | STAND | 3 | stand3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` | 2026-05-04 | visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly |
 | STAND | 4 | stand4 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route |
-| STAND | 5 | stand5 | ⏳ | ⏳ | — | — |  |
+| STAND | 5 | stand5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay | 2026-05-04 | visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay |
 | STAND | 6 | stand6 | ⏳ | ⏳ | — | — |  |
 | STAND | 7 | stand7 | ⏳ | ⏳ | — | — |  |
 | STAND | 8 | stand8 | ⏳ | ⏳ | — | — |  |

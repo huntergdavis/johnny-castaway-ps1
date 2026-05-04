@@ -4,11 +4,11 @@ title: STAND 5 — Looks out over the ocean
 ads: STAND
 tag: 5
 slug: stand5
-status: pending
-description: "STAND.ADS scene 5: Looks out over the ocean. Not yet validated."
+status: validated
+description: "STAND.ADS scene 5: Looks out over the ocean. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-04.
 
 ## Pack identifiers
 
@@ -21,21 +21,15 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+Visual signoff passed after regenerating high and low tide packs through the
+STAND no-stitch fast path.
 
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+Boot route:
+`fgpilot stand5 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 loop seed 1`.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+The first no-stitch attempt faded Johnny's legs because pure base-diff treated
+frame-0 static pixels as background. The exporter fast path now keeps a
+single-position foreground-only overlay while still skipping far-left/far-right
+stitch captures for simple STAND scenes.

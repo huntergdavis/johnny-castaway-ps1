@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 328 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 329 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -51,6 +51,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.5.0/' | relative_url }}">v0.5.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.5.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-explorer-design/' | relative_url }}">Scene Explorer — design doc</a><p><code>docs/ps1/scene-explorer-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-status/' | relative_url }}">PS1 Scene Pipeline Status</a><p><code>docs/ps1/scene-status.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/scene-validation-agent-handoff/' | relative_url }}">PS1 Scene Validation Agent Handoff</a><p><code>docs/ps1/scene-validation-agent-handoff.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scripted-input-harness/' | relative_url }}">PS1 Scripted Input Harness</a><p><code>docs/ps1/scripted-input-harness.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TESTING/' | relative_url }}">PS1 Port Testing Guide</a><p><code>docs/ps1/TESTING.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/TODO/' | relative_url }}">PS1 Port TODO</a><p><code>docs/ps1/TODO.md</code></p></li>

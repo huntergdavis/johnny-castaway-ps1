@@ -511,12 +511,18 @@
 - ads: STAND
   tag: 5
   slug: stand5
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+  last_verified: 2026-05-04
+  notes: visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
 - ads: STAND
   tag: 6
   slug: stand6

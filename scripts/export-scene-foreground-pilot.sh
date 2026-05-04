@@ -3,6 +3,57 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+NO_STITCH_REQUESTED=0
+FORCE_STITCH_REQUESTED=0
+POSITIONAL_ARGS=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --no-stitch|-nostitch|nostitch)
+      NO_STITCH_REQUESTED=1
+      shift
+      ;;
+    --stitch|stitch)
+      FORCE_STITCH_REQUESTED=1
+      shift
+      ;;
+    -h|--help)
+      cat <<'EOF'
+Usage: export-scene-foreground-pilot.sh [--no-stitch|--stitch] [output-dir] scene-slug scene-name pack-basename [start-frame] [timeline-speed] [lowtide-pack-basename]
+
+  --no-stitch, -nostitch, nostitch
+      Skip far-left/far-right foreground-only stitching and build from the
+      single capture position. Useful for simple STAND scenes.
+
+  --stitch, stitch
+      Force generic multi-view stitching even for scenes that default to the
+      fast no-stitch path.
+EOF
+      exit 0
+      ;;
+    --)
+      shift
+      while [ "$#" -gt 0 ]; do
+        POSITIONAL_ARGS+=("$1")
+        shift
+      done
+      ;;
+    -*)
+      echo "unknown option: $1" >&2
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+if [ "$NO_STITCH_REQUESTED" = "1" ] && [ "$FORCE_STITCH_REQUESTED" = "1" ]; then
+  echo "--no-stitch and --stitch are mutually exclusive" >&2
+  exit 1
+fi
+
 OUTPUT_DIR="${1:-}"
 SCENE_SLUG="${2:-fishing1}"
 SCENE_NAME="${3:-FISHING 1}"
@@ -137,11 +188,20 @@ if [ -z "$KEYED_OVERLAY_RECT" ] &&
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 MULTIVIEW_STITCH="${FG_EXPORT_MULTIVIEW_STITCH:-}"
-if [ -z "$MULTIVIEW_STITCH" ]; then
+if [ "$NO_STITCH_REQUESTED" = "1" ]; then
+  MULTIVIEW_STITCH="0"
+elif [ "$FORCE_STITCH_REQUESTED" = "1" ]; then
+  MULTIVIEW_STITCH="1"
+elif [ -z "$MULTIVIEW_STITCH" ]; then
   if [ "$SCENE_SLUG" = "johnny2" ] || [ "$SCENE_SLUG" = "mary2" ]; then
     # These scenes have validated custom capture paths: JOHNNY2 keeps a
     # partial lower-band overlay so thought bubbles stay full-host, and MARY2
     # has a bespoke multi-view + bubble-shell injection branch below.
+    MULTIVIEW_STITCH="0"
+  elif [[ "$SCENE_SLUG" == stand* ]]; then
+    # STAND scenes are static/island-local by construction. Start them on the
+    # fast single-position capture path; use --stitch if validation exposes
+    # clipped off-screen action later.
     MULTIVIEW_STITCH="0"
   else
     # New scene validation should start with a normal/reference capture plus
@@ -152,6 +212,12 @@ if [ -z "$MULTIVIEW_STITCH" ]; then
   fi
 fi
 if [ "$MULTIVIEW_STITCH" = "1" ]; then
+  KEYED_OVERLAY_RECT="0,0,640,480"
+elif [ -z "$KEYED_OVERLAY_RECT" ] &&
+   { [ "$NO_STITCH_REQUESTED" = "1" ] || [[ "$SCENE_SLUG" == stand* ]]; }; then
+  # Fast no-stitch captures still need a foreground-only source for static
+  # actor pixels. A pure base-diff pack treats frame-0 Johnny as background
+  # and can fade/drop stationary legs in STAND scenes.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
