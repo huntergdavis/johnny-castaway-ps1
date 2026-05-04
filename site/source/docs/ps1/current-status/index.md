@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated as-is on the normal high-tide/night route — the host engine exits STAND.ADS:10 after only 2 frames so the no-stitch export collapses to an empty pack, and the previously-committed 96 KB FG2 pack was kept).
+validated as-is on the normal high-tide/night route — same host export quirk as STAND 10, the previously-committed 95 KB FG2 pack was kept).
 
 ## File facts
 
@@ -22,14 +22,14 @@ validated as-is on the normal high-tide/night route — the host engine exits ST
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 353 |
-| Approx. words | 3417 |
+| Approx. words | 3441 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 31 / 63 fully validated
+-   Scenes: 32 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

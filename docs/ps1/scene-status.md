@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 31 / 63 (next: stand11)
+## Progress: 32 / 63 (next: stand12)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -68,7 +68,7 @@ current public release is `v0.6.10-ps1`.
 | STAND | 8 | stand8 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack |
 | STAND | 9 | stand9 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced |
 | STAND | 10 | stand10 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · existing committed FG2 pack (host export quirk) · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is. |
-| STAND | 11 | stand11 | ⏳ | ⏳ | — | — |  |
+| STAND | 11 | stand11 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · existing committed FG2 pack (host export quirk) · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is. |
 | STAND | 12 | stand12 | ⏳ | ⏳ | — | — |  |
 | STAND | 15 | stand15 | ⏳ | ⏳ | — | — |  |
 | STAND | 16 | stand16 | ⏳ | ⏳ | — | — |  |
