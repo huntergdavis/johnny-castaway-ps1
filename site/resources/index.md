@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 483 source and generated runtime assets indexed for the site.
+subtitle: 484 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -259,6 +259,7 @@ for the practical porting path.
 <tr><td><code>SXST11.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST11.SCR">source</a></td></tr>
 <tr><td><code>SXST12.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST12.SCR">source</a></td></tr>
 <tr><td><code>SXST15.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST15.SCR">source</a></td></tr>
+<tr><td><code>SXST16.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST16.SCR">source</a></td></tr>
 <tr><td><code>SXST6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST6.SCR">source</a></td></tr>
 <tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
@@ -510,7 +511,7 @@ for the practical porting path.
 <tr><td><code>STAND11.FG2</code></td><td>95,506</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND11.FG2">source</a></td></tr>
 <tr><td><code>STAND12.FG2</code></td><td>275,785</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND12.FG2">source</a></td></tr>
 <tr><td><code>STAND15.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND15.FG2">source</a></td></tr>
-<tr><td><code>STAND16.FG2</code></td><td>282,218</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND16.FG2">source</a></td></tr>
+<tr><td><code>STAND16.FG2</code></td><td>51,975</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND16.FG2">source</a></td></tr>
 <tr><td><code>STAND2.FG2</code></td><td>93,181</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND2.FG2">source</a></td></tr>
 <tr><td><code>STAND3.FG2</code></td><td>98,095</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND3.FG2">source</a></td></tr>
 <tr><td><code>STAND4.FG2</code></td><td>167,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND4.FG2">source</a></td></tr>
@@ -523,7 +524,7 @@ for the practical porting path.
 <tr><td><code>STND11L.FG2</code></td><td>47,816</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND11L.FG2">source</a></td></tr>
 <tr><td><code>STND12L.FG2</code></td><td>145,924</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND12L.FG2">source</a></td></tr>
 <tr><td><code>STND15L.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND15L.FG2">source</a></td></tr>
-<tr><td><code>STND16L.FG2</code></td><td>176,275</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND16L.FG2">source</a></td></tr>
+<tr><td><code>STND16L.FG2</code></td><td>51,975</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND16L.FG2">source</a></td></tr>
 <tr><td><code>STND1LOW.FG2</code></td><td>26,906</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND1LOW.FG2">source</a></td></tr>
 <tr><td><code>STND2LOW.FG2</code></td><td>50,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND2LOW.FG2">source</a></td></tr>
 <tr><td><code>STND3LOW.FG2</code></td><td>48,775</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND3LOW.FG2">source</a></td></tr>

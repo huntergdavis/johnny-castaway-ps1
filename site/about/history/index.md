@@ -270,9 +270,9 @@ high-tide/night route passed human visual + audible review. The count became
 
 `STAND 1` followed with a much shorter idle-loop validation. Its high and low
 packs were regenerated through the same stitch, and the resulting 35-frame /
-169-vblank no-SFX loop matched the user's visual review. `STAND 2`,
-`STAND 3`, and `STAND 4` then passed the normal high-tide/night route on
-**2026-05-04**. The current count is **25 / 63**.
+169-vblank no-SFX loop matched the user's visual review. `STAND 2` through
+`STAND 12`, plus `STAND 15` and `STAND 16`, then passed the normal
+high-tide/night route on **2026-05-04**. The current count is **35 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

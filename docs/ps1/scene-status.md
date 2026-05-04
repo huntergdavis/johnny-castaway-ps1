@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 34 / 63 (next: stand16)
+## Progress: 35 / 63 (next: suzy1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.10-ps1`.
+current public release is `v0.6.11-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -71,7 +71,7 @@ current public release is `v0.6.10-ps1`.
 | STAND | 11 | stand11 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · existing committed FG2 pack (host export quirk) · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is. |
 | STAND | 12 | stand12 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · existing committed FG2 pack (host export quirk) · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is. |
 | STAND | 15 | stand15 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick |
-| STAND | 16 | stand16 | ⏳ | ⏳ | — | — |  |
+| STAND | 16 | stand16 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick |
 | SUZY | 1 | suzy1 | ⏳ | ⏳ | — | — |  |
 | SUZY | 2 | suzy2 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 1 | visitor1 | ⏳ | ⏳ | — | — |  |
