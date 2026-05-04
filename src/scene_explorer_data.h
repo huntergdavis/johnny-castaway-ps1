@@ -67,7 +67,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "stand16", "STAND 16  -  Spyglass, center", "Standing", "FG/STAND16.FG2", "BMP/SCEXPL_STAND16.PSB", 154, 0, 0 },
     { "stand2", "STAND 2  -  Adjusts pants", "Standing", "FG/STAND2.FG2", "BMP/SCEXPL_STAND2.PSB", 78, 1, 0 },
     { "stand3", "STAND 3  -  Lifts hat", "Standing", "FG/STAND3.FG2", "BMP/SCEXPL_STAND3.PSB", 91, 1, 0 },
-    { "stand4", "STAND 4  -  Taps foot", "Standing", "FG/STAND4.FG2", "BMP/SCEXPL_STAND4.PSB", 200, 0, 0 },
+    { "stand4", "STAND 4  -  Taps foot", "Standing", "FG/STAND4.FG2", "BMP/SCEXPL_STAND4.PSB", 107, 1, 0 },
     { "stand5", "STAND 5  -  Looks out over the ocean", "Standing", "FG/STAND5.FG2", "BMP/SCEXPL_STAND5.PSB", 238, 0, 0 },
     { "stand6", "STAND 6  -  Looks at the palm", "Standing", "FG/STAND6.FG2", "BMP/SCEXPL_STAND6.PSB", 223, 0, 0 },
     { "stand7", "STAND 7  -  Lifts hat, looks around", "Standing", "FG/STAND7.FG2", "BMP/SCEXPL_STAND7.PSB", 87, 0, 0 },

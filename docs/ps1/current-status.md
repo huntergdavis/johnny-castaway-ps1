@@ -85,15 +85,15 @@ quickly enough that the restart is hard to see.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 24 / 63 fully validated
+## Scenes: 25 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
-- Current main after `v0.6.11-ps1` — promotes `STAND 2` and `STAND 3`
-  after visual signoff on the normal high-tide/night route. The
+- Current main after `v0.6.11-ps1` — promotes `STAND 2`, `STAND 3`, and
+  `STAND 4` after visual signoff on the normal high-tide/night route. The
   scene-loader direct launch path now skips the stale story walk before
   the frog/full-wipe transition, and high-pressure clean snapshots
   release optional caches before allocation.
@@ -265,6 +265,7 @@ searchability — **do not cite them as current progress**:
 | **22 / 63** | **2026-05-03** | **Current scene ledger after `STAND 1` promotion; current generic multi-view stitch regenerated high/low packs and the 35-frame / 169-vblank no-SFX idle loop passed human visual signoff** | **this doc, `scene-status.md`** |
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
+| **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
 | **21 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 2` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **20 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 1` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **19 / 63** | **2026-05-03** | **Scene ledger after `MARY 5` promotion; story flags now clamp external raft state for `NORAFT` scenes and skip walk preludes for `FIRST` full-wipe scenes** | **this doc, `scene-status.md`** |

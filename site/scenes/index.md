@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-03:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `24 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3` |
+| Scenes visually validated | `25 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
@@ -248,8 +248,8 @@ and this page.
 | `stand2` | low | measured | 2026-04-30T05:35:49 | compact-fgp3-v29-smallprime | +27.5% | 78.4% | 626/491 | 0 | 0 | 0 | validated 2026-05-04 on normal high-tide/night route; active timing predates visual signoff |
 | `stand3` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +24.4% | 80.4% | 694/558 | 0 | 0 | 0 | validated 2026-05-04 on normal high-tide/night route; active timing predates visual signoff |
 | `stand3` | low | measured | 2026-04-30T05:33:36 | compact-fgp3-v29-smallprime | +24.4% | 80.4% | 694/558 | 0 | 0 | 0 | validated 2026-05-04 on normal high-tide/night route; active timing predates visual signoff |
-| `stand4` | high | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +11.3% | 89.8% | 1359/1221 | 0 | 0 | 0 |  |
-| `stand4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.2% | 89.9% | 1358/1221 | 0 | 0 | 0 |  |
+| `stand4` | high | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +11.3% | 89.8% | 1359/1221 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch; active timing predates refreshed validation pack |
+| `stand4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.2% | 89.9% | 1358/1221 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch; active timing predates refreshed validation pack |
 | `stand5` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +9.2% | 91.6% | 1595/1461 | 0 | 0 | 0 |  |
 | `stand5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.1% | 91.7% | 1594/1461 | 0 | 0 | 0 |  |
 | `stand6` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.0% | 90.9% | 1501/1365 | 0 | 0 | 0 |  |
