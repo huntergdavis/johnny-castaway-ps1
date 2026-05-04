@@ -190,6 +190,7 @@
                 <file name="SXAC11.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC11.SCR"/>
                 <file name="SXAC12.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC12.SCR"/>
                 <file name="SXBL1.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL1.SCR"/>
+                <file name="SXST6.SCR" type="data" source="../../jc_resources/extracted/scr/SXST6.SCR"/>
             </dir>
 
             <dir name="PSB">

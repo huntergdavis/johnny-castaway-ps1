@@ -3,9 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-04 (scene ledger at 26/63; `STAND 5` was
-validated after the STAND no-stitch export fast path kept a full-frame
-foreground-only overlay for static frame-0 Johnny pixels).
+**Last updated:** 2026-05-04 (scene ledger at 27/63; `STAND 6` was
+validated on the normal high-tide/night route through the same STAND
+no-stitch fast-path export `STAND 5` proved out).
 
 ## Overall
 
@@ -14,7 +14,7 @@ animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`,
 `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
 `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`,
-`STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, and `STAND 5` have been validated
+`STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, and `STAND 6` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -68,11 +68,11 @@ visually/audibly signed off on the normal high-tide/night route.
 `STAND 1` uses the same generic multi-view capture path; it has no
 captured SFX events and its 35-frame / 169-vblank idle loop resets
 quickly enough that the restart is hard to see.
-`STAND 2`, `STAND 3`, `STAND 4`, and `STAND 5` are validated on the
-normal high-tide/night route. `STAND 5` uses the STAND no-stitch export
-fast path, but that fast path still keeps a full-frame single-position
-foreground-only overlay so static first-frame Johnny pixels are not
-suppressed as background.
+`STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, and `STAND 6` are validated
+on the normal high-tide/night route. `STAND 5` and `STAND 6` use the
+STAND no-stitch export fast path, but that fast path still keeps a
+full-frame single-position foreground-only overlay so static first-frame
+Johnny pixels are not suppressed as background.
 
 | Component | Status |
 |---|---|
@@ -81,7 +81,7 @@ suppressed as background.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 26/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 27/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -91,7 +91,7 @@ suppressed as background.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 26 / 63 fully validated
+## Scenes: 27 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -99,13 +99,13 @@ this page gives the narrative around it.
 
 Milestone releases:
 - Current main after `v0.6.11-ps1` — promotes `STAND 2`, `STAND 3`,
-  `STAND 4`, and `STAND 5` after visual signoff on the normal
-  high-tide/night route. `STAND 5` also promotes the STAND no-stitch
-  export fast path with a full-frame foreground-only overlay, after the
-  pure base-diff shortcut faded Johnny's legs. The scene-loader direct
-  launch path now skips the stale story walk before the frog/full-wipe
-  transition, and high-pressure clean snapshots release optional caches
-  before allocation.
+  `STAND 4`, `STAND 5`, and `STAND 6` after visual signoff on the normal
+  high-tide/night route. `STAND 5` and `STAND 6` ride the STAND
+  no-stitch export fast path with a full-frame foreground-only overlay
+  the pure base-diff shortcut needed after it faded Johnny's legs on
+  `STAND 5`. The scene-loader direct launch path now skips the stale
+  story walk before the frog/full-wipe transition, and high-pressure
+  clean snapshots release optional caches before allocation.
 - `v0.6.11-ps1` — promotes `MISCGAG 1`, `MISCGAG 2`, and `STAND 1`
   after regenerating high/low packs through the generic multi-view
   stitch. `STAND 1` is a short 169-vblank idle loop with no captured SFX
@@ -275,7 +275,8 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **26 / 63** | **2026-05-04** | **Current scene ledger after `STAND 5` promotion; high/low packs were regenerated through the STAND no-stitch fast path with a full-frame foreground-only overlay, and normal high-tide/night playback passed human visual signoff** | **this doc, `scene-status.md`** |
+| **27 / 63** | **2026-05-04** | **Current scene ledger after `STAND 6` promotion; high/low packs were regenerated through the same STAND no-stitch fast-path export `STAND 5` proved out, and normal high-tide/night playback passed human visual signoff** | **this doc, `scene-status.md`** |
+| 26 / 63 | 2026-05-04 | Scene ledger after `STAND 5` promotion; high/low packs were regenerated through the STAND no-stitch fast path with a full-frame foreground-only overlay, and normal high-tide/night playback passed human visual signoff | this doc, `scene-status.md` |
 | **21 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 2` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **20 / 63** | **2026-05-03** | **Scene ledger after `MISCGAG 1` promotion; current generic multi-view stitch regenerated high/low packs and normal high-tide/night playback passed human visual + audible signoff** | **this doc, `scene-status.md`** |
 | **19 / 63** | **2026-05-03** | **Scene ledger after `MARY 5` promotion; story flags now clamp external raft state for `NORAFT` scenes and skip walk preludes for `FIRST` full-wipe scenes** | **this doc, `scene-status.md`** |
