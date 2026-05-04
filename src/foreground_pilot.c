@@ -2410,6 +2410,24 @@ static int fgRuntimePrepareStagedFrameForPresent(uint16 *outElapsedVBlanks,
         ps1PerfMarkRenderPhase(PS1_PERF_RENDER_RESTORE,
                                ps1PerfElapsedVBlanks(perfTick));
 
+    /* Tick ocean wave animation each frame so scenes whose pack carries
+     * no captured water frames (the STAND no-stitch foreground-only
+     * fast path being the most common case) still get moving waves.
+     * Mirrors adsPilotTickBackgroundWaves' timer pattern: advance one
+     * wave frame every gFgBackdropThread.delay vblanks, and on
+     * intermediate frames redraw the last wave so grRestoreBgFromRects
+     * doesn't leave a gap. The foreground compose below draws on top,
+     * so packs that carry their own water frames still mask this. */
+    if (gFgBackdropThread.isRunning) {
+        if (gFgBackdropThread.timer == 0) {
+            gFgBackdropThread.timer = gFgBackdropThread.delay;
+            islandAnimate(&gFgBackdropThread);
+        } else {
+            islandRedrawWave(&gFgBackdropThread);
+            gFgBackdropThread.timer--;
+        }
+    }
+
     if (perfDetail)
         perfTick = ps1PerfTick();
     fgRuntimeComposeEntryToBackground(&gFgRuntime.stagedEntry,

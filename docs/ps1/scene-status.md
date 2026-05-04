@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 28 / 63 (next: stand8)
+## Progress: 29 / 63 (next: stand9)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -65,7 +65,7 @@ current public release is `v0.6.10-ps1`.
 | STAND | 5 | stand5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay | 2026-05-04 | visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay |
 | STAND | 6 | stand6 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path |
 | STAND | 7 | stand7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path |
-| STAND | 8 | stand8 | ⏳ | ⏳ | — | — |  |
+| STAND | 8 | stand8 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack |
 | STAND | 9 | stand9 | ⏳ | ⏳ | — | — |  |
 | STAND | 10 | stand10 | ⏳ | ⏳ | — | — |  |
 | STAND | 11 | stand11 | ⏳ | ⏳ | — | — |  |

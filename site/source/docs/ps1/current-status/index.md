@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the normal high-tide/night route through the same STAND no-stitch fast-path export STAND 5 and STAND 6 use).
+validated after adding a per-frame ocean wave tick to the FG2 runtime so STAND no-stitch scenes get animated water from the engine instead of from the foreground-only pack).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 341 |
-| Approx. words | 3214 |
+| Lines | 352 |
+| Approx. words | 3356 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 28 / 63 fully validated
+-   Scenes: 29 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

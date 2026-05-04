@@ -192,6 +192,7 @@
                 <file name="SXBL1.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL1.SCR"/>
                 <file name="SXST6.SCR" type="data" source="../../jc_resources/extracted/scr/SXST6.SCR"/>
                 <file name="SXST7.SCR" type="data" source="../../jc_resources/extracted/scr/SXST7.SCR"/>
+                <file name="SXST8.SCR" type="data" source="../../jc_resources/extracted/scr/SXST8.SCR"/>
             </dir>
 
             <dir name="PSB">
