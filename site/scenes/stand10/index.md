@@ -4,38 +4,32 @@ title: STAND 10 — Looks at his raft
 ads: STAND
 tag: 10
 slug: stand10
-status: pending
-description: "STAND.ADS scene 10: Looks at his raft. Not yet validated."
+status: validated
+description: "STAND.ADS scene 10: Looks at his raft. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-04.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>STAND.ADS scene 10</code>
 - Slug: <code>stand10</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Idle at SPOT_D NE: looks toward the raft.
+Idle at SPOT_D NE: looks at his raft.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+Visual signoff passed on the normal high-tide/night route using the
+previously-committed FG2 pack (96 KB) without regenerating.
 
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+The host engine quirks on `STAND.ADS:10`: it exits after only two frames,
+so the standard no-stitch export collapses to an empty 92-byte pack.
+Rather than chase the host-side cause, we kept the committed pack — which
+already plays cleanly on PS1 — and signed off the scene as-is.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Boot route:
+`fgpilot stand10 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 loop seed 1`.

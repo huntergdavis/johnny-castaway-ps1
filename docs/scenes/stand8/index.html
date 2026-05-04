@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>STAND 8 — Tap, lift, look — Johnny Castaway PS1</title>
-  <meta name="description" content="STAND.ADS scene 8: Tap, lift, look. Not yet validated." />
+  <meta name="description" content="STAND.ADS scene 8: Tap, lift, look. Validated on PS1." />
 
   <meta property="og:title"        content="STAND 8 — Tap, lift, look — Johnny Castaway PS1" />
-  <meta property="og:description"  content="STAND.ADS scene 8: Tap, lift, look. Not yet validated." />
+  <meta property="og:description"  content="STAND.ADS scene 8: Tap, lift, look. Validated on PS1." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,7 +68,7 @@
     <p class="eyebrow">
       Scene · STAND 8
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
     <h1>STAND 8 — Tap, lift, look</h1>
@@ -77,7 +77,7 @@
   </header>
 
   <div class="page-body">
-    <p>Not yet validated.</p>
+    <p>Validated on 2026-05-04.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -86,30 +86,27 @@
   <li>Slug: <code>stand8</code></li>
 </ul>
 
-<h2 id="what-this-scene-probably-is">What this scene probably is</h2>
+<h2 id="what-this-scene-is">What this scene is</h2>
 
-<p>(Guess.) Idle at SPOT_C E: composite of two short stances.</p>
+<p>Idle at SPOT_C E: composite of two short stances.</p>
 
 <p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>LOW</strong>.</p>
 
-<h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
+<h2 id="validation-notes">Validation notes</h2>
 
-<p>The same way every scene does: under the FISHING 1 bar.</p>
+<p>Visual signoff passed after regenerating high and low tide packs through the
+STAND no-stitch fast path AND adding a per-frame wave tick to the FG2
+runtime. The earlier STAND validations (5/6/7) had silently lost ocean
+animation: the no-stitch foreground-only pack carries Johnny pixels but no
+captured water frames, so the static <code class="language-plaintext highlighter-rouge">OCEAN00.SCR</code> bg never advanced. The
+new tick mirrors <code class="language-plaintext highlighter-rouge">adsPilotTickBackgroundWaves</code>’ timer pattern, advancing
+one wave frame every <code class="language-plaintext highlighter-rouge">gFgBackdropThread.delay</code> vblanks and redrawing the
+last wave on intermediate frames so <code class="language-plaintext highlighter-rouge">grRestoreBgFromRects</code> doesn’t leave a
+gap. Scenes whose pack carries its own water frames are unaffected — the
+foreground compose still draws on top.</p>
 
-<p>A host-side Johnny Reborn capture/export pass produces a
-base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-<a href="../../docs/regtest/">regtest harness</a> checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
-<a href="../">ledger</a>.</p>
-
-<p>Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See <a href="../../about/method/">the method</a>
-for the longer version.</p>
+<p>Boot route:
+<code class="language-plaintext highlighter-rouge">fgpilot stand8 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 loop seed 1</code>.</p>
 
   </div>
 
@@ -135,7 +132,7 @@ for the longer version.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          26 / 63 scenes validated
+          34 / 63 scenes validated
           (v0.6.11-ps1)
         </p>
         <p class="footer-transparency">

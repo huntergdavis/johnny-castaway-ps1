@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after the STAND no-stitch export fast path kept a full-frame foreground-only overlay for static frame-0 Johnny pixels).
+validated on the normal high-tide/night route through the STAND no-stitch fast-path export — the host engine plays this scene normally and the export produced a real 48 KB foreground-only pack).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 339 |
-| Approx. words | 3108 |
+| Lines | 357 |
+| Approx. words | 3536 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 26 / 63 fully validated
+-   Scenes: 34 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

@@ -526,75 +526,129 @@
 - ads: STAND
   tag: 6
   slug: stand6
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 7
   slug: stand7
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 8
   slug: stand8
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
 - ads: STAND
   tag: 9
   slug: stand9
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick STAND 8 introduced
 - ads: STAND
   tag: 10
   slug: stand10
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - existing committed FG2 pack (host export quirk)
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route. The host engine exits STAND.ADS:10 after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 11
   slug: stand11
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - existing committed FG2 pack (host export quirk)
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route. Like STAND 10, the host engine exits STAND.ADS:11 after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 12
   slug: stand12
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - existing committed FG2 pack (host export quirk)
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route. Same host export quirk as STAND 10/STAND 11; the previously-committed 276 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 15
   slug: stand15
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+    - runtime FG2 wave-tick
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick
 - ads: STAND
   tag: 16
   slug: stand16

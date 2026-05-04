@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 475 source and generated runtime assets indexed for the site.
+subtitle: 483 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -255,6 +255,14 @@ for the practical porting path.
 <tr><td><code>SXMA3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA3.SCR">source</a></td></tr>
 <tr><td><code>SXMA4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA4.SCR">source</a></td></tr>
 <tr><td><code>SXMA5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA5.SCR">source</a></td></tr>
+<tr><td><code>SXST10.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST10.SCR">source</a></td></tr>
+<tr><td><code>SXST11.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST11.SCR">source</a></td></tr>
+<tr><td><code>SXST12.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST12.SCR">source</a></td></tr>
+<tr><td><code>SXST15.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST15.SCR">source</a></td></tr>
+<tr><td><code>SXST6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST6.SCR">source</a></td></tr>
+<tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
+<tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
+<tr><td><code>SXST9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST9.SCR">source</a></td></tr>
 <tr><td><code>THEEND.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/THEEND.SCR">source</a></td></tr>
 </tbody>
 </table>
@@ -501,30 +509,30 @@ for the practical porting path.
 <tr><td><code>STAND10.FG2</code></td><td>96,712</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND10.FG2">source</a></td></tr>
 <tr><td><code>STAND11.FG2</code></td><td>95,506</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND11.FG2">source</a></td></tr>
 <tr><td><code>STAND12.FG2</code></td><td>275,785</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND12.FG2">source</a></td></tr>
-<tr><td><code>STAND15.FG2</code></td><td>208,410</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND15.FG2">source</a></td></tr>
+<tr><td><code>STAND15.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND15.FG2">source</a></td></tr>
 <tr><td><code>STAND16.FG2</code></td><td>282,218</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND16.FG2">source</a></td></tr>
 <tr><td><code>STAND2.FG2</code></td><td>93,181</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND2.FG2">source</a></td></tr>
 <tr><td><code>STAND3.FG2</code></td><td>98,095</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND3.FG2">source</a></td></tr>
 <tr><td><code>STAND4.FG2</code></td><td>167,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND4.FG2">source</a></td></tr>
 <tr><td><code>STAND5.FG2</code></td><td>205,011</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND5.FG2">source</a></td></tr>
-<tr><td><code>STAND6.FG2</code></td><td>268,793</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND6.FG2">source</a></td></tr>
-<tr><td><code>STAND7.FG2</code></td><td>96,145</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND7.FG2">source</a></td></tr>
-<tr><td><code>STAND8.FG2</code></td><td>95,443</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND8.FG2">source</a></td></tr>
-<tr><td><code>STAND9.FG2</code></td><td>96,251</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND9.FG2">source</a></td></tr>
+<tr><td><code>STAND6.FG2</code></td><td>184,547</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND6.FG2">source</a></td></tr>
+<tr><td><code>STAND7.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND7.FG2">source</a></td></tr>
+<tr><td><code>STAND8.FG2</code></td><td>54,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND8.FG2">source</a></td></tr>
+<tr><td><code>STAND9.FG2</code></td><td>60,408</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND9.FG2">source</a></td></tr>
 <tr><td><code>STND10L.FG2</code></td><td>49,022</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND10L.FG2">source</a></td></tr>
 <tr><td><code>STND11L.FG2</code></td><td>47,816</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND11L.FG2">source</a></td></tr>
 <tr><td><code>STND12L.FG2</code></td><td>145,924</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND12L.FG2">source</a></td></tr>
-<tr><td><code>STND15L.FG2</code></td><td>120,200</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND15L.FG2">source</a></td></tr>
+<tr><td><code>STND15L.FG2</code></td><td>48,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND15L.FG2">source</a></td></tr>
 <tr><td><code>STND16L.FG2</code></td><td>176,275</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND16L.FG2">source</a></td></tr>
 <tr><td><code>STND1LOW.FG2</code></td><td>26,906</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND1LOW.FG2">source</a></td></tr>
 <tr><td><code>STND2LOW.FG2</code></td><td>50,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND2LOW.FG2">source</a></td></tr>
 <tr><td><code>STND3LOW.FG2</code></td><td>48,775</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND3LOW.FG2">source</a></td></tr>
 <tr><td><code>STND4LOW.FG2</code></td><td>167,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND4LOW.FG2">source</a></td></tr>
 <tr><td><code>STND5LOW.FG2</code></td><td>205,011</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND5LOW.FG2">source</a></td></tr>
-<tr><td><code>STND6LOW.FG2</code></td><td>152,213</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND6LOW.FG2">source</a></td></tr>
-<tr><td><code>STND7LOW.FG2</code></td><td>48,455</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND7LOW.FG2">source</a></td></tr>
-<tr><td><code>STND8LOW.FG2</code></td><td>51,100</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND8LOW.FG2">source</a></td></tr>
-<tr><td><code>STND9LOW.FG2</code></td><td>48,561</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND9LOW.FG2">source</a></td></tr>
+<tr><td><code>STND6LOW.FG2</code></td><td>184,547</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND6LOW.FG2">source</a></td></tr>
+<tr><td><code>STND7LOW.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND7LOW.FG2">source</a></td></tr>
+<tr><td><code>STND8LOW.FG2</code></td><td>54,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND8LOW.FG2">source</a></td></tr>
+<tr><td><code>STND9LOW.FG2</code></td><td>60,408</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND9LOW.FG2">source</a></td></tr>
 <tr><td><code>SUZY1.FG2</code></td><td>20,634,648</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1.FG2">source</a></td></tr>
 <tr><td><code>SUZY1LOW.FG2</code></td><td>20,634,648</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1LOW.FG2">source</a></td></tr>
 <tr><td><code>SUZY2.FG2</code></td><td>13,706,356</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY2.FG2">source</a></td></tr>

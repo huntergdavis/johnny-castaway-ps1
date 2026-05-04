@@ -190,6 +190,14 @@
                 <file name="SXAC11.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC11.SCR"/>
                 <file name="SXAC12.SCR" type="data" source="../../jc_resources/extracted/scr/SXAC12.SCR"/>
                 <file name="SXBL1.SCR" type="data" source="../../jc_resources/extracted/scr/SXBL1.SCR"/>
+                <file name="SXST6.SCR" type="data" source="../../jc_resources/extracted/scr/SXST6.SCR"/>
+                <file name="SXST7.SCR" type="data" source="../../jc_resources/extracted/scr/SXST7.SCR"/>
+                <file name="SXST8.SCR" type="data" source="../../jc_resources/extracted/scr/SXST8.SCR"/>
+                <file name="SXST9.SCR" type="data" source="../../jc_resources/extracted/scr/SXST9.SCR"/>
+                <file name="SXST10.SCR" type="data" source="../../jc_resources/extracted/scr/SXST10.SCR"/>
+                <file name="SXST11.SCR" type="data" source="../../jc_resources/extracted/scr/SXST11.SCR"/>
+                <file name="SXST12.SCR" type="data" source="../../jc_resources/extracted/scr/SXST12.SCR"/>
+                <file name="SXST15.SCR" type="data" source="../../jc_resources/extracted/scr/SXST15.SCR"/>
             </dir>
 
             <dir name="PSB">
