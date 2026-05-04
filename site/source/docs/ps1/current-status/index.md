@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after generic multi-view scene-relative stitching and runtime story-flag policy fixes for NORAFT and FIRST scenes).
+validated after confirming its short 169-vblank idle loop is expected).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 308 |
-| Approx. words | 2644 |
+| Lines | 321 |
+| Approx. words | 2838 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 19 / 63 fully validated
+-   Scenes: 22 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

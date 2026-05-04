@@ -15,7 +15,7 @@ baseurl: "/johnny-castaway-ps1"
 release:
   version: "0.6.10"
   tag: "v0.6.10-ps1"
-  scenes_validated: 19
+  scenes_validated: 22
   scenes_total: 63
 
 repo: "huntergdavis/johnny-castaway-ps1"

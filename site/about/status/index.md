@@ -16,7 +16,8 @@ holiday, raft-stage):
 The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
 `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
-`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, and `MARY 5`. The live per-scene ledger is at
+`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`,
+`MISCGAG 1`, `MISCGAG 2`, and `STAND 1`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -53,7 +54,7 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 44 scenes in
+- **Scene coverage past the signed-off set.** The other 41 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current
@@ -88,9 +89,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **Scene-by-scene validation after `MARY 5`.** Next focus is continuing
-  the signed scene-by-scene ledger after story-flag policy made `MARY 5`
-  honor its own raft art and full-wipe transition without a walk prelude.
+- **Scene-by-scene validation after `STAND 1`.** Next focus is continuing
+  the signed scene-by-scene ledger after the generic multi-view stitch
+  regenerated `MISCGAG 1`, `MISCGAG 2`, and `STAND 1` cleanly.
   The bring-up loop is in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

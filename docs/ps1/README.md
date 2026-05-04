@@ -14,7 +14,7 @@ background, waves, holiday overlay, and SFX playback.
 |---|---|
 | Release | `v0.6.10-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **19 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`) |
+| Scenes fully validated under the reference bar | **22 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,6 +23,11 @@ scene-relative stitching rebuilt the high/low packs with the generic raft
 off. Direct scene playback now respects story flags too: `NORAFT` clamps
 the external raft off, and `FIRST` skips the walk prelude before full-wipe
 scenes.
+
+Current main after `v0.6.10-ps1` also validates `MISCGAG 1`,
+`MISCGAG 2`, and `STAND 1` after the current generic multi-view stitch
+rebuilt their high/low packs. `STAND 1` is a short 169-vblank idle loop
+with no captured SFX events.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after a wide scene-relative multi-view stitch restored

@@ -67,9 +67,10 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Seventeen scenes are signed off; `MARY 3` now runs after a far-right
-full-frame foreground recapture, host capture stale-surface invalidation,
-and low-memory clean-snapshot relief. The remaining scenes are queued.
+Twenty-two scenes are signed off; `MISCGAG 1`, `MISCGAG 2`, and
+`STAND 1` now run after the generic normal/far-left/far-right
+foreground-only multi-view stitch rebuilt their packs. The remaining
+scenes are queued.
 
 ## What this isn't
 

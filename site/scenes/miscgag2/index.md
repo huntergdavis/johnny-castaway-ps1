@@ -4,16 +4,18 @@ title: MISCGAG 2 — Towel, toe, shark
 ads: MISCGAG
 tag: 2
 slug: miscgag2
-status: pending
-description: "MISCGAG.ADS scene 2: Towel, toe, shark. Not yet validated."
+status: validated
+description: "MISCGAG.ADS scene 2: Towel, toe, shark. Validated after generic multi-view pack regeneration."
 ---
 
-Not yet validated.
+Validated on 2026-05-03 under the FISHING 1 bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>MISCGAG.ADS scene 2</code>
 - Slug: <code>miscgag2</code>
+- High pack: <code>MISCGAG2.FG2</code>
+- Low pack: <code>MISC2LOW.FG2</code> (regenerated for parity; the scene's story flags do not randomize low tide)
 
 ## What this scene probably is
 
@@ -21,21 +23,12 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+## Validation Notes
 
-The same way every scene does: under the FISHING 1 bar.
+`MISCGAG 2` passed human visual + audible signoff after the current export
+pipeline rebuilt both high and low packs with the generic normal/far-left/far-right
+foreground-only multi-view stitch. The signed route was the normal
+high-tide/night playback route.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Runtime island placement remains variable; the controlled host/test island
+positions only prove the scene-relative pack carries all pixels.

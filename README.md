@@ -84,7 +84,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 |---|---|
 | Current release | **`v0.6.10-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **19 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`) |
+| Scenes fully validated under the reference bar | **22 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
@@ -98,6 +98,12 @@ validated. The high/low packs were rebuilt through the generic multi-view
 scene-relative stitch with the generic raft off, and the runtime now applies
 story flags to direct scene playback: `NORAFT` suppresses the external raft
 and `FIRST` skips the walk prelude before full-wipe scenes.
+
+Current main after `v0.6.10-ps1` has also validated `MISCGAG 1`,
+`MISCGAG 2`, and `STAND 1` after regenerating their high/low packs
+through the generic multi-view stitch. `STAND 1` is a short 169-vblank
+idle loop with no captured SFX events, so the hard-to-see reset is
+expected.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after rebuilding high/low packs from a wide scene-relative
@@ -166,10 +172,11 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Seventeen scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
+Twenty-two scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
 `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`,
-`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`)
-validated end-to-end anchor the scene-by-scene bring-up loop.
+`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`,
+`mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`) validated end-to-end anchor
+the scene-by-scene bring-up loop.
 
 The full pipeline — pack format byte layout, hardware constraints hit
 on the way, the SPI pad-poll fix, dirty-rect bookkeeping — is detailed

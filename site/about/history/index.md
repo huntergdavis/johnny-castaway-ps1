@@ -258,7 +258,20 @@ runtime placement. The count became **18 / 63**.
 `MARY 5` followed as a story-flag policy fix. The scene contains its own raft
 art and begins behind a frog-clock full wipe, so the PS1 route now clamps
 generic raft state off for `NORAFT` scenes and skips the walk prelude for
-`FIRST` full-wipe scenes. The current count is **19 / 63**.
+`FIRST` full-wipe scenes. The count became **19 / 63**.
+
+`MISCGAG 1` then validated cleanly after regenerating high and low tide packs
+with the generic normal/far-left/far-right foreground-only multi-view stitch.
+
+`MISCGAG 2` followed the same path. Its story flags do not randomize low tide,
+but both high and low packs were regenerated for parity and the normal
+high-tide/night route passed human visual + audible review. The count became
+**21 / 63**.
+
+`STAND 1` followed with a much shorter idle-loop validation. Its high and low
+packs were regenerated through the same stitch, and the resulting 35-frame /
+169-vblank no-SFX loop matched the user's visual review. The current count is
+**22 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

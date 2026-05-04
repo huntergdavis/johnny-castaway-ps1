@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 19 / 63 (next: miscgag1)
+## Progress: 22 / 63 (next: stand2)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -56,9 +56,9 @@ current public release is `v0.6.10-ps1`.
 | MARY | 3 | mary3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island position `x=80,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames |
 | MARY | 4 | mary4 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed |
 | MARY | 5 | mary5 | ✅ | ✅ | night · low-tide · holiday · ~~raft-stage~~ (`NORAFT`) · full-wipe scene (`FIRST`, no walk prelude) · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition |
-| MISCGAG | 1 | miscgag1 | ⏳ | ⏳ | — | — |  |
-| MISCGAG | 2 | miscgag2 | ⏳ | ⏳ | — | — |  |
-| STAND | 1 | stand1 | ⏳ | ⏳ | — | — |  |
+| MISCGAG | 1 | miscgag1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route |
+| MISCGAG | 2 | miscgag2 | ✅ | ✅ | night · ~~low-tide~~ (not randomized by story flags; high/low packs regenerated) · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route |
+| STAND | 1 | stand1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-03 | visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected |
 | STAND | 2 | stand2 | ⏳ | ⏳ | — | — |  |
 | STAND | 3 | stand3 | ⏳ | ⏳ | — | — |  |
 | STAND | 4 | stand4 | ⏳ | ⏳ | — | — |  |

@@ -326,7 +326,20 @@ runtime placement. The count became <strong>18 / 63</strong>.</p>
 <p><code class="language-plaintext highlighter-rouge">MARY 5</code> followed as a story-flag policy fix. The scene contains its own raft
 art and begins behind a frog-clock full wipe, so the PS1 route now clamps
 generic raft state off for <code class="language-plaintext highlighter-rouge">NORAFT</code> scenes and skips the walk prelude for
-<code class="language-plaintext highlighter-rouge">FIRST</code> full-wipe scenes. The current count is <strong>19 / 63</strong>.</p>
+<code class="language-plaintext highlighter-rouge">FIRST</code> full-wipe scenes. The count became <strong>19 / 63</strong>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">MISCGAG 1</code> then validated cleanly after regenerating high and low tide packs
+with the generic normal/far-left/far-right foreground-only multi-view stitch.</p>
+
+<p><code class="language-plaintext highlighter-rouge">MISCGAG 2</code> followed the same path. Its story flags do not randomize low tide,
+but both high and low packs were regenerated for parity and the normal
+high-tide/night route passed human visual + audible review. The count became
+<strong>21 / 63</strong>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">STAND 1</code> followed with a much shorter idle-loop validation. Its high and low
+packs were regenerated through the same stitch, and the resulting 35-frame /
+169-vblank no-SFX loop matched the user’s visual review. The current count is
+<strong>22 / 63</strong>.</p>
 
 <p>The same day, <code class="language-plaintext highlighter-rouge">FISHING 7</code> and <code class="language-plaintext highlighter-rouge">FISHING 8</code> were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack
@@ -404,7 +417,7 @@ the walking release: the steady-state frame loop does not allocate.</li>
 
 <ul>
   <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.6.10-ps1</code></strong>.</li>
-  <li>Validated scenes: <strong>19 / 63</strong>
+  <li>Validated scenes: <strong>22 / 63</strong>
 (<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, <code class="language-plaintext highlighter-rouge">FISHING 5</code>, <code class="language-plaintext highlighter-rouge">FISHING 6</code>, <code class="language-plaintext highlighter-rouge">FISHING 7</code>, <code class="language-plaintext highlighter-rouge">FISHING 8</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 1</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 2</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 3</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 4</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 5</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 6</code>, <code class="language-plaintext highlighter-rouge">MARY 1</code>, <code class="language-plaintext highlighter-rouge">MARY 2</code>).</li>
   <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">MARY 3</code></strong>.</li>
   <li>Freeplay/debug release: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong> – direct-control Johnny,
@@ -447,7 +460,7 @@ you were cheated. Open source and free.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          19 / 63 scenes validated
+          22 / 63 scenes validated
           (v0.6.10-ps1)
         </p>
         <p class="footer-transparency">

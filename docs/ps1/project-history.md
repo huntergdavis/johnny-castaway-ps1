@@ -195,11 +195,12 @@ support high/low tide variants correctly, and generate a corpus for all
 
 **Achievements**:
 - High-tide and low-tide FG2 packs generated for all 63 scenes.
-- Seventeen scenes are validated under the current bar: `FISHING 1`,
+- Twenty-two scenes are validated under the current bar: `FISHING 1`,
   `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`,
   `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`,
   `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, and
-  `MARY 3`.
+  `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, and
+  `STAND 1`.
 - `FISHING 5` cleared its shark-residue blocker after the host capture
   path switched to a full-frame keyed current-ledger overlay for that
   interaction.
@@ -220,6 +221,14 @@ support high/low tide variants correctly, and generate a corpus for all
   pack. A full-host bubble injection restores the fish thought-bubble
   shell that foreground-only capture omitted, and far-right plus true
   far-left stress runs proved the result remains variable-position safe.
+- `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, and `STAND 1`
+  validated after the generic normal/far-left/far-right
+  foreground-only multi-view stitch became the default new-scene
+  bring-up path. `MARY 5` also proved the runtime story-flag policy:
+  `NORAFT` suppresses external raft art and `FIRST` skips the walk
+  prelude before a full-wipe scene. `STAND 1` proved the short no-SFX
+  idle-loop case, where the reset is expected because the source pack is
+  only 35 frames / 169 vblanks long.
 - FG1 support, direct/fallback routing, stale `.FG1`/`.FOC` artifacts,
   and per-scene establishing RAWs were removed from the active PS1
   runtime/generation path.
