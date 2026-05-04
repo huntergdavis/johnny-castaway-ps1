@@ -541,12 +541,18 @@
 - ads: STAND
   tag: 7
   slug: stand7
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - validation route x=-154,y=54
+    - no-stitch host export with full-frame foreground-only overlay
+  last_verified: 2026-05-04
+  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 8
   slug: stand8

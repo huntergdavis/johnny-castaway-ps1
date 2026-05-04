@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the normal high-tide/night route through the same STAND no-stitch fast-path export STAND 5 proved out).
+validated on the normal high-tide/night route through the same STAND no-stitch fast-path export STAND 5 and STAND 6 use).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 340 |
-| Approx. words | 3162 |
+| Lines | 341 |
+| Approx. words | 3214 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 27 / 63 fully validated
+-   Scenes: 28 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

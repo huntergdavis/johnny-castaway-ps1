@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 476 source and generated runtime assets indexed for the site.
+subtitle: 477 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -256,6 +256,7 @@ for the practical porting path.
 <tr><td><code>SXMA4.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA4.SCR">source</a></td></tr>
 <tr><td><code>SXMA5.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXMA5.SCR">source</a></td></tr>
 <tr><td><code>SXST6.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST6.SCR">source</a></td></tr>
+<tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>THEEND.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/THEEND.SCR">source</a></td></tr>
 </tbody>
 </table>
@@ -509,7 +510,7 @@ for the practical porting path.
 <tr><td><code>STAND4.FG2</code></td><td>167,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND4.FG2">source</a></td></tr>
 <tr><td><code>STAND5.FG2</code></td><td>205,011</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND5.FG2">source</a></td></tr>
 <tr><td><code>STAND6.FG2</code></td><td>184,547</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND6.FG2">source</a></td></tr>
-<tr><td><code>STAND7.FG2</code></td><td>96,145</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND7.FG2">source</a></td></tr>
+<tr><td><code>STAND7.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND7.FG2">source</a></td></tr>
 <tr><td><code>STAND8.FG2</code></td><td>95,443</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND8.FG2">source</a></td></tr>
 <tr><td><code>STAND9.FG2</code></td><td>96,251</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STAND9.FG2">source</a></td></tr>
 <tr><td><code>STND10L.FG2</code></td><td>49,022</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND10L.FG2">source</a></td></tr>
@@ -523,7 +524,7 @@ for the practical porting path.
 <tr><td><code>STND4LOW.FG2</code></td><td>167,473</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND4LOW.FG2">source</a></td></tr>
 <tr><td><code>STND5LOW.FG2</code></td><td>205,011</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND5LOW.FG2">source</a></td></tr>
 <tr><td><code>STND6LOW.FG2</code></td><td>184,547</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND6LOW.FG2">source</a></td></tr>
-<tr><td><code>STND7LOW.FG2</code></td><td>48,455</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND7LOW.FG2">source</a></td></tr>
+<tr><td><code>STND7LOW.FG2</code></td><td>60,393</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND7LOW.FG2">source</a></td></tr>
 <tr><td><code>STND8LOW.FG2</code></td><td>51,100</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND8LOW.FG2">source</a></td></tr>
 <tr><td><code>STND9LOW.FG2</code></td><td>48,561</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/STND9LOW.FG2">source</a></td></tr>
 <tr><td><code>SUZY1.FG2</code></td><td>20,634,648</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/SUZY1.FG2">source</a></td></tr>
