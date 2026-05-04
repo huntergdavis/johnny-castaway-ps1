@@ -29,7 +29,7 @@ validated after confirming its short 169-vblank idle loop is expected).
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 22 / 63 fully validated
+-   Scenes: 23 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

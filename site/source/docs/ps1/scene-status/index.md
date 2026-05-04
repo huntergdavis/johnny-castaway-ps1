@@ -28,7 +28,7 @@ Tracks per-scene readiness under the fishing1 bar: pixel-perfect visuals plus sy
 ## Outline
 
 - PS1 Scene Pipeline Status
--   Progress: 22 / 63 (next: stand2)
+-   Progress: 23 / 63 (next: stand3)
 -   Per-scene workflow
 -   Variant definitions
 

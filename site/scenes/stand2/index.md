@@ -4,11 +4,11 @@ title: STAND 2 — Adjusts pants
 ads: STAND
 tag: 2
 slug: stand2
-status: pending
-description: "STAND.ADS scene 2: Adjusts pants. Not yet validated."
+status: validated
+description: "STAND.ADS scene 2: Adjusts pants. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-04.
 
 ## Pack identifiers
 
@@ -21,21 +21,11 @@ Not yet validated.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+Visual signoff passed on the normal high-tide/night route:
+`fgpilot stand2 lowtide 0 night 1 holiday 0 raft-stage 4 island-pos -154 54 loop seed 1`.
 
-A pixel-perfect host capture (ScummVM via the export script) produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+The scene is a short pants-adjust idle loop. It played cleanly with no
+visible residue, and the Scene Explorer direct-launch path no longer
+walks Johnny before the frog/loading transition.
