@@ -788,11 +788,24 @@ PY
 
       convert_pack_to_fgp3=1
     else
+      stitch_inject_args=()
+      if [ "$SCENE_SLUG" = "visitor6" ]; then
+        # VISITOR 6 has scene-owned coconut/tree impact pixels in the full
+        # host layer. Foreground-only captures keep Johnny/coconuts but omit
+        # the tree strike deltas, so inject only the non-backdrop full-host
+        # differences during the impact window.
+        stitch_inject_args=(
+          --inject-full-host-diff-rect "330,55,260,275"
+          --inject-full-host-diff-frames "120:141"
+        )
+      fi
+
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+        "${stitch_inject_args[@]}" \
         --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
 
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
@@ -800,6 +813,7 @@ PY
         --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+        "${stitch_inject_args[@]}" \
         --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi
 
