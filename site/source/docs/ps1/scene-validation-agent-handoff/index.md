@@ -21,8 +21,8 @@ Last updated: 2026-05-04
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/scene-validation-agent-handoff.md` |
-| Lines | 423 |
-| Approx. words | 1984 |
+| Lines | 427 |
+| Approx. words | 2092 |
 | Code fences | 15 |
 
 ## Outline
