@@ -1,25 +1,27 @@
 ---
 layout: scene
-title: VISITOR 4 — Red boat circles
+title: VISITOR 4 — Coconut plane hit
 ads: VISITOR
 tag: 4
 slug: visitor4
-status: pending
-description: "VISITOR.ADS scene 4: Red boat circles. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 4: Coconut plane gag. Validated on PS1/DuckStation."
 ---
 
-Not yet validated.
+Validated on 2026-05-04 under the FISHING 1 bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>VISITOR.ADS scene 4</code>
 - Slug: <code>visitor4</code>
 
-## What this scene probably is
+## What This Scene Is
 
-(Guess.) A red boat spots Johnny, circles, fills the screen.
+Johnny knocks down the plane/visitor with a coconut.
 
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+The old catalogue label on this page described a red-boat scene; live
+validation proved VISITOR 4 is the coconut/plane gag in the current PS1
+scene mapping.
 
 ### How this scene gets validated
 
@@ -36,6 +38,8 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+VISITOR 4 uses the generic normal/far-left/far-right foreground-only
+multi-view stitch so island-relative action is complete across production
+placements.
+
+See [the method]({{ '/about/method/' | relative_url }}) for the longer version.

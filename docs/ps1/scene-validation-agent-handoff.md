@@ -21,11 +21,11 @@ defects already seen during the scene-by-scene push.
 
 Immediate handoff note:
 
-- `VISITOR 3` has human visual + audible signoff and is being promoted in the same point-release pass as this handoff doc.
-- The regenerated `VISITOR3.FG2`, `VIST3LOW.FG2`, and `scripts/merge-visitor3-ship-foreground.py` belong with the `VISITOR 3` promotion.
-- `VISITOR 3` is a red-ship/splash synthesis case: foreground-only views keep moving sprites clean, full-host frames contribute the ship hull only during live crash frames, FGP3 cleanup clears post-crash rows, and hold timing keeps the real frame-158 splash visible.
+- `VISITOR 6` has human visual + audible signoff and is being promoted with the scene ledger at 43/63.
+- The regenerated `VISITOR6.FG2`, `VIST6LOW.FG2`, `scripts/merge-scene-foreground-views.py`, and the VISITOR6 branch in `scripts/export-scene-foreground-pilot.sh` belong with the `VISITOR 6` promotion.
+- `VISITOR 6` is a background-owned impact-delta case: foreground-only views keep Johnny/coconut clean but omit tree shake/strike pixels, so the generic merge helper injects only non-backdrop full-host deltas from source frames 120:141.
 - Production island placement remains variable. The normal, far-left, and far-right capture/test positions are evidence, not runtime pins.
-- Next scene after promoting `VISITOR 3` is `VISITOR 4`.
+- Next scene after promoting `VISITOR 6` is `VISITOR 7`.
 
 ## Non-Negotiables
 

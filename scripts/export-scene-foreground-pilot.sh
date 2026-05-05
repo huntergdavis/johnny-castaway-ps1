@@ -275,6 +275,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor3" ]; then
   # splash readable by moving a few ticks from the first ship row instead.
   HOLD_ADJUSTMENTS="158:+4 159:-4"
 fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor5" ]; then
+  # The coconut hit/downed-plane motion has several one-tick rows between long
+  # static holds. Move time into those action rows so the gag reads clearly.
+  HOLD_ADJUSTMENTS="91:-2 93:-2 95:-2 96:-1 98:-2 100:-2 102:-2 104:-1 105:+2 108:+2 109:+1 112:+2 113:+3 116:+2 119:+2 147:-2 149:+2 150:-2 152:+2 153:-2 155:+2 156:-2 158:+2 159:-2 161:+2 162:-2 164:+2 165:-2 167:+2 168:-2 170:+2 171:-2 173:+2 174:-2 176:+2 177:-1 179:+2 180:-1"
+fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   "$HOST_CAPTURE_HIGH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR" \
@@ -783,11 +788,24 @@ PY
 
       convert_pack_to_fgp3=1
     else
+      stitch_inject_args=()
+      if [ "$SCENE_SLUG" = "visitor6" ]; then
+        # VISITOR 6 has scene-owned coconut/tree impact pixels in the full
+        # host layer. Foreground-only captures keep Johnny/coconuts but omit
+        # the tree strike deltas, so inject only the non-backdrop full-host
+        # differences during the impact window.
+        stitch_inject_args=(
+          --inject-full-host-diff-rect "330,55,260,275"
+          --inject-full-host-diff-frames "120:141"
+        )
+      fi
+
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+        "${stitch_inject_args[@]}" \
         --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
 
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
@@ -795,6 +813,7 @@ PY
         --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+        "${stitch_inject_args[@]}" \
         --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi
 
