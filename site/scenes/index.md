@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-05:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `50 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `building1`, `building2`, `building3`, `building4`, `building5`, `building6`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1`, `visitor3`, `visitor4`, `visitor5`, `visitor6`, `visitor7`, `walkstuf3` |
+| Scenes visually validated | `51 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `building1`, `building2`, `building3`, `building4`, `building5`, `building6`, `building7`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1`, `visitor3`, `visitor4`, `visitor5`, `visitor6`, `visitor7`, `walkstuf3` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
@@ -198,8 +198,8 @@ and this page.
 | `building5` | low | measured | 2026-04-29T17:24:22 | compact-fgp3-v2-fullmatrix | +4.5% | 95.7% | 3498/3348 | 16 | 11 | 2 |  |
 | `building6` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +5.3% | 95.0% | 2561/2433 | 223 | 16 | 33 |  |
 | `building6` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +5.3% | 95.0% | 2564/2436 | 217 | 16 | 33 |  |
-| `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 |  |
-| `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 |  |
+| `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 | validated 2026-05-05 after generic multi-view stitch plus animated campfire lane patch and FGP3 cleanup; active timing predates refreshed validation pack |
+| `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 | validated 2026-05-05 after generic multi-view stitch plus animated campfire lane patch and FGP3 cleanup; active timing predates refreshed validation pack |
 | `fishing1` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | -0.7% | 100.7% | 1067/1074 | 2 | 2 | 0 |  |
 | `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |

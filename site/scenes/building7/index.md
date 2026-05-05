@@ -4,11 +4,19 @@ title: BUILDING 7 — Builds up the raft
 ads: BUILDING
 tag: 7
 slug: building7
-status: pending
-description: "BUILDING.ADS scene 7: Builds up the raft. Not yet validated."
+status: validated
+description: "BUILDING.ADS scene 7: Builds up the raft. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 after regenerating high/low packs through the generic
+normal/far-left/far-right foreground-only multi-view stitch. The middle
+campfire interval is reconstructed from clean animated foreground rows instead
+of stale full-host pixels, then the packs are converted to FGP3 with an
+explicit cleanup frame.
+
+User visual signoff passed on the normal high-tide/night validation route. A
+last-100-frame full-host review did not show a fish-skeleton draw in this
+scene.
 
 ## Pack identifiers
 
@@ -36,6 +44,5 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+This scene is now in the validated set under the current FISHING 1 bar. See
+[the method]({{ '/about/method/' | relative_url }}) for the longer version.

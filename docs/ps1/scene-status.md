@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 50 / 63 (next: building7)
+## Progress: 51 / 63 (next: activity1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -36,7 +36,7 @@ current public release is `v0.6.12-ps1`.
 | BUILDING | 4 | building4 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly |
 | BUILDING | 5 | building5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route |
 | BUILDING | 6 | building6 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; edge-sleep scene played cleanly on the normal high-tide/night validation route |
-| BUILDING | 7 | building7 | ⏳ | ⏳ | — | — |  |
+| BUILDING | 7 | building7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene |
 | FISHING | 1 | fishing1 | ✅ | ✅ | night · low-tide · holiday · raft-stage | v0.3.6-ps1 | reference scene; template for remaining |
 | FISHING | 2 | fishing2 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-04-23 |  |
 | FISHING | 3 | fishing3 | ✅ | ✅ | night · low-tide · holiday · raft-stage | 2026-05-01 | visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline |

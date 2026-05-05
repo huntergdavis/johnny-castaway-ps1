@@ -804,10 +804,12 @@ PY
           --inject-full-host-diff-frames "120:141"
         )
       fi
-      if [ "$SCENE_SLUG" = "building2" ] || [ "$SCENE_SLUG" = "building4" ]; then
-        # BUILDING 2/4 need temporal-residual cleanup at scene end. BUILDING 2
-        # has disappearing Lilliputian/plane pixels; BUILDING 4 otherwise
-        # leaves the final Johnny/bird foreground row held over the backdrop.
+      if [ "$SCENE_SLUG" = "building2" ] ||
+         [ "$SCENE_SLUG" = "building4" ] ||
+         [ "$SCENE_SLUG" = "building7" ]; then
+        # BUILDING 2/4/7 need temporal-residual cleanup for scene-local state.
+        # BUILDING 7's campfire is also a persistent prop that is cheaper and
+        # safer as explicit residual spans after the injected full-host lane.
         convert_pack_to_fgp3=1
       fi
       if [ "$SCENE_SLUG" = "building2" ]; then
@@ -849,13 +851,25 @@ PY
         --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi
 
+    if [ "$SCENE_SLUG" = "building7" ]; then
+      # Full-host diff copies keep this campfire present but ghosted. Use the
+      # clean animated foreground rows instead and layer them behind the live
+      # action for the long missing middle interval.
+      python3 "$SCRIPT_DIR/patch-building7-fire-foreground.py" \
+        "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+      python3 "$SCRIPT_DIR/patch-building7-fire-foreground.py" \
+        "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+    fi
+
     high_overlay_args=()
     low_overlay_args=()
     HOST_CAPTURE_HIGH_DIR="$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
     HOST_CAPTURE_LOW_DIR="$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     KEYED_OVERLAY_RECT=""
     scene_base_args=(--scene-base-color ff00ff)
-    if [ "$SCENE_SLUG" = "building2" ] || [ "$SCENE_SLUG" = "building4" ]; then
+    if [ "$SCENE_SLUG" = "building2" ] ||
+       [ "$SCENE_SLUG" = "building4" ] ||
+       [ "$SCENE_SLUG" = "building7" ]; then
       python3 "$SCRIPT_DIR/append-foreground-cleanup-frame.py" \
         "$HOST_CAPTURE_HIGH_DIR"
       python3 "$SCRIPT_DIR/append-foreground-cleanup-frame.py" \
