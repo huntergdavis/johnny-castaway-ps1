@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 40 / 63 (next: visitor4)
+## Progress: 41 / 63 (next: visitor4)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -77,7 +77,7 @@ current public release is `v0.6.12-ps1`.
 | VISITOR | 1 | visitor1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival |
 | VISITOR | 3 | visitor3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue |
 | VISITOR | 4 | visitor4 | ⏳ | ⏳ | — | — |  |
-| VISITOR | 5 | visitor5 | ⏳ | ⏳ | — | — |  |
+| VISITOR | 5 | visitor5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration |
 | VISITOR | 6 | visitor6 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 7 | visitor7 | ⏳ | ⏳ | — | — |  |
 | WALKSTUF | 1 | walkstuf1 | ⏳ | ⏳ | — | — |  |
