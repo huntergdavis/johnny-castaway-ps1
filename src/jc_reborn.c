@@ -419,14 +419,17 @@ static int fgLoopIsValidHdg(int hdg)
     return (hdg >= HDG_S && hdg <= HDG_SE);
 }
 
-static int fgLoopSceneHasValidStart(const struct TStoryScene *s)
+/* Non-static: scene_picker.c uses these via extern decls so the
+ * Original-mode walk-aware retry can skip scenes without valid
+ * start/end coordinates (matches Sierra's storyPlay() filter). */
+int fgLoopSceneHasValidStart(const struct TStoryScene *s)
 {
     return s != NULL
         && fgLoopIsValidSpot(s->spotStart)
         && fgLoopIsValidHdg(s->hdgStart);
 }
 
-static int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
+int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
 {
     return s != NULL
         && fgLoopIsValidSpot(s->spotEnd)

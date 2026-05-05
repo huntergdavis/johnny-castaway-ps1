@@ -42,6 +42,14 @@ extern const char *fgLoopGetProvenSlug(int index);
  * both helpers below see the same incomplete-vs-complete type. */
 extern const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug);
 
+/* Walk-awareness predicates owned by jc_reborn.c — the Original mode
+ * retry loop uses these to mirror Sierra's `storyHasValidStart/End`
+ * filtering (skip scenes without spotStart/hdgStart when Johnny needs
+ * a walk-in; skip without spotEnd/hdgEnd so the next iteration's
+ * prevSpot stays meaningful). */
+extern int fgLoopSceneHasValidStart(const struct TStoryScene *s);
+extern int fgLoopSceneHasValidEnd(const struct TStoryScene *s);
+
 /* islandState (tide + Johnny's xPos/yPos drift) is owned by src/island.c;
  * storyCurrentDay (1..11, advances when ps1Soft date rolls over) is
  * owned by src/jc_reborn.c. Original mode reads them through these
@@ -117,6 +125,20 @@ enum {
     SEQ_PLAY_FINAL        = 2,
 };
 
+/* Path categorisation for telemetry — pickOriginal sets *outPath so
+ * the JCPICK line can label each return honestly:
+ *   INTM      — picked an intermediate scene (state machine running)
+ *   FINAL     — returned the stashed final scene (mini-story climax)
+ *   DEGRADED  — pool had no FINAL-flagged scene; fell through to
+ *               pickRandom. Differentiates "Sierra logic ran" from
+ *               "we silently became Random because the active set
+ *               doesn't have any FINAL-tagged scenes." */
+enum {
+    ORIG_PATH_INTM     = 0,
+    ORIG_PATH_FINAL    = 1,
+    ORIG_PATH_DEGRADED = 2,
+};
+
 static uint8  gSequenceState         = SEQ_PICK_FINAL;
 static uint8  gIntermediatesRemaining = 0;
 /* gIsFirstSequence: gates the FIRST flag exclusion for finals. Sierra's
@@ -127,6 +149,14 @@ static uint8  gIntermediatesRemaining = 0;
  * first mini-story completes, FIRST is allowed again. */
 static uint8  gIsFirstSequence       = 1;
 static char   gFinalSlug[16]         = {0};   /* stashed from PICK_FINAL */
+
+/* Walk-aware retry state. Sierra tracks these as locals inside
+ * storyPlay(); we keep them as module-level statics because the picker
+ * is invoked once per scene-loop iteration, not once per mini-story.
+ * gPrevSpot = -1 means "fresh sequence, no prior position to walk
+ * from." Updated after each successfully picked intermediate. */
+static sint8  gPrevSpot              = -1;
+static sint8  gPrevHdg               = -1;
 
 const char *pickerPolicyName(int policy)
 {
@@ -150,6 +180,8 @@ void pickerOnSceneSetCycle(void)
     gSequenceState         = SEQ_PICK_FINAL;
     gIntermediatesRemaining = 0;
     gFinalSlug[0]          = '\0';
+    gPrevSpot              = -1;
+    gPrevHdg               = -1;
 }
 
 void pickerSetPolicy(int policy)
@@ -316,9 +348,12 @@ static const char *pickSequential(int sceneSetIdx, uint8 *outRetries)
  *  fall-through reuses the same frame's buffer via the for(;;) loop;
  *  no recursion.
  * ------------------------------------------------------------------------- */
-static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
+static const char *pickOriginal(int sceneSetIdx,
+                                uint8 *outRetries,
+                                uint8 *outPath)
 {
     *outRetries = 0;
+    *outPath    = ORIG_PATH_INTM;     /* assume happy path; override on degrade/final */
     int n = activePoolCount(sceneSetIdx);
     if (n <= 0)
         return NULL;
@@ -332,6 +367,17 @@ static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
     for (int safety = 0; safety < 4; safety++) {
 
         if (gSequenceState == SEQ_PICK_FINAL) {
+            /* Sierra resets per-mini-story locals at the top of each
+             * storyPlay() outer iteration: prevSpot=-1, lastAdsName="".
+             * Mirror that here so the new sequence's first intermediate
+             * isn't blocked by repeat-prevention against the previous
+             * sequence's last scene, and isn't walk-aware-skipped on
+             * the basis of a stale prevSpot. */
+            gLastAdsName[0] = '\0';
+            gLastAdsTag     = 0xFFFF;
+            gPrevSpot       = -1;
+            gPrevHdg        = -1;
+
             uint16 wanted   = FINAL;
             /* Sierra: `if (firstSequence) unwantedFlags |= FIRST` —
              * exclude FIRST-flagged scenes from finals on the very
@@ -341,13 +387,22 @@ static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
             int count = filterPoolByFlags(sceneSetIdx, wanted, unwanted,
                                           indices, NUM_SCENES);
             if (count == 0) {
-                /* No FINAL-flagged scene in this pool — degrade. */
+                /* No FINAL-flagged scene in this pool — degrade to
+                 * Random and tell the caller so the JCPICK line can
+                 * say origpath=degraded. The default "All Scenes"
+                 * (kProvenScenes) currently has no FINAL scenes, so
+                 * this fires every pick when Original is selected
+                 * with that set. Sierra fidelity needs a Scene Set
+                 * with FINAL-tagged scenes (Fishing, Activities). */
+                *outPath = ORIG_PATH_DEGRADED;
                 return pickRandom(sceneSetIdx, outRetries);
             }
             const char *slug = activePoolSlug(sceneSetIdx,
                                               indices[rand() % count]);
-            if (slug == NULL)
+            if (slug == NULL) {
+                *outPath = ORIG_PATH_DEGRADED;
                 return pickRandom(sceneSetIdx, outRetries);
+            }
             size_t len = strlen(slug);
             if (len >= sizeof(gFinalSlug)) len = sizeof(gFinalSlug) - 1;
             memcpy(gFinalSlug, slug, len);
@@ -380,19 +435,54 @@ static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
             int budget = (count <= 8) ? (count - 1) : 8;
             if (budget < 0) budget = 0;
             const char *slug = NULL;
+            const struct TStoryScene *scene = NULL;
             int retries = 0;
             do {
-                slug = activePoolSlug(sceneSetIdx,
-                                      indices[rand() % count]);
+                slug  = activePoolSlug(sceneSetIdx,
+                                       indices[rand() % count]);
                 if (slug == NULL) break;
-                if (!slugMatchesLastPick(slug)) break;
+                scene = fgLoopFindStorySceneBySlug(slug);
+                if (scene == NULL) {
+                    /* Pool entry doesn't map to storyScenes — skip
+                     * (couldn't apply walk-aware/repeat checks). */
+                    retries++;
+                    continue;
+                }
+                /* Sierra's walk-aware skip: if Johnny needs a walk-in
+                 * (prevSpot != -1) and this scene has no valid start
+                 * coords, skip and retry. */
+                if (gPrevSpot != -1
+                    && !fgLoopSceneHasValidStart(scene)) {
+                    retries++;
+                    continue;
+                }
+                /* Sierra requires a valid end too so the next pick's
+                 * prevSpot is meaningful. Skip dead-end scenes. */
+                if (!fgLoopSceneHasValidEnd(scene)) {
+                    retries++;
+                    continue;
+                }
+                /* Repeat-prevention: same family + tag as last pick? */
+                if (!slugMatchesLastPick(slug))
+                    break;
                 retries++;
             } while (retries <= budget);
             *outRetries = (uint8)retries;
+            /* Update walk-aware state from whichever scene we landed
+             * on (even if the budget was exhausted — Sierra accepts
+             * the pickTry-8 result either way). */
+            if (scene != NULL && fgLoopSceneHasValidEnd(scene)) {
+                gPrevSpot = (sint8)scene->spotEnd;
+                gPrevHdg  = (sint8)scene->hdgEnd;
+            } else {
+                gPrevSpot = -1;
+                gPrevHdg  = -1;
+            }
             if (gIntermediatesRemaining > 0)
                 gIntermediatesRemaining--;
             if (gIntermediatesRemaining == 0)
                 gSequenceState = SEQ_PLAY_FINAL;
+            *outPath = ORIG_PATH_INTM;
             return slug;
         }
 
@@ -405,6 +495,7 @@ static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
                  * next loop iteration to start a fresh mini-story. */
                 continue;
             }
+            *outPath = ORIG_PATH_FINAL;
             return slug;
         }
 
@@ -413,6 +504,7 @@ static const char *pickOriginal(int sceneSetIdx, uint8 *outRetries)
     }
 
     /* Shouldn't reach here — Random is the safety net. */
+    *outPath = ORIG_PATH_DEGRADED;
     return pickRandom(sceneSetIdx, outRetries);
 }
 
@@ -431,20 +523,14 @@ const char *pickerNextScene(const char *explicitScene, int sceneSetIdx)
     const char *slug = NULL;
     int policy = gPickerPolicy;
 
-    /* Snapshot the Original sequence state BEFORE the pick so the
-     * JCPICK telemetry reports which phase produced this slug, not the
-     * phase the picker will be in next time. PLAY_INTERMEDIATE returns
-     * after decrementing the counter, so we'd otherwise log the phase
-     * we just transitioned out of. */
-    int originalSeqBefore = (int)gSequenceState;
-    int originalLeftBefore = (int)gIntermediatesRemaining;
+    uint8 originalPath = ORIG_PATH_INTM;
 
     switch (policy) {
     case SCENE_PICKER_SEQUENTIAL:
         slug = pickSequential(sceneSetIdx, &retries);
         break;
     case SCENE_PICKER_ORIGINAL:
-        slug = pickOriginal(sceneSetIdx, &retries);
+        slug = pickOriginal(sceneSetIdx, &retries, &originalPath);
         break;
     case SCENE_PICKER_RANDOM:
     default:
@@ -458,18 +544,22 @@ const char *pickerNextScene(const char *explicitScene, int sceneSetIdx)
 
     recordPick(slug);
 
-    /* JCPICK telemetry. Original mode adds seq=/left= so soak tests can
-     * verify the FINAL → 6..19 INTM → FINAL → repeat shape; other
-     * policies omit those fields so the existing line format stays
-     * cheap to grep. */
+    /* JCPICK telemetry. Original mode reports `origpath=` (intm /
+     * final / degraded) so soak tests can verify Sierra logic
+     * actually ran instead of silently falling through to Random;
+     * `left=` is the intermediate counter AFTER this pick (so an
+     * intm row decrementing toward 0 marks the path to PLAY_FINAL).
+     * Other policies stick to the original short format for cheap
+     * grep-ability. */
     if (policy == SCENE_PICKER_ORIGINAL) {
-        const char *seqLabel =
-            (originalSeqBefore == SEQ_PICK_FINAL)        ? "final" :
-            (originalSeqBefore == SEQ_PLAY_INTERMEDIATE) ? "intm"  :
-            (originalSeqBefore == SEQ_PLAY_FINAL)        ? "final" : "?";
-        printf("JCPICK frame=%u policy=%d set=%d picked=%s retries=%u seq=%s left=%d\n",
+        const char *pathLabel =
+            (originalPath == ORIG_PATH_INTM)     ? "intm"     :
+            (originalPath == ORIG_PATH_FINAL)    ? "final"    :
+            (originalPath == ORIG_PATH_DEGRADED) ? "degraded" : "?";
+        printf("JCPICK frame=%u policy=%d set=%d picked=%s retries=%u origpath=%s left=%d\n",
                (unsigned)gJcpickFrame++, policy, sceneSetIdx,
-               slug, (unsigned)retries, seqLabel, originalLeftBefore);
+               slug, (unsigned)retries, pathLabel,
+               (int)gIntermediatesRemaining);
     } else {
         printf("JCPICK frame=%u policy=%d set=%d picked=%s retries=%u\n",
                (unsigned)gJcpickFrame++, policy, sceneSetIdx,
