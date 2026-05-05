@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 49 / 63 (next: activity9)
+## Progress: 50 / 63 (next: activity7; activity9 deferred)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -25,7 +25,7 @@ current public release is `v0.6.12-ps1`.
 | ACTIVITY | 5 | activity5 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 6 | activity6 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 7 | activity7 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 8 | activity8 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 8 | activity8 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base |
 | ACTIVITY | 9 | activity9 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 10 | activity10 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book |
 | ACTIVITY | 11 | activity11 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop |

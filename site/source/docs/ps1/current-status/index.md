@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the existing on-disc packs (no rework — high-tide nighttime route, reads-and-seagull-steals-book). Earlier this push: ACTIVITY 11 was validated after re-exporting with a frame-wide keyed overlay to fix stale Johnny/bird residue against the rain backdrop; ACTIVITY 12 was validated on the existing on-disc packs (no rework — belly-flop dive); WALKSTUF 1 and WALKSTUF 2 were validated. WALKSTUF1 uses re-exported high/low packs with -500/+300 sti...
+validated after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay — fixes ghosted Johnny pose residue from base-diff against the static-Johnny base. ACTIVITY 9 is deferred — Sierra's source render has a hard right-edge clip that crops the boat sprite at any island position tested. Earlier this push: ACTIVITY 10 was validated on the existing on-disc packs (no rework — reads-and-seagull-steals-book); ACTIVITY 11 was...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 453 |
-| Approx. words | 4811 |
+| Lines | 458 |
+| Approx. words | 4918 |
 | Code fences | 1 |
 
 ## Outline
