@@ -804,6 +804,33 @@ PY
           --inject-full-host-diff-frames "120:141"
         )
       fi
+      if [ "$SCENE_SLUG" = "building2" ] || [ "$SCENE_SLUG" = "building4" ]; then
+        # BUILDING 2/4 need temporal-residual cleanup at scene end. BUILDING 2
+        # has disappearing Lilliputian/plane pixels; BUILDING 4 otherwise
+        # leaves the final Johnny/bird foreground row held over the backdrop.
+        convert_pack_to_fgp3=1
+      fi
+      if [ "$SCENE_SLUG" = "building2" ]; then
+        # The Lilliputian sandcastle is scene-local state: it is built once,
+        # then the red flag and planes originate from it. Foreground-only
+        # captures can omit the mostly-static yellow castle after reveal, so
+        # inject the full-host diff lane and allow sand-colored pixels through
+        # the backdrop filter for this rect only.
+        stitch_inject_args=(
+          --inject-full-host-diff-rect "70,220,310,220"
+          --inject-full-host-diff-frames "20:408"
+          --inject-full-host-diff-keep-sand
+          --inject-full-host-diff-sand-component-min-pixels 80
+          --inject-full-host-diff-sand-component-right-pad 4
+          --trim-sand-tail-frames "20:408"
+          --trim-sand-tail-min-y 245
+          --trim-sand-tail-component-min-pixels 80
+          --trim-sand-tail-column-min-sand 5
+          --trim-sand-tail-right-pad 4
+          --drop-output-rect "668,179,75,25"
+          --drop-output-frames "360:400"
+        )
+      fi
 
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
@@ -828,6 +855,12 @@ PY
     HOST_CAPTURE_LOW_DIR="$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     KEYED_OVERLAY_RECT=""
     scene_base_args=(--scene-base-color ff00ff)
+    if [ "$SCENE_SLUG" = "building2" ] || [ "$SCENE_SLUG" = "building4" ]; then
+      python3 "$SCRIPT_DIR/append-foreground-cleanup-frame.py" \
+        "$HOST_CAPTURE_HIGH_DIR"
+      python3 "$SCRIPT_DIR/append-foreground-cleanup-frame.py" \
+        "$HOST_CAPTURE_LOW_DIR"
+    fi
   elif [ "$SCENE_SLUG" != "mary2" ]; then
     high_overlay_args=(
       --keyed-overlay-frames-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR/frames"
@@ -873,11 +906,14 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
 if [ "$convert_pack_to_fgp3" = "1" ]; then
   high_fgp3_tmp="${PACK_PATH}.fgp3tmp"
   low_fgp3_tmp="${LOWTIDE_PACK_PATH}.fgp3tmp"
+  fgp3_extra_args=()
   python3 "$SCRIPT_DIR/build-fg3-temporal-residual-pack.py" \
     --input-fg2 "$PACK_PATH" \
+    "${fgp3_extra_args[@]}" \
     --output-fg3 "$high_fgp3_tmp"
   python3 "$SCRIPT_DIR/build-fg3-temporal-residual-pack.py" \
     --input-fg2 "$LOWTIDE_PACK_PATH" \
+    "${fgp3_extra_args[@]}" \
     --output-fg3 "$low_fgp3_tmp"
   mv "$high_fgp3_tmp" "$PACK_PATH"
   mv "$low_fgp3_tmp" "$LOWTIDE_PACK_PATH"

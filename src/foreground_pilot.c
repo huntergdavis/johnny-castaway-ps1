@@ -875,6 +875,9 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
                                          uint32 cleanBytes,
                                          uint32 maxFrameBytes)
 {
+    if (fgSceneEquals(sceneName, "building2"))
+        return 0;
+
     if (cleanBytes >= FG_CLEAN_SNAPSHOT_PRESSURE_BYTES)
         return 1;
 
@@ -3200,9 +3203,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     {
         uint32 cleanRectEstimate =
             (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
-        if (cleanRectEstimate >= FG_LARGE_CLEAN_SNAPSHOT_BYTES ||
-            fgSceneNeedsCleanMemoryRelief(sceneName, cleanRectEstimate,
-                                          gFgRuntime.frameBufferSize)) {
+        if (!fgSceneEquals(sceneName, "building2") &&
+            (cleanRectEstimate >= FG_LARGE_CLEAN_SNAPSHOT_BYTES ||
+             fgSceneNeedsCleanMemoryRelief(sceneName, cleanRectEstimate,
+                                           gFgRuntime.frameBufferSize))) {
             largeCleanSnapshot = 1;
             /* Wide scenes need the backdrop baseline more than optional
              * prefetch. The pixels stay exact; only the hidden-read cache is

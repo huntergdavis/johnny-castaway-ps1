@@ -4,11 +4,14 @@ title: BUILDING 1 — Sand castle (crumbles)
 ads: BUILDING
 tag: 1
 slug: building1
-status: pending
-description: "BUILDING.ADS scene 1: Sand castle (crumbles). Not yet validated."
+status: validated
+description: "BUILDING.ADS scene 1: Sand castle (crumbles). Validated on PS1 after generic multi-view capture."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+regenerated through the generic normal/far-left/far-right foreground-only
+multi-view stitch and passed visual + audible signoff on the normal
+high-tide/night validation route.
 
 ## Pack identifiers
 

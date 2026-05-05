@@ -4,11 +4,14 @@ title: BUILDING 3 — Builds a fire
 ads: BUILDING
 tag: 3
 slug: building3
-status: pending
-description: "BUILDING.ADS scene 3: Builds a fire. Not yet validated."
+status: validated
+description: "BUILDING.ADS scene 3: Builds a fire. Validated on PS1 after generic multi-view capture."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+regenerated through the generic normal/far-left/far-right foreground-only
+multi-view stitch, and the long sleeping/idle beat played cleanly on the
+normal low-tide/night validation route.
 
 ## Pack identifiers
 

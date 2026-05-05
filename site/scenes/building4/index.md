@@ -4,11 +4,14 @@ title: BUILDING 4 — Sand castle vs. lilliputians
 ads: BUILDING
 tag: 4
 slug: building4
-status: pending
-description: "BUILDING.ADS scene 4: Sand castle vs. lilliputians. Not yet validated."
+status: validated
+description: "BUILDING.ADS scene 4: Sand castle vs. lilliputians. Validated on PS1 after generic multi-view capture and terminal cleanup."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+regenerated through the generic normal/far-left/far-right foreground-only
+multi-view stitch, then converted to FGP3 with an explicit terminal cleanup
+frame so the final Johnny/bird foreground row restores cleanly.
 
 ## Pack identifiers
 

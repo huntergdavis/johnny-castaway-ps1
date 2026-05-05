@@ -236,12 +236,24 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-fg2", required=True, type=Path)
     parser.add_argument("--output-fg3", required=True, type=Path)
+    parser.add_argument(
+        "--keyframe-source",
+        action="append",
+        type=int,
+        default=[],
+        help=(
+            "Source-frame number to encode as a self-contained residual keyframe. "
+            "The frame first restores all prior foreground pixels, then redraws "
+            "the full current foreground state."
+        ),
+    )
     args = parser.parse_args()
 
     pack, header, palette, entries, sound_events = parse_fg2(args.input_fg2)
     out_entries: list[Entry] = []
     chunks: list[bytes] = []
     prev_pixels: dict[tuple[int, int], int] = {}
+    keyframe_sources = set(args.keyframe_source)
 
     for entry in entries:
         current = decode_pixels(pack, entry, header.version)
@@ -252,14 +264,18 @@ def main() -> None:
             prev_pixels = current
             continue
 
-        cleanup = {
-            point for point, value in prev_pixels.items()
-            if current.get(point) != value
-        }
-        draw = {
-            point: value for point, value in current.items()
-            if prev_pixels.get(point) != value
-        }
+        if entry.source_frame in keyframe_sources:
+            cleanup = set(prev_pixels.keys())
+            draw = dict(current)
+        else:
+            cleanup = {
+                point for point, value in prev_pixels.items()
+                if current.get(point) != value
+            }
+            draw = {
+                point: value for point, value in current.items()
+                if prev_pixels.get(point) != value
+            }
         dirty_points = set(cleanup) | set(draw.keys())
         dirty_bbox = bbox(dirty_points)
         if dirty_bbox is None:
