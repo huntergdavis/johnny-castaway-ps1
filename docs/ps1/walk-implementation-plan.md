@@ -17,6 +17,19 @@ Owner: PS1 perf branch
 > historical record of the original walk port; ignore the Phase 4 / R2.3
 > / R7.4 sections below.
 
+> **2026-05-04 update — picker promoted, `kProvenScenes` retired.**
+> The scene-picking logic moved out of `fgLoopNextScene` into a
+> dedicated `src/scene_picker.c` (Random / Sequential / Original
+> policies, see `docs/ps1/scene-picker-design.md`). The
+> hand-curated `kProvenScenes[]` array referenced throughout this
+> plan has been replaced by `kAllScenes[]`, which contains every
+> scene with an FG2 pack on disc (63 today). Story Day filtering,
+> walk-aware retry, and FINAL/FIRST gating now live in the picker
+> module, not in `fgLoopNextScene`. The `kProvenScenes` snippets
+> later in this doc describe the pre-picker baseline that motivated
+> the walk port — read `docs/ps1/scene-picker-design.md` and
+> `src/scene_picker.c` for current behaviour.
+
 ## Executive Summary
 
 The PS1 build used to pick each scene at random and teleport Johnny

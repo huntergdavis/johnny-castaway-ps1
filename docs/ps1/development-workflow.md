@@ -74,9 +74,13 @@ foreground inventory from `config/ps1/regtest-scenes.txt`:
 Do not add one-off scene branches for normal FG2 playback; add a family only
 if the rollout manifest introduces a new ADS prefix/naming rule.
 
-`jc_reborn.c` — add the slug to `kProvenScenes` only after full human
-visual + audible signoff. Pending scenes can still be launched explicitly with
-`fgpilot <slug>` because all generated FG2 scene slugs are routable.
+`jc_reborn.c` — `kAllScenes[]` is the default pool the screensaver
+picker draws from; every slug that has an FG2 pack on disc lives there
+(63 entries today, mirrors `storyScenes[]` 1:1). New scenes land
+in `kAllScenes` as soon as their pack ships in `cd_layout.xml`. Visual
+signoff is tracked separately in `docs/ps1/scene-status.md` — there's
+no longer a runtime gate that hides un-signed-off scenes from the
+default loop.
 
 ### 3. Build + launch
 

@@ -226,31 +226,53 @@ static int screensaverLoopDisabled = 0;
  * content isn't visually-signed-off; they're here for walk-system
  * verification on the walk-implementation-20260429 branch only.
  * Trim the list back to the validated pair before merging to main. */
-static const char *kProvenScenes[] = {
-    /* Variety hand-picked to exercise different walk endpoints — Johnny
-     * ends at SPOT_A / C / D / E / F across the set, so the next-scene
-     * walk fires from a meaningful range of positions instead of just
-     * repeatedly turning at SPOT_D. */
-    "fishing1",   /* end: SPOT_D HDG_E */
-    "fishing2",   /* end: SPOT_D HDG_E */
-    "building1",  /* end: SPOT_A HDG_W (long walk in: SPOT_F→SPOT_A) */
-    "building3",  /* end: SPOT_C HDG_SE (medium walk in: SPOT_A→SPOT_C) */
-    "walkstuf2",  /* end: SPOT_D HDG_SE (medium walk in: SPOT_E→SPOT_D) */
-    "walkstuf3",  /* end: SPOT_E HDG_W */
+/* The "All Scenes" pool — every scene that has an FG2 pack on disc.
+ * 63 entries, mirroring storyScenes[]. There used to be a hand-curated
+ * "proven/validated" subset here; that gate was retired once the full
+ * set ran cleanly, so the picker now draws from everything. New scenes
+ * land here as soon as their FG2 pack ships on the CD layout. */
+static const char *kAllScenes[] = {
+    /* Activities (10 — ACTIVITY 2/3 were unused Sierra placeholders) */
+    "activity1",  "activity4",  "activity5",  "activity6",  "activity7",
+    "activity8",  "activity9",  "activity10", "activity11", "activity12",
+    /* Building (7) */
+    "building1",  "building2",  "building3",  "building4",  "building5",
+    "building6",  "building7",
+    /* Fishing (8) */
+    "fishing1",   "fishing2",   "fishing3",   "fishing4",   "fishing5",
+    "fishing6",   "fishing7",   "fishing8",
+    /* Johnny (6) */
+    "johnny1",    "johnny2",    "johnny3",    "johnny4",    "johnny5",
+    "johnny6",
+    /* Mary (5) */
+    "mary1",      "mary2",      "mary3",      "mary4",      "mary5",
+    /* Misc gags (2) */
+    "miscgag1",   "miscgag2",
+    /* Stand (14 — gaps in Sierra's tag numbering: STAND 13/14 unused) */
+    "stand1",     "stand2",     "stand3",     "stand4",     "stand5",
+    "stand6",     "stand7",     "stand8",     "stand9",     "stand10",
+    "stand11",    "stand12",    "stand15",    "stand16",
+    /* Suzy (2) */
+    "suzy1",      "suzy2",
+    /* Visitor (6 — VISITOR 2 was an unused Sierra placeholder) */
+    "visitor1",   "visitor3",   "visitor4",   "visitor5",   "visitor6",
+    "visitor7",
+    /* Walkstuf (3) */
+    "walkstuf1",  "walkstuf2",  "walkstuf3",
 };
-#define NUM_PROVEN_SCENES ((int)(sizeof(kProvenScenes) / sizeof(kProvenScenes[0])))
+#define NUM_ALL_SCENES ((int)(sizeof(kAllScenes) / sizeof(kAllScenes[0])))
 
 /* Scene-set framework — the pause-menu "Scene Set" item cycles
- * through these pools. Each set is a constrained slice of validated
+ * through these pools. Each set is a family-curated slice of
  * scenes; the screensaver loop draws from the current set's pool
- * instead of the default kProvenScenes. Order MUST match the
+ * instead of the default kAllScenes. Order MUST match the
  * kSceneSetNames array in pause_menu.c.
  *
  * Adding a set: declare a kSet<Name>Scenes[] array, append it to
  * gSceneSetPools, append the human-readable name to kSceneSetNames
- * in pause_menu.c. If a set is empty (size 0), the picker silently
- * falls back to kProvenScenes — useful for sets like "Mary" or
- * "Visitors" that aren't fully validated yet. */
+ * in pause_menu.c. If a set is empty (size 0), the picker falls
+ * back to kAllScenes — same effect as picking "All Scenes" from
+ * the menu. */
 static const char *kSetFishingScenes[] = {
     "fishing1", "fishing2", "fishing3", "fishing4",
     "fishing5", "fishing6", "fishing7", "fishing8",
@@ -292,7 +314,7 @@ struct SceneSetPool {
 #define SCENE_SET_POOL(arr) { arr, (int)(sizeof(arr) / sizeof((arr)[0])) }
 
 static const struct SceneSetPool gSceneSetPools[] = {
-    { NULL, 0 },                              /* All Scenes — uses kProvenScenes */
+    { NULL, 0 },                              /* All Scenes — uses kAllScenes */
     SCENE_SET_POOL(kSetFishingScenes),        /* Fishing Only */
     SCENE_SET_POOL(kSetJohnnyScenes),         /* Johnny Stories */
     SCENE_SET_POOL(kSetMaryScenes),           /* Mary Visits */
@@ -310,23 +332,52 @@ static int hostForcedSceneOffsetY = 0;
 static int hostCapturePreludeFrame = 0;
 #endif
 
-/* Pick the scene to play on this screensaver-loop iteration. If the user
- * explicitly named a scene on the fgpilot command line, we replay THAT
- * scene every iteration with random variants; if no scene was named we
- * free-select from the kProvenScenes array (so `fgpilot` alone cycles
- * through every validated scene). */
+/* Catalog accessors used by src/scene_picker.c so it doesn't need to
+ * know the layout of gSceneSetPools[] / kAllScenes. The picker reads
+ * pool counts + slugs through these and chooses an entry per its
+ * active policy. Returning a count of 0 from fgLoopGetPoolCount
+ * signals an empty / placeholder set; callers fall back to
+ * kAllScenes via fgLoopGetAllCount/Slug. */
+int fgLoopGetPoolCount(int sceneSetIdx)
+{
+    if (sceneSetIdx < 0 || sceneSetIdx >= NUM_SCENE_SET_POOLS)
+        return 0;
+    return gSceneSetPools[sceneSetIdx].count;
+}
+
+const char *fgLoopGetPoolSlug(int sceneSetIdx, int index)
+{
+    if (sceneSetIdx < 0 || sceneSetIdx >= NUM_SCENE_SET_POOLS)
+        return NULL;
+    const struct SceneSetPool *p = &gSceneSetPools[sceneSetIdx];
+    if (index < 0 || index >= p->count || p->scenes == NULL)
+        return NULL;
+    return p->scenes[index];
+}
+
+int fgLoopGetAllCount(void)
+{
+    return NUM_ALL_SCENES;
+}
+
+const char *fgLoopGetAllSlug(int index)
+{
+    if (index < 0 || index >= NUM_ALL_SCENES)
+        return NULL;
+    return kAllScenes[index];
+}
+
+/* Pick the scene to play on this screensaver-loop iteration. Pinning
+ * (Scene Explorer Cross/Triangle, fgpilot CLI) wins, otherwise we
+ * delegate to the picker module which honours the user-selected
+ * policy (Random / Sequential / Original). The picker also emits the
+ * JCPICK telemetry line per pick. */
 static const char *fgLoopNextScene(const char *explicitScene,
                                    int sceneSetIdx)
 {
-    if (explicitScene && explicitScene[0] != '\0')
-        return explicitScene;
-    if (sceneSetIdx >= 0 && sceneSetIdx < NUM_SCENE_SET_POOLS) {
-        const struct SceneSetPool *p = &gSceneSetPools[sceneSetIdx];
-        if (p->scenes != NULL && p->count > 0)
-            return p->scenes[rand() % p->count];
-    }
-    /* "All" set or empty set → fall back to the default proven pool. */
-    return kProvenScenes[rand() % NUM_PROVEN_SCENES];
+    extern const char *pickerNextScene(const char *explicitScene,
+                                       int sceneSetIdx);
+    return pickerNextScene(explicitScene, sceneSetIdx);
 }
 
 /* Set by fgLoopApplyVariant when the story-sequence counter expires
@@ -390,14 +441,17 @@ static int fgLoopIsValidHdg(int hdg)
     return (hdg >= HDG_S && hdg <= HDG_SE);
 }
 
-static int fgLoopSceneHasValidStart(const struct TStoryScene *s)
+/* Non-static: scene_picker.c uses these via extern decls so the
+ * Original-mode walk-aware retry can skip scenes without valid
+ * start/end coordinates (matches Sierra's storyPlay() filter). */
+int fgLoopSceneHasValidStart(const struct TStoryScene *s)
 {
     return s != NULL
         && fgLoopIsValidSpot(s->spotStart)
         && fgLoopIsValidHdg(s->hdgStart);
 }
 
-static int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
+int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
 {
     return s != NULL
         && fgLoopIsValidSpot(s->spotEnd)
@@ -405,9 +459,12 @@ static int fgLoopSceneHasValidEnd(const struct TStoryScene *s)
 }
 
 /* Resolve a slug like "fishing1" to its storyScenes[] entry by parsing
- * the slug into (family, tag) and linear-searching the array. The
- * validated set is small; an O(N) scan over 63 entries is fine. */
-static const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug)
+ * the slug into (family, tag) and linear-searching the array. 63
+ * entries; an O(N) scan is ~1µs and only runs once per scene transition.
+ *
+ * Non-static: src/scene_picker.c uses this via an extern declaration
+ * to map slugs back to (adsName, adsTagNo) for repeat-prevention. */
+const struct TStoryScene *fgLoopFindStorySceneBySlug(const char *slug)
 {
     if (slug == NULL || slug[0] == '\0') return NULL;
 
@@ -1680,8 +1737,10 @@ int main(int argc, char **argv)
          * update storyCurrentSpot/Hdg on completion. */
         if (pauseMenuRequestSceneSetCycle) {
             extern const char *pauseMenuSceneSetName(int idx);
+            extern void pickerOnSceneSetCycle(void);
             pauseMenuRequestSceneSetCycle = 0;
             explicitScene = NULL;
+            pickerOnSceneSetCycle();   /* reset Sequential cursor + repeat-prevention */
             ps1ShowFreeplayLoadingFrame("changing scene set", 0);
             {
                 char banner[40];

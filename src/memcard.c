@@ -31,6 +31,7 @@
 #include "memcard.h"
 #include "holidays.h"
 #include "spi.h"
+#include "scene_picker.h"
 
 extern int soundMuted;
 extern int oceanAmbientEnabled; /* sound_ps1.c — pause-menu Ocean toggle */
@@ -49,13 +50,15 @@ extern void oceanAmbientStop(void);
 extern int  oceanAmbientLoaded(void);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     4  /* v4 drops the unused footstepsEnabled toggle.
+#define MC_VERSION     5  /* v5 adds pickerPolicy (Random/Sequential/Original).
+                           * v4 drops the unused footstepsEnabled toggle.
                            * v3 added oceanAmbientEnabled.
                            * v2 added footstepsEnabled + storyCurrentDay.
-                           * v1 had no walk fields. v2 and v3 saves still
+                           * v1 had no walk fields. v2..v4 saves still
                            * load (the old footsteps byte is ignored;
                            * v2 saves get oceanAmbientEnabled defaulted
-                           * to ON). */
+                           * to ON; pre-v5 saves get pickerPolicy
+                           * defaulted to Random). */
 #define MC_BLOCK       1            /* memcard block we own (1..15) */
 #define MC_FIRST_SECT  (MC_BLOCK * 64)
 #define MC_FRAME_SIZE  8192
@@ -261,7 +264,10 @@ typedef struct {
                                 * reads or writes it. */
     uint8  storyCurrentDay;    /* added in MC_VERSION 2 — walk plan Phase 8 */
     uint8  oceanAmbientEnabled;/* added in MC_VERSION 3 — CC0 ocean ambience */
-    uint8  reserved[1];
+    uint8  pickerPolicy;       /* added in MC_VERSION 5 — Random/Sequential/Original.
+                                * Reuses the v4 reserved[1] byte slot, so v4 saves
+                                * load with whatever was sitting there — clamped to
+                                * RANDOM by the version-gated load below. */
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -358,12 +364,16 @@ int memcardLoadSettings(void)
         printf("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
         return 0;
     }
-    /* Accept v2..v4. v4 drops the unused footstepsEnabled toggle but
-     * keeps its byte position for binary compatibility — the field is
-     * just ignored on load and zeroed on save. v3 added
-     * oceanAmbientEnabled; v2 saves get that defaulted to ON.
-     * Reject v < 2 — those were transient and never released. */
-    if (s->version != MC_VERSION && s->version != 2 && s->version != 3) {
+    /* Accept v2..v5. v5 adds pickerPolicy (re-uses v4's reserved byte).
+     * v4 drops the unused footstepsEnabled toggle but keeps its byte
+     * position for binary compatibility — the field is ignored on
+     * load and zeroed on save. v3 added oceanAmbientEnabled; v2 saves
+     * get that defaulted to ON. Reject v < 2 — those were transient
+     * and never released. */
+    if (s->version != MC_VERSION
+        && s->version != 2
+        && s->version != 3
+        && s->version != 4) {
         memcardLastStatus = "version mismatch";
         return 0;
     }
@@ -398,6 +408,17 @@ int memcardLoadSettings(void)
     if (ps1SoftYear < 1583)
         ps1SoftYear = 2026;
 
+    /* pickerPolicy is field-of-record in v5+ only. v < 5 saves had a
+     * reserved byte sitting at this offset; force RANDOM so we don't
+     * accidentally restore garbage as a "real" policy. */
+    {
+        int policy = (loadedVersion >= 5) ? (int)s->pickerPolicy
+                                          : SCENE_PICKER_RANDOM;
+        if (policy < 0 || policy >= SCENE_PICKER_COUNT)
+            policy = SCENE_PICKER_RANDOM;
+        pickerSetPolicy(policy);
+    }
+
     /* Sync the ocean ambience SPU voice to the loaded toggle value when
      * settings are loaded after SPU init. Normal boot loads memcard first,
      * so this block is a no-op until soundInit has uploaded OCEAN.VAG. */
@@ -407,10 +428,11 @@ int memcardLoadSettings(void)
     }
 
     memcardLastStatus = "loaded";
-    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d\n",
+    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d picker=%d\n",
            soundMuted, hostForcedNight, hostForcedHoliday,
            ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMinute,
-           ps1SoftMonth, ps1SoftDay, ps1SoftYear, oceanAmbientEnabled);
+           ps1SoftMonth, ps1SoftDay, ps1SoftYear, oceanAmbientEnabled,
+           pickerGetPolicy());
     return 1;
 }
 
@@ -440,6 +462,7 @@ int memcardSaveSettings(void)
     s->softDay          = (uint8)ps1SoftDay;
     s->softYearLo       = (uint8)(ps1SoftYear & 0xFF);
     s->softYearHi       = (uint8)((ps1SoftYear >> 8) & 0xFF);
+    s->pickerPolicy     = (uint8)pickerGetPolicy();
 
     mcardSlowPoll();
 
