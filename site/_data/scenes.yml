@@ -783,21 +783,21 @@
 - ads: WALKSTUF
   tag: 1
   slug: walkstuf1
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: "2026-05-05"
+  notes: "visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out"
 - ads: WALKSTUF
   tag: 2
   slug: walkstuf2
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: "2026-05-04"
+  notes: "visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route"
 - ads: WALKSTUF
   tag: 3
   slug: walkstuf3

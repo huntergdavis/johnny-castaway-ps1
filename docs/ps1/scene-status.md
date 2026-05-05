@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 44 / 63 (next: walkstuf1)
+## Progress: 46 / 63 (next: building1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -80,8 +80,8 @@ current public release is `v0.6.12-ps1`.
 | VISITOR | 5 | visitor5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration |
 | VISITOR | 6 | visitor6 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position · full-host impact-delta injection | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels |
 | VISITOR | 7 | visitor7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position · coconut impact hold redistribution | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration |
-| WALKSTUF | 1 | walkstuf1 | ⏳ | ⏳ | — | — |  |
-| WALKSTUF | 2 | walkstuf2 | ⏳ | ⏳ | — | — |  |
+| WALKSTUF | 1 | walkstuf1 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him |
+| WALKSTUF | 2 | walkstuf2 | ✅ | ✅ | — | 2026-05-04 | visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route |
 | WALKSTUF | 3 | walkstuf3 | ✅ | ✅ | — | 2026-05-04 | visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed |
 
 ## Per-scene workflow

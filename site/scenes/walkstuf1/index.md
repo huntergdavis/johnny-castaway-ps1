@@ -4,11 +4,16 @@ title: WALKSTUF 1 — Jogs around the island
 ads: WALKSTUF
 tag: 1
 slug: walkstuf1
-status: pending
-description: "WALKSTUF.ADS scene 1: Jogs around the island. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "WALKSTUF.ADS scene 1: Jogs around the island. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff after re-exporting
+high/low packs with -500/+300 stitch positions and a range-gated
+Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny
+stays drawn in his rest position while the boat + mermaid scene plays
+out and the foreground-only diff drops him.
 
 ## Pack identifiers
 

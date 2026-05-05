@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 485 source and generated runtime assets indexed for the site.
+subtitle: 487 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -264,6 +264,8 @@ for the practical porting path.
 <tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
 <tr><td><code>SXST9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST9.SCR">source</a></td></tr>
+<tr><td><code>SXWK1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK1.SCR">source</a></td></tr>
+<tr><td><code>SXWK2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK2.SCR">source</a></td></tr>
 <tr><td><code>SXWK3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK3.SCR">source</a></td></tr>
 <tr><td><code>THEEND.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/THEEND.SCR">source</a></td></tr>
 </tbody>
@@ -551,10 +553,10 @@ for the practical porting path.
 <tr><td><code>VIST5LOW.FG2</code></td><td>354,227</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST5LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST6LOW.FG2</code></td><td>187,017</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST6LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST7LOW.FG2</code></td><td>134,088</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST7LOW.FG2">source</a></td></tr>
-<tr><td><code>WALK1LOW.FG2</code></td><td>2,157,403</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
+<tr><td><code>WALK1LOW.FG2</code></td><td>1,535,263</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK2LOW.FG2</code></td><td>163,167</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK2LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK3LOW.FG2</code></td><td>994,669</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK3LOW.FG2">source</a></td></tr>
-<tr><td><code>WALKSTUF1.FG2</code></td><td>2,128,856</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF1.FG2">source</a></td></tr>
+<tr><td><code>WALKSTUF1.FG2</code></td><td>1,535,263</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF1.FG2">source</a></td></tr>
 <tr><td><code>WALKSTUF2.FG2</code></td><td>163,167</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF2.FG2">source</a></td></tr>
 <tr><td><code>WALKSTUF3.FG2</code></td><td>1,026,922</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF3.FG2">source</a></td></tr>
 </tbody>

@@ -200,6 +200,8 @@
                 <file name="SXST12.SCR" type="data" source="../../jc_resources/extracted/scr/SXST12.SCR"/>
                 <file name="SXST15.SCR" type="data" source="../../jc_resources/extracted/scr/SXST15.SCR"/>
                 <file name="SXST16.SCR" type="data" source="../../jc_resources/extracted/scr/SXST16.SCR"/>
+                <file name="SXWK1.SCR" type="data" source="../../jc_resources/extracted/scr/SXWK1.SCR"/>
+                <file name="SXWK2.SCR" type="data" source="../../jc_resources/extracted/scr/SXWK2.SCR"/>
                 <file name="SXWK3.SCR" type="data" source="../../jc_resources/extracted/scr/SXWK3.SCR"/>
             </dir>
 
