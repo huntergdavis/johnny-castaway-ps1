@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 48 / 63 (next: building5)
+## Progress: 49 / 63 (next: building6)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -34,7 +34,7 @@ current public release is `v0.6.12-ps1`.
 | BUILDING | 2 | building2 | ✅ | ✅ | night · low-tide · holiday · validation route `raft-stage 0` · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form |
 | BUILDING | 3 | building3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route |
 | BUILDING | 4 | building4 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly |
-| BUILDING | 5 | building5 | ⏳ | ⏳ | — | — |  |
+| BUILDING | 5 | building5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route |
 | BUILDING | 6 | building6 | ⏳ | ⏳ | — | — |  |
 | BUILDING | 7 | building7 | ⏳ | ⏳ | — | — |  |
 | FISHING | 1 | fishing1 | ✅ | ✅ | night · low-tide · holiday · raft-stage | v0.3.6-ps1 | reference scene; template for remaining |
