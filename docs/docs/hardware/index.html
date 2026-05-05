@@ -12,47 +12,47 @@
   <meta property="og:title"        content="PS1 hardware constraints — Johnny Castaway PS1" />
   <meta property="og:description"  content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="/johnny-castaway-ps1/docs/hardware/" />
+  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../help/">Help</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../archaeology/">Archaeology</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -105,7 +105,7 @@ The CD’s 150 ms seek and the SPU’s separate-RAM model are what shape the
 runtime; the MIPS core itself is rarely the bottleneck. That distinction
 matters when reading the rest of these docs — most of the perf work is about
 hiding seeks, not making the CPU faster. See
-<a href="../performance/">Performance work</a> for the
+<a href="/johnny-castaway-ps1/docs/performance/">Performance work</a> for the
 experiment ledger.</p>
 
 <h2 id="hardware-reference">Hardware reference</h2>
@@ -189,7 +189,7 @@ mix audio; it uploads samples once and triggers them via voice keys.</p>
 
 <p>For this project the entire sound bank — 23 effect samples, total ~95 KB
 ADPCM — preloads into SPU RAM at boot. There is no streaming, no music. See
-<a href="../audio/">Audio pipeline</a> for the SPU layout map.</p>
+<a href="/johnny-castaway-ps1/docs/audio/">Audio pipeline</a> for the SPU layout map.</p>
 
 <h3 id="storage-cd-rom">Storage (CD-ROM)</h3>
 
@@ -274,7 +274,7 @@ move VBlank cadence enough to mask or invent the very bugs being debugged.
 The project uses TTY for one-shot snapshots (<code class="language-plaintext highlighter-rouge">JCPAUSE</code>, <code class="language-plaintext highlighter-rouge">JCPERF</code>,
 <code class="language-plaintext highlighter-rouge">JCPERF2</code>, <code class="language-plaintext highlighter-rouge">JCPAD</code>, <code class="language-plaintext highlighter-rouge">JCSPI</code>) and a colored on-framebuffer telemetry
 overlay for steady-state visibility. See
-<a href="../performance/">Performance work</a> for how the
+<a href="/johnny-castaway-ps1/docs/performance/">Performance work</a> for how the
 perf module gates print levels.</p>
 
 <h3 id="vprintf-was-unbounded-and-that-forced-debugmode0"><code class="language-plaintext highlighter-rouge">vprintf</code> was unbounded, and that forced <code class="language-plaintext highlighter-rouge">debugMode=0</code></h3>
@@ -301,17 +301,17 @@ specialized compositors, not a clock change — the clock isn’t going up.</p>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../build/">Build &amp; toolchain</a> — the cross-compile
+  <li><a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a> — the cross-compile
 setup that targets this hardware.</li>
-  <li><a href="../infrastructure/">Build infrastructure</a> — what
+  <li><a href="/johnny-castaway-ps1/docs/infrastructure/">Build infrastructure</a> — what
 the dev environment looks like beyond the toolchain.</li>
-  <li><a href="../performance/">Performance work</a> — the
+  <li><a href="/johnny-castaway-ps1/docs/performance/">Performance work</a> — the
 experiment ledger that lives on top of these constraints.</li>
-  <li><a href="../audio/">Audio pipeline</a> — SPU layout and the
+  <li><a href="/johnny-castaway-ps1/docs/audio/">Audio pipeline</a> — SPU layout and the
 HLE-vs-hardware divergence in detail.</li>
-  <li><a href="../../about/method/">Method</a> — how a one-person port
+  <li><a href="/johnny-castaway-ps1/about/method/">Method</a> — how a one-person port
 decides what to ship.</li>
-  <li><a href="../../devlog/">Devlog</a> — day-by-day worklog where most of
+  <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a> — day-by-day worklog where most of
 these bugs got triaged.</li>
 </ul>
 
@@ -336,9 +336,9 @@ these bugs got triaged.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          44 / 63 scenes validated
+          57 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -351,14 +351,14 @@ these bugs got triaged.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

@@ -25,11 +25,11 @@ current public release is `v0.6.12-ps1`.
 | ACTIVITY | 5 | activity5 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 6 | activity6 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 7 | activity7 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 8 | activity8 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 8 | activity8 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base |
 | ACTIVITY | 9 | activity9 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 10 | activity10 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 11 | activity11 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 12 | activity12 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 10 | activity10 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book |
+| ACTIVITY | 11 | activity11 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop |
+| ACTIVITY | 12 | activity12 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive |
 | BUILDING | 1 | building1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route |
 | BUILDING | 2 | building2 | ✅ | ✅ | night · low-tide · holiday · validation route `raft-stage 0` · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form |
 | BUILDING | 3 | building3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-05 | visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route |
@@ -80,8 +80,8 @@ current public release is `v0.6.12-ps1`.
 | VISITOR | 5 | visitor5 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration |
 | VISITOR | 6 | visitor6 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position · full-host impact-delta injection | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels |
 | VISITOR | 7 | visitor7 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position · coconut impact hold redistribution | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration |
-| WALKSTUF | 1 | walkstuf1 | ⏳ | ⏳ | — | — |  |
-| WALKSTUF | 2 | walkstuf2 | ⏳ | ⏳ | — | — |  |
+| WALKSTUF | 1 | walkstuf1 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him |
+| WALKSTUF | 2 | walkstuf2 | ✅ | ✅ | — | 2026-05-04 | visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route |
 | WALKSTUF | 3 | walkstuf3 | ✅ | ✅ | — | 2026-05-04 | visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed |
 
 ## Per-scene workflow

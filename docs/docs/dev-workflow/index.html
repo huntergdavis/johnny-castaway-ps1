@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Development workflow — Johnny Castaway PS1" />
   <meta property="og:description"  content="The Johnny Castaway PS1 port's per-scene development loop — host capture, FG2 encoding, PS1 replay, screenshot, and the human visual + audible signoff bar." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="/johnny-castaway-ps1/docs/dev-workflow/" />
+  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="../../">
+    <a class="site-title" href="/johnny-castaway-ps1/">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="../../">Home</a></li>
-        <li><a href="../../play/">Play</a></li>
-        <li><a href="../../help/">Help</a></li>
-        <li><a href="../../about/">About</a></li>
-        <li><a href="../../scenes/">Scenes</a></li>
-        <li><a href="../../devlog/">Devlog</a></li>
-        <li><a href="../../archaeology/">Archaeology</a></li>
-        <li><a href="../../lab/">Lab</a></li>
-        <li><a href="../../hack/">Hack</a></li>
-        <li><a href="../" aria-current="page">Docs</a></li>
+        <li><a href="/johnny-castaway-ps1/">Home</a></li>
+        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
+        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
+        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
+        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
+        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
+        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
+        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -76,7 +76,7 @@
     <p>A labor of love by Hunter Davis. This page is the author’s own runbook —
 the literal sequence of commands typed when bringing up a new scene. It is
 <strong>not</strong> a contributor onboarding. The project does not solicit
-contributions; see the <a href="../../faq/">FAQ</a> for the
+contributions; see the <a href="/johnny-castaway-ps1/faq/">FAQ</a> for the
 project’s stance. If you’re reading this for archaeology or to understand
 how the disc image is being built scene by scene, you’re in the right
 place.</p>
@@ -94,7 +94,7 @@ applicable variant for that scene.</p>
 <p>That is the gate. Frame-hash-equal regression is a useful diagnostic but
 not the gate. SHA256 state hashes are useful for “did this build change
 behavior” questions but not the gate. See
-<a href="../regtest/">Regression testing</a> for what
+<a href="/johnny-castaway-ps1/docs/regtest/">Regression testing</a> for what
 those tools are good for.</p>
 
 <p>Milestone release cadence: every <strong>10</strong> scenes reaching <code class="language-plaintext highlighter-rouge">✅ / ✅</code>. Smaller
@@ -105,7 +105,7 @@ worth shipping.</p>
 
 <ul>
   <li>Docker, image <code class="language-plaintext highlighter-rouge">jc-reborn-ps1-dev:amd64</code> already built. See
-<a href="../build/">Build &amp; toolchain</a>.</li>
+<a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a>.</li>
   <li>DuckStation, Flatpak install (<code class="language-plaintext highlighter-rouge">org.duckstation.DuckStation</code>).</li>
   <li>A real PS1 BIOS file in one of the auto-detected directories.</li>
   <li>
@@ -298,7 +298,7 @@ always in <code class="language-plaintext highlighter-rouge">fgBackdropRelease(k
 
 <p>The runbook above is the <em>happy path</em>. The actual time per scene is
 dominated by debugging mismatches between host capture and PS1 replay,
-which is why the <a href="../regtest/">regtest harness</a>
+which is why the <a href="/johnny-castaway-ps1/docs/regtest/">regtest harness</a>
 exists as a diagnostic — not as the acceptance gate.</p>
 
 <h2 id="diagnostics">Diagnostics</h2>
@@ -326,7 +326,7 @@ are useful ground truth when a replay mismatches. Point
 or a custom <code class="language-plaintext highlighter-rouge">PADSCRIPT.TXT</code> route when a bug depends on menu navigation or
 Freeplay input. The script drives the actual PS1 pad path and emits
 <code class="language-plaintext highlighter-rouge">JCPADSHOT</code> markers for screenshot alignment; see
-<a href="../scripted-input/">Scripted input harness</a>.</li>
+<a href="/johnny-castaway-ps1/docs/scripted-input/">Scripted input harness</a>.</li>
   <li><strong>Scratch files go in <code class="language-plaintext highlighter-rouge">scratch/</code></strong>, never <code class="language-plaintext highlighter-rouge">/tmp</code>. DuckStation logs
 grow fast and <code class="language-plaintext highlighter-rouge">/tmp</code> has filled and broken the shell before.</li>
 </ul>
@@ -406,14 +406,14 @@ in the archaeology and research docs.</p>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="../build/">Build &amp; toolchain</a> — what
+  <li><a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a> — what
 <code class="language-plaintext highlighter-rouge">build-ps1.sh</code> actually does inside the dev container.</li>
-  <li><a href="../regtest/">Regression testing</a> — secondary
+  <li><a href="/johnny-castaway-ps1/docs/regtest/">Regression testing</a> — secondary
 diagnostics path. Useful for frozen-artifact comparisons.</li>
-  <li><a href="../pause-menu/">Pause menu</a> — the editors
+  <li><a href="/johnny-castaway-ps1/docs/pause-menu/">Pause menu</a> — the editors
 for Set Time / Island Pos / Seed cover variant testing without
 rebooting.</li>
-  <li><a href="../../scenes/">Scene ledger</a> — current per-scene
+  <li><a href="/johnny-castaway-ps1/scenes/">Scene ledger</a> — current per-scene
 status.</li>
 </ul>
 
@@ -440,9 +440,9 @@ status.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          44 / 63 scenes validated
+          57 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -455,14 +455,14 @@ status.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="../../help/">Help</a></li>
-          <li><a href="../../faq/">FAQ</a></li>
-          <li><a href="../../credits/">Credits</a></li>
-          <li><a href="../../hack/">Hack</a></li>
-          <li><a href="../../source/">Source library</a></li>
-          <li><a href="../../resources/">Resources</a></li>
-          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="../../legal/">Legal</a></li>
+          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
+          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
+          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
+          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
+          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
+          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
+          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
         </ul>
       </nav>
     </div>
