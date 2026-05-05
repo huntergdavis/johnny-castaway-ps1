@@ -3,10 +3,11 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-04 (scene ledger at 43/63; `VISITOR 4`,
-`VISITOR 5`, and `VISITOR 6` were validated after generic multi-view
-capture. VISITOR6 also uses full-host impact-delta injection for the
-background-owned coconut/tree impact frames).
+**Last updated:** 2026-05-04 (scene ledger at 44/63; `VISITOR 4`,
+`VISITOR 5`, `VISITOR 6`, and `VISITOR 7` were validated after generic
+multi-view capture. VISITOR6 also uses full-host impact-delta injection
+for the background-owned coconut/tree impact frames, while VISITOR7 uses
+hold redistribution for its coconut/tree impact frames).
 
 ## Overall
 
@@ -16,7 +17,8 @@ animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
 `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`,
 `STAND 1`-`STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`,
-`VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, and `WALKSTUF 3` have been validated
+`VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`,
+`VISITOR 7`, and `WALKSTUF 3` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -112,6 +114,11 @@ impact-delta injection for source frames 120:141. Foreground-only capture
 keeps Johnny and the coconut clean but omits the background-owned tree
 shake/strike pixels, so only that proved live window is copied from the
 full-host capture.
+`VISITOR 7` uses the generic normal/far-left/far-right multi-view stitch
+with production-variable island placement. The captured coconut/tree
+impact pixels were present, but dedupe left the strike rows too short, so
+source frames 32, 62, 71, and 80 now receive redistributed hold time while
+the total 1355-vblank scene duration stays unchanged.
 `WALKSTUF 3` validates the existing on-disc `WALK3.FG2` / `WALK3LOW.FG2`
 packs on the normal high-tide/night route with visual + audible signoff;
 no pack/runtime rework was needed.
@@ -123,7 +130,7 @@ no pack/runtime rework was needed.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 43/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 44/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -133,21 +140,24 @@ no pack/runtime rework was needed.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 43 / 63 fully validated
+## Scenes: 44 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
 Milestone releases:
-- Post-`v0.6.12-ps1` — promotes `VISITOR 4`, `VISITOR 5`, and `VISITOR 6`.
+- `v0.6.13-ps1` — promotes `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, and `VISITOR 7`.
   VISITOR4 is the coconut/plane gag in the current scene mapping, correcting
   the old red-boat catalogue label. VISITOR5 regenerates high/low packs through
   the generic multi-view stitch and redistributes hold time into the coconut
   impact / downed-plane rows. Total scene duration remains 915 vblanks.
   VISITOR6 regenerates high/low packs through the same multi-view path and
   injects only the full-host source frames 120:141 deltas needed for the
-  background-owned tree shake/strike pixels.
+  background-owned tree shake/strike pixels. VISITOR7 regenerates high/low
+  packs through the same multi-view path and redistributes hold time onto
+  source frames 32, 62, 71, and 80 so the coconut/tree impact frames read
+  without changing total scene duration.
 - `v0.6.12-ps1` — promotes `STAND 2`-`STAND 12`,
   `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`,
   and `WALKSTUF 3` after visual signoff. The STAND
@@ -345,7 +355,8 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **43 / 63** | **2026-05-04** | **Current scene ledger after `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels** | **this doc, `scene-status.md`** |
+| **44 / 63** | **2026-05-04** | **Current scene ledger after `VISITOR 7` promotion; high/low packs use the generic multi-view stitch plus hold redistribution for source frames 32, 62, 71, and 80 so the coconut/tree impact reads clearly** | **this doc, `scene-status.md`** |
+| 43 / 63 | 2026-05-04 | `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels | this doc, `scene-status.md` |
 | 42 / 63 | 2026-05-04 | `VISITOR 4` promotion; live validation confirms VISITOR4 is the coconut/plane gag in the current scene mapping, and its high/low packs use the generic multi-view stitch | this doc, `scene-status.md` |
 | 41 / 63 | 2026-05-04 | `VISITOR 5` promotion; high/low packs use the generic multi-view stitch plus scene-specific hold redistribution for the coconut impact and downed-plane motion | this doc, `scene-status.md` |
 | 40 / 63 | 2026-05-04 | `VISITOR 3` and `WALKSTUF 3` promotion; VISITOR3 uses rebuilt high/low red-ship/splash synthesis packs, while WALKSTUF3 validates existing on-disc WALK3 packs without rework | this doc, `scene-status.md` |

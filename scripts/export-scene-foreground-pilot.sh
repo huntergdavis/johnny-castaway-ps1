@@ -280,6 +280,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor5" ]; then
   # static holds. Move time into those action rows so the gag reads clearly.
   HOLD_ADJUSTMENTS="91:-2 93:-2 95:-2 96:-1 98:-2 100:-2 102:-2 104:-1 105:+2 108:+2 109:+1 112:+2 113:+3 116:+2 119:+2 147:-2 149:+2 150:-2 152:+2 153:-2 155:+2 156:-2 158:+2 159:-2 161:+2 162:-2 164:+2 165:-2 167:+2 168:-2 170:+2 171:-2 173:+2 174:-2 176:+2 177:-1 179:+2 180:-1"
 fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor7" ]; then
+  # The coconut impact star frames exist in the capture but dedupe leaves them
+  # at four ticks between long static poses, so they read as missing in replay.
+  HOLD_ADJUSTMENTS="32:+8 39:-8 62:+8 65:-8 71:+8 74:-8 80:+8 85:-8"
+fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   "$HOST_CAPTURE_HIGH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR" \

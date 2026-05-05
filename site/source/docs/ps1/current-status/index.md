@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-VISITOR 5, and VISITOR 6 were validated after generic multi-view capture. VISITOR6 also uses full-host impact-delta injection for the background-owned coconut/tree impact frames).
+VISITOR 5, VISITOR 6, and VISITOR 7 were validated after generic multi-view capture. VISITOR6 also uses full-host impact-delta injection for the background-owned coconut/tree impact frames, while VISITOR7 uses hold redistribution for its coconut/tree impact frames).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 426 |
-| Approx. words | 4397 |
+| Lines | 437 |
+| Approx. words | 4534 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 43 / 63 fully validated
+-   Scenes: 44 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
