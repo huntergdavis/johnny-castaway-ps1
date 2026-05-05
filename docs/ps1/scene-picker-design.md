@@ -1,19 +1,21 @@
 # Scene Picker Algorithms — Research + Design (v2)
 
-> Status: research draft, **not signed off**. Includes a red-team review at
-> the bottom that flags risks before any implementation.
+> Status: **shipped** as branch `scene-picker-policies-20260504`. PR1
+> (Random + Sequential) and PR2 (Original Sierra state machine + Force
+> Story Day) both landed; the runtime "validated/proven set" gate was
+> retired in the same arc — see "Today's runtime" below.
 
-## What we have today
+## What we had before this work
 
-`fgLoopNextScene(explicitScene, sceneSetIdx)` in `src/jc_reborn.c:318` is a
-three-way fallback:
+`fgLoopNextScene(explicitScene, sceneSetIdx)` was a three-way fallback:
 
 1. If a caller (Scene Explorer pin, CLI `fgpilot <slug>`) set
    `explicitScene`, replay that slug forever until cleared.
-2. Otherwise, if the active Scene Set has a non-empty pool, return
+2. Otherwise, if the active Scene Set had a non-empty pool, return
    `pool[rand() % pool.count]`.
 3. Otherwise, return `kProvenScenes[rand() % NUM_PROVEN_SCENES]` — a
-   six-entry hand-curated walk-friendly fallback.
+   six-entry hand-curated walk-friendly fallback. This array is gone;
+   `kAllScenes` (all 63 scenes that ship with FG2 packs) replaced it.
 
 Wrapped around it: a story-day calendar tick, an island-position reroll
 on sequence boundaries, a walk render to the next scene's start, the
@@ -386,9 +388,10 @@ as Original. Easy hook — `storyForcedCurrentDay` already exists at
 
 The pool's order today is the order we authored in
 `gSceneSetPools[]`. For Fishing Only that's `fishing1..fishing8`,
-which feels natural. But for "All Scenes" that's `kProvenScenes` ↦
-`fishing1, fishing2, building1, building3, walkstuf2, walkstuf3` —
-not alphabetical, not chronological.
+which feels natural. For "All Scenes" the order is whatever
+`kAllScenes[]` lists (alphabetical-by-family-then-tag — activity1
+through walkstuf3); it cycles all 63 in ~14 minutes of playback
+before wrapping.
 
 **Recommendation**: Sequential cycles through the pool in
 authored order. Document this. If users want alphabetical, that's a
