@@ -21,11 +21,11 @@ defects already seen during the scene-by-scene push.
 
 Immediate handoff note:
 
-- `VISITOR 6` has human visual + audible signoff and is being promoted with the scene ledger at 43/63.
-- The regenerated `VISITOR6.FG2`, `VIST6LOW.FG2`, `scripts/merge-scene-foreground-views.py`, and the VISITOR6 branch in `scripts/export-scene-foreground-pilot.sh` belong with the `VISITOR 6` promotion.
-- `VISITOR 6` is a background-owned impact-delta case: foreground-only views keep Johnny/coconut clean but omit tree shake/strike pixels, so the generic merge helper injects only non-backdrop full-host deltas from source frames 120:141.
+- `VISITOR 7` has human visual + audible signoff and is being promoted with the scene ledger at 44/63.
+- The regenerated `VISITOR7.FG2`, `VIST7LOW.FG2`, and the VISITOR7 hold-redistribution branch in `scripts/export-scene-foreground-pilot.sh` belong with the `VISITOR 7` promotion.
+- `VISITOR 7` is a timing case: foreground-only host frames already contain the coconut/tree strike pixels, but dedupe left the impact rows too short. Source frames 32, 62, 71, and 80 now get redistributed hold time without changing total scene duration.
 - Production island placement remains variable. The normal, far-left, and far-right capture/test positions are evidence, not runtime pins.
-- Next scene after promoting `VISITOR 6` is `VISITOR 7`.
+- Next scene after promoting `VISITOR 7` is `WALKSTUF 1`.
 
 ## Non-Negotiables
 
