@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 57 / 63 (next: activity1; activity9 deferred)
+## Progress: 58 / 63 (next: activity1; activity9 deferred)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -23,7 +23,7 @@ current public release is `v0.6.12-ps1`.
 | ACTIVITY | 1 | activity1 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 4 | activity4 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 5 | activity5 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 6 | activity6 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 6 | activity6 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop |
 | ACTIVITY | 7 | activity7 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 8 | activity8 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base |
 | ACTIVITY | 9 | activity9 | ⏳ | ⏳ | — | — |  |

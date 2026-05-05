@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Lab — Johnny Castaway PS1" />
   <meta property="og:description"  content="The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/lab/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/" aria-current="page">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../help/">Help</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="./" aria-current="page">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -97,14 +97,14 @@ disclosure is part of the methodology, not an apology for it. The
 voice anchor for the whole site — the four-line <code class="language-plaintext highlighter-rouge">drawCredits</code> text in
 <code class="language-plaintext highlighter-rouge">src/pause_menu.c</code> — is hand-written and load-bearing; everything
 downstream of it gets edited until it sounds like the same person. The
-<a href="/johnny-castaway-ps1/lab/voice-anchor-problem/">voice-anchor article</a>
+<a href="./voice-anchor-problem/">voice-anchor article</a>
 goes into how that pipeline works in practice.</p>
 
 <p>If you want the practical learning path rather than the magazine treatment,
-start with the <a href="/johnny-castaway-ps1/hack/">Curious Hacker’s Guide</a>. If you
+start with the <a href="../hack/">Curious Hacker’s Guide</a>. If you
 want the raw documents behind the essays, use the
-<a href="/johnny-castaway-ps1/source/">source library</a> and the
-<a href="/johnny-castaway-ps1/resources/">resource catalog</a>.</p>
+<a href="../source/">source library</a> and the
+<a href="../resources/">resource catalog</a>.</p>
 
 <h2 id="contents">Contents</h2>
 
@@ -115,27 +115,27 @@ second six are the companion craft retrospectives.</p>
 
 <ul class="doc-grid">
   <li>
-    <a href="/johnny-castaway-ps1/lab/dunking-bird/">The dunking bird</a>
+    <a href="./dunking-bird/">The dunking bird</a>
     <p>A dumb hack the author wrote that pokes multiple LLM agents in parallel so they keep working instead of going idle. Used a lot during the perf branch's long unattended runs.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/llm-pass/">The LLM pass</a>
-    <p>How a one-person fan port uses AI sub-agents without lying about it. The methodology essay; the docs version is at <a href="/johnny-castaway-ps1/docs/agents/">/docs/agents/</a>.</p>
+    <a href="./llm-pass/">The LLM pass</a>
+    <p>How a one-person fan port uses AI sub-agents without lying about it. The methodology essay; the docs version is at <a href="../docs/agents/">/docs/agents/</a>.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/hallucination-engineering/">Hallucination engineering</a>
+    <a href="./hallucination-engineering/">Hallucination engineering</a>
     <p>Mitigating LLM-driven dev's specific failure mode: confident wrong answers. War stories, mitigations, what the year of practice teaches.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/build-farm/">The 24/7 build farm</a>
+    <a href="./build-farm/">The 24/7 build farm</a>
     <p>Docker, multiple branches, headless DuckStation. How a one-person project keeps a build matrix running around the clock.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/regression-as-lifestyle/">Regression as a lifestyle</a>
+    <a href="./regression-as-lifestyle/">Regression as a lifestyle</a>
     <p>Continuous regtest is not a CI feature. On this project it's a way of working — frame-by-frame screenshot diffs are the heartbeat.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/voice-anchor-problem/">The voice anchor problem</a>
+    <a href="./voice-anchor-problem/">The voice anchor problem</a>
     <p>Keeping a project's voice consistent when half the prose was drafted by AI sub-agents. The drawCredits text, the voice guide, the audit pass.</p>
   </li>
 </ul>
@@ -144,27 +144,27 @@ second six are the companion craft retrospectives.</p>
 
 <ul class="doc-grid">
   <li>
-    <a href="/johnny-castaway-ps1/lab/pixel-perfect-pivot/">The pivot that almost didn't happen</a>
+    <a href="./pixel-perfect-pivot/">The pivot that almost didn't happen</a>
     <p>How the project nearly shipped at "looks similar" before pixel-perfect became the bar. A retrospective on the choice that defined everything else.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/35-holidays-codegen/">35 holidays in 4 weeks: a codegen study</a>
+    <a href="./35-holidays-codegen/">35 holidays in 4 weeks: a codegen study</a>
     <p>From four shipped holidays to thirty-six in a month, via Meeus, Zeller, and a YAML file that compiles to a C struct array.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/why-i-keep-porting-johnny/">Why I keep porting Johnny Castaway</a>
+    <a href="./why-i-keep-porting-johnny/">Why I keep porting Johnny Castaway</a>
     <p>Dreamcast, picture frame, embedded Linux, PS1. The same screensaver, four times. What I'm actually doing when I do it again.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/two-day-spi-bug/">The two-day SPI bug</a>
+    <a href="./two-day-spi-bug/">The two-day SPI bug</a>
     <p>A war story about the PS1 controller pad-poll TX length. DuckStation only delivers button bytes when you send the full five-byte sequence. Spicyjpeg's example is wrong about that.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/fan-port-in-public/">Building a fan port in public</a>
+    <a href="./fan-port-in-public/">Building a fan port in public</a>
     <p>Disclaimers, the original creator, GPL-3.0 inheritance, "if you paid for this, you were cheated." How shipping a fan port works without lawyers in 2026.</p>
   </li>
   <li>
-    <a href="/johnny-castaway-ps1/lab/the-63-scene-grind/">The 63-scene grind</a>
+    <a href="./the-63-scene-grind/">The 63-scene grind</a>
     <p>Five scenes signed off, fifty-eight to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
   </li>
 </ul>
@@ -180,11 +180,11 @@ what worked, and that future me is the primary reader. You’re welcome
 to read along.</p>
 
 <p>For the live status of the port, see
-<a href="/johnny-castaway-ps1/about/status/">/about/status/</a>. For the
+<a href="../about/status/">/about/status/</a>. For the
 day-by-day worklogs, see
-<a href="/johnny-castaway-ps1/devlog/">/devlog/</a>. For reference docs, see
-<a href="/johnny-castaway-ps1/docs/">/docs/</a>. For a guided path through the
-codebase, see <a href="/johnny-castaway-ps1/hack/">/hack/</a>.</p>
+<a href="../devlog/">/devlog/</a>. For reference docs, see
+<a href="../docs/">/docs/</a>. For a guided path through the
+codebase, see <a href="../hack/">/hack/</a>.</p>
 
   </div>
 </article>
@@ -201,9 +201,9 @@ codebase, see <a href="/johnny-castaway-ps1/hack/">/hack/</a>.</p>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -216,14 +216,14 @@ codebase, see <a href="/johnny-castaway-ps1/hack/">/hack/</a>.</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../help/">Help</a></li>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

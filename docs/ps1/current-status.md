@@ -3,23 +3,31 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-05 (scene ledger at 50/63; `BUILDING 1`,
-`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, and `BUILDING 6` were validated after
-generic multi-view capture. BUILDING2 keeps the persistent sandcastle via
-full-host diff injection, and BUILDING4 uses an explicit terminal FGP3
-cleanup frame so the final Johnny/bird row restores cleanly).
+**Last updated:** 2026-05-05 (scene ledger at 58/63; `ACTIVITY 6` was
+validated after re-exporting high/low packs through the no-stitch fast
+path with frame-wide keyed overlay — fixes ghosted Johnny pose residue
+from base-diff against the static-Johnny base on the
+reads/falls-asleep/coconut-bonk loop. Earlier this push: `BUILDING 1`-`BUILDING 7`
+were validated through generic multi-view capture; BUILDING2 keeps the
+persistent sandcastle via full-host diff injection, BUILDING4 uses an
+explicit terminal FGP3 cleanup frame so the final Johnny/bird row
+restores cleanly, and BUILDING7 patches the middle campfire from clean
+animated foreground rows before FGP3 cleanup. `ACTIVITY 8`, `ACTIVITY 10`,
+`ACTIVITY 11`, `ACTIVITY 12`, `WALKSTUF 1`, and `WALKSTUF 2` were also
+validated upstream).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
-animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
+animations. `ACTIVITY 6`, `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`,
+`ACTIVITY 12`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `BUILDING 1`,
-`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `JOHNNY 1`, `JOHNNY 2`,
+`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `JOHNNY 1`, `JOHNNY 2`,
 `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
 `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`,
 `STAND 1`-`STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`,
 `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`,
-`VISITOR 7`, and `WALKSTUF 3` have been validated
+`VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, and `WALKSTUF 3` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -131,7 +139,7 @@ no pack/runtime rework was needed.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 50/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 58/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -141,7 +149,7 @@ no pack/runtime rework was needed.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 57 / 63 fully validated
+## Scenes: 58 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -356,6 +364,7 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
+| **58 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 6` promotion; high/low packs were re-exported through the no-stitch fast path with frame-wide keyed overlay to clean ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop** | **this doc, `scene-status.md`** |
 | **57 / 63** | **2026-05-05** | **Current scene ledger after `BUILDING 7` promotion plus upstream `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `WALKSTUF 1`, and `WALKSTUF 2`; BUILDING1-7 high/low packs use the generic multi-view stitch, BUILDING2 injects persistent full-host sandcastle pixels, BUILDING4 uses terminal FGP3 cleanup, and BUILDING7 patches the middle campfire from clean animated foreground rows before FGP3 cleanup** | **this doc, `scene-status.md`** |
 | 44 / 63 | 2026-05-04 | `VISITOR 7` promotion; high/low packs use the generic multi-view stitch plus hold redistribution for source frames 32, 62, 71, and 80 so the coconut/tree impact reads clearly | this doc, `scene-status.md` |
 | 43 / 63 | 2026-05-04 | `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels | this doc, `scene-status.md` |

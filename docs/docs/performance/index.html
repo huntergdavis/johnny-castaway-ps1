@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
   <meta property="og:description"  content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/docs/performance/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -149,7 +149,7 @@ At the time of writing it contains 600+ experiment rows going back to
 
 <p>The full scene/tide battle card is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
-and is rendered as the perf battle card section of the <a href="/johnny-castaway-ps1/scenes/">scene ledger</a>.
+and is rendered as the perf battle card section of the <a href="../../scenes/">scene ledger</a>.
 It is not the human scene-promotion ledger; it is the timing sheet for
 headless performance work.</p>
 
@@ -353,7 +353,7 @@ carry active-loop timing; <code class="language-plaintext highlighter-rouge">suz
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
 run is <code class="language-plaintext highlighter-rouge">2026-05-03T14:22:57</code>; per-row freshness and stats version are shown on
-the <a href="/johnny-castaway-ps1/scenes/">scene ledger</a>. The values below are
+the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
@@ -768,17 +768,17 @@ scene playback first.</li>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
-  <li><a href="/johnny-castaway-ps1/docs/hardware/">Hardware</a> — what the
+  <li><a href="../hardware/">Hardware</a> — what the
 optimizations are running against.</li>
-  <li><a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a> — how the
+  <li><a href="../build/">Build &amp; toolchain</a> — how the
 PS1 binary is produced.</li>
-  <li><a href="/johnny-castaway-ps1/docs/infrastructure/">Build infrastructure</a> —
+  <li><a href="../infrastructure/">Build infrastructure</a> —
 the wrapper around the perf iterate script.</li>
-  <li><a href="/johnny-castaway-ps1/docs/audio/">Audio pipeline</a> — the SPU side,
+  <li><a href="../audio/">Audio pipeline</a> — the SPU side,
 which has its own scheduling concerns.</li>
-  <li><a href="/johnny-castaway-ps1/docs/vision/">Vision-classifier work</a> — the
+  <li><a href="../vision/">Vision-classifier work</a> — the
 validation layer that runs against perf-experiment outputs.</li>
-  <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a> — perf work shows up
+  <li><a href="../../devlog/">Devlog</a> — perf work shows up
 day-by-day there.</li>
 </ul>
 
@@ -807,9 +807,9 @@ day-by-day there.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -822,14 +822,14 @@ day-by-day there.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

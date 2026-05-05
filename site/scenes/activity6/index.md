@@ -4,11 +4,15 @@ title: ACTIVITY 6 — Reads, falls asleep, coconut bonk
 ads: ACTIVITY
 tag: 6
 slug: activity6
-status: pending
-description: "ACTIVITY.ADS scene 6: Reads, falls asleep, coconut bonk. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 6: Reads, falls asleep, coconut bonk. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff after re-exporting
+high/low packs through the no-stitch fast path with frame-wide keyed
+overlay — fixes ghosted Johnny pose residue from base-diff against the
+static-Johnny base on the reads/falls-asleep/coconut-bonk loop.
 
 ## Pack identifiers
 

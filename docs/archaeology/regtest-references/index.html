@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Regtest reference set — Johnny Castaway PS1" />
   <meta property="og:description"  content="The frozen reference frames the Johnny Castaway PS1 fan port's regtest harness compares each fresh capture against, plus the metadata that lets a fresh run reproduce the conditions of the original." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/archaeology/regtest-references/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/" aria-current="page">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../" aria-current="page">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -108,7 +108,7 @@ be detected by comparing against a fixed point.</p>
 file (<code class="language-plaintext highlighter-rouge">FISHING.ADS</code>, <code class="language-plaintext highlighter-rouge">BUILDING.ADS</code>, etc.) and the tag is the scene’s
 position within that ADS, one-indexed. This is the same scheme the
 project uses everywhere else: in the
-<a href="/johnny-castaway-ps1/scenes/">scene ledger</a>,
+<a href="../../scenes/">scene ledger</a>,
 in the boot strings, in the bringup status reports.</p>
 
 <p>The ten ADS families are:</p>
@@ -212,11 +212,11 @@ the reference’s, the scene passed. The slow path, used when the hash
 disagrees, is per-frame BMP diffing, which is what produces the
 side-by-side review HTML the operator looks at to figure out what
 changed. That slow-path diffing is documented in
-<a href="/johnny-castaway-ps1/docs/regtest/">the regtest docs</a> along with the
+<a href="../../docs/regtest/">the regtest docs</a> along with the
 exit codes and the harness invocation.</p>
 
 <p>Each preserved reference also has a generated shelf page under
-<a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">/archaeology/regtest-references/cases/</a>.
+<a href="./cases/">/archaeology/regtest-references/cases/</a>.
 Those pages expose the boot string, frame count, state hash, source artifacts,
 and links back to the corresponding scene ledger entry.</p>
 
@@ -232,84 +232,84 @@ on 2026-03-28 against the host build of that day.</p>
 <tr><th>Scene</th><th>ADS</th><th>Tag</th><th>Reference dir</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity1/">ACTIVITY-1</a></td><td>ACTIVITY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-1/">ACTIVITY-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity4/">ACTIVITY-4</a></td><td>ACTIVITY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-4/">ACTIVITY-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity5/">ACTIVITY-5</a></td><td>ACTIVITY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-5/">ACTIVITY-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity6/">ACTIVITY-6</a></td><td>ACTIVITY.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-6/">ACTIVITY-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity7/">ACTIVITY-7</a></td><td>ACTIVITY.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-7/">ACTIVITY-7/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity8/">ACTIVITY-8</a></td><td>ACTIVITY.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-8/">ACTIVITY-8/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity9/">ACTIVITY-9</a></td><td>ACTIVITY.ADS</td><td>9</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9/">ACTIVITY-9/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity10/">ACTIVITY-10</a></td><td>ACTIVITY.ADS</td><td>10</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-10/">ACTIVITY-10/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity11/">ACTIVITY-11</a></td><td>ACTIVITY.ADS</td><td>11</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-11/">ACTIVITY-11/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/activity12/">ACTIVITY-12</a></td><td>ACTIVITY.ADS</td><td>12</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-12/">ACTIVITY-12/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building1/">BUILDING-1</a></td><td>BUILDING.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-1/">BUILDING-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building2/">BUILDING-2</a></td><td>BUILDING.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-2/">BUILDING-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building3/">BUILDING-3</a></td><td>BUILDING.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-3/">BUILDING-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building4/">BUILDING-4</a></td><td>BUILDING.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-4/">BUILDING-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building5/">BUILDING-5</a></td><td>BUILDING.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-5/">BUILDING-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building6/">BUILDING-6</a></td><td>BUILDING.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-6/">BUILDING-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/building7/">BUILDING-7</a></td><td>BUILDING.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-7/">BUILDING-7/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing1/">FISHING-1</a></td><td>FISHING.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-1/">FISHING-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing2/">FISHING-2</a></td><td>FISHING.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-2/">FISHING-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing3/">FISHING-3</a></td><td>FISHING.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-3/">FISHING-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing4/">FISHING-4</a></td><td>FISHING.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-4/">FISHING-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing5/">FISHING-5</a></td><td>FISHING.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-5/">FISHING-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing6/">FISHING-6</a></td><td>FISHING.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-6/">FISHING-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing7/">FISHING-7</a></td><td>FISHING.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-7/">FISHING-7/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/fishing8/">FISHING-8</a></td><td>FISHING.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-8/">FISHING-8/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny1/">JOHNNY-1</a></td><td>JOHNNY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-1/">JOHNNY-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny2/">JOHNNY-2</a></td><td>JOHNNY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-2/">JOHNNY-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny3/">JOHNNY-3</a></td><td>JOHNNY.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-3/">JOHNNY-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny4/">JOHNNY-4</a></td><td>JOHNNY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-4/">JOHNNY-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny5/">JOHNNY-5</a></td><td>JOHNNY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-5/">JOHNNY-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/johnny6/">JOHNNY-6</a></td><td>JOHNNY.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-6/">JOHNNY-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/mary1/">MARY-1</a></td><td>MARY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-1/">MARY-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/mary2/">MARY-2</a></td><td>MARY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-2/">MARY-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/mary3/">MARY-3</a></td><td>MARY.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-3/">MARY-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/mary4/">MARY-4</a></td><td>MARY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-4/">MARY-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/mary5/">MARY-5</a></td><td>MARY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-5/">MARY-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/miscgag1/">MISCGAG-1</a></td><td>MISCGAG.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MISCGAG-1/">MISCGAG-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/miscgag2/">MISCGAG-2</a></td><td>MISCGAG.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MISCGAG-2/">MISCGAG-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand1/">STAND-1</a></td><td>STAND.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-1/">STAND-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand2/">STAND-2</a></td><td>STAND.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-2/">STAND-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand3/">STAND-3</a></td><td>STAND.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-3/">STAND-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand4/">STAND-4</a></td><td>STAND.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-4/">STAND-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand5/">STAND-5</a></td><td>STAND.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-5/">STAND-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand6/">STAND-6</a></td><td>STAND.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-6/">STAND-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand7/">STAND-7</a></td><td>STAND.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-7/">STAND-7/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand8/">STAND-8</a></td><td>STAND.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-8/">STAND-8/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand9/">STAND-9</a></td><td>STAND.ADS</td><td>9</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-9/">STAND-9/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand10/">STAND-10</a></td><td>STAND.ADS</td><td>10</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-10/">STAND-10/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand11/">STAND-11</a></td><td>STAND.ADS</td><td>11</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-11/">STAND-11/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand12/">STAND-12</a></td><td>STAND.ADS</td><td>12</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-12/">STAND-12/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand15/">STAND-15</a></td><td>STAND.ADS</td><td>15</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-15/">STAND-15/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/stand16/">STAND-16</a></td><td>STAND.ADS</td><td>16</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-16/">STAND-16/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/suzy1/">SUZY-1</a></td><td>SUZY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/SUZY-1/">SUZY-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/suzy2/">SUZY-2</a></td><td>SUZY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/SUZY-2/">SUZY-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor1/">VISITOR-1</a></td><td>VISITOR.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-1/">VISITOR-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor3/">VISITOR-3</a></td><td>VISITOR.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-3/">VISITOR-3/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor4/">VISITOR-4</a></td><td>VISITOR.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-4/">VISITOR-4/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor5/">VISITOR-5</a></td><td>VISITOR.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-5/">VISITOR-5/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor6/">VISITOR-6</a></td><td>VISITOR.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-6/">VISITOR-6/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/visitor7/">VISITOR-7</a></td><td>VISITOR.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-7/">VISITOR-7/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/walkstuf1/">WALKSTUF-1</a></td><td>WALKSTUF.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-1/">WALKSTUF-1/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/walkstuf2/">WALKSTUF-2</a></td><td>WALKSTUF.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-2/">WALKSTUF-2/</a></td></tr>
-<tr><td><a href="/johnny-castaway-ps1/scenes/walkstuf3/">WALKSTUF-3</a></td><td>WALKSTUF.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-3/">WALKSTUF-3/</a></td></tr>
+<tr><td><a href="../../scenes/activity1/">ACTIVITY-1</a></td><td>ACTIVITY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-1/">ACTIVITY-1/</a></td></tr>
+<tr><td><a href="../../scenes/activity4/">ACTIVITY-4</a></td><td>ACTIVITY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-4/">ACTIVITY-4/</a></td></tr>
+<tr><td><a href="../../scenes/activity5/">ACTIVITY-5</a></td><td>ACTIVITY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-5/">ACTIVITY-5/</a></td></tr>
+<tr><td><a href="../../scenes/activity6/">ACTIVITY-6</a></td><td>ACTIVITY.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-6/">ACTIVITY-6/</a></td></tr>
+<tr><td><a href="../../scenes/activity7/">ACTIVITY-7</a></td><td>ACTIVITY.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-7/">ACTIVITY-7/</a></td></tr>
+<tr><td><a href="../../scenes/activity8/">ACTIVITY-8</a></td><td>ACTIVITY.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-8/">ACTIVITY-8/</a></td></tr>
+<tr><td><a href="../../scenes/activity9/">ACTIVITY-9</a></td><td>ACTIVITY.ADS</td><td>9</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-9/">ACTIVITY-9/</a></td></tr>
+<tr><td><a href="../../scenes/activity10/">ACTIVITY-10</a></td><td>ACTIVITY.ADS</td><td>10</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-10/">ACTIVITY-10/</a></td></tr>
+<tr><td><a href="../../scenes/activity11/">ACTIVITY-11</a></td><td>ACTIVITY.ADS</td><td>11</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-11/">ACTIVITY-11/</a></td></tr>
+<tr><td><a href="../../scenes/activity12/">ACTIVITY-12</a></td><td>ACTIVITY.ADS</td><td>12</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-12/">ACTIVITY-12/</a></td></tr>
+<tr><td><a href="../../scenes/building1/">BUILDING-1</a></td><td>BUILDING.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-1/">BUILDING-1/</a></td></tr>
+<tr><td><a href="../../scenes/building2/">BUILDING-2</a></td><td>BUILDING.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-2/">BUILDING-2/</a></td></tr>
+<tr><td><a href="../../scenes/building3/">BUILDING-3</a></td><td>BUILDING.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-3/">BUILDING-3/</a></td></tr>
+<tr><td><a href="../../scenes/building4/">BUILDING-4</a></td><td>BUILDING.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-4/">BUILDING-4/</a></td></tr>
+<tr><td><a href="../../scenes/building5/">BUILDING-5</a></td><td>BUILDING.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-5/">BUILDING-5/</a></td></tr>
+<tr><td><a href="../../scenes/building6/">BUILDING-6</a></td><td>BUILDING.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-6/">BUILDING-6/</a></td></tr>
+<tr><td><a href="../../scenes/building7/">BUILDING-7</a></td><td>BUILDING.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/BUILDING-7/">BUILDING-7/</a></td></tr>
+<tr><td><a href="../../scenes/fishing1/">FISHING-1</a></td><td>FISHING.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-1/">FISHING-1/</a></td></tr>
+<tr><td><a href="../../scenes/fishing2/">FISHING-2</a></td><td>FISHING.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-2/">FISHING-2/</a></td></tr>
+<tr><td><a href="../../scenes/fishing3/">FISHING-3</a></td><td>FISHING.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-3/">FISHING-3/</a></td></tr>
+<tr><td><a href="../../scenes/fishing4/">FISHING-4</a></td><td>FISHING.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-4/">FISHING-4/</a></td></tr>
+<tr><td><a href="../../scenes/fishing5/">FISHING-5</a></td><td>FISHING.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-5/">FISHING-5/</a></td></tr>
+<tr><td><a href="../../scenes/fishing6/">FISHING-6</a></td><td>FISHING.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-6/">FISHING-6/</a></td></tr>
+<tr><td><a href="../../scenes/fishing7/">FISHING-7</a></td><td>FISHING.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-7/">FISHING-7/</a></td></tr>
+<tr><td><a href="../../scenes/fishing8/">FISHING-8</a></td><td>FISHING.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/FISHING-8/">FISHING-8/</a></td></tr>
+<tr><td><a href="../../scenes/johnny1/">JOHNNY-1</a></td><td>JOHNNY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-1/">JOHNNY-1/</a></td></tr>
+<tr><td><a href="../../scenes/johnny2/">JOHNNY-2</a></td><td>JOHNNY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-2/">JOHNNY-2/</a></td></tr>
+<tr><td><a href="../../scenes/johnny3/">JOHNNY-3</a></td><td>JOHNNY.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-3/">JOHNNY-3/</a></td></tr>
+<tr><td><a href="../../scenes/johnny4/">JOHNNY-4</a></td><td>JOHNNY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-4/">JOHNNY-4/</a></td></tr>
+<tr><td><a href="../../scenes/johnny5/">JOHNNY-5</a></td><td>JOHNNY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-5/">JOHNNY-5/</a></td></tr>
+<tr><td><a href="../../scenes/johnny6/">JOHNNY-6</a></td><td>JOHNNY.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/JOHNNY-6/">JOHNNY-6/</a></td></tr>
+<tr><td><a href="../../scenes/mary1/">MARY-1</a></td><td>MARY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-1/">MARY-1/</a></td></tr>
+<tr><td><a href="../../scenes/mary2/">MARY-2</a></td><td>MARY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-2/">MARY-2/</a></td></tr>
+<tr><td><a href="../../scenes/mary3/">MARY-3</a></td><td>MARY.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-3/">MARY-3/</a></td></tr>
+<tr><td><a href="../../scenes/mary4/">MARY-4</a></td><td>MARY.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-4/">MARY-4/</a></td></tr>
+<tr><td><a href="../../scenes/mary5/">MARY-5</a></td><td>MARY.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MARY-5/">MARY-5/</a></td></tr>
+<tr><td><a href="../../scenes/miscgag1/">MISCGAG-1</a></td><td>MISCGAG.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MISCGAG-1/">MISCGAG-1/</a></td></tr>
+<tr><td><a href="../../scenes/miscgag2/">MISCGAG-2</a></td><td>MISCGAG.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/MISCGAG-2/">MISCGAG-2/</a></td></tr>
+<tr><td><a href="../../scenes/stand1/">STAND-1</a></td><td>STAND.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-1/">STAND-1/</a></td></tr>
+<tr><td><a href="../../scenes/stand2/">STAND-2</a></td><td>STAND.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-2/">STAND-2/</a></td></tr>
+<tr><td><a href="../../scenes/stand3/">STAND-3</a></td><td>STAND.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-3/">STAND-3/</a></td></tr>
+<tr><td><a href="../../scenes/stand4/">STAND-4</a></td><td>STAND.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-4/">STAND-4/</a></td></tr>
+<tr><td><a href="../../scenes/stand5/">STAND-5</a></td><td>STAND.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-5/">STAND-5/</a></td></tr>
+<tr><td><a href="../../scenes/stand6/">STAND-6</a></td><td>STAND.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-6/">STAND-6/</a></td></tr>
+<tr><td><a href="../../scenes/stand7/">STAND-7</a></td><td>STAND.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-7/">STAND-7/</a></td></tr>
+<tr><td><a href="../../scenes/stand8/">STAND-8</a></td><td>STAND.ADS</td><td>8</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-8/">STAND-8/</a></td></tr>
+<tr><td><a href="../../scenes/stand9/">STAND-9</a></td><td>STAND.ADS</td><td>9</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-9/">STAND-9/</a></td></tr>
+<tr><td><a href="../../scenes/stand10/">STAND-10</a></td><td>STAND.ADS</td><td>10</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-10/">STAND-10/</a></td></tr>
+<tr><td><a href="../../scenes/stand11/">STAND-11</a></td><td>STAND.ADS</td><td>11</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-11/">STAND-11/</a></td></tr>
+<tr><td><a href="../../scenes/stand12/">STAND-12</a></td><td>STAND.ADS</td><td>12</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-12/">STAND-12/</a></td></tr>
+<tr><td><a href="../../scenes/stand15/">STAND-15</a></td><td>STAND.ADS</td><td>15</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-15/">STAND-15/</a></td></tr>
+<tr><td><a href="../../scenes/stand16/">STAND-16</a></td><td>STAND.ADS</td><td>16</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/STAND-16/">STAND-16/</a></td></tr>
+<tr><td><a href="../../scenes/suzy1/">SUZY-1</a></td><td>SUZY.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/SUZY-1/">SUZY-1/</a></td></tr>
+<tr><td><a href="../../scenes/suzy2/">SUZY-2</a></td><td>SUZY.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/SUZY-2/">SUZY-2/</a></td></tr>
+<tr><td><a href="../../scenes/visitor1/">VISITOR-1</a></td><td>VISITOR.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-1/">VISITOR-1/</a></td></tr>
+<tr><td><a href="../../scenes/visitor3/">VISITOR-3</a></td><td>VISITOR.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-3/">VISITOR-3/</a></td></tr>
+<tr><td><a href="../../scenes/visitor4/">VISITOR-4</a></td><td>VISITOR.ADS</td><td>4</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-4/">VISITOR-4/</a></td></tr>
+<tr><td><a href="../../scenes/visitor5/">VISITOR-5</a></td><td>VISITOR.ADS</td><td>5</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-5/">VISITOR-5/</a></td></tr>
+<tr><td><a href="../../scenes/visitor6/">VISITOR-6</a></td><td>VISITOR.ADS</td><td>6</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-6/">VISITOR-6/</a></td></tr>
+<tr><td><a href="../../scenes/visitor7/">VISITOR-7</a></td><td>VISITOR.ADS</td><td>7</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/VISITOR-7/">VISITOR-7/</a></td></tr>
+<tr><td><a href="../../scenes/walkstuf1/">WALKSTUF-1</a></td><td>WALKSTUF.ADS</td><td>1</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-1/">WALKSTUF-1/</a></td></tr>
+<tr><td><a href="../../scenes/walkstuf2/">WALKSTUF-2</a></td><td>WALKSTUF.ADS</td><td>2</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-2/">WALKSTUF-2/</a></td></tr>
+<tr><td><a href="../../scenes/walkstuf3/">WALKSTUF-3</a></td><td>WALKSTUF.ADS</td><td>3</td><td><a href="https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/docs/ps1/archaeology/regtest-references/WALKSTUF-3/">WALKSTUF-3/</a></td></tr>
 </tbody>
 </table>
 
 <h2 id="cross-links">Cross-links</h2>
 
 <ul>
-  <li><a href="/johnny-castaway-ps1/docs/regtest/">Regtest documentation</a> — the
+  <li><a href="../../docs/regtest/">Regtest documentation</a> — the
 harness that consumes this set.</li>
-  <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Per-case reference shelf</a> —
+  <li><a href="./cases/">Per-case reference shelf</a> —
 one generated page per frozen host baseline.</li>
-  <li><a href="/johnny-castaway-ps1/scenes/">Per-scene ledger</a> — the same scenes
+  <li><a href="../../scenes/">Per-scene ledger</a> — the same scenes
 with their bringup status, narrative, and screenshots.</li>
-  <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a> — entries that walk through
+  <li><a href="../../devlog/">Devlog</a> — entries that walk through
 reference roll-forwards when they happened.</li>
-  <li><a href="/johnny-castaway-ps1/archaeology/timeline/">Era timeline</a> —
+  <li><a href="../timeline/">Era timeline</a> —
 context for why the references were captured on 2026-03-28
 specifically.</li>
 </ul>
@@ -333,9 +333,9 @@ specifically.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -348,14 +348,14 @@ specifically.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="./cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

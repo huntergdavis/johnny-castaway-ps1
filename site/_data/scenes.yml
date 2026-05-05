@@ -41,12 +41,12 @@
 - ads: ACTIVITY
   tag: 6
   slug: activity6
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ''
-  notes: ''
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop
 - ads: ACTIVITY
   tag: 7
   slug: activity7

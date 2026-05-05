@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Memory Wars — Johnny Castaway PS1" />
   <meta property="og:description"  content="Memory and asset-budget guide for the Johnny Castaway PS1 port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/hack/memory-wars/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/" aria-current="page">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../" aria-current="page">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -90,10 +90,10 @@ The CD drive is slow enough that layout and prefetch matter even when a file is
 small.</p>
 
 <p>That is why the project has separate pages for
-<a href="/johnny-castaway-ps1/docs/hardware/">hardware</a>,
-<a href="/johnny-castaway-ps1/docs/performance/">performance</a>,
-<a href="/johnny-castaway-ps1/docs/audio/">audio</a>, and
-<a href="/johnny-castaway-ps1/docs/formats/">formats</a>. They are not isolated topics;
+<a href="../../docs/hardware/">hardware</a>,
+<a href="../../docs/performance/">performance</a>,
+<a href="../../docs/audio/">audio</a>, and
+<a href="../../docs/formats/">formats</a>. They are not isolated topics;
 they are the same budget seen from different angles.</p>
 
 <h2 id="what-worked">What Worked</h2>
@@ -114,8 +114,8 @@ engine.</p>
   <li>Treat VRAM allocation as explicit state, not as a magical side effect of drawing.</li>
 </ul>
 
-<p>The <a href="/johnny-castaway-ps1/resources/">resource catalog</a> is the public map of
-the files competing for space. The <a href="/johnny-castaway-ps1/source/">source library</a>
+<p>The <a href="../../resources/">resource catalog</a> is the public map of
+the files competing for space. The <a href="../../source/">source library</a>
 preserves the older memory notes and false starts.</p>
 
 <h2 id="the-lesson">The Lesson</h2>
@@ -139,9 +139,9 @@ The PS1 port started working when the answer stopped being “everywhere.”</p>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -154,14 +154,14 @@ The PS1 port started working when the answer stopped being “everywhere.”</p>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

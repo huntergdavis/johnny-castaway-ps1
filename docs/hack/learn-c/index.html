@@ -12,47 +12,47 @@
   <meta property="og:title"        content="Learn C From Johnny — Johnny Castaway PS1" />
   <meta property="og:description"  content="A guided reading path through the C code in the Johnny Castaway PS1 port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/hack/learn-c/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/" aria-current="page">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/">Docs</a></li>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../" aria-current="page">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -85,16 +85,16 @@ you are learning.</p>
 module owns memory? Which module owns time? Which module owns a draw call?
 Which module is allowed to know about PS1 hardware?</p>
 
-<p>Use the <a href="/johnny-castaway-ps1/docs/api/">API mapping</a> as the first map. It
+<p>Use the <a href="../../docs/api/">API mapping</a> as the first map. It
 shows the seam between the original SDL2-oriented code and PSn00bSDK. Then
-read the source-facing wrappers in the <a href="/johnny-castaway-ps1/source/">source library</a>,
+read the source-facing wrappers in the <a href="../../source/">source library</a>,
 especially:</p>
 
 <ul>
-  <li><a href="/johnny-castaway-ps1/source/docs/ps1/api-mapping/">API mapping reference</a></li>
-  <li><a href="/johnny-castaway-ps1/source/docs/ps1/build-system/">Build system</a></li>
-  <li><a href="/johnny-castaway-ps1/source/docs/ps1/hardware-specs/">Hardware specs</a></li>
-  <li><a href="/johnny-castaway-ps1/source/docs/general/memory-management/">Memory management</a></li>
+  <li><a href="../../source/docs/ps1/api-mapping/">API mapping reference</a></li>
+  <li><a href="../../source/docs/ps1/build-system/">Build system</a></li>
+  <li><a href="../../source/docs/ps1/hardware-specs/">Hardware specs</a></li>
+  <li><a href="../../source/docs/general/memory-management/">Memory management</a></li>
 </ul>
 
 <p>The lesson is that C on a console is not “C but older.” It is C where the
@@ -123,8 +123,8 @@ Alignment is not a courtesy.</p>
 </ul>
 
 <p>For the long-form version of the tool-and-habit side, read
-<a href="/johnny-castaway-ps1/lab/regression-as-lifestyle/">Regression as a lifestyle</a>
-and <a href="/johnny-castaway-ps1/lab/hallucination-engineering/">Hallucination engineering</a>.</p>
+<a href="../../lab/regression-as-lifestyle/">Regression as a lifestyle</a>
+and <a href="../../lab/hallucination-engineering/">Hallucination engineering</a>.</p>
 
   </div>
 </article>
@@ -141,9 +141,9 @@ and <a href="/johnny-castaway-ps1/lab/hallucination-engineering/">Hallucination 
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -156,14 +156,14 @@ and <a href="/johnny-castaway-ps1/lab/hallucination-engineering/">Hallucination 
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

@@ -12,47 +12,47 @@
   <meta property="og:title"        content="FG2 pack payload — Johnny Castaway PS1" />
   <meta property="og:description"  content="Byte-level reference for the FG2 (Foreground Pilot 2) pack payload — the on-disc binary the PS1 build reads at runtime to replay one captured ADS scene. Header layout, palette, entry table, base/diff frame format, sound-event table, sector alignment, and a worked example walking the first 64 bytes." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="/johnny-castaway-ps1/docs/formats/pack-payload/" />
-  <meta property="og:image"        content="/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="/johnny-castaway-ps1/assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/bitter-latin-700-normal.woff2" />
+        href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="/johnny-castaway-ps1/assets/fonts/inter-latin-400-normal.woff2" />
+        href="../../../assets/fonts/inter-latin-400-normal.woff2" />
 
-  <link rel="stylesheet" href="/johnny-castaway-ps1/assets/css/main.css" />
+  <link rel="stylesheet" href="../../../assets/css/main.css" />
 
-  <link rel="icon" type="image/x-icon" href="/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+  <link rel="icon" type="image/x-icon" href="../../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../assets/img/branding/apple-touch-icon.png" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" role="banner">
   <div class="site-header-inner">
-    <a class="site-title" href="/johnny-castaway-ps1/">
+    <a class="site-title" href="../../../">
       <span class="site-title-main">JOHNNY CASTAWAY</span>
       <span class="site-title-sub">PS1</span>
     </a>
     <nav class="site-nav" aria-label="Main">
       <ul>
-        <li><a href="/johnny-castaway-ps1/">Home</a></li>
-        <li><a href="/johnny-castaway-ps1/play/">Play</a></li>
-        <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-        <li><a href="/johnny-castaway-ps1/about/">About</a></li>
-        <li><a href="/johnny-castaway-ps1/scenes/">Scenes</a></li>
-        <li><a href="/johnny-castaway-ps1/devlog/">Devlog</a></li>
-        <li><a href="/johnny-castaway-ps1/archaeology/">Archaeology</a></li>
-        <li><a href="/johnny-castaway-ps1/lab/">Lab</a></li>
-        <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-        <li><a href="/johnny-castaway-ps1/docs/" aria-current="page">Docs</a></li>
+        <li><a href="../../../">Home</a></li>
+        <li><a href="../../../play/">Play</a></li>
+        <li><a href="../../../help/">Help</a></li>
+        <li><a href="../../../about/">About</a></li>
+        <li><a href="../../../scenes/">Scenes</a></li>
+        <li><a href="../../../devlog/">Devlog</a></li>
+        <li><a href="../../../archaeology/">Archaeology</a></li>
+        <li><a href="../../../lab/">Lab</a></li>
+        <li><a href="../../../hack/">Hack</a></li>
+        <li><a href="../../" aria-current="page">Docs</a></li>
       </ul>
     </nav>
     <a class="site-gh"
@@ -490,7 +490,7 @@ at sector 1, after the header/TOC block is padded up to <code class="language-pl
 <code class="language-plaintext highlighter-rouge">streamWindowBuffer</code>. <code class="language-plaintext highlighter-rouge">FG_PREFETCH_DEFAULT_WINDOW_BYTES</code> is 16 KB, which
 covers eight sectors worth of frame data — enough lookahead that the
 2x drive’s ~150 ms cold seek does not stall presentation. See
-<a href="/johnny-castaway-ps1/docs/formats/transition-prefetch/">transition prefetch</a>.</p>
+<a href="../transition-prefetch/">transition prefetch</a>.</p>
 
 <p>The first 8192 bytes of the file are reserved as a metadata-prefix region
 (<code class="language-plaintext highlighter-rouge">FG_PACK_METADATA_PREFIX_BYTES</code>). The runtime treats this as the safe
@@ -567,19 +567,19 @@ manifest sidecar. That writer is the source of truth for the byte
 layout — the doc you are reading is a re-narration.</li>
   <li><strong>Disc image</strong> — <code class="language-plaintext highlighter-rouge">cd_layout.xml</code> lists every <code class="language-plaintext highlighter-rouge">FG\*.FG2</code> file
 <code class="language-plaintext highlighter-rouge">mkpsxiso</code> should stamp onto <code class="language-plaintext highlighter-rouge">jcreborn.bin</code>. See
-<a href="/johnny-castaway-ps1/docs/build/">Build &amp; toolchain</a>.</li>
+<a href="../../build/">Build &amp; toolchain</a>.</li>
   <li><strong>Manifest</strong> — every pack ships with a JSON sidecar. See
-<a href="/johnny-castaway-ps1/docs/formats/pack-manifest/">FG2 pack manifest</a>.</li>
+<a href="../pack-manifest/">FG2 pack manifest</a>.</li>
 </ul>
 
 <h2 id="related-references">Related references</h2>
 
 <ul>
-  <li><a href="/johnny-castaway-ps1/docs/formats/pack-manifest/">FG2 pack manifest</a> —
+  <li><a href="../pack-manifest/">FG2 pack manifest</a> —
 the JSON sidecar that travels with each pack.</li>
-  <li><a href="/johnny-castaway-ps1/docs/formats/dirty-region/">Dirty region template</a> —
+  <li><a href="../dirty-region/">Dirty region template</a> —
 offline scene-state file consumed alongside a pack.</li>
-  <li><a href="/johnny-castaway-ps1/docs/formats/transition-prefetch/">Transition prefetch</a> —
+  <li><a href="../transition-prefetch/">Transition prefetch</a> —
 how the runtime decides which pack to start reading next.</li>
 </ul>
 
@@ -605,9 +605,9 @@ how the runtime decides which pack to start reading next.</li>
           this port ships only the code that drives it.
         </p>
         <p class="footer-license">
-          Code: <a href="/johnny-castaway-ps1/legal/">GPL-3.0</a> ·
+          Code: <a href="../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          57 / 63 scenes validated
+          58 / 63 scenes validated
           (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
@@ -620,14 +620,14 @@ how the runtime decides which pack to start reading next.</li>
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
-          <li><a href="/johnny-castaway-ps1/help/">Help</a></li>
-          <li><a href="/johnny-castaway-ps1/faq/">FAQ</a></li>
-          <li><a href="/johnny-castaway-ps1/credits/">Credits</a></li>
-          <li><a href="/johnny-castaway-ps1/hack/">Hack</a></li>
-          <li><a href="/johnny-castaway-ps1/source/">Source library</a></li>
-          <li><a href="/johnny-castaway-ps1/resources/">Resources</a></li>
-          <li><a href="/johnny-castaway-ps1/archaeology/regtest-references/cases/">Regtest cases</a></li>
-          <li><a href="/johnny-castaway-ps1/legal/">Legal</a></li>
+          <li><a href="../../../help/">Help</a></li>
+          <li><a href="../../../faq/">FAQ</a></li>
+          <li><a href="../../../credits/">Credits</a></li>
+          <li><a href="../../../hack/">Hack</a></li>
+          <li><a href="../../../source/">Source library</a></li>
+          <li><a href="../../../resources/">Resources</a></li>
+          <li><a href="../../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../../legal/">Legal</a></li>
         </ul>
       </nav>
     </div>

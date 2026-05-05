@@ -433,23 +433,23 @@ for the practical porting path.
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
-<tr><td><code>ACTIVITY1.FG2</code></td><td>693,638</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY1.FG2</code></td><td>514,086</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY10.FG2</code></td><td>280,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY11.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY12.FG2</code></td><td>338,314</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY4.FG2</code></td><td>295,098</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY4.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY5.FG2</code></td><td>638,384</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY5.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY6.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY6.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY6.FG2</code></td><td>170,404</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY6.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY7.FG2</code></td><td>147,625</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY7.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY8.FG2</code></td><td>131,995</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY9.FG2</code></td><td>1,752,713</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY9.FG2">source</a></td></tr>
 <tr><td><code>ACTV10L.FG2</code></td><td>302,878</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
 <tr><td><code>ACTV11L.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
 <tr><td><code>ACTV12L.FG2</code></td><td>363,249</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
-<tr><td><code>ACTV1LOW.FG2</code></td><td>693,638</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
+<tr><td><code>ACTV1LOW.FG2</code></td><td>514,086</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV4LOW.FG2</code></td><td>200,222</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV4LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV5LOW.FG2</code></td><td>486,136</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV5LOW.FG2">source</a></td></tr>
-<tr><td><code>ACTV6LOW.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV6LOW.FG2">source</a></td></tr>
+<tr><td><code>ACTV6LOW.FG2</code></td><td>170,404</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV6LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV7LOW.FG2</code></td><td>92,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV7LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV8LOW.FG2</code></td><td>131,995</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV8LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV9LOW.FG2</code></td><td>1,672,165</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV9LOW.FG2">source</a></td></tr>
