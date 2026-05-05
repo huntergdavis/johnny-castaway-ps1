@@ -3,8 +3,8 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-05 (scene ledger at 49/63; `BUILDING 1`,
-`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, and `BUILDING 5` were validated after
+**Last updated:** 2026-05-05 (scene ledger at 50/63; `BUILDING 1`,
+`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, and `BUILDING 6` were validated after
 generic multi-view capture. BUILDING2 keeps the persistent sandcastle via
 full-host diff injection, and BUILDING4 uses an explicit terminal FGP3
 cleanup frame so the final Johnny/bird row restores cleanly).
@@ -14,7 +14,7 @@ cleanup frame so the final Johnny/bird row restores cleanly).
 The game boots on DuckStation, loads resources from CD, and runs scene
 animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `BUILDING 1`,
-`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `JOHNNY 1`, `JOHNNY 2`,
+`BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `JOHNNY 1`, `JOHNNY 2`,
 `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
 `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`,
 `STAND 1`-`STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`,
@@ -131,7 +131,7 @@ no pack/runtime rework was needed.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 49/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 50/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -141,7 +141,7 @@ no pack/runtime rework was needed.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 49 / 63 fully validated
+## Scenes: 50 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -356,7 +356,7 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **49 / 63** | **2026-05-05** | **Current scene ledger after `BUILDING 5` promotion; BUILDING1-5 high/low packs use the generic multi-view stitch, BUILDING2 injects persistent full-host sandcastle pixels, and BUILDING4 uses terminal FGP3 cleanup for the final Johnny/bird row** | **this doc, `scene-status.md`** |
+| **50 / 63** | **2026-05-05** | **Current scene ledger after `BUILDING 6` promotion; BUILDING1-6 high/low packs use the generic multi-view stitch, BUILDING2 injects persistent full-host sandcastle pixels, and BUILDING4 uses terminal FGP3 cleanup for the final Johnny/bird row** | **this doc, `scene-status.md`** |
 | 44 / 63 | 2026-05-04 | `VISITOR 7` promotion; high/low packs use the generic multi-view stitch plus hold redistribution for source frames 32, 62, 71, and 80 so the coconut/tree impact reads clearly | this doc, `scene-status.md` |
 | 43 / 63 | 2026-05-04 | `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels | this doc, `scene-status.md` |
 | 42 / 63 | 2026-05-04 | `VISITOR 4` promotion; live validation confirms VISITOR4 is the coconut/plane gag in the current scene mapping, and its high/low packs use the generic multi-view stitch | this doc, `scene-status.md` |

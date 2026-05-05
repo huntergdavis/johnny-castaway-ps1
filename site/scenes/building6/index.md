@@ -4,11 +4,14 @@ title: BUILDING 6 — Edge sleep
 ads: BUILDING
 tag: 6
 slug: building6
-status: pending
-description: "BUILDING.ADS scene 6: Edge sleep. Not yet validated."
+status: validated
+description: "BUILDING.ADS scene 6: Edge sleep. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 after regenerating high/low packs through the
+generic normal/far-left/far-right foreground-only multi-view stitch. The
+edge-sleep scene played cleanly on the normal high-tide/night validation
+route.
 
 ## Pack identifiers
 
@@ -36,6 +39,5 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+This scene is now in the validated set. See
+[the method]({{ '/about/method/' | relative_url }}) for the longer version.
