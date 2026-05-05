@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after re-exporting high/low packs with a frame-wide keyed overlay (KEYEDOVERLAYRECT="0,0,640,480") — fixes stale Johnny / bird-outline residue against the moving rain backdrop. Earlier this push: ACTIVITY 12 was validated on the existing on-disc packs (no rework — high-tide nighttime route, belly-flop dive); WALKSTUF 1 and WALKSTUF 2 were validated. WALKSTUF1 uses re-exported high/low packs with -500/+300 stitch positions and a range-gated Joh...
+validated on the existing on-disc packs (no rework — high-tide nighttime route, reads-and-seagull-steals-book). Earlier this push: ACTIVITY 11 was validated after re-exporting with a frame-wide keyed overlay to fix stale Johnny/bird residue against the rain backdrop; ACTIVITY 12 was validated on the existing on-disc packs (no rework — belly-flop dive); WALKSTUF 1 and WALKSTUF 2 were validated. WALKSTUF1 uses re-exported high/low packs with -500/+300 sti...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 451 |
-| Approx. words | 4778 |
+| Lines | 453 |
+| Approx. words | 4811 |
 | Code fences | 1 |
 
 ## Outline

@@ -4,11 +4,14 @@ title: ACTIVITY 10 — Reads; seagull steals book
 ads: ACTIVITY
 tag: 10
 slug: activity10
-status: pending
-description: "ACTIVITY.ADS scene 10: Reads; seagull steals book. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 10: Reads; seagull steals book. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff on the existing on-disc
+`ACTIVITY10.FG2` / `ACTV10L.FG2` packs — high-tide nighttime route, no
+rework needed.
 
 ## Pack identifiers
 
