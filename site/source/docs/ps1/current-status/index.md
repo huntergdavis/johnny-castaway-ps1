@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated on the normal high-tide/night route through the STAND no-stitch fast-path export — the host engine plays this scene normally and the export produced a real 48 KB foreground-only pack).
+validated against the existing on-disc WALK3.FG2 / WALK3LOW.FG2 packs — high-tide nighttime route passed visual + audible signoff without any pack regen).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 357 |
-| Approx. words | 3536 |
+| Lines | 358 |
+| Approx. words | 3557 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 34 / 63 fully validated
+-   Scenes: 35 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

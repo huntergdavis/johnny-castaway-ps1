@@ -751,9 +751,9 @@
 - ads: WALKSTUF
   tag: 3
   slug: walkstuf3
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: validated
+  sfx: validated
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: "2026-05-04"
+  notes: "visual + audible signoff on f2519a0c2; high-tide nighttime route, packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed"

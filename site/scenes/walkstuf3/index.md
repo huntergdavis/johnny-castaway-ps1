@@ -4,11 +4,14 @@ title: WALKSTUF 3 — Walk transition
 ads: WALKSTUF
 tag: 3
 slug: walkstuf3
-status: pending
-description: "WALKSTUF.ADS scene 3: Walk transition. Not yet validated."
+status: validated
+last_verified: "2026-05-04"
+description: "WALKSTUF.ADS scene 3: Walk transition. Validated 2026-05-04."
 ---
 
-Not yet validated.
+Validated 2026-05-04. Visual + audible signoff on commit
+`f2519a0c2`; high-tide nighttime route, packs `WALK3.FG2` /
+`WALK3LOW.FG2` already on disc, no rework needed.
 
 ## Pack identifiers
 

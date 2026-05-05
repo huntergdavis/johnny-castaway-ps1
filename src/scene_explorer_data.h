@@ -75,7 +75,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "stand9", "STAND 9  -  Looks back inland", "Standing", "FG/STAND9.FG2", "BMP/SCEXPL_STAND9.PSB", 47, 1, 0 },
     { "walkstuf1", "WALKSTUF 1  -  Jogs around the island", "Walking", "FG/WALKSTUF1.FG2", "BMP/SCEXPL_WALKSTUF1.PSB", 354, 0, 0 },
     { "walkstuf2", "WALKSTUF 2  -  Walk transition", "Walking", "FG/WALKSTUF2.FG2", "BMP/SCEXPL_WALKSTUF2.PSB", 57, 0, 0 },
-    { "walkstuf3", "WALKSTUF 3  -  Walk transition", "Walking", "FG/WALKSTUF3.FG2", "BMP/SCEXPL_WALKSTUF3.PSB", 439, 0, 0 },
+    { "walkstuf3", "WALKSTUF 3  -  Walk transition", "Walking", "FG/WALKSTUF3.FG2", "BMP/SCEXPL_WALKSTUF3.PSB", 439, 1, 0 },
     { "building1", "BUILDING 1  -  Sand castle (crumbles)", "Building", "FG/BUILDING1.FG2", "BMP/SCEXPL_BUILDING1.PSB", 149, 0, 0 },
     { "building2", "BUILDING 2  -  Roasts a boot", "Building", "FG/BUILDING2.FG2", "BMP/SCEXPL_BUILDING2.PSB", 320, 0, 0 },
     { "building3", "BUILDING 3  -  Builds a fire", "Building", "FG/BUILDING3.FG2", "BMP/SCEXPL_BUILDING3.PSB", 219, 0, 0 },

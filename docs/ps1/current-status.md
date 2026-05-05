@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-04 (scene ledger at 34/63; `STAND 15` was
-validated on the normal high-tide/night route through the STAND
-no-stitch fast-path export — the host engine plays this scene normally
-and the export produced a real 48 KB foreground-only pack).
+**Last updated:** 2026-05-04 (scene ledger at 35/63; `WALKSTUF 3` was
+validated against the existing on-disc `WALK3.FG2` / `WALK3LOW.FG2`
+packs — high-tide nighttime route passed visual + audible signoff
+without any pack regen).
 
 ## Overall
 
@@ -85,7 +85,7 @@ foreground-only pack.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 34/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 35/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -95,7 +95,7 @@ foreground-only pack.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 34 / 63 fully validated
+## Scenes: 35 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -285,7 +285,8 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **34 / 63** | **2026-05-04** | **Current scene ledger after `STAND 15` promotion; high/low packs were regenerated through the STAND no-stitch fast-path export and normal high-tide/night playback passed human visual signoff** | **this doc, `scene-status.md`** |
+| **35 / 63** | **2026-05-04** | **Current scene ledger after `WALKSTUF 3` promotion; existing on-disc `WALK3.FG2` / `WALK3LOW.FG2` packs were verified at the normal high-tide/night route without rework** | **this doc, `scene-status.md`** |
+| 34 / 63 | 2026-05-04 | Scene ledger after `STAND 15` promotion; high/low packs were regenerated through the STAND no-stitch fast-path export and normal high-tide/night playback passed human visual signoff | this doc, `scene-status.md` |
 | 33 / 63 | 2026-05-04 | Scene ledger after `STAND 12` promotion; same host export quirk as `STAND 10`/`STAND 11`, the previously-committed 276 KB FG2 pack was kept and signed off as-is on the normal high-tide/night route | this doc, `scene-status.md` |
 | 32 / 63 | 2026-05-04 | Scene ledger after `STAND 11` promotion; same host export quirk as `STAND 10`, the previously-committed 95 KB FG2 pack was kept and signed off as-is on the normal high-tide/night route | this doc, `scene-status.md` |
 | 31 / 63 | 2026-05-04 | Scene ledger after `STAND 10` promotion; the host engine exits `STAND.ADS:10` after only 2 frames so the no-stitch export collapses to an empty pack, and the previously-committed 96 KB FG2 pack was kept and signed off as-is on the normal high-tide/night route | this doc, `scene-status.md` |

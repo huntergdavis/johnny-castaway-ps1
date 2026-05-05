@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 34 / 63 (next: stand16)
+## Progress: 35 / 63 (next: walkstuf2)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -82,7 +82,7 @@ current public release is `v0.6.10-ps1`.
 | VISITOR | 7 | visitor7 | ⏳ | ⏳ | — | — |  |
 | WALKSTUF | 1 | walkstuf1 | ⏳ | ⏳ | — | — |  |
 | WALKSTUF | 2 | walkstuf2 | ⏳ | ⏳ | — | — |  |
-| WALKSTUF | 3 | walkstuf3 | ⏳ | ⏳ | — | — |  |
+| WALKSTUF | 3 | walkstuf3 | ✅ | ✅ | — | 2026-05-04 | visual + audible signoff on `f2519a0c2`; high-tide nighttime route, packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed |
 
 ## Per-scene workflow
 

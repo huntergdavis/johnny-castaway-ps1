@@ -21,8 +21,8 @@ Date: 2026-04-29 Status: implemented in v0.4.20-ps1; freeplay-specific phases re
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/walk-implementation-plan.md` |
-| Lines | 1179 |
-| Approx. words | 7678 |
+| Lines | 1192 |
+| Approx. words | 7777 |
 | Code fences | 18 |
 
 ## Outline
