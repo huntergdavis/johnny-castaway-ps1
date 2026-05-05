@@ -466,10 +466,17 @@ enum {
     SYSTEM_SET_TIME,
     SYSTEM_SET_SEED,
     SYSTEM_PERF,
+    SYSTEM_STORY_DAY,        /* force storyCurrentDay 1..11 — exercises Original mode dayNo gates */
     SYSTEM_RESET_LOOP,
     SYSTEM_NEXT_SCENE,
     SYSTEM_COUNT
 };
+
+/* storyCurrentDay (jc_reborn.c) is the 11-day Sierra calendar gate that
+ * Original-mode picks consult via the dayNo column in storyScenes[].
+ * The System sub-screen lets the user pin a day for testing without
+ * waiting 11 in-game-date rollovers. */
+extern int storyCurrentDay;
 
 /* Scene Set Options sub-screen rows. */
 enum {
@@ -1501,6 +1508,15 @@ static void drawSystemMenu(void)
              systemCursor == SYSTEM_SET_SEED ? ">" : " ");
     pmPrintf(" %s Perf Log: %s\n",
              systemCursor == SYSTEM_PERF ? ">" : " ", perfLevelLabel());
+    {
+        int day = storyCurrentDay;
+        if (day < 1 || day > 11) day = 1;
+        pmPrintf(" %s Story Day: %s%2d/11%s\n",
+                 systemCursor == SYSTEM_STORY_DAY ? ">" : " ",
+                 systemCursor == SYSTEM_STORY_DAY ? "<" : " ",
+                 day,
+                 systemCursor == SYSTEM_STORY_DAY ? ">" : " ");
+    }
     pmPrintf(" %s Reset Scene\n",
              systemCursor == SYSTEM_RESET_LOOP ? ">" : " ");
     pmPrintf(" %s Next Scene\n",
@@ -2122,9 +2138,18 @@ static int handleSystemInput(uint16 pressed)
     if (pressed & PAD_RIGHT) {
         if (systemCursor == SYSTEM_PERF)
             cyclePerf(+1);
+        else if (systemCursor == SYSTEM_STORY_DAY) {
+            storyCurrentDay++;
+            if (storyCurrentDay > 11) storyCurrentDay = 1;
+            if (storyCurrentDay < 1)  storyCurrentDay = 1;
+        }
     } else if (pressed & PAD_LEFT) {
         if (systemCursor == SYSTEM_PERF)
             cyclePerf(-1);
+        else if (systemCursor == SYSTEM_STORY_DAY) {
+            storyCurrentDay--;
+            if (storyCurrentDay < 1) storyCurrentDay = 11;
+        }
     } else if (pressed & PAD_CROSS) {
         switch (systemCursor) {
         case SYSTEM_SAVE:
