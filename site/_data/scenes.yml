@@ -18,8 +18,8 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 4
   slug: activity4
@@ -27,8 +27,8 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 5
   slug: activity5
@@ -36,8 +36,8 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 6
   slug: activity6
@@ -45,8 +45,8 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 7
   slug: activity7
@@ -54,17 +54,17 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 8
   slug: activity8
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base
 - ads: ACTIVITY
   tag: 9
   slug: activity9
@@ -72,140 +72,140 @@
   visuals: wip
   sfx: wip
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: ''
+  notes: ''
 - ads: ACTIVITY
   tag: 10
   slug: activity10
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book
 - ads: ACTIVITY
   tag: 11
   slug: activity11
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop
 - ads: ACTIVITY
   tag: 12
   slug: activity12
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive
 - ads: BUILDING
   tag: 1
   slug: building1
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route
 - ads: BUILDING
   tag: 2
   slug: building2
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
-  - validation route raft-stage 0
-  - host capture/test island positions x=-154, x=-300, x=300
+  - validation route `raft-stage 0`
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form
 - ads: BUILDING
   tag: 3
   slug: building3
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route
 - ads: BUILDING
   tag: 4
   slug: building4
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
 - ads: BUILDING
   tag: 5
   slug: building5
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route
 - ads: BUILDING
   tag: 6
   slug: building6
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
+  last_verified: '2026-05-05'
   notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; edge-sleep scene played cleanly on the normal high-tide/night validation route
 - ads: BUILDING
   tag: 7
   slug: building7
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
   - night
   - low-tide
   - holiday
   - raft-stage
-  - host capture/test island positions x=-154, x=-300, x=300
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
-  last_verified: "2026-05-05"
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; middle campfire interval is patched from clean animated foreground rows and packs are FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw
+  last_verified: '2026-05-05'
+  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene
 - ads: FISHING
   tag: 1
   slug: fishing1
@@ -213,10 +213,10 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
   last_verified: v0.3.6-ps1
   notes: reference scene; template for remaining
 - ads: FISHING
@@ -226,12 +226,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-  last_verified: 2026-04-23
-  notes: ""
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  last_verified: '2026-04-23'
+  notes: ''
 - ads: FISHING
   tag: 3
   slug: fishing3
@@ -239,12 +239,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-  last_verified: 2026-05-01
-  notes: visual + audible signoff on PS1/DuckStation from v0.6.1-ps1 baseline
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  last_verified: '2026-05-01'
+  notes: visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline
 - ads: FISHING
   tag: 4
   slug: fishing4
@@ -252,12 +252,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-  last_verified: 2026-05-01
-  notes: visual + audible signoff after LEFT_ISLAND fgpilot draw-offset fix
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  last_verified: '2026-05-01'
+  notes: visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix
 - ads: FISHING
   tag: 5
   slug: fishing5
@@ -265,11 +265,11 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-  last_verified: 2026-05-02
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  last_verified: '2026-05-02'
   notes: visual + audible signoff after rebuilding high/low FG2 with a full-frame keyed current-ledger overlay; stale full-host shark overpaint and outline-only foreground-mask shark frames are fixed
 - ads: FISHING
   tag: 6
@@ -278,11 +278,11 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-  last_verified: 2026-05-01
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  last_verified: '2026-05-01'
   notes: visual + audible signoff after terminal FGP3 cleanup fix for splash/pole residue
 - ads: FISHING
   tag: 7
@@ -291,13 +291,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island position x=-300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island position `x=-300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
   notes: visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
 - ads: FISHING
   tag: 8
@@ -306,14 +306,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island position x=-300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after the same full-frame foreground-only recapture pattern as FISHING 7; pack completeness is proven at the far-left stress position and production playback stays random-position safe
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island position `x=-300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe
 - ads: JOHNNY
   tag: 1
   slug: johnny1
@@ -321,10 +321,10 @@
   visuals: done
   sfx: done
   variants:
-    - black backdrop
-    - high/low pack parity
-  last_verified: 2026-05-02
-  notes: full-screen black-backdrop playback; visual signoff after placement/scaling and clean-rect memory fixes
+  - black backdrop
+  - high/low pack parity
+  last_verified: '2026-05-02'
+  notes: visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
 - ads: JOHNNY
   tag: 2
   slug: johnny2
@@ -332,10 +332,10 @@
   visuals: done
   sfx: done
   variants:
-    - captured island position x=-64,y=54
-    - high/low pack parity
-  last_verified: 2026-05-02
-  notes: visual + audible signoff after lower-band keyed overlay cleanup and thought-bubble hold timing fixes
+  - captured island position `x=-64,y=54`
+  - high/low pack parity
+  last_verified: '2026-05-02'
+  notes: visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles
 - ads: JOHNNY
   tag: 3
   slug: johnny3
@@ -343,12 +343,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - variable island position
-  last_verified: 2026-05-02
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - variable island position
+  last_verified: '2026-05-02'
   notes: visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required
 - ads: JOHNNY
   tag: 4
@@ -357,11 +357,11 @@
   visuals: done
   sfx: done
   variants:
-    - host capture/test island position x=-64,y=54
-    - high/low pack parity
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after full-frame keyed foreground-only overlay fixed stale bottle overpaint and full-host SOS bubble blue-line contamination without adding a runtime island-position pin
+  - host capture/test island position `x=-64,y=54`
+  - high/low pack parity
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin
 - ads: JOHNNY
   tag: 5
   slug: johnny5
@@ -369,11 +369,11 @@
   visuals: done
   sfx: done
   variants:
-    - host capture/test island position x=80,y=54
-    - high/low pack parity
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after x=80 host capture restored the thrown-bottle splash, full-frame keyed foreground-only overlay fixed stale lower-band overpaint, and hold timing was redistributed onto the SOS note bubble without adding a runtime island-position pin
+  - host capture/test island position `x=80,y=54`
+  - high/low pack parity
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows
 - ads: JOHNNY
   tag: 6
   slug: johnny6
@@ -381,10 +381,10 @@
   visuals: done
   sfx: done
   variants:
-    - black backdrop
-    - high/low pack parity
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after routing through the full-screen black-backdrop runtime path; no ocean/island background is painted
+  - black backdrop
+  - high/low pack parity
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted
 - ads: MARY
   tag: 1
   slug: mary1
@@ -392,13 +392,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-124,y=37
-    - raft-stage 5
-  last_verified: 2026-05-03
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-124,y=37`
+  - raft-stage `5`
+  last_verified: '2026-05-03'
   notes: visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required
 - ads: MARY
   tag: 2
@@ -407,14 +407,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=80,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after wide scene-relative multi-view stitch restored clipped line/mermaid/boot/splash pixels and full-host bubble injection restored the fish thought-bubble shell; far-right and true far-left stress playback passed
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
 - ads: MARY
   tag: 3
   slug: mary3
@@ -422,14 +422,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island position x=80,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after far-right full-frame keyed foreground-only recapture; stale host capture sprite-surface references are invalidated before BMP/layer frees, low-memory clean-snapshot relief keeps the large pack stable, and the late dinner/thought beat now holds on the readable frames
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island position `x=80,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames
 - ads: MARY
   tag: 4
   slug: mary4
@@ -437,14 +437,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs from normal, far-left, and far-right foreground-only captures; far-right stress playback passed without a production placement pin
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed
 - ads: MARY
   tag: 5
   slug: mary5
@@ -452,15 +452,15 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage not applicable; NORAFT story flag clamps generic raft off
-    - full-wipe FIRST scene; no walk prelude
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs with the generic raft off; runtime story-flag policy now clamps NORAFT scenes to no external raft and skips walk-in for FIRST full-wipe scenes
+  - night
+  - low-tide
+  - holiday
+  - ~~raft-stage~~ (`NORAFT`)
+  - full-wipe scene (`FIRST`, no walk prelude)
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition
 - ads: MISCGAG
   tag: 1
   slug: miscgag1
@@ -468,14 +468,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; validated on the normal high-tide/night route
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
 - ads: MISCGAG
   tag: 2
   slug: miscgag2
@@ -483,14 +483,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide not randomized by story flags; high/low packs regenerated
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-03
-  notes: visual + audible signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; validated on the normal high-tide/night route
+  - night
+  - ~~low-tide~~ (not randomized by story flags; high/low packs regenerated)
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route
 - ads: STAND
   tag: 1
   slug: stand1
@@ -498,15 +498,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-    - no captured SFX events
-  last_verified: 2026-05-03
-  notes: visual signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; source pack is a short 35-frame / 169-vblank idle loop, so the hard-to-see reset is expected
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-03'
+  notes: visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected
 - ads: STAND
   tag: 2
   slug: stand2
@@ -514,12 +513,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route; short pants-adjust idle loop played cleanly with no visible residue or scene-loader walk prelude
 - ads: STAND
   tag: 3
@@ -528,12 +527,12 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route; short hat-lift idle loop played cleanly
 - ads: STAND
   tag: 4
@@ -542,13 +541,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54; x=-300,y=54; x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-04'
   notes: visual signoff after regenerating high/low packs through the generic multi-view stitch; tapping-foot idle loop played cleanly on the normal high-tide/night route
 - ads: STAND
   tag: 5
@@ -557,13 +556,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  last_verified: '2026-05-04'
   notes: visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
 - ads: STAND
   tag: 6
@@ -572,13 +571,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 7
@@ -587,13 +586,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path
 - ads: STAND
   tag: 8
@@ -602,14 +601,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
 - ads: STAND
   tag: 9
@@ -618,15 +617,15 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
-  notes: visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick STAND 8 introduced
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
+  notes: visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced
 - ads: STAND
   tag: 10
   slug: stand10
@@ -634,15 +633,15 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - existing committed FG2 pack (host export quirk)
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
-  notes: visual signoff on the normal high-tide/night route. The host engine exits STAND.ADS:10 after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - existing committed FG2 pack (host export quirk)
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
+  notes: visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 11
   slug: stand11
@@ -650,15 +649,15 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - existing committed FG2 pack (host export quirk)
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
-  notes: visual signoff on the normal high-tide/night route. Like STAND 10, the host engine exits STAND.ADS:11 after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - existing committed FG2 pack (host export quirk)
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
+  notes: visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 12
   slug: stand12
@@ -666,15 +665,15 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - existing committed FG2 pack (host export quirk)
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
-  notes: visual signoff on the normal high-tide/night route. Same host export quirk as STAND 10/STAND 11; the previously-committed 276 KB pack was kept and validated as-is.
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - existing committed FG2 pack (host export quirk)
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
+  notes: visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 15
   slug: stand15
@@ -682,14 +681,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick
 - ads: STAND
   tag: 16
@@ -698,14 +697,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - validation route x=-154,y=54
-    - no-stitch host export with full-frame foreground-only overlay
-    - runtime FG2 wave-tick
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - validation route `x=-154,y=54`
+  - no-stitch host export with full-frame foreground-only overlay
+  - runtime FG2 wave-tick
+  last_verified: '2026-05-04'
   notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick
 - ads: SUZY
   tag: 1
@@ -714,9 +713,9 @@
   visuals: done
   sfx: done
   variants:
-    - scene-specific SUZBEACH.SCR backdrop
-    - high/low pack parity
-  last_verified: 2026-05-04
+  - scene-specific `SUZBEACH.SCR` backdrop
+  - high/low pack parity
+  last_verified: '2026-05-04'
   notes: visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
 - ads: SUZY
   tag: 2
@@ -725,10 +724,10 @@
   visuals: done
   sfx: done
   variants:
-    - scene-specific SUZBEACH.SCR backdrop
-    - high/low pack parity
-    - static-base foreground overlay for MRAFT.BMP
-  last_verified: 2026-05-04
+  - scene-specific `SUZBEACH.SCR` backdrop
+  - high/low pack parity
+  - static-base foreground overlay for `MRAFT.BMP`
+  last_verified: '2026-05-04'
   notes: visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
 - ads: VISITOR
   tag: 1
@@ -737,13 +736,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-04'
   notes: visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival
 - ads: VISITOR
   tag: 3
@@ -752,14 +751,14 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-04
-  notes: visual + audible signoff after VISITOR3-specific multi-view synthesis; foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-04'
+  notes: 'visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'
 - ads: VISITOR
   tag: 4
   slug: visitor4
@@ -767,13 +766,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-04'
   notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label
 - ads: VISITOR
   tag: 5
@@ -782,13 +781,13 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-  last_verified: 2026-05-04
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  last_verified: '2026-05-04'
   notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
 - ads: VISITOR
   tag: 6
@@ -797,55 +796,55 @@
   visuals: done
   sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-    - full-host impact-delta injection
-  last_verified: 2026-05-04
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames 120:141 restore the background-owned tree shake/strike pixels
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  - full-host impact-delta injection
+  last_verified: '2026-05-04'
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels
 - ads: VISITOR
   tag: 7
   slug: visitor7
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants:
-    - night
-    - low-tide
-    - holiday
-    - raft-stage
-    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
-    - production variable island position
-    - coconut impact hold redistribution
-  last_verified: 2026-05-04
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames 32, 62, 71, and 80 now hold long enough for the coconut/tree impact frames to read without changing total scene duration
+  - night
+  - low-tide
+  - holiday
+  - raft-stage
+  - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
+  - production variable island position
+  - coconut impact hold redistribution
+  last_verified: '2026-05-04'
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration
 - ads: WALKSTUF
   tag: 1
   slug: walkstuf1
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him
 - ads: WALKSTUF
   tag: 2
   slug: walkstuf2
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: '2026-05-04'
+  notes: visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route
 - ads: WALKSTUF
   tag: 3
   slug: walkstuf3
   status: validated
-  visuals: validated
-  sfx: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: "2026-05-04"
-  notes: "visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed"
+  last_verified: '2026-05-04'
+  notes: visual + audible signoff on the normal high-tide/night route; packs WALK3.FG2/WALK3LOW.FG2 already on disc, no rework needed

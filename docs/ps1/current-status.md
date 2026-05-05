@@ -141,7 +141,7 @@ no pack/runtime rework was needed.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 51 / 63 fully validated
+## Scenes: 57 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -356,7 +356,7 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **51 / 63** | **2026-05-05** | **Current scene ledger after `BUILDING 7` promotion; BUILDING1-7 high/low packs use the generic multi-view stitch, BUILDING2 injects persistent full-host sandcastle pixels, BUILDING4 uses terminal FGP3 cleanup, and BUILDING7 patches the middle campfire from clean animated foreground rows before FGP3 cleanup** | **this doc, `scene-status.md`** |
+| **57 / 63** | **2026-05-05** | **Current scene ledger after `BUILDING 7` promotion plus upstream `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `WALKSTUF 1`, and `WALKSTUF 2`; BUILDING1-7 high/low packs use the generic multi-view stitch, BUILDING2 injects persistent full-host sandcastle pixels, BUILDING4 uses terminal FGP3 cleanup, and BUILDING7 patches the middle campfire from clean animated foreground rows before FGP3 cleanup** | **this doc, `scene-status.md`** |
 | 44 / 63 | 2026-05-04 | `VISITOR 7` promotion; high/low packs use the generic multi-view stitch plus hold redistribution for source frames 32, 62, 71, and 80 so the coconut/tree impact reads clearly | this doc, `scene-status.md` |
 | 43 / 63 | 2026-05-04 | `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels | this doc, `scene-status.md` |
 | 42 / 63 | 2026-05-04 | `VISITOR 4` promotion; live validation confirms VISITOR4 is the coconut/plane gag in the current scene mapping, and its high/low packs use the generic multi-view stitch | this doc, `scene-status.md` |

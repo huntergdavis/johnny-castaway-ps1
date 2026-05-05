@@ -4,11 +4,14 @@ title: ACTIVITY 12 — Belly-flop dive
 ads: ACTIVITY
 tag: 12
 slug: activity12
-status: pending
-description: "ACTIVITY.ADS scene 12: Belly-flop dive. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 12: Belly-flop dive. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff on the existing on-disc
+`ACTIVITY12.FG2` / `ACTV12L.FG2` packs — high-tide nighttime route, no
+rework needed.
 
 ## Pack identifiers
 

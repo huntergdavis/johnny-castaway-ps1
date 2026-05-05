@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 485 source and generated runtime assets indexed for the site.
+subtitle: 487 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -264,6 +264,8 @@ for the practical porting path.
 <tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
 <tr><td><code>SXST9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST9.SCR">source</a></td></tr>
+<tr><td><code>SXWK1.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK1.SCR">source</a></td></tr>
+<tr><td><code>SXWK2.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK2.SCR">source</a></td></tr>
 <tr><td><code>SXWK3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK3.SCR">source</a></td></tr>
 <tr><td><code>THEEND.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/THEEND.SCR">source</a></td></tr>
 </tbody>
@@ -433,38 +435,38 @@ for the practical porting path.
 <tbody>
 <tr><td><code>ACTIVITY1.FG2</code></td><td>693,638</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY10.FG2</code></td><td>280,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY11.FG2</code></td><td>201,945</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY11.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY12.FG2</code></td><td>338,314</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY4.FG2</code></td><td>295,098</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY4.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY5.FG2</code></td><td>638,384</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY5.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY6.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY6.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY7.FG2</code></td><td>147,625</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY7.FG2">source</a></td></tr>
-<tr><td><code>ACTIVITY8.FG2</code></td><td>173,564</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY8.FG2</code></td><td>131,995</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY8.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY9.FG2</code></td><td>1,752,713</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY9.FG2">source</a></td></tr>
 <tr><td><code>ACTV10L.FG2</code></td><td>302,878</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
-<tr><td><code>ACTV11L.FG2</code></td><td>201,945</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
+<tr><td><code>ACTV11L.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
 <tr><td><code>ACTV12L.FG2</code></td><td>363,249</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
 <tr><td><code>ACTV1LOW.FG2</code></td><td>693,638</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV4LOW.FG2</code></td><td>200,222</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV4LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV5LOW.FG2</code></td><td>486,136</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV5LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV6LOW.FG2</code></td><td>100,620</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV6LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV7LOW.FG2</code></td><td>92,891</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV7LOW.FG2">source</a></td></tr>
-<tr><td><code>ACTV8LOW.FG2</code></td><td>173,564</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV8LOW.FG2">source</a></td></tr>
+<tr><td><code>ACTV8LOW.FG2</code></td><td>131,995</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV8LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV9LOW.FG2</code></td><td>1,672,165</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV9LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL1LOW.FG2</code></td><td>460,081</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL1LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL2LOW.FG2</code></td><td>868,961</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL2LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL3LOW.FG2</code></td><td>263,908</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL3LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL4LOW.FG2</code></td><td>1,147,327</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL4LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL5LOW.FG2</code></td><td>683,697</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL5LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL6LOW.FG2</code></td><td>1,058,595</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL6LOW.FG2">source</a></td></tr>
-<tr><td><code>BUIL7LOW.FG2</code></td><td>736,597</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL7LOW.FG2">source</a></td></tr>
-<tr><td><code>BUILDING1.FG2</code></td><td>529,556</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING1.FG2">source</a></td></tr>
-<tr><td><code>BUILDING2.FG2</code></td><td>868,961</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING2.FG2">source</a></td></tr>
-<tr><td><code>BUILDING3.FG2</code></td><td>391,266</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING3.FG2">source</a></td></tr>
-<tr><td><code>BUILDING4.FG2</code></td><td>1,147,327</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING4.FG2">source</a></td></tr>
-<tr><td><code>BUILDING5.FG2</code></td><td>979,569</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING5.FG2">source</a></td></tr>
-<tr><td><code>BUILDING6.FG2</code></td><td>1,058,595</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING6.FG2">source</a></td></tr>
-<tr><td><code>BUILDING7.FG2</code></td><td>1,061,955</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING7.FG2">source</a></td></tr>
+<tr><td><code>BUIL1LOW.FG2</code></td><td>318,131</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL1LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL2LOW.FG2</code></td><td>1,303,332</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL2LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL3LOW.FG2</code></td><td>845,270</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL3LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL4LOW.FG2</code></td><td>1,714,154</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL4LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL5LOW.FG2</code></td><td>818,670</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL5LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL6LOW.FG2</code></td><td>1,444,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL6LOW.FG2">source</a></td></tr>
+<tr><td><code>BUIL7LOW.FG2</code></td><td>668,045</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUIL7LOW.FG2">source</a></td></tr>
+<tr><td><code>BUILDING1.FG2</code></td><td>318,131</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING1.FG2">source</a></td></tr>
+<tr><td><code>BUILDING2.FG2</code></td><td>1,303,332</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING2.FG2">source</a></td></tr>
+<tr><td><code>BUILDING3.FG2</code></td><td>845,270</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING3.FG2">source</a></td></tr>
+<tr><td><code>BUILDING4.FG2</code></td><td>1,714,154</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING4.FG2">source</a></td></tr>
+<tr><td><code>BUILDING5.FG2</code></td><td>818,670</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING5.FG2">source</a></td></tr>
+<tr><td><code>BUILDING6.FG2</code></td><td>1,444,370</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING6.FG2">source</a></td></tr>
+<tr><td><code>BUILDING7.FG2</code></td><td>668,045</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/BUILDING7.FG2">source</a></td></tr>
 <tr><td><code>FISH1LOW.FG2</code></td><td>303,083</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH1LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH2LOW.FG2</code></td><td>385,436</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH2LOW.FG2">source</a></td></tr>
 <tr><td><code>FISH3LOW.FG2</code></td><td>549,622</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/FISH3LOW.FG2">source</a></td></tr>
@@ -551,10 +553,10 @@ for the practical porting path.
 <tr><td><code>VIST5LOW.FG2</code></td><td>354,227</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST5LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST6LOW.FG2</code></td><td>187,017</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST6LOW.FG2">source</a></td></tr>
 <tr><td><code>VIST7LOW.FG2</code></td><td>134,088</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/VIST7LOW.FG2">source</a></td></tr>
-<tr><td><code>WALK1LOW.FG2</code></td><td>2,157,403</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
+<tr><td><code>WALK1LOW.FG2</code></td><td>1,535,263</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK1LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK2LOW.FG2</code></td><td>163,167</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK2LOW.FG2">source</a></td></tr>
 <tr><td><code>WALK3LOW.FG2</code></td><td>994,669</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALK3LOW.FG2">source</a></td></tr>
-<tr><td><code>WALKSTUF1.FG2</code></td><td>2,128,856</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF1.FG2">source</a></td></tr>
+<tr><td><code>WALKSTUF1.FG2</code></td><td>1,535,263</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF1.FG2">source</a></td></tr>
 <tr><td><code>WALKSTUF2.FG2</code></td><td>163,167</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF2.FG2">source</a></td></tr>
 <tr><td><code>WALKSTUF3.FG2</code></td><td>1,026,922</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/WALKSTUF3.FG2">source</a></td></tr>
 </tbody>

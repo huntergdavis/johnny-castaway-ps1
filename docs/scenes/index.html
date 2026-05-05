@@ -92,7 +92,7 @@ are still <code class="language-plaintext highlighter-rouge">pending</code>.</p>
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/scene-status.md"><code class="language-plaintext highlighter-rouge">docs/ps1/scene-status.md</code></a>
 in the project repo. The table on this page is generated from
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/_data/scenes.yml"><code class="language-plaintext highlighter-rouge">site/_data/scenes.yml</code></a>,
-which is parsed from that file. Current tally: <strong>51 of
+which is parsed from that file. Current tally: <strong>57 of
 63 scenes</strong> validated. <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> is the
 release line the validated rows were last verified on. For the longer
 explanation of how a scene moves from <code class="language-plaintext highlighter-rouge">pending</code> to <code class="language-plaintext highlighter-rouge">validated</code>, see
@@ -106,9 +106,9 @@ reference instead of the PS1 replay path.</p>
 <h2 id="at-a-glance">At a glance</h2>
 
 <ul class="scene-counts">
-  <li><span class="scene-status ok">validated</span> &nbsp; 51 / 63</li>
+  <li><span class="scene-status ok">validated</span> &nbsp; 57 / 63</li>
   <li><span class="scene-status wip">in-bring-up</span> &nbsp; 0</li>
-  <li><span class="scene-status pending">pending</span> &nbsp; 12</li>
+  <li><span class="scene-status pending">pending</span> &nbsp; 6</li>
   <li><span class="scene-status blocked">blocked</span> &nbsp; 0</li>
 </ul>
 
@@ -197,9 +197,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">ACTIVITY 8</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/activity8/">activity8</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-05</code></td>
+        <td>visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base</td>
       </tr>
 
 
@@ -221,9 +221,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">ACTIVITY 10</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/activity10/">activity10</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-05</code></td>
+        <td>visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book</td>
       </tr>
 
 
@@ -233,9 +233,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">ACTIVITY 11</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/activity11/">activity11</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-05</code></td>
+        <td>visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop</td>
       </tr>
 
 
@@ -245,9 +245,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">ACTIVITY 12</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/activity12/">activity12</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-05</code></td>
+        <td>visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive</td>
       </tr>
 
 
@@ -331,7 +331,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/building7/">building7</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-05</code></td>
-        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; middle campfire interval is patched from clean animated foreground rows and packs are FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw</td>
+        <td>visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, patching the middle campfire interval from clean animated foreground rows, and converting to FGP3 with explicit cleanup; last-100-frame full-host review showed no fish-skeleton draw in this scene</td>
       </tr>
 
 
@@ -367,7 +367,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/fishing3/">fishing3</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-01</code></td>
-        <td>visual + audible signoff on PS1/DuckStation from v0.6.1-ps1 baseline</td>
+        <td>visual + audible signoff on PS1/DuckStation from `v0.6.1-ps1` baseline</td>
       </tr>
 
 
@@ -379,7 +379,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/fishing4/">fishing4</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-01</code></td>
-        <td>visual + audible signoff after LEFT_ISLAND fgpilot draw-offset fix</td>
+        <td>visual + audible signoff after `LEFT_ISLAND` fgpilot draw-offset fix</td>
       </tr>
 
 
@@ -427,7 +427,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/fishing8/">fishing8</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after the same full-frame foreground-only recapture pattern as FISHING 7; pack completeness is proven at the far-left stress position and production playback stays random-position safe</td>
+        <td>visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe</td>
       </tr>
 
 
@@ -439,7 +439,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/johnny1/">johnny1</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-02</code></td>
-        <td>full-screen black-backdrop playback; visual signoff after placement/scaling and clean-rect memory fixes</td>
+        <td>visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init</td>
       </tr>
 
 
@@ -451,7 +451,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/johnny2/">johnny2</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-02</code></td>
-        <td>visual + audible signoff after lower-band keyed overlay cleanup and thought-bubble hold timing fixes</td>
+        <td>visual + audible signoff after rebuilding high/low FG2 with lower-band keyed overlay cleanup and hold-advance/hold-adjust timing for the island/SOS thought bubbles</td>
       </tr>
 
 
@@ -475,7 +475,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/johnny4/">johnny4</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after full-frame keyed foreground-only overlay fixed stale bottle overpaint and full-host SOS bubble blue-line contamination without adding a runtime island-position pin</td>
+        <td>visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin</td>
       </tr>
 
 
@@ -487,7 +487,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/johnny5/">johnny5</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after x=80 host capture restored the thrown-bottle splash, full-frame keyed foreground-only overlay fixed stale lower-band overpaint, and hold timing was redistributed onto the SOS note bubble without adding a runtime island-position pin</td>
+        <td>visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows</td>
       </tr>
 
 
@@ -499,7 +499,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/johnny6/">johnny6</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after routing through the full-screen black-backdrop runtime path; no ocean/island background is painted</td>
+        <td>visual + audible signoff after routing the scene through the full-screen black-backdrop runtime path; no ocean/island background is painted</td>
       </tr>
 
 
@@ -523,7 +523,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/mary2/">mary2</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after wide scene-relative multi-view stitch restored clipped line/mermaid/boot/splash pixels and full-host bubble injection restored the fish thought-bubble shell; far-right and true far-left stress playback passed</td>
+        <td>visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed</td>
       </tr>
 
 
@@ -535,7 +535,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/mary3/">mary3</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after far-right full-frame keyed foreground-only recapture; stale host capture sprite-surface references are invalidated before BMP/layer frees, low-memory clean-snapshot relief keeps the large pack stable, and the late dinner/thought beat now holds on the readable frames</td>
+        <td>visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames</td>
       </tr>
 
 
@@ -547,7 +547,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/mary4/">mary4</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs from normal, far-left, and far-right foreground-only captures; far-right stress playback passed without a production placement pin</td>
+        <td>visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed</td>
       </tr>
 
 
@@ -559,7 +559,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/mary5/">mary5</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after generic multi-view scene-relative stitch rebuilt high/low packs with the generic raft off; runtime story-flag policy now clamps NORAFT scenes to no external raft and skips walk-in for FIRST full-wipe scenes</td>
+        <td>visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition</td>
       </tr>
 
 
@@ -571,7 +571,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/miscgag1/">miscgag1</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; validated on the normal high-tide/night route</td>
+        <td>visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
       </tr>
 
 
@@ -583,7 +583,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/miscgag2/">miscgag2</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual + audible signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; validated on the normal high-tide/night route</td>
+        <td>visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; validated on the normal high-tide/night route</td>
       </tr>
 
 
@@ -595,7 +595,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/stand1/">stand1</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-03</code></td>
-        <td>visual signoff after generic normal/far-left/far-right foreground-only multi-view stitch rebuilt high/low packs; source pack is a short 35-frame / 169-vblank idle loop, so the hard-to-see reset is expected</td>
+        <td>visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected</td>
       </tr>
 
 
@@ -691,7 +691,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/stand9/">stand9</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick STAND 8 introduced</td>
+        <td>visual signoff on the normal high-tide/night route through the same STAND no-stitch fast-path export and per-frame wave tick `STAND 8` introduced</td>
       </tr>
 
 
@@ -703,7 +703,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/stand10/">stand10</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual signoff on the normal high-tide/night route. The host engine exits STAND.ADS:10 after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.</td>
+        <td>visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -715,7 +715,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/stand11/">stand11</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual signoff on the normal high-tide/night route. Like STAND 10, the host engine exits STAND.ADS:11 after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.</td>
+        <td>visual signoff on the normal high-tide/night route. Like `STAND 10`, the host engine exits `STAND.ADS:11` after only 2 frames so the no-stitch export collapses to an empty 92-byte pack; the previously-committed 95 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -727,7 +727,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/stand12/">stand12</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual signoff on the normal high-tide/night route. Same host export quirk as STAND 10/STAND 11; the previously-committed 276 KB pack was kept and validated as-is.</td>
+        <td>visual signoff on the normal high-tide/night route. Same host export quirk as `STAND 10`/`STAND 11`; the previously-committed 276 KB pack was kept and validated as-is.</td>
       </tr>
 
 
@@ -799,7 +799,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/visitor3/">visitor3</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual + audible signoff after VISITOR3-specific multi-view synthesis; foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue</td>
+        <td>visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue</td>
       </tr>
 
 
@@ -835,7 +835,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/visitor6/">visitor6</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames 120:141 restore the background-owned tree shake/strike pixels</td>
+        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames `120:141` restore the background-owned tree shake/strike pixels</td>
       </tr>
 
 
@@ -847,7 +847,7 @@ just say “not yet validated” and label what the scene probably is).</p>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/visitor7/">visitor7</a></td>
         <td class="scene-status ok">validated</td>
         <td><code>2026-05-04</code></td>
-        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames 32, 62, 71, and 80 now hold long enough for the coconut/tree impact frames to read without changing total scene duration</td>
+        <td>visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames `32`, `62`, `71`, and `80` now hold long enough for the coconut/tree impact frames to read without changing total scene duration</td>
       </tr>
 
 
@@ -857,9 +857,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">WALKSTUF 1</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/walkstuf1/">walkstuf1</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-05</code></td>
+        <td>visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him</td>
       </tr>
 
 
@@ -869,9 +869,9 @@ just say “not yet validated” and label what the scene probably is).</p>
       <tr>
         <td class="scene-tag">WALKSTUF 2</td>
         <td class="scene-name"><a href="/johnny-castaway-ps1/scenes/walkstuf2/">walkstuf2</a></td>
-        <td class="scene-status pending">pending</td>
-        <td>—</td>
-        <td></td>
+        <td class="scene-status ok">validated</td>
+        <td><code>2026-05-04</code></td>
+        <td>visual + audible signoff on the existing on-disc WALK2.FG2 / WALK2LOW.FG2 packs (no rework needed); high-tide nighttime route</td>
       </tr>
 
 
@@ -916,11 +916,11 @@ optimization battle card for “how fast does this scene/tide variant run.”</l
   <tbody>
     <tr>
       <td>Scenes visually validated</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">51 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">57 / 63</code></td>
     </tr>
     <tr>
       <td>Validated scenes</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code>, <code class="language-plaintext highlighter-rouge">fishing3</code>, <code class="language-plaintext highlighter-rouge">fishing4</code>, <code class="language-plaintext highlighter-rouge">fishing5</code>, <code class="language-plaintext highlighter-rouge">fishing6</code>, <code class="language-plaintext highlighter-rouge">fishing7</code>, <code class="language-plaintext highlighter-rouge">fishing8</code>, <code class="language-plaintext highlighter-rouge">building1</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">building3</code>, <code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">building5</code>, <code class="language-plaintext highlighter-rouge">building6</code>, <code class="language-plaintext highlighter-rouge">building7</code>, <code class="language-plaintext highlighter-rouge">johnny1</code>, <code class="language-plaintext highlighter-rouge">johnny2</code>, <code class="language-plaintext highlighter-rouge">johnny3</code>, <code class="language-plaintext highlighter-rouge">johnny4</code>, <code class="language-plaintext highlighter-rouge">johnny5</code>, <code class="language-plaintext highlighter-rouge">johnny6</code>, <code class="language-plaintext highlighter-rouge">mary1</code>, <code class="language-plaintext highlighter-rouge">mary2</code>, <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">mary4</code>, <code class="language-plaintext highlighter-rouge">mary5</code>, <code class="language-plaintext highlighter-rouge">miscgag1</code>, <code class="language-plaintext highlighter-rouge">miscgag2</code>, <code class="language-plaintext highlighter-rouge">stand1</code>, <code class="language-plaintext highlighter-rouge">stand2</code>, <code class="language-plaintext highlighter-rouge">stand3</code>, <code class="language-plaintext highlighter-rouge">stand4</code>, <code class="language-plaintext highlighter-rouge">stand5</code>, <code class="language-plaintext highlighter-rouge">stand6</code>, <code class="language-plaintext highlighter-rouge">stand7</code>, <code class="language-plaintext highlighter-rouge">stand8</code>, <code class="language-plaintext highlighter-rouge">stand9</code>, <code class="language-plaintext highlighter-rouge">stand10</code>, <code class="language-plaintext highlighter-rouge">stand11</code>, <code class="language-plaintext highlighter-rouge">stand12</code>, <code class="language-plaintext highlighter-rouge">stand15</code>, <code class="language-plaintext highlighter-rouge">stand16</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, <code class="language-plaintext highlighter-rouge">suzy2</code>, <code class="language-plaintext highlighter-rouge">visitor1</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">visitor4</code>, <code class="language-plaintext highlighter-rouge">visitor5</code>, <code class="language-plaintext highlighter-rouge">visitor6</code>, <code class="language-plaintext highlighter-rouge">visitor7</code>, <code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">activity8</code>, <code class="language-plaintext highlighter-rouge">activity10</code>, <code class="language-plaintext highlighter-rouge">activity11</code>, <code class="language-plaintext highlighter-rouge">activity12</code>, <code class="language-plaintext highlighter-rouge">building1</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">building3</code>, <code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">building5</code>, <code class="language-plaintext highlighter-rouge">building6</code>, <code class="language-plaintext highlighter-rouge">building7</code>, <code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code>, <code class="language-plaintext highlighter-rouge">fishing3</code>, <code class="language-plaintext highlighter-rouge">fishing4</code>, <code class="language-plaintext highlighter-rouge">fishing5</code>, <code class="language-plaintext highlighter-rouge">fishing6</code>, <code class="language-plaintext highlighter-rouge">fishing7</code>, <code class="language-plaintext highlighter-rouge">fishing8</code>, <code class="language-plaintext highlighter-rouge">johnny1</code>, <code class="language-plaintext highlighter-rouge">johnny2</code>, <code class="language-plaintext highlighter-rouge">johnny3</code>, <code class="language-plaintext highlighter-rouge">johnny4</code>, <code class="language-plaintext highlighter-rouge">johnny5</code>, <code class="language-plaintext highlighter-rouge">johnny6</code>, <code class="language-plaintext highlighter-rouge">mary1</code>, <code class="language-plaintext highlighter-rouge">mary2</code>, <code class="language-plaintext highlighter-rouge">mary3</code>, <code class="language-plaintext highlighter-rouge">mary4</code>, <code class="language-plaintext highlighter-rouge">mary5</code>, <code class="language-plaintext highlighter-rouge">miscgag1</code>, <code class="language-plaintext highlighter-rouge">miscgag2</code>, <code class="language-plaintext highlighter-rouge">stand1</code>, <code class="language-plaintext highlighter-rouge">stand2</code>, <code class="language-plaintext highlighter-rouge">stand3</code>, <code class="language-plaintext highlighter-rouge">stand4</code>, <code class="language-plaintext highlighter-rouge">stand5</code>, <code class="language-plaintext highlighter-rouge">stand6</code>, <code class="language-plaintext highlighter-rouge">stand7</code>, <code class="language-plaintext highlighter-rouge">stand8</code>, <code class="language-plaintext highlighter-rouge">stand9</code>, <code class="language-plaintext highlighter-rouge">stand10</code>, <code class="language-plaintext highlighter-rouge">stand11</code>, <code class="language-plaintext highlighter-rouge">stand12</code>, <code class="language-plaintext highlighter-rouge">stand15</code>, <code class="language-plaintext highlighter-rouge">stand16</code>, <code class="language-plaintext highlighter-rouge">suzy1</code>, <code class="language-plaintext highlighter-rouge">suzy2</code>, <code class="language-plaintext highlighter-rouge">visitor1</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">visitor4</code>, <code class="language-plaintext highlighter-rouge">visitor5</code>, <code class="language-plaintext highlighter-rouge">visitor6</code>, <code class="language-plaintext highlighter-rouge">visitor7</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">walkstuf2</code>, <code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
     </tr>
     <tr>
       <td>Scene/tide variants routed through headless perf</td>

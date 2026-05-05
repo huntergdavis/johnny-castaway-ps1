@@ -4,11 +4,16 @@ title: ACTIVITY 11 — Rain dance
 ads: ACTIVITY
 tag: 11
 slug: activity11
-status: pending
-description: "ACTIVITY.ADS scene 11: Rain dance. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 11: Rain dance. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff after re-exporting
+high/low packs with a frame-wide keyed overlay
+(`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny / bird-outline
+residue that the foreground-only diff carried against the moving rain
+backdrop.
 
 ## Pack identifiers
 

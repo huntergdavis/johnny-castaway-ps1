@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 51 / 63 (next: activity1)
+## Progress: 57 / 63 (next: activity1; activity9 deferred)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
