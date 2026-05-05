@@ -84,7 +84,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 |---|---|
 | Current release | **`v0.6.11-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
-| Scenes fully validated under the reference bar | **37 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`) |
+| Scenes fully validated under the reference bar | **38 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+13.9% over target / 88.6% target speed** |
@@ -100,7 +100,7 @@ story flags to direct scene playback: `NORAFT` suppresses the external raft
 and `FIRST` skips the walk prelude before full-wipe scenes.
 
 Current main after `v0.6.11-ps1` has also validated `STAND 2`-`STAND 12`,
-`STAND 15`, `STAND 16`, `SUZY 1`, and `SUZY 2`. `STAND 5`-`STAND 9`,
+`STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, and `VISITOR 1`. `STAND 5`-`STAND 9`,
 `STAND 15`, and `STAND 16` use the STAND no-stitch export fast path, and the FG2 runtime now ticks ocean wave
 animation every frame so no-stitch scenes get moving water from the
 engine instead of from the foreground-only pack. The fast path keeps a
@@ -111,7 +111,8 @@ the scene-local `MRAFT.BMP` raft in the foreground overlay and uses SFX
 mixer headroom so overlapping raft samples do not clip. The scene-loader
 path now skips the stale walk prelude before direct scene launches, and
 high-pressure clean snapshots release optional walk/prefetch caches before
-allocating.
+allocating. `VISITOR 1` validates through the standard multi-view stitch
+with one captured SFX event and variable production island placement.
 
 `v0.6.8-ps1` is a scene-validation bugfix release: `MARY 2` is now
 validated after rebuilding high/low packs from a wide scene-relative

@@ -39,7 +39,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "mary3", "MARY 3  -  Mermaid sneak-up", "Mary", "FG/MARY3.FG2", "BMP/SCEXPL_MARY3.PSB", 256, 1, 0 },
     { "mary4", "MARY 4  -  Heartbroken at the raft", "Mary", "FG/MARY4.FG2", "BMP/SCEXPL_MARY4.PSB", 154, 1, 0 },
     { "mary5", "MARY 5  -  Goodbye", "Mary", "FG/MARY5.FG2", "BMP/SCEXPL_MARY5.PSB", 150, 1, 0 },
-    { "visitor1", "VISITOR 1  -  Lilliputians arrive", "Visitors", "FG/VISITOR1.FG2", "BMP/SCEXPL_VISITOR1.PSB", 120, 0, 0 },
+    { "visitor1", "VISITOR 1  -  Lilliputians arrive", "Visitors", "FG/VISITOR1.FG2", "BMP/SCEXPL_VISITOR1.PSB", 67, 1, 0 },
     { "visitor3", "VISITOR 3  -  Yacht couple, photos", "Visitors", "FG/VISITOR3.FG2", "BMP/SCEXPL_VISITOR3.PSB", 190, 0, 0 },
     { "visitor4", "VISITOR 4  -  Red boat circles", "Visitors", "FG/VISITOR4.FG2", "BMP/SCEXPL_VISITOR4.PSB", 67, 0, 0 },
     { "visitor5", "VISITOR 5  -  Visitor takes Johnny", "Visitors", "FG/VISITOR5.FG2", "BMP/SCEXPL_VISITOR5.PSB", 228, 0, 0 },

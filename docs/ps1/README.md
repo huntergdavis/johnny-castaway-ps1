@@ -14,7 +14,7 @@ background, waves, holiday overlay, and SFX playback.
 |---|---|
 | Release | `v0.6.11-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **37 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`) |
+| Scenes fully validated under the reference bar | **38 / 63** (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`) |
 | Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -25,7 +25,7 @@ the external raft off, and `FIRST` skips the walk prelude before full-wipe
 scenes.
 
 Current main after `v0.6.11-ps1` also validates `STAND 2`-`STAND 12`,
-`STAND 15`, `STAND 16`, `SUZY 1`, and `SUZY 2`. `STAND 5`-`STAND 9`,
+`STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, and `VISITOR 1`. `STAND 5`-`STAND 9`,
 `STAND 15`, and `STAND 16` use the STAND no-stitch
 export fast path with a full-frame single-position foreground-only
 overlay so static frame-0 Johnny pixels are not dropped. The FG2
@@ -36,7 +36,8 @@ are unaffected because the foreground compose still draws on top.
 `SUZY 1` and `SUZY 2` use the source `SUZBEACH.SCR` backdrop instead
 of the island/ocean runtime path. `SUZY 2` also keeps `MRAFT.BMP` in
 the foreground overlay so Johnny rides the raft, and the SFX mixer now
-has headroom for overlapping raft samples. The scene-loader path now skips the stale
+has headroom for overlapping raft samples. `VISITOR 1` validates through
+the standard multi-view stitch with one captured SFX event. The scene-loader path now skips the stale
 walk prelude before direct scene launches, and high-pressure clean
 snapshots release optional walk/prefetch caches before allocating.
 

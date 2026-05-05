@@ -282,7 +282,11 @@ behind the foreground pack.
 `SUZY 2` followed after the raft was classified as scene-local static art.
 The foreground pack now includes `MRAFT.BMP` static-base pixels so Johnny
 rides the raft instead of floating, and the SFX mixer leaves headroom for
-the overlapping raft samples. The current count is **37 / 63**.
+the overlapping raft samples.
+
+`VISITOR 1` followed through the now-standard multi-view stitch. The
+Lilliputian arrival validated with a wide scene-relative foreground union
+and one captured SFX event. The current count is **38 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

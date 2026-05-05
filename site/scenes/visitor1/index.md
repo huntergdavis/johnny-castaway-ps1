@@ -4,38 +4,31 @@ title: VISITOR 1 — Lilliputians arrive
 ads: VISITOR
 tag: 1
 slug: visitor1
-status: pending
-description: "VISITOR.ADS scene 1: Lilliputians arrive. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 1: Lilliputians arrive. Validated on PS1 after generic multi-view capture stitching."
 ---
 
-Not yet validated.
+Validated on 2026-05-04.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>VISITOR.ADS scene 1</code>
 - Slug: <code>visitor1</code>
 
-## What this scene probably is
+## What This Scene Is
 
-(Guess.) A three-mast ship arrives; tiny figures tie Johnny down. (low-tide variant ok)
+A three-mast ship arrives and the Lilliputians tie Johnny down.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
-### How this scene gets validated
+## Validation Notes
 
-The same way every scene does: under the FISHING 1 bar.
+VISITOR 1 was regenerated through the standard normal/far-left/far-right
+foreground-only multi-view stitch. The resulting high and low tide FG2 packs
+carry a wide scene-relative foreground union for the Lilliputian arrival and
+one captured SFX event.
 
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
-
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+The validation route used low tide, night, no holiday overlay, raft-stage 4,
+and `island-pos -154 54` for review. Production playback remains variable
+island-position safe; the controlled host/test positions were capture
+coverage probes, not runtime pins.

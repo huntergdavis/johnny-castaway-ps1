@@ -3,10 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-04 (scene ledger at 37/63; `SUZY 2` was
-validated after keeping its scene-local `MRAFT.BMP` raft in the
-foreground overlay and adding SFX mixer headroom for overlapping raft
-samples).
+**Last updated:** 2026-05-04 (scene ledger at 38/63; `VISITOR 1` was
+validated after regenerating high/low packs through the standard
+normal/far-left/far-right foreground-only multi-view stitch).
 
 ## Overall
 
@@ -15,7 +14,7 @@ animations. `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`,
 `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`,
 `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`,
-`STAND 1`-`STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, and `SUZY 2` have been validated
+`STAND 1`-`STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, and `VISITOR 1` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
 / raft-stage), signed off by human visual + audible review. `FISHING 7`
@@ -85,6 +84,11 @@ static `MRAFT.BMP` raft in the foreground overlay. Its high/low packs
 were rebuilt with a full-frame foreground-only overlay that includes
 static base draws, and SFX playback now leaves mixer headroom so its
 overlapping raft samples do not clip.
+`VISITOR 1` was regenerated through the generic normal/far-left/far-right
+foreground-only multi-view stitch and validated on the low-tide/night
+route. Its pack carries one captured SFX event and a wide scene-relative
+foreground union for the Lilliputian arrival; production placement remains
+variable-position safe.
 
 | Component | Status |
 |---|---|
@@ -93,7 +97,7 @@ overlapping raft samples do not clip.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 37/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 38/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -103,7 +107,7 @@ overlapping raft samples do not clip.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 37 / 63 fully validated
+## Scenes: 38 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
@@ -111,7 +115,7 @@ this page gives the narrative around it.
 
 Milestone releases:
 - Current main after `v0.6.11-ps1` — promotes `STAND 2`-`STAND 12`,
-  `STAND 15`, `STAND 16`, `SUZY 1`, and `SUZY 2` after visual signoff. The STAND
+  `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, and `VISITOR 1` after visual signoff. The STAND
   scenes passed the normal high-tide/night route. `STAND 5`-`STAND 9`,
   `STAND 15`, and `STAND 16` ride the STAND no-stitch
   export fast path with a full-frame
@@ -129,7 +133,9 @@ Milestone releases:
   is loaded from `SUZBEACH.SCR`, not painted as the standard island/ocean
   scene. `SUZY 2` keeps the scene-local `MRAFT.BMP` raft in a
   static-base foreground overlay and uses SFX mixer headroom so its
-  overlapping raft samples play without clipping.
+  overlapping raft samples play without clipping. `VISITOR 1` uses the
+  standard multi-view stitch and validates the Lilliputian arrival with
+  one captured SFX event.
 - `v0.6.11-ps1` — promotes `MISCGAG 1`, `MISCGAG 2`, and `STAND 1`
   after regenerating high/low packs through the generic multi-view
   stitch. `STAND 1` is a short 169-vblank idle loop with no captured SFX
@@ -299,8 +305,9 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **37 / 63** | **2026-05-04** | **Current scene ledger after `SUZY 2` promotion; high/low packs were regenerated with a static-base foreground overlay for `MRAFT.BMP`, and SFX playback now leaves mixer headroom for overlapping raft samples** | **this doc, `scene-status.md`** |
-| **36 / 63** | **2026-05-04** | **`SUZY 1` promotion; high/low packs were regenerated and runtime playback now loads `SUZBEACH.SCR` as the scene-specific beach backdrop instead of painting the normal island/ocean background** | **this doc, `scene-status.md`** |
+| **38 / 63** | **2026-05-04** | **Current scene ledger after `VISITOR 1` promotion; high/low packs were regenerated through the generic normal/far-left/far-right foreground-only multi-view stitch and low-tide/night playback passed visual + audible signoff** | **this doc, `scene-status.md`** |
+| 37 / 63 | 2026-05-04 | `SUZY 2` promotion; high/low packs were regenerated with a static-base foreground overlay for `MRAFT.BMP`, and SFX playback now leaves mixer headroom for overlapping raft samples | this doc, `scene-status.md` |
+| 36 / 63 | 2026-05-04 | `SUZY 1` promotion; high/low packs were regenerated and runtime playback now loads `SUZBEACH.SCR` as the scene-specific beach backdrop instead of painting the normal island/ocean background | this doc, `scene-status.md` |
 | 35 / 63 | 2026-05-04 | Scene ledger after `STAND 16` promotion; high/low packs were regenerated through the STAND no-stitch fast-path export and normal high-tide/night center-spyglass playback passed human visual signoff | this doc, `scene-status.md` |
 | 34 / 63 | 2026-05-04 | Scene ledger after `STAND 15` promotion; high/low packs were regenerated through the STAND no-stitch fast-path export and normal high-tide/night playback passed human visual signoff | this doc, `scene-status.md` |
 | 33 / 63 | 2026-05-04 | Scene ledger after `STAND 12` promotion; same host export quirk as `STAND 10`/`STAND 11`, the previously-committed 276 KB FG2 pack was kept and signed off as-is on the normal high-tide/night route | this doc, `scene-status.md` |

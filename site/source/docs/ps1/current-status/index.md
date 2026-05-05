@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after keeping its scene-local MRAFT.BMP raft in the foreground overlay and adding SFX mixer headroom for overlapping raft samples).
+validated after regenerating high/low packs through the standard normal/far-left/far-right foreground-only multi-view stitch).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 374 |
-| Approx. words | 3787 |
+| Lines | 381 |
+| Approx. words | 3876 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 37 / 63 fully validated
+-   Scenes: 38 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
