@@ -45,6 +45,12 @@ def write_merged_foreground(
     reference_capture_dir: Path,
     source_fg_dirs: list[Path],
     output_dir: Path,
+    hold_empty_frames: bool = False,
+    hold_drop_threshold: float = 0.0,
+    hold_drop_floor: int = 0,
+    hold_johnny_in_bbox: tuple[int, int, int, int] | None = None,
+    hold_johnny_frame_range: tuple[int, int] | None = None,
+    hold_johnny_glitch_threshold: int = 2000,
 ) -> None:
     out_frames = output_dir / "frames"
     out_meta = output_dir / "frame-meta"
@@ -57,6 +63,8 @@ def write_merged_foreground(
     global_max_x = None
     global_max_y = None
 
+    last_visible_pixels: dict[tuple[int, int], tuple[int, int, int]] = {}
+    last_johnny_bbox_pixels: dict[tuple[int, int], tuple[int, int, int]] = {}
     for ref_frame in frame_paths(reference_capture_dir):
         local_pixels: dict[tuple[int, int], tuple[int, int, int]] = {}
         ref_meta_path = reference_capture_dir / "frame-meta" / ref_frame.with_suffix(".json").name
@@ -75,7 +83,79 @@ def write_merged_foreground(
                 local_key = (x - offset_x, y - offset_y)
                 local_pixels.setdefault(local_key, rgb)
 
+        # When --hold-empty-frames is set: a frame with no foreground in any
+        # source reuses the previous visible frame's pixels. Used for scenes
+        # like walkstuf1 where the host engine drops Johnny for 1-3 frame
+        # bursts mid-animation; without this hold, the temporal-residual
+        # pack encodes those bursts as ERASE → DRAW → ERASE, which plays
+        # back as a Johnny blink. Holding instead emits no delta for the
+        # gap frame, so the runtime keeps the previous Johnny visible.
+        if not local_pixels and hold_empty_frames and last_visible_pixels:
+            local_pixels = dict(last_visible_pixels)
+
+        # Stronger glitch-detection hold: if the current frame's pixel
+        # count drops sharply (below `hold_drop_threshold` × previous)
+        # AND the previous frame was above `hold_drop_floor` (i.e. was
+        # showing a healthy Johnny — not a steady-state small pose),
+        # treat the current frame as a glitch and hold the previous.
+        # This catches walkstuf1's "Johnny drops to a partial fragment
+        # for 1-2 frames" pattern that hold-empty-frames misses
+        # because the fragment isn't fully empty.
+        if (
+            hold_drop_threshold > 0.0
+            and last_visible_pixels
+            and len(last_visible_pixels) > hold_drop_floor
+            and len(local_pixels) < int(len(last_visible_pixels) * hold_drop_threshold)
+        ):
+            local_pixels = dict(last_visible_pixels)
+
+        # Frame-range-gated Johnny-bbox hold: only inside the active
+        # frame range, replace the bbox contents with the last "real"
+        # Johnny pose IF the current frame's bbox is mostly empty
+        # (Johnny dropped from foreground-only diff because he stopped
+        # moving). Outside the bbox, the rest of the scene (boat,
+        # mermaid, etc.) animates normally.
+        #
+        # We track `last_johnny_bbox_pixels` on EVERY frame (whether
+        # in-range or not) so the first held frame at the range start
+        # has something to fall back to.
+        if hold_johnny_in_bbox:
+            jx0, jy0, jx1, jy1 = hold_johnny_in_bbox
+            current_in_bbox = sum(
+                1 for (x, y) in local_pixels
+                if jx0 <= x < jx1 and jy0 <= y < jy1
+            )
+
+            in_range = False
+            if hold_johnny_frame_range:
+                frame_idx = int(ref_frame.stem.split("_")[-1])
+                range_start, range_end = hold_johnny_frame_range
+                in_range = range_start <= frame_idx <= range_end
+
+            if (
+                in_range
+                and current_in_bbox < hold_johnny_glitch_threshold
+                and last_johnny_bbox_pixels
+            ):
+                # Glitch frame inside the hold range — drop the
+                # fragmented bbox pixels and replace with the last
+                # full Johnny pose so we don't get a stack of
+                # partial-Johnny ghosts.
+                local_pixels = {
+                    k: v for k, v in local_pixels.items()
+                    if not (jx0 <= k[0] < jx1 and jy0 <= k[1] < jy1)
+                }
+                local_pixels.update(last_johnny_bbox_pixels)
+            elif current_in_bbox >= hold_johnny_glitch_threshold:
+                # Healthy Johnny pose — remember it for later glitch
+                # replacement (whether in-range or not).
+                last_johnny_bbox_pixels = {
+                    k: v for k, v in local_pixels.items()
+                    if jx0 <= k[0] < jx1 and jy0 <= k[1] < jy1
+                }
+
         if local_pixels:
+            last_visible_pixels = dict(local_pixels)
             frame_min_x = min(x for x, _ in local_pixels)
             frame_max_x = max(x for x, _ in local_pixels)
             frame_min_y = min(y for _, y in local_pixels)
@@ -138,12 +218,82 @@ def main() -> None:
     parser.add_argument("--reference-capture", required=True)
     parser.add_argument("--source-fg-dir", action="append", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--hold-empty-frames",
+        action="store_true",
+        help="If a frame has no foreground in any source, hold the "
+             "previous visible frame's pixels. Use only for scenes whose "
+             "source content has Johnny-disappear bursts that the "
+             "temporal-residual pack would otherwise play as a blink "
+             "(currently: walkstuf1).",
+    )
+    parser.add_argument(
+        "--hold-drop-threshold",
+        type=float,
+        default=0.0,
+        help="If a frame's foreground pixel count drops below this "
+             "fraction of the previous frame's count, hold the previous "
+             "frame. 0 disables (default). Recommended: 0.5 for walkstuf1.",
+    )
+    parser.add_argument(
+        "--hold-drop-floor",
+        type=int,
+        default=0,
+        help="Only apply --hold-drop-threshold when the previous frame "
+             "had MORE than this many foreground pixels (so we don't "
+             "freeze a legitimate steady-state small-pose sequence). "
+             "Recommended: 5000 for walkstuf1.",
+    )
+    parser.add_argument(
+        "--hold-johnny-in-bbox",
+        default="",
+        help="Scene-local bbox to hold Johnny inside: 'left,top,right,bottom'. "
+             "Use with --hold-johnny-frame-range to specify when the hold "
+             "applies. Pixels OUTSIDE the bbox always animate normally "
+             "(boat, mermaid, etc.).",
+    )
+    parser.add_argument(
+        "--hold-johnny-frame-range",
+        default="",
+        help="Frame range (inclusive) for --hold-johnny-in-bbox: 'start,end'. "
+             "Outside this range the hold is inactive. Required for the "
+             "bbox hold to fire — without a range, nothing is held.",
+    )
+    parser.add_argument(
+        "--hold-johnny-glitch-threshold",
+        type=int,
+        default=2000,
+        help="Within the hold range, replace the bbox contents with the "
+             "last full Johnny pose ONLY if the current frame has fewer "
+             "than this many pixels in the bbox (i.e. Johnny is missing "
+             "or fragmented). Default 2000.",
+    )
     args = parser.parse_args()
+
+    bbox = None
+    if args.hold_johnny_in_bbox:
+        parts = [int(p) for p in args.hold_johnny_in_bbox.split(",")]
+        if len(parts) != 4:
+            raise SystemExit("--hold-johnny-in-bbox needs 'left,top,right,bottom'")
+        bbox = tuple(parts)  # type: ignore[assignment]
+
+    frame_range = None
+    if args.hold_johnny_frame_range:
+        parts = [int(p) for p in args.hold_johnny_frame_range.split(",")]
+        if len(parts) != 2:
+            raise SystemExit("--hold-johnny-frame-range needs 'start,end'")
+        frame_range = tuple(parts)  # type: ignore[assignment]
 
     write_merged_foreground(
         Path(args.reference_capture),
         [Path(value) for value in args.source_fg_dir],
         Path(args.output),
+        hold_empty_frames=args.hold_empty_frames,
+        hold_drop_threshold=args.hold_drop_threshold,
+        hold_drop_floor=args.hold_drop_floor,
+        hold_johnny_in_bbox=bbox,
+        hold_johnny_frame_range=frame_range,
+        hold_johnny_glitch_threshold=args.hold_johnny_glitch_threshold,
     )
 
 

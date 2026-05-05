@@ -783,11 +783,40 @@ PY
 
       convert_pack_to_fgp3=1
     else
+      # walkstuf1 has Johnny-disappear / Johnny-fragment bursts in the
+      # source animation (host engine drops Johnny entirely for some
+      # frames and renders only a tiny fragment for others mid-jog around
+      # the island). Without these holds the temporal-residual pack
+      # encodes the gap as ERASE → DRAW → ERASE → DRAW which plays as a
+      # Johnny blink. The two holds work together:
+      #  --hold-empty-frames     covers truly empty frames (0 pixels)
+      #  --hold-drop-threshold   covers partial-Johnny glitch frames
+      #                          (drop > 50% from the previous full
+      #                          Johnny). The drop-floor=5000 keeps
+      #                          us from freezing legitimate small-pose
+      #                          sequences.
+      merge_extra_args=()
+      if [ "$SCENE_SLUG" = "walkstuf1" ]; then
+        # Frame range 63-165 is where Johnny stops jumping and stands
+        # still while the boat+mermaid play out, but the foreground-only
+        # diff drops him intermittently because he's no longer the
+        # moving content. Hold his last full pose in his rest bbox
+        # ONLY across this range, ONLY when the current frame's bbox
+        # is mostly empty (so legit jump frames before f63 still play
+        # normally and the boat outside the bbox animates fine).
+        merge_extra_args+=(--hold-johnny-in-bbox 350,130,460,350)
+        merge_extra_args+=(--hold-johnny-frame-range 63,165)
+        # Healthy Johnny is ~1200-1800 px in this bbox; fragmenting
+        # glitches are 0-700 px. Threshold 1000 catches all fragments
+        # (replaces with last full pose) while preserving real frames.
+        merge_extra_args+=(--hold-johnny-glitch-threshold 1000)
+      fi
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+        "${merge_extra_args[@]}" \
         --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
 
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
@@ -795,6 +824,7 @@ PY
         --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
         --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+        "${merge_extra_args[@]}" \
         --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi
 
