@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-WALKSTUF 2 were validated. WALKSTUF1 uses re-exported high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat + mermaid scene plays out and the foreground-only diff drops him. WALKSTUF2 signed off on the existing on-disc packs with no rework. Earlier in this release line VISITOR 4, VISITOR 5, VISITOR 6, and VISITOR 7 were validated...
+validated on the existing on-disc packs (no rework — high-tide nighttime route, belly-flop dive). Earlier this push: WALKSTUF 1 and WALKSTUF 2 were validated. WALKSTUF1 uses re-exported high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat + mermaid scene plays out and the foreground-only diff drops him. WALKSTUF2 signed off on th...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 444 |
-| Approx. words | 4656 |
+| Lines | 447 |
+| Approx. words | 4705 |
 | Code fences | 1 |
 
 ## Outline

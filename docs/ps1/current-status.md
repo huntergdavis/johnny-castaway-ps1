@@ -3,7 +3,9 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-05 (scene ledger at 46/63; `WALKSTUF 1` and
+**Last updated:** 2026-05-05 (scene ledger at 47/63; `ACTIVITY 12` was
+validated on the existing on-disc packs (no rework — high-tide
+nighttime route, belly-flop dive). Earlier this push: `WALKSTUF 1` and
 `WALKSTUF 2` were validated. WALKSTUF1 uses re-exported high/low packs
 with -500/+300 stitch positions and a range-gated Johnny-bbox hold
 (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his
@@ -136,7 +138,7 @@ no pack/runtime rework was needed.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 46/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 47/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -361,7 +363,8 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **46 / 63** | **2026-05-05** | **Current scene ledger after `WALKSTUF 1` + `WALKSTUF 2` promotion; WALKSTUF1 high/low packs were re-exported with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165) so Johnny stays drawn in his rest position while the boat + mermaid play out and the foreground-only diff drops him; WALKSTUF2 signed off on the existing on-disc packs with no rework** | **this doc, `scene-status.md`** |
+| **47 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 12` promotion; signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework); high-tide nighttime route, belly-flop dive** | **this doc, `scene-status.md`** |
+| 46 / 63 | 2026-05-05 | Scene ledger after `WALKSTUF 1` + `WALKSTUF 2` promotion; WALKSTUF1 high/low packs were re-exported with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165) so Johnny stays drawn in his rest position while the boat + mermaid play out and the foreground-only diff drops him; WALKSTUF2 signed off on the existing on-disc packs with no rework | this doc, `scene-status.md` |
 | 44 / 63 | 2026-05-04 | Scene ledger after `VISITOR 7` promotion; high/low packs use the generic multi-view stitch plus hold redistribution for source frames 32, 62, 71, and 80 so the coconut/tree impact reads clearly | this doc, `scene-status.md` |
 | 43 / 63 | 2026-05-04 | `VISITOR 6` promotion; high/low packs use the generic multi-view stitch plus full-host impact-delta injection for source frames 120:141 to restore background-owned coconut/tree impact pixels | this doc, `scene-status.md` |
 | 42 / 63 | 2026-05-04 | `VISITOR 4` promotion; live validation confirms VISITOR4 is the coconut/plane gag in the current scene mapping, and its high/low packs use the generic multi-view stitch | this doc, `scene-status.md` |

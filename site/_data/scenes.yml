@@ -95,12 +95,12 @@
 - ads: ACTIVITY
   tag: 12
   slug: activity12
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: "2026-05-05"
+  notes: "visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive"
 - ads: BUILDING
   tag: 1
   slug: building1

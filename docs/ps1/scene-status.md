@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 46 / 63 (next: building1)
+## Progress: 47 / 63 (next: activity11)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -29,7 +29,7 @@ current public release is `v0.6.12-ps1`.
 | ACTIVITY | 9 | activity9 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 10 | activity10 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 11 | activity11 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 12 | activity12 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 12 | activity12 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive |
 | BUILDING | 1 | building1 | ⏳ | ⏳ | — | — |  |
 | BUILDING | 2 | building2 | ⏳ | ⏳ | — | — |  |
 | BUILDING | 3 | building3 | ⏳ | ⏳ | — | — |  |
