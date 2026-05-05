@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after VISITOR3-specific red-ship/splash synthesis rebuilt the high/low packs).
+validated after VISITOR3-specific red-ship/splash synthesis rebuilt the high/low packs, and WALKSTUF 3 was validated against the existing on-disc WALK3.FG2 / WALK3LOW.FG2 packs).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 392 |
-| Approx. words | 3993 |
+| Lines | 401 |
+| Approx. words | 4088 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 39 / 63 fully validated
+-   Scenes: 40 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

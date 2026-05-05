@@ -2,7 +2,7 @@
 layout: page
 title: Resource catalog
 eyebrow: Sprites, sounds, packs
-subtitle: 484 source and generated runtime assets indexed for the site.
+subtitle: 485 source and generated runtime assets indexed for the site.
 description: Catalog of Johnny Castaway source assets and generated PS1 runtime artifacts.
 ---
 
@@ -264,6 +264,7 @@ for the practical porting path.
 <tr><td><code>SXST7.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST7.SCR">source</a></td></tr>
 <tr><td><code>SXST8.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST8.SCR">source</a></td></tr>
 <tr><td><code>SXST9.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXST9.SCR">source</a></td></tr>
+<tr><td><code>SXWK3.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/SXWK3.SCR">source</a></td></tr>
 <tr><td><code>THEEND.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/THEEND.SCR">source</a></td></tr>
 </tbody>
 </table>
