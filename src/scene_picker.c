@@ -30,11 +30,13 @@ struct TTtmThread;
 #include "story_data.h"
 #pragma GCC diagnostic pop
 
-/* Catalog accessors live in jc_reborn.c — keeps the pool data private. */
+/* Catalog accessors live in jc_reborn.c — keeps the pool data private.
+ * Pool count == 0 means "fall back to the All Scenes set" (all 63
+ * scenes that ship with FG2 packs on disc). */
 extern int   fgLoopGetPoolCount(int sceneSetIdx);
 extern const char *fgLoopGetPoolSlug(int sceneSetIdx, int index);
-extern int   fgLoopGetProvenCount(void);
-extern const char *fgLoopGetProvenSlug(int index);
+extern int   fgLoopGetAllCount(void);
+extern const char *fgLoopGetAllSlug(int index);
 
 /* Slug → storyScenes[] entry lookup, owned by jc_reborn.c. We need the
  * full struct visibility from story_data.h above so we can dereference
@@ -84,8 +86,8 @@ extern int storyCurrentDay;
 static int gPickerPolicy = SCENE_PICKER_RANDOM;
 
 /* Sequential cursor. 0..pool.count-1; resets to 0 on Scene Set cycle.
- * 16 bits is more than enough — largest pool is the catch-all pool
- * (kProvenScenes is 6 today; future "All Scenes" might be ~30). */
+ * 16 bits is more than enough — the All Scenes pool tops out at 63
+ * today and the per-family sets are smaller. */
 static uint16 gSequentialCursor = 0;
 
 /* Repeat-prevention. Used by Random and Original (Sequential cycles
@@ -203,13 +205,14 @@ int pickerGetPolicy(void)
 /* ---------------------------------------------------------------------------
  *  Helper: how many scenes does the active set carry, and how do we
  *  read slug N out of it?  The set's pool is indexed by sceneSetIdx;
- *  if its count is 0 (empty / placeholder set) we fall through to
- *  kProvenScenes. The caller has already validated sceneSetIdx range.
+ *  if its count is 0 (empty / placeholder set, or the canonical
+ *  "All Scenes" entry at index 0) we fall through to kAllScenes.
+ *  The caller has already validated sceneSetIdx range.
  * ------------------------------------------------------------------------- */
 static int activePoolCount(int sceneSetIdx)
 {
     int n = fgLoopGetPoolCount(sceneSetIdx);
-    return (n > 0) ? n : fgLoopGetProvenCount();
+    return (n > 0) ? n : fgLoopGetAllCount();
 }
 
 static const char *activePoolSlug(int sceneSetIdx, int index)
@@ -217,7 +220,7 @@ static const char *activePoolSlug(int sceneSetIdx, int index)
     int n = fgLoopGetPoolCount(sceneSetIdx);
     if (n > 0)
         return fgLoopGetPoolSlug(sceneSetIdx, index);
-    return fgLoopGetProvenSlug(index);
+    return fgLoopGetAllSlug(index);
 }
 
 /* ---------------------------------------------------------------------------
@@ -389,11 +392,10 @@ static const char *pickOriginal(int sceneSetIdx,
             if (count == 0) {
                 /* No FINAL-flagged scene in this pool — degrade to
                  * Random and tell the caller so the JCPICK line can
-                 * say origpath=degraded. The default "All Scenes"
-                 * (kProvenScenes) currently has no FINAL scenes, so
-                 * this fires every pick when Original is selected
-                 * with that set. Sierra fidelity needs a Scene Set
-                 * with FINAL-tagged scenes (Fishing, Activities). */
+                 * say origpath=degraded. With kAllScenes (the
+                 * default) this never fires — 14 of the 63 scenes
+                 * are FINAL-tagged. Only happens for tiny
+                 * family-curated sets that omit finals. */
                 *outPath = ORIG_PATH_DEGRADED;
                 return pickRandom(sceneSetIdx, outRetries);
             }

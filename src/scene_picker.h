@@ -37,11 +37,12 @@ const char *pickerPolicyName(int policy);
  *                     (Scene Explorer pin / fgpilot CLI / fgLoopSequenceJustReset
  *                     paths set this; pinning trumps policy).
  *   sceneSetIdx       Index into gSceneSetPools[]. If the set's pool is
- *                     empty, the picker falls back to kProvenScenes.
+ *                     empty, the picker falls back to kAllScenes (every
+ *                     scene that ships with an FG2 pack on disc).
  *
  * Returns a slug pointer that is stable across the next iteration of
  * the screensaver loop (it points into either gSceneSetPools[].scenes
- * or kProvenScenes, both of which are static). Never NULL on success.
+ * or kAllScenes, both of which are static). Never NULL on success.
  */
 const char *pickerNextScene(const char *explicitScene, int sceneSetIdx);
 
