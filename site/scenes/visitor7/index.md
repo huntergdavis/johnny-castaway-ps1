@@ -1,25 +1,30 @@
 ---
 layout: scene
-title: VISITOR 7 — Plane overhead
+title: VISITOR 7 — Coconut tree impact
 ads: VISITOR
 tag: 7
 slug: visitor7
-status: pending
-description: "VISITOR.ADS scene 7: Plane overhead. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 7: Coconut tree impact. Validated on PS1 with regenerated high/low FG2 packs."
 ---
 
-Not yet validated.
+VISITOR 7 is validated under the current PS1 scene bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>VISITOR.ADS scene 7</code>
 - Slug: <code>visitor7</code>
 
-## What this scene probably is
+## Validation Notes
 
-(Guess.) An airplane flies over while Johnny is scanning the wrong way.
+The current mapping is the coconut/tree impact gag. High and low tide packs
+were regenerated through the generic normal/far-left/far-right foreground-only
+multi-view stitch, so runtime island placement stays variable-position safe.
 
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+The first validation pass had the correct captured pixels, but the coconut
+impact frames read as missing because dedupe left the strike rows too short.
+The final pack redistributes hold time onto source frames `32`, `62`, `71`,
+and `80`; total scene duration remains unchanged.
 
 ### How this scene gets validated
 
@@ -36,6 +41,4 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+See [the method]({{ '/about/method/' | relative_url }}) for the longer version.

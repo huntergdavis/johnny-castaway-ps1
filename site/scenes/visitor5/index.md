@@ -4,11 +4,11 @@ title: VISITOR 5 — Visitor takes Johnny
 ads: VISITOR
 tag: 5
 slug: visitor5
-status: pending
-description: "VISITOR.ADS scene 5: Visitor takes Johnny. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 5: Visitor takes Johnny. Validated on PS1/DuckStation with readable coconut impact timing."
 ---
 
-Not yet validated.
+Validated on 2026-05-04 under the FISHING 1 bar.
 
 ## Pack identifiers
 
@@ -36,6 +36,10 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+VISITOR 5 uses the generic normal/far-left/far-right foreground-only
+multi-view stitch so island-relative action is complete across production
+placements. Its high/low packs also use scene-specific hold redistribution
+so the coconut impact and downed-plane motion stay readable without
+changing total scene duration.
+
+See [the method]({{ '/about/method/' | relative_url }}) for the longer version.

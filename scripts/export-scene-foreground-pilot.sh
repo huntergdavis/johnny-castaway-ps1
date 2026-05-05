@@ -275,6 +275,16 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor3" ]; then
   # splash readable by moving a few ticks from the first ship row instead.
   HOLD_ADJUSTMENTS="158:+4 159:-4"
 fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor5" ]; then
+  # The coconut hit/downed-plane motion has several one-tick rows between long
+  # static holds. Move time into those action rows so the gag reads clearly.
+  HOLD_ADJUSTMENTS="91:-2 93:-2 95:-2 96:-1 98:-2 100:-2 102:-2 104:-1 105:+2 108:+2 109:+1 112:+2 113:+3 116:+2 119:+2 147:-2 149:+2 150:-2 152:+2 153:-2 155:+2 156:-2 158:+2 159:-2 161:+2 162:-2 164:+2 165:-2 167:+2 168:-2 170:+2 171:-2 173:+2 174:-2 176:+2 177:-1 179:+2 180:-1"
+fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor7" ]; then
+  # The coconut impact star frames exist in the capture but dedupe leaves them
+  # at four ticks between long static poses, so they read as missing in replay.
+  HOLD_ADJUSTMENTS="32:+8 39:-8 62:+8 65:-8 71:+8 74:-8 80:+8 85:-8"
+fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   "$HOST_CAPTURE_HIGH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR" \
@@ -783,33 +793,28 @@ PY
 
       convert_pack_to_fgp3=1
     else
-      # walkstuf1 has Johnny-disappear / Johnny-fragment bursts in the
-      # source animation (host engine drops Johnny entirely for some
-      # frames and renders only a tiny fragment for others mid-jog around
-      # the island). Without these holds the temporal-residual pack
-      # encodes the gap as ERASE → DRAW → ERASE → DRAW which plays as a
-      # Johnny blink. The two holds work together:
-      #  --hold-empty-frames     covers truly empty frames (0 pixels)
-      #  --hold-drop-threshold   covers partial-Johnny glitch frames
-      #                          (drop > 50% from the previous full
-      #                          Johnny). The drop-floor=5000 keeps
-      #                          us from freezing legitimate small-pose
-      #                          sequences.
       merge_extra_args=()
       if [ "$SCENE_SLUG" = "walkstuf1" ]; then
-        # Frame range 63-165 is where Johnny stops jumping and stands
-        # still while the boat+mermaid play out, but the foreground-only
-        # diff drops him intermittently because he's no longer the
-        # moving content. Hold his last full pose in his rest bbox
-        # ONLY across this range, ONLY when the current frame's bbox
-        # is mostly empty (so legit jump frames before f63 still play
-        # normally and the boat outside the bbox animates fine).
+        # walkstuf1 frames 63-165: Johnny stops moving while the boat +
+        # mermaid scene plays out, so the foreground-only diff drops
+        # him. Hold his last full pose in his rest bbox ONLY across
+        # this range, ONLY when the current frame's bbox is mostly
+        # empty (legit jump frames before f63 still play normally and
+        # the boat outside the bbox animates fine). Healthy Johnny is
+        # ~1200-1800 px in this bbox; fragmenting glitches are 0-700
+        # px — threshold 1000 catches the fragments without freezing
+        # real partial poses.
         merge_extra_args+=(--hold-johnny-in-bbox 350,130,460,350)
         merge_extra_args+=(--hold-johnny-frame-range 63,165)
-        # Healthy Johnny is ~1200-1800 px in this bbox; fragmenting
-        # glitches are 0-700 px. Threshold 1000 catches all fragments
-        # (replaces with last full pose) while preserving real frames.
         merge_extra_args+=(--hold-johnny-glitch-threshold 1000)
+      fi
+      if [ "$SCENE_SLUG" = "visitor6" ]; then
+        # VISITOR 6 has scene-owned coconut/tree impact pixels in the
+        # full host layer. Foreground-only captures keep Johnny /
+        # coconuts but omit the tree strike deltas, so inject only the
+        # non-backdrop full-host differences during the impact window.
+        merge_extra_args+=(--inject-full-host-diff-rect "330,55,260,275")
+        merge_extra_args+=(--inject-full-host-diff-frames "120:141")
       fi
       python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
         --reference-capture "$HOST_CAPTURE_HIGH_DIR" \

@@ -41,6 +41,92 @@ def non_key_pixels(img: Image.Image):
                 yield x, y, rgb
 
 
+def parse_rect(value: str) -> tuple[int, int, int, int]:
+    parts = [int(part.strip()) for part in value.split(",")]
+    if len(parts) != 4:
+        raise argparse.ArgumentTypeError("rect must be x,y,w,h")
+    x, y, w, h = parts
+    if w <= 0 or h <= 0:
+        raise argparse.ArgumentTypeError("rect width/height must be positive")
+    return x, y, w, h
+
+
+def parse_frame_range(value: str) -> tuple[int, int]:
+    if ":" not in value:
+        frame = int(value)
+        return frame, frame
+    start_text, end_text = value.split(":", 1)
+    start = int(start_text)
+    end = int(end_text)
+    if end < start:
+        raise argparse.ArgumentTypeError("frame range end must be >= start")
+    return start, end
+
+
+def frame_number(frame_path: Path) -> int:
+    try:
+        return int(frame_path.stem.split("_")[-1])
+    except (ValueError, IndexError):
+        return -1
+
+
+def in_frame_ranges(frame: int, ranges: list[tuple[int, int]]) -> bool:
+    if not ranges:
+        return False
+    return any(start <= frame <= end for start, end in ranges)
+
+
+def is_probable_backdrop_pixel(rgb: tuple[int, int, int]) -> bool:
+    r, g, b = rgb
+    if rgb == KEY:
+        return True
+    if b > 150 and r < 80 and g < 130:
+        return True
+    if g > 180 and b > 180 and r < 80:
+        return True
+    if r > 210 and g > 190 and b < 80:
+        return True
+    return False
+
+
+def full_host_diff_pixels(
+    reference_capture_dir: Path,
+    frame_name: str,
+    base_full: Image.Image | None,
+    inject_rects: list[tuple[int, int, int, int]],
+) -> dict[tuple[int, int], tuple[int, int, int]]:
+    if base_full is None or not inject_rects:
+        return {}
+
+    full_path = reference_capture_dir / "frames" / frame_name
+    if not full_path.exists():
+        return {}
+
+    offset_x, offset_y = load_offset(reference_capture_dir, frame_name)
+    with Image.open(full_path) as raw:
+        full = raw.convert("RGB")
+
+    full_pixels = full.load()
+    base_pixels = base_full.load()
+    injected: dict[tuple[int, int], tuple[int, int, int]] = {}
+
+    for rect_x, rect_y, rect_w, rect_h in inject_rects:
+        left = max(0, rect_x)
+        top = max(0, rect_y)
+        right = min(full.width, rect_x + rect_w)
+        bottom = min(full.height, rect_y + rect_h)
+        for y in range(top, bottom):
+            for x in range(left, right):
+                rgb = full_pixels[x, y]
+                if rgb == base_pixels[x, y]:
+                    continue
+                if is_probable_backdrop_pixel(rgb):
+                    continue
+                injected[(x - offset_x, y - offset_y)] = rgb
+
+    return injected
+
+
 def write_merged_foreground(
     reference_capture_dir: Path,
     source_fg_dirs: list[Path],
@@ -51,11 +137,18 @@ def write_merged_foreground(
     hold_johnny_in_bbox: tuple[int, int, int, int] | None = None,
     hold_johnny_frame_range: tuple[int, int] | None = None,
     hold_johnny_glitch_threshold: int = 2000,
+    inject_full_host_diff_rects: list[tuple[int, int, int, int]] | None = None,
+    inject_full_host_diff_frame_ranges: list[tuple[int, int]] | None = None,
 ) -> None:
     out_frames = output_dir / "frames"
     out_meta = output_dir / "frame-meta"
     out_frames.mkdir(parents=True, exist_ok=True)
     out_meta.mkdir(parents=True, exist_ok=True)
+
+    inject_full_host_diff_rects = inject_full_host_diff_rects or []
+    inject_full_host_diff_frame_ranges = inject_full_host_diff_frame_ranges or []
+    base_full_path = reference_capture_dir / "frames" / "frame_00000.bmp"
+    base_full = Image.open(base_full_path).convert("RGB") if base_full_path.exists() else None
 
     frames = []
     global_min_x = None
@@ -154,6 +247,19 @@ def write_merged_foreground(
                     if jx0 <= k[0] < jx1 and jy0 <= k[1] < jy1
                 }
 
+        # visitor3-style full-host diff injection: pull non-backdrop
+        # pixels that differ from frame 0 inside the configured rects
+        # for the configured frame ranges, and merge them in.
+        if in_frame_ranges(frame_number(ref_frame), inject_full_host_diff_frame_ranges):
+            local_pixels.update(
+                full_host_diff_pixels(
+                    reference_capture_dir,
+                    ref_frame.name,
+                    base_full,
+                    inject_full_host_diff_rects,
+                )
+            )
+
         if local_pixels:
             last_visible_pixels = dict(local_pixels)
             frame_min_x = min(x for x, _ in local_pixels)
@@ -209,6 +315,9 @@ def write_merged_foreground(
     sound_events = reference_capture_dir / "sound-events.jsonl"
     if sound_events.exists():
         shutil.copy2(sound_events, output_dir / "sound-events.jsonl")
+
+    if base_full is not None:
+        base_full.close()
 
 
 def main() -> None:
@@ -268,6 +377,20 @@ def main() -> None:
              "than this many pixels in the bbox (i.e. Johnny is missing "
              "or fragmented). Default 2000.",
     )
+    parser.add_argument(
+        "--inject-full-host-diff-rect",
+        action="append",
+        type=parse_rect,
+        default=[],
+        help="Inject non-backdrop full-host pixels that differ from frame 0 inside x,y,w,h screen rects.",
+    )
+    parser.add_argument(
+        "--inject-full-host-diff-frames",
+        action="append",
+        type=parse_frame_range,
+        default=[],
+        help="Source frame or inclusive start:end range where full-host diff injection applies.",
+    )
     args = parser.parse_args()
 
     bbox = None
@@ -294,6 +417,8 @@ def main() -> None:
         hold_johnny_in_bbox=bbox,
         hold_johnny_frame_range=frame_range,
         hold_johnny_glitch_threshold=args.hold_johnny_glitch_threshold,
+        inject_full_host_diff_rects=args.inject_full_host_diff_rect,
+        inject_full_host_diff_frame_ranges=args.inject_full_host_diff_frames,
     )
 
 

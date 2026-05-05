@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-04:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `40 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1`, `visitor3`, `walkstuf3` |
+| Scenes visually validated | `44 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1`, `visitor3`, `visitor4`, `visitor5`, `visitor6`, `walkstuf3` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
@@ -282,10 +282,10 @@ and this page.
 | `visitor4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
 | `visitor5` | high | measured | 2026-04-29T18:06:00 | compact-fgp3-v2-fullmatrix | +17.6% | 85.0% | 1274/1083 | 79 | 34 | 9 |  |
 | `visitor5` | low | measured | 2026-04-29T18:06:05 | compact-fgp3-v2-fullmatrix | +14.3% | 87.5% | 1244/1088 | 49 | 14 | 6 |  |
-| `visitor6` | high | measured | 2026-04-29T18:08:18 | compact-fgp3-v2-fullmatrix | +7.5% | 93.0% | 2195/2042 | 13 | 13 | 0 |  |
-| `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 |  |
-| `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
-| `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 |  |
+| `visitor6` | high | measured | 2026-04-29T18:08:18 | compact-fgp3-v2-fullmatrix | +7.5% | 93.0% | 2195/2042 | 13 | 13 | 0 | validated 2026-05-04 after generic multi-view stitch plus full-host impact-delta injection for source frames 120:141; active timing predates refreshed validation pack |
+| `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus full-host impact-delta injection for source frames 120:141; active timing predates refreshed validation pack |
+| `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus coconut impact hold redistribution for source frames 32, 62, 71, and 80; active timing predates refreshed validation pack |
+| `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus coconut impact hold redistribution for source frames 32, 62, 71, and 80; active timing predates refreshed validation pack |
 | `walkstuf1` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +29.5% | 77.2% | 1833/1415 | 423 | 139 | 23 |  |
 | `walkstuf1` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +30.1% | 76.9% | 1820/1399 | 452 | 140 | 34 |  |
 | `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |

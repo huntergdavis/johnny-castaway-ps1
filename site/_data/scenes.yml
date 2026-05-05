@@ -721,39 +721,65 @@
 - ads: VISITOR
   tag: 4
   slug: visitor4
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; current mapping is the coconut/plane gag, not the old red-boat catalogue label
 - ads: VISITOR
   tag: 5
   slug: visitor5
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
 - ads: VISITOR
   tag: 6
   slug: visitor6
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
+    - production variable island position
+    - full-host impact-delta injection
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch plus frame-windowed full-host delta injection for the coconut/tree impact; foreground-only views keep Johnny/coconut clean while source frames 120:141 restore the background-owned tree shake/strike pixels
 - ads: VISITOR
   tag: 7
   slug: visitor7
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: validated
+  sfx: validated
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
+    - production variable island position
+    - coconut impact hold redistribution
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; source frames 32, 62, 71, and 80 now hold long enough for the coconut/tree impact frames to read without changing total scene duration
 - ads: WALKSTUF
   tag: 1
   slug: walkstuf1

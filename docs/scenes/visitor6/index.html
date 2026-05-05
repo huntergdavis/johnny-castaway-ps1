@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
-  <title>VISITOR 6 — Schooner with partygoers — Johnny Castaway PS1</title>
-  <meta name="description" content="VISITOR.ADS scene 6: Schooner with partygoers. Not yet validated." />
+  <title>VISITOR 6 — Coconut tree impact — Johnny Castaway PS1</title>
+  <meta name="description" content="VISITOR.ADS scene 6: Coconut tree impact. Validated on PS1/DuckStation with full-host impact-delta capture." />
 
-  <meta property="og:title"        content="VISITOR 6 — Schooner with partygoers — Johnny Castaway PS1" />
-  <meta property="og:description"  content="VISITOR.ADS scene 6: Schooner with partygoers. Not yet validated." />
+  <meta property="og:title"        content="VISITOR 6 — Coconut tree impact — Johnny Castaway PS1" />
+  <meta property="og:description"  content="VISITOR.ADS scene 6: Coconut tree impact. Validated on PS1/DuckStation with full-host impact-delta capture." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
@@ -68,16 +68,16 @@
     <p class="eyebrow">
       Scene · VISITOR 6
 
-        <span class="pill pill--wip">not yet validated</span>
+        <span class="pill pill--ok">validated</span>
 
     </p>
-    <h1>VISITOR 6 — Schooner with partygoers</h1>
+    <h1>VISITOR 6 — Coconut tree impact</h1>
 
     <hr class="rule" />
   </header>
 
   <div class="page-body">
-    <p>Not yet validated.</p>
+    <p>Validated on 2026-05-04 under the FISHING 1 bar.</p>
 
 <h2 id="pack-identifiers">Pack identifiers</h2>
 
@@ -86,11 +86,14 @@
   <li>Slug: <code>visitor6</code></li>
 </ul>
 
-<h2 id="what-this-scene-probably-is">What this scene probably is</h2>
+<h2 id="what-this-scene-is">What This Scene Is</h2>
 
-<p>(Guess.) A schooner passes with partygoers and a waterskier; Johnny returns drunk.</p>
+<p>Johnny shakes the palm tree; the coconut/tree impact is partly owned by
+background-visible host layers instead of foreground-only actor draws.</p>
 
-<p>Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>HIGH</strong>.</p>
+<p>The old catalogue label on this page described the schooner/partygoer scene.
+Live validation showed that label belongs elsewhere in the current mapping.
+Caption mapping confidence in the <a href="../../docs/captions/">audit</a>: <strong>LOW</strong>.</p>
 
 <h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
 
@@ -107,9 +110,13 @@ ticks. Once that holds across all applicable variants, the scene moves
 to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
 <a href="../">ledger</a>.</p>
 
-<p>Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See <a href="../../about/method/">the method</a>
-for the longer version.</p>
+<p>VISITOR 6 uses the generic normal/far-left/far-right foreground-only
+multi-view stitch for random-position safety. Its coconut/tree impact also
+needs a narrow full-host delta injection over source frames 120:141, because
+foreground-only capture keeps Johnny and the coconut clean but omits
+background-owned tree shake/strike pixels.</p>
+
+<p>See <a href="../../about/method/">the method</a> for the longer version.</p>
 
   </div>
 
@@ -135,8 +142,8 @@ for the longer version.</p>
         <p class="footer-license">
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
-          40 / 63 scenes validated
-          (v0.6.12-ps1)
+          44 / 63 scenes validated
+          (v0.6.13-ps1)
         </p>
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex

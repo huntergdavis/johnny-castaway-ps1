@@ -21,11 +21,11 @@ defects already seen during the scene-by-scene push.
 
 Immediate handoff note:
 
-- `VISITOR 3` has human visual + audible signoff and is being promoted in the same point-release pass as this handoff doc.
-- The regenerated `VISITOR3.FG2`, `VIST3LOW.FG2`, and `scripts/merge-visitor3-ship-foreground.py` belong with the `VISITOR 3` promotion.
-- `VISITOR 3` is a red-ship/splash synthesis case: foreground-only views keep moving sprites clean, full-host frames contribute the ship hull only during live crash frames, FGP3 cleanup clears post-crash rows, and hold timing keeps the real frame-158 splash visible.
+- `VISITOR 7` has human visual + audible signoff and is being promoted with the scene ledger at 44/63.
+- The regenerated `VISITOR7.FG2`, `VIST7LOW.FG2`, and the VISITOR7 hold-redistribution branch in `scripts/export-scene-foreground-pilot.sh` belong with the `VISITOR 7` promotion.
+- `VISITOR 7` is a timing case: foreground-only host frames already contain the coconut/tree strike pixels, but dedupe left the impact rows too short. Source frames 32, 62, 71, and 80 now get redistributed hold time without changing total scene duration.
 - Production island placement remains variable. The normal, far-left, and far-right capture/test positions are evidence, not runtime pins.
-- Next scene after promoting `VISITOR 3` is `VISITOR 4`.
+- Next scene after promoting `VISITOR 7` is `WALKSTUF 1`.
 
 ## Non-Negotiables
 

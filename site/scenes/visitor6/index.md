@@ -1,25 +1,28 @@
 ---
 layout: scene
-title: VISITOR 6 — Schooner with partygoers
+title: VISITOR 6 — Coconut tree impact
 ads: VISITOR
 tag: 6
 slug: visitor6
-status: pending
-description: "VISITOR.ADS scene 6: Schooner with partygoers. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 6: Coconut tree impact. Validated on PS1/DuckStation with full-host impact-delta capture."
 ---
 
-Not yet validated.
+Validated on 2026-05-04 under the FISHING 1 bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>VISITOR.ADS scene 6</code>
 - Slug: <code>visitor6</code>
 
-## What this scene probably is
+## What This Scene Is
 
-(Guess.) A schooner passes with partygoers and a waterskier; Johnny returns drunk.
+Johnny shakes the palm tree; the coconut/tree impact is partly owned by
+background-visible host layers instead of foreground-only actor draws.
 
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+The old catalogue label on this page described the schooner/partygoer scene.
+Live validation showed that label belongs elsewhere in the current mapping.
+Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
 
 ### How this scene gets validated
 
@@ -36,6 +39,10 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+VISITOR 6 uses the generic normal/far-left/far-right foreground-only
+multi-view stitch for random-position safety. Its coconut/tree impact also
+needs a narrow full-host delta injection over source frames 120:141, because
+foreground-only capture keeps Johnny and the coconut clean but omits
+background-owned tree shake/strike pixels.
+
+See [the method]({{ '/about/method/' | relative_url }}) for the longer version.
