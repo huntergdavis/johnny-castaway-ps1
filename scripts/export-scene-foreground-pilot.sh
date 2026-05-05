@@ -192,6 +192,15 @@ if [ -z "$KEYED_OVERLAY_RECT" ] &&
   # without the stale island/ocean pixels, so use them frame-wide.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "activity11" ]; then
+  # ACTIVITY 11 (rain dance) leaves stale Johnny pose pixels in the
+  # bottom-left of the island/water and bird-outline residue in the
+  # top-middle-right of the frame when the foreground-only diff
+  # accumulates against the moving rain backdrop. Frame-wide keyed
+  # overlay replaces base-diff pixels with foreground-only capture so
+  # the stale ghosts go away.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 MULTIVIEW_STITCH="${FG_EXPORT_MULTIVIEW_STITCH:-}"
 if [ "$NO_STITCH_REQUESTED" = "1" ]; then
   MULTIVIEW_STITCH="0"

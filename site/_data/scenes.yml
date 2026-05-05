@@ -86,12 +86,12 @@
 - ads: ACTIVITY
   tag: 11
   slug: activity11
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ""
-  notes: ""
+  last_verified: "2026-05-05"
+  notes: "visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay; fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop"
 - ads: ACTIVITY
   tag: 12
   slug: activity12
