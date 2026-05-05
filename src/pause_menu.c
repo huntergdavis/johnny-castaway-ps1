@@ -1354,16 +1354,12 @@ static void drawMainMenu(void)
     pmPrintf(" %s Resume\n",
              menuCursor == MENU_RESUME ? ">" : " ");
     /* Scene Set Options is a sub-screen; the inline cycler moved into
-     * it alongside the new Scene Picker policy selector. The row label
-     * shows the active set name so users see at a glance which pool
-     * is currently driving the loop without having to dive in. */
-    {
-        int activeIdx = pauseMenuSceneSet;
-        if (activeIdx < 0 || activeIdx >= NUM_SCENE_SETS) activeIdx = 0;
-        pmPrintf(" %s Scene Set Options... (%s)\n",
-                 menuCursor == MENU_SCENE_SET ? ">" : " ",
-                 kSceneSetNames[activeIdx]);
-    }
+     * it alongside the new Scene Picker policy selector. The active
+     * set name lives inside the sub-screen — appending it here would
+     * overflow the panel for the longer set names ("Misc & Suzy",
+     * "Johnny Stories", etc.). */
+    pmPrintf(" %s Scene Set Options...\n",
+             menuCursor == MENU_SCENE_SET ? ">" : " ");
     pmPrintf(" %s Scene Explorer\n",
              menuCursor == MENU_SCENE_EXPLORER ? ">" : " ");
     pmPrintf(" %s Freeplay: %s\n",
