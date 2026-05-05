@@ -104,8 +104,8 @@ Current battle-card rollup as of 2026-05-04:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `38 / 63` |
-| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1` |
+| Scenes visually validated | `39 / 63` |
+| Validated scenes | `fishing1`, `fishing2`, `fishing3`, `fishing4`, `fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`, `johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`, `mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`, `stand2`, `stand3`, `stand4`, `stand5`, `stand6`, `stand7`, `stand8`, `stand9`, `stand10`, `stand11`, `stand12`, `stand15`, `stand16`, `suzy1`, `suzy2`, `visitor1`, `visitor3` |
 | Scene/tide variants routed through headless perf | `126 / 126` |
 | Timing-bearing variants | `120 / 126` |
 | Scenes with at least one active-loop timed variant | `60 / 63` |
@@ -276,8 +276,8 @@ and this page.
 | `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | high | measured | 2026-04-30T08:11:17 | compact-fgp3-v34-visitor1high-prime | +18.8% | 84.2% | 804/677 | 0 | 0 | 0 |  |
 | `visitor1` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +17.3% | 85.3% | 794/677 | 0 | 0 | 0 |  |
-| `visitor3` | high | measured | 2026-05-01T07:57:42 | compact-fgp3-v66-final-frame-hold | +40.5% | 71.2% | 1416/1008 | 356 | 83 | 26 |  |
-| `visitor3` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +37.2% | 72.9% | 1393/1015 | 314 | 83 | 22 |  |
+| `visitor3` | high | measured | 2026-05-01T07:57:42 | compact-fgp3-v66-final-frame-hold | +40.5% | 71.2% | 1416/1008 | 356 | 83 | 26 | validated 2026-05-04 after VISITOR3 red-ship/splash synthesis; active timing predates refreshed validation pack |
+| `visitor3` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +37.2% | 72.9% | 1393/1015 | 314 | 83 | 22 | validated 2026-05-04 after VISITOR3 red-ship/splash synthesis; active timing predates refreshed validation pack |
 | `visitor4` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
 | `visitor4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
 | `visitor5` | high | measured | 2026-04-29T18:06:00 | compact-fgp3-v2-fullmatrix | +17.6% | 85.0% | 1274/1083 | 79 | 34 | 9 |  |

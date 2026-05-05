@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.6.10-ps1
+eyebrow: Component-level state at v0.6.12-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -18,7 +18,7 @@ The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
 `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
 `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`,
 `MISCGAG 1`, `MISCGAG 2`, `STAND 1`-`STAND 12`, `STAND 15`,
-`STAND 16`, `SUZY 1`, `SUZY 2`, and `VISITOR 1`. The live per-scene ledger is at
+`STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, and `VISITOR 3`. The live per-scene ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -55,7 +55,7 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 41 scenes in
+- **Scene coverage past the signed-off set.** The other 24 scenes in
   [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
   are unverified under the current bar; some have older bring-up
   notes from the harness era that no longer count as current

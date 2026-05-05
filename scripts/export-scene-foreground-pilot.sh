@@ -269,6 +269,12 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "mary3" ]; then
   # from the following recovery rows so the gag is readable without length drift.
   HOLD_ADJUSTMENTS="347:+24 348:+28 349:-1 351:-4 353:-2 354:-2 355:-5 358:-3 359:-1 360:-5 362:-1 363:-4 365:-2 366:-2 367:-5 369:-2 370:-3 371:-5 373:-1 374:-4"
 fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor3" ]; then
+  # The clean splash exists only on source frame 158. Earlier rescue attempts
+  # copied stale full-host splash pixels into later ship rows; keep the real
+  # splash readable by moving a few ticks from the first ship row instead.
+  HOLD_ADJUSTMENTS="158:+4 159:-4"
+fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   "$HOST_CAPTURE_HIGH_FGONLY_DIR" "$HOST_CAPTURE_LOW_FGONLY_DIR" \
@@ -325,6 +331,7 @@ if [ -n "$HOLD_ADJUSTMENTS" ]; then
   done
 fi
 scene_base_args=(--scene-base-frame 0)
+convert_pack_to_fgp3=0
 if [ -n "$KEYED_OVERLAY_RECT" ]; then
   "$SCRIPT_DIR/capture-host-scene.sh" \
     --scene "$SCENE_NAME" \
@@ -753,19 +760,43 @@ PY
       "${foreground_capture_args[@]}" \
       --output "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR"
 
-    python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
-      --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
-      --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+    if [ "$SCENE_SLUG" = "visitor3" ]; then
+      # VISITOR 3's red ship is revealed as a moving foreground slice. The
+      # full host surface accumulates that slice but then keeps stale red too
+      # long; foreground-only by itself drops the already-revealed hull. Build
+      # a clean synthesized source that accumulates only the ship slice, then
+      # convert to FGP3 so the post-crash blank frame explicitly restores the
+      # red hull instead of being treated as a hold frame.
+      python3 "$SCRIPT_DIR/merge-visitor3-ship-foreground.py" \
+        --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+        --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
 
-    python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
-      --reference-capture "$HOST_CAPTURE_LOW_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
-      --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
-      --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+      python3 "$SCRIPT_DIR/merge-visitor3-ship-foreground.py" \
+        --reference-capture "$HOST_CAPTURE_LOW_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+        --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+
+      convert_pack_to_fgp3=1
+    else
+      python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
+        --reference-capture "$HOST_CAPTURE_HIGH_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_STITCH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_HIGH_FAR_STITCH_FGONLY_DIR" \
+        --output "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+
+      python3 "$SCRIPT_DIR/merge-scene-foreground-views.py" \
+        --reference-capture "$HOST_CAPTURE_LOW_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_STITCH_FGONLY_DIR" \
+        --source-fg-dir "$HOST_CAPTURE_LOW_FAR_STITCH_FGONLY_DIR" \
+        --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+    fi
 
     high_overlay_args=()
     low_overlay_args=()
@@ -814,6 +845,19 @@ python3 "$SCRIPT_DIR/build-scene-foreground-pack.py" \
   "${hold_adjust_args[@]}" \
   --output-pack "$LOWTIDE_PACK_PATH" \
   --output-json "$LOWTIDE_PACK_JSON"
+
+if [ "$convert_pack_to_fgp3" = "1" ]; then
+  high_fgp3_tmp="${PACK_PATH}.fgp3tmp"
+  low_fgp3_tmp="${LOWTIDE_PACK_PATH}.fgp3tmp"
+  python3 "$SCRIPT_DIR/build-fg3-temporal-residual-pack.py" \
+    --input-fg2 "$PACK_PATH" \
+    --output-fg3 "$high_fgp3_tmp"
+  python3 "$SCRIPT_DIR/build-fg3-temporal-residual-pack.py" \
+    --input-fg2 "$LOWTIDE_PACK_PATH" \
+    --output-fg3 "$low_fgp3_tmp"
+  mv "$high_fgp3_tmp" "$PACK_PATH"
+  mv "$low_fgp3_tmp" "$LOWTIDE_PACK_PATH"
+fi
 
 if [ ! -s "$PACK_PATH" ]; then
   echo "foreground pack was not generated: $PACK_PATH" >&2

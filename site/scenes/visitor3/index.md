@@ -1,41 +1,41 @@
 ---
 layout: scene
-title: VISITOR 3 — Yacht couple, photos
+title: VISITOR 3 - Yacht couple, photos
 ads: VISITOR
 tag: 3
 slug: visitor3
-status: pending
-description: "VISITOR.ADS scene 3: Yacht couple, photos. Not yet validated."
+status: validated
+description: "VISITOR.ADS scene 3: Yacht couple, photos. Validated on PS1 after VISITOR3-specific red-ship and splash synthesis."
 ---
 
-Not yet validated.
+Validated on 2026-05-04.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>VISITOR.ADS scene 3</code>
 - Slug: <code>visitor3</code>
+- High-tide pack: <code>VISITOR3.FG2</code>
+- Low-tide pack: <code>VIST3LOW.FG2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; final.) A yacht arrives; the couple aboard takes photos of mask-wearing Johnny.
+A large red ship/yacht crashes through the scene while Johnny reacts in the
+water. The original host renderer reveals the ship as moving slices, but the
+visible scene expects those slices to accumulate into a full hull before the
+cleanup frames remove it.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+VISITOR 3 is not a plain base-diff scene. The validated high/low packs use the
+standard normal, far-left, and far-right foreground-only capture set, then a
+VISITOR3-specific synthesis helper builds the foreground source:
 
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+- Foreground-only views keep the moving sprite pixels clean.
+- Full-host frames contribute the red ship hull only during live crash frames.
+- FGP3 temporal cleanup clears the post-crash blank rows instead of holding stale red.
+- Hold timing keeps the real source frame-158 splash visible without replaying stale right-side splash residue.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+Production island placement remains variable. The capture/test island positions
+were evidence-gathering positions, not runtime pins.

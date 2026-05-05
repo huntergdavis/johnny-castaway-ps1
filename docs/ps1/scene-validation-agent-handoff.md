@@ -21,11 +21,11 @@ defects already seen during the scene-by-scene push.
 
 Immediate handoff note:
 
-- `STAND 5` has human visual signoff and is being promoted in the same commit as this handoff doc.
-- The regenerated `STAND5.FG2`, `STND5LOW.FG2`, and exporter no-stitch fix belong with the `STAND 5` promotion.
-- `scripts/export-scene-foreground-pilot.sh` now supports `--no-stitch`, `-nostitch`, `nostitch`, and `--stitch`.
-- The `--no-stitch` fast path must still use a single-position foreground-only overlay. Pure base-diff drops static frame-0 Johnny pixels and caused faded legs in `STAND 5`.
-- Next scene after promoting `STAND 5` is `STAND 6`.
+- `VISITOR 3` has human visual + audible signoff and is being promoted in the same point-release pass as this handoff doc.
+- The regenerated `VISITOR3.FG2`, `VIST3LOW.FG2`, and `scripts/merge-visitor3-ship-foreground.py` belong with the `VISITOR 3` promotion.
+- `VISITOR 3` is a red-ship/splash synthesis case: foreground-only views keep moving sprites clean, full-host frames contribute the ship hull only during live crash frames, FGP3 cleanup clears post-crash rows, and hold timing keeps the real frame-158 splash visible.
+- Production island placement remains variable. The normal, far-left, and far-right capture/test positions are evidence, not runtime pins.
+- Next scene after promoting `VISITOR 3` is `VISITOR 4`.
 
 ## Non-Negotiables
 
@@ -213,6 +213,7 @@ signoff. Examples already present:
 - `MARY 3`: far-right full-frame keyed foreground-only capture plus timing hold fixes.
 - `MARY 5`: `NORAFT` capture policy and full-wipe launch behavior.
 - `STAND*`: no-stitch fast path with foreground-only overlay.
+- `VISITOR 3`: scene-specific red-ship/splash synthesis from multi-view foreground-only and live full-host crash frames.
 
 ## Bug Patterns Already Seen
 
@@ -229,6 +230,7 @@ Examples:
 - `JOHNNY 4` / `JOHNNY 5`: bottle-message scenes needed full-frame foreground-only overlay.
 - `FISHING 5`: shark frames were stale or outline-only until current-ledger foreground data was included.
 - `MARY 2`: lower-water and mermaid/boot regions required merged foreground-only views.
+- `VISITOR 3`: full-host red ship pixels were useful only during live crash frames; copying later full-host rows replayed stale red/splash residue.
 
 Fixes:
 
@@ -250,6 +252,7 @@ Examples:
 - `JOHNNY 5`: x=80 host capture kept the thrown-bottle splash in frame.
 - `MARY 2`: line/mermaid/boot/splash needed multiple island-position captures stitched together.
 - `MARY 4` and later generic scenes: multi-view stitch became the default bring-up path.
+- `VISITOR 3`: normal/far-left/far-right foreground-only views are still required even though the red ship hull needs scene-specific full-host synthesis.
 
 Fixes:
 
@@ -290,6 +293,7 @@ Examples:
 - `JOHNNY 2`: island/SOS thought bubbles needed hold redistribution.
 - `JOHNNY 5`: SOS note needed longer hold while blank rows were shortened.
 - `MARY 3`: dinner/thought beat needed hold time moved onto readable frames.
+- `VISITOR 3`: source frame 158 holds the clean splash; moving ticks from frame 159 keeps the splash readable without stale full-host rescue rows.
 
 Fixes:
 
@@ -417,6 +421,6 @@ signoff is the acceptance gate.
 
 ## Current Next Steps
 
-1. Regenerate `STAND 6` with `--no-stitch`.
-2. Launch `STAND 6` for user signoff.
-3. If `STAND 6` validates, promote it through the same ledger/site/readme/static-site checklist.
+1. Regenerate `VISITOR 4` with the current exporter before visual validation.
+2. Launch `VISITOR 4` for user signoff.
+3. If `VISITOR 4` validates, promote it through the same ledger/site/readme/static-site checklist.

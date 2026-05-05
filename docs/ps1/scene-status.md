@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 38 / 63 (next: visitor3)
+## Progress: 39 / 63 (next: visitor4)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.11-ps1`.
+current public release is `v0.6.12-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -75,7 +75,7 @@ current public release is `v0.6.11-ps1`.
 | SUZY | 1 | suzy1 | ✅ | ✅ | scene-specific `SUZBEACH.SCR` backdrop · high/low pack parity | 2026-05-04 | visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path |
 | SUZY | 2 | suzy2 | ✅ | ✅ | scene-specific `SUZBEACH.SCR` backdrop · high/low pack parity · static-base foreground overlay for `MRAFT.BMP` | 2026-05-04 | visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples |
 | VISITOR | 1 | visitor1 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; pack carries one captured SFX event and a wide scene-relative foreground union for the Lilliputian arrival |
-| VISITOR | 3 | visitor3 | ⏳ | ⏳ | — | — |  |
+| VISITOR | 3 | visitor3 | ✅ | ✅ | night · low-tide · holiday · raft-stage · host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54` · production variable island position | 2026-05-04 | visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue |
 | VISITOR | 4 | visitor4 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 5 | visitor5 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 6 | visitor6 | ⏳ | ⏳ | — | — |  |

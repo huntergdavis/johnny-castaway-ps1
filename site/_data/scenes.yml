@@ -706,12 +706,18 @@
 - ads: VISITOR
   tag: 3
   slug: visitor3
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - night
+    - low-tide
+    - holiday
+    - raft-stage
+    - host capture/test island positions x=-154,y=54, x=-300,y=54, x=300,y=54
+    - production variable island position
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after VISITOR3-specific multi-view synthesis; foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue
 - ads: VISITOR
   tag: 4
   slug: visitor4
