@@ -679,12 +679,15 @@
 - ads: SUZY
   tag: 2
   slug: suzy2
-  status: pending
-  visuals: wip
-  sfx: wip
-  variants: []
-  last_verified: ""
-  notes: ""
+  status: validated
+  visuals: done
+  sfx: done
+  variants:
+    - scene-specific SUZBEACH.SCR backdrop
+    - high/low pack parity
+    - static-base foreground overlay for MRAFT.BMP
+  last_verified: 2026-05-04
+  notes: visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
 - ads: VISITOR
   tag: 1
   slug: visitor1

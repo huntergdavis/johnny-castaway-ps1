@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after routing SUZY scenes through the source SUZBEACH.SCR backdrop instead of the island/ocean runtime path).
+validated after keeping its scene-local MRAFT.BMP raft in the foreground overlay and adding SFX mixer headroom for overlapping raft samples).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 365 |
-| Approx. words | 3669 |
+| Lines | 374 |
+| Approx. words | 3787 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 36 / 63 fully validated
+-   Scenes: 37 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

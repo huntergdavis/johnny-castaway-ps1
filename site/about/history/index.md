@@ -277,7 +277,12 @@ high-tide/night route on **2026-05-04**.
 `SUZY 1` followed after a backdrop-classification fix. The source scene
 uses a separate beach screen, so the PS1 runtime now loads `SUZBEACH.SCR`
 for SUZY scenes instead of painting the standard island/ocean background
-behind the foreground pack. The current count is **36 / 63**.
+behind the foreground pack.
+
+`SUZY 2` followed after the raft was classified as scene-local static art.
+The foreground pack now includes `MRAFT.BMP` static-base pixels so Johnny
+rides the raft instead of floating, and the SFX mixer leaves headroom for
+the overlapping raft samples. The current count is **37 / 63**.
 
 The same day, `FISHING 7` and `FISHING 8` were revalidated under the new
 capture-position rule: controlled host/test placement can prove pack

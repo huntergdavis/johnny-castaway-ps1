@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 36 / 63 (next: suzy2)
+## Progress: 37 / 63 (next: visitor1)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -73,7 +73,7 @@ current public release is `v0.6.11-ps1`.
 | STAND | 15 | stand15 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; spyglass-on-left-edge idle loop played cleanly with the runtime wave tick |
 | STAND | 16 | stand16 | ✅ | ✅ | night · low-tide · holiday · raft-stage · validation route `x=-154,y=54` · no-stitch host export with full-frame foreground-only overlay · runtime FG2 wave-tick | 2026-05-04 | visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick |
 | SUZY | 1 | suzy1 | ✅ | ✅ | scene-specific `SUZBEACH.SCR` backdrop · high/low pack parity | 2026-05-04 | visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path |
-| SUZY | 2 | suzy2 | ⏳ | ⏳ | — | — |  |
+| SUZY | 2 | suzy2 | ✅ | ✅ | scene-specific `SUZBEACH.SCR` backdrop · high/low pack parity · static-base foreground overlay for `MRAFT.BMP` | 2026-05-04 | visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples |
 | VISITOR | 1 | visitor1 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 3 | visitor3 | ⏳ | ⏳ | — | — |  |
 | VISITOR | 4 | visitor4 | ⏳ | ⏳ | — | — |  |

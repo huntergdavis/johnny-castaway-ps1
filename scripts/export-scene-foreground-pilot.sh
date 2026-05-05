@@ -180,6 +180,11 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "mary3" ]; then
   # keeps the live Johnny/Mary action without baking the backdrop into FG2.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "suzy2" ]; then
+  # SUZY 2 needs MRAFT.BMP in the foreground overlay. The static-base include
+  # below keeps the raft body while this rect avoids a huge full-host pack.
+  KEYED_OVERLAY_RECT="0,0,640,480"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] &&
    { [ "$SCENE_SLUG" = "fishing7" ] || [ "$SCENE_SLUG" = "fishing8" ]; }; then
   # The older full-host captures for these scenes were both full-width dirty
@@ -197,6 +202,11 @@ elif [ -z "$MULTIVIEW_STITCH" ]; then
     # These scenes have validated custom capture paths: JOHNNY2 keeps a
     # partial lower-band overlay so thought bubbles stay full-host, and MARY2
     # has a bespoke multi-view + bubble-shell injection branch below.
+    MULTIVIEW_STITCH="0"
+  elif [ "$SCENE_SLUG" = "suzy2" ]; then
+    # SUZY 2's raft body is drawn by MRAFT.BMP as scene-local static art.
+    # Keep a single capture position, but include static base draws in the
+    # foreground-only overlay below so the raft is not dropped.
     MULTIVIEW_STITCH="0"
   elif [[ "$SCENE_SLUG" == stand* ]]; then
     # STAND scenes are static/island-local by construction. Start them on the
@@ -224,6 +234,11 @@ if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]
   # The shark waterline also uses current BACKGRND.BMP ledger draws. The
   # default foreground-only capture excludes those for other scenes, but
   # FISHING 5 needs them to avoid outline-only shark frames.
+  KEYED_OVERLAY_INCLUDE_STATIC_BASE="1"
+fi
+if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "suzy2" ]; then
+  # MRAFT.BMP is a scene-local static prop. Without static-base foreground
+  # replay, the raft body is treated as background and Johnny appears to float.
   KEYED_OVERLAY_INCLUDE_STATIC_BASE="1"
 fi
 if [ -z "$KEYED_OVERLAY_SKIP_VISIBILITY_MASK" ] && [ "$SCENE_SLUG" = "fishing5" ]; then

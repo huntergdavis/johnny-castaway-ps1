@@ -55,6 +55,10 @@ int oceanAmbientEnabled = 1;
 #define SPU_DATA_START 0x1010  /* After SPU capture buffers + dummy block */
 #define VAG_HEADER_SIZE 48    /* Standard Sony VAG header size */
 #define NUM_CHANNELS 8        /* Use 8 channels for round-robin */
+/* Leave mixer headroom for scenes that intentionally overlap the same SFX.
+ * SUZY 2 fires SOUND18 three times while earlier voices are still ringing; at
+ * full scale those voices can clip when summed by the SPU/emulator mixer. */
+#define SFX_VOLUME 0x3000
 /* Dedicated SPU voice for the ambience loop. Voice 23 is the highest
  * available; SFX uses voices 0..7 round-robin so 23 is well clear. */
 #define OCEAN_AMBIENT_VOICE 23
@@ -327,8 +331,8 @@ void soundPlay(int nb)
      * ADSR2=0x0000 (no sustain/release curve). */
     SPU_CH_FREQ(ch)  = soundPitches[nb];
     SPU_CH_ADDR(ch)  = getSPUAddr(soundAddresses[nb]);
-    SPU_CH_VOL_L(ch) = 0x3FFF;
-    SPU_CH_VOL_R(ch) = 0x3FFF;
+    SPU_CH_VOL_L(ch) = SFX_VOLUME;
+    SPU_CH_VOL_R(ch) = SFX_VOLUME;
     SPU_CH_ADSR1(ch) = 0x00FF;
     SPU_CH_ADSR2(ch) = 0x0000;
 
