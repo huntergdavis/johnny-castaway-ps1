@@ -61,6 +61,18 @@
         href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="{{ '/assets/fonts/inter-latin-400-normal.woff2' | relative_url }}" />
+  {%- comment -%}
+    Home-page-only LCP preload. The hero <img> is the largest
+    contentful paint; hinting it to the browser before the rest of
+    the body parses pulls the network request earlier in the
+    waterfall. Scoped to `/` so other pages don't try to preload
+    an image they never use.
+  {%- endcomment -%}
+  {% if page.url == '/' %}
+  <link rel="preload" as="image"
+        href="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+        fetchpriority="high" />
+  {% endif %}
 
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
   <script defer src="{{ '/assets/js/key-nav.js' | relative_url }}"></script>
