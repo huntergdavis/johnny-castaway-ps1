@@ -5,9 +5,9 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-06T19:04:34+00:00` |
+| Generated at | `2026-05-06T19:13:07+00:00` |
 | Branch | `perf-headless-20260506` |
-| Commit | `fdbe9002b` |
+| Commit | `8b95a0474` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `215040` |

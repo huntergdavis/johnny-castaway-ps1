@@ -155,17 +155,18 @@ FISHING1 showed the same visible regression pattern while the ELF grew by
 `3472` bytes and the holidays object grew `25440 -> 30008`. Keep the
 translation unit at `-Os`.
 The current v0.8.0 default-`O2` retest of `src/ps1_debug.c` is rejected:
-FISHING1 regressed `loop_vb 1068 -> 1069` and the build shifted tracked hot
-foreground/graphics/CD symbols by `+452..+464` bytes with no timing or
+against the refreshed `v080-current-fishing1-baseline`, FISHING1 stayed
+exact-flat at `1069/1073`, but ELF grew `954192 -> 954632` with no timing or
 work-volume win. Keep the translation unit at `-Os`.
 The current v0.8.0 default-`O2` retest of `src/utils.c` is rejected:
-FISHING1 regressed `loop_vb 1068 -> 1069` and shifted tracked hot symbols by
-`+472..+484` bytes. Keep the translation unit at `-Os`.
+FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 955436` and
+tracked hot symbols shifted by `+20` bytes. Keep the translation unit at
+`-Os`.
 The current v0.8.0 default-`O2` retest of `src/island.c` is rejected:
-FISHING1 regressed `loop_vb 1068 -> 1069` and shifted tracked hot symbols by
-up to `+512` bytes. Keep the translation unit at `-Os`; the normal cold
-compiler-flag queue is exhausted, leaving only review-only/default-off surfaces
-unless the link layout changes materially.
+FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954492` and
+tracked graphics/CD symbols shifted by `+48` bytes. Keep the translation unit
+at `-Os`; the normal cold compiler-flag queue is exhausted, leaving only
+review-only/default-off surfaces unless the link layout changes materially.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an

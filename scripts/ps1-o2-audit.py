@@ -119,15 +119,15 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
     ),
     "src/ps1_debug.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
-        "Whole-TU -O2 regressed FISHING1 loop timing and shifted hot foreground/graphics/CD symbols by more than the phase gate allows.",
+        "Whole-TU -O2 stayed FISHING1-flat against the refreshed v0.8.0 baseline but grew ELF with no work or speed win.",
     ),
     "src/utils.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
-        "Whole-TU -O2 regressed FISHING1 loop timing and shifted hot foreground/graphics/CD symbols by more than the phase gate allows.",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked hot symbols by 20 bytes with no work or speed win.",
     ),
     "src/island.c": (
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
-        "Whole-TU -O2 regressed FISHING1 loop timing and shifted hot foreground/graphics/CD symbols by more than the phase gate allows.",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked graphics/CD symbols by 48 bytes with no work or speed win.",
     ),
 }
 
