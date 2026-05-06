@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-05:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+12.5%` (`12.4923%` exact) |
-| Timing-bearing average target speed | `89.5%` (`89.4905%` exact) |
-| Latest perf matrix run | `2026-05-05T23:17:25` |
-| Stats version | mixed: latest refreshed rows use `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+11.9%` (`11.9317%` exact) |
+| Timing-bearing average target speed | `89.9%` (`89.9171%` exact) |
+| Latest perf matrix run | `2026-05-05T23:27:49` |
+| Stats version | mixed: latest refreshed rows use `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `stand1-v072-current-refresh`,
+  refreshed rows use `visitor4-v072-current-refresh`,
+  `stand1-v072-current-refresh`,
   `visitor3-v072-prefetch-relief`,
   `walkstuf1-v072-prefetch-relief`,
   `mary2-v068-wide-stitch`,
@@ -281,8 +282,8 @@ and this page.
 | `visitor1` | low | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +17.3% | 85.3% | 794/677 | 0 | 0 | 0 |  |
 | `visitor3` | high | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.1% | 69.4% | 1455/1010 | 363 | 21 | 31 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
 | `visitor3` | low | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.0% | 69.4% | 1453/1009 | 365 | 23 | 32 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
-| `visitor4` | high | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
-| `visitor4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +32.7% | 75.4% | 568/428 | 0 | 0 | 0 |  |
+| `visitor4` | high | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `visitor4` | low | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `visitor5` | high | measured | 2026-04-29T18:06:00 | compact-fgp3-v2-fullmatrix | +17.6% | 85.0% | 1274/1083 | 79 | 34 | 9 |  |
 | `visitor5` | low | measured | 2026-04-29T18:06:05 | compact-fgp3-v2-fullmatrix | +14.3% | 87.5% | 1244/1088 | 49 | 14 | 6 |  |
 | `visitor6` | high | measured | 2026-04-29T18:08:18 | compact-fgp3-v2-fullmatrix | +7.5% | 93.0% | 2195/2042 | 13 | 13 | 0 | validated 2026-05-04 after generic multi-view stitch plus full-host impact-delta injection for source frames 120:141; active timing predates refreshed validation pack |
