@@ -44,6 +44,12 @@ blocking `355 -> 353`; `208 KiB` regressed overrun `435 -> 436`, blocking
 `14 -> 13`. Treat `192 KiB` as the closed accepted cap. The next VISITOR3 work
 should be scheduler-owned CD timing or selective pack/data-shape preprocessing.
 
+Rejected post-cap standalone group: `{158,170}` saved one nominal VISITOR3 high
+read (`45 -> 44`) but regressed loop `1450 -> 1453`, overrun `435 -> 438`,
+blocking `355 -> 357`, and prefetch overrun `14 -> 16`. Do not retry more
+current-fit VISITOR3 groups as source tables; the planner's scheduler-owned
+classification is now confirmed after setup-prime.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
