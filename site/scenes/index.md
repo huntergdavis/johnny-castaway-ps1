@@ -124,11 +124,11 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.9%` (`0.8692%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4529%` exact) |
-| Latest perf matrix run | `2026-05-06T07:45:20` |
-| Stats version | mixed: latest refreshed rows use `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
+| Timing-bearing average over target | `+0.9%` (`0.8556%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.4595%` exact) |
+| Latest perf matrix run | `2026-05-06T15:10:17` |
+| Stats version | mixed: latest refreshed rows use `visitor3-setup-prime-192k-v080`, `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `visitor3-high-group170-186-v080-current`, `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -181,6 +181,7 @@ and this page.
   `stand-family-v072-current-refresh`,
   `visitor4-v072-current-refresh`,
   `stand1-v072-current-refresh`,
+  `visitor3-setup-prime-192k-v080`,
   `visitor3-v072-prefetch-relief`,
   `walkstuf1-v072-prefetch-relief`,
   `mary2-v068-wide-stitch`,
@@ -190,7 +191,8 @@ and this page.
   `compact-fgp3-v64-building2-group318-330`,
   `compact-fgp3-v63-building2low-prime`, and
   `indexed8-row-local-dirty-v1`; other refreshed rows
-  include `compact-fgp3-v62-fishing3low-group253-265`,
+  include `visitor3-high-group170-186-v080-current`,
+  `compact-fgp3-v62-fishing3low-group253-265`,
   `compact-fgp3-v61-fishing3low-group163-175`,
   `compact-fgp3-v60-visitor3high-group230-242`,
   `compact-fgp3-v59-visitor3high-group72-84`,
@@ -313,8 +315,8 @@ and this page.
 | `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `visitor1` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 672/677 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `visitor1` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 672/677 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor3` | high | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.1% | 69.4% | 1455/1010 | 363 | 21 | 31 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
-| `visitor3` | low | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.0% | 69.4% | 1453/1009 | 365 | 23 | 32 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
+| `visitor3` | high | measured | 2026-05-06T15:10:17 | visitor3-setup-prime-192k-v080 | +42.9% | 70.0% | 1450/1015 | 355 | 14 | 31 | VISITOR3-only 192 KiB setup-prime resident cap reduces active-loop CD reads/blocking after accepted high-tide group 170..186; global cap remains 128 KiB |
+| `visitor3` | low | measured | 2026-05-06T15:10:17 | visitor3-setup-prime-192k-v080 | +43.6% | 69.6% | 1453/1012 | 362 | 19 | 32 | VISITOR3-only 192 KiB setup-prime resident cap reduces low-tide CD reads/blocking while preserving unrelated canary rows; global cap remains 128 KiB |
 | `visitor4` | high | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `visitor4` | low | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `visitor5` | high | measured | 2026-05-06T00:23:01 | visitor5-v072-prefetch-relief | +1.9% | 98.1% | 1111/1090 | 12 | 12 | 0 | validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |

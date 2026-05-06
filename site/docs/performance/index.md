@@ -271,12 +271,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.9% over target /
-99.5% target speed** (`0.8692%` exact over target / `99.4529%` exact target speed).
+99.5% target speed** (`0.8556%` exact over target / `99.4595%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-setup-prime-192k-v080`,
 `visitor3-high-group170-186-v080-current`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
@@ -320,13 +321,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T13:05:21`; per-row freshness and stats version are shown on
+run is `2026-05-06T15:10:17`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-high-group170-186-v080-current`,
+rows now use `visitor3-setup-prime-192k-v080`,
+`visitor3-high-group170-186-v080-current`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
@@ -423,7 +425,7 @@ rows are historical only.
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
 | `visitor1` | -0.7% / 100.7% (672/677) | -0.7% / 100.7% (672/677) |
-| `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 361 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
+| `visitor3` | +42.9% / 70.0% (1450/1015); due 31; blk 355 | +43.6% / 69.6% (1453/1012); due 32; blk 362 |
 | `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
 | `visitor5` | +1.9% / 98.1% (1111/1090); blk 12 | +2.0% / 98.0% (1112/1090); blk 12 |
 | `visitor6` | -0.2% / 100.2% (2043/2047); blk 1 | -0.2% / 100.2% (2043/2047); blk 1 |

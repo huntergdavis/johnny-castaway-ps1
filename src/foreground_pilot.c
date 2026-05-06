@@ -178,6 +178,7 @@ enum {
 #define FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
 #define FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES (216UL * 1024UL)
 #define FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES (208UL * 1024UL)
+#define FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES (192UL * 1024UL)
 #define FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES (296UL * 1024UL)
 #define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
@@ -2049,11 +2050,14 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
          i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
          i++) {
         if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName)) {
+            uint32 maxResidentBytes = fgSceneEquals(sceneName, "visitor3") ?
+                FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES :
+                FG_SETUP_PRIME_MAX_RESIDENT_BYTES;
             requested = islandState.lowTide ?
                 kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
                 kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
-            return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
-                FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+            return requested > maxResidentBytes ?
+                maxResidentBytes : requested;
         }
     }
     return 0;
