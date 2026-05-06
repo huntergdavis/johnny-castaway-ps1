@@ -26,12 +26,42 @@ layout: default
 
   <footer class="post-footer">
     <hr class="rule" />
-    <p>
-      <a href="{{ '/devlog/' | relative_url }}">← back to devlog index</a>
-      {% if page.source_path %}
-      &nbsp;·&nbsp;
+
+    {%- comment -%}
+      Devlog walking. Jekyll's posts collection is sorted ascending by
+      date (oldest first) on the docs array that backs page.previous /
+      page.next, so page.previous = older post and page.next = newer
+      post (verified: newest post has page.next == nil, oldest post has
+      page.previous == nil). Labels are by direction in time so the
+      walk doesn't depend on the reader knowing Jekyll's convention.
+      Reuses the .scene-pager class — pure layout, same shape.
+    {%- endcomment -%}
+    <nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
+        {% if page.previous %}
+          <a href="{{ page.previous.url | relative_url }}" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">{{ page.previous.date | date: "%Y-%m-%d" }}</span>
+          </a>
+        {% endif %}
+      </div>
+      <div class="scene-pager-up">
+        <a href="{{ '/devlog/' | relative_url }}">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+        {% if page.next %}
+          <a href="{{ page.next.url | relative_url }}" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">{{ page.next.date | date: "%Y-%m-%d" }}</span>
+          </a>
+        {% endif %}
+      </div>
+    </nav>
+
+    {% if page.source_path %}
+    <p class="post-source">
       <a href="{{ site.github_url }}/blob/main/{{ page.source_path }}">view source on GitHub</a>
-      {% endif %}
     </p>
+    {% endif %}
   </footer>
 </article>

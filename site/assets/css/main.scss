@@ -660,6 +660,14 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   .scene-pager-up   { grid-column: 1 / span 2; grid-row: 2; }
 }
 
+/* Per-post "view source" line beneath the devlog pager. */
+.post-source {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--fg-mute);
+}
+
 /* ---------- Chapter / call-out blocks ---------- */
 .chapter {
   margin: 2.5rem 0;
