@@ -128,7 +128,19 @@ order, with the original variants. The art is unchanged. The
 holidays' visual style matches the existing 4 (Sierra retained
 the original sprites; the new ones were authored to fit).
 
-**Added**: closed captions (off by default), 32 additional
-holidays, a pause menu with Sound / Day-Night / Tide / Raft /
-Captions toggles, a Set Time / Set Island Pos / Set RNG Seed
-editor for testing, and a full Credits page.
+**Added**: a real pause menu reachable with Start (the original
+had none), with sub-screens for Scene Set, Freeplay Options,
+Controls, World Options, Holidays, Set Island Position,
+Accessibility, Sound Test, System, Set Time / Date, and Set RNG
+Seed. Closed captions (off by default; see [/docs/captions/]({{ '/docs/captions/' | relative_url }})).
+Thirty-two additional holidays via a code-generated table and
+pure-algorithm date core. [Story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+between scenes (v0.4.20-ps1) — Johnny no longer teleports.
+[Freeplay / debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+(v0.5.0-ps1) where the player drives Johnny directly, with gag
+and visitor catalogs. Optional ocean-ambience loop on a dedicated
+SPU voice (v0.6.0-ps1). Scene Set pool selector for filtering
+the random rotation by family. Frog-clock loading transitions
+between scene swaps. A full [Credits page]({{ '/credits/' | relative_url }})
+that names the prior ports and toolchain authors this build
+stands on.
