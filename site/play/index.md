@@ -67,7 +67,7 @@ anchor, set the RNG seed, and open the sound test.
 ## Freeplay controls
 
 Freeplay launches from the pause menu. It is the direct-control Johnny
-mode added in `{{ site.release.tag }}`.
+mode added in [`v0.5.0-ps1`]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }}).
 
 | Button | Action |
 |---|---|
