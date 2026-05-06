@@ -100,7 +100,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3180 words
+          ~12 min read · 3182 words
         </p>
 
       <hr class="rule" />
@@ -359,10 +359,10 @@ boot tokens still enable them on demand.</li>
 </ul>
 
 <p>The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1068</code> against a target of
-<code class="language-plaintext highlighter-rouge">target_vb=1074</code>. The original headless perf-loop baseline was
-<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">358</code> VBlanks
-(<code class="language-plaintext highlighter-rouge">25.11%</code> loop reduction).</p>
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1069</code> against a target of
+<code class="language-plaintext highlighter-rouge">target_vb=1072</code>. The original headless perf-loop baseline was
+<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">357</code> VBlanks
+(<code class="language-plaintext highlighter-rouge">25.04%</code> loop reduction).</p>
 
 <h2 id="where-it-sits-at-v080-ps1">Where it sits at v0.8.0-ps1</h2>
 
@@ -372,20 +372,20 @@ fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 2
-prefetch.overrun_vb = 2
-loop_vb = 1068
+blocking_vb = 5
+prefetch.overrun_vb = 6
+loop_vb = 1069
 overrun_vb = 0
-target_vb = 1074
+target_vb = 1072
 restore_bytes = 251,144
-upload_bytes  = 10,680,960
-dirty_rows    = 16,689
-upload_rects  = 469
+upload_bytes  = 10,648,960
+dirty_rows    = 16,639
+upload_rects  = 460
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
+<p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+0.9% over target /
 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8692%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4529%</code> exact target speed).</p>
 
@@ -393,6 +393,7 @@ sound_late = 0   cd_fail = 0
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
 <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
@@ -435,13 +436,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T07:45:20</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T13:05:21</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
+rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
+<code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
 <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
@@ -766,7 +768,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
-      <td style="text-align: right">+44.1% / 69.4% (1455/1010); due 31; blk 363</td>
+      <td style="text-align: right">+44.1% / 69.4% (1455/1010); due 31; blk 361</td>
       <td style="text-align: right">+44.0% / 69.4% (1453/1009); due 32; blk 365</td>
     </tr>
     <tr>

@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.9% over target / 99.5% target speed** |
-| Latest perf matrix run | **`2026-05-06T07:45:20`** (`last_run_at` in the CSV) |
-| Perf stats version | Latest refreshed rows use `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Latest perf matrix run | **`2026-05-06T13:05:21`** (`last_run_at` in the CSV) |
+| Perf stats version | Latest refreshed rows use `visitor3-high-group170-186-v080-current`, `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -205,18 +205,18 @@ harness-and-restore-pilot eras are preserved as history in
 `current-status.md`; none carry forward as current progress.
 
 Headless perf timing is a separate battle card, not the scene-promotion
-bar. The current FISHING 1 canary is `loop_vb=1068` against
-`target_vb=1074` (**-0.6% over target / 100.6% target speed**) with
-`blocking_vb=2`, `prefetch_overrun_vb=2`, and `due_misses=0`. Four routed
+bar. The current FISHING 1 canary is `loop_vb=1069` against
+`target_vb=1072` (**-0.3% over target / 100.3% target speed**) with
+`blocking_vb=5`, `prefetch_overrun_vb=6`, and `due_misses=0`. Four routed
 rows (`suzy1`, `suzy2`, high/low) currently complete without active-loop
 timing and are excluded from speed averages; `mary3` is visually validated
 but still needs a perf-matrix refresh.
 
 The `v0.8.0` headless performance baseline includes the accepted `activity9`
 low-tide FGP3 grouped append for sectors `624..636` after the padded FGP3
-conversion. Low tide improves `2103/2053 -> 2093/2056`, with visible blocking
-dropping `60 -> 43`; high tide and FISHING1/VISITOR3/WALKSTUF1/BUILDING2
-canaries stay flat. The timing-bearing average is now `+0.8692%` over target /
+conversion, plus the follow-up VISITOR3 high 16-sector group `170..186`.
+VISITOR3 high now trims blocking `363 -> 361` and loop reads `53 -> 52`;
+the timing-bearing average remains `+0.8692%` over target /
 `99.4529%` target speed; since the compact full-matrix baseline was about
 `+17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `16.5` percentage points of over-target gap and added about

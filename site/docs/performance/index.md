@@ -234,10 +234,10 @@ They cluster into a few themes.
   boot tokens still enable them on demand.
 
 The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at `loop_vb=1068` against a target of
-`target_vb=1074`. The original headless perf-loop baseline was
-`loop_vb=1426`, so the FISHING 1 canary is down `358` VBlanks
-(`25.11%` loop reduction).
+fishing1 high-tide playback at `loop_vb=1069` against a target of
+`target_vb=1072`. The original headless perf-loop baseline was
+`loop_vb=1426`, so the FISHING 1 canary is down `357` VBlanks
+(`25.04%` loop reduction).
 
 ## Where it sits at {{ site.release.tag }}
 
@@ -248,20 +248,20 @@ policy = stage1_window
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 2
-prefetch.overrun_vb = 2
-loop_vb = 1068
+blocking_vb = 5
+prefetch.overrun_vb = 6
+loop_vb = 1069
 overrun_vb = 0
-target_vb = 1074
+target_vb = 1072
 restore_bytes = 251,144
-upload_bytes  = 10,680,960
-dirty_rows    = 16,689
-upload_rects  = 469
+upload_bytes  = 10,648,960
+dirty_rows    = 16,639
+upload_rects  = 460
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.6% over target**, or **100.6% of target speed**. Across the
+That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.9% over target /
 99.5% target speed** (`0.8692%` exact over target / `99.4529%` exact target speed).
 
@@ -269,6 +269,7 @@ That is **-0.6% over target**, or **100.6% of target speed**. Across the
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-group170-186-v080-current`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
@@ -311,13 +312,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T07:45:20`; per-row freshness and stats version are shown on
+run is `2026-05-06T13:05:21`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `activity9-lowgroup-v072c`,
+rows now use `visitor3-high-group170-186-v080-current`,
+`activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
 `building4-6-johnny6-v072c-prefetch-relief`,
@@ -413,7 +415,7 @@ rows are historical only.
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
 | `visitor1` | -0.7% / 100.7% (672/677) | -0.7% / 100.7% (672/677) |
-| `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 363 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
+| `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 361 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
 | `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
 | `visitor5` | +1.9% / 98.1% (1111/1090); blk 12 | +2.0% / 98.0% (1112/1090); blk 12 |
 | `visitor6` | -0.2% / 100.2% (2043/2047); blk 1 | -0.2% / 100.2% (2043/2047); blk 1 |

@@ -7,23 +7,23 @@ Current accepted fishing1 high-tide canary baseline:
 | Metric | Value |
 |---|---:|
 | `loop_vb` | `1069` |
-| `target_vb` | `1073` |
+| `target_vb` | `1072` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.37%` |
-| `blocking_vb` | `4` |
-| `prefetch_overrun_vb` | `4` |
+| `remaining_over_target` | `-0.28%` |
+| `blocking_vb` | `5` |
+| `prefetch_overrun_vb` | `6` |
 | `loop_reads` | `20` |
-| `upload_bytes` | `12317440` |
-| `restore_bytes` | `249810` |
+| `upload_bytes` | `10648960` |
+| `restore_bytes` | `251144` |
 | `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
 | `jcreborn.exe` | `215040` bytes |
-| `jcreborn.elf` | `954192` bytes |
+| `jcreborn.elf` | `954284` bytes |
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
 or long-run heap stability. The current all-scene battle card is `0.8692%`
 over target / `99.4529%` target speed across `120` timing-bearing rows after
-the `activity9-lowgroup-v072c` optimization. The largest
+the `visitor3-high-group170-186-v080-current` optimization. The largest
 remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9,
 BUILDING4, BUILDING6, and generated selective preprocessing, not FISHING1.
 
@@ -828,7 +828,7 @@ pre-v0.8.0 row.
 | 2 | Done first pass: read-plan candidate rows now include concrete source, touched, and append-start read segments from actual CD logs, not just pack-sector overlap. | Proposed read groups can prove `append_start_fireable=true`, actual runtime ownership, and expected `group_hits>0` before source tables are touched. |
 | 3 | Done first pass: read-plan output now classifies whether a candidate fits the current grouped-read runtime capacity or requires scheduler/larger-window metadata. | Runtime code size stops growing per experiment; groups can be enabled/disabled from pack metadata with exact FISHING1 canary layout. |
 | 4 | Done first pass: read-plan output now assigns a visible-CD cost class from first-gap slack, internal-gap slack, overread sectors, partial-touch count, and seek direction. | Raw saved-read groups are sorted by visible-risk, preventing repeats of BUILDING4/WALKSTUF1 exact-flat or regressing hand groups. |
-| 5 | Build a scheduler-owned append window that can choose whether to spend held VBlanks on due staging, group append, or visual prep. | A read-group win must lower loop or blocking without increasing visible refill; scheduler counters explain why it fired. |
+| 5 | Next VISITOR3 pass: build scheduler-owned/generated append timing for additional balanced 16/24-sector candidates without more hot hand tables. | A read-group win must lower loop or blocking without increasing visible refill; scheduler counters explain why it fired. |
 | 6 | Generate per-scene/tide setup-prime segments from the current read-plan, capped by heap and active-loop payoff. | Setup primes are segmented and scene-local; no global cap raise or raw broad segment can regress VISITOR3/FISHING1 cadence. |
 | 7 | Add selective upload-ready x-band preprocessing for VISITOR3 first, using the matrix's high score and moderate payload growth. | Upload bytes and loop time drop without shifting the FG pack LBA or increasing loop reads. |
 | 8 | Store upload-ready bands only when per-frame payload growth is under a generated threshold. | The direct16 lane avoids WALKSTUF1-style CD pressure where whole-pack expansion cancels compositor savings. |
@@ -911,6 +911,7 @@ pre-v0.8.0 row.
 | Visible-cost foreground read plans | Done first pass plus append-start fireability scoring. Use `visible_candidate_sets` and require `append_start_fireable=true` before choosing new manual groups. Raw saved-read rank alone has selected exact-flat or regressing BUILDING/VISITOR/WALKSTUF candidates. |
 | VISITOR3 low read group `182..194` | Do not promote or retry as a hand-coded group. It saved one read and lowered refill overrun, but regressed loop/blocking; require generated visible-cost scoring before more VISITOR3 groups. |
 | VISITOR3 high `163..175` / low `158..170` groups | Do not retry as standalone source tables. The generated visible-cost candidates produced `group_hits=0`; high had no key timing improvement and low regressed loop/blocking/refill. Require append-start ownership metadata or scheduler-owned preload before more VISITOR3 grouping. |
+| VISITOR3 high read group `170..186` with 16-sector retained capacity | Done; keep. The first stale-canary rejection was corrected with a clean same-source control. VISITOR3 high improves `1456/1010 -> 1455/1010`, `blocking_vb 363 -> 361`, and `loop_reads 53 -> 52`; VISITOR3 low, FISHING1, FISHING3 high/low, BUILDING2 low, ACTIVITY9 low, and WALKSTUF1 high canaries match the clean control on loop timing. Do not generalize this into more hot hand tables; next VISITOR3 work should use scheduler/generated metadata. |
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
 | WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. Retry only with a new shrinking encoder or an explicit layout-moving pack experiment. |
 | ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |

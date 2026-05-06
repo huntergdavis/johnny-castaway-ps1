@@ -164,6 +164,12 @@ randomized play by retrying BUILDING4-scale clean-rect allocation after
 releasing stale walk-clean memory pressure. See
 [release-notes-0.8.0.md](release-notes-0.8.0.md).
 
+Current post-release perf branch: VISITOR3 high now keeps a `170..186`
+retained read group under a 16-sector group window. The headline matrix average
+is unchanged because the row already sat at `1455/1010`, but active VISITOR3
+high CD pressure drops from `blocking_vb=363` and `loop_reads=53` to
+`blocking_vb=361` and `loop_reads=52`.
+
 Milestone releases:
 - `v0.8.0-ps1` — complete-scene performance baseline. Keeps the 63/63
   visual + audible scene ledger intact, promotes the current 126-variant
