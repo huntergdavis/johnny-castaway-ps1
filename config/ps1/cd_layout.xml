@@ -16,7 +16,7 @@
             <file name="TITLE.RAW" type="data" source="../../generated/ps1/foreground/TITLE.RAW"/>
             <file name="BOOTMODE.TXT" type="data" source="../../config/ps1/BOOTMODE.TXT"/>
 
-            <dir name="FG">
+            <dir name="FG" source="../../generated/ps1/foreground">
                 <file name="FISHING1.FG2" type="data" source="../../generated/ps1/foreground/FISHING1.FG2"/>
                 <file name="FISH1LOW.FG2" type="data" source="../../generated/ps1/foreground/FISH1LOW.FG2"/>
                 <file name="FISHING2.FG2" type="data" source="../../generated/ps1/foreground/FISHING2.FG2"/>
@@ -150,7 +150,7 @@
             <file name="RESOURCE.MAP" type="data" source="../../jc_resources/RESOURCE.MAP"/>
             <file name="RESOURCE.001" type="data" source="../../jc_resources/RESOURCE.001"/>
 
-            <dir name="SCR">
+            <dir name="SCR" source="../../jc_resources/extracted/scr">
                 <file name="ISLETEMP.SCR" type="data" source="../../jc_resources/extracted/scr/ISLETEMP.SCR"/>
                 <file name="NIGHT.SCR" type="data" source="../../jc_resources/extracted/scr/NIGHT.SCR"/>
                 <file name="OCEAN00.SCR" type="data" source="../../jc_resources/extracted/scr/OCEAN00.SCR"/>
@@ -205,7 +205,7 @@
                 <file name="SXWK3.SCR" type="data" source="../../jc_resources/extracted/scr/SXWK3.SCR"/>
             </dir>
 
-            <dir name="PSB">
+            <dir name="PSB" source="../../jc_resources/transcoded">
                 <file name="BACKGRND.PSB" type="data" source="../../jc_resources/transcoded/BACKGRND.PSB"/>
                 <file name="BOAT.PSB" type="data" source="../../jc_resources/transcoded/BOAT.PSB"/>
                 <file name="CLOUDS.PSB" type="data" source="../../jc_resources/transcoded/CLOUDS.PSB"/>
@@ -245,7 +245,7 @@
             </dir>
 
             <!-- sound11 and sound13 do not exist in the original game data. -->
-            <dir name="SND">
+            <dir name="SND" source="../../jc_resources/extracted/snd">
                 <file name="SOUND00.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND00.VAG"/>
                 <file name="SOUND01.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND01.VAG"/>
                 <file name="SOUND02.VAG" type="data" source="../../jc_resources/extracted/snd/SOUND02.VAG"/>

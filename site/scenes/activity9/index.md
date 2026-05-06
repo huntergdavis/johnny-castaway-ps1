@@ -4,38 +4,37 @@ title: ACTIVITY 9 — Bathes with a brush
 ads: ACTIVITY
 tag: 9
 slug: activity9
-status: pending
-description: "ACTIVITY.ADS scene 9: Bathes with a brush. Not yet validated."
+status: validated
+description: "ACTIVITY.ADS scene 9: Bathes with a brush. Validated after wide boat stitching and source-edge repair."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 under the current visual + audible signoff bar.
 
 ## Pack identifiers
 
 - ADS dispatch: <code>ACTIVITY.ADS scene 9</code>
 - Slug: <code>activity9</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Bathes in the ocean with a brush; the smell-the-brush sub-variant.
+Bathes in the ocean while a wide boat passes through the scene.
 
 Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
 
-### How this scene gets validated
+## Validation notes
 
-The same way every scene does: under the FISHING 1 bar.
+`ACTIVITY 9` is the edge case that proved a source sprite can be wider than
+the legacy scene clip while still being valid scene-relative content. The
+high/low packs were rebuilt through an Activity9-specific wide stitch using
+host capture/test island positions `x=-500,y=54`, `x=-154,y=54`, and
+`x=500,y=54`; production playback remains variable-position safe.
 
-A host-side Johnny Reborn capture/export pass produces a
-base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
-build replays that pack at native resolution through every variant the
-original game randomized between (night, low-tide, holiday overlays,
-raft-stage progress where applicable). The
-[regtest harness]({{ '/docs/regtest/' | relative_url }}) checks that the
-visuals come out frame-identical and the SFX cues land on the same
-ticks. Once that holds across all applicable variants, the scene moves
-to `validated` and a row turns green in the
-[ledger]({{ '/scenes/' | relative_url }}).
+`patch-activity9-boat-foreground.py` fills missing `BOAT.PSB` bow/stern
+pixels from the decoded source sprite at the legacy clip edges, only into
+keyed foreground holes. It also overlaps the clip edge narrowly to remove the
+vertical seam and carries the last boat draw across metadata-held frames so the
+late bow does not flicker.
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+See the live [ledger]({{ '/scenes/' | relative_url }}) and
+[the method]({{ '/about/method/' | relative_url }}) for the full validation
+workflow.

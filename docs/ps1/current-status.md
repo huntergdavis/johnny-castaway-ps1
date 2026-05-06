@@ -3,36 +3,19 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-05 (scene ledger at 62/63; `ACTIVITY 1`
-was validated after rebuilding high/low packs from a capped two-beat
-story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`). Source frames
-`148` and `348` hold the animal scorecards, and
-`patch-activity1-tree-foreground.py` keys foreground-only tree-band
-contamination against the full-host composite so the pre-pop hat/white
-pixels and tree-occlusion ghosts are gone in both loops. Earlier this
-push: `ACTIVITY 7` was validated after re-exporting high/low packs
-through the no-stitch fast path with frame-wide keyed overlay — fixes
-ghosted Johnny pose residue on the right side of the island from
-base-diff against the static-Johnny base on the
-bathes-and-seagull-steals-clothes loop. `ACTIVITY 4` was validated on
-the existing on-disc packs (no rework). `ACTIVITY 5` was validated on
-the climb/look/dive gag using a JOHNNY 2-style split (upper bubble lane
-on full base-diff, lower third on keyed overlay) plus +30 vblanks of
-hold on source frame 46. `ACTIVITY 6` was validated after re-exporting
-high/low packs through the no-stitch fast path with frame-wide keyed
-overlay. Earlier still: `BUILDING 1`-`BUILDING 7` were validated through
-generic multi-view capture; BUILDING2 keeps the persistent sandcastle
-via full-host diff injection, BUILDING4 uses an explicit terminal FGP3
-cleanup frame so the final Johnny/bird row restores cleanly, and
-BUILDING7 patches the middle campfire from clean animated foreground
-rows before FGP3 cleanup. `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`,
-`ACTIVITY 12`, `WALKSTUF 1`, and `WALKSTUF 2` were also validated
-upstream).
+**Last updated:** 2026-05-05 (scene ledger at 63/63; `ACTIVITY 9`
+completed the current visual + audible validation sweep. The high/low
+packs were rebuilt through an Activity9-specific wide stitch
+(`x=-500,y=54`, `x=-154,y=54`, `x=500,y=54`), then
+`patch-activity9-boat-foreground.py` filled clipped `BOAT.PSB` bow/stern
+pixels from source at the legacy clip edges, added a narrow overlap band
+to remove the stitch seam, and carried the last boat draw across
+metadata-held frames so the late bow no longer flickers).
 
 ## Overall
 
 The game boots on DuckStation, loads resources from CD, and runs scene
-animations. `ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`,
+animations. `ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`,
 `ACTIVITY 12`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`,
 `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `BUILDING 1`,
 `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `JOHNNY 1`, `JOHNNY 2`,
@@ -43,7 +26,12 @@ animations. `ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`
 `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, and `WALKSTUF 3` have been validated
 under the project's current acceptance bar: pixel-perfect visuals plus
 synced SFX, across every applicable variant (night / low-tide / holiday
-/ raft-stage), signed off by human visual + audible review. `FISHING 7`
+/ raft-stage), signed off by human visual + audible review. `ACTIVITY 9`
+uses an Activity9-specific wide stitch plus source `BOAT.PSB` repair at the
+legacy clip edges; the helper also carries boat draw metadata through held
+frames so the late bow does not flicker while production island placement
+stays variable.
+`FISHING 7`
 and `FISHING 8` were recaptured with a far-left host/test island position
 (`x=-300,y=54`) so all scene-relative pixels are present, but production
 runtime placement is now variable again. `JOHNNY 1` and `JOHNNY 6` are
@@ -152,7 +140,7 @@ no pack/runtime rework was needed.
 | Graphics layer (`graphics_ps1.c`) | Complete |
 | Input layer (`events_ps1.c` + `spi.c`) | Complete — direct SPI driver replaces the broken BIOS pad path |
 | Resource system (hashed + LRU) | Complete |
-| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 62/63 scenes fully validated |
+| Scene playback (fgpilot, `foreground_pilot.c`) | Primary render path; 63/63 scenes fully validated |
 | Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working — Johnny walks between scene endpoints with wave motion, holiday re-stamping, palm-tree cover-up, and a persistent 340x224 erase buffer; the release candidate survived a ~10-minute DuckStation soak with no `JCBSOD` or `JCWALK` allocation failures |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working — menu-launched direct-control Johnny with D-pad/analog movement, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and no steady-state frame allocations |
 | Audio layer (`sound_ps1.c`) | Working — VAG preload at boot + round-robin SPU voices + captured SFX replay; mute via direct SPU register writes (`SpuSetCommonMasterVolume` is not honored by DuckStation HLE) |
@@ -162,13 +150,25 @@ no pack/runtime rework was needed.
 | User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
-## Scenes: 62 / 63 fully validated
+## Scenes: 63 / 63 fully validated
 
 The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
+Next feature lane: `v0.7.1-ps1` is planned for persisted pause-menu options
+and holiday-mode polish. See [release-plan-0.7.1.md](release-plan-0.7.1.md)
+for the target list: captions, Scene Set, tide, raft, island position,
+freeplay/perf preferences, and an `AUTO DATE: ORIGINAL 4` holiday mode that
+becomes the no-card/fresh-save default.
+
 Milestone releases:
+- `v0.7.0-ps1` — first complete-scene release. All 63 original Johnny
+  Castaway scenes are validated under the current visual + audible signoff
+  bar. `ACTIVITY 9` completed the sweep with an Activity9-specific wide stitch,
+  source `BOAT.PSB` bow/stern repair at the legacy clip edges, a narrow overlap
+  band to remove the boat seam, and metadata-held boat draw carry-forward so
+  the late bow remains stable.
 - `v0.6.13-ps1` — promotes `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, and `VISITOR 7`.
   VISITOR4 is the coconut/plane gag in the current scene mapping, correcting
   the old red-boat catalogue label. VISITOR5 regenerates high/low packs through
@@ -278,9 +278,10 @@ Milestone releases:
 - Prior visual-only release `v0.3.5-ps1` (commit `9448d49f`) —
   superseded by the full-SFX release above.
 
-Milestone release cadence from here: cut every 10 scenes that reach the
-same validated bar. Smaller stability releases may happen between scene
-milestones.
+Milestone release cadence from here shifts away from scene-count milestones.
+All 63 scenes are validated; future releases should be cut around bugfixes,
+speed/loading wins, memory-pressure reductions, settings persistence, and
+feature polish.
 
 ## Primary render methodology: hybrid scene playback (fgpilot)
 
@@ -377,7 +378,8 @@ searchability — **do not cite them as current progress**:
 | **23 / 63** | **2026-05-04** | **Current scene ledger after `STAND 2` promotion; normal high-tide/night playback passed human visual signoff and direct scene-loader launches now skip the stale story-walk prelude** | **this doc, `scene-status.md`** |
 | **24 / 63** | **2026-05-04** | **Current scene ledger after `STAND 3` promotion; normal high-tide/night playback passed human visual signoff on the short hat-lift idle loop** | **this doc, `scene-status.md`** |
 | **25 / 63** | **2026-05-04** | **Current scene ledger after `STAND 4` promotion; high/low packs were regenerated through the generic multi-view stitch and normal high-tide/night playback passed human visual signoff on the tapping-foot idle loop** | **this doc, `scene-status.md`** |
-| **62 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 1` promotion; high/low packs were rebuilt from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`), source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops** | **this doc, `scene-status.md`** |
+| **63 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 9` promotion; all scenes are validated under the current visual + audible signoff bar, and ACTIVITY9 high/low packs were rebuilt through a wide stitch plus source `BOAT.PSB` edge repair, clip-edge overlap, and held-frame boat draw carry-forward** | **this doc, `scene-status.md`, `release-notes-0.7.0.md`** |
+| **62 / 63** | **2026-05-05** | **Scene ledger after `ACTIVITY 1` promotion; high/low packs were rebuilt from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`), source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops** | **this doc, `scene-status.md`** |
 | **61 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 7` promotion; high/low packs were re-exported through the no-stitch fast path with frame-wide keyed overlay to clean ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop** | **this doc, `scene-status.md`** |
 | **60 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 4` promotion; signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route, reads-with-seagull-on-head** | **this doc, `scene-status.md`** |
 | **59 / 63** | **2026-05-05** | **Current scene ledger after `ACTIVITY 5` promotion; high/low packs were re-exported single-position with the JOHNNY 2-style split keyed overlay (upper bubble lane on full base-diff so the storm-cloud thought bubble + connector dots survive, lower third on keyed overlay so the dive splash band cleans up without ghost trails) plus +30 vblanks of hold on source frame 46 so the gag is readable** | **this doc, `scene-status.md`** |

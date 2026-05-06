@@ -12,11 +12,11 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 62 / 63 (next: activity9)
+## Progress: 63 / 63
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.13-ps1`.
+current public release is `v0.7.0-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
@@ -26,7 +26,7 @@ current public release is `v0.6.13-ps1`.
 | ACTIVITY | 6 | activity6 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop |
 | ACTIVITY | 7 | activity7 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop |
 | ACTIVITY | 8 | activity8 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base |
-| ACTIVITY | 9 | activity9 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 9 | activity9 | ✅ | ✅ | host capture/test island positions `x=-500,y=54`, `x=-154,y=54`, `x=500,y=54` · production variable island position | 2026-05-05 | visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers |
 | ACTIVITY | 10 | activity10 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY10.FG2 / ACTV10L.FG2 packs (no rework needed); high-tide nighttime route, reads-and-seagull-steals-book |
 | ACTIVITY | 11 | activity11 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop |
 | ACTIVITY | 12 | activity12 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY12.FG2 / ACTV12L.FG2 packs (no rework needed); high-tide nighttime route, belly-flop dive |

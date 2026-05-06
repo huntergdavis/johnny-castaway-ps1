@@ -23,8 +23,8 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="trio">
   <figure>
-    <img src="{{ '/assets/img/johnny6-ps1-office.png' | relative_url }}" alt="JOHNNY 6 running on PS1: Johnny working in an office." />
-    <figcaption>JOHNNY 6 · office</figcaption>
+    <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+    <figcaption>ACTIVITY 9 · boat pass</figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />

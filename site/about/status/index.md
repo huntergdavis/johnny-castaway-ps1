@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.6.12-ps1
+eyebrow: Component-level state at v0.7.0-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,12 +13,8 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-The signed-off scenes are `FISHING 1`, `FISHING 2`, `FISHING 3`,
-`FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`,
-`JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`,
-`JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`,
-`MISCGAG 1`, `MISCGAG 2`, `STAND 1`-`STAND 12`, `STAND 15`,
-`STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, and `VISITOR 3`. The live per-scene ledger is at
+`v0.7.0-ps1` is the first complete-scene release: every row in the live
+per-scene ledger is signed off. The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -55,11 +51,10 @@ done."
 
 Honest list, narrowed to specifics:
 
-- **Scene coverage past the signed-off set.** The other 24 scenes in
-  [`scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md)
-  are unverified under the current bar; some have older bring-up
-  notes from the harness era that no longer count as current
-  evidence.
+- **Post-validation regressions.** Scene coverage is complete at 63/63, but
+  future bugfixes can still be needed when broader play, new features, or
+  performance changes disturb a signed-off path. The scene ledger remains the
+  acceptance source after each fix.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
   formatted card or a card with a corrupted block is still being
@@ -90,10 +85,9 @@ harness output is the SoT for build-and-boot regressions.
 Pulled from the live narrative in
 [`docs/ps1/current-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/current-status.md):
 
-- **Scene-by-scene validation after `STAND 1`.** Next focus is continuing
-  the signed scene-by-scene ledger after the generic multi-view stitch
-  regenerated `MISCGAG 1`, `MISCGAG 2`, and `STAND 1` cleanly.
-  The bring-up loop is in
+- **Optimization after full validation.** With all 63 scenes signed off, the
+  next focus is preserving pixel-perfect playback while improving speed,
+  loading, memory pressure, and release polish. The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing
@@ -101,6 +95,10 @@ Pulled from the live narrative in
   image stays manageable.
 - **Memcard hardening.** Closing the fresh-card and corrupted-
   block edge cases.
+- **`v0.7.1` persisted-options feature lane.** The next feature release should
+  persist the remaining pause-menu settings and add an `AUTO DATE: ORIGINAL 4`
+  holiday mode: date-driven like full auto, but restricted to Sierra's original
+  four holiday overlays and intended to become the no-card/fresh-save default.
 - **Caption audit follow-through.** HIGH-confidence ADS-tag
   mappings are in; LOW-confidence STAND/VISITOR/WALKSTUF slots
   will be refined as those scenes pass the bar.
@@ -110,7 +108,8 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.6.10-ps1` validates `MARY 5`
+- **Milestone release cadence.** `v0.7.0-ps1` validates all 63 scenes and
+  moves the project into bugfix/optimization mode. `v0.6.10-ps1` validates `MARY 5`
   after the `NORAFT` raft clamp and `FIRST` full-wipe transition fix.
   `v0.6.8-ps1` validates `MARY 2` after the wide multi-view stitch and fish thought-bubble repair.
   `v0.6.6-ps1` removes the old

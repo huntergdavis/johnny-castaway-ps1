@@ -212,6 +212,11 @@ elif [ -z "$MULTIVIEW_STITCH" ]; then
     # ACTIVITY 5's storm-cloud thought bubble + connector dots only survive
     # in pure base-diff (frame-wide keyed overlay drops the bubble shell).
     MULTIVIEW_STITCH="0"
+  elif [ "$SCENE_SLUG" = "activity9" ]; then
+    # ACTIVITY 9's boat spans wider than the host viewport during entry/exit.
+    # It needs extra-wide far-left/far-right foreground views so the stitched
+    # scene-local canvas has both the incoming stern and outgoing bow.
+    MULTIVIEW_STITCH="1"
   elif [ "$SCENE_SLUG" = "suzy2" ]; then
     # SUZY 2's raft body is drawn by MRAFT.BMP as scene-local static art.
     # Keep a single capture position, but include static base draws in the
@@ -754,6 +759,12 @@ PY
   if [ "$SCENE_SLUG" != "mary2" ] && [ "$MULTIVIEW_STITCH" = "1" ]; then
     STITCH_LEFT_ISLAND_X="${FG_EXPORT_STITCH_LEFT_ISLAND_X:--300}"
     STITCH_RIGHT_ISLAND_X="${FG_EXPORT_STITCH_RIGHT_ISLAND_X:-300}"
+    if [ "$SCENE_SLUG" = "activity9" ]; then
+      # The boat still clips with the generic +/-300 stitch anchors. Use wider
+      # capture anchors; runtime island placement remains variable.
+      STITCH_LEFT_ISLAND_X="${FG_EXPORT_STITCH_LEFT_ISLAND_X:--500}"
+      STITCH_RIGHT_ISLAND_X="${FG_EXPORT_STITCH_RIGHT_ISLAND_X:-500}"
+    fi
 
     "$SCRIPT_DIR/capture-host-scene.sh" \
       --scene "$SCENE_NAME" \
@@ -908,6 +919,19 @@ PY
         "$HOST_CAPTURE_HIGH_DIR" \
         "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
       python3 "$SCRIPT_DIR/patch-activity1-tree-foreground.py" \
+        "$HOST_CAPTURE_LOW_DIR" \
+        "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+    fi
+
+    if [ "$SCENE_SLUG" = "activity9" ]; then
+      # ACTIVITY 9 moves BOAT.BMP wider than any single host viewport. The
+      # normal/far-left/far-right captures tell us the authored per-frame
+      # position, but screen-window clipping can still cut the entering stern
+      # or exiting bow. Fill only keyed gaps from the decoded BOAT source.
+      python3 "$SCRIPT_DIR/patch-activity9-boat-foreground.py" \
+        "$HOST_CAPTURE_HIGH_DIR" \
+        "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+      python3 "$SCRIPT_DIR/patch-activity9-boat-foreground.py" \
         "$HOST_CAPTURE_LOW_DIR" \
         "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi

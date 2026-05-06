@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-was validated after rebuilding high/low packs from a capped two-beat story capture (FGEXPORTACTIVITY1CAPTUREFRAMES=400). Source frames 148 and 348 hold the animal scorecards, and patch-activity1-tree-foreground.py keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops. Earlier this push: ACTIVITY 7 was validated after re-exporting high/low packs throug...
+completed the current visual + audible validation sweep. The high/low packs were rebuilt through an Activity9-specific wide stitch (x=-500,y=54, x=-154,y=54, x=500,y=54), then patch-activity9-boat-foreground.py filled clipped BOAT.PSB bow/stern pixels from source at the legacy clip edges, added a narrow overlap band to remove the stitch seam, and carried the last boat draw across metadata-held frames so the late bow no longer flickers).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 465 |
-| Approx. words | 5074 |
+| Lines | 467 |
+| Approx. words | 5140 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 62 / 63 fully validated
+-   Scenes: 63 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
