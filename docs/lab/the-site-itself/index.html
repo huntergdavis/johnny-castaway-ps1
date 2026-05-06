@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -100,7 +100,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1796 words
+          ~7 min read · 1807 words
         </p>
 
       <hr class="rule" />
@@ -162,7 +162,11 @@
 <span class="na">canonical_baseurl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/johnny-castaway-ps1"</span>
 </code></pre></div></div>
 
-<p>The pages that need absolute URLs use <code class="language-plaintext highlighter-rouge">https://hunterdavis.com/johnny-castaway-ps1/...</code>. Those URLs start with <code class="language-plaintext highlighter-rouge">https://</code>, which the relativizer’s <code class="language-plaintext highlighter-rouge">is_external</code> check leaves alone. So the absolute URLs pass through untouched while every other path on the page gets relativized.</p>
+<p>The pages that need absolute URLs join the configured site URL with
+<code class="language-plaintext highlighter-rouge">canonical_baseurl</code> and the target path. Those URLs start with <code class="language-plaintext highlighter-rouge">https://</code>,
+which the relativizer’s <code class="language-plaintext highlighter-rouge">is_external</code> check leaves alone. So the absolute
+URLs pass through untouched while every other path on the page gets
+relativized.</p>
 
 <p>Yes, the prefix is duplicated in two config keys. That duplication is intentional: the regular <code class="language-plaintext highlighter-rouge">baseurl</code> participates in Jekyll’s link-resolution machinery and gets blanked by build-time CLI flags, and the <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> doesn’t. They serve different jobs.</p>
 
@@ -190,7 +194,9 @@
 
 <ul>
   <li>The plugin emits a top-level <code class="language-plaintext highlighter-rouge">feed.xml</code>, which gets removed for the reason above.</li>
-  <li>The site already has the existing manual head template with explicit OG / Twitter meta. Adding <code class="language-plaintext highlighter-rouge">{% seo %}</code> would double-emit half of that and require a refactor to reconcile.</li>
+  <li>The site already has the existing manual head template with explicit OG /
+Twitter meta. Adding the <code class="language-plaintext highlighter-rouge">seo</code> Liquid tag would double-emit half of that and
+require a refactor to reconcile.</li>
 </ul>
 
 <p>So the feeds are a Liquid template plus an XML/JSON skeleton, in <code class="language-plaintext highlighter-rouge">site/devlog/feed.xml</code> and <code class="language-plaintext highlighter-rouge">site/devlog/feed.json</code>. They iterate <code class="language-plaintext highlighter-rouge">site.posts</code>, escape strings via <code class="language-plaintext highlighter-rouge">xml_escape</code> (Atom) or <code class="language-plaintext highlighter-rouge">jsonify</code> (JSON Feed), use absolute URLs via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link rel="alternate"&gt;</code> tags in the head, validated with <code class="language-plaintext highlighter-rouge">xml.etree</code> and <code class="language-plaintext highlighter-rouge">json.load</code> respectively.</p>
@@ -204,7 +210,11 @@
 <ul>
   <li>Scene pages compute prev/next from <code class="language-plaintext highlighter-rouge">_data/scenes.yml</code>, sorted by <code class="language-plaintext highlighter-rouge">sort: 'tag' | sort: 'ads'</code> (the same order the index renders).</li>
   <li>Devlog posts use Jekyll’s built-in <code class="language-plaintext highlighter-rouge">page.previous</code> / <code class="language-plaintext highlighter-rouge">page.next</code>. Caveat: those are sourced from the posts collection’s <code class="language-plaintext highlighter-rouge">docs</code> array, which is sorted oldest-first, so <code class="language-plaintext highlighter-rouge">page.previous</code> is the <em>older</em> post and <code class="language-plaintext highlighter-rouge">page.next</code> is the <em>newer</em> one. Labels here say “older” and “newer” by direction in time, not “prev” and “next” by Jekyll’s array semantics — the convention is too easy to invert.</li>
-  <li>Regtest case pages compute prev/next from <code class="language-plaintext highlighter-rouge">site.pages</code> filtered by URL prefix, lex-sorted (matching the index table). The case shelf detail pages live under <code class="language-plaintext highlighter-rouge">_layouts/page.html</code>, which conditionally includes the case pager only when the URL is under the cases path. Whitespace-control on the <code class="language-plaintext highlighter-rouge">{% if %}</code> keeps non-case pages byte-identical.</li>
+  <li>Regtest case pages compute prev/next from <code class="language-plaintext highlighter-rouge">site.pages</code> filtered by URL
+prefix, lex-sorted (matching the index table). The case shelf detail pages
+live under <code class="language-plaintext highlighter-rouge">_layouts/page.html</code>, which conditionally includes the case pager
+only when the URL is under the cases path. Whitespace-control on the Liquid
+<code class="language-plaintext highlighter-rouge">if</code> block keeps non-case pages byte-identical.</li>
 </ul>
 
 <table>
@@ -231,7 +241,10 @@
 
 <h2 id="structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></h2>
 
-<p><code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code> is in the Gemfile but <code class="language-plaintext highlighter-rouge">{% seo %}</code> is never invoked, so the plugin emits nothing. The manual head template handles <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code>, OG, Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
+<p><code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code> is in the Gemfile but the <code class="language-plaintext highlighter-rouge">seo</code> Liquid tag is never invoked,
+so the plugin emits nothing. The manual head template handles <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code>, OG,
+Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
+feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
 
 <p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Four record types ship today:</p>
 
@@ -280,7 +293,7 @@
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.7.2-ps1)
+          (v0.8.0-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:

@@ -50,7 +50,11 @@ baseurl: "/johnny-castaway-ps1"
 canonical_baseurl: "/johnny-castaway-ps1"
 ```
 
-The pages that need absolute URLs use `{{ site.url }}{{ site.canonical_baseurl }}/...`. Those URLs start with `https://`, which the relativizer's `is_external` check leaves alone. So the absolute URLs pass through untouched while every other path on the page gets relativized.
+The pages that need absolute URLs join the configured site URL with
+`canonical_baseurl` and the target path. Those URLs start with `https://`,
+which the relativizer's `is_external` check leaves alone. So the absolute
+URLs pass through untouched while every other path on the page gets
+relativized.
 
 Yes, the prefix is duplicated in two config keys. That duplication is intentional: the regular `baseurl` participates in Jekyll's link-resolution machinery and gets blanked by build-time CLI flags, and the `canonical_baseurl` doesn't. They serve different jobs.
 
@@ -76,7 +80,9 @@ The site's own feed lives one level down the tree at `/devlog/feed.xml` (Atom) a
 `jekyll-feed` would have done it in one line of Gemfile. Two reasons it isn't there:
 
 - The plugin emits a top-level `feed.xml`, which gets removed for the reason above.
-- The site already has the existing manual head template with explicit OG / Twitter meta. Adding {% raw %}`{% seo %}`{% endraw %} would double-emit half of that and require a refactor to reconcile.
+- The site already has the existing manual head template with explicit OG /
+  Twitter meta. Adding the `seo` Liquid tag would double-emit half of that and
+  require a refactor to reconcile.
 
 So the feeds are a Liquid template plus an XML/JSON skeleton, in `site/devlog/feed.xml` and `site/devlog/feed.json`. They iterate `site.posts`, escape strings via `xml_escape` (Atom) or `jsonify` (JSON Feed), use absolute URLs via `site.canonical_baseurl`, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery `<link rel="alternate">` tags in the head, validated with `xml.etree` and `json.load` respectively.
 
@@ -88,7 +94,11 @@ The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case
 
 - Scene pages compute prev/next from `_data/scenes.yml`, sorted by `sort: 'tag' | sort: 'ads'` (the same order the index renders).
 - Devlog posts use Jekyll's built-in `page.previous` / `page.next`. Caveat: those are sourced from the posts collection's `docs` array, which is sorted oldest-first, so `page.previous` is the *older* post and `page.next` is the *newer* one. Labels here say "older" and "newer" by direction in time, not "prev" and "next" by Jekyll's array semantics — the convention is too easy to invert.
-- Regtest case pages compute prev/next from `site.pages` filtered by URL prefix, lex-sorted (matching the index table). The case shelf detail pages live under `_layouts/page.html`, which conditionally includes the case pager only when the URL is under the cases path. Whitespace-control on the {% raw %}`{% if %}`{% endraw %} keeps non-case pages byte-identical.
+- Regtest case pages compute prev/next from `site.pages` filtered by URL
+  prefix, lex-sorted (matching the index table). The case shelf detail pages
+  live under `_layouts/page.html`, which conditionally includes the case pager
+  only when the URL is under the cases path. Whitespace-control on the Liquid
+  `if` block keeps non-case pages byte-identical.
 
 All three pagers reuse one CSS class — `.scene-pager` — because the layout is identical (3-col grid, collapses to prev|next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to `.page-pager` is on the backlog.
 
@@ -108,7 +118,10 @@ Coarsening the stamp to `%Y-%m-%d` dropped the per-commit churn to zero for in-d
 
 ## Structured data without `jekyll-seo-tag`
 
-`jekyll-seo-tag` is in the Gemfile but {% raw %}`{% seo %}`{% endraw %} is never invoked, so the plugin emits nothing. The manual head template handles `<title>`, OG, Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.
+`jekyll-seo-tag` is in the Gemfile but the `seo` Liquid tag is never invoked,
+so the plugin emits nothing. The manual head template handles `<title>`, OG,
+Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
+feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.
 
 The JSON-LD include uses the multi-block strategy: each schema type gets its own `<script type="application/ld+json">` tag. Crawlers merge multiple blocks per page, so there's no comma juggling between conditionally-emitted records. Four record types ship today:
 
