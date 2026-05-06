@@ -81,6 +81,12 @@ int ps1HolidayFromDate(int month, int day)
     return holidayForDate(year, month, day);
 }
 
+int ps1HolidayFromDateOriginal4(int month, int day)
+{
+    int year = ps1SoftYear ? ps1SoftYear : 2026;
+    return holidayForDateOriginal4(year, month, day);
+}
+
 void fatalError(char *message, ... )
 {
     va_list(args);

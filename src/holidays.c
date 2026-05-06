@@ -143,7 +143,7 @@ void holidayAutumnalEquinox(int year, int *out_month, int *out_day)
  * Cost: one cheap arithmetic pass per holiday. With a few dozen holidays this
  * is negligible — called once per scene start. No need to memoize. */
 
-int holidayForDate(int year, int month, int day)
+static int holidayForDateFiltered(int year, int month, int day, int original4Only)
 {
     if (month < 1 || month > 12) return 0;
     if (day < 1   || day > 31)   return 0;
@@ -152,6 +152,8 @@ int holidayForDate(int year, int month, int day)
         const struct Holiday *h = &gHolidays[i];
         int rm = 0, rd = 0;
         int em, ed, ey;
+        if (original4Only && !holidayIsOriginalId(h->id))
+            continue;
         switch (h->kind) {
         case HOLIDAY_KIND_FIXED:
             rm = h->month;
@@ -198,6 +200,16 @@ int holidayForDate(int year, int month, int day)
     return 0;
 }
 
+int holidayForDate(int year, int month, int day)
+{
+    return holidayForDateFiltered(year, month, day, 0);
+}
+
+int holidayForDateOriginal4(int year, int month, int day)
+{
+    return holidayForDateFiltered(year, month, day, 1);
+}
+
 const struct Holiday *holidayById(int id)
 {
     for (int i = 0; i < gHolidayCount; i++) {
@@ -213,6 +225,37 @@ int holidayMaxId(void)
         if (gHolidays[i].id > maxId) maxId = gHolidays[i].id;
     }
     return maxId;
+}
+
+int holidayIsOriginalId(int id)
+{
+    return id >= 1 && id <= 4 && holidayById(id) != 0;
+}
+
+int holidayFirstExpandedId(void)
+{
+    for (int i = 0; i < gHolidayCount; i++) {
+        if (gHolidays[i].id > 4)
+            return gHolidays[i].id;
+    }
+    return 0;
+}
+
+int holidayModeFromOverride(int holidayOverride)
+{
+    if (holidayOverride < 0)
+        return HOLIDAY_MODE_AUTO_ALL;
+    if (holidayOverride == 0)
+        return HOLIDAY_MODE_NONE;
+    if (holidayIsOriginalId(holidayOverride))
+        return HOLIDAY_MODE_MANUAL_ORIG4;
+    return HOLIDAY_MODE_MANUAL_EXPANDED;
+}
+
+int holidayModeIsManual(int mode)
+{
+    return mode == HOLIDAY_MODE_MANUAL_ORIG4 ||
+           mode == HOLIDAY_MODE_MANUAL_EXPANDED;
 }
 
 int holidayNextId(int current)

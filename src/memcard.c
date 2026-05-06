@@ -37,6 +37,7 @@ extern int soundMuted;
 extern int oceanAmbientEnabled; /* sound_ps1.c — pause-menu Ocean toggle */
 extern int storyCurrentDay;   /* jc_reborn.c — 11-day story calendar */
 extern int hostForcedNight;
+extern int hostHolidayMode;
 extern int hostForcedHoliday;
 extern int ps1SoftTimeEnabled;
 extern int ps1SoftHour;
@@ -50,7 +51,9 @@ extern void oceanAmbientStop(void);
 extern int  oceanAmbientLoaded(void);
 
 #define MC_MAGIC       0x434D434A   /* 'JCMC' little-endian */
-#define MC_VERSION     5  /* v5 adds pickerPolicy (Random/Sequential/Original).
+#define MC_VERSION     6  /* v6 adds holidayMode so auto policy and manual id
+                           * are stored separately.
+                           * v5 adds pickerPolicy (Random/Sequential/Original).
                            * v4 drops the unused footstepsEnabled toggle.
                            * v3 added oceanAmbientEnabled.
                            * v2 added footstepsEnabled + storyCurrentDay.
@@ -268,6 +271,8 @@ typedef struct {
                                 * Reuses the v4 reserved[1] byte slot, so v4 saves
                                 * load with whatever was sitting there — clamped to
                                 * RANDOM by the version-gated load below. */
+    uint8  holidayMode;        /* added in MC_VERSION 6 — enum HolidayMode.
+                                * v2..v5 derive this from holidayOverride. */
 } JCMCSettings;
 
 #define DATA_OFFSET 0x180
@@ -364,7 +369,8 @@ int memcardLoadSettings(void)
         printf("JCMC load: bad magic %08lx\n", (unsigned long)s->magic);
         return 0;
     }
-    /* Accept v2..v5. v5 adds pickerPolicy (re-uses v4's reserved byte).
+    /* Accept v2..v6. v6 adds holidayMode. v5 adds pickerPolicy
+     * (re-uses v4's reserved byte).
      * v4 drops the unused footstepsEnabled toggle but keeps its byte
      * position for binary compatibility — the field is ignored on
      * load and zeroed on save. v3 added oceanAmbientEnabled; v2 saves
@@ -373,7 +379,8 @@ int memcardLoadSettings(void)
     if (s->version != MC_VERSION
         && s->version != 2
         && s->version != 3
-        && s->version != 4) {
+        && s->version != 4
+        && s->version != 5) {
         memcardLastStatus = "version mismatch";
         return 0;
     }
@@ -390,9 +397,27 @@ int memcardLoadSettings(void)
                           ? s->storyCurrentDay : 1;
     hostForcedNight   = s->dayNightOverride;
     hostForcedHoliday = s->holidayOverride;
-    if (hostForcedHoliday < -1 ||
+    if (hostForcedHoliday < 0 ||
         (hostForcedHoliday > 0 && !holidayById(hostForcedHoliday)))
-        hostForcedHoliday = -1;
+        hostForcedHoliday = 0;
+    if (loadedVersion >= 6) {
+        hostHolidayMode = s->holidayMode;
+    } else if (s->holidayOverride < 0) {
+        /* 0.7.1 changes the first-run/no-card auto policy to the original
+         * Sierra four holidays. Migrate old "auto all" saves to the new
+         * default unless the user explicitly saved a manual holiday/none. */
+        hostHolidayMode = HOLIDAY_MODE_AUTO_ORIGINAL4;
+    } else {
+        hostHolidayMode = holidayModeFromOverride(s->holidayOverride);
+    }
+    if (hostHolidayMode < 0 || hostHolidayMode >= HOLIDAY_MODE_COUNT)
+        hostHolidayMode = HOLIDAY_MODE_AUTO_ORIGINAL4;
+    if (hostHolidayMode == HOLIDAY_MODE_MANUAL_ORIG4 &&
+        !holidayIsOriginalId(hostForcedHoliday))
+        hostForcedHoliday = 1;
+    if (hostHolidayMode == HOLIDAY_MODE_MANUAL_EXPANDED &&
+        (hostForcedHoliday <= 4 || !holidayById(hostForcedHoliday)))
+        hostForcedHoliday = holidayFirstExpandedId();
     ps1SoftTimeEnabled = s->softTimeEnabled ? 1 : 0;
     ps1SoftHour       = s->softHour;
     ps1SoftMinute     = (s->softMinute <= 59) ? s->softMinute : 0;
@@ -428,8 +453,8 @@ int memcardLoadSettings(void)
     }
 
     memcardLastStatus = "loaded";
-    printf("JCMC loaded: muted=%d dn=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d picker=%d\n",
-           soundMuted, hostForcedNight, hostForcedHoliday,
+    printf("JCMC loaded: muted=%d dn=%d holimode=%d holi=%d soft=%d %02d:%02d %02d/%02d/%04d ocean=%d picker=%d\n",
+           soundMuted, hostForcedNight, hostHolidayMode, hostForcedHoliday,
            ps1SoftTimeEnabled, ps1SoftHour, ps1SoftMinute,
            ps1SoftMonth, ps1SoftDay, ps1SoftYear, oceanAmbientEnabled,
            pickerGetPolicy());
@@ -455,6 +480,10 @@ int memcardSaveSettings(void)
                                    ? storyCurrentDay : 1);
     s->dayNightOverride = (sint8)hostForcedNight;
     s->holidayOverride  = (sint8)hostForcedHoliday;
+    s->holidayMode      = (uint8)((hostHolidayMode >= 0 &&
+                                   hostHolidayMode < HOLIDAY_MODE_COUNT)
+                                  ? hostHolidayMode
+                                  : HOLIDAY_MODE_AUTO_ORIGINAL4);
     s->softTimeEnabled  = (uint8)(ps1SoftTimeEnabled ? 1 : 0);
     s->softHour         = (uint8)ps1SoftHour;
     s->softMinute       = (uint8)ps1SoftMinute;

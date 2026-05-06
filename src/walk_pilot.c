@@ -303,6 +303,12 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
          * scene→walk→scene looks seamless. */
         fgBackdropTickWavesPublic();
 
+        /* Holiday decorations are part of the island backdrop during walks.
+         * Stamp them before Johnny so the walking sprite is never hidden by
+         * a menu/default holiday overlay. Scene packs still bake holiday on
+         * top where the original z-order calls for it. */
+        fgBackdropStampHolidayPublic();
+
         if (timerLeft <= 0) {
             /* Tick: walkAnimate advances pose + calls walkRenderFrame
              * (which stamps Johnny + updates the redraw cache). */
@@ -320,7 +326,6 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
             timerLeft--;
         }
 
-        fgBackdropStampHolidayPublic();
         grUpdateDisplay(NULL, NULL, NULL);
     }
 
@@ -337,8 +342,8 @@ int fgWalkRender(int fromSpot, int fromHdg, int toSpot, int toHdg)
         grRestoreBgFromRects();
         walkPilotRestoreClean();
         fgBackdropTickWavesPublic();
-        walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
         fgBackdropStampHolidayPublic();
+        walkRedrawLastFrame(NULL, &gWalkBmpSlot, bgSlot);
         grUpdateDisplay(NULL, NULL, NULL);
     }
 

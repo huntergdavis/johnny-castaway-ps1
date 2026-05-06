@@ -27,6 +27,15 @@ enum HolidayDateKind {
     HOLIDAY_KIND_ELECTION_DAY  = 7   /* 1st Tue after 1st Mon of November */
 };
 
+enum HolidayMode {
+    HOLIDAY_MODE_AUTO_ORIGINAL4 = 0,
+    HOLIDAY_MODE_AUTO_ALL       = 1,
+    HOLIDAY_MODE_NONE           = 2,
+    HOLIDAY_MODE_MANUAL_ORIG4   = 3,
+    HOLIDAY_MODE_MANUAL_EXPANDED = 4,
+    HOLIDAY_MODE_COUNT
+};
+
 /* One row per holiday, generated into gHolidays[] in holidays_table.c. */
 struct Holiday {
     int          id;             /* Stable holiday id; 0 is reserved for none */
@@ -88,10 +97,15 @@ void holidayAutumnalEquinox(int year, int *out_month, int *out_day);
 /* Is `(year, month, day)` a known holiday? Returns the holiday id, or 0
  * if no match. Iterates gHolidays[] applying each row's date rule. */
 int holidayForDate(int year, int month, int day);
+int holidayForDateOriginal4(int year, int month, int day);
 
 /* Table lookup helpers. Invalid ids return NULL / "?" / -1 as appropriate. */
 const struct Holiday *holidayById(int id);
 int holidayMaxId(void);
+int holidayIsOriginalId(int id);
+int holidayFirstExpandedId(void);
+int holidayModeFromOverride(int holidayOverride);
+int holidayModeIsManual(int mode);
 int holidayNextId(int current);
 int holidayPrevId(int current);
 int holidaySpriteIndex(int id);
