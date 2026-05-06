@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+4.6%` (`4.5708%` exact) |
-| Timing-bearing average target speed | `96.1%` (`96.0653%` exact) |
-| Latest perf matrix run | `2026-05-06T00:55:09` |
-| Stats version | mixed: latest refreshed rows use `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+3.1%` (`3.1299%` exact) |
+| Timing-bearing average target speed | `97.4%` (`97.3807%` exact) |
+| Latest perf matrix run | `2026-05-06T01:14:22` |
+| Stats version | mixed: latest refreshed rows use `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `stale-zero-v072b-current-refresh`,
+  refreshed rows use `stale-zero2-v072b-current-refresh`,
+  `stale-zero-v072b-current-refresh`,
   `stale-top-v072b-current-refresh`,
   `visitor5-v072-prefetch-relief`,
   `mismatch-top-v072-current-refresh`,
@@ -189,8 +190,8 @@ and this page.
 | `activity8` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.6% | 100.6% | 899/904 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
 | `activity9` | high | measured | 2026-04-30T19:37:06 | compact-fgp3-v58-activity9high-window20-table | +10.4% | 90.6% | 2259/2047 | 84 | 53 | 6 |  |
 | `activity9` | low | measured | 2026-04-29T17:01:37 | compact-fgp3-v2-fullmatrix | +11.2% | 90.0% | 2272/2044 | 94 | 58 | 8 |  |
-| `activity10` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.9% | 90.2% | 1399/1262 | 0 | 0 | 0 |  |
-| `activity10` | low | measured | 2026-04-29T17:03:48 | compact-fgp3-v2-fullmatrix | +11.4% | 89.8% | 1401/1258 | 14 | 4 | 2 |  |
+| `activity10` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +12.8% | 88.6% | 1424/1262 | 622 | 0 | 255 | current validated pack refresh; baseline correction |
+| `activity10` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +14.4% | 87.4% | 1441/1260 | 664 | 0 | 255 | current validated pack refresh; baseline correction |
 | `activity11` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
 | `activity11` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
 | `activity12` | high | measured | 2026-04-30T08:59:42 | compact-fgp3-v38-activity12high-prime | +9.0% | 91.7% | 1543/1415 | 0 | 0 | 0 |  |
@@ -209,8 +210,8 @@ and this page.
 | `building6` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +5.3% | 95.0% | 2564/2436 | 217 | 16 | 33 |  |
 | `building7` | high | measured | 2026-04-29T17:25:59 | compact-fgp3-v2-fullmatrix | +4.8% | 95.4% | 3843/3668 | 43 | 24 | 4 | validated 2026-05-05 after generic multi-view stitch plus animated campfire lane patch and FGP3 cleanup; active timing predates refreshed validation pack |
 | `building7` | low | measured | 2026-04-29T17:27:03 | compact-fgp3-v2-fullmatrix | +4.2% | 96.0% | 3830/3676 | 12 | 12 | 0 | validated 2026-05-05 after generic multi-view stitch plus animated campfire lane patch and FGP3 cleanup; active timing predates refreshed validation pack |
-| `fishing1` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | -0.7% | 100.7% | 1067/1074 | 2 | 2 | 0 |  |
-| `fishing1` | low | measured | 2026-04-29T17:28:34 | compact-fgp3-v2-fullmatrix | +12.2% | 89.1% | 1207/1076 | 0 | 0 | 0 |  |
+| `fishing1` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1068/1074 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
+| `fishing1` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.7% | 100.7% | 1067/1074 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
 | `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
 | `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
 | `fishing3` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.4% | 99.6% | 1960/1952 | 18 | 13 | 1 |  |
@@ -223,16 +224,16 @@ and this page.
 | `fishing6` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.2% | 101.2% | 744/753 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `fishing7` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -1.4% | 101.4% | 715/725 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `fishing7` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -1.4% | 101.4% | 715/725 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing8` | high | measured | 2026-04-29T17:34:39 | compact-fgp3-v2-fullmatrix | +11.9% | 89.4% | 1393/1245 | 13 | 14 | 0 |  |
-| `fishing8` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.1% | 90.8% | 1380/1253 | 0 | 0 | 0 |  |
+| `fishing8` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1243/1253 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `fishing8` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1243/1253 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny1` | high | measured | 2026-04-29T17:35:40 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 2125/1942 | 31 | 31 | 0 |  |
 | `johnny1` | low | measured | 2026-04-29T17:36:10 | compact-fgp3-v2-fullmatrix | +9.6% | 91.2% | 2129/1942 | 33 | 33 | 0 |  |
 | `johnny2` | high | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.6% | 99.4% | 1761/1751 | 16 | 0 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
 | `johnny2` | low | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.5% | 99.5% | 1758/1750 | 16 | 1 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
-| `johnny3` | high | measured | 2026-04-30T09:00:55 | compact-fgp3-v38-activity12high-prime | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
-| `johnny3` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +11.3% | 89.8% | 1298/1166 | 0 | 0 | 0 |  |
-| `johnny4` | high | measured | 2026-04-30T13:18:41 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
-| `johnny4` | low | measured | 2026-04-30T13:17:30 | compact-fgp3-v46-johnny4low-auto-prime | +10.5% | 90.5% | 1341/1214 | 0 | 0 | 0 |  |
+| `johnny3` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +7.9% | 92.7% | 1258/1166 | 560 | 0 | 209 | current validated pack refresh; baseline correction |
+| `johnny3` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +5.4% | 94.9% | 1229/1166 | 464 | 0 | 175 | current validated pack refresh; baseline correction |
+| `johnny4` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `johnny4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny5` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.1% | 101.1% | 811/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny5` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.2% | 101.2% | 810/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny6` | high | measured | 2026-04-29T17:40:45 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2895/2800 | 27 | 27 | 0 |  |
@@ -257,12 +258,12 @@ and this page.
 | `stand2` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -2.0% | 102.1% | 480/490 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand3` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.8% | 101.8% | 547/557 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand3` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.8% | 101.8% | 547/557 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand4` | high | measured | 2026-04-30T07:13:22 | compact-fgp3-v32-auto256 | +11.3% | 89.8% | 1359/1221 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch; active timing predates refreshed validation pack |
-| `stand4` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.2% | 89.9% | 1358/1221 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch; active timing predates refreshed validation pack |
-| `stand5` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +9.2% | 91.6% | 1595/1461 | 0 | 0 | 0 |  |
-| `stand5` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.1% | 91.7% | 1594/1461 | 0 | 0 | 0 |  |
-| `stand6` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +10.0% | 90.9% | 1501/1365 | 0 | 0 | 0 |  |
-| `stand6` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.9% | 91.0% | 1500/1365 | 0 | 0 | 0 |  |
+| `stand4` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.5% | 101.5% | 1202/1220 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `stand4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1203/1218 | 3 | 3 | 0 | current validated pack refresh; baseline correction |
+| `stand5` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1442/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `stand5` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1442/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `stand6` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.3% | 101.3% | 1346/1364 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `stand6` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.3% | 101.3% | 1346/1364 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand7` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.3% | 103.5% | 520/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand7` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.3% | 103.5% | 520/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand8` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.2% | 103.3% | 483/499 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
@@ -273,12 +274,12 @@ and this page.
 | `stand10` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand11` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand11` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand12` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +9.1% | 91.7% | 1594/1461 | 0 | 0 | 0 |  |
-| `stand12` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +9.1% | 91.7% | 1593/1460 | 0 | 0 | 0 |  |
+| `stand12` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1450/1459 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
+| `stand12` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.7% | 100.7% | 1450/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand15` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.8% | 101.8% | 444/452 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `stand15` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.8% | 101.8% | 444/452 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand16` | high | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +11.0% | 90.1% | 1322/1191 | 0 | 0 | 0 |  |
-| `stand16` | low | measured | 2026-04-30T06:13:51 | compact-fgp3-v30-mediumprime | +11.1% | 90.0% | 1323/1191 | 0 | 0 | 0 |  |
+| `stand16` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +0.2% | 99.8% | 473/472 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `stand16` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +0.2% | 99.8% | 473/472 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `suzy1` | high | measured | 2026-04-29T18:01:51 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `suzy1` | low | measured | 2026-04-29T18:01:58 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
 | `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
