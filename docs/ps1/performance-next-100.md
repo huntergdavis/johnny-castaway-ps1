@@ -36,10 +36,13 @@ improves VISITOR3 low from `1453/1009` to `1453/1012`, lowers blocking
 `51 -> 50`. Do not generalize this cap before canaries prove the memory
 residency is safe for other scenes.
 
-Rejected cap edge: `208 KiB` VISITOR3 setup-prime residency regressed high-tide
-overrun `435 -> 436`, blocking `355 -> 359`, and loop reads `45 -> 49`, despite
-lowering prefetch overrun `14 -> 13`. Treat `192 KiB` as the current accepted
-cap and only bisect inside `192..208 KiB` if continuing this lane.
+Rejected cap edge: `200 KiB` regressed high-tide loop `1450 -> 1452` and
+overrun `435 -> 437` despite lowering blocking `355 -> 353`; `208 KiB`
+regressed overrun `435 -> 436`, blocking `355 -> 359`, and loop reads
+`45 -> 49` despite lowering prefetch overrun `14 -> 13`. Treat `192 KiB` as
+the current accepted cap; only `196 KiB` remains plausible in this lane, and
+the better next moves are scheduler-owned CD timing or selective pack/data-shape
+preprocessing.
 
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
