@@ -156,12 +156,20 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.7.2-ps1` fixes the story-loop walking regression
-where Johnny could walk over water when the next scene used a different island
-backdrop than the previous framebuffer. See
-[release-notes-0.7.2.md](release-notes-0.7.2.md).
+Latest point release: `v0.8.0-ps1` is the complete-scene performance
+baseline. All 63 scenes remain validated, all 126 high/low scene variants are
+routed through the headless performance matrix, and the timing-bearing rows
+average `+0.8692%` over target / `99.4529%` target speed. It also hardens
+randomized play by retrying BUILDING4-scale clean-rect allocation after
+releasing stale walk-clean memory pressure. See
+[release-notes-0.8.0.md](release-notes-0.8.0.md).
 
 Milestone releases:
+- `v0.8.0-ps1` — complete-scene performance baseline. Keeps the 63/63
+  visual + audible scene ledger intact, promotes the current 126-variant
+  headless battle card, and fixes a randomized BUILDING4 clean-rect pressure
+  BSOD by releasing stale walk-clean buffers before retrying the large scene
+  clean snapshot.
 - `v0.7.2-ps1` — story-loop walking bugfix. Inter-scene walks now require the
   remembered backdrop key to match the next scene's tide, raft, night,
   holiday, and island X/Y state; otherwise the runtime skips the walk and lets

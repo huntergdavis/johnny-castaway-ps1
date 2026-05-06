@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.7.2-ps1
+eyebrow: Component-level state at v0.8.0-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,8 +13,10 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.7.2-ps1` is the current point release: every row in the live
-per-scene ledger is signed off. The live ledger is at
+`v0.8.0-ps1` is the current release: every row in the live per-scene
+ledger is signed off, all 126 high/low scene variants are routed, and the
+headless timing-bearing average is +0.9% over target / 99.5% target speed.
+The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
 [`docs/ps1/scene-status.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/scene-status.md).
@@ -36,7 +38,7 @@ done."
 | Input (`events_ps1.c` + `src/spi.c`) | Complete | Direct SPI driver, timer-2 + SIO0 IRQ at 250 Hz, lifted from spicyjpeg's `pads` example. The BIOS pad path (`InitPAD`/`StartPAD`) is unusable in PSn00bSDK 0.24 + DuckStation. Poll TX is `tx_len=5`, not 4 -- DuckStation only delivers button bytes when the full 5-byte sequence comes from the TX buffer. |
 | Closed captions (`src/ps1_captions.{c,h}`) | Working | On/off via Pause -> Accessibility -> Captions. Dark band at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text. Glyph atlas shared with the pause menu. Caption corpus from the upstream `closed_captions` branch of `jc_reborn`; the original sequential ADS-tag map had ~20 mismatches and was re-audited (`docs/ps1/caption-audit-2026-04-26.yaml`). HIGH-confidence matches dominate; LOW-confidence slots remain on STAND idles and a few VISITOR / WALKSTUF edges. |
 | Holidays (36 of them, code-generated) | Working | Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -> World Options -> Holidays and `BOOTMODE.TXT`. Generation is offline; design notes in `docs/ps1/holidays-expansion-design.md`. |
-| Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. `v0.7.2` adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state. |
+| Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. `v0.7.2` adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; `v0.8.0` adds a clean-rect retry path so large scenes can recover after releasing stale walk-clean pressure. |
 | Freeplay/debug mode (`scene_freeplay.c`) | Working | `v0.5.0-ps1` promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and a no-allocation steady-state frame loop. |
 | Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Compact sub-screens: Freeplay Options, World Options, Accessibility, Sound Test, System, and the date/island/seed editors. |
 | Memcard persistence (`memcard.c`) | Working / expanding | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work. |
@@ -53,7 +55,8 @@ Honest list, narrowed to specifics:
 
 - **Post-validation regressions.** Scene coverage is complete at 63/63, but
   future bugfixes can still be needed when broader play, new features, or
-  performance changes disturb a signed-off path. The scene ledger remains the
+  performance changes disturb a signed-off path. `v0.8.0` fixed the latest
+  random-run clean-rect pressure regression; the scene ledger remains the
   acceptance source after each fix.
 - **Memcard fresh-card edge cases.** Save / load works on a card
   that already holds the project's block. Behavior on a freshly
@@ -87,7 +90,9 @@ Pulled from the live narrative in
 
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
-  loading, memory pressure, and release polish. The bring-up loop remains in
+  loading, memory pressure, and release polish. `v0.8.0` sets the current
+  headless baseline at +0.9% over target / 99.5% target speed. The bring-up
+  loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing
@@ -109,9 +114,10 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.7.2-ps1` fixes stale-backdrop story-loop
-  walks. `v0.7.1-ps1` adds the original-four auto holiday default and
-  persisted holiday mode. `v0.7.0-ps1` validates all
+- **Milestone release cadence.** `v0.8.0-ps1` is the complete-scene
+  performance baseline and fixes random-run clean-rect pressure. `v0.7.2-ps1`
+  fixes stale-backdrop story-loop walks. `v0.7.1-ps1` adds the original-four
+  auto holiday default and persisted holiday mode. `v0.7.0-ps1` validates all
   63 scenes and
   moves the project into bugfix/optimization mode. `v0.6.10-ps1` validates `MARY 5`
   after the `NORAFT` raft clamp and `FIRST` full-wipe transition fix.

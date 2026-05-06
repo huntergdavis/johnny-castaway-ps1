@@ -12,11 +12,28 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.6.13-ps1` |
+| Release | `v0.8.0-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
-| Scenes fully validated under the reference bar | **62 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
-| Pack corpus | FG2 high/low packs generated for all 63 scenes; CD/runtime routing remains scene-by-scene |
+| Scenes fully validated under the reference bar | **63 / 63** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.9% over target / 99.5% target speed** |
+| Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
+
+`v0.8.0-ps1` is the complete-scene performance baseline. Every original
+scene remains validated under the visual + audible signoff bar, every high
+and low tide scene variant is routed through the headless matrix, and the
+timing-bearing rows average `+0.8692%` over target / `99.4529%` target speed.
+It also fixes a randomized BUILDING4 clean-rect pressure BSOD by releasing
+stale walk-clean buffers before retrying large scene clean snapshots.
+
+`v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
+over water when the next scene used a different island backdrop key.
+
+`v0.7.1-ps1` adds persisted holiday mode and makes `AUTO DATE:ORIG4` the
+fresh/no-card default.
+
+`v0.7.0-ps1` is the complete-scene validation milestone: all 63 original
+scenes are validated under the current bar.
 
 `v0.6.13-ps1` validates `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, and
 `VISITOR 7`. VISITOR4, VISITOR5, and VISITOR7 use the generic
@@ -198,6 +215,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.0.md](release-notes-0.8.0.md) — complete-scene performance baseline release notes
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
 - [release-notes-0.5.0.md](release-notes-0.5.0.md) — release notes for the freeplay/debug milestone

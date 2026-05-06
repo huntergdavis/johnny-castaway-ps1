@@ -82,7 +82,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.7.2-ps1`** |
+| Current release | **`v0.8.0-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -92,6 +92,15 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf stats version | Latest refreshed rows use `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.8.0-ps1` is the complete-scene performance baseline. All 63 scenes remain
+signed off, all 126 high/low scene variants are routed, and the 120
+timing-bearing rows average **+0.9% over target / 99.5% target speed**. Since
+the compact full-matrix baseline was about **+17.4% over target / 87.1% target
+speed**, the headless optimization loop has removed about **16.5 percentage
+points** of over-target gap and added about **12.4 target-speed points**. The
+release also hardens randomized play by retrying BUILDING4-scale clean-rect
+allocation after releasing stale walk-clean memory pressure.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -203,12 +212,12 @@ rows (`suzy1`, `suzy2`, high/low) currently complete without active-loop
 timing and are excluded from speed averages; `mary3` is visually validated
 but still needs a perf-matrix refresh.
 
-Latest accepted headless performance work adds an `activity9` low-tide FGP3
-grouped append for sectors `624..636` after the padded FGP3 conversion. Low
-tide improves `2103/2053 -> 2093/2056`, with visible blocking dropping
-`60 -> 43`; high tide and FISHING1/VISITOR3/WALKSTUF1/BUILDING2 canaries stay
-flat. The timing-bearing average is now `+0.8692%` over target / `99.4529%`
-target speed; since the compact full-matrix baseline was about
+The `v0.8.0` headless performance baseline includes the accepted `activity9`
+low-tide FGP3 grouped append for sectors `624..636` after the padded FGP3
+conversion. Low tide improves `2103/2053 -> 2093/2056`, with visible blocking
+dropping `60 -> 43`; high tide and FISHING1/VISITOR3/WALKSTUF1/BUILDING2
+canaries stay flat. The timing-bearing average is now `+0.8692%` over target /
+`99.4529%` target speed; since the compact full-matrix baseline was about
 `+17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `16.5` percentage points of over-target gap and added about
 `12.4` points of target speed.
@@ -242,11 +251,9 @@ The PS1 build is deliberately hybrid, not a from-scratch engine rewrite:
   a per-pack event cursor with a 3-frame delay so sample key-on matches
   the visible trigger.
 
-Twenty-two scenes (`fishing1`, `fishing2`, `fishing3`, `fishing4`,
-`fishing5`, `fishing6`, `fishing7`, `fishing8`, `johnny1`, `johnny2`,
-`johnny3`, `johnny4`, `johnny5`, `johnny6`, `mary1`, `mary2`, `mary3`,
-`mary4`, `mary5`, `miscgag1`, `miscgag2`, `stand1`) validated end-to-end anchor
-the scene-by-scene bring-up loop.
+All 63 original scenes are validated end-to-end under the current visual +
+audible bar. The scene-by-scene loop remains the regression bar for future
+bugfixes and performance changes.
 
 The full pipeline — pack format byte layout, hardware constraints hit
 on the way, the SPI pad-poll fix, dirty-rect bookkeeping — is detailed
@@ -428,6 +435,7 @@ prefer.
 - [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](docs/ps1/performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) + [performance-o2-audit.csv](docs/ps1/performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
+- [release-notes-0.8.0.md](docs/ps1/release-notes-0.8.0.md) — complete-scene performance baseline release notes
 
 **Platform reference** — [website /docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)
 - [hardware-specs.md](docs/ps1/hardware-specs.md) ↔ [/docs/hardware/](https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/)
