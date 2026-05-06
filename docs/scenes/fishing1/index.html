@@ -117,6 +117,29 @@
 
 <p>This is the reference scene for the whole pipeline. If FISHING 1 looks right and sounds right across all four variant flags, the host capture pipeline and the PS1 playback engine are working as designed. Every other scene gets validated against this bar.</p>
 
+<h2 id="reference-frames">Reference frames</h2>
+
+<p>These are the Sierra original — captured from the host build running the
+real ADS/TTM bytecode against the original Sierra data files. The
+host-vs-PS1 frame diff is the project’s whole signoff loop: a scene
+“clears the bar” when the PS1 frames match these references pixel-for-
+pixel across every applicable variant.</p>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-arrival.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny arrives at the shoreline carrying a coiled fishing line." />
+  <figcaption>Reference · arrival. Johnny walks onto the shore with the rod tucked, line coiled. From the Sierra original via host capture.</figcaption>
+</figure>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-cast.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny mid-cast with the rod arched and the line trailing into the ocean." />
+  <figcaption>Reference · cast. Rod arched, line out. The PS1 build's hero shot at the top of this page is the same beat, replayed from the captured FG2 pack.</figcaption>
+</figure>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-catch.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny reels in a small red starfish that flies off the line back into the ocean." />
+  <figcaption>Reference · catch. The red starfish in flight — the line that gives the scene its caption ("He catches a starfish. He throws it back.").</figcaption>
+</figure>
+
 <h2 id="validation">Validation</h2>
 
 <p>Validated as of <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code>. Variants exercised: night, low-tide, holiday, raft-stage.
