@@ -121,6 +121,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 regressed FISHING1 loop timing and shifted hot foreground/graphics/CD symbols by more than the phase gate allows.",
     ),
+    "src/utils.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 regressed FISHING1 loop timing and shifted hot foreground/graphics/CD symbols by more than the phase gate allows.",
+    ),
 }
 
 

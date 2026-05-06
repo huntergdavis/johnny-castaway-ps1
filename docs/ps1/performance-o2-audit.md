@@ -5,9 +5,9 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-06T18:58:46+00:00` |
+| Generated at | `2026-05-06T19:01:57+00:00` |
 | Branch | `perf-headless-20260506` |
-| Commit | `1d45c4730` |
+| Commit | `da5104643` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `215040` |
@@ -23,7 +23,6 @@
 
 | Priority | Type | Target | Current | Symbol bytes | Source text bytes | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 71 | translation_unit | `src/utils.c` | -Os | 0 | 448 | Test whole TU at default -O2 after hot sweep |
 | 72 | translation_unit | `src/island.c` | -Os | 0 | 612 | Test whole TU at default -O2 after hot sweep |
 | 80 | translation_unit | `src/ps1_pad_script.c` | -Os | 0 | 348 | Review TU optimization flag |
 | 80 | translation_unit | `src/scene_freeplay.c` | -Os | 0 | 9392 | Review TU optimization flag |
@@ -39,6 +38,7 @@
 | 90 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/ps1_captions.c` | -Os | 0 | 1208 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | translation_unit | `src/ps1_debug.c` | -Os | 0 | 1752 | Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected |
 
 ## Function-Scoped Flags
 
