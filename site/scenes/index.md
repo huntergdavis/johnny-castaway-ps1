@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-05:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+13.9%` (`13.8570%` exact) |
-| Timing-bearing average target speed | `88.6%` (`88.6303%` exact) |
-| Latest perf matrix run | `2026-05-03T14:22:57` |
-| Stats version | mixed: latest refreshed rows use `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+13.6%` (`13.6273%` exact) |
+| Timing-bearing average target speed | `88.8%` (`88.7828%` exact) |
+| Latest perf matrix run | `2026-05-05T22:25:30` |
+| Stats version | mixed: latest refreshed rows use `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `mary2-v068-wide-stitch`,
+  refreshed rows use `walkstuf1-v072-prefetch-relief`,
+  `mary2-v068-wide-stitch`,
   `fishing5-v065-current-ledger-overlay`,
   `johnny2-v064-validation-refresh`,
   `compact-fgp3-v66-final-frame-hold`,
@@ -286,8 +287,8 @@ and this page.
 | `visitor6` | low | measured | 2026-04-30T07:23:55 | compact-fgp3-v33-auto288 | +6.8% | 93.6% | 2188/2048 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus full-host impact-delta injection for source frames 120:141; active timing predates refreshed validation pack |
 | `visitor7` | high | measured | 2026-04-30T09:32:23 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus coconut impact hold redistribution for source frames 32, 62, 71, and 80; active timing predates refreshed validation pack |
 | `visitor7` | low | measured | 2026-04-30T09:33:43 | compact-fgp3-v39-visitor7high-prime | +8.7% | 92.0% | 1766/1625 | 0 | 0 | 0 | validated 2026-05-04 after generic multi-view stitch plus coconut impact hold redistribution for source frames 32, 62, 71, and 80; active timing predates refreshed validation pack |
-| `walkstuf1` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +29.5% | 77.2% | 1833/1415 | 423 | 139 | 23 |  |
-| `walkstuf1` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +30.1% | 76.9% | 1820/1399 | 452 | 140 | 34 |  |
+| `walkstuf1` | high | measured | 2026-05-05T22:25:30 | walkstuf1-v072-prefetch-relief | +16.1% | 86.1% | 1637/1410 | 297 | 67 | 54 | validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
+| `walkstuf1` | low | measured | 2026-05-05T22:25:30 | walkstuf1-v072-prefetch-relief | +16.0% | 86.2% | 1634/1409 | 304 | 73 | 55 | validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
 | `walkstuf2` | high | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf2` | low | measured | 2026-04-30T13:39:47 | compact-fgp3-v49-walkstuf2-auto-prime | +28.4% | 77.9% | 593/462 | 0 | 0 | 0 |  |
 | `walkstuf3` | high | measured | 2026-04-29T18:12:55 | compact-fgp3-v2-fullmatrix | +8.1% | 92.5% | 2460/2276 | 79 | 45 | 6 |  |

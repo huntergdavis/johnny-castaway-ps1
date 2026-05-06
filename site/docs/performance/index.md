@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+13.9% over target /
-88.6% target speed** (`13.8570%` exact over target / `88.6303%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+13.6% over target /
+88.8% target speed** (`13.6273%` exact over target / `88.7828%` exact target speed).
 
 ## Scene Battle Card
 
-As of 2026-05-03, all 126 scene/tide variants have current headless
+As of 2026-05-05, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf1-v072-prefetch-relief`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
 `johnny2-v064-validation-refresh`,
@@ -272,13 +273,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-03T14:22:57`; per-row freshness and stats version are shown on
+run is `2026-05-05T22:25:30`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `compact-fgp3-v66-final-frame-hold`,
+rows now use `walkstuf1-v072-prefetch-relief`,
+`compact-fgp3-v66-final-frame-hold`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
 `johnny2-v064-validation-refresh`,
@@ -354,7 +356,7 @@ rows are historical only.
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
-| `walkstuf1` | +29.5% / 77.2% (1833/1415); due 23; blk 423 | +30.1% / 76.9% (1820/1399); due 34; blk 452 |
+| `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |
 | `walkstuf2` | +28.4% / 77.9% (593/462) | +28.4% / 77.9% (593/462) |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
