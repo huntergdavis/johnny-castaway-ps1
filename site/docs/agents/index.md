@@ -26,14 +26,22 @@ runs the validation passes, signs off on each release, and writes the
 pause-menu Credits text. He is also the only operator of any AI tooling
 involved.
 
-The project uses AI sub-agents — Claude, mostly, with occasional excursions
-into other models for specific jobs — as an unusual member of the team. The
-agents draft text, scaffold code, run parallel research passes against
+The project uses AI sub-agents — primarily Claude and Codex, on separate
+worktrees against separate branches, with occasional excursions into other
+models for specific jobs — as an unusual member of the team. The agents
+draft text, scaffold code, run parallel research passes against
 documentation, and rubber-duck design questions. They do not own decisions.
 They do not pick what's worth shipping. They do not validate scenes. The
 chrome of the product — the on-screen pause menu, the merge bar that gates
 a scene as validated, the website's information architecture — is the
 author's call.
+
+The setup is on the record at
+[/about/dev-environment/]({{ '/about/dev-environment/' | relative_url }})
+— a photograph of the desk shows the two agent prompt windows next to
+the [Dunking Bird auto-poker]({{ '/lab/dunking-bird/' | relative_url }})
+that keeps them moving and the DuckStation window where every visual
+signoff still lands.
 
 The claim being made on this page is narrow: AI helped with first drafts,
 mechanical work, and parallel exploration. The author kept the pen.
