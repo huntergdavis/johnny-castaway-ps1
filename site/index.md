@@ -196,6 +196,29 @@ man on a small island. The disc plays. That's what mattered.
 
 </section>
 
+## Latest from the lab
+
+The Lab is the magazine — feature-length retrospectives on the
+methodology, the war stories, and the choices that defined the
+work. Five most recent, newest first:
+
+{%- assign lab_pages = site.pages | where_exp: "p", "p.url contains '/lab/'" | where_exp: "p", "p.url != '/lab/'" | where_exp: "p", "p.date" | sort: "date" | reverse -%}
+<ul class="devlog-list">
+  {% for article in lab_pages limit:5 %}
+  <li>
+    <time datetime="{{ article.date | date: '%Y-%m-%d' }}">{{ article.date | date: "%Y-%m-%d" }}</time>
+    <div>
+      <a href="{{ article.url | relative_url }}">{{ article.title }}</a>
+      {% if article.subtitle %}<span class="summary">{{ article.subtitle }}</span>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<p>
+  <a class="btn btn--small" href="{{ '/lab/' | relative_url }}">Browse all lab articles &rarr;</a>
+</p>
+
 ## Latest from the devlog
 
 <ul class="devlog-list">

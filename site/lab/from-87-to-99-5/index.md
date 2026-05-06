@@ -47,6 +47,24 @@ The harness writes one JSONL line per run into a scratch directory and one row i
 
 These are the changes that landed against the matrix from the compact baseline through `v0.8.0-ps1`. None of them changed pixels.
 
+### The single biggest unlock: clean-memory-relief drop-prefetch
+
+Most of the matrix-wide gain in the last 24 hours came from one mechanism. Many scenes shared a diagnostic shape: **compact packs + a large clean snapshot ⇒ `policy=none` ⇒ every payload due-misses**. The runtime's prefetch buffer was sitting on memory the clean-rect path needed, so the streamer fell back to no-prefetch and missed every read.
+
+The fix is a per-scene opt-in: when the clean snapshot is large, drop the prefetch buffer instead of starving on it. Scenes opt in by joining the *clean-memory-relief / large-clean drop-prefetch exception list*. Twelve scenes were added in the v0.8.0 push (2026-05-06): `JOHNNY1`, `ACTIVITY9`, `MARY1`, `ACTIVITY11`, `ACTIVITY12`, `BUILDING4`, `BUILDING6`, `JOHNNY6`, `ACTIVITY4`, `FISHING4` — plus `WALKSTUF1`, `VISITOR3`, `VISITOR5`, `ACTIVITY10`, `JOHNNY3` already on it from a prior pass. The numbers, straight from the experiment log:
+
+- **ACTIVITY9 high**: `blocking_vb 884 → 139`, `loop_reads 251 → 116`, `due_misses 251 → 25`.
+- **ACTIVITY9 low**: `871 → 175`, `251 → 166`, `251 → 48`.
+- **BUILDING4 high**: `loop_vb 3286 → 2985`, `blocking 1519 → 285`, `loop_reads 427 → 93`, `due 427 → 40`.
+- **BUILDING4 low**: `3294 → 2981`, `1510 → 199`, `427 → 62`, `427 → 14`.
+- **BUILDING6 high**: `2642 → 2520`, `blocking 1035 → 62`, `due 306 → 1`.
+
+Cuts measured in *thousands* of blocking vblanks per variant. Most of the ~12-percentage-point matrix-mean move came from this one mechanism. The fix is simple — release a buffer when memory pressure is high — and the discipline was the per-scene measured opt-in instead of a global runtime change.
+
+### Stale-row baseline refreshes
+
+Bracketing Stage 1, before the relief work landed, was a wave of `*-current-refresh` batches that re-ran 50+ scenes against current packs to evict stale April matrix rows. Promoted refreshes: `mismatch-top-v072-current-refresh`, `stale-top-v072b`, `stale-zero-v072b`, `stale-zero2-v072b`, `stale-pressure2-v072c`, `stale-layout-v072c`, `stale-next-v072c`. Not a code change. Hygiene. But it surfaced the rows that were actually slow against the current build and stopped the optimizer queue from chasing ghosts. Maybe two to three percentage points came from this alone.
+
 ### FGP3 pack format conversions
 
 The original FG2 pack format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.

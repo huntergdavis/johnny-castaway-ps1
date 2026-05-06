@@ -823,6 +823,13 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   color: var(--fg-mute);
   font-size: 0.95rem;
 }
+.doc-grid li p.lab-date {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin: 0 0 0.25rem;
+}
 
 /* ---------- Menu help guide ---------- */
 .menu-guide {
