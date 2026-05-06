@@ -21,9 +21,9 @@ Current accepted fishing1 high-tide canary baseline:
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `0.9493%`
-over target / `99.3794%` target speed across `120` timing-bearing rows after
-the `activity9-window-v072c` optimization. The largest
+or long-run heap stability. The current all-scene battle card is `0.8745%`
+over target / `99.4479%` target speed across `120` timing-bearing rows after
+the `activity9-fgp3-v072c` optimization. The largest
 remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9,
 BUILDING4, BUILDING6, and generated selective preprocessing, not FISHING1.
 
@@ -828,6 +828,8 @@ near misses:
 | VISITOR3 high `163..175` / low `158..170` groups | Do not retry as standalone source tables. The generated visible-cost candidates produced `group_hits=0`; high had no key timing improvement and low regressed loop/blocking/refill. Require append-start ownership metadata or scheduler-owned preload before more VISITOR3 grouping. |
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
 | WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. Retry only with a new shrinking encoder or an explicit layout-moving pack experiment. |
+| ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |
+| BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
 | Setup segment persistence cleanup | Do not retry alone. It was memory-safe in theory but regressed VISITOR3 high through code layout/cadence while only improving refill overrun. |
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
