@@ -100,7 +100,7 @@
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1999 words
+          ~8 min read · 2091 words
         </p>
 
       <hr class="rule" />
@@ -393,6 +393,20 @@ stitches for the wide scenes, residual-cleanup pack fixes when a
 few pixels missed, the backdrop-key guard that kept story-loop
 walks from running across stale islands. That is the property
 the project was reaching for.</p>
+
+<p>The second bar, <a href="../../docs/performance/">headless-perf timing</a>,
+is its own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <code class="language-plaintext highlighter-rouge">87.1%</code>
+target speed at the compact full-matrix baseline to
+<code class="language-plaintext highlighter-rouge">99.5%</code> target speed at
+<code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — closed without changing pixels, sound
+event timing, scene identity, or long-run heap stability. The
+<a href="../../lab/from-87-to-99-5/">retrospective</a>
+walks through which experiments landed (FGP3 packs, scene-local
+prefetch relief, stream-window retuning, padded residual packs,
+scoped read groups) and which did not (<code class="language-plaintext highlighter-rouge">-O2</code>, naive read-group
+probes). Visual signoff and headless perf stay separate ledgers
+because their failure modes are uncorrelated; mixing them is how
+regressions ship.</p>
 
   </div>
 </article>
