@@ -46,5 +46,9 @@ accepted performance baseline.
   selected pack before a runtime probe. VISITOR3 now proves why: cap-hit frames
   `134..136` save `0%` under blanket x-band, while nearby non-cap frames carry
   most of the useful byte saving.
+- The current VISITOR3 detail sheet is
+  `docs/ps1/performance-preprocess-visitor3-hotspots.csv`. Its default
+  threshold plan selects `96 / 144` frames, excludes `3` cap-hit frames, and
+  estimates `6114568` selected-subset upload bytes saved.
 - This matrix should guide the next generated pack-format experiment, not
   more hand-authored scene branches.

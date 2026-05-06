@@ -109,7 +109,9 @@ The per-pack detail analyzer
 [`scripts/analyze-fg2-preprocess-plans.py`]({{ site.github_url }}/blob/main/scripts/analyze-fg2-preprocess-plans.py)
 now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
 splits cap-hit frames from saving-heavy frames, which keeps the next
-upload-ready experiment selective instead of a whole-pack conversion.
+upload-ready experiment selective instead of a whole-pack conversion. The
+current VISITOR3 frame sheet is
+[`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv).
 
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan

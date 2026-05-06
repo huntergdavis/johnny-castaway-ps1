@@ -177,7 +177,11 @@ next upload-ready experiment should be selective/thresholded rather than a
 blanket conversion. The per-frame preprocess analyzer now supports FGP3
 temporal-residual packs directly: for VISITOR3 it separates the cap-hit crash
 frames (`134..136`, where blanket x-band saves `0%`) from the profitable
-non-cap frames (`121..133`, where align4 x-band saves roughly `65..75%`).
+non-cap frames (`121..133`, where align4 x-band saves roughly `65..75%`). The
+first tracked threshold plan is
+[performance-preprocess-visitor3-hotspots.csv](performance-preprocess-visitor3-hotspots.csv):
+it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
+`6114568` upload bytes saved inside the selected subset.
 
 Milestone releases:
 - `v0.8.0-ps1` — complete-scene performance baseline. Keeps the 63/63

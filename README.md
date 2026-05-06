@@ -108,7 +108,9 @@ keeps VISITOR3 first but requires selective upload-ready bands rather than a
 blanket pack conversion. The per-frame preprocessing analyzer now understands
 FGP3 cleanup/draw payloads and separates cap-hit frames from profitable x-band
 frames, so the next VISITOR3 pack-format probe can be targeted instead of
-whole-pack speculative.
+whole-pack speculative. The tracked VISITOR3 hotspot CSV selects `96 / 144`
+frames for the first thresholded plan and explicitly excludes the `3` cap-hit
+frames.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key

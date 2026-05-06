@@ -9,6 +9,7 @@ full-width row uploads against pack-emitted upload/restore plans.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import struct
 from dataclasses import dataclass
@@ -757,6 +758,66 @@ def pct_saved(current: int, proposed: int) -> float:
     return round(((current - proposed) * 100.0) / current, 2)
 
 
+def compress_ranges(values: list[int]) -> list[dict[str, int]]:
+    if not values:
+        return []
+    ranges: list[dict[str, int]] = []
+    ordered = sorted(values)
+    start = ordered[0]
+    prev = ordered[0]
+    for value in ordered[1:]:
+        if value == prev + 1:
+            prev = value
+            continue
+        ranges.append({"start": start, "end": prev, "count": prev - start + 1})
+        start = value
+        prev = value
+    ranges.append({"start": start, "end": prev, "count": prev - start + 1})
+    return ranges
+
+
+def write_frame_hotspot_csv(path: Path,
+                            rows: list[dict[str, Any]],
+                            selected_frame_indices: set[int]) -> None:
+    fieldnames = [
+        "frame_index",
+        "source_frame",
+        "hold_vblanks",
+        "entry_data_size",
+        "initial_full_dirty",
+        "cleanup_bytes",
+        "cleanup_intervals",
+        "draw_exact_bytes",
+        "draw_exact_intervals",
+        "runtime_full_width_bytes",
+        "runtime_full_width_rows",
+        "runtime_full_width_rects",
+        "runtime_cap_hit",
+        "xband_exact_align4_bytes",
+        "xband_exact_align4_rects",
+        "xband_exact_align4_cap_hit",
+        "xband_exact_align4_saved_bytes",
+        "xband_exact_align4_saved_percent",
+        "exact_interval_upload_bytes",
+        "exact_interval_upload_rects",
+        "selective_plan",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in sorted(rows, key=lambda item: int(item["frame_index"])):
+            out = {name: row.get(name, "") for name in fieldnames}
+            out["selective_plan"] = (
+                "selected"
+                if int(row["frame_index"]) in selected_frame_indices
+                else "excluded_cap_hit"
+                if row["xband_exact_align4_cap_hit"]
+                else "excluded_threshold"
+            )
+            writer.writerow(out)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Analyze host-side FG2/FGP3 preprocessing upload/restore opportunities."
@@ -779,6 +840,23 @@ def main() -> None:
         type=int,
         default=12,
         help="Number of per-frame upload hotspot rows to include.",
+    )
+    parser.add_argument(
+        "--selective-min-saved-percent",
+        type=float,
+        default=50.0,
+        help="Minimum per-frame x-band saved percent for the selective plan.",
+    )
+    parser.add_argument(
+        "--selective-min-saved-bytes",
+        type=int,
+        default=32768,
+        help="Minimum per-frame x-band saved bytes for the selective plan.",
+    )
+    parser.add_argument(
+        "--output-frame-csv",
+        type=Path,
+        help="Write all per-frame x-band plan rows to CSV.",
     )
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output.")
     args = parser.parse_args()
@@ -1079,6 +1157,54 @@ def main() -> None:
         ),
         reverse=True,
     )[:hotspot_limit]
+    selective_frames = [
+        row for row in frame_hotspots
+        if not row["initial_full_dirty"] and
+        not row["xband_exact_align4_cap_hit"] and
+        row["xband_exact_align4_saved_bytes"] >= args.selective_min_saved_bytes and
+        row["xband_exact_align4_saved_percent"] >= args.selective_min_saved_percent
+    ]
+    selective_frames = sorted(
+        selective_frames,
+        key=lambda row: row["frame_index"],
+    )
+    selective_runtime_bytes = sum(row["runtime_full_width_bytes"] for row in selective_frames)
+    selective_xband_bytes = sum(row["xband_exact_align4_bytes"] for row in selective_frames)
+    selective_rects = sum(row["xband_exact_align4_rects"] for row in selective_frames)
+    selective_saved_bytes = selective_runtime_bytes - selective_xband_bytes
+    selective_payload_bytes = selective_xband_bytes + selective_rects * 8
+    selective_plan = {
+        "align_px": 4,
+        "min_saved_percent": args.selective_min_saved_percent,
+        "min_saved_bytes": args.selective_min_saved_bytes,
+        "selected_frame_count": len(selective_frames),
+        "selected_frame_ranges": compress_ranges([
+            int(row["frame_index"]) for row in selective_frames
+        ]),
+        "selected_source_frame_ranges": compress_ranges([
+            int(row["source_frame"]) for row in selective_frames
+        ]),
+        "selected_runtime_full_width_bytes": selective_runtime_bytes,
+        "selected_xband_bytes": selective_xband_bytes,
+        "selected_saved_bytes": selective_saved_bytes,
+        "selected_saved_percent": pct_saved(selective_runtime_bytes, selective_xband_bytes),
+        "selected_xband_rects": selective_rects,
+        "estimated_payload_plus_rect_metadata_bytes": selective_payload_bytes,
+        "excluded_cap_hit_frames": compress_ranges([
+            int(row["frame_index"]) for row in frame_hotspots
+            if row["xband_exact_align4_cap_hit"]
+        ]),
+        "top_selected_frames": sorted(
+            selective_frames,
+            key=lambda row: row["xband_exact_align4_saved_bytes"],
+            reverse=True,
+        )[:hotspot_limit],
+    }
+    selected_frame_indices = {
+        int(row["frame_index"]) for row in selective_frames
+    }
+    if args.output_frame_csv is not None:
+        write_frame_hotspot_csv(args.output_frame_csv, frame_hotspots, selected_frame_indices)
 
     result: dict[str, Any] = {
         "pack": str(args.pack),
@@ -1125,6 +1251,7 @@ def main() -> None:
         "frame_cap_hotspots": frame_cap_hotspots,
         "frame_saving_hotspots": frame_saving_hotspots,
         "frame_hotspots": frame_cap_hotspots,
+        "selective_xband_align4_plan": selective_plan,
         "red_team": [
             "Pack-emitted narrow multi-row uploads cannot read directly from current tile RAM; the rows are strided.",
             "An FGP3 direct-upload payload lowers runtime work but increases pack/CD bytes, so CD pressure must be gated.",
