@@ -76,5 +76,7 @@
         href="{{ '/devlog/feed.json' | relative_url }}" />
   <link rel="author" type="text/plain" href="{{ '/humans.txt' | relative_url }}" />
 
+  {% include head-pagination.html %}
+
   {% include json-ld.html %}
 </head>

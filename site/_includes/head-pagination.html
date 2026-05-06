@@ -1,0 +1,73 @@
+{%- comment -%}
+  Head-level pagination hints. Search engines (Google, Bing) and
+  screen readers handle <link rel="prev"> / <link rel="next"> in
+  the document head differently from rel attributes on anchor
+  tags inside the body — head-level hints feed into crawl-pattern
+  understanding and assistive-tech "next page" controls.
+
+  Three sections of this site emit body-level pagers, and this
+  include mirrors each one's logic:
+
+    - scene pages (layout: scene), via _data/scenes.yml sorted
+      by tag then ads (matching the index page's sort);
+    - devlog posts (layout: post), via Jekyll's built-in
+      page.previous (older) / page.next (newer);
+    - regtest cases under /archaeology/regtest-references/cases/,
+      via site.pages filtered by URL prefix and lex-sorted.
+
+  Absolute URLs everywhere so they match the canonical link form.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+
+{%- if page.layout == 'scene' -%}
+  {%- assign sorted_scenes = site.data.scenes | sort: 'tag' | sort: 'ads' -%}
+  {%- assign scene_prev = nil -%}
+  {%- assign scene_next = nil -%}
+  {%- assign scene_reached = false -%}
+  {%- for s in sorted_scenes -%}
+    {%- if scene_reached and scene_next == nil -%}
+      {%- assign scene_next = s -%}
+    {%- elsif s.slug == page.slug -%}
+      {%- assign scene_reached = true -%}
+    {%- elsif scene_reached == false -%}
+      {%- assign scene_prev = s -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if scene_prev -%}
+  <link rel="prev" href="{{ site_root }}/scenes/{{ scene_prev.slug }}/" />
+  {%- endif -%}
+  {%- if scene_next -%}
+  <link rel="next" href="{{ site_root }}/scenes/{{ scene_next.slug }}/" />
+  {%- endif -%}
+
+{%- elsif page.layout == 'post' -%}
+  {%- if page.previous -%}
+  <link rel="prev" href="{{ site_root }}{{ page.previous.url }}" />
+  {%- endif -%}
+  {%- if page.next -%}
+  <link rel="next" href="{{ site_root }}{{ page.next.url }}" />
+  {%- endif -%}
+
+{%- elsif page.url contains '/archaeology/regtest-references/cases/' and page.url != '/archaeology/regtest-references/cases/' -%}
+  {%- assign cases_index_url = '/archaeology/regtest-references/cases/' -%}
+  {%- assign cases = site.pages | where_exp: 'p', 'p.url' | where_exp: 'p', 'p.url contains cases_index_url' | sort: 'url' -%}
+  {%- assign case_prev = nil -%}
+  {%- assign case_next = nil -%}
+  {%- assign case_reached = false -%}
+  {%- for c in cases -%}
+    {%- if c.url == cases_index_url -%}{%- continue -%}{%- endif -%}
+    {%- if case_reached and case_next == nil -%}
+      {%- assign case_next = c -%}
+    {%- elsif c.url == page.url -%}
+      {%- assign case_reached = true -%}
+    {%- elsif case_reached == false -%}
+      {%- assign case_prev = c -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if case_prev -%}
+  <link rel="prev" href="{{ site_root }}{{ case_prev.url }}" />
+  {%- endif -%}
+  {%- if case_next -%}
+  <link rel="next" href="{{ site_root }}{{ case_next.url }}" />
+  {%- endif -%}
+{%- endif -%}
