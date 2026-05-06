@@ -780,7 +780,7 @@ near misses:
 | Inline perf-detail check | Do not retry alone; it shrank two hot functions but grew total ELF with no speed movement. |
 | Upload perf marker combine | Done; keep because it removed one rendered-frame marker call and preserved all upload/dirty counters. |
 | `grDrawBackground()` function `-Os` | Done; keep because scoped upload-function codegen stayed exact-flat and shrank ELF. A current v0.7.2 retest of default `-O2` grew `grDrawBackground` by `504` bytes, left VISITOR3/WALKSTUF1/BUILDING2 key timing flat, and gave ACTIVITY9 only a one-VBlank blocking-only movement with no loop win. Retest only after generated upload-ready bands or a dirty-upload rewrite changes this hot path. |
-| `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. |
+| `grUpdateDisplay()` function `-Os` | Done; keep because scoped display-wrapper codegen stayed exact-flat and shrank ELF. A current v0.7.2 retest of default `-O2` grew the helper by `40` bytes, shifted CD helpers by `40` bytes, and left VISITOR3/WALKSTUF1/BUILDING2/ACTIVITY9 key timing flat. Retest only after display/present scheduling or upload ownership changes. |
 | Reusable upload `RECT` stack storage | Done; keep because it removes unused per-call stack array storage with exact timing/upload identity. |
 | Upload rect cap `6` after stack reuse | Do not promote from fishing1 alone; it was exact no-op on all tracked metrics and narrows cross-scene headroom. |
 | Upload band byte arrays | Do not promote alone; it shrank `grDrawBackground` but grew the final ELF with no timing or work movement. |
