@@ -11,7 +11,7 @@ image_alt: "FISHING 1 on PS1: Johnny casts a fishing line off the island, sun ov
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
   <figcaption>FISHING 1 on PS1 hardware. The reference scene.</figcaption>
 </figure>
 ## What happens
