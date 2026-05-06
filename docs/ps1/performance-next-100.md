@@ -21,11 +21,11 @@ Current accepted fishing1 high-tide canary baseline:
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `0.8556%`
-over target / `99.4595%` target speed across `120` timing-bearing rows after
-the `visitor3-setup-prime-192k-v080` optimization. The largest
-remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9,
-BUILDING4, BUILDING6, and generated selective preprocessing, not FISHING1.
+or long-run heap stability. The current all-scene battle card is `0.8318%`
+over target / `99.4775%` target speed across `120` timing-bearing rows after
+the `walkstuf1-fgp2-setup-prime-v080` optimization. The largest remaining
+absolute gaps are now VISITOR3, WALKSTUF1 low, BUILDING4, WALKSTUF1 high,
+BUILDING2, BUILDING6, and generated selective preprocessing, not FISHING1.
 
 Latest promoted VISITOR3 baseline: keep the scene-local `192 KiB` setup-prime
 resident cap with the global setup-prime cap still at `128 KiB`. It improves
@@ -49,6 +49,18 @@ read (`45 -> 44`) but regressed loop `1450 -> 1453`, overrun `435 -> 438`,
 blocking `355 -> 357`, and prefetch overrun `14 -> 16`. Do not retry more
 current-fit VISITOR3 groups as source tables; the planner's scheduler-owned
 classification is now confirmed after setup-prime.
+
+Latest promoted WALKSTUF1 baseline: keep the PAL4/FGP2 setup-prime policy that
+applies the existing `88 KiB` setup-prime base to WALKSTUF1 even though the
+validated packs are not indexed8 residual packs. High tide improves from
+`1640/1406` to `1595/1403`, lowers overrun `234 -> 192`, blocking
+`318 -> 278`, prefetch overrun `67 -> 50`, loop reads `144 -> 136`, and
+loop read VBlanks `663 -> 601`. Low tide improves from `1631/1414` to
+`1614/1397`, lowers blocking `296 -> 276`, prefetch overrun `60 -> 59`,
+loop reads `147 -> 134`, loop read VBlanks `660 -> 605`, and due misses
+`55 -> 49`; target accounting moved with the loop, so overrun stayed `217`.
+Canaries stayed exact-flat for FISHING1 high, VISITOR3 low, and BUILDING2 low.
+Read-plan setup coverage now reports `auto:walkstuf1-*` instead of `none`.
 
 Rejected setup-owned hot segment: priming VISITOR3 high sectors `158..170`
 during setup and retaining that segment for multiple entry copies still
@@ -955,7 +967,7 @@ pre-v0.8.0 row.
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
 | WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. The current high `429..441` read-group probe stayed exact-flat while shifting hot symbols, and the read plan classifies the remaining top candidates as tight-visible-gap. Retry only with a new shrinking encoder, scheduler-owned grouping, selective indexed8/data-shape preprocessing, or an explicit layout-moving pack experiment. |
 | ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |
-| ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. The current exact matrix rollup is `0.8556%` over target / `99.4595%` target speed after the later VISITOR3 setup-prime promotion. |
+| ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. The current exact matrix rollup is `0.8318%` over target / `99.4775%` target speed after the later VISITOR3 and WALKSTUF1 setup-prime promotions. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |

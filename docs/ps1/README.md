@@ -22,7 +22,7 @@ background, waves, holiday overlay, and SFX playback.
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-timing-bearing rows average `+0.8692%` over target / `99.4529%` target speed.
+timing-bearing rows average `+0.8318%` over target / `99.4775%` target speed.
 It also fixes a randomized BUILDING4 clean-rect pressure BSOD by releasing
 stale walk-clean buffers before retrying large scene clean snapshots.
 

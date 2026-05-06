@@ -2021,8 +2021,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     uint8 i;
     uint32 requested = 0;
 
-    if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
-        fgSceneEquals(sceneName, "walkstuf1")) {
+    if (fgSceneEquals(sceneName, "walkstuf1")) {
         requested = (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
             (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
         return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?

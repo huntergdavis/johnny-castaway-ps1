@@ -159,17 +159,17 @@ this page gives the narrative around it.
 Latest point release: `v0.8.0-ps1` is the complete-scene performance
 baseline. All 63 scenes remain validated, all 126 high/low scene variants are
 routed through the headless performance matrix, and the timing-bearing rows
-average `+0.8556%` over target / `99.4595%` target speed. It also hardens
+average `+0.8318%` over target / `99.4775%` target speed. It also hardens
 randomized play by retrying BUILDING4-scale clean-rect allocation after
 releasing stale walk-clean memory pressure. See
 [release-notes-0.8.0.md](release-notes-0.8.0.md).
 
 Current post-release perf branch: VISITOR3 now keeps the accepted high-tide
 `170..186` retained read group and uses a VISITOR3-only `192 KiB` setup-prime
-resident cap. High tide improves to `1450/1015` with `blocking_vb=355`,
-`prefetch_overrun_vb=14`, and `loop_reads=45`; low tide improves to
-`1453/1012` with `blocking_vb=362`, `prefetch_overrun_vb=19`, and
-`loop_reads=50`. The global setup-prime cap remains `128 KiB`.
+resident cap. WALKSTUF1 now also gets PAL4 setup-prime coverage while keeping
+the global setup-prime cap at `128 KiB`. WALKSTUF1 high improves to
+`1595/1403` with `blocking_vb=278`; low improves to `1614/1397` with
+`blocking_vb=276`. VISITOR3 remains the largest remaining outlier.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the

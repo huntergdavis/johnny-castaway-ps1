@@ -519,6 +519,10 @@ def parse_source_setup_policy() -> dict[str, Any]:
         policy["setup_prime_max_resident_bytes"] = symbols[
             "FG_SETUP_PRIME_MAX_RESIDENT_BYTES"
         ]
+    if "FG_PREFETCH_DEFAULT_WINDOW_BYTES" in symbols:
+        policy["default_window_bytes"] = symbols[
+            "FG_PREFETCH_DEFAULT_WINDOW_BYTES"
+        ]
     if "FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES" in symbols:
         policy["visitor3_setup_prime_max_resident_bytes"] = symbols[
             "FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES"
@@ -665,10 +669,13 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
         if prime is None:
             prime = source_policy.get("visitor3_high_prime_bytes")
         return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024, visitor3_cap), [], "auto:visitor3-high"
-    if scene_name == "walkstuf1" and scene.get("fmt") == "fgp3_indexed8_residual":
-        normal = source_policy.get(
-            "walkstuf1_low_window_bytes" if lowtide else "walkstuf1_high_window_bytes"
-        )
+    if scene_name == "walkstuf1":
+        if scene.get("fmt") == "fgp3_indexed8_residual":
+            normal = source_policy.get(
+                "walkstuf1_low_window_bytes" if lowtide else "walkstuf1_high_window_bytes"
+            )
+        else:
+            normal = source_policy.get("default_window_bytes")
         base = source_policy.get("walkstuf1_setup_prime_base_bytes")
         trim = 0 if lowtide else source_policy.get("walkstuf1_high_setup_prime_trim_bytes")
         if isinstance(normal, int) and isinstance(base, int) and isinstance(trim, int):
