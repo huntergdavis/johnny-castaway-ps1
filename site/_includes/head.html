@@ -7,16 +7,36 @@
   <title>{% if page.title and page.url != "/" %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — fan port{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description }}" />
 
+  {%- comment -%}
+    OG/Twitter image: prefer page.image (set in frontmatter) so per-
+    scene and per-post pages can have their own social card; fall
+    back to the site's branded OG image. The per-page image, when
+    set, also overrides og:image:alt with page.image_alt (or page
+    title) so screen readers and social previews land on something
+    that matches what's actually shown.
+  {%- endcomment -%}
+  {%- if page.image -%}
+    {%- assign og_image = page.image | relative_url -%}
+    {%- assign og_image_alt = page.image_alt | default: page.title | default: site.title -%}
+  {%- else -%}
+    {%- assign og_image = '/assets/img/branding/og-image.png' | relative_url -%}
+    {%- assign og_image_alt = 'Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art.' -%}
+  {%- endif -%}
+  {%- if page.twitter_image -%}
+    {%- assign tw_image = page.twitter_image | relative_url -%}
+  {%- elsif page.image -%}
+    {%- assign tw_image = page.image | relative_url -%}
+  {%- else -%}
+    {%- assign tw_image = '/assets/img/branding/twitter-card.png' | relative_url -%}
+  {%- endif -%}
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
   <meta property="og:url"          content="{{ page.url | relative_url }}" />
-  <meta property="og:image"        content="{{ '/assets/img/branding/og-image.png' | relative_url }}" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta property="og:image"        content="{{ og_image }}" />
+  <meta property="og:image:alt"    content="{{ og_image_alt }}" />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="{{ '/assets/img/branding/twitter-card.png' | relative_url }}" />
+  <meta name="twitter:image" content="{{ tw_image }}" />
 
   {%- comment -%}
     Forensic build stamp. Lets anyone debugging a deployed page see

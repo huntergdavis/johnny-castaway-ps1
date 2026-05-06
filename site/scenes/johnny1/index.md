@@ -6,6 +6,8 @@ tag: 1
 slug: johnny1
 status: validated
 description: "JOHNNY.ADS scene 1: The End. Validated on PS1 with full-screen black-backdrop playback."
+image: /assets/img/johnny1-ps1-the-end.png
+image_alt: "JOHNNY 1 on PS1: the original Sierra 'The End' scroll graphic — Johnny waves from his island at sunset, palm tree silhouetted."
 ---
 
 ## Validated
