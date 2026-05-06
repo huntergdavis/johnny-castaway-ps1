@@ -1,0 +1,54 @@
+{%- comment -%}
+  Per-case prev/next walker for the regtest reference shelf at
+  /archaeology/regtest-references/cases/. Uses the same lex-sort
+  order the index table on cases/index.md displays — Liquid's
+  `sort: 'url'` — so the pager and the index walk the catalog in
+  the same direction. Single-pass (most recent before-match becomes
+  prev, the iteration after match becomes next).
+
+  Reuses the .scene-pager class — pure layout, same shape as the
+  scene + devlog pagers.
+
+  Page templates include this conditionally; only the case detail
+  pages need it (the index doesn't).
+{%- endcomment -%}
+{%- assign cases_index_url = '/archaeology/regtest-references/cases/' -%}
+{%- assign cases = site.pages | where_exp: 'p', 'p.url' | where_exp: 'p', 'p.url contains cases_index_url' | sort: 'url' -%}
+{%- assign case_prev = nil -%}
+{%- assign case_next = nil -%}
+{%- assign case_reached = false -%}
+{%- for c in cases -%}
+  {%- if c.url == cases_index_url -%}{%- continue -%}{%- endif -%}
+  {%- if case_reached and case_next == nil -%}
+    {%- assign case_next = c -%}
+  {%- elsif c.url == page.url -%}
+    {%- assign case_reached = true -%}
+  {%- elsif case_reached == false -%}
+    {%- assign case_prev = c -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Regtest case navigation">
+    <div class="scene-pager-prev">
+      {% if case_prev %}
+        <a href="{{ case_prev.url | relative_url }}" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← prev</span>
+          <span class="scene-pager-tag">{{ case_prev.title | replace: ' regression reference', '' }}</span>
+        </a>
+      {% endif %}
+    </div>
+    <div class="scene-pager-up">
+      <a href="{{ cases_index_url | relative_url }}">↑ case shelf</a>
+    </div>
+    <div class="scene-pager-next">
+      {% if case_next %}
+        <a href="{{ case_next.url | relative_url }}" rel="next">
+          <span class="scene-pager-dir" aria-hidden="true">next →</span>
+          <span class="scene-pager-tag">{{ case_next.title | replace: ' regression reference', '' }}</span>
+        </a>
+      {% endif %}
+    </div>
+  </nav>
+</footer>

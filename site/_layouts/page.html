@@ -12,5 +12,14 @@ layout: default
   {% endif %}
   <div class="page-body">
     {{ content }}
-  </div>
+  </div>{% comment %}
+    Section-specific pagers. The detail pages of the regtest case
+    shelf get a prev/next walker like the scene and devlog pages
+    do. The index page itself (no slug after `/cases/`) does not.
+    No whitespace-trim modifiers on the outer if/endif: pages that
+    don't take this branch must remain byte-identical so unrelated
+    commits don't churn 500+ HTMLs.
+  {% endcomment %}{% if page.url contains '/archaeology/regtest-references/cases/' and page.url != '/archaeology/regtest-references/cases/' %}
+  {% include regtest-case-pager.html %}
+  {% endif %}
 </article>
