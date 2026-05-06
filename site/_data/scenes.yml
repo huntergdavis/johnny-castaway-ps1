@@ -23,12 +23,12 @@
 - ads: ACTIVITY
   tag: 4
   slug: activity4
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ''
-  notes: ''
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route, reads-with-seagull-on-head
 - ads: ACTIVITY
   tag: 5
   slug: activity5

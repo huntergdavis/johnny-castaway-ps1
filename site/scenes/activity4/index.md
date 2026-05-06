@@ -4,11 +4,14 @@ title: ACTIVITY 4 — Reads, seagull on head
 ads: ACTIVITY
 tag: 4
 slug: activity4
-status: pending
-description: "ACTIVITY.ADS scene 4: Reads, seagull on head. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 4: Reads, seagull on head. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff on the existing on-disc
+`ACTIVITY4.FG2` / `ACTV4LOW.FG2` packs — no rework needed. High-tide
+nighttime route, reads-with-seagull-on-head.
 
 ## Pack identifiers
 

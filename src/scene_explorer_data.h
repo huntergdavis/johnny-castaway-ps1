@@ -49,7 +49,7 @@ static const struct TSceneExplorerEntry gSceneExplorer[] = {
     { "activity10", "ACTIVITY 10  -  Reads; seagull steals book", "Activities", "FG/ACTIVITY10.FG2", "BMP/SCEXPL_ACTIVITY10.PSB", 256, 1, 0 },
     { "activity11", "ACTIVITY 11  -  Rain dance", "Activities", "FG/ACTIVITY11.FG2", "BMP/SCEXPL_ACTIVITY11.PSB", 208, 1, 0 },
     { "activity12", "ACTIVITY 12  -  Belly-flop dive", "Activities", "FG/ACTIVITY12.FG2", "BMP/SCEXPL_ACTIVITY12.PSB", 252, 1, 0 },
-    { "activity4", "ACTIVITY 4  -  Reads, seagull on head", "Activities", "FG/ACTIVITY4.FG2", "BMP/SCEXPL_ACTIVITY4.PSB", 190, 0, 0 },
+    { "activity4", "ACTIVITY 4  -  Reads, seagull on head", "Activities", "FG/ACTIVITY4.FG2", "BMP/SCEXPL_ACTIVITY4.PSB", 190, 1, 0 },
     { "activity5", "ACTIVITY 5  -  Climb / look / dive", "Activities", "FG/ACTIVITY5.FG2", "BMP/SCEXPL_ACTIVITY5.PSB", 169, 1, 0 },
     { "activity6", "ACTIVITY 6  -  Reads, falls asleep, coconut bonk", "Activities", "FG/ACTIVITY6.FG2", "BMP/SCEXPL_ACTIVITY6.PSB", 105, 1, 0 },
     { "activity7", "ACTIVITY 7  -  Bathes; seagull steals clothes", "Activities", "FG/ACTIVITY7.FG2", "BMP/SCEXPL_ACTIVITY7.PSB", 108, 0, 0 },
