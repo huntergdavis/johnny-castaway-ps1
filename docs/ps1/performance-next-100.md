@@ -150,6 +150,10 @@ The current v0.7.2 default-`O2` retest of `src/memcard.c` is rejected:
 FISHING1 regressed `loop_vb 1068 -> 1069`, visible blocking `4 -> 5`, and
 prefetch overrun `4 -> 6` while the ELF and memcard object grew. Keep the
 translation unit at `-Os`.
+The current v0.7.2 default-`O2` retest of `src/holidays.c` is rejected:
+FISHING1 showed the same visible regression pattern while the ELF grew by
+`3472` bytes and the holidays object grew `25440 -> 30008`. Keep the
+translation unit at `-Os`.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
