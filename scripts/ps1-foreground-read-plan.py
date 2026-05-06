@@ -204,6 +204,20 @@ def candidate_visible_cost(start: int, end: int,
     }
 
 
+def read_segment_summary(segment: dict[str, Any]) -> dict[str, Any]:
+    """Keep the generated read-plan JSON self-contained for runtime metadata."""
+    return {
+        "read_index": segment.get("index"),
+        "line": segment.get("line"),
+        "lba": segment.get("lba"),
+        "sectors": segment.get("sectors"),
+        "file_sector_start": segment.get("file_sector_start"),
+        "file_sector_end": segment.get("file_sector_end"),
+        "inferred_sectors": segment.get("inferred_sectors"),
+        "prev_time_delta_s": segment.get("prev_time_delta_s"),
+    }
+
+
 def eval_c_int_expr(expr: str, symbols: dict[str, int]) -> int | None:
     text = re.sub(r"/\*.*?\*/", "", expr)
     text = re.sub(r"//.*", "", text)
@@ -694,8 +708,20 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "avg_prev_gap_s": round(sum(read_gaps) / len(read_gaps), 4) if read_gaps else None,
             "phase_risk_hint": phase_risk_hint(fully_covered_reads),
             "source_read_indices": [segment.get("index") for segment in fully_covered_reads],
+            "source_read_segments": [
+                read_segment_summary(segment)
+                for segment in fully_covered_reads
+            ],
+            "touched_read_segments": [
+                read_segment_summary(segment)
+                for segment in touched_reads
+            ],
             "append_start_fireable": bool(append_start_reads),
             "append_start_read_indices": [segment.get("index") for segment in append_start_reads],
+            "append_start_read_segments": [
+                read_segment_summary(segment)
+                for segment in append_start_reads
+            ],
             "nearest_observed_append_start_sector": nearest_append_start,
             "nearest_observed_append_delta_sectors": nearest_append_delta,
             **visible_cost,
