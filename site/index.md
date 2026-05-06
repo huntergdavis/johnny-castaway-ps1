@@ -61,11 +61,15 @@ running on real hardware or on DuckStation. It is a fan project: the
 character belongs to the original creator, and the site's chrome and
 its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
-It's also a work in progress. Out of **63 scenes**,
-**{{ site.release.scenes_validated }} are validated** under the
-fishing-1 bar (pixel-perfect visuals plus synced SFX, signed off by
-human review across every applicable variant). The
-[scene ledger]({{ '/scenes/' | relative_url }}) shows the rest.
+All **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
+routed scenes the original game had are validated under the
+fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
+off by human review across every applicable variant. The current
+work is closing the last bit of speed gap; most scenes already
+run at native rate. The
+[scene ledger]({{ '/scenes/' | relative_url }}) tracks the
+visual signoff bar and the headless-perf battle card per
+scene, side by side.
 
 ## How it works (the short version)
 
