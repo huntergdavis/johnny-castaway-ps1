@@ -62,6 +62,39 @@
 </script>
 {%- endif -%}
 
+{%- comment -%}
+  BreadcrumbList. Skips the home page (no breadcrumb at the root) and
+  any page whose URL is just /. Splits page.url on '/', filters empty
+  segments (leading + trailing slashes produce them), titlecases the
+  rest with '-' and '_' converted to spaces. Position 1 is always
+  Home; subsequent positions are the cumulative path. The cumulative
+  trail is rebuilt by appending each segment so each ListItem points
+  at the correct ancestor URL.
+{%- endcomment -%}
+{%- if page.url != '/' -%}
+  {%- assign segments = page.url | split: '/' -%}
+  {%- capture home_item -%}{ "@type": "ListItem", "position": 1, "name": "Home", "item": {{ site_root | append: '/' | jsonify }} }{%- endcapture -%}
+  {%- assign items_json = home_item -%}
+  {%- assign trail = '' -%}
+  {%- assign position = 1 -%}
+  {%- for seg in segments -%}
+    {%- if seg != '' -%}
+      {%- assign trail = trail | append: '/' | append: seg -%}
+      {%- assign position = position | plus: 1 -%}
+      {%- assign label = seg | replace: '-', ' ' | replace: '_', ' ' | capitalize -%}
+      {%- capture item -%}, { "@type": "ListItem", "position": {{ position }}, "name": {{ label | jsonify }}, "item": {{ site_root | append: trail | append: '/' | jsonify }} }{%- endcapture -%}
+      {%- assign items_json = items_json | append: item -%}
+    {%- endif -%}
+  {%- endfor -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{{ items_json }}]
+}
+</script>
+{%- endif -%}
+
 {%- if page.layout == 'post' and page.date -%}
 <script type="application/ld+json">
 {
