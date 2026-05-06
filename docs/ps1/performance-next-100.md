@@ -59,6 +59,13 @@ schedule. The next VISITOR3 work should be generated scheduler metadata or a
 pack/data-shape change that reduces upload/CD work rather than relocating the
 same sector cluster into setup.
 
+Rejected post-cap larger group: VISITOR3 high `{146,170}` proved that simply
+using the larger retained setup-prime buffer as group capacity is not enough.
+It saved three reads (`45 -> 42`) but regressed loop `1450 -> 1456`, blocking
+`355 -> 358`, and prefetch overrun `14 -> 18`. Do not retry 24-sector
+VISITOR3 high groups through the current append path; the scheduler needs a
+first-class budget/ownership change before larger generated groups are viable.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
