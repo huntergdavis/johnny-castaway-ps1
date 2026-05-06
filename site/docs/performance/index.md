@@ -248,13 +248,15 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+2.4% over target /
-98.0% target speed** (`2.4134%` exact over target / `98.0111%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+1.8% over target /
+98.6% target speed** (`1.7731%` exact over target / `98.6106%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`mary1-v072c-prefetch-relief`,
+`stale-layout-v072c-current-refresh`,
 `activity9-v072c-prefetch-relief`,
 `stale-pressure2-v072c-current-refresh`,
 `johnny1-v072c-prefetch-relief`,
@@ -287,13 +289,15 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T02:29:16`; per-row freshness and stats version are shown on
+run is `2026-05-06T03:05:20`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `activity9-v072c-prefetch-relief`,
+rows now use `mary1-v072c-prefetch-relief`,
+`stale-layout-v072c-current-refresh`,
+`activity9-v072c-prefetch-relief`,
 `stale-pressure2-v072c-current-refresh`,
 `johnny1-v072c-prefetch-relief`,
 `stale-pressure-v072c-current-refresh`,
@@ -326,7 +330,7 @@ rows are historical only.
 |---|---:|---:|
 | `activity1` | +3.1% / 97.0% (4373/4243); blk 1 | +3.1% / 97.0% (4373/4243); blk 1 |
 | `activity4` | +0.0% / 100.0% (1065/1065); blk 5 | +3.0% / 97.1% (1102/1070); due 155; blk 361 |
-| `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
+| `activity5` | -1.1% / 101.1% (1730/1749); blk 2 | -1.0% / 101.0% (1731/1749); blk 2 |
 | `activity6` | +0.1% / 99.9% (912/911) | +0.1% / 99.9% (912/911) |
 | `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
 | `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
@@ -338,9 +342,9 @@ rows are historical only.
 | `building2` | +14.9% / 87.1% (1476/1285); due 37; blk 286 | +14.6% / 87.2% (1465/1278); due 40; blk 279 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
 | `building4` | +4.9% / 95.4% (2928/2792); due 34; blk 234 | +4.6% / 95.6% (2925/2797); due 2; blk 96 |
-| `building5` | +5.0% / 95.2% (3504/3336); due 6; blk 52 | +4.5% / 95.7% (3498/3348); due 2; blk 16 |
+| `building5` | +0.4% / 99.6% (3359/3346); blk 20 | +0.4% / 99.6% (3359/3347); blk 19 |
 | `building6` | +5.3% / 95.0% (2561/2433); due 33; blk 223 | +5.3% / 95.0% (2564/2436); due 33; blk 217 |
-| `building7` | +4.8% / 95.4% (3843/3668); due 4; blk 43 | +4.2% / 96.0% (3830/3676); blk 12 |
+| `building7` | -0.0% / 100.0% (3132/3133); blk 9 | -0.1% / 100.1% (3130/3133); blk 7 |
 | `fishing1` | -0.6% / 100.6% (1068/1074); blk 2 | -0.7% / 100.7% (1067/1074); blk 1 |
 | `fishing2` | +7.6% / 92.9% (1899/1765); blk 3 | +7.4% / 93.1% (1898/1767) |
 | `fishing3` | +0.4% / 99.6% (1960/1952); due 1; blk 18 | +0.1% / 99.9% (1956/1954); blk 6 |
@@ -355,7 +359,7 @@ rows are historical only.
 | `johnny4` | -0.8% / 100.8% (1204/1214) | -0.8% / 100.8% (1204/1214) |
 | `johnny5` | -1.1% / 101.1% (811/820) | -1.2% / 101.2% (810/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
-| `mary1` | +3.7% / 96.4% (5004/4826); due 2; blk 49 | +3.2% / 96.9% (4994/4839); due 1; blk 26 |
+| `mary1` | +0.8% / 99.2% (4867/4830); due 2; blk 47 | +0.4% / 99.6% (4860/4840); due 1; blk 31 |
 | `mary2` | +0.2% / 99.8% (2250/2246); blk 4 | +0.3% / 99.7% (2253/2246); blk 7 |
 | `mary3` | validated; perf refresh pending | validated; perf refresh pending |
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
@@ -382,8 +386,8 @@ rows are historical only.
 | `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 363 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
 | `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
 | `visitor5` | +1.9% / 98.1% (1111/1090); blk 12 | +2.0% / 98.0% (1112/1090); blk 12 |
-| `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
-| `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
+| `visitor6` | -0.2% / 100.2% (2043/2047); blk 1 | -0.2% / 100.2% (2043/2047); blk 1 |
+| `visitor7` | -0.4% / 100.4% (1619/1625) | -0.4% / 100.4% (1619/1625) |
 | `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |
 | `walkstuf2` | -2.2% / 102.2% (451/461) | -2.2% / 102.2% (451/461) |
 | `walkstuf3` | +1.9% / 98.1% (2321/2278); due 6; blk 68 | +1.1% / 98.9% (2321/2295); due 5; blk 40 |
@@ -401,17 +405,17 @@ gfx.upload_bytes  = 8,643,840
 ```
 
 The canary now has only two visible CD/refill VBlanks, but the full battle card still has
-CD-heavy scenes (`walkstuf1`, `walkstuf3`, `visitor3`, `building4`,
-`building6`). The `FGP3/v2` indexed8 results, WALKSTUF1 split-window policy,
-and the derived high/low setup-prime budgets prove host-side pack preprocessing plus
-scene-local CD policy can move major outliers, but they also leave enough
-residual pressure to keep the next experiments matrix-aware.
+CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `activity9`,
+`building4`, `building6`). The clean-pressure relief rows prove scene-local
+CD policy can recover large due-miss collapses, while the refreshed stale rows
+prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup segmentation for residual indexed8
-   packs.** WALKSTUF1 high/low still have `blocking_vb=423/452`, so the
-   format/window/setup-prime/compositor wins need a second CD-shape pass.
+   packs.** VISITOR3 remains the largest gap at `+445/+444` VBlanks and
+   WALKSTUF1 still has `blocking_vb=297/304`, so the next CD-shape pass
+   needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.
@@ -437,7 +441,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now +2.6% over target / 97.9% target speed, with several worse
+  average is now +1.8% over target / 98.6% target speed, with several worse
   CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

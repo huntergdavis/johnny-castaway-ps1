@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `2.4134%` over target
+- Average measured timing gap: `1.7731%` over target
 - Average estimated align4 x-band upload byte saving: `67.13%`
 
 ## Top Upload-Ready Candidates
@@ -21,20 +21,20 @@ accepted performance baseline.
 | 4 | `building2` | `low` | 207.56 | 14.63% | 67.28% | 258.68% | 327 | candidate |
 | 5 | `walkstuf1` | `low` | 199.19 | 15.97% | 46.64% | 493.1% | 377 | candidate |
 | 6 | `walkstuf1` | `high` | 196.88 | 16.10% | 46.64% | 493.1% | 364 | candidate |
-| 7 | `mary1` | `high` | 162.42 | 3.69% | 78.75% | 274.07% | 89 | candidate |
-| 8 | `building7` | `high` | 155.28 | 4.77% | 79.16% | 319.45% | 67 | candidate |
-| 9 | `activity9` | `low` | 155.17 | 8.20% | 63.79% | 584.63% | 192 | large upload-ready payload; needs compression/selective bands |
-| 10 | `building4` | `high` | 153.03 | 4.87% | 65.1% | 191.66% | 258 | candidate |
-| 11 | `building5` | `high` | 141.9 | 5.04% | 73.0% | 558.04% | 77 | large upload-ready payload; needs compression/selective bands |
-| 12 | `mary1` | `low` | 136.19 | 3.20% | 80.45% | 268.49% | 46 | candidate |
-| 13 | `activity5` | `high` | 131.7 | 9.37% | 76.53% | 677.37% | 37 | large upload-ready payload; needs compression/selective bands |
-| 14 | `building4` | `low` | 129.83 | 4.58% | 65.1% | 191.66% | 186 | candidate |
-| 15 | `activity9` | `high` | 129.61 | 7.02% | 63.79% | 584.63% | 151 | large upload-ready payload; needs compression/selective bands |
-| 16 | `visitor6` | `high` | 128.36 | 7.49% | 79.65% | 832.92% | 26 | large upload-ready payload; needs compression/selective bands |
-| 17 | `building7` | `low` | 127.91 | 4.19% | 79.16% | 319.45% | 24 | candidate |
-| 18 | `activity5` | `low` | 126.59 | 8.96% | 76.53% | 677.37% | 38 | large upload-ready payload; needs compression/selective bands |
-| 19 | `building6` | `high` | 116.28 | 5.26% | 44.17% | 810.26% | 239 | large upload-ready payload; needs compression/selective bands |
-| 20 | `building5` | `low` | 116.26 | 4.48% | 73.0% | 558.04% | 27 | large upload-ready payload; needs compression/selective bands |
+| 7 | `activity9` | `low` | 155.17 | 8.20% | 63.79% | 584.63% | 192 | large upload-ready payload; needs compression/selective bands |
+| 8 | `building4` | `high` | 153.03 | 4.87% | 65.1% | 191.66% | 258 | candidate |
+| 9 | `building4` | `low` | 129.83 | 4.58% | 65.1% | 191.66% | 186 | candidate |
+| 10 | `activity9` | `high` | 129.61 | 7.02% | 63.79% | 584.63% | 151 | large upload-ready payload; needs compression/selective bands |
+| 11 | `building6` | `high` | 116.28 | 5.26% | 44.17% | 810.26% | 239 | large upload-ready payload; needs compression/selective bands |
+| 12 | `building6` | `low` | 114.78 | 5.25% | 44.17% | 810.26% | 233 | large upload-ready payload; needs compression/selective bands |
+| 13 | `activity4` | `low` | 113.41 | 2.99% | 72.37% | 485.6% | 361 | candidate |
+| 14 | `activity12` | `low` | 98.42 | 9.36% | 72.29% | 537.34% | 12 | large upload-ready payload; needs compression/selective bands |
+| 15 | `fishing2` | `high` | 97.04 | 7.59% | 71.3% | 407.97% | 6 | candidate |
+| 16 | `activity12` | `high` | 95.58 | 9.05% | 74.67% | 448.43% | 0 | candidate |
+| 17 | `building3` | `high` | 95.46 | 9.44% | 68.86% | 1309.63% | 10 | large upload-ready payload; needs compression/selective bands |
+| 18 | `activity11` | `high` | 94.7 | 7.77% | 70.67% | 885.94% | 0 | large upload-ready payload; needs compression/selective bands |
+| 19 | `activity11` | `low` | 94.7 | 7.77% | 70.67% | 885.94% | 0 | large upload-ready payload; needs compression/selective bands |
+| 20 | `activity1` | `high` | 93.92 | 3.06% | 71.86% | 809.77% | 2 | large upload-ready payload; needs compression/selective bands |
 
 ## Read Before Acting
 
