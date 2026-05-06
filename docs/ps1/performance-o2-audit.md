@@ -5,15 +5,15 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-06T16:25:12+00:00` |
-| Branch | `perf-headless-20260505` |
-| Commit | `9850984c9` |
+| Generated at | `2026-05-06T18:58:46+00:00` |
+| Branch | `perf-headless-20260506` |
+| Commit | `1d45c4730` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `215040` |
 | PS-EXE sector bucket bytes | `215040` |
-| ELF bytes | `952268` |
-| Map bytes | `57457` |
+| ELF bytes | `954192` |
+| Map bytes | `57531` |
 | Translation units at `-O2` | `10` |
 | Translation units at `-Os` | `16` |
 | Function-scoped optimize attributes | `4` |
@@ -23,22 +23,22 @@
 
 | Priority | Type | Target | Current | Symbol bytes | Source text bytes | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 69 | translation_unit | `src/ps1_debug.c` | -Os | 0 | 1752 | Test whole TU at default -O2 after hot sweep |
 | 71 | translation_unit | `src/utils.c` | -Os | 0 | 448 | Test whole TU at default -O2 after hot sweep |
 | 72 | translation_unit | `src/island.c` | -Os | 0 | 612 | Test whole TU at default -O2 after hot sweep |
 | 80 | translation_unit | `src/ps1_pad_script.c` | -Os | 0 | 348 | Review TU optimization flag |
 | 80 | translation_unit | `src/scene_freeplay.c` | -Os | 0 | 9392 | Review TU optimization flag |
 | 80 | translation_unit | `src/scene_picker.c` | -Os | 0 | 2112 | Review TU optimization flag |
-| 90 | function | `grDrawBackground` | optimize("Os") | 1300 | 34116 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
-| 90 | function | `grUpdateDisplay` | optimize("Os") | 412 | 34116 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | function | `grDrawBackground` | optimize("Os") | 1300 | 34128 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | function | `grUpdateDisplay` | optimize("Os") | 412 | 34128 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 484 | 9608 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 592 | 9608 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
-| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 19764 | Keep whole TU at -Os; historical default-O2 retest rejected |
+| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 20216 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 8468 | Keep whole TU at -Os; historical default-O2 retest rejected |
 | 90 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | translation_unit | `src/ps1_captions.c` | -Os | 0 | 1208 | Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected |
 
 ## Function-Scoped Flags
 
@@ -56,7 +56,7 @@
 | `src/calcpath.c` | -O2 | 10224 | -O2 |
 | `src/cdrom_ps1.c` | -O2 | 154868 | -O2 |
 | `src/events_ps1.c` | -Os | 36988 | -O2 -Os |
-| `src/foreground_pilot.c` | -Os | 152796 | -O2 -Os |
+| `src/foreground_pilot.c` | -Os | 155612 | -O2 -Os |
 | `src/graphics_ps1.c` | -O2 | 323320 | -O2 |
 | `src/holidays.c` | -Os | 25440 | -O2 -Os |
 | `src/holidays_table.c` | -O2 | 7456 | -O2 |
