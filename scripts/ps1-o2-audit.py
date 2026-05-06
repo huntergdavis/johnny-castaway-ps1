@@ -129,6 +129,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked graphics/CD symbols by 48 bytes with no work or speed win.",
     ),
+    "src/ps1_pad_script.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked CD helper symbols by 36 bytes with no work or speed win.",
+    ),
 }
 
 
