@@ -10,6 +10,14 @@ author: Hunter Davis
 url: "https://hunterdavis.com"
 baseurl: "/johnny-castaway-ps1"
 
+# Stable canonical prefix that does NOT get overridden at build time.
+# The build runs `jekyll build --baseurl ""` so assets and links can be
+# relativized into a path-portable bundle, which blanks `site.baseurl`
+# inside templates. Pages whose links must point at the deployed origin
+# (404.html being the obvious one — it's served at arbitrary URL depths
+# and can't rely on relative paths) use `site.canonical_baseurl` instead.
+canonical_baseurl: "/johnny-castaway-ps1"
+
 # Pinned values for P1. Phase P3 will replace these via _data/release.yml
 # written by the GitHub Actions workflow at build time.
 release:

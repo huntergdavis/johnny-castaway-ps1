@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="robots" content="noindex" />
+
+  <title>Page not found — Johnny Castaway PS1</title>
+  <meta name="description" content="The page you wanted isn't on this island. Routes back to Play, Help, About, the Scene ledger, and the Devlog." />
+
+  <link rel="icon" type="image/x-icon" href="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/apple-touch-icon.png" />
+
+  <style>
+    /* ============================================================
+     * Self-contained styles. Every URL on this page is absolute,
+     * so it works no matter what bad path GitHub Pages served us at.
+     * Palette mirrors site/assets/css/main.scss (sampled from the
+     * VGA-style sprites). No external CSS so a missing stylesheet
+     * can't double-fail this page.
+     * ============================================================ */
+    :root {
+      --jc-cyan:        #00FFFF;
+      --jc-cyan-dim:    #00A8A8;
+      --jc-blue-dim:    #0000A8;
+      --jc-blue-deep:   #040056;
+      --jc-sun-cream:   #FFF6D9;
+      --jc-sun-cream-2: #F4EAD5;
+      --jc-trunk:       #743900;
+      --jc-red:         #FC0000;
+      --jc-ink:         #0A1029;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --jc-bg:    var(--jc-blue-deep);
+        --jc-fg:    #F4EAD5;
+        --jc-muted: #A6B4D6;
+        --jc-panel: #0A1538;
+        --jc-rule:  #3A4A82;
+        --jc-link:  var(--jc-cyan);
+      }
+    }
+    @media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+      :root {
+        --jc-bg:    var(--jc-sun-cream);
+        --jc-fg:    var(--jc-ink);
+        --jc-muted: #4A4F5C;
+        --jc-panel: var(--jc-sun-cream-2);
+        --jc-rule:  var(--jc-trunk);
+        --jc-link:  var(--jc-blue-dim);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--jc-bg);
+      color: var(--jc-fg);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+      line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+    }
+    main {
+      max-width: 44rem;
+      margin: 2.5rem auto 2rem;
+      width: 100%;
+    }
+    figure.hero {
+      margin: 0 0 1.25rem;
+      padding: 0;
+      background: var(--jc-black, #000);
+      border: 2px solid var(--jc-rule);
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+    }
+    figure.hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    figure.hero figcaption {
+      font-family: ui-monospace, "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--jc-muted);
+      padding: 0.5rem 0.75rem;
+      background: var(--jc-panel);
+      border-top: 1px solid var(--jc-rule);
+    }
+    .crest {
+      font-family: ui-monospace, "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--jc-muted);
+      margin: 0 0 0.5rem;
+    }
+    .crest a { color: inherit; text-decoration: none; border-bottom: 1px dotted var(--jc-muted); }
+    .crest a:hover, .crest a:focus { color: var(--jc-link); border-bottom-color: var(--jc-link); }
+    .lost {
+      font-family: ui-monospace, "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 4rem;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      color: var(--jc-red);
+      margin: 0;
+    }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      margin: 0.5rem 0 1rem;
+      color: var(--jc-fg);
+    }
+    p { margin: 0 0 1rem; }
+    .page-tried {
+      font-family: ui-monospace, "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.95rem;
+      color: var(--jc-muted);
+      background: var(--jc-panel);
+      padding: 0.4rem 0.6rem;
+      border-left: 3px solid var(--jc-rule);
+      word-break: break-all;
+      display: none; /* shown by inline script when JS is on */
+    }
+    hr.rule {
+      border: 0;
+      border-top: 1px solid var(--jc-rule);
+      margin: 1.75rem 0 1.25rem;
+    }
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--jc-muted);
+      margin: 0 0 0.75rem;
+    }
+    ul.routes {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+      gap: 0.75rem 1.5rem;
+    }
+    ul.routes li { margin: 0; }
+    ul.routes a {
+      display: block;
+      color: var(--jc-link);
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding: 0.15rem 0;
+    }
+    ul.routes a:hover, ul.routes a:focus { color: var(--jc-red); }
+    ul.routes .desc {
+      display: block;
+      font-weight: 400;
+      font-size: 0.92rem;
+      color: var(--jc-muted);
+      border: 0;
+      margin-top: 0.15rem;
+    }
+    footer {
+      margin-top: auto;
+      padding-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--jc-muted);
+      text-align: center;
+    }
+    footer a { color: var(--jc-link); }
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .skip-link:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      padding: 0.5rem 0.75rem;
+      background: var(--jc-fg);
+      color: var(--jc-bg);
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-404">Skip to content</a>
+  <main id="main-404">
+    <p class="crest">
+      <a href="https://hunterdavis.com/johnny-castaway-ps1/">Johnny Castaway · PS1</a>
+      &nbsp;·&nbsp; v0.7.0
+    </p>
+
+    <figure class="hero">
+      <img src="https://hunterdavis.com/johnny-castaway-ps1/assets/img/johnny1-ps1-the-end.png"
+           alt="The original Sierra 'The End' scroll graphic: Johnny stands on his tiny island at sunset, palm tree silhouetted, waving toward the horizon." />
+      <figcaption>That's it. That's the page.</figcaption>
+    </figure>
+
+    <p class="lost" aria-hidden="true">404</p>
+    <h1>This page got marooned.</h1>
+    <p>
+      Johnny waved from the island for sixteen years before anyone came
+      looking. Your URL has been waving a little less long than that —
+      but it's not coming back, either. Whatever lived here got renamed,
+      moved, or never existed.
+    </p>
+    <p id="tried" class="page-tried" aria-live="polite"></p>
+
+    <hr class="rule" />
+
+    <h2>Where to go from here</h2>
+    <ul class="routes">
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/">Home</a>
+        <span class="desc">Project status, hero shots, the short pitch.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/play/">Play</a>
+        <span class="desc">Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/help/">Help</a>
+        <span class="desc">Controls, menu screenshots, scripted-input test path.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/scenes/">Scene ledger</a>
+        <span class="desc">All 63 scenes; per-scene case studies.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/about/method/">How it works</a>
+        <span class="desc">The hybrid host-and-replay pipeline, in detail.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/devlog/">Devlog</a>
+        <span class="desc">Dated, unedited worklogs — dead ends preserved.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/docs/">Reference docs</a>
+        <span class="desc">Build, captions, holidays, regtest, API mapping.</span>
+      </li>
+      <li>
+        <a href="https://hunterdavis.com/johnny-castaway-ps1/source/">Source library</a>
+        <span class="desc">Every Markdown file in the repo as a public shelf.</span>
+      </li>
+    </ul>
+  </main>
+  <footer>
+    Still stuck? File an issue at
+    <a href="https://github.com/huntergdavis/johnny-castaway-ps1/issues">huntergdavis/johnny-castaway-ps1/issues</a>.
+  </footer>
+  <script>
+    /* If the user actually 404'd on a real path, surface it so they
+       can see what was tried. Doesn't run unless JS is on, so it
+       can never break the page. */
+    (function () {
+      try {
+        var path = window.location.pathname || "";
+        if (path && path !== "/" && path !== "/404.html") {
+          var el = document.getElementById("tried");
+          if (el) {
+            el.textContent = "Tried: " + path;
+            el.style.display = "block";
+          }
+        }
+      } catch (e) { /* swallow */ }
+    })();
+  </script>
+</body>
+</html>
