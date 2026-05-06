@@ -306,6 +306,44 @@ def runtime_group_metadata(start: int, end: int,
     }
 
 
+def scheduler_retry_metadata(item: dict[str, Any]) -> dict[str, Any]:
+    saved_reads = int(item.get("estimated_saved_reads") or 0)
+    if saved_reads <= 0:
+        retry_class = "reject:no-saved-read"
+    elif not item.get("append_start_fireable"):
+        retry_class = "reject:no-observed-append-start"
+    elif item.get("runtime_metadata_class") != "current-read-group-compatible":
+        retry_class = "needs-generated-or-larger-group-window"
+    else:
+        cd_class = str(item.get("visible_cd_cost_class") or "")
+        risk_reasons = set(item.get("visible_risk_reasons") or [])
+        hidden_refill_reasons = {
+            "tight-internal-gap",
+            "short-internal-gap",
+            "group-overread",
+            "partial-read-overlap",
+        }
+        if cd_class.startswith("safe:"):
+            retry_class = "standalone-candidate"
+        elif cd_class.startswith("balanced:") or cd_class == "risky:short-visible-gap":
+            retry_class = "scheduler-owned-candidate"
+        else:
+            retry_class = "high-risk:scheduler-only"
+
+    notes = {
+        "standalone-candidate": "current table may promote under strict no-regression gate",
+        "scheduler-owned-candidate": "visible timing may improve, but refill/overlap risk should be scheduler-owned",
+        "high-risk:scheduler-only": "do not test as a standalone table",
+        "needs-generated-or-larger-group-window": "requires metadata or a larger retained window before runtime can fire",
+        "reject:no-observed-append-start": "runtime will not fire from the current append start",
+        "reject:no-saved-read": "no expected read-count win",
+    }
+    return {
+        "scheduler_retry_class": retry_class,
+        "scheduler_retry_note": notes.get(retry_class, ""),
+    }
+
+
 def read_segment_summary(segment: dict[str, Any]) -> dict[str, Any]:
     """Keep the generated read-plan JSON self-contained for runtime metadata."""
     return {
@@ -838,6 +876,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             **visible_cost,
             **runtime_metadata,
         })
+        candidates[-1].update(scheduler_retry_metadata(candidates[-1]))
 
     candidates.sort(
         key=lambda item: (
@@ -1105,6 +1144,7 @@ def print_human(report: dict[str, Any]) -> None:
                 f"fire={'yes' if item['append_start_fireable'] else 'no'} "
                 f"fit={'yes' if item.get('runtime_current_group_fit') else 'no'} "
                 f"class={item.get('runtime_metadata_class')} "
+                f"scheduler={item.get('scheduler_retry_class')} "
                 f"reads={item['source_read_indices']}"
             )
 
