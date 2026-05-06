@@ -878,6 +878,12 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
     if (fgSceneEquals(sceneName, "building2"))
         return 0;
 
+    if (fgSceneEquals(sceneName, "building4"))
+        return 0;
+
+    if (fgSceneEquals(sceneName, "building6"))
+        return 0;
+
     if (fgSceneEquals(sceneName, "walkstuf1"))
         return 0;
 
@@ -894,6 +900,9 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
         return 0;
 
     if (fgSceneEquals(sceneName, "johnny1"))
+        return 0;
+
+    if (fgSceneEquals(sceneName, "johnny6"))
         return 0;
 
     if (fgSceneEquals(sceneName, "activity9"))
@@ -3234,12 +3243,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         uint32 cleanRectEstimate =
             (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
         if (!fgSceneEquals(sceneName, "building2") &&
+            !fgSceneEquals(sceneName, "building4") &&
+            !fgSceneEquals(sceneName, "building6") &&
             !fgSceneEquals(sceneName, "walkstuf1") &&
             !fgSceneEquals(sceneName, "visitor3") &&
             !fgSceneEquals(sceneName, "visitor5") &&
             !fgSceneEquals(sceneName, "activity10") &&
             !fgSceneEquals(sceneName, "johnny3") &&
             !fgSceneEquals(sceneName, "johnny1") &&
+            !fgSceneEquals(sceneName, "johnny6") &&
             !fgSceneEquals(sceneName, "activity9") &&
             !fgSceneEquals(sceneName, "mary1") &&
             !fgSceneEquals(sceneName, "activity11") &&

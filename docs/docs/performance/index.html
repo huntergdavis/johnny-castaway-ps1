@@ -328,13 +328,15 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+1.1% over target /
-99.2% target speed</strong> (<code class="language-plaintext highlighter-rouge">1.1131%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.2199%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+1.0% over target /
+99.3% target speed</strong> (<code class="language-plaintext highlighter-rouge">1.0270%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.3047%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
+<code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>,
@@ -371,13 +373,15 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T03:40:30</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T04:15:06</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
+rows now use <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
+<code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
+<code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">stale-layout-v072c-current-refresh</code>,
@@ -421,8 +425,8 @@ rows are historical only.</p>
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
-      <td style="text-align: right">+3.1% / 97.0% (4373/4243); blk 1</td>
-      <td style="text-align: right">+3.1% / 97.0% (4373/4243); blk 1</td>
+      <td style="text-align: right">-0.4% / 100.4% (2754/2764); blk 1</td>
+      <td style="text-align: right">-0.4% / 100.4% (2754/2765)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
@@ -486,8 +490,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td style="text-align: right">+4.9% / 95.4% (2928/2792); due 34; blk 234</td>
-      <td style="text-align: right">+4.6% / 95.6% (2925/2797); due 2; blk 96</td>
+      <td style="text-align: right">+7.6% / 93.0% (2985/2774); due 40; blk 285</td>
+      <td style="text-align: right">+7.1% / 93.4% (2981/2784); due 14; blk 199</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building5</code></td>
@@ -496,8 +500,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building6</code></td>
-      <td style="text-align: right">+5.3% / 95.0% (2561/2433); due 33; blk 223</td>
-      <td style="text-align: right">+5.3% / 95.0% (2564/2436); due 33; blk 217</td>
+      <td style="text-align: right">+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
+      <td style="text-align: right">+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building7</code></td>
@@ -571,8 +575,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
-      <td style="text-align: right">+3.4% / 96.7% (2895/2800); blk 27</td>
-      <td style="text-align: right">+3.4% / 96.7% (2896/2800); blk 27</td>
+      <td style="text-align: right">+1.1% / 98.9% (2832/2800); blk 28</td>
+      <td style="text-align: right">+1.1% / 98.9% (2832/2800); blk 28</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
@@ -750,7 +754,7 @@ gfx.upload_bytes  = 8,643,840
 
 <p>The canary now has only two visible CD/refill VBlanks, but the full battle card still has
 CD-heavy scenes (<code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">activity9</code>,
-<code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">building6</code>). The clean-pressure relief rows prove scene-local
+<code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">fishing4</code> low, <code class="language-plaintext highlighter-rouge">building6</code>). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
@@ -758,7 +762,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup segmentation for residual indexed8
-packs.</strong> VISITOR3 remains the largest gap at <code class="language-plaintext highlighter-rouge">+445/+444</code> VBlanks and
+  packs.</strong> VISITOR3 remains the largest gap at <code class="language-plaintext highlighter-rouge">+445/+444</code> VBlanks and
 WALKSTUF1 still has <code class="language-plaintext highlighter-rouge">blocking_vb=297/304</code>, so the next CD-shape pass
 needs generated cost metadata rather than hand-authored ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
@@ -788,7 +792,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-average is now +1.1% over target / 99.2% target speed, with several worse
+average is now +1.0% over target / 99.3% target speed, with several worse
 CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

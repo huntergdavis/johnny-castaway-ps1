@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+1.1%` (`1.1131%` exact) |
-| Timing-bearing average target speed | `99.2%` (`99.2199%` exact) |
-| Latest perf matrix run | `2026-05-06T03:40:30` |
-| Stats version | mixed: latest refreshed rows use `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+1.0%` (`1.0270%` exact) |
+| Timing-bearing average target speed | `99.3%` (`99.3047%` exact) |
+| Latest perf matrix run | `2026-05-06T04:15:06` |
+| Stats version | mixed: latest refreshed rows use `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `activity11-12-v072c-prefetch-relief`,
+  refreshed rows use `building4-6-johnny6-v072c-prefetch-relief`,
+  `activity1-v072c-current-refresh`,
+  `activity11-12-v072c-prefetch-relief`,
   `stale-next-v072c-current-refresh`,
   `mary1-v072c-prefetch-relief`,
   `stale-layout-v072c-current-refresh`,
@@ -185,8 +187,8 @@ and this page.
 
 | Scene | Tide | Status | Latest Run | Stats Version | Over Target | Target Speed | VBlanks | Blocking | Prefetch | Due | Notes |
 |---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|
-| `activity1` | high | measured | 2026-04-29T16:47:26 | compact-fgp3-v2-fullmatrix | +3.1% | 97.0% | 4373/4243 | 1 | 1 | 0 |  |
-| `activity1` | low | measured | 2026-04-29T16:49:09 | compact-fgp3-v2-fullmatrix | +3.1% | 97.0% | 4373/4243 | 1 | 1 | 0 |  |
+| `activity1` | high | measured | 2026-05-06T04:01:15 | activity1-v072c-current-refresh | -0.4% | 100.4% | 2754/2764 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
+| `activity1` | low | measured | 2026-05-06T04:01:15 | activity1-v072c-current-refresh | -0.4% | 100.4% | 2754/2765 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `activity4` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | +0.0% | 100.0% | 1065/1065 | 5 | 5 | 0 | current validated pack refresh; baseline correction |
 | `activity4` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | +3.0% | 97.1% | 1102/1070 | 361 | 0 | 155 | current validated pack refresh; baseline correction |
 | `activity5` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -1.1% | 101.1% | 1730/1749 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
@@ -211,12 +213,12 @@ and this page.
 | `building2` | low | measured | 2026-05-06T01:59:35 | stale-pressure-v072c-current-refresh | +14.6% | 87.2% | 1465/1278 | 279 | 48 | 40 | current validated pack refresh; baseline correction |
 | `building3` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `building3` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `building4` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +4.9% | 95.4% | 2928/2792 | 234 | 24 | 34 | validated 2026-05-05 after generic multi-view stitch plus terminal FGP3 cleanup frame; active timing predates refreshed validation pack |
-| `building4` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +4.6% | 95.6% | 2925/2797 | 96 | 90 | 2 | validated 2026-05-05 after generic multi-view stitch plus terminal FGP3 cleanup frame; active timing predates refreshed validation pack |
+| `building4` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +7.6% | 93.0% | 2985/2774 | 285 | 51 | 40 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
+| `building4` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +7.1% | 93.4% | 2981/2784 | 199 | 119 | 14 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
 | `building5` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | +0.4% | 99.6% | 3359/3346 | 20 | 20 | 0 | current validated pack refresh; baseline correction |
 | `building5` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | +0.4% | 99.6% | 3359/3347 | 19 | 19 | 0 | current validated pack refresh; baseline correction |
-| `building6` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +5.3% | 95.0% | 2561/2433 | 223 | 16 | 33 |  |
-| `building6` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +5.3% | 95.0% | 2564/2436 | 217 | 16 | 33 |  |
+| `building6` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +3.2% | 96.9% | 2520/2442 | 62 | 64 | 1 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
+| `building6` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +3.2% | 96.9% | 2515/2437 | 70 | 66 | 2 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
 | `building7` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.0% | 100.0% | 3132/3133 | 9 | 9 | 0 | current validated pack refresh; baseline correction |
 | `building7` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.1% | 100.1% | 3130/3133 | 7 | 7 | 0 | current validated pack refresh; baseline correction |
 | `fishing1` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1068/1074 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
@@ -245,8 +247,8 @@ and this page.
 | `johnny4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny5` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.1% | 101.1% | 811/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny5` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.2% | 101.2% | 810/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny6` | high | measured | 2026-04-29T17:40:45 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2895/2800 | 27 | 27 | 0 |  |
-| `johnny6` | low | measured | 2026-04-29T17:41:03 | compact-fgp3-v2-fullmatrix | +3.4% | 96.7% | 2896/2800 | 27 | 27 | 0 |  |
+| `johnny6` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +1.1% | 98.9% | 2832/2800 | 28 | 28 | 0 | clean-snapshot relief restores stage1_window prefetch versus fresh current row |
+| `johnny6` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +1.1% | 98.9% | 2832/2800 | 28 | 28 | 0 | clean-snapshot relief restores stage1_window prefetch versus fresh current row |
 | `mary1` | high | measured | 2026-05-06T03:05:20 | mary1-v072c-prefetch-relief | +0.8% | 99.2% | 4867/4830 | 47 | 37 | 2 | mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
 | `mary1` | low | measured | 2026-05-06T03:05:20 | mary1-v072c-prefetch-relief | +0.4% | 99.6% | 4860/4840 | 31 | 24 | 1 | mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
 | `mary2` | high | measured | 2026-05-03T14:22:57 | mary2-v068-wide-stitch | +0.2% | 99.8% | 2250/2246 | 4 | 4 | 0 | validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed |
