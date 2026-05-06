@@ -10,6 +10,13 @@ the project, running it, and the original game.
 
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## About
 
 ### What is this?
