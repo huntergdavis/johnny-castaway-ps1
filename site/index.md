@@ -42,6 +42,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 <aside class="status-strip" aria-label="Project status">
   <span><strong>Latest:</strong> {{ site.release.tag }}</span>
   <span class="pill pill--ok">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</span>
+  <span class="pill pill--ok">{{ site.release.perf_target_speed_pct }}% target speed</span>
   <span class="pill pill--info">PSn00bSDK 0.24</span>
   <span class="pill pill--info">DuckStation</span>
   <span class="pill pill--info">36 holidays</span>
