@@ -54,6 +54,10 @@ If you paid for this, you were cheated. Open source and free.
     <a href="{{ '/docs/dev-workflow/' | relative_url }}">Development workflow</a>
     <p>The author's per-scene runbook: capture on host, encode to <code>.FG2</code>, replay on PS1, take a screenshot, validate. Honest about how long it takes and how often it breaks.</p>
   </li>
+  <li>
+    <a href="{{ '/docs/glossary/' | relative_url }}">Glossary</a>
+    <p>The specific technical terms the rest of the docs use without scaffolding — FG2 packs, ADS, TTM, dirty-rect bookkeeping, FntFlush, the FISHING 1 bar, drawCredits. Grouped by area, not alphabetical.</p>
+  </li>
 </ul>
 
 ## The Other Maps
