@@ -117,7 +117,8 @@ def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
 
 def candidate_visible_cost(start: int, end: int,
                            fully_covered_reads: list[dict[str, Any]],
-                           touched_reads: list[dict[str, Any]]) -> dict[str, Any]:
+                           touched_reads: list[dict[str, Any]],
+                           append_start_fireable: bool) -> dict[str, Any]:
     read_count = len(fully_covered_reads)
     saved_reads = max(0, read_count - 1)
     touched_count = len(touched_reads)
@@ -145,6 +146,9 @@ def candidate_visible_cost(start: int, end: int,
     if saved_reads <= 0:
         risk += 120
         reasons.append("no-saved-read")
+    if not append_start_fireable:
+        risk += 180
+        reasons.append("no-observed-append-start")
     if partial_touch_count > 0:
         risk += partial_touch_count * 35
         reasons.append("partial-read-overlap")
@@ -175,7 +179,9 @@ def candidate_visible_cost(start: int, end: int,
         overread_sectors * 4
     )
 
-    if saved_reads <= 0:
+    if not append_start_fireable:
+        hint = "reject:no-observed-append-start"
+    elif saved_reads <= 0:
         hint = "reject:no-saved-read"
     elif risk >= 100:
         hint = "high-risk:visible-cadence"
@@ -590,6 +596,13 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
                    coverage_ranges: list[tuple[int, int]], pack_sectors: int,
                    window_sectors: int, top: int) -> list[dict[str, Any]]:
     candidates: list[dict[str, Any]] = []
+    uncovered_append_starts = sorted({
+        int(segment["file_sector_start"])
+        for segment in read_segments
+        if not range_contains(coverage_ranges,
+                              segment["file_sector_start"],
+                              segment["file_sector_end"])
+    })
     for start in range(0, max(0, pack_sectors - window_sectors) + 1):
         end = start + window_sectors
         if range_overlaps(coverage_ranges, start, end):
@@ -621,6 +634,20 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
         if not covered_entries and not fully_covered_reads and not touched_reads:
             continue
 
+        append_start_reads = [
+            segment for segment in read_segments
+            if not range_contains(coverage_ranges,
+                                  segment["file_sector_start"],
+                                  segment["file_sector_end"])
+            and int(segment["file_sector_start"]) == start
+        ]
+        nearest_append_start = None
+        nearest_append_delta = None
+        if uncovered_append_starts:
+            nearest_append_start = min(uncovered_append_starts,
+                                       key=lambda value: abs(value - start))
+            nearest_append_delta = nearest_append_start - start
+
         payload_bytes = sum(int(entry["data_size"]) for entry in covered_entries)
         hold_vblanks = sum(int(entry.get("hold_vblanks", 0)) for entry in covered_entries)
         read_vblank_estimate = 0.0
@@ -641,7 +668,13 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             payload_bytes +
             hold_vblanks
         )
-        visible_cost = candidate_visible_cost(start, end, fully_covered_reads, touched_reads)
+        visible_cost = candidate_visible_cost(
+            start,
+            end,
+            fully_covered_reads,
+            touched_reads,
+            bool(append_start_reads),
+        )
         candidates.append({
             "start_sector": start,
             "end_sector": end,
@@ -661,6 +694,10 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "avg_prev_gap_s": round(sum(read_gaps) / len(read_gaps), 4) if read_gaps else None,
             "phase_risk_hint": phase_risk_hint(fully_covered_reads),
             "source_read_indices": [segment.get("index") for segment in fully_covered_reads],
+            "append_start_fireable": bool(append_start_reads),
+            "append_start_read_indices": [segment.get("index") for segment in append_start_reads],
+            "nearest_observed_append_start_sector": nearest_append_start,
+            "nearest_observed_append_delta_sectors": nearest_append_delta,
             **visible_cost,
         })
 
@@ -884,6 +921,7 @@ def print_human(report: dict[str, Any]) -> None:
                 f"est_vb={item['estimated_read_vblanks']} "
                 f"gap={item['min_prev_gap_s']}..{item['max_prev_gap_s']}s "
                 f"risk={item['phase_risk_hint']} "
+                f"fire={'yes' if item['append_start_fireable'] else 'no'} "
                 f"entries={item['covered_entry_count']}({entry_span}) "
                 f"bytes={item['covered_payload_bytes']}"
             )
@@ -912,6 +950,7 @@ def print_human(report: dict[str, Any]) -> None:
                 f"overread={item['group_overread_sectors']} "
                 f"first_gap={first_gap} "
                 f"internal_min={internal_min} "
+                f"fire={'yes' if item['append_start_fireable'] else 'no'} "
                 f"reads={item['source_read_indices']}"
             )
 
