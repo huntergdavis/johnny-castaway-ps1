@@ -12,6 +12,13 @@ image_alt: "ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the isl
 
 Validated on 2026-05-05 under the current visual + audible signoff bar.
 
+<figure class="scene-hero">
+  <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}"
+       width="1127" height="677"
+       alt="ACTIVITY 9 running on PS1 at night: Johnny stands on the island with the raft visible on the shore as a wide boat with a passenger passes by the moonlit ocean." />
+  <figcaption>ACTIVITY 9 on PS1 hardware. Wide boat passing the night-palette island; raft visible on the shore.</figcaption>
+</figure>
+
 ## Pack identifiers
 
 - ADS dispatch: <code>ACTIVITY.ADS scene 9</code>

@@ -39,6 +39,20 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 - **holiday** — Holiday overlay variants — christmas, halloween, etc. (BOOTMODE `holiday N`).
 - **raft-stage** — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE `raft-stage N`).
 
+<figure>
+  <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
+       width="1127" height="677"
+       alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
+  <figcaption>FISHING 1 · night variant. Full moon, dark sky and water, the same cast pose against the moonlit shore.</figcaption>
+</figure>
+
+<figure>
+  <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
+       width="1127" height="677"
+       alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
+  <figcaption>FISHING 1 · raft-stage variant. Same scene with the cumulative raft-build state at completion.</figcaption>
+</figure>
+
 ## Caption
 
 This scene has on-screen caption text. Confidence: HIGH in the [caption audit]({{ '/docs/captions/' | relative_url }}).
