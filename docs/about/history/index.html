@@ -389,8 +389,9 @@ capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
 unless a scene proves otherwise.</p>
 
-<p>The remaining unvalidated scenes are queued. The per-scene workflow is
-the same loop, repeated:</p>
+<p>By <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> (2026-05-05) every routed scene was signed off:
+<strong>63 of 63</strong>.
+The per-scene workflow stayed the same loop, repeated 63 times:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. capture-host-scene.sh          (host capture, high tide + low tide)
 2. export-scene-foreground-pilot  (build the FG2 pack from the capture)
@@ -460,9 +461,16 @@ the walking release: the steady-state frame loop does not allocate.</li>
 
 <ul>
   <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong>.</li>
-  <li>Validated scenes: <strong>63 / 63</strong>
-(<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, <code class="language-plaintext highlighter-rouge">FISHING 5</code>, <code class="language-plaintext highlighter-rouge">FISHING 6</code>, <code class="language-plaintext highlighter-rouge">FISHING 7</code>, <code class="language-plaintext highlighter-rouge">FISHING 8</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 1</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 2</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 3</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 4</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 5</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 6</code>, <code class="language-plaintext highlighter-rouge">MARY 1</code>, <code class="language-plaintext highlighter-rouge">MARY 2</code>).</li>
-  <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">MARY 3</code></strong>.</li>
+  <li>Validated scenes:
+<strong>63 / 63</strong> —
+every routed scene the original game had, signed off across every
+applicable variant (night palette, low tide, holiday overlay,
+raft-stage progression). The live ledger is at
+<a href="../../scenes/">/scenes/</a>.</li>
+  <li>Last point release: <strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong> — backdrop-key guard so
+story-loop walks only run when the next scene’s background
+state matches the previous rendered tide / raft / night /
+holiday / island position.</li>
   <li>Freeplay/debug release: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong> – direct-control Johnny,
 pause-menu debug catalogs, frog loading transitions, and a
 no-allocation steady-state freeplay loop.</li>

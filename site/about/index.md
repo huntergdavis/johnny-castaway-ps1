@@ -67,10 +67,15 @@ deterministic flipbook to render.
 
 The price: each scene needs a verified host capture and a successful
 PS1 replay before it joins the validated count. There is no shortcut.
-Twenty-two scenes are signed off; `MISCGAG 1`, `MISCGAG 2`, and
-`STAND 1` now run after the generic normal/far-left/far-right
-foreground-only multi-view stitch rebuilt their packs. The remaining
-scenes are queued.
+At `{{ site.release.tag }}`, all
+**{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
+scenes are signed off — every row in the
+[per-scene ledger]({{ '/scenes/' | relative_url }}) clears the
+FISHING 1 bar across every applicable variant. The hard cluster
+near the end was the foreground-only multi-view scenes
+(`MISCGAG 1`, `MISCGAG 2`, `STAND 1`, the wide LILLIPUTIAN arrival),
+which all needed the generic normal / far-left / far-right host
+stitch before their packs replayed cleanly.
 
 ## What this isn't
 

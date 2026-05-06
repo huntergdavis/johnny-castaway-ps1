@@ -101,7 +101,7 @@ to behave.
   </li>
   <li>
     <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">The 63-scene grind</a>
-    <p>Five scenes signed off, fifty-eight to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
+    <p>From five signed off to all 63. What the daily loop looked like on a project of finite scenes and finite evenings, written from inside the grind.</p>
   </li>
 </ul>
 
