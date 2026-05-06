@@ -1,23 +1,23 @@
 # PS1 Performance Next 100
 
-Date: 2026-04-27
+Date: 2026-05-06
 
 Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1068` |
-| `target_vb` | `1074` |
+| `loop_vb` | `1069` |
+| `target_vb` | `1073` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.56%` |
-| `blocking_vb` | `2` |
-| `prefetch_overrun_vb` | `2` |
+| `remaining_over_target` | `-0.37%` |
+| `blocking_vb` | `4` |
+| `prefetch_overrun_vb` | `4` |
 | `loop_reads` | `20` |
-| `upload_bytes` | `8643840` |
-| `restore_bytes` | `251144` |
+| `upload_bytes` | `12317440` |
+| `restore_bytes` | `249810` |
 | `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
-| `jcreborn.exe` | `169984` bytes |
-| `jcreborn.elf` | `796312` bytes |
+| `jcreborn.exe` | `215040` bytes |
+| `jcreborn.elf` | `954192` bytes |
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
@@ -812,6 +812,48 @@ near misses:
 | 8 | 16 | Cost predictor needed before any more grouped-window or raw window-size probes. |
 | 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` and VISITOR3 high `72..84` are accepted. |
 | 10 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
+
+## 2026-05-06 Post-O2 Generated Optimization Queue
+
+The current `-O2` audit queue is exhausted under the v0.8.0 FISHING1 canary.
+The remaining useful work is generated metadata, data-shape changes, and
+scheduler-owned timing. Use the refreshed baseline artifact
+`scratch/ps1-perf-iterate/v080-current-fishing1-baseline/20260506-120547-3872759/summary.json`
+for FISHING1 spot gates; do not compare new probes to the stale `1068/1074`
+pre-v0.8.0 row.
+
+| Priority | Experiment | Acceptance Signal |
+|---:|---|---|
+| 1 | Add a current-baseline fingerprint to every perf probe: loop/target/blocking/prefetch, PS-EXE bucket, ELF bytes, FG pack LBA, and hot symbol sizes. | The harness refuses or labels stale-baseline comparisons before a false rejection/acceptance can be logged. |
+| 2 | Generate append-start ownership metadata from actual CD read logs, not just pack-sector overlap. | Proposed read groups prove `append_start_fireable=true`, actual runtime ownership, and expected `group_hits>0` before source tables are touched. |
+| 3 | Emit per-scene read-group metadata into generated foreground assets instead of hand-coded sector tables. | Runtime code size stops growing per experiment; groups can be enabled/disabled from pack metadata with exact FISHING1 canary layout. |
+| 4 | Add a visible-CD cost class for each generated group: first-gap slack, internal-gap slack, overread sectors, partial-touch count, and seek direction. | Raw saved-read groups are sorted by visible-risk, preventing repeats of BUILDING4/WALKSTUF1 exact-flat or regressing hand groups. |
+| 5 | Build a scheduler-owned append window that can choose whether to spend held VBlanks on due staging, group append, or visual prep. | A read-group win must lower loop or blocking without increasing visible refill; scheduler counters explain why it fired. |
+| 6 | Generate per-scene/tide setup-prime segments from the current read-plan, capped by heap and active-loop payoff. | Setup primes are segmented and scene-local; no global cap raise or raw broad segment can regress VISITOR3/FISHING1 cadence. |
+| 7 | Add selective upload-ready x-band preprocessing for VISITOR3 first, using the matrix's high score and moderate payload growth. | Upload bytes and loop time drop without shifting the FG pack LBA or increasing loop reads. |
+| 8 | Store upload-ready bands only when per-frame payload growth is under a generated threshold. | The direct16 lane avoids WALKSTUF1-style CD pressure where whole-pack expansion cancels compositor savings. |
+| 9 | Compress upload-ready bands with a tiny pack-time RLE or residual opcode class. | VISITOR3/BUILDING2/BUILDING4 upload-byte savings survive without large sector growth. |
+| 10 | Generate exact restore bands for dirty backdrop repair, separate from upload bands. | Restore bytes fall without hot runtime overlap tests or branch-heavy row walkers. |
+| 11 | Add a rect-count cap model to the preprocessing matrix, not just byte volume. | Candidate upload plans prove they do not exceed `max_upload_rects` or create DMA setup overhead. |
+| 12 | Add per-frame x-band skyline reports for the largest remaining scenes. | We can see whether the gap is a few wide bands, many tiny bands, or a rect-count problem before changing runtime code. |
+| 13 | Try a pack/runtime-owned aligned PAL4 pair command class, replacing the failed runtime pair-store branch. | The hot compositor receives pre-aligned spans and avoids local branch/packing growth. |
+| 14 | Generate same-palette direct16 only for indexed8 spans whose palette lookup cost dominates and whose CD expansion stays local. | WALKSTUF1-like indexed8 rows improve without whole-pack direct16 expansion. |
+| 15 | Add a selective/keyframed FGP3 residual encoder for BUILDING6 and WALKSTUF1. | Current direct residual expansion becomes a shrinking or layout-stable data shape before benchmarking. |
+| 16 | Build a per-scene memory-residency estimator for setup primes, preprocessed bands, and retained read windows. | Experiments fail fast when combined heap pressure would recreate scene-loader BSODs or retained-window regressions. |
+| 17 | Add an automated all-canary baseline refresh command that records the artifact path into the experiment log. | Every promoted/rejected probe can cite a same-commit baseline and avoid stale symbol/loop drift. |
+| 18 | Split cold boot/menu/debug functions into a layout-isolated section only after proving foreground LBAs stay fixed. | Valid size cleanups stop perturbing hot CD cadence or foreground pack placement. |
+| 19 | Pad or lock foreground pack LBAs for code-shape experiments that are supposed to test CPU only. | Compiler/source experiments can separate code speed from CD layout movement. |
+| 20 | Add per-scene sound-event timing deltas to the automatic promotion gate. | Speed wins remain safe for the validated scene corpus, not just pixels and loop VBlanks. |
+| 21 | Add a generated hold-frame budget report so long holds can be used for safe setup/read work. | The scheduler spends known slack at scorecards/final holds without changing joke timing. |
+| 22 | Add a "no-stitch/static scene" capture classification to avoid expensive generated stitching where host frames never leave the island. | Host generation time drops without changing validated scene assets. |
+| 23 | Generate host-capture duration from observed scene loops instead of fixed overcapture multipliers. | Multi-loop scenes like ACTIVITY1 are complete without creating 4x redundant host packs. |
+| 24 | Add pack-death/incomplete-generation detection to host capture and pack preprocessing. | A failed generation cannot silently produce truncated frames that later pass source build. |
+| 25 | Add a random-run long-soak perf mode that samples scene IDs, loop metrics, heap, and BSOD signatures. | Performance commits get a quick broad stability gate before release merge-down. |
+| 26 | Add a generated per-family optimization matrix: visitors, buildings, activities, fishing, walkstuff, stands. | Similar scenes share data-shape probes while still preserving scene-specific flags such as raft, tide, and holiday state. |
+| 27 | Re-run the preprocessing opportunity matrix after every promoted runtime/data win. | Scores stay tied to the new baseline instead of chasing stale top candidates. |
+| 28 | Add a "rejected but informative" artifact index keyed by experiment ID and source files touched. | The next agent can avoid repeating failed local threshold/branch/source-shape probes. |
+| 29 | Promote host-only tooling improvements separately from runtime speed wins. | Better measurement and generation workflow can land without pretending to improve VBlank metrics. |
+| 30 | When a binary choice is cheap, run both variants against the same fresh baseline before logging either. | The headless loop preserves momentum while still making a defensible binary decision. |
 
 ## Retest Rules For Old Failures
 
