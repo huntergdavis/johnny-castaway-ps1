@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+13.7% over target /
-88.7% target speed** (`13.7135%` exact over target / `88.7395%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+12.5% over target /
+89.5% target speed** (`12.4923%` exact over target / `89.4905%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-05, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`stand1-v072-current-refresh`,
 `walkstuf1-v072-prefetch-relief`,
 `visitor3-v072-prefetch-relief`,
 `mary2-v068-wide-stitch`,
@@ -274,13 +275,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-05T22:51:29`; per-row freshness and stats version are shown on
+run is `2026-05-05T23:17:25`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-v072-prefetch-relief`,
+rows now use `stand1-v072-current-refresh`,
+`visitor3-v072-prefetch-relief`,
 `walkstuf1-v072-prefetch-relief`,
 `compact-fgp3-v66-final-frame-hold`,
 `mary2-v068-wide-stitch`,
@@ -336,7 +338,7 @@ rows are historical only.
 | `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
 | `miscgag1` | +14.2% / 87.6% (1097/961) | +14.0% / 87.7% (1096/961) |
 | `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
-| `stand1` | +69.3% / 59.1% (342/202) | +69.3% / 59.1% (342/202) |
+| `stand1` | -4.0% / 104.1% (194/202) | -4.0% / 104.1% (194/202) |
 | `stand2` | +27.5% / 78.4% (626/491) | +27.5% / 78.4% (626/491) |
 | `stand3` | +24.4% / 80.4% (694/558) | +24.4% / 80.4% (694/558) |
 | `stand4` | +11.3% / 89.8% (1359/1221) | +11.2% / 89.9% (1358/1221) |
