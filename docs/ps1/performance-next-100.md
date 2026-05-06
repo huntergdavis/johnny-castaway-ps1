@@ -824,7 +824,7 @@ pre-v0.8.0 row.
 
 | Priority | Experiment | Acceptance Signal |
 |---:|---|---|
-| 1 | Add a current-baseline fingerprint to every perf probe: loop/target/blocking/prefetch, PS-EXE bucket, ELF bytes, FG pack LBA, and hot symbol sizes. | The harness refuses or labels stale-baseline comparisons before a false rejection/acceptance can be logged. |
+| 1 | Done first pass: every perf case records a current-baseline fingerprint with loop/target/blocking/prefetch, PS-EXE bucket, ELF bytes, FG pack LBA, and hot symbol sizes. | Baseline comparisons now label missing/dirty/different-commit baseline metadata before a false rejection/acceptance can be logged. |
 | 2 | Generate append-start ownership metadata from actual CD read logs, not just pack-sector overlap. | Proposed read groups prove `append_start_fireable=true`, actual runtime ownership, and expected `group_hits>0` before source tables are touched. |
 | 3 | Emit per-scene read-group metadata into generated foreground assets instead of hand-coded sector tables. | Runtime code size stops growing per experiment; groups can be enabled/disabled from pack metadata with exact FISHING1 canary layout. |
 | 4 | Add a visible-CD cost class for each generated group: first-gap slack, internal-gap slack, overread sectors, partial-touch count, and seek direction. | Raw saved-read groups are sorted by visible-risk, preventing repeats of BUILDING4/WALKSTUF1 exact-flat or regressing hand groups. |

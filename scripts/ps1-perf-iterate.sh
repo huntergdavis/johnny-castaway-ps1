@@ -468,10 +468,15 @@ parse_case_metrics() {
     local ps_exe_sectors="$7"
     local elf_bytes="$8"
     local map_bytes="$9"
-    local out_file="${10}"
+    local git_commit="${10}"
+    local git_branch="${11}"
+    local git_dirty="${12}"
+    local run_id="${13}"
+    local out_file="${14}"
 
     python3 - "$label" "$boot" "$case_dir" "$log_file" \
-        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" > "$out_file" <<'PY'
+        "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
+        "$git_commit" "$git_branch" "$git_dirty" "$run_id" > "$out_file" <<'PY'
 import json
 import re
 import sys
@@ -479,6 +484,7 @@ from pathlib import Path
 
 label, boot, case_dir, log_file = sys.argv[1:5]
 ps_exe_bytes, ps_exe_bucket_bytes, ps_exe_sectors, elf_bytes, map_bytes = (int(value) for value in sys.argv[5:10])
+git_commit, git_branch, git_dirty, run_id = sys.argv[10:14]
 log_path = Path(log_file)
 ansi_re = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
 
@@ -654,9 +660,40 @@ if compose_pixels > 0:
 if get("render", "present_wait_vb", 0) > 0:
     suggestions.append("present: present_wait_vb is nonzero")
 
+fingerprint = {
+    "metrics": {
+        "loop_vb": loop_vb,
+        "target_vb": target_vb,
+        "blocking_vb": blocking_vb,
+        "prefetch_overrun_vb": get("prefetch", "overrun_vb", 0),
+        "loop_reads": get("cd", "loop_reads", 0),
+    },
+    "layout": {
+        "pack_lba": get("scene", "pack_lba", 0),
+        "pack_sectors": get("scene", "pack_sectors", 0),
+        "ps_exe_bytes": ps_exe_bytes,
+        "ps_exe_sector_bucket_bytes": ps_exe_bucket_bytes,
+        "elf_bytes": elf_bytes,
+        "map_bytes": map_bytes,
+    },
+    "hot_symbol_sizes": {
+        name: item["size"]
+        for name, item in sorted(symbols.items())
+        if isinstance(item.get("size"), int)
+    },
+}
+
 summary = {
     "label": label,
     "boot": boot,
+    "run": {
+        "id": run_id,
+        "git": {
+            "commit": git_commit,
+            "branch": git_branch,
+            "dirty": bool(int(git_dirty)),
+        },
+    },
     "case_dir": str(Path(case_dir).resolve()),
     "log_file": str(log_path.resolve()),
     "sections": sections,
@@ -677,6 +714,7 @@ summary = {
             "symbols": symbols,
         },
     },
+    "fingerprint": fingerprint,
     "legacy_jcperf": legacy,
     "gate": {
         "pass": not failures,
@@ -833,6 +871,7 @@ record = {
     "regtest_exit": int(regtest_exit),
     "gate_pass": gate.get("pass"),
     "gate_failures": gate.get("failures", []),
+    "gate_warnings": gate.get("warnings", []),
     "git": {
         "branch": git_branch,
         "commit": git_commit,
@@ -878,6 +917,7 @@ record = {
         "elf_bytes": elf.get("bytes"),
         "map_bytes": build_map.get("bytes"),
     },
+    "fingerprint": summary.get("fingerprint"),
 }
 
 Path(log_path).parent.mkdir(parents=True, exist_ok=True)
@@ -1137,6 +1177,7 @@ for i in "${!CASE_LABELS[@]}"; do
     summary_file="$case_dir/perf-summary.json"
     parse_case_metrics "$label" "$boot" "$case_dir" "$log_file" \
         "$ps_exe_bytes" "$ps_exe_bucket_bytes" "$ps_exe_sectors" "$elf_bytes" "$map_bytes" \
+        "$GIT_COMMIT" "$GIT_BRANCH" "$GIT_DIRTY" "$RUN_ID" \
         "$summary_file"
     emit_foreground_read_plan "$summary_file" "$case_dir"
     SUMMARY_PATHS+=("$summary_file")
@@ -1229,6 +1270,68 @@ def hot_symbols(case):
     symbols = path_value(case, ("build", "map", "symbols"))
     return symbols if isinstance(symbols, dict) else {}
 
+def synthesize_fingerprint(case):
+    existing = case.get("fingerprint")
+    if isinstance(existing, dict):
+        return existing
+    sections = case.get("sections", {})
+    timing = sections.get("timing", {})
+    cd = sections.get("cd", {})
+    prefetch = sections.get("prefetch", {})
+    scene = sections.get("scene", {})
+    build = case.get("build", {})
+    ps_exe = build.get("ps_exe", {})
+    elf = build.get("elf", {})
+    build_map = build.get("map", {})
+    symbols = hot_symbols(case)
+    return {
+        "metrics": {
+            "loop_vb": timing.get("loop_vb"),
+            "target_vb": timing.get("target_vb"),
+            "blocking_vb": cd.get("blocking_vb"),
+            "prefetch_overrun_vb": prefetch.get("overrun_vb"),
+            "loop_reads": cd.get("loop_reads"),
+        },
+        "layout": {
+            "pack_lba": scene.get("pack_lba"),
+            "pack_sectors": scene.get("pack_sectors"),
+            "ps_exe_bytes": ps_exe.get("bytes"),
+            "ps_exe_sector_bucket_bytes": ps_exe.get("sector_bucket_bytes"),
+            "elf_bytes": elf.get("bytes"),
+            "map_bytes": build_map.get("bytes"),
+        },
+        "hot_symbol_sizes": {
+            name: item.get("size")
+            for name, item in sorted(symbols.items())
+            if isinstance(item, dict) and isinstance(item.get("size"), int)
+        },
+    }
+
+def run_git(case):
+    value = path_value(case, ("run", "git"))
+    return value if isinstance(value, dict) else {}
+
+def fingerprint_deltas(current, previous):
+    deltas = {}
+    for section in ("metrics", "layout", "hot_symbol_sizes"):
+        section_deltas = {}
+        current_section = current.get(section, {})
+        previous_section = previous.get(section, {})
+        if not isinstance(current_section, dict) or not isinstance(previous_section, dict):
+            continue
+        for key in sorted(set(current_section) | set(previous_section)):
+            c_value = current_section.get(key)
+            p_value = previous_section.get(key)
+            if c_value == p_value:
+                continue
+            item = {"baseline": p_value, "current": c_value}
+            if isinstance(c_value, int) and isinstance(p_value, int):
+                item["delta"] = c_value - p_value
+            section_deltas[key] = item
+        if section_deltas:
+            deltas[section] = section_deltas
+    return deltas
+
 overall_failures = []
 for case in cases:
     label = case["label"]
@@ -1238,6 +1341,32 @@ for case in cases:
     base = baseline_cases.get(label)
     improved = False
     if base:
+        current_fingerprint = synthesize_fingerprint(case)
+        previous_fingerprint = synthesize_fingerprint(base)
+        fingerprint = {
+            "baseline_has_stored_fingerprint": isinstance(base.get("fingerprint"), dict),
+            "baseline": previous_fingerprint,
+            "current": current_fingerprint,
+            "deltas": fingerprint_deltas(current_fingerprint, previous_fingerprint),
+        }
+        base_git = run_git(base)
+        current_git = run_git(case)
+        if not fingerprint["baseline_has_stored_fingerprint"]:
+            warnings.append("baseline missing stored fingerprint; stale-baseline detection is limited")
+        if base_git:
+            fingerprint["baseline_git"] = base_git
+            fingerprint["current_git"] = current_git
+            baseline_commit = base_git.get("commit")
+            current_commit = current_git.get("commit")
+            if baseline_commit and current_commit and baseline_commit != current_commit:
+                warnings.append(
+                    f"baseline git commit differs: baseline={baseline_commit} current={current_commit}"
+                )
+            if base_git.get("dirty"):
+                warnings.append("baseline was generated from a dirty worktree")
+        else:
+            warnings.append("baseline missing run.git metadata; stale-baseline commit check is unavailable")
+        case["baseline_fingerprint_comparison"] = fingerprint
         comparisons = []
         work_identity = []
         layout_identity = []
@@ -1381,6 +1510,8 @@ for case in cases:
     )
     for failure in gate.get("failures", []):
         print(f"  failure: {failure}")
+    for warning in gate.get("warnings", [])[:6]:
+        print(f"  warning: {warning}")
     comparisons = case.get("baseline_comparison", [])
     if comparisons:
         parts = []
