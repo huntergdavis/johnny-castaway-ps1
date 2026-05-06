@@ -3,6 +3,7 @@ layout: post
 title: "Scripted pad input, menu screenshots, and testing the UI like a player"
 date: 2026-05-01
 summary: "The next test harness teaches the PS1 build to press its own controller buttons, capture every major pause-menu screen, and publish the result as player help."
+source_path: docs/ps1/scripted-input-harness.md
 ---
 
 Freeplay made the pause menu important enough that screenshots are no
