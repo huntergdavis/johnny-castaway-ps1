@@ -21,9 +21,9 @@ Current accepted fishing1 high-tide canary baseline:
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `0.9628%`
-over target / `99.3677%` target speed across `120` timing-bearing rows after
-the `activity4-fishing4-v072c-prefetch-relief` optimization. The largest
+or long-run heap stability. The current all-scene battle card is `0.9493%`
+over target / `99.3794%` target speed across `120` timing-bearing rows after
+the `activity9-window-v072c` optimization. The largest
 remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9,
 BUILDING4, BUILDING6, and generated selective preprocessing, not FISHING1.
 

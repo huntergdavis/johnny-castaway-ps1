@@ -249,12 +249,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+1.0% over target /
-99.4% target speed** (`0.9628%` exact over target / `99.3677%` exact target speed).
+99.4% target speed** (`0.9493%` exact over target / `99.3794%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity9-window-v072c`,
 `activity4-fishing4-v072c-prefetch-relief`,
 `building4-6-johnny6-v072c-prefetch-relief`,
 `activity1-v072c-current-refresh`,
@@ -294,13 +295,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T04:41:05`; per-row freshness and stats version are shown on
+run is `2026-05-06T05:15:52`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `building4-6-johnny6-v072c-prefetch-relief`,
+rows now use `activity9-window-v072c`,
+`building4-6-johnny6-v072c-prefetch-relief`,
 `activity4-fishing4-v072c-prefetch-relief`,
 `activity1-v072c-current-refresh`,
 `activity11-12-v072c-prefetch-relief`,
@@ -344,7 +346,7 @@ rows are historical only.
 | `activity6` | +0.1% / 99.9% (912/911) | +0.1% / 99.9% (912/911) |
 | `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
 | `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
-| `activity9` | +7.0% / 93.4% (2194/2050); due 25; blk 139 | +8.2% / 92.4% (2218/2050); due 48; blk 175 |
+| `activity9` | +6.6% / 93.8% (2185/2049); due 14; blk 117 | +7.0% / 93.5% (2197/2054); due 28; blk 146 |
 | `activity10` | +0.0% / 100.0% (1259/1259); due 1; blk 7 | -0.1% / 100.1% (1255/1256); due 2; blk 17 |
 | `activity11` | +0.5% / 99.5% (1729/1720); due 1; blk 10 | +0.7% / 99.3% (1729/1717); due 1; blk 14 |
 | `activity12` | -0.1% / 100.1% (1411/1412); blk 7 | -0.1% / 100.1% (1409/1411); due 1; blk 10 |

@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+1.0%` (`0.9628%` exact) |
-| Timing-bearing average target speed | `99.4%` (`99.3677%` exact) |
-| Latest perf matrix run | `2026-05-06T04:41:05` |
-| Stats version | mixed: latest refreshed rows use `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+1.0%` (`0.9493%` exact) |
+| Timing-bearing average target speed | `99.4%` (`99.3794%` exact) |
+| Latest perf matrix run | `2026-05-06T05:15:52` |
+| Stats version | mixed: latest refreshed rows use `activity9-window-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `activity4-fishing4-v072c-prefetch-relief`,
+  refreshed rows use `activity9-window-v072c`,
+  `activity4-fishing4-v072c-prefetch-relief`,
   `building4-6-johnny6-v072c-prefetch-relief`,
   `activity1-v072c-current-refresh`,
   `activity11-12-v072c-prefetch-relief`,
@@ -200,8 +201,8 @@ and this page.
 | `activity7` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.3% | 100.3% | 594/596 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `activity8` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 898/904 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
 | `activity8` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.6% | 100.6% | 899/904 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `activity9` | high | measured | 2026-05-06T02:29:16 | activity9-v072c-prefetch-relief | +7.0% | 93.4% | 2194/2050 | 139 | 12 | 25 | activity9 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `activity9` | low | measured | 2026-05-06T02:29:16 | activity9-v072c-prefetch-relief | +8.2% | 92.4% | 2218/2050 | 175 | 17 | 48 | activity9 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
+| `activity9` | high | measured | 2026-05-06T05:15:52 | activity9-window-v072c | +6.6% | 93.8% | 2185/2049 | 117 | 14 | 14 | activity9 stream-window retune: high tide uses 32 KiB to reduce stage1 due misses and active-loop blocking |
+| `activity9` | low | measured | 2026-05-06T05:15:52 | activity9-window-v072c | +7.0% | 93.5% | 2197/2054 | 146 | 8 | 28 | activity9 stream-window retune: low tide uses 20 KiB; larger windows reduce reads but regress total loop VBlanks |
 | `activity10` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | +0.0% | 100.0% | 1259/1259 | 7 | 4 | 1 |  |
 | `activity10` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.1% | 100.1% | 1255/1256 | 17 | 4 | 2 |  |
 | `activity11` | high | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | +0.5% | 99.5% | 1729/1720 | 10 | 4 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |

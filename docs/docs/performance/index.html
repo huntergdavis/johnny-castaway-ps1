@@ -329,12 +329,13 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+1.0% over target /
-99.4% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.9628%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.3677%</code> exact target speed).</p>
+99.4% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.9493%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.3794%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
@@ -374,13 +375,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T04:41:05</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T05:15:52</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
+rows now use <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
+<code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
@@ -457,8 +459,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
-      <td style="text-align: right">+7.0% / 93.4% (2194/2050); due 25; blk 139</td>
-      <td style="text-align: right">+8.2% / 92.4% (2218/2050); due 48; blk 175</td>
+      <td style="text-align: right">+6.6% / 93.8% (2185/2049); due 14; blk 117</td>
+      <td style="text-align: right">+7.0% / 93.5% (2197/2054); due 28; blk 146</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
