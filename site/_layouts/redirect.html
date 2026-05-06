@@ -1,0 +1,33 @@
+{%- comment -%}
+  Custom redirect template overriding the jekyll-redirect-from default
+  (vendor/bundle/.../jekyll-redirect-from-0.16.0/lib/jekyll-redirect-from/redirect.html).
+
+  The plugin computes `page.redirect.to` via `absolute_url(to)` which
+  uses site.baseurl, but the build runs `jekyll build --baseurl ""`
+  to keep the bundle path-portable. That makes the plugin's absolute
+  URLs come out pointed at the user-pages root (https://hunterdavis.com/scenes/)
+  instead of this project page (https://hunterdavis.com/johnny-castaway-ps1/scenes/),
+  which would silently redirect old bookmarks to the wrong site.
+
+  Workaround: strip the site.url prefix from page.redirect.to to
+  recover the path, then prepend the canonical absolute URL using
+  site.canonical_baseurl. External redirect targets (URL doesn't
+  start with site.url) pass through unchanged.
+{%- endcomment -%}
+{%- assign target = page.redirect.to -%}
+{%- assign path_only = target | remove_first: site.url -%}
+{%- if path_only != target -%}
+  {%- comment -%} Internal: rewrite via canonical baseurl. {%- endcomment -%}
+  {%- assign target = site.url | append: site.canonical_baseurl | append: path_only -%}
+{%- endif -%}
+<!DOCTYPE html>
+<html lang="en-US">
+  <meta charset="utf-8">
+  <title>Redirecting&hellip;</title>
+  <link rel="canonical" href="{{ target }}">
+  <script>location="{{ target }}"</script>
+  <meta http-equiv="refresh" content="0; url={{ target }}">
+  <meta name="robots" content="noindex">
+  <h1>Redirecting&hellip;</h1>
+  <a href="{{ target }}">Click here if you are not redirected.</a>
+</html>
