@@ -50,6 +50,15 @@ blocking `355 -> 357`, and prefetch overrun `14 -> 16`. Do not retry more
 current-fit VISITOR3 groups as source tables; the planner's scheduler-owned
 classification is now confirmed after setup-prime.
 
+Rejected setup-owned hot segment: priming VISITOR3 high sectors `158..170`
+during setup and retaining that segment for multiple entry copies still
+regressed loop `1450 -> 1451`, overrun `435 -> 438`, and prefetch overrun
+`14 -> 19` with blocking flat at `355`. Do not retry setup segments as a local
+VISITOR3 fix; the extra resident bytes/read cadence still perturb the active
+schedule. The next VISITOR3 work should be generated scheduler metadata or a
+pack/data-shape change that reduces upload/CD work rather than relocating the
+same sector cluster into setup.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
