@@ -108,6 +108,36 @@ hardware the PS1 port actually runs on — and a short list of the places where
 that hardware drew blood during development. If you paid for this, you were
 cheated. Open source and free.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-shape-of-the-machine-in-2026" id="markdown-toc-the-shape-of-the-machine-in-2026">The shape of the machine in 2026</a></li>
+  <li><a href="#hardware-reference" id="markdown-toc-hardware-reference">Hardware reference</a>    <ul>
+      <li><a href="#cpu-and-memory" id="markdown-toc-cpu-and-memory">CPU and memory</a></li>
+      <li><a href="#graphics-gpu--vram" id="markdown-toc-graphics-gpu--vram">Graphics (GPU + VRAM)</a></li>
+      <li><a href="#audio-spu" id="markdown-toc-audio-spu">Audio (SPU)</a></li>
+      <li><a href="#storage-cd-rom" id="markdown-toc-storage-cd-rom">Storage (CD-ROM)</a></li>
+      <li><a href="#input-controller" id="markdown-toc-input-controller">Input (controller)</a></li>
+    </ul>
+  </li>
+  <li><a href="#what-bit-us-in-practice" id="markdown-toc-what-bit-us-in-practice">What bit us in practice</a>    <ul>
+      <li><a href="#spi-pad-polling-needs-tx_len5-not-4" id="markdown-toc-spi-pad-polling-needs-tx_len5-not-4">SPI pad polling needs <code class="language-plaintext highlighter-rouge">tx_len=5</code>, not <code class="language-plaintext highlighter-rouge">4</code></a></li>
+      <li><a href="#fntflush-is-empirically-broken-in-scene-runtime-context" id="markdown-toc-fntflush-is-empirically-broken-in-scene-runtime-context"><code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in scene-runtime context</a></li>
+      <li><a href="#spu-hle-diverges-from-real-hardware" id="markdown-toc-spu-hle-diverges-from-real-hardware">SPU HLE diverges from real hardware</a></li>
+      <li><a href="#dirty-rect-bookkeeping-eats-currdirty-on-full-restores" id="markdown-toc-dirty-rect-bookkeeping-eats-currdirty-on-full-restores">Dirty-rect bookkeeping eats <code class="language-plaintext highlighter-rouge">currDirty</code> on full restores</a></li>
+      <li><a href="#vram-corruption-when-scenes-dont-restore-the-clut" id="markdown-toc-vram-corruption-when-scenes-dont-restore-the-clut">VRAM corruption when scenes don’t restore the CLUT</a></li>
+      <li><a href="#tty-printf-is-the-only-debug-surface-and-its-a-sharp-tool" id="markdown-toc-tty-printf-is-the-only-debug-surface-and-its-a-sharp-tool">TTY printf is the only debug surface, and it’s a sharp tool</a></li>
+      <li><a href="#vprintf-was-unbounded-and-that-forced-debugmode0" id="markdown-toc-vprintf-was-unbounded-and-that-forced-debugmode0"><code class="language-plaintext highlighter-rouge">vprintf</code> was unbounded, and that forced <code class="language-plaintext highlighter-rouge">debugMode=0</code></a></li>
+    </ul>
+  </li>
+  <li><a href="#where-this-leaves-the-runtime" id="markdown-toc-where-this-leaves-the-runtime">Where this leaves the runtime</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
+  <li><a href="#view-source-on-github" id="markdown-toc-view-source-on-github">View source on GitHub</a></li>
+</ul>
+
+</details>
+
 <h2 id="the-shape-of-the-machine-in-2026">The shape of the machine in 2026</h2>
 
 <p>The PlayStation 1 was released in 1994. In 2026 it is a museum piece, but it is

@@ -16,6 +16,13 @@ re-drawing Johnny.
 
 If you paid for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Distribution at a glance
 
 | Month | Count | Examples |

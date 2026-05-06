@@ -18,6 +18,13 @@ frame reads the controller, updates a small state machine, restores the
 background from clean rects, draws Johnny and any active prop, and presents
 the frame. That makes it useful as a play mode and as a debugging cockpit.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## How to enter and leave
 
 The normal boot still starts in screensaver mode. Press **Start**, choose

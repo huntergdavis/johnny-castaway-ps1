@@ -17,6 +17,13 @@ runtime parses it and merges those buttons into the same active-high pad mask
 used by a real controller. The pause menu does not know it is being tested.
 Freeplay does not know it is being tested. That is the point.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The fast path
 
 ```bash

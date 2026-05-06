@@ -15,6 +15,13 @@ Johnny is doing.
 
 If you paid for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## How it works
 
 Three things plug together:

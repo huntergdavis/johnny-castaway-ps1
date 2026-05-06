@@ -109,6 +109,28 @@ image actually contains, what the wrapper scripts do, and where the
 automation stops and the author starts typing things by hand. If you paid
 for this, you were cheated. Open source and free.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#why-docker" id="markdown-toc-why-docker">Why Docker</a></li>
+  <li><a href="#the-docker-dev-image" id="markdown-toc-the-docker-dev-image">The Docker dev image</a></li>
+  <li><a href="#the-build-pipeline-end-to-end" id="markdown-toc-the-build-pipeline-end-to-end">The build pipeline end-to-end</a>    <ul>
+      <li><a href="#host-build-vs-ps1-build" id="markdown-toc-host-build-vs-ps1-build">Host build vs PS1 build</a></li>
+      <li><a href="#the-mkpsxiso-step" id="markdown-toc-the-mkpsxiso-step">The <code class="language-plaintext highlighter-rouge">mkpsxiso</code> step</a></li>
+    </ul>
+  </li>
+  <li><a href="#the-wrapper-scripts" id="markdown-toc-the-wrapper-scripts">The wrapper scripts</a></li>
+  <li><a href="#the-release-script" id="markdown-toc-the-release-script">The release script</a></li>
+  <li><a href="#where-this-gets-tested" id="markdown-toc-where-this-gets-tested">Where this gets tested</a></li>
+  <li><a href="#whats-not-automated-yet" id="markdown-toc-whats-not-automated-yet">What’s not automated yet</a></li>
+  <li><a href="#common-breakages" id="markdown-toc-common-breakages">Common breakages</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
+  <li><a href="#view-source-on-github" id="markdown-toc-view-source-on-github">View source on GitHub</a></li>
+</ul>
+
+</details>
+
 <h2 id="why-docker">Why Docker</h2>
 
 <p>PSn00bSDK is sensitive to toolchain version. The SDK is a thin layer over a

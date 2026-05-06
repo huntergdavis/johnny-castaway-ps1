@@ -11,6 +11,13 @@ the SPU constraints, the conversion path from WAV to VAG, the runtime
 preload, and the playback path during scene replay. If you paid for this,
 you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The SPU
 
 The PS1's Sound Processing Unit is a separate processor with its own RAM
