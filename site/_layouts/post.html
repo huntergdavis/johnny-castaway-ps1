@@ -11,6 +11,19 @@ layout: default
     </p>
     <h1>{{ page.title }}</h1>
     {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    {%- comment -%}
+      Reading-time on devlog posts. Worklog entries vary wildly —
+      from ~60 lines to the harness-worklog at 5300 — so a "X min
+      read · M words" up front is even more useful here than on
+      curated /lab/ essays. Same Liquid as page.html: strip HTML
+      and divide word count by 250, floored at 1 min.
+    {%- endcomment -%}
+    {%- assign reading_words = content | strip_html | number_of_words -%}
+    {%- assign reading_min = reading_words | divided_by: 250 -%}
+    {%- if reading_min < 1 %}{% assign reading_min = 1 %}{% endif %}
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~{{ reading_min }} min read · {{ reading_words }} words
+    </p>
     <hr class="rule" />
   </header>
 
