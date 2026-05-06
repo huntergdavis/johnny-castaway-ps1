@@ -161,6 +161,11 @@ work-volume win. Keep the translation unit at `-Os`.
 The current v0.8.0 default-`O2` retest of `src/utils.c` is rejected:
 FISHING1 regressed `loop_vb 1068 -> 1069` and shifted tracked hot symbols by
 `+472..+484` bytes. Keep the translation unit at `-Os`.
+The current v0.8.0 default-`O2` retest of `src/island.c` is rejected:
+FISHING1 regressed `loop_vb 1068 -> 1069` and shifted tracked hot symbols by
+up to `+512` bytes. Keep the translation unit at `-Os`; the normal cold
+compiler-flag queue is exhausted, leaving only review-only/default-off surfaces
+unless the link layout changes materially.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
