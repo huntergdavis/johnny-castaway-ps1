@@ -105,6 +105,12 @@ and its machine-readable
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.
 
+The per-pack detail analyzer
+[`scripts/analyze-fg2-preprocess-plans.py`]({{ site.github_url }}/blob/main/scripts/analyze-fg2-preprocess-plans.py)
+now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
+splits cap-hit frames from saving-heavy frames, which keeps the next
+upload-ready experiment selective instead of a whole-pack conversion.
+
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
 candidates by observed append-start ownership, current grouped-read capacity,

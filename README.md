@@ -105,7 +105,10 @@ allocation after releasing stale walk-clean memory pressure.
 Current performance work is focused on VISITOR3 and the remaining CD/graphics
 outliers. The preprocessing matrix now includes x-band rect/cap pressure, which
 keeps VISITOR3 first but requires selective upload-ready bands rather than a
-blanket pack conversion.
+blanket pack conversion. The per-frame preprocessing analyzer now understands
+FGP3 cleanup/draw payloads and separates cap-hit frames from profitable x-band
+frames, so the next VISITOR3 pack-format probe can be targeted instead of
+whole-pack speculative.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key

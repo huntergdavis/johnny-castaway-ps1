@@ -100,7 +100,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3182 words
+          ~12 min read · 3216 words
         </p>
 
       <hr class="rule" />
@@ -217,6 +217,12 @@ and its machine-readable
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-opportunities.csv"><code class="language-plaintext highlighter-rouge">performance-preprocess-opportunities.csv</code></a>.
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.</p>
+
+<p>The per-pack detail analyzer
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/analyze-fg2-preprocess-plans.py"><code class="language-plaintext highlighter-rouge">scripts/analyze-fg2-preprocess-plans.py</code></a>
+now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
+splits cap-hit frames from saving-heavy frames, which keeps the next
+upload-ready experiment selective instead of a whole-pack conversion.</p>
 
 <p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan

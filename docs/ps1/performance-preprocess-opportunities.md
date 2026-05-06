@@ -42,5 +42,9 @@ accepted performance baseline.
   expansion already regressed WALKSTUF1 low by adding too much CD pressure.
 - Rows with large payload growth need selective bands, compression, or setup
   residency before runtime promotion.
+- Use `scripts/analyze-fg2-preprocess-plans.py --hotspot-count N` on the
+  selected pack before a runtime probe. VISITOR3 now proves why: cap-hit frames
+  `134..136` save `0%` under blanket x-band, while nearby non-cap frames carry
+  most of the useful byte saving.
 - This matrix should guide the next generated pack-format experiment, not
   more hand-authored scene branches.

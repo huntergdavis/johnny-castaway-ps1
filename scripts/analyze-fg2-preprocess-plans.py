@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Estimate host-side preprocessing wins for FG2 foreground packs.
+"""Estimate host-side preprocessing wins for foreground packs.
 
-This tool is intentionally host-only. It decodes an existing FGP2 pack and
-replays the runtime dirty-state rules closely enough to compare today's
+This tool is intentionally host-only. It decodes an existing FGP2/FGP3 pack
+and replays the runtime dirty-state rules closely enough to compare today's
 full-width row uploads against pack-emitted upload/restore plans.
 """
 
@@ -30,11 +30,12 @@ TILE_COUNT = 4
 FLAG_SCENE_RELATIVE = 0x0008
 
 UPLOAD_MAX_RECTS = 8
-UPLOAD_BAND_MERGE_GAP = 1
+UPLOAD_BAND_MERGE_GAP = 0
 
 
 @dataclass(frozen=True)
 class Header:
+    magic: bytes
     version: int
     frame_count: int
     display_vblanks: int
@@ -63,6 +64,18 @@ class Entry:
     hold_vblanks: int
     data_offset: int
     data_size: int
+
+
+@dataclass(frozen=True)
+class FrameModel:
+    entry: Entry
+    draw_rows: "RowIntervals"
+    draw_extents: "RowExtents"
+    cleanup_rows: "RowIntervals"
+    cleanup_spans: int
+    cleanup_pixels: int
+    draw_spans: int
+    draw_pixels: int
 
 
 RowIntervals = list[list[list[tuple[int, int]]]]
@@ -204,7 +217,7 @@ def add_screen_interval(rows: RowIntervals, x0: int, x1: int, y: int) -> None:
 def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
     payload = path.read_bytes()
     if len(payload) < FG2_HEADER_SIZE:
-        raise SystemExit(f"FG2 pack too small: {path}")
+        raise SystemExit(f"foreground pack too small: {path}")
 
     (
         magic,
@@ -225,14 +238,15 @@ def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
         reserved1,
     ) = struct.unpack_from(FG2_HEADER, payload, 0)
 
-    if magic != b"FGP2":
-        raise SystemExit(f"not an FGP2 pack: {path}")
+    if magic not in (b"FGP2", b"FGP3"):
+        raise SystemExit(f"not an FGP2/FGP3 pack: {path}")
     if version not in (1, 2):
-        raise SystemExit(f"unsupported FGP2 version {version}: {path}")
+        raise SystemExit(f"unsupported foreground pack version {version}: {path}")
     if table_offset + frame_count * FG2_ENTRY_SIZE > len(payload):
         raise SystemExit(f"entry table extends beyond pack: {path}")
 
     header = Header(
+        magic=magic,
         version=version,
         frame_count=frame_count,
         display_vblanks=display_vblanks,
@@ -280,48 +294,124 @@ def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
     return payload, header, entries
 
 
-def decode_entry_rows(payload: bytes, header: Header, entry: Entry,
-                      scene_dx: int, scene_dy: int) -> RowIntervals:
+def parse_span_rows(data: bytes,
+                    offset: int,
+                    limit: int,
+                    version: int,
+                    base_x: int,
+                    base_y: int,
+                    with_pixel_payload: bool) -> tuple[RowIntervals, int, int, int]:
     rows = empty_intervals()
-    if entry.data_size == 0 or entry.width == 0 or entry.height == 0:
-        return rows
-
-    data = payload[entry.data_offset:entry.data_offset + entry.data_size]
-    if len(data) < 2:
-        return rows
-
-    base_x = entry.x + scene_dx
-    base_y = entry.y + scene_dy
-    offset = 0
+    spans = 0
+    pixels = 0
+    if offset + 2 > limit:
+        return rows, offset, spans, pixels
     row_count = read_u16(data, offset)
     offset += 2
 
     for _ in range(row_count):
-        if offset + 4 > len(data):
+        if offset + 4 > limit:
             break
         rel_y = read_u16(data, offset)
         span_count = read_u16(data, offset + 2)
         offset += 4
         screen_y = base_y + rel_y
         for _span in range(span_count):
-            if offset + 4 > len(data):
+            if offset + 4 > limit:
                 break
             rel_x = read_u16(data, offset)
             pixel_count = read_u16(data, offset + 2)
             offset += 4
             screen_x = base_x + rel_x
             add_screen_interval(rows, screen_x, screen_x + pixel_count, screen_y)
-            if header.version == 1:
-                offset += (pixel_count + 1) // 2
-            else:
-                offset += pixel_count
-            if offset > len(data):
+            spans += 1
+            pixels += pixel_count
+            if with_pixel_payload:
+                if version == 1:
+                    offset += (pixel_count + 1) // 2
+                else:
+                    offset += pixel_count
+            if offset > limit:
+                offset = limit
                 break
 
     for tile in range(TILE_COUNT):
         for y in range(TILE_H):
             rows[tile][y] = merge_intervals(rows[tile][y])
+    return rows, offset, spans, pixels
+
+
+def decode_entry_rows(payload: bytes, header: Header, entry: Entry,
+                      scene_dx: int, scene_dy: int) -> RowIntervals:
+    if entry.data_size == 0 or entry.width == 0 or entry.height == 0:
+        return empty_intervals()
+
+    data = payload[entry.data_offset:entry.data_offset + entry.data_size]
+    base_x = entry.x + scene_dx
+    base_y = entry.y + scene_dy
+    rows, _offset, _spans, _pixels = parse_span_rows(
+        data,
+        0,
+        len(data),
+        header.version,
+        base_x,
+        base_y,
+        with_pixel_payload=True,
+    )
     return rows
+
+
+def build_frame_model(payload: bytes, header: Header, entry: Entry,
+                      scene_dx: int, scene_dy: int) -> FrameModel:
+    cleanup_rows = empty_intervals()
+    cleanup_spans = 0
+    cleanup_pixels = 0
+    draw_rows = empty_intervals()
+    draw_spans = 0
+    draw_pixels = 0
+    if entry.data_size != 0 and entry.width != 0 and entry.height != 0:
+        data = payload[entry.data_offset:entry.data_offset + entry.data_size]
+        base_x = entry.x + scene_dx
+        base_y = entry.y + scene_dy
+        if header.magic == b"FGP3":
+            cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_span_rows(
+                data,
+                0,
+                len(data),
+                header.version,
+                base_x,
+                base_y,
+                with_pixel_payload=False,
+            )
+            draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
+                data,
+                offset,
+                len(data),
+                header.version,
+                base_x,
+                base_y,
+                with_pixel_payload=True,
+            )
+        else:
+            draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
+                data,
+                0,
+                len(data),
+                header.version,
+                base_x,
+                base_y,
+                with_pixel_payload=True,
+            )
+    return FrameModel(
+        entry=entry,
+        draw_rows=draw_rows,
+        draw_extents=intervals_to_extents(draw_rows),
+        cleanup_rows=cleanup_rows,
+        cleanup_spans=cleanup_spans,
+        cleanup_pixels=cleanup_pixels,
+        draw_spans=draw_spans,
+        draw_pixels=draw_pixels,
+    )
 
 
 def draw_bounds(entries: list[Entry], scene_dx: int, scene_dy: int) -> tuple[int, int, int, int] | None:
@@ -443,6 +533,18 @@ def subtract_intervals(base: list[tuple[int, int]],
         if not pieces:
             break
     return pieces
+
+
+def restore_rows_minus_current_plan(cleanup_rows: RowIntervals,
+                                    current_exact: RowIntervals) -> dict[str, int]:
+    total = 0
+    intervals = 0
+    for tile in range(TILE_COUNT):
+        for y in range(TILE_H):
+            for start, end in subtract_intervals(cleanup_rows[tile][y], current_exact[tile][y]):
+                total += (end - start) * 2
+                intervals += 1
+    return {"bytes": total, "intervals": intervals}
 
 
 def restore_minus_current_plan(prev: RowExtents, current_exact: RowIntervals,
@@ -657,7 +759,7 @@ def pct_saved(current: int, proposed: int) -> float:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Analyze host-side FG2 preprocessing upload/restore opportunities."
+        description="Analyze host-side FG2/FGP3 preprocessing upload/restore opportunities."
     )
     parser.add_argument("pack", type=Path)
     parser.add_argument("--island-x", type=int, default=0)
@@ -671,6 +773,12 @@ def main() -> None:
         "--no-initial-full-dirty",
         action="store_true",
         help="Do not model the runtime's first-frame full-screen upload.",
+    )
+    parser.add_argument(
+        "--hotspot-count",
+        type=int,
+        default=12,
+        help="Number of per-frame upload hotspot rows to include.",
     )
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output.")
     args = parser.parse_args()
@@ -687,11 +795,12 @@ def main() -> None:
     if entries and entries[0].data_size == 0:
         active_entries = entries[1:]
 
-    frame_exact = [
-        decode_entry_rows(payload, header, entry, scene_dx, scene_dy)
+    frame_models = [
+        build_frame_model(payload, header, entry, scene_dx, scene_dy)
         for entry in active_entries
     ]
-    frame_extents = [intervals_to_extents(rows) for rows in frame_exact]
+    frame_exact = [model.draw_rows for model in frame_models]
+    frame_extents = [model.draw_extents for model in frame_models]
 
     bounds = draw_bounds(entries, scene_dx, scene_dy)
     clean_rects = clean_rects_for_pack(bounds)
@@ -718,9 +827,14 @@ def main() -> None:
         "upload_xband_exact_bytes_align4": 0,
         "upload_xband_exact_bytes_align16": 0,
         "upload_xband_exact_rects": 0,
+        "upload_xband_exact_cap_hits": 0,
         "upload_exact_interval_bytes": 0,
         "upload_exact_interval_rects": 0,
         "upload_extent_row_bytes": 0,
+        "cleanup_spans": 0,
+        "cleanup_pixels": 0,
+        "compose_spans": 0,
+        "compose_pixels": 0,
     }
     maxima = {
         "restore_runtime_bytes": 0,
@@ -732,13 +846,30 @@ def main() -> None:
         "upload_xband_exact_bytes_align4": 0,
         "upload_xband_exact_rects": 0,
     }
+    frame_hotspots: list[dict[str, Any]] = []
 
-    for exact_rows, extent_rows in zip(frame_exact, frame_extents):
-        restore_plan = restore_plan_for_extents(prev_extents, clean_rects)
-        restore_bytes = restore_plan["bytes"]
-        restore_skipped = restore_minus_current_plan(prev_extents, exact_rows, clean_rects)
-        union_extent = union_extent_intervals(prev_extents, extent_rows)
-        union_exact = union_intervals(prev_exact, exact_rows)
+    for frame_index, model in enumerate(frame_models):
+        exact_rows = model.draw_rows
+        extent_rows = model.draw_extents
+        first_frame_full_dirty = not args.no_initial_full_dirty and frame_index == 0
+
+        if header.magic == b"FGP3":
+            restore_bytes = interval_bytes(model.cleanup_rows)
+            restore_plan = {
+                "bytes": restore_bytes,
+                "intervals": interval_count(model.cleanup_rows),
+            }
+            restore_skipped = restore_rows_minus_current_plan(model.cleanup_rows, exact_rows)
+            union_exact = union_intervals(model.cleanup_rows, exact_rows)
+            if first_frame_full_dirty:
+                union_exact = union_intervals(extents_to_intervals(full_tile_extents()), union_exact)
+            union_extent = extents_to_intervals(intervals_to_extents(union_exact))
+        else:
+            restore_plan = restore_plan_for_extents(prev_extents, clean_rects)
+            restore_bytes = restore_plan["bytes"]
+            restore_skipped = restore_minus_current_plan(prev_extents, exact_rows, clean_rects)
+            union_extent = union_extent_intervals(prev_extents, extent_rows)
+            union_exact = union_intervals(prev_exact, exact_rows)
         full_plan = full_width_upload_plan(union_extent)
 
         x_extent_1 = xband_upload_plan(union_extent, 1)
@@ -747,6 +878,9 @@ def main() -> None:
         x_exact_1 = xband_upload_plan(union_exact, 1)
         x_exact_4 = xband_upload_plan(union_exact, 4)
         x_exact_16 = xband_upload_plan(union_exact, 16)
+        exact_interval_bytes = interval_bytes(union_exact)
+        exact_interval_rects = interval_count(union_exact)
+        x_exact_4_cap_hit = x_exact_4.get("xband_cap_hit", x_exact_4.get("cap_hit", 0))
 
         totals["restore_runtime_bytes"] += restore_bytes
         totals["restore_runtime_intervals"] += restore_plan["intervals"]
@@ -763,9 +897,14 @@ def main() -> None:
         totals["upload_xband_exact_bytes_align4"] += x_exact_4["bytes"]
         totals["upload_xband_exact_bytes_align16"] += x_exact_16["bytes"]
         totals["upload_xband_exact_rects"] += x_exact_4["rects"]
-        totals["upload_exact_interval_bytes"] += interval_bytes(union_exact)
-        totals["upload_exact_interval_rects"] += interval_count(union_exact)
+        totals["upload_xband_exact_cap_hits"] += x_exact_4_cap_hit
+        totals["upload_exact_interval_bytes"] += exact_interval_bytes
+        totals["upload_exact_interval_rects"] += exact_interval_rects
         totals["upload_extent_row_bytes"] += extent_bytes(intervals_to_extents(union_exact))
+        totals["cleanup_spans"] += model.cleanup_spans
+        totals["cleanup_pixels"] += model.cleanup_pixels
+        totals["compose_spans"] += model.draw_spans
+        totals["compose_pixels"] += model.draw_pixels
 
         maxima["restore_runtime_bytes"] = max(maxima["restore_runtime_bytes"], restore_bytes)
         maxima["restore_runtime_intervals"] = max(
@@ -797,8 +936,33 @@ def main() -> None:
             x_exact_4["rects"],
         )
 
-        prev_extents = extent_rows
-        prev_exact = exact_rows
+        saved_bytes = full_plan["bytes"] - x_exact_4["bytes"]
+        frame_hotspots.append({
+            "frame_index": frame_index,
+            "source_frame": model.entry.source_frame,
+            "hold_vblanks": model.entry.hold_vblanks,
+            "entry_data_size": model.entry.data_size,
+            "initial_full_dirty": first_frame_full_dirty,
+            "cleanup_bytes": interval_bytes(model.cleanup_rows),
+            "cleanup_intervals": interval_count(model.cleanup_rows),
+            "draw_exact_bytes": interval_bytes(exact_rows),
+            "draw_exact_intervals": interval_count(exact_rows),
+            "runtime_full_width_bytes": full_plan["bytes"],
+            "runtime_full_width_rows": full_plan["rows"],
+            "runtime_full_width_rects": full_plan["rects"],
+            "runtime_cap_hit": full_plan["cap_hit"],
+            "xband_exact_align4_bytes": x_exact_4["bytes"],
+            "xband_exact_align4_rects": x_exact_4["rects"],
+            "xband_exact_align4_cap_hit": x_exact_4_cap_hit,
+            "xband_exact_align4_saved_bytes": saved_bytes,
+            "xband_exact_align4_saved_percent": pct_saved(full_plan["bytes"], x_exact_4["bytes"]),
+            "exact_interval_upload_bytes": exact_interval_bytes,
+            "exact_interval_upload_rects": exact_interval_rects,
+        })
+
+        if header.magic == b"FGP2":
+            prev_extents = extent_rows
+            prev_exact = exact_rows
 
     current_upload = totals["upload_runtime_full_width_bytes"]
     current_restore = totals["restore_runtime_bytes"]
@@ -813,39 +977,40 @@ def main() -> None:
         }
     }
 
-    for name, min_saved_pixels, max_pieces in (
-        ("min8px_max4pieces", 8, 4),
-        ("min16px_max3pieces", 16, 3),
-        ("min32px_max2pieces", 32, 2),
-        ("min64px_max2pieces", 64, 2),
-        ("full_cover_only", 1, 0),
-    ):
-        total_bytes = 0
-        total_intervals = 0
-        max_bytes = 0
-        max_intervals = 0
-        prev_for_profile = empty_extents()
-        if not args.no_initial_full_dirty:
-            prev_for_profile = full_tile_extents()
-        for exact_rows, _extent_rows in zip(frame_exact, frame_extents):
-            plan = restore_threshold_plan(
-                prev_for_profile,
-                exact_rows,
-                clean_rects,
-                min_saved_pixels=min_saved_pixels,
-                max_pieces=max_pieces,
-            )
-            total_bytes += plan["bytes"]
-            total_intervals += plan["intervals"]
-            max_bytes = max(max_bytes, plan["bytes"])
-            max_intervals = max(max_intervals, plan["intervals"])
-            prev_for_profile = intervals_to_extents(exact_rows)
-        restore_profiles[name] = {
-            "bytes": total_bytes,
-            "intervals": total_intervals,
-            "max_bytes": max_bytes,
-            "max_intervals": max_intervals,
-        }
+    if header.magic == b"FGP2":
+        for name, min_saved_pixels, max_pieces in (
+            ("min8px_max4pieces", 8, 4),
+            ("min16px_max3pieces", 16, 3),
+            ("min32px_max2pieces", 32, 2),
+            ("min64px_max2pieces", 64, 2),
+            ("full_cover_only", 1, 0),
+        ):
+            total_bytes = 0
+            total_intervals = 0
+            max_bytes = 0
+            max_intervals = 0
+            prev_for_profile = empty_extents()
+            if not args.no_initial_full_dirty:
+                prev_for_profile = full_tile_extents()
+            for exact_rows, _extent_rows in zip(frame_exact, frame_extents):
+                plan = restore_threshold_plan(
+                    prev_for_profile,
+                    exact_rows,
+                    clean_rects,
+                    min_saved_pixels=min_saved_pixels,
+                    max_pieces=max_pieces,
+                )
+                total_bytes += plan["bytes"]
+                total_intervals += plan["intervals"]
+                max_bytes = max(max_bytes, plan["bytes"])
+                max_intervals = max(max_intervals, plan["intervals"])
+                prev_for_profile = intervals_to_extents(exact_rows)
+            restore_profiles[name] = {
+                "bytes": total_bytes,
+                "intervals": total_intervals,
+                "max_bytes": max_bytes,
+                "max_intervals": max_intervals,
+            }
 
     for profile in restore_profiles.values():
         profile["saved_bytes"] = current_restore - profile["bytes"]
@@ -895,6 +1060,25 @@ def main() -> None:
             "note": "Upper-bound byte floor before rect-count and contiguous-source constraints.",
         },
     }
+    hotspot_limit = max(0, args.hotspot_count)
+    frame_cap_hotspots = sorted(
+        frame_hotspots,
+        key=lambda row: (
+            row["xband_exact_align4_cap_hit"],
+            row["runtime_full_width_bytes"],
+            row["xband_exact_align4_saved_bytes"],
+        ),
+        reverse=True,
+    )[:hotspot_limit]
+    frame_saving_hotspots = sorted(
+        frame_hotspots,
+        key=lambda row: (
+            row["xband_exact_align4_saved_bytes"],
+            row["xband_exact_align4_saved_percent"],
+            row["runtime_full_width_bytes"],
+        ),
+        reverse=True,
+    )[:hotspot_limit]
 
     result: dict[str, Any] = {
         "pack": str(args.pack),
@@ -902,6 +1086,7 @@ def main() -> None:
         "pack_metadata_bytes": pack_metadata_bytes,
         "active_payload_bytes": payload_bytes,
         "header": {
+            "magic": header.magic.decode("ascii"),
             "version": header.version,
             "frame_count": header.frame_count,
             "flags": header.flags,
@@ -937,10 +1122,14 @@ def main() -> None:
         "preprocess_maxima": maxima,
         "restore_skip_profiles": restore_profiles,
         "opportunities": opportunities,
+        "frame_cap_hotspots": frame_cap_hotspots,
+        "frame_saving_hotspots": frame_saving_hotspots,
+        "frame_hotspots": frame_cap_hotspots,
         "red_team": [
             "Pack-emitted narrow multi-row uploads cannot read directly from current tile RAM; the rows are strided.",
             "An FGP3 direct-upload payload lowers runtime work but increases pack/CD bytes, so CD pressure must be gated.",
             "Restore-under-current skipping is only safe against exact opaque current spans, not row min/max dirty extents.",
+            "FGP3 cleanup rows are already explicit; FGP2 coalesced restore profiles are not generated for FGP3 packs.",
             "The first active frame currently needs a full-screen upload because setup forces all background tiles dirty.",
         ],
     }
