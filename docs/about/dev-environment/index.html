@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>The dev environment — Johnny Castaway PS1</title>
+  <meta name="description" content="A photograph of the development environment behind the Johnny Castaway PS1 fan port — Claude and Codex sub-agents, a fresh worktree, the dunking bird auto-poker, DuckStation running the latest build, the editor/terminal column, and bottom-monitor system telemetry." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/dev-environment/" />
+
+  <meta property="og:title"        content="The dev environment — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A photograph of the development environment behind the Johnny Castaway PS1 fan port — Claude and Codex sub-agents, a fresh worktree, the dunking bird auto-poker, DuckStation running the latest build, the editor/terminal column, and bottom-monitor system telemetry." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/dev-environment-2026-05-06-w1600.jpg" />
+  <meta property="og:image:alt"    content="Multi-monitor PS1 development environment. Top row: dunking bird task list, two LLM agent prompt windows, DuckStation running Johnny Castaway. Middle row: vim editing C source, terminal with git diff and build output. Bottom row: system telemetry." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/dev-environment-2026-05-06-w1600.jpg" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "About", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/" }, { "@type": "ListItem", "position": 3, "name": "Dev environment", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/dev-environment/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../" aria-current="page">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Photographed · 2026-05-06</p>
+      <h1>The dev environment</h1>
+      <p class="subtitle">One screenshot of the workflow that built the post-validation performance baseline. Two LLM agents, one auto-dunker, DuckStation, the editor, the build farm, and bottom-monitor system telemetry.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~1 min read · 469 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A photograph of the actual workflow as of <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>. Click the image for the full-resolution capture.</p>
+
+<p><a href="../../assets/img/dev-environment-2026-05-06.png">
+  <img src="../../assets/img/dev-environment-2026-05-06-w1600.jpg" width="1600" height="1086" loading="lazy" decoding="async" alt="Multi-monitor PS1 development environment with dunking bird, two LLM agent windows, DuckStation, editor, terminal, and system telemetry." />
+</a></p>
+
+<h2 id="whats-in-the-frame">What’s in the frame</h2>
+
+<p>Reading the screenshot the way the work actually flows on this machine:</p>
+
+<ul>
+  <li><strong>Top-left.</strong> The <a href="../../lab/dunking-bird/">dunking bird</a> task list, mid-double-dunk. Two agent slots are queued; the bird taps a key whenever either model goes idle so the perf-iteration loop keeps moving instead of stalling on attention. The lab essay covers the why.</li>
+  <li><strong>Top-middle.</strong> Two LLM sub-agents accepting input. <strong>Claude</strong> on the left, <strong>Codex</strong> on the right. Each has its own working tree against its own branch — they don’t share commits. Promotion goes through the same headless-perf gate every other change does (<a href="../../docs/glossary/#promotion-rule">promotion rule</a>), no matter who drafted the patch.</li>
+  <li><strong>Top-right.</strong> <strong>DuckStation</strong> running the latest build off <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> / <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. The frame caught FISHING 1 mid-cast — the canary scene whose <code class="language-plaintext highlighter-rouge">loop_vb</code> vs <code class="language-plaintext highlighter-rouge">target_vb</code> ratio is the first sanity check after any matrix-wide change.</li>
+  <li><strong>Middle-left.</strong> The editor. C source in <code class="language-plaintext highlighter-rouge">src/</code> — that frame is foreground-pilot code, the runtime that owns FG2/FGP3 replay. Not where most LLM-drafted patches land; the agents prefer scripts and YAML, the editor stays for hand-shaping the runtime.</li>
+  <li><strong>Middle-right.</strong> Terminal with <code class="language-plaintext highlighter-rouge">git diff</code> and <code class="language-plaintext highlighter-rouge">rebuild-and-let-run.sh</code> output. This is the loop that produces a new disc image, points DuckStation at it, and watches for a clean boot. About 90 seconds end-to-end for an unchanged build; longer when packs rebuild.</li>
+  <li><strong>Bottom row.</strong> The “fresh” worktree and the <a href="../../lab/build-farm/">build-farm</a> terminal — Docker matrix runs feeding the perf experiment log — plus bottom-monitor system telemetry (<code class="language-plaintext highlighter-rouge">btop</code>-style CPU / memory / network panels). The build farm runs unattended overnight; bottom monitor exists so the laptop fan and the experiment cadence stay in the same field of view.</li>
+</ul>
+
+<h2 id="why-all-of-it-on-one-screen">Why all of it on one screen</h2>
+
+<p>Every window above maps to one of the bars the project actually measures.</p>
+
+<ul>
+  <li>The <strong>dunking bird</strong> keeps the agents productive when attention drifts — it’s a hardware solution to the soft “are the agents still going” problem.</li>
+  <li><strong>Claude + Codex</strong> draft against the <a href="../../docs/glossary/#experiment-log">experiment log</a>; their output gets graded by the matrix, not by which model wrote it.</li>
+  <li><strong>DuckStation</strong> is the visual signoff bar — pixel-perfect against host capture, the human-review gate that no LLM signs off in this project.</li>
+  <li><strong>Editor + terminal</strong> are the manual override path. When a patch needs to touch the runtime carefully, the human takes the keyboard.</li>
+  <li><strong>Bottom monitor</strong> is an honest look at whether the laptop is melting.</li>
+</ul>
+
+<p>The two-ledger discipline (<a href="../method/#why-hybrid-won">visual signoff and headless perf stay separate</a>) shows up in the layout: the right side of the screen is what the player will see, the middle and left are what made it true, the bottom is the cost of keeping it true.</p>
+
+<p>This is what most of the <a href="../../lab/from-87-to-99-5/">post-validation performance loop</a> looked like. Not a methodology diagram — a desk.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (v0.8.0-ps1)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/dev-environment/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -113,6 +113,10 @@ A few things this project is deliberately not trying to be:
 - [/about/voice/]({{ '/about/voice/' | relative_url }}) -- the
   editorial standard the prose on this site holds itself to.
   Read it before writing a new page.
+- [/about/dev-environment/]({{ '/about/dev-environment/' | relative_url }})
+  -- the actual desk behind the work, photographed. Two LLM
+  sub-agents, the dunking bird auto-poker, DuckStation,
+  editor/terminal column, build farm, bottom-monitor telemetry.
 - [/scenes/]({{ '/scenes/' | relative_url }}) -- live per-scene
   ledger. What's validated, what's in bring-up, what's blocked.
 - [/devlog/]({{ '/devlog/' | relative_url }}) -- the dated
