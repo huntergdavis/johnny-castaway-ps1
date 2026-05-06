@@ -8,15 +8,15 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `13.6273%` over target
+- Average measured timing gap: `13.7135%` over target
 - Average estimated align4 x-band upload byte saving: `67.13%`
 
 ## Top Upload-Ready Candidates
 
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
-| 1 | `visitor3` | `high` | 342.21 | 40.48% | 56.97% | 229.28% | 439 | candidate |
-| 2 | `visitor3` | `low` | 314.61 | 37.24% | 56.97% | 229.28% | 397 | candidate |
+| 1 | `visitor3` | `low` | 349.97 | 44.00% | 56.97% | 229.28% | 388 | candidate |
+| 2 | `visitor3` | `high` | 349.54 | 44.06% | 56.97% | 229.28% | 384 | candidate |
 | 3 | `building2` | `high` | 217.99 | 19.75% | 67.28% | 258.68% | 183 | candidate |
 | 4 | `building2` | `low` | 207.08 | 18.89% | 67.28% | 258.68% | 169 | candidate |
 | 5 | `walkstuf1` | `low` | 199.19 | 15.97% | 46.64% | 493.1% | 377 | candidate |
