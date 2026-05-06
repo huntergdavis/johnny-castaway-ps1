@@ -137,6 +137,11 @@ fully flat while ELF grew `952312 -> 952360` and the stubs object grew
 `16640 -> 16680`. Keep the translation unit at `-Os` and do not put remaining
 cold/default-off `-O2` probes ahead of generated metadata without a stronger
 phase hypothesis.
+The current v0.7.2 default-`O2` retest of `src/pause_menu.c` is rejected:
+it grew the PS-EXE bucket by `2048` bytes, shifted foreground LBAs by `+1`,
+and regressed FISHING1, WALKSTUF1, BUILDING2, and ACTIVITY9 canaries. Keep the
+translation unit at `-Os`; do not retry pause-menu `-O2` unless link-phase
+padding or pause/menu source shape changes materially.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
@@ -839,6 +844,7 @@ near misses:
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | Unbuffered CD helper default `O2` retest | Do not promote or retry under the current phase. It regressed FISHING1 loop/blocking/read/due-miss metrics, grew the helper `592 -> 660` bytes, and grew ELF `952312 -> 952548`. |
 | `ps1_stubs.c` whole-TU `O2` | Do not promote or retry under the current phase. Five exact canaries stayed timing/work-flat while ELF and the stubs object grew. |
+| `pause_menu.c` whole-TU `O2` | Do not promote or retry under the current phase. It grew the PS-EXE bucket `215040 -> 217088`, shifted foreground LBAs by `+1`, and regressed FISHING1, WALKSTUF1, BUILDING2, and ACTIVITY9 canaries. |
 | Unbuffered CD file-LBA cache | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | `fgRuntimeFillWindowForEntry()` function-scoped `Os` | Do not retry alone; it was exact no-op on timing, size, and tracked symbols. |
 | Prepared visual metadata decoupling | Do not retry as metadata-only; it adds duplicate probes and code growth without staging farther ahead. |

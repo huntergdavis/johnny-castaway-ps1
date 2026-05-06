@@ -101,6 +101,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and the stubs object.",
     ),
+    "src/pause_menu.c": (
+        "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
+        "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and regressed canaries.",
+    ),
 }
 
 
