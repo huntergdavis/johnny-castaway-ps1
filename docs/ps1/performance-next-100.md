@@ -146,6 +146,10 @@ The current v0.7.2 default-`O2` retest of `src/ps1_captions.c` is rejected:
 FISHING1 stayed exact-flat and the PS-EXE bucket stayed fixed, but the ELF and
 captions object both grew with no speed or work-volume improvement. Keep the
 translation unit at `-Os`.
+The current v0.7.2 default-`O2` retest of `src/memcard.c` is rejected:
+FISHING1 regressed `loop_vb 1068 -> 1069`, visible blocking `4 -> 5`, and
+prefetch overrun `4 -> 6` while the ELF and memcard object grew. Keep the
+translation unit at `-Os`.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
