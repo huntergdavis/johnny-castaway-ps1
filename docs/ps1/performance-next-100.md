@@ -180,6 +180,12 @@ palette lookups did not matter enough to offset the pack growth
 (`2.16 MB -> 2.92 MB`) and extra CD pressure (`loop_reads 62 -> 85`,
 `blocking_vb 452 -> 712`). Future upload-ready work must be selective or
 compressed, not whole-payload 16bpp expansion.
+The current validated WALKSTUF1 pal4 packs also reject direct padded-FGP3
+conversion before runtime measurement. `build-fg3-temporal-residual-pack.py`
+expands both high and low payloads `1530775 -> 1712687`, so keeping the old
+`1535263` byte CD footprint would truncate real data. Do not retry pal4 padded
+FGP3 for WALKSTUF1 unless the encoder changes enough to prove the pack fits, or
+the experiment explicitly accepts a layout-moving pack and runs broad canaries.
 A VISITOR3-only `192 KiB` setup-prime cap is rejected. High tide traded lower
 blocking for worse loop/refill, and low tide regressed across all key metrics.
 Do not retry larger contiguous setup residency for VISITOR3; any preload work
@@ -803,6 +809,7 @@ near misses:
 | VISITOR3 low read group `182..194` | Do not promote or retry as a hand-coded group. It saved one read and lowered refill overrun, but regressed loop/blocking; require generated visible-cost scoring before more VISITOR3 groups. |
 | VISITOR3 high `163..175` / low `158..170` groups | Do not retry as standalone source tables. The generated visible-cost candidates produced `group_hits=0`; high had no key timing improvement and low regressed loop/blocking/refill. Require append-start ownership metadata or scheduler-owned preload before more VISITOR3 grouping. |
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
+| WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. Retry only with a new shrinking encoder or an explicit layout-moving pack experiment. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
 | Setup segment persistence cleanup | Do not retry alone. It was memory-safe in theory but regressed VISITOR3 high through code layout/cadence while only improving refill overrun. |
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
