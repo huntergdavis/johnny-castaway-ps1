@@ -11,7 +11,7 @@ image_alt: "FISHING 1 on PS1: Johnny casts a fishing line off the island, sun ov
 ---
 
 <figure class="scene-hero">
-  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
   <figcaption>FISHING 1 on PS1 hardware. The reference scene.</figcaption>
 </figure>
 ## What happens
@@ -41,15 +41,13 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 
 <figure>
   <img src="{{ '/assets/img/fishing1-ps1-night.png' | relative_url }}"
-       width="1127" height="677"
-       alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
+       width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
   <figcaption>FISHING 1 · night variant. Full moon, dark sky and water, the same cast pose against the moonlit shore.</figcaption>
 </figure>
 
 <figure>
   <img src="{{ '/assets/img/fishing1-ps1-raft.png' | relative_url }}"
-       width="1127" height="677"
-       alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
+       width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
   <figcaption>FISHING 1 · raft-stage variant. Same scene with the cumulative raft-build state at completion.</figcaption>
 </figure>
 
