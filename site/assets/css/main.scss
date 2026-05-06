@@ -763,3 +763,110 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   * { animation: none !important; transition: none !important; }
   .btn:hover { transform: none; }
 }
+
+/* ---------- Print ----------
+ * Optimized for the devlog and the long-form essays in /lab and
+ * /archaeology. Strips chrome (header / footer / nav / pagers /
+ * skip-link), forces black text on white, expands link URLs after
+ * each anchor so a printed page is self-referential, and drops the
+ * decorative wave rules in favor of a flat hairline. Page break
+ * hints keep code blocks and headings together. Pixel-art images
+ * keep their crisp edges; the wavy <hr> is decorative-only. */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #ffffff;
+    --fg: #000000;
+    --fg-mute: #444444;
+    --link: #000000;
+    --link-hov: #000000;
+    --rule-color: #000000;
+    --panel-bg: #ffffff;
+    --panel-fg: #000000;
+    --heading: #000000;
+    --accent: #000000;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-size: 11pt;
+    line-height: 1.45;
+  }
+
+  /* Strip chrome that's noise on paper. */
+  .skip-link,
+  .site-header,
+  .site-footer,
+  .site-nav,
+  .site-gh,
+  .scene-pager,
+  .post-source,
+  .hero-cta,
+  .editor-note { display: none; }
+
+  /* Decorative wave <hr> is image-driven; render as a flat rule. */
+  hr.rule, .rule {
+    background: none;
+    border: 0;
+    border-top: 1px solid #000;
+    height: 0;
+    margin: 0.8em 0;
+  }
+
+  /* Surface link targets next to the link text — readers of a paper
+     copy can follow up. Skip in-page anchors and javascript: noise. */
+  a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-family: var(--font-code);
+    font-size: 0.85em;
+    color: #444;
+    word-break: break-all;
+  }
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after,
+  a[href^="mailto:"]::after { content: ""; }
+
+  /* Keep headings with their following content; avoid orphan headers
+     stranded at the bottom of a printed page. */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  pre, blockquote, figure, table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Expand the page to use the full margin. */
+  .main { max-width: none; padding: 0; margin: 0; }
+  .page { max-width: none; }
+
+  /* Code blocks: black on white with a thin frame. */
+  pre {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #777;
+    border-left-width: 3px;
+  }
+  code {
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+
+  /* Image rendering: keep pixel art crisp at print resolution. */
+  img {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+  }
+
+  /* Article footer: drop the post-footer entirely, keep the title +
+     date that the page-header already prints. */
+  .post-footer { display: none; }
+}
