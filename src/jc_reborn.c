@@ -403,6 +403,52 @@ static int sceneExplorerOneShot = 0;
 static int storyCurrentSpot = -1;
 static int storyCurrentHdg  = -1;
 
+/* The walk renderer draws on top of the framebuffer left by the previous
+ * scene. A walk is only safe when the next scene uses exactly the same island
+ * backdrop state. Scene sequences can mix VARPOS_OK and fixed/left-island
+ * scenes without a sequence reset, so compare the actual backdrop key instead
+ * of trusting fgLoopSequenceJustReset alone. */
+static int storyWalkBackdropValid = 0;
+static int storyWalkLowTide = 0;
+static int storyWalkRaft = 0;
+static int storyWalkNight = 0;
+static int storyWalkHoliday = 0;
+static int storyWalkXPos = 0;
+static int storyWalkYPos = 0;
+
+static void fgLoopForgetWalkContext(void)
+{
+    storyCurrentSpot = -1;
+    storyCurrentHdg  = -1;
+    storyWalkBackdropValid = 0;
+}
+
+static int fgLoopWalkBackdropMatchesCurrent(void)
+{
+    return storyWalkBackdropValid &&
+           storyWalkLowTide == islandState.lowTide &&
+           storyWalkRaft == islandState.raft &&
+           storyWalkNight == islandState.night &&
+           storyWalkHoliday == islandState.holiday &&
+           storyWalkXPos == islandState.xPos &&
+           storyWalkYPos == islandState.yPos;
+}
+
+static void fgLoopRememberWalkBackdrop(const struct TStoryScene *scene)
+{
+    if (scene == NULL || !(scene->flags & ISLAND)) {
+        storyWalkBackdropValid = 0;
+        return;
+    }
+    storyWalkLowTide = islandState.lowTide;
+    storyWalkRaft = islandState.raft;
+    storyWalkNight = islandState.night;
+    storyWalkHoliday = islandState.holiday;
+    storyWalkXPos = islandState.xPos;
+    storyWalkYPos = islandState.yPos;
+    storyWalkBackdropValid = 1;
+}
+
 /* 11-day story-calendar progression (Phase 8). Loaded from memcard
  * on boot, advances when ps1Soft date rolls over (mirrors the host
  * engine's day-of-year tracker). The picker filters scenes whose
@@ -1776,8 +1822,7 @@ int main(int argc, char **argv)
                          pauseMenuSceneSetName(pauseMenuSceneSet));
                 captionsShowText(banner, 300);
             }
-            storyCurrentSpot = -1;
-            storyCurrentHdg  = -1;
+            fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
             skipWalkThisIteration = 1;
         }
@@ -1799,8 +1844,7 @@ int main(int argc, char **argv)
             if (idx >= 0 && idx < gSceneExplorerCount) {
                 explicitScene = gSceneExplorer[idx].slug;
                 sceneExplorerOneShot = oneShot;
-                storyCurrentSpot = -1;
-                storyCurrentHdg  = -1;
+                fgLoopForgetWalkContext();
                 fgLoopSequenceJustReset = 1;
                 skipWalkThisIteration = 1;
                 ps1PrepareSceneExplorerLaunch();
@@ -1850,19 +1894,21 @@ int main(int argc, char **argv)
              * just play this one anyway since fishing1/2 are dayNo=0. */
         }
 
-        /* Walk only when the story-sequence is continuing (same
-         * island position as the previous scene). On the iteration
-         * where position randomized, skip the walk — otherwise
-         * Johnny appears at the new island center before the new
-         * scene's bg has been loaded, producing a "teleport into
-         * water" visual followed by the bg redraw. */
+        /* Walk only when the story-sequence and the actual island backdrop
+         * are both continuing. Sequence reset catches deliberate rerolls;
+         * the backdrop key catches scene-specific policy changes inside the
+         * same sequence (e.g. VARPOS_OK -> fixed/left-island, NORAFT, tide,
+         * holiday). Without this, Johnny can draw at the new scene's walk
+         * coordinates over the previous scene's island, leaving water trails. */
         if (!skipWalkThisIteration &&
             !fgLoopSequenceJustReset &&
+            fgLoopWalkBackdropMatchesCurrent() &&
             !(storyScene && (storyScene->flags & FIRST))) {
             fgLoopWalkToScene(storyScene);
         } else {
-            /* New sequence or FIRST/full-wipe scene: don't walk, but still
-             * clear cached walk pixels before the FG2 scene owns the screen. */
+            /* New sequence/backdrop or FIRST/full-wipe scene: don't walk, but
+             * still clear cached walk pixels before the FG2 scene owns the
+             * screen. */
             walkRenderResetCache();
         }
 
@@ -1882,8 +1928,7 @@ int main(int argc, char **argv)
         if (freeplayExitRequested()) {
             freeplayClearExitRequest();
             explicitScene = NULL;       /* return to random story rotation */
-            storyCurrentSpot = -1;
-            storyCurrentHdg  = -1;
+            fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCFREE consume freeplay-exit\n");
@@ -1904,6 +1949,7 @@ int main(int argc, char **argv)
             !pauseMenuRequestFreeplay &&
             !pauseMenuRequestResetLoop) {
             fgLoopUpdatePosFromScene(storyScene);
+            fgLoopRememberWalkBackdrop(storyScene);
         }
 
         /* Scene Explorer one-shot pin: if Cross was pressed (oneShot=1),
@@ -1928,8 +1974,7 @@ int main(int argc, char **argv)
         }
         if (pauseMenuRequestFreeplay) {
             pauseMenuRequestFreeplay = 0;
-            storyCurrentSpot = -1;
-            storyCurrentHdg  = -1;
+            fgLoopForgetWalkContext();
             fgLoopSequenceJustReset = 1;
 #if JC_PAUSE_REQUEST_DIAG_LOGS
             printf("JCPAUSE consume freeplay direct\n");
