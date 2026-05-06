@@ -1,0 +1,48 @@
+---
+permalink: /devlog/feed.json
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  JSON Feed (jsonfeed.org/version/1.1) for the devlog. Lives next
+  to the Atom feed at /devlog/feed.xml. Hand-rolled, no plugin.
+
+  All URLs absolute via site.canonical_baseurl (the build's
+  --baseurl "" override blanks site.baseurl). Strings flow through
+  `jsonify` so titles or content with quotes/backslashes can't
+  break the JSON. Newest-first ordering matches site.posts.
+{%- endcomment -%}
+{%- assign site_root  = site.url | append: site.canonical_baseurl -%}
+{%- assign feed_url   = site_root | append: '/devlog/feed.json' -%}
+{%- assign devlog_url = site_root | append: '/devlog/' -%}
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": {{ site.title | append: ' — Devlog' | jsonify }},
+  "description": "Dated, unedited worklogs from the Johnny Castaway PS1 port. Dead ends preserved.",
+  "home_page_url": {{ devlog_url | jsonify }},
+  "feed_url": {{ feed_url | jsonify }},
+  "language": "en",
+  "authors": [
+    {
+      "name": {{ site.author | jsonify }},
+      "url": "https://hunterdavis.com/"
+    }
+  ],
+  "items": [
+    {%- for post in site.posts -%}
+    {%- assign post_abs = site_root | append: post.url -%}
+    {
+      "id": {{ post_abs | jsonify }},
+      "url": {{ post_abs | jsonify }},
+      "title": {{ post.title | jsonify }},
+      "date_published": "{{ post.date | date_to_xmlschema }}",
+      {%- if post.description %}
+      "summary": {{ post.description | strip_newlines | jsonify }},
+      {%- elsif post.editor_note %}
+      "summary": {{ post.editor_note | strip_newlines | jsonify }},
+      {%- endif %}
+      "content_html": {{ post.content | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor %}
+  ]
+}
