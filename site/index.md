@@ -107,7 +107,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/scenes/' | relative_url }}">Live scene ledger</a>
-    <p>All 63 scenes, current validation status, last-verified release tag, per-scene case studies.</p>
+    <p>All 63 scenes side-by-side under both bars — visual signoff and the headless-perf battle card — with per-scene case studies and a family jump nav.</p>
   </li>
   <li>
     <a href="{{ '/archaeology/' | relative_url }}">The full story</a>
@@ -127,7 +127,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Build, captions, holidays, pause menu, scripted input, regtest, the SDL2 → PSn00bSDK API mapping.</p>
+    <p>Build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, the SDL2 → PSn00bSDK API mapping, and a glossary.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>
