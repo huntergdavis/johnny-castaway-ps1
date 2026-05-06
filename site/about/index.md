@@ -105,6 +105,9 @@ A few things this project is deliberately not trying to be:
   the timeline. Pre-port era, first PS1 attempts, the hybrid
   pivot, the 63-scene grind, where it stands at
   `{{ site.release.tag }}`.
+- [/about/voice/]({{ '/about/voice/' | relative_url }}) -- the
+  editorial standard the prose on this site holds itself to.
+  Read it before writing a new page.
 - [/scenes/]({{ '/scenes/' | relative_url }}) -- live per-scene
   ledger. What's validated, what's in bring-up, what's blocked.
 - [/devlog/]({{ '/devlog/' | relative_url }}) -- the dated
