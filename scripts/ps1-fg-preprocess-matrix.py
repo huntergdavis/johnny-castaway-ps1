@@ -358,6 +358,9 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
     maxima = {
         "upload_bytes": 0,
         "upload_rects": 0,
+        "xband_align4_bytes": 0,
+        "xband_align4_rects": 0,
+        "exact_upload_intervals": 0,
         "restore_bytes": 0,
         "restore_intervals": 0,
     }
@@ -439,6 +442,12 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
         totals["xband_align4_cap_hits"] += xband.get("xband_cap_hits", 0)
         maxima["upload_bytes"] = max(maxima["upload_bytes"], full_upload["bytes"])
         maxima["upload_rects"] = max(maxima["upload_rects"], full_upload["rects"])
+        maxima["xband_align4_bytes"] = max(maxima["xband_align4_bytes"], xband["bytes"])
+        maxima["xband_align4_rects"] = max(maxima["xband_align4_rects"], xband["rects"])
+        maxima["exact_upload_intervals"] = max(
+            maxima["exact_upload_intervals"],
+            exact_upload_intervals,
+        )
         first = False
 
     upload_saved = totals["upload_bytes"] - totals["xband_align4_bytes"]
@@ -456,6 +465,10 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
         (upload_ready_payload - totals["payload_bytes"]) * 100.0 / totals["payload_bytes"]
         if totals["payload_bytes"] else 0.0
     )
+    xband_rect_pressure = (
+        totals["xband_align4_rects"] / len(active_entries(entries))
+        if active_entries(entries) else 0.0
+    )
 
     return {
         "magic": header.magic.decode("ascii"),
@@ -472,6 +485,7 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
         "upload_exact_saved_percent": exact_saved_percent,
         "upload_ready_payload_bytes": upload_ready_payload,
         "upload_ready_payload_growth_percent": payload_growth_percent,
+        "xband_align4_rect_pressure": xband_rect_pressure,
     }
 
 
@@ -519,13 +533,22 @@ def make_output_row(matrix_row: dict[str, str],
     totals = analysis["totals"]
     maxima = analysis["maxima"]
     visible_pressure = blocking_vb + prefetch_overrun_vb
+    active_frames = analysis["active_frames"]
+    xband_rect_pressure = (
+        totals["xband_align4_rects"] / active_frames
+        if active_frames else 0.0
+    )
     rank_score = (
         over_target_vb * (analysis["upload_xband_align4_saved_percent"] / 100.0) +
         visible_pressure * 0.25
     )
     notes = "candidate"
-    if analysis["upload_ready_payload_growth_percent"] > 500.0:
+    if totals["xband_align4_cap_hits"]:
+        notes = "x-band rect cap pressure; needs selective bands"
+    elif analysis["upload_ready_payload_growth_percent"] > 500.0:
         notes = "large upload-ready payload; needs compression/selective bands"
+    elif xband_rect_pressure > 6.0:
+        notes = "high x-band rect pressure; needs rect coalescing"
     elif matrix_row.get("status") != "measured":
         notes = "pending timing row; pack-only estimate"
 
@@ -551,8 +574,15 @@ def make_output_row(matrix_row: dict[str, str],
         "max_upload_bytes": maxima["upload_bytes"],
         "max_upload_rects": maxima["upload_rects"],
         "xband_align4_bytes": totals["xband_align4_bytes"],
+        "xband_align4_rects": totals["xband_align4_rects"],
+        "xband_align4_cap_hits": totals["xband_align4_cap_hits"],
+        "xband_align4_rect_pressure": round(analysis["xband_align4_rect_pressure"], 2),
+        "max_xband_align4_bytes": maxima["xband_align4_bytes"],
+        "max_xband_align4_rects": maxima["xband_align4_rects"],
         "xband_align4_saved_percent": round(analysis["upload_xband_align4_saved_percent"], 2),
         "exact_upload_bytes": totals["exact_upload_bytes"],
+        "exact_upload_intervals": totals["exact_upload_intervals"],
+        "max_exact_upload_intervals": maxima["exact_upload_intervals"],
         "exact_upload_saved_percent": round(analysis["upload_exact_saved_percent"], 2),
         "upload_ready_payload_bytes": analysis["upload_ready_payload_bytes"],
         "upload_ready_payload_growth_percent": round(analysis["upload_ready_payload_growth_percent"], 2),
@@ -607,12 +637,16 @@ def write_markdown(path: Path, rows: list[dict[str, Any]], csv_path: Path) -> No
     ]
     for idx, row in enumerate(top, 1):
         visible = safe_int(str(row["blocking_vb"])) + safe_int(str(row["prefetch_overrun_vb"]))
+        rect_pressure = row.get("xband_align4_rect_pressure", "")
+        note = row["notes"]
+        if rect_pressure != "":
+            note = f"{note}; rect/frame {rect_pressure}"
         lines.append(
             f"| {idx} | `{row['scene_slug']}` | `{row['tide']}` | "
             f"{row['rank_score']} | {row['over_target_percent']}% | "
             f"{row['xband_align4_saved_percent']}% | "
             f"{row['upload_ready_payload_growth_percent']}% | {visible} | "
-            f"{row['notes']} |"
+            f"{note} |"
         )
     lines.extend([
         "",
@@ -687,8 +721,15 @@ def main() -> None:
         "max_upload_bytes",
         "max_upload_rects",
         "xband_align4_bytes",
+        "xband_align4_rects",
+        "xband_align4_cap_hits",
+        "xband_align4_rect_pressure",
+        "max_xband_align4_bytes",
+        "max_xband_align4_rects",
         "xband_align4_saved_percent",
         "exact_upload_bytes",
+        "exact_upload_intervals",
+        "max_exact_upload_intervals",
         "exact_upload_saved_percent",
         "upload_ready_payload_bytes",
         "upload_ready_payload_growth_percent",

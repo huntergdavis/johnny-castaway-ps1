@@ -22,7 +22,7 @@ Status: generated host-side planning sheet
 |---|---:|
 | Source path | `docs/ps1/performance-preprocess-opportunities.md` |
 | Lines | 47 |
-| Approx. words | 419 |
+| Approx. words | 535 |
 | Code fences | 0 |
 
 ## Outline

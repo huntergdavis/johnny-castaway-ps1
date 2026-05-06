@@ -102,6 +102,11 @@ points** of over-target gap and added about **12.4 target-speed points**. The
 release also hardens randomized play by retrying BUILDING4-scale clean-rect
 allocation after releasing stale walk-clean memory pressure.
 
+Current performance work is focused on VISITOR3 and the remaining CD/graphics
+outliers. The preprocessing matrix now includes x-band rect/cap pressure, which
+keeps VISITOR3 first but requires selective upload-ready bands rather than a
+blanket pack conversion.
+
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
 (tide, raft, night, holiday, island X/Y) before allowing an inter-scene walk.

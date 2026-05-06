@@ -170,6 +170,12 @@ is unchanged because the row already sat at `1455/1010`, but active VISITOR3
 high CD pressure drops from `blocking_vb=363` and `loop_reads=53` to
 `blocking_vb=361` and `loop_reads=52`.
 
+The preprocessing opportunity matrix now includes x-band rect totals, cap
+hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the
+top graphics-preprocess target, but both tides show x-band cap pressure, so the
+next upload-ready experiment should be selective/thresholded rather than a
+blanket conversion.
+
 Milestone releases:
 - `v0.8.0-ps1` — complete-scene performance baseline. Keeps the 63/63
   visual + audible scene ledger intact, promotes the current 126-variant

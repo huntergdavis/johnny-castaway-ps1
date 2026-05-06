@@ -21,8 +21,8 @@ completed the current visual + audible validation sweep. The high/low packs were
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 489 |
-| Approx. words | 5343 |
+| Lines | 495 |
+| Approx. words | 5388 |
 | Code fences | 1 |
 
 ## Outline
