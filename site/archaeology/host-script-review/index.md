@@ -16,6 +16,13 @@ workflow. It is preserved here so the methodology that produced the
 is documented in concrete terms rather than only described in the
 [era timeline]({{ '/archaeology/timeline/' | relative_url }}).
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What's in there
 
 The bundle indexes itself through `manifest.json`, which lists two

@@ -25,6 +25,13 @@ identification report looked like, what the per-scene match quality
 was, and what a full regtest run of FISHING 1 produced when the
 classifier was the active validation surface.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What's preserved
 
 Three subdirectories, each with a different scope.

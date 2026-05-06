@@ -16,6 +16,13 @@ record, and a self-contained HTML viewer. The frame BMPs themselves
 repository tractable. The files in `docs/ps1/archaeology/regtest-references/`
 are the bookkeeping.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What this is
 
 When a host engine produces a scene capture — say, a fresh recording of

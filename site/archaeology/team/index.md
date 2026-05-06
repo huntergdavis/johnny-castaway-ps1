@@ -27,6 +27,13 @@ contributor actually did, because the line between "wrote it,"
 "authored the work it depends on," and "helped the author think"
 matters and is worth being honest about.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The author
 
 **Hunter Davis** wrote the PS1 port. That includes every line in

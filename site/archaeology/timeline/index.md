@@ -18,6 +18,13 @@ the foreground pilot started looking like the answer.
 
 <section class="chapter" markdown="1">
 <span class="chapter-num">2025-10-18 → 2026-03-16</span>
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Embedded port bootstrap and runtime survival
 
 This is the era of "make the console boot." Cross-compilation through
