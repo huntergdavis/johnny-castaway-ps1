@@ -143,18 +143,27 @@ order, with the same variants the original randomized between. The art
 is unchanged. The 4 original holiday decorations (Christmas, New Year,
 Halloween, St. Patrick's Day) keep their original sprites.
 
-**Added on top.** Freeplay/debug mode, where Johnny can be walked around
-the island directly with the controller and debug-selected gags, visitors,
-sound effects, holidays, tide, raft, and day/night state. Closed captions
-for every scene (off by default, in a
-[fresh-authored corpus]({{ '/docs/captions/' | relative_url }}) from
-scene content — not lifted from any prior project). A holiday calendar
-expanded from 4 to **36 holidays** with movable feasts computed by
-pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
-no expiring date tables. A pause menu with options toggles
-split into Freeplay Options, World Options, Accessibility, Sound Test,
-System, date/time editing, island-position nudging, and RNG seed override.
-The website credits and legal pages name exactly what's owed to whom.
+**Added on top.** [Story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+between scenes — Johnny no longer teleports; he walks the
+original Sierra route table from one scene's end to the next
+scene's start, with palm-tree occlusion and ocean animation
+preserved across the walk.
+[Freeplay/debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }}),
+where Johnny can be walked directly with the controller and
+debug-selected gags, visitors, sound effects, holidays, tide,
+raft, and day/night state. Closed captions for every scene (off
+by default, in a [fresh-authored corpus]({{ '/docs/captions/' | relative_url }})
+from scene content — not lifted from any prior project). A
+holiday calendar expanded from 4 to **36 holidays** with movable
+feasts computed by pure algorithm — Meeus for Easter,
+Nth-weekday-of-month for the rest, no expiring date tables. A
+pause menu reachable with Start (the original had none), with
+sub-screens for Scene Set, Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound
+Test, System, Set Time/Date, and Set RNG Seed. An optional
+ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
+transitions between scene swaps. The website credits and legal
+pages name exactly what's owed to whom.
 
 The full menu of what's added vs preserved lives at
 [/about/]({{ '/about/' | relative_url }}). The implementations live at
