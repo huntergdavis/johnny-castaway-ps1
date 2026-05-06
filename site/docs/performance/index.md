@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+9.1% over target /
-92.2% target speed** (`9.0942%` exact over target / `92.2322%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+7.8% over target /
+93.3% target speed** (`7.8267%` exact over target / `93.3111%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-05, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`mismatch-top-v072-current-refresh`,
 `stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
@@ -277,13 +278,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-05T23:34:06`; per-row freshness and stats version are shown on
+run is `2026-05-05T23:47:29`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `stand-family-v072-current-refresh`,
+rows now use `mismatch-top-v072-current-refresh`,
+`stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
 `visitor3-v072-prefetch-relief`,
@@ -308,8 +310,8 @@ rows are historical only.
 | `activity4` | +12.4% / 88.9% (1202/1069) | +12.4% / 88.9% (1202/1069) |
 | `activity5` | +9.4% / 91.4% (1867/1707); due 4; blk 27 | +9.0% / 91.8% (1860/1707); due 3; blk 26 |
 | `activity6` | +14.5% / 87.3% (1043/911) | +14.5% / 87.3% (1043/911) |
-| `activity7` | +21.3% / 82.4% (746/615) | +21.3% / 82.4% (746/615) |
-| `activity8` | +15.2% / 86.8% (1043/905) | +15.2% / 86.8% (1043/905) |
+| `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
+| `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
 | `activity9` | +10.4% / 90.6% (2259/2047); due 6; blk 84 | +11.2% / 90.0% (2272/2044); due 8; blk 94 |
 | `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
@@ -327,7 +329,7 @@ rows are historical only.
 | `fishing4` | +14.7% / 87.2% (967/843) | +14.7% / 87.2% (967/843) |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
 | `fishing6` | +18.2% / 84.6% (890/753) | +18.2% / 84.6% (890/753) |
-| `fishing7` | +18.3% / 84.5% (858/725) | +18.3% / 84.5% (858/725) |
+| `fishing7` | -1.4% / 101.4% (715/725) | -1.4% / 101.4% (715/725) |
 | `fishing8` | +11.9% / 89.4% (1393/1245); blk 13 | +10.1% / 90.8% (1380/1253) |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
 | `johnny2` | +0.6% / 99.4% (1761/1751); due 3; blk 16 | +0.5% / 99.5% (1758/1750); due 3; blk 16 |
@@ -358,7 +360,7 @@ rows are historical only.
 | `stand16` | +11.0% / 90.1% (1322/1191) | +11.1% / 90.0% (1323/1191) |
 | `suzy1` | metadata-only | metadata-only |
 | `suzy2` | metadata-only | metadata-only |
-| `visitor1` | +18.8% / 84.2% (804/677) | +17.3% / 85.3% (794/677) |
+| `visitor1` | -0.7% / 100.7% (672/677) | -0.7% / 100.7% (672/677) |
 | `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 363 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
 | `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
 | `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
