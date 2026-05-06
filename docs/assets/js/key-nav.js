@@ -29,6 +29,23 @@
     return el ? el.getAttribute("href") : null;
   }
 
+  /* Reveal the "← / → arrow keys also walk this list" hint, but only
+   * when this script is actually loaded — there's no point telling
+   * a no-JS reader the keys work. The hint is hidden in HTML by
+   * default and we drop the `hidden` attribute on init. */
+  function revealHints() {
+    if (!findRel("prev") && !findRel("next")) return;
+    var hints = document.querySelectorAll(".scene-pager-hint[hidden]");
+    for (var i = 0; i < hints.length; i++) {
+      hints[i].removeAttribute("hidden");
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", revealHints);
+  } else {
+    revealHints();
+  }
+
   document.addEventListener("keydown", function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
     if (isEditable(document.activeElement)) return;

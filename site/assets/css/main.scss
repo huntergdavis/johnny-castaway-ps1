@@ -726,6 +726,16 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   letter-spacing: 0.05em;
   color: var(--fg-mute);
 }
+.scene-pager-hint {
+  grid-column: 1 / -1;
+  margin: 0.5rem 0 0;
+  text-align: center;
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  color: var(--fg-mute);
+  font-style: normal;
+}
 @media (max-width: 32rem) {
   .scene-pager {
     grid-template-columns: 1fr 1fr;
@@ -734,6 +744,7 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   .scene-pager-prev { grid-column: 1; grid-row: 1; }
   .scene-pager-next { grid-column: 2; grid-row: 1; }
   .scene-pager-up   { grid-column: 1 / span 2; grid-row: 2; }
+  .scene-pager-hint { grid-column: 1 / -1; grid-row: 3; }
 }
 
 /* Per-post "view source" line beneath the devlog pager. */
