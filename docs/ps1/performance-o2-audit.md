@@ -5,17 +5,17 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-01T05:30:01+00:00` |
-| Branch | `ps1-perf-o2-sweep-20260430` |
-| Commit | `dde2af21` |
+| Generated at | `2026-05-06T13:48:06+00:00` |
+| Branch | `perf-headless-20260505` |
+| Commit | `5e599acca` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
-| PS-EXE bytes | `169984` |
-| PS-EXE sector bucket bytes | `169984` |
-| ELF bytes | `791808` |
-| Map bytes | `45253` |
+| PS-EXE bytes | `215040` |
+| PS-EXE sector bucket bytes | `215040` |
+| ELF bytes | `952312` |
+| Map bytes | `57408` |
 | Translation units at `-O2` | `10` |
-| Translation units at `-Os` | `13` |
+| Translation units at `-Os` | `16` |
 | Function-scoped optimize attributes | `4` |
 | Candidate CSV | [`docs/ps1/performance-o2-audit.csv`](performance-o2-audit.csv) |
 
@@ -23,59 +23,62 @@
 
 | Priority | Type | Target | Current | Symbol bytes | Source text bytes | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 10 | function | `grDrawBackground` | optimize("Os") | 1300 | 28372 | Test scoped helper at default -O2 |
-| 10 | function | `grUpdateDisplay` | optimize("Os") | 412 | 28372 | Test scoped helper at default -O2 |
-| 20 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 17044 | Test whole TU at default -O2 |
-| 21 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 6808 | Test whole TU at default -O2 |
+| 20 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 19764 | Test whole TU at default -O2 |
+| 21 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 8468 | Test whole TU at default -O2 |
 | 22 | translation_unit | `src/resource.c` | -Os | 0 | 1520 | Test whole TU at default -O2 |
-| 23 | translation_unit | `src/sound_ps1.c` | -Os | 0 | 1036 | Test whole TU at default -O2 |
-| 24 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3964 | Test whole TU at default -O2 |
-| 40 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 484 | 9360 | Retest only after graphics helper sweep |
-| 40 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 592 | 9360 | Retest only after graphics helper sweep |
-| 65 | translation_unit | `src/pause_menu.c` | -Os | 0 | 8092 | Test whole TU at default -O2 after hot sweep |
-| 66 | translation_unit | `src/ps1_captions.c` | -Os | 0 | 1160 | Test whole TU at default -O2 after hot sweep |
-| 67 | translation_unit | `src/memcard.c` | -Os | 0 | 2532 | Test whole TU at default -O2 after hot sweep |
-| 68 | translation_unit | `src/holidays.c` | -Os | 0 | 2292 | Test whole TU at default -O2 after hot sweep |
+| 23 | translation_unit | `src/sound_ps1.c` | -Os | 0 | 1880 | Test whole TU at default -O2 |
+| 24 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Test whole TU at default -O2 |
+| 40 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 592 | 9608 | Retest only after graphics helper sweep |
+| 65 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Test whole TU at default -O2 after hot sweep |
+| 66 | translation_unit | `src/ps1_captions.c` | -Os | 0 | 1208 | Test whole TU at default -O2 after hot sweep |
+| 67 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Test whole TU at default -O2 after hot sweep |
+| 68 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Test whole TU at default -O2 after hot sweep |
 | 69 | translation_unit | `src/ps1_debug.c` | -Os | 0 | 1752 | Test whole TU at default -O2 after hot sweep |
 | 70 | translation_unit | `src/ps1_stubs.c` | -Os | 0 | 240 | Test whole TU at default -O2 after hot sweep |
-| 71 | translation_unit | `src/utils.c` | -Os | 0 | 416 | Test whole TU at default -O2 after hot sweep |
+| 71 | translation_unit | `src/utils.c` | -Os | 0 | 448 | Test whole TU at default -O2 after hot sweep |
+| 72 | translation_unit | `src/island.c` | -Os | 0 | 612 | Test whole TU at default -O2 after hot sweep |
+| 80 | translation_unit | `src/ps1_pad_script.c` | -Os | 0 | 348 | Review TU optimization flag |
+| 80 | translation_unit | `src/scene_freeplay.c` | -Os | 0 | 9392 | Review TU optimization flag |
 
 ## Function-Scoped Flags
 
 | Location | Function | Current attribute |
 | --- | --- | --- |
 | `src/cdrom_ps1.c:818` | `ps1_streamReadFromCdFile` | `optimize("Os")` |
-| `src/cdrom_ps1.c:1050` | `ps1_streamReadAlignedFromCdFileInto` | `optimize("Os")` |
-| `src/graphics_ps1.c:827` | `grUpdateDisplay` | `optimize("Os")` |
-| `src/graphics_ps1.c:3804` | `grDrawBackground` | `optimize("Os")` |
+| `src/cdrom_ps1.c:1082` | `ps1_streamReadAlignedFromCdFileInto` | `optimize("Os")` |
+| `src/graphics_ps1.c:840` | `grUpdateDisplay` | `optimize("Os")` |
+| `src/graphics_ps1.c:4125` | `grDrawBackground` | `optimize("Os")` |
 
 ## Translation Unit Flags
 
 | Source | Final optimization | Object bytes | Optimization flags |
 | --- | --- | --- | --- |
 | `src/calcpath.c` | -O2 | 10224 | -O2 |
-| `src/cdrom_ps1.c` | -O2 | 152616 | -O2 |
-| `src/events_ps1.c` | -Os | 35280 | -O2 -Os |
-| `src/foreground_pilot.c` | -Os | 132768 | -O2 -Os |
-| `src/graphics_ps1.c` | -O2 | 284760 | -O2 |
-| `src/holidays.c` | -Os | 21544 | -O2 -Os |
+| `src/cdrom_ps1.c` | -O2 | 154868 | -O2 |
+| `src/events_ps1.c` | -Os | 36988 | -O2 -Os |
+| `src/foreground_pilot.c` | -Os | 152648 | -O2 -Os |
+| `src/graphics_ps1.c` | -O2 | 323320 | -O2 |
+| `src/holidays.c` | -Os | 25440 | -O2 -Os |
 | `src/holidays_table.c` | -O2 | 7456 | -O2 |
-| `src/island.c` | -Os | 20116 | -O2 -Os |
-| `src/jc_reborn.c` | -Os | 66328 | -O2 -Os |
-| `src/memcard.c` | -Os | 25648 | -O2 -Os |
-| `src/pause_menu.c` | -Os | 66732 | -O2 -Os |
-| `src/ps1_captions.c` | -Os | 25016 | -O2 -Os |
+| `src/island.c` | -Os | 20152 | -O2 -Os |
+| `src/jc_reborn.c` | -Os | 94496 | -O2 -Os |
+| `src/memcard.c` | -Os | 28716 | -O2 -Os |
+| `src/pause_menu.c` | -Os | 123332 | -O2 -Os |
+| `src/ps1_captions.c` | -Os | 28180 | -O2 -Os |
 | `src/ps1_debug.c` | -Os | 22348 | -O2 -Os |
+| `src/ps1_pad_script.c` | -Os | 11604 | -O2 -Os |
 | `src/ps1_perf.c` | -O2 | 61400 | -O2 |
 | `src/ps1_stubs.c` | -Os | 16640 | -O2 -Os |
 | `src/resource.c` | -Os | 31584 | -O2 -Os |
-| `src/sound_ps1.c` | -Os | 13032 | -O2 -Os |
-| `src/spi.c` | -O2 | 18972 | -O2 |
+| `src/scene_freeplay.c` | -Os | 86108 | -O2 -Os |
+| `src/scene_picker.c` | -Os | 26812 | -O2 -Os |
+| `src/sound_ps1.c` | -Os | 20544 | -O2 -Os |
+| `src/spi.c` | -O2 | 19020 | -O2 |
 | `src/uncompress.c` | -O2 | 16100 | -O2 |
-| `src/utils.c` | -Os | 20600 | -O2 -Os |
-| `src/walk.c` | -O2 | 17960 | -O2 |
-| `src/walk_pilot.c` | -O2 | 25904 | -O2 |
-| `src/walk_render.c` | -O2 | 9424 | -O2 |
+| `src/utils.c` | -Os | 21444 | -O2 -Os |
+| `src/walk.c` | -O2 | 17940 | -O2 |
+| `src/walk_pilot.c` | -O2 | 21244 | -O2 |
+| `src/walk_render.c` | -O2 | 9084 | -O2 |
 
 ## Acceptance Notes
 

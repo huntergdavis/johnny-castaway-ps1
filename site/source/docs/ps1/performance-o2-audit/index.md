@@ -21,8 +21,8 @@ normal headless perf gate.
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-o2-audit.md` |
-| Lines | 88 |
-| Approx. words | 586 |
+| Lines | 91 |
+| Approx. words | 609 |
 | Code fences | 0 |
 
 ## Outline

@@ -116,6 +116,12 @@ no timing movement.
 Function-scoped `-Os` on the aligned CD read helper is accepted: it keeps
 exact cadence flat while shrinking the public aligned-read wrapper to 8 bytes
 and ELF to `712556`.
+The current v0.7.2 default-`O2` retest of that same aligned helper is rejected:
+exact canaries stayed key-flat except one BUILDING2 blocking-only VBlank in the
+partial run, while `ps1_streamReadAlignedIntoFile` grew by `+524` bytes and the
+ELF grew `952312 -> 952488`. Keep the helper at function-scoped `-Os` until CD
+helper splitting, async/scheduler ownership, or generated read metadata changes
+the active helper shape.
 Function-scoped `-Os` on the unbuffered stream-read helper is accepted too,
 shrinking that setup-facing helper by 56 bytes and ELF to `712524` with exact
 playback identity.
@@ -800,7 +806,7 @@ near misses:
 | Post-dirty raw window retune | Do not retry raw `18-20 KB` windows blindly; `20 KB` regressed and the 9-sector rounded window shape crashed before metrics. Use generated group metadata/cost prediction first. |
 | Aligned CD file-LBA cache | Done; keep because it shrank the active aligned read helper and ELF with exact timing/layout identity. |
 | Aligned CD single-chunk fast path | Do not retry as a duplicated branch; it grew the helper by 104 bytes without moving timing. |
-| Aligned CD helper function-scoped `Os` | Done; keep because it shrank the aligned-read path and ELF with exact timing/layout identity. |
+| Aligned CD helper function-scoped `Os` | Done; keep because it shrank the aligned-read path and ELF with exact timing/layout identity. The current v0.7.2 default-`O2` retest grew the helper by `+524` bytes and stayed key-flat, so do not retest without a changed CD helper/scheduler shape. |
 | Buffered CD helper function-scoped `Os` | Do not retry alone; it grew the ELF and did not shrink the helper. |
 | Fallthrough slack `5` after CD helper cleanup | Do not retry as a local guard change; it regressed `blocking_vb` and `prefetch_overrun_vb` to `10`. |
 | Fallthrough slack `7` after CD helper cleanup | Do not retry as a local guard change; it failed before metrics with log overflow/regtest `137`. |

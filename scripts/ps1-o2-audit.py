@@ -57,6 +57,21 @@ CD_HELPERS = {
     "ps1_streamReadAlignedFromCdFileInto",
 }
 
+REJECTED_DEFAULT_O2_FUNCTIONS = {
+    "grDrawBackground": (
+        "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
+        "The current retest grew the upload helper by 504 bytes and did not improve loop timing.",
+    ),
+    "grUpdateDisplay": (
+        "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
+        "The current retest grew the display wrapper by 40 bytes and did not improve key timing.",
+    ),
+    "ps1_streamReadAlignedFromCdFileInto": (
+        "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
+        "The current retest grew the active aligned-read helper by 524 bytes and stayed key-flat.",
+    ),
+}
+
 
 def relpath(path_text: str) -> str:
     if not path_text:
@@ -177,6 +192,9 @@ def classify_tu(source: str) -> str:
 
 
 def priority_for_function(function: str, source: str) -> tuple[int, str, str]:
+    if function in REJECTED_DEFAULT_O2_FUNCTIONS:
+        action, reason = REJECTED_DEFAULT_O2_FUNCTIONS[function]
+        return (90, action, reason)
     if function in GRAPHICS_HELPERS:
         return (
             10,
@@ -284,7 +302,7 @@ def write_csv(path: Path, candidates: list[dict[str, object]]) -> None:
         "reason",
     ]
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows({field: row.get(field, "") for field in fields} for row in candidates)
 
