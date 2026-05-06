@@ -20,10 +20,13 @@
 
   {%- comment -%}
     Forensic build stamp. Lets anyone debugging a deployed page see
-    which release line built it and when. Format mirrors the Jekyll
-    convention (one space-separated string).
+    which release line built it and roughly when. Date-only (not
+    timestamp) on purpose: with second precision every site build
+    re-diffs all 587 HTMLs even when the content delta is one line
+    of CSS, which makes git history noisy. Day granularity preserves
+    forensic value while keeping in-day commits byte-stable.
   {%- endcomment -%}
-  <meta name="generator" content="Jekyll {{ jekyll.version }}; johnny-castaway-ps1 v{{ site.release.version }}; built {{ site.time | date: '%Y-%m-%dT%H:%M:%S%z' }}" />
+  <meta name="generator" content="Jekyll {{ jekyll.version }}; johnny-castaway-ps1 v{{ site.release.version }}; built {{ site.time | date: '%Y-%m-%d' }}" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />

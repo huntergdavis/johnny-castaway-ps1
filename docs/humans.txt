@@ -31,7 +31,7 @@ BigSoundBank sound 0266 (CC0)       — ocean ambience loop source.
                        /* this site */
 
 Last release    : v0.7.2-ps1
-Built           : 2026-05-06T01:23:38-0400
+Built           : 2026-05-06
 Validated       : 63 of 63 scenes
 Standards       : HTML5, CSS3, Atom 1.0, Schema.org JSON-LD
 Engine          : Jekyll 4.4.1 (no plugins beyond
