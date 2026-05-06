@@ -325,7 +325,7 @@ fi
 if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "activity1" ]; then
   # The end score-card gag existed but read too quickly after a long blank
   # beat. The actual animal score-card pose is source frame 758.
-  HOLD_ADJUSTMENTS="754:+24 756:+24 758:+160"
+  HOLD_ADJUSTMENTS="758:+208"
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \

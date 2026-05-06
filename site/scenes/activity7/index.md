@@ -4,11 +4,15 @@ title: ACTIVITY 7 — Bathes; seagull steals clothes
 ads: ACTIVITY
 tag: 7
 slug: activity7
-status: pending
-description: "ACTIVITY.ADS scene 7: Bathes; seagull steals clothes. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 7: Bathes; seagull steals clothes. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff after re-exporting
+high/low packs through the no-stitch fast path with frame-wide keyed
+overlay — fixes ghosted Johnny pose residue on the right side of the
+island from base-diff against the static-Johnny base.
 
 ## Pack identifiers
 
