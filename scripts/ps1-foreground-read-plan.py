@@ -115,6 +115,63 @@ def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
     return "medium-validate-phase"
 
 
+def gap_slack_class(gap_s: float | None) -> str:
+    if gap_s is None:
+        return "unknown"
+    if gap_s < 0.20:
+        return "tight"
+    if gap_s < 0.50:
+        return "short"
+    if gap_s < 1.00:
+        return "medium"
+    return "long"
+
+
+def read_seek_direction(reads: list[dict[str, Any]]) -> str:
+    lbas = [
+        int(segment["lba"])
+        for segment in reads
+        if isinstance(segment.get("lba"), int)
+    ]
+    if len(lbas) < 2:
+        return "single-or-unknown"
+
+    deltas = [later - earlier for earlier, later in zip(lbas, lbas[1:])]
+    if all(delta >= 0 for delta in deltas):
+        return "forward"
+    if all(delta <= 0 for delta in deltas):
+        return "reverse"
+    return "mixed"
+
+
+def visible_cd_cost_class(saved_reads: int,
+                          append_start_fireable: bool,
+                          first_gap_class: str,
+                          internal_gap_class: str,
+                          partial_touch_count: int,
+                          overread_sectors: int,
+                          seek_direction: str) -> str:
+    if saved_reads <= 0:
+        return "reject:no-saved-read"
+    if not append_start_fireable:
+        return "reject:no-observed-append-start"
+    if first_gap_class == "tight" or internal_gap_class == "tight":
+        return "unsafe:tight-visible-gap"
+    if seek_direction in ("reverse", "mixed"):
+        return "risky:seek-direction"
+    if partial_touch_count >= 2:
+        return "risky:multi-partial-overlap"
+    if overread_sectors > 4:
+        return "risky:overread"
+    if first_gap_class == "short" or internal_gap_class == "short":
+        return "risky:short-visible-gap"
+    if partial_touch_count > 0 or overread_sectors > 0:
+        return "balanced:validate-overlap"
+    if first_gap_class == "long" and internal_gap_class in ("long", "medium", "unknown"):
+        return "safe:long-visible-gap"
+    return "balanced:medium-visible-gap"
+
+
 def candidate_visible_cost(start: int, end: int,
                            fully_covered_reads: list[dict[str, Any]],
                            touched_reads: list[dict[str, Any]],
@@ -140,6 +197,18 @@ def candidate_visible_cost(start: int, end: int,
     )
     group_sectors = end - start
     overread_sectors = max(0, group_sectors - observed_sectors)
+    first_gap_class = gap_slack_class(first_gap)
+    internal_gap_class = gap_slack_class(min_internal_gap)
+    seek_direction = read_seek_direction(fully_covered_reads)
+    visible_cd_class = visible_cd_cost_class(
+        saved_reads,
+        append_start_fireable,
+        first_gap_class,
+        internal_gap_class,
+        partial_touch_count,
+        overread_sectors,
+        seek_direction,
+    )
 
     risk = 0
     reasons: list[str] = []
@@ -194,6 +263,10 @@ def candidate_visible_cost(start: int, end: int,
         "visible_safety_score": safety_score,
         "visible_risk_score": risk,
         "visible_risk_hint": hint,
+        "visible_cd_cost_class": visible_cd_class,
+        "first_gap_slack_class": first_gap_class,
+        "internal_gap_slack_class": internal_gap_class,
+        "read_seek_direction": seek_direction,
         "visible_risk_reasons": reasons,
         "partial_touch_count": partial_touch_count,
         "observed_read_sectors": observed_sectors,
@@ -1021,12 +1094,14 @@ def print_human(report: dict[str, Any]) -> None:
                 f"{item['start_sector']}:{item['end_sector']} "
                 f"score={item['visible_safety_score']} "
                 f"hint={item['visible_risk_hint']} "
+                f"cd={item.get('visible_cd_cost_class')} "
                 f"saved={item['estimated_saved_reads']} "
                 f"risk={item['visible_risk_score']} "
                 f"partial={item['partial_touch_count']} "
                 f"overread={item['group_overread_sectors']} "
                 f"first_gap={first_gap} "
                 f"internal_min={internal_min} "
+                f"seek={item.get('read_seek_direction')} "
                 f"fire={'yes' if item['append_start_fireable'] else 'no'} "
                 f"fit={'yes' if item.get('runtime_current_group_fit') else 'no'} "
                 f"class={item.get('runtime_metadata_class')} "

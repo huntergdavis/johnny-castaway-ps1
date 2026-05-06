@@ -107,9 +107,10 @@ work without changing the runtime baseline.
 
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
-candidates by observed append-start ownership plus current grouped-read
-capacity. That makes stale-baseline comparisons and no-op read groups visible
-before a runtime source edit.
+candidates by observed append-start ownership, current grouped-read capacity,
+and visible-CD cost class. That makes stale-baseline comparisons, no-op read
+groups, and tight visible-cluster candidates visible before a runtime source
+edit.
 
 ## Experiments that didn't work
 
