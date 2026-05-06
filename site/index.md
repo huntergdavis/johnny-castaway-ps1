@@ -137,6 +137,10 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
     <a href="{{ '/resources/' | relative_url }}">Resource catalog</a>
     <p>Bitmap, ADS, TTM, sound, sprite-bank, and foreground-pack inventory with direct source links.</p>
   </li>
+  <li>
+    <a href="{{ '/about/dev-environment/' | relative_url }}">The dev environment, photographed</a>
+    <p>One screenshot, six windows: the Dunking Bird auto-poker, the fresh editor, two LLM sub-agents (Claude + Codex), DuckStation running the latest build, and bottom-monitor telemetry — KDE Plasma on KDE Neon.</p>
+  </li>
 </ul>
 
 <section class="page" markdown="1">
