@@ -18,6 +18,13 @@
   <meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="{{ '/assets/img/branding/twitter-card.png' | relative_url }}" />
 
+  {%- comment -%}
+    Forensic build stamp. Lets anyone debugging a deployed page see
+    which release line built it and when. Format mirrors the Jekyll
+    convention (one space-separated string).
+  {%- endcomment -%}
+  <meta name="generator" content="Jekyll {{ jekyll.version }}; johnny-castaway-ps1 v{{ site.release.version }}; built {{ site.time | date: '%Y-%m-%dT%H:%M:%S%z' }}" />
+
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
