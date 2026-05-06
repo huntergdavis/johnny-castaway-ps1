@@ -260,6 +260,13 @@ hr.rule, .rule {
   max-width: 60ch;
   margin: 0.4rem 0 0;
 }
+.reading-time {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0;
+}
 
 /* ---------- Header ---------- */
 .site-header {

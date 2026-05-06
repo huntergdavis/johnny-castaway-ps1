@@ -6,7 +6,24 @@ layout: default
     <header class="page-header">
       {% if page.eyebrow %}<p class="eyebrow">{{ page.eyebrow }}</p>{% endif %}
       <h1>{{ page.title }}</h1>
-      {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+      {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}{% comment %}
+        Reading-time hint on lab essays. Lab pages are long-form by
+        design, so a quick "X min read" anchored in word count gives
+        readers a sense of commitment before they scroll. Computed
+        from `content | strip_html | number_of_words` divided by 250
+        (a typical reading speed). Floored at 1 min so a short
+        section header still reads sensibly. No whitespace-trim on
+        the outer if/endif: pages that don't take this branch must
+        stay byte-identical so unrelated commits don't churn 500+
+        HTMLs.
+      {% endcomment %}{% if page.url contains '/lab/' and page.url != '/lab/' %}
+        {%- assign reading_words = content | strip_html | number_of_words -%}
+        {%- assign reading_min = reading_words | divided_by: 250 -%}
+        {%- if reading_min < 1 %}{% assign reading_min = 1 %}{% endif %}
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~{{ reading_min }} min read · {{ reading_words }} words
+        </p>
+      {% endif %}
       <hr class="rule" />
     </header>
   {% endif %}
