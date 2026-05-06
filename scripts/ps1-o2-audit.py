@@ -133,6 +133,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked CD helper symbols by 36 bytes with no work or speed win.",
     ),
+    "src/scene_freeplay.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and gave no active-scene timing win.",
+    ),
 }
 
 

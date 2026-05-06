@@ -171,6 +171,10 @@ The current v0.8.0 default-`O2` retest of `src/ps1_pad_script.c` is rejected:
 FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954248` and
 tracked CD helper symbols shifted by `+36` bytes. Keep the translation unit at
 `-Os`.
+The current v0.8.0 default-`O2` retest of `src/scene_freeplay.c` is rejected:
+it grew the PS-EXE bucket `215040 -> 217088`, shifted `FISHING1.FG2` LBA
+`434 -> 435`, and grew ELF `954192 -> 960236` with no timing win. Keep the
+translation unit at `-Os`.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
