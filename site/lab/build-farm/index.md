@@ -32,6 +32,7 @@ pack-format or scheduler change.
 
 ## Pointers
 
+- [The dev environment, photographed]({{ '/about/dev-environment/' | relative_url }}) — the farm's bottom-monitor panel in the same field of view as the rest of the workflow.
 - [Scene ledger + perf battle card]({{ '/scenes/' | relative_url }})
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)

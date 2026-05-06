@@ -113,6 +113,8 @@ long as it did.
 
 ## Cross-links
 
+- [The dev environment, photographed]({{ '/about/dev-environment/' | relative_url }}) —
+  the bird mid-double-dunk, in context with the rest of the workflow.
 - [The LLM pass]({{ '/lab/llm-pass/' | relative_url }}) — what the
   pair-programming loop actually does between dunking-bird ticks.
 - [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }}) —
