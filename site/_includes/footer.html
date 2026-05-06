@@ -21,6 +21,12 @@
           &nbsp;·&nbsp;
           <a href="{{ '/humans.txt' | relative_url }}" type="text/plain">humans.txt</a>
         </p>
+        {%- if page.path -%}
+        <p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="{{ site.github_url }}/edit/main/site/{{ page.path }}" rel="noopener">Edit this page on GitHub</a> →
+        </p>
+        {%- endif -%}
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
