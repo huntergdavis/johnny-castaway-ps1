@@ -29,6 +29,15 @@
   {%- else -%}
     {%- assign tw_image = '/assets/img/branding/twitter-card.png' | relative_url -%}
   {%- endif -%}
+  {%- comment -%}
+    Canonical URL: absolute via site.canonical_baseurl (the build's
+    `--baseurl ""` blanks site.baseurl, so Jekyll's `absolute_url`
+    filter gives the wrong domain — same problem the 404 page,
+    feeds, and JSON-LD work around). Search engines use this to
+    deduplicate the project page from its user-pages-root sibling.
+  {%- endcomment -%}
+  <link rel="canonical" href="{{ site.url }}{{ site.canonical_baseurl }}{{ page.url }}" />
+
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
   <meta property="og:type"         content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
