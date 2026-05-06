@@ -22,8 +22,50 @@ layout: default
 
   <footer class="post-footer">
     <hr class="rule" />
-    <p>
-      <a href="{{ '/scenes/' | relative_url }}">← back to scene ledger</a>
-    </p>
+
+    {%- comment -%}
+      Walk the catalog: prev/next within the same sort the ledger uses
+      (by tag, then ads — Liquid `sort` is stable so the second sort wins
+      as the outer key, matching scenes/index.md). Single-pass: keep
+      track of the most-recent-before-match as `prev`, set `reached`
+      on match, and grab the very next iteration's scene as `next`.
+    {%- endcomment -%}
+    {%- assign sorted_scenes = site.data.scenes | sort: "tag" | sort: "ads" -%}
+    {%- assign scene_prev = nil -%}
+    {%- assign scene_next = nil -%}
+    {%- assign scene_reached = false -%}
+    {%- for s in sorted_scenes -%}
+      {%- if scene_reached and scene_next == nil -%}
+        {%- assign scene_next = s -%}
+      {%- elsif s.slug == page.slug -%}
+        {%- assign scene_reached = true -%}
+      {%- elsif scene_reached == false -%}
+        {%- assign scene_prev = s -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <nav class="scene-pager" aria-label="Scene navigation">
+      <div class="scene-pager-prev">
+        {% if scene_prev %}
+          <a href="{{ '/scenes/' | append: scene_prev.slug | append: '/' | relative_url }}"
+             rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← prev</span>
+            <span class="scene-pager-tag">{{ scene_prev.ads }} {{ scene_prev.tag }}</span>
+          </a>
+        {% endif %}
+      </div>
+      <div class="scene-pager-up">
+        <a href="{{ '/scenes/' | relative_url }}">↑ scene ledger</a>
+      </div>
+      <div class="scene-pager-next">
+        {% if scene_next %}
+          <a href="{{ '/scenes/' | append: scene_next.slug | append: '/' | relative_url }}"
+             rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">next →</span>
+            <span class="scene-pager-tag">{{ scene_next.ads }} {{ scene_next.tag }}</span>
+          </a>
+        {% endif %}
+      </div>
+    </nav>
   </footer>
 </article>
