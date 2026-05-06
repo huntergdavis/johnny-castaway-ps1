@@ -126,6 +126,7 @@ the project, running it, and the original game.</p>
       <li><a href="#do-i-need-original-sierra-files" id="markdown-toc-do-i-need-original-sierra-files">Do I need original Sierra files?</a></li>
       <li><a href="#does-it-work-on-real-ps1-hardware" id="markdown-toc-does-it-work-on-real-ps1-hardware">Does it work on real PS1 hardware?</a></li>
       <li><a href="#which-emulators-are-supported" id="markdown-toc-which-emulators-are-supported">Which emulators are supported?</a></li>
+      <li><a href="#does-it-run-at-native-rate" id="markdown-toc-does-it-run-at-native-rate">Does it run at native rate?</a></li>
       <li><a href="#where-do-i-file-bugs" id="markdown-toc-where-do-i-file-bugs">Where do I file bugs?</a></li>
     </ul>
   </li>
@@ -212,6 +213,21 @@ Your mileage may vary; treat any boot success as a small miracle.</p>
 <p>DuckStation is the only one tested every commit. PCSX-Redux
 should work. ePSXe is unverified. The release smoke gauntlet
 runs in headless DuckStation, so that one is the reference.</p>
+
+<h3 id="does-it-run-at-native-rate">Does it run at native rate?</h3>
+
+<p>At v0.8.0-ps1 the headless-perf battle card averages
+<strong>99.5% target speed</strong> across
+the 120 timing-bearing scene/tide rows — close enough that most
+scenes hit their original frame budget on PS1 hardware. The
+remaining gap is concentrated in a small set of high-leverage
+scenes (wide-action, clean-rect-heavy frames) and is the active
+work between milestone tags. The
+<a href="../scenes/">scene ledger</a> shows the
+per-scene battle card; the
+<a href="../lab/from-87-to-99-5/">retrospective</a>
+walks through how the matrix moved here from the compact
+baseline of 87.1%.</p>
 
 <h3 id="where-do-i-file-bugs">Where do I file bugs?</h3>
 

@@ -91,6 +91,21 @@ DuckStation is the only one tested every commit. PCSX-Redux
 should work. ePSXe is unverified. The release smoke gauntlet
 runs in headless DuckStation, so that one is the reference.
 
+### Does it run at native rate?
+
+At {{ site.release.tag }} the headless-perf battle card averages
+**{{ site.release.perf_target_speed_pct }}% target speed** across
+the 120 timing-bearing scene/tide rows — close enough that most
+scenes hit their original frame budget on PS1 hardware. The
+remaining gap is concentrated in a small set of high-leverage
+scenes (wide-action, clean-rect-heavy frames) and is the active
+work between milestone tags. The
+[scene ledger]({{ '/scenes/' | relative_url }}) shows the
+per-scene battle card; the
+[retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+walks through how the matrix moved here from the compact
+baseline of 87.1%.
+
 ### Where do I file bugs?
 
 If you must, the issue tracker is at
