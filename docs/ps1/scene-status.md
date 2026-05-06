@@ -12,15 +12,15 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 61 / 63 (next: activity1; activity9 deferred)
+## Progress: 62 / 63 (next: activity9)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.6.12-ps1`.
+current public release is `v0.6.13-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|
-| ACTIVITY | 1 | activity1 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 1 | activity1 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after rebuilding high/low packs from a capped two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`); source frames `148` and `348` hold the animal scorecards, and `patch-activity1-tree-foreground.py` keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops |
 | ACTIVITY | 4 | activity4 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the existing on-disc ACTIVITY4.FG2 / ACTV4LOW.FG2 packs (no rework); high-tide nighttime route, reads-with-seagull-on-head |
 | ACTIVITY | 5 | activity5 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the climb/look/dive gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff so the storm-cloud thought bubble + connector dots survive, lower third on keyed overlay so the dive splash band cleans up without ghost trails), single-position capture; hold time on source frame 46 (+30 vblanks) so the bubble is readable |
 | ACTIVITY | 6 | activity6 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop |

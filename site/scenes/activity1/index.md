@@ -4,11 +4,16 @@ title: ACTIVITY 1 — Climbs the palm and dives
 ads: ACTIVITY
 tag: 1
 slug: activity1
-status: pending
-description: "ACTIVITY.ADS scene 1: Climbs the palm and dives. Not yet validated."
+status: validated
+description: "ACTIVITY.ADS scene 1: Climbs the palm and dives. Validated on PS1."
 ---
 
-Not yet validated.
+Validated on 2026-05-05 after rebuilding high/low packs from a capped
+two-beat story capture (`FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES=400`).
+Source frames `148` and `348` hold the animal scorecards, and
+`patch-activity1-tree-foreground.py` keys foreground-only tree-band
+contamination against the full-host composite so the pre-pop hat/white
+pixels and tree-occlusion ghosts are gone in both loops.
 
 ## Pack identifiers
 
@@ -36,6 +41,5 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+See [the method]({{ '/about/method/' | relative_url }}) for the longer
+version of the validation process.

@@ -433,7 +433,7 @@ for the practical porting path.
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
-<tr><td><code>ACTIVITY1.FG2</code></td><td>514,874</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
+<tr><td><code>ACTIVITY1.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY10.FG2</code></td><td>280,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY11.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY11.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY12.FG2</code></td><td>338,314</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY12.FG2">source</a></td></tr>
@@ -446,7 +446,7 @@ for the practical porting path.
 <tr><td><code>ACTV10L.FG2</code></td><td>302,878</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV10L.FG2">source</a></td></tr>
 <tr><td><code>ACTV11L.FG2</code></td><td>433,970</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV11L.FG2">source</a></td></tr>
 <tr><td><code>ACTV12L.FG2</code></td><td>363,249</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV12L.FG2">source</a></td></tr>
-<tr><td><code>ACTV1LOW.FG2</code></td><td>514,874</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
+<tr><td><code>ACTV1LOW.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV1LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV4LOW.FG2</code></td><td>200,222</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV4LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV5LOW.FG2</code></td><td>385,793</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV5LOW.FG2">source</a></td></tr>
 <tr><td><code>ACTV6LOW.FG2</code></td><td>170,404</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTV6LOW.FG2">source</a></td></tr>

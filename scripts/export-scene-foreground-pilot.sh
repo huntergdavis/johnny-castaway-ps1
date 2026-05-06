@@ -323,9 +323,16 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor7" ]; then
   HOLD_ADJUSTMENTS="32:+8 39:-8 62:+8 65:-8 71:+8 74:-8 80:+8 85:-8"
 fi
 if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "activity1" ]; then
-  # The end score-card gag existed but read too quickly after a long blank
-  # beat. The actual animal score-card pose is source frame 758.
-  HOLD_ADJUSTMENTS="758:+208"
+  # ACTIVITY 1 has two score-card beats in the capped story capture. Hold both
+  # animal score-card poses long enough for the gag to read.
+  HOLD_ADJUSTMENTS="148:+208 348:+208"
+fi
+capture_stop_args=(--until-exit)
+if [ "$SCENE_SLUG" = "activity1" ]; then
+  # The host story-single route repeats this gag if left to run until process
+  # exit. Capture the two signed-off beats and stop at a clean loop boundary.
+  ACTIVITY1_CAPTURE_FRAMES="${FG_EXPORT_ACTIVITY1_CAPTURE_FRAMES:-400}"
+  capture_stop_args=(--frames "$ACTIVITY1_CAPTURE_FRAMES")
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
@@ -340,7 +347,7 @@ rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   --seed 1 \
   --start-frame "$START_FRAME" \
   --interval 1 \
-  --until-exit \
+  "${capture_stop_args[@]}" \
   --no-stamp \
   --lowtide 0 \
   --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -354,7 +361,7 @@ rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
   --seed 1 \
   --start-frame "$START_FRAME" \
   --interval 1 \
-  --until-exit \
+  "${capture_stop_args[@]}" \
   --no-stamp \
   --lowtide 1 \
   --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -391,7 +398,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
     --seed 1 \
     --start-frame "$START_FRAME" \
     --interval 1 \
-    --until-exit \
+    "${capture_stop_args[@]}" \
     --no-stamp \
     --lowtide 0 \
     --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -407,7 +414,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
     --seed 1 \
     --start-frame "$START_FRAME" \
     --interval 1 \
-    --until-exit \
+    "${capture_stop_args[@]}" \
     --no-stamp \
     --lowtide 1 \
     --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -426,7 +433,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 0 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -442,7 +449,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 1 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -458,7 +465,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 0 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -474,7 +481,7 @@ if [ -n "$KEYED_OVERLAY_RECT" ]; then
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 1 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -754,7 +761,7 @@ PY
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 0 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -770,7 +777,7 @@ PY
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 1 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -786,7 +793,7 @@ PY
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 0 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \
@@ -802,7 +809,7 @@ PY
       --seed 1 \
       --start-frame "$START_FRAME" \
       --interval 1 \
-      --until-exit \
+      "${capture_stop_args[@]}" \
       --no-stamp \
       --lowtide 1 \
       --raft-stage "$CAPTURE_RAFT_STAGE" \

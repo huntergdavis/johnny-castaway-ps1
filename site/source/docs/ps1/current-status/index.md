@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay — fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop. Earlier this push: ACTIVITY 4 was validated on the existing on-disc packs (no rework). ACTIVITY 5 was validated on the climb/look/dive gag using a JOHNNY 2-style split (upper bubble lane on...
+was validated after rebuilding high/low packs from a capped two-beat story capture (FGEXPORTACTIVITY1CAPTUREFRAMES=400). Source frames 148 and 348 hold the animal scorecards, and patch-activity1-tree-foreground.py keys foreground-only tree-band contamination against the full-host composite so the pre-pop hat/white pixels and tree-occlusion ghosts are gone in both loops. Earlier this push: ACTIVITY 7 was validated after re-exporting high/low packs throug...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 457 |
-| Approx. words | 4960 |
+| Lines | 465 |
+| Approx. words | 5074 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 61 / 63 fully validated
+-   Scenes: 62 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model
