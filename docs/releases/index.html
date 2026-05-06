@@ -114,10 +114,11 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
+      <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
+      <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
       <li><a href="#v070-ps1--complete-scene-validation" id="markdown-toc-v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</a></li>
       <li><a href="#v050-ps1--freeplay-and-debug-mode" id="markdown-toc-v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</a></li>
@@ -130,6 +131,27 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
+<p><em>2026-05-06</em></p>
+
+<p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.9% over target / 99.5% target speed</strong> — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline.</p>
+
+<ul>
+  <li><strong>63 / 63 scenes still validated</strong> after the post-validation bugfix pass.</li>
+  <li><strong>126 / 126 variants routed</strong>, 120 carrying active-loop timing.</li>
+  <li><strong>Performance is near target</strong> — <code class="language-plaintext highlighter-rouge">+0.9%</code> average over target, <code class="language-plaintext highlighter-rouge">99.5%</code> target speed.</li>
+  <li><strong>ACTIVITY 9 is now an optimized validated outlier</strong> — wide-boat stitch + padded FGP3 residual packs + scoped low-tide read group.</li>
+  <li><strong>Random-run clean-rect pressure fixed</strong> — the BUILDING4 soak regression that exposed walk-clean memory pressure now releases the stale walk clean buffer, retries the large scene clean snapshot, and recaptures the walk baseline cleanly.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.0/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.0-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</h3>
 <p><em>2026-05-05</em></p>
@@ -144,11 +166,7 @@
 
 <p><a href="../source/docs/ps1/release-notes-0.7.2/">Full notes</a>
  · 
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1">GitHub release</a>
- · 
-<a href="../play/">Download .bin / .cue</a></p>
-
-<h2 id="earlier-milestones">Earlier milestones</h2>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1">GitHub release</a></p>
 
 <h3 id="v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</h3>
 <p><em>2026-05-05</em></p>

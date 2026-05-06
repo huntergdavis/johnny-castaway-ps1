@@ -22,6 +22,25 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.0-ps1` — complete-scene performance baseline
+*2026-05-06*
+
+The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.9% over target / 99.5% target speed** — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline.
+
+- **63 / 63 scenes still validated** after the post-validation bugfix pass.
+- **126 / 126 variants routed**, 120 carrying active-loop timing.
+- **Performance is near target** — `+0.9%` average over target, `99.5%` target speed.
+- **ACTIVITY 9 is now an optimized validated outlier** — wide-boat stitch + padded FGP3 residual packs + scoped low-tide read group.
+- **Random-run clean-rect pressure fixed** — the BUILDING4 soak regression that exposed walk-clean memory pressure now releases the stale walk clean buffer, retries the large scene clean snapshot, and recaptures the walk baseline cleanly.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.0/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.0-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
 ### `v0.7.2-ps1` — story-loop walk backdrop guard
 *2026-05-05*
 
@@ -34,10 +53,6 @@ A randomized story-loop walking regression let Johnny walk over water and leave 
 [Full notes]({{ '/source/docs/ps1/release-notes-0.7.2/' | relative_url }})
 &nbsp;·&nbsp;
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.2-ps1)
-&nbsp;·&nbsp;
-[Download .bin / .cue]({{ '/play/' | relative_url }})
-
-## Earlier milestones
 
 ### `v0.7.1-ps1` — persisted holiday mode and first-run defaults
 *2026-05-05*
