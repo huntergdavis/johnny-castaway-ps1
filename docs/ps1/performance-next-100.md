@@ -934,6 +934,7 @@ pre-v0.8.0 row.
 | Prepared visual stage-next branch | Retry only with an explicit no-slack guard and scheduler budget; v2 was correctness-clean and lowered read/late counters but left `loop_vb` flat. |
 | Prepared visual `>=4` threshold | Do not retry as a threshold-only tweak; it failed structurally before metrics. |
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
+| VISITOR3 prepared-visual `>=4` threshold after high `170..186` | Do not retry as a threshold-only tweak. The current-source probe stayed exact-flat on VISITOR3 high and low, so the remaining gap needs CD-first scheduling or generated append ownership rather than broader local prepare eligibility. |
 | FG2 read group `102..110` | Do not retry as a raw hard-coded group; it saved one read but regressed visible CD pressure to `8` VBlanks. Retry only with group-cost prediction or CD-first slack ownership. |
 | FG2 read groups `384..396` and `307..317` | Do not retry as raw hard-coded groups. `384..396` did not fit/fire; `307..317` was exact-flat with code growth. Generated metadata must prove append fit and read-count movement first. |
 | Global setup-prime resident cap above `128 KiB` | Do not retry as a raw cap raise. The `192 KiB` probe saved FISHING1 reads but regressed visible loop/CD pressure and increased retained prefetch heap. |
