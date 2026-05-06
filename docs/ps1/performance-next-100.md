@@ -6,10 +6,10 @@ Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1067` |
+| `loop_vb` | `1068` |
 | `target_vb` | `1074` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.65%` |
+| `remaining_over_target` | `-0.56%` |
 | `blocking_vb` | `2` |
 | `prefetch_overrun_vb` | `2` |
 | `loop_reads` | `20` |
@@ -21,11 +21,12 @@ Current accepted fishing1 high-tide canary baseline:
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `2.5740%`
-over target / `97.8684%` target speed across `120` timing-bearing rows after
-the `johnny1-v072c-prefetch-relief` optimization and current BUILDING2 refresh.
-The largest remaining absolute gaps are now VISITOR3, ACTIVITY9, WALKSTUF1,
-BUILDING2, and WALKSTUF3, not FISHING1.
+or long-run heap stability. The current all-scene battle card is `2.4134%`
+over target / `98.0111%` target speed across `120` timing-bearing rows after
+the `activity9-v072c-prefetch-relief` optimization and current WALKSTUF3
+refresh. The largest remaining absolute gaps are now VISITOR3, WALKSTUF1,
+BUILDING2, ACTIVITY9, MARY1/BUILDING7 stale-layout candidates, and generated
+selective preprocessing, not FISHING1.
 
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 

@@ -220,10 +220,10 @@ They cluster into a few themes.
   boot tokens still enable them on demand.
 
 The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at `loop_vb=1067` against a target of
+fishing1 high-tide playback at `loop_vb=1068` against a target of
 `target_vb=1074`. The original headless perf-loop baseline was
-`loop_vb=1426`, so the FISHING 1 canary is down `359` VBlanks
-(`25.18%` loop reduction).
+`loop_vb=1426`, so the FISHING 1 canary is down `358` VBlanks
+(`25.11%` loop reduction).
 
 ## Where it sits at {{ site.release.tag }}
 
@@ -236,25 +236,27 @@ hits   = 155
 due_misses = 0
 blocking_vb = 2
 prefetch.overrun_vb = 2
-loop_vb = 1067
+loop_vb = 1068
 overrun_vb = 0
 target_vb = 1074
 restore_bytes = 251,144
-upload_bytes  = 8,643,840
-dirty_rows    = 13,506
-upload_rects  = 439
+upload_bytes  = 10,680,960
+dirty_rows    = 16,689
+upload_rects  = 469
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+2.6% over target /
-97.9% target speed** (`2.5740%` exact over target / `97.8684%` exact target speed).
+That is **-0.6% over target**, or **100.6% of target speed**. Across the
+120 timing-bearing battle-card rows, the average is **+2.4% over target /
+98.0% target speed** (`2.4134%` exact over target / `98.0111%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity9-v072c-prefetch-relief`,
+`stale-pressure2-v072c-current-refresh`,
 `johnny1-v072c-prefetch-relief`,
 `stale-pressure-v072c-current-refresh`,
 `activity10-johnny3-v072-prefetch-relief`,
@@ -285,13 +287,15 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T02:08:50`; per-row freshness and stats version are shown on
+run is `2026-05-06T02:29:16`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `johnny1-v072c-prefetch-relief`,
+rows now use `activity9-v072c-prefetch-relief`,
+`stale-pressure2-v072c-current-refresh`,
+`johnny1-v072c-prefetch-relief`,
 `stale-pressure-v072c-current-refresh`,
 `activity10-johnny3-v072-prefetch-relief`,
 `stale-zero2-v072b-current-refresh`,
@@ -326,7 +330,7 @@ rows are historical only.
 | `activity6` | +0.1% / 99.9% (912/911) | +0.1% / 99.9% (912/911) |
 | `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
 | `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
-| `activity9` | +10.4% / 90.6% (2259/2047); due 6; blk 84 | +11.2% / 90.0% (2272/2044); due 8; blk 94 |
+| `activity9` | +7.0% / 93.4% (2194/2050); due 25; blk 139 | +8.2% / 92.4% (2218/2050); due 48; blk 175 |
 | `activity10` | +0.0% / 100.0% (1259/1259); due 1; blk 7 | -0.1% / 100.1% (1255/1256); due 2; blk 17 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
@@ -382,7 +386,7 @@ rows are historical only.
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
 | `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |
 | `walkstuf2` | -2.2% / 102.2% (451/461) | -2.2% / 102.2% (451/461) |
-| `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
+| `walkstuf3` | +1.9% / 98.1% (2321/2278); due 6; blk 68 | +1.1% / 98.9% (2321/2295); due 5; blk 40 |
 
 Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:

@@ -48,12 +48,12 @@ removal, simplified runtime-active accessor, the fishing1 high-tide tail
 read group `396..406` with 11-sector retained capacity, and the final-frame
 hold correction in the current `compact-fgp3-v66-final-frame-hold` source shape, reported
 `policy=stage1_window`, `buf=137048`, `hits=155`, `due_misses=0`,
-`blocking_vb=2`, `prefetch.overrun_vb=2`, `loop_vb=1067`,
+`blocking_vb=2`, `prefetch.overrun_vb=2`, `loop_vb=1068`,
 `overrun_vb=0`, `target_vb=1074`, `restore_bytes=251144`,
-`upload_bytes=8643840`, `dirty_rows=13506`, `upload_rects=439`, `trip=0`,
+`upload_bytes=10680960`, `dirty_rows=16689`, `upload_rects=469`, `trip=0`,
 `fallback=0`, `frame_mismatch=0`, `sound_late=0`, and `cd_fail=0`.
-The same run also reports `setup_reads=6`, `pack_start_vb=90`,
-`setup_read_vb=137`, `loop_reads=20`, `loop_read_vb=89`, and `scene_vb=1319`.
+The same run also reports `setup_reads=13`, `pack_start_vb=83`,
+`setup_read_vb=152`, `loop_reads=20`, `loop_read_vb=88`, and `scene_vb=1325`.
 This is the current baseline for the next experiment. The earlier accepted FGP3
 temporal-residual transition intentionally changed layout while cutting
 high-tide pack bytes `829851 -> 398433` and restore bytes
@@ -156,12 +156,12 @@ Historical post-cleanup Detail-tier attribution on `20260426-234118` showed
 `loop_vb=1221`, `overrun_vb=150`, `render_vb=179`,
 `present_wait_vb=157`, `restore_vb=26`, `compose_vb=32`, `blocking_vb=5`,
 and `prefetch.overrun_vb=5`. That is now historical context, not the current
-canary. As of the 2026-05-01 battle-card refresh, FISHING 1 high is
-`loop_vb=1067` against `target_vb=1074`, with `blocking_vb=2`,
+canary. As of the 2026-05-06 battle-card refresh, FISHING 1 high is
+`loop_vb=1068` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+2.6%` over target /
-`97.9%` target speed as of `johnny1-v072c-prefetch-relief` (`2.5740%` exact over target /
-`97.8684%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+2.4%` over target /
+`98.0%` target speed as of `activity9-v072c-prefetch-relief` (`2.4134%` exact over target /
+`98.0111%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -782,10 +782,10 @@ exact-4 VBlank held-slack prepared-present pass plus leading-empty setup consume
 coalesced FG2 metadata-prefix startup reads plus long-hold host-deadline catch-up,
 the exact no-holiday fishing1 high-tide variant now uses the FGP3
 zero-shift temporal-residual pack and reports
-`loop_vb=1067`, `target_vb=1074`, `overrun_vb=0`, `blocking_vb=2`,
+`loop_vb=1068`, `target_vb=1074`, `overrun_vb=0`, `blocking_vb=2`,
 `due_misses=0`, and prefetch `overrun_vb=2`, with
-`upload_bytes=8643840`, `restore_bytes=251144`, `upload_rects=439`,
-`loop_reads=20`, `setup_reads=6`, and `scene_vb=1319`.
+`upload_bytes=10680960`, `restore_bytes=251144`, `upload_rects=469`,
+`loop_reads=20`, `setup_reads=13`, and `scene_vb=1325`.
 Row-level restore created enough
 CPU headroom that CD blocking fell too; the latest dirty-marker cleanup
 converted redundant span-side dirty work into more useful prefetch coverage,
@@ -1273,6 +1273,8 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-331` | Done: restore ACTIVITY10 and JOHNNY3 prefetch after validated-pack clean pressure. | The stale-zero2 refresh proved ACTIVITY10 and JOHNNY3 were real current CD-pressure rows, but their validated FGP3 packs were compact enough for prefetch; large clean snapshots were disabling the stage/window buffers. A scene-local exception keeps prefetch alive for those two scenes. ACTIVITY10 high improves `1424/1262 -> 1259/1259`, `blocking_vb 622 -> 7`, `loop_reads 255 -> 11`, and `due_misses 255 -> 1`; ACTIVITY10 low improves `1441/1260 -> 1255/1256`, `blocking_vb 664 -> 17`, `loop_reads 255 -> 22`, and `due_misses 255 -> 2`. JOHNNY3 high improves `1258/1166 -> 1158/1161`, `blocking_vb 560 -> 10`, `loop_reads 209 -> 14`, and `due_misses 209 -> 1`; low improves `1229/1166 -> 1157/1166`, `blocking_vb 464 -> 0`, `loop_reads 175 -> 7`, and `due_misses 175 -> 0`. Latest rows now use `activity10-johnny3-v072-prefetch-relief`; exact matrix average improves from `3.1299%` to `2.7833%` over target / `97.6931%` target speed. Artifact `scratch/ps1-perf-iterate/activity10-johnny3-prefetch-relief-rebuilt-probe/20260506-014728-405578/summary.json`. |
 | `P5-332` | Done: refresh remaining current-pressure rows before optimizing. | A focused current-pack refresh replaced stale BUILDING2 high/low rows and probed ACTIVITY9, JOHNNY1, and WALKSTUF3. BUILDING2 high/low now report `1476/1285` and `1465/1278` with `blocking_vb=286/279`, `prefetch_overrun_vb=66/48`, `loop_reads=96/86`, and `due_misses=37/40`; this is a baseline correction, not a runtime win. JOHNNY1 high/low came back `2002/1947` with `policy=none`, `blocking_vb=365`, `loop_reads=111`, and `due_misses=111`, proving it matches the validated-pack clean-pressure failure class. ACTIVITY9 and WALKSTUF3 did not emit `JCPERF2` under the 3600-frame noloop window and remain queued for longer/different capture windows before optimization. Artifact `scratch/ps1-perf-iterate/stale-pressure-current-v072c-refresh/20260506-015935-473122/summary.json`; promoted BUILDING2-only summary `summary-building2-promoted.json`. |
 | `P5-333` | Done: restore JOHNNY1 prefetch after validated-pack clean pressure. | JOHNNY1 high/low were compact enough for stage/window prefetch, but their current validated packs hit the generic large-clean memory relief path and ran with `policy=none`. A scene-local exception restores prefetch for JOHNNY1 only. High improves `2002/1947 -> 1974/1944`, `blocking_vb 365 -> 27`, `loop_reads 111 -> 16`, and `due_misses 111 -> 0`; low has the same improvement. Hidden refill overrun rises `0 -> 27`, accepted because visible blocking/read pressure collapses and FISHING1 high, BUILDING2 high, and VISITOR3 high canaries stayed flat. Latest rows now use `johnny1-v072c-prefetch-relief`; exact matrix average improves from `2.7833%` to `2.5740%` over target / `97.8684%` target speed. Artifact `scratch/ps1-perf-iterate/johnny1-prefetch-relief-v072c-probe/20260506-020850-526213/summary.json`; promoted JOHNNY1-only summary `summary-johnny1-promoted.json`. |
+| `P5-334` | Done: refresh ACTIVITY9 and WALKSTUF3 with a longer current window. | The 3600-frame noloop probe cut off ACTIVITY9/WALKSTUF3 before `JCPERF2`, so they were rerun with `--frames 9000 --timeout 240`. ACTIVITY9 high/low fresh baselines report `2225/2056` and `2234/2054` with `policy=none`, `blocking_vb=884/871`, `loop_reads=251/251`, and `due_misses=251/251`, proving the same clean-pressure class. WALKSTUF3 high/low are current `2321/2278` and `2321/2295` with `stage1_window`, `blocking_vb=68/40`, and `due_misses=6/5`; those rows now use `stale-pressure2-v072c-current-refresh` as a baseline correction. Artifact `scratch/ps1-perf-iterate/activity9-walkstuf3-long-current-refresh/20260506-022347-609439/summary.json`; promoted WALKSTUF3-only summary `summary-walkstuf3-promoted.json`. |
+| `P5-335` | Done: restore ACTIVITY9 prefetch after validated-pack clean pressure. | ACTIVITY9's validated wide-stitch packs are large on disc but still fit the small stage/window prefetch buffers; the generic large-clean memory relief path was disabling them and due-missing every payload. A scene-local exception restores prefetch for ACTIVITY9 only. High improves against the fresh longer-window baseline `loop_vb 2225 -> 2194`, `target_vb 2056 -> 2050`, `blocking_vb 884 -> 139`, `loop_reads 251 -> 116`, and `due_misses 251 -> 25`; low improves `2234 -> 2218`, `2054 -> 2050`, `871 -> 175`, `251 -> 166`, and `251 -> 48`. Hidden refill overrun rises `0 -> 12/17`, accepted because visible blocking/read pressure drops and FISHING1 high, BUILDING2 high, VISITOR3 high, and JOHNNY1 high canaries stayed flat. Latest rows now use `activity9-v072c-prefetch-relief`; exact matrix average improves from `2.5740%` to `2.4134%` over target / `98.0111%` target speed. Artifact `scratch/ps1-perf-iterate/activity9-prefetch-relief-v072c-probe/20260506-022916-641019/summary.json`; promoted ACTIVITY9-only summary `summary-activity9-promoted.json`. |
 | `P5-94` | Failed/no promotion: FISHING2 high setup segment `185..191`. | The read-plan's top FISHING2 high single-read candidate did not promote through either scratch-owned or persistent-owned setup-segment ownership. Scratch ownership stayed timing-flat without reducing `loop_reads`; persistent ownership regressed `loop_vb 1898 -> 1900` and `blocking_vb/prefetch_overrun_vb 2 -> 4`. The next CD/setup attempt should be generated multi-segment policy with explicit scheduler ownership/cost proof, not another hand-authored single side segment. |
 | `P5-95` | Done: remove stale FISHING1 read group. | The old FISHING1 high group `{396,406}` was beyond the current FGP3 pack sector range and could not fire. Removing the table and startup branch keeps FISHING1, FISHING2 high/low, and FISHING3 high/low exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `foregroundPilotPlay` by `44` bytes. This is generated-policy cleanup, not a VBlank win. |
 | `P5-96` | Done: wire the all-scene fgpilot performance matrix. | `scripts/ps1-foreground-scene-manifest.py` now derives the `63` scene slugs and `126` tide variants from `config/ps1/regtest-scenes.txt`, emits the full `FG/` CD layout from generated FG2 packs, prints perf-runner cases, and writes `docs/ps1/performance-scene-matrix.csv`. `scripts/ps1-perf-all-scenes.sh` runs that generated case set through the headless perf harness and refreshes the sheet from collected summaries. Runtime routing now constructs pack paths for every generated scene family while `kProvenScenes` still controls only the human-validated default random loop. |
@@ -1496,13 +1498,13 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `johnny1-v072c-prefetch-relief`: the matrix is now
-`120` timing-bearing rows at `2.5740%` exact average over target / `97.8684%`
-exact target speed. The VISITOR3/WALKSTUF1/VISITOR5/ACTIVITY10/JOHNNY3/JOHNNY1 recoveries prove validation-pack
+Checkpoint after `activity9-v072c-prefetch-relief`: the matrix is now
+`120` timing-bearing rows at `2.4134%` exact average over target / `98.0111%`
+exact target speed. The VISITOR3/WALKSTUF1/VISITOR5/ACTIVITY10/JOHNNY3/JOHNNY1/ACTIVITY9 recoveries prove validation-pack
 refreshes can change memory pressure enough to reopen old prefetch paths; the
 STAND, ACTIVITY7, VISITOR1, FISHING7, ACTIVITY8, WALKSTUF2, STAND3, BUILDING1,
 FISHING6, JOHNNY5, FISHING4, ACTIVITY6, MISCGAG1, STAND15, ACTIVITY4, FISHING1,
-JOHNNY3, STAND4, STAND16, ACTIVITY10, JOHNNY4, FISHING8, STAND6, STAND5, STAND12, and BUILDING2 row
+JOHNNY3, STAND4, STAND16, ACTIVITY10, JOHNNY4, FISHING8, STAND6, STAND5, STAND12, BUILDING2, and WALKSTUF3 row
 refreshes also prove stale matrix rows must be replaced before treating a scene
 as a fixed-overhead target. The next loop should prioritize generated pack
 metadata, selective preprocessing, and scheduler-owned CD/render budgets before
@@ -1511,9 +1513,9 @@ more raw read-count groups.
 | Priority | Target class | Current signal | Next experiment shape |
 |---:|---|---|---|
 | 0 | Generated data/metadata wins | The broad `-O2` audit and hot/scoped helper probes produced no promotions under the current source shape. The active wins are now coming from generated read/layout policy and pack/compositor data shape, and the new preprocessing matrix ranks current FG2/FGP3 packs for selective upload-ready work. | Prioritize generated read metadata with a visible-cost model, selective upload-ready/compressed pack data, and scheduler-owned CD/render budgets before another one-off source-shape or compiler-flag probe. Revisit `-O2`/toolchain only with a scripted multi-target harness and map-address accounting. |
-| 1 | `visitor3` low/high, `activity9` low/high, `walkstuf1` low/high, and `building2` high/low | VISITOR3 remains the largest absolute gap after the prefetch recovery (`+444/+445` VBlanks) and is still the top preprocess opportunity. ACTIVITY9 retains `+228/+212` VBlank gaps but needs a longer/different capture window before another current refresh. WALKSTUF1 remains CD-heavy (`+225/+227` VBlanks, `blocking_vb=304/297`). BUILDING2 is refreshed current-layout CD pressure (`+191/+187` VBlanks, `blocking_vb=286/279`) and one-off groups did not convert read savings into timing. | Move VISITOR3 to generated selective upload-ready or scheduler-owned CD/render work. Re-run ACTIVITY9 with a longer/loop capture before optimizing. Test BUILDING2 with generated metadata, not hand-authored groups. Keep WALKSTUF1 as a canary and avoid more raw groups unless generated cost metadata predicts a visible loop/blocking win. |
+| 1 | `visitor3` low/high, `walkstuf1` low/high, `building2` high/low, and `activity9` low/high | VISITOR3 remains the largest absolute gap after the prefetch recovery (`+444/+445` VBlanks) and is still the top preprocess opportunity. WALKSTUF1 remains CD-heavy (`+225/+227` VBlanks, `blocking_vb=304/297`). BUILDING2 is refreshed current-layout CD pressure (`+191/+187` VBlanks, `blocking_vb=286/279`) and one-off groups did not convert read savings into timing. ACTIVITY9 is no longer a due-miss collapse row after relief, but still retains `+144/+168` VBlank gaps with visible blocking `139/175`. | Move VISITOR3 to generated selective upload-ready or scheduler-owned CD/render work. Test BUILDING2 and ACTIVITY9 with generated metadata, not hand-authored groups. Keep WALKSTUF1/WALKSTUF3 as canaries and avoid more raw groups unless generated cost metadata predicts a visible loop/blocking win. |
 | 2 | BUILDING-family CD pressure | Final-frame hold cut BUILDING4/6 gaps roughly in half, but BUILDING4 high/low and BUILDING6 high/low still retain `128..136` VBlank gaps and substantial visible blocking on high tide. BUILDING2 low has a proven `128 KiB` setup-prime win plus one safe grouped-read window; raw BUILDING4/6 setup-prime and family-wide window sweeps regressed. | Continue per-tide generated setup/read policy, but treat every BUILDING win as layout- and tide-sensitive. Move to generated read groups or host-side preprocessing that changes read placement/format; do not assume high/low pairs share a safe setup-prime or window knee. |
-| 3 | Remaining true CD-pressure rows | The latest prefetch-relief pass removed JOHNNY1 from the true-pressure queue, leaving VISITOR3, ACTIVITY9, WALKSTUF1, BUILDING2, and WALKSTUF3 as the largest absolute gaps. ACTIVITY9 and WALKSTUF3 need current longer-window refreshes before direct optimization. | Continue with generated setup/segment coverage, selective upload-ready preprocessing, and scheduler-owned CD/render budgets for the remaining top rows. Do not spend time on generic zero-CD overhead until a fresh current row proves it still exists. |
+| 3 | Remaining true CD-pressure rows | The latest prefetch-relief pass removed ACTIVITY9 from the due-miss collapse queue, leaving VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9, and WALKSTUF3 as the largest current CD/render pressure set. WALKSTUF3 refreshed to near-target and should mainly serve as a stability canary unless a generated opportunity appears. | Continue with generated setup/segment coverage, selective upload-ready preprocessing, and scheduler-owned CD/render budgets for the remaining top rows. Do not spend time on generic zero-CD overhead until a fresh current row proves it still exists. |
 
 ## Failed Experiment Triage After P5-90
 
