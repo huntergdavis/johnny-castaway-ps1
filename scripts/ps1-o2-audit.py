@@ -137,6 +137,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
         "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and gave no active-scene timing win.",
     ),
+    "src/scene_picker.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat with fixed tracked hot symbols but grew ELF with no work or speed win.",
+    ),
 }
 
 

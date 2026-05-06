@@ -1,5 +1,4 @@
 priority,target_type,target,source,current_opt,symbol_address,symbol_size_bytes,source_text_bytes,next_action,reason
-80,translation_unit,src/scene_picker.c,src/scene_picker.c,-Os,,0,2112,Review TU optimization flag,Source is size-optimized but not classified in the current sweep order.
 90,function,grDrawBackground,src/graphics_ps1.c,"optimize(""Os"")",0x80020360,1300,34128,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the upload helper by 504 bytes and did not improve loop timing.
 90,function,grUpdateDisplay,src/graphics_ps1.c,"optimize(""Os"")",0x80020874,412,34128,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the display wrapper by 40 bytes and did not improve key timing.
 90,function,ps1_streamReadAlignedFromCdFileInto,src/cdrom_ps1.c,"optimize(""Os"")",0x80023a80,484,9608,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the active aligned-read helper by 524 bytes and stayed key-flat.
@@ -17,5 +16,6 @@ priority,target_type,target,source,current_opt,symbol_address,symbol_size_bytes,
 90,translation_unit,src/ps1_stubs.c,src/ps1_stubs.c,-Os,,0,240,Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected,Whole-TU -O2 stayed exact-flat while growing ELF and the stubs object.
 90,translation_unit,src/resource.c,src/resource.c,-Os,,0,1520,Keep whole TU at -Os; historical default-O2 retest rejected,Whole-TU -O2 stayed exact-flat while growing ELF and shifting foreground symbols.
 90,translation_unit,src/scene_freeplay.c,src/scene_freeplay.c,-Os,,0,9392,Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected,"Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and gave no active-scene timing win."
+90,translation_unit,src/scene_picker.c,src/scene_picker.c,-Os,,0,2112,Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected,Whole-TU -O2 stayed FISHING1-flat with fixed tracked hot symbols but grew ELF with no work or speed win.
 90,translation_unit,src/sound_ps1.c,src/sound_ps1.c,-Os,,0,1880,Keep whole TU at -Os; historical default-O2 retest rejected,Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.
 90,translation_unit,src/utils.c,src/utils.c,-Os,,0,448,Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected,Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked hot symbols by 20 bytes with no work or speed win.
