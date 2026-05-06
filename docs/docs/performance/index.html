@@ -328,13 +328,14 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>-0.7% over target</strong>, or <strong>100.7% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+7.6% over target /
-93.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">7.5934%</code> exact over target / <code class="language-plaintext highlighter-rouge">93.5083%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+6.0% over target /
+94.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">5.9984%</code> exact over target / <code class="language-plaintext highlighter-rouge">94.8106%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mismatch-top-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stand-family-v072-current-refresh</code>,
@@ -359,13 +360,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T00:23:01</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T00:38:12</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
+rows now use <code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
+<code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mismatch-top-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stand-family-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor4-v072-current-refresh</code>,
@@ -447,8 +449,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building1</code></td>
-      <td style="text-align: right">+23.3% / 81.1% (951/771); due 8; blk 63</td>
-      <td style="text-align: right">+19.9% / 83.4% (935/780); due 4; blk 37</td>
+      <td style="text-align: right">+2.1% / 98.0% (794/778); blk 21</td>
+      <td style="text-align: right">+1.9% / 98.1% (794/779); blk 21</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">building2</code></td>
@@ -507,8 +509,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
-      <td style="text-align: right">+18.2% / 84.6% (890/753)</td>
-      <td style="text-align: right">+18.2% / 84.6% (890/753)</td>
+      <td style="text-align: right">-1.2% / 101.2% (744/753)</td>
+      <td style="text-align: right">-1.2% / 101.2% (744/753)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
@@ -597,8 +599,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
-      <td style="text-align: right">+24.4% / 80.4% (694/558)</td>
-      <td style="text-align: right">+24.4% / 80.4% (694/558)</td>
+      <td style="text-align: right">-1.8% / 101.8% (547/557)</td>
+      <td style="text-align: right">-1.8% / 101.8% (547/557)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
@@ -702,8 +704,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
-      <td style="text-align: right">+28.4% / 77.9% (593/462)</td>
-      <td style="text-align: right">+28.4% / 77.9% (593/462)</td>
+      <td style="text-align: right">-2.2% / 102.2% (451/461)</td>
+      <td style="text-align: right">-2.2% / 102.2% (451/461)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>

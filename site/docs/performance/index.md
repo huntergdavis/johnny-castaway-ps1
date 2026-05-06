@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+7.6% over target /
-93.5% target speed** (`7.5934%` exact over target / `93.5083%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+6.0% over target /
+94.8% target speed** (`5.9984%` exact over target / `94.8106%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`stale-top-v072b-current-refresh`,
 `visitor5-v072-prefetch-relief`,
 `mismatch-top-v072-current-refresh`,
 `stand-family-v072-current-refresh`,
@@ -279,13 +280,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T00:23:01`; per-row freshness and stats version are shown on
+run is `2026-05-06T00:38:12`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor5-v072-prefetch-relief`,
+rows now use `stale-top-v072b-current-refresh`,
+`visitor5-v072-prefetch-relief`,
 `mismatch-top-v072-current-refresh`,
 `stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
@@ -318,7 +320,7 @@ rows are historical only.
 | `activity10` | +10.9% / 90.2% (1399/1262) | +11.4% / 89.8% (1401/1258); due 2; blk 14 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
-| `building1` | +23.3% / 81.1% (951/771); due 8; blk 63 | +19.9% / 83.4% (935/780); due 4; blk 37 |
+| `building1` | +2.1% / 98.0% (794/778); blk 21 | +1.9% / 98.1% (794/779); blk 21 |
 | `building2` | +19.8% / 83.5% (1552/1296); due 19; blk 144 | +18.9% / 84.1% (1542/1297); due 20; blk 138 |
 | `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
 | `building4` | +4.9% / 95.4% (2928/2792); due 34; blk 234 | +4.6% / 95.6% (2925/2797); due 2; blk 96 |
@@ -330,7 +332,7 @@ rows are historical only.
 | `fishing3` | +0.4% / 99.6% (1960/1952); due 1; blk 18 | +0.1% / 99.9% (1956/1954); blk 6 |
 | `fishing4` | +14.7% / 87.2% (967/843) | +14.7% / 87.2% (967/843) |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
-| `fishing6` | +18.2% / 84.6% (890/753) | +18.2% / 84.6% (890/753) |
+| `fishing6` | -1.2% / 101.2% (744/753) | -1.2% / 101.2% (744/753) |
 | `fishing7` | -1.4% / 101.4% (715/725) | -1.4% / 101.4% (715/725) |
 | `fishing8` | +11.9% / 89.4% (1393/1245); blk 13 | +10.1% / 90.8% (1380/1253) |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
@@ -348,7 +350,7 @@ rows are historical only.
 | `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
 | `stand1` | -4.0% / 104.1% (194/202) | -4.0% / 104.1% (194/202) |
 | `stand2` | -2.0% / 102.1% (480/490) | -2.0% / 102.1% (480/490) |
-| `stand3` | +24.4% / 80.4% (694/558) | +24.4% / 80.4% (694/558) |
+| `stand3` | -1.8% / 101.8% (547/557) | -1.8% / 101.8% (547/557) |
 | `stand4` | +11.3% / 89.8% (1359/1221) | +11.2% / 89.9% (1358/1221) |
 | `stand5` | +9.2% / 91.6% (1595/1461) | +9.1% / 91.7% (1594/1461) |
 | `stand6` | +10.0% / 90.9% (1501/1365) | +9.9% / 91.0% (1500/1365) |
@@ -369,7 +371,7 @@ rows are historical only.
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
 | `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |
-| `walkstuf2` | +28.4% / 77.9% (593/462) | +28.4% / 77.9% (593/462) |
+| `walkstuf2` | -2.2% / 102.2% (451/461) | -2.2% / 102.2% (451/461) |
 | `walkstuf3` | +8.1% / 92.5% (2460/2276); due 6; blk 79 | +7.9% / 92.7% (2466/2285); due 5; blk 66 |
 
 Detail-tier attribution for the canary currently points at render and
