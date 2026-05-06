@@ -14,6 +14,19 @@
           {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated
           ({{ site.release.tag }})
         </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="{{ '/devlog/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a> ·
+          <a href="{{ '/devlog/feed.json' | relative_url }}" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="{{ '/humans.txt' | relative_url }}" type="text/plain">humans.txt</a>
+        </p>
+        {%- if page.path -%}
+        <p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="{{ site.github_url }}/edit/main/site/{{ page.path }}" rel="noopener">Edit this page on GitHub</a> →
+        </p>
+        {%- endif -%}
         <p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
@@ -25,6 +38,7 @@
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="{{ '/help/'     | relative_url }}">Help</a></li>
+          <li><a href="{{ '/releases/' | relative_url }}">Releases</a></li>
           <li><a href="{{ '/faq/'      | relative_url }}">FAQ</a></li>
           <li><a href="{{ '/credits/'  | relative_url }}">Credits</a></li>
           <li><a href="{{ '/hack/'     | relative_url }}">Hack</a></li>

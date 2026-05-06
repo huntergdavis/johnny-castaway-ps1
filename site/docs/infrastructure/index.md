@@ -12,6 +12,13 @@ image actually contains, what the wrapper scripts do, and where the
 automation stops and the author starts typing things by hand. If you paid
 for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Why Docker
 
 PSn00bSDK is sensitive to toolchain version. The SDK is a thin layer over a

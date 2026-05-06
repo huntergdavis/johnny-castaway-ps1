@@ -7,6 +7,13 @@ source_path: docs/ps1/research/FISHING1_PIXEL_PERFECT_PLAN_2026-04-21.md
 description: "Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Goal
 
 Get the fishing1 fgpilot scene visually identical to the original PC

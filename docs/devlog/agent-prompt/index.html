@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>PS1 Scene Validation And Debug Prompt — Johnny Castaway PS1</title>
-  <meta name="description" content="Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts." />
+  <meta name="description" content="Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/agent-prompt/" />
 
   <meta property="og:title"        content="PS1 Scene Validation And Debug Prompt — Johnny Castaway PS1" />
   <meta property="og:description"  content="Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/harness-worklog/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/local-vision-classifier-plan/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Agent prompt", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/agent-prompt/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PS1 Scene Validation And Debug Prompt",
+  "description": "Mission brief for the PS1 scene-validation debugging agent: validate 63 PS1 scenes against the canonical Linux reference, with auditable artifacts.",
+  "datePublished": "2026-03-29T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/agent-prompt/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/agent-prompt/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>PS1 Scene Validation And Debug Prompt</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~3 min read · 858 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -86,6 +145,29 @@
     <p>You are working in the <code class="language-plaintext highlighter-rouge">jc_reborn</code> repository on the PS1 runtime and test harness.</p>
 
 <p>Your mission is not to produce plausible-looking runs. Your mission is to get to <code class="language-plaintext highlighter-rouge">63</code> actually validated PS1 story scenes against the canonical Linux/reference output, with trustworthy comparison artifacts a human can review.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#primary-goal" id="markdown-toc-primary-goal">Primary Goal</a></li>
+  <li><a href="#source-of-truth" id="markdown-toc-source-of-truth">Source Of Truth</a></li>
+  <li><a href="#current-expectations" id="markdown-toc-current-expectations">Current Expectations</a></li>
+  <li><a href="#comparison-requirements" id="markdown-toc-comparison-requirements">Comparison Requirements</a></li>
+  <li><a href="#how-to-compare-correctly" id="markdown-toc-how-to-compare-correctly">How To Compare Correctly</a>    <ul>
+      <li><a href="#single-ps1-run-review" id="markdown-toc-single-ps1-run-review">Single PS1 run review</a></li>
+      <li><a href="#ps1-vs-reference-comparison" id="markdown-toc-ps1-vs-reference-comparison">PS1 vs reference comparison</a></li>
+      <li><a href="#validation-rule" id="markdown-toc-validation-rule">Validation rule</a></li>
+    </ul>
+  </li>
+  <li><a href="#current-harness-concerns-to-investigate" id="markdown-toc-current-harness-concerns-to-investigate">Current Harness Concerns To Investigate</a></li>
+  <li><a href="#current-ps1-runtime-debug-context" id="markdown-toc-current-ps1-runtime-debug-context">Current PS1 Runtime Debug Context</a></li>
+  <li><a href="#recommended-work-sequence" id="markdown-toc-recommended-work-sequence">Recommended Work Sequence</a></li>
+  <li><a href="#logging-requirements" id="markdown-toc-logging-requirements">Logging Requirements</a></li>
+  <li><a href="#standards" id="markdown-toc-standards">Standards</a></li>
+</ul>
+
+</details>
 
 <h2 id="primary-goal">Primary Goal</h2>
 
@@ -381,14 +463,34 @@ matters</li>
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../harness-worklog/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-03-28</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../local-vision-classifier-plan/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-03-29</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/AGENT_PROMPT_2026-03-29.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -409,7 +511,16 @@ matters</li>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-03-29-agent-prompt.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -420,6 +531,7 @@ matters</li>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

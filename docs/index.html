@@ -7,30 +7,87 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Johnny Castaway PS1 — fan port</title>
-  <meta name="description" content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
+  <meta name="description" content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/" />
 
   <meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
   <meta property="og:description"  content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="./assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="./assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="./assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/inter-latin-400-normal.woff2" />
+  <link rel="preload" as="image"
+        href="./assets/img/johnny6-ps1-date-dream.png"
+        fetchpriority="high" />
+
 
   <link rel="stylesheet" href="./assets/css/main.css" />
+  <script defer src="./assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="./assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="./devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="./devlog/feed.json" />
+  <link rel="author" type="text/plain" href="./humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "applicationCategory": "GameApplication",
+  "applicationSubCategory": "Screensaver",
+  "operatingSystem": "Sony PlayStation",
+  "softwareVersion": "0.7.2",
+  "isAccessibleForFree": true,
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "codeRepository": "https://github.com/huntergdavis/johnny-castaway-ps1",
+  "downloadUrl": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "url": "https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -65,7 +122,7 @@
   <main id="main" class="main">
     <section class="hero">
   <div class="hero-frame">
-    <img src="./assets/img/johnny6-ps1-date-dream.png" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v0.7.2</p>
@@ -81,15 +138,15 @@
 
 <section class="trio">
   <figure>
-    <img src="./assets/img/activity9-ps1-boat.png" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+    <img src="./assets/img/activity9-ps1-boat.png" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
     <figcaption>ACTIVITY 9 · boat pass</figcaption>
   </figure>
   <figure>
-    <img src="./assets/img/johnny6-ps1-date-dream.png" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
     <figcaption>JOHNNY 6 · daydream</figcaption>
   </figure>
   <figure>
-    <img src="./assets/img/fishing1-ps1-cast.png" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
+    <img src="./assets/img/fishing1-ps1-cast.png" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
     <figcaption>FISHING 1 · reference</figcaption>
   </figure>
 </section>
@@ -116,11 +173,15 @@ running on real hardware or on DuckStation. It is a fan project: the
 character belongs to the original creator, and the site’s chrome and
 its <a href="./legal/">legal page</a> reflect that.</p>
 
-  <p>It’s also a work in progress. Out of <strong>63 scenes</strong>,
-<strong>63 are validated</strong> under the
-fishing-1 bar (pixel-perfect visuals plus synced SFX, signed off by
-human review across every applicable variant). The
-<a href="./scenes/">scene ledger</a> shows the rest.</p>
+  <p>All <strong>63 of 63</strong>
+routed scenes the original game had are validated under the
+fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
+off by human review across every applicable variant. The current
+work is closing the last bit of speed gap; most scenes already
+run at native rate. The
+<a href="./scenes/">scene ledger</a> tracks the
+visual signoff bar and the headless-perf battle card per
+scene, side by side.</p>
 
   <h2 id="how-it-works-the-short-version">How it works (the short version)</h2>
 
@@ -198,18 +259,27 @@ order, with the same variants the original randomized between. The art
 is unchanged. The 4 original holiday decorations (Christmas, New Year,
 Halloween, St. Patrick’s Day) keep their original sprites.</p>
 
-  <p><strong>Added on top.</strong> Freeplay/debug mode, where Johnny can be walked around
-the island directly with the controller and debug-selected gags, visitors,
-sound effects, holidays, tide, raft, and day/night state. Closed captions
-for every scene (off by default, in a
-<a href="./docs/captions/">fresh-authored corpus</a> from
-scene content — not lifted from any prior project). A holiday calendar
-expanded from 4 to <strong>36 holidays</strong> with movable feasts computed by
-pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
-no expiring date tables. A pause menu with options toggles
-split into Freeplay Options, World Options, Accessibility, Sound Test,
-System, date/time editing, island-position nudging, and RNG seed override.
-The website credits and legal pages name exactly what’s owed to whom.</p>
+  <p><strong>Added on top.</strong> <a href="./releases/#v0420-ps1--story-loop-walking">Story-loop walking</a>
+between scenes — Johnny no longer teleports; he walks the
+original Sierra route table from one scene’s end to the next
+scene’s start, with palm-tree occlusion and ocean animation
+preserved across the walk.
+<a href="./releases/#v050-ps1--freeplay-and-debug-mode">Freeplay/debug mode</a>,
+where Johnny can be walked directly with the controller and
+debug-selected gags, visitors, sound effects, holidays, tide,
+raft, and day/night state. Closed captions for every scene (off
+by default, in a <a href="./docs/captions/">fresh-authored corpus</a>
+from scene content — not lifted from any prior project). A
+holiday calendar expanded from 4 to <strong>36 holidays</strong> with movable
+feasts computed by pure algorithm — Meeus for Easter,
+Nth-weekday-of-month for the rest, no expiring date tables. A
+pause menu reachable with Start (the original had none), with
+sub-screens for Scene Set, Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound
+Test, System, Set Time/Date, and Set RNG Seed. An optional
+ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
+transitions between scene swaps. The website credits and legal
+pages name exactly what’s owed to whom.</p>
 
   <p>The full menu of what’s added vs preserved lives at
 <a href="./about/">/about/</a>. The implementations live at
@@ -271,7 +341,7 @@ man on a small island. The disc plays. That’s what mattered.</p>
     <time datetime="2026-05-01">2026-05-01</time>
     <div>
       <a href="./devlog/scripted-pad-menu-harness/">Scripted pad input, menu screenshots, and testing the UI like a player</a>
-
+      <span class="summary">The next test harness teaches the PS1 build to press its own controller buttons, capture every major pause-menu screen, and publish the result as player help.</span>
     </div>
   </li>
 
@@ -323,7 +393,16 @@ the user supplies themselves.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="./devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="./devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="./humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -334,6 +413,7 @@ the user supplies themselves.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="./help/">Help</a></li>
+          <li><a href="./releases/">Releases</a></li>
           <li><a href="./faq/">FAQ</a></li>
           <li><a href="./credits/">Credits</a></li>
           <li><a href="./hack/">Hack</a></li>

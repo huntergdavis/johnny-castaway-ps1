@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Method — Johnny Castaway PS1</title>
-  <meta name="description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
+  <meta name="description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/method/" />
 
   <meta property="og:title"        content="Method — Johnny Castaway PS1" />
   <meta property="og:description"  content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,43 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "About", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/" }, { "@type": "ListItem", "position": 3, "name": "Method", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/method/" }]
+}
+</script>
 </head>
 
 <body>
@@ -69,11 +99,28 @@
       <p class="eyebrow">Host-capture . FG2 pack . PS1 replay</p>
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~7 min read · 1999 words
+        </p>
+
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <h2 id="the-problem">The problem</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-problem" id="markdown-toc-the-problem">The problem</a></li>
+  <li><a href="#the-hybrid-pipeline" id="markdown-toc-the-hybrid-pipeline">The hybrid pipeline</a></li>
+  <li><a href="#whats-in-a-pack" id="markdown-toc-whats-in-a-pack">What’s in a pack</a></li>
+  <li><a href="#ps1-hardware-constraints-we-hit" id="markdown-toc-ps1-hardware-constraints-we-hit">PS1 hardware constraints we hit</a></li>
+  <li><a href="#why-hybrid-won" id="markdown-toc-why-hybrid-won">Why hybrid won</a></li>
+</ul>
+
+</details>
+
+<h2 id="the-problem">The problem</h2>
 
 <p>Sierra’s <em>Johnny Castaway</em> shipped in 1992 for Windows 3.1. It is a
 screensaver. The engine is a small interpreter for two custom
@@ -335,12 +382,17 @@ and why scene continuity bugs stopped being a runtime concern: the
 runtime no longer carries the state that those bugs lived in.</p>
 
 <p>The cost is that every scene needs a verified host capture before
-it joins the validated count, and that count is currently
-<code class="language-plaintext highlighter-rouge">63 / 63</code>.
-Five scenes pixel-perfect plus synced SFX is not 63. But the path
-from one to five is now a repeatable scene-by-scene loop, including
-small pack-level fixes when the residual cleanup contract misses a
-few pixels. That is the property the project was reaching for.</p>
+it joins the validated count. At <code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> that
+count is <code class="language-plaintext highlighter-rouge">63 / 63</code> —
+every routed scene the original game had now plays pixel-perfect
+on the PS1 with synced SFX across every applicable variant. The
+path from the first signed-off scene to all 63 was the same
+repeatable loop on every row: capture, pack, route, replay, sign
+off. The hard work was the loop’s edges — multi-view foreground
+stitches for the wide scenes, residual-cleanup pack fixes when a
+few pixels missed, the backdrop-key guard that kept story-loop
+walks from running across stale islands. That is the property
+the project was reaching for.</p>
 
   </div>
 </article>
@@ -362,7 +414,16 @@ few pixels. That is the property the project was reaching for.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/method/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -373,6 +434,7 @@ few pixels. That is the property the project was reaching for.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

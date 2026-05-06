@@ -23,6 +23,13 @@ display correctly") in late 2025, then carried forward unchanged into
 `docs/ps1/archaeology/retired-src/` as part of the
 [2026-04-04 repository reorganisation]({{ '/archaeology/timeline/' | relative_url }}).
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## ps1_minimal_main.c (4.4 KB)
 
 The minimal main was the first program that proved the PS1 GPU could

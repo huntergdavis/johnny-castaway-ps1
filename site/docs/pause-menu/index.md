@@ -17,6 +17,13 @@ design rule is simple: no submenu should need more than a handful of rows on
 the PS1 screen. Anything that grows into a catalog becomes a selector page
 with a title, description, source asset, frame count, and memory note.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Controller mapping
 
 | Button | Action |

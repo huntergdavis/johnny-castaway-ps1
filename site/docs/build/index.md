@@ -17,6 +17,13 @@ Docker won by default.
 
 If you paid for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What you need
 
 - **Docker Desktop** (or rootless Docker on Linux). The build never runs

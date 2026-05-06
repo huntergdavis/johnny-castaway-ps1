@@ -236,6 +236,13 @@ Progress update
   - the bad takeover at the handoff is now consistent with a live `slot 2` zero-IP thread preempting the intended authored loop
   - the next probe should identify that live `slot 2` tag exactly, rather than continuing to infer from the old compact bitcells or noisy emulator logs
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## 2026-03-28 12:59 PDT
 
 - Found and fixed a real PS1 libc corruption source in `ps1_stubs.c`:

@@ -14,6 +14,13 @@ looping ocean track — the sound of the place we're showing — without
 touching the screensaver loop's per-VBlank cost.
 
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Why ocean, and not music
 
 The PS1 has three independent audio paths: the SPU (dedicated coprocessor

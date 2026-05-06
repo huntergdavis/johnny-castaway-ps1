@@ -25,6 +25,13 @@ diagnostic.
 
 If you paid for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What it captures
 
 Every regtest run produces, under `regtest-results/<run-id>/`:

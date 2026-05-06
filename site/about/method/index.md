@@ -6,6 +6,13 @@ subtitle: How a 1992 Windows screensaver ends up running on a 1994 console witho
 description: Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The problem
 
 Sierra's *Johnny Castaway* shipped in 1992 for Windows 3.1. It is a
@@ -261,9 +268,14 @@ and why scene continuity bugs stopped being a runtime concern: the
 runtime no longer carries the state that those bugs lived in.
 
 The cost is that every scene needs a verified host capture before
-it joins the validated count, and that count is currently
-`{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}`.
-Five scenes pixel-perfect plus synced SFX is not 63. But the path
-from one to five is now a repeatable scene-by-scene loop, including
-small pack-level fixes when the residual cleanup contract misses a
-few pixels. That is the property the project was reaching for.
+it joins the validated count. At `{{ site.release.tag }}` that
+count is `{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}` —
+every routed scene the original game had now plays pixel-perfect
+on the PS1 with synced SFX across every applicable variant. The
+path from the first signed-off scene to all 63 was the same
+repeatable loop on every row: capture, pack, route, replay, sign
+off. The hard work was the loop's edges — multi-view foreground
+stitches for the wide scenes, residual-cleanup pack fixes when a
+few pixels missed, the backdrop-key guard that kept story-loop
+walks from running across stale islands. That is the property
+the project was reaching for.

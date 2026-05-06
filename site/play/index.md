@@ -6,12 +6,15 @@ subtitle: Latest build, quickstart, controls.
 
 ## Latest build
 
-**{{ site.release.tag }}** — see [release notes]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
+**{{ site.release.tag }}** — short notes on this and earlier
+versions are at [/releases/]({{ '/releases/' | relative_url }});
+the GitHub release pages are at
+[{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
 <p class="hero-cta" markdown="0">
   <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download .bin</a>
   <a class="btn"              href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.cue">Download .cue</a>
-  <a class="btn btn--small"   href="{{ site.github_url }}/releases">All releases</a>
+  <a class="btn btn--small"   href="{{ '/releases/' | relative_url }}">Release notes</a>
 </p>
 
 The CD image ships as a **.bin / .cue** pair. Both files belong in
@@ -64,7 +67,7 @@ anchor, set the RNG seed, and open the sound test.
 ## Freeplay controls
 
 Freeplay launches from the pause menu. It is the direct-control Johnny
-mode added in `{{ site.release.tag }}`.
+mode added in [`v0.5.0-ps1`]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }}).
 
 | Button | Action |
 |---|---|

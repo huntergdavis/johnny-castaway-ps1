@@ -7,6 +7,9 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 <section class="hero">
   <div class="hero-frame">
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
+         width="1127" height="677"
+         fetchpriority="high"
+         decoding="async"
          alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
   </div>
   <div class="hero-text">
@@ -23,15 +26,15 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="trio">
   <figure>
-    <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+    <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
     <figcaption>ACTIVITY 9 · boat pass</figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
+    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
     <figcaption>JOHNNY 6 · daydream</figcaption>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
+    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
     <figcaption>FISHING 1 · reference</figcaption>
   </figure>
 </section>
@@ -58,11 +61,15 @@ running on real hardware or on DuckStation. It is a fan project: the
 character belongs to the original creator, and the site's chrome and
 its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
-Every one of the **63 scenes** is validated under the fishing-1 bar:
-pixel-perfect visuals plus synced SFX, signed off by human review across
-every applicable variant. Current mainline work is now bugfixing,
-performance, and feature polish; the
-[scene ledger]({{ '/scenes/' | relative_url }}) remains the acceptance source.
+All **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
+routed scenes the original game had are validated under the
+fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
+off by human review across every applicable variant. Current mainline work is
+bugfixing, performance, and feature polish; the `v0.8.0` baseline is closing
+the last bit of speed gap, and most scenes already run at native rate. The
+[scene ledger]({{ '/scenes/' | relative_url }}) tracks the
+visual signoff bar and the headless-perf battle card per
+scene, side by side.
 
 ## How it works (the short version)
 
@@ -140,18 +147,27 @@ order, with the same variants the original randomized between. The art
 is unchanged. The 4 original holiday decorations (Christmas, New Year,
 Halloween, St. Patrick's Day) keep their original sprites.
 
-**Added on top.** Freeplay/debug mode, where Johnny can be walked around
-the island directly with the controller and debug-selected gags, visitors,
-sound effects, holidays, tide, raft, and day/night state. Closed captions
-for every scene (off by default, in a
-[fresh-authored corpus]({{ '/docs/captions/' | relative_url }}) from
-scene content — not lifted from any prior project). A holiday calendar
-expanded from 4 to **36 holidays** with movable feasts computed by
-pure algorithm — Meeus for Easter, Nth-weekday-of-month for the rest,
-no expiring date tables. A pause menu with options toggles
-split into Freeplay Options, World Options, Accessibility, Sound Test,
-System, date/time editing, island-position nudging, and RNG seed override.
-The website credits and legal pages name exactly what's owed to whom.
+**Added on top.** [Story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+between scenes — Johnny no longer teleports; he walks the
+original Sierra route table from one scene's end to the next
+scene's start, with palm-tree occlusion and ocean animation
+preserved across the walk.
+[Freeplay/debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }}),
+where Johnny can be walked directly with the controller and
+debug-selected gags, visitors, sound effects, holidays, tide,
+raft, and day/night state. Closed captions for every scene (off
+by default, in a [fresh-authored corpus]({{ '/docs/captions/' | relative_url }})
+from scene content — not lifted from any prior project). A
+holiday calendar expanded from 4 to **36 holidays** with movable
+feasts computed by pure algorithm — Meeus for Easter,
+Nth-weekday-of-month for the rest, no expiring date tables. A
+pause menu reachable with Start (the original had none), with
+sub-screens for Scene Set, Freeplay Options, Controls, World
+Options, Holidays, Set Island Position, Accessibility, Sound
+Test, System, Set Time/Date, and Set RNG Seed. An optional
+ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
+transitions between scene swaps. The website credits and legal
+pages name exactly what's owed to whom.
 
 The full menu of what's added vs preserved lives at
 [/about/]({{ '/about/' | relative_url }}). The implementations live at

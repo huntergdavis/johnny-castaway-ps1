@@ -7,6 +7,13 @@ description: "A practical essay on controlling LLM hallucinations in a real C/PS
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The expensive kind of wrong
 
 The dangerous LLM answer is not the surreal one. The dangerous answer is the

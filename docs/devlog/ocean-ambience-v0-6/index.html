@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Ocean Ambience — v0.6.0-ps1 — May 1, 2026 — Johnny Castaway PS1</title>
-  <meta name="description" content="v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state." />
+  <meta name="description" content="v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/ocean-ambience-v0-6/" />
 
   <meta property="og:title"        content="Ocean Ambience — v0.6.0-ps1 — May 1, 2026 — Johnny Castaway PS1" />
   <meta property="og:description"  content="v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/scripted-pad-menu-harness/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/scene-set-and-frog-clock/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Ocean ambience v0 6", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/ocean-ambience-v0-6/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ocean Ambience — v0.6.0-ps1 — May 1, 2026",
+  "description": "v0.6.0-ps1 ships a CC0 ocean ambience loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state.",
+  "datePublished": "2026-05-01T15:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/ocean-ambience-v0-6/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/ocean-ambience-v0-6/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>Ocean Ambience — v0.6.0-ps1 — May 1, 2026</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~4 min read · 1175 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -88,6 +147,20 @@ drove a few PC-speaker tones and short Sound-Blaster digital effects but
 ran in silence the rest of the time. <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> adds an optional
 looping ocean track — the sound of the place we’re showing — without
 touching the screensaver loop’s per-VBlank cost.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#why-ocean-and-not-music" id="markdown-toc-why-ocean-and-not-music">Why ocean, and not music</a></li>
+  <li><a href="#the-mechanism-pre-loaded-adpcm-in-spu-ram" id="markdown-toc-the-mechanism-pre-loaded-adpcm-in-spu-ram">The mechanism: pre-loaded ADPCM in SPU RAM</a></li>
+  <li><a href="#the-loop-20-seconds-crossfade-replace-at-the-seam" id="markdown-toc-the-loop-20-seconds-crossfade-replace-at-the-seam">The loop: 20 seconds, crossfade-replace at the seam</a></li>
+  <li><a href="#the-toggle-pause-menu-memcard-zero-flicker" id="markdown-toc-the-toggle-pause-menu-memcard-zero-flicker">The toggle: pause-menu, memcard, zero-flicker</a></li>
+  <li><a href="#frame-impact-zero-verified" id="markdown-toc-frame-impact-zero-verified">Frame impact: zero, verified</a></li>
+  <li><a href="#what-the-headroom-leaves" id="markdown-toc-what-the-headroom-leaves">What the headroom leaves</a></li>
+</ul>
+
+</details>
 
 <h2 id="why-ocean-and-not-music">Why ocean, and not music</h2>
 
@@ -231,14 +304,34 @@ and a binary toggle.</p>
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../scripted-pad-menu-harness/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-05-01</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../scene-set-and-frog-clock/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-05-03</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/background-music-feasibility.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -259,7 +352,16 @@ and a binary toggle.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-05-01-ocean-ambience-v0-6.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -270,6 +372,7 @@ and a binary toggle.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

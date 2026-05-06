@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FAQ — Johnny Castaway PS1</title>
-  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
 
   <meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
   <meta property="og:description"  content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,43 @@
         href="../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../assets/css/main.css" />
+  <script defer src="../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Faq", "item": "https://hunterdavis.com/johnny-castaway-ps1/faq/" }]
+}
+</script>
 </head>
 
 <body>
@@ -78,6 +108,36 @@ written by the author, not crowdsourced. Three sections: about
 the project, running it, and the original game.</p>
 
 <hr />
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#about" id="markdown-toc-about">About</a>    <ul>
+      <li><a href="#what-is-this" id="markdown-toc-what-is-this">What is this?</a></li>
+      <li><a href="#why-ps1" id="markdown-toc-why-ps1">Why PS1?</a></li>
+      <li><a href="#will-you-port-other-sierra-screensavers" id="markdown-toc-will-you-port-other-sierra-screensavers">Will you port other Sierra screensavers?</a></li>
+      <li><a href="#is-this-legal" id="markdown-toc-is-this-legal">Is this legal?</a></li>
+      <li><a href="#why-is-it-only-63--63-scenes" id="markdown-toc-why-is-it-only-63--63-scenes">Why is it only 63 / 63 scenes?</a></li>
+    </ul>
+  </li>
+  <li><a href="#running-it" id="markdown-toc-running-it">Running it</a>    <ul>
+      <li><a href="#how-do-i-run-it" id="markdown-toc-how-do-i-run-it">How do I run it?</a></li>
+      <li><a href="#do-i-need-original-sierra-files" id="markdown-toc-do-i-need-original-sierra-files">Do I need original Sierra files?</a></li>
+      <li><a href="#does-it-work-on-real-ps1-hardware" id="markdown-toc-does-it-work-on-real-ps1-hardware">Does it work on real PS1 hardware?</a></li>
+      <li><a href="#which-emulators-are-supported" id="markdown-toc-which-emulators-are-supported">Which emulators are supported?</a></li>
+      <li><a href="#where-do-i-file-bugs" id="markdown-toc-where-do-i-file-bugs">Where do I file bugs?</a></li>
+    </ul>
+  </li>
+  <li><a href="#original-game" id="markdown-toc-original-game">Original game</a>    <ul>
+      <li><a href="#where-does-the-caption-text-come-from" id="markdown-toc-where-does-the-caption-text-come-from">Where does the caption text come from?</a></li>
+      <li><a href="#why-are-there-36-holidays-now-instead-of-4" id="markdown-toc-why-are-there-36-holidays-now-instead-of-4">Why are there 36 holidays now instead of 4?</a></li>
+      <li><a href="#whats-faithful-to-the-original-and-whats-added" id="markdown-toc-whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</a></li>
+    </ul>
+  </li>
+</ul>
+
+</details>
 
 <h2 id="about">About</h2>
 
@@ -173,11 +233,11 @@ scene content. It is not lifted from any prior corpus. The
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of v0.7.2-ps1).</p>
 
-<h3 id="why-are-there-35-holidays-now-instead-of-4">Why are there 35 holidays now instead of 4?</h3>
+<h3 id="why-are-there-36-holidays-now-instead-of-4">Why are there 36 holidays now instead of 4?</h3>
 
 <p>The original Sierra game had 4 baked-in holiday decorations
 (Christmas, New Year, Halloween, St. Patrick’s Day). This port
-extends that to 35 US holidays via a code-generated table and a
+extends that to 36 US holidays via a code-generated table and a
 pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
 for 100+ years. See <code class="language-plaintext highlighter-rouge">holidays.yml</code> and <code class="language-plaintext highlighter-rouge">src/holidays.c</code> in the
@@ -190,10 +250,22 @@ order, with the original variants. The art is unchanged. The
 holidays’ visual style matches the existing 4 (Sierra retained
 the original sprites; the new ones were authored to fit).</p>
 
-<p><strong>Added</strong>: closed captions (off by default), 31 additional
-holidays, a pause menu with Sound / Day-Night / Tide / Raft /
-Captions toggles, a Set Time / Set Island Pos / Set RNG Seed
-editor for testing, and a full Credits page.</p>
+<p><strong>Added</strong>: a real pause menu reachable with Start (the original
+had none), with sub-screens for Scene Set, Freeplay Options,
+Controls, World Options, Holidays, Set Island Position,
+Accessibility, Sound Test, System, Set Time / Date, and Set RNG
+Seed. Closed captions (off by default; see <a href="../docs/captions/">/docs/captions/</a>).
+Thirty-two additional holidays via a code-generated table and
+pure-algorithm date core. <a href="../releases/#v0420-ps1--story-loop-walking">Story-loop walking</a>
+between scenes (v0.4.20-ps1) — Johnny no longer teleports.
+<a href="../releases/#v050-ps1--freeplay-and-debug-mode">Freeplay / debug mode</a>
+(v0.5.0-ps1) where the player drives Johnny directly, with gag
+and visitor catalogs. Optional ocean-ambience loop on a dedicated
+SPU voice (v0.6.0-ps1). Scene Set pool selector for filtering
+the random rotation by family. Frog-clock loading transitions
+between scene swaps. A full <a href="../credits/">Credits page</a>
+that names the prior ports and toolchain authors this build
+stands on.</p>
 
   </div>
 </article>
@@ -215,7 +287,16 @@ editor for testing, and a full Credits page.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/faq/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -226,6 +307,7 @@ editor for testing, and a full Credits page.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../help/">Help</a></li>
+          <li><a href="../releases/">Releases</a></li>
           <li><a href="./">FAQ</a></li>
           <li><a href="../credits/">Credits</a></li>
           <li><a href="../hack/">Hack</a></li>

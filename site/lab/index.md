@@ -2,7 +2,7 @@
 layout: page
 title: Lab
 eyebrow: Magazine . Methodology and reflection
-subtitle: How a one-person PS1 fan port actually gets built. Twelve feature articles on the craft, the failures, and the tools.
+subtitle: How a one-person PS1 fan port actually gets built. Thirteen feature articles on the craft, the failures, and the tools.
 description: The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port.
 date: 2026-04-26
 ---
@@ -42,8 +42,10 @@ want the raw documents behind the essays, use the
 
 ## Contents
 
-Twelve feature articles in two streams. The first six are mine; the
-second six are the companion craft retrospectives.
+Thirteen feature articles, the original twelve plus one meta piece on the
+site itself. The first six are methodology; the second six are craft
+retrospectives; the thirteenth covers how this Jekyll deployment was made
+to behave.
 
 ### Methodology, infrastructure, and tools
 
@@ -99,7 +101,16 @@ second six are the companion craft retrospectives.
   </li>
   <li>
     <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">The 63-scene grind</a>
-    <p>Five scenes signed off, fifty-eight to go. What the daily loop actually looks like on a project of finite scenes and finite evenings.</p>
+    <p>From five signed off to all 63. What the daily loop looked like on a project of finite scenes and finite evenings, written from inside the grind.</p>
+  </li>
+</ul>
+
+### About the site
+
+<ul class="doc-grid">
+  <li>
+    <a href="{{ '/lab/the-site-itself/' | relative_url }}">The site itself, as a small program</a>
+    <p>The path-portable build, the canonical_baseurl trick, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn. A handful of decisions that keep the deployment stable and low-noise.</p>
   </li>
 </ul>
 

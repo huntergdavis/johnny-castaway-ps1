@@ -1,0 +1,58 @@
+---
+permalink: /humans.txt
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  humans.txt — the people behind a small project on a small island.
+  See https://humanstxt.org. Lives at /johnny-castaway-ps1/humans.txt.
+  Voice mirrors the in-game credits screen and /credits/.
+{% endcomment %}                       /* who */
+
+A labor of love by Hunter Davis.
+
+Hunter does not own or have a license to the Johnny Castaway
+character. The original creator generously allows fan ports.
+
+If you paid for this, you were cheated.
+Open source and free.
+{{ site.github_url }}
+
+
+                       /* on the shoulders of */
+
+jno6809 / jc_reborn   — SDL2 port; bytecode decoder this build forks.
+nivs1978 / JCOS       — alternate decoder; cross-validation reference.
+xesf / Castaway       — reverse-engineering notes.
+The Sierra Chest      — preserved manuals and box copy.
+
+
+                       /* toolchain */
+
+PSn00bSDK (Lameguy64 et al.)        — open-source PS1 SDK.
+DuckStation (Connor McLaughlin)     — every commit tested here.
+mkpsxiso                            — .bin/.cue packing.
+spicyjpeg's pad-poll example        — SPI driver derives from it.
+Jean Meeus                          — Easter algorithm for movables.
+BigSoundBank sound 0266 (CC0)       — ocean ambience loop source.
+
+
+                       /* this site */
+
+Last release    : {{ site.release.tag }}
+Built           : {{ site.time | date: '%Y-%m-%d' }}
+Validated       : {{ site.release.scenes_validated }} of {{ site.release.scenes_total }} scenes
+Standards       : HTML5, CSS3, Atom 1.0, Schema.org JSON-LD
+Engine          : Jekyll {{ jekyll.version }} (no plugins beyond
+                  jekyll-seo-tag, jekyll-redirect-from)
+Source          : {{ site.github_url }}/tree/main/site
+Feed            : {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.xml
+Code license    : GPL-3.0
+Asset license   : Sierra On-Line retains the Castaway character
+                  and original art; see /legal/ for the line.
+
+
+                       /* a small project */
+
+It's a small project about a small man on a small island.
+The disc plays. That's what mattered.

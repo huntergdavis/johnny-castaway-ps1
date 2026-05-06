@@ -1,0 +1,104 @@
+---
+title: Releases
+eyebrow: Tagged versions · what shipped, when
+subtitle: A short index of every milestone and stability release. Themes, headlines, links to the full notes and the disc image.
+description: Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version.
+redirect_from:
+  - /changelog/
+---
+
+A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn't change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.
+
+The current release line is **`{{ site.release.tag }}`** with
+**{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}** scenes signed off under the
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
+## Latest
+
+### `v0.7.2-ps1` — story-loop walk backdrop guard
+*2026-05-05*
+
+A randomized story-loop walking regression let Johnny walk over water and leave repeated walking poses when the next scene's island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.
+
+- **Walks now require a matching backdrop key.** Inter-scene walks only run when tide, raft, night, holiday, and island X/Y all match the previous rendered scene.
+- **Scene-policy changes force a clean scene load.** Moving from a variable-position scene to a fixed/left-island/no-raft/tide/holiday variant inside the same sequence no longer draws Johnny over stale water.
+- **Menu and freeplay resets clear the walk context.** Scene Set changes, Scene Explorer launches, and Freeplay exits all invalidate the remembered backdrop.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.7.2/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.7.2-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
+### `v0.7.1-ps1` — persisted holiday mode and first-run defaults
+*2026-05-05*
+
+Memory-card schema bumped to v6 to separate the holiday *policy* from the manual override, so the pause menu can offer five distinct holiday modes. New boots default to `AUTO DATE:ORIG4` — Sierra's original four overlays, automatic by date.
+
+- **`AUTO DATE:ORIG4` is now the fresh/no-card default.** Reflects the source material's holiday set.
+- **Holiday mode is persisted separately from manual selection.** Memory card schema v6.
+- **Walking holiday z-order corrected.** Story-loop walks now stamp holiday overlays before Johnny so default decorations don't paint over the walking sprite.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.7.1/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.7.1-ps1)
+
+### `v0.7.0-ps1` — complete scene validation
+*2026-05-05*
+
+The 63-scene grind ended here. Every routed scene the original Sierra game had now plays pixel-perfect on the PS1 with synced SFX across every applicable variant. The retrospective on what the daily loop actually looked like is at [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}).
+
+- **63 / 63 scenes validated.** The live ledger is fully green under the FISHING 1 reference bar.
+- **ACTIVITY 9 completed the sweep.** The final scene needed a wide-boat repair path because `BOAT.PSB` can extend past the legacy 640px scene clip.
+- **Landing page now uses the ACTIVITY 9 boat screenshot.** The hero image shows the final validated scene running in the PS1 build.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.7.0/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.7.0-ps1)
+
+### `v0.5.0-ps1` — Freeplay and debug mode
+*2026-05-01*
+
+The release that turned the project from a passive screensaver port into something a player could touch. Direct-control Johnny via D-pad / analog, gag and visitor debug catalogs in the pause menu, controllable world state, and a no-allocation steady-state freeplay loop.
+
+- **Freeplay mode** with D-pad / analog walking, fishing, and L2/R2 speed modifiers.
+- **Pause-menu debug catalogs** for gags, visitors, sound effects, controls, world options, accessibility, and system pages.
+- **Frog-clock loading transitions** keep the screen coherent between scene swaps.
+- **Steady-state freeplay loop does not allocate.** Important because freeplay can run indefinitely.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.5.0/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.5.0-ps1)
+
+### `v0.4.20-ps1` — story-loop walking
+*2026-04-30*
+
+The first build where Johnny no longer teleports between finished scenes. The PS1 screensaver loop now carries his spot and heading forward, runs Sierra's original `walk_data.h` route table, and visibly walks him across the island before the next FG2 scene begins.
+
+- **Story-loop walking** wired into the PS1 screensaver loop using the original route table and `JOHNWALK` sprite bank.
+- **The ocean keeps animating during walks**, and active holiday overlays persist across scene → walk → scene transitions.
+- **Palm-tree occlusion works.** The trunk and leaves are re-stamped over Johnny when the route passes behind the tree.
+- **Tight, persistent walk erase buffer** (340×224, ≈149 KB) replaces the early build's per-walk free/malloc churn that fragmented the heap.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.4.20/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.4.20-ps1)
+
+## Where to go from here
+
+- The [scene ledger]({{ '/scenes/' | relative_url }}) is the live status of every scene at the current release.
+- The [history page]({{ '/about/history/' | relative_url }}) is the longer narrative — pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind.
+- The [devlog]({{ '/devlog/' | relative_url }}) is the daily worklog. Releases are the milestones; the devlog is the run-up.
+- Older releases (`v0.3.x` and earlier) aren't included above because they predate the per-version release-notes habit. Their commit messages and the [history page]({{ '/about/history/' | relative_url }}) cover the same ground.
+
+The full list of all tagged releases on GitHub is at
+[{{ site.repo }}/releases]({{ site.github_url }}/releases).

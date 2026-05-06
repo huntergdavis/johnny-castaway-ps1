@@ -11,6 +11,13 @@ You are working in the `jc_reborn` repository on the PS1 runtime and test harnes
 
 Your mission is not to produce plausible-looking runs. Your mission is to get to `63` actually validated PS1 story scenes against the canonical Linux/reference output, with trustworthy comparison artifacts a human can review.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Primary Goal
 
 Reach a state where all `63` target PS1 story scenes can be:

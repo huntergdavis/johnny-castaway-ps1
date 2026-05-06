@@ -7,6 +7,13 @@ description: A codegen retrospective on expanding Johnny Castaway PS1 from four 
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Four was not enough
 
 The original screensaver had four holiday decorations: Halloween, St.

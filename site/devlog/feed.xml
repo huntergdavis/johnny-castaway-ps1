@@ -1,0 +1,66 @@
+---
+permalink: /devlog/feed.xml
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Atom 1.0 feed for the devlog. Hand-rolled (no jekyll-feed plugin)
+  because the site-build pass deletes a top-level docs/feed.xml to
+  avoid conflict with the user-pages root, but a devlog-scoped feed
+  at /devlog/feed.xml lives below that line.
+
+  All URLs are absolute https://... using site.canonical_baseurl
+  (the build's --baseurl "" override blanks site.baseurl). RSS readers
+  need absolute hrefs to link back to the site, and the absolute form
+  also satisfies the relativize-build pass's is_external check so the
+  URLs are left alone.
+
+  Text fields run through xml_escape; the post body is CDATA-wrapped
+  HTML so feed readers can render it as-is.
+
+  Updated stamp on the feed itself = newest post's date (site.posts is
+  reverse-chronological, so .first is newest).
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign feed_url  = site_root | append: '/devlog/feed.xml' -%}
+{%- assign devlog_url = site_root | append: '/devlog/' -%}
+{%- assign newest = site.posts | first -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title>{{ site.title | xml_escape }} — Devlog</title>
+  <subtitle>Dated, unedited worklogs from the Johnny Castaway PS1 port. Dead ends preserved.</subtitle>
+  <link rel="self" type="application/atom+xml" href="{{ feed_url }}"/>
+  <link rel="alternate" type="text/html" href="{{ devlog_url }}"/>
+  <id>{{ devlog_url }}</id>
+  {%- if newest %}
+  <updated>{{ newest.date | date_to_xmlschema }}</updated>
+  {%- else %}
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  {%- endif %}
+  <generator uri="https://jekyllrb.com/" version="hand-rolled">Jekyll (no plugin)</generator>
+  <rights>Code GPL-3.0. Sierra art and the Johnny Castaway character are © Sierra On-Line and not licensed under GPL — see /legal/.</rights>
+  <author>
+    <name>{{ site.author | xml_escape }}</name>
+    <uri>https://hunterdavis.com/</uri>
+  </author>
+  {%- for post in site.posts %}
+  {%- assign post_abs = site_root | append: post.url -%}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <link rel="alternate" type="text/html" href="{{ post_abs }}"/>
+    <id>{{ post_abs }}</id>
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+    <author>
+      <name>{{ site.author | xml_escape }}</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    {%- if post.description %}
+    <summary>{{ post.description | xml_escape }}</summary>
+    {%- elsif post.editor_note %}
+    <summary>{{ post.editor_note | xml_escape }}</summary>
+    {%- endif %}
+    <content type="html"><![CDATA[{{ post.content }}]]></content>
+  </entry>
+  {%- endfor %}
+</feed>

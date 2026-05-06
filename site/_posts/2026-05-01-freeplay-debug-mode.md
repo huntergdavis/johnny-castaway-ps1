@@ -25,6 +25,13 @@ clean rects, the shared walk renderer, holiday stamping, captions, SPU sound,
 and the pause menu. It is live C code, but it stands on the replay runtime
 instead of fighting it.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The control scheme got smaller
 
 The early builds tried to use the whole controller. Gags on face buttons.

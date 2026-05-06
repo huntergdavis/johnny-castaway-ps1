@@ -28,8 +28,18 @@ is the source file from `docs/ps1/research/`, preserved as it was
 written. A link back to the source on GitHub sits at the bottom of
 every post.
 
+{% assign posts_by_month = site.posts | group_by_exp: "p", "p.date | date: '%Y-%m'" %}
+
+<nav class="scenes-jump" aria-label="Jump to month">
+  <span class="scenes-jump-label">Jump to:</span>
+  {% for group in posts_by_month %}<a href="#month-{{ group.name }}">{{ group.items.first.date | date: "%b %Y" }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+</nav>
+
+{% for group in posts_by_month %}
+<h2 id="month-{{ group.name }}">{{ group.items.first.date | date: "%B %Y" }}</h2>
+
 <ul class="devlog-list">
-  {% for post in site.posts %}
+  {% for post in group.items %}
   <li>
     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     <div>
@@ -39,6 +49,7 @@ every post.
   </li>
   {% endfor %}
 </ul>
+{% endfor %}
 
 <p class="callout">
   Older material that predates the worklog stream — earlier plans,

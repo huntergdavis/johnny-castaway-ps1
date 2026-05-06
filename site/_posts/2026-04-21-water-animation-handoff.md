@@ -11,6 +11,13 @@ Date: 2026-04-21
 Repo: `repo:/`
 Branch: `ps1`
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Goal
 
 Get `fgpilot fishing1` to:

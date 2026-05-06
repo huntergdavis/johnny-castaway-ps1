@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Era Timeline — Johnny Castaway PS1</title>
-  <meta name="description" content="A vertical era strip covering the PS1 branch from embedded bootstrap (Oct 2025) through the foreground playback pivot (April 2026) that produced the first validated scene." />
+  <meta name="description" content="A vertical era strip covering the PS1 branch from embedded bootstrap (Oct 2025) through the foreground playback pivot (April 2026) that produced the first validated scene." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/archaeology/timeline/" />
 
   <meta property="og:title"        content="Era Timeline — Johnny Castaway PS1" />
   <meta property="og:description"  content="A vertical era strip covering the PS1 branch from embedded bootstrap (Oct 2025) through the foreground playback pivot (April 2026) that produced the first validated scene." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,43 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Archaeology", "item": "https://hunterdavis.com/johnny-castaway-ps1/archaeology/" }, { "@type": "ListItem", "position": 3, "name": "Timeline", "item": "https://hunterdavis.com/johnny-castaway-ps1/archaeology/timeline/" }]
+}
+</script>
 </head>
 
 <body>
@@ -69,6 +99,10 @@
       <p class="eyebrow">Six months in five eras</p>
       <h1>Era Timeline</h1>
       <p class="subtitle">How the PS1 branch changed jobs without changing standards.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~3 min read · 870 words
+        </p>
+
       <hr class="rule" />
     </header>
 
@@ -85,6 +119,19 @@ the foreground pilot started looking like the answer.</p>
 
 <section class="chapter">
   <p><span class="chapter-num">2025-10-18 → 2026-03-16</span></p>
+  <details class="page-toc">
+    <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#embedded-port-bootstrap-and-runtime-survival" id="markdown-toc-embedded-port-bootstrap-and-runtime-survival">Embedded port bootstrap and runtime survival</a></li>
+  <li><a href="#restore-packs-and-the-rollout-surface" id="markdown-toc-restore-packs-and-the-rollout-surface">Restore packs and the rollout surface</a></li>
+  <li><a href="#validation-and-instrumentation-maximalism" id="markdown-toc-validation-and-instrumentation-maximalism">Validation and instrumentation maximalism</a></li>
+  <li><a href="#binary-library-and-regression-archaeology" id="markdown-toc-binary-library-and-regression-archaeology">Binary library and regression archaeology</a></li>
+  <li><a href="#foreground-playback-pivot-to-validated-baseline" id="markdown-toc-foreground-playback-pivot-to-validated-baseline">Foreground playback pivot to validated baseline</a></li>
+</ul>
+
+  </details>
+
   <h2 id="embedded-port-bootstrap-and-runtime-survival">Embedded port bootstrap and runtime survival</h2>
 
   <p>This is the era of “make the console boot.” Cross-compilation through
@@ -212,7 +259,16 @@ walkthrough is at <a href="../">/archaeology/</a>.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/archaeology/timeline/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -223,6 +279,7 @@ walkthrough is at <a href="../">/archaeology/</a>.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

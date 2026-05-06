@@ -7,6 +7,13 @@ description: A retrospective on the finite scene-by-scene validation grind behin
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The finite list
 
 The port has 63 routed scenes in the current ledger.

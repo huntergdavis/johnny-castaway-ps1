@@ -11,6 +11,13 @@ hardware the PS1 port actually runs on — and a short list of the places where
 that hardware drew blood during development. If you paid for this, you were
 cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The shape of the machine in 2026
 
 The PlayStation 1 was released in 1994. In 2026 it is a museum piece, but it is

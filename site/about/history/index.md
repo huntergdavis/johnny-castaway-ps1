@@ -6,6 +6,13 @@ subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind
 description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The pre-port era
 
 Before this project there was an engine to decode. *Johnny Castaway*
@@ -293,8 +300,9 @@ capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
 unless a scene proves otherwise.
 
-The remaining unvalidated scenes are queued. The per-scene workflow is
-the same loop, repeated:
+By `v0.7.0-ps1` (2026-05-05) every routed scene was signed off:
+**{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**.
+The per-scene workflow stayed the same loop, repeated 63 times:
 
 ```
 1. capture-host-scene.sh          (host capture, high tide + low tide)
@@ -362,9 +370,16 @@ component-completeness phases:
 ## Where it stands at {{ site.release.tag }}
 
 - Build: **`{{ site.release.tag }}`**.
-- Validated scenes: **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**
-  (`FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`).
-- Next scene in bring-up: **`MARY 3`**.
+- Validated scenes:
+  **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}** —
+  every routed scene the original game had, signed off across every
+  applicable variant (night palette, low tide, holiday overlay,
+  raft-stage progression). The live ledger is at
+  [/scenes/]({{ '/scenes/' | relative_url }}).
+- Last point release: **`v0.7.2-ps1`** — backdrop-key guard so
+  story-loop walks only run when the next scene's background
+  state matches the previous rendered tide / raft / night /
+  holiday / island position.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.

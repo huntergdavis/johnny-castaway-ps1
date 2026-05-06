@@ -292,7 +292,7 @@ are routed into the CD image at any one time.
 Around the validated-scene work, several other surfaces have come up
 to where they need to be:
 
-**The 35 holidays expansion.** The original game has a small set of
+**The 36 holidays expansion.** The original game has a small set of
 holiday overlays — Christmas, Halloween, Thanksgiving, the Fourth of
 July. The PS1 port expands that to 35, including movable feasts that
 need a real Easter calculation. The Easter algorithm in use here is

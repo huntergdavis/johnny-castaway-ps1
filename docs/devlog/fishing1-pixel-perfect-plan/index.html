@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Fishing 1 Pixel-Perfect Plan — April 21, 2026 — Johnny Castaway PS1</title>
-  <meta name="description" content="Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation." />
+  <meta name="description" content="Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/fishing1-pixel-perfect-plan/" />
 
   <meta property="og:title"        content="Fishing 1 Pixel-Perfect Plan — April 21, 2026 — Johnny Castaway PS1" />
   <meta property="og:description"  content="Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/ocean-restore-plan/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-handoff/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Fishing1 pixel perfect plan", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/fishing1-pixel-perfect-plan/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Fishing 1 Pixel-Perfect Plan — April 21, 2026",
+  "description": "Plan to bring the fishing1 fgpilot scene to pixel-perfect parity with the original PC version across every islandState variation.",
+  "datePublished": "2026-04-21T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/fishing1-pixel-perfect-plan/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/fishing1-pixel-perfect-plan/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>Fishing 1 Pixel-Perfect Plan — April 21, 2026</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~3 min read · 858 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -83,7 +142,32 @@
 
 
   <div class="page-body">
-    <h2 id="goal">Goal</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#goal" id="markdown-toc-goal">Goal</a></li>
+  <li><a href="#working-mode" id="markdown-toc-working-mode">Working mode</a></li>
+  <li><a href="#approach-path-a-bespoke-stay-on-else-branch" id="markdown-toc-approach-path-a-bespoke-stay-on-else-branch">Approach: Path A (bespoke, stay on ELSE branch)</a></li>
+  <li><a href="#step-list" id="markdown-toc-step-list">Step list</a>    <ul>
+      <li><a href="#step-1--boot-override-tokens-for-islandstate" id="markdown-toc-step-1--boot-override-tokens-for-islandstate">Step 1 — Boot-override tokens for <code class="language-plaintext highlighter-rouge">islandState</code></a></li>
+      <li><a href="#step-2--boot-override-for-islandstate-via-bootmodetxt" id="markdown-toc-step-2--boot-override-for-islandstate-via-bootmodetxt">Step 2 — Boot-override for <code class="language-plaintext highlighter-rouge">islandState</code> via <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code></a></li>
+      <li><a href="#step-3--high-tide-baseline" id="markdown-toc-step-3--high-tide-baseline">Step 3 — High-tide baseline</a></li>
+      <li><a href="#step-4--low-tide" id="markdown-toc-step-4--low-tide">Step 4 — Low-tide</a></li>
+      <li><a href="#steps-59--raft-stages" id="markdown-toc-steps-59--raft-stages">Steps 5–9 — Raft stages</a></li>
+      <li><a href="#steps-1013--holidays" id="markdown-toc-steps-1013--holidays">Steps 10–13 — Holidays</a></li>
+      <li><a href="#step-14--night-mode" id="markdown-toc-step-14--night-mode">Step 14 — Night mode</a></li>
+      <li><a href="#step-15--island-position-variations" id="markdown-toc-step-15--island-position-variations">Step 15 — Island position variations</a></li>
+      <li><a href="#step-16--anything-else-you-spot" id="markdown-toc-step-16--anything-else-you-spot">Step 16 — Anything else you spot</a></li>
+      <li><a href="#step-17--cleanup--handoff" id="markdown-toc-step-17--cleanup--handoff">Step 17 — Cleanup / handoff</a></li>
+    </ul>
+  </li>
+  <li><a href="#after-this-document-is-done" id="markdown-toc-after-this-document-is-done">After this document is done</a></li>
+</ul>
+
+</details>
+
+<h2 id="goal">Goal</h2>
 
 <p>Get the fishing1 fgpilot scene visually identical to the original PC
 version of Johnny Castaway, covering every <code class="language-plaintext highlighter-rouge">islandState</code>-driven variation
@@ -247,14 +331,34 @@ the larger master plan.</p>
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../ocean-restore-plan/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-04-16</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../water-animation-handoff/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-04-21</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/FISHING1_PIXEL_PERFECT_PLAN_2026-04-21.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -275,7 +379,16 @@ the larger master plan.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-04-21-fishing1-pixel-perfect-plan.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -286,6 +399,7 @@ the larger master plan.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

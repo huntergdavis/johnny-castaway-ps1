@@ -10,6 +10,13 @@ the project, running it, and the original game.
 
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## About
 
 ### What is this?
@@ -104,11 +111,11 @@ scene content. It is not lifted from any prior corpus. The
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of {{ site.release.tag }}).
 
-### Why are there 35 holidays now instead of 4?
+### Why are there 36 holidays now instead of 4?
 
 The original Sierra game had 4 baked-in holiday decorations
 (Christmas, New Year, Halloween, St. Patrick's Day). This port
-extends that to 35 US holidays via a code-generated table and a
+extends that to 36 US holidays via a code-generated table and a
 pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
 for 100+ years. See `holidays.yml` and `src/holidays.c` in the
@@ -121,7 +128,19 @@ order, with the original variants. The art is unchanged. The
 holidays' visual style matches the existing 4 (Sierra retained
 the original sprites; the new ones were authored to fit).
 
-**Added**: closed captions (off by default), 31 additional
-holidays, a pause menu with Sound / Day-Night / Tide / Raft /
-Captions toggles, a Set Time / Set Island Pos / Set RNG Seed
-editor for testing, and a full Credits page.
+**Added**: a real pause menu reachable with Start (the original
+had none), with sub-screens for Scene Set, Freeplay Options,
+Controls, World Options, Holidays, Set Island Position,
+Accessibility, Sound Test, System, Set Time / Date, and Set RNG
+Seed. Closed captions (off by default; see [/docs/captions/]({{ '/docs/captions/' | relative_url }})).
+Thirty-two additional holidays via a code-generated table and
+pure-algorithm date core. [Story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+between scenes (v0.4.20-ps1) — Johnny no longer teleports.
+[Freeplay / debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+(v0.5.0-ps1) where the player drives Johnny directly, with gag
+and visitor catalogs. Optional ocean-ambience loop on a dedicated
+SPU voice (v0.6.0-ps1). Scene Set pool selector for filtering
+the random rotation by family. Frog-clock loading transitions
+between scene swaps. A full [Credits page]({{ '/credits/' | relative_url }})
+that names the prior ports and toolchain authors this build
+stands on.

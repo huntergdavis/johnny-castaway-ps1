@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Local Vision Classifier Plan — March 29, 2026 — Johnny Castaway PS1</title>
-  <meta name="description" content="Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative." />
+  <meta name="description" content="Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/local-vision-classifier-plan/" />
 
   <meta property="og:title"        content="Local Vision Classifier Plan — March 29, 2026 — Johnny Castaway PS1" />
   <meta property="og:description"  content="Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/agent-prompt/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/validation-log/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Local vision classifier plan", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/local-vision-classifier-plan/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Local Vision Classifier Plan — March 29, 2026",
+  "description": "Plan to run a local vision classifier for PS1 scene captioning, evaluated against a hosted VLM alternative.",
+  "datePublished": "2026-03-29T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/local-vision-classifier-plan/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/local-vision-classifier-plan/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>Local Vision Classifier Plan — March 29, 2026</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~6 min read · 1719 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -112,6 +171,58 @@
 
 <p>This is not primarily a training problem yet.
 The first target is a practical semantic harness that converts frames into structured, comparable scene descriptions.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#executive-recommendation" id="markdown-toc-executive-recommendation">Executive Recommendation</a></li>
+  <li><a href="#why-this-is-the-right-shape" id="markdown-toc-why-this-is-the-right-shape">Why This Is The Right Shape</a></li>
+  <li><a href="#source-of-truth" id="markdown-toc-source-of-truth">Source Of Truth</a></li>
+  <li><a href="#what-the-harness-must-answer" id="markdown-toc-what-the-harness-must-answer">What The Harness Must Answer</a></li>
+  <li><a href="#core-design-reference-first-semantic-retrieval" id="markdown-toc-core-design-reference-first-semantic-retrieval">Core Design: Reference-First Semantic Retrieval</a>    <ul>
+      <li><a href="#reference-bank-contents" id="markdown-toc-reference-bank-contents">Reference Bank Contents</a></li>
+      <li><a href="#runtime-ps1-evaluation" id="markdown-toc-runtime-ps1-evaluation">Runtime PS1 Evaluation</a></li>
+    </ul>
+  </li>
+  <li><a href="#architecture" id="markdown-toc-architecture">Architecture</a>    <ul>
+      <li><a href="#stage-0-build-the-reference-index" id="markdown-toc-stage-0-build-the-reference-index">Stage 0: Build The Reference Index</a></li>
+      <li><a href="#stage-1-cheap-deterministic-triage" id="markdown-toc-stage-1-cheap-deterministic-triage">Stage 1: Cheap Deterministic Triage</a></li>
+      <li><a href="#stage-2-lightweight-embedding-model" id="markdown-toc-stage-2-lightweight-embedding-model">Stage 2: Lightweight Embedding Model</a></li>
+      <li><a href="#stage-3-sampled-semantic-explainer" id="markdown-toc-stage-3-sampled-semantic-explainer">Stage 3: Sampled Semantic Explainer</a></li>
+      <li><a href="#stage-4-optional-tiny-supervised-classifier" id="markdown-toc-stage-4-optional-tiny-supervised-classifier">Stage 4: Optional Tiny Supervised Classifier</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-models-under-8-gb-ram" id="markdown-toc-recommended-models-under-8-gb-ram">Recommended Models Under 8 GB RAM</a>    <ul>
+      <li><a href="#1-clip-vit-b32" id="markdown-toc-1-clip-vit-b32">1. CLIP ViT-B/32</a></li>
+      <li><a href="#2-florence-2-base-ft" id="markdown-toc-2-florence-2-base-ft">2. Florence-2-base-ft</a></li>
+      <li><a href="#3-smolvlm-500m" id="markdown-toc-3-smolvlm-500m">3. SmolVLM-500M</a></li>
+      <li><a href="#4-moondream2" id="markdown-toc-4-moondream2">4. moondream2</a></li>
+    </ul>
+  </li>
+  <li><a href="#reference-grounded-labeling-strategy" id="markdown-toc-reference-grounded-labeling-strategy">Reference-Grounded Labeling Strategy</a>    <ul>
+      <li><a href="#pass-a-deterministic-label-seed" id="markdown-toc-pass-a-deterministic-label-seed">Pass A: Deterministic Label Seed</a></li>
+      <li><a href="#pass-b-nearest-neighbor-clustering" id="markdown-toc-pass-b-nearest-neighbor-clustering">Pass B: Nearest-Neighbor Clustering</a></li>
+      <li><a href="#pass-c-sampled-vlm-annotation" id="markdown-toc-pass-c-sampled-vlm-annotation">Pass C: Sampled VLM Annotation</a></li>
+      <li><a href="#pass-d-human-correction-loop" id="markdown-toc-pass-d-human-correction-loop">Pass D: Human Correction Loop</a></li>
+    </ul>
+  </li>
+  <li><a href="#how-ps1-comparison-should-work" id="markdown-toc-how-ps1-comparison-should-work">How PS1 Comparison Should Work</a></li>
+  <li><a href="#proposed-output-files" id="markdown-toc-proposed-output-files">Proposed Output Files</a></li>
+  <li><a href="#what-counts-as-success" id="markdown-toc-what-counts-as-success">What Counts As Success</a></li>
+  <li><a href="#recommended-implementation-order" id="markdown-toc-recommended-implementation-order">Recommended Implementation Order</a>    <ul>
+      <li><a href="#phase-1" id="markdown-toc-phase-1">Phase 1</a></li>
+      <li><a href="#phase-2" id="markdown-toc-phase-2">Phase 2</a></li>
+      <li><a href="#phase-3" id="markdown-toc-phase-3">Phase 3</a></li>
+      <li><a href="#phase-4" id="markdown-toc-phase-4">Phase 4</a></li>
+    </ul>
+  </li>
+  <li><a href="#immediate-practical-recommendation" id="markdown-toc-immediate-practical-recommendation">Immediate Practical Recommendation</a></li>
+  <li><a href="#research-notes" id="markdown-toc-research-notes">Research Notes</a></li>
+  <li><a href="#progress-logging" id="markdown-toc-progress-logging">Progress Logging</a></li>
+</ul>
+
+</details>
 
 <h2 id="executive-recommendation">Executive Recommendation</h2>
 
@@ -827,14 +938,34 @@ The classifier is a semantic layer that makes the truth usable for automated tri
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../agent-prompt/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-03-29</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../validation-log/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-03-29</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/LOCAL_VISION_CLASSIFIER_PLAN_2026-03-29.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -855,7 +986,16 @@ The classifier is a semantic layer that makes the truth usable for automated tri
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-03-29-local-vision-classifier-plan.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -866,6 +1006,7 @@ The classifier is a semantic layer that makes the truth usable for automated tri
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

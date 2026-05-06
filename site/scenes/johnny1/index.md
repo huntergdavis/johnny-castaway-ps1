@@ -6,6 +6,8 @@ tag: 1
 slug: johnny1
 status: validated
 description: "JOHNNY.ADS scene 1: The End. Validated on PS1 with full-screen black-backdrop playback."
+image: /assets/img/johnny1-ps1-the-end.png
+image_alt: "JOHNNY 1 on PS1: the original Sierra 'The End' scroll graphic — Johnny waves from his island at sunset, palm tree silhouetted."
 ---
 
 ## Validated
@@ -16,12 +18,12 @@ and removes the ocean/island clean-rect memory pressure that caused the
 previous JOHNNY1 loop BSOD.
 
 <figure>
-  <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" alt="JOHNNY 1 The End title card running on PS1." />
+  <img src="{{ '/assets/img/johnny1-ps1-the-end.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 1 The End title card running on PS1." />
   <figcaption>JOHNNY 1 · The End, captured from DuckStation.</figcaption>
 </figure>
 
 <figure>
-  <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" alt="Frog clock transition frame running on PS1." />
+  <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock transition frame running on PS1." />
   <figcaption>The frog clock transition frame from the same validation run.</figcaption>
 </figure>
 

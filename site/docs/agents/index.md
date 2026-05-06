@@ -12,6 +12,13 @@ and it is not a denial that AI was used. The project's voice is plainspoken;
 pretending the author wrote every word would not be plainspoken. If you paid
 for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The lay of the land
 
 This is a one-person fan port. Hunter writes code, decides what scenes ship,

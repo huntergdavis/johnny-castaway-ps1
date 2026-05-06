@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1." />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" />
 
   <meta property="og:title"        content="History — Johnny Castaway PS1" />
   <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,43 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "About", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/" }, { "@type": "ListItem", "position": 3, "name": "History", "item": "https://hunterdavis.com/johnny-castaway-ps1/about/history/" }]
+}
+</script>
 </head>
 
 <body>
@@ -69,11 +99,29 @@
       <p class="eyebrow">2025-10 to v0.6.5-ps1</p>
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~11 min read · 2871 words
+        </p>
+
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <h2 id="the-pre-port-era">The pre-port era</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-pre-port-era" id="markdown-toc-the-pre-port-era">The pre-port era</a></li>
+  <li><a href="#first-ps1-prototype-attempts" id="markdown-toc-first-ps1-prototype-attempts">First PS1 prototype attempts</a></li>
+  <li><a href="#the-hybrid-pipeline-pivot" id="markdown-toc-the-hybrid-pipeline-pivot">The hybrid pipeline pivot</a></li>
+  <li><a href="#first-scenes-validated" id="markdown-toc-first-scenes-validated">First scenes validated</a></li>
+  <li><a href="#the-63-scene-grind" id="markdown-toc-the-63-scene-grind">The 63-scene grind</a></li>
+  <li><a href="#where-it-stands-at-v072-ps1" id="markdown-toc-where-it-stands-at-v072-ps1">Where it stands at v0.7.2-ps1</a></li>
+</ul>
+
+</details>
+
+<h2 id="the-pre-port-era">The pre-port era</h2>
 
 <p>Before this project there was an engine to decode. <em>Johnny Castaway</em>
 shipped in 1992 as a Win16 screensaver: a small interpreter for two
@@ -361,8 +409,9 @@ capture-position rule: controlled host/test placement can prove pack
 completeness, but production runtime should stay random-position safe
 unless a scene proves otherwise.</p>
 
-<p>The remaining unvalidated scenes are queued. The per-scene workflow is
-the same loop, repeated:</p>
+<p>By <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> (2026-05-05) every routed scene was signed off:
+<strong>63 of 63</strong>.
+The per-scene workflow stayed the same loop, repeated 63 times:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. capture-host-scene.sh          (host capture, high tide + low tide)
 2. export-scene-foreground-pilot  (build the FG2 pack from the capture)
@@ -432,9 +481,16 @@ the walking release: the steady-state frame loop does not allocate.</li>
 
 <ul>
   <li>Build: <strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong>.</li>
-  <li>Validated scenes: <strong>63 / 63</strong>
-(<code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, <code class="language-plaintext highlighter-rouge">FISHING 5</code>, <code class="language-plaintext highlighter-rouge">FISHING 6</code>, <code class="language-plaintext highlighter-rouge">FISHING 7</code>, <code class="language-plaintext highlighter-rouge">FISHING 8</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 1</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 2</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 3</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 4</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 5</code>, <code class="language-plaintext highlighter-rouge">JOHNNY 6</code>, <code class="language-plaintext highlighter-rouge">MARY 1</code>, <code class="language-plaintext highlighter-rouge">MARY 2</code>).</li>
-  <li>Next scene in bring-up: <strong><code class="language-plaintext highlighter-rouge">MARY 3</code></strong>.</li>
+  <li>Validated scenes:
+<strong>63 / 63</strong> —
+every routed scene the original game had, signed off across every
+applicable variant (night palette, low tide, holiday overlay,
+raft-stage progression). The live ledger is at
+<a href="../../scenes/">/scenes/</a>.</li>
+  <li>Last point release: <strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong> — backdrop-key guard so
+story-loop walks only run when the next scene’s background
+state matches the previous rendered tide / raft / night /
+holiday / island position.</li>
   <li>Freeplay/debug release: <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong> – direct-control Johnny,
 pause-menu debug catalogs, frog loading transitions, and a
 no-allocation steady-state freeplay loop.</li>
@@ -478,7 +534,16 @@ you were cheated. Open source and free.</p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/history/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -489,6 +554,7 @@ you were cheated. Open source and free.</p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

@@ -20,6 +20,13 @@ follows is the narrative version — what each one was for, what made it
 the right call at the time, and what made retiring it the right call
 once the project changed shape.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The library builders
 
 `build-binary-library.sh` (17 KB) was the workhorse. Given a commit

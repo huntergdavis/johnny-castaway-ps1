@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>PS1 Fishing 1 Water Animation Handoff — April 21, 2026 — Johnny Castaway PS1</title>
-  <meta name="description" content="Handoff doc for the fishing1 water-animation work on PS1, scoped so the next session can pick up cleanly." />
+  <meta name="description" content="Handoff doc for the fishing1 water-animation work on PS1, scoped so the next session can pick up cleanly." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-handoff/" />
 
   <meta property="og:title"        content="PS1 Fishing 1 Water Animation Handoff — April 21, 2026 — Johnny Castaway PS1" />
   <meta property="og:description"  content="Handoff doc for the fishing1 water-animation work on PS1, scoped so the next session can pick up cleanly." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/fishing1-pixel-perfect-plan/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-worklog/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Water animation handoff", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-handoff/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PS1 Fishing 1 Water Animation Handoff — April 21, 2026",
+  "description": "Handoff doc for the fishing1 water-animation work on PS1, scoped so the next session can pick up cleanly.",
+  "datePublished": "2026-04-21T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-handoff/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/water-animation-handoff/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>PS1 Fishing 1 Water Animation Handoff — April 21, 2026</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~4 min read · 1239 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -86,6 +145,46 @@
     <p>Date: 2026-04-21
 Repo: <code class="language-plaintext highlighter-rouge">repo:/</code>
 Branch: <code class="language-plaintext highlighter-rouge">ps1</code></p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#goal" id="markdown-toc-goal">Goal</a></li>
+  <li><a href="#known-good-baseline" id="markdown-toc-known-good-baseline">Known Good Baseline</a></li>
+  <li><a href="#what-has-been-proven" id="markdown-toc-what-has-been-proven">What Has Been Proven</a>    <ul>
+      <li><a href="#1-the-wave-primitive-itself-works-on-ps1" id="markdown-toc-1-the-wave-primitive-itself-works-on-ps1">1. The wave primitive itself works on PS1</a></li>
+      <li><a href="#2-the-fishing-1-integrated-failure-is-not-a-host-data-absence-issue" id="markdown-toc-2-the-fishing-1-integrated-failure-is-not-a-host-data-absence-issue">2. The Fishing 1 integrated failure is not a host-data absence issue</a></li>
+      <li><a href="#3-water-failure-is-integrationruntime-side" id="markdown-toc-3-water-failure-is-integrationruntime-side">3. Water failure is integration/runtime-side</a></li>
+    </ul>
+  </li>
+  <li><a href="#current-technical-findings" id="markdown-toc-current-technical-findings">Current Technical Findings</a>    <ul>
+      <li><a href="#grloadbmp-is-ram-path-only-on-ps1" id="markdown-toc-grloadbmp-is-ram-path-only-on-ps1"><code class="language-plaintext highlighter-rouge">grLoadBmp()</code> is RAM-path only on PS1</a></li>
+      <li><a href="#integrated-main-loop-shape" id="markdown-toc-integrated-main-loop-shape">Integrated main loop shape</a></li>
+      <li><a href="#foreground-pack-path-uses-direct-compositing" id="markdown-toc-foreground-pack-path-uses-direct-compositing">Foreground pack path uses direct compositing</a></li>
+      <li><a href="#some-direct-helper-paths-clear-currdirty" id="markdown-toc-some-direct-helper-paths-clear-currdirty">Some direct helper paths clear <code class="language-plaintext highlighter-rouge">currDirty*</code></a></li>
+    </ul>
+  </li>
+  <li><a href="#what-has-been-tried-and-failed" id="markdown-toc-what-has-been-tried-and-failed">What Has Been Tried And Failed</a>    <ul>
+      <li><a href="#high-memory-backdrop-frame-streams" id="markdown-toc-high-memory-backdrop-frame-streams">High-memory backdrop frame streams</a></li>
+      <li><a href="#draw-pack-replay-variants" id="markdown-toc-draw-pack-replay-variants">Draw-pack replay variants</a></li>
+      <li><a href="#native-backdrop-thread-reuse" id="markdown-toc-native-backdrop-thread-reuse">Native backdrop thread reuse</a></li>
+      <li><a href="#wrong-path-proof-overlays" id="markdown-toc-wrong-path-proof-overlays">Wrong-path proof overlays</a></li>
+    </ul>
+  </li>
+  <li><a href="#most-important-validated-sandbox-mechanism" id="markdown-toc-most-important-validated-sandbox-mechanism">Most Important Validated Sandbox Mechanism</a></li>
+  <li><a href="#current-dirty-worktree-state" id="markdown-toc-current-dirty-worktree-state">Current Dirty Worktree State</a></li>
+  <li><a href="#best-current-hypothesis" id="markdown-toc-best-current-hypothesis">Best Current Hypothesis</a></li>
+  <li><a href="#recommended-next-debugging-boundary" id="markdown-toc-recommended-next-debugging-boundary">Recommended Next Debugging Boundary</a>    <ul>
+      <li><a href="#sandbox-working-path" id="markdown-toc-sandbox-working-path">Sandbox working path</a></li>
+      <li><a href="#integrated-failing-path" id="markdown-toc-integrated-failing-path">Integrated failing path</a></li>
+    </ul>
+  </li>
+  <li><a href="#practical-constraint" id="markdown-toc-practical-constraint">Practical Constraint</a></li>
+  <li><a href="#short-version" id="markdown-toc-short-version">Short Version</a></li>
+</ul>
+
+</details>
 
 <h2 id="goal">Goal</h2>
 
@@ -502,14 +601,34 @@ Branch: <code class="language-plaintext highlighter-rouge">ps1</code></p>
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../fishing1-pixel-perfect-plan/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-04-21</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../water-animation-worklog/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-04-21</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/WATER_ANIMATION_HANDOFF_2026-04-21.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -530,7 +649,16 @@ Branch: <code class="language-plaintext highlighter-rouge">ps1</code></p>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-04-21-water-animation-handoff.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -541,6 +669,7 @@ Branch: <code class="language-plaintext highlighter-rouge">ps1</code></p>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

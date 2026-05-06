@@ -12,6 +12,13 @@ got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
 bottom. If you paid for this, you were cheated. Open source and free.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The constraint
 
 "Performance" on a PS1 means a different shape of problem than performance

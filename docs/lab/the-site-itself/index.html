@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>The site itself, as a small program — Johnny Castaway PS1</title>
+  <meta name="description" content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" />
+
+  <meta property="og:title"        content="The site itself, as a small program — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The site itself", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Methodology · the site</p>
+      <h1>The site itself, as a small program</h1>
+      <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~7 min read · 1796 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>The PS1 port has a website. The website has its own engineering choices, and most of them aren’t documented anywhere because nobody asks. This page is for me, six months from now, when I’m wondering why the build script does that one thing.</p>
+
+<p>The site is Jekyll, hosted on GitHub Pages, served at <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/</code> as a project page beneath a separate user-pages site. That last bit — <em>project</em> page beneath a <em>user</em> page — is where almost every interesting decision comes from.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-path-portable-build" id="markdown-toc-the-path-portable-build">The path-portable build</a></li>
+  <li><a href="#the-canonical_baseurl-workaround" id="markdown-toc-the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</a></li>
+  <li><a href="#the-build-script-removes-three-files" id="markdown-toc-the-build-script-removes-three-files">The build script removes three files</a></li>
+  <li><a href="#hand-rolled-feeds-no-plugin" id="markdown-toc-hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</a></li>
+  <li><a href="#the-pager-pattern-shared-across-three-catalogs" id="markdown-toc-the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</a></li>
+  <li><a href="#the-build-stamp-and-the-git-churn-it-caused" id="markdown-toc-the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</a></li>
+  <li><a href="#structured-data-without-jekyll-seo-tag" id="markdown-toc-structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></a></li>
+  <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
+  <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
+  <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
+</ul>
+
+</details>
+
+<h2 id="the-path-portable-build">The path-portable build</h2>
+
+<p>Jekyll’s <code class="language-plaintext highlighter-rouge">relative_url</code> filter takes <code class="language-plaintext highlighter-rouge">site.baseurl</code> from <code class="language-plaintext highlighter-rouge">_config.yml</code>. In the deployed config that’s <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1</code>. In the build pipeline it isn’t:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll build <span class="nt">--trace</span> <span class="nt">--baseurl</span> <span class="s2">""</span> <span class="nt">--destination</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs"</span>
+</code></pre></div></div>
+
+<p>Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at <code class="language-plaintext highlighter-rouge">/</code>, and a small Python pass — <code class="language-plaintext highlighter-rouge">scripts/site-relativize-build.py</code> — rewrites those to file-relative paths (<code class="language-plaintext highlighter-rouge">./play/</code>, <code class="language-plaintext highlighter-rouge">../assets/css/main.css</code>). The output bundle has no embedded knowledge of where it lives. It can be served at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/</code>, at <code class="language-plaintext highlighter-rouge">/</code>, at <code class="language-plaintext highlighter-rouge">/anywhere/</code>, and every internal link resolves against the actual served path.</p>
+
+<p>That’s a useful property for a project hosted at GitHub Pages, where the publish prefix isn’t stable across renames or forks. It’s also a useful property if anyone ever clones the bundle to host it as a backup, or if the canonical URL ever moves.</p>
+
+<p>The cost: any URL that genuinely needs to be absolute — for crawlers, RSS readers, social previews, redirect targets — has to bypass the relativizer.</p>
+
+<h2 id="the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</h2>
+
+<p>Several pages can’t rely on relative URLs:</p>
+
+<ul>
+  <li>The 404 page is served at any URL depth on the project (any not-found path under <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/...</code> lands here). A relative <code class="language-plaintext highlighter-rouge">./play/</code> from a page that lives at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/404.html</code> would resolve against the <em>requested</em> URL, not the served file’s location, so a 404 at <code class="language-plaintext highlighter-rouge">/scenes/typo/foo/</code> would point its nav at <code class="language-plaintext highlighter-rouge">/scenes/typo/foo/play/</code>. Broken.</li>
+  <li>The Atom feed and JSON Feed have to work in feed readers that fetch them and need full URLs to link back to the site.</li>
+  <li>The JSON-LD structured data is consumed by search engines and AI agents, which need fully qualified URIs.</li>
+  <li>The redirect HTML pages (from <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter) emit <code class="language-plaintext highlighter-rouge">&lt;meta http-equiv="refresh"&gt;</code> URLs that browsers resolve as absolute.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">site.baseurl</code> is empty during the build. So is <code class="language-plaintext highlighter-rouge">site.url + site.baseurl</code>. The fix is a separate config key that the build can’t override:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://hunterdavis.com"</span>
+<span class="na">baseurl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/johnny-castaway-ps1"</span>
+
+<span class="c1"># Stable canonical prefix that does NOT get overridden at build time.</span>
+<span class="na">canonical_baseurl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/johnny-castaway-ps1"</span>
+</code></pre></div></div>
+
+<p>The pages that need absolute URLs use <code class="language-plaintext highlighter-rouge">https://hunterdavis.com/johnny-castaway-ps1/...</code>. Those URLs start with <code class="language-plaintext highlighter-rouge">https://</code>, which the relativizer’s <code class="language-plaintext highlighter-rouge">is_external</code> check leaves alone. So the absolute URLs pass through untouched while every other path on the page gets relativized.</p>
+
+<p>Yes, the prefix is duplicated in two config keys. That duplication is intentional: the regular <code class="language-plaintext highlighter-rouge">baseurl</code> participates in Jekyll’s link-resolution machinery and gets blanked by build-time CLI flags, and the <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> doesn’t. They serve different jobs.</p>
+
+<h2 id="the-build-script-removes-three-files">The build script removes three files</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># At the end of scripts/site-build-static-root.sh</span>
+<span class="nb">rm</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/feed.xml"</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/sitemap.xml"</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/robots.txt"</span>
+</code></pre></div></div>
+
+<p>A standard Jekyll setup with <code class="language-plaintext highlighter-rouge">jekyll-feed</code>, <code class="language-plaintext highlighter-rouge">jekyll-sitemap</code>, and the gem-default <code class="language-plaintext highlighter-rouge">robots.txt</code> would produce all three at the root of <code class="language-plaintext highlighter-rouge">docs/</code>. On a project page hosted under a user page, those three files at the project’s deploy root would conflict with whatever the user-pages repo serves at the apex domain. Specifically:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/feed.xml</code> is the user-pages site’s job, not this project’s.</li>
+  <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/sitemap.xml</code> likewise.</li>
+  <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/robots.txt</code> is one file per site; the apex must own it.</li>
+</ul>
+
+<p>The deletion is preventative — none of those files actually get generated today (the plugins aren’t enabled), but if a future change pulls in <code class="language-plaintext highlighter-rouge">jekyll-feed</code> they’d land in the wrong namespace. The <code class="language-plaintext highlighter-rouge">rm</code> keeps the boundary clean.</p>
+
+<p>The site’s own feed lives one level down the tree at <code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code> (Atom) and <code class="language-plaintext highlighter-rouge">/devlog/feed.json</code> (JSON Feed). Below the delete line.</p>
+
+<h2 id="hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</h2>
+
+<p><code class="language-plaintext highlighter-rouge">jekyll-feed</code> would have done it in one line of Gemfile. Two reasons it isn’t there:</p>
+
+<ul>
+  <li>The plugin emits a top-level <code class="language-plaintext highlighter-rouge">feed.xml</code>, which gets removed for the reason above.</li>
+  <li>The site already has the existing manual head template with explicit OG / Twitter meta. Adding <code class="language-plaintext highlighter-rouge">{% seo %}</code> would double-emit half of that and require a refactor to reconcile.</li>
+</ul>
+
+<p>So the feeds are a Liquid template plus an XML/JSON skeleton, in <code class="language-plaintext highlighter-rouge">site/devlog/feed.xml</code> and <code class="language-plaintext highlighter-rouge">site/devlog/feed.json</code>. They iterate <code class="language-plaintext highlighter-rouge">site.posts</code>, escape strings via <code class="language-plaintext highlighter-rouge">xml_escape</code> (Atom) or <code class="language-plaintext highlighter-rouge">jsonify</code> (JSON Feed), use absolute URLs via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link rel="alternate"&gt;</code> tags in the head, validated with <code class="language-plaintext highlighter-rouge">xml.etree</code> and <code class="language-plaintext highlighter-rouge">json.load</code> respectively.</p>
+
+<p><code class="language-plaintext highlighter-rouge">jekyll-redirect-from</code> <em>is</em> in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin’s <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter API is already in use on <code class="language-plaintext highlighter-rouge">scenes/index.md</code>. There was a bug there, though — the plugin’s <code class="language-plaintext highlighter-rouge">absolute_url(to)</code> honors <code class="language-plaintext highlighter-rouge">site.baseurl</code>, which the build wipes, so every redirect was silently pointed at <code class="language-plaintext highlighter-rouge">hunterdavis.com/...</code> (the user-pages root) instead of <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/...</code>. The fix is a custom <code class="language-plaintext highlighter-rouge">_layouts/redirect.html</code> override that strips <code class="language-plaintext highlighter-rouge">site.url</code> from <code class="language-plaintext highlighter-rouge">page.redirect.to</code> and rebuilds the URL through <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. External redirect targets (URLs that don’t start with <code class="language-plaintext highlighter-rouge">site.url</code>) pass through unchanged.</p>
+
+<h2 id="the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</h2>
+
+<p>The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:</p>
+
+<ul>
+  <li>Scene pages compute prev/next from <code class="language-plaintext highlighter-rouge">_data/scenes.yml</code>, sorted by <code class="language-plaintext highlighter-rouge">sort: 'tag' | sort: 'ads'</code> (the same order the index renders).</li>
+  <li>Devlog posts use Jekyll’s built-in <code class="language-plaintext highlighter-rouge">page.previous</code> / <code class="language-plaintext highlighter-rouge">page.next</code>. Caveat: those are sourced from the posts collection’s <code class="language-plaintext highlighter-rouge">docs</code> array, which is sorted oldest-first, so <code class="language-plaintext highlighter-rouge">page.previous</code> is the <em>older</em> post and <code class="language-plaintext highlighter-rouge">page.next</code> is the <em>newer</em> one. Labels here say “older” and “newer” by direction in time, not “prev” and “next” by Jekyll’s array semantics — the convention is too easy to invert.</li>
+  <li>Regtest case pages compute prev/next from <code class="language-plaintext highlighter-rouge">site.pages</code> filtered by URL prefix, lex-sorted (matching the index table). The case shelf detail pages live under <code class="language-plaintext highlighter-rouge">_layouts/page.html</code>, which conditionally includes the case pager only when the URL is under the cases path. Whitespace-control on the <code class="language-plaintext highlighter-rouge">{% if %}</code> keeps non-case pages byte-identical.</li>
+</ul>
+
+<table>
+  <tbody>
+    <tr>
+      <td>All three pagers reuse one CSS class — <code class="language-plaintext highlighter-rouge">.scene-pager</code> — because the layout is identical (3-col grid, collapses to prev</td>
+      <td>next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to <code class="language-plaintext highlighter-rouge">.page-pager</code> is on the backlog.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Above that, a 30-line progressive-enhancement script (<code class="language-plaintext highlighter-rouge">assets/js/key-nav.js</code>) listens for ArrowLeft/ArrowRight and follows the page’s <code class="language-plaintext highlighter-rouge">&lt;a rel="prev"&gt;</code> / <code class="language-plaintext highlighter-rouge">&lt;a rel="next"&gt;</code> links. It doesn’t know which pager fired — it queries by <code class="language-plaintext highlighter-rouge">rel</code> attribute. Skip-out conditions: any modifier key, focus inside an editable element. Works on any future pager that emits the same <code class="language-plaintext highlighter-rouge">rel</code> attributes without needing a code update.</p>
+
+<h2 id="the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</h2>
+
+<p>Every page carries:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"generator"</span> <span class="na">content=</span><span class="s">"Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>That stamp is forensically useful when something breaks on a deployed page and you want to know which build produced it. The first version of this stamp embedded a full ISO-8601 timestamp with second precision. The result: every site rebuild re-diffed all 587 HTML pages, even if the actual change was one line of CSS. Git commits became noise: 590 files changed every time, the diff would have to scroll past 587 trivial timestamp updates to find the real change.</p>
+
+<p>Coarsening the stamp to <code class="language-plaintext highlighter-rouge">%Y-%m-%d</code> dropped the per-commit churn to zero for in-day rebuilds. Every page that didn’t actually change is byte-identical between builds. The first commit after the change (a small new content addition) showed exactly 4 files changed instead of 590 — the win the coarsening was reaching for.</p>
+
+<h2 id="structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></h2>
+
+<p><code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code> is in the Gemfile but <code class="language-plaintext highlighter-rouge">{% seo %}</code> is never invoked, so the plugin emits nothing. The manual head template handles <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code>, OG, Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
+
+<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Four record types ship today:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">WebSite</code> on every page.</li>
+  <li><code class="language-plaintext highlighter-rouge">SoftwareApplication</code> only on the home page (the project is a piece of software).</li>
+  <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels.</li>
+  <li><code class="language-plaintext highlighter-rouge">BlogPosting</code> only on devlog posts.</li>
+</ul>
+
+<p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page.</p>
+
+<h2 id="the-404-pages-problem">The 404 page’s problem</h2>
+
+<p>GitHub Pages serves <code class="language-plaintext highlighter-rouge">/404.html</code> from the publish root for any not-found URL within the project’s prefix. The 404 file lives at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/404.html</code> and is served when a user hits <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/typo/foo/bar/</code>. The browser resolves relative URLs against the requested URL, not the served file’s location, so a relative <code class="language-plaintext highlighter-rouge">./play/</code> in the 404’s nav would point at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/typo/foo/bar/play/</code>. That doesn’t exist either.</p>
+
+<p>The 404 page is therefore self-contained: <code class="language-plaintext highlighter-rouge">layout: null</code> (skips the standard chrome), inline minimal CSS (no external stylesheet to also possibly fail), and absolute URLs everywhere via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. It uses the original Sierra “The End” scroll graphic as the hero — Johnny waving from his island at sunset is exactly the right vibe for <em>the page got marooned</em>.</p>
+
+<h2 id="three-small-extras">Three small extras</h2>
+
+<ul>
+  <li>A <code class="language-plaintext highlighter-rouge">humans.txt</code> at the publish root mirrors the in-game credits voice (<code class="language-plaintext highlighter-rouge">drawCredits</code>) and lists prior ports, toolchain, this site’s standards, and the dynamic release/build fields. Auto-discoverable via <code class="language-plaintext highlighter-rouge">&lt;link rel="author" type="text/plain"&gt;</code>.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">@media print</code> block in <code class="language-plaintext highlighter-rouge">main.scss</code> flattens the palette to black-on-white, strips chrome, surfaces link URLs via <code class="language-plaintext highlighter-rouge">a::after</code>, sets <code class="language-plaintext highlighter-rouge">@page</code> margins, and hints page-break-avoidance on headings, code blocks, figures. Long worklogs save as clean PDFs without any setup.</li>
+  <li>A custom <code class="language-plaintext highlighter-rouge">404.html</code> script reads <code class="language-plaintext highlighter-rouge">window.location.pathname</code> and renders it as <code class="language-plaintext highlighter-rouge">Tried: /typo/foo/</code> so a reader can see what was attempted. Degrades cleanly if JS is off.</li>
+</ul>
+
+<h2 id="the-shape">The shape</h2>
+
+<p>None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (v0.7.2-ps1)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/the-site-itself/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

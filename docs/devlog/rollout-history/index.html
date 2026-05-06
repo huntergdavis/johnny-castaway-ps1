@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>PS1 Restore Rollout History — Johnny Castaway PS1</title>
-  <meta name="description" content="Dated rollout chronology of the PS1 restore pilot, preserved verbatim from the research README." />
+  <meta name="description" content="Dated rollout chronology of the PS1 restore pilot, preserved verbatim from the research README." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/rollout-history/" />
 
   <meta property="og:title"        content="PS1 Restore Rollout History — Johnny Castaway PS1" />
   <meta property="og:description"  content="Dated rollout chronology of the PS1 restore pilot, preserved verbatim from the research README." />
-  <meta property="og:type"         content="website" />
+  <meta property="og:type"         content="article" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,69 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-03-21/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/harness-worklog/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Devlog", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/" }, { "@type": "ListItem", "position": 3, "name": "Rollout history", "item": "https://hunterdavis.com/johnny-castaway-ps1/devlog/rollout-history/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PS1 Restore Rollout History",
+  "description": "Dated rollout chronology of the PS1 restore pilot, preserved verbatim from the research README.",
+  "datePublished": "2026-03-21T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/rollout-history/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/rollout-history/",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/"
+  }
+}
+</script>
 </head>
 
 <body>
@@ -73,6 +129,9 @@
     </p>
     <h1>PS1 Restore Rollout History</h1>
 
+    <p class="reading-time" aria-label="Estimated reading time">
+      ~12 min read · 3247 words
+    </p>
     <hr class="rule" />
   </header>
 
@@ -311,6 +370,45 @@ earlier <code class="language-plaintext highlighter-rouge">ps1-test-20260319-083
 still reports one real active-pack miss (<code class="language-plaintext highlighter-rouge">WOULDBE.BMP</code> signature <code class="language-plaintext highlighter-rouge">17</code>) during
 the bounded harness route, but that remaining miss is now a secondary cleanup,
 not the visible scene-entry regression.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a></li>
+  <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+  <li><a href="#current-facts-from-the-repo" id="markdown-toc-current-facts-from-the-repo">Current facts from the repo</a>    <ul>
+      <li><a href="#1-the-pc-and-ps1-rendering-models-do-not-match" id="markdown-toc-1-the-pc-and-ps1-rendering-models-do-not-match">1. The PC and PS1 rendering models do not match</a></li>
+      <li><a href="#2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently" id="markdown-toc-2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently">2. The project already uses ISO space to trade for RAM, but inconsistently</a></li>
+      <li><a href="#3-static-analysis-is-already-strong-enough-to-drive-compilation-decisions" id="markdown-toc-3-static-analysis-is-already-strong-enough-to-drive-compilation-decisions">3. Static analysis is already strong enough to drive compilation decisions</a></li>
+      <li><a href="#4-analyzer-v2-output-is-now-machine-readable" id="markdown-toc-4-analyzer-v2-output-is-now-machine-readable">4. Analyzer v2 output is now machine-readable</a></li>
+      <li><a href="#5-pack-planner-consumer-exists" id="markdown-toc-5-pack-planner-consumer-exists">5. Pack planner consumer exists</a></li>
+      <li><a href="#6-scene-pack-compiler-and-generic-loader-exist" id="markdown-toc-6-scene-pack-compiler-and-generic-loader-exist">6. Scene pack compiler and generic loader exist</a></li>
+      <li><a href="#7-transition--prefetch-post-processing" id="markdown-toc-7-transition--prefetch-post-processing">7. Transition / prefetch post-processing</a></li>
+      <li><a href="#8-dirty-region-and-restore-runtime" id="markdown-toc-8-dirty-region-and-restore-runtime">8. Dirty-region and restore runtime</a></li>
+      <li><a href="#9-sdl-compat-lite-contract" id="markdown-toc-9-sdl-compat-lite-contract">9. SDL-Compat Lite contract</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-architecture" id="markdown-toc-recommended-architecture">Recommended architecture</a>    <ul>
+      <li><a href="#recommendation-a-compiled-scene-packs" id="markdown-toc-recommendation-a-compiled-scene-packs">Recommendation A: Compiled scene packs</a></li>
+      <li><a href="#recommendation-b-offline-sprite-transcoding-to-ps1-native-blit-format" id="markdown-toc-recommendation-b-offline-sprite-transcoding-to-ps1-native-blit-format">Recommendation B: Offline sprite transcoding to PS1-native blit format</a></li>
+      <li><a href="#recommendation-c-sdl-compat-lite-runtime-contract" id="markdown-toc-recommendation-c-sdl-compat-lite-runtime-contract">Recommendation C: SDL-Compat Lite runtime contract</a></li>
+      <li><a href="#recommendation-d-scene-local-frame-cache-with-static-prefetch" id="markdown-toc-recommendation-d-scene-local-frame-cache-with-static-prefetch">Recommendation D: Scene-local frame cache with static prefetch</a></li>
+    </ul>
+  </li>
+  <li><a href="#what-should-move-offline" id="markdown-toc-what-should-move-offline">What should move offline</a></li>
+  <li><a href="#what-should-stay-runtime" id="markdown-toc-what-should-stay-runtime">What should stay runtime</a></li>
+  <li><a href="#research-conclusions" id="markdown-toc-research-conclusions">Research conclusions</a>    <ul>
+      <li><a href="#best-target-state" id="markdown-toc-best-target-state">Best target state</a></li>
+      <li><a href="#best-incremental-path" id="markdown-toc-best-incremental-path">Best incremental path</a></li>
+      <li><a href="#what-not-to-do" id="markdown-toc-what-not-to-do">What not to do</a></li>
+    </ul>
+  </li>
+  <li><a href="#external-references" id="markdown-toc-external-references">External references</a></li>
+  <li><a href="#related-files-in-this-research-package" id="markdown-toc-related-files-in-this-research-package">Related files in this research package</a></li>
+</ul>
+
+</details>
 
 <h2 id="current-facts-from-the-repo">Current facts from the repo</h2>
 
@@ -844,14 +942,34 @@ right fit for general sprite animation assets.</li>
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to devlog index</a>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Devlog navigation">
+      <div class="scene-pager-prev">
 
-      &nbsp;·&nbsp;
+          <a href="../current-status-2026-03-21/" rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← older</span>
+            <span class="scene-pager-tag">2026-03-21</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ devlog index</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../harness-worklog/" rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+            <span class="scene-pager-tag">2026-03-28</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this timeline.</p>
+    </nav>
+
+
+    <p class="post-source">
       <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/research/ROLLOUT_HISTORY.md">view source on GitHub</a>
-
     </p>
+
   </footer>
 </article>
 
@@ -872,7 +990,16 @@ right fit for general sprite animation assets.</li>
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-03-21-rollout-history.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -883,6 +1010,7 @@ right fit for general sprite animation assets.</li>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

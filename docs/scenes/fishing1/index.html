@@ -7,18 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FISHING 1 — Johnny casts a line — Johnny Castaway PS1</title>
-  <meta name="description" content="FISHING.ADS scene 1: Johnny casts a line. Validated under the FISHING 1 bar." />
+  <meta name="description" content="FISHING.ADS scene 1: Johnny casts a line. Validated under the FISHING 1 bar." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/fishing1/" />
 
   <meta property="og:title"        content="FISHING 1 — Johnny casts a line — Johnny Castaway PS1" />
   <meta property="og:description"  content="FISHING.ADS scene 1: Johnny casts a line. Validated under the FISHING 1 bar." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta property="og:image"        content="../../assets/img/fishing1-ps1-cast.png" />
+  <meta property="og:image:alt"    content="FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" />
+  <meta name="twitter:image" content="../../assets/img/fishing1-ps1-cast.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -26,11 +24,43 @@
         href="../../assets/fonts/inter-latin-400-normal.woff2" />
 
   <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
 
   <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/building7/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/fishing2/" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "Fishing1", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/fishing1/" }]
+}
+</script>
 </head>
 
 <body>
@@ -78,7 +108,7 @@
 
   <div class="page-body">
     <figure class="scene-hero">
-  <img src="../../assets/img/fishing1-ps1-cast.png" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
+  <img src="../../assets/img/fishing1-ps1-cast.png" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 hardware: Johnny mid-cast." />
   <figcaption>FISHING 1 on PS1 hardware. The reference scene.</figcaption>
 </figure>
 <h2 id="what-happens">What happens</h2>
@@ -86,6 +116,29 @@
 <p>Johnny walks down to the water with a fishing rod, casts the line, and after a beat reels in a starfish. He looks at it, shrugs, and tosses it back. Then he packs up and walks back inland.</p>
 
 <p>This is the reference scene for the whole pipeline. If FISHING 1 looks right and sounds right across all four variant flags, the host capture pipeline and the PS1 playback engine are working as designed. Every other scene gets validated against this bar.</p>
+
+<h2 id="reference-frames">Reference frames</h2>
+
+<p>These are the Sierra original — captured from the host build running the
+real ADS/TTM bytecode against the original Sierra data files. The
+host-vs-PS1 frame diff is the project’s whole signoff loop: a scene
+“clears the bar” when the PS1 frames match these references pixel-for-
+pixel across every applicable variant.</p>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-arrival.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny arrives at the shoreline carrying a coiled fishing line." />
+  <figcaption>Reference · arrival. Johnny walks onto the shore with the rod tucked, line coiled. From the Sierra original via host capture.</figcaption>
+</figure>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-cast.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny mid-cast with the rod arched and the line trailing into the ocean." />
+  <figcaption>Reference · cast. Rod arched, line out. The PS1 build's hero shot at the top of this page is the same beat, replayed from the captured FG2 pack.</figcaption>
+</figure>
+
+<figure>
+  <img src="../../assets/img/fishing1-reference-catch.png" width="640" height="480" loading="lazy" decoding="async" alt="FISHING 1 reference, host capture: Johnny reels in a small red starfish that flies off the line back into the ocean." />
+  <figcaption>Reference · catch. The red starfish in flight — the line that gives the scene its caption ("He catches a starfish. He throws it back.").</figcaption>
+</figure>
 
 <h2 id="validation">Validation</h2>
 
@@ -110,6 +163,16 @@ This scene clears the <a href="../../about/method/">FISHING 1 bar</a> — pixel-
   <li><strong>raft-stage</strong> — Cumulative raft-build state; raft sprite gains parts as the player progresses (BOOTMODE <code class="language-plaintext highlighter-rouge">raft-stage N</code>).</li>
 </ul>
 
+<figure>
+  <img src="../../assets/img/fishing1-ps1-night.png" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1 at night: full moon, dark ocean, Johnny mid-cast at the moonlit shore." />
+  <figcaption>FISHING 1 · night variant. Full moon, dark sky and water, the same cast pose against the moonlit shore.</figcaption>
+</figure>
+
+<figure>
+  <img src="../../assets/img/fishing1-ps1-raft.png" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 on PS1 with the raft built: Johnny stands next to a completed wood raft on the island shore." />
+  <figcaption>FISHING 1 · raft-stage variant. Same scene with the cumulative raft-build state at completion.</figcaption>
+</figure>
+
 <h2 id="caption">Caption</h2>
 
 <p>This scene has on-screen caption text. Confidence: HIGH in the <a href="../../docs/captions/">caption audit</a>.</p>
@@ -123,10 +186,30 @@ He throws it back.
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" />
-    <p>
-      <a href="../">← back to scene ledger</a>
-    </p>
+    <hr class="rule" /><nav class="scene-pager" aria-label="Scene navigation">
+      <div class="scene-pager-prev">
+
+          <a href="../building7/"
+             rel="prev">
+            <span class="scene-pager-dir" aria-hidden="true">← prev</span>
+            <span class="scene-pager-tag">BUILDING 7</span>
+          </a>
+
+      </div>
+      <div class="scene-pager-up">
+        <a href="../">↑ scene ledger</a>
+      </div>
+      <div class="scene-pager-next">
+
+          <a href="../fishing2/"
+             rel="next">
+            <span class="scene-pager-dir" aria-hidden="true">next →</span>
+            <span class="scene-pager-tag">FISHING 2</span>
+          </a>
+
+      </div>
+      <p class="scene-pager-hint" hidden>← / → arrow keys also walk this list.</p>
+    </nav>
   </footer>
 </article>
 
@@ -147,7 +230,16 @@ He throws it back.
           63 / 63 scenes validated
           (v0.7.2-ps1)
         </p>
-        <p class="footer-transparency">
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/scenes/fishing1/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,
           debugging support, and generating the prose on this website.
@@ -158,6 +250,7 @@ He throws it back.
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
           <li><a href="../../hack/">Hack</a></li>

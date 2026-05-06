@@ -59,6 +59,12 @@ study; every scene has one, including the pending ones (which mostly
 just say "not yet validated" and label what the scene probably is).
 
 {% assign sorted_scenes = all_scenes | sort: "tag" | sort: "ads" %}
+{% assign families = sorted_scenes | map: "ads" | uniq %}
+
+<nav class="scenes-jump" aria-label="Jump to ADS family">
+  <span class="scenes-jump-label">Jump to:</span>
+  {% for fam in families %}<a href="#ads-{{ fam | downcase }}">{{ fam }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+</nav>
 
 <table class="scene-table">
   <thead>
@@ -71,12 +77,18 @@ just say "not yet validated" and label what the scene probably is).
     </tr>
   </thead>
   <tbody>
+    {% assign current_ads = "" %}
     {% for s in sorted_scenes %}
       {% if s.status == "validated"  %}{% assign cls = "ok"      %}{% endif %}
       {% if s.status == "in-bringup" %}{% assign cls = "wip"     %}{% endif %}
       {% if s.status == "pending"    %}{% assign cls = "pending" %}{% endif %}
       {% if s.status == "blocked"    %}{% assign cls = "blocked" %}{% endif %}
-      <tr>
+      {% if s.ads != current_ads %}
+        {% assign current_ads = s.ads %}
+        <tr id="ads-{{ s.ads | downcase }}">
+      {% else %}
+        <tr>
+      {% endif %}
         <td class="scene-tag">{{ s.ads }} {{ s.tag }}</td>
         <td class="scene-name"><a href="{{ '/scenes/' | append: s.slug | append: '/' | relative_url }}">{{ s.slug }}</a></td>
         <td class="scene-status {{ cls }}">{{ s.status }}</td>
