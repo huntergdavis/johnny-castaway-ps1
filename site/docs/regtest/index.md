@@ -23,6 +23,14 @@ frame-timing investigations, and per-scene snapshot generation when a
 human review needs frozen artifacts. It is not the gate; it is a
 diagnostic.
 
+The same headless DuckStation pipeline, run in `perf-log` mode against
+a deterministic boot, drives the
+[headless-perf battle card]({{ '/docs/performance/' | relative_url }})
+visible at the bottom of the [scene ledger]({{ '/scenes/' | relative_url }}) —
+the second ledger that lives alongside visual signoff. Regtest proves
+*it boots and renders something*; the perf matrix proves *it hits
+target rate*. Different bars; same harness.
+
 If you paid for this, you were cheated. Open source and free.
 
 <details class="page-toc" markdown="1">

@@ -100,7 +100,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1685 words
+          ~6 min read · 1739 words
         </p>
 
       <hr class="rule" />
@@ -123,6 +123,14 @@ is retained for targeted diagnostics: regression hunts, deterministic
 frame-timing investigations, and per-scene snapshot generation when a
 human review needs frozen artifacts. It is not the gate; it is a
 diagnostic.</p>
+
+<p>The same headless DuckStation pipeline, run in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against
+a deterministic boot, drives the
+<a href="../performance/">headless-perf battle card</a>
+visible at the bottom of the <a href="../../scenes/">scene ledger</a> —
+the second ledger that lives alongside visual signoff. Regtest proves
+<em>it boots and renders something</em>; the perf matrix proves <em>it hits
+target rate</em>. Different bars; same harness.</p>
 
 <p>If you paid for this, you were cheated. Open source and free.</p>
 
