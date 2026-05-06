@@ -5,9 +5,9 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-06T13:48:06+00:00` |
+| Generated at | `2026-05-06T13:50:05+00:00` |
 | Branch | `perf-headless-20260505` |
-| Commit | `5e599acca` |
+| Commit | `76f27b04d` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `215040` |
@@ -23,11 +23,6 @@
 
 | Priority | Type | Target | Current | Symbol bytes | Source text bytes | Next action |
 | --- | --- | --- | --- | --- | --- | --- |
-| 20 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 19764 | Test whole TU at default -O2 |
-| 21 | translation_unit | `src/jc_reborn.c` | -Os | 0 | 8468 | Test whole TU at default -O2 |
-| 22 | translation_unit | `src/resource.c` | -Os | 0 | 1520 | Test whole TU at default -O2 |
-| 23 | translation_unit | `src/sound_ps1.c` | -Os | 0 | 1880 | Test whole TU at default -O2 |
-| 24 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Test whole TU at default -O2 |
 | 40 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 592 | 9608 | Retest only after graphics helper sweep |
 | 65 | translation_unit | `src/pause_menu.c` | -Os | 0 | 14852 | Test whole TU at default -O2 after hot sweep |
 | 66 | translation_unit | `src/ps1_captions.c` | -Os | 0 | 1208 | Test whole TU at default -O2 after hot sweep |
@@ -39,6 +34,11 @@
 | 72 | translation_unit | `src/island.c` | -Os | 0 | 612 | Test whole TU at default -O2 after hot sweep |
 | 80 | translation_unit | `src/ps1_pad_script.c` | -Os | 0 | 348 | Review TU optimization flag |
 | 80 | translation_unit | `src/scene_freeplay.c` | -Os | 0 | 9392 | Review TU optimization flag |
+| 80 | translation_unit | `src/scene_picker.c` | -Os | 0 | 2112 | Review TU optimization flag |
+| 90 | function | `grDrawBackground` | optimize("Os") | 1300 | 34116 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | function | `grUpdateDisplay` | optimize("Os") | 412 | 34116 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 484 | 9608 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
+| 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
 
 ## Function-Scoped Flags
 

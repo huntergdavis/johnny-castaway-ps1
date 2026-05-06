@@ -72,6 +72,29 @@ REJECTED_DEFAULT_O2_FUNCTIONS = {
     ),
 }
 
+REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
+    "src/foreground_pilot.c": (
+        "Keep whole TU at -Os; historical default-O2 retest rejected",
+        "Whole-TU -O2 grew foregroundPilotPlay and failed structurally before scene-end metrics.",
+    ),
+    "src/jc_reborn.c": (
+        "Keep whole TU at -Os; historical default-O2 retest rejected",
+        "Whole-TU -O2 stayed exact-flat while growing ELF and shifting hot symbols.",
+    ),
+    "src/resource.c": (
+        "Keep whole TU at -Os; historical default-O2 retest rejected",
+        "Whole-TU -O2 stayed exact-flat while growing ELF and shifting foreground symbols.",
+    ),
+    "src/sound_ps1.c": (
+        "Keep whole TU at -Os; historical default-O2 retest rejected",
+        "Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.",
+    ),
+    "src/events_ps1.c": (
+        "Keep whole TU at -Os; historical default-O2 retest rejected",
+        "Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.",
+    ),
+}
+
 
 def relpath(path_text: str) -> str:
     if not path_text:
@@ -214,6 +237,29 @@ def priority_for_function(function: str, source: str) -> tuple[int, str, str]:
     )
 
 
+def priority_for_translation_unit(source: str, source_class: str, order_index: dict[str, int]) -> tuple[int, str, str]:
+    if source in REJECTED_DEFAULT_O2_TRANSLATION_UNITS:
+        action, reason = REJECTED_DEFAULT_O2_TRANSLATION_UNITS[source]
+        return (90, action, reason)
+    if source_class == "hot":
+        return (
+            20 + order_index.get(source, 99),
+            "Test whole TU at default -O2",
+            "Hot or semi-hot TU is currently forced to -Os; speed may beat size.",
+        )
+    if source_class == "cold":
+        return (
+            60 + order_index.get(source, 99),
+            "Test whole TU at default -O2 after hot sweep",
+            "Cold/default-off TU may perturb phase; record outcome after hot targets.",
+        )
+    return (
+        80,
+        "Review TU optimization flag",
+        "Source is size-optimized but not classified in the current sweep order.",
+    )
+
+
 def build_candidates(
     compile_rows: list[dict[str, object]],
     attr_rows: list[dict[str, object]],
@@ -248,18 +294,7 @@ def build_candidates(
         if final_opt != "-Os":
             continue
         source_class = classify_tu(source)
-        if source_class == "hot":
-            priority = 20 + order_index.get(source, 99)
-            action = "Test whole TU at default -O2"
-            reason = "Hot or semi-hot TU is currently forced to -Os; speed may beat size."
-        elif source_class == "cold":
-            priority = 60 + order_index.get(source, 99)
-            action = "Test whole TU at default -O2 after hot sweep"
-            reason = "Cold/default-off TU may perturb phase; record outcome after hot targets."
-        else:
-            priority = 80
-            action = "Review TU optimization flag"
-            reason = "Source is size-optimized but not classified in the current sweep order."
+        priority, action, reason = priority_for_translation_unit(source, source_class, order_index)
         candidates.append(
             {
                 "priority": priority,
