@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `0.8745%` over target
+- Average measured timing gap: `0.8692%` over target
 - Average estimated align4 x-band upload byte saving: `66.91%`
 
 ## Top Upload-Ready Candidates
@@ -27,9 +27,9 @@ accepted performance baseline.
 | 10 | `building6` | `high` | 65.95 | 3.19% | 44.17% | 810.26% | 126 | large upload-ready payload; needs compression/selective bands |
 | 11 | `walkstuf3` | `high` | 60.93 | 1.89% | 81.22% | 251.74% | 104 | candidate |
 | 12 | `mary1` | `high` | 50.14 | 0.77% | 78.75% | 274.07% | 84 | candidate |
-| 13 | `activity9` | `low` | 44.83 | 2.44% | 50.66% | 560.7% | 78 | large upload-ready payload; needs compression/selective bands |
-| 14 | `activity9` | `high` | 40.8 | 2.19% | 50.66% | 560.7% | 72 | large upload-ready payload; needs compression/selective bands |
-| 15 | `walkstuf3` | `low` | 35.23 | 1.13% | 77.8% | 581.73% | 60 | large upload-ready payload; needs compression/selective bands |
+| 13 | `activity9` | `high` | 40.8 | 2.19% | 50.66% | 560.7% | 72 | large upload-ready payload; needs compression/selective bands |
+| 14 | `walkstuf3` | `low` | 35.23 | 1.13% | 77.8% | 581.73% | 60 | large upload-ready payload; needs compression/selective bands |
+| 15 | `activity9` | `low` | 32.99 | 1.80% | 50.66% | 560.7% | 57 | large upload-ready payload; needs compression/selective bands |
 | 16 | `johnny6` | `high` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate |
 | 17 | `johnny6` | `low` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate |
 | 18 | `mary1` | `low` | 29.84 | 0.41% | 80.45% | 268.49% | 55 | candidate |
