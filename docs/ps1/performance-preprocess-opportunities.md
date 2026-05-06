@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `5.9984%` over target
+- Average measured timing gap: `4.5711%` over target
 - Average estimated align4 x-band upload byte saving: `67.13%`
 
 ## Top Upload-Ready Candidates

@@ -328,13 +328,14 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>-0.7% over target</strong>, or <strong>100.7% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+6.0% over target /
-94.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">5.9984%</code> exact over target / <code class="language-plaintext highlighter-rouge">94.8106%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+4.6% over target /
+96.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">4.5708%</code> exact over target / <code class="language-plaintext highlighter-rouge">96.0653%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">stale-zero-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mismatch-top-v072-current-refresh</code>,
@@ -360,13 +361,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T00:38:12</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T00:55:09</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
+rows now use <code class="language-plaintext highlighter-rouge">stale-zero-v072b-current-refresh</code>,
+<code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mismatch-top-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stand-family-v072-current-refresh</code>,
@@ -404,8 +406,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
-      <td style="text-align: right">+12.4% / 88.9% (1202/1069)</td>
-      <td style="text-align: right">+12.4% / 88.9% (1202/1069)</td>
+      <td style="text-align: right">+0.0% / 100.0% (1065/1065); blk 5</td>
+      <td style="text-align: right">+3.0% / 97.1% (1102/1070); due 155; blk 361</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
@@ -414,8 +416,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
-      <td style="text-align: right">+14.5% / 87.3% (1043/911)</td>
-      <td style="text-align: right">+14.5% / 87.3% (1043/911)</td>
+      <td style="text-align: right">+0.1% / 99.9% (912/911)</td>
+      <td style="text-align: right">+0.1% / 99.9% (912/911)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
@@ -499,8 +501,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
-      <td style="text-align: right">+14.7% / 87.2% (967/843)</td>
-      <td style="text-align: right">+14.7% / 87.2% (967/843)</td>
+      <td style="text-align: right">-0.8% / 100.8% (835/842); blk 2</td>
+      <td style="text-align: right">+3.2% / 96.9% (870/843); due 89; blk 251</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
@@ -544,8 +546,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
-      <td style="text-align: right">+15.5% / 86.6% (947/820)</td>
-      <td style="text-align: right">+15.5% / 86.6% (947/820)</td>
+      <td style="text-align: right">-1.1% / 101.1% (811/820)</td>
+      <td style="text-align: right">-1.2% / 101.2% (810/820)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
@@ -579,8 +581,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
-      <td style="text-align: right">+14.2% / 87.6% (1097/961)</td>
-      <td style="text-align: right">+14.0% / 87.7% (1096/961)</td>
+      <td style="text-align: right">-0.8% / 100.8% (953/961)</td>
+      <td style="text-align: right">-0.8% / 100.8% (953/961)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
@@ -649,8 +651,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
-      <td style="text-align: right">+13.4% / 88.2% (1123/990)</td>
-      <td style="text-align: right">+13.4% / 88.1% (1122/989)</td>
+      <td style="text-align: right">-1.8% / 101.8% (444/452)</td>
+      <td style="text-align: right">-1.8% / 101.8% (444/452)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
