@@ -248,13 +248,15 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+1.8% over target /
-98.6% target speed** (`1.7731%` exact over target / `98.6106%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+1.1% over target /
+99.2% target speed** (`1.1131%` exact over target / `99.2199%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity11-12-v072c-prefetch-relief`,
+`stale-next-v072c-current-refresh`,
 `mary1-v072c-prefetch-relief`,
 `stale-layout-v072c-current-refresh`,
 `activity9-v072c-prefetch-relief`,
@@ -289,13 +291,15 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T03:05:20`; per-row freshness and stats version are shown on
+run is `2026-05-06T03:40:30`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `mary1-v072c-prefetch-relief`,
+rows now use `activity11-12-v072c-prefetch-relief`,
+`stale-next-v072c-current-refresh`,
+`mary1-v072c-prefetch-relief`,
 `stale-layout-v072c-current-refresh`,
 `activity9-v072c-prefetch-relief`,
 `stale-pressure2-v072c-current-refresh`,
@@ -336,17 +340,17 @@ rows are historical only.
 | `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
 | `activity9` | +7.0% / 93.4% (2194/2050); due 25; blk 139 | +8.2% / 92.4% (2218/2050); due 48; blk 175 |
 | `activity10` | +0.0% / 100.0% (1259/1259); due 1; blk 7 | -0.1% / 100.1% (1255/1256); due 2; blk 17 |
-| `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
-| `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
+| `activity11` | +0.5% / 99.5% (1729/1720); due 1; blk 10 | +0.7% / 99.3% (1729/1717); due 1; blk 14 |
+| `activity12` | -0.1% / 100.1% (1411/1412); blk 7 | -0.1% / 100.1% (1409/1411); due 1; blk 10 |
 | `building1` | +2.1% / 98.0% (794/778); blk 21 | +1.9% / 98.1% (794/779); blk 21 |
 | `building2` | +14.9% / 87.1% (1476/1285); due 37; blk 286 | +14.6% / 87.2% (1465/1278); due 40; blk 279 |
-| `building3` | +9.4% / 91.4% (1565/1430); blk 5 | +9.1% / 91.7% (1564/1434) |
+| `building3` | -0.1% / 100.1% (5460/5465) | -0.1% / 100.1% (5460/5465) |
 | `building4` | +4.9% / 95.4% (2928/2792); due 34; blk 234 | +4.6% / 95.6% (2925/2797); due 2; blk 96 |
 | `building5` | +0.4% / 99.6% (3359/3346); blk 20 | +0.4% / 99.6% (3359/3347); blk 19 |
 | `building6` | +5.3% / 95.0% (2561/2433); due 33; blk 223 | +5.3% / 95.0% (2564/2436); due 33; blk 217 |
 | `building7` | -0.0% / 100.0% (3132/3133); blk 9 | -0.1% / 100.1% (3130/3133); blk 7 |
 | `fishing1` | -0.6% / 100.6% (1068/1074); blk 2 | -0.7% / 100.7% (1067/1074); blk 1 |
-| `fishing2` | +7.6% / 92.9% (1899/1765); blk 3 | +7.4% / 93.1% (1898/1767) |
+| `fishing2` | -0.1% / 100.1% (1761/1763); blk 6 | -0.3% / 100.3% (1759/1765); blk 3 |
 | `fishing3` | +0.4% / 99.6% (1960/1952); due 1; blk 18 | +0.1% / 99.9% (1956/1954); blk 6 |
 | `fishing4` | -0.8% / 100.8% (835/842); blk 2 | +3.2% / 96.9% (870/843); due 89; blk 251 |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
@@ -363,7 +367,7 @@ rows are historical only.
 | `mary2` | +0.2% / 99.8% (2250/2246); blk 4 | +0.3% / 99.7% (2253/2246); blk 7 |
 | `mary3` | validated; perf refresh pending | validated; perf refresh pending |
 | `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
-| `mary5` | +6.6% / 93.8% (1687/1583); blk 7 | +6.6% / 93.8% (1688/1583); blk 8 |
+| `mary5` | +0.6% / 99.4% (1591/1582); blk 8 | +0.5% / 99.5% (1590/1582); blk 7 |
 | `miscgag1` | -0.8% / 100.8% (953/961) | -0.8% / 100.8% (953/961) |
 | `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
 | `stand1` | -4.0% / 104.1% (194/202) | -4.0% / 104.1% (194/202) |
@@ -441,7 +445,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now +1.8% over target / 98.6% target speed, with several worse
+  average is now +1.1% over target / 99.2% target speed, with several worse
   CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

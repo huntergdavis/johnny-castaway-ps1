@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+1.8%` (`1.7731%` exact) |
-| Timing-bearing average target speed | `98.6%` (`98.6106%` exact) |
-| Latest perf matrix run | `2026-05-06T03:05:20` |
-| Stats version | mixed: latest refreshed rows use `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+1.1%` (`1.1131%` exact) |
+| Timing-bearing average target speed | `99.2%` (`99.2199%` exact) |
+| Latest perf matrix run | `2026-05-06T03:40:30` |
+| Stats version | mixed: latest refreshed rows use `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,9 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `mary1-v072c-prefetch-relief`,
+  refreshed rows use `activity11-12-v072c-prefetch-relief`,
+  `stale-next-v072c-current-refresh`,
+  `mary1-v072c-prefetch-relief`,
   `stale-layout-v072c-current-refresh`,
   `activity9-v072c-prefetch-relief`,
   `stale-pressure2-v072c-current-refresh`,
@@ -199,16 +201,16 @@ and this page.
 | `activity9` | low | measured | 2026-05-06T02:29:16 | activity9-v072c-prefetch-relief | +8.2% | 92.4% | 2218/2050 | 175 | 17 | 48 | activity9 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
 | `activity10` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | +0.0% | 100.0% | 1259/1259 | 7 | 4 | 1 |  |
 | `activity10` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.1% | 100.1% | 1255/1256 | 17 | 4 | 2 |  |
-| `activity11` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
-| `activity11` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
-| `activity12` | high | measured | 2026-04-30T08:59:42 | compact-fgp3-v38-activity12high-prime | +9.0% | 91.7% | 1543/1415 | 0 | 0 | 0 |  |
-| `activity12` | low | measured | 2026-04-29T17:08:49 | compact-fgp3-v2-fullmatrix | +9.4% | 91.4% | 1543/1411 | 8 | 4 | 1 |  |
+| `activity11` | high | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | +0.5% | 99.5% | 1729/1720 | 10 | 4 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
+| `activity11` | low | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | +0.7% | 99.3% | 1729/1717 | 14 | 9 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
+| `activity12` | high | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | -0.1% | 100.1% | 1411/1412 | 7 | 7 | 0 | validated pack clean-snapshot relief exception keeps stage1_window prefetch; current high tide is baseline clean |
+| `activity12` | low | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | -0.1% | 100.1% | 1409/1411 | 10 | 6 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
 | `building1` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | +2.1% | 98.0% | 794/778 | 21 | 21 | 0 | current validated pack refresh; baseline correction |
 | `building1` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | +1.9% | 98.1% | 794/779 | 21 | 21 | 0 | current validated pack refresh; baseline correction |
 | `building2` | high | measured | 2026-05-06T01:59:35 | stale-pressure-v072c-current-refresh | +14.9% | 87.1% | 1476/1285 | 286 | 66 | 37 | current validated pack refresh; baseline correction |
 | `building2` | low | measured | 2026-05-06T01:59:35 | stale-pressure-v072c-current-refresh | +14.6% | 87.2% | 1465/1278 | 279 | 48 | 40 | current validated pack refresh; baseline correction |
-| `building3` | high | measured | 2026-04-30T13:33:14 | compact-fgp3-v48-building3low-auto-prime | +9.4% | 91.4% | 1565/1430 | 5 | 5 | 0 |  |
-| `building3` | low | measured | 2026-04-30T13:32:08 | compact-fgp3-v48-building3low-auto-prime | +9.1% | 91.7% | 1564/1434 | 0 | 0 | 0 |  |
+| `building3` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
+| `building3` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `building4` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +4.9% | 95.4% | 2928/2792 | 234 | 24 | 34 | validated 2026-05-05 after generic multi-view stitch plus terminal FGP3 cleanup frame; active timing predates refreshed validation pack |
 | `building4` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +4.6% | 95.6% | 2925/2797 | 96 | 90 | 2 | validated 2026-05-05 after generic multi-view stitch plus terminal FGP3 cleanup frame; active timing predates refreshed validation pack |
 | `building5` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | +0.4% | 99.6% | 3359/3346 | 20 | 20 | 0 | current validated pack refresh; baseline correction |
@@ -219,8 +221,8 @@ and this page.
 | `building7` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.1% | 100.1% | 3130/3133 | 7 | 7 | 0 | current validated pack refresh; baseline correction |
 | `fishing1` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1068/1074 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
 | `fishing1` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.7% | 100.7% | 1067/1074 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `fishing2` | high | measured | 2026-04-29T17:28:52 | compact-fgp3-v2-fullmatrix | +7.6% | 92.9% | 1899/1765 | 3 | 3 | 0 |  |
-| `fishing2` | low | measured | 2026-04-29T17:29:29 | compact-fgp3-v2-fullmatrix | +7.4% | 93.1% | 1898/1767 | 0 | 0 | 0 |  |
+| `fishing2` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 1761/1763 | 6 | 6 | 0 | current validated pack refresh; baseline correction |
+| `fishing2` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.3% | 100.3% | 1759/1765 | 3 | 3 | 0 | current validated pack refresh; baseline correction |
 | `fishing3` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.4% | 99.6% | 1960/1952 | 18 | 13 | 1 |  |
 | `fishing3` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.1% | 99.9% | 1956/1954 | 6 | 6 | 0 |  |
 | `fishing4` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -0.8% | 100.8% | 835/842 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
@@ -253,8 +255,8 @@ and this page.
 | `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh |
 | `mary4` | high | measured | 2026-04-29T17:46:07 | compact-fgp3-v2-fullmatrix | -2.4% | 102.4% | 1968/2016 | 28 | 12 | 3 | validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed |
 | `mary4` | low | measured | 2026-04-29T17:46:13 | compact-fgp3-v2-fullmatrix | -2.6% | 102.7% | 1966/2019 | 24 | 10 | 3 | validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed |
-| `mary5` | high | measured | 2026-04-29T17:47:11 | compact-fgp3-v2-fullmatrix | +6.6% | 93.8% | 1687/1583 | 7 | 7 | 0 |  |
-| `mary5` | low | measured | 2026-04-29T17:47:23 | compact-fgp3-v2-fullmatrix | +6.6% | 93.8% | 1688/1583 | 8 | 8 | 0 |  |
+| `mary5` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | +0.6% | 99.4% | 1591/1582 | 8 | 8 | 0 | current validated pack refresh; baseline correction |
+| `mary5` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | +0.5% | 99.5% | 1590/1582 | 7 | 7 | 0 | current validated pack refresh; baseline correction |
 | `miscgag1` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -0.8% | 100.8% | 953/961 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `miscgag1` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -0.8% | 100.8% | 953/961 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `miscgag2` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | -0.3% | 100.3% | 1352/1356 | 0 | 0 | 0 |  |

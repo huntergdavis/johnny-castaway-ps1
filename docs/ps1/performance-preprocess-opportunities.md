@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `1.7731%` over target
+- Average measured timing gap: `1.1131%` over target
 - Average estimated align4 x-band upload byte saving: `67.13%`
 
 ## Top Upload-Ready Candidates
@@ -28,13 +28,13 @@ accepted performance baseline.
 | 11 | `building6` | `high` | 116.28 | 5.26% | 44.17% | 810.26% | 239 | large upload-ready payload; needs compression/selective bands |
 | 12 | `building6` | `low` | 114.78 | 5.25% | 44.17% | 810.26% | 233 | large upload-ready payload; needs compression/selective bands |
 | 13 | `activity4` | `low` | 113.41 | 2.99% | 72.37% | 485.6% | 361 | candidate |
-| 14 | `activity12` | `low` | 98.42 | 9.36% | 72.29% | 537.34% | 12 | large upload-ready payload; needs compression/selective bands |
-| 15 | `fishing2` | `high` | 97.04 | 7.59% | 71.3% | 407.97% | 6 | candidate |
-| 16 | `activity12` | `high` | 95.58 | 9.05% | 74.67% | 448.43% | 0 | candidate |
-| 17 | `building3` | `high` | 95.46 | 9.44% | 68.86% | 1309.63% | 10 | large upload-ready payload; needs compression/selective bands |
-| 18 | `activity11` | `high` | 94.7 | 7.77% | 70.67% | 885.94% | 0 | large upload-ready payload; needs compression/selective bands |
-| 19 | `activity11` | `low` | 94.7 | 7.77% | 70.67% | 885.94% | 0 | large upload-ready payload; needs compression/selective bands |
-| 20 | `activity1` | `high` | 93.92 | 3.06% | 71.86% | 809.77% | 2 | large upload-ready payload; needs compression/selective bands |
+| 14 | `activity1` | `high` | 93.92 | 3.06% | 71.86% | 809.77% | 2 | large upload-ready payload; needs compression/selective bands |
+| 15 | `activity1` | `low` | 93.92 | 3.06% | 71.86% | 809.77% | 2 | large upload-ready payload; needs compression/selective bands |
+| 16 | `fishing4` | `low` | 76.97 | 3.20% | 52.66% | 975.37% | 251 | large upload-ready payload; needs compression/selective bands |
+| 17 | `johnny6` | `low` | 66.17 | 3.43% | 54.86% | 310.08% | 54 | candidate |
+| 18 | `johnny6` | `high` | 65.62 | 3.39% | 54.86% | 310.08% | 54 | candidate |
+| 19 | `walkstuf3` | `high` | 60.93 | 1.89% | 81.22% | 251.74% | 104 | candidate |
+| 20 | `mary1` | `high` | 50.14 | 0.77% | 78.75% | 274.07% | 84 | candidate |
 
 ## Read Before Acting
 
