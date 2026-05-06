@@ -202,7 +202,8 @@ The Lab is the magazine — feature-length retrospectives on the
 methodology, the war stories, and the choices that defined the
 work. Five most recent, newest first:
 
-{%- assign lab_pages = site.pages | where_exp: "p", "p.url contains '/lab/'" | where_exp: "p", "p.url != '/lab/'" | where_exp: "p", "p.date" | sort: "date" | reverse -%}
+{% assign lab_pages = site.pages | where_exp: "p", "p.url contains '/lab/'" | where_exp: "p", "p.url != '/lab/'" | where_exp: "p", "p.date" | sort: "date" | reverse %}
+
 <ul class="devlog-list">
   {% for article in lab_pages limit:5 %}
   <li>
