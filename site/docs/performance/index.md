@@ -249,12 +249,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+1.0% over target /
-99.3% target speed** (`1.0270%` exact over target / `99.3047%` exact target speed).
+99.4% target speed** (`0.9628%` exact over target / `99.3677%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity4-fishing4-v072c-prefetch-relief`,
 `building4-6-johnny6-v072c-prefetch-relief`,
 `activity1-v072c-current-refresh`,
 `activity11-12-v072c-prefetch-relief`,
@@ -293,13 +294,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T04:15:06`; per-row freshness and stats version are shown on
+run is `2026-05-06T04:41:05`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `building4-6-johnny6-v072c-prefetch-relief`,
+`activity4-fishing4-v072c-prefetch-relief`,
 `activity1-v072c-current-refresh`,
 `activity11-12-v072c-prefetch-relief`,
 `stale-next-v072c-current-refresh`,
@@ -337,7 +339,7 @@ rows are historical only.
 | Scene | High tide | Low tide |
 |---|---:|---:|
 | `activity1` | -0.4% / 100.4% (2754/2764); blk 1 | -0.4% / 100.4% (2754/2765) |
-| `activity4` | +0.0% / 100.0% (1065/1065); blk 5 | +3.0% / 97.1% (1102/1070); due 155; blk 361 |
+| `activity4` | -0.1% / 100.1% (1065/1066); blk 4 | -0.4% / 100.4% (1064/1068); blk 1 |
 | `activity5` | -1.1% / 101.1% (1730/1749); blk 2 | -1.0% / 101.0% (1731/1749); blk 2 |
 | `activity6` | +0.1% / 99.9% (912/911) | +0.1% / 99.9% (912/911) |
 | `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
@@ -356,7 +358,7 @@ rows are historical only.
 | `fishing1` | -0.6% / 100.6% (1068/1074); blk 2 | -0.7% / 100.7% (1067/1074); blk 1 |
 | `fishing2` | -0.1% / 100.1% (1761/1763); blk 6 | -0.3% / 100.3% (1759/1765); blk 3 |
 | `fishing3` | +0.4% / 99.6% (1960/1952); due 1; blk 18 | +0.1% / 99.9% (1956/1954); blk 6 |
-| `fishing4` | -0.8% / 100.8% (835/842); blk 2 | +3.2% / 96.9% (870/843); due 89; blk 251 |
+| `fishing4` | -0.8% / 100.8% (835/842); blk 2 | -1.1% / 101.1% (834/843) |
 | `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
 | `fishing6` | -1.2% / 101.2% (744/753) | -1.2% / 101.2% (744/753) |
 | `fishing7` | -1.4% / 101.4% (715/725) | -1.4% / 101.4% (715/725) |
@@ -414,7 +416,7 @@ gfx.upload_bytes  = 8,643,840
 
 The canary now has only two visible CD/refill VBlanks, but the full battle card still has
 CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `activity9`,
-`building4`, `fishing4` low, `building6`). The clean-pressure relief rows prove scene-local
+`building4`, `building6`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.
 
