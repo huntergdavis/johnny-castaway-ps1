@@ -128,7 +128,20 @@
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* In-page hash navigation lands smoothly. .skip-link, the
+   * scenes-jump nav, the page TOC, the glossary cross-refs,
+   * and the head-pagination rel=prev/next links all rely on
+   * anchor jumps; this turns those from teleports into a brief
+   * scroll. Disabled below for prefers-reduced-motion users. */
+  scroll-behavior: smooth;
+  /* Sticky site-header is ~3.6rem tall in headroom; add a bit of
+   * breathing room so anchor targets don't sit flush against it.
+   * Applied at the document level so headings, glossary <dt>,
+   * scene-jump rows, etc. all clear the chrome on jump. */
+  scroll-padding-top: 4.5rem;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -847,6 +860,7 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
   .btn:hover { transform: none; }
 }
