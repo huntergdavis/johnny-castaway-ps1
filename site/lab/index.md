@@ -2,7 +2,7 @@
 layout: page
 title: Lab
 eyebrow: Magazine . Methodology and reflection
-subtitle: How a one-person PS1 fan port actually gets built. Thirteen feature articles on the craft, the failures, and the tools.
+subtitle: How a one-person PS1 fan port actually gets built. Fourteen feature articles on the craft, the failures, and the tools.
 description: The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port.
 date: 2026-04-26
 ---
@@ -42,10 +42,11 @@ want the raw documents behind the essays, use the
 
 ## Contents
 
-Thirteen feature articles, the original twelve plus one meta piece on the
-site itself. The first six are methodology; the second six are craft
-retrospectives; the thirteenth covers how this Jekyll deployment was made
-to behave.
+Fourteen feature articles, the original twelve plus a craft
+retrospective on the post-validation performance loop and one meta
+piece on the site itself. The first six are methodology; the next
+seven are craft retrospectives; the fourteenth covers how this
+Jekyll deployment was made to behave.
 
 ### Methodology, infrastructure, and tools
 
@@ -102,6 +103,10 @@ to behave.
   <li>
     <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">The 63-scene grind</a>
     <p>From five signed off to all 63. What the daily loop looked like on a project of finite scenes and finite evenings, written from inside the grind.</p>
+  </li>
+  <li>
+    <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">From 87 to 99.5: the post-validation performance loop</a>
+    <p>How the headless-perf battle card moved from +17.4% over target to +0.9% after every scene was already signed off — the methodology, the accepted experiments, the rejected ones, and why an experiment log is not paperwork.</p>
   </li>
 </ul>
 
