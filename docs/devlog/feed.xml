@@ -413,6 +413,7 @@ and a binary toggle.</p>
       <name>Hunter Davis</name>
       <uri>https://hunterdavis.com/</uri>
     </author>
+    <summary>How the Johnny Castaway PS1 build&apos;s scripted pad-input harness drives deterministic menu navigation, captures every pause-menu screen, and turns the result into the /help/menu/ player guide.</summary>
     <content type="html"><![CDATA[<p>Freeplay made the pause menu important enough that screenshots are no
 longer decoration. The menu is now a piece of the machine: it enters and
 exits Freeplay, opens the gag and visitor catalogs, changes the island’s
