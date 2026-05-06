@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Date-algorithm core — Johnny Castaway PS1</title>
-  <meta name="description" content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 35 holidays from 1583 to 4099." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/" />
+  <meta name="description" content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 36 holidays from 1583 to 4099." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/holidays/algorithm/" />
 
   <meta property="og:title"        content="Date-algorithm core — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 35 holidays from 1583 to 4099." />
+  <meta property="og:description"  content="Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 36 holidays from 1583 to 4099." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
@@ -98,7 +98,7 @@
     <header class="page-header">
       <p class="eyebrow">Reference</p>
       <h1>Date-algorithm core</h1>
-      <p class="subtitle">How the 35 holidays compute their dates with no expiring tables.</p>
+      <p class="subtitle">How the 36 holidays compute their dates with no expiring tables.</p>
       <hr class="rule" />
     </header>
 
@@ -110,7 +110,7 @@ Day, St. Patrick’s Day, Halloween, Christmas. Three of those are fixed
 calendar dates and the fourth is a fixed calendar date too. They never
 move. A two-line lookup table is enough.</p>
 
-<p>This port carries 35 holidays. Several of them move year to year:
+<p>This port carries 36 holidays. Several of them move year to year:
 Easter, Mardi Gras, Thanksgiving, MLK Day, Memorial Day, Labor Day,
 Election Day, both equinoxes, both solstices, Mother’s Day, Father’s
 Day, Pride Day, Super Bowl Sunday, Presidents’ Day, Columbus /
@@ -453,7 +453,7 @@ a rebuild.</p>
 
 <h2 id="why-no-hijri--lunar-new-year--diwali">Why no Hijri / Lunar New Year / Diwali</h2>
 
-<p>Honest answer: the current corpus is US-centric. The 35 holidays cover
+<p>Honest answer: the current corpus is US-centric. The 36 holidays cover
 the US federal calendar, the four original Sierra holidays, and a
 handful of internet-popular dates (Pi Day, Star Wars Day, Pirate Day,
 4/20). There is no Lunar New Year, no Hijri calendar holiday, no Diwali,

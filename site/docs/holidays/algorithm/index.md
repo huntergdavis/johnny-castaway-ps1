@@ -2,8 +2,8 @@
 layout: page
 title: Date-algorithm core
 eyebrow: Reference
-subtitle: How the 35 holidays compute their dates with no expiring tables.
-description: Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 35 holidays from 1583 to 4099.
+subtitle: How the 36 holidays compute their dates with no expiring tables.
+description: Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 36 holidays from 1583 to 4099.
 ---
 
 ## The problem
@@ -13,7 +13,7 @@ Day, St. Patrick's Day, Halloween, Christmas. Three of those are fixed
 calendar dates and the fourth is a fixed calendar date too. They never
 move. A two-line lookup table is enough.
 
-This port carries 35 holidays. Several of them move year to year:
+This port carries 36 holidays. Several of them move year to year:
 Easter, Mardi Gras, Thanksgiving, MLK Day, Memorial Day, Labor Day,
 Election Day, both equinoxes, both solstices, Mother's Day, Father's
 Day, Pride Day, Super Bowl Sunday, Presidents' Day, Columbus /
@@ -284,7 +284,7 @@ a rebuild.
 
 ## Why no Hijri / Lunar New Year / Diwali
 
-Honest answer: the current corpus is US-centric. The 35 holidays cover
+Honest answer: the current corpus is US-centric. The 36 holidays cover
 the US federal calendar, the four original Sierra holidays, and a
 handful of internet-popular dates (Pi Day, Star Wars Day, Pirate Day,
 4/20). There is no Lunar New Year, no Hijri calendar holiday, no Diwali,
