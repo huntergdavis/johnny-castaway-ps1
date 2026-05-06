@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+7.8% over target /
-93.3% target speed** (`7.8267%` exact over target / `93.3111%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+7.6% over target /
+93.5% target speed** (`7.5934%` exact over target / `93.5083%` exact target speed).
 
 ## Scene Battle Card
 
-As of 2026-05-05, all 126 scene/tide variants have current headless
+As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor5-v072-prefetch-relief`,
 `mismatch-top-v072-current-refresh`,
 `stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
@@ -278,13 +279,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-05T23:47:29`; per-row freshness and stats version are shown on
+run is `2026-05-06T00:23:01`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `mismatch-top-v072-current-refresh`,
+rows now use `visitor5-v072-prefetch-relief`,
+`mismatch-top-v072-current-refresh`,
 `stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
@@ -363,7 +365,7 @@ rows are historical only.
 | `visitor1` | -0.7% / 100.7% (672/677) | -0.7% / 100.7% (672/677) |
 | `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 363 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
 | `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
-| `visitor5` | +17.6% / 85.0% (1274/1083); due 9; blk 79 | +14.3% / 87.5% (1244/1088); due 6; blk 49 |
+| `visitor5` | +1.9% / 98.1% (1111/1090); blk 12 | +2.0% / 98.0% (1112/1090); blk 12 |
 | `visitor6` | +7.5% / 93.0% (2195/2042); blk 13 | +6.8% / 93.6% (2188/2048) |
 | `visitor7` | +8.7% / 92.0% (1766/1625) | +8.7% / 92.0% (1766/1625) |
 | `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |

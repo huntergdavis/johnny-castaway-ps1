@@ -570,8 +570,15 @@ def write_markdown(path: Path, rows: list[dict[str, Any]], csv_path: Path) -> No
         row["over_target_percent"] != ""
     ]
     top = sorted(measured, key=lambda row: row["rank_score"], reverse=True)[:20]
+    def timing_gap_percent(row: dict[str, Any]) -> float:
+        loop_vb = safe_int(str(row.get("loop_vb", "")))
+        target_vb = safe_int(str(row.get("target_vb", "")))
+        if loop_vb > 0 and target_vb > 0:
+            return (loop_vb - target_vb) * 100.0 / target_vb
+        return float(row["over_target_percent"])
+
     avg_gap = (
-        sum(float(row["over_target_percent"]) for row in measured) / len(measured)
+        sum(timing_gap_percent(row) for row in measured) / len(measured)
         if measured else 0.0
     )
     avg_xband = (
