@@ -205,7 +205,8 @@ int hostForcedIslandY = 0;
 int hostForcedLowTide = -1;
 int hostForcedRaftStage = -1;
 int hostForcedNight = -1;
-int hostForcedHoliday = -1;
+int hostHolidayMode = HOLIDAY_MODE_AUTO_ORIGINAL4;
+int hostForcedHoliday = 0;
 static int hostBootForcedNightValid = 0;
 static int hostBootForcedHolidayValid = 0;
 
@@ -617,6 +618,18 @@ static void fgLoopRandomVarPos(int *outX, int *outY)
     }
 }
 
+static int fgLoopRandomHolidayAll(void)
+{
+    int roll = rand() % (gHolidayCount + 1);
+    return (roll == 0) ? 0 : gHolidays[roll - 1].id;
+}
+
+static int fgLoopRandomHolidayOriginal4(void)
+{
+    int roll = rand() % 5; /* none + the four Sierra-era holiday ids */
+    return (roll == 0 || !holidayIsOriginalId(roll)) ? 0 : roll;
+}
+
 /* Set islandState variant fields for one iteration. Fields explicitly
  * forced via BOOTMODE (hostForced* >= 0) stay forced; unforced fields
  * get a fresh random value each call. Position policy is scene-specific:
@@ -629,6 +642,7 @@ static void fgLoopApplyVariant(const char *sceneName)
     extern int ps1SoftMonth;
     extern int ps1SoftDay;
     extern int ps1HolidayFromDate(int month, int day);
+    extern int ps1HolidayFromDateOriginal4(int month, int day);
 
     /* Two pools of pinned state:
      *
@@ -651,6 +665,7 @@ static void fgLoopApplyVariant(const char *sceneName)
     static int sessionValid = 0;
     static int sessionNight = 0;
     static int sessionHoliday = 0;
+    static int sessionHolidayOriginal4 = 0;
 
     static int sequenceScenesRemaining = 0;
     static int seqLowTide = 0;
@@ -661,10 +676,8 @@ static void fgLoopApplyVariant(const char *sceneName)
 
     if (!sessionValid) {
         sessionNight = (rand() & 1);
-        {
-            int roll = rand() % (gHolidayCount + 1);
-            sessionHoliday = (roll == 0) ? 0 : gHolidays[roll - 1].id;
-        }
+        sessionHoliday = fgLoopRandomHolidayAll();
+        sessionHolidayOriginal4 = fgLoopRandomHolidayOriginal4();
         sessionValid = 1;
     }
 
@@ -706,8 +719,15 @@ static void fgLoopApplyVariant(const char *sceneName)
         islandState.night = sessionNight;
     }
 
-    if (hostForcedHoliday >= 0) {
+    if (hostHolidayMode == HOLIDAY_MODE_MANUAL_ORIG4 ||
+        hostHolidayMode == HOLIDAY_MODE_MANUAL_EXPANDED) {
         islandState.holiday = hostForcedHoliday;
+    } else if (hostHolidayMode == HOLIDAY_MODE_NONE) {
+        islandState.holiday = 0;
+    } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4) {
+        islandState.holiday = ps1SoftTimeEnabled
+                            ? ps1HolidayFromDateOriginal4(ps1SoftMonth, ps1SoftDay)
+                            : sessionHolidayOriginal4;
     } else if (ps1SoftTimeEnabled) {
         islandState.holiday = ps1HolidayFromDate(ps1SoftMonth, ps1SoftDay);
     } else {
@@ -777,7 +797,8 @@ static void ps1ResetBootArgs(void)
     hostForcedLowTide = -1;
     hostForcedRaftStage = -1;
     hostForcedNight = -1;
-    hostForcedHoliday = -1;
+    hostHolidayMode = HOLIDAY_MODE_AUTO_ORIGINAL4;
+    hostForcedHoliday = 0;
     hostBootForcedNightValid = 0;
     hostBootForcedHolidayValid = 0;
 }
@@ -926,6 +947,7 @@ static void ps1ApplyBootOverride(char *buffer)
             hostForcedHoliday = atoi(tokens[i + 1]);
             if (hostForcedHoliday < 0) hostForcedHoliday = 0;
             if (hostForcedHoliday > holidayMaxId()) hostForcedHoliday = holidayMaxId();
+            hostHolidayMode = holidayModeFromOverride(hostForcedHoliday);
             hostBootForcedHolidayValid = 1;
             i++;
         } else if (!strcmp(tokens[i], "noloop")) {
@@ -1531,6 +1553,7 @@ static void parseArgs(int argc, char **argv)
                     if (hostForcedHoliday < 0) hostForcedHoliday = 0;
                     if (hostForcedHoliday > holidayMaxId())
                         hostForcedHoliday = holidayMaxId();
+                    hostHolidayMode = holidayModeFromOverride(hostForcedHoliday);
                     hostBootForcedHolidayValid = 1;
                 } else {
                     fprintf(stderr, "Error: holiday requires a value 0..%d\n",
@@ -1673,6 +1696,7 @@ int main(int argc, char **argv)
     int bootHolidayValid = hostBootForcedHolidayValid;
     int bootNight = hostForcedNight;
     int bootHoliday = hostForcedHoliday;
+    int bootHolidayMode = hostHolidayMode;
     int memcardSettingsLoaded = 0;
     int memcardRequestedMute = 0;
 
@@ -1691,8 +1715,10 @@ int main(int argc, char **argv)
     ps1PrintfProbe("sound-init", NULL);
     if (bootNightValid)
         hostForcedNight = bootNight;
-    if (bootHolidayValid)
+    if (bootHolidayValid) {
         hostForcedHoliday = bootHoliday;
+        hostHolidayMode = bootHolidayMode;
+    }
 
     if (numPalResources > 0 && palResources[0]) {
         grLoadPalette(palResources[0]);
@@ -1704,7 +1730,9 @@ int main(int argc, char **argv)
         islandState.raft = hostForcedRaftStage;
     if (hostForcedNight >= 0)
         islandState.night = hostForcedNight;
-    if (hostForcedHoliday >= 0)
+    if (hostHolidayMode == HOLIDAY_MODE_NONE)
+        islandState.holiday = 0;
+    if (holidayModeIsManual(hostHolidayMode))
         islandState.holiday = hostForcedHoliday;
     if (hostForcedIslandPosValid) {
         islandState.xPos = hostForcedIslandX;

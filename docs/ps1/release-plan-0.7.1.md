@@ -1,18 +1,21 @@
-# v0.7.1-ps1 Planned Feature Notes
+# v0.7.1-ps1 Feature Notes
 
 **Theme:** persisted options and holiday-mode polish
-**Status:** planned after `v0.7.0-ps1`
+**Status:** released as a narrow holiday-mode point release
 
 `v0.7.0-ps1` freezes the complete-scene milestone: all 63 scenes are validated.
-`v0.7.1-ps1` should be the first follow-up feature release, focused on making
-the pause-menu options behave like durable player settings.
+`v0.7.1-ps1` became the first follow-up point release, focused specifically on
+holiday mode defaults and persistence. The broader persisted-options list below
+remains useful planning material, but captions, Scene Set, tide, raft, island
+position, freeplay/perf preferences, and menu cursor defaults did not ship in
+0.7.1.
 
 ## Memcard Persistence
 
-The current save schema (`MC_VERSION` 5) persists sound mute, ocean ambience,
-story day, day/night override, holiday override, soft clock/date, and scene
-picker policy. The `v0.7.1` target is to bump the schema and persist the
-remaining user-facing options:
+The save schema is now `MC_VERSION` 6. It persists sound mute, ocean ambience,
+story day, day/night override, holiday override, soft clock/date, scene picker
+policy, and the new `holidayMode` field. The remaining user-facing options for
+future releases are:
 
 - captions enabled;
 - active Scene Set;
@@ -25,8 +28,9 @@ remaining user-facing options:
 - any menu cursor defaults we decide are user preference rather than transient
   UI state.
 
-Backward compatibility rule: v5 saves must still load and default the new
-fields to current boot defaults.
+Backward compatibility rule: v5 saves must still load. Old automatic holiday
+saves migrate to the new `AUTO DATE:ORIG4` default; manual selections and
+`NONE` remain explicit.
 
 ## Holiday Mode
 
@@ -42,7 +46,7 @@ four Sierra-era holiday overlays:
 - Christmas;
 - New Year's.
 
-For `v0.7.1`, this should become the fresh-boot default when no memory card is
+For `v0.7.1`, this became the fresh-boot default when no memory card is
 installed and the first-time default written to a new save. In other words:
 users without saved settings get the original Sierra holiday behavior by
 default, while still being able to opt into the expanded generated holiday
@@ -64,10 +68,11 @@ selection. Do not overload a positive holiday id to mean an auto policy.
 ## Acceptance Bar
 
 - Fresh boot with no save keeps the existing defaults except holiday mode.
-- Fresh boot with no save uses `AUTO DATE: ORIGINAL 4` as the default holiday
-  policy.
-- Save immediately after a fresh boot produces deterministic defaults.
-- Loading a v5 save produces the same behavior users had before `v0.7.1`.
+- Fresh boot with no save uses `AUTO DATE:ORIG4` as the default holiday policy.
+- Save immediately after a fresh boot writes schema v6 with the mode separate
+  from the manual holiday id.
+- Loading a v5 auto save migrates to `AUTO DATE:ORIG4`; v5 manual holiday and
+  `NONE` settings remain explicit.
 - The new holiday mode is visible in the pause menu and survives power cycle.
 - Full-scene validation remains green; no scene should need revalidation just
   because a saved option exists.

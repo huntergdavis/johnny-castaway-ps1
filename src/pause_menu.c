@@ -1148,6 +1148,7 @@ static const char *perfLevelLabel(void)
 
 /* Externs from jc_reborn.c: -1 = auto/random, else forced. */
 extern int hostForcedNight;
+extern int hostHolidayMode;
 extern int hostForcedHoliday;
 extern int hostForcedLowTide;
 extern int hostForcedRaftStage;
@@ -1173,37 +1174,36 @@ static const char *daynightLabel(void)
 
 static const char *holidayLabel(void)
 {
-    if (hostForcedHoliday < 0) return "AUTO";
+    if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 ||
+        hostHolidayMode == HOLIDAY_MODE_AUTO_ALL)
+        return "AUTO";
+    if (hostHolidayMode == HOLIDAY_MODE_NONE) return "NONE";
     if (hostForcedHoliday == 0) return "NONE";
     return holidayShortName(hostForcedHoliday);
 }
 
 static int holidaySetMode(void)
 {
-    if (hostForcedHoliday < 0) return 0;  /* date/auto */
-    if (hostForcedHoliday == 0) return 1; /* none */
-    if (hostForcedHoliday <= 4) return 2; /* original four */
-    return 3;                             /* expanded set */
+    if (hostHolidayMode < 0 || hostHolidayMode >= HOLIDAY_MODE_COUNT)
+        return HOLIDAY_MODE_AUTO_ORIGINAL4;
+    return hostHolidayMode;
 }
 
 static const char *holidaySetLabel(void)
 {
     switch (holidaySetMode()) {
-    case 0: return "AUTO DATE";
-    case 1: return "NONE";
-    case 2: return "ORIGINAL 4";
-    case 3: return "EXPANDED";
+    case HOLIDAY_MODE_AUTO_ORIGINAL4: return "AUTO DATE:ORIG4";
+    case HOLIDAY_MODE_AUTO_ALL:       return "AUTO DATE";
+    case HOLIDAY_MODE_NONE:           return "NONE";
+    case HOLIDAY_MODE_MANUAL_ORIG4:   return "ORIGINAL 4";
+    case HOLIDAY_MODE_MANUAL_EXPANDED:return "EXPANDED";
     default: return "?";
     }
 }
 
 static int firstExpandedHoliday(void)
 {
-    for (int i = 0; i < gHolidayCount; i++) {
-        if (gHolidays[i].id > 4)
-            return gHolidays[i].id;
-    }
-    return 0;
+    return holidayFirstExpandedId();
 }
 
 static int nextHolidayInRange(int current, int minId, int maxId, int dir)
@@ -1243,17 +1243,21 @@ static void cycleHolidaySet(int dir)
 {
     int mode = holidaySetMode();
     mode += (dir >= 0) ? 1 : -1;
-    if (mode > 3) mode = 0;
-    if (mode < 0) mode = 3;
+    if (mode >= HOLIDAY_MODE_COUNT) mode = 0;
+    if (mode < 0) mode = HOLIDAY_MODE_COUNT - 1;
 
+    hostHolidayMode = mode;
     switch (mode) {
-    case 0: hostForcedHoliday = -1; break;
-    case 1: hostForcedHoliday = 0; break;
-    case 2:
+    case HOLIDAY_MODE_AUTO_ORIGINAL4:
+    case HOLIDAY_MODE_AUTO_ALL:
+    case HOLIDAY_MODE_NONE:
+        hostForcedHoliday = 0;
+        break;
+    case HOLIDAY_MODE_MANUAL_ORIG4:
         if (hostForcedHoliday < 1 || hostForcedHoliday > 4)
             hostForcedHoliday = 1;
         break;
-    case 3:
+    case HOLIDAY_MODE_MANUAL_EXPANDED:
         if (hostForcedHoliday <= 4)
             hostForcedHoliday = firstExpandedHoliday();
         break;
@@ -1265,9 +1269,9 @@ static void cycleHolidaySet(int dir)
 static void cycleHolidaySelection(int dir)
 {
     int oldHoliday = hostForcedHoliday;
-    if (hostForcedHoliday >= 1 && hostForcedHoliday <= 4) {
+    if (hostHolidayMode == HOLIDAY_MODE_MANUAL_ORIG4) {
         hostForcedHoliday = nextHolidayInRange(hostForcedHoliday, 1, 4, dir);
-    } else if (hostForcedHoliday > 4) {
+    } else if (hostHolidayMode == HOLIDAY_MODE_MANUAL_EXPANDED) {
         hostForcedHoliday = nextHolidayInRange(hostForcedHoliday, 5,
                                                holidayMaxId(), dir);
     }
@@ -1422,13 +1426,24 @@ static void drawHolidayMenu(void)
     pmPrintf(" %s Back\n",
              holidayCursor == HOLIDAY_BACK ? ">" : " ");
     drawSeparator();
-    if (hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
+    if (holidayModeIsManual(hostHolidayMode) &&
+        hostForcedHoliday > 0 && holidayById(hostForcedHoliday)) {
         pmPrintf("   %s\n", holidayDateLabel(hostForcedHoliday));
         pmPrintf("   %.28s\n", holidayTitle(hostForcedHoliday));
-    } else if (hostForcedHoliday < 0 && ps1SoftTimeEnabled) {
-        int dateHoliday = holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
+    } else if ((hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 ||
+                hostHolidayMode == HOLIDAY_MODE_AUTO_ALL) &&
+               ps1SoftTimeEnabled) {
+        int dateHoliday = (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4)
+                        ? holidayForDateOriginal4(ps1SoftYear, ps1SoftMonth, ps1SoftDay)
+                        : holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
         pmPrintf("   Date picker: %s\n",
                  dateHoliday ? holidayShortName(dateHoliday) : "NONE");
+    } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4) {
+        pmPrintf("   Random original 4 until\n");
+        pmPrintf("   Set Time/Date is saved.\n");
+    } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ALL) {
+        pmPrintf("   Random expanded holiday\n");
+        pmPrintf("   until Set Time/Date.\n");
     }
     pmPrintf(" O/START = back\n");
 }
@@ -2259,7 +2274,10 @@ static int handleSetTimeInput(uint16 pressed)
         ps1SoftMonth = editMonth;
         ps1SoftDay   = editDay;
         ps1SoftYear  = editYear;
-        hostForcedHoliday = -1;  /* date picker drives holiday while in AUTO */
+        if (hostHolidayMode != HOLIDAY_MODE_AUTO_ORIGINAL4 &&
+            hostHolidayMode != HOLIDAY_MODE_AUTO_ALL)
+            hostHolidayMode = HOLIDAY_MODE_AUTO_ORIGINAL4;
+        hostForcedHoliday = 0;  /* date picker drives holiday while in AUTO */
         /* getDayOfYear() in utils.c computes from ps1SoftMonth/ps1SoftDay */
 
         /* Return to System after confirming. */

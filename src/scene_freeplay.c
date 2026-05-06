@@ -34,6 +34,7 @@ extern uint32 ps1FrameCount;
 extern int grDx;
 extern int grDy;
 extern int hostForcedNight;
+extern int hostHolidayMode;
 extern int hostForcedHoliday;
 extern int hostForcedLowTide;
 extern int hostForcedRaftStage;
@@ -774,8 +775,16 @@ static int fpApplyMenuWorldOverrides(void)
     if (hostForcedRaftStage >= 0)
         desiredRaft = hostForcedRaftStage;
 
-    if (hostForcedHoliday >= 0) {
+    if (hostHolidayMode == HOLIDAY_MODE_MANUAL_ORIG4 ||
+        hostHolidayMode == HOLIDAY_MODE_MANUAL_EXPANDED) {
         desiredHoliday = hostForcedHoliday;
+    } else if (hostHolidayMode == HOLIDAY_MODE_NONE) {
+        desiredHoliday = 0;
+    } else if (hostHolidayMode == HOLIDAY_MODE_AUTO_ORIGINAL4 &&
+               ps1SoftTimeEnabled) {
+        desiredHoliday = holidayForDateOriginal4(ps1SoftYear,
+                                                 ps1SoftMonth,
+                                                 ps1SoftDay);
     } else if (ps1SoftTimeEnabled) {
         desiredHoliday = holidayForDate(ps1SoftYear, ps1SoftMonth, ps1SoftDay);
     }

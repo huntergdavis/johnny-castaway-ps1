@@ -147,7 +147,7 @@ no pack/runtime rework was needed.
 | Telemetry / debug overlay | Complete |
 | Perf instrumentation (`ps1_perf.c`) | Complete — level-gated `JCPERF`/`JCPERF2` TTY lines (OFF/SUMMARY/DETAIL/DEBUG via `ps1PerfSetLevel`) |
 | Pause menu (`pause_menu.c`) | Complete — Start opens overlay; custom 8x8 font (FntFlush is empirically broken in scene-runtime context); POLY_F4 dim + panel quads |
-| User settings persistence (`memcard.c`) | In progress — pause-menu choices save to `bu00:` |
+| User settings persistence (`memcard.c`) | Working / expanding — v6 saves persist holiday mode separately from manual holiday id; broader menu-option persistence remains future work |
 | TTY printf | Reliable on PSn00bSDK + DuckStation as of 2026-04-25 |
 
 ## Scenes: 63 / 63 fully validated
@@ -156,13 +156,21 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Next feature lane: `v0.7.1-ps1` is planned for persisted pause-menu options
-and holiday-mode polish. See [release-plan-0.7.1.md](release-plan-0.7.1.md)
-for the target list: captions, Scene Set, tide, raft, island position,
-freeplay/perf preferences, and an `AUTO DATE: ORIGINAL 4` holiday mode that
-becomes the no-card/fresh-save default.
+Latest point release: `v0.7.1-ps1` adds persisted holiday mode, separates
+automatic holiday policy from manual holiday selection, and makes
+`AUTO DATE:ORIG4` the no-card/fresh-save default. See
+[release-notes-0.7.1.md](release-notes-0.7.1.md).
+
+Known next bugfix target: a walking regression that predates `v0.7.1` can
+place Johnny over water during some randomized story-loop transitions and
+leave repeated poses on the ocean. This is tracked for `v0.7.2`.
 
 Milestone releases:
+- `v0.7.1-ps1` — holiday-mode point release. Adds memory-card schema v6 with
+  `holidayMode`, exposes `AUTO DATE:ORIG4` / `AUTO DATE` / `NONE` /
+  `ORIGINAL 4` / `EXPANDED` as distinct policies, migrates old auto saves to
+  the original-four default, and fixes holiday overlay z-order during
+  story-loop walks.
 - `v0.7.0-ps1` — first complete-scene release. All 63 original Johnny
   Castaway scenes are validated under the current visual + audible signoff
   bar. `ACTIVITY 9` completed the sweep with an Activity9-specific wide stitch,
