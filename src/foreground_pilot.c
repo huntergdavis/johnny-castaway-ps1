@@ -1570,6 +1570,36 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
     }
 }
 
+static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
+                                                          sint16 fgX,
+                                                          sint16 fgY,
+                                                          uint16 fgW,
+                                                          uint16 fgH,
+                                                          uint32 cleanBytes,
+                                                          int *deferWalkCleanRecapture)
+{
+    if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
+        return 1;
+
+    if (walkPilotCleanBufferAllocated()) {
+        printf("JCMEM clean-retry walk-clean-release scene=%s clean=%lu walkKB=%lu\n",
+               sceneName != NULL ? sceneName : "?",
+               (unsigned long)cleanBytes,
+               walkPilotCleanBufferBytes() / 1024UL);
+        walkPilotReleaseCleanWalkArea();
+        if (deferWalkCleanRecapture != NULL)
+            *deferWalkCleanRecapture = 1;
+        if (fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH))
+            return 1;
+    }
+
+    printf("JCMEM clean-retry drop-prefetch scene=%s clean=%lu\n",
+           sceneName != NULL ? sceneName : "?",
+           (unsigned long)cleanBytes);
+    fgDropOptionalPrefetchBuffersForCleanSnapshot();
+    return fgBackdropSaveCleanBgRectsForPack(fgX, fgY, fgW, fgH);
+}
+
 static void fgBackdropStampHoliday(void)
 {
     static int cachedHolidayId = -2;
@@ -3156,6 +3186,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     const char *sceneBackdropScreen = fgSceneBackdropScreen(sceneName);
     int sceneSpecificBackdrop = sceneBackdropScreen != NULL;
     int largeCleanSnapshot = 0;
+    int deferWalkCleanRecapture = 0;
     int perfDetail = ps1PerfEnabled ? ps1PerfDetailEnabled() : 0;
 
     fgHeapProbe("before_scene", sceneName);
@@ -3293,8 +3324,15 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
     } else {
-        if (!fgBackdropSaveCleanBgRectsForPack(fgBoundsX, fgBoundsY,
-                                               fgBoundsW, fgBoundsH)) {
+        uint32 cleanRectEstimate =
+            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
+        if (!fgBackdropSaveCleanBgRectsWithPressureFallback(sceneName,
+                                                            fgBoundsX,
+                                                            fgBoundsY,
+                                                            fgBoundsW,
+                                                            fgBoundsH,
+                                                            cleanRectEstimate,
+                                                            &deferWalkCleanRecapture)) {
             fgRuntimeReset();
             fgReleaseStreamBuffers();
             grFreeCleanBgRects();
@@ -3325,7 +3363,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * needs to wipe its previous pose against. The function is a no-op
      * when the state key matches the last capture, so it's cheap to
      * call every scene setup. */
-    if (!blackBackdrop && !sceneSpecificBackdrop) {
+    if (!blackBackdrop && !sceneSpecificBackdrop && !deferWalkCleanRecapture) {
         walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
                                              islandState.lowTide,
                                              islandState.night,
@@ -3496,6 +3534,13 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         ps1PerfMarkCleanupStart();
     }
 
+    if (deferWalkCleanRecapture && !blackBackdrop && !sceneSpecificBackdrop &&
+        grCleanBgRectsCount() > 0) {
+        grForceFullRedrawNextFrame();
+        grRestoreBgFromRects();
+        fgBackdropStampHoliday();
+    }
+
     /* End-of-scene heap cleanup — the screensaver loop replays scenes
      * indefinitely, so every per-scene allocation needs to come back to
      * the heap before the next scene starts. Without this the fragmented
@@ -3504,7 +3549,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
      * ~93 KB) fails silently after 2-3 iterations. */
     fgRuntimeReset();
     fgReleaseStreamBuffers();
-    if (blackBackdrop || largeCleanSnapshot) {
+    if (blackBackdrop || largeCleanSnapshot || deferWalkCleanRecapture) {
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(0);
     } else {
@@ -3514,6 +3559,14 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     }
     /* Keep BACKGRND.BMP in slot 0 across scenes; release only
      * variant-dependent overlay slots to avoid needless PSB churn. */
+    if (deferWalkCleanRecapture && !blackBackdrop && !sceneSpecificBackdrop) {
+        walkPilotCaptureCleanWalkAreaIfStale(islandState.raft,
+                                             islandState.lowTide,
+                                             islandState.night,
+                                             islandState.holiday,
+                                             islandState.xPos,
+                                             islandState.yPos);
+    }
     fgBackdropRelease((blackBackdrop || sceneSpecificBackdrop) ? 0 : 1);
     fgHeapProbe("after_scene_cleanup", sceneName);
 }
