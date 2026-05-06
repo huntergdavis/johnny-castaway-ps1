@@ -204,6 +204,35 @@ def candidate_visible_cost(start: int, end: int,
     }
 
 
+def runtime_group_metadata(start: int, end: int,
+                           saved_reads: int,
+                           append_start_fireable: bool,
+                           runtime_group_capacity_sectors: int) -> dict[str, Any]:
+    sectors = end - start
+    capacity = max(0, runtime_group_capacity_sectors)
+    fits_current_group_path = (
+        saved_reads > 0 and
+        append_start_fireable and
+        capacity > 0 and
+        sectors <= capacity
+    )
+    if saved_reads <= 0:
+        metadata_class = "reject:no-saved-read"
+    elif not append_start_fireable:
+        metadata_class = "needs-new-append-start"
+    elif capacity <= 0:
+        metadata_class = "needs-runtime-group-capacity"
+    elif sectors > capacity:
+        metadata_class = "needs-scheduler-or-larger-group-window"
+    else:
+        metadata_class = "current-read-group-compatible"
+    return {
+        "runtime_group_capacity_sectors": capacity,
+        "runtime_current_group_fit": fits_current_group_path,
+        "runtime_metadata_class": metadata_class,
+    }
+
+
 def read_segment_summary(segment: dict[str, Any]) -> dict[str, Any]:
     """Keep the generated read-plan JSON self-contained for runtime metadata."""
     return {
@@ -608,7 +637,8 @@ def read_segments_from_log(cdlog: Any, log_path: Path | None, pack_lba: int | No
 
 def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, Any]],
                    coverage_ranges: list[tuple[int, int]], pack_sectors: int,
-                   window_sectors: int, top: int) -> list[dict[str, Any]]:
+                   window_sectors: int, top: int,
+                   runtime_group_capacity_sectors: int = 0) -> list[dict[str, Any]]:
     candidates: list[dict[str, Any]] = []
     uncovered_append_starts = sorted({
         int(segment["file_sector_start"])
@@ -689,6 +719,14 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             touched_reads,
             bool(append_start_reads),
         )
+        saved_reads = max(0, len(fully_covered_reads) - 1)
+        runtime_metadata = runtime_group_metadata(
+            start,
+            end,
+            saved_reads,
+            bool(append_start_reads),
+            runtime_group_capacity_sectors,
+        )
         candidates.append({
             "start_sector": start,
             "end_sector": end,
@@ -700,7 +738,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "first_entry": covered_entries[0]["index"] if covered_entries else None,
             "last_entry": covered_entries[-1]["index"] if covered_entries else None,
             "fully_covered_read_count": len(fully_covered_reads),
-            "estimated_saved_reads": max(0, len(fully_covered_reads) - 1),
+            "estimated_saved_reads": saved_reads,
             "touched_read_count": len(touched_reads),
             "estimated_read_vblanks": round(read_vblank_estimate, 2),
             "min_prev_gap_s": round(min(read_gaps), 4) if read_gaps else None,
@@ -725,6 +763,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "nearest_observed_append_start_sector": nearest_append_start,
             "nearest_observed_append_delta_sectors": nearest_append_delta,
             **visible_cost,
+            **runtime_metadata,
         })
 
     candidates.sort(
@@ -742,7 +781,8 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
 
 def visible_candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, Any]],
                            coverage_ranges: list[tuple[int, int]], pack_sectors: int,
-                           window_sectors: int, top: int) -> list[dict[str, Any]]:
+                           window_sectors: int, top: int,
+                           runtime_group_capacity_sectors: int = 0) -> list[dict[str, Any]]:
     candidates = candidate_rows(
         entries,
         read_segments,
@@ -750,6 +790,7 @@ def visible_candidate_rows(entries: list[dict[str, Any]], read_segments: list[di
         pack_sectors,
         window_sectors,
         top=max(top * 8, top),
+        runtime_group_capacity_sectors=runtime_group_capacity_sectors,
     )
     candidates.sort(
         key=lambda item: (
@@ -783,6 +824,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         pack_sectors = int(math.ceil(int(pack.get("bytes", 0)) / SECTOR_SIZE))
 
     source_policy = parse_source_setup_policy()
+    runtime_group_capacity_sectors = 0
+    group_bytes = source_policy.get("symbols", {}).get("FG_PREFETCH_GROUP_WINDOW_BYTES")
+    if isinstance(group_bytes, int) and group_bytes > 0:
+        runtime_group_capacity_sectors = int(math.ceil(group_bytes / SECTOR_SIZE))
     data_offset = int(header.get("data_offset", 0))
 
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
@@ -835,12 +880,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
     candidate_sets = {
         str(window): candidate_rows(entries, read_segments, coverage_ranges,
-                                    pack_sectors, window, args.top)
+                                    pack_sectors, window, args.top,
+                                    runtime_group_capacity_sectors=runtime_group_capacity_sectors)
         for window in args.candidate_sectors
     }
     visible_candidate_sets = {
         str(window): visible_candidate_rows(entries, read_segments, coverage_ranges,
-                                            pack_sectors, window, args.top)
+                                            pack_sectors, window, args.top,
+                                            runtime_group_capacity_sectors=runtime_group_capacity_sectors)
         for window in args.candidate_sectors
     }
 
@@ -875,6 +922,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "prime_range": [prime_start, prime_end],
             "setup_segments": [[start, end] for start, end in segment_ranges],
             "merged_ranges": [[start, end] for start, end in coverage_ranges],
+        },
+        "runtime_grouping": {
+            "current_group_capacity_sectors": runtime_group_capacity_sectors,
+            "current_group_capacity_bytes": runtime_group_capacity_sectors * SECTOR_SIZE,
         },
         "observed_reads": {
             "after_pack_locate_segments": len(read_segments),
@@ -977,6 +1028,8 @@ def print_human(report: dict[str, Any]) -> None:
                 f"first_gap={first_gap} "
                 f"internal_min={internal_min} "
                 f"fire={'yes' if item['append_start_fireable'] else 'no'} "
+                f"fit={'yes' if item.get('runtime_current_group_fit') else 'no'} "
+                f"class={item.get('runtime_metadata_class')} "
                 f"reads={item['source_read_indices']}"
             )
 

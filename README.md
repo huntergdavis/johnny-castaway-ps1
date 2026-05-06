@@ -222,10 +222,11 @@ canaries stay flat. The timing-bearing average is now `+0.8692%` over target /
 removed about `16.5` percentage points of over-target gap and added about
 `12.4` points of target speed.
 
-The current planning pass also scores foreground read groups by observed
-append-start fireability before source edits. This host-side filter prevents
+The current planning pass also fingerprints perf baselines before comparison
+and scores foreground read groups by observed append-start fireability and
+runtime group-capacity fit before source edits. These host-side filters prevent
 more no-op probes where a range covers useful reads but cannot fire in the
-runtime append path; it does not change PS1 timing or the battle-card totals.
+runtime append path; they do not change PS1 timing or the battle-card totals.
 
 The headless harness now has opt-in scripted controller input. Run
 `./scripts/ps1-menu-input-harness.sh` to build a temporary pad-script disc,

@@ -100,7 +100,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3133 words
+          ~12 min read · 3174 words
         </p>
 
       <hr class="rule" />
@@ -217,6 +217,12 @@ and its machine-readable
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-opportunities.csv"><code class="language-plaintext highlighter-rouge">performance-preprocess-opportunities.csv</code></a>.
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.</p>
+
+<p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
+fingerprints in every perf summary and classifies foreground read-plan
+candidates by observed append-start ownership plus current grouped-read
+capacity. That makes stale-baseline comparisons and no-op read groups visible
+before a runtime source edit.</p>
 
 <h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
 

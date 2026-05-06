@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-Date: 2026-04-27
+Date: 2026-05-06
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/performance-next-100.md` |
-| Lines | 897 |
-| Approx. words | 13964 |
+| Lines | 964 |
+| Approx. words | 15202 |
 | Code fences | 0 |
 
 ## Outline
@@ -34,6 +34,7 @@ Date: 2026-04-27
 -   Impact-Prioritized Order
 -   Next 100 Tests
 -   First Execution Order
+-   2026-05-06 Post-O2 Generated Optimization Queue
 -   Retest Rules For Old Failures
 
 ## Read it in context

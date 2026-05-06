@@ -105,6 +105,12 @@ and its machine-readable
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.
 
+The current post-`-O2` tooling pass also records compact baseline
+fingerprints in every perf summary and classifies foreground read-plan
+candidates by observed append-start ownership plus current grouped-read
+capacity. That makes stale-baseline comparisons and no-op read groups visible
+before a runtime source edit.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't
