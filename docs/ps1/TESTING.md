@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+3.1%` (`3.1299%` exact) |
-| Timing-bearing average target speed | `97.4%` (`97.3807%` exact) |
-| Latest perf matrix run | `2026-05-06T01:14:22` |
-| Stats version | mixed: latest refreshed rows use `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+2.8%` (`2.7833%` exact) |
+| Timing-bearing average target speed | `97.7%` (`97.6931%` exact) |
+| Latest perf matrix run | `2026-05-06T01:47:28` |
+| Stats version | mixed: latest refreshed rows use `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -94,6 +94,7 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
+`activity10-johnny3-v072-prefetch-relief`,
 `stale-zero2-v072b-current-refresh`,
 `stale-zero-v072b-current-refresh`,
 `stale-top-v072b-current-refresh`,

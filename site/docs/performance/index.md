@@ -248,13 +248,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.7% over target**, or **100.7% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+3.1% over target /
-97.4% target speed** (`3.1299%` exact over target / `97.3807%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+2.8% over target /
+97.7% target speed** (`2.7833%` exact over target / `97.6931%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity10-johnny3-v072-prefetch-relief`,
 `stale-zero2-v072b-current-refresh`,
 `stale-zero-v072b-current-refresh`,
 `stale-top-v072b-current-refresh`,
@@ -282,13 +283,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T01:14:22`; per-row freshness and stats version are shown on
+run is `2026-05-06T01:47:28`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `stale-zero2-v072b-current-refresh`,
+rows now use `activity10-johnny3-v072-prefetch-relief`,
+`stale-zero2-v072b-current-refresh`,
 `stale-zero-v072b-current-refresh`,
 `stale-top-v072b-current-refresh`,
 `visitor5-v072-prefetch-relief`,
@@ -321,7 +323,7 @@ rows are historical only.
 | `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
 | `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
 | `activity9` | +10.4% / 90.6% (2259/2047); due 6; blk 84 | +11.2% / 90.0% (2272/2044); due 8; blk 94 |
-| `activity10` | +12.8% / 88.6% (1424/1262); due 255; blk 622 | +14.4% / 87.4% (1441/1260); due 255; blk 664 |
+| `activity10` | +0.0% / 100.0% (1259/1259); due 1; blk 7 | -0.1% / 100.1% (1255/1256); due 2; blk 17 |
 | `activity11` | +7.8% / 92.8% (1859/1725) | +7.8% / 92.8% (1859/1725) |
 | `activity12` | +9.0% / 91.7% (1543/1415) | +9.4% / 91.4% (1543/1411); due 1; blk 8 |
 | `building1` | +2.1% / 98.0% (794/778); blk 21 | +1.9% / 98.1% (794/779); blk 21 |
@@ -341,7 +343,7 @@ rows are historical only.
 | `fishing8` | -0.8% / 100.8% (1243/1253) | -0.8% / 100.8% (1243/1253) |
 | `johnny1` | +9.4% / 91.4% (2125/1942); blk 31 | +9.6% / 91.2% (2129/1942); blk 33 |
 | `johnny2` | +0.6% / 99.4% (1761/1751); due 3; blk 16 | +0.5% / 99.5% (1758/1750); due 3; blk 16 |
-| `johnny3` | +7.9% / 92.7% (1258/1166); due 209; blk 560 | +5.4% / 94.9% (1229/1166); due 175; blk 464 |
+| `johnny3` | -0.3% / 100.3% (1158/1161); due 1; blk 10 | -0.8% / 100.8% (1157/1166) |
 | `johnny4` | -0.8% / 100.8% (1204/1214) | -0.8% / 100.8% (1204/1214) |
 | `johnny5` | -1.1% / 101.1% (811/820) | -1.2% / 101.2% (810/820) |
 | `johnny6` | +3.4% / 96.7% (2895/2800); blk 27 | +3.4% / 96.7% (2896/2800); blk 27 |
@@ -427,9 +429,9 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is still +3.1% over target, with several worse CD-bound
-  outliers; compressing the timing files would expose the same throughput
-  bottleneck without fixing it.
+  average is now +2.8% over target / 97.7% target speed, with several worse
+  CD-bound outliers; compressing the timing files would expose the same
+  throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
   from the active public path. The PS1 executable links only the
   scene-playback runtime plus the minimal background / audio / input

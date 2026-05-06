@@ -328,13 +328,14 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>-0.7% over target</strong>, or <strong>100.7% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+3.1% over target /
-97.4% target speed</strong> (<code class="language-plaintext highlighter-rouge">3.1299%</code> exact over target / <code class="language-plaintext highlighter-rouge">97.3807%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+2.8% over target /
+97.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">2.7833%</code> exact over target / <code class="language-plaintext highlighter-rouge">97.6931%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">activity10-johnny3-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">stale-zero2-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stale-zero-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
@@ -362,13 +363,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T01:14:22</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T01:47:28</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">stale-zero2-v072b-current-refresh</code>,
+rows now use <code class="language-plaintext highlighter-rouge">activity10-johnny3-v072-prefetch-relief</code>,
+<code class="language-plaintext highlighter-rouge">stale-zero2-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stale-zero-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stale-top-v072b-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor5-v072-prefetch-relief</code>,
@@ -438,8 +440,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
-      <td style="text-align: right">+12.8% / 88.6% (1424/1262); due 255; blk 622</td>
-      <td style="text-align: right">+14.4% / 87.4% (1441/1260); due 255; blk 664</td>
+      <td style="text-align: right">+0.0% / 100.0% (1259/1259); due 1; blk 7</td>
+      <td style="text-align: right">-0.1% / 100.1% (1255/1256); due 2; blk 17</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
@@ -538,8 +540,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
-      <td style="text-align: right">+7.9% / 92.7% (1258/1166); due 209; blk 560</td>
-      <td style="text-align: right">+5.4% / 94.9% (1229/1166); due 175; blk 464</td>
+      <td style="text-align: right">-0.3% / 100.3% (1158/1161); due 1; blk 10</td>
+      <td style="text-align: right">-0.8% / 100.8% (1157/1166)</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
@@ -770,9 +772,9 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-average is still +3.1% over target, with several worse CD-bound
-outliers; compressing the timing files would expose the same throughput
-bottleneck without fixing it.</li>
+average is now +2.8% over target / 97.7% target speed, with several worse
+CD-bound outliers; compressing the timing files would expose the same
+throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired
 from the active public path. The PS1 executable links only the
 scene-playback runtime plus the minimal background / audio / input

@@ -112,10 +112,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+3.1%` (`3.1299%` exact) |
-| Timing-bearing average target speed | `97.4%` (`97.3807%` exact) |
-| Latest perf matrix run | `2026-05-06T01:14:22` |
-| Stats version | mixed: latest refreshed rows use `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
+| Timing-bearing average over target | `+2.8%` (`2.7833%` exact) |
+| Timing-bearing average target speed | `97.7%` (`97.6931%` exact) |
+| Latest perf matrix run | `2026-05-06T01:47:28` |
+| Stats version | mixed: latest refreshed rows use `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1067 / 1074 VBlanks`, `-0.7%`, `100.7% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -146,7 +146,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `stale-zero2-v072b-current-refresh`,
+  refreshed rows use `activity10-johnny3-v072-prefetch-relief`,
+  `stale-zero2-v072b-current-refresh`,
   `stale-zero-v072b-current-refresh`,
   `stale-top-v072b-current-refresh`,
   `visitor5-v072-prefetch-relief`,
@@ -190,8 +191,8 @@ and this page.
 | `activity8` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.6% | 100.6% | 899/904 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
 | `activity9` | high | measured | 2026-04-30T19:37:06 | compact-fgp3-v58-activity9high-window20-table | +10.4% | 90.6% | 2259/2047 | 84 | 53 | 6 |  |
 | `activity9` | low | measured | 2026-04-29T17:01:37 | compact-fgp3-v2-fullmatrix | +11.2% | 90.0% | 2272/2044 | 94 | 58 | 8 |  |
-| `activity10` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +12.8% | 88.6% | 1424/1262 | 622 | 0 | 255 | current validated pack refresh; baseline correction |
-| `activity10` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +14.4% | 87.4% | 1441/1260 | 664 | 0 | 255 | current validated pack refresh; baseline correction |
+| `activity10` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | +0.0% | 100.0% | 1259/1259 | 7 | 4 | 1 |  |
+| `activity10` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.1% | 100.1% | 1255/1256 | 17 | 4 | 2 |  |
 | `activity11` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
 | `activity11` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | +7.8% | 92.8% | 1859/1725 | 0 | 0 | 0 |  |
 | `activity12` | high | measured | 2026-04-30T08:59:42 | compact-fgp3-v38-activity12high-prime | +9.0% | 91.7% | 1543/1415 | 0 | 0 | 0 |  |
@@ -230,8 +231,8 @@ and this page.
 | `johnny1` | low | measured | 2026-04-29T17:36:10 | compact-fgp3-v2-fullmatrix | +9.6% | 91.2% | 2129/1942 | 33 | 33 | 0 |  |
 | `johnny2` | high | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.6% | 99.4% | 1761/1751 | 16 | 0 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
 | `johnny2` | low | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.5% | 99.5% | 1758/1750 | 16 | 1 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
-| `johnny3` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +7.9% | 92.7% | 1258/1166 | 560 | 0 | 209 | current validated pack refresh; baseline correction |
-| `johnny3` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +5.4% | 94.9% | 1229/1166 | 464 | 0 | 175 | current validated pack refresh; baseline correction |
+| `johnny3` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.3% | 100.3% | 1158/1161 | 10 | 6 | 1 |  |
+| `johnny3` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.8% | 100.8% | 1157/1166 | 0 | 0 | 0 |  |
 | `johnny4` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
 | `johnny5` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.1% | 101.1% | 811/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |

@@ -887,6 +887,12 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
     if (fgSceneEquals(sceneName, "visitor5"))
         return 0;
 
+    if (fgSceneEquals(sceneName, "activity10"))
+        return 0;
+
+    if (fgSceneEquals(sceneName, "johnny3"))
+        return 0;
+
     if (cleanBytes >= FG_CLEAN_SNAPSHOT_PRESSURE_BYTES)
         return 1;
 
@@ -3216,6 +3222,8 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             !fgSceneEquals(sceneName, "walkstuf1") &&
             !fgSceneEquals(sceneName, "visitor3") &&
             !fgSceneEquals(sceneName, "visitor5") &&
+            !fgSceneEquals(sceneName, "activity10") &&
+            !fgSceneEquals(sceneName, "johnny3") &&
             (cleanRectEstimate >= FG_LARGE_CLEAN_SNAPSHOT_BYTES ||
              fgSceneNeedsCleanMemoryRelief(sceneName, cleanRectEstimate,
                                            gFgRuntime.frameBufferSize))) {
