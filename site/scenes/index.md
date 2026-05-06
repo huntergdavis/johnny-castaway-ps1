@@ -108,6 +108,13 @@ The ledger above tracks the **release bar** — pixel-perfect human signoff. Thi
 - **Headless performance** is automated DuckStation timing. That is the
   optimization battle card for "how fast does this scene/tide variant run."
 
+The reference manual for the perf work is at
+[/docs/performance/]({{ '/docs/performance/' | relative_url }});
+the retrospective on the optimization loop that moved this matrix
+from the compact baseline to its current `{{ site.release.perf_target_speed_pct }}%`
+target-speed average is at
+[/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
+
 A scene can be timed here without being visually certified.
 
 ### Rollup

@@ -10,7 +10,10 @@ A labor of love by Hunter Davis. This page is the running summary of perf
 work on the PS1 port at {{ site.release.tag }}: where the bottleneck is, what
 got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
-bottom. If you paid for this, you were cheated. Open source and free.
+bottom. The retrospective on how the matrix moved from the compact baseline
+to the current battle card —
+[*From 87 to 99.5: the post-validation performance loop*]({{ '/lab/from-87-to-99-5/' | relative_url }})
+— is in the Lab. If you paid for this, you were cheated. Open source and free.
 
 <details class="page-toc" markdown="1">
 <summary>On this page</summary>
