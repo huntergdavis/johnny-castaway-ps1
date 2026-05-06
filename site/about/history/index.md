@@ -376,10 +376,20 @@ component-completeness phases:
   applicable variant (night palette, low tide, holiday overlay,
   raft-stage progression). The live ledger is at
   [/scenes/]({{ '/scenes/' | relative_url }}).
-- Last point release: **`v0.7.2-ps1`** — backdrop-key guard so
-  story-loop walks only run when the next scene's background
-  state matches the previous rendered tide / raft / night /
-  holiday / island position.
+- Performance baseline:
+  **{{ site.release.perf_target_speed_pct }}%** target speed across
+  the 120 timing-bearing scene/tide rows on the headless-perf
+  battle card. The retrospective is at
+  [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
+- Performance-baseline release: **`v0.8.0-ps1`** — promoted the
+  headless optimization methodology to a release baseline; routed
+  all 126 high/low scene variants through the perf matrix; clean-
+  memory-relief drop-prefetch turned the post-validation perf
+  arc from `+17.4%` over target to `+0.9%` over target.
+- Last pre-v0.8.0 stability release: **`v0.7.2-ps1`** — backdrop-
+  key guard so story-loop walks only run when the next scene's
+  background state matches the previous rendered tide / raft /
+  night / holiday / island position.
 - Freeplay/debug release: **`v0.5.0-ps1`** -- direct-control Johnny,
   pause-menu debug catalogs, frog loading transitions, and a
   no-allocation steady-state freeplay loop.
