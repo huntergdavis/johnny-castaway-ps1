@@ -1,0 +1,95 @@
+{%- comment -%}
+  Structured data (Schema.org JSON-LD). Always emits a WebSite record;
+  on the home page also a SoftwareApplication describing the port; on
+  devlog posts also a BlogPosting. Each record is its own <script>
+  block — JSON-LD allows multiple blocks per page and crawlers merge
+  them, which avoids brittle comma-juggling between conditional pieces.
+
+  URLs use site.canonical_baseurl because the build runs with
+  --baseurl "" (path-portable bundle) and that blanks site.baseurl.
+  All user-supplied strings go through `jsonify` so titles with
+  quotes/backslashes can't break the JSON.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign page_abs  = site_root | append: page.url -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ site.title | jsonify }},
+  "url": {{ site_root | append: '/' | jsonify }},
+  "description": {{ site.description | strip_newlines | jsonify }},
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script>
+
+{%- if page.url == '/' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": {{ site.title | jsonify }},
+  "url": {{ site_root | append: '/' | jsonify }},
+  "description": {{ site.description | strip_newlines | jsonify }},
+  "applicationCategory": "GameApplication",
+  "applicationSubCategory": "Screensaver",
+  "operatingSystem": "Sony PlayStation",
+  "softwareVersion": {{ site.release.version | jsonify }},
+  "isAccessibleForFree": true,
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "codeRepository": {{ site.github_url | jsonify }},
+  "downloadUrl": "{{ site.github_url }}/releases/tag/{{ site.release.tag }}",
+  "image": {{ site_root | append: '/assets/img/branding/og-image.png' | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "url": "{{ site.github_url }}/releases/tag/{{ site.release.tag }}"
+  }
+}
+</script>
+{%- endif -%}
+
+{%- if page.layout == 'post' and page.date -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  {%- if page.description %}
+  "description": {{ page.description | strip_newlines | jsonify }},
+  {%- endif %}
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "url": {{ page_abs | jsonify }},
+  "mainEntityOfPage": {{ page_abs | jsonify }},
+  "inLanguage": "en",
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Johnny Castaway PS1 — Devlog",
+    "url": {{ site_root | append: '/devlog/' | jsonify }}
+  }
+}
+</script>
+{%- endif -%}
