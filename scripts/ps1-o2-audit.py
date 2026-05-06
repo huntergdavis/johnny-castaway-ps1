@@ -97,6 +97,10 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; historical default-O2 retest rejected",
         "Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.",
     ),
+    "src/ps1_stubs.c": (
+        "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
+        "Whole-TU -O2 stayed exact-flat while growing ELF and the stubs object.",
+    ),
 }
 
 

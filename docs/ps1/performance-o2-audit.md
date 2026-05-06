@@ -5,9 +5,9 @@
 
 | Field | Value |
 |---|---|
-| Generated at | `2026-05-06T13:55:54+00:00` |
+| Generated at | `2026-05-06T14:09:04+00:00` |
 | Branch | `perf-headless-20260505` |
-| Commit | `d1ec220b8` |
+| Commit | `b0f07c0f5` |
 | Compile database | `build-ps1/compile_commands.json` |
 | Map file | `build-ps1/jcreborn.map` |
 | PS-EXE bytes | `215040` |
@@ -28,7 +28,6 @@
 | 67 | translation_unit | `src/memcard.c` | -Os | 0 | 3100 | Test whole TU at default -O2 after hot sweep |
 | 68 | translation_unit | `src/holidays.c` | -Os | 0 | 2224 | Test whole TU at default -O2 after hot sweep |
 | 69 | translation_unit | `src/ps1_debug.c` | -Os | 0 | 1752 | Test whole TU at default -O2 after hot sweep |
-| 70 | translation_unit | `src/ps1_stubs.c` | -Os | 0 | 240 | Test whole TU at default -O2 after hot sweep |
 | 71 | translation_unit | `src/utils.c` | -Os | 0 | 448 | Test whole TU at default -O2 after hot sweep |
 | 72 | translation_unit | `src/island.c` | -Os | 0 | 612 | Test whole TU at default -O2 after hot sweep |
 | 80 | translation_unit | `src/ps1_pad_script.c` | -Os | 0 | 348 | Review TU optimization flag |
@@ -39,6 +38,7 @@
 | 90 | function | `ps1_streamReadAlignedFromCdFileInto` | optimize("Os") | 484 | 9608 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | function | `ps1_streamReadFromCdFile` | optimize("Os") | 592 | 9608 | Keep scoped -Os; current v0.7.2 default-O2 retest rejected |
 | 90 | translation_unit | `src/events_ps1.c` | -Os | 0 | 3996 | Keep whole TU at -Os; historical default-O2 retest rejected |
+| 90 | translation_unit | `src/foreground_pilot.c` | -Os | 0 | 19764 | Keep whole TU at -Os; historical default-O2 retest rejected |
 
 ## Function-Scoped Flags
 

@@ -131,6 +131,12 @@ FISHING1 regressed `loop_vb 1068 -> 1069`, `blocking_vb 4 -> 9`,
 `592 -> 660` bytes and ELF grew `952312 -> 952548`. Keep the helper at
 function-scoped `-Os` until setup/direct-read splitting or scheduler metadata
 changes the phase.
+The current v0.7.2 default-`O2` retest of `src/ps1_stubs.c` is also rejected:
+FISHING1, VISITOR3, WALKSTUF1, BUILDING2, and ACTIVITY9 exact canaries stayed
+fully flat while ELF grew `952312 -> 952360` and the stubs object grew
+`16640 -> 16680`. Keep the translation unit at `-Os` and do not put remaining
+cold/default-off `-O2` probes ahead of generated metadata without a stronger
+phase hypothesis.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
@@ -826,6 +832,7 @@ near misses:
 | Setup segment persistence cleanup | Do not retry alone. It was memory-safe in theory but regressed VISITOR3 high through code layout/cadence while only improving refill overrun. |
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | Unbuffered CD helper default `O2` retest | Do not promote or retry under the current phase. It regressed FISHING1 loop/blocking/read/due-miss metrics, grew the helper `592 -> 660` bytes, and grew ELF `952312 -> 952548`. |
+| `ps1_stubs.c` whole-TU `O2` | Do not promote or retry under the current phase. Five exact canaries stayed timing/work-flat while ELF and the stubs object grew. |
 | Unbuffered CD file-LBA cache | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | `fgRuntimeFillWindowForEntry()` function-scoped `Os` | Do not retry alone; it was exact no-op on timing, size, and tracked symbols. |
 | Prepared visual metadata decoupling | Do not retry as metadata-only; it adds duplicate probes and code growth without staging farther ahead. |
