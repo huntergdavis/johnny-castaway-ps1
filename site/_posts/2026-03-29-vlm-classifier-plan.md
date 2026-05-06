@@ -7,6 +7,13 @@ source_path: docs/ps1/research/VLM_CLASSIFIER_PLAN_2026-03-29.md
 description: "Plan to replace the heuristic caption layer with a hosted multimodal model, posed against the local-classifier alternative."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Goal
 
 Replace the current heuristic caption layer with a real multimodal model that can answer questions like:

@@ -147,6 +147,22 @@ broken BIOS pad path, and the start of memory-card-backed user settings.
 What follows is the day’s archeology in bullets, with links to the
 locked-in design docs.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#1-working-ps1-printf-to-tty" id="markdown-toc-1-working-ps1-printf-to-tty">1. Working PS1 <code class="language-plaintext highlighter-rouge">printf()</code> to TTY</a></li>
+  <li><a href="#2-performance-baseline--docker-regtest-pipeline" id="markdown-toc-2-performance-baseline--docker-regtest-pipeline">2. Performance baseline + Docker regtest pipeline</a></li>
+  <li><a href="#3-pause-menu--first-real-user-facing-ui-shipped" id="markdown-toc-3-pause-menu--first-real-user-facing-ui-shipped">3. Pause menu — first real user-facing UI (SHIPPED)</a></li>
+  <li><a href="#4-holiday-expansion--4--35-design" id="markdown-toc-4-holiday-expansion--4--35-design">4. Holiday expansion — 4 → 35 design</a></li>
+  <li><a href="#5-spi-direct-controller-polling" id="markdown-toc-5-spi-direct-controller-polling">5. SPI direct controller polling</a></li>
+  <li><a href="#6-memcard-support-shipped" id="markdown-toc-6-memcard-support-shipped">6. Memcard support (SHIPPED)</a></li>
+  <li><a href="#7-tty-log-prefixes" id="markdown-toc-7-tty-log-prefixes">7. TTY log prefixes</a></li>
+  <li><a href="#pointers" id="markdown-toc-pointers">Pointers</a></li>
+</ul>
+
+</details>
+
 <h2 id="1-working-ps1-printf-to-tty">1. Working PS1 <code class="language-plaintext highlighter-rouge">printf()</code> to TTY</h2>
 
 <ul>

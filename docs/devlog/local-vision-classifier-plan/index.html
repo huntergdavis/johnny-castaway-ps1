@@ -169,6 +169,58 @@
 <p>This is not primarily a training problem yet.
 The first target is a practical semantic harness that converts frames into structured, comparable scene descriptions.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#executive-recommendation" id="markdown-toc-executive-recommendation">Executive Recommendation</a></li>
+  <li><a href="#why-this-is-the-right-shape" id="markdown-toc-why-this-is-the-right-shape">Why This Is The Right Shape</a></li>
+  <li><a href="#source-of-truth" id="markdown-toc-source-of-truth">Source Of Truth</a></li>
+  <li><a href="#what-the-harness-must-answer" id="markdown-toc-what-the-harness-must-answer">What The Harness Must Answer</a></li>
+  <li><a href="#core-design-reference-first-semantic-retrieval" id="markdown-toc-core-design-reference-first-semantic-retrieval">Core Design: Reference-First Semantic Retrieval</a>    <ul>
+      <li><a href="#reference-bank-contents" id="markdown-toc-reference-bank-contents">Reference Bank Contents</a></li>
+      <li><a href="#runtime-ps1-evaluation" id="markdown-toc-runtime-ps1-evaluation">Runtime PS1 Evaluation</a></li>
+    </ul>
+  </li>
+  <li><a href="#architecture" id="markdown-toc-architecture">Architecture</a>    <ul>
+      <li><a href="#stage-0-build-the-reference-index" id="markdown-toc-stage-0-build-the-reference-index">Stage 0: Build The Reference Index</a></li>
+      <li><a href="#stage-1-cheap-deterministic-triage" id="markdown-toc-stage-1-cheap-deterministic-triage">Stage 1: Cheap Deterministic Triage</a></li>
+      <li><a href="#stage-2-lightweight-embedding-model" id="markdown-toc-stage-2-lightweight-embedding-model">Stage 2: Lightweight Embedding Model</a></li>
+      <li><a href="#stage-3-sampled-semantic-explainer" id="markdown-toc-stage-3-sampled-semantic-explainer">Stage 3: Sampled Semantic Explainer</a></li>
+      <li><a href="#stage-4-optional-tiny-supervised-classifier" id="markdown-toc-stage-4-optional-tiny-supervised-classifier">Stage 4: Optional Tiny Supervised Classifier</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-models-under-8-gb-ram" id="markdown-toc-recommended-models-under-8-gb-ram">Recommended Models Under 8 GB RAM</a>    <ul>
+      <li><a href="#1-clip-vit-b32" id="markdown-toc-1-clip-vit-b32">1. CLIP ViT-B/32</a></li>
+      <li><a href="#2-florence-2-base-ft" id="markdown-toc-2-florence-2-base-ft">2. Florence-2-base-ft</a></li>
+      <li><a href="#3-smolvlm-500m" id="markdown-toc-3-smolvlm-500m">3. SmolVLM-500M</a></li>
+      <li><a href="#4-moondream2" id="markdown-toc-4-moondream2">4. moondream2</a></li>
+    </ul>
+  </li>
+  <li><a href="#reference-grounded-labeling-strategy" id="markdown-toc-reference-grounded-labeling-strategy">Reference-Grounded Labeling Strategy</a>    <ul>
+      <li><a href="#pass-a-deterministic-label-seed" id="markdown-toc-pass-a-deterministic-label-seed">Pass A: Deterministic Label Seed</a></li>
+      <li><a href="#pass-b-nearest-neighbor-clustering" id="markdown-toc-pass-b-nearest-neighbor-clustering">Pass B: Nearest-Neighbor Clustering</a></li>
+      <li><a href="#pass-c-sampled-vlm-annotation" id="markdown-toc-pass-c-sampled-vlm-annotation">Pass C: Sampled VLM Annotation</a></li>
+      <li><a href="#pass-d-human-correction-loop" id="markdown-toc-pass-d-human-correction-loop">Pass D: Human Correction Loop</a></li>
+    </ul>
+  </li>
+  <li><a href="#how-ps1-comparison-should-work" id="markdown-toc-how-ps1-comparison-should-work">How PS1 Comparison Should Work</a></li>
+  <li><a href="#proposed-output-files" id="markdown-toc-proposed-output-files">Proposed Output Files</a></li>
+  <li><a href="#what-counts-as-success" id="markdown-toc-what-counts-as-success">What Counts As Success</a></li>
+  <li><a href="#recommended-implementation-order" id="markdown-toc-recommended-implementation-order">Recommended Implementation Order</a>    <ul>
+      <li><a href="#phase-1" id="markdown-toc-phase-1">Phase 1</a></li>
+      <li><a href="#phase-2" id="markdown-toc-phase-2">Phase 2</a></li>
+      <li><a href="#phase-3" id="markdown-toc-phase-3">Phase 3</a></li>
+      <li><a href="#phase-4" id="markdown-toc-phase-4">Phase 4</a></li>
+    </ul>
+  </li>
+  <li><a href="#immediate-practical-recommendation" id="markdown-toc-immediate-practical-recommendation">Immediate Practical Recommendation</a></li>
+  <li><a href="#research-notes" id="markdown-toc-research-notes">Research Notes</a></li>
+  <li><a href="#progress-logging" id="markdown-toc-progress-logging">Progress Logging</a></li>
+</ul>
+
+</details>
+
 <h2 id="executive-recommendation">Executive Recommendation</h2>
 
 <p>Do this as a reference-first system, not a generic captioning toy.</p>

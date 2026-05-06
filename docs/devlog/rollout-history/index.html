@@ -368,6 +368,45 @@ still reports one real active-pack miss (<code class="language-plaintext highlig
 the bounded harness route, but that remaining miss is now a secondary cleanup,
 not the visible scene-entry regression.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#historical-rollout-chronology" id="markdown-toc-historical-rollout-chronology">Historical rollout chronology</a></li>
+  <li><a href="#2026-03-18-update" id="markdown-toc-2026-03-18-update">2026-03-18 update</a></li>
+  <li><a href="#current-facts-from-the-repo" id="markdown-toc-current-facts-from-the-repo">Current facts from the repo</a>    <ul>
+      <li><a href="#1-the-pc-and-ps1-rendering-models-do-not-match" id="markdown-toc-1-the-pc-and-ps1-rendering-models-do-not-match">1. The PC and PS1 rendering models do not match</a></li>
+      <li><a href="#2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently" id="markdown-toc-2-the-project-already-uses-iso-space-to-trade-for-ram-but-inconsistently">2. The project already uses ISO space to trade for RAM, but inconsistently</a></li>
+      <li><a href="#3-static-analysis-is-already-strong-enough-to-drive-compilation-decisions" id="markdown-toc-3-static-analysis-is-already-strong-enough-to-drive-compilation-decisions">3. Static analysis is already strong enough to drive compilation decisions</a></li>
+      <li><a href="#4-analyzer-v2-output-is-now-machine-readable" id="markdown-toc-4-analyzer-v2-output-is-now-machine-readable">4. Analyzer v2 output is now machine-readable</a></li>
+      <li><a href="#5-pack-planner-consumer-exists" id="markdown-toc-5-pack-planner-consumer-exists">5. Pack planner consumer exists</a></li>
+      <li><a href="#6-scene-pack-compiler-and-generic-loader-exist" id="markdown-toc-6-scene-pack-compiler-and-generic-loader-exist">6. Scene pack compiler and generic loader exist</a></li>
+      <li><a href="#7-transition--prefetch-post-processing" id="markdown-toc-7-transition--prefetch-post-processing">7. Transition / prefetch post-processing</a></li>
+      <li><a href="#8-dirty-region-and-restore-runtime" id="markdown-toc-8-dirty-region-and-restore-runtime">8. Dirty-region and restore runtime</a></li>
+      <li><a href="#9-sdl-compat-lite-contract" id="markdown-toc-9-sdl-compat-lite-contract">9. SDL-Compat Lite contract</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-architecture" id="markdown-toc-recommended-architecture">Recommended architecture</a>    <ul>
+      <li><a href="#recommendation-a-compiled-scene-packs" id="markdown-toc-recommendation-a-compiled-scene-packs">Recommendation A: Compiled scene packs</a></li>
+      <li><a href="#recommendation-b-offline-sprite-transcoding-to-ps1-native-blit-format" id="markdown-toc-recommendation-b-offline-sprite-transcoding-to-ps1-native-blit-format">Recommendation B: Offline sprite transcoding to PS1-native blit format</a></li>
+      <li><a href="#recommendation-c-sdl-compat-lite-runtime-contract" id="markdown-toc-recommendation-c-sdl-compat-lite-runtime-contract">Recommendation C: SDL-Compat Lite runtime contract</a></li>
+      <li><a href="#recommendation-d-scene-local-frame-cache-with-static-prefetch" id="markdown-toc-recommendation-d-scene-local-frame-cache-with-static-prefetch">Recommendation D: Scene-local frame cache with static prefetch</a></li>
+    </ul>
+  </li>
+  <li><a href="#what-should-move-offline" id="markdown-toc-what-should-move-offline">What should move offline</a></li>
+  <li><a href="#what-should-stay-runtime" id="markdown-toc-what-should-stay-runtime">What should stay runtime</a></li>
+  <li><a href="#research-conclusions" id="markdown-toc-research-conclusions">Research conclusions</a>    <ul>
+      <li><a href="#best-target-state" id="markdown-toc-best-target-state">Best target state</a></li>
+      <li><a href="#best-incremental-path" id="markdown-toc-best-incremental-path">Best incremental path</a></li>
+      <li><a href="#what-not-to-do" id="markdown-toc-what-not-to-do">What not to do</a></li>
+    </ul>
+  </li>
+  <li><a href="#external-references" id="markdown-toc-external-references">External references</a></li>
+  <li><a href="#related-files-in-this-research-package" id="markdown-toc-related-files-in-this-research-package">Related files in this research package</a></li>
+</ul>
+
+</details>
+
 <h2 id="current-facts-from-the-repo">Current facts from the repo</h2>
 
 <h3 id="1-the-pc-and-ps1-rendering-models-do-not-match">1. The PC and PS1 rendering models do not match</h3>

@@ -28,6 +28,13 @@ Goal:
 This is not primarily a training problem yet.
 The first target is a practical semantic harness that converts frames into structured, comparable scene descriptions.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Executive Recommendation
 
 Do this as a reference-first system, not a generic captioning toy.

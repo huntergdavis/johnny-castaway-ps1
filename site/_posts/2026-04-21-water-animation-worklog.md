@@ -7,6 +7,13 @@ source_path: docs/ps1/research/WATER_ANIMATION_WORKLOG_2026-04-21.md
 description: "Session worklog tracing the fishing1 missing-waves bug to an empty background sprite slot after adsInitIsland."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Outcome so far
 
 - Root cause of "no waves" found: **`ttmBackgroundSlot.numSprites[0] == 0`**

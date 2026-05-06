@@ -143,6 +143,61 @@
 Status: Proposed pivot
 Owner: PS1 runtime / content pipeline</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#why-this-exists" id="markdown-toc-why-this-exists">Why This Exists</a></li>
+  <li><a href="#executive-summary" id="markdown-toc-executive-summary">Executive Summary</a></li>
+  <li><a href="#hard-storage-reality" id="markdown-toc-hard-storage-reality">Hard Storage Reality</a>    <ul>
+      <li><a href="#full-screen-raw-storage-does-not-fit" id="markdown-toc-full-screen-raw-storage-does-not-fit">Full-screen raw storage does not fit</a></li>
+      <li><a href="#current-disc-usage-suggests-room-for-a-smarter-offline-format" id="markdown-toc-current-disc-usage-suggests-room-for-a-smarter-offline-format">Current disc usage suggests room for a smarter offline format</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-architecture" id="markdown-toc-recommended-architecture">Recommended Architecture</a></li>
+  <li><a href="#core-decision" id="markdown-toc-core-decision">Core Decision</a></li>
+  <li><a href="#display-model" id="markdown-toc-display-model">Display Model</a></li>
+  <li><a href="#pixel-perfect-johnny-requirement" id="markdown-toc-pixel-perfect-johnny-requirement">Pixel-Perfect Johnny Requirement</a></li>
+  <li><a href="#proposed-playback-asset-format" id="markdown-toc-proposed-playback-asset-format">Proposed Playback Asset Format</a>    <ul>
+      <li><a href="#plate-encoding" id="markdown-toc-plate-encoding">Plate encoding</a></li>
+    </ul>
+  </li>
+  <li><a href="#why-hybrid-plates-are-better-than-full-fmv" id="markdown-toc-why-hybrid-plates-are-better-than-full-fmv">Why Hybrid Plates Are Better Than Full-FMV</a></li>
+  <li><a href="#runtime-responsibilities" id="markdown-toc-runtime-responsibilities">Runtime Responsibilities</a></li>
+  <li><a href="#variant-handling" id="markdown-toc-variant-handling">Variant Handling</a></li>
+  <li><a href="#feasibility-gate" id="markdown-toc-feasibility-gate">Feasibility Gate</a></li>
+  <li><a href="#pilot-plan" id="markdown-toc-pilot-plan">Pilot Plan</a>    <ul>
+      <li><a href="#pilot-deliverables" id="markdown-toc-pilot-deliverables">Pilot deliverables</a>        <ul>
+          <li><a href="#stage-1-offline-analysis" id="markdown-toc-stage-1-offline-analysis">Stage 1: Offline analysis</a></li>
+          <li><a href="#stage-2-storage-simulation" id="markdown-toc-stage-2-storage-simulation">Stage 2: Storage simulation</a></li>
+          <li><a href="#stage-3-ps1-playback-prototype" id="markdown-toc-stage-3-ps1-playback-prototype">Stage 3: PS1 playback prototype</a></li>
+          <li><a href="#stage-4-visual-validation" id="markdown-toc-stage-4-visual-validation">Stage 4: Visual validation</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#costbenefit-compared-to-current-path" id="markdown-toc-costbenefit-compared-to-current-path">Cost/Benefit Compared To Current Path</a></li>
+  <li><a href="#benefits" id="markdown-toc-benefits">Benefits</a></li>
+  <li><a href="#costs" id="markdown-toc-costs">Costs</a></li>
+  <li><a href="#risks" id="markdown-toc-risks">Risks</a>    <ul>
+      <li><a href="#risk-1-plate-regions-are-still-too-big" id="markdown-toc-risk-1-plate-regions-are-still-too-big">Risk 1: Plate regions are still too big</a></li>
+      <li><a href="#risk-2-compression-artifacts-break-pixel-perfect-johnny" id="markdown-toc-risk-2-compression-artifacts-break-pixel-perfect-johnny">Risk 2: Compression artifacts break “pixel-perfect Johnny”</a></li>
+      <li><a href="#risk-3-oceanbackground-interaction-is-more-scene-dependent-than-expected" id="markdown-toc-risk-3-oceanbackground-interaction-is-more-scene-dependent-than-expected">Risk 3: Ocean/background interaction is more scene-dependent than expected</a></li>
+      <li><a href="#risk-4-pipeline-takes-too-long-to-build" id="markdown-toc-risk-4-pipeline-takes-too-long-to-build">Risk 4: Pipeline takes too long to build</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommended-product-split" id="markdown-toc-recommended-product-split">Recommended Product Split</a>    <ul>
+      <li><a href="#class-a-offline-playback-scenes" id="markdown-toc-class-a-offline-playback-scenes">Class A: Offline playback scenes</a></li>
+      <li><a href="#class-b-live-runtime-scenes" id="markdown-toc-class-b-live-runtime-scenes">Class B: Live runtime scenes</a></li>
+    </ul>
+  </li>
+  <li><a href="#recommendation" id="markdown-toc-recommendation">Recommendation</a></li>
+  <li><a href="#immediate-next-steps" id="markdown-toc-immediate-next-steps">Immediate Next Steps</a></li>
+  <li><a href="#decision-gate" id="markdown-toc-decision-gate">Decision Gate</a></li>
+</ul>
+
+</details>
+
 <h2 id="why-this-exists">Why This Exists</h2>
 
 <p>The current PS1 rendering effort has spent too much time on runtime

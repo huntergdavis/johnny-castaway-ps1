@@ -139,7 +139,32 @@
 
 
   <div class="page-body">
-    <h2 id="outcome-so-far">Outcome so far</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#outcome-so-far" id="markdown-toc-outcome-so-far">Outcome so far</a></li>
+  <li><a href="#evidence-gathered" id="markdown-toc-evidence-gathered">Evidence gathered</a></li>
+  <li><a href="#what-the-probe-grid-currently-tests" id="markdown-toc-what-the-probe-grid-currently-tests">What the probe grid currently tests</a></li>
+  <li><a href="#whats-been-tried-that-did-not-work-this-session" id="markdown-toc-whats-been-tried-that-did-not-work-this-session">What’s been tried that did NOT work (this session)</a></li>
+  <li><a href="#recommended-next-steps" id="markdown-toc-recommended-next-steps">Recommended next steps</a></li>
+  <li><a href="#fix-candidates-that-are-still-on-the-table" id="markdown-toc-fix-candidates-that-are-still-on-the-table">Fix candidates that are still on the table</a></li>
+  <li><a href="#probe-infrastructure-already-in-place-keep" id="markdown-toc-probe-infrastructure-already-in-place-keep">Probe infrastructure already in place (keep)</a></li>
+  <li><a href="#boot-hang-root-cause-solved" id="markdown-toc-boot-hang-root-cause-solved">Boot-hang root cause (solved)</a></li>
+  <li><a href="#debugging-lessons-learned" id="markdown-toc-debugging-lessons-learned">Debugging lessons learned</a></li>
+  <li><a href="#resolution-landed-this-session" id="markdown-toc-resolution-landed-this-session">Resolution (landed this session)</a>    <ul>
+      <li><a href="#1-pre-load-backgrndbmp-before-bg-tile-allocation" id="markdown-toc-1-pre-load-backgrndbmp-before-bg-tile-allocation">1. Pre-load BACKGRND.BMP before bg-tile allocation</a></li>
+      <li><a href="#2-wave-tick-parity-with-the-normal-ads-path" id="markdown-toc-2-wave-tick-parity-with-the-normal-ads-path">2. Wave-tick parity with the normal ads path</a></li>
+      <li><a href="#3-rect-based-clean-backup-option-b" id="markdown-toc-3-rect-based-clean-backup-option-b">3. Rect-based clean backup (option B)</a></li>
+      <li><a href="#div-by-zero-guard" id="markdown-toc-div-by-zero-guard">Div-by-zero guard</a></li>
+    </ul>
+  </li>
+  <li><a href="#open-follow-ups-for-subsequent-sessions" id="markdown-toc-open-follow-ups-for-subsequent-sessions">Open follow-ups for subsequent sessions</a></li>
+</ul>
+
+</details>
+
+<h2 id="outcome-so-far">Outcome so far</h2>
 
 <ul>
   <li>Root cause of “no waves” found: <strong><code class="language-plaintext highlighter-rouge">ttmBackgroundSlot.numSprites[0] == 0</code></strong>

@@ -7,6 +7,13 @@ source_path: docs/ps1/research/FOREGROUND_TOP_LAYER_LOG_2026-04-13.md
 description: "Validation log for prerendered foreground-only fgpilot scenes, kept separate from full PS1 scene verification."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Purpose
 
 Track prerendered foreground-only pilot status separately from the normal PS1

@@ -143,6 +143,46 @@
 Repo: <code class="language-plaintext highlighter-rouge">repo:/</code>
 Branch: <code class="language-plaintext highlighter-rouge">ps1</code></p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#goal" id="markdown-toc-goal">Goal</a></li>
+  <li><a href="#known-good-baseline" id="markdown-toc-known-good-baseline">Known Good Baseline</a></li>
+  <li><a href="#what-has-been-proven" id="markdown-toc-what-has-been-proven">What Has Been Proven</a>    <ul>
+      <li><a href="#1-the-wave-primitive-itself-works-on-ps1" id="markdown-toc-1-the-wave-primitive-itself-works-on-ps1">1. The wave primitive itself works on PS1</a></li>
+      <li><a href="#2-the-fishing-1-integrated-failure-is-not-a-host-data-absence-issue" id="markdown-toc-2-the-fishing-1-integrated-failure-is-not-a-host-data-absence-issue">2. The Fishing 1 integrated failure is not a host-data absence issue</a></li>
+      <li><a href="#3-water-failure-is-integrationruntime-side" id="markdown-toc-3-water-failure-is-integrationruntime-side">3. Water failure is integration/runtime-side</a></li>
+    </ul>
+  </li>
+  <li><a href="#current-technical-findings" id="markdown-toc-current-technical-findings">Current Technical Findings</a>    <ul>
+      <li><a href="#grloadbmp-is-ram-path-only-on-ps1" id="markdown-toc-grloadbmp-is-ram-path-only-on-ps1"><code class="language-plaintext highlighter-rouge">grLoadBmp()</code> is RAM-path only on PS1</a></li>
+      <li><a href="#integrated-main-loop-shape" id="markdown-toc-integrated-main-loop-shape">Integrated main loop shape</a></li>
+      <li><a href="#foreground-pack-path-uses-direct-compositing" id="markdown-toc-foreground-pack-path-uses-direct-compositing">Foreground pack path uses direct compositing</a></li>
+      <li><a href="#some-direct-helper-paths-clear-currdirty" id="markdown-toc-some-direct-helper-paths-clear-currdirty">Some direct helper paths clear <code class="language-plaintext highlighter-rouge">currDirty*</code></a></li>
+    </ul>
+  </li>
+  <li><a href="#what-has-been-tried-and-failed" id="markdown-toc-what-has-been-tried-and-failed">What Has Been Tried And Failed</a>    <ul>
+      <li><a href="#high-memory-backdrop-frame-streams" id="markdown-toc-high-memory-backdrop-frame-streams">High-memory backdrop frame streams</a></li>
+      <li><a href="#draw-pack-replay-variants" id="markdown-toc-draw-pack-replay-variants">Draw-pack replay variants</a></li>
+      <li><a href="#native-backdrop-thread-reuse" id="markdown-toc-native-backdrop-thread-reuse">Native backdrop thread reuse</a></li>
+      <li><a href="#wrong-path-proof-overlays" id="markdown-toc-wrong-path-proof-overlays">Wrong-path proof overlays</a></li>
+    </ul>
+  </li>
+  <li><a href="#most-important-validated-sandbox-mechanism" id="markdown-toc-most-important-validated-sandbox-mechanism">Most Important Validated Sandbox Mechanism</a></li>
+  <li><a href="#current-dirty-worktree-state" id="markdown-toc-current-dirty-worktree-state">Current Dirty Worktree State</a></li>
+  <li><a href="#best-current-hypothesis" id="markdown-toc-best-current-hypothesis">Best Current Hypothesis</a></li>
+  <li><a href="#recommended-next-debugging-boundary" id="markdown-toc-recommended-next-debugging-boundary">Recommended Next Debugging Boundary</a>    <ul>
+      <li><a href="#sandbox-working-path" id="markdown-toc-sandbox-working-path">Sandbox working path</a></li>
+      <li><a href="#integrated-failing-path" id="markdown-toc-integrated-failing-path">Integrated failing path</a></li>
+    </ul>
+  </li>
+  <li><a href="#practical-constraint" id="markdown-toc-practical-constraint">Practical Constraint</a></li>
+  <li><a href="#short-version" id="markdown-toc-short-version">Short Version</a></li>
+</ul>
+
+</details>
+
 <h2 id="goal">Goal</h2>
 
 <p>Get <code class="language-plaintext highlighter-rouge">fgpilot fishing1</code> to:</p>

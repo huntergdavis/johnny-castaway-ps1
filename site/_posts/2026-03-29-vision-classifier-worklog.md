@@ -16,6 +16,13 @@ Worktree:
 Branch:
 - `worktree-ps1-debug-20260329`
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Goal
 
 Build a local CPU-only visual classifier pipeline that:

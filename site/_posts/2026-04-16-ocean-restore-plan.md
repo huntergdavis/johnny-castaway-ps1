@@ -10,6 +10,13 @@ description: "Short-term plan for restoring the ocean draw path on the PS1 prere
 Status: active short-term plan
 Owner: PS1 prerender pilot
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Safe baseline
 
 - `title -> fgpilot fishing1` is the current known-good path.

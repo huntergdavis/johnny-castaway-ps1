@@ -218,6 +218,13 @@ still reports one real active-pack miss (`WOULDBE.BMP` signature `17`) during
 the bounded harness route, but that remaining miss is now a secondary cleanup,
 not the visible scene-entry regression.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Current facts from the repo
 
 ### 1. The PC and PS1 rendering models do not match

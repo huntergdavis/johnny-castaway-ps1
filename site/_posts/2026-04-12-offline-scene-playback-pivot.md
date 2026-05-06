@@ -11,6 +11,13 @@ Date: 2026-04-12
 Status: Proposed pivot
 Owner: PS1 runtime / content pipeline
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Why This Exists
 
 The current PS1 rendering effort has spent too much time on runtime
