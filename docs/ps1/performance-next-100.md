@@ -36,6 +36,11 @@ improves VISITOR3 low from `1453/1009` to `1453/1012`, lowers blocking
 `51 -> 50`. Do not generalize this cap before canaries prove the memory
 residency is safe for other scenes.
 
+Rejected cap edge: `208 KiB` VISITOR3 setup-prime residency regressed high-tide
+overrun `435 -> 436`, blocking `355 -> 359`, and loop reads `45 -> 49`, despite
+lowering prefetch overrun `14 -> 13`. Treat `192 KiB` as the current accepted
+cap and only bisect inside `192..208 KiB` if continuing this lane.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
