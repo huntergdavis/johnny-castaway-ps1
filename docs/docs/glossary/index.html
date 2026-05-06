@@ -100,7 +100,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1650 words
+          ~8 min read · 2130 words
         </p>
 
       <hr class="rule" />
@@ -113,7 +113,7 @@
 
 <nav class="scenes-jump" aria-label="Jump to glossary section">
   <span class="scenes-jump-label">Jump to:</span>
-  <a href="#pipeline">Pipeline</a> · <a href="#graphics">Graphics</a> · <a href="#audio">Audio</a> · <a href="#hardware">Hardware</a> · <a href="#build">Build</a> · <a href="#voice">Voice</a>
+  <a href="#pipeline">Pipeline</a> · <a href="#graphics">Graphics</a> · <a href="#audio">Audio</a> · <a href="#hardware">Hardware</a> · <a href="#build">Build</a> · <a href="#performance">Performance</a> · <a href="#voice">Voice</a>
 </nav>
 
 <h2 id="pipeline">Pipeline</h2>
@@ -230,6 +230,40 @@
 
 <dt id="milestone">Milestone</dt>
 <dd>Tagged release line cut every ~10 newly validated scenes (<code>v0.6.x</code>, <code>v0.7.x</code>). Smaller stability releases happen between milestones for runtime fixes that don't change the validated set.</dd>
+</dl>
+
+<h2 id="performance">Performance</h2>
+
+<dl>
+<dt id="battle-card">Battle card (headless-perf)</dt>
+<dd>The headless-DuckStation timing matrix. One row per scene/tide variant; the live aggregate is <em>average over-target %</em> and <em>average target-speed %</em> across timing-bearing rows. Visible at the bottom of <a href="../../scenes/">/scenes/</a> alongside the visual signoff table. The current matrix mean is on the home-page status pill.</dd>
+
+<dt id="target-vb">target_vb / loop_vb</dt>
+<dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
+
+<dt id="fgp3">FGP3 pack format</dt>
+<dd>Denser successor to the original FG2 pack format. Same per-frame foreground deltas, but with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs are FGP3 as of <code>v0.8.0-ps1</code>; the win is per-frame upload bytes, the biggest bottleneck after raw playback on a 2× CD.</dd>
+
+<dt id="prefetch-window">Prefetch window</dt>
+<dd>The streaming budget the runtime uses to read pack data ahead of the playback frame. Originally global (one number across all scenes); the scene-local relief pass made it a per-scene setting backed by measurement. Smaller per-scene buffers, fewer evictions when the next scene is loading.</dd>
+
+<dt id="stream-window">Stream-window (stage-1)</dt>
+<dd>The CD stream's first-stage read buffer. Default was 32 KB; the per-scene retune (some up, some down) reduced blocking vblanks across the matrix by about a third. The number that mattered wasn't the size — it was that the size had been one number before, and was a per-scene measurement after.</dd>
+
+<dt id="read-group">Read group (CD layout)</dt>
+<dd>How <code>cd_layout.xml</code> bundles related scene/tide assets so the streaming code can prefetch them as a unit. Naive bundling (every scene's high+low together) backfires — the screensaver loop picks tides independently, so bundling slowed the first-tide read. <em>Scoped</em> read groups (e.g., ACTIVITY 9's low-tide variant on its own) are the correct shape.</dd>
+
+<dt id="padded-residual">Padded residual packs</dt>
+<dd>FGP3 residual cleanup tables padded to cover a sprite footprint that exceeds the legacy 640px scene clip. Used for ACTIVITY 9's wide-boat scene; replaces the per-scene <code>patch-&lt;scene&gt;-foreground.py</code> postprocess that earlier filled the missing pixels at runtime.</dd>
+
+<dt id="canary">Canary scene</dt>
+<dd>FISHING 1's high-tide run. Gets re-measured on every release. Its <code>loop_vb</code> vs <code>target_vb</code> is the load-bearing reference frame for "did this matrix-wide change just regress the easiest path." If the canary moves the wrong way, the change doesn't promote.</dd>
+
+<dt id="experiment-log">Experiment log</dt>
+<dd>The decision-record table at <code>docs/ps1/performance-experiment-log.md</code>. Every accepted optimization gets a row; every <em>rejected</em> one too — <code>-O2</code>, naive read-group probes, anything that ran for two days and produced the same number. The rejected rows pay for themselves the first time someone is about to re-try a no-op.</dd>
+
+<dt id="promotion-rule">Promotion rule</dt>
+<dd>An optimization promotes when (a) the canary doesn't regress, (b) every visual signoff still holds, and (c) the matrix mean improves. All three must hold; mixing them is how regressions ship.</dd>
 </dl>
 
 <h2 id="voice">Voice</h2>
