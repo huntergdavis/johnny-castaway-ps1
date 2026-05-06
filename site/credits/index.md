@@ -59,6 +59,22 @@ The caption text was authored fresh for this port from scene
 content, not lifted from any prior corpus. The [caption audit]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
 shows the confidence level of every ADS-tag → caption mapping.
 
+## Site typography
+
+This site self-hosts four font families as woff2 (seven weight files
+in total). All are released
+under the [SIL Open Font License](https://scripts.sil.org/OFL),
+which doesn't strictly require attribution but the project's voice
+does:
+
+- **Bitter** (Sol Matas, Huerta Tipográfica) — display serif, used for headings.
+- **Inter** (Rasmus Andersson) — body sans-serif.
+- **IBM Plex Mono** (Mike Abbink + Bold Monday for IBM) — code blocks and the build-stamp meta.
+- **VT323** (Peter Hull) — pixel display font, used for eyebrows, jump-nav labels, and pager hints.
+
+Subsetted to Latin and stored under `site/assets/fonts/`. The full
+license text ships next to the files in source.
+
 ## Ocean ambience
 
 The looping background ocean track shipped with `v0.6.0-ps1`
