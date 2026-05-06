@@ -7,16 +7,19 @@ layout: default
       {% if page.eyebrow %}<p class="eyebrow">{{ page.eyebrow }}</p>{% endif %}
       <h1>{{ page.title }}</h1>
       {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}{% comment %}
-        Reading-time hint on lab essays. Lab pages are long-form by
-        design, so a quick "X min read" anchored in word count gives
-        readers a sense of commitment before they scroll. Computed
-        from `content | strip_html | number_of_words` divided by 250
-        (a typical reading speed). Floored at 1 min so a short
-        section header still reads sensibly. No whitespace-trim on
-        the outer if/endif: pages that don't take this branch must
-        stay byte-identical so unrelated commits don't churn 500+
-        HTMLs.
-      {% endcomment %}{% if page.url contains '/lab/' and page.url != '/lab/' %}
+        Reading-time hint on long-form pages: lab essays and the
+        /docs/ reference manuals. Both are pages a reader is likely
+        to land on cold and want to gauge commitment before
+        committing to scroll. Computed from `content | strip_html |
+        number_of_words` divided by 250 (a typical reading speed).
+        Floored at 1 min so a short section header still reads
+        sensibly.
+
+        Section index pages (/lab/, /docs/) are excluded — they're
+        navigational hubs, not articles. No whitespace-trim on the
+        outer if/endif so pages that don't take this branch stay
+        byte-identical and unrelated commits don't churn HTMLs.
+      {% endcomment %}{% assign rt_lab  = false %}{% assign rt_docs = false %}{% assign url_lab_prefix  = page.url | slice: 0, 5 %}{% assign url_docs_prefix = page.url | slice: 0, 6 %}{% if url_lab_prefix == '/lab/' and page.url != '/lab/' %}{% assign rt_lab = true %}{% endif %}{% if url_docs_prefix == '/docs/' and page.url != '/docs/' %}{% assign rt_docs = true %}{% endif %}{% if rt_lab or rt_docs %}
         {%- assign reading_words = content | strip_html | number_of_words -%}
         {%- assign reading_min = reading_words | divided_by: 250 -%}
         {%- if reading_min < 1 %}{% assign reading_min = 1 %}{% endif %}
