@@ -6,6 +6,13 @@ subtitle: How a 1992 Windows screensaver ends up running on a 1994 console witho
 description: Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The problem
 
 Sierra's *Johnny Castaway* shipped in 1992 for Windows 3.1. It is a

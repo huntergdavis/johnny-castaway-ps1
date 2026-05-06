@@ -7,6 +7,13 @@ description: "A methodology essay on the LLM-assisted development workflow behin
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The honest shape of it
 
 This project uses LLMs. A lot.

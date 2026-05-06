@@ -7,6 +7,13 @@ description: "A methodology essay about the Johnny Castaway PS1 regression suite
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The project is a regression problem
 
 Johnny Castaway PS1 is not trying to invent a new game. It is trying to make a

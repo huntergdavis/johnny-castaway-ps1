@@ -6,6 +6,13 @@ subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind
 description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The pre-port era
 
 Before this project there was an engine to decode. *Johnny Castaway*

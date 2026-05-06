@@ -7,6 +7,13 @@ description: Voice and tone guide for the Johnny Castaway PS1 site — the rhyth
 
 This page exists because the site has a deliberate voice and somebody is going to want to write a new page someday. The shorter version of what follows: read the in-game credits screen, then write like that. The longer version is below.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The voice in one paragraph
 
 First person, plainspoken, often mildly self-deprecating about the artifact and quietly confident about the choice. Sentences are short or medium; long sentences appear, but they earn it by carrying actual content. Numbers carry the weight that adjectives don't. Dead ends are named, often with a one-word lampshade. Realizations are named too. *Johnny Castaway* is treated as a recurring craft obsession, not a one-time curiosity. The phrases **"a labor of love"** and **"if you paid for this, you were cheated"** come straight off the in-game Credits screen and are load-bearing — every prose surface on this site has to match them, not the other way around.
