@@ -1,5 +1,4 @@
 priority,target_type,target,source,current_opt,symbol_address,symbol_size_bytes,source_text_bytes,next_action,reason
-40,function,ps1_streamReadFromCdFile,src/cdrom_ps1.c,"optimize(""Os"")",0x8002330c,592,9608,Retest only after graphics helper sweep,CD helper codegen is phase-sensitive; keep behind graphics scoped probes.
 65,translation_unit,src/pause_menu.c,src/pause_menu.c,-Os,,0,14852,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
 66,translation_unit,src/ps1_captions.c,src/ps1_captions.c,-Os,,0,1208,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
 67,translation_unit,src/memcard.c,src/memcard.c,-Os,,0,3100,Test whole TU at default -O2 after hot sweep,Cold/default-off TU may perturb phase; record outcome after hot targets.
@@ -14,6 +13,7 @@ priority,target_type,target,source,current_opt,symbol_address,symbol_size_bytes,
 90,function,grDrawBackground,src/graphics_ps1.c,"optimize(""Os"")",0x80020190,1300,34116,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the upload helper by 504 bytes and did not improve loop timing.
 90,function,grUpdateDisplay,src/graphics_ps1.c,"optimize(""Os"")",0x800206a4,412,34116,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the display wrapper by 40 bytes and did not improve key timing.
 90,function,ps1_streamReadAlignedFromCdFileInto,src/cdrom_ps1.c,"optimize(""Os"")",0x800238b0,484,9608,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the active aligned-read helper by 524 bytes and stayed key-flat.
+90,function,ps1_streamReadFromCdFile,src/cdrom_ps1.c,"optimize(""Os"")",0x8002330c,592,9608,Keep scoped -Os; current v0.7.2 default-O2 retest rejected,The current retest grew the setup/unbuffered stream helper by 68 bytes and regressed FISHING1.
 90,translation_unit,src/events_ps1.c,src/events_ps1.c,-Os,,0,3996,Keep whole TU at -Os; historical default-O2 retest rejected,Whole-TU -O2 stayed exact-flat while growing ELF and shifting CD helper symbols.
 90,translation_unit,src/foreground_pilot.c,src/foreground_pilot.c,-Os,,0,19764,Keep whole TU at -Os; historical default-O2 retest rejected,Whole-TU -O2 grew foregroundPilotPlay and failed structurally before scene-end metrics.
 90,translation_unit,src/jc_reborn.c,src/jc_reborn.c,-Os,,0,8468,Keep whole TU at -Os; historical default-O2 retest rejected,Whole-TU -O2 stayed exact-flat while growing ELF and shifting hot symbols.

@@ -70,6 +70,10 @@ REJECTED_DEFAULT_O2_FUNCTIONS = {
         "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
         "The current retest grew the active aligned-read helper by 524 bytes and stayed key-flat.",
     ),
+    "ps1_streamReadFromCdFile": (
+        "Keep scoped -Os; current v0.7.2 default-O2 retest rejected",
+        "The current retest grew the setup/unbuffered stream helper by 68 bytes and regressed FISHING1.",
+    ),
 }
 
 REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {

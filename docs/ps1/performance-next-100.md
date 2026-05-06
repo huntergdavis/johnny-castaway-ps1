@@ -125,6 +125,12 @@ the active helper shape.
 Function-scoped `-Os` on the unbuffered stream-read helper is accepted too,
 shrinking that setup-facing helper by 56 bytes and ELF to `712524` with exact
 playback identity.
+The current v0.7.2 default-`O2` retest of the unbuffered helper is rejected:
+FISHING1 regressed `loop_vb 1068 -> 1069`, `blocking_vb 4 -> 9`,
+`loop_reads 20 -> 21`, and `due_misses 0 -> 1`, while the helper grew
+`592 -> 660` bytes and ELF grew `952312 -> 952548`. Keep the helper at
+function-scoped `-Os` until setup/direct-read splitting or scheduler metadata
+changes the phase.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
@@ -819,6 +825,7 @@ near misses:
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
 | Setup segment persistence cleanup | Do not retry alone. It was memory-safe in theory but regressed VISITOR3 high through code layout/cadence while only improving refill overrun. |
 | Unbuffered CD helper function-scoped `Os` | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
+| Unbuffered CD helper default `O2` retest | Do not promote or retry under the current phase. It regressed FISHING1 loop/blocking/read/due-miss metrics, grew the helper `592 -> 660` bytes, and grew ELF `952312 -> 952548`. |
 | Unbuffered CD file-LBA cache | Done; keep because it shrank the setup-facing stream helper and ELF with exact playback identity. |
 | `fgRuntimeFillWindowForEntry()` function-scoped `Os` | Do not retry alone; it was exact no-op on timing, size, and tracked symbols. |
 | Prepared visual metadata decoupling | Do not retry as metadata-only; it adds duplicate probes and code growth without staging farther ahead. |
