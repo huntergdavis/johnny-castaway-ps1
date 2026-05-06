@@ -13,6 +13,13 @@ The current release line is **`{{ site.release.tag }}`** with
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}** scenes signed off under the
 [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Latest
 
 ### `v0.7.2-ps1` — story-loop walk backdrop guard
