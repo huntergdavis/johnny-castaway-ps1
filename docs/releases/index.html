@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>Releases — Johnny Castaway PS1</title>
+  <meta name="description" content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/releases/" />
+
+  <meta property="og:title"        content="Releases — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.7.2; built 2026-05-06" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <script defer src="../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Releases", "item": "https://hunterdavis.com/johnny-castaway-ps1/releases/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../play/">Play</a></li>
+        <li><a href="../help/">Help</a></li>
+        <li><a href="../about/">About</a></li>
+        <li><a href="../scenes/">Scenes</a></li>
+        <li><a href="../devlog/">Devlog</a></li>
+        <li><a href="../archaeology/">Archaeology</a></li>
+        <li><a href="../lab/">Lab</a></li>
+        <li><a href="../hack/">Hack</a></li>
+        <li><a href="../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Tagged versions · what shipped, when</p>
+      <h1>Releases</h1>
+      <p class="subtitle">A short index of every milestone and stability release. Themes, headlines, links to the full notes and the disc image.</p>
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
+
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong> with
+<strong>63 / 63</strong> scenes signed off under the
+<a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
+
+<h2 id="latest">Latest</h2>
+
+<h3 id="v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</h3>
+<p><em>2026-05-05</em></p>
+
+<p>A randomized story-loop walking regression let Johnny walk over water and leave repeated walking poses when the next scene’s island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.</p>
+
+<ul>
+  <li><strong>Walks now require a matching backdrop key.</strong> Inter-scene walks only run when tide, raft, night, holiday, and island X/Y all match the previous rendered scene.</li>
+  <li><strong>Scene-policy changes force a clean scene load.</strong> Moving from a variable-position scene to a fixed/left-island/no-raft/tide/holiday variant inside the same sequence no longer draws Johnny over stale water.</li>
+  <li><strong>Menu and freeplay resets clear the walk context.</strong> Scene Set changes, Scene Explorer launches, and Freeplay exits all invalidate the remembered backdrop.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.7.2/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
+
+<h3 id="v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</h3>
+<p><em>2026-05-05</em></p>
+
+<p>Memory-card schema bumped to v6 to separate the holiday <em>policy</em> from the manual override, so the pause menu can offer five distinct holiday modes. New boots default to <code class="language-plaintext highlighter-rouge">AUTO DATE:ORIG4</code> — Sierra’s original four overlays, automatic by date.</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">AUTO DATE:ORIG4</code> is now the fresh/no-card default.</strong> Reflects the source material’s holiday set.</li>
+  <li><strong>Holiday mode is persisted separately from manual selection.</strong> Memory card schema v6.</li>
+  <li><strong>Walking holiday z-order corrected.</strong> Story-loop walks now stamp holiday overlays before Johnny so default decorations don’t paint over the walking sprite.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.7.1/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.1-ps1">GitHub release</a></p>
+
+<h3 id="v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</h3>
+<p><em>2026-05-05</em></p>
+
+<p>The 63-scene grind ended here. Every routed scene the original Sierra game had now plays pixel-perfect on the PS1 with synced SFX across every applicable variant. The retrospective on what the daily loop actually looked like is at <a href="../lab/the-63-scene-grind/">/lab/the-63-scene-grind/</a>.</p>
+
+<ul>
+  <li><strong>63 / 63 scenes validated.</strong> The live ledger is fully green under the FISHING 1 reference bar.</li>
+  <li><strong>ACTIVITY 9 completed the sweep.</strong> The final scene needed a wide-boat repair path because <code class="language-plaintext highlighter-rouge">BOAT.PSB</code> can extend past the legacy 640px scene clip.</li>
+  <li><strong>Landing page now uses the ACTIVITY 9 boat screenshot.</strong> The hero image shows the final validated scene running in the PS1 build.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.7.0/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.0-ps1">GitHub release</a></p>
+
+<h3 id="v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</h3>
+<p><em>2026-05-01</em></p>
+
+<p>The release that turned the project from a passive screensaver port into something a player could touch. Direct-control Johnny via D-pad / analog, gag and visitor debug catalogs in the pause menu, controllable world state, and a no-allocation steady-state freeplay loop.</p>
+
+<ul>
+  <li><strong>Freeplay mode</strong> with D-pad / analog walking, fishing, and L2/R2 speed modifiers.</li>
+  <li><strong>Pause-menu debug catalogs</strong> for gags, visitors, sound effects, controls, world options, accessibility, and system pages.</li>
+  <li><strong>Frog-clock loading transitions</strong> keep the screen coherent between scene swaps.</li>
+  <li><strong>Steady-state freeplay loop does not allocate.</strong> Important because freeplay can run indefinitely.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.5.0/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.5.0-ps1">GitHub release</a></p>
+
+<h3 id="v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> — story-loop walking</h3>
+<p><em>2026-04-30</em></p>
+
+<p>The first build where Johnny no longer teleports between finished scenes. The PS1 screensaver loop now carries his spot and heading forward, runs Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> route table, and visibly walks him across the island before the next FG2 scene begins.</p>
+
+<ul>
+  <li><strong>Story-loop walking</strong> wired into the PS1 screensaver loop using the original route table and <code class="language-plaintext highlighter-rouge">JOHNWALK</code> sprite bank.</li>
+  <li><strong>The ocean keeps animating during walks</strong>, and active holiday overlays persist across scene → walk → scene transitions.</li>
+  <li><strong>Palm-tree occlusion works.</strong> The trunk and leaves are re-stamped over Johnny when the route passes behind the tree.</li>
+  <li><strong>Tight, persistent walk erase buffer</strong> (340×224, ≈149 KB) replaces the early build’s per-walk free/malloc churn that fragmented the heap.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.4.20/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.4.20-ps1">GitHub release</a></p>
+
+<h2 id="where-to-go-from-here">Where to go from here</h2>
+
+<ul>
+  <li>The <a href="../scenes/">scene ledger</a> is the live status of every scene at the current release.</li>
+  <li>The <a href="../about/history/">history page</a> is the longer narrative — pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind.</li>
+  <li>The <a href="../devlog/">devlog</a> is the daily worklog. Releases are the milestones; the devlog is the run-up.</li>
+  <li>Older releases (<code class="language-plaintext highlighter-rouge">v0.3.x</code> and earlier) aren’t included above because they predate the per-version release-notes habit. Their commit messages and the <a href="../about/history/">history page</a> cover the same ground.</li>
+</ul>
+
+<p>The full list of all tagged releases on GitHub is at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">huntergdavis/johnny-castaway-ps1/releases</a>.</p>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (v0.7.2-ps1)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/releases/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../help/">Help</a></li>
+          <li><a href="./">Releases</a></li>
+          <li><a href="../faq/">FAQ</a></li>
+          <li><a href="../credits/">Credits</a></li>
+          <li><a href="../hack/">Hack</a></li>
+          <li><a href="../source/">Source library</a></li>
+          <li><a href="../resources/">Resources</a></li>
+          <li><a href="../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
