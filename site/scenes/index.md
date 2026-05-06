@@ -156,19 +156,19 @@ Current battle-card rollup as of 2026-05-06:
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td><code>+0.9%</code> (<code>0.8318%</code> exact)</td>
+      <td><code>+0.9%</code> (<code>0.8309%</code> exact)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td><code>99.5%</code> (<code>99.4775%</code> exact)</td>
+      <td><code>99.5%</code> (<code>99.4779%</code> exact)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td><code>2026-05-06T15:56:38</code></td>
+      <td><code>2026-05-06T16:20:55</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td>mixed; newest optimized rows use <code>walkstuf1-fgp2-setup-prime-v080</code> and <code>visitor3-setup-prime-192k-v080</code>; full row-level versions remain in <code>performance-scene-matrix.csv</code></td>
+      <td>mixed; newest optimized rows use <code>visitor3-low-group170-186-v080b</code>, <code>walkstuf1-fgp2-setup-prime-v080</code>, and <code>visitor3-setup-prime-192k-v080</code>; full row-level versions remain in <code>performance-scene-matrix.csv</code></td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -204,7 +204,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The newest
-  optimized rows use `walkstuf1-fgp2-setup-prime-v080` and
+  optimized rows use `visitor3-low-group170-186-v080b`,
+  `walkstuf1-fgp2-setup-prime-v080`, and
   `visitor3-setup-prime-192k-v080`; older row-level versions remain visible
   in the table instead of being collapsed into a single global baseline.
 
@@ -1786,15 +1787,15 @@ and this page.
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T15:10:17</td>
-      <td>visitor3-setup-prime-192k-v080</td>
-      <td>+43.6%</td>
-      <td>69.6%</td>
-      <td>1453/1012</td>
-      <td>362</td>
+      <td>2026-05-06T16:20:55</td>
+      <td>visitor3-low-group170-186-v080b</td>
+      <td>+43.5%</td>
+      <td>69.7%</td>
+      <td>1452/1012</td>
+      <td>361</td>
       <td>19</td>
       <td>32</td>
-      <td>VISITOR3-only 192 KiB setup-prime resident cap reduces low-tide CD reads/blocking while preserving unrelated canary rows; global cap remains 128 KiB</td>
+      <td>VISITOR3 low grouped append 170..186 saves one visible read after the 192 KiB setup-prime baseline; high/FISHING1/BUILDING2 canaries stay flat</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

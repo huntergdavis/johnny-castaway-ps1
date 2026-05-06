@@ -271,12 +271,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.9% over target /
-99.5% target speed** (`0.8318%` exact over target / `99.4775%` exact target speed).
+99.5% target speed** (`0.8309%` exact over target / `99.4779%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-low-group170-186-v080b`,
 `walkstuf1-fgp2-setup-prime-v080`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-high-group170-186-v080-current`,
@@ -321,13 +322,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T15:56:38`; per-row freshness and stats version are shown on
+run is `2026-05-06T16:20:55`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf1-fgp2-setup-prime-v080`,
+rows now use `visitor3-low-group170-186-v080b`,
+`walkstuf1-fgp2-setup-prime-v080`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-high-group170-186-v080-current`,
 `activity9-lowgroup-v072c`,
@@ -655,7 +657,7 @@ rows are historical only.
     <tr>
       <td><code>visitor3</code></td>
       <td>+42.9% / 70.0% (1450/1015); due 31; blk 355</td>
-      <td>+43.6% / 69.6% (1453/1012); due 32; blk 362</td>
+      <td>+43.5% / 69.7% (1452/1012); due 32; blk 361</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -715,7 +717,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at `+435/+441` VBlanks, and WALKSTUF1 still has
+   largest gap at `+440/+435` VBlanks, and WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
    pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier

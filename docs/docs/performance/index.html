@@ -100,7 +100,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3223 words
+          ~12 min read · 3225 words
         </p>
 
       <hr class="rule" />
@@ -395,12 +395,13 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+0.9% over target /
-99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8318%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4775%</code> exact target speed).</p>
+99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8309%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4779%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-setup-prime-192k-v080</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
@@ -445,13 +446,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T15:56:38</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T16:20:55</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>,
+rows now use <code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-setup-prime-192k-v080</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
 <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
@@ -779,7 +781,7 @@ rows are historical only.</p>
     <tr>
       <td><code>visitor3</code></td>
       <td>+42.9% / 70.0% (1450/1015); due 31; blk 355</td>
-      <td>+43.6% / 69.6% (1453/1012); due 32; blk 362</td>
+      <td>+43.5% / 69.7% (1452/1012); due 32; blk 361</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -839,7 +841,7 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 remains the
-largest gap at <code class="language-plaintext highlighter-rouge">+435/+441</code> VBlanks, and WALKSTUF1 still has
+largest gap at <code class="language-plaintext highlighter-rouge">+440/+435</code> VBlanks, and WALKSTUF1 still has
 <code class="language-plaintext highlighter-rouge">blocking_vb=278/276</code> after the PAL4 setup-prime win, so the next CD-shape
 pass needs generated cost metadata rather than hand-authored ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier

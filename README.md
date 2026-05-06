@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.9% over target / 99.5% target speed** |
-| Latest perf matrix run | **`2026-05-06T15:56:38`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `walkstuf1-fgp2-setup-prime-v080` and `visitor3-setup-prime-192k-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-06T16:20:55`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -227,8 +227,10 @@ low-tide FGP3 grouped append, the VISITOR3-only `192 KiB` setup-prime resident
 cap, and the latest WALKSTUF1 PAL4 setup-prime policy. VISITOR3 high now trims
 blocking `361 -> 355`, prefetch overrun `21 -> 14`, and loop reads `52 -> 45`;
 WALKSTUF1 high trims `loop_vb 1640 -> 1595` and blocking `318 -> 278`, while
-WALKSTUF1 low trims `loop_vb 1631 -> 1614` and blocking `296 -> 276`. The
-timing-bearing average is now `+0.8318%` over target / `99.4775%` target speed;
+WALKSTUF1 low trims `loop_vb 1631 -> 1614` and blocking `296 -> 276`. VISITOR3
+low now adds the accepted `170..186` grouped append and moves `loop_vb
+1453 -> 1452`, overrun `441 -> 440`, and blocking `362 -> 361`. The
+timing-bearing average is now `+0.8309%` over target / `99.4779%` target speed;
 since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.6`
 percentage points of over-target gap and added about `12.4` points of target
