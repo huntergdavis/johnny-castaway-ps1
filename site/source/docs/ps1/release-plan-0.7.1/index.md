@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "v0.7.1-ps1 Planned Feature Notes"
+title: "v0.7.1-ps1 Feature Notes"
 eyebrow: Source library
 subtitle: "docs/ps1/release-plan-0.7.1.md"
 description: "Generated source-library page for docs/ps1/release-plan-0.7.1.md"
@@ -14,20 +14,20 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-v0.7.0-ps1 freezes the complete-scene milestone: all 63 scenes are validated. v0.7.1-ps1 should be the first follow-up feature release, focused on making the pause-menu options behave like durable player settings.
+v0.7.0-ps1 freezes the complete-scene milestone: all 63 scenes are validated. v0.7.1-ps1 became the first follow-up point release, focused specifically on holiday mode defaults and persistence. The broader persisted-options list below remains useful planning material, but captions, Scene Set, tide, raft, island position, freeplay/perf preferences, and menu cursor defaults did not ship in 0.7.1.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-plan-0.7.1.md` |
-| Lines | 74 |
-| Approx. words | 410 |
+| Lines | 79 |
+| Approx. words | 456 |
 | Code fences | 0 |
 
 ## Outline
 
-- v0.7.1-ps1 Planned Feature Notes
+- v0.7.1-ps1 Feature Notes
 -   Memcard Persistence
 -   Holiday Mode
 -   Acceptance Bar
