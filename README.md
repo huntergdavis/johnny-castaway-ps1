@@ -82,7 +82,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.7.1-ps1`** |
+| Current release | **`v0.7.2-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -93,6 +93,13 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
+`v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
+walking across stale island backdrops by comparing the full backdrop key
+(tide, raft, night, holiday, island X/Y) before allowing an inter-scene walk.
+If the next scene would use a different island state, the runtime now skips
+the walk and lets the scene reload its own background, avoiding water-walk
+trails during randomized transitions.
+
 `v0.7.1-ps1` is a settings/holiday polish release. It adds a persisted
 holiday mode field, separates automatic holiday policy from manual holiday
 selection, and makes **AUTO DATE:ORIG4** the fresh/no-card default so the
@@ -100,11 +107,6 @@ screensaver starts with Sierra's original four-holiday behavior unless the
 user opts into the expanded generated calendar. It also fixes menu labeling
 for holiday `NONE` and draws holiday overlays behind Johnny during story-loop
 walk frames so holiday decorations do not cover the walking sprite.
-
-Known `v0.7.2` follow-up: a pre-existing walking regression can still place
-Johnny over water during some randomized story-loop transitions. That issue is
-tracked for the next bugfix pass and is not caused by the 0.7.1 menu/holiday
-work.
 
 `v0.7.0-ps1` is the first complete-scene release: all 63 original Johnny
 Castaway scenes are validated under the project's current pixel-perfect visual

@@ -156,16 +156,16 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.7.1-ps1` adds persisted holiday mode, separates
-automatic holiday policy from manual holiday selection, and makes
-`AUTO DATE:ORIG4` the no-card/fresh-save default. See
-[release-notes-0.7.1.md](release-notes-0.7.1.md).
-
-Known next bugfix target: a walking regression that predates `v0.7.1` can
-place Johnny over water during some randomized story-loop transitions and
-leave repeated poses on the ocean. This is tracked for `v0.7.2`.
+Latest point release: `v0.7.2-ps1` fixes the story-loop walking regression
+where Johnny could walk over water when the next scene used a different island
+backdrop than the previous framebuffer. See
+[release-notes-0.7.2.md](release-notes-0.7.2.md).
 
 Milestone releases:
+- `v0.7.2-ps1` — story-loop walking bugfix. Inter-scene walks now require the
+  remembered backdrop key to match the next scene's tide, raft, night,
+  holiday, and island X/Y state; otherwise the runtime skips the walk and lets
+  the scene reload its own background.
 - `v0.7.1-ps1` — holiday-mode point release. Adds memory-card schema v6 with
   `holidayMode`, exposes `AUTO DATE:ORIG4` / `AUTO DATE` / `NONE` /
   `ORIGINAL 4` / `EXPANDED` as distinct policies, migrates old auto saves to
