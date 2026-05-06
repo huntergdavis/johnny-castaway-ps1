@@ -107,6 +107,24 @@
 
 <p>The site is Jekyll, hosted on GitHub Pages, served at <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/</code> as a project page beneath a separate user-pages site. That last bit — <em>project</em> page beneath a <em>user</em> page — is where almost every interesting decision comes from.</p>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-path-portable-build" id="markdown-toc-the-path-portable-build">The path-portable build</a></li>
+  <li><a href="#the-canonical_baseurl-workaround" id="markdown-toc-the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</a></li>
+  <li><a href="#the-build-script-removes-three-files" id="markdown-toc-the-build-script-removes-three-files">The build script removes three files</a></li>
+  <li><a href="#hand-rolled-feeds-no-plugin" id="markdown-toc-hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</a></li>
+  <li><a href="#the-pager-pattern-shared-across-three-catalogs" id="markdown-toc-the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</a></li>
+  <li><a href="#the-build-stamp-and-the-git-churn-it-caused" id="markdown-toc-the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</a></li>
+  <li><a href="#structured-data-without-jekyll-seo-tag" id="markdown-toc-structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></a></li>
+  <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
+  <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
+  <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
+</ul>
+
+</details>
+
 <h2 id="the-path-portable-build">The path-portable build</h2>
 
 <p>Jekyll’s <code class="language-plaintext highlighter-rouge">relative_url</code> filter takes <code class="language-plaintext highlighter-rouge">site.baseurl</code> from <code class="language-plaintext highlighter-rouge">_config.yml</code>. In the deployed config that’s <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1</code>. In the build pipeline it isn’t:</p>

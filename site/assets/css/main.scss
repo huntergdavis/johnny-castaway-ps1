@@ -582,6 +582,55 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 .devlog-list a:hover { text-decoration: underline; }
 .devlog-list .summary { display: block; font-family: var(--font-body); color: var(--fg-mute); font-weight: 400; font-size: 0.95rem; margin-top: 0.2em; }
 
+/* ---------- "On this page" TOC ----------
+ * Used in long-form pages by wrapping kramdown's {:toc} directive
+ * inside a <details class="page-toc" markdown="1">. Collapsed by
+ * default (no `open` attribute). Reuses .scene-pager's panel +
+ * border-left look for visual consistency with other side-rails.
+ */
+.page-toc {
+  margin: 1.4rem 0 1.8rem;
+  padding: 0.55rem 0.95rem;
+  background: var(--bg-alt);
+  border-left: 3px solid var(--jc-cyan-dim);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+.page-toc > summary {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  font-size: 0.85rem;
+  cursor: pointer;
+  list-style: none;
+  outline-offset: 2px;
+}
+.page-toc > summary::-webkit-details-marker { display: none; }
+.page-toc > summary::before {
+  content: "▸ ";
+  color: var(--accent);
+  display: inline-block;
+  margin-right: 0.2em;
+  transition: transform 100ms ease;
+}
+.page-toc[open] > summary::before {
+  content: "▾ ";
+}
+.page-toc ul {
+  list-style: none;
+  padding: 0.4rem 0 0 0.6rem;
+  margin: 0;
+}
+.page-toc li { margin: 0.15rem 0; }
+.page-toc a { text-decoration: none; }
+.page-toc a:hover, .page-toc a:focus-visible { text-decoration: underline; }
+.page-toc ul ul {
+  padding-left: 1rem;
+  border-left: 1px dashed var(--jc-cyan-dim);
+  margin-left: 0.3rem;
+}
+
 /* ---------- Scene jump nav ---------- */
 .scenes-jump {
   margin: 1.4rem 0 0.6rem;

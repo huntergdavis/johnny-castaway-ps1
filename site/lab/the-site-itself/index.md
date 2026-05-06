@@ -10,6 +10,13 @@ The PS1 port has a website. The website has its own engineering choices, and mos
 
 The site is Jekyll, hosted on GitHub Pages, served at `hunterdavis.com/johnny-castaway-ps1/` as a project page beneath a separate user-pages site. That last bit — *project* page beneath a *user* page — is where almost every interesting decision comes from.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The path-portable build
 
 Jekyll's `relative_url` filter takes `site.baseurl` from `_config.yml`. In the deployed config that's `/johnny-castaway-ps1`. In the build pipeline it isn't:
