@@ -151,6 +151,13 @@ if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "johnny2" ]; then
   # pixels; foreground-only does not include those bubble pixels reliably.
   KEYED_OVERLAY_RECT="0,320,320,160"
 fi
+if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "activity5" ]; then
+  # Same split as JOHNNY 2: keep the upper thought-bubble lane on full
+  # base-diff so the storm-cloud bubble + connector dots survive, and apply
+  # keyed overlay only to the lower third so the post-dive splash/ocean
+  # band cleans up without leaving ghost trails.
+  KEYED_OVERLAY_RECT="0,320,640,160"
+fi
 if [ -z "$KEYED_OVERLAY_RECT" ] && [ "$SCENE_SLUG" = "mary2" ]; then
   # MARY 2's full-host surface accumulates stale lower-water sprites, and its
   # opening cast uses thin line pixels that base-diff can under-carry against
@@ -198,10 +205,12 @@ if [ "$NO_STITCH_REQUESTED" = "1" ]; then
 elif [ "$FORCE_STITCH_REQUESTED" = "1" ]; then
   MULTIVIEW_STITCH="1"
 elif [ -z "$MULTIVIEW_STITCH" ]; then
-  if [ "$SCENE_SLUG" = "johnny2" ] || [ "$SCENE_SLUG" = "mary2" ]; then
+  if [ "$SCENE_SLUG" = "johnny2" ] || [ "$SCENE_SLUG" = "mary2" ] || [ "$SCENE_SLUG" = "activity5" ]; then
     # These scenes have validated custom capture paths: JOHNNY2 keeps a
-    # partial lower-band overlay so thought bubbles stay full-host, and MARY2
-    # has a bespoke multi-view + bubble-shell injection branch below.
+    # partial lower-band overlay so thought bubbles stay full-host, MARY2
+    # has a bespoke multi-view + bubble-shell injection branch below, and
+    # ACTIVITY 5's storm-cloud thought bubble + connector dots only survive
+    # in pure base-diff (frame-wide keyed overlay drops the bubble shell).
     MULTIVIEW_STITCH="0"
   elif [ "$SCENE_SLUG" = "suzy2" ]; then
     # SUZY 2's raft body is drawn by MRAFT.BMP as scene-local static art.
@@ -213,21 +222,43 @@ elif [ -z "$MULTIVIEW_STITCH" ]; then
     # fast single-position capture path; use --stitch if validation exposes
     # clipped off-screen action later.
     MULTIVIEW_STITCH="0"
-  else
-    # New scene validation should start with a normal/reference capture plus
-    # far-left and far-right foreground-only views. Island-relative content can
-    # span more than one screen width, so single-position packs are now treated
-    # as an opt-out diagnostic path rather than the default.
+  elif [ "$SCENE_SLUG" = "building1" ] ||
+       [ "$SCENE_SLUG" = "building2" ] ||
+       [ "$SCENE_SLUG" = "building3" ] ||
+       [ "$SCENE_SLUG" = "building4" ] ||
+       [ "$SCENE_SLUG" = "building5" ] ||
+       [ "$SCENE_SLUG" = "building6" ] ||
+       [ "$SCENE_SLUG" = "building7" ] ||
+       [ "$SCENE_SLUG" = "mary4" ] ||
+       [ "$SCENE_SLUG" = "mary5" ] ||
+       [ "$SCENE_SLUG" = "mary6" ] ||
+       [ "$SCENE_SLUG" = "miscgag1" ] ||
+       [ "$SCENE_SLUG" = "miscgag2" ] ||
+       [ "$SCENE_SLUG" = "visitor1" ] ||
+       [ "$SCENE_SLUG" = "visitor3" ] ||
+       [ "$SCENE_SLUG" = "visitor4" ] ||
+       [ "$SCENE_SLUG" = "visitor5" ] ||
+       [ "$SCENE_SLUG" = "visitor6" ] ||
+       [ "$SCENE_SLUG" = "visitor7" ] ||
+       [ "$SCENE_SLUG" = "walkstuf1" ]; then
+    # These scenes have already proven they need the normal/far-left/far-right
+    # stitch, a scene-local persistent prop, or a helper that depends on the
+    # stitched foreground canvas. Keep them on the safe validated path.
     MULTIVIEW_STITCH="1"
+  else
+    # New scene validation starts on the fast single-position path. Use
+    # --stitch, or add the scene above, only after host review or visual
+    # validation proves off-screen clipping or scene-local persistent state.
+    MULTIVIEW_STITCH="0"
   fi
 fi
 if [ "$MULTIVIEW_STITCH" = "1" ]; then
   KEYED_OVERLAY_RECT="0,0,640,480"
-elif [ -z "$KEYED_OVERLAY_RECT" ] &&
-   { [ "$NO_STITCH_REQUESTED" = "1" ] || [[ "$SCENE_SLUG" == stand* ]]; }; then
+elif [ -z "$KEYED_OVERLAY_RECT" ]; then
   # Fast no-stitch captures still need a foreground-only source for static
-  # actor pixels. A pure base-diff pack treats frame-0 Johnny as background
-  # and can fade/drop stationary legs in STAND scenes.
+  # actor pixels. A pure base-diff pack treats frame-0 Johnny as background and
+  # can drag stale full-host composites when the actor moves over water/tree
+  # backdrops.
   KEYED_OVERLAY_RECT="0,0,640,480"
 fi
 if [ -z "$KEYED_OVERLAY_INCLUDE_STATIC_BASE" ] && [ "$SCENE_SLUG" = "fishing5" ]; then
@@ -269,6 +300,12 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "mary3" ]; then
   # from the following recovery rows so the gag is readable without length drift.
   HOLD_ADJUSTMENTS="347:+24 348:+28 349:-1 351:-4 353:-2 354:-2 355:-5 358:-3 359:-1 360:-5 362:-1 363:-4 365:-2 366:-2 367:-5 369:-2 370:-3 371:-5 373:-1 374:-4"
 fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "activity5" ]; then
+  # The storm-cloud thought bubble (source frame 46) only holds for 4 vblanks,
+  # too fast to read on the climb/look/dive gag. Pause on it long enough to
+  # read the weather concern.
+  HOLD_ADJUSTMENTS="46:+30"
+fi
 if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor3" ]; then
   # The clean splash exists only on source frame 158. Earlier rescue attempts
   # copied stale full-host splash pixels into later ship rows; keep the real
@@ -284,6 +321,11 @@ if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "visitor7" ]; then
   # The coconut impact star frames exist in the capture but dedupe leaves them
   # at four ticks between long static poses, so they read as missing in replay.
   HOLD_ADJUSTMENTS="32:+8 39:-8 62:+8 65:-8 71:+8 74:-8 80:+8 85:-8"
+fi
+if [ -z "$HOLD_ADJUSTMENTS" ] && [ "$SCENE_SLUG" = "activity1" ]; then
+  # The end score-card gag existed but read too quickly after a long blank
+  # beat. The actual animal score-card pose is source frame 758.
+  HOLD_ADJUSTMENTS="754:+24 756:+24 758:+160"
 fi
 mkdir -p "$OUTPUT_DIR"
 rm -rf "$HOST_CAPTURE_HIGH_DIR" "$HOST_CAPTURE_LOW_DIR" \
@@ -851,6 +893,18 @@ PY
         --output "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
     fi
 
+    if [ "$SCENE_SLUG" = "activity1" ]; then
+      # Foreground-only views draw Johnny over the palm during the post-coconut
+      # jump. The full host composite correctly hides those pixels behind the
+      # tree, so patch that lane from full-host differences after stitching.
+      python3 "$SCRIPT_DIR/patch-activity1-tree-foreground.py" \
+        "$HOST_CAPTURE_HIGH_DIR" \
+        "$HOST_CAPTURE_HIGH_MERGED_FGONLY_DIR"
+      python3 "$SCRIPT_DIR/patch-activity1-tree-foreground.py" \
+        "$HOST_CAPTURE_LOW_DIR" \
+        "$HOST_CAPTURE_LOW_MERGED_FGONLY_DIR"
+    fi
+
     if [ "$SCENE_SLUG" = "building7" ]; then
       # Full-host diff copies keep this campfire present but ghosted. Use the
       # clean animated foreground rows instead and layer them behind the live
@@ -876,6 +930,18 @@ PY
         "$HOST_CAPTURE_LOW_DIR"
     fi
   elif [ "$SCENE_SLUG" != "mary2" ]; then
+    if [ "$SCENE_SLUG" = "activity1" ]; then
+      # Foreground-only replay draws Johnny over the palm during the post-
+      # coconut jump. Patch that tree lane from the full-host composite before
+      # the pack builder consumes the foreground-only overlay.
+      python3 "$SCRIPT_DIR/patch-activity1-tree-foreground.py" \
+        "$HOST_CAPTURE_HIGH_DIR" \
+        "$HOST_CAPTURE_HIGH_FGONLY_DIR"
+      python3 "$SCRIPT_DIR/patch-activity1-tree-foreground.py" \
+        "$HOST_CAPTURE_LOW_DIR" \
+        "$HOST_CAPTURE_LOW_FGONLY_DIR"
+    fi
+
     high_overlay_args=(
       --keyed-overlay-frames-dir "$HOST_CAPTURE_HIGH_FGONLY_DIR/frames"
       --keyed-overlay-rect "$KEYED_OVERLAY_RECT"

@@ -14,22 +14,22 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay — fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop. Earlier this push: BUILDING 1-BUILDING 7 were validated through generic multi-view capture; BUILDING2 keeps the persistent sandcastle via full-host diff injection, BUILDING4 uses an explicit terminal FGP3 cleanup frame so th...
+validated on the climb/look/dive gag using a JOHNNY 2-style split — the upper thought-bubble lane stays on full base-diff so the storm-cloud thought bubble + connector dots survive pixel-perfect, and the lower third uses keyed overlay so the post-dive splash band cleans up without ghost trails; source frame 46 also gets +30 vblanks of hold so the bubble is readable. Earlier this push: ACTIVITY 6 was validated after re-exporting high/low packs through th...
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 448 |
-| Approx. words | 4732 |
+| Lines | 453 |
+| Approx. words | 4852 |
 | Code fences | 1 |
 
 ## Outline
 
 - PS1 Port — Current Status
 -   Overall
--   Scenes: 58 / 63 fully validated
+-   Scenes: 59 / 63 fully validated
 -   Primary render methodology: hybrid scene playback (fgpilot)
 -     Pipeline
 -     Acceptance model

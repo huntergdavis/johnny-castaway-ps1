@@ -4,11 +4,17 @@ title: ACTIVITY 5 — Climb / look / dive
 ads: ACTIVITY
 tag: 5
 slug: activity5
-status: pending
-description: "ACTIVITY.ADS scene 5: Climb / look / dive. Not yet validated."
+status: validated
+last_verified: "2026-05-05"
+description: "ACTIVITY.ADS scene 5: Climb / look / dive. Validated 2026-05-05."
 ---
 
-Not yet validated.
+Validated 2026-05-05. Visual + audible signoff on the climb/look/dive
+gag. High/low packs use the JOHNNY 2-style split — upper thought-bubble
+lane on full base-diff so the storm-cloud bubble + connector dots
+survive, and lower third on keyed overlay so the post-dive splash band
+cleans up without ghost trails. Source frame 46 (the storm-cloud
+bubble) gets +30 vblanks of hold so the gag is readable.
 
 ## Pack identifiers
 

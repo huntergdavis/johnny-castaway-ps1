@@ -32,12 +32,12 @@
 - ads: ACTIVITY
   tag: 5
   slug: activity5
-  status: pending
-  visuals: wip
-  sfx: wip
+  status: validated
+  visuals: done
+  sfx: done
   variants: []
-  last_verified: ''
-  notes: ''
+  last_verified: '2026-05-05'
+  notes: visual + audible signoff on the climb/look/dive gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff, lower third on keyed overlay) plus +30 vblanks of hold on source frame 46 so the storm-cloud thought bubble is readable
 - ads: ACTIVITY
   tag: 6
   slug: activity6

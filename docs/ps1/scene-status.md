@@ -12,7 +12,7 @@ plus synced SFX, across every applicable variant.
 - ~~strike~~ variant not applicable to this scene
 - — TBD (will be filled in when the scene is worked)
 
-## Progress: 58 / 63 (next: activity1; activity9 deferred)
+## Progress: 59 / 63 (next: activity1; activity9 deferred)
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
@@ -22,7 +22,7 @@ current public release is `v0.6.12-ps1`.
 |-----|-----|------|:-:|:-:|---|---|---|
 | ACTIVITY | 1 | activity1 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 4 | activity4 | ⏳ | ⏳ | — | — |  |
-| ACTIVITY | 5 | activity5 | ⏳ | ⏳ | — | — |  |
+| ACTIVITY | 5 | activity5 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff on the climb/look/dive gag; high/low packs use a JOHNNY 2-style split (upper bubble lane on full base-diff so the storm-cloud thought bubble + connector dots survive, lower third on keyed overlay so the dive splash band cleans up without ghost trails), single-position capture; hold time on source frame 46 (+30 vblanks) so the bubble is readable |
 | ACTIVITY | 6 | activity6 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base on the reads/falls-asleep/coconut-bonk loop |
 | ACTIVITY | 7 | activity7 | ⏳ | ⏳ | — | — |  |
 | ACTIVITY | 8 | activity8 | ✅ | ✅ | — | 2026-05-05 | visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue from base-diff against the static-Johnny base |
@@ -90,11 +90,10 @@ For each iteration:
 
 1. Run `./scripts/export-scene-foreground-pilot.sh <output_dir> <slug> '<ADS TAG>' <PACK_BASENAME> 0 1.0 <LOW_PACK_BASENAME>`
    to produce the high-tide and low-tide `.FG2` packs and sound-event JSONL.
-   The default export path captures normal, far-left, and far-right
-   foreground-only host views and stitches them into one scene-relative
-   foreground canvas, because island-relative content can extend beyond a
-   single screen-width capture. Opt out only for validated scene-specific
-   paths such as `JOHNNY 2`.
+   The default export path is now the fast single-position capture. Use
+   `--stitch` only after host review or visual validation proves off-screen
+   clipping, scene-local persistent state, or a validated helper path that
+   requires the normal/far-left/far-right foreground-only stitch.
 2. Confirm both `<SCENE>.FG2` and low-tide `<LOW_PACK_BASENAME>.FG2` entries exist in `config/ps1/cd_layout.xml`.
 3. Confirm the scene's routing entries exist in `foreground_pilot.c`
    (`fgCompactOverlayPackPathForScene`).
