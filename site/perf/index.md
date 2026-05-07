@@ -5,6 +5,10 @@ subtitle: Click a column header to sort. Target Speed cells are color-coded — 
 description: The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers.
 ---
 
+{% assign all_scenes      = site.data.scenes %}
+{% assign validated_count = all_scenes | where: "status", "validated"  | size %}
+{% assign total_count     = all_scenes | size %}
+
 A labor of love by Hunter Davis. This page is the other ledger
 that lives next to the [scene ledger]({{ '/scenes/' | relative_url }}).
 The scene ledger tracks visual signoff (pixel-perfect against host
@@ -57,7 +61,7 @@ Current battle-card rollup as of 2026-05-06:
 | Timing-bearing average over target | `+0.9%` (`0.8692%` exact) |
 | Timing-bearing average target speed | `99.5%` (`99.4529%` exact) |
 | Latest perf matrix run | `2026-05-06T07:45:20` |
-| Stats version | mixed across rows; latest refreshed rows use the `v072c` and `v072b` prefetch-relief / current-refresh families, baseline rows remain `compact-fgp3-v2-fullmatrix`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Stats version | mixed: latest refreshed rows use `activity9-lowgroup-v072c`, `activity9-fgp3-v072c`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `activity9-v072c-prefetch-relief`, `stale-pressure2-v072c-current-refresh`, `johnny1-v072c-prefetch-relief`, `stale-pressure-v072c-current-refresh`, `activity10-johnny3-v072-prefetch-relief`, `stale-zero2-v072b-current-refresh`, `stale-zero-v072b-current-refresh`, `stale-top-v072b-current-refresh`, `visitor5-v072-prefetch-relief`, `mismatch-top-v072-current-refresh`, `stand-family-v072-current-refresh`, `visitor4-v072-current-refresh`, `stand1-v072-current-refresh`, `visitor3-v072-prefetch-relief`, `walkstuf1-v072-prefetch-relief`, `mary2-v068-wide-stitch`, `fishing5-v065-current-ledger-overlay`, `johnny2-v064-validation-refresh`, `compact-fgp3-v66-final-frame-hold`, `compact-fgp3-v64-building2-group318-330`, `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include `compact-fgp3-v62-fishing3low-group253-265`, `compact-fgp3-v61-fishing3low-group163-175`, `compact-fgp3-v60-visitor3high-group230-242`, `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`, `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`; full-matrix baseline rows remain `compact-fgp3-v2-fullmatrix` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
