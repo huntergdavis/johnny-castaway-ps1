@@ -231,6 +231,11 @@ not been pulled forward.
   classification is one place AI gets used at process boundaries.
 - [Method]({{ '/about/method/' | relative_url }}) — how the
   validation work fits the project's overall acceptance model.
+- [Lab: regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
+  — the magazine treatment of why frame-by-frame regtest +
+  vision classification are how this project gets work done,
+  not features bolted on. Reciprocal of the link from there to
+  here.
 
 ## View source on GitHub
 
