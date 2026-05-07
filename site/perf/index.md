@@ -16,21 +16,29 @@ are uncorrelated.
 
 If you paid for this, you were cheated. Open source and free.
 
-The ledger above tracks the **release bar** — pixel-perfect human signoff. This section tracks the **performance bar** — automated DuckStation timing. They are different bars and should not be mixed:
-
-- **Scene validation** is human visual + audible signoff. That is the release
-  bar for "done."
-- **Headless performance** is automated DuckStation timing. That is the
-  optimization battle card for "how fast does this scene/tide variant run."
-
 The reference manual for the perf work is at
 [/docs/performance/]({{ '/docs/performance/' | relative_url }});
 the retrospective on the optimization loop that moved this matrix
 from the compact baseline to its current `{{ site.release.perf_target_speed_pct }}%`
 target-speed average is at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
-
 A scene can be timed here without being visually certified.
+
+## At a glance
+
+<p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
+  Target Speed distribution at <code>{{ site.release.tag }}</code>:
+  <span class="spd-key spd-green">98 ≥ 99%</span>
+  <span class="spd-key spd-yellow">20 ≥ 80%</span>
+  <span class="spd-key spd-red">2 &lt; 80%</span>
+  out of 120 timing-bearing rows. 6 rows have no timing data yet.
+</p>
+
+The two red rows are `visitor3` high and low (both around `69.4%`
+after the v0.7.2 prefetch-relief refresh; the largest single
+optimization target left on the matrix). The yellow cluster includes
+the wide-action and `BUILDING2` rows still finishing their
+prefetch-relief and stream-window work.
 
 ## Rollup
 
