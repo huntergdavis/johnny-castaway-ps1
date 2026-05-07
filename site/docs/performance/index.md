@@ -284,13 +284,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.5% over target /
-99.8% target speed** (`0.4533%` exact over target / `99.7548%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+0.4% over target /
+99.8% target speed** (`0.4096%` exact over target / `99.7860%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`compact-u16-inline-v083`,
 `fgp3v4-drawcompact-all-v082`,
 `activity9-dead-readgroup-prune-v082`,
 `read-group-selector-single-assign-v082`,
@@ -350,13 +351,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T14:34:45`; per-row freshness and stats version are shown on
+run is `2026-05-07T15:35:11`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `fgp3v4-drawcompact-all-v082`,
+`compact-u16-inline-v083`,
 `visitor3-fgp3-cleanup-compact-v081`,
 `walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
@@ -447,7 +449,7 @@ rows are historical only.
     <tr>
       <td><code>activity9</code></td>
       <td>+1.8% / 98.2% (2094/2056); due 2; blk 37</td>
-      <td>+1.3% / 98.7% (2085/2058); due 3; blk 28</td>
+      <td>+1.3% / 98.7% (2085/2058); due 3; blk 29</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -471,8 +473,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+8.2% / 92.4% (1405/1298); due 32; blk 176</td>
-      <td>+7.8% / 92.8% (1395/1294); due 25; blk 144</td>
+      <td>+7.1% / 93.3% (1394/1301); due 25; blk 138</td>
+      <td>+6.3% / 94.1% (1385/1303); due 23; blk 121</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -691,8 +693,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+33.8% / 74.7% (1369/1023); due 31; blk 244</td>
-      <td>+34.5% / 74.3% (1376/1023); due 31; blk 253</td>
+      <td>+32.6% / 75.4% (1357/1023); due 31; blk 246</td>
+      <td>+33.0% / 75.2% (1361/1023); due 31; blk 250</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -752,8 +754,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at about `+353/+346` VBlanks after the FGP3/v4 draw-metadata
-   compaction, though the guarded high-tide generated-window `138..162` append
+   largest gap at about `+338/+334` VBlanks after the FGP3/v4 draw-metadata
+   compaction and compact decoder inline pass, though the guarded high-tide generated-window `138..162` append
    already proved scheduler-owned groups can reduce visible blocking and active
    reads without moving layout. WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
@@ -783,7 +785,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now +1.0% over target / 99.3% target speed, with several worse
+  average is now +0.4% over target / 99.8% target speed, with several worse
   CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

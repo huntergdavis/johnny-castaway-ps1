@@ -1836,7 +1836,7 @@ static uint16 grReadPackedSpanU16(const uint8 *p)
 
 static uint8 grPacked4SpanMetadataCompact = 0;
 
-static int __attribute__((noinline, optimize("Os")))
+static inline int
 grReadCompactSpanU16(const uint8 *data,
                      uint32 dataSize,
                      uint32 *offset,
