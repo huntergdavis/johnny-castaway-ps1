@@ -14,6 +14,37 @@ The point is not just documentation. It is a test. If Start stops opening the me
 
 The default capture script starts in normal screensaver playback, waits 30 seconds, opens the pause menu, then walks each major screen with D-pad, Cross, and Circle. It intentionally captures catalog entry pages once, not every gag or visitor row.
 
+<nav class="scenes-jump" aria-label="Jump to a specific menu screen">
+<span class="scenes-jump-label">Jump to:</span>
+<a href="#pause-main">Pause Menu</a>
+·
+<a href="#scene-set">Scene Set</a>
+·
+<a href="#freeplay-options">Freeplay Options</a>
+·
+<a href="#freeplay-gags">Freeplay Gags</a>
+·
+<a href="#freeplay-visitors">Freeplay Visitors</a>
+·
+<a href="#controls">Controls</a>
+·
+<a href="#world-options">World Options</a>
+·
+<a href="#holidays">Holidays</a>
+·
+<a href="#island-position">Set Island Position</a>
+·
+<a href="#accessibility">Accessibility</a>
+·
+<a href="#sound-test">Sound Test</a>
+·
+<a href="#system">System</a>
+·
+<a href="#set-time-date">Set Time / Date</a>
+·
+<a href="#set-rng-seed">Set RNG Seed</a>
+</nav>
+
 <div class="menu-guide">
 <section class="menu-shot" id="pause-main">
 <h2>Pause Menu</h2>
