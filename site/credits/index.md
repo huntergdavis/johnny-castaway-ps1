@@ -53,6 +53,20 @@ the longer version — the people whose work this project stands on.
 
 - **Hunter Davis** — wrote it, broke it, fixed it again.
 
+## AI sub-agents
+
+LLM sub-agents — primarily **Claude** (Anthropic) and **Codex**
+(OpenAI), with occasional excursions into other models — drafted
+text, scaffolded code, ran parallel research passes, and generated
+the holiday-emblem sprite primitives. They do not own decisions,
+do not validate scenes, and do not sign off on releases. Every
+agent-drafted page on this site got at least one factual edit on
+review; a few got rewritten substantially. The disclosure surface
+is documented at
+[/docs/agents/]({{ '/docs/agents/' | relative_url }}); the
+[footer]({{ '/about/' | relative_url }}) carries the short
+version on every page.
+
 ## Closed captions
 
 The caption text was authored fresh for this port from scene
