@@ -183,6 +183,13 @@ no-op stub — captions are a PS1-only feature.
   font atlas and the `Captions: ON / OFF` toggle.
 - [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — how
   the per-scene loop validates that captions fire on the right ADS tags.
+- [AI sub-agents]({{ '/docs/agents/' | relative_url }}) — the caption
+  corpus and the 2026-04-26 audit's confidence ratings were drafted
+  by an LLM sub-agent and then human-edited; this page records what
+  that did and didn't cover.
+- [Voice guide]({{ '/about/voice/' | relative_url }}) — the editorial
+  standard the caption text is held to (short lines, plainspoken,
+  describes-the-gag-not-the-frame).
 
 ## View source on GitHub
 
