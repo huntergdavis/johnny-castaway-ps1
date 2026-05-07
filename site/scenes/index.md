@@ -154,7 +154,7 @@ their failure modes are uncorrelated.
 **Variant flags** (used on the per-scene pages, derived from the source
 table):
 
-- `night` — dusk/night palette swap (BOOTMODE `night 1`).
+- `night` — dusk/night palette swap ([BOOTMODE]({{ '/docs/glossary/#bootmode' | relative_url }}) `night 1`).
 - `low-tide` — tide-state variant; the shoreline geometry shifts
   (BOOTMODE `lowtide 1`).
 - `holiday` — holiday overlay variants (christmas, halloween, etc.;
