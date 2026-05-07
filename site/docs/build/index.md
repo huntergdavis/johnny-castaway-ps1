@@ -244,10 +244,17 @@ or running it through the [headless regtest harness]({{ '/docs/regtest/' | relat
 
 - [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — what to do
   *with* a fresh build, scene by scene.
+- [Build infrastructure]({{ '/docs/infrastructure/' | relative_url }}) —
+  the bigger picture: Docker images, regtest container, release
+  script, what's still done by hand on each release.
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) — the
+  PS1 envelope the build is targeting.
 - [Regression testing]({{ '/docs/regtest/' | relative_url }}) — booting the disc
   image headlessly for screenshots and TTY capture.
 - [API mapping]({{ '/docs/api/' | relative_url }}) — what each PSn00bSDK
   library is replacing.
+- [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }})
+  — the same machinery framed as methodology.
 
 ## View source on GitHub
 
