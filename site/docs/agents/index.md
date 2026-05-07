@@ -76,18 +76,22 @@ side and the audit breakdown in detail.
 
 ### The holiday emblem sprites
 
-The 2026-04 holiday expansion grew the project from four shipped holidays
-to thirty-six. Each holiday gets a 32&times;32 emblem sprite in the 16-color
-EGA/VGA palette, drawn in a Sierra-screensaver-adjacent style: chunky
-pixels, bold outlines, recognizable at 32 pixels.
+The 2026-04 holiday expansion grew the project from four shipped
+holidays to thirty-six. The four original Sierra holidays
+(IDs 1–4: Halloween, St. Patrick's, Christmas, New Year's) keep
+their original full-island sprites; the thirty-two added holidays
+(IDs 5–36) each get a 32&times;32 transparent emblem sprite in
+the 16-color EGA/VGA palette, drawn in a Sierra-screensaver-
+adjacent style: chunky pixels, bold outlines, recognizable at
+32 pixels.
 
-Drawing 32 thematically distinct sprites in a constrained palette is the
-kind of work that stops being interesting after the third sprite. A
-sub-agent authored Python+PIL scripts that generated the emblems
-algorithmically — primitive shapes, palette-locked colors, a per-holiday
-"compose this from these primitives" routine. The output is the sprite
-sheet at
-[`docs/ps1/holidays-emblems/holiday-emblem-sheet.png`]({{ site.github_url }}/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png).
+Drawing 32 thematically distinct sprites in a constrained palette
+is the kind of work that stops being interesting after the third
+sprite. A sub-agent authored Python+PIL scripts that generated the
+emblems algorithmically — primitive shapes, palette-locked colors,
+a per-holiday "compose this from these primitives" routine. The
+output is the sprite sheet at
+[`docs/ps1/holidays-emblems/holiday-emblems-sheet.png`]({{ site.github_url }}/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png).
 The script lives at
 [`scripts/holidays-emblem-sheet.py`]({{ site.github_url }}/blob/main/scripts/holidays-emblem-sheet.py).
 
