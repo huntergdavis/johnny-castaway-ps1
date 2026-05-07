@@ -39,6 +39,7 @@ Several pages can't rely on relative URLs:
 - The Atom feed and JSON Feed have to work in feed readers that fetch them and need full URLs to link back to the site.
 - The JSON-LD structured data is consumed by search engines and AI agents, which need fully qualified URIs.
 - The redirect HTML pages (from `redirect_from:` frontmatter) emit `<meta http-equiv="refresh">` URLs that browsers resolve as absolute.
+- The Open Graph and Twitter Card meta tags (`og:url`, `og:image`, `twitter:image`) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don't resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through `relative_url` and rendered as `./` and `../../assets/...` post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.)
 
 `site.baseurl` is empty during the build. So is `site.url + site.baseurl`. The fix is a separate config key that the build can't override:
 
@@ -91,6 +92,8 @@ The third file in this list used to be `sitemap.xml` and the `rm` originally rem
 
 So the feeds are a Liquid template plus an XML/JSON skeleton, in `site/devlog/feed.xml` and `site/devlog/feed.json`. They iterate `site.posts`, escape strings via `xml_escape` (Atom) or `jsonify` (JSON Feed), use absolute URLs via `site.canonical_baseurl`, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery `<link rel="alternate">` tags in the head, validated with `xml.etree` and `json.load` respectively.
 
+The Lab section has its own Atom feed at `/lab/feed.xml`. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates `site.html_pages | sort: 'date' | reverse` and filters to URLs starting with `/lab/`. Embedding `essay.content` in `<![CDATA[...]]>` *should* work the way it does for posts, and it doesn't. Jekyll guarantees `site.posts` are rendered before any other page consumes their `.content`; it doesn't make that guarantee for `site.html_pages`. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every `<content>` block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with `<summary>` and no `<content>`, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. The summary text comes from `page.description` (the same string the meta tag uses), with a fallback to `page.subtitle`.
+
 `jekyll-redirect-from` *is* in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin's `redirect_from:` frontmatter API is already in use on `scenes/index.md`. There was a bug there, though — the plugin's `absolute_url(to)` honors `site.baseurl`, which the build wipes, so every redirect was silently pointed at `hunterdavis.com/...` (the user-pages root) instead of `hunterdavis.com/johnny-castaway-ps1/...`. The fix is a custom `_layouts/redirect.html` override that strips `site.url` from `page.redirect.to` and rebuilds the URL through `site.canonical_baseurl`. External redirect targets (URLs that don't start with `site.url`) pass through unchanged.
 
 ## The pager pattern, shared across three catalogs
@@ -128,12 +131,13 @@ so the plugin emits nothing. The manual head template handles `<title>`, OG,
 Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
 feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.
 
-The JSON-LD include uses the multi-block strategy: each schema type gets its own `<script type="application/ld+json">` tag. Crawlers merge multiple blocks per page, so there's no comma juggling between conditionally-emitted records. Four record types ship today:
+The JSON-LD include uses the multi-block strategy: each schema type gets its own `<script type="application/ld+json">` tag. Crawlers merge multiple blocks per page, so there's no comma juggling between conditionally-emitted records. Five record types ship today:
 
 - `WebSite` on every page.
 - `SoftwareApplication` only on the home page (the project is a piece of software).
 - `BreadcrumbList` on every non-home page; positions are derived from splitting `page.url` on `/`, with cumulative trail and titlecased segment labels.
 - `BlogPosting` only on devlog posts.
+- `Article` only on lab essays — URL prefix `/lab/`, excluding the `/lab/` index, requiring `page.date`. Lab essays are dated long-form content, exactly the surface Google's Article structured-data guidance targets, but they live in `site.html_pages` rather than `site.posts` so the `BlogPosting` predicate doesn't catch them.
 
 All user strings flow through `jsonify` so titles and descriptions with quotes, backslashes, or em-dashes can't break the JSON. Validated with strict `json.loads` across home / a devlog post / about / a scene / a regtest case page.
 
@@ -160,6 +164,9 @@ None of this is novel work. Every piece is a Jekyll trick somebody else has done
 - [/devlog/feed.xml]({{ '/devlog/feed.xml' | relative_url }}) and
   [/devlog/feed.json]({{ '/devlog/feed.json' | relative_url }}) —
   the no-plugin Atom + JSON Feed pair.
+- [/lab/feed.xml]({{ '/lab/feed.xml' | relative_url }}) — the
+  Lab section's headlines-and-summary Atom feed; the
+  site.html_pages variant of the same pattern.
 - [/humans.txt]({{ '/humans.txt' | relative_url }}) — the credits-
   voice humans.txt file the article describes.
 - [404 page]({{ '/typo-that-does-not-exist/' | relative_url }}) —
