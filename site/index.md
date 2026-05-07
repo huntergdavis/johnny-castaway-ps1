@@ -223,11 +223,15 @@ work. Five most recent, newest first:
 
 <ul class="devlog-list">
   {% for article in lab_pages limit:5 %}
+  {%- assign a_words = article.content | strip_html | number_of_words -%}
+  {%- assign a_min = a_words | divided_by: 250 -%}
+  {%- if a_min < 1 %}{%- assign a_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ article.date | date: '%Y-%m-%d' }}">{{ article.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ article.url | relative_url }}">{{ article.title }}</a>
       {% if article.subtitle %}<span class="summary">{{ article.subtitle }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ a_min }} min read · {{ a_words }} words</span>
     </div>
   </li>
   {% endfor %}
@@ -245,11 +249,15 @@ most recent posts, newest first:
 
 <ul class="devlog-list">
   {% for post in site.posts limit:5 %}
+  {%- assign p_words = post.content | strip_html | number_of_words -%}
+  {%- assign p_min = p_words | divided_by: 250 -%}
+  {%- if p_min < 1 %}{%- assign p_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       {% if post.editor_note %}<span class="summary">{{ post.editor_note }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ p_min }} min read · {{ p_words }} words</span>
     </div>
   </li>
   {% else %}
