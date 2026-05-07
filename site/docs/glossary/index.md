@@ -160,6 +160,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="target-vb">target_vb / loop_vb</dt>
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
+<dt id="scene-end">Scene-end</dt>
+<dd>The runtime event marking one full <a href="#fg2-pack">FG2 pack</a> loop completion. Triggers a <code>JCPERF</code>/<code>JCPERF2</code> TTY dump (vblank counts, CD/compose/upload/wait counters, <code>blocking_vb</code>, <code>alloc_fail</code>) and finalizes the row's perf-matrix entry; the <a href="#regtest">regtest harness</a> uses it as the natural pivot point for state-hash capture. Story scenes reach scene-end deterministically; the <a href="{{ '/scenes/suzy1/' | relative_url }}">SUZY</a> mermaid scenes do not (no terminal frame), which is why their /perf/ rows are metadata-only and excluded from the matrix's <em>target_speed</em> averages on purpose.</dd>
+
 <dt id="over-target">over_target</dt>
 <dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
