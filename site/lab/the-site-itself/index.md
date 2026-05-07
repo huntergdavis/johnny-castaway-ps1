@@ -79,7 +79,7 @@ The deletion is preventative — neither file actually gets generated today (the
 
 The site's own feed lives one level down the tree at `/devlog/feed.xml` (Atom) and `/devlog/feed.json` (JSON Feed). Below the delete line.
 
-The third file in this list used to be `sitemap.xml` and the `rm` originally removed all three. That changed when the site grew a hand-rolled `/sitemap.xml` (598 URLs at `{{ site.release.tag }}`), generated from a Liquid template at `site/sitemap.xml` that uses `site.canonical_baseurl` directly so it survives the `--baseurl ""` build override. Pages opt out via `sitemap: false` front matter (the feeds, the sitemap itself, the 404, redirect stubs). `lastmod` uses `page.date` when present and falls back to the build-day stamp. The `<link rel="sitemap">` autodiscovery tag in `_includes/head.html` points at it. The `rm` line stopped touching `sitemap.xml` so the hand-rolled one survives the build pass.
+The third file in this list used to be `sitemap.xml` and the `rm` originally removed all three. That changed when the site grew a hand-rolled `/sitemap.xml` (around 600 URLs at the current release), generated from a Liquid template at `site/sitemap.xml` that uses `site.canonical_baseurl` directly so it survives the `--baseurl ""` build override. Pages opt out via `sitemap: false` front matter (the feeds, the sitemap itself, the 404, redirect stubs). `lastmod` uses `page.date` when present and falls back to the build-day stamp. The `<link rel="sitemap">` autodiscovery tag in `_includes/head.html` points at it. The `rm` line stopped touching `sitemap.xml` so the hand-rolled one survives the build pass.
 
 ## Hand-rolled feeds, no plugin
 

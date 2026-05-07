@@ -74,7 +74,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 2279,
+  "wordCount": 2282,
   "timeRequired": "PT9M",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -133,7 +133,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2244 words
+          ~8 min read · 2247 words
         </p>
 
       <hr class="rule" />
@@ -226,7 +226,7 @@ apex domain:</p>
 
 <p>The site’s own feed lives one level down the tree at <code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code> (Atom) and <code class="language-plaintext highlighter-rouge">/devlog/feed.json</code> (JSON Feed). Below the delete line.</p>
 
-<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (598 URLs at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
+<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (around 600 URLs at the current release), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
 
 <h2 id="hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</h2>
 
