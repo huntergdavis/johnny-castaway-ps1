@@ -255,6 +255,10 @@ shipped is the author's.
 - [Voice guide]({{ '/about/voice/' | relative_url }}) — the
   editorial standard agent drafts get edited against. Read this
   before writing anything that ships under the project's name.
+- [The LLM pass]({{ '/lab/llm-pass/' | relative_url }}) — the
+  methodology essay this docs page is the reference companion
+  for. Same disclosure scope; magazine treatment instead of
+  reference list.
 - [The voice-anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
   — the deeper retrospective on how the four-line `drawCredits`
   text propagates voice constraints downstream.
