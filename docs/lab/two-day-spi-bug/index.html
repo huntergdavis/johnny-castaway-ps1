@@ -102,7 +102,7 @@
       <h1>The two-day SPI bug</h1>
       <p class="subtitle">The controller worked everywhere except where it mattered.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 309 words
+          ~1 min read · 378 words
         </p>
 
       <hr class="rule" />
@@ -163,7 +163,17 @@ defines the product.</p>
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/spi.c"><code class="language-plaintext highlighter-rouge">src/spi.c</code></a></li>
   <li><a href="../../docs/pause-menu/">Pause menu docs</a></li>
+  <li><a href="../../docs/freeplay/">Freeplay mode</a> — the
+largest live consumer of the controller path this bug blocked.</li>
+  <li><a href="../../docs/scripted-input/">Scripted input harness</a>
+— the headless test harness that merges pad-script bytes into
+the same active-high mask the SPI driver fills.</li>
   <li><a href="../../docs/hardware/">PS1 hardware constraints</a></li>
+  <li><a href="../../docs/api/">API mapping (SDL2 → PSn00bSDK)</a>
+— the Input section maps <code class="language-plaintext highlighter-rouge">SDL_PollEvent</code> to the SPI driver
+this article is the war story for.</li>
+  <li><a href="../../docs/glossary/#tx-len">Glossary: tx_len</a>
+— the one-byte fix at the center of the bug.</li>
   <li><a href="../../docs/infrastructure/">Build infrastructure</a></li>
 </ul>
 

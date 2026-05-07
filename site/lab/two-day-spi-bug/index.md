@@ -60,5 +60,15 @@ defines the product.
 
 - [`src/spi.c`]({{ site.github_url }}/blob/main/src/spi.c)
 - [Pause menu docs]({{ '/docs/pause-menu/' | relative_url }})
+- [Freeplay mode]({{ '/docs/freeplay/' | relative_url }}) — the
+  largest live consumer of the controller path this bug blocked.
+- [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }})
+  — the headless test harness that merges pad-script bytes into
+  the same active-high mask the SPI driver fills.
 - [PS1 hardware constraints]({{ '/docs/hardware/' | relative_url }})
+- [API mapping (SDL2 → PSn00bSDK)]({{ '/docs/api/' | relative_url }})
+  — the Input section maps `SDL_PollEvent` to the SPI driver
+  this article is the war story for.
+- [Glossary: tx_len]({{ '/docs/glossary/#tx-len' | relative_url }})
+  — the one-byte fix at the center of the bug.
 - [Build infrastructure]({{ '/docs/infrastructure/' | relative_url }})
