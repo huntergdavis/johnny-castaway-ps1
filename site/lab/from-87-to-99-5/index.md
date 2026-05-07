@@ -17,7 +17,16 @@ When the project hit 63 / 63 scenes signed off at `v0.7.0-ps1`, the visible work
 
 The compact full-matrix baseline at the same time read **+17.4% over target / 87.1% target speed** across 120 timing-bearing scene/tide rows. That's a different kind of done. A scene that overruns its frame budget by a sixth still looks correct — pixels and audio match the host capture — but the playback rate is wrong, and on real hardware "wrong rate" eventually shows up as audio drift or a stretched walk. Validation said *the bar was met for visuals*. Performance said *most rows have more work to do*.
 
-Between then and `v0.8.0-ps1` (the current release line as of writing), the headless-perf battle card moved to **+0.9% over target / 99.5% target speed** across the same 120 rows. Roughly **16.5 percentage points** of over-target gap closed; about **12.4 target-speed points** added. ACTIVITY 9 — the last validated scene and the widest one — graduated from "validated" to "optimized validated outlier." This article is what that loop actually looked like.
+Between then and `v0.8.0-ps1` (the release that promoted the
+headless optimization methodology to a baseline), the
+headless-perf battle card moved to **+0.9% over target / 99.5%
+target speed** across the same 120 rows. Roughly
+**16.5 percentage points** of over-target gap closed; about
+**12.4 target-speed points** added. ACTIVITY 9 — the last
+validated scene and the widest one — graduated from "validated"
+to "optimized validated outlier." `v0.8.1-ps1` followed as a
+clean-rect pressure stability fix that left the matrix mean
+untouched. This article is what that loop actually looked like.
 
 ## Two ledgers, on purpose
 
