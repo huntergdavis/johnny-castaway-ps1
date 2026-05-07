@@ -24,9 +24,11 @@ target speed** across the same 120 rows. Roughly
 **16.5 percentage points** of over-target gap closed; about
 **12.4 target-speed points** added. ACTIVITY 9 — the last
 validated scene and the widest one — graduated from "validated"
-to "optimized validated outlier." `v0.8.1-ps1` followed as a
-clean-rect pressure stability fix that left the matrix mean
-untouched. This article is what that loop actually looked like.
+to "optimized validated outlier."
+[`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+followed as a clean-rect pressure stability fix that left the
+matrix mean untouched. This article is what that loop actually
+looked like.
 
 ## Two ledgers, on purpose
 
