@@ -132,9 +132,14 @@ A few things this project is deliberately not trying to be:
   status surfaces, retired tooling, the harness era, the
   restore-pilot era, and other paths that did not become the
   active methodology.
-- [/lab/]({{ '/lab/' | relative_url }}) -- feature-length essays on
-  LLM-assisted development, hallucination control, build
-  infrastructure, and regression practice.
+- [/lab/]({{ '/lab/' | relative_url }}) -- fourteen feature-length
+  retrospectives, newest first. The
+  [post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}),
+  [the site itself as a small program]({{ '/lab/the-site-itself/' | relative_url }}),
+  [the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}),
+  [the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }}),
+  the LLM pass, hallucination engineering, regression as a
+  lifestyle, and the rest.
 - [/hack/]({{ '/hack/' | relative_url }}) -- a learning path for
   hackers who want to read the C, port to another machine, or
   understand the debugging loops.
