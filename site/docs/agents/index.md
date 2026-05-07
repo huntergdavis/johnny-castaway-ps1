@@ -265,6 +265,11 @@ shipped is the author's.
 - [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }}) —
   the parallel-agent infrastructure that keeps two LLM sessions
   productive without constant operator attention.
+- [35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }})
+  — codegen retrospective covering the holiday-emblem sprite
+  primitives an LLM sub-agent drafted, the YAML-to-C pipeline,
+  and the date algorithms. Reciprocal of the link from there
+  to here.
 - [Closed captions]({{ '/docs/captions/' | relative_url }}) — the
   caption corpus the audit produced.
 - [Holidays]({{ '/docs/holidays/' | relative_url }}) — the 36-holiday
