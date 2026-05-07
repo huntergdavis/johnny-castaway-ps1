@@ -70,6 +70,11 @@
   Home; subsequent positions are the cumulative path. The cumulative
   trail is rebuilt by appending each segment so each ListItem points
   at the correct ancestor URL.
+
+  Leaf segment uses page.title when available — slug capitalization
+  produces ugly labels like "Two day spi bug" or "Activity9" that
+  show up in Google rich-result breadcrumb trails; the page's own
+  title is the canonical display string.
 {%- endcomment -%}
 {%- if page.url != '/' -%}
   {%- assign segments = page.url | split: '/' -%}
@@ -81,7 +86,12 @@
     {%- if seg != '' -%}
       {%- assign trail = trail | append: '/' | append: seg -%}
       {%- assign position = position | plus: 1 -%}
-      {%- assign label = seg | replace: '-', ' ' | replace: '_', ' ' | capitalize -%}
+      {%- assign trail_with_slash = trail | append: '/' -%}
+      {%- if trail_with_slash == page.url and page.title -%}
+        {%- assign label = page.title -%}
+      {%- else -%}
+        {%- assign label = seg | replace: '-', ' ' | replace: '_', ' ' | capitalize -%}
+      {%- endif -%}
       {%- capture item -%}, { "@type": "ListItem", "position": {{ position }}, "name": {{ label | jsonify }}, "item": {{ site_root | append: trail | append: '/' | jsonify }} }{%- endcapture -%}
       {%- assign items_json = items_json | append: item -%}
     {%- endif -%}
