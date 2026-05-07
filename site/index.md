@@ -107,7 +107,11 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/scenes/' | relative_url }}">Live scene ledger</a>
-    <p>All 63 scenes with visual-signoff status, per-scene case studies, and a family jump nav. The headless-perf <a href="{{ '/perf/' | relative_url }}">battle card</a> is the sortable second ledger that lives next to it.</p>
+    <p>All 63 scenes with visual-signoff status, per-scene case studies, and a family jump nav. The visual bar.</p>
+  </li>
+  <li>
+    <a href="{{ '/perf/' | relative_url }}">Headless-perf battle card</a>
+    <p>The other bar: 126 scene/tide variants timed against target frame budget. Sortable headers, color-coded Target Speed (≥99% green, ≥80% yellow, &lt;80% red). Currently averaging {{ site.release.perf_target_speed_pct }}% target speed.</p>
   </li>
   <li>
     <a href="{{ '/archaeology/' | relative_url }}">The full story</a>
