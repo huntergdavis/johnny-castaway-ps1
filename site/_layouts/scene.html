@@ -38,11 +38,19 @@ layout: default
       <a href="{{ '/archaeology/regtest-references/cases/' | append: case_slug | append: '/' | relative_url }}">{{ page.ads }}-{{ page.tag }} case page</a>
       — desktop baseline before PS1 validation.
     </p>
+    {%- comment -%}
+      Per-row anchors live on /perf/ as id="perf-{slug}-{tide}". The scene
+      slug used here matches what's in the first <td><code>...</code></td>
+      cell of each matrix row — i.e., page.slug ("activity1", no dash),
+      not case_slug ("activity-1") which is the host regtest convention.
+    {%- endcomment -%}
     <p class="post-source">
       Performance battle card:
-      <a href="{{ '/perf/' | relative_url }}">{{ page.ads }} {{ page.tag }} on /perf/</a>
-      — current per-tide timing rows in the 126-variant matrix
-      (sort the Scene column to find them).
+      <a href="{{ '/perf/#perf-' | append: page.slug | append: '-high' | relative_url }}">high tide</a>
+      ·
+      <a href="{{ '/perf/#perf-' | append: page.slug | append: '-low' | relative_url }}">low tide</a>
+      — direct rows in the 126-variant matrix (or
+      <a href="{{ '/perf/' | relative_url }}">/perf/</a> for the full table).
     </p>
 
     {%- comment -%}
