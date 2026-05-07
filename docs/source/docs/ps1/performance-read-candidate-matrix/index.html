@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
-  <title>PS1 Performance Experiment Log — Johnny Castaway PS1</title>
-  <meta name="description" content="Generated source-library page for docs/ps1/performance-experiment-log.md" /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/performance-experiment-log/" />
+  <title>PS1 Foreground Read Candidate Matrix — Johnny Castaway PS1</title>
+  <meta name="description" content="Generated source-library page for docs/ps1/performance-read-candidate-matrix.md" /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/performance-read-candidate-matrix/" />
 
-  <meta property="og:title"        content="PS1 Performance Experiment Log — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Generated source-library page for docs/ps1/performance-experiment-log.md" />
+  <meta property="og:title"        content="PS1 Foreground Read Candidate Matrix — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Generated source-library page for docs/ps1/performance-read-candidate-matrix.md" />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="./" />
   <meta property="og:image"        content="../../../../assets/img/branding/og-image.png" />
@@ -60,7 +60,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Source", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/" }, { "@type": "ListItem", "position": 3, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/" }, { "@type": "ListItem", "position": 4, "name": "Ps1", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/" }, { "@type": "ListItem", "position": 5, "name": "Performance experiment log", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/performance-experiment-log/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Source", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/" }, { "@type": "ListItem", "position": 3, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/" }, { "@type": "ListItem", "position": 4, "name": "Ps1", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/" }, { "@type": "ListItem", "position": 5, "name": "Performance read candidate matrix", "item": "https://hunterdavis.com/johnny-castaway-ps1/source/docs/ps1/performance-read-candidate-matrix/" }]
 }
 </script>
 </head>
@@ -99,13 +99,13 @@
 
     <header class="page-header">
       <p class="eyebrow">Source library</p>
-      <h1>PS1 Performance Experiment Log</h1>
-      <p class="subtitle">docs/ps1/performance-experiment-log.md</p>
+      <h1>PS1 Foreground Read Candidate Matrix</h1>
+      <p class="subtitle">docs/ps1/performance-read-candidate-matrix.md</p>
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>This is the website shelf page for <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>.
+    <p>This is the website shelf page for <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.md</code></a>.
 It exists because the project has hundreds of Markdown files and the website
 should not pretend the interesting work only happened in the polished essays.</p>
 
@@ -113,7 +113,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>Date started: 2026-04-25</p>
+<p>This host-side report aggregates the current foreground-read-plan.json artifacts and ranks candidate retained-window read groups by scene pressure and visible-cadence risk. It does not change the PS1 binary.</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -127,15 +127,15 @@ should not pretend the interesting work only happened in the polished essays.</p
   <tbody>
     <tr>
       <td>Source path</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.md</code></td>
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">1095</td>
+      <td style="text-align: right">83</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">143484</td>
+      <td style="text-align: right">740</td>
     </tr>
     <tr>
       <td>Code fences</td>
@@ -147,17 +147,16 @@ should not pretend the interesting work only happened in the polished essays.</p
 <h2 id="outline">Outline</h2>
 
 <ul>
-  <li>PS1 Performance Experiment Log</li>
-  <li>Experiments</li>
-  <li>Retry Queue</li>
-  <li>Harness Notes</li>
-  <li>Promotion Rule</li>
+  <li>PS1 Foreground Read Candidate Matrix</li>
+  <li>Top 40 Candidates</li>
+  <li>CSV</li>
+  <li>Columns</li>
 </ul>
 
 <h2 id="read-it-in-context">Read it in context</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md">Open the source file on GitHub</a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.md">Open the source file on GitHub</a></li>
   <li><a href="../../../">Back to the source library index</a></li>
   <li><a href="../../../../docs/">Main docs index</a></li>
 </ul>
@@ -190,7 +189,7 @@ should not pretend the interesting work only happened in the polished essays.</p
           <a href="../../../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
-          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/source/docs/ps1/performance-experiment-log/index.md" rel="noopener">Edit this page on GitHub</a> →
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/source/docs/ps1/performance-read-candidate-matrix/index.md" rel="noopener">Edit this page on GitHub</a> →
         </p><p class="footer-transparency">
           <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
           were all used extensively across this project — for programming,

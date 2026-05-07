@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3258 words
+          ~13 min read · 3297 words
         </p>
 
       <hr class="rule" />
@@ -237,6 +237,14 @@ candidates by observed append-start ownership, current grouped-read capacity,
 and visible-CD cost class. That makes stale-baseline comparisons, no-op read
 groups, and tight visible-cluster candidates visible before a runtime source
 edit.</p>
+
+<p>Those foreground read-plan candidates are now rolled up into
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.md</code></a>
+and its machine-readable
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.csv"><code class="language-plaintext highlighter-rouge">performance-read-candidate-matrix.csv</code></a>.
+The current report has no standalone-safe rows; VISITOR3 and the other
+remaining read-timing candidates should be scheduler-owned or guarded instead
+of hand-authored raw table ranges.</p>
 
 <h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
 

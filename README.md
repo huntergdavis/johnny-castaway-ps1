@@ -90,7 +90,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.7% target speed** |
 | Latest perf matrix run | **`2026-05-07T06:46:25`** (`last_run_at` in the CSV) |
 | Perf stats version | Newest optimized rows use `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
-| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
+| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
 `v0.8.1-ps1` is a stability point release on top of the complete-scene
@@ -489,6 +489,7 @@ prefer.
 - [TESTING.md](docs/ps1/TESTING.md) — validation strategy
 - [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) ↔ [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) — 63-scene / 126-variant perf battle card
 - [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) — accepted and rejected optimization history
+- [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) + [performance-read-candidate-matrix.csv](docs/ps1/performance-read-candidate-matrix.csv) — ranked foreground read-plan candidate queue
 - [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](docs/ps1/performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) + [performance-o2-audit.csv](docs/ps1/performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint

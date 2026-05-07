@@ -123,6 +123,14 @@ and visible-CD cost class. That makes stale-baseline comparisons, no-op read
 groups, and tight visible-cluster candidates visible before a runtime source
 edit.
 
+Those foreground read-plan candidates are now rolled up into
+[`docs/ps1/performance-read-candidate-matrix.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.md)
+and its machine-readable
+[`performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv).
+The current report has no standalone-safe rows; VISITOR3 and the other
+remaining read-timing candidates should be scheduler-owned or guarded instead
+of hand-authored raw table ranges.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't

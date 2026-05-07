@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 336 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 337 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -43,6 +43,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/performance-o2-audit/' | relative_url }}">PS1 -O2 Audit</a><p><code>docs/ps1/performance-o2-audit.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-optimization-plan/' | relative_url }}">PS1 Scene Playback Performance Optimization Plan</a><p><code>docs/ps1/performance-optimization-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-preprocess-opportunities/' | relative_url }}">PS1 Foreground Preprocess Opportunity Matrix</a><p><code>docs/ps1/performance-preprocess-opportunities.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/performance-read-candidate-matrix/' | relative_url }}">PS1 Foreground Read Candidate Matrix</a><p><code>docs/ps1/performance-read-candidate-matrix.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/project-history/' | relative_url }}">PS1 Port - Project History</a><p><code>docs/ps1/project-history.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/README/' | relative_url }}">Johnny Reborn — PlayStation 1 Port</a><p><code>docs/ps1/README.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
