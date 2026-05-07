@@ -4,7 +4,7 @@ title: Johnny Castaway PS1
 description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0.
 ---
 
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <div class="hero-frame">
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
          width="1127" height="677"
@@ -14,7 +14,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>
-    <h1>{{ site.title }}</h1>
+    <h1 id="hero-title">{{ site.title }}</h1>
     <p class="tagline">{{ site.tagline }}</p>
     <div class="hero-cta">
       <a class="btn btn--primary" href="{{ '/play/' | relative_url }}">Download &amp; play</a>
@@ -24,7 +24,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
 </section>
 
-<section class="trio">
+<section class="trio" aria-label="Selected PS1 captures">
   <figure>
     <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
     <figcaption><a href="{{ '/scenes/activity9/' | relative_url }}">ACTIVITY 9 · boat pass</a></figcaption>
