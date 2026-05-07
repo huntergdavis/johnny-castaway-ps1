@@ -26,7 +26,7 @@ If you paid for this, you were cheated. Open source and free.
 ## What this is
 
 Story-loop walks fire **between scenes**, not inside them. The
-screensaver-loop scene picker decides what's next, asks the walk
+screensaver-loop [scene picker]({{ '/docs/glossary/#scene-picker' | relative_url }}) decides what's next, asks the walk
 subsystem to move Johnny from his current `(spot, heading)` to the
 next scene's start `(spot, heading)`, and only then plays the next
 scene's [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }}).
