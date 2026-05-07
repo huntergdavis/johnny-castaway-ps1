@@ -46,7 +46,8 @@ story playback can keep randomized island placement.
 `mary4` — the
 [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
 pressure estimator under-counted the upper/lower split save plus
-the ocean wave band, so optional prefetch/walk memory wasn't
+the ocean wave band, so optional prefetch and
+[walk]({{ '/docs/walks/' | relative_url }}) memory wasn't
 released early enough and the heap fragmented before scene playback
 could start. The fix is centralized (it covers fourteen non-exempt
 random-position scenes, not just `mary4`) and the matrix mean
