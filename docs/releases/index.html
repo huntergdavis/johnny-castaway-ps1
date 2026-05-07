@@ -189,7 +189,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <h3 id="v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</h3>
 <p><em>2026-05-05</em></p>
 
-<p>A randomized story-loop walking regression let Johnny walk over water and leave repeated walking poses when the next scene’s island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.</p>
+<p>A randomized <a href="../docs/walks/">story-loop walking</a> regression let Johnny walk over water and leave repeated walking poses when the next scene’s island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.</p>
 
 <ul>
   <li><strong>Walks now require a matching backdrop key.</strong> Inter-scene walks only run when tide, raft, night, holiday, and island X/Y all match the previous rendered scene.</li>
