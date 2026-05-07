@@ -173,7 +173,7 @@ SpuSetMute(SPU_OFF);
 SpuSetCommonMasterVolume(0x3FFF, 0x3FFF);
 ```
 
-### Sound load (work in progress)
+### Sound load
 
 ```c
 /* SDL2 */
@@ -189,7 +189,7 @@ SpuWrite(vag_data, vag_size);
 SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
 ```
 
-### Sound playback (work in progress)
+### Sound playback
 
 ```c
 /* SDL2 */

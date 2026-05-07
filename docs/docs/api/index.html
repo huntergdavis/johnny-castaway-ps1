@@ -104,7 +104,7 @@
       <h1>API mapping (SDL2 → PSn00bSDK)</h1>
       <p class="subtitle">Every SDL2 symbol the upstream engine called, mapped to the PSn00bSDK call that replaced it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1287 words
+          ~5 min read · 1275 words
         </p>
 
       <hr class="rule" />
@@ -145,8 +145,8 @@ the call site.</p>
   </li>
   <li><a href="#audio" id="markdown-toc-audio">Audio</a>    <ul>
       <li><a href="#initialization-2" id="markdown-toc-initialization-2">Initialization</a></li>
-      <li><a href="#sound-load-work-in-progress" id="markdown-toc-sound-load-work-in-progress">Sound load (work in progress)</a></li>
-      <li><a href="#sound-playback-work-in-progress" id="markdown-toc-sound-playback-work-in-progress">Sound playback (work in progress)</a></li>
+      <li><a href="#sound-load" id="markdown-toc-sound-load">Sound load</a></li>
+      <li><a href="#sound-playback" id="markdown-toc-sound-playback">Sound playback</a></li>
     </ul>
   </li>
   <li><a href="#file-io" id="markdown-toc-file-io">File I/O</a>    <ul>
@@ -411,7 +411,7 @@ the call site.</p>
 <span class="n">SpuSetCommonMasterVolume</span><span class="p">(</span><span class="mh">0x3FFF</span><span class="p">,</span> <span class="mh">0x3FFF</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h3 id="sound-load-work-in-progress">Sound load (work in progress)</h3>
+<h3 id="sound-load">Sound load</h3>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* SDL2 */</span>
 <span class="n">Mix_Chunk</span> <span class="o">*</span><span class="n">sound</span> <span class="o">=</span> <span class="n">Mix_LoadWAV</span><span class="p">(</span><span class="s">"sound.wav"</span><span class="p">);</span>
@@ -426,7 +426,7 @@ the call site.</p>
 <span class="n">SpuIsTransferCompleted</span><span class="p">(</span><span class="n">SPU_TRANSFER_WAIT</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h3 id="sound-playback-work-in-progress">Sound playback (work in progress)</h3>
+<h3 id="sound-playback">Sound playback</h3>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* SDL2 */</span>
 <span class="n">Mix_PlayChannel</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sound</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
