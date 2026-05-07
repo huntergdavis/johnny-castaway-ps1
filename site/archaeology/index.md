@@ -279,26 +279,28 @@ honest about the wrong question.
 
 The disc plays. That's the headline.
 
-`v0.3.10-ps1` boots on DuckStation, loads from a 9.9 MB CD image,
-runs the validated scenes correctly, and idles cleanly through long
-sessions thanks to the loop-stability work in `v0.3.9-ps1`. The PS1
-executable is about 84 KB after the legacy ADS/TTM/FG1 runtime paths
-were removed; the rest of the disc is foreground packs, the
-title raw, palette tables, and the resource map. The full FG2 corpus
-— 126 packs covering every scene's high-tide and low-tide variants —
-exists offline at about 343 MB but only the validated scenes' packs
-are routed into the CD image at any one time.
+`{{ site.release.tag }}` boots on DuckStation, loads from a ~76 MB CD
+image, plays every scene the original game routed pixel-perfect with
+synced SFX, and idles cleanly through long randomized sessions. The
+PS1 executable is around 208 KiB after the legacy ADS/TTM/FG1 runtime
+paths were removed; the rest of the disc is FG2/FGP3 foreground pack
+payload, the title raw, palette tables, the ocean ambience VAG, and
+the resource map. The full FG2 corpus — 126 packs covering every
+scene's high-tide and low-tide variants — is routed onto the CD at
+release; what gets loaded at runtime is whichever the screensaver
+loop picks next.
 
-Around the validated-scene work, several other surfaces have come up
-to where they need to be:
+Around the validated-scene work, several other surfaces shipped:
 
-**The 36 holidays expansion.** The original game has a small set of
-holiday overlays — Christmas, Halloween, Thanksgiving, the Fourth of
-July. The PS1 port expands that to 35, including movable feasts that
-need a real Easter calculation. The Easter algorithm in use here is
-the Meeus / Jones / Butcher formulation. It's accurate from 1900
-forward. The overlay is composited into the foreground replay path
-so it survives every scene that ships with a `holiday` variant.
+**The 36 holidays expansion.** The original game has four baked-in
+holiday overlays — Christmas, New Year, Halloween, St. Patrick's Day.
+The PS1 port expands that to 36, including movable feasts that need a
+real Easter calculation. The Easter algorithm in use here is the
+Meeus / Jones / Butcher formulation, accurate from 1900 forward. The
+overlay is composited into the foreground replay path so it survives
+every scene that ships with a `holiday` variant. The retrospective on
+the codegen pipeline is at
+[/lab/35-holidays-codegen/]({{ '/lab/35-holidays-codegen/' | relative_url }}).
 
 **Closed captions.** The captions on this port were authored fresh
 from scene content. They are not lifted from any prior corpus. There's
@@ -308,13 +310,16 @@ that grades each ADS-tag → caption mapping. Some are high confidence
 ("Johnny is fishing"). Some are guesses. The guesses are marked.
 
 **The pause menu.** Press Start during any scene and you get an
-overlay menu — credits, holiday selection, captions toggle, mute,
-restart. It uses a custom embedded 8x8 ASCII font because PSn00bSDK's
+overlay menu reachable through eleven sub-screens — Scene Set,
+Freeplay Options, Controls, World Options, Holidays, Set Island
+Position, Accessibility, Sound Test, System, Set Time / Date, and Set
+RNG Seed. It uses a custom embedded 8x8 ASCII font because PSn00bSDK's
 `FntFlush` is empirically broken in the scene-runtime context: the
 primitives accumulate but no pixels appear. POLY_F4 quads handle the
-dim and the panel chrome. User settings persist to a memory card
-save at `bu00:` through `memcard.c`, which is currently in progress
-but reads and writes the basic option set.
+dim and the panel chrome. User settings persist to a memory card save
+at `bu00:` through `memcard.c`; the persisted set covers sound mute,
+captions, holiday mode, ocean ambience, and the rest of the
+pause-menu toggles.
 
 **Audio.** All 23 VAG sound effects are preloaded into SPU RAM at
 boot. `soundPlay(nb)` rotates them through 8 round-robin voices.
@@ -333,30 +338,32 @@ that used to require visual debugging now also has a text breadcrumb
 trail. The visual telemetry overlay (5 panels) is still the right
 tool for per-frame state; the text logs are for setup and teardown.
 
-What's left is mostly more scenes. There are 61 more entries on the
-ledger — `ACTIVITY 1`, `BUILDING 1`, all of `JOHNNY`, all of `MARY`,
-the `STAND` set, the `VISITOR` set, `WALKSTUF`, the `MISCGAG` pair,
-and the rest of the `FISHING` family. Each one needs a host capture,
-a base-diff FG2 pack for both tide states, a CD layout entry, a
-routing entry in `foreground_pilot.c`, and a human signoff. The
-estimated cost per scene is somewhere between an evening and a long
-weekend, depending on how many variants exist and how cleanly the
-host capture survives the bytecode. There is no committed timeline.
-The project ships when scenes ship.
+What's left is performance polish on a small set of high-leverage
+rows, not more scenes. The
+[scene ledger]({{ '/scenes/' | relative_url }}) reads
+**{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
+clear under the
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+across every applicable variant — the daily-loop story is in
+[/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}).
+The
+[headless-perf battle card]({{ '/perf/' | relative_url }}) averages
+**{{ site.release.perf_target_speed_pct }}% target speed** across
+the 120 timing-bearing scene/tide rows; the post-validation
+optimization loop that closed the gap from `87.1%` is documented
+at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
+The remaining gap lives in `VISITOR 3` (high and low) and a yellow
+cluster of clean-rect-heavy and wide-action scenes.
 
-There are also things that won't ship. Real hardware testing is on
-the long-term list and may not happen — the PS1 hardware is plentiful
-and cheap, but burning a CD-R that boots on a real console without a
-modchip is a separate problem from making the game run. Memory card
-save/load is in progress but will likely stay minimal. A title screen
-beyond the existing `TITLE.RAW` is on the list and may stay there.
-The known limitations section in
+Real hardware shipped. The build has been smoke-tested on a
+SCPH-7501 via the [TonyHax](https://github.com/socram8888/tonyhax)
+softmod path; long-term hardware soak observations are still on
+the wishlist. The known limitations section in
 [current-status.md]({{ site.github_url }}/blob/main/docs/ps1/current-status.md)
 is the honest list of what is broken in ways that the project knows
 about.
 
-The disc plays. The validated count is small. The author is one
-person. The work is open source under GPL-3.0 and free at
+The disc plays. The work is open source under GPL-3.0 and free at
 [github.com]({{ site.github_url }}). The credits screen on the disc
 itself reads:
 
@@ -373,7 +380,7 @@ That's the whole thing. That's the project. The site's
 version — the prior ports, the toolchain authors, the algorithm
 references. None of this would exist without that bibliography. None
 of it would have shipped without one person deciding to keep going
-after the 63/63 turned out to mean nothing.
+after each milestone turned out not to be the end.
 
 A 1992 screensaver runs on a 1994 console in 2026. The hardware
 matched. The bytecode was decoded long ago. The hard part was
