@@ -3,7 +3,7 @@ layout: page
 title: Pause menu
 eyebrow: Reference
 subtitle: Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.
-description: "How the Johnny Castaway PS1 pause menu works in v0.5.0: controls, sub-screens, freeplay/debug integration, world options, sound test, and font sharing with captions."
+description: "How the Johnny Castaway PS1 pause menu works: controls, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), freeplay/debug integration, persisted memcard options, and the embedded 8x8 font shared with captions."
 ---
 
 A labor of love by Hunter Davis. The pause menu is the PS1 build's in-game
