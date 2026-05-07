@@ -2,6 +2,7 @@
 title: Credits
 eyebrow: A labor of love
 subtitle: The full acknowledgements behind a small port.
+description: Acknowledgements for the Johnny Castaway PS1 fan port — Sierra On-Line for the original screensaver, the prior reverse-engineering ports (jno6809/jc_reborn, JCOS, xesf/Castaway), the toolchain authors (PSn00bSDK, DuckStation, mkpsxiso, spicyjpeg), the AI sub-agents that drafted text and emblem sprites, the four self-hosted SIL OFL fonts, and the CC0 ocean-ambience source.
 ---
 
 ## In the game

@@ -2,6 +2,7 @@
 title: Play
 eyebrow: Download · Run
 subtitle: Latest build, quickstart, controls.
+description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
 ## Latest build
