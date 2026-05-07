@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3327 words
+          ~13 min read · 3360 words
         </p>
 
       <hr class="rule" />
@@ -916,6 +916,11 @@ PS1 binary is produced.</li>
 the wrapper around the perf iterate script.</li>
   <li><a href="../audio/">Audio pipeline</a> — the SPU side,
 which has its own scheduling concerns.</li>
+  <li><a href="../walks/">Story-loop walks</a> — the
+walk subsystem’s persistent clean buffer is part of the same
+pressure-accounting envelope the matrix above measures; the v0.8.0
+clean-rect retry path and v0.8.1 wave-band/split-rect pressure
+changes are documented there.</li>
   <li><a href="../vision/">Vision-classifier work</a> — the
 validation layer that runs against perf-experiment outputs.</li>
   <li><a href="../../devlog/">Devlog</a> — perf work shows up

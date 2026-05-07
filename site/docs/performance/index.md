@@ -784,6 +784,11 @@ A few things the perf work explicitly does not chase, with reasons:
   the wrapper around the perf iterate script.
 - [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the SPU side,
   which has its own scheduling concerns.
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  walk subsystem's persistent clean buffer is part of the same
+  pressure-accounting envelope the matrix above measures; the v0.8.0
+  clean-rect retry path and v0.8.1 wave-band/split-rect pressure
+  changes are documented there.
 - [Vision-classifier work]({{ '/docs/vision/' | relative_url }}) — the
   validation layer that runs against perf-experiment outputs.
 - [Devlog]({{ '/devlog/' | relative_url }}) — perf work shows up
