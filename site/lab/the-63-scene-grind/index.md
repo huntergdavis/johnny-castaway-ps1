@@ -90,7 +90,22 @@ The grind becomes navigable when every unit has a shelf.
 
 ## Cross-links
 
-- [Scene ledger]({{ '/scenes/' | relative_url }})
-- [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }})
-- [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
-- [Method]({{ '/about/method/' | relative_url }})
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — the live
+  state of the 63 rows this essay is the back-story for.
+- [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }}) —
+  the host-side baseline preserved per scene, captured before
+  PS1 validation took over.
+- [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }}) —
+  the methodology essay on why the daily loop runs at all.
+- [Method]({{ '/about/method/' | relative_url }}) — the technical
+  pipeline the grind grinds against.
+- [`v0.7.0-ps1` release]({{ '/releases/#v070-ps1--complete-scene-validation' | relative_url }})
+  — the milestone that capped this grind: 63 / 63 signed off
+  under the FISHING 1 bar.
+- [Performance battle card]({{ '/perf/' | relative_url }}) and
+  [from-87-to-99-5 retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the second ledger that opened when this one closed.
+- [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the kind of regression the validated-but-fragile post-grind
+  era surfaces, and why the project added a soak loop alongside
+  the per-commit matrix.
