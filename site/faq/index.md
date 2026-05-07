@@ -290,7 +290,7 @@ System, Set Time / Date, and Set RNG Seed. Closed captions
 via a code-generated table and pure-algorithm date core.
 [Story-loop walking]({{ '/docs/walks/' | relative_url }})
 between scenes (v0.4.20-ps1) — Johnny no longer teleports.
-[Freeplay / debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+[Freeplay / debug mode]({{ '/docs/freeplay/' | relative_url }})
 (v0.5.0-ps1) where the player drives Johnny directly, with gag
 and visitor catalogs. Optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
