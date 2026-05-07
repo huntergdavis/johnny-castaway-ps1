@@ -417,6 +417,23 @@ component-completeness phases:
   [TonyHax](https://github.com/socram8888/tonyhax) softmod path.
   Long-term hardware-soak observations are still on the wishlist.
 
+## Related pages
+
+- [Method]({{ '/about/method/' | relative_url }}) — the *what* and
+  the *why* of the hybrid pipeline this history walked toward.
+- [Status]({{ '/about/status/' | relative_url }}) — the current
+  per-component state at `{{ site.release.tag }}`.
+- [Releases]({{ '/releases/' | relative_url }}) — every tagged
+  version with theme line and headline bullets.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — magazine treatment of the validation arc that runs from
+  *First scenes validated* through the v0.7.0 cap.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the post-validation performance loop that defined the
+  v0.8.0 baseline above.
+- [Lab: v0.8.1 — what the soak found]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the stability follow-on that motivated the latest line.
+
 This isn't done. That's fine. A labor of love by Hunter Davis. The
 original creator generously allows fan ports. If you paid for this,
 you were cheated. Open source and free.
