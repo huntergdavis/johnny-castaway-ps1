@@ -507,6 +507,19 @@ hr.rule, .rule {
   background: var(--jc-sun);
   color: var(--jc-blue-deep);
 }
+/* When the figcaption text is itself a link to the scene page,
+   inherit the figcaption color (otherwise the default --link cyan
+   pops jarringly against the sun-yellow caption background). The
+   underline appears on hover/focus as the affordance. */
+.trio figcaption a {
+  color: inherit;
+  text-decoration: none;
+}
+.trio figcaption a:hover,
+.trio figcaption a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 /* ---------- Status strip ---------- */
 .status-strip {

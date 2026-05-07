@@ -27,15 +27,15 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 <section class="trio">
   <figure>
     <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    <figcaption><a href="{{ '/scenes/activity9/' | relative_url }}">ACTIVITY 9 · boat pass</a></figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
-    <figcaption>JOHNNY 6 · daydream</figcaption>
+    <figcaption><a href="{{ '/scenes/johnny6/' | relative_url }}">JOHNNY 6 · daydream</a></figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption>FISHING 1 · reference</figcaption>
+    <figcaption><a href="{{ '/scenes/fishing1/' | relative_url }}">FISHING 1 · reference</a></figcaption>
   </figure>
 </section>
 
