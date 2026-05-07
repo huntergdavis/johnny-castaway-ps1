@@ -27,21 +27,27 @@ avoid stomping pixels. Some are mostly standing animation and some are little
 movies. They all eventually need the same thing: watch the PS1 output, compare
 against reference, fix what is wrong, mark the row.
 
-## Why only five validated
+## Why the first five mattered
 
 At the time this essay was first drafted, five scenes were validated:
 `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, and `FISHING 6`.
-The live ledger has since moved on; `FISHING 5` is now validated after
-its shark cleanup capture was rebuilt.
+The live ledger has since moved through the rest; all 63 routed scenes
+are validated as of `v0.7.0-ps1` and the headless-perf battle card is
+now its own
+[post-validation arc]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 
-That can sound small if you treat the scene count like a progress bar. It is
-not the right read. The first validated scene built the pipeline. The second
-proved the pipeline was not a one-off accident. The next three proved the
-loop could survive placement bugs, residual cleanup bugs, and real variant
-checks. The remaining fifty-eight are work, but they are work inside a known
+Five out of sixty-three could sound small if you treat the scene count
+like a progress bar. It is not the right read. The first validated
+scene built the pipeline. The second proved the pipeline was not a
+one-off accident. The next three proved the loop could survive
+placement bugs, residual cleanup bugs, and real variant checks. The
+remaining fifty-eight became work, but they were work inside a known
 frame.
 
-The difference between "nothing is known" and "the loop is known" is enormous.
+The difference between "nothing is known" and "the loop is known" is
+enormous. The same difference shows up later in performance work: once
+the first row of the matrix has a number, the rest are numbers in
+context, not unknowns.
 
 ## The daily loop
 
@@ -64,12 +70,14 @@ uneventful.
 
 ## The grind is the project
 
-There is no grand final algorithm that validates the other fifty-eight. There
-will be tricks. There will be pack improvements. There will be more codegen.
-But the work is still one scene at a time.
+There was no grand final algorithm that validated the other fifty-eight.
+There were tricks. There were pack improvements. There was more codegen.
+But the work stayed one scene at a time, and the last cluster (the
+foreground-only multi-view scenes) closed on `2026-05-05` with
+`ACTIVITY 9` as the final row to flip green.
 
-That is not disappointing. It is the nature of preservation work. The only way
-to know a gag landed is to watch the gag.
+That is not disappointing. It is the nature of preservation work. The
+only way to know a gag landed is to watch the gag — sixty-three times.
 
 ## Why the website mirrors it
 

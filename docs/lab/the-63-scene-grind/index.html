@@ -102,7 +102,7 @@
       <h1>The 63-scene grind</h1>
       <p class="subtitle">The scene-by-scene validation ledger, from five signed off to the current grind.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 469 words
+          ~2 min read · 531 words
         </p>
 
       <hr class="rule" />
@@ -114,7 +114,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#the-finite-list" id="markdown-toc-the-finite-list">The finite list</a></li>
-  <li><a href="#why-only-five-validated" id="markdown-toc-why-only-five-validated">Why only five validated</a></li>
+  <li><a href="#why-the-first-five-mattered" id="markdown-toc-why-the-first-five-mattered">Why the first five mattered</a></li>
   <li><a href="#the-daily-loop" id="markdown-toc-the-daily-loop">The daily loop</a></li>
   <li><a href="#the-grind-is-the-project" id="markdown-toc-the-grind-is-the-project">The grind is the project</a></li>
   <li><a href="#why-the-website-mirrors-it" id="markdown-toc-why-the-website-mirrors-it">Why the website mirrors it</a></li>
@@ -136,21 +136,27 @@ avoid stomping pixels. Some are mostly standing animation and some are little
 movies. They all eventually need the same thing: watch the PS1 output, compare
 against reference, fix what is wrong, mark the row.</p>
 
-<h2 id="why-only-five-validated">Why only five validated</h2>
+<h2 id="why-the-first-five-mattered">Why the first five mattered</h2>
 
 <p>At the time this essay was first drafted, five scenes were validated:
 <code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, and <code class="language-plaintext highlighter-rouge">FISHING 6</code>.
-The live ledger has since moved on; <code class="language-plaintext highlighter-rouge">FISHING 5</code> is now validated after
-its shark cleanup capture was rebuilt.</p>
+The live ledger has since moved through the rest; all 63 routed scenes
+are validated as of <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> and the headless-perf battle card is
+now its own
+<a href="../from-87-to-99-5/">post-validation arc</a>.</p>
 
-<p>That can sound small if you treat the scene count like a progress bar. It is
-not the right read. The first validated scene built the pipeline. The second
-proved the pipeline was not a one-off accident. The next three proved the
-loop could survive placement bugs, residual cleanup bugs, and real variant
-checks. The remaining fifty-eight are work, but they are work inside a known
+<p>Five out of sixty-three could sound small if you treat the scene count
+like a progress bar. It is not the right read. The first validated
+scene built the pipeline. The second proved the pipeline was not a
+one-off accident. The next three proved the loop could survive
+placement bugs, residual cleanup bugs, and real variant checks. The
+remaining fifty-eight became work, but they were work inside a known
 frame.</p>
 
-<p>The difference between “nothing is known” and “the loop is known” is enormous.</p>
+<p>The difference between “nothing is known” and “the loop is known” is
+enormous. The same difference shows up later in performance work: once
+the first row of the matrix has a number, the rest are numbers in
+context, not unknowns.</p>
 
 <h2 id="the-daily-loop">The daily loop</h2>
 
@@ -175,12 +181,14 @@ uneventful.</p>
 
 <h2 id="the-grind-is-the-project">The grind is the project</h2>
 
-<p>There is no grand final algorithm that validates the other fifty-eight. There
-will be tricks. There will be pack improvements. There will be more codegen.
-But the work is still one scene at a time.</p>
+<p>There was no grand final algorithm that validated the other fifty-eight.
+There were tricks. There were pack improvements. There was more codegen.
+But the work stayed one scene at a time, and the last cluster (the
+foreground-only multi-view scenes) closed on <code class="language-plaintext highlighter-rouge">2026-05-05</code> with
+<code class="language-plaintext highlighter-rouge">ACTIVITY 9</code> as the final row to flip green.</p>
 
-<p>That is not disappointing. It is the nature of preservation work. The only way
-to know a gag landed is to watch the gag.</p>
+<p>That is not disappointing. It is the nature of preservation work. The
+only way to know a gag landed is to watch the gag — sixty-three times.</p>
 
 <h2 id="why-the-website-mirrors-it">Why the website mirrors it</h2>
 
