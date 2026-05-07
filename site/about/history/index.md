@@ -51,7 +51,7 @@ precompiled macOS toolchain was attempted and abandoned (missing
 Docker: `Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK's toolchain file; CD packaging via
-mkpsxiso; one shell script (`build-ps1.sh`, later
+[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script (`build-ps1.sh`, later
 `rebuild-and-let-run.sh`) on top.
 
 Core implementation came next. The plan was: port only the platform
