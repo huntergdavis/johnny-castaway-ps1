@@ -208,134 +208,1790 @@ and this page.
 
 ### 126-variant battle card
 
-| Scene | Tide | Status | Latest Run | Stats Version | Over Target | Target Speed | VBlanks | Blocking | Prefetch | Due | Notes |
-|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---|
-| `activity1` | high | measured | 2026-05-06T04:01:15 | activity1-v072c-current-refresh | -0.4% | 100.4% | 2754/2764 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `activity1` | low | measured | 2026-05-06T04:01:15 | activity1-v072c-current-refresh | -0.4% | 100.4% | 2754/2765 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `activity4` | high | measured | 2026-05-06T04:41:05 | activity4-fishing4-v072c-prefetch-relief | -0.1% | 100.1% | 1065/1066 | 4 | 4 | 0 | clean-snapshot relief restores stage1_window prefetch versus fresh ACTIVITY4 current row; accepted hidden-refill tradeoff remains |
-| `activity4` | low | measured | 2026-05-06T04:41:05 | activity4-fishing4-v072c-prefetch-relief | -0.4% | 100.4% | 1064/1068 | 1 | 1 | 0 | clean-snapshot relief collapses ACTIVITY4 low due misses and restores stage1_window prefetch |
-| `activity5` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -1.1% | 101.1% | 1730/1749 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `activity5` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -1.0% | 101.0% | 1731/1749 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `activity6` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | +0.1% | 99.9% | 912/911 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `activity6` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | +0.1% | 99.9% | 912/911 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `activity7` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.5% | 100.5% | 593/596 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `activity7` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.3% | 100.3% | 594/596 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `activity8` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 898/904 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `activity8` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.6% | 100.6% | 899/904 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `activity9` | high | measured | 2026-05-06T07:14:27 | activity9-fgp3-v072c | +2.2% | 97.9% | 2101/2056 | 44 | 28 | 2 | padded pal4 FGP3 temporal-residual conversion keeps the original 1745484-byte CD footprint while shrinking runtime payload to 1453793 bytes |
-| `activity9` | low | measured | 2026-05-06T07:45:20 | activity9-lowgroup-v072c | +1.8% | 98.2% | 2093/2056 | 43 | 14 | 5 | low-tide pal4 FGP3 grouped append for sectors 624..636 reduces visible CD pressure after the padded FGP3 conversion |
-| `activity10` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | +0.0% | 100.0% | 1259/1259 | 7 | 4 | 1 |  |
-| `activity10` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.1% | 100.1% | 1255/1256 | 17 | 4 | 2 |  |
-| `activity11` | high | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | +0.5% | 99.5% | 1729/1720 | 10 | 4 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `activity11` | low | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | +0.7% | 99.3% | 1729/1717 | 14 | 9 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `activity12` | high | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | -0.1% | 100.1% | 1411/1412 | 7 | 7 | 0 | validated pack clean-snapshot relief exception keeps stage1_window prefetch; current high tide is baseline clean |
-| `activity12` | low | measured | 2026-05-06T03:40:30 | activity11-12-v072c-prefetch-relief | -0.1% | 100.1% | 1409/1411 | 10 | 6 | 1 | validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `building1` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | +2.1% | 98.0% | 794/778 | 21 | 21 | 0 | current validated pack refresh; baseline correction |
-| `building1` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | +1.9% | 98.1% | 794/779 | 21 | 21 | 0 | current validated pack refresh; baseline correction |
-| `building2` | high | measured | 2026-05-06T01:59:35 | stale-pressure-v072c-current-refresh | +14.9% | 87.1% | 1476/1285 | 286 | 66 | 37 | current validated pack refresh; baseline correction |
-| `building2` | low | measured | 2026-05-06T01:59:35 | stale-pressure-v072c-current-refresh | +14.6% | 87.2% | 1465/1278 | 279 | 48 | 40 | current validated pack refresh; baseline correction |
-| `building3` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `building3` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 5460/5465 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `building4` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +7.6% | 93.0% | 2985/2774 | 285 | 51 | 40 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
-| `building4` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +7.1% | 93.4% | 2981/2784 | 199 | 119 | 14 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
-| `building5` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | +0.4% | 99.6% | 3359/3346 | 20 | 20 | 0 | current validated pack refresh; baseline correction |
-| `building5` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | +0.4% | 99.6% | 3359/3347 | 19 | 19 | 0 | current validated pack refresh; baseline correction |
-| `building6` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +3.2% | 96.9% | 2520/2442 | 62 | 64 | 1 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
-| `building6` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +3.2% | 96.9% | 2515/2437 | 70 | 66 | 2 | clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains |
-| `building7` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.0% | 100.0% | 3132/3133 | 9 | 9 | 0 | current validated pack refresh; baseline correction |
-| `building7` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.1% | 100.1% | 3130/3133 | 7 | 7 | 0 | current validated pack refresh; baseline correction |
-| `fishing1` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1068/1074 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `fishing1` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.7% | 100.7% | 1067/1074 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `fishing2` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.1% | 100.1% | 1761/1763 | 6 | 6 | 0 | current validated pack refresh; baseline correction |
-| `fishing2` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | -0.3% | 100.3% | 1759/1765 | 3 | 3 | 0 | current validated pack refresh; baseline correction |
-| `fishing3` | high | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.4% | 99.6% | 1960/1952 | 18 | 13 | 1 |  |
-| `fishing3` | low | measured | 2026-05-01T07:40:38 | compact-fgp3-v66-final-frame-hold | +0.1% | 99.9% | 1956/1954 | 6 | 6 | 0 |  |
-| `fishing4` | high | measured | 2026-05-06T04:41:05 | activity4-fishing4-v072c-prefetch-relief | -0.8% | 100.8% | 835/842 | 2 | 2 | 0 | clean-snapshot relief keeps FISHING4 high under target with stage1_window prefetch restored |
-| `fishing4` | low | measured | 2026-05-06T04:41:05 | activity4-fishing4-v072c-prefetch-relief | -1.1% | 101.1% | 834/843 | 0 | 0 | 0 | clean-snapshot relief collapses FISHING4 low due misses and makes the row CD-clean |
-| `fishing5` | high | measured | 2026-05-02T22:39:34 | fishing5-v065-current-ledger-overlay | -0.6% | 100.6% | 885/890 | 0 | 0 | 0 |  |
-| `fishing5` | low | measured | 2026-05-02T22:39:34 | fishing5-v065-current-ledger-overlay | -0.6% | 100.6% | 885/890 | 0 | 0 | 0 |  |
-| `fishing6` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.2% | 101.2% | 744/753 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing6` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.2% | 101.2% | 744/753 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing7` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -1.4% | 101.4% | 715/725 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing7` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -1.4% | 101.4% | 715/725 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing8` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1243/1253 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `fishing8` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1243/1253 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny1` | high | measured | 2026-05-06T02:08:50 | johnny1-v072c-prefetch-relief | +1.5% | 98.5% | 1974/1944 | 27 | 27 | 0 | johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `johnny1` | low | measured | 2026-05-06T02:08:50 | johnny1-v072c-prefetch-relief | +1.5% | 98.5% | 1974/1944 | 27 | 27 | 0 | johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `johnny2` | high | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.6% | 99.4% | 1761/1751 | 16 | 0 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
-| `johnny2` | low | measured | 2026-05-02T19:06:01 | johnny2-v064-validation-refresh | +0.5% | 99.5% | 1758/1750 | 16 | 1 | 3 | validated v0.6.4 refresh; island-pos -64 54; correctness clean |
-| `johnny3` | high | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.3% | 100.3% | 1158/1161 | 10 | 6 | 1 |  |
-| `johnny3` | low | measured | 2026-05-06T01:47:28 | activity10-johnny3-v072-prefetch-relief | -0.8% | 100.8% | 1157/1166 | 0 | 0 | 0 |  |
-| `johnny4` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.8% | 100.8% | 1204/1214 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny5` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.1% | 101.1% | 811/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny5` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.2% | 101.2% | 810/820 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `johnny6` | high | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +1.1% | 98.9% | 2832/2800 | 28 | 28 | 0 | clean-snapshot relief restores stage1_window prefetch versus fresh current row |
-| `johnny6` | low | measured | 2026-05-06T04:15:06 | building4-6-johnny6-v072c-prefetch-relief | +1.1% | 98.9% | 2832/2800 | 28 | 28 | 0 | clean-snapshot relief restores stage1_window prefetch versus fresh current row |
-| `mary1` | high | measured | 2026-05-06T03:05:20 | mary1-v072c-prefetch-relief | +0.8% | 99.2% | 4867/4830 | 47 | 37 | 2 | mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `mary1` | low | measured | 2026-05-06T03:05:20 | mary1-v072c-prefetch-relief | +0.4% | 99.6% | 4860/4840 | 31 | 24 | 1 | mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `mary2` | high | measured | 2026-05-03T14:22:57 | mary2-v068-wide-stitch | +0.2% | 99.8% | 2250/2246 | 4 | 4 | 0 | validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed |
-| `mary2` | low | measured | 2026-05-03T14:22:57 | mary2-v068-wide-stitch | +0.3% | 99.7% | 2253/2246 | 7 | 7 | 0 | validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed |
-| `mary3` | high | measured | 2026-04-29T17:45:25 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh |
-| `mary3` | low | measured | 2026-04-29T17:45:37 | compact-fgp3-v2-fullmatrix | - | - | 0/0 | 0 | 0 | 0 | validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh |
-| `mary4` | high | measured | 2026-04-29T17:46:07 | compact-fgp3-v2-fullmatrix | -2.4% | 102.4% | 1968/2016 | 28 | 12 | 3 | validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed |
-| `mary4` | low | measured | 2026-04-29T17:46:13 | compact-fgp3-v2-fullmatrix | -2.6% | 102.7% | 1966/2019 | 24 | 10 | 3 | validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed |
-| `mary5` | high | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | +0.6% | 99.4% | 1591/1582 | 8 | 8 | 0 | current validated pack refresh; baseline correction |
-| `mary5` | low | measured | 2026-05-06T03:26:10 | stale-next-v072c-current-refresh | +0.5% | 99.5% | 1590/1582 | 7 | 7 | 0 | current validated pack refresh; baseline correction |
-| `miscgag1` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -0.8% | 100.8% | 953/961 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `miscgag1` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -0.8% | 100.8% | 953/961 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `miscgag2` | high | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | -0.3% | 100.3% | 1352/1356 | 0 | 0 | 0 |  |
-| `miscgag2` | low | measured | 2026-04-30T06:58:15 | compact-fgp3-v31-auto224 | -0.3% | 100.3% | 1352/1356 | 0 | 0 | 0 |  |
-| `stand1` | high | measured | 2026-05-05T23:17:25 | stand1-v072-current-refresh | -4.0% | 104.1% | 194/202 | 0 | 0 | 0 | current validated 18-entry host-deadline pack refresh; baseline correction |
-| `stand1` | low | measured | 2026-05-05T23:17:25 | stand1-v072-current-refresh | -4.0% | 104.1% | 194/202 | 0 | 0 | 0 | current validated 18-entry host-deadline pack refresh; baseline correction |
-| `stand2` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -2.0% | 102.1% | 480/490 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand2` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -2.0% | 102.1% | 480/490 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand3` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.8% | 101.8% | 547/557 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand3` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -1.8% | 101.8% | 547/557 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand4` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.5% | 101.5% | 1202/1220 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand4` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1203/1218 | 3 | 3 | 0 | current validated pack refresh; baseline correction |
-| `stand5` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1442/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand5` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.2% | 101.2% | 1442/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand6` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.3% | 101.3% | 1346/1364 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand6` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -1.3% | 101.3% | 1346/1364 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand7` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.3% | 103.5% | 520/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand7` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.3% | 103.5% | 520/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand8` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.2% | 103.3% | 483/499 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `stand8` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.2% | 103.3% | 483/499 | 2 | 2 | 0 | current validated pack refresh; baseline correction |
-| `stand9` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.3% | 103.5% | 520/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand9` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -3.0% | 103.1% | 522/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand10` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand10` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand11` | high | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand11` | low | measured | 2026-05-05T23:34:06 | stand-family-v072-current-refresh | -1.9% | 101.9% | 528/538 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand12` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.6% | 100.6% | 1450/1459 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `stand12` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | -0.7% | 100.7% | 1450/1460 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand15` | high | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.8% | 101.8% | 444/452 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand15` | low | measured | 2026-05-06T00:55:09 | stale-zero-v072b-current-refresh | -1.8% | 101.8% | 444/452 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand16` | high | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +0.2% | 99.8% | 473/472 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `stand16` | low | measured | 2026-05-06T01:14:22 | stale-zero2-v072b-current-refresh | +0.2% | 99.8% | 473/472 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `suzy1` | high | measured | 2026-04-29T18:01:51 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy1` | low | measured | 2026-04-29T18:01:58 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy2` | high | measured | 2026-04-29T18:02:29 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `suzy2` | low | measured | 2026-04-29T18:02:35 | compact-fgp3-v2-fullmatrix | - | - | 0/6 | 0 | 0 | 0 | metadata-only; no active-loop timing; excluded from speed averages |
-| `visitor1` | high | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 672/677 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor1` | low | measured | 2026-05-05T23:47:29 | mismatch-top-v072-current-refresh | -0.7% | 100.7% | 672/677 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor3` | high | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.1% | 69.4% | 1455/1010 | 363 | 21 | 31 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
-| `visitor3` | low | measured | 2026-05-05T22:51:29 | visitor3-v072-prefetch-relief | +44.0% | 69.4% | 1453/1009 | 365 | 23 | 32 | validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff |
-| `visitor4` | high | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor4` | low | measured | 2026-05-05T23:27:49 | visitor4-v072-current-refresh | -0.9% | 100.9% | 424/428 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor5` | high | measured | 2026-05-06T00:23:01 | visitor5-v072-prefetch-relief | +1.9% | 98.1% | 1111/1090 | 12 | 12 | 0 | validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `visitor5` | low | measured | 2026-05-06T00:23:01 | visitor5-v072-prefetch-relief | +2.0% | 98.0% | 1112/1090 | 12 | 12 | 0 | validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `visitor6` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.2% | 100.2% | 2043/2047 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `visitor6` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.2% | 100.2% | 2043/2047 | 1 | 1 | 0 | current validated pack refresh; baseline correction |
-| `visitor7` | high | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.4% | 100.4% | 1619/1625 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `visitor7` | low | measured | 2026-05-06T02:48:00 | stale-layout-v072c-current-refresh | -0.4% | 100.4% | 1619/1625 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `walkstuf1` | high | measured | 2026-05-05T22:25:30 | walkstuf1-v072-prefetch-relief | +16.1% | 86.1% | 1637/1410 | 297 | 67 | 54 | validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `walkstuf1` | low | measured | 2026-05-05T22:25:30 | walkstuf1-v072-prefetch-relief | +16.0% | 86.2% | 1634/1409 | 304 | 73 | 55 | validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff |
-| `walkstuf2` | high | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -2.2% | 102.2% | 451/461 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `walkstuf2` | low | measured | 2026-05-06T00:38:12 | stale-top-v072b-current-refresh | -2.2% | 102.2% | 451/461 | 0 | 0 | 0 | current validated pack refresh; baseline correction |
-| `walkstuf3` | high | measured | 2026-05-06T02:23:47 | stale-pressure2-v072c-current-refresh | +1.9% | 98.1% | 2321/2278 | 68 | 36 | 6 | current validated pack refresh after longer noloop window; baseline correction |
-| `walkstuf3` | low | measured | 2026-05-06T02:23:47 | stale-pressure2-v072c-current-refresh | +1.1% | 98.9% | 2321/2295 | 40 | 20 | 5 | current validated pack refresh after longer noloop window; baseline correction |
+<table class="scene-perf-table">
+  <thead>
+    <tr>
+      <th>Scene</th>
+      <th>Tide</th>
+      <th>Status</th>
+      <th>Latest Run</th>
+      <th>Stats Version</th>
+      <th>Over Target</th>
+      <th>Target Speed</th>
+      <th>VBlanks</th>
+      <th>Blocking</th>
+      <th>Prefetch</th>
+      <th>Due</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>activity1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:01:15</td>
+      <td>activity1-v072c-current-refresh</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>2754/2764</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:01:15</td>
+      <td>activity1-v072c-current-refresh</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>2754/2765</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:41:05</td>
+      <td>activity4-fishing4-v072c-prefetch-relief</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>1065/1066</td>
+      <td>4</td>
+      <td>4</td>
+      <td>0</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh ACTIVITY4 current row; accepted hidden-refill tradeoff remains</td>
+    </tr>
+    <tr>
+      <td><code>activity4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:41:05</td>
+      <td>activity4-fishing4-v072c-prefetch-relief</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>1064/1068</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>clean-snapshot relief collapses ACTIVITY4 low due misses and restores stage1_window prefetch</td>
+    </tr>
+    <tr>
+      <td><code>activity5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-1.1%</td>
+      <td class="spd-green">101.1%</td>
+      <td>1730/1749</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-1.0%</td>
+      <td class="spd-green">101.0%</td>
+      <td>1731/1749</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.9%</td>
+      <td>912/911</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.9%</td>
+      <td>912/911</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.5%</td>
+      <td class="spd-green">100.5%</td>
+      <td>593/596</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>594/596</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity8</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.7%</td>
+      <td class="spd-green">100.7%</td>
+      <td>898/904</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity8</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>899/904</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>activity9</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T07:14:27</td>
+      <td>activity9-fgp3-v072c</td>
+      <td>+2.2%</td>
+      <td class="spd-yellow">97.9%</td>
+      <td>2101/2056</td>
+      <td>44</td>
+      <td>28</td>
+      <td>2</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 1745484-byte CD footprint while shrinking runtime payload to 1453793 bytes</td>
+    </tr>
+    <tr>
+      <td><code>activity9</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T07:45:20</td>
+      <td>activity9-lowgroup-v072c</td>
+      <td>+1.8%</td>
+      <td class="spd-yellow">98.2%</td>
+      <td>2093/2056</td>
+      <td>43</td>
+      <td>14</td>
+      <td>5</td>
+      <td>low-tide pal4 FGP3 grouped append for sectors 624..636 reduces visible CD pressure after the padded FGP3 conversion</td>
+    </tr>
+    <tr>
+      <td><code>activity10</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:47:28</td>
+      <td>activity10-johnny3-v072-prefetch-relief</td>
+      <td>+0.0%</td>
+      <td class="spd-green">100.0%</td>
+      <td>1259/1259</td>
+      <td>7</td>
+      <td>4</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>activity10</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:47:28</td>
+      <td>activity10-johnny3-v072-prefetch-relief</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>1255/1256</td>
+      <td>17</td>
+      <td>4</td>
+      <td>2</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>activity11</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:40:30</td>
+      <td>activity11-12-v072c-prefetch-relief</td>
+      <td>+0.5%</td>
+      <td class="spd-green">99.5%</td>
+      <td>1729/1720</td>
+      <td>10</td>
+      <td>4</td>
+      <td>1</td>
+      <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>activity11</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:40:30</td>
+      <td>activity11-12-v072c-prefetch-relief</td>
+      <td>+0.7%</td>
+      <td class="spd-green">99.3%</td>
+      <td>1729/1717</td>
+      <td>14</td>
+      <td>9</td>
+      <td>1</td>
+      <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>activity12</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:40:30</td>
+      <td>activity11-12-v072c-prefetch-relief</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>1411/1412</td>
+      <td>7</td>
+      <td>7</td>
+      <td>0</td>
+      <td>validated pack clean-snapshot relief exception keeps stage1_window prefetch; current high tide is baseline clean</td>
+    </tr>
+    <tr>
+      <td><code>activity12</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:40:30</td>
+      <td>activity11-12-v072c-prefetch-relief</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>1409/1411</td>
+      <td>10</td>
+      <td>6</td>
+      <td>1</td>
+      <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>building1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>+2.1%</td>
+      <td class="spd-yellow">98.0%</td>
+      <td>794/778</td>
+      <td>21</td>
+      <td>21</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>+1.9%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>794/779</td>
+      <td>21</td>
+      <td>21</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:59:35</td>
+      <td>stale-pressure-v072c-current-refresh</td>
+      <td>+14.9%</td>
+      <td class="spd-yellow">87.1%</td>
+      <td>1476/1285</td>
+      <td>286</td>
+      <td>66</td>
+      <td>37</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:59:35</td>
+      <td>stale-pressure-v072c-current-refresh</td>
+      <td>+14.6%</td>
+      <td class="spd-yellow">87.2%</td>
+      <td>1465/1278</td>
+      <td>279</td>
+      <td>48</td>
+      <td>40</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>5460/5465</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>5460/5465</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+7.6%</td>
+      <td class="spd-yellow">93.0%</td>
+      <td>2985/2774</td>
+      <td>285</td>
+      <td>51</td>
+      <td>40</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+    </tr>
+    <tr>
+      <td><code>building4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+7.1%</td>
+      <td class="spd-yellow">93.4%</td>
+      <td>2981/2784</td>
+      <td>199</td>
+      <td>119</td>
+      <td>14</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+    </tr>
+    <tr>
+      <td><code>building5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>+0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>3359/3346</td>
+      <td>20</td>
+      <td>20</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>+0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>3359/3347</td>
+      <td>19</td>
+      <td>19</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+3.2%</td>
+      <td class="spd-yellow">96.9%</td>
+      <td>2520/2442</td>
+      <td>62</td>
+      <td>64</td>
+      <td>1</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+    </tr>
+    <tr>
+      <td><code>building6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+3.2%</td>
+      <td class="spd-yellow">96.9%</td>
+      <td>2515/2437</td>
+      <td>70</td>
+      <td>66</td>
+      <td>2</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+    </tr>
+    <tr>
+      <td><code>building7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.0%</td>
+      <td class="spd-green">100.0%</td>
+      <td>3132/3133</td>
+      <td>9</td>
+      <td>9</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>building7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>3130/3133</td>
+      <td>7</td>
+      <td>7</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>1068/1074</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.7%</td>
+      <td class="spd-green">100.7%</td>
+      <td>1067/1074</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>1761/1763</td>
+      <td>6</td>
+      <td>6</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1759/1765</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-01T07:40:38</td>
+      <td>compact-fgp3-v66-final-frame-hold</td>
+      <td>+0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>1960/1952</td>
+      <td>18</td>
+      <td>13</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>fishing3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-01T07:40:38</td>
+      <td>compact-fgp3-v66-final-frame-hold</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.9%</td>
+      <td>1956/1954</td>
+      <td>6</td>
+      <td>6</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>fishing4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:41:05</td>
+      <td>activity4-fishing4-v072c-prefetch-relief</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>835/842</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>clean-snapshot relief keeps FISHING4 high under target with stage1_window prefetch restored</td>
+    </tr>
+    <tr>
+      <td><code>fishing4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:41:05</td>
+      <td>activity4-fishing4-v072c-prefetch-relief</td>
+      <td>-1.1%</td>
+      <td class="spd-green">101.1%</td>
+      <td>834/843</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>clean-snapshot relief collapses FISHING4 low due misses and makes the row CD-clean</td>
+    </tr>
+    <tr>
+      <td><code>fishing5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-02T22:39:34</td>
+      <td>fishing5-v065-current-ledger-overlay</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>885/890</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>fishing5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-02T22:39:34</td>
+      <td>fishing5-v065-current-ledger-overlay</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>885/890</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>fishing6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>744/753</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>744/753</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-1.4%</td>
+      <td class="spd-green">101.4%</td>
+      <td>715/725</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-1.4%</td>
+      <td class="spd-green">101.4%</td>
+      <td>715/725</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing8</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>1243/1253</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>fishing8</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>1243/1253</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>johnny1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:08:50</td>
+      <td>johnny1-v072c-prefetch-relief</td>
+      <td>+1.5%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>1974/1944</td>
+      <td>27</td>
+      <td>27</td>
+      <td>0</td>
+      <td>johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>johnny1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:08:50</td>
+      <td>johnny1-v072c-prefetch-relief</td>
+      <td>+1.5%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>1974/1944</td>
+      <td>27</td>
+      <td>27</td>
+      <td>0</td>
+      <td>johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>johnny2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-02T19:06:01</td>
+      <td>johnny2-v064-validation-refresh</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>1761/1751</td>
+      <td>16</td>
+      <td>0</td>
+      <td>3</td>
+      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+    </tr>
+    <tr>
+      <td><code>johnny2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-02T19:06:01</td>
+      <td>johnny2-v064-validation-refresh</td>
+      <td>+0.5%</td>
+      <td class="spd-green">99.5%</td>
+      <td>1758/1750</td>
+      <td>16</td>
+      <td>1</td>
+      <td>3</td>
+      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+    </tr>
+    <tr>
+      <td><code>johnny3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:47:28</td>
+      <td>activity10-johnny3-v072-prefetch-relief</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1158/1161</td>
+      <td>10</td>
+      <td>6</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>johnny3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:47:28</td>
+      <td>activity10-johnny3-v072-prefetch-relief</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>1157/1166</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>johnny4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>1204/1214</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>johnny4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>1204/1214</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>johnny5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-1.1%</td>
+      <td class="spd-green">101.1%</td>
+      <td>811/820</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>johnny5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>810/820</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>johnny6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+1.1%</td>
+      <td class="spd-yellow">98.9%</td>
+      <td>2832/2800</td>
+      <td>28</td>
+      <td>28</td>
+      <td>0</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
+    </tr>
+    <tr>
+      <td><code>johnny6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T04:15:06</td>
+      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>+1.1%</td>
+      <td class="spd-yellow">98.9%</td>
+      <td>2832/2800</td>
+      <td>28</td>
+      <td>28</td>
+      <td>0</td>
+      <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
+    </tr>
+    <tr>
+      <td><code>mary1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:05:20</td>
+      <td>mary1-v072c-prefetch-relief</td>
+      <td>+0.8%</td>
+      <td class="spd-green">99.2%</td>
+      <td>4867/4830</td>
+      <td>47</td>
+      <td>37</td>
+      <td>2</td>
+      <td>mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>mary1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:05:20</td>
+      <td>mary1-v072c-prefetch-relief</td>
+      <td>+0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>4860/4840</td>
+      <td>31</td>
+      <td>24</td>
+      <td>1</td>
+      <td>mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>mary2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-03T14:22:57</td>
+      <td>mary2-v068-wide-stitch</td>
+      <td>+0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>2250/2246</td>
+      <td>4</td>
+      <td>4</td>
+      <td>0</td>
+      <td>validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed</td>
+    </tr>
+    <tr>
+      <td><code>mary2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-03T14:22:57</td>
+      <td>mary2-v068-wide-stitch</td>
+      <td>+0.3%</td>
+      <td class="spd-green">99.7%</td>
+      <td>2253/2246</td>
+      <td>7</td>
+      <td>7</td>
+      <td>0</td>
+      <td>validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed</td>
+    </tr>
+    <tr>
+      <td><code>mary3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:45:25</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
+    </tr>
+    <tr>
+      <td><code>mary3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:45:37</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
+    </tr>
+    <tr>
+      <td><code>mary4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T17:46:07</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-2.4%</td>
+      <td class="spd-green">102.4%</td>
+      <td>1968/2016</td>
+      <td>28</td>
+      <td>12</td>
+      <td>3</td>
+      <td>validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed</td>
+    </tr>
+    <tr>
+      <td><code>mary4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T17:46:13</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-2.6%</td>
+      <td class="spd-green">102.7%</td>
+      <td>1966/2019</td>
+      <td>24</td>
+      <td>10</td>
+      <td>3</td>
+      <td>validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed</td>
+    </tr>
+    <tr>
+      <td><code>mary5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>1591/1582</td>
+      <td>8</td>
+      <td>8</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>mary5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T03:26:10</td>
+      <td>stale-next-v072c-current-refresh</td>
+      <td>+0.5%</td>
+      <td class="spd-green">99.5%</td>
+      <td>1590/1582</td>
+      <td>7</td>
+      <td>7</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>miscgag1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>953/961</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>miscgag1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-0.8%</td>
+      <td class="spd-green">100.8%</td>
+      <td>953/961</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>miscgag2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-30T06:58:15</td>
+      <td>compact-fgp3-v31-auto224</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1352/1356</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>miscgag2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-30T06:58:15</td>
+      <td>compact-fgp3-v31-auto224</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1352/1356</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>stand1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:17:25</td>
+      <td>stand1-v072-current-refresh</td>
+      <td>-4.0%</td>
+      <td class="spd-green">104.1%</td>
+      <td>194/202</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:17:25</td>
+      <td>stand1-v072-current-refresh</td>
+      <td>-4.0%</td>
+      <td class="spd-green">104.1%</td>
+      <td>194/202</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-2.0%</td>
+      <td class="spd-green">102.1%</td>
+      <td>480/490</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-2.0%</td>
+      <td class="spd-green">102.1%</td>
+      <td>480/490</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-1.8%</td>
+      <td class="spd-green">101.8%</td>
+      <td>547/557</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-1.8%</td>
+      <td class="spd-green">101.8%</td>
+      <td>547/557</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.5%</td>
+      <td class="spd-green">101.5%</td>
+      <td>1202/1220</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>1203/1218</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>1442/1460</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.2%</td>
+      <td class="spd-green">101.2%</td>
+      <td>1442/1460</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.3%</td>
+      <td class="spd-green">101.3%</td>
+      <td>1346/1364</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-1.3%</td>
+      <td class="spd-green">101.3%</td>
+      <td>1346/1364</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.3%</td>
+      <td class="spd-green">103.5%</td>
+      <td>520/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.3%</td>
+      <td class="spd-green">103.5%</td>
+      <td>520/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand8</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.2%</td>
+      <td class="spd-green">103.3%</td>
+      <td>483/499</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand8</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.2%</td>
+      <td class="spd-green">103.3%</td>
+      <td>483/499</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand9</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.3%</td>
+      <td class="spd-green">103.5%</td>
+      <td>520/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand9</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-3.0%</td>
+      <td class="spd-green">103.1%</td>
+      <td>522/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand10</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-1.9%</td>
+      <td class="spd-green">101.9%</td>
+      <td>528/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand10</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-1.9%</td>
+      <td class="spd-green">101.9%</td>
+      <td>528/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand11</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-1.9%</td>
+      <td class="spd-green">101.9%</td>
+      <td>528/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand11</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:34:06</td>
+      <td>stand-family-v072-current-refresh</td>
+      <td>-1.9%</td>
+      <td class="spd-green">101.9%</td>
+      <td>528/538</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand12</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>1450/1459</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand12</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>-0.7%</td>
+      <td class="spd-green">100.7%</td>
+      <td>1450/1460</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand15</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-1.8%</td>
+      <td class="spd-green">101.8%</td>
+      <td>444/452</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand15</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:55:09</td>
+      <td>stale-zero-v072b-current-refresh</td>
+      <td>-1.8%</td>
+      <td class="spd-green">101.8%</td>
+      <td>444/452</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand16</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>+0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>473/472</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>stand16</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T01:14:22</td>
+      <td>stale-zero2-v072b-current-refresh</td>
+      <td>+0.2%</td>
+      <td class="spd-green">99.8%</td>
+      <td>473/472</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>suzy1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T18:01:51</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code>suzy1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T18:01:58</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code>suzy2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-04-29T18:02:29</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code>suzy2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-04-29T18:02:35</td>
+      <td>compact-fgp3-v2-fullmatrix</td>
+      <td>-</td>
+      <td>-</td>
+      <td>0/6</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+    </tr>
+    <tr>
+      <td><code>visitor1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.7%</td>
+      <td class="spd-green">100.7%</td>
+      <td>672/677</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:47:29</td>
+      <td>mismatch-top-v072-current-refresh</td>
+      <td>-0.7%</td>
+      <td class="spd-green">100.7%</td>
+      <td>672/677</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T22:51:29</td>
+      <td>visitor3-v072-prefetch-relief</td>
+      <td>+44.1%</td>
+      <td class="spd-red">69.4%</td>
+      <td>1455/1010</td>
+      <td>363</td>
+      <td>21</td>
+      <td>31</td>
+      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>visitor3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T22:51:29</td>
+      <td>visitor3-v072-prefetch-relief</td>
+      <td>+44.0%</td>
+      <td class="spd-red">69.4%</td>
+      <td>1453/1009</td>
+      <td>365</td>
+      <td>23</td>
+      <td>32</td>
+      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>visitor4</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T23:27:49</td>
+      <td>visitor4-v072-current-refresh</td>
+      <td>-0.9%</td>
+      <td class="spd-green">100.9%</td>
+      <td>424/428</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor4</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T23:27:49</td>
+      <td>visitor4-v072-current-refresh</td>
+      <td>-0.9%</td>
+      <td class="spd-green">100.9%</td>
+      <td>424/428</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor5</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:23:01</td>
+      <td>visitor5-v072-prefetch-relief</td>
+      <td>+1.9%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>1111/1090</td>
+      <td>12</td>
+      <td>12</td>
+      <td>0</td>
+      <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>visitor5</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:23:01</td>
+      <td>visitor5-v072-prefetch-relief</td>
+      <td>+2.0%</td>
+      <td class="spd-yellow">98.0%</td>
+      <td>1112/1090</td>
+      <td>12</td>
+      <td>12</td>
+      <td>0</td>
+      <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>visitor6</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.2%</td>
+      <td class="spd-green">100.2%</td>
+      <td>2043/2047</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor6</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.2%</td>
+      <td class="spd-green">100.2%</td>
+      <td>2043/2047</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor7</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>1619/1625</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>visitor7</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:48:00</td>
+      <td>stale-layout-v072c-current-refresh</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>1619/1625</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf1</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-05T22:25:30</td>
+      <td>walkstuf1-v072-prefetch-relief</td>
+      <td>+16.1%</td>
+      <td class="spd-yellow">86.1%</td>
+      <td>1637/1410</td>
+      <td>297</td>
+      <td>67</td>
+      <td>54</td>
+      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf1</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-05T22:25:30</td>
+      <td>walkstuf1-v072-prefetch-relief</td>
+      <td>+16.0%</td>
+      <td class="spd-yellow">86.2%</td>
+      <td>1634/1409</td>
+      <td>304</td>
+      <td>73</td>
+      <td>55</td>
+      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf2</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-2.2%</td>
+      <td class="spd-green">102.2%</td>
+      <td>451/461</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf2</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T00:38:12</td>
+      <td>stale-top-v072b-current-refresh</td>
+      <td>-2.2%</td>
+      <td class="spd-green">102.2%</td>
+      <td>451/461</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>current validated pack refresh; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf3</code></td>
+      <td>high</td>
+      <td>measured</td>
+      <td>2026-05-06T02:23:47</td>
+      <td>stale-pressure2-v072c-current-refresh</td>
+      <td>+1.9%</td>
+      <td class="spd-yellow">98.1%</td>
+      <td>2321/2278</td>
+      <td>68</td>
+      <td>36</td>
+      <td>6</td>
+      <td>current validated pack refresh after longer noloop window; baseline correction</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf3</code></td>
+      <td>low</td>
+      <td>measured</td>
+      <td>2026-05-06T02:23:47</td>
+      <td>stale-pressure2-v072c-current-refresh</td>
+      <td>+1.1%</td>
+      <td class="spd-yellow">98.9%</td>
+      <td>2321/2295</td>
+      <td>40</td>
+      <td>20</td>
+      <td>5</td>
+      <td>current validated pack refresh after longer noloop window; baseline correction</td>
+    </tr>
+  </tbody>
+</table>
 
 ## How to read this
 

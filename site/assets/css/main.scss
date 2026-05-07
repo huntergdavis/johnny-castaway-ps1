@@ -703,6 +703,51 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   .scene-table td.scene-status.ok  { color: var(--jc-palm); }
 }
 
+/* ---------- Headless-perf battle card (126-variant table) ----------
+ * Color-codes the Target Speed cell per row:
+ *   ≥ 99% → green   (at or above target)
+ *   ≥ 80% → yellow  (close but below)
+ *   < 80% → red     (well below)
+ * rgba so the value text stays readable; black/white text in dark mode
+ * gets enough contrast over the muted backgrounds.
+ */
+.scene-perf-table {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+.scene-perf-table th,
+.scene-perf-table td {
+  padding: 0.4em 0.65em;
+  border-bottom: 1px solid var(--fg-mute);
+  white-space: nowrap;
+  vertical-align: top;
+}
+.scene-perf-table th {
+  text-align: left;
+  background: rgba(0, 0, 0, 0);
+}
+.scene-perf-table td:nth-child(6),
+.scene-perf-table td:nth-child(7),
+.scene-perf-table td:nth-child(8),
+.scene-perf-table td:nth-child(9),
+.scene-perf-table td:nth-child(10),
+.scene-perf-table td:nth-child(11) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.scene-perf-table td.spd-green  { background: rgba(0, 168, 0, 0.18); font-weight: 700; }
+.scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.20); font-weight: 700; }
+.scene-perf-table td.spd-red    { background: rgba(252,   0, 0, 0.18); font-weight: 700; }
+@media (prefers-color-scheme: dark) {
+  .scene-perf-table td.spd-green  { background: rgba(0, 252, 0, 0.20); color: var(--jc-blue-deep); }
+  .scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.30); color: var(--jc-blue-deep); }
+  .scene-perf-table td.spd-red    { background: rgba(252,  0,  0, 0.32); color: var(--jc-sun-cream); }
+}
+
 /* ---------- Scene pager (per-scene prev / ledger / next) ---------- */
 .scene-pager {
   display: grid;
