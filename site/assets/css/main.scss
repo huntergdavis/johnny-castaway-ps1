@@ -791,6 +791,17 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   white-space: nowrap;
   vertical-align: top;
 }
+/* Long-content columns wrap so the 12-column table fits more
+   viewports without the user thinking the per-row detail is
+   gone. Stats Version (col 5) holds verbose pack-version slugs;
+   Notes (col 12) holds prose. The numeric columns and short
+   identifiers stay `nowrap` so per-row alignment reads cleanly. */
+.scene-perf-table td:nth-child(5),
+.scene-perf-table td:nth-child(12) {
+  white-space: normal;
+  max-width: 32ch;
+  word-break: break-word;
+}
 .scene-perf-table th {
   text-align: left;
   background: rgba(0, 0, 0, 0);
