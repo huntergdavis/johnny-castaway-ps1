@@ -67,7 +67,9 @@ loop reads `40 -> 39`, and loop read VBlanks `335 -> 332` with fixed foreground
 LBAs and the accepted `215040` byte PS-EXE sector bucket. Treat this as proof
 that VISITOR3 groups need scheduler/slack ownership; the next VISITOR3 pass
 should continue generated ownership/data-shape work rather than adding
-unguarded hand tables.
+unguarded hand tables. A current-baseline prepared-present threshold retune
+from held slack `4` to `5` stayed exact-flat on VISITOR3 high and low, so do
+not spend more local threshold-only probes here without a new scheduler budget.
 
 Latest promoted MARY2 baseline: keep the same-layout padded FGP3 temporal
 residual conversion for both validated packs. High tide improves the
@@ -1110,6 +1112,7 @@ pre-v0.8.0 row.
 | Prepared visual `>=4` threshold | Do not retry as a threshold-only tweak; it failed structurally before metrics. |
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | VISITOR3 prepared-visual `>=4` threshold after high `170..186` | Do not retry as a threshold-only tweak. The current-source probe stayed exact-flat on VISITOR3 high and low, so the remaining gap needs CD-first scheduling or generated append ownership rather than broader local prepare eligibility. |
+| VISITOR3 prepared-present threshold `5` after cleanup compaction | Do not retry as a threshold-only tweak. It stayed exact-flat at the current `1406/1405` VISITOR3 high/low baseline, so the scheduler needs generated CD ownership or pack/data-shape work rather than another local slack constant. |
 | VISITOR3 high `144..156` current-window group after cleanup compaction | Do not retry as a source-table append. The fresh post-BUILDING4 baseline probe stayed exact-flat on VISITOR3 high/low (`1406/1019` and `1405/1015`), reported `group_hits=0`, and only shifted hot symbols by `+4` bytes. Retry this sector cluster only if scheduler-owned refill metadata changes when the append is attempted. |
 | VISITOR3 resident-window staging reuse | Do not retry as a broad local staging eligibility change. It saved one VISITOR3 high duplicate read and reduced blocking, but turned hidden refill into `prefetch_overrun_vb 7 -> 40` and regressed low tide `loop_vb 1405 -> 1409`. Retry only with explicit generated refill budget/cadence ownership, not by treating every resident large entry as stageable. |
 | VISITOR3 high read group `97..113` | Do not retry as a source-table group. It saved reads (`40 -> 38`) but regressed high tide `loop_vb 1406 -> 1421` and `blocking_vb 296 -> 309` with stable layout. Early VISITOR3 clusters are visible-gap-sensitive; use scheduler-owned refill timing or data-shape work instead. |
