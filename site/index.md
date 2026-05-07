@@ -68,9 +68,11 @@ fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
 off by human review across every applicable variant. Current mainline work is
 bugfixing, performance, and feature polish; the `v0.8.0` baseline is closing
 the last bit of speed gap, and most scenes already run at native rate. The
-[scene ledger]({{ '/scenes/' | relative_url }}) tracks the
-visual signoff bar and the headless-perf battle card per
-scene, side by side.
+two ledgers live separately: the
+[scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
+signoff and the
+[performance battle card]({{ '/perf/' | relative_url }}) tracks
+headless DuckStation timing for every scene/tide variant.
 
 ## How it works (the short version)
 
