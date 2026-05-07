@@ -194,3 +194,19 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="dead-end">Dead end (named out loud)</dt>
 <dd>A path that did not work, kept in the public record because dead ends are content. The <a href="{{ '/devlog/' | relative_url }}">devlog</a> is verbatim — superseded plans, partial successes, week-long timing bugs preserved unedited. The blog convention is to name them with a short lampshade ("Bummer." "Lightbulb moment!") rather than rewrite history into a clean narrative.</dd>
 </dl>
+
+## See also
+
+- [/scenes/]({{ '/scenes/' | relative_url }}) — the visual signoff
+  ledger; the FISHING 1 bar in practice.
+- [/perf/]({{ '/perf/' | relative_url }}) — the headless-perf
+  battle card; the column headers (`over_target`, `blocking_vb`,
+  `prefetch_hits`, etc.) all have entries above.
+- [/docs/]({{ '/docs/' | relative_url }}) — the reference manuals
+  these definitions support.
+- [/lab/]({{ '/lab/' | relative_url }}) — the magazine-length
+  retrospectives where many of these terms got their first
+  in-context introduction.
+- [/about/voice/]({{ '/about/voice/' | relative_url }}) — the
+  editorial standard the entries above are written to. The voice
+  that lets a definition stay terse without being curt.
