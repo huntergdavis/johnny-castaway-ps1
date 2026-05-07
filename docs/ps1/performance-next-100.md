@@ -117,8 +117,11 @@ Rejected cap edge: `196 KiB` regressed high-tide loop `1450 -> 1454`, overrun
 regressed loop `1450 -> 1452` and overrun `435 -> 437` despite lowering
 blocking `355 -> 353`; `208 KiB` regressed overrun `435 -> 436`, blocking
 `355 -> 359`, and loop reads `45 -> 49` despite lowering prefetch overrun
-`14 -> 13`. Treat `192 KiB` as the closed accepted cap. The next VISITOR3 work
-should be scheduler-owned CD timing or selective pack/data-shape preprocessing.
+`14 -> 13`. A later current-baseline `224 KiB` retry after cleanup compaction
+kept layout fixed and lowered reads, but regressed high `1406 -> 1410` and low
+`1405 -> 1413` with worse visible blocking. Treat `192 KiB` as the closed
+accepted cap. The next VISITOR3 work should be scheduler-owned CD timing or
+selective pack/data-shape preprocessing.
 
 Rejected post-cap standalone group: `{158,170}` saved one nominal VISITOR3 high
 read (`45 -> 44`) but regressed loop `1450 -> 1453`, overrun `435 -> 438`,
