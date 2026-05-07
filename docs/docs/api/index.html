@@ -102,7 +102,7 @@
       <h1>API mapping (SDL2 → PSn00bSDK)</h1>
       <p class="subtitle">Every SDL2 symbol the upstream engine called, mapped to the PSn00bSDK call that replaced it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1225 words
+          ~5 min read · 1263 words
         </p>
 
       <hr class="rule" />
@@ -735,8 +735,14 @@ in the research directory, but it has not been implemented.</p>
 <ul>
   <li><a href="../build/">Build &amp; toolchain</a> — how
 PSn00bSDK is installed in the dev image.</li>
+  <li><a href="../hardware/">Hardware</a> — the
+underlying GPU / SPU / CD specs the mappings target.</li>
+  <li><a href="../audio/">Audio pipeline</a> — the
+SDL2 audio surface mapped to the PSn00bSDK SPU side.</li>
   <li><a href="../pause-menu/">Pause menu</a> — extensive use
 of <code class="language-plaintext highlighter-rouge">POLY_F4</code>, <code class="language-plaintext highlighter-rouge">SPRT</code>, and the OT pattern.</li>
+  <li><a href="../freeplay/">Freeplay mode</a> — the
+largest live consumer of the <code class="language-plaintext highlighter-rouge">gr*</code> graphics surface.</li>
   <li><a href="../captions/">Closed captions</a> — <code class="language-plaintext highlighter-rouge">SPRT</code>-based
 glyph rendering against a shared font atlas.</li>
 </ul>
