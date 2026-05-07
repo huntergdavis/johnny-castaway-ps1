@@ -41,6 +41,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="story-loop-walks">Story-loop walks</dt>
 <dd>The runtime path that moves Johnny between scenes instead of teleporting him. Fires after the screensaver-loop scene picker has chosen the next scene and before that scene's <a href="#fg2-pack">FG2 pack</a> plays. Uses Sierra's pre-baked <code>walk_data.h</code> route table from the original engine; the PS1-side modules are <code>src/walk_pilot.c</code> (state) and <code>src/walk_render.c</code> (per-frame draw, also reused by Freeplay direct-control walks). Shipped in <code>v0.4.20-ps1</code>; v0.7.2 added a backdrop-key guard, v0.8.0 a clean-rect retry path, v0.8.1 wave-band/split-rect pressure accounting. Full reference at <a href="{{ '/docs/walks/' | relative_url }}">/docs/walks/</a>.</dd>
 
+<dt id="frog-clock">Frog clock</dt>
+<dd>The animated loading-transition card that appears between scene swaps and during freeplay teardown/rebuild. Sierra's original engine had a static "MEANWHILE…" frame (<code>MEANWHIL.BMP</code> + a single hand sprite); the PS1 port shipped it static at first and then in <code>v0.6.x</code> turned it into a 36-VBlank animation with hour and minute hands positioned from the original <code>MEANWHIL.TTM</code> script. Plays during walk-skipping cycles too — see the <a href="{{ '/devlog/scene-set-and-frog-clock/' | relative_url }}">scene-set-and-frog-clock devlog</a> for the sequence-reset story.</dd>
+
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
 
