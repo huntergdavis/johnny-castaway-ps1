@@ -74,7 +74,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 2667,
+  "wordCount": 2708,
   "timeRequired": "PT10M",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -133,7 +133,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~10 min read · 2632 words
+          ~10 min read · 2673 words
         </p>
 
       <hr class="rule" />
@@ -186,7 +186,7 @@
   <li>The Atom feed and JSON Feed have to work in feed readers that fetch them and need full URLs to link back to the site.</li>
   <li>The JSON-LD structured data is consumed by search engines and AI agents, which need fully qualified URIs.</li>
   <li>The redirect HTML pages (from <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter) emit <code class="language-plaintext highlighter-rouge">&lt;meta http-equiv="refresh"&gt;</code> URLs that browsers resolve as absolute.</li>
-  <li>The Open Graph and Twitter Card meta tags (<code class="language-plaintext highlighter-rouge">og:url</code>, <code class="language-plaintext highlighter-rouge">og:image</code>, <code class="language-plaintext highlighter-rouge">twitter:image</code>) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don’t resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through <code class="language-plaintext highlighter-rouge">relative_url</code> and rendered as <code class="language-plaintext highlighter-rouge">./</code> and <code class="language-plaintext highlighter-rouge">../../assets/...</code> post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.)</li>
+  <li>The Open Graph and Twitter Card meta tags (<code class="language-plaintext highlighter-rouge">og:url</code>, <code class="language-plaintext highlighter-rouge">og:image</code>, <code class="language-plaintext highlighter-rouge">twitter:image</code>) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don’t resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through <code class="language-plaintext highlighter-rouge">relative_url</code> and rendered as <code class="language-plaintext highlighter-rouge">./</code> and <code class="language-plaintext highlighter-rouge">../../assets/...</code> post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.) The head template also emits <code class="language-plaintext highlighter-rouge">og:image:width</code> / <code class="language-plaintext highlighter-rouge">og:image:height</code> so consumers can size the preview slot before the image fetch lands — <code class="language-plaintext highlighter-rouge">1200×630</code> for the default branding card; per-asset values from <code class="language-plaintext highlighter-rouge">image_width</code> / <code class="language-plaintext highlighter-rouge">image_height</code> frontmatter on the five pages that override <code class="language-plaintext highlighter-rouge">page.image</code>.</li>
 </ul>
 
 <p><code class="language-plaintext highlighter-rouge">site.baseurl</code> is empty during the build. So is <code class="language-plaintext highlighter-rouge">site.url + site.baseurl</code>. The fix is a separate config key that the build can’t override:</p>
