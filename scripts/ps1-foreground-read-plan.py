@@ -543,6 +543,10 @@ def parse_source_setup_policy() -> dict[str, Any]:
         policy["walkstuf1_high_setup_prime_trim_bytes"] = symbols[
             "FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES"
         ]
+    if "FG_WALKSTUF1_LOW_SETUP_PRIME_MAX_RESIDENT_BYTES" in symbols:
+        policy["walkstuf1_low_setup_prime_max_resident_bytes"] = symbols[
+            "FG_WALKSTUF1_LOW_SETUP_PRIME_MAX_RESIDENT_BYTES"
+        ]
     if "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES" in symbols:
         policy["activity12_high_prime_bytes"] = symbols[
             "FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES"
@@ -680,7 +684,9 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
         trim = 0 if lowtide else source_policy.get("walkstuf1_high_setup_prime_trim_bytes")
         if isinstance(normal, int) and isinstance(base, int) and isinstance(trim, int):
             prime = (normal << 2) + base - trim
-            return clamp_setup_prime_bytes(source_policy, prime), [], (
+            cap = source_policy.get("walkstuf1_low_setup_prime_max_resident_bytes") if lowtide else None
+            cap_override = cap if isinstance(cap, int) and cap > 0 else None
+            return clamp_setup_prime_bytes(source_policy, prime, cap_override), [], (
                 "auto:walkstuf1-low" if lowtide else "auto:walkstuf1-high"
             )
     if scene_name == "visitor1" and not lowtide:

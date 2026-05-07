@@ -274,12 +274,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.6% over target /
-99.7% target speed** (`0.5830%` exact over target / `99.6672%` exact target speed).
+99.7% target speed** (`0.5706%` exact over target / `99.6769%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
 `activity9-low-fgp3-cleanup-compact-v081`,
 `activity9-current-v081-refresh`,
@@ -334,13 +335,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T04:18:16`; per-row freshness and stats version are shown on
+run is `2026-05-07T06:46:25`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `visitor3-fgp3-cleanup-compact-v081`,
+`walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
 `mary2-prefetch-relief-v081`,
 `mary2-fgp3-padded-v081`,
@@ -699,7 +701,7 @@ rows are historical only.
     <tr>
       <td><code>walkstuf1</code></td>
       <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
-      <td>+15.5% / 86.6% (1614/1397); due 49; blk 276</td>
+      <td>+14.0% / 87.7% (1604/1407); due 50; blk 270</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>

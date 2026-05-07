@@ -54,10 +54,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.5830%` exact) |
-| Timing-bearing average target speed | `99.7%` (`99.6672%` exact) |
-| Latest perf matrix run | `2026-05-07T04:18:16` |
-| Stats version | mixed across rows; newest optimized rows use `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
+| Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
+| Latest perf matrix run | `2026-05-07T06:46:25` |
+| Stats version | mixed across rows; newest optimized rows use `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -88,7 +88,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `johnny2-prefetch-relief-v081`,
+  refreshed rows use `walkstuf1-low-primecap160-v081`,
+  `johnny2-prefetch-relief-v081`,
   `activity9-low-fgp3-cleanup-compact-v081`,
   `activity9-current-v081-refresh`,
   `building4-fgp3-cleanup-compact-window-v081`,
@@ -1864,15 +1865,15 @@ and this page.
       <td><code>walkstuf1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T15:56:38</td>
-      <td>walkstuf1-fgp2-setup-prime-v080</td>
-      <td>+15.5%</td>
-      <td class="spd-yellow">86.6%</td>
-      <td>1614/1397</td>
-      <td>276</td>
-      <td>59</td>
-      <td>49</td>
-      <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
+      <td>2026-05-07T06:46:25</td>
+      <td>walkstuf1-low-primecap160-v081</td>
+      <td>+14.0%</td>
+      <td class="spd-yellow">87.7%</td>
+      <td>1604/1407</td>
+      <td>270</td>
+      <td>55</td>
+      <td>50</td>
+      <td>validated FGP2/pal4 pack; low-tide setup-prime cap raised to 160 KiB, extending setup coverage to sectors 2..78 while preserving stage1_window prefetch and exact-flat high/canary rows</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>

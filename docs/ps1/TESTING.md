@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.5830%` exact) |
-| Timing-bearing average target speed | `99.7%` (`99.6672%` exact) |
-| Latest perf matrix run | `2026-05-07T04:18:16` |
-| Stats version | mixed; newest optimized rows use `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
+| Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
+| Latest perf matrix run | `2026-05-07T06:46:25` |
+| Stats version | mixed; newest optimized rows use `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -127,6 +127,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `building5-fgp3-padded-v080`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-v072-prefetch-relief`,
+`walkstuf1-low-primecap160-v081`,
 `walkstuf1-fgp2-setup-prime-v080`,
 `fishing5-v065-current-ledger-overlay`,
 `compact-fgp3-v66-final-frame-hold`,

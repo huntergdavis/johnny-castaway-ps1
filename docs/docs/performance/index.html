@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3256 words
+          ~13 min read · 3258 words
         </p>
 
       <hr class="rule" />
@@ -400,12 +400,13 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+0.6% over target /
-99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5830%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.6672%</code> exact target speed).</p>
+99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5706%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.6769%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>,
 <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-fgp3-cleanup-compact-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity9-current-v081-refresh</code>,
@@ -460,13 +461,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T04:18:16</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-07T06:46:25</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
 rows now use <code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>,
 <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">mary2-fgp3-padded-v081</code>,
@@ -825,7 +827,7 @@ rows are historical only.</p>
     <tr>
       <td><code>walkstuf1</code></td>
       <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
-      <td>+15.5% / 86.6% (1614/1397); due 49; blk 276</td>
+      <td>+14.0% / 87.7% (1604/1407); due 50; blk 270</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
