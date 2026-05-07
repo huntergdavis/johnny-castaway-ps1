@@ -7,12 +7,13 @@ description: The 32-cell emblem sheet that overlays the island during a holiday 
 ---
 
 The four original Sierra holidays (New Year's Day, St. Patrick's
-Day, Halloween, Christmas) keep their original full-island sprites.
-The 31 holidays added by this port use a different artifact: a
-32x32 transparent emblem that overlays the corner of the screen during
-the holiday's window. There are 32 emblems total — the 31 added
-holidays plus Elvis's Birthday, which received a fresh emblem because
-the original game did not include it.
+Day, Halloween, Christmas — IDs 1–4 in `holidays.yml`) keep their
+original full-island sprites. The 32 holidays added by this port
+(IDs 5–36) use a different artifact: a 32x32 transparent emblem
+that overlays the corner of the screen during the holiday's window.
+There are 32 emblems total, one for each added holiday — `4` original
++ `32` added = `36` total holidays in the calendar (matches the home
+status pill and `holidays.yml`).
 
 The icons were authored by AI sub-agents working from
 [`docs/ps1/holidays-style-guide.md`]({{ site.github_url }}/blob/main/docs/ps1/holidays-style-guide.md)
