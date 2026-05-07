@@ -89,8 +89,8 @@ The PS1 never interprets Sierra's bytecode at runtime. That's the whole
 trick. A 1992 screensaver fits onto a CD-ROM and inside 2 MB of RAM
 because all of the smart work is done on a desktop and pre-baked.
 
-The full deep-dive — pack format, hardware gotchas, the SPI pad-poll
-fix that cost two days, the dirty-rect bookkeeping that wiped framebuffers
+The full deep-dive — pack format, hardware gotchas, the [SPI pad-poll
+fix that cost two days]({{ '/lab/two-day-spi-bug/' | relative_url }}), the dirty-rect bookkeeping that wiped framebuffers
 on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})**.
 
 </section>
