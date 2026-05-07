@@ -54,7 +54,7 @@ still finishing their prefetch-relief and stream-window work.
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
 high/low (metadata-only; the SUZY mermaid scenes don't reach a
-deterministic scene-end so they're excluded from speed averages
+deterministic [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) so they're excluded from speed averages
 on purpose).
 
 ## Rollup
