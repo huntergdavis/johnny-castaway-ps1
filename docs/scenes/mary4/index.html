@@ -141,6 +141,21 @@ foreground pixels are retained.</p>
 That is evidence for pack completeness, not a production pin; normal
 story playback can keep randomized island placement.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> shipped because of this scene. A randomized
+<a href="../../docs/glossary/#soak-test">soak</a> on top of
+<code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> froze when the screensaver loop randomly picked
+<code class="language-plaintext highlighter-rouge">mary4</code> — the
+<a href="../../docs/glossary/#clean-rect">clean-rect</a>
+pressure estimator under-counted the upper/lower split save plus
+the ocean wave band, so optional prefetch/walk memory wasn’t
+released early enough and the heap fragmented before scene playback
+could start. The fix is centralized (it covers fourteen non-exempt
+random-position scenes, not just <code class="language-plaintext highlighter-rouge">mary4</code>) and the matrix mean
+stayed compatible. The full retrospective is at
+<a href="../../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>.</p>
+
   </div>
 
   <footer class="post-footer">

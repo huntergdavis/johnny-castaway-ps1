@@ -37,3 +37,18 @@ foreground pixels are retained.
 Far-right PS1 stress playback at <code>island-pos 300 54</code> passed.
 That is evidence for pack completeness, not a production pin; normal
 story playback can keep randomized island placement.
+
+## Notable runtime history
+
+`v0.8.1-ps1` shipped because of this scene. A randomized
+[soak]({{ '/docs/glossary/#soak-test' | relative_url }}) on top of
+`v0.8.0-ps1` froze when the screensaver loop randomly picked
+`mary4` — the
+[clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
+pressure estimator under-counted the upper/lower split save plus
+the ocean wave band, so optional prefetch/walk memory wasn't
+released early enough and the heap fragmented before scene playback
+could start. The fix is centralized (it covers fourteen non-exempt
+random-position scenes, not just `mary4`) and the matrix mean
+stayed compatible. The full retrospective is at
+[/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}).
