@@ -159,6 +159,55 @@ The 404 page is therefore self-contained: `layout: null` (skips the standard chr
 - A `@media print` block in `main.scss` flattens the palette to black-on-white, strips chrome, surfaces link URLs via `a::after`, sets `@page` margins, and hints page-break-avoidance on headings, code blocks, figures. Long worklogs save as clean PDFs without any setup.
 - A custom `404.html` script reads `window.location.pathname` and renders it as `Tried: /typo/foo/` so a reader can see what was attempted. Degrades cleanly if JS is off.
 
+## The auto-generated pages and the f-string rule
+
+Three big surfaces under `site/` aren't hand-written:
+`site/source/index.md` (a wrapper page for every Markdown file outside
+the website tree), `site/resources/index.md` (the asset catalog with
+seven section tables), and
+`site/archaeology/regtest-references/cases/index.md` plus its 63
+per-case detail pages. They're emitted by
+`scripts/site-generate-library.py` on every build, before Jekyll runs.
+
+The catch is a foot-gun for any future improvement: editing those
+`.md` files in place looks fine in `git diff`, builds locally, then
+gets silently wiped on the next build because the generator
+regenerates them. I learned this the obvious way — added a TOC block
+to `site/resources/index.md`, ran the build, watched the TOC vanish.
+
+The rule the project follows now: any change to those three surfaces
+goes into the generator's f-string template, not the rendered
+markdown. The cost of remembering this once is one merge; the cost of
+shipping a "fix" that quietly disappears on the next build is one
+honestly-confused contributor and a half-hour of debugging.
+
+The pattern looks like this — note the doubled `{{:toc}}` because
+the f-string consumes one pair of braces, leaving Liquid the rest:
+
+```python
+index = f"""---
+layout: page
+title: Resource catalog
+...
+---
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{{:toc}}
+</details>
+
+{resource_sections}
+"""
+```
+
+Same trick for the case-shelf family jump nav (`<nav class="scenes-jump">`
+with per-family counts and `id="ads-<family>"` on the first row of each
+group), and for the `<caption class="visually-hidden">` per-table a11y
+captions on `/resources/`. All four shipped through the generator
+template, not the markdown.
+
 ## The shape
 
 None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.
