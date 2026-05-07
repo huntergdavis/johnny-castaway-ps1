@@ -263,7 +263,7 @@ release tag is `v0.3.6-ps1`, commit `f2737253`. That's the moment the
 project's status page counts as the first real validated scene.
 
 A second scene, **FISHING 2**, was promoted on **2026-04-24**. As of
-the current release `v0.3.10-ps1`, the count is
+the current release `{{ site.release.tag }}`, the count is
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 
 The bar for "validated" is human visual signoff plus audible SFX
