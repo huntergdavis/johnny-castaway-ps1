@@ -102,7 +102,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1072 words
+          ~4 min read · 1093 words
         </p>
 
       <hr class="rule" />
@@ -167,9 +167,12 @@ docker build <span class="nt">-f</span> Dockerfile.ps1 <span class="nt">-t</span
 <span class="c">#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).</span>
 </code></pre></div></div>
 
-<p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. The CD image is
-about 650 KB. If you want the per-scene loop instead of a one-shot build,
-read <a href="../dev-workflow/">Development workflow</a>.</p>
+<p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. At
+<code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> the CD image is about <strong>76 MB</strong> — that
+weight is almost all foreground (FG2) packs routed onto the disc;
+the PS-EXE itself is ~84 KB. If you want the per-scene loop instead
+of a one-shot build, read
+<a href="../dev-workflow/">Development workflow</a>.</p>
 
 <h2 id="the-docker-image">The Docker image</h2>
 
