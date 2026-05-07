@@ -323,3 +323,7 @@ regressions ship.
   narrative version, dated, eras-and-milestones.
 - [Status]({{ '/about/status/' | relative_url }}) — the
   component-level state at the current release.
+- [Lab: the pivot that almost didn't happen]({{ '/lab/pixel-perfect-pivot/' | relative_url }})
+  — magazine retrospective on the choice between "looks similar"
+  and pixel-perfect-with-host-capture that defined the rest of
+  this method. The decision behind every section above.
