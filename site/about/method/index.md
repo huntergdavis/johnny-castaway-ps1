@@ -301,3 +301,24 @@ documents the soak loop that catches what the per-commit matrix
 doesn't. Visual signoff and headless perf stay separate ledgers
 because their failure modes are uncorrelated; mixing them is how
 regressions ship.
+
+## Related pages
+
+- [Development workflow]({{ '/docs/dev-workflow/' | relative_url }})
+  — the author's per-scene runbook (capture, encode, replay,
+  screenshot, validate); this method page is the *why*, that
+  page is the *what to type*.
+- [File formats]({{ '/docs/formats/' | relative_url }}) — the
+  five formats this pipeline produces and consumes (FG2 pack
+  payload, pack manifest, dirty-region template, transition
+  prefetch schema, SDL compat lite).
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) — the PS1
+  envelope (33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU,
+  2× CD) every constraint above traces back to.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) — the
+  technical vocabulary used throughout (ADS, TTM, FG2 pack,
+  capture, replay, dirty-rect, FntFlush, FISHING 1 bar).
+- [History]({{ '/about/history/' | relative_url }}) — the longer
+  narrative version, dated, eras-and-milestones.
+- [Status]({{ '/about/status/' | relative_url }}) — the
+  component-level state at the current release.

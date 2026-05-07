@@ -104,7 +104,7 @@
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2124 words
+          ~8 min read · 2237 words
         </p>
 
       <hr class="rule" />
@@ -120,6 +120,7 @@
   <li><a href="#whats-in-a-pack" id="markdown-toc-whats-in-a-pack">What’s in a pack</a></li>
   <li><a href="#ps1-hardware-constraints-we-hit" id="markdown-toc-ps1-hardware-constraints-we-hit">PS1 hardware constraints we hit</a></li>
   <li><a href="#why-hybrid-won" id="markdown-toc-why-hybrid-won">Why hybrid won</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -419,6 +420,29 @@ documents the soak loop that catches what the per-commit matrix
 doesn’t. Visual signoff and headless perf stay separate ledgers
 because their failure modes are uncorrelated; mixing them is how
 regressions ship.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../docs/dev-workflow/">Development workflow</a>
+— the author’s per-scene runbook (capture, encode, replay,
+screenshot, validate); this method page is the <em>why</em>, that
+page is the <em>what to type</em>.</li>
+  <li><a href="../../docs/formats/">File formats</a> — the
+five formats this pipeline produces and consumes (FG2 pack
+payload, pack manifest, dirty-region template, transition
+prefetch schema, SDL compat lite).</li>
+  <li><a href="../../docs/hardware/">Hardware</a> — the PS1
+envelope (33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU,
+2× CD) every constraint above traces back to.</li>
+  <li><a href="../../docs/glossary/">Glossary</a> — the
+technical vocabulary used throughout (ADS, TTM, FG2 pack,
+capture, replay, dirty-rect, FntFlush, FISHING 1 bar).</li>
+  <li><a href="../history/">History</a> — the longer
+narrative version, dated, eras-and-milestones.</li>
+  <li><a href="../status/">Status</a> — the
+component-level state at the current release.</li>
+</ul>
 
   </div>
 </article>
