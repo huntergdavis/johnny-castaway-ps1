@@ -330,11 +330,11 @@ component-completeness phases:
   `closed_captions` branch of `jc_reborn`. The original sequential
   ADS-tag map had ~20 mismatches; a content-driven re-audit
   (`docs/ps1/caption-audit-2026-04-26.yaml`) replaced it.
-- **Holidays expansion.** From a small original set to **35
-  holidays**, code-generated, with an emblem sprite sheet packed
-  into the holiday overlay. Selectable from the pause menu and
-  from `BOOTMODE.TXT`. Design notes in
-  `docs/ps1/holidays-expansion-design.md`.
+- **Holidays expansion.** From the original four (Christmas, New
+  Year, Halloween, St. Patrick's) to **36 holidays**, code-generated,
+  with an emblem sprite sheet packed into the holiday overlay.
+  Selectable from the pause menu and from `BOOTMODE.TXT`. Design
+  notes in `docs/ps1/holidays-expansion-design.md`.
 - **Pause menu locked design.** Start opens an overlay mid-scene,
   custom embedded 8x8 ASCII font (because PSn00bSDK's `FntFlush`
   is empirically broken in the scene-runtime context),
