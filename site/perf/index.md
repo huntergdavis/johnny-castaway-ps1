@@ -38,11 +38,11 @@ A scene can be timed here without being visually certified.
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-The two red rows are `visitor3` high and low (both around `69.4%`
-after the v0.7.2 prefetch-relief refresh; the largest single
-optimization target left on the matrix). The yellow cluster includes
-the wide-action and `BUILDING2` rows still finishing their
-prefetch-relief and stream-window work.
+The two red rows are `visitor3` high (`70.0%`) and `visitor3`
+low (`69.7%`) after the `v0.8.0` setup-prime + group 170..186
+work; the largest single optimization target left on the matrix.
+The yellow cluster includes the wide-action and `BUILDING2` rows
+still finishing their prefetch-relief and stream-window work.
 
 The 6 untimed rows are `MARY 3` high/low (active-loop timing not
 yet refreshed against the current pack), and `SUZY 1` + `SUZY 2`
@@ -1711,29 +1711,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.1%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1455/1010</td>
-      <td>363</td>
-      <td>21</td>
+      <td>2026-05-06T15:10:17</td>
+      <td>visitor3-setup-prime-192k-v080</td>
+      <td>+42.9%</td>
+      <td class="spd-red">70.0%</td>
+      <td>1450/1015</td>
+      <td>355</td>
+      <td>14</td>
       <td>31</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>VISITOR3-only 192 KiB setup-prime resident cap reduces active-loop CD reads/blocking after accepted high-tide group 170..186; global cap remains 128 KiB</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.0%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1453/1009</td>
-      <td>365</td>
-      <td>23</td>
+      <td>2026-05-06T16:20:55</td>
+      <td>visitor3-low-group170-186-v080b</td>
+      <td>+43.5%</td>
+      <td class="spd-red">69.7%</td>
+      <td>1452/1012</td>
+      <td>361</td>
+      <td>19</td>
       <td>32</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>VISITOR3 low grouped append 170..186 saves one visible read after the 192 KiB setup-prime baseline; high/FISHING1/BUILDING2 canaries stay flat</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

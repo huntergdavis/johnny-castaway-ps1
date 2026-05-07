@@ -136,11 +136,11 @@ A scene can be timed here without being visually certified.</p>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-<p>The two red rows are <code class="language-plaintext highlighter-rouge">visitor3</code> high and low (both around <code class="language-plaintext highlighter-rouge">69.4%</code>
-after the v0.7.2 prefetch-relief refresh; the largest single
-optimization target left on the matrix). The yellow cluster includes
-the wide-action and <code class="language-plaintext highlighter-rouge">BUILDING2</code> rows still finishing their
-prefetch-relief and stream-window work.</p>
+<p>The two red rows are <code class="language-plaintext highlighter-rouge">visitor3</code> high (<code class="language-plaintext highlighter-rouge">70.0%</code>) and <code class="language-plaintext highlighter-rouge">visitor3</code>
+low (<code class="language-plaintext highlighter-rouge">69.7%</code>) after the <code class="language-plaintext highlighter-rouge">v0.8.0</code> setup-prime + group 170..186
+work; the largest single optimization target left on the matrix.
+The yellow cluster includes the wide-action and <code class="language-plaintext highlighter-rouge">BUILDING2</code> rows
+still finishing their prefetch-relief and stream-window work.</p>
 
 <p>The 6 untimed rows are <code class="language-plaintext highlighter-rouge">MARY 3</code> high/low (active-loop timing not
 yet refreshed against the current pack), and <code class="language-plaintext highlighter-rouge">SUZY 1</code> + <code class="language-plaintext highlighter-rouge">SUZY 2</code>
@@ -1858,29 +1858,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.1%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1455/1010</td>
-      <td>363</td>
-      <td>21</td>
+      <td>2026-05-06T15:10:17</td>
+      <td>visitor3-setup-prime-192k-v080</td>
+      <td>+42.9%</td>
+      <td class="spd-red">70.0%</td>
+      <td>1450/1015</td>
+      <td>355</td>
+      <td>14</td>
       <td>31</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>VISITOR3-only 192 KiB setup-prime resident cap reduces active-loop CD reads/blocking after accepted high-tide group 170..186; global cap remains 128 KiB</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.0%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1453/1009</td>
-      <td>365</td>
-      <td>23</td>
+      <td>2026-05-06T16:20:55</td>
+      <td>visitor3-low-group170-186-v080b</td>
+      <td>+43.5%</td>
+      <td class="spd-red">69.7%</td>
+      <td>1452/1012</td>
+      <td>361</td>
+      <td>19</td>
       <td>32</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>VISITOR3 low grouped append 170..186 saves one visible read after the 192 KiB setup-prime baseline; high/FISHING1/BUILDING2 canaries stay flat</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
