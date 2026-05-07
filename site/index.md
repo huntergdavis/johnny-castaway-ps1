@@ -238,6 +238,10 @@ work. Five most recent, newest first:
 
 ## Latest from the devlog
 
+The devlog is the verbatim worklog — what was in the author's
+head on a particular day, with the dead ends preserved. Five
+most recent posts, newest first:
+
 <ul class="devlog-list">
   {% for post in site.posts limit:5 %}
   <li>
