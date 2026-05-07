@@ -67,4 +67,10 @@ Public fan work survives on trust. Trust is mostly made of boring accuracy.
 - [Legal]({{ '/legal/' | relative_url }})
 - [Credits]({{ '/credits/' | relative_url }})
 - [Play]({{ '/play/' | relative_url }})
+- [FAQ]({{ '/faq/' | relative_url }}) — the author-written answers
+  to the practical questions a public fan port keeps fielding.
+- [Releases]({{ '/releases/' | relative_url }}) — the release-
+  notes discipline this article describes in practice.
+- [Voice guide]({{ '/about/voice/' | relative_url }}) — the
+  editorial standard the public-facing writing holds itself to.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }})
