@@ -291,6 +291,7 @@ That is **-0.6% over target**, or **100.6% of target speed**. Across the
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-readgroup-prune-v084`,
 `compact-u16-inline-v083`,
 `fgp3v4-drawcompact-all-v082`,
 `activity9-dead-readgroup-prune-v082`,
@@ -351,13 +352,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T15:35:11`; per-row freshness and stats version are shown on
+run is `2026-05-07T16:30:49`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `fgp3v4-drawcompact-all-v082`,
+rows now use `visitor3-high-readgroup-prune-v084`,
+`fgp3v4-drawcompact-all-v082`,
 `compact-u16-inline-v083`,
 `visitor3-fgp3-cleanup-compact-v081`,
 `walkstuf1-low-primecap160-v081`,

@@ -74,19 +74,19 @@ VISITOR3 high/low to `1357/1023` and `1361/1023`, BUILDING2 high/low to
 `1394/1301` and `1385/1303`, and leaves ACTIVITY9 low plus FISHING1 high
 inside the broad stability gate. The current all-scene battle card is now
 `0.4096%` over target / `99.7860%` target speed across `120` timing-bearing
-rows.
+rows. The follow-up VISITOR3 high read-group prune is a code-headroom
+promotion: it keeps that same rollup while shrinking `foregroundPilotPlay` by
+`48` bytes.
 
-Latest promoted VISITOR3 scheduler pass: keep the high-tide guarded
-generated-window `138..162` grouped append with `minSlackVBlanks=4`. It
-leaves loop timing flat at `1406/1019` but lowers visible blocking `294 -> 293`,
-loop reads `40 -> 39`, and loop read VBlanks `335 -> 332` with fixed foreground
-LBAs and the accepted `215040` byte PS-EXE sector bucket. The follow-up
-`72..84` row removal is also promoted: current read-plan coverage proves
-VISITOR3 high setup prime already owns sectors `1..97`, so removing the old
-row is exact-flat across broad canaries and shrinks `foregroundPilotPlay` by
-`4` bytes. Treat this as proof that VISITOR3 groups need scheduler/slack
-ownership and coverage checks; the next VISITOR3 pass should continue
-generated ownership/data-shape work rather than adding unguarded hand tables.
+Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
+window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
+scheduler/slack ownership and coverage checks, not blind hand tables. After
+compact-u16 inline, the remaining high-tide local table (`138..162`,
+`170..186`, `230..242`) is now exhausted and was removed. Broad canaries stayed
+exact-flat on VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, and
+FISHING1 high with fixed foreground LBAs and the accepted `215040` byte PS-EXE
+sector bucket, while `foregroundPilotPlay` shrank by `48` bytes. Treat that as
+code headroom for generated scheduler/data-shape work, not a VBlank speed win.
 A current-baseline prepared-present threshold retune
 from held slack `4` to `5` stayed exact-flat on VISITOR3 high and low, so do
 not spend more local threshold-only probes here without a new scheduler budget.
@@ -125,6 +125,14 @@ VISITOR3 high/low and BUILDING2 high/low; broad stability also passed
 ACTIVITY9 low and FISHING1 high with fixed pack LBAs and the `215040` byte
 PS-EXE bucket. Artifact:
 `scratch/ps1-perf-iterate/compact-u16-inline-v083-broad-stability/20260507-153511-639350/summary.json`.
+
+Latest promoted code-headroom pass: remove the exhausted VISITOR3 high local
+retained-read table and selector branch. Focused VISITOR3 high/low and broad
+VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, and FISHING1 high gates
+were exact-flat against the compact-u16 inline baseline; `foregroundPilotPlay`
+shrinks by `48` bytes and the public rollup remains `0.4096%` over target /
+`99.7860%` target speed. Artifact:
+`scratch/ps1-perf-iterate/visitor3-high-readgroup-prune-v084-broad/20260507-163049-965277/summary.json`.
 
 Latest promoted MARY2 baseline: keep the same-layout padded FGP3 temporal
 residual conversion for both validated packs. High tide improves the
@@ -1153,6 +1161,7 @@ pre-v0.8.0 row.
 | ACTIVITY9 low FGP3/v3 cleanup-metadata compaction | Done; keep as a tide-specific no-new-runtime-code pack-shape win. The paired high/low attempt is rejected because high regressed, but compacting only `ACTV9LOW.FG2` keeps the `1745484`-byte CD footprint, keeps ACTIVITY9 high flat at `2094/2056`, and improves low `2098/2056 -> 2087/2056`, `blocking_vb 47 -> 42`, `prefetch_overrun_vb 19 -> 12`, and active payload `1453793 -> 1196583`. Standard canaries across FISHING1, VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high/low, BUILDING4 high/low, BUILDING6 high/low, and ACTIVITY9 high/low passed. This checkpoint later moved to `0.4096%` over target / `99.7860%` target speed after JOHNNY2 clean-pressure relief, WALKSTUF1 low-primecap, selector cleanup, FGP3/v4 draw-metadata compaction, and compact decoder inline promotion; the current rollup is tracked at the top of this file. |
 | FGP3/v4 compact draw metadata for current compact residual packs | Done; keep. Current FGP3/v3 compact residual packs now use FGP3/v4 draw row/span metadata, preserving padded CD footprints and LBAs while reducing active metadata. VISITOR3 high/low improve to `1369/1023` and `1376/1023`, BUILDING2 high/low improve to `1405/1298` and `1395/1294`, ACTIVITY9 low improves to `2085/2058`, and the FISHING1 high control remains under target at `1068/1074`. This checkpoint later moved to `0.4096%` over target / `99.7860%` target speed after the compact decoder inline promotion; the current rollup is tracked at the top of this file. |
 | Compact FGP3/v4 metadata reader inline | Done; keep. `grReadCompactSpanU16` is now a default inline helper instead of a noinline `-Os` helper. VISITOR3 high/low improve to `1357/1023` and `1361/1023`, BUILDING2 high/low improve to `1394/1301` and `1385/1303`, ACTIVITY9 low remains timing-flat at `2085/2058` with an accepted `blocking_vb 28 -> 29`, and FISHING1 high remains exact-flat under target at `1068/1074`. Current exact matrix rollup is `0.4096%` over target / `99.7860%` target speed. |
+| VISITOR3 high read-group table prune | Done; keep as code headroom. The remaining high-tide local table (`138..162`, `170..186`, `230..242`) is exhausted after compact-u16 inline and no longer changes runtime metrics. Removing it keeps VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, and FISHING1 high exact-flat while shrinking `foregroundPilotPlay` by `48` bytes. Current exact matrix rollup remains `0.4096%` over target / `99.7860%` target speed. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |
 | BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
