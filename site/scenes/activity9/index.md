@@ -8,6 +8,8 @@ status: validated
 description: "ACTIVITY.ADS scene 9: Bathes with a brush. Validated after wide boat stitching and source-edge repair."
 image: /assets/img/activity9-ps1-boat.png
 image_alt: "ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island."
+image_width: 1127
+image_height: 677
 ---
 
 Validated on 2026-05-05 under the current visual + audible signoff bar.

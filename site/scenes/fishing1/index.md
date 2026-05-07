@@ -8,6 +8,8 @@ status: validated
 description: "FISHING.ADS scene 1: Johnny casts a line. Validated under the FISHING 1 bar."
 image: /assets/img/fishing1-ps1-cast.png
 image_alt: "FISHING 1 on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame."
+image_width: 1127
+image_height: 677
 ---
 
 <figure class="scene-hero">

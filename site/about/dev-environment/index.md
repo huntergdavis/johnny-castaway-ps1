@@ -5,6 +5,8 @@ subtitle: One screenshot of the workflow that built the post-validation performa
 description: A photograph of the development environment behind the Johnny Castaway PS1 fan port — Hunter's own Dunking Bird auto-poker, the fresh editor, Claude and Codex sub-agents on separate worktrees, DuckStation running the latest build, and bottom-monitor system telemetry on KDE Neon (Debian backend).
 image: /assets/img/dev-environment-2026-05-06-w1600.jpg
 image_alt: "Multi-monitor PS1 development environment on KDE Plasma. Dunking Bird task list, the fresh editor on C source, two AI agent prompt windows (Claude and Codex), DuckStation running Johnny Castaway, and a bottom-monitor system telemetry panel."
+image_width: 1600
+image_height: 1086
 ---
 
 A photograph of the actual workflow as of `{{ site.release.tag }}`. Click the image for the full-resolution capture.
