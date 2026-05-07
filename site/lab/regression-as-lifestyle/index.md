@@ -104,5 +104,13 @@ pretending.
 - [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }})
 - [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Vision-classifier work]({{ '/docs/vision/' | relative_url }})
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  the second ledger; same headless harness, just measuring time
+  instead of pixels.
 - [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+- [From 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }}) —
+  the regression discipline applied to perf optimization.
+- [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }}) —
+  the third loop on top of the per-commit gate: long-run
+  randomized [soak-test]({{ '/docs/glossary/#soak-test' | relative_url }}).
 - [Scene ledger]({{ '/scenes/' | relative_url }})
