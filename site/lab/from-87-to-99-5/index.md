@@ -24,7 +24,7 @@ Between then and `v0.8.0-ps1` (the current release line as of writing), the head
 The project keeps two acceptance bars and never lets them merge:
 
 - **Visual signoff** — pixel-perfect against host capture, plus SFX cues on the same engine ticks, signed off across every variant flag. Human review. The [scene ledger]({{ '/scenes/' | relative_url }}) tracks this in the top table.
-- **Headless performance** — automated DuckStation timing in capture mode. Measures `loop_vb`, `target_vb`, `over_target`, `blocking_vb`, `prefetch_hits`, byte counts. The same scene ledger has the perf battle card below the visual table.
+- **Headless performance** — automated DuckStation timing in capture mode. Measures `loop_vb`, `target_vb`, `over_target`, `blocking_vb`, `prefetch_hits`, byte counts. The live battle card is at [/perf/]({{ '/perf/' | relative_url }}) — sortable headers, color-coded Target Speed cells.
 
 A scene can clear the visual bar and still be slow. A scene can be fast and still be wrong. The ledgers stay separate because the failure modes are uncorrelated. Optimizing for speed without re-running the visual signoff would be how regressions ship.
 
@@ -103,7 +103,7 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 
 The current matrix mean is `99.5%` target speed. The remaining `0.5%` lives in a small number of high-leverage rows: the wide-action scenes with multi-view stitches, the BUILDING family's clean-rect heavy frames, a couple of MARY scenes whose composite frame budgets sit near the line. The optimization plan at `docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about thirty named experiments still on the bench. Some will land, some will join the rejected log.
 
-The home-page status strip carries the current target-speed pill (`{{ site.release.perf_target_speed_pct }}%` as of `{{ site.release.tag }}`); the [scene ledger]({{ '/scenes/' | relative_url }}) is the live battle card.
+The home-page status strip carries the current target-speed pill (`{{ site.release.perf_target_speed_pct }}%` as of `{{ site.release.tag }}`); the live battle card is at [/perf/]({{ '/perf/' | relative_url }}).
 
 ## What the loop made obvious
 

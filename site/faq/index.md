@@ -100,8 +100,8 @@ scenes hit their original frame budget on PS1 hardware. The
 remaining gap is concentrated in a small set of high-leverage
 scenes (wide-action, clean-rect-heavy frames) and is the active
 work between milestone tags. The
-[scene ledger]({{ '/scenes/' | relative_url }}) shows the
-per-scene battle card; the
+[battle card]({{ '/perf/' | relative_url }}) shows the
+per-scene timing — sortable, color-coded; the
 [retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
 walks through how the matrix moved here from the compact
 baseline of 87.1%.

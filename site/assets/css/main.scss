@@ -729,6 +729,19 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 .scene-perf-table th {
   text-align: left;
   background: rgba(0, 0, 0, 0);
+  position: relative;
+}
+/* Clickable when the table-sort.js attaches role=button on init. */
+.scene-perf-table th[role="button"]:hover {
+  background: var(--bg-alt);
+}
+.scene-perf-table th[role="button"]:focus-visible {
+  outline: 2px solid var(--jc-cyan);
+  outline-offset: -2px;
+}
+.scene-perf-table .sort-marker {
+  font-size: 0.85em;
+  color: var(--accent);
 }
 .scene-perf-table td:nth-child(6),
 .scene-perf-table td:nth-child(7),

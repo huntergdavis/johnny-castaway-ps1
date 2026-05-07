@@ -107,7 +107,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/scenes/' | relative_url }}">Live scene ledger</a>
-    <p>All 63 scenes side-by-side under both bars — visual signoff and the headless-perf battle card — with per-scene case studies and a family jump nav.</p>
+    <p>All 63 scenes with visual-signoff status, per-scene case studies, and a family jump nav. The headless-perf <a href="{{ '/perf/' | relative_url }}">battle card</a> is the sortable second ledger that lives next to it.</p>
   </li>
   <li>
     <a href="{{ '/archaeology/' | relative_url }}">The full story</a>

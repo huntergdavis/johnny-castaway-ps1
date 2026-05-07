@@ -100,7 +100,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1739 words
+          ~6 min read · 1741 words
         </p>
 
       <hr class="rule" />
@@ -126,11 +126,12 @@ diagnostic.</p>
 
 <p>The same headless DuckStation pipeline, run in <code class="language-plaintext highlighter-rouge">perf-log</code> mode against
 a deterministic boot, drives the
-<a href="../performance/">headless-perf battle card</a>
-visible at the bottom of the <a href="../../scenes/">scene ledger</a> —
-the second ledger that lives alongside visual signoff. Regtest proves
-<em>it boots and renders something</em>; the perf matrix proves <em>it hits
-target rate</em>. Different bars; same harness.</p>
+<a href="../../perf/">headless-perf battle card</a> — the
+second ledger that lives alongside <a href="../../scenes/">visual signoff</a>.
+Regtest proves <em>it boots and renders something</em>; the perf matrix
+proves <em>it hits target rate</em>. Different bars; same harness. The
+reference manual for the perf work is at
+<a href="../performance/">/docs/performance/</a>.</p>
 
 <p>If you paid for this, you were cheated. Open source and free.</p>
 
@@ -664,6 +665,7 @@ surface the regtest binary is exercising.</li>
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>

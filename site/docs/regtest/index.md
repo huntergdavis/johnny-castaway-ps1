@@ -25,11 +25,12 @@ diagnostic.
 
 The same headless DuckStation pipeline, run in `perf-log` mode against
 a deterministic boot, drives the
-[headless-perf battle card]({{ '/docs/performance/' | relative_url }})
-visible at the bottom of the [scene ledger]({{ '/scenes/' | relative_url }}) —
-the second ledger that lives alongside visual signoff. Regtest proves
-*it boots and renders something*; the perf matrix proves *it hits
-target rate*. Different bars; same harness.
+[headless-perf battle card]({{ '/perf/' | relative_url }}) — the
+second ledger that lives alongside [visual signoff]({{ '/scenes/' | relative_url }}).
+Regtest proves *it boots and renders something*; the perf matrix
+proves *it hits target rate*. Different bars; same harness. The
+reference manual for the perf work is at
+[/docs/performance/]({{ '/docs/performance/' | relative_url }}).
 
 If you paid for this, you were cheated. Open source and free.
 

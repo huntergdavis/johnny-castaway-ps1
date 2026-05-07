@@ -146,7 +146,7 @@
 
 <ul>
   <li><strong>Visual signoff</strong> — pixel-perfect against host capture, plus SFX cues on the same engine ticks, signed off across every variant flag. Human review. The <a href="../../scenes/">scene ledger</a> tracks this in the top table.</li>
-  <li><strong>Headless performance</strong> — automated DuckStation timing in capture mode. Measures <code class="language-plaintext highlighter-rouge">loop_vb</code>, <code class="language-plaintext highlighter-rouge">target_vb</code>, <code class="language-plaintext highlighter-rouge">over_target</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">prefetch_hits</code>, byte counts. The same scene ledger has the perf battle card below the visual table.</li>
+  <li><strong>Headless performance</strong> — automated DuckStation timing in capture mode. Measures <code class="language-plaintext highlighter-rouge">loop_vb</code>, <code class="language-plaintext highlighter-rouge">target_vb</code>, <code class="language-plaintext highlighter-rouge">over_target</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>, <code class="language-plaintext highlighter-rouge">prefetch_hits</code>, byte counts. The live battle card is at <a href="../../perf/">/perf/</a> — sortable headers, color-coded Target Speed cells.</li>
 </ul>
 
 <p>A scene can clear the visual bar and still be slow. A scene can be fast and still be wrong. The ledgers stay separate because the failure modes are uncorrelated. Optimizing for speed without re-running the visual signoff would be how regressions ship.</p>
@@ -230,7 +230,7 @@
 
 <p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.5%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.5%</code> lives in a small number of high-leverage rows: the wide-action scenes with multi-view stitches, the BUILDING family’s clean-rect heavy frames, a couple of MARY scenes whose composite frame budgets sit near the line. The optimization plan at <code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code> § 7 and § 8 lists about thirty named experiments still on the bench. Some will land, some will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.5%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>); the <a href="../../scenes/">scene ledger</a> is the live battle card.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.5%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
@@ -285,6 +285,7 @@
       <nav class="footer-nav" aria-label="Footer">
         <ul>
           <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
           <li><a href="../../releases/">Releases</a></li>
           <li><a href="../../faq/">FAQ</a></li>
           <li><a href="../../credits/">Credits</a></li>
