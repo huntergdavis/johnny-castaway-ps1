@@ -36,6 +36,10 @@ pack-format or scheduler change.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — visual signoff (the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})).
 - [Performance battle card]({{ '/perf/' | relative_url }}) — second ledger; per-scene timing against the target frame budget, sortable + color-coded.
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
+- [Regression testing]({{ '/docs/regtest/' | relative_url }}) —
+  the headless DuckStation runner the farm orchestrates around
+  every commit; the harness produces frame PNGs, state hashes,
+  and `JCPERF` logs the loop above parses.
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
 - [Scene performance matrix]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
 - [From 87 to 99.5: the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}) — retrospective on the optimization arc this farm fed.
