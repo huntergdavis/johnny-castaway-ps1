@@ -133,7 +133,7 @@ their failure modes are uncorrelated.
 
 - `validated` — clears the FISHING 1 bar across every applicable
   variant. Frame-diff and SFX-cue diff both clean.
-- `in-bring-up` — the scene's FG2 pack loops without dropping frames
+- `in-bring-up` — the scene's [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }}) loops without dropping frames
   and the tide variant looks correct, but it has not yet been signed
   off as fishing-1-bar-equivalent. The next likely promotion to
   `validated`.
