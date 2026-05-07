@@ -126,6 +126,10 @@ the taste, the release bar, the legal posture, or the Credits screen.
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
 - [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }})
 - [The voice anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+- [35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }})
+  — case study; the codegen pipeline whose sprite primitives an
+  LLM sub-agent drafted under the methodology this essay
+  describes.
 - [Voice guide]({{ '/about/voice/' | relative_url }}) — the
   public-facing distillation of the voice rules an LLM pass has
   to land inside.

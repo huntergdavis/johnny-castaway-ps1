@@ -89,4 +89,7 @@ documentation.
   — the sprite primitives that compose into the emblem sheet
   were drafted by an LLM sub-agent; that page records the
   human-edit pass that reviewed them.
+- [The LLM pass]({{ '/lab/llm-pass/' | relative_url }})
+  — the methodology essay whose loop this codegen story is one
+  case study of.
 - [4/20 Day]({{ '/docs/holidays/calendar/420-day/' | relative_url }})
