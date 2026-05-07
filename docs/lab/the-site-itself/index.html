@@ -102,7 +102,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1807 words
+          ~7 min read · 1900 words
         </p>
 
       <hr class="rule" />
@@ -119,7 +119,7 @@
 <ul id="markdown-toc">
   <li><a href="#the-path-portable-build" id="markdown-toc-the-path-portable-build">The path-portable build</a></li>
   <li><a href="#the-canonical_baseurl-workaround" id="markdown-toc-the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</a></li>
-  <li><a href="#the-build-script-removes-three-files" id="markdown-toc-the-build-script-removes-three-files">The build script removes three files</a></li>
+  <li><a href="#the-build-script-removes-two-files" id="markdown-toc-the-build-script-removes-two-files">The build script removes two files</a></li>
   <li><a href="#hand-rolled-feeds-no-plugin" id="markdown-toc-hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</a></li>
   <li><a href="#the-pager-pattern-shared-across-three-catalogs" id="markdown-toc-the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</a></li>
   <li><a href="#the-build-stamp-and-the-git-churn-it-caused" id="markdown-toc-the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</a></li>
@@ -172,23 +172,28 @@ relativized.</p>
 
 <p>Yes, the prefix is duplicated in two config keys. That duplication is intentional: the regular <code class="language-plaintext highlighter-rouge">baseurl</code> participates in Jekyll’s link-resolution machinery and gets blanked by build-time CLI flags, and the <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> doesn’t. They serve different jobs.</p>
 
-<h2 id="the-build-script-removes-three-files">The build script removes three files</h2>
+<h2 id="the-build-script-removes-two-files">The build script removes two files</h2>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># At the end of scripts/site-build-static-root.sh</span>
-<span class="nb">rm</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/feed.xml"</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/sitemap.xml"</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/robots.txt"</span>
+<span class="nb">rm</span> <span class="nt">-f</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/feed.xml"</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs/robots.txt"</span>
 </code></pre></div></div>
 
-<p>A standard Jekyll setup with <code class="language-plaintext highlighter-rouge">jekyll-feed</code>, <code class="language-plaintext highlighter-rouge">jekyll-sitemap</code>, and the gem-default <code class="language-plaintext highlighter-rouge">robots.txt</code> would produce all three at the root of <code class="language-plaintext highlighter-rouge">docs/</code>. On a project page hosted under a user page, those three files at the project’s deploy root would conflict with whatever the user-pages repo serves at the apex domain. Specifically:</p>
+<p>A standard Jekyll setup with <code class="language-plaintext highlighter-rouge">jekyll-feed</code> and the gem-default
+<code class="language-plaintext highlighter-rouge">robots.txt</code> would produce both at the root of <code class="language-plaintext highlighter-rouge">docs/</code>. On a project
+page hosted under a user page, those files at the project’s deploy
+root would conflict with whatever the user-pages repo serves at the
+apex domain:</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/feed.xml</code> is the user-pages site’s job, not this project’s.</li>
-  <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/sitemap.xml</code> likewise.</li>
   <li><code class="language-plaintext highlighter-rouge">hunterdavis.com/robots.txt</code> is one file per site; the apex must own it.</li>
 </ul>
 
-<p>The deletion is preventative — none of those files actually get generated today (the plugins aren’t enabled), but if a future change pulls in <code class="language-plaintext highlighter-rouge">jekyll-feed</code> they’d land in the wrong namespace. The <code class="language-plaintext highlighter-rouge">rm</code> keeps the boundary clean.</p>
+<p>The deletion is preventative — neither file actually gets generated today (the plugins aren’t enabled), but if a future change pulls in <code class="language-plaintext highlighter-rouge">jekyll-feed</code> they’d land in the wrong namespace. The <code class="language-plaintext highlighter-rouge">rm</code> keeps the boundary clean.</p>
 
 <p>The site’s own feed lives one level down the tree at <code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code> (Atom) and <code class="language-plaintext highlighter-rouge">/devlog/feed.json</code> (JSON Feed). Below the delete line.</p>
+
+<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (598 URLs at <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
 
 <h2 id="hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</h2>
 

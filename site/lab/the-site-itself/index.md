@@ -58,22 +58,27 @@ relativized.
 
 Yes, the prefix is duplicated in two config keys. That duplication is intentional: the regular `baseurl` participates in Jekyll's link-resolution machinery and gets blanked by build-time CLI flags, and the `canonical_baseurl` doesn't. They serve different jobs.
 
-## The build script removes three files
+## The build script removes two files
 
 ```bash
 # At the end of scripts/site-build-static-root.sh
-rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/sitemap.xml" "$ROOT/docs/robots.txt"
+rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/robots.txt"
 ```
 
-A standard Jekyll setup with `jekyll-feed`, `jekyll-sitemap`, and the gem-default `robots.txt` would produce all three at the root of `docs/`. On a project page hosted under a user page, those three files at the project's deploy root would conflict with whatever the user-pages repo serves at the apex domain. Specifically:
+A standard Jekyll setup with `jekyll-feed` and the gem-default
+`robots.txt` would produce both at the root of `docs/`. On a project
+page hosted under a user page, those files at the project's deploy
+root would conflict with whatever the user-pages repo serves at the
+apex domain:
 
 - `hunterdavis.com/feed.xml` is the user-pages site's job, not this project's.
-- `hunterdavis.com/sitemap.xml` likewise.
 - `hunterdavis.com/robots.txt` is one file per site; the apex must own it.
 
-The deletion is preventative — none of those files actually get generated today (the plugins aren't enabled), but if a future change pulls in `jekyll-feed` they'd land in the wrong namespace. The `rm` keeps the boundary clean.
+The deletion is preventative — neither file actually gets generated today (the plugins aren't enabled), but if a future change pulls in `jekyll-feed` they'd land in the wrong namespace. The `rm` keeps the boundary clean.
 
 The site's own feed lives one level down the tree at `/devlog/feed.xml` (Atom) and `/devlog/feed.json` (JSON Feed). Below the delete line.
+
+The third file in this list used to be `sitemap.xml` and the `rm` originally removed all three. That changed when the site grew a hand-rolled `/sitemap.xml` (598 URLs at `{{ site.release.tag }}`), generated from a Liquid template at `site/sitemap.xml` that uses `site.canonical_baseurl` directly so it survives the `--baseurl ""` build override. Pages opt out via `sitemap: false` front matter (the feeds, the sitemap itself, the 404, redirect stubs). `lastmod` uses `page.date` when present and falls back to the build-day stamp. The `<link rel="sitemap">` autodiscovery tag in `_includes/head.html` points at it. The `rm` line stopped touching `sitemap.xml` so the hand-rolled one survives the build pass.
 
 ## Hand-rolled feeds, no plugin
 
