@@ -388,6 +388,12 @@ keeps being compared against while a scene moves from "it boots" to "it is
 signed off."
 
 <table>
+<caption class="visually-hidden">
+  Regression test case shelf: 63 preserved host baselines, one
+  per scene captured before the validated-on-PS1 bar shipped.
+  Columns are case name (linking to the case detail page), ADS
+  family, scene tag, captured frame count, and verification status.
+</caption>
 <thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
 <tbody>
 {rows}

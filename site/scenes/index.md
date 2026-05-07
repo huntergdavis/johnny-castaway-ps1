@@ -76,6 +76,13 @@ host-vs-PS1 reference frames where applicable.
 </nav>
 
 <table class="scene-table">
+  <caption class="visually-hidden">
+    Scene ledger at {{ site.release.tag }}: {{ validated_count }} of
+    {{ total_count }} scenes validated under the FISHING 1 bar.
+    Columns are ADS-and-tag, scene name, status, last-verified
+    release tag, and notes. Rows are grouped by ADS family; use
+    the family jump-nav above to skip to a section.
+  </caption>
   <thead>
     <tr>
       <th class="scene-tag">ADS · tag</th>
