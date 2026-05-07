@@ -19,6 +19,13 @@ Markdown documentation, the [scene ledger]({{ '/scenes/' | relative_url }})
 for runtime status, and the [Curious Hacker's Guide]({{ '/hack/' | relative_url }})
 for the practical porting path.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Original bitmap resources
 
 <table>
