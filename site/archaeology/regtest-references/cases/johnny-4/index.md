@@ -51,6 +51,7 @@ ee96bf3a73653780f3a568a5e5fa348fa4fef71e10d7d4616b8b3132929ab867
 
 ## Cross-links
 
+- [Live scene page: `JOHNNY 4`]({{ '/scenes/johnny4/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

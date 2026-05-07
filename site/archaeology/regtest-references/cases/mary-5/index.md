@@ -51,6 +51,7 @@ with.
 
 ## Cross-links
 
+- [Live scene page: `MARY 5`]({{ '/scenes/mary5/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

@@ -51,6 +51,7 @@ df66a6924790ec81450b74c6ae2348b5e7fc8029896b2affe329195f99b19ea2
 
 ## Cross-links
 
+- [Live scene page: `MARY 3`]({{ '/scenes/mary3/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

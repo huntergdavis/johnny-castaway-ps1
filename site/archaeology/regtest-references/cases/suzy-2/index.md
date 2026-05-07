@@ -51,6 +51,7 @@ a91e47dc1120cbf00edb4ac4d6f190c901d1b0d8e629c822672d306c5de5b82b
 
 ## Cross-links
 
+- [Live scene page: `SUZY 2`]({{ '/scenes/suzy2/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

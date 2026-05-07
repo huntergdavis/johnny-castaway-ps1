@@ -51,6 +51,7 @@ bf98fdd0d69cc957f46e785c6ba97cfd1c522e66d8bd613f1b19af885cfdb48c
 
 ## Cross-links
 
+- [Live scene page: `BUILDING 1`]({{ '/scenes/building1/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

@@ -51,6 +51,7 @@ f23f992d2bb981170615f7ae5c04c6f5aadcc8e4dbf4a033c1f8c27630bb40dc
 
 ## Cross-links
 
+- [Live scene page: `ACTIVITY 7`]({{ '/scenes/activity7/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

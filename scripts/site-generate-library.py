@@ -307,6 +307,9 @@ def generate_regtest_cases() -> None:
         status = meta.get("status", "")
         date = meta.get("capture_date", "")
         source_rel = rel(case_dir)
+        # Scene slug uses lowercase ADS + tag (e.g. ACTIVITY-1 → activity1).
+        # Verified all 63 cases map exactly to live scene pages.
+        scene_slug = f"{str(ads).lower()}{tag}"
 
         content = f"""---
 layout: page
@@ -361,6 +364,7 @@ with.
 
 ## Cross-links
 
+- [Live scene page: `{ads} {tag}`]({{{{ '/scenes/{scene_slug}/' | relative_url }}}}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{{{ '/archaeology/regtest-references/cases/' | relative_url }}}})
 - [Regtest reference narrative]({{{{ '/archaeology/regtest-references/' | relative_url }}}})
 - [Scene ledger]({{{{ '/scenes/' | relative_url }}}})

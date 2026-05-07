@@ -51,6 +51,7 @@ da0b9bd2015f2c8ee82810f1718ea7b246ee9201b508b933fc060fa0ef3a3f85
 
 ## Cross-links
 
+- [Live scene page: `VISITOR 7`]({{ '/scenes/visitor7/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})
