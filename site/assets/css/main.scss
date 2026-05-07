@@ -742,6 +742,26 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 .scene-perf-table td.spd-green  { background: rgba(0, 168, 0, 0.18); font-weight: 700; }
 .scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.20); font-weight: 700; }
 .scene-perf-table td.spd-red    { background: rgba(252,   0, 0, 0.18); font-weight: 700; }
+.scene-perf-legend {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: var(--fg-mute);
+  margin: 1.2rem 0 0.6rem;
+}
+.scene-perf-legend .spd-key {
+  display: inline-block;
+  padding: 0.1em 0.55em;
+  margin: 0 0.35rem;
+  font-family: var(--font-pixel);
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+  color: var(--fg);
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+.scene-perf-legend .spd-key.spd-green  { background: rgba(0, 168, 0, 0.18); }
+.scene-perf-legend .spd-key.spd-yellow { background: rgba(252, 252, 0, 0.20); }
+.scene-perf-legend .spd-key.spd-red    { background: rgba(252,   0, 0, 0.18); }
 @media (prefers-color-scheme: dark) {
   .scene-perf-table td.spd-green  { background: rgba(0, 252, 0, 0.20); color: var(--jc-blue-deep); }
   .scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.30); color: var(--jc-blue-deep); }

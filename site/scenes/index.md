@@ -208,6 +208,14 @@ and this page.
 
 ### 126-variant battle card
 
+<p class="scene-perf-legend" aria-label="Target speed legend">
+  Target Speed colour key:
+  <span class="spd-key spd-green">≥ 99% (at target)</span>
+  <span class="spd-key spd-yellow">≥ 80% (close)</span>
+  <span class="spd-key spd-red">&lt; 80% (well below)</span>
+  Rows without timing data show "—" and stay uncolored.
+</p>
+
 <table class="scene-perf-table">
   <thead>
     <tr>
