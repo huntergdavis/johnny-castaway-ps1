@@ -15,16 +15,18 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.0-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.9% over target / 99.5% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.8% over target / 99.5% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-timing-bearing rows average `+0.8309%` over target / `99.4779%` target speed.
-It also fixes a randomized BUILDING4 clean-rect pressure BSOD by releasing
-stale walk-clean buffers before retrying large scene clean snapshots.
+current timing-bearing rows average `+0.8231%` over target / `99.4858%`
+target speed after the post-release BUILDING5 padded-FGP3 optimization.
+The release also fixes a randomized BUILDING4 clean-rect pressure BSOD by
+releasing stale walk-clean buffers before retrying large scene clean
+snapshots.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.

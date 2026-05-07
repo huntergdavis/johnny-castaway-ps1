@@ -159,7 +159,8 @@ this page gives the narrative around it.
 Latest point release: `v0.8.0-ps1` is the complete-scene performance
 baseline. All 63 scenes remain validated, all 126 high/low scene variants are
 routed through the headless performance matrix, and the timing-bearing rows
-average `+0.8309%` over target / `99.4779%` target speed. It also hardens
+now average `+0.8231%` over target / `99.4858%` target speed after the
+post-release BUILDING5 padded-FGP3 optimization. The release also hardens
 randomized play by retrying BUILDING4-scale clean-rect allocation after
 releasing stale walk-clean memory pressure. See
 [release-notes-0.8.0.md](release-notes-0.8.0.md).
@@ -167,9 +168,13 @@ releasing stale walk-clean memory pressure. See
 Current post-release perf branch: VISITOR3 now keeps the accepted high-tide
 `170..186` retained read group and uses a VISITOR3-only `192 KiB` setup-prime
 resident cap. WALKSTUF1 now also gets PAL4 setup-prime coverage while keeping
-the global setup-prime cap at `128 KiB`, and VISITOR3 low has the accepted `170..186` grouped append on top of the `192 KiB` setup-prime baseline. WALKSTUF1 high improves to
-`1595/1403` with `blocking_vb=278`; low improves to `1614/1397` with
-`blocking_vb=276`. VISITOR3 remains the largest remaining outlier.
+the global setup-prime cap at `128 KiB`, VISITOR3 low has the accepted
+`170..186` grouped append on top of the `192 KiB` setup-prime baseline, and
+BUILDING5 high/low now use padded FGP3 packs while preserving the original
+`818670`-byte CD footprints. WALKSTUF1 high improves to `1595/1403` with
+`blocking_vb=278`; low improves to `1614/1397` with `blocking_vb=276`.
+BUILDING5 high/low now run at `3343/3348` and `3345/3347` with visible
+blocking cut to `5/8` VBlanks. VISITOR3 remains the largest remaining outlier.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the

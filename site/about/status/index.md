@@ -15,7 +15,7 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 `v0.8.0-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed, and the
-headless timing-bearing average is +0.9% over target / 99.5% target speed.
+headless timing-bearing average is +0.8% over target / 99.5% target speed.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -91,7 +91,7 @@ Pulled from the live narrative in
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
   loading, memory pressure, and release polish. `v0.8.0` sets the current
-  headless baseline at +0.9% over target / 99.5% target speed. The bring-up
+  headless baseline at +0.8% over target / 99.5% target speed. The bring-up
   loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

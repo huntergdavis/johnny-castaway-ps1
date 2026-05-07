@@ -159,9 +159,9 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-05-06 battle-card refresh, FISHING 1 high is
 `loop_vb=1068` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+0.9%` over target /
-`99.5%` target speed as of `visitor3-low-group170-186-v080b` (`0.8309%` exact over target /
-`99.4779%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+0.8%` over target /
+`99.5%` target speed as of `building5-fgp3-padded-v080` (`0.8231%` exact over target /
+`99.4858%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1515,11 +1515,12 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-312` | Failed: PAL4 aligned pair-store compose helper. | A local `grCompositePacked4OpaqueRun()` variant that wrote two 16-bit pixels with one aligned 32-bit store shrank ELF `796412 -> 795968`, but BUILDING4 high regressed `loop_vb 3071 -> 3077`, `overrun_vb 279 -> 284`, `blocking_vb 234 -> 237`, and `loop_read_vb 378 -> 381` with unchanged read/work counts. Do not promote runtime pair-store branching alone; retry compose-width work only as generated aligned command classes, pack/runtime-owned pair LUTs, or an indexed8-only probe with separate canaries. |
 | `P5-313` | Done: add visible-cost ranking to foreground read plans. | `scripts/ps1-foreground-read-plan.py` now emits `visible_candidate_sets` and per-candidate `visible_safety_score`, `visible_risk_score`, `visible_risk_hint`, `visible_risk_reasons`, first/internal gap fields, partial-overlap count, observed sectors, and overread sectors. This is host-side tooling only, but it directly addresses the recent BUILDING6/VISITOR3/WALKSTUF pattern where raw saved-read ranking picked exact-flat or regressing groups. Use it as the next read-group filter before any source probe. |
 | `P5-314` | Done: add VISITOR3 low read group `170..186` on the current baseline. | A previous `170..186` low-tide retry failed before the later setup-prime/source-shape changes, so this is recorded as `visitor3-low-group170-186-v080b`. With the accepted 192 KiB VISITOR3 setup-prime baseline, the low-tide group now improves `loop_vb 1453 -> 1452`, `overrun_vb 441 -> 440`, `blocking_vb 362 -> 361`, and `loop_reads 50 -> 49`; high tide, FISHING1 high, and BUILDING2 low canaries stay flat. Latest low row now uses `visitor3-low-group170-186-v080b`; exact matrix average improves to `0.8309%` over target / `99.4779%` target speed. |
+| `P5-315` | Done: convert current BUILDING5 high/low to padded FGP3. | The validated compact BUILDING5 PAL4 packs still fit a same-layout FGP3 temporal-residual encoding. Converting both high and low packs, padding each back to the existing `818670` byte CD footprint, and rerunning the strict high/low gate improves high tide `scene_vb 3622 -> 3606`, `loop_vb 3359 -> 3343`, `overrun_vb 13 -> 0`, `blocking_vb 20 -> 5`, and `loop_reads 56 -> 41`; low improves `scene_vb 3621 -> 3609`, `loop_vb 3357 -> 3345`, `overrun_vb 10 -> 0`, `blocking_vb 17 -> 8`, and `loop_reads 56 -> 41`. Latest rows now use `building5-fgp3-padded-v080`; exact matrix average improves to `0.8231%` over target / `99.4858%` target speed. |
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `visitor3-low-group170-186-v080b`: the matrix is now
-`120` timing-bearing rows at `0.8309%` exact average over target / `99.4779%`
+Checkpoint after `building5-fgp3-padded-v080`: the matrix is now
+`120` timing-bearing rows at `0.8231%` exact average over target / `99.4858%`
 exact target speed. The VISITOR3/WALKSTUF1/VISITOR5/ACTIVITY10/JOHNNY3/JOHNNY1/ACTIVITY9/MARY1/ACTIVITY11/ACTIVITY12/BUILDING4/BUILDING6/JOHNNY6/ACTIVITY4/FISHING4 recoveries prove validation-pack
 refreshes can change memory pressure enough to reopen old prefetch paths; the
 STAND, ACTIVITY7, VISITOR1, FISHING7, ACTIVITY8, WALKSTUF2, STAND3, BUILDING1,

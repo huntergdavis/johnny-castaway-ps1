@@ -156,19 +156,19 @@ Current battle-card rollup as of 2026-05-06:
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td><code>+0.9%</code> (<code>0.8309%</code> exact)</td>
+      <td><code>+0.8%</code> (<code>0.8231%</code> exact)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td><code>99.5%</code> (<code>99.4779%</code> exact)</td>
+      <td><code>99.5%</code> (<code>99.4858%</code> exact)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td><code>2026-05-06T16:20:55</code></td>
+      <td><code>2026-05-06T17:38:07</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td>mixed; newest optimized rows use <code>visitor3-low-group170-186-v080b</code>, <code>walkstuf1-fgp2-setup-prime-v080</code>, and <code>visitor3-setup-prime-192k-v080</code>; full row-level versions remain in <code>performance-scene-matrix.csv</code></td>
+      <td>mixed; newest optimized rows use <code>building5-fgp3-padded-v080</code>, <code>visitor3-low-group170-186-v080b</code>, <code>walkstuf1-fgp2-setup-prime-v080</code>, and <code>visitor3-setup-prime-192k-v080</code>; full row-level versions remain in <code>performance-scene-matrix.csv</code></td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -204,7 +204,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The newest
-  optimized rows use `visitor3-low-group170-186-v080b`,
+  optimized rows use `building5-fgp3-padded-v080`,
+  `visitor3-low-group170-186-v080b`,
   `walkstuf1-fgp2-setup-prime-v080`, and
   `visitor3-setup-prime-192k-v080`; older row-level versions remain visible
   in the table instead of being collapsed into a single global baseline.
@@ -625,29 +626,29 @@ and this page.
       <td><code>building5</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td>99.6%</td>
-      <td>3359/3346</td>
-      <td>20</td>
-      <td>20</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td>100.1%</td>
+      <td>3343/3348</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td>99.6%</td>
-      <td>3359/3347</td>
-      <td>19</td>
-      <td>19</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td>100.1%</td>
+      <td>3345/3347</td>
+      <td>8</td>
+      <td>8</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building6</code></td>

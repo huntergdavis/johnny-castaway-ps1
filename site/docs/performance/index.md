@@ -270,13 +270,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.9% over target /
-99.5% target speed** (`0.8309%` exact over target / `99.4779%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+0.8% over target /
+99.5% target speed** (`0.8231%` exact over target / `99.4858%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building5-fgp3-padded-v080`,
 `visitor3-low-group170-186-v080b`,
 `walkstuf1-fgp2-setup-prime-v080`,
 `visitor3-setup-prime-192k-v080`,
@@ -322,13 +323,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T16:20:55`; per-row freshness and stats version are shown on
+run is `2026-05-06T17:38:07`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-low-group170-186-v080b`,
+rows now use `building5-fgp3-padded-v080`,
+`visitor3-low-group170-186-v080b`,
 `walkstuf1-fgp2-setup-prime-v080`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-high-group170-186-v080-current`,
@@ -451,8 +453,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building5</code></td>
-      <td>+0.4% / 99.6% (3359/3346); blk 20</td>
-      <td>+0.4% / 99.6% (3359/3347); blk 19</td>
+      <td>-0.1% / 100.1% (3343/3348); blk 5</td>
+      <td>-0.1% / 100.1% (3345/3347); blk 8</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
