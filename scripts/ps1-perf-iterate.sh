@@ -128,8 +128,8 @@ Gate rules:
     coverage gaps are warnings, not accepted speed evidence.
   - correctness trip/fallback/stale/frame/sound/CD counters must be zero.
   - gfx full_fallbacks must be zero.
-  - with --baseline, loop_vb, timing overrun_vb, blocking_vb, and prefetch
-    overrun_vb must not regress beyond --allow-regression.
+  - with --baseline, scene_vb, loop_vb, timing overrun_vb, blocking_vb,
+    and prefetch overrun_vb must not regress beyond --allow-regression.
   - with --baseline, render/restore/compose/upload call counts must not fall
     below --work-identity-min unless explicitly disabled.
   - with --baseline, PS-EXE sector bucket and foreground pack LBA must stay
@@ -1236,6 +1236,7 @@ if baseline_path and baseline_path.is_file():
         baseline_cases[case.get("label")] = case
 
 compare_fields = [
+    ("timing", "scene_vb"),
     ("timing", "loop_vb"),
     ("timing", "overrun_vb"),
     ("cd", "blocking_vb"),
@@ -1276,6 +1277,7 @@ def synthesize_fingerprint(case):
         return existing
     sections = case.get("sections", {})
     timing = sections.get("timing", {})
+    setup = sections.get("setup", {})
     cd = sections.get("cd", {})
     prefetch = sections.get("prefetch", {})
     scene = sections.get("scene", {})
@@ -1286,8 +1288,10 @@ def synthesize_fingerprint(case):
     symbols = hot_symbols(case)
     return {
         "metrics": {
+            "scene_vb": timing.get("scene_vb"),
             "loop_vb": timing.get("loop_vb"),
             "target_vb": timing.get("target_vb"),
+            "setup_vb": setup.get("setup_vb"),
             "blocking_vb": cd.get("blocking_vb"),
             "prefetch_overrun_vb": prefetch.get("overrun_vb"),
             "loop_reads": cd.get("loop_reads"),
@@ -1375,6 +1379,8 @@ for case in cases:
             current = field(case, section, key)
             previous = field(base, section, key)
             if current is None or previous is None:
+                if section == "timing" and key == "scene_vb":
+                    warnings.append("baseline comparison skipped timing.scene_vb; metric missing from current or baseline")
                 continue
             limit = previous * (1.0 + allow_pct / 100.0)
             delta = current - previous
@@ -1503,6 +1509,7 @@ for case in cases:
     status = "PASS" if gate.get("pass") else "FAIL"
     print(
         f"{status} {case['label']}: "
+        f"scene_vb={timing.get('scene_vb')} "
         f"loop_vb={timing.get('loop_vb')} target_vb={timing.get('target_vb')} "
         f"blocking_vb={cd.get('blocking_vb')} "
         f"policy={prefetch.get('policy')} hits={prefetch.get('hits')} "
