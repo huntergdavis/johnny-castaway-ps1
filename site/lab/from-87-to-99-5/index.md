@@ -138,3 +138,19 @@ A few things this work clarified that the validation grind didn't:
 - **A canary scene is the right unit of measurement.** FISHING 1's high-tide canary stayed on every release run as the baseline tracker. The matrix moved; the canary was the load-bearing reference frame.
 
 The disc plays. That was always the point. It also plays at near native rate now, which means it plays *the way the original looked*, on the hardware nobody thought it would. That's the point too.
+
+## Cross-links
+
+- [/perf/]({{ '/perf/' | relative_url }}) — the live battle card this article is the back-story for.
+- [/scenes/]({{ '/scenes/' | relative_url }}) — the visual signoff ledger; the parallel acceptance bar.
+- [/docs/performance/]({{ '/docs/performance/' | relative_url }}) — reference manual for what each column on the battle card means.
+- [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the stability follow-on that left this article's matrix mean untouched.
+- [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — the slowest two rows; the largest single optimization target left.
+- [/scenes/activity9/]({{ '/scenes/activity9/' | relative_url }}) — wide-boat scene; padded FGP3 + scoped low-tide read group case study.
+- [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — clean-rect-heavy variant; representative of the drop-prefetch unlock.
+- [/scenes/fishing1/]({{ '/scenes/fishing1/' | relative_url }}) — the canary scene the matrix tracks against every release.
+- [Glossary: FGP3]({{ '/docs/glossary/#fgp3' | relative_url }}) — the pack format most rebuilds converged on.
+- [Glossary: prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }}) — the buffer the drop-prefetch mechanism releases under clean-rect pressure.
+- [Glossary: read group]({{ '/docs/glossary/#read-group' | relative_url }}) — the CD layout primitive the ACTIVITY 9 scope-narrowing exploited.
+- [Glossary: experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }}) — the long-form table of every accepted and rejected probe.
+- [Glossary: canary scene]({{ '/docs/glossary/#canary' | relative_url }}) — the FISHING 1 high-tide load-bearing reference frame.
