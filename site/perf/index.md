@@ -178,7 +178,7 @@ and this page.
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr id="perf-activity1-high">
       <td><code>activity1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -192,7 +192,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity1-low">
       <td><code>activity1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -206,7 +206,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity4-high">
       <td><code>activity4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -220,7 +220,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh ACTIVITY4 current row; accepted hidden-refill tradeoff remains</td>
     </tr>
-    <tr>
+    <tr id="perf-activity4-low">
       <td><code>activity4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -234,7 +234,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief collapses ACTIVITY4 low due misses and restores stage1_window prefetch</td>
     </tr>
-    <tr>
+    <tr id="perf-activity5-high">
       <td><code>activity5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -248,7 +248,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity5-low">
       <td><code>activity5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -262,7 +262,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity6-high">
       <td><code>activity6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -276,7 +276,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity6-low">
       <td><code>activity6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -290,7 +290,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity7-high">
       <td><code>activity7</code></td>
       <td>high</td>
       <td>measured</td>
@@ -304,7 +304,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity7-low">
       <td><code>activity7</code></td>
       <td>low</td>
       <td>measured</td>
@@ -318,7 +318,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity8-high">
       <td><code>activity8</code></td>
       <td>high</td>
       <td>measured</td>
@@ -332,7 +332,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity8-low">
       <td><code>activity8</code></td>
       <td>low</td>
       <td>measured</td>
@@ -346,7 +346,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-activity9-high">
       <td><code>activity9</code></td>
       <td>high</td>
       <td>measured</td>
@@ -360,7 +360,7 @@ and this page.
       <td>2</td>
       <td>padded pal4 FGP3 temporal-residual conversion keeps the original 1745484-byte CD footprint while shrinking runtime payload to 1453793 bytes</td>
     </tr>
-    <tr>
+    <tr id="perf-activity9-low">
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
@@ -374,7 +374,7 @@ and this page.
       <td>5</td>
       <td>low-tide pal4 FGP3 grouped append for sectors 624..636 reduces visible CD pressure after the padded FGP3 conversion</td>
     </tr>
-    <tr>
+    <tr id="perf-activity10-high">
       <td><code>activity10</code></td>
       <td>high</td>
       <td>measured</td>
@@ -388,7 +388,7 @@ and this page.
       <td>1</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-activity10-low">
       <td><code>activity10</code></td>
       <td>low</td>
       <td>measured</td>
@@ -402,7 +402,7 @@ and this page.
       <td>2</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-activity11-high">
       <td><code>activity11</code></td>
       <td>high</td>
       <td>measured</td>
@@ -416,7 +416,7 @@ and this page.
       <td>1</td>
       <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-activity11-low">
       <td><code>activity11</code></td>
       <td>low</td>
       <td>measured</td>
@@ -430,7 +430,7 @@ and this page.
       <td>1</td>
       <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-activity12-high">
       <td><code>activity12</code></td>
       <td>high</td>
       <td>measured</td>
@@ -444,7 +444,7 @@ and this page.
       <td>0</td>
       <td>validated pack clean-snapshot relief exception keeps stage1_window prefetch; current high tide is baseline clean</td>
     </tr>
-    <tr>
+    <tr id="perf-activity12-low">
       <td><code>activity12</code></td>
       <td>low</td>
       <td>measured</td>
@@ -458,7 +458,7 @@ and this page.
       <td>1</td>
       <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-building1-high">
       <td><code>building1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -472,7 +472,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building1-low">
       <td><code>building1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -486,7 +486,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building2-high">
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -500,7 +500,7 @@ and this page.
       <td>37</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building2-low">
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -514,7 +514,7 @@ and this page.
       <td>40</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building3-high">
       <td><code>building3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -528,7 +528,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building3-low">
       <td><code>building3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -542,7 +542,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building4-high">
       <td><code>building4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -556,7 +556,7 @@ and this page.
       <td>40</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
     </tr>
-    <tr>
+    <tr id="perf-building4-low">
       <td><code>building4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -570,7 +570,7 @@ and this page.
       <td>14</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
     </tr>
-    <tr>
+    <tr id="perf-building5-high">
       <td><code>building5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -584,7 +584,7 @@ and this page.
       <td>0</td>
       <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
-    <tr>
+    <tr id="perf-building5-low">
       <td><code>building5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -598,7 +598,7 @@ and this page.
       <td>0</td>
       <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
-    <tr>
+    <tr id="perf-building6-high">
       <td><code>building6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -612,7 +612,7 @@ and this page.
       <td>1</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
     </tr>
-    <tr>
+    <tr id="perf-building6-low">
       <td><code>building6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -626,7 +626,7 @@ and this page.
       <td>2</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
     </tr>
-    <tr>
+    <tr id="perf-building7-high">
       <td><code>building7</code></td>
       <td>high</td>
       <td>measured</td>
@@ -640,7 +640,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-building7-low">
       <td><code>building7</code></td>
       <td>low</td>
       <td>measured</td>
@@ -654,7 +654,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing1-high">
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -668,7 +668,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing1-low">
       <td><code>fishing1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -682,7 +682,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing2-high">
       <td><code>fishing2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -696,7 +696,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing2-low">
       <td><code>fishing2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -710,7 +710,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing3-high">
       <td><code>fishing3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -724,7 +724,7 @@ and this page.
       <td>1</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-fishing3-low">
       <td><code>fishing3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -738,7 +738,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-fishing4-high">
       <td><code>fishing4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -752,7 +752,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief keeps FISHING4 high under target with stage1_window prefetch restored</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing4-low">
       <td><code>fishing4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -766,7 +766,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief collapses FISHING4 low due misses and makes the row CD-clean</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing5-high">
       <td><code>fishing5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -780,7 +780,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-fishing5-low">
       <td><code>fishing5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -794,7 +794,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-fishing6-high">
       <td><code>fishing6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -808,7 +808,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing6-low">
       <td><code>fishing6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -822,7 +822,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing7-high">
       <td><code>fishing7</code></td>
       <td>high</td>
       <td>measured</td>
@@ -836,7 +836,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing7-low">
       <td><code>fishing7</code></td>
       <td>low</td>
       <td>measured</td>
@@ -850,7 +850,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing8-high">
       <td><code>fishing8</code></td>
       <td>high</td>
       <td>measured</td>
@@ -864,7 +864,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-fishing8-low">
       <td><code>fishing8</code></td>
       <td>low</td>
       <td>measured</td>
@@ -878,7 +878,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny1-high">
       <td><code>johnny1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -892,7 +892,7 @@ and this page.
       <td>0</td>
       <td>johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny1-low">
       <td><code>johnny1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -906,7 +906,7 @@ and this page.
       <td>0</td>
       <td>johnny1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny2-high">
       <td><code>johnny2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -920,7 +920,7 @@ and this page.
       <td>3</td>
       <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny2-low">
       <td><code>johnny2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -934,7 +934,7 @@ and this page.
       <td>3</td>
       <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny3-high">
       <td><code>johnny3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -948,7 +948,7 @@ and this page.
       <td>1</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-johnny3-low">
       <td><code>johnny3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -962,7 +962,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-johnny4-high">
       <td><code>johnny4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -976,7 +976,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny4-low">
       <td><code>johnny4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -990,7 +990,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny5-high">
       <td><code>johnny5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1004,7 +1004,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny5-low">
       <td><code>johnny5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1018,7 +1018,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny6-high">
       <td><code>johnny6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1032,7 +1032,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
     </tr>
-    <tr>
+    <tr id="perf-johnny6-low">
       <td><code>johnny6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1046,7 +1046,7 @@ and this page.
       <td>0</td>
       <td>clean-snapshot relief restores stage1_window prefetch versus fresh current row</td>
     </tr>
-    <tr>
+    <tr id="perf-mary1-high">
       <td><code>mary1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1060,7 +1060,7 @@ and this page.
       <td>2</td>
       <td>mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-mary1-low">
       <td><code>mary1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1074,7 +1074,7 @@ and this page.
       <td>1</td>
       <td>mary1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-mary2-high">
       <td><code>mary2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1088,7 +1088,7 @@ and this page.
       <td>0</td>
       <td>validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed</td>
     </tr>
-    <tr>
+    <tr id="perf-mary2-low">
       <td><code>mary2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1102,7 +1102,7 @@ and this page.
       <td>0</td>
       <td>validated v0.6.8 wide multi-view stitch; perf route uses island-pos -154 54; far-right and true far-left visual stress passed</td>
     </tr>
-    <tr>
+    <tr id="perf-mary3-high">
       <td><code>mary3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1116,7 +1116,7 @@ and this page.
       <td>0</td>
       <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
     </tr>
-    <tr>
+    <tr id="perf-mary3-low">
       <td><code>mary3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1130,7 +1130,7 @@ and this page.
       <td>0</td>
       <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
     </tr>
-    <tr>
+    <tr id="perf-mary4-high">
       <td><code>mary4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1144,7 +1144,7 @@ and this page.
       <td>3</td>
       <td>validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed</td>
     </tr>
-    <tr>
+    <tr id="perf-mary4-low">
       <td><code>mary4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1158,7 +1158,7 @@ and this page.
       <td>3</td>
       <td>validated 2026-05-03 after generic multi-view stitch; active timing predates refreshed pack; far-right x=300 visual stress passed</td>
     </tr>
-    <tr>
+    <tr id="perf-mary5-high">
       <td><code>mary5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1172,7 +1172,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-mary5-low">
       <td><code>mary5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1186,7 +1186,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-miscgag1-high">
       <td><code>miscgag1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1200,7 +1200,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-miscgag1-low">
       <td><code>miscgag1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1214,7 +1214,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-miscgag2-high">
       <td><code>miscgag2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1228,7 +1228,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-miscgag2-low">
       <td><code>miscgag2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1242,7 +1242,7 @@ and this page.
       <td>0</td>
       <td></td>
     </tr>
-    <tr>
+    <tr id="perf-stand1-high">
       <td><code>stand1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1256,7 +1256,7 @@ and this page.
       <td>0</td>
       <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand1-low">
       <td><code>stand1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1270,7 +1270,7 @@ and this page.
       <td>0</td>
       <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand2-high">
       <td><code>stand2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1284,7 +1284,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand2-low">
       <td><code>stand2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1298,7 +1298,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand3-high">
       <td><code>stand3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1312,7 +1312,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand3-low">
       <td><code>stand3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1326,7 +1326,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand4-high">
       <td><code>stand4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1340,7 +1340,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand4-low">
       <td><code>stand4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1354,7 +1354,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand5-high">
       <td><code>stand5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1368,7 +1368,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand5-low">
       <td><code>stand5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1382,7 +1382,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand6-high">
       <td><code>stand6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1396,7 +1396,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand6-low">
       <td><code>stand6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1410,7 +1410,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand7-high">
       <td><code>stand7</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1424,7 +1424,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand7-low">
       <td><code>stand7</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1438,7 +1438,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand8-high">
       <td><code>stand8</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1452,7 +1452,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand8-low">
       <td><code>stand8</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1466,7 +1466,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand9-high">
       <td><code>stand9</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1480,7 +1480,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand9-low">
       <td><code>stand9</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1494,7 +1494,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand10-high">
       <td><code>stand10</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1508,7 +1508,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand10-low">
       <td><code>stand10</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1522,7 +1522,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand11-high">
       <td><code>stand11</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1536,7 +1536,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand11-low">
       <td><code>stand11</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1550,7 +1550,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand12-high">
       <td><code>stand12</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1564,7 +1564,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand12-low">
       <td><code>stand12</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1578,7 +1578,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand15-high">
       <td><code>stand15</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1592,7 +1592,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand15-low">
       <td><code>stand15</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1606,7 +1606,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand16-high">
       <td><code>stand16</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1620,7 +1620,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-stand16-low">
       <td><code>stand16</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1634,7 +1634,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-suzy1-high">
       <td><code>suzy1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1648,7 +1648,7 @@ and this page.
       <td>0</td>
       <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
-    <tr>
+    <tr id="perf-suzy1-low">
       <td><code>suzy1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1662,7 +1662,7 @@ and this page.
       <td>0</td>
       <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
-    <tr>
+    <tr id="perf-suzy2-high">
       <td><code>suzy2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1676,7 +1676,7 @@ and this page.
       <td>0</td>
       <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
-    <tr>
+    <tr id="perf-suzy2-low">
       <td><code>suzy2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1690,7 +1690,7 @@ and this page.
       <td>0</td>
       <td>metadata-only; no active-loop timing; excluded from speed averages</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor1-high">
       <td><code>visitor1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1704,7 +1704,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor1-low">
       <td><code>visitor1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1718,7 +1718,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor3-high">
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1732,7 +1732,7 @@ and this page.
       <td>31</td>
       <td>VISITOR3-only 192 KiB setup-prime resident cap reduces active-loop CD reads/blocking after accepted high-tide group 170..186; global cap remains 128 KiB</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor3-low">
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1746,7 +1746,7 @@ and this page.
       <td>32</td>
       <td>VISITOR3 low grouped append 170..186 saves one visible read after the 192 KiB setup-prime baseline; high/FISHING1/BUILDING2 canaries stay flat</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor4-high">
       <td><code>visitor4</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1760,7 +1760,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor4-low">
       <td><code>visitor4</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1774,7 +1774,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor5-high">
       <td><code>visitor5</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1788,7 +1788,7 @@ and this page.
       <td>0</td>
       <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor5-low">
       <td><code>visitor5</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1802,7 +1802,7 @@ and this page.
       <td>0</td>
       <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor6-high">
       <td><code>visitor6</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1816,7 +1816,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor6-low">
       <td><code>visitor6</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1830,7 +1830,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor7-high">
       <td><code>visitor7</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1844,7 +1844,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-visitor7-low">
       <td><code>visitor7</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1858,7 +1858,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf1-high">
       <td><code>walkstuf1</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1872,7 +1872,7 @@ and this page.
       <td>57</td>
       <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf1-low">
       <td><code>walkstuf1</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1886,7 +1886,7 @@ and this page.
       <td>49</td>
       <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf2-high">
       <td><code>walkstuf2</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1900,7 +1900,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf2-low">
       <td><code>walkstuf2</code></td>
       <td>low</td>
       <td>measured</td>
@@ -1914,7 +1914,7 @@ and this page.
       <td>0</td>
       <td>current validated pack refresh; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf3-high">
       <td><code>walkstuf3</code></td>
       <td>high</td>
       <td>measured</td>
@@ -1928,7 +1928,7 @@ and this page.
       <td>6</td>
       <td>current validated pack refresh after longer noloop window; baseline correction</td>
     </tr>
-    <tr>
+    <tr id="perf-walkstuf3-low">
       <td><code>walkstuf3</code></td>
       <td>low</td>
       <td>measured</td>
