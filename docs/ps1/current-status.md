@@ -3,10 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-06 (`v0.8.1-ps1` point release; all 63 scenes remain
-validated, and randomized long-run scene loads now account for the real
-clean-rect pressure before allocation, including ocean wave-band expansion and
-upper/lower split rects).
+**Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
+current selector-cleanup baseline; all 63 scenes remain validated, and the
+headless battle card is near target at `0.5746%` over / `99.6729%` target
+speed).
 
 ## Overall
 
@@ -152,25 +152,19 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.1-ps1` is the clean-rect pressure stability
-release. All 63 scenes remain validated, and randomized long runs no longer
-under-count large split clean snapshots before scene playback. The estimator
-now mirrors the real save path: pack bounds, ocean wave band, clamping, and the
-upper/lower split are counted before optional prefetch/walk pressure is kept or
-dropped. Focused `MARY 4` and representative `FISHING 1` pressure routes
-completed with `scene-end` and `alloc_fail=0`. See
-[release-notes-0.8.1.md](release-notes-0.8.1.md).
+Latest point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
+release. All 63 scenes remain validated, all 126 high/low variants remain
+routed through headless perf, and the current selector-cleanup baseline keeps
+the 13-case canary set exact-flat while shrinking `foregroundPilotPlay` by
+`36` bytes. See [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
-Current performance baseline: VISITOR3 now keeps the accepted high-tide
-`170..186` retained read group and uses a VISITOR3-only `192 KiB` setup-prime
-resident cap. WALKSTUF1 now also gets PAL4 setup-prime coverage while keeping
-the global setup-prime cap at `128 KiB`, VISITOR3 low has the accepted
-`170..186` grouped append on top of the `192 KiB` setup-prime baseline, and
-BUILDING5 high/low now use padded FGP3 packs while preserving the original
-`818670`-byte CD footprints. WALKSTUF1 high improves to `1595/1403` with
-`blocking_vb=278`; low improves to `1614/1397` with `blocking_vb=276`.
-BUILDING5 high/low now run at `3343/3348` and `3345/3347` with visible
-blocking cut to `5/8` VBlanks. VISITOR3 remains the largest remaining outlier.
+Current performance baseline: VISITOR3 uses cleanup-compact FGP3/v3 metadata,
+the `192 KiB` setup-prime resident cap, and the guarded high-tide `138..162`
+read group. VISITOR3 high remains `1406/1019` with `blocking_vb=293`; low
+remains `1405/1015` with `blocking_vb=301`. BUILDING2, BUILDING4, ACTIVITY9
+low, JOHNNY2, WALKSTUF1, and related current-pack clean-pressure work are all
+preserved in the matrix. The latest selector cleanup is a code-headroom win,
+not a VBlank-speed win.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the
@@ -186,6 +180,9 @@ it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
 `6114568` upload bytes saved inside the selected subset.
 
 Milestone releases:
+- `v0.8.2-ps1` — VISITOR3 guarded-read performance and docs/site sync. Lowers
+  VISITOR3 high visible CD pressure while preserving loop cadence and keeps the
+  validated 63-scene bar intact.
 - `v0.8.1-ps1` — clean-rect pressure stability. Large ocean clean snapshots
   now estimate the real pressure footprint before allocation, including
   wave-band expansion and upper/lower split rects; the fix covers the

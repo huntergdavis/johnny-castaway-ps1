@@ -12,12 +12,17 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.1-ps1` |
+| Release | `v0.8.2-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.6% over target / 99.7% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
+
+`v0.8.2-ps1` is the current performance point release after `v0.8.1-ps1`.
+It keeps all 63 scenes visually/audibly validated, preserves the routed
+126-variant headless matrix, and promotes the VISITOR3 high-tide guarded
+generated-window read group plus follow-up table cleanup.
 
 `v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
 randomized long-run scene-load freeze by estimating the actual clean
@@ -28,9 +33,10 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.5830%` over target / `99.6672%`
+current timing-bearing rows average `+0.5746%` over target / `99.6729%`
 target speed after the post-release VISITOR3, BUILDING2, BUILDING4,
-ACTIVITY9, and JOHNNY2 clean-pressure promotions.
+ACTIVITY9, JOHNNY2 clean-pressure, WALKSTUF1, and selector-cleanup
+promotions.
 MARY2's padded FGP3 conversion exposed a clean-memory prefetch miss; the
 MARY2-local relief restores `stage1_window`, moves high/low to `2241/2248`
 and `2242/2250`, and collapses due misses from `233` to `0`.

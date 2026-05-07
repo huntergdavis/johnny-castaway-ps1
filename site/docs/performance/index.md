@@ -285,12 +285,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.6% over target /
-99.7% target speed** (`0.5706%` exact over target / `99.6769%` exact target speed).
+99.7% target speed** (`0.5746%` exact over target / `99.6729%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`read-group-selector-single-assign-v082`,
 `visitor3-high-group138-162-slack4-v081`,
 `walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,

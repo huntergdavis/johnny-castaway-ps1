@@ -35,7 +35,7 @@ A scene can be timed here without being visually certified.
   <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
   <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
   <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
-  out of 120 timing-bearing rows. 6 rows have no timing data yet.
+  out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
 </p>
 
 The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
@@ -66,10 +66,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
-| Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
-| Latest perf matrix run | `2026-05-07T10:17:42` |
-| Stats version | mixed across rows; newest optimized rows use `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.5746%` exact) |
+| Timing-bearing average target speed | `99.7%` (`99.6729%` exact) |
+| Latest perf matrix run | `2026-05-07T12:08:59` |
+| Stats version | mixed across rows; newest optimized rows use `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -361,29 +361,29 @@ and this page.
       <td><code>activity9</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T03:43:00</td>
-      <td>activity9-current-v081-refresh</td>
-      <td>+1.9%</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
+      <td>+1.8%</td>
       <td class="spd-yellow">98.2%</td>
       <td>2094/2056</td>
       <td>37</td>
       <td>23</td>
       <td>2</td>
-      <td>current same-source ACTIVITY9 high refresh; high pack remains padded pal4 FGP3 and stayed flat while low-tide cleanup compaction was promoted</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T03:43:00</td>
-      <td>activity9-low-fgp3-cleanup-compact-v081</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+1.5%</td>
       <td class="spd-yellow">98.5%</td>
       <td>2087/2056</td>
       <td>42</td>
       <td>12</td>
       <td>6</td>
-      <td>low-tide FGP3/v3 cleanup metadata compaction preserves the 1745484-byte CD footprint while dropping active payload to 1196583 bytes</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -397,7 +397,7 @@ and this page.
       <td>7</td>
       <td>4</td>
       <td>1</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -411,7 +411,7 @@ and this page.
       <td>17</td>
       <td>4</td>
       <td>2</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>activity11</code></td>
@@ -501,29 +501,29 @@ and this page.
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T01:45:52</td>
-      <td>building2-fgp3-cleanup-compact-v081</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+10.9%</td>
       <td class="spd-yellow">90.1%</td>
       <td>1430/1289</td>
       <td>212</td>
       <td>20</td>
       <td>39</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T01:45:52</td>
-      <td>building2-fgp3-cleanup-compact-v081</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+11.1%</td>
       <td class="spd-yellow">90.0%</td>
       <td>1429/1286</td>
       <td>193</td>
       <td>35</td>
       <td>32</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -557,29 +557,29 @@ and this page.
       <td><code>building4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T02:19:26</td>
-      <td>building4-fgp3-cleanup-compact-window-v081</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+5.5%</td>
       <td class="spd-yellow">94.8%</td>
       <td>2939/2786</td>
       <td>240</td>
       <td>27</td>
       <td>40</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building4</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T02:19:26</td>
-      <td>building4-fgp3-cleanup-compact-window-v081</td>
-      <td>+5.2%</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
+      <td>+5.3%</td>
       <td class="spd-yellow">95.0%</td>
       <td>2945/2798</td>
       <td>117</td>
       <td>114</td>
       <td>1</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -613,29 +613,29 @@ and this page.
       <td><code>building6</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>2520/2442</td>
       <td>62</td>
       <td>64</td>
       <td>1</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>2515/2437</td>
       <td>70</td>
       <td>66</td>
       <td>2</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>building7</code></td>
@@ -669,15 +669,15 @@ and this page.
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T01:14:22</td>
-      <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
-      <td>1068/1074</td>
-      <td>2</td>
-      <td>2</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1069/1072</td>
+      <td>5</td>
+      <td>6</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -725,29 +725,29 @@ and this page.
       <td><code>fishing3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-01T07:40:38</td>
-      <td>compact-fgp3-v66-final-frame-hold</td>
-      <td>+0.4%</td>
-      <td class="spd-green">99.6%</td>
-      <td>1960/1952</td>
-      <td>18</td>
-      <td>13</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>1962/1950</td>
+      <td>17</td>
+      <td>14</td>
       <td>1</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>fishing3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-01T07:40:38</td>
-      <td>compact-fgp3-v66-final-frame-hold</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+0.1%</td>
       <td class="spd-green">99.9%</td>
-      <td>1956/1954</td>
-      <td>6</td>
-      <td>6</td>
+      <td>1957/1955</td>
+      <td>9</td>
+      <td>9</td>
       <td>0</td>
-      <td>—</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>fishing4</code></td>
@@ -789,7 +789,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>fishing5</code></td>
@@ -803,7 +803,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>fishing6</code></td>
@@ -957,7 +957,7 @@ and this page.
       <td>10</td>
       <td>6</td>
       <td>1</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>
@@ -971,7 +971,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>johnny4</code></td>
@@ -1121,7 +1121,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/0</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1135,7 +1135,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/0</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1265,7 +1265,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand1</code></td>
@@ -1279,7 +1279,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand2</code></td>
@@ -1293,7 +1293,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand2</code></td>
@@ -1307,7 +1307,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand3</code></td>
@@ -1427,13 +1427,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.4%</td>
+      <td>-3.3%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand7</code></td>
@@ -1441,13 +1441,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.4%</td>
+      <td>-3.3%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -1461,7 +1461,7 @@ and this page.
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -1475,7 +1475,7 @@ and this page.
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand9</code></td>
@@ -1483,13 +1483,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.4%</td>
+      <td>-3.3%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand9</code></td>
@@ -1503,7 +1503,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand10</code></td>
@@ -1517,7 +1517,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand10</code></td>
@@ -1531,7 +1531,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand11</code></td>
@@ -1545,7 +1545,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand11</code></td>
@@ -1559,7 +1559,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>stand12</code></td>
@@ -1653,7 +1653,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/6</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1667,7 +1667,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/6</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1681,7 +1681,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/6</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1695,7 +1695,7 @@ and this page.
       <td>compact-fgp3-v2-fullmatrix</td>
       <td>—</td>
       <td>—</td>
-      <td>0/6</td>
+      <td>—</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
@@ -1733,29 +1733,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T10:17:42</td>
-      <td>visitor3-high-remove-144-160-v082</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+38.0%</td>
       <td class="spd-red">72.5%</td>
       <td>1406/1019</td>
       <td>293</td>
       <td>7</td>
       <td>31</td>
-      <td>Dropped redundant guarded 144..160 row now subsumed by 138..162; broad canary exact-flat with fixed loop timing pack LBAs and PS-EXE bucket</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T00:05:13</td>
-      <td>visitor3-fgp3-cleanup-compact-v081</td>
+      <td>2026-05-07T12:08:59</td>
+      <td>read-group-selector-single-assign-v082</td>
       <td>+38.4%</td>
       <td class="spd-red">72.2%</td>
       <td>1405/1015</td>
       <td>301</td>
       <td>8</td>
       <td>33</td>
-      <td>FGP3/v3 cleanup-metadata compaction keeps PAL4 draw payloads and CD footprint stable while reducing active-loop restore/CD pressure</td>
+      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -1769,7 +1769,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -1783,7 +1783,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>—</td>
+      <td></td>
     </tr>
     <tr>
       <td><code>visitor5</code></td>

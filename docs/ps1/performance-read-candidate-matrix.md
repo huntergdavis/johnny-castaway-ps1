@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-remove-72-84-v082-canaries/20260507-113352-3426056`
+- Source artifact root: `scratch/ps1-perf-iterate/read-group-selector-single-assign-v082-canaries/20260507-120859-3629908`
 - Candidate rows: `127`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `8`
@@ -35,10 +35,10 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 13 | `visitor3` | `low` | 1405/1015 | 301 | `106..112` (6s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 14 | `visitor3` | `low` | 1405/1015 | 301 | `110..116` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 15 | `building4` | `high` | 2939/2786 | 240 | `531..547` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 16 | `building4` | `high` | 2939/2786 | 240 | `547..563` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 16 | `building4` | `high` | 2939/2786 | 240 | `552..568` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 17 | `building4` | `high` | 2939/2786 | 240 | `414..426` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 18 | `building4` | `high` | 2939/2786 | 240 | `563..575` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 19 | `building4` | `high` | 2939/2786 | 240 | `671..683` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 18 | `building4` | `high` | 2939/2786 | 240 | `671..683` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 19 | `building4` | `high` | 2939/2786 | 240 | `525..537` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 20 | `building2` | `low` | 1429/1286 | 193 | `99..115` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 21 | `building2` | `low` | 1429/1286 | 193 | `388..404` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 22 | `building2` | `low` | 1429/1286 | 193 | `245..261` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |

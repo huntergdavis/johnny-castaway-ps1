@@ -2830,6 +2830,8 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (gFgPrefetchWindowBytes > 0 && !cleanMemoryRelief) {
                 uint32 windowBytes = ((gFgPrefetchWindowBytes + 2047u) / 2048u) * 2048u;
                 uint32 windowCapacityBytes = windowBytes;
+                const struct TFgPilotReadGroup *streamReadGroups = NULL;
+                uint8 streamReadGroupCount = 0;
                 windowBytes = fgRuntimeStreamWindowBytes(sceneName, windowBytes);
                 windowCapacityBytes = windowBytes;
                 gFgRuntime.setupPrimeWindowBytes =
@@ -2840,49 +2842,48 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                 if (islandState.lowTide &&
                     fgSceneEquals(sceneName, "activity9") &&
                     gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual) {
-                    gFgRuntime.streamReadGroups = kActivity9LowFgp3ReadGroups;
-                    gFgRuntime.streamReadGroupCount =
+                    streamReadGroups = kActivity9LowFgp3ReadGroups;
+                    streamReadGroupCount =
                         (uint8)(sizeof(kActivity9LowFgp3ReadGroups) /
                                 sizeof(kActivity9LowFgp3ReadGroups[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                     fgSceneEquals(sceneName, "fishing3")) {
                     if (islandState.lowTide) {
-                        gFgRuntime.streamReadGroups = kFishing3LowReadGroups12;
-                        gFgRuntime.streamReadGroupCount =
+                        streamReadGroups = kFishing3LowReadGroups12;
+                        streamReadGroupCount =
                             (uint8)(sizeof(kFishing3LowReadGroups12) /
                                     sizeof(kFishing3LowReadGroups12[0]));
                     } else {
-                        gFgRuntime.streamReadGroups = kFishing3HighReadGroups12;
-                        gFgRuntime.streamReadGroupCount =
+                        streamReadGroups = kFishing3HighReadGroups12;
+                        streamReadGroupCount =
                             (uint8)(sizeof(kFishing3HighReadGroups12) /
                                     sizeof(kFishing3HighReadGroups12[0]));
                     }
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            !islandState.lowTide &&
                            fgSceneEquals(sceneName, "visitor3")) {
-                    gFgRuntime.streamReadGroups = kVisitor3HighReadGroups12;
-                    gFgRuntime.streamReadGroupCount =
+                    streamReadGroups = kVisitor3HighReadGroups12;
+                    streamReadGroupCount =
                         (uint8)(sizeof(kVisitor3HighReadGroups12) /
                                 sizeof(kVisitor3HighReadGroups12[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            islandState.lowTide &&
                            fgSceneEquals(sceneName, "visitor3")) {
-                    gFgRuntime.streamReadGroups = kVisitor3LowReadGroups16;
-                    gFgRuntime.streamReadGroupCount =
+                    streamReadGroups = kVisitor3LowReadGroups16;
+                    streamReadGroupCount =
                         (uint8)(sizeof(kVisitor3LowReadGroups16) /
                                 sizeof(kVisitor3LowReadGroups16[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            islandState.lowTide &&
                            fgSceneEquals(sceneName, "building2")) {
-                    gFgRuntime.streamReadGroups = kBuilding2LowReadGroups12;
-                    gFgRuntime.streamReadGroupCount =
+                    streamReadGroups = kBuilding2LowReadGroups12;
+                    streamReadGroupCount =
                         (uint8)(sizeof(kBuilding2LowReadGroups12) /
                                 sizeof(kBuilding2LowReadGroups12[0]));
-                } else {
-                    gFgRuntime.streamReadGroups = NULL;
-                    gFgRuntime.streamReadGroupCount = 0;
                 }
-                if (gFgRuntime.streamReadGroupCount > 0 &&
+                gFgRuntime.streamReadGroups = streamReadGroups;
+                gFgRuntime.streamReadGroupCount = streamReadGroupCount;
+                if (streamReadGroupCount > 0 &&
                     windowCapacityBytes < FG_PREFETCH_GROUP_WINDOW_BYTES)
                     windowCapacityBytes = FG_PREFETCH_GROUP_WINDOW_BYTES;
                 if (windowCapacityBytes > gFgStreamWindowBufferSize) {
