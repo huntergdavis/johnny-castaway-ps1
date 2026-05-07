@@ -24,6 +24,22 @@ layout: default
     <hr class="rule" />
 
     {%- comment -%}
+      Cross-link to the host-side regtest case page. Every scene has
+      one (verified 63/63 1:1 mapping). Case slug uses lowercase ADS
+      + dash + tag (ACTIVITY 1 → activity-1), distinct from the
+      scene-side slug (activity1, no dash). The case page is the
+      pre-PS1 baseline: same scene captured under the desktop
+      interpreter, frame count and state hash on file, kept around
+      so PS1 validation has something to argue with.
+    {%- endcomment -%}
+    {%- assign case_slug = page.ads | downcase | append: '-' | append: page.tag -%}
+    <p class="post-source">
+      Host regression reference:
+      <a href="{{ '/archaeology/regtest-references/cases/' | append: case_slug | append: '/' | relative_url }}">{{ page.ads }}-{{ page.tag }} case page</a>
+      — desktop baseline before PS1 validation.
+    </p>
+
+    {%- comment -%}
       Walk the catalog: prev/next within the same sort the ledger uses
       (by tag, then ads — Liquid `sort` is stable so the second sort wins
       as the outer key, matching scenes/index.md). Single-pass: keep
