@@ -181,7 +181,7 @@ done.”</p>
       <td>Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -&gt; World Options -&gt; Holidays and <code class="language-plaintext highlighter-rouge">BOOTMODE.TXT</code>. Generation is offline; design notes in <code class="language-plaintext highlighter-rouge">docs/ps1/holidays-expansion-design.md</code>.</td>
     </tr>
     <tr>
-      <td>Story-loop walks (<code class="language-plaintext highlighter-rouge">walk_pilot.c</code>, <code class="language-plaintext highlighter-rouge">walk_render.c</code>)</td>
+      <td><a href="../../docs/walks/">Story-loop walks</a> (<code class="language-plaintext highlighter-rouge">walk_pilot.c</code>, <code class="language-plaintext highlighter-rouge">walk_render.c</code>)</td>
       <td>Working</td>
       <td>Johnny walks between scene endpoints using Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. <code class="language-plaintext highlighter-rouge">v0.7.2</code> adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; <code class="language-plaintext highlighter-rouge">v0.8.0</code> adds a clean-rect retry path; <code class="language-plaintext highlighter-rouge">v0.8.1</code> counts wave-band/split-rect clean pressure before allocation.</td>
     </tr>
