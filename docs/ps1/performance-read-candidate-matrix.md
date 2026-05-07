@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-group138-162-slack4-v081-canaries/20260507-085249-2508519`
+- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-remove-144-160-v082-canaries/20260507-101742-2985323`
 - Candidate rows: `127`
 - Standalone probes: `1`
 - Scheduler or guarded probes: `10`
@@ -41,7 +41,7 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 19 | `visitor3` | `high` | 1406/1019 | 293 | `124..140` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 20 | `visitor3` | `high` | 1406/1019 | 293 | `111..127` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 21 | `building4` | `high` | 2939/2786 | 240 | `531..547` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 22 | `building4` | `high` | 2939/2786 | 240 | `547..563` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 22 | `building4` | `high` | 2939/2786 | 240 | `552..568` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 23 | `building4` | `high` | 2939/2786 | 240 | `414..426` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 24 | `building4` | `high` | 2939/2786 | 240 | `671..683` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 25 | `building4` | `high` | 2939/2786 | 240 | `525..537` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |

@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.7% target speed** |
-| Latest perf matrix run | **`2026-05-07T08:52:49`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `visitor3-high-group138-162-slack4-v081`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-07T10:17:42`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -283,7 +283,10 @@ The timing-bearing average is now `+0.5706%` over target /
 `99.6769%` target speed after the WALKSTUF1 low-tide setup-prime cap retune;
 the later VISITOR3 high guarded generated-window append `138..162` trims
 blocking `294 -> 293`, loop reads `40 -> 39`, and loop read VBlanks
-`335 -> 332` while leaving the loop-time average unchanged.
+`335 -> 332` while leaving the loop-time average unchanged. The follow-up
+`visitor3-high-remove-144-160-v082` cleanup drops the now-redundant guarded
+`144..160` row after exact-flat broad canaries, preserving that baseline while
+recovering table headroom.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.8`
 percentage points of over-target gap and added about `12.6` points of target

@@ -78,8 +78,8 @@ Current battle-card rollup as of 2026-05-07:
 | Blocked variants | `0 / 126` |
 | Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
 | Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
-| Latest perf matrix run | `2026-05-07T08:52:49` |
-| Stats version | mixed; newest optimized rows use `visitor3-high-group138-162-slack4-v081`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Latest perf matrix run | `2026-05-07T10:17:42` |
+| Stats version | mixed; newest optimized rows use `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -94,7 +94,7 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
-`visitor3-high-group138-162-slack4-v081`,
+`visitor3-high-remove-144-160-v082`,
 `building2-fgp3-cleanup-compact-v081`,
 `visitor3-fgp3-cleanup-compact-v081`,
 `johnny2-prefetch-relief-v081`,

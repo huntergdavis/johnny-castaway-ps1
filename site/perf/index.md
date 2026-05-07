@@ -68,8 +68,8 @@ Current battle-card rollup as of 2026-05-07:
 | Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
 | Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
-| Latest perf matrix run | `2026-05-07T08:52:49` |
-| Stats version | mixed across rows; newest optimized rows use `visitor3-high-group138-162-slack4-v081`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Latest perf matrix run | `2026-05-07T10:17:42` |
+| Stats version | mixed across rows; newest optimized rows use `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -100,7 +100,7 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-high-group138-162-slack4-v081`,
+  refreshed rows use `visitor3-high-remove-144-160-v082`,
   `walkstuf1-low-primecap160-v081`,
   `johnny2-prefetch-relief-v081`,
   `activity9-low-fgp3-cleanup-compact-v081`,
@@ -1733,15 +1733,15 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T08:52:49</td>
-      <td>visitor3-high-group138-162-slack4-v081</td>
+      <td>2026-05-07T10:17:42</td>
+      <td>visitor3-high-remove-144-160-v082</td>
       <td>+38.0%</td>
       <td class="spd-red">72.5%</td>
       <td>1406/1019</td>
       <td>293</td>
       <td>7</td>
       <td>31</td>
-      <td>Guarded generated-window 138..162 append lowers visible blocking and loop reads while keeping loop timing layout and pack LBAs stable</td>
+      <td>Dropped redundant guarded 144..160 row now subsumed by 138..162; broad canary exact-flat with fixed loop timing pack LBAs and PS-EXE bucket</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
