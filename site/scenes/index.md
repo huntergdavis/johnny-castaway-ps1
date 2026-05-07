@@ -72,7 +72,13 @@ host-vs-PS1 reference frames where applicable.
 
 <nav class="scenes-jump" aria-label="Jump to ADS family">
   <span class="scenes-jump-label">Jump to:</span>
-  {% for fam in families %}<a href="#ads-{{ fam | downcase }}">{{ fam }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+  {%- comment -%}
+    Per-family count appended after the ADS name so a reader
+    knows what's in each section before clicking. Counts come
+    from the same sorted_scenes assign used to build the table,
+    so they stay in sync if scenes.yml changes.
+  {%- endcomment -%}
+  {% for fam in families %}{% assign fam_count = sorted_scenes | where: "ads", fam | size %}<a href="#ads-{{ fam | downcase }}">{{ fam }} <span class="scenes-jump-count">({{ fam_count }})</span></a>{% unless forloop.last %} · {% endunless %}{% endfor %}
 </nav>
 
 <table class="scene-table">
