@@ -338,6 +338,11 @@ DuckStation's access to `jcreborn.cue`.
   experiment ledger that runs against this build.
 - [Regression testing]({{ '/docs/regtest/' | relative_url }}) — the
   headless harness that boots the disc image.
+- [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }})
+  — the same machinery framed as a methodology essay.
+- [Lab: the dunking bird]({{ '/lab/dunking-bird/' | relative_url }})
+  — the parallel-agent infrastructure that drives the build farm
+  between human review passes.
 - [Method]({{ '/about/method/' | relative_url }}) — how the project
   decides what's worth automating.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog.
