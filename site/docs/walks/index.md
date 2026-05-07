@@ -54,10 +54,10 @@ The walk subsystem lives in four files under `src/`:
 
 | File | Lines | Owner | Notes |
 |---|---:|---|---|
-| `walk_data.h` | 489 | Sierra (via `jc_reborn`) | Pre-baked spot graph, shortest-path bookmarks, per-segment frame tables. Unchanged from the upstream engine decode. |
-| `walk.c` / `walk.h` | 219 / 26 | upstream | The original walk state machine. Consumes `walk_data.h`; produces a per-tick `(x, y, sprite_idx, heading)`. |
-| `walk_pilot.c` / `.h` | 449 / 84 | this port | Story-loop walk driver. Wraps `walk.c` for the screensaver loop, owns the persistent walk-area clean buffer, and feeds `walk_render` one frame at a time. |
-| `walk_render.c` / `.h` | 142 / 75 | this port | Per-frame draw kernel. Restores the island background, stamps the JOHNWALK sprite, and re-stamps the palm trunk + leaves on top when Johnny is between SPOT_3 and SPOT_4. Used by both walk_pilot and freeplay. |
+| `walk_data.h` | 533 | Sierra (via `jc_reborn`) | Pre-baked spot graph, shortest-path bookmarks, per-segment frame tables. Unchanged from the upstream engine decode. |
+| `walk.c` / `walk.h` | 195 / 25 | upstream | The original walk state machine. Consumes `walk_data.h`; produces a per-tick `(x, y, sprite_idx, heading)`. |
+| `walk_pilot.c` / `.h` | 354 / 84 | this port | Story-loop walk driver. Wraps `walk.c` for the screensaver loop, owns the persistent walk-area clean buffer, and feeds `walk_render` one frame at a time. |
+| `walk_render.c` / `.h` | 119 / 75 | this port | Per-frame draw kernel. Restores the island background, stamps the JOHNWALK sprite, and re-stamps the palm trunk + leaves on top when Johnny is between SPOT_3 and SPOT_4. Used by both walk_pilot and freeplay. |
 
 The split between `walk_pilot` (state) and `walk_render` (pixel push)
 is deliberate. Freeplay reuses `walk_render` directly — same kernel,
