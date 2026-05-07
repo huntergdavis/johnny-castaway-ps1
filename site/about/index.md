@@ -124,9 +124,11 @@ A few things this project is deliberately not trying to be:
   editorial standard the prose on this site holds itself to.
   Read it before writing a new page.
 - [/about/dev-environment/]({{ '/about/dev-environment/' | relative_url }})
-  -- the actual desk behind the work, photographed. Two LLM
-  sub-agents, the dunking bird auto-poker, DuckStation,
-  editor/terminal column, build farm, bottom-monitor telemetry.
+  -- the actual desk behind the work, photographed. Six windows:
+  the Dunking Bird auto-poker, the fresh editor, two LLM
+  sub-agents (Claude + Codex), DuckStation running the latest
+  build, and a bottom-monitor system-telemetry panel — all on
+  KDE Plasma.
 - [/scenes/]({{ '/scenes/' | relative_url }}) -- live per-scene
   ledger. All 63 rows clear the FISHING 1 bar; family jump nav,
   per-scene case studies, last-verified release tag.
