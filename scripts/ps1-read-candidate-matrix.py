@@ -20,12 +20,13 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = (
     REPO_ROOT
-    / "scratch/ps1-perf-iterate/walkstuf1-low-primecap160-v081-canaries/"
-      "20260507-064747-1797388"
+    / "scratch/ps1-perf-iterate/visitor3-high-remove-144-160-v082-canaries/"
+      "20260507-101742-2985323"
 )
 DEFAULT_CSV = REPO_ROOT / "docs/ps1/performance-read-candidate-matrix.csv"
 DEFAULT_MD = REPO_ROOT / "docs/ps1/performance-read-candidate-matrix.md"
 DEFAULT_EXPERIMENT_LOG = REPO_ROOT / "docs/ps1/performance-experiment-log.md"
+DEFAULT_SCENE_MATRIX = REPO_ROOT / "docs/ps1/performance-scene-matrix.csv"
 
 
 CSV_FIELDS = [
@@ -77,6 +78,30 @@ def safe_float(value: Any) -> float | None:
     return None
 
 
+def load_known_scenes(path: Path = DEFAULT_SCENE_MATRIX) -> list[str]:
+    fallback = [
+        "activity9",
+        "building2",
+        "building4",
+        "building6",
+        "fishing1",
+        "fishing3",
+        "visitor3",
+        "walkstuf1",
+    ]
+    if not path.exists():
+        return fallback
+
+    scenes: set[str] = set()
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            scene = str(row.get("scene_slug", "")).strip().lower()
+            if scene:
+                scenes.add(scene)
+    return sorted(scenes, key=lambda item: (-len(item), item)) or fallback
+
+
 def scene_from_label(label: str) -> str:
     if "-high" in label:
         return label.split("-high", 1)[0]
@@ -123,22 +148,15 @@ def load_closed_ranges(path: Path | None) -> set[tuple[str, int, int]]:
     if path is None or not path.exists():
         return set()
 
+    known_scenes = load_known_scenes()
     closed: set[tuple[str, int, int]] = set()
     for raw_line in path.read_text(encoding="utf-8").splitlines():
         line = raw_line.lower()
         if "failed/no promotion" not in line and "rejected" not in line and "do not promote" not in line:
             continue
 
-        for scene in (
-            "activity9",
-            "building2",
-            "building4",
-            "building6",
-            "fishing1",
-            "visitor3",
-            "walkstuf1",
-        ):
-            if scene not in line:
+        for scene in known_scenes:
+            if not re.search(rf"(?<![a-z0-9]){re.escape(scene)}(?![a-z0-9])", line):
                 continue
             for match in re.finditer(r"(\d+)\s*\.\.\s*(\d+)", line):
                 closed.add((scene, int(match.group(1)), int(match.group(2))))
