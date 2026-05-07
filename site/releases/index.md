@@ -102,6 +102,35 @@ The 63-scene grind ended here. Every routed scene the original Sierra game had n
 &nbsp;·&nbsp;
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.0-ps1)
 
+### `v0.6.0-ps1` — ocean ambience
+*2026-05-01*
+
+A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
+underneath every scene. Toggleable from the pause menu; choice
+persists to the memory card. Zero per-frame CPU cost — the SPU
+loops the sample in hardware while the main CPU keeps doing
+playback work.
+
+- **Looping ocean ambience** on SPU voice slot reserved at boot.
+- **Pause → Sound → Ocean: ON / OFF**, persisted to memcard.
+- **Bootmode token** for capture/test discs that need a known-state run.
+
+[GitHub release]({{ site.github_url }}/releases/tag/v0.6.0-ps1)
+
+### `v0.6.1-ps1` through `v0.6.13-ps1` — the validation-cluster patches
+*2026-05-01 → 2026-05-04*
+
+The stability releases between `v0.6.0-ps1` (ocean ambience) and
+`v0.7.0-ps1` (complete scene validation) are scene-by-scene
+bring-up tags rather than feature milestones. Each one carries a
+specific scene clearing the FISHING 1 bar (FISHING 5, MARY 5,
+VISITOR 4–7, and others) plus the small bugfix needed to get the
+scene through. They aren't enumerated here because the per-scene
+narrative belongs in the [history page]({{ '/about/history/' | relative_url }})
+and the [scene ledger]({{ '/scenes/' | relative_url }}) tracks the
+final state. The full list of GitHub-tagged builds in this cluster
+is at [{{ site.repo }}/releases]({{ site.github_url }}/releases).
+
 ### `v0.5.0-ps1` — Freeplay and debug mode
 *2026-05-01*
 

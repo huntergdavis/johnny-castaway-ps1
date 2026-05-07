@@ -124,6 +124,8 @@
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
       <li><a href="#v070-ps1--complete-scene-validation" id="markdown-toc-v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</a></li>
+      <li><a href="#v060-ps1--ocean-ambience" id="markdown-toc-v060-ps1--ocean-ambience"><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> — ocean ambience</a></li>
+      <li><a href="#v061-ps1-through-v0613-ps1--the-validation-cluster-patches" id="markdown-toc-v061-ps1-through-v0613-ps1--the-validation-cluster-patches"><code class="language-plaintext highlighter-rouge">v0.6.1-ps1</code> through <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> — the validation-cluster patches</a></li>
       <li><a href="#v050-ps1--freeplay-and-debug-mode" id="markdown-toc-v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</a></li>
       <li><a href="#v0420-ps1--story-loop-walking" id="markdown-toc-v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> — story-loop walking</a></li>
     </ul>
@@ -224,6 +226,37 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <p><a href="../source/docs/ps1/release-notes-0.7.0/">Full notes</a>
  · 
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.0-ps1">GitHub release</a></p>
+
+<h3 id="v060-ps1--ocean-ambience"><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> — ocean ambience</h3>
+<p><em>2026-05-01</em></p>
+
+<p>A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
+underneath every scene. Toggleable from the pause menu; choice
+persists to the memory card. Zero per-frame CPU cost — the SPU
+loops the sample in hardware while the main CPU keeps doing
+playback work.</p>
+
+<ul>
+  <li><strong>Looping ocean ambience</strong> on SPU voice slot reserved at boot.</li>
+  <li><strong>Pause → Sound → Ocean: ON / OFF</strong>, persisted to memcard.</li>
+  <li><strong>Bootmode token</strong> for capture/test discs that need a known-state run.</li>
+</ul>
+
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.6.0-ps1">GitHub release</a></p>
+
+<h3 id="v061-ps1-through-v0613-ps1--the-validation-cluster-patches"><code class="language-plaintext highlighter-rouge">v0.6.1-ps1</code> through <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> — the validation-cluster patches</h3>
+<p><em>2026-05-01 → 2026-05-04</em></p>
+
+<p>The stability releases between <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> (ocean ambience) and
+<code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> (complete scene validation) are scene-by-scene
+bring-up tags rather than feature milestones. Each one carries a
+specific scene clearing the FISHING 1 bar (FISHING 5, MARY 5,
+VISITOR 4–7, and others) plus the small bugfix needed to get the
+scene through. They aren’t enumerated here because the per-scene
+narrative belongs in the <a href="../about/history/">history page</a>
+and the <a href="../scenes/">scene ledger</a> tracks the
+final state. The full list of GitHub-tagged builds in this cluster
+is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">huntergdavis/johnny-castaway-ps1/releases</a>.</p>
 
 <h3 id="v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</h3>
 <p><em>2026-05-01</em></p>
