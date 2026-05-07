@@ -128,18 +128,24 @@ Coarsening the stamp to `%Y-%m-%d` dropped the per-commit churn to zero for in-d
 
 `jekyll-seo-tag` is in the Gemfile but the `seo` Liquid tag is never invoked,
 so the plugin emits nothing. The manual head template handles `<title>`, OG,
-Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
-feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.
+Twitter card, canonical, the `theme-color` light/dark pair plus the matching
+`color-scheme: light dark` meta (so native UA widgets — scrollbars, form
+controls, address-bar tint between navigations — honor the user's
+`prefers-color-scheme`), favicons, fonts, the build stamp, the feed
+auto-discovery, the humans.txt link, and a separate include for JSON-LD.
 
-The JSON-LD include uses the multi-block strategy: each schema type gets its own `<script type="application/ld+json">` tag. Crawlers merge multiple blocks per page, so there's no comma juggling between conditionally-emitted records. Five record types ship today:
+The JSON-LD include uses the multi-block strategy: each schema type gets its own `<script type="application/ld+json">` tag. Crawlers merge multiple blocks per page, so there's no comma juggling between conditionally-emitted records. Six record types ship today:
 
 - `WebSite` on every page.
 - `SoftwareApplication` only on the home page (the project is a piece of software).
-- `BreadcrumbList` on every non-home page; positions are derived from splitting `page.url` on `/`, with cumulative trail and titlecased segment labels.
+- `BreadcrumbList` on every non-home page; positions are derived from splitting `page.url` on `/`, with cumulative trail and titlecased segment labels. The leaf segment uses `page.title` rather than slug-capitalization so Google's rich-result trail reads `Home > Lab > The two-day SPI bug` instead of `Home > Lab > Two day spi bug`.
 - `BlogPosting` only on devlog posts.
 - `Article` only on lab essays — URL prefix `/lab/`, excluding the `/lab/` index, requiring `page.date`. Lab essays are dated long-form content, exactly the surface Google's Article structured-data guidance targets, but they live in `site.html_pages` rather than `site.posts` so the `BlogPosting` predicate doesn't catch them.
+- `FAQPage` only on `/faq/`, mirroring the page's 14 H3 questions with summary answers. Google retired generic-site FAQ rich results in 2023, but Bing, AI agents, and knowledge graphs still consume FAQPage; zero user-visible bytes.
 
-All user strings flow through `jsonify` so titles and descriptions with quotes, backslashes, or em-dashes can't break the JSON. Validated with strict `json.loads` across home / a devlog post / about / a scene / a regtest case page.
+`Article` and `BlogPosting` both also carry `wordCount` and `timeRequired` (ISO-8601 `PT[N]M`) — the same counts the `~N min read · M words` page-header hint exposes visibly. Computed once at the top of the include and reused across both records.
+
+All user strings flow through `jsonify` so titles and descriptions with quotes, backslashes, or em-dashes can't break the JSON. Validated with strict `json.loads` across home / a devlog post / about / a scene / a regtest case page / `/faq/`.
 
 ## The 404 page's problem
 

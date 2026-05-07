@@ -74,7 +74,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 2282,
+  "wordCount": 2415,
   "timeRequired": "PT9M",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -133,7 +133,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2247 words
+          ~9 min read · 2380 words
         </p>
 
       <hr class="rule" />
@@ -285,20 +285,26 @@ only when the URL is under the cases path. Whitespace-control on the Liquid
 
 <p><code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code> is in the Gemfile but the <code class="language-plaintext highlighter-rouge">seo</code> Liquid tag is never invoked,
 so the plugin emits nothing. The manual head template handles <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code>, OG,
-Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
-feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
+Twitter card, canonical, the <code class="language-plaintext highlighter-rouge">theme-color</code> light/dark pair plus the matching
+<code class="language-plaintext highlighter-rouge">color-scheme: light dark</code> meta (so native UA widgets — scrollbars, form
+controls, address-bar tint between navigations — honor the user’s
+<code class="language-plaintext highlighter-rouge">prefers-color-scheme</code>), favicons, fonts, the build stamp, the feed
+auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
 
-<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Five record types ship today:</p>
+<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Six record types ship today:</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">WebSite</code> on every page.</li>
   <li><code class="language-plaintext highlighter-rouge">SoftwareApplication</code> only on the home page (the project is a piece of software).</li>
-  <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels.</li>
+  <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels. The leaf segment uses <code class="language-plaintext highlighter-rouge">page.title</code> rather than slug-capitalization so Google’s rich-result trail reads <code class="language-plaintext highlighter-rouge">Home &gt; Lab &gt; The two-day SPI bug</code> instead of <code class="language-plaintext highlighter-rouge">Home &gt; Lab &gt; Two day spi bug</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">BlogPosting</code> only on devlog posts.</li>
   <li><code class="language-plaintext highlighter-rouge">Article</code> only on lab essays — URL prefix <code class="language-plaintext highlighter-rouge">/lab/</code>, excluding the <code class="language-plaintext highlighter-rouge">/lab/</code> index, requiring <code class="language-plaintext highlighter-rouge">page.date</code>. Lab essays are dated long-form content, exactly the surface Google’s Article structured-data guidance targets, but they live in <code class="language-plaintext highlighter-rouge">site.html_pages</code> rather than <code class="language-plaintext highlighter-rouge">site.posts</code> so the <code class="language-plaintext highlighter-rouge">BlogPosting</code> predicate doesn’t catch them.</li>
+  <li><code class="language-plaintext highlighter-rouge">FAQPage</code> only on <code class="language-plaintext highlighter-rouge">/faq/</code>, mirroring the page’s 14 H3 questions with summary answers. Google retired generic-site FAQ rich results in 2023, but Bing, AI agents, and knowledge graphs still consume FAQPage; zero user-visible bytes.</li>
 </ul>
 
-<p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page.</p>
+<p><code class="language-plaintext highlighter-rouge">Article</code> and <code class="language-plaintext highlighter-rouge">BlogPosting</code> both also carry <code class="language-plaintext highlighter-rouge">wordCount</code> and <code class="language-plaintext highlighter-rouge">timeRequired</code> (ISO-8601 <code class="language-plaintext highlighter-rouge">PT[N]M</code>) — the same counts the <code class="language-plaintext highlighter-rouge">~N min read · M words</code> page-header hint exposes visibly. Computed once at the top of the include and reused across both records.</p>
+
+<p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page / <code class="language-plaintext highlighter-rouge">/faq/</code>.</p>
 
 <h2 id="the-404-pages-problem">The 404 page’s problem</h2>
 
