@@ -249,7 +249,7 @@ If you must, the issue tracker is at
 [{{ site.repo }}/issues]({{ site.github_url }}/issues). Bugs are
 tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
-About]({{ '/about/' | relative_url }}).
+About]({{ '/about/#what-this-isnt' | relative_url }}).
 
 ---
 
