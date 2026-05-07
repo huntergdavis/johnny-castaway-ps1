@@ -303,6 +303,10 @@ shipped with.
   holiday's own page with worked dates.
 - [Emblem gallery]({{ '/docs/holidays/emblems/' | relative_url }}) —
   the 32-icon sheet.
+- [Lab: 35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }}) —
+  the retrospective on building the codegen pipeline, the date
+  algorithms above, and the sprite primitives the emblem sheet
+  composes from.
 - [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c) —
   this file's algorithms.
 - [`src/holidays.h`]({{ site.github_url }}/blob/main/src/holidays.h) —
