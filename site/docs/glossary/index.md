@@ -143,7 +143,7 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.9%</code>.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
