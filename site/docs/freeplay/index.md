@@ -156,6 +156,10 @@ part of the forever-run player build.
 
 ## Related pages
 
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  other consumer of `walk_render`. Same draw kernel; story-loop
+  walks consume the pre-baked Sierra path table while freeplay
+  drives `(x, y)` from the D-pad per VBlank.
 - [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — menu structure and persistence.
 - [Holidays]({{ '/docs/holidays/' | relative_url }}) — holiday overlays used by the world toggle.
 - [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the SPU
