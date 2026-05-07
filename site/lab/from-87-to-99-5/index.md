@@ -144,6 +144,7 @@ The disc plays. That was always the point. It also plays at near native rate now
 - [/perf/]({{ '/perf/' | relative_url }}) — the live battle card this article is the back-story for.
 - [/scenes/]({{ '/scenes/' | relative_url }}) — the visual signoff ledger; the parallel acceptance bar.
 - [/docs/performance/]({{ '/docs/performance/' | relative_url }}) — reference manual for what each column on the battle card means.
+- [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}) — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.
 - [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the stability follow-on that left this article's matrix mean untouched.
 - [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — the slowest two rows; the largest single optimization target left.
 - [/scenes/activity9/]({{ '/scenes/activity9/' | relative_url }}) — wide-boat scene; padded FGP3 + scoped low-tide read group case study.
