@@ -81,9 +81,11 @@ The pause menu carries the rest of freeplay/debug mode:
 | Accessibility | Closed captions, sound mute, ocean ambience, and the Sound Test selector. |
 | Controls | On-device reference for the freeplay controls above. |
 
-This split is intentional. The joypad is for walking, fishing, clearing,
-and the four immediate world toggles. Everything with a catalog or
-metadata lives in a menu.
+This split is intentional. The joypad is for walking, clearing, and the
+four immediate world toggles. Everything with a catalog or metadata
+lives in a menu — including fishing, which moved off Circle to the
+Scene Set selector during the Scene Set rewrite (see the "Fishing"
+section below).
 
 ## What the debug catalogs expose
 
