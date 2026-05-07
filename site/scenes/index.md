@@ -25,8 +25,11 @@ the **FISHING 1 bar**: pixel-perfect visuals against the host-captured
 reference, plus SFX cues that land on the same engine ticks, across
 every variant flag that applies to the scene (night palette, low-tide
 shoreline, holiday overlay, raft-stage progression). That's a higher
-bar than "it ran once and didn't crash," which is why most rows below
-are still `pending`.
+bar than "it ran once and didn't crash" — at `{{ site.release.tag }}`
+all 63 rows below clear it. The
+[63-scene grind retrospective]({{ '/lab/the-63-scene-grind/' | relative_url }})
+walks through how the last cluster (the foreground-only multi-view
+scenes) cleared the bar.
 
 The source of truth for this ledger is
 [`docs/ps1/scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md)
