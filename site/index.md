@@ -171,16 +171,20 @@ debug-selected gags, visitors, sound effects, holidays, tide,
 raft, and day/night state. Closed captions for every scene (off
 by default, in a [fresh-authored corpus]({{ '/docs/captions/' | relative_url }})
 from scene content — not lifted from any prior project). A
-holiday calendar expanded from 4 to **36 holidays** with movable
-feasts computed by pure algorithm — Meeus for Easter,
+[holiday calendar expanded from 4 to **36 holidays**]({{ '/docs/holidays/' | relative_url }})
+with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
-pause menu reachable with Start (the original had none), with
-sub-screens for Scene Set, Freeplay Options, Controls, World
-Options, Holidays, Set Island Position, Accessibility, Sound
-Test, System, Set Time/Date, and Set RNG Seed. An optional
-ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
-transitions between scene swaps. The website credits and legal
-pages name exactly what's owed to whom.
+[pause menu]({{ '/docs/pause-menu/' | relative_url }}) reachable
+with Start (the original had none), with sub-screens for Scene
+Set, Freeplay Options, Controls, World Options, Holidays, Set
+Island Position, Accessibility, Sound Test, System, Set Time/Date,
+and Set RNG Seed. An optional
+[ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
+on a dedicated SPU voice. Frog-clock loading transitions between
+scene swaps. The website
+[credits]({{ '/credits/' | relative_url }}) and
+[legal]({{ '/legal/' | relative_url }}) pages name exactly what's
+owed to whom.
 
 The full menu of what's added vs preserved lives at
 [/about/]({{ '/about/' | relative_url }}). The implementations live at
