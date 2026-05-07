@@ -285,8 +285,14 @@ are noted in case the project ever needs them.
   `psxspu` gets linked.
 - [Method]({{ '/about/method/' | relative_url }}) — how the
   audio acceptance bar fits the project's overall standard.
-- [Devlog]({{ '/devlog/' | relative_url }}) — the SPU debugging pass
-  is documented there.
+- [v0.6.0-ps1 release entry]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
+  — the milestone the ocean-ambience loop shipped in.
+- [Devlog: ocean ambience v0.6]({{ '/devlog/ocean-ambience-v0-6/' | relative_url }})
+  — the implementation worklog for the dedicated SPU voice that
+  drives the ambience loop. Pairs with the Ocean ambience H2 above.
+- [Glossary: VAG]({{ '/docs/glossary/#vag' | relative_url }})
+  · [Glossary: SPU]({{ '/docs/glossary/#spu' | relative_url }})
+  · [Glossary: PLAY_SAMPLE]({{ '/docs/glossary/#play-sample' | relative_url }})
 
 ## View source on GitHub
 
