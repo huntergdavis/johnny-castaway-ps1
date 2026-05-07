@@ -15,6 +15,13 @@ The numbers, dates, and names below are real. Where something is unknown
 or contested, that's stated. Where Hunter took a wrong turn, that's stated
 too — the dead ends are what made the eventual method look obvious.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 <section class="chapter" markdown="1">
 <span class="chapter-num">Chapter 1</span>
 ## The screensaver before the project
