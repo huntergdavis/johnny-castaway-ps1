@@ -40,7 +40,12 @@ them automatically.
 
 <nav class="scenes-jump" aria-label="Jump to month">
   <span class="scenes-jump-label">Jump to:</span>
-  {% for group in posts_by_month %}<a href="#month-{{ group.name }}">{{ group.items.first.date | date: "%b %Y" }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+  {%- comment -%}
+    Per-month post count appended after each month name so a reader
+    can gauge depth before clicking. Matches the per-family pattern
+    on /scenes/ jump nav. Reuses .scenes-jump-count for styling.
+  {%- endcomment -%}
+  {% for group in posts_by_month %}<a href="#month-{{ group.name }}">{{ group.items.first.date | date: "%b %Y" }} <span class="scenes-jump-count">({{ group.items | size }})</span></a>{% unless forloop.last %} · {% endunless %}{% endfor %}
 </nav>
 
 {% for group in posts_by_month %}
