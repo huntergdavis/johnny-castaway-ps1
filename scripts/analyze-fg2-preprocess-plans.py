@@ -87,6 +87,18 @@ def read_u16(data: bytes, offset: int) -> int:
     return struct.unpack_from("<H", data, offset)[0]
 
 
+def read_compact_u16(data: bytes, offset: int, limit: int) -> tuple[int | None, int]:
+    if offset >= limit:
+        return None, offset
+    value = data[offset]
+    offset += 1
+    if value != 0xFF:
+        return value, offset
+    if offset + 2 > limit:
+        return None, limit
+    return read_u16(data, offset), offset + 2
+
+
 def merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:
     if not intervals:
         return []
@@ -241,7 +253,7 @@ def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
 
     if magic not in (b"FGP2", b"FGP3"):
         raise SystemExit(f"not an FGP2/FGP3 pack: {path}")
-    if version not in (1, 2):
+    if version not in (1, 2, 3):
         raise SystemExit(f"unsupported foreground pack version {version}: {path}")
     if table_offset + frame_count * FG2_ENTRY_SIZE > len(payload):
         raise SystemExit(f"entry table extends beyond pack: {path}")
@@ -342,6 +354,41 @@ def parse_span_rows(data: bytes,
     return rows, offset, spans, pixels
 
 
+def parse_compact_cleanup_rows(data: bytes,
+                               offset: int,
+                               limit: int,
+                               base_x: int,
+                               base_y: int) -> tuple[RowIntervals, int, int, int]:
+    rows = empty_intervals()
+    spans = 0
+    pixels = 0
+    if offset + 2 > limit:
+        return rows, offset, spans, pixels
+    row_count = read_u16(data, offset)
+    offset += 2
+
+    for _ in range(row_count):
+        rel_y, offset = read_compact_u16(data, offset, limit)
+        span_count, offset = read_compact_u16(data, offset, limit)
+        if rel_y is None or span_count is None:
+            break
+        screen_y = base_y + rel_y
+        for _span in range(span_count):
+            rel_x, offset = read_compact_u16(data, offset, limit)
+            pixel_count, offset = read_compact_u16(data, offset, limit)
+            if rel_x is None or pixel_count is None:
+                break
+            screen_x = base_x + rel_x
+            add_screen_interval(rows, screen_x, screen_x + pixel_count, screen_y)
+            spans += 1
+            pixels += pixel_count
+
+    for tile in range(TILE_COUNT):
+        for y in range(TILE_H):
+            rows[tile][y] = merge_intervals(rows[tile][y])
+    return rows, offset, spans, pixels
+
+
 def decode_entry_rows(payload: bytes, header: Header, entry: Entry,
                       scene_dx: int, scene_dy: int) -> RowIntervals:
     if entry.data_size == 0 or entry.width == 0 or entry.height == 0:
@@ -350,11 +397,31 @@ def decode_entry_rows(payload: bytes, header: Header, entry: Entry,
     data = payload[entry.data_offset:entry.data_offset + entry.data_size]
     base_x = entry.x + scene_dx
     base_y = entry.y + scene_dy
+    offset = 0
+    if header.magic == b"FGP3":
+        if header.version == 3:
+            _cleanup_rows, offset, _cleanup_spans, _cleanup_pixels = parse_compact_cleanup_rows(
+                data,
+                0,
+                len(data),
+                base_x,
+                base_y,
+            )
+        else:
+            _cleanup_rows, offset, _cleanup_spans, _cleanup_pixels = parse_span_rows(
+                data,
+                0,
+                len(data),
+                header.version,
+                base_x,
+                base_y,
+                with_pixel_payload=False,
+            )
     rows, _offset, _spans, _pixels = parse_span_rows(
         data,
-        0,
+        offset,
         len(data),
-        header.version,
+        1 if header.version == 3 else header.version,
         base_x,
         base_y,
         with_pixel_payload=True,
@@ -375,20 +442,29 @@ def build_frame_model(payload: bytes, header: Header, entry: Entry,
         base_x = entry.x + scene_dx
         base_y = entry.y + scene_dy
         if header.magic == b"FGP3":
-            cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_span_rows(
-                data,
-                0,
-                len(data),
-                header.version,
-                base_x,
-                base_y,
-                with_pixel_payload=False,
-            )
+            if header.version == 3:
+                cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_compact_cleanup_rows(
+                    data,
+                    0,
+                    len(data),
+                    base_x,
+                    base_y,
+                )
+            else:
+                cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_span_rows(
+                    data,
+                    0,
+                    len(data),
+                    header.version,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=False,
+                )
             draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
                 data,
                 offset,
                 len(data),
-                header.version,
+                1 if header.version == 3 else header.version,
                 base_x,
                 base_y,
                 with_pixel_payload=True,

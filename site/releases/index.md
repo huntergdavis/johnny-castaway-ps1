@@ -49,7 +49,7 @@ performance baseline intact.
 ### `v0.8.0-ps1` — complete-scene performance baseline
 *2026-05-06*
 
-The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.8% over target / 99.5% target speed** — about 16.6 percentage points of over-target gap closed since the compact full-matrix baseline.
+The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.7% over target / 99.5% target speed** — about 16.7 percentage points of over-target gap closed since the compact full-matrix baseline.
 
 - **63 / 63 scenes still validated** after the post-validation bugfix pass.
 - **126 / 126 variants routed**, 120 carrying active-loop timing.

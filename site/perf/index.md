@@ -34,15 +34,15 @@ A scene can be timed here without being visually certified.
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-The two red rows are `visitor3` high and low (around `70%`
-after the current setup-prime and read-group refreshes; the largest single
+The two red rows are `visitor3` high and low (around `72%`
+after the current cleanup-metadata compaction; the largest single
 optimization target left on the matrix). The yellow cluster includes
 the wide-action and `BUILDING2` rows still finishing their
 prefetch-relief, stream-window, and selective-preprocessing work.
 
 ## Rollup
 
-Current battle-card rollup as of 2026-05-06:
+Current battle-card rollup as of 2026-05-07:
 
 | Metric | Value |
 |---|---:|
@@ -54,10 +54,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.8%` (`0.8228%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4872%` exact) |
-| Latest perf matrix run | `2026-05-06T22:29:02` |
-| Stats version | mixed across rows; newest optimized rows use `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.7%` (`0.7400%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.5291%` exact) |
+| Latest perf matrix run | `2026-05-07T00:05:13` |
+| Stats version | mixed across rows; newest optimized rows use `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -88,7 +88,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `activity9-lowgroup-v072c`,
+  refreshed rows use `visitor3-fgp3-cleanup-compact-v081`,
+  `activity9-lowgroup-v072c`,
   `activity9-fgp3-v072c`,
   `activity9-window-v072c`,
   `activity4-fishing4-v072c-prefetch-relief`,
@@ -1704,29 +1705,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.1%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1455/1010</td>
-      <td>363</td>
-      <td>21</td>
+      <td>2026-05-07T00:05:13</td>
+      <td>visitor3-fgp3-cleanup-compact-v081</td>
+      <td>+38.0%</td>
+      <td class="spd-red">72.5%</td>
+      <td>1406/1019</td>
+      <td>296</td>
+      <td>7</td>
       <td>31</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>FGP3/v3 cleanup-metadata compaction keeps PAL4 draw payloads and CD footprint stable while reducing active-loop restore/CD pressure</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.0%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1453/1009</td>
-      <td>365</td>
-      <td>23</td>
-      <td>32</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>2026-05-07T00:05:13</td>
+      <td>visitor3-fgp3-cleanup-compact-v081</td>
+      <td>+38.4%</td>
+      <td class="spd-red">72.2%</td>
+      <td>1405/1015</td>
+      <td>301</td>
+      <td>8</td>
+      <td>33</td>
+      <td>FGP3/v3 cleanup-metadata compaction keeps PAL4 draw payloads and CD footprint stable while reducing active-loop restore/CD pressure</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

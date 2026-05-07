@@ -1834,6 +1834,31 @@ static uint16 grReadPackedSpanU16(const uint8 *p)
     return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
 }
 
+static int __attribute__((noinline, optimize("Os")))
+grReadCompactSpanU16(const uint8 *data,
+                     uint32 dataSize,
+                     uint32 *offset,
+                     uint16 *outValue)
+{
+    uint8 value;
+
+    if (*offset >= dataSize)
+        return 0;
+
+    value = data[*offset];
+    *offset = *offset + 1u;
+    if (value != 0xffu) {
+        *outValue = value;
+        return 1;
+    }
+
+    if (*offset + 2u > dataSize)
+        return 0;
+    *outValue = grReadPackedSpanU16(data + *offset);
+    *offset = *offset + 2u;
+    return 1;
+}
+
 static inline void grCompositePacked4OpaqueRun(uint16 *dst,
                                                const uint8 *packedPixels,
                                                int srcPixel,
@@ -2114,6 +2139,55 @@ void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint3
             relX = grReadPackedSpanU16(spanData + offset);
             pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
             offset += 4u;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkRestore(restoredBytes);
+    if (offset < spanDataSize)
+        grCompositePacked4SpansToBackground(spanData + offset,
+                                            spanDataSize - offset,
+                                            palette,
+                                            screenX,
+                                            screenY);
+}
+
+void __attribute__((optimize("Os")))
+grCompositePacked4CompactTemporalResidualToBackground(const uint8 *spanData,
+                                                      uint32 spanDataSize,
+                                                      const uint16 *palette,
+                                                      sint16 screenX,
+                                                      sint16 screenY)
+{
+    uint32 offset = 0;
+    uint32 restoredBytes = 0;
+    uint16 cleanupRows;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    cleanupRows = grReadPackedSpanU16(spanData);
+    offset = 2;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relY) ||
+            !grReadCompactSpanU16(spanData, spanDataSize, &offset, &spanCount))
+            return;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relX) ||
+                !grReadCompactSpanU16(spanData, spanDataSize, &offset, &pixelCount))
+                return;
             restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
                                                            rowScreenY,
                                                            (int)pixelCount);

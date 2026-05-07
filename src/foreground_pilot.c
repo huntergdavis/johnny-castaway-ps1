@@ -153,6 +153,7 @@ static const uint8 kFgPilotPackFormatPal4Spans = 2;
 static const uint8 kFgPilotPackFormatIndexed8Spans = 3;
 static const uint8 kFgPilotPackFormatPal4TemporalResidual = 4;
 static const uint8 kFgPilotPackFormatIndexed8TemporalResidual = 5;
+static const uint8 kFgPilotPackFormatPal4CompactTemporalResidual = 6;
 enum {
     FG_PACK_HEADER_SIZE = 40,
     FG_PACK_ENTRY_SIZE = 20,
@@ -208,7 +209,8 @@ enum {
       (entry)->height > 0) ? 1 : 0)
 #define fgRuntimeUsesTemporalResidual() \
     ((gFgRuntime.packFormat == kFgPilotPackFormatPal4TemporalResidual || \
-      gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) ? 1 : 0)
+      gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual || \
+      gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual) ? 1 : 0)
 #define fgRuntimeHeldSlackBeforeWait() \
     ((uint16)((!gFgRuntime.active || \
                gFgRuntime.displayVBlanks == 0 || \
@@ -708,7 +710,7 @@ static int fgHeaderIsPal4TemporalResidual(const struct TFgPilotHeader *header)
 {
     return (header != NULL &&
             memcmp(header->magic, "FGP3", 4) == 0 &&
-            header->version == 1) ? 1 : 0;
+            (header->version == 1 || header->version == 3)) ? 1 : 0;
 }
 
 static int fgHeaderIsIndexed8TemporalResidual(const struct TFgPilotHeader *header)
@@ -2535,6 +2537,12 @@ static void fgRuntimeComposeEntryToBackground(const struct TFgPilotEntry *entry,
                                                        gFgRuntime.palette,
                                                        entry->x,
                                                        entry->y);
+    } else if (gFgRuntime.packFormat == kFgPilotPackFormatPal4CompactTemporalResidual) {
+        grCompositePacked4CompactTemporalResidualToBackground(frameData,
+                                                              entry->dataSize,
+                                                              gFgRuntime.palette,
+                                                              entry->x,
+                                                              entry->y);
     } else if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual) {
         grCompositeIndexed8TemporalResidualToBackground(frameData,
                                                         entry->dataSize,
@@ -2768,7 +2776,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else if (fgHeaderIsPal4TemporalResidual(&gFgRuntime.header))
-                gFgRuntime.packFormat = kFgPilotPackFormatPal4TemporalResidual;
+                gFgRuntime.packFormat = (gFgRuntime.header.version == 3) ?
+                    kFgPilotPackFormatPal4CompactTemporalResidual :
+                    kFgPilotPackFormatPal4TemporalResidual;
             else if (fgHeaderIsIndexed8TemporalResidual(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8TemporalResidual;
             else

@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-06:
+Current battle-card rollup as of 2026-05-07:
 
 | Metric | Value |
 |---|---:|
@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.8%` (`0.8228%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4872%` exact) |
-| Latest perf matrix run | `2026-05-06T22:29:02` |
-| Stats version | mixed; newest optimized rows use `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.7%` (`0.7400%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.5291%` exact) |
+| Latest perf matrix run | `2026-05-07T00:05:13` |
+| Stats version | mixed; newest optimized rows use `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -94,6 +94,7 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
+`visitor3-fgp3-cleanup-compact-v081`,
 `johnny2-fgp3-padded-v081`,
 `mary2-prefetch-relief-v081`,
 `mary2-fgp3-padded-v081`,
@@ -120,7 +121,6 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
 `building5-fgp3-padded-v080`,
-`visitor3-low-group170-186-v080b`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-v072-prefetch-relief`,
 `walkstuf1-fgp2-setup-prime-v080`,

@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -135,15 +135,15 @@ A scene can be timed here without being visually certified.</p>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-<p>The two red rows are <code class="language-plaintext highlighter-rouge">visitor3</code> high and low (around <code class="language-plaintext highlighter-rouge">70%</code>
-after the current setup-prime and read-group refreshes; the largest single
+<p>The two red rows are <code class="language-plaintext highlighter-rouge">visitor3</code> high and low (around <code class="language-plaintext highlighter-rouge">72%</code>
+after the current cleanup-metadata compaction; the largest single
 optimization target left on the matrix). The yellow cluster includes
 the wide-action and <code class="language-plaintext highlighter-rouge">BUILDING2</code> rows still finishing their
 prefetch-relief, stream-window, and selective-preprocessing work.</p>
 
 <h2 id="rollup">Rollup</h2>
 
-<p>Current battle-card rollup as of 2026-05-06:</p>
+<p>Current battle-card rollup as of 2026-05-07:</p>
 
 <table>
   <thead>
@@ -187,19 +187,19 @@ prefetch-relief, stream-window, and selective-preprocessing work.</p>
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.8%</code> (<code class="language-plaintext highlighter-rouge">0.8228%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.7%</code> (<code class="language-plaintext highlighter-rouge">0.7400%</code> exact)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.4872%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.5291%</code> exact)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-06T22:29:02</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-07T00:05:13</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>, and <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, and <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -237,7 +237,8 @@ Lower is better.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>,
+<code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
@@ -1854,29 +1855,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.1%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1455/1010</td>
-      <td>363</td>
-      <td>21</td>
+      <td>2026-05-07T00:05:13</td>
+      <td>visitor3-fgp3-cleanup-compact-v081</td>
+      <td>+38.0%</td>
+      <td class="spd-red">72.5%</td>
+      <td>1406/1019</td>
+      <td>296</td>
+      <td>7</td>
       <td>31</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>FGP3/v3 cleanup-metadata compaction keeps PAL4 draw payloads and CD footprint stable while reducing active-loop restore/CD pressure</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:51:29</td>
-      <td>visitor3-v072-prefetch-relief</td>
-      <td>+44.0%</td>
-      <td class="spd-red">69.4%</td>
-      <td>1453/1009</td>
-      <td>365</td>
-      <td>23</td>
-      <td>32</td>
-      <td>validated v0.7 pack; visitor3 clean-snapshot relief exception restores stage1_window prefetch against fresh current baseline with accepted hidden-refill tradeoff</td>
+      <td>2026-05-07T00:05:13</td>
+      <td>visitor3-fgp3-cleanup-compact-v081</td>
+      <td>+38.4%</td>
+      <td class="spd-red">72.2%</td>
+      <td>1405/1015</td>
+      <td>301</td>
+      <td>8</td>
+      <td>33</td>
+      <td>FGP3/v3 cleanup-metadata compaction keeps PAL4 draw payloads and CD footprint stable while reducing active-loop restore/CD pressure</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

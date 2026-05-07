@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.1-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.8% over target / 99.5% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.7% over target / 99.5% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -28,11 +28,11 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.8228%` over target / `99.4872%`
-target speed after the post-release MARY2 prefetch-relief refresh. MARY2's
-padded FGP3 conversion exposed a clean-memory prefetch miss; the MARY2-local
-relief restores `stage1_window`, moves high/low to `2241/2248` and
-`2242/2250`, and collapses due misses from `233` to `0`.
+current timing-bearing rows average `+0.7400%` over target / `99.5291%`
+target speed after the post-release VISITOR3 cleanup-metadata compaction.
+MARY2's padded FGP3 conversion exposed a clean-memory prefetch miss; the
+MARY2-local relief restores `stage1_window`, moves high/low to `2241/2248`
+and `2242/2250`, and collapses due misses from `233` to `0`.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.
