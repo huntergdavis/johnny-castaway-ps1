@@ -478,7 +478,6 @@ static const struct TFgPilotReadGroup kFishing3LowReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kVisitor3HighReadGroups12[] = {
-    {72, 84, 0},
     {138, 162, 4},
     {170, 186, 0},
     {230, 242, 0}

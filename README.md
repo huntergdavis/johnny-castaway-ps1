@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.7% target speed** |
-| Latest perf matrix run | **`2026-05-07T10:17:42`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-07T11:33:52`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -122,7 +122,10 @@ outliers. VISITOR3 now uses an `FGP3/v3` cleanup-compact metadata shape that
 keeps the PAL4 draw payloads and CD footprint stable while trimming active
 payload from `1552446` to `1265930` bytes, plus a guarded high-tide
 generated-window `138..162` append that lowers visible blocking `294 -> 293`
-and loop reads `40 -> 39` without moving the active loop or layout. BUILDING2 now uses the same cleanup-compact format,
+and loop reads `40 -> 39` without moving the active loop or layout. The
+follow-up `72..84` cleanup removes a setup-covered VISITOR3 high table row
+after broad exact-flat canaries, leaving the active high table at
+`138..162`, `170..186`, and `230..242`. BUILDING2 now uses the same cleanup-compact format,
 trimming active payload `1296388 -> 1044638` without moving pack LBAs or the
 PS-EXE bucket. The preprocessing matrix still keeps VISITOR3 first, but the
 next larger win needs scheduler-owned CD timing or selective upload-ready bands
@@ -286,7 +289,10 @@ blocking `294 -> 293`, loop reads `40 -> 39`, and loop read VBlanks
 `335 -> 332` while leaving the loop-time average unchanged. The follow-up
 `visitor3-high-remove-144-160-v082` cleanup drops the now-redundant guarded
 `144..160` row after exact-flat broad canaries, preserving that baseline while
-recovering table headroom.
+recovering table headroom. The later `visitor3-high-remove-72-84-v082`
+cleanup drops a second now-dead high-tide row after the read plan proved setup
+prime coverage already owns sectors `1..97`; broad canaries remain exact-flat
+and the aggregate speed rollup is unchanged.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.8`
 percentage points of over-target gap and added about `12.6` points of target
