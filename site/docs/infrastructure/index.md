@@ -48,7 +48,7 @@ PS1 BIOS file for testing.
 
 This is not a high-throughput build. A clean Docker rebuild of the PS1
 executable plus CD image is around 20 seconds on a recent laptop. The
-overhead of running `docker run` per step (CMake configure, make, mkpsxiso)
+overhead of running `docker run` per step (CMake configure, make, [mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}))
 is real but irrelevant for a one-person workflow. What matters is that
 every build is the same build.
 
