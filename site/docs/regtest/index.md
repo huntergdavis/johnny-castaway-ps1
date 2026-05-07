@@ -416,6 +416,20 @@ ps1_test.h                         Test-instrumentation macros
   image is produced before regtest can run.
 - [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}) — the
   primary acceptance loop. Regtest is secondary tooling.
+- [Performance battle card]({{ '/perf/' | relative_url }}) — the same
+  headless DuckStation pipeline run in `perf-log` mode against
+  every scene/tide variant.
+- [Performance reference]({{ '/docs/performance/' | relative_url }}) —
+  what the `loop_vb` / `target_vb` / `blocking_vb` columns the
+  harness emits actually mean.
+- [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }})
+  — pad-script routes the regtest binary consumes via
+  `BOOTMODE.TXT pad-script`.
+- [Glossary: soak-test]({{ '/docs/glossary/#soak-test' | relative_url }}) —
+  the long-run randomized DuckStation pass that catches
+  state-coupling bugs the per-commit regtest gate doesn't. The
+  v0.8.1 [MARY 4 freeze retrospective]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  is the canonical example.
 - [API mapping]({{ '/docs/api/' | relative_url }}) — the SDL2 → PSn00bSDK
   surface the regtest binary is exercising.
 
