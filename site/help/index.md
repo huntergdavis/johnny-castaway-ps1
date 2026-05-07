@@ -21,6 +21,14 @@ just watching it.
     <p>The quick player-facing control map for normal screensaver mode and Freeplay.</p>
   </li>
   <li>
+    <a href="{{ '/docs/pause-menu/' | relative_url }}">Pause menu reference</a>
+    <p>What every pause-menu sub-screen does — Scene Set, Freeplay Options, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/captions/' | relative_url }}">Closed captions</a>
+    <p>Off by default; toggle from Pause → Accessibility → Captions. Dark text band at scene start; corpus authored fresh for this port. The 30 HIGH / 21 MED / 12 LOW confidence breakdown for every scene.</p>
+  </li>
+  <li>
     <a href="{{ '/docs/freeplay/' | relative_url }}">Freeplay reference</a>
     <p>Direct-control Johnny, gag and visitor catalogs, world toggles, fishing, and the memory rules that keep it running.</p>
   </li>
