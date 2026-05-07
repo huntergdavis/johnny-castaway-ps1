@@ -95,6 +95,18 @@
 </script>
 {%- endif -%}
 
+{%- comment -%}
+  wordCount and timeRequired (Schema.org / ISO-8601 PTnM): both
+  recognized by Google for Article/BlogPosting and load-bearing
+  for content-discovery surfaces. The reading-time hint in the
+  page header uses the same divisor (250 wpm); same floor at
+  one minute. Computed once and reused across both records.
+{%- endcomment -%}
+{%- assign jsonld_words = content | strip_html | number_of_words -%}
+{%- assign jsonld_minutes = jsonld_words | divided_by: 250 -%}
+{%- if jsonld_minutes < 1 -%}{%- assign jsonld_minutes = 1 -%}{%- endif -%}
+{%- assign jsonld_iso_dur = 'PT' | append: jsonld_minutes | append: 'M' -%}
+
 {%- if page.layout == 'post' and page.date -%}
 <script type="application/ld+json">
 {
@@ -108,6 +120,8 @@
   "url": {{ page_abs | jsonify }},
   "mainEntityOfPage": {{ page_abs | jsonify }},
   "inLanguage": "en",
+  "wordCount": {{ jsonld_words }},
+  "timeRequired": {{ jsonld_iso_dur | jsonify }},
   "author": {
     "@type": "Person",
     "name": {{ site.author | jsonify }},
@@ -153,6 +167,8 @@
   "url": {{ page_abs | jsonify }},
   "mainEntityOfPage": {{ page_abs | jsonify }},
   "inLanguage": "en",
+  "wordCount": {{ jsonld_words }},
+  "timeRequired": {{ jsonld_iso_dur | jsonify }},
   "image": {{ article_image | jsonify }},
   "author": {
     "@type": "Person",
