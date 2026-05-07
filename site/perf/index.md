@@ -32,9 +32,9 @@ A scene can be timed here without being visually certified.
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">98 ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 ≥ 80%</span>
-  <span class="spd-key spd-red">2 &lt; 80%</span>
+  <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
+  <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
@@ -56,14 +56,14 @@ Current battle-card rollup as of 2026-05-06:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `{{ validated_count }} / {{ total_count }}` |
+| Scenes visually validated | `{{ validated_count }} / {{ total_count }}` (`100%`) |
 | Validated scenes | all 63 original scenes; see the live ledger above for the source rows |
-| Scene/tide variants routed through headless perf | `126 / 126` |
-| Timing-bearing variants | `120 / 126` |
-| Scenes with at least one active-loop timed variant | `60 / 63` |
-| Scenes with both high/low variants measured | `63 / 63` |
-| Pending variants | `0 / 126` |
-| Blocked variants | `0 / 126` |
+| Scene/tide variants routed through headless perf | `126 / 126` (`100%`) |
+| Timing-bearing variants | `120 / 126` (`95.2%`) |
+| Scenes with at least one active-loop timed variant | `60 / 63` (`95.2%`) |
+| Scenes with both high/low variants measured | `63 / 63` (`100%`) |
+| Pending variants | `0 / 126` (`0%`) |
+| Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.8%` (`0.8229%` exact) |
 | Timing-bearing average target speed | `99.5%` (`99.4860%` exact) |
 | Latest perf matrix run | `2026-05-06T17:38:07` |
