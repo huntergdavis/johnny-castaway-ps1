@@ -532,6 +532,31 @@ hr.rule, .rule {
   .pill--info { color: var(--jc-cyan); }
 }
 
+/* Anchor pills: status-strip pills are <a> when they point at an
+   internal page. Drop the default underline; preserve the pill
+   class color through hover (the default a:hover rule has higher
+   specificity than .pill--ok so we re-assert color per class);
+   subtle currentColor fill on hover so the affordance reads;
+   visible focus ring for keyboard nav. */
+a.pill {
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+a.pill:hover,
+a.pill:focus-visible {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+a.pill:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+a.pill--ok:hover, a.pill--ok:focus-visible    { color: var(--jc-palm-dim); }
+a.pill--info:hover, a.pill--info:focus-visible { color: var(--jc-cyan-dim); }
+@media (prefers-color-scheme: dark) {
+  a.pill--ok:hover, a.pill--ok:focus-visible    { color: var(--jc-palm); }
+  a.pill--info:hover, a.pill--info:focus-visible { color: var(--jc-cyan); }
+}
+
 /* ---------- Tables ---------- */
 table { width: 100%; border-collapse: collapse; margin: 1.4rem 0; font-size: 0.97rem; }
 th, td {

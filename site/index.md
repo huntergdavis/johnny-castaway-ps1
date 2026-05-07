@@ -40,13 +40,13 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> {{ site.release.tag }}</span>
-  <span class="pill pill--ok">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</span>
-  <span class="pill pill--ok">{{ site.release.perf_target_speed_pct }}% target speed</span>
-  <span class="pill pill--info">PSn00bSDK 0.24</span>
-  <span class="pill pill--info">DuckStation</span>
-  <span class="pill pill--info">36 holidays</span>
-  <span class="pill pill--info">GPL-3.0</span>
+  <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a></span>
+  <a class="pill pill--ok" href="{{ '/scenes/' | relative_url }}">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</a>
+  <a class="pill pill--ok" href="{{ '/perf/' | relative_url }}">{{ site.release.perf_target_speed_pct }}% target speed</a>
+  <a class="pill pill--info" href="{{ '/docs/build/' | relative_url }}">PSn00bSDK 0.24</a>
+  <a class="pill pill--info" href="{{ '/play/#emulator' | relative_url }}">DuckStation</a>
+  <a class="pill pill--info" href="{{ '/docs/holidays/' | relative_url }}">36 holidays</a>
+  <a class="pill pill--info" href="{{ '/legal/' | relative_url }}">GPL-3.0</a>
 </aside>
 
 <section class="page" markdown="1">
