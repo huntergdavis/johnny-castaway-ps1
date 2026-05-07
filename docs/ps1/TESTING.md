@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.8%` (`0.8324%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4776%` exact) |
-| Latest perf matrix run | `2026-05-06T21:20:57` |
-| Stats version | mixed; newest optimized rows use `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.9%` (`0.8847%` exact) |
+| Timing-bearing average target speed | `99.4%` (`99.4269%` exact) |
+| Latest perf matrix run | `2026-05-06T21:39:22` |
+| Stats version | mixed; newest optimized rows use `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -95,6 +95,7 @@ scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
 `johnny2-fgp3-padded-v081`,
+`mary2-fgp3-padded-v081`,
 `mary5-fgp3-padded-v081`,
 `activity11-fgp3-padded-v081`,
 `activity9-lowgroup-v072c`,
@@ -122,7 +123,6 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `visitor3-setup-prime-192k-v080`,
 `visitor3-v072-prefetch-relief`,
 `walkstuf1-fgp2-setup-prime-v080`,
-`mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,

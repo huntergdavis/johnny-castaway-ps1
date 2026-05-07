@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.1-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.8% over target / 99.5% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.9% over target / 99.4% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -28,9 +28,10 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.8324%` over target / `99.4776%`
-target speed after the post-release JOHNNY2 padded-FGP3 refresh. JOHNNY2 is a
-same-commit active-loop win, but it also replaces stale v0.6.4 matrix rows.
+current timing-bearing rows average `+0.8847%` over target / `99.4269%`
+target speed after the post-release MARY2 padded-FGP3 refresh. MARY2 is a
+same-commit active-loop win (`2385 -> 2330` high, `2384 -> 2327` low), but it
+also replaces stale v0.6.8 matrix rows.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.

@@ -159,9 +159,9 @@ and `prefetch.overrun_vb=5`. That is now historical context, not the current
 canary. As of the 2026-05-06 battle-card refresh, FISHING 1 high is
 `loop_vb=1068` against `target_vb=1074`, with `blocking_vb=2`,
 `prefetch_overrun_vb=2`, and `due_misses=0`; across the measured matrix,
-120/126 scene/tide variants carry active-loop timing and average `+0.8%` over target /
-`99.5%` target speed as of `johnny2-fgp3-padded-v081` (`0.8324%` exact over target /
-`99.4776%` exact target speed). The remaining optimization target is therefore
+120/126 scene/tide variants carry active-loop timing and average `+0.9%` over target /
+`99.4%` target speed as of `mary2-fgp3-padded-v081` (`0.8847%` exact over target /
+`99.4269%` exact target speed). The remaining optimization target is therefore
 matrix-wide: some scenes are now canary-clean, while others still have large
 CD/payload and render/restore pressure. A direct prepared-present event-poll
 removal was rejected because it regressed visible CD pressure and weakens
@@ -1297,6 +1297,7 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 | `P5-355` | Done: convert current ACTIVITY11 high/low to padded FGP3. | The validated ACTIVITY11 PAL4 packs shrink as same-layout FGP3 temporal residuals and fit when padded back to the original `433970` byte files. High improves active loop `1729 -> 1715`, overrun `9 -> 0`, blocking `10 -> 2`, prefetch overrun `4 -> 2`, and loop reads `29 -> 11`; low improves active loop `1729 -> 1717`, overrun `12 -> 0`, blocking `14 -> 4`, prefetch overrun `9 -> 4`, and loop reads `29 -> 11`. Full scene setup grows by `8/11` VBlanks because more pack work is primed before playback, so this is an accepted active-loop/data-shape win. Latest rows use `activity11-fgp3-padded-v081`; exact matrix average improves from `0.8231%` to `0.8071%` over target / from `99.4858%` to `99.5018%` target speed. |
 | `P5-356` | Done: convert current MARY5 high/low to padded FGP3. | The validated MARY5 PAL4 packs shrink as same-layout FGP3 temporal residuals and fit when padded back to the original `646602` byte files. High improves active loop `1591 -> 1581`, overrun `9 -> 0`, blocking `8 -> 5`, prefetch overrun `8 -> 0`, and loop reads `49 -> 42`; low improves active loop `1592 -> 1581`, overrun `11 -> 0`, blocking `10 -> 6`, prefetch overrun `10 -> 2`, and loop reads `49 -> 42`. LBAs and PS-EXE bucket stay fixed. Latest rows use `mary5-fgp3-padded-v081`; exact matrix average improves from `0.8071%` to `0.7939%` over target / from `99.5018%` to `99.5149%` target speed. |
 | `P5-357` | Done: convert current JOHNNY2 high/low to padded FGP3. | The validated JOHNNY2 PAL4 packs shrink as same-layout FGP3 temporal residuals and fit when padded back to the original `288637` byte files. Against the same-commit FGP2 control, high improves scene time `2089 -> 2080`, active loop `1833 -> 1801`, overrun `82 -> 50`, and blocking `401 -> 369`; low improves scene time `2091 -> 2080`, active loop `1833 -> 1800`, overrun `82 -> 49`, and blocking `399 -> 377`. LBAs and PS-EXE bucket stay fixed. Latest rows use `johnny2-fgp3-padded-v081`; exact matrix average moves from `0.7939%` to `0.8324%` over target / from `99.5149%` to `99.4776%` target speed because the refresh replaces stale v0.6.4 matrix rows. |
+| `P5-358` | Done: convert current MARY2 high/low to padded FGP3. | The validated MARY2 PAL4 packs shrink as same-layout FGP3 temporal residuals and fit when padded back to the original `582189` byte files. Against the same-commit FGP2 control, high improves scene time `2638 -> 2583`, active loop `2385 -> 2330`, and overrun `135 -> 78`; low improves scene time `2638 -> 2581`, active loop `2384 -> 2327`, and overrun `134 -> 75`. LBAs and PS-EXE bucket stay fixed. Latest rows use `mary2-fgp3-padded-v081`; exact matrix average moves from `0.8324%` to `0.8847%` over target / from `99.4776%` to `99.4269%` target speed because the refresh replaces stale v0.6.8 matrix rows. |
 | `P5-94` | Failed/no promotion: FISHING2 high setup segment `185..191`. | The read-plan's top FISHING2 high single-read candidate did not promote through either scratch-owned or persistent-owned setup-segment ownership. Scratch ownership stayed timing-flat without reducing `loop_reads`; persistent ownership regressed `loop_vb 1898 -> 1900` and `blocking_vb/prefetch_overrun_vb 2 -> 4`. The next CD/setup attempt should be generated multi-segment policy with explicit scheduler ownership/cost proof, not another hand-authored single side segment. |
 | `P5-95` | Done: remove stale FISHING1 read group. | The old FISHING1 high group `{396,406}` was beyond the current FGP3 pack sector range and could not fire. Removing the table and startup branch keeps FISHING1, FISHING2 high/low, and FISHING3 high/low exact-flat, preserves PS-EXE `145408` and pack LBAs, and shrinks `foregroundPilotPlay` by `44` bytes. This is generated-policy cleanup, not a VBlank win. |
 | `P5-96` | Done: wire the all-scene fgpilot performance matrix. | `scripts/ps1-foreground-scene-manifest.py` now derives the `63` scene slugs and `126` tide variants from `config/ps1/regtest-scenes.txt`, emits the full `FG/` CD layout from generated FG2 packs, prints perf-runner cases, and writes `docs/ps1/performance-scene-matrix.csv`. `scripts/ps1-perf-all-scenes.sh` runs that generated case set through the headless perf harness and refreshes the sheet from collected summaries. Runtime routing now constructs pack paths for every generated scene family while `kProvenScenes` still controls only the human-validated default random loop. |
@@ -1522,8 +1523,8 @@ Goal: move repeatable parsing and clipping work out of the PS1 runtime.
 
 ## Current Highest-Leverage Targets
 
-Checkpoint after `johnny2-fgp3-padded-v081`: the matrix is now
-`120` timing-bearing rows at `0.8324%` exact average over target / `99.4776%`
+Checkpoint after `mary2-fgp3-padded-v081`: the matrix is now
+`120` timing-bearing rows at `0.8847%` exact average over target / `99.4269%`
 exact target speed. The VISITOR3/WALKSTUF1/VISITOR5/ACTIVITY10/JOHNNY3/JOHNNY1/ACTIVITY9/MARY1/ACTIVITY11/ACTIVITY12/BUILDING4/BUILDING6/JOHNNY6/ACTIVITY4/FISHING4 recoveries prove validation-pack
 refreshes can change memory pressure enough to reopen old prefetch paths; the
 STAND, ACTIVITY7, VISITOR1, FISHING7, ACTIVITY8, WALKSTUF2, STAND3, BUILDING1,

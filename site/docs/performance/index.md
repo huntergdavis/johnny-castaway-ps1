@@ -273,13 +273,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.8% over target /
-99.5% target speed** (`0.8324%` exact over target / `99.4776%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+0.9% over target /
+99.4% target speed** (`0.8847%` exact over target / `99.4269%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`mary2-fgp3-padded-v081`,
 `johnny2-fgp3-padded-v081`,
 `mary5-fgp3-padded-v081`,
 `activity11-fgp3-padded-v081`,
@@ -312,7 +313,6 @@ perf measurements. The latest updated rows are stamped
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
 `visitor3-v072-prefetch-relief`,
-`mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,
@@ -328,13 +328,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T21:20:57`; per-row freshness and stats version are shown on
+run is `2026-05-06T21:39:22`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `johnny2-fgp3-padded-v081`,
+rows now use `mary2-fgp3-padded-v081`,
+`johnny2-fgp3-padded-v081`,
 `mary5-fgp3-padded-v081`,
 `activity11-fgp3-padded-v081`,
 `building5-fgp3-padded-v080`,
@@ -367,7 +368,6 @@ rows now use `johnny2-fgp3-padded-v081`,
 `stand1-v072-current-refresh`,
 `visitor3-v072-prefetch-relief`,
 `compact-fgp3-v66-final-frame-hold`,
-`mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
@@ -550,8 +550,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>mary2</code></td>
-      <td>+0.2% / 99.8% (2250/2246); blk 4</td>
-      <td>+0.3% / 99.7% (2253/2246); blk 7</td>
+      <td>+3.5% / 96.7% (2330/2252); due 233; blk 668</td>
+      <td>+3.3% / 96.8% (2327/2252); due 233; blk 662</td>
     </tr>
     <tr>
       <td><code>mary3</code></td>
