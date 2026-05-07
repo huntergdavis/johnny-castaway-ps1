@@ -104,7 +104,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1419 words
+          ~5 min read · 1457 words
         </p>
 
       <hr class="rule" />
@@ -252,9 +252,14 @@ direct register writes; the divergence itself is a DuckStation
 HLE quirk, not a project bug, but it does mean audio-on-real-
 hardware needs verification before any release calls itself
 hardware-confirmed.</li>
-  <li><strong>Real hardware testing.</strong> All current validation is on
-DuckStation. A real-PSone run is on the long-term list. Until
-then, treat hardware claims with the appropriate skepticism.</li>
+  <li><strong>Real hardware soak.</strong> Smoke-tested on an SCPH-7501 via the
+<a href="https://github.com/socram8888/tonyhax">TonyHax</a> softmod path —
+the disc boots and runs. Long-term observations on real
+hardware (extended idle, real SPU register behavior, real CD
+seek timing under random-position scene picks) are still on
+the wishlist. The <code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> HLE divergence
+above is a concrete reason to keep treating hardware audio as
+unverified until the soak loop covers it.</li>
   <li><strong>Older count-based status models</strong> (<code class="language-plaintext highlighter-rouge">25/63</code>, <code class="language-plaintext highlighter-rouge">27/63</code>, <code class="language-plaintext highlighter-rouge">60/63</code>,
 <code class="language-plaintext highlighter-rouge">63/63</code>) from prior validation eras are <em>retired</em>, not current.
 They are preserved in
