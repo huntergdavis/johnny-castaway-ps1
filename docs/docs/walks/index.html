@@ -178,25 +178,25 @@ and gained three runtime guards in subsequent releases (see
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_data.h</code></td>
-      <td style="text-align: right">489</td>
+      <td style="text-align: right">533</td>
       <td>Sierra (via <code class="language-plaintext highlighter-rouge">jc_reborn</code>)</td>
       <td>Pre-baked spot graph, shortest-path bookmarks, per-segment frame tables. Unchanged from the upstream engine decode.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk.c</code> / <code class="language-plaintext highlighter-rouge">walk.h</code></td>
-      <td style="text-align: right">219 / 26</td>
+      <td style="text-align: right">195 / 25</td>
       <td>upstream</td>
       <td>The original walk state machine. Consumes <code class="language-plaintext highlighter-rouge">walk_data.h</code>; produces a per-tick <code class="language-plaintext highlighter-rouge">(x, y, sprite_idx, heading)</code>.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_pilot.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
-      <td style="text-align: right">449 / 84</td>
+      <td style="text-align: right">354 / 84</td>
       <td>this port</td>
       <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">walk_render.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
-      <td style="text-align: right">142 / 75</td>
+      <td style="text-align: right">119 / 75</td>
       <td>this port</td>
       <td>Per-frame draw kernel. Restores the island background, stamps the JOHNWALK sprite, and re-stamps the palm trunk + leaves on top when Johnny is between SPOT_3 and SPOT_4. Used by both walk_pilot and freeplay.</td>
     </tr>
