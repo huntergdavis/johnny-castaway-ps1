@@ -71,7 +71,8 @@ At `{{ site.release.tag }}`, all
 **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
 scenes are signed off — every row in the
 [per-scene ledger]({{ '/scenes/' | relative_url }}) clears the
-FISHING 1 bar across every applicable variant. The hard cluster
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+across every applicable variant. The hard cluster
 near the end was the foreground-only multi-view scenes
 (`MISCGAG 1`, `MISCGAG 2`, `STAND 1`, the wide LILLIPUTIAN arrival),
 which all needed the generic normal / far-left / far-right host

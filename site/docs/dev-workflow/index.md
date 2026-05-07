@@ -40,7 +40,8 @@ those tools are good for.
 Performance is its own ledger, separate from the visual-signoff gate
 above. Per-scene timing lives at
 [/perf/]({{ '/perf/' | relative_url }}); a scene can be validated
-under the FISHING 1 bar without sitting in the green band on the
+under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+without sitting in the green band on the
 matrix, and a row in the green band that fails visual review
 doesn't ship. The two ledgers stay separate on purpose — different
 bars, different cadences, different failure modes.

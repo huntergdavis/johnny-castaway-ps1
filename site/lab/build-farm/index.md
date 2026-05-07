@@ -33,7 +33,7 @@ pack-format or scheduler change.
 ## Pointers
 
 - [The dev environment, photographed]({{ '/about/dev-environment/' | relative_url }}) — the farm's bottom-monitor panel in the same field of view as the rest of the workflow.
-- [Scene ledger]({{ '/scenes/' | relative_url }}) — visual signoff (the FISHING 1 bar).
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — visual signoff (the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})).
 - [Performance battle card]({{ '/perf/' | relative_url }}) — second ledger; per-scene timing against the target frame budget, sortable + color-coded.
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)

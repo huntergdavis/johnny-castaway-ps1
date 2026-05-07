@@ -77,7 +77,7 @@ and headless perf timing. The two-ledger framing on
 [/about/]({{ '/about/' | relative_url }}) is the public version
 of that. `v0.8.1` adds a third loop that keeps both honest:
 
-- **Visual signoff** runs to the FISHING 1 bar. Per-scene human
+- **Visual signoff** runs to the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). Per-scene human
   review. Catches pixel and SFX wrong.
 - **Headless matrix** runs every (scene, tide) variant
   deterministically. Catches timing wrong.
