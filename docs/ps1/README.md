@@ -28,9 +28,9 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.6452%` over target / `99.6067%`
-target speed after the post-release VISITOR3, BUILDING2, and BUILDING4
-cleanup-metadata compactions.
+current timing-bearing rows average `+0.6400%` over target / `99.6118%`
+target speed after the post-release VISITOR3, BUILDING2, BUILDING4, and
+ACTIVITY9 cleanup-metadata compactions.
 MARY2's padded FGP3 conversion exposed a clean-memory prefetch miss; the
 MARY2-local relief restores `stage1_window`, moves high/low to `2241/2248`
 and `2242/2250`, and collapses due misses from `233` to `0`.

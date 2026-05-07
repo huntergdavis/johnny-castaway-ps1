@@ -140,7 +140,7 @@
 
 <p>The compact full-matrix baseline at the same time read <strong>+17.4% over target / 87.1% target speed</strong> across 120 timing-bearing scene/tide rows. That’s a different kind of done. A scene that overruns its frame budget by a sixth still looks correct — pixels and audio match the host capture — but the playback rate is wrong, and on real hardware “wrong rate” eventually shows up as audio drift or a stretched walk. Validation said <em>the bar was met for visuals</em>. Performance said <em>most rows have more work to do</em>.</p>
 
-<p>Between then and the current post-<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> performance branch, the headless-perf battle card moved to <strong>+0.7% over target / 99.5% target speed</strong> across the same 120 rows. Roughly <strong>16.7 percentage points</strong> of over-target gap closed; about <strong>12.4 target-speed points</strong> added. ACTIVITY 9 — the last validated scene and the widest one — graduated from “validated” to “optimized validated outlier.” This article is what that loop actually looked like.</p>
+<p>Between then and the current post-<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> performance branch, the headless-perf battle card moved to <strong>+0.6% over target / 99.6% target speed</strong> across the same 120 rows. Roughly <strong>16.8 percentage points</strong> of over-target gap closed; about <strong>12.5 target-speed points</strong> added. ACTIVITY 9 — the last validated scene and the widest one — graduated from “validated” to “optimized validated outlier.” This article is what that loop actually looked like.</p>
 
 <h2 id="two-ledgers-on-purpose">Two ledgers, on purpose</h2>
 
@@ -230,7 +230,7 @@
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.5%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.5%</code>
+<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.6%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.4%</code>
 lives in a small number of high-leverage rows. As of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>
 the only two red rows on the <a href="../../perf/">battle card</a>
 are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low, both around <code class="language-plaintext highlighter-rouge">69.4%</code> after
@@ -244,7 +244,7 @@ other composite-frame rows. The optimization plan at
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.5%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.6%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 

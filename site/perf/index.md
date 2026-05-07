@@ -54,10 +54,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.7%` (`0.7400%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.5291%` exact) |
-| Latest perf matrix run | `2026-05-07T00:05:13` |
-| Stats version | mixed across rows; newest optimized rows use `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.6400%` exact) |
+| Timing-bearing average target speed | `99.6%` (`99.6118%` exact) |
+| Latest perf matrix run | `2026-05-07T03:43:00` |
+| Stats version | mixed across rows; newest optimized rows use `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -88,7 +88,11 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-fgp3-cleanup-compact-v081`,
+  refreshed rows use `activity9-low-fgp3-cleanup-compact-v081`,
+  `activity9-current-v081-refresh`,
+  `building4-fgp3-cleanup-compact-window-v081`,
+  `building2-fgp3-cleanup-compact-v081`,
+  `visitor3-fgp3-cleanup-compact-v081`,
   `activity9-lowgroup-v072c`,
   `activity9-fgp3-v072c`,
   `activity9-window-v072c`,
@@ -333,29 +337,29 @@ and this page.
       <td><code>activity9</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T07:14:27</td>
-      <td>activity9-fgp3-v072c</td>
-      <td>+2.2%</td>
-      <td class="spd-yellow">97.9%</td>
-      <td>2101/2056</td>
-      <td>44</td>
-      <td>28</td>
+      <td>2026-05-07T03:43:00</td>
+      <td>activity9-current-v081-refresh</td>
+      <td>+1.9%</td>
+      <td class="spd-yellow">98.2%</td>
+      <td>2094/2056</td>
+      <td>37</td>
+      <td>23</td>
       <td>2</td>
-      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 1745484-byte CD footprint while shrinking runtime payload to 1453793 bytes</td>
+      <td>current same-source ACTIVITY9 high refresh; high pack remains padded pal4 FGP3 and stayed flat while low-tide cleanup compaction was promoted</td>
     </tr>
     <tr>
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T07:45:20</td>
-      <td>activity9-lowgroup-v072c</td>
-      <td>+1.8%</td>
-      <td class="spd-yellow">98.2%</td>
-      <td>2093/2056</td>
-      <td>43</td>
-      <td>14</td>
-      <td>5</td>
-      <td>low-tide pal4 FGP3 grouped append for sectors 624..636 reduces visible CD pressure after the padded FGP3 conversion</td>
+      <td>2026-05-07T03:43:00</td>
+      <td>activity9-low-fgp3-cleanup-compact-v081</td>
+      <td>+1.5%</td>
+      <td class="spd-yellow">98.5%</td>
+      <td>2087/2056</td>
+      <td>42</td>
+      <td>12</td>
+      <td>6</td>
+      <td>low-tide FGP3/v3 cleanup metadata compaction preserves the 1745484-byte CD footprint while dropping active payload to 1196583 bytes</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -369,7 +373,7 @@ and this page.
       <td>7</td>
       <td>4</td>
       <td>1</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -383,7 +387,7 @@ and this page.
       <td>17</td>
       <td>4</td>
       <td>2</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>activity11</code></td>
@@ -473,29 +477,29 @@ and this page.
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T01:59:35</td>
-      <td>stale-pressure-v072c-current-refresh</td>
-      <td>+14.9%</td>
-      <td class="spd-yellow">87.1%</td>
-      <td>1476/1285</td>
-      <td>286</td>
-      <td>66</td>
-      <td>37</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>2026-05-07T01:45:52</td>
+      <td>building2-fgp3-cleanup-compact-v081</td>
+      <td>+10.9%</td>
+      <td class="spd-yellow">90.1%</td>
+      <td>1430/1289</td>
+      <td>212</td>
+      <td>20</td>
+      <td>39</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T01:59:35</td>
-      <td>stale-pressure-v072c-current-refresh</td>
-      <td>+14.6%</td>
-      <td class="spd-yellow">87.2%</td>
-      <td>1465/1278</td>
-      <td>279</td>
-      <td>48</td>
-      <td>40</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>2026-05-07T01:45:52</td>
+      <td>building2-fgp3-cleanup-compact-v081</td>
+      <td>+11.1%</td>
+      <td class="spd-yellow">90.0%</td>
+      <td>1429/1286</td>
+      <td>193</td>
+      <td>35</td>
+      <td>32</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -529,57 +533,57 @@ and this page.
       <td><code>building4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
-      <td>+7.6%</td>
-      <td class="spd-yellow">93.0%</td>
-      <td>2985/2774</td>
-      <td>285</td>
-      <td>51</td>
+      <td>2026-05-07T02:19:26</td>
+      <td>building4-fgp3-cleanup-compact-window-v081</td>
+      <td>+5.5%</td>
+      <td class="spd-yellow">94.8%</td>
+      <td>2939/2786</td>
+      <td>240</td>
+      <td>27</td>
       <td>40</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>building4</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T04:15:06</td>
-      <td>building4-6-johnny6-v072c-prefetch-relief</td>
-      <td>+7.1%</td>
-      <td class="spd-yellow">93.4%</td>
-      <td>2981/2784</td>
-      <td>199</td>
-      <td>119</td>
-      <td>14</td>
-      <td>clean-snapshot relief restores stage1_window prefetch versus fresh failure baseline; accepted hidden-refill tradeoff remains</td>
+      <td>2026-05-07T02:19:26</td>
+      <td>building4-fgp3-cleanup-compact-window-v081</td>
+      <td>+5.2%</td>
+      <td class="spd-yellow">95.0%</td>
+      <td>2945/2798</td>
+      <td>117</td>
+      <td>114</td>
+      <td>1</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td class="spd-green">99.6%</td>
-      <td>3359/3346</td>
-      <td>20</td>
-      <td>20</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>3343/3348</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td class="spd-green">99.6%</td>
-      <td>3359/3347</td>
-      <td>19</td>
-      <td>19</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>3345/3347</td>
+      <td>8</td>
+      <td>8</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
@@ -705,7 +709,7 @@ and this page.
       <td>18</td>
       <td>13</td>
       <td>1</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>fishing3</code></td>
@@ -719,7 +723,7 @@ and this page.
       <td>6</td>
       <td>6</td>
       <td>0</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>fishing4</code></td>
@@ -761,7 +765,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>fishing5</code></td>
@@ -775,7 +779,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>fishing6</code></td>
@@ -929,7 +933,7 @@ and this page.
       <td>10</td>
       <td>6</td>
       <td>1</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>
@@ -943,7 +947,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td></td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>johnny4</code></td>
@@ -1091,8 +1095,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:25</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1105,8 +1109,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:37</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1209,7 +1213,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td></td>
+      <td>validated 2026-05-03 after generic multi-view stitch regenerated high/low packs; active timing predates refreshed pack</td>
     </tr>
     <tr>
       <td><code>miscgag2</code></td>
@@ -1223,7 +1227,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td></td>
+      <td>validated 2026-05-03 after generic multi-view stitch regenerated high/low packs; active timing predates refreshed pack</td>
     </tr>
     <tr>
       <td><code>stand1</code></td>
@@ -1237,7 +1241,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand1</code></td>
@@ -1251,7 +1255,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand2</code></td>
@@ -1265,7 +1269,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand2</code></td>
@@ -1279,7 +1283,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand3</code></td>
@@ -1399,13 +1403,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand7</code></td>
@@ -1413,13 +1417,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -1433,7 +1437,7 @@ and this page.
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -1447,7 +1451,7 @@ and this page.
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand9</code></td>
@@ -1455,13 +1459,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand9</code></td>
@@ -1475,7 +1479,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand10</code></td>
@@ -1489,7 +1493,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand10</code></td>
@@ -1503,7 +1507,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand11</code></td>
@@ -1517,7 +1521,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand11</code></td>
@@ -1531,7 +1535,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>stand12</code></td>
@@ -1623,8 +1627,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:01:51</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1637,8 +1641,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:01:58</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1651,8 +1655,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:02:29</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1665,8 +1669,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:02:35</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>—</td>
+      <td>—</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1741,7 +1745,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -1755,7 +1759,7 @@ and this page.
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>—</td>
     </tr>
     <tr>
       <td><code>visitor5</code></td>
@@ -1845,29 +1849,29 @@ and this page.
       <td><code>walkstuf1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:25:30</td>
-      <td>walkstuf1-v072-prefetch-relief</td>
-      <td>+16.1%</td>
-      <td class="spd-yellow">86.1%</td>
-      <td>1637/1410</td>
-      <td>297</td>
-      <td>67</td>
-      <td>54</td>
-      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T15:55:23</td>
+      <td>walkstuf1-fgp2-setup-prime-v080</td>
+      <td>+13.7%</td>
+      <td class="spd-yellow">88.0%</td>
+      <td>1595/1403</td>
+      <td>278</td>
+      <td>50</td>
+      <td>57</td>
+      <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:25:30</td>
-      <td>walkstuf1-v072-prefetch-relief</td>
-      <td>+16.0%</td>
-      <td class="spd-yellow">86.2%</td>
-      <td>1634/1409</td>
-      <td>304</td>
-      <td>73</td>
-      <td>55</td>
-      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T15:56:38</td>
+      <td>walkstuf1-fgp2-setup-prime-v080</td>
+      <td>+15.5%</td>
+      <td class="spd-yellow">86.6%</td>
+      <td>1614/1397</td>
+      <td>276</td>
+      <td>59</td>
+      <td>49</td>
+      <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>

@@ -273,13 +273,17 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.7% over target /
-99.5% target speed** (`0.7400%` exact over target / `99.5291%` exact target speed).
+120 timing-bearing battle-card rows, the average is **+0.6% over target /
+99.6% target speed** (`0.6400%` exact over target / `99.6118%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity9-low-fgp3-cleanup-compact-v081`,
+`activity9-current-v081-refresh`,
+`building4-fgp3-cleanup-compact-window-v081`,
+`building2-fgp3-cleanup-compact-v081`,
 `visitor3-fgp3-cleanup-compact-v081`,
 `mary2-prefetch-relief-v081`,
 `mary2-fgp3-padded-v081`,
@@ -422,8 +426,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>activity9</code></td>
-      <td>+2.2% / 97.9% (2101/2056); due 2; blk 44</td>
-      <td>+1.8% / 98.2% (2093/2056); due 5; blk 43</td>
+      <td>+1.9% / 98.2% (2094/2056); due 2; blk 37</td>
+      <td>+1.5% / 98.5% (2087/2056); due 6; blk 42</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -432,8 +436,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>activity11</code></td>
-      <td>+0.5% / 99.5% (1729/1720); due 1; blk 10</td>
-      <td>+0.7% / 99.3% (1729/1717); due 1; blk 14</td>
+      <td>-0.4% / 100.4% (1715/1722); blk 2</td>
+      <td>-0.3% / 100.3% (1717/1722); blk 4</td>
     </tr>
     <tr>
       <td><code>activity12</code></td>
@@ -447,8 +451,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+14.9% / 87.1% (1476/1285); due 37; blk 286</td>
-      <td>+14.6% / 87.2% (1465/1278); due 40; blk 279</td>
+      <td>+10.9% / 90.1% (1430/1289); due 39; blk 212</td>
+      <td>+11.1% / 90.0% (1429/1286); due 32; blk 193</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -457,8 +461,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building4</code></td>
-      <td>+7.6% / 92.9% (2985/2774); due 40; blk 285</td>
-      <td>+7.1% / 93.4% (2981/2784); due 14; blk 199</td>
+      <td>+5.5% / 94.8% (2939/2786); due 40; blk 240</td>
+      <td>+5.2% / 95.0% (2945/2798); due 1; blk 117</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -557,8 +561,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>mary3</code></td>
-      <td>validated; perf refresh pending</td>
-      <td>validated; perf refresh pending</td>
+      <td>measured</td>
+      <td>measured</td>
     </tr>
     <tr>
       <td><code>mary4</code></td>
@@ -612,8 +616,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>stand7</code></td>
-      <td>-3.3% / 103.5% (520/538)</td>
-      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.4% / 103.5% (520/538)</td>
+      <td>-3.4% / 103.5% (520/538)</td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -622,7 +626,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>stand9</code></td>
-      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.4% / 103.5% (520/538)</td>
       <td>-3.0% / 103.1% (522/538)</td>
     </tr>
     <tr>
@@ -652,13 +656,13 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>suzy1</code></td>
-      <td>metadata-only</td>
-      <td>metadata-only</td>
+      <td>measured</td>
+      <td>measured</td>
     </tr>
     <tr>
       <td><code>suzy2</code></td>
-      <td>metadata-only</td>
-      <td>metadata-only</td>
+      <td>measured</td>
+      <td>measured</td>
     </tr>
     <tr>
       <td><code>visitor1</code></td>
@@ -667,8 +671,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+42.9% / 70.0% (1450/1015); due 31; blk 355</td>
-      <td>+43.5% / 69.7% (1452/1012); due 32; blk 361</td>
+      <td>+38.0% / 72.5% (1406/1019); due 31; blk 296</td>
+      <td>+38.4% / 72.2% (1405/1015); due 33; blk 301</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -720,8 +724,8 @@ gfx.upload_bytes  = 8,643,840
 ```
 
 The FISHING1 canary remains under target, but the full battle card still has
-CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `activity9`,
-`building4`, `building6`). The clean-pressure relief rows prove scene-local
+CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `building4`,
+`building6`, `johnny2`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.
 

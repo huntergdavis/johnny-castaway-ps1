@@ -30,7 +30,7 @@ release:
   # release; the matrix row that backs this lives at
   # docs/ps1/research/perf-matrix-latest/. Stored as a string so a
   # trailing zero (e.g. "99.50") doesn't get coerced.
-  perf_target_speed_pct: "99.5"
+  perf_target_speed_pct: "99.6"
 
 repo: "huntergdavis/johnny-castaway-ps1"
 github_url: "https://github.com/huntergdavis/johnny-castaway-ps1"

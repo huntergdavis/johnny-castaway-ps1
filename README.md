@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.6% target speed** |
-| Latest perf matrix run | **`2026-05-07T02:19:26`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-07T03:43:00`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -103,7 +103,7 @@ VISITOR3 high/low refresh stayed at the current matrix baseline.
 `v0.8.0-ps1` is the complete-scene performance baseline. All 63 scenes remain
 signed off, all 126 high/low scene variants are routed, and the current 120
 timing-bearing rows average **+0.6% over target / 99.6% target speed** after
-the VISITOR3, BUILDING2, and BUILDING4 cleanup-metadata compactions. Since the compact full-matrix
+the VISITOR3, BUILDING2, BUILDING4, and ACTIVITY9 cleanup-metadata compactions. Since the compact full-matrix
 baseline was about **+17.4% over target / 87.1% target speed**, the headless
 optimization loop has removed about **16.8 percentage points** of over-target
 gap and added about **12.5 target-speed points**.
@@ -260,8 +260,12 @@ scene-local stream-window retuning: high tide moves `2985/2774 -> 2939/2786`,
 blocking `285 -> 240`, and hidden refill overrun `51 -> 27`; low tide moves
 `2981/2784 -> 2945/2798`, blocking `199 -> 117`, and hidden refill overrun
 `119 -> 114`.
-The timing-bearing average is now `+0.6452%` over target /
-`99.6067%` target speed after the BUILDING4 cleanup-metadata/window compaction;
+ACTIVITY9 low now promotes the same cleanup-compact FGP3/v3 metadata shape:
+low tide moves `2098/2056 -> 2087/2056`, blocking `47 -> 42`, and hidden
+refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
+original padded FGP3 pack left untouched.
+The timing-bearing average is now `+0.6400%` over target /
+`99.6118%` target speed after the ACTIVITY9 low cleanup-metadata compaction;
 since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.8`
 percentage points of over-target gap and added about `12.5` points of target
