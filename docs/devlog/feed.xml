@@ -2013,6 +2013,20 @@ current status see the <a href="../source/docs/ps1/scene-status/">scene-status s
 and <a href="../source/docs/ps1/current-status/">current-status shelf page</a>.</p>
 </blockquote>
 
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#validated-now" id="markdown-toc-validated-now">Validated now</a></li>
+  <li><a href="#current-blocker" id="markdown-toc-current-blocker">Current blocker</a></li>
+  <li><a href="#failed-recent-experiments" id="markdown-toc-failed-recent-experiments">Failed recent experiments</a></li>
+  <li><a href="#current-conclusion" id="markdown-toc-current-conclusion">Current conclusion</a></li>
+  <li><a href="#working-reference-command" id="markdown-toc-working-reference-command">Working reference command</a></li>
+  <li><a href="#guardrails" id="markdown-toc-guardrails">Guardrails</a></li>
+</ul>
+
+</details>
+
 <p>Date: 2026-04-16</p>
 
 <h2 id="validated-now">Validated now</h2>
@@ -2278,7 +2292,20 @@ validation has been recorded yet</li>
       <uri>https://hunterdavis.com/</uri>
     </author>
     <summary>Plan to bring fgpilot foreground timing back in line with host baseline after the fishing1 visual win.</summary>
-    <content type="html"><![CDATA[<p>Current validated baseline:</p>
+    <content type="html"><![CDATA[<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#what-worked" id="markdown-toc-what-worked">What Worked</a></li>
+  <li><a href="#what-failed" id="markdown-toc-what-failed">What Failed</a></li>
+  <li><a href="#prioritized-speed-backlog" id="markdown-toc-prioritized-speed-backlog">Prioritized Speed Backlog</a></li>
+  <li><a href="#next-target" id="markdown-toc-next-target">Next Target</a></li>
+  <li><a href="#repeat-prompt" id="markdown-toc-repeat-prompt">Repeat Prompt</a></li>
+</ul>
+
+</details>
+
+<p>Current validated baseline:</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">fgpilot fishing1</code> is visually correct.</li>
@@ -3453,7 +3480,20 @@ runtime-composition effort indefinitely.</p>
       <uri>https://hunterdavis.com/</uri>
     </author>
     <summary>Operator reference for running the PS1 vision-classifier captioning pipeline end-to-end.</summary>
-    <content type="html"><![CDATA[<p>Worktree:</p>
+    <content type="html"><![CDATA[<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#one-command-reference-pipeline" id="markdown-toc-one-command-reference-pipeline">One-Command Reference Pipeline</a></li>
+  <li><a href="#primary-outputs" id="markdown-toc-primary-outputs">Primary Outputs</a></li>
+  <li><a href="#useful-reports" id="markdown-toc-useful-reports">Useful Reports</a></li>
+  <li><a href="#core-cli" id="markdown-toc-core-cli">Core CLI</a></li>
+  <li><a href="#important-note" id="markdown-toc-important-note">Important Note</a></li>
+</ul>
+
+</details>
+
+<p>Worktree:</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">/tmp/jc_reborn_ps1_debug</code></li>
 </ul>
@@ -3550,7 +3590,27 @@ The next meaningful use is PS1 analysis against the built reference bank.</p>
       <uri>https://hunterdavis.com/</uri>
     </author>
     <summary>Validation log of all 63 PS1 scenes against the canonical Linux reference, with per-scene findings and build state.</summary>
-    <content type="html"><![CDATA[<h2 id="mission">Mission</h2>
+    <content type="html"><![CDATA[<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#mission" id="markdown-toc-mission">Mission</a></li>
+  <li><a href="#key-findings" id="markdown-toc-key-findings">Key Findings</a>    <ul>
+      <li><a href="#build-state" id="markdown-toc-build-state">Build State</a></li>
+      <li><a href="#timing" id="markdown-toc-timing">Timing</a></li>
+      <li><a href="#sweep-1-all-63-scenes-without-seed-story-single-via-storyplay" id="markdown-toc-sweep-1-all-63-scenes-without-seed-story-single-via-storyplay">Sweep 1: All 63 scenes without seed (story single via storyPlay)</a></li>
+      <li><a href="#sweep-2-structural-comparison-against-linux-reference" id="markdown-toc-sweep-2-structural-comparison-against-linux-reference">Sweep 2: Structural comparison against Linux reference</a></li>
+      <li><a href="#sweep-3-seeded-deterministic-run-in-progress" id="markdown-toc-sweep-3-seeded-deterministic-run-in-progress">Sweep 3: Seeded deterministic run (in progress)</a></li>
+    </ul>
+  </li>
+  <li><a href="#artifacts" id="markdown-toc-artifacts">Artifacts</a></li>
+  <li><a href="#commits-this-session" id="markdown-toc-commits-this-session">Commits This Session</a></li>
+  <li><a href="#next-steps" id="markdown-toc-next-steps">Next Steps</a></li>
+</ul>
+
+</details>
+
+<h2 id="mission">Mission</h2>
 <p>Validate all 63 PS1 scenes against the canonical Linux reference set.</p>
 
 <h2 id="key-findings">Key Findings</h2>
