@@ -104,7 +104,7 @@
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2268 words
+          ~9 min read · 2284 words
         </p>
 
       <hr class="rule" />
@@ -159,7 +159,9 @@ open-source SDK; it gives you <code class="language-plaintext highlighter-rouge"
 <code class="language-plaintext highlighter-rouge">psxapi</code>, <code class="language-plaintext highlighter-rouge">psxgte</code>, <code class="language-plaintext highlighter-rouge">psxsio</code>. There is no <code class="language-plaintext highlighter-rouge">printf</code> you can trust
 in a hot loop, no <code class="language-plaintext highlighter-rouge">malloc</code> worth leaning on for transients, no
 <code class="language-plaintext highlighter-rouge">pthread</code>, no <code class="language-plaintext highlighter-rouge">clock_gettime</code>. SDL’s design assumptions are not
-even close.</li>
+even close. The symbol-by-symbol mapping the host build hands
+off to the PS1 build is documented at
+<a href="../../docs/api/">/docs/api/</a>.</li>
 </ol>
 
 <p>The first prototype tried to brute-force these problems in the runtime
