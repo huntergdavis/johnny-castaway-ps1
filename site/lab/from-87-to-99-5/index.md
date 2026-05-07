@@ -17,7 +17,7 @@ When the project hit 63 / 63 scenes signed off at `v0.7.0-ps1`, the visible work
 
 The compact full-matrix baseline at the same time read **+17.4% over target / 87.1% target speed** across 120 timing-bearing scene/tide rows. That's a different kind of done. A scene that overruns its frame budget by a sixth still looks correct — pixels and audio match the host capture — but the playback rate is wrong, and on real hardware "wrong rate" eventually shows up as audio drift or a stretched walk. Validation said *the bar was met for visuals*. Performance said *most rows have more work to do*.
 
-Between then and the current post-`v0.8.1-ps1` performance branch, the headless-perf battle card moved to **+0.9% over target / 99.4% target speed** across the same 120 rows. Roughly **16.5 percentage points** of over-target gap closed; about **12.3 target-speed points** added. ACTIVITY 9 — the last validated scene and the widest one — graduated from "validated" to "optimized validated outlier." This article is what that loop actually looked like.
+Between then and the current post-`v0.8.1-ps1` performance branch, the headless-perf battle card moved to **+0.8% over target / 99.5% target speed** across the same 120 rows. Roughly **16.6 percentage points** of over-target gap closed; about **12.4 target-speed points** added. ACTIVITY 9 — the last validated scene and the widest one — graduated from "validated" to "optimized validated outlier." This article is what that loop actually looked like.
 
 ## Two ledgers, on purpose
 
@@ -101,16 +101,16 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 
 ## What's left
 
-The current matrix mean is `99.4%` target speed. The remaining `0.6%`
+The current matrix mean is `99.5%` target speed. The remaining `0.5%`
 lives in a small number of high-leverage rows. As of `{{ site.release.tag }}`
 the only two red rows on the [battle card]({{ '/perf/' | relative_url }})
 are `VISITOR 3` high and `VISITOR 3` low, both around `69.4%` after
 the `v0.7.2` prefetch-relief refresh — that scene's wide multi-view
 stitch hits the prefetch window the hardest and is the largest single
-optimization target left. The yellow cluster (twenty-four rows between
+optimization target left. The yellow cluster (twenty-two rows between
 `80%` and `99%`) is the rest of the wide-action surface plus the
-`BUILDING 2` and `BUILDING 4` clean-rect heavy frames, refreshed MARY2,
-and a couple of other MARY composite-frame rows. The optimization plan at
+`BUILDING 2` and `BUILDING 4` clean-rect heavy frames, plus a couple of
+other composite-frame rows. The optimization plan at
 `docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.

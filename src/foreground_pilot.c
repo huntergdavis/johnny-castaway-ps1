@@ -922,6 +922,9 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
     if (fgSceneEquals(sceneName, "mary1"))
         return 0;
 
+    if (fgSceneEquals(sceneName, "mary2"))
+        return 0;
+
     if (fgSceneEquals(sceneName, "activity11"))
         return 0;
 
@@ -3383,6 +3386,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
             !fgSceneEquals(sceneName, "johnny6") &&
             !fgSceneEquals(sceneName, "activity9") &&
             !fgSceneEquals(sceneName, "mary1") &&
+            !fgSceneEquals(sceneName, "mary2") &&
             !fgSceneEquals(sceneName, "activity11") &&
             !fgSceneEquals(sceneName, "activity12") &&
             !fgSceneEquals(sceneName, "activity4") &&

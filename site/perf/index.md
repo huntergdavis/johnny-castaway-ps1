@@ -28,8 +28,8 @@ A scene can be timed here without being visually certified.
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">94 ≥ 99%</span>
-  <span class="spd-key spd-yellow">24 ≥ 80%</span>
+  <span class="spd-key spd-green">96 ≥ 99%</span>
+  <span class="spd-key spd-yellow">22 ≥ 80%</span>
   <span class="spd-key spd-red">2 &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
@@ -38,7 +38,7 @@ The two red rows are `visitor3` high and low (around `70%`
 after the current setup-prime and read-group refreshes; the largest single
 optimization target left on the matrix). The yellow cluster includes
 the wide-action and `BUILDING2` rows still finishing their
-prefetch-relief and stream-window work, plus refreshed MARY2 pressure.
+prefetch-relief, stream-window, and selective-preprocessing work.
 
 ## Rollup
 
@@ -54,10 +54,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.9%` (`0.8847%` exact) |
-| Timing-bearing average target speed | `99.4%` (`99.4269%` exact) |
-| Latest perf matrix run | `2026-05-06T21:39:22` |
-| Stats version | mixed across rows; newest optimized rows use `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.8%` (`0.8228%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.4872%` exact) |
+| Latest perf matrix run | `2026-05-06T22:29:02` |
+| Stats version | mixed across rows; newest optimized rows use `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -94,6 +94,7 @@ and this page.
   `activity4-fishing4-v072c-prefetch-relief`,
   `building4-6-johnny6-v072c-prefetch-relief`,
   `activity1-v072c-current-refresh`,
+  `mary2-prefetch-relief-v081`,
   `mary2-fgp3-padded-v081`,
   `johnny2-fgp3-padded-v081`,
   `mary5-fgp3-padded-v081`,
@@ -1059,29 +1060,29 @@ and this page.
       <td><code>mary2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T21:39:22</td>
-      <td>mary2-fgp3-padded-v081</td>
-      <td>+3.5%</td>
-      <td class="spd-yellow">96.7%</td>
-      <td>2330/2252</td>
-      <td>668</td>
+      <td>2026-05-06T22:29:02</td>
+      <td>mary2-prefetch-relief-v081</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>2241/2248</td>
+      <td>2</td>
+      <td>2</td>
       <td>0</td>
-      <td>233</td>
-      <td>padded FGP3 improves same-commit current baseline 2385-&gt;2330 and exposes stale v0.6.8 matrix row</td>
+      <td>mary2 clean-memory relief restores stage1_window after padded FGP3; blocking 668-&gt;2 and due 233-&gt;0</td>
     </tr>
     <tr>
       <td><code>mary2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T21:39:22</td>
-      <td>mary2-fgp3-padded-v081</td>
-      <td>+3.3%</td>
-      <td class="spd-yellow">96.8%</td>
-      <td>2327/2252</td>
-      <td>662</td>
+      <td>2026-05-06T22:29:02</td>
+      <td>mary2-prefetch-relief-v081</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>2242/2250</td>
+      <td>2</td>
+      <td>2</td>
       <td>0</td>
-      <td>233</td>
-      <td>padded FGP3 improves same-commit current baseline 2384-&gt;2327 and exposes stale v0.6.8 matrix row</td>
+      <td>mary2 clean-memory relief restores stage1_window after padded FGP3; blocking 662-&gt;2 and due 233-&gt;0</td>
     </tr>
     <tr>
       <td><code>mary3</code></td>

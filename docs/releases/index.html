@@ -164,12 +164,12 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
 <p><em>2026-05-06</em></p>
 
-<p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.9% over target / 99.5% target speed</strong> — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline.</p>
+<p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.8% over target / 99.5% target speed</strong> — about 16.6 percentage points of over-target gap closed since the compact full-matrix baseline.</p>
 
 <ul>
   <li><strong>63 / 63 scenes still validated</strong> after the post-validation bugfix pass.</li>
   <li><strong>126 / 126 variants routed</strong>, 120 carrying active-loop timing.</li>
-  <li><strong>Performance is near target</strong> — <code class="language-plaintext highlighter-rouge">+0.9%</code> average over target, <code class="language-plaintext highlighter-rouge">99.5%</code> target speed.</li>
+  <li><strong>Performance is near target</strong> — <code class="language-plaintext highlighter-rouge">+0.8%</code> average over target, <code class="language-plaintext highlighter-rouge">99.5%</code> target speed.</li>
   <li><strong>ACTIVITY 9 is now an optimized validated outlier</strong> — wide-boat stitch + padded FGP3 residual packs + scoped low-tide read group.</li>
   <li><strong>Random-run clean-rect pressure fixed</strong> — the BUILDING4 soak regression that exposed walk-clean memory pressure now releases the stale walk clean buffer, retries the large scene clean snapshot, and recaptures the walk baseline cleanly.</li>
 </ul>
