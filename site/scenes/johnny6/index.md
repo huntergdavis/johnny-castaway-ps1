@@ -8,6 +8,8 @@ status: validated
 description: "JOHNNY.ADS scene 6: Office daydream. Validated with black-backdrop playback."
 image: /assets/img/johnny6-ps1-date-dream.png
 image_alt: "JOHNNY 6 on PS1: Johnny dreams about his island date — pixel art rendering on PlayStation."
+image_width: 1127
+image_height: 677
 ---
 
 ## Validated
