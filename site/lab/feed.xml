@@ -1,0 +1,78 @@
+---
+permalink: /lab/feed.xml
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Atom 1.0 feed for the Lab section. Modeled on /devlog/feed.xml.
+  Iterates `site.html_pages` (lab essays use `layout: page`, not
+  posts), filters to entries whose URL begins with `/lab/`, excludes
+  the /lab/ index, requires a `date` so undated drafts don't leak.
+  Reverse-chronological — newest first — matching the Lab index page
+  and the devlog feed.
+
+  All URLs are absolute https://... using site.canonical_baseurl
+  (the build's --baseurl "" override blanks site.baseurl). Same
+  external-URL escape hatch the relativizer respects.
+
+  Headlines + summary feed (no embedded body): when iterating
+  site.html_pages from another page's render, Jekyll does not
+  guarantee that each entry's `.content` has been processed yet,
+  so embedding it produces raw Markdown + un-rendered Liquid. The
+  Atom spec accepts a feed with `<summary>` and no `<content>`,
+  which is exactly the "headline + link to full article" pattern
+  most RSS readers handle. Summary prefers page.description (also
+  what the meta tag uses), falls back to subtitle.
+
+  Updated stamp on the feed = newest essay's date.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign feed_url  = site_root | append: '/lab/feed.xml' -%}
+{%- assign lab_url   = site_root | append: '/lab/' -%}
+{%- assign all_lab   = site.html_pages | sort: 'date' | reverse -%}
+{%- assign lab_essays = '' | split: '' -%}
+{%- for entry in all_lab -%}
+  {%- assign url_prefix = entry.url | slice: 0, 5 -%}
+  {%- if url_prefix == '/lab/' and entry.url != '/lab/' and entry.date -%}
+    {%- assign lab_essays = lab_essays | push: entry -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign newest = lab_essays | first -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title>{{ site.title | xml_escape }} — Lab</title>
+  <subtitle>Long-form retrospectives, war stories, and methodology essays from the Johnny Castaway PS1 port.</subtitle>
+  <link rel="self" type="application/atom+xml" href="{{ feed_url }}"/>
+  <link rel="alternate" type="text/html" href="{{ lab_url }}"/>
+  <id>{{ lab_url }}</id>
+  {%- if newest %}
+  <updated>{{ newest.date | date_to_xmlschema }}</updated>
+  {%- else %}
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  {%- endif %}
+  <generator uri="https://jekyllrb.com/" version="hand-rolled">Jekyll (no plugin)</generator>
+  <rights>Code GPL-3.0. Sierra art and the Johnny Castaway character are © Sierra On-Line and not licensed under GPL — see /legal/.</rights>
+  <author>
+    <name>{{ site.author | xml_escape }}</name>
+    <uri>https://hunterdavis.com/</uri>
+  </author>
+  {%- for essay in lab_essays %}
+  {%- assign essay_abs = site_root | append: essay.url -%}
+  <entry>
+    <title>{{ essay.title | xml_escape }}</title>
+    <link rel="alternate" type="text/html" href="{{ essay_abs }}"/>
+    <id>{{ essay_abs }}</id>
+    <published>{{ essay.date | date_to_xmlschema }}</published>
+    <updated>{{ essay.date | date_to_xmlschema }}</updated>
+    <author>
+      <name>{{ site.author | xml_escape }}</name>
+      <uri>https://hunterdavis.com/</uri>
+    </author>
+    {%- if essay.description %}
+    <summary>{{ essay.description | xml_escape }}</summary>
+    {%- elsif essay.subtitle %}
+    <summary>{{ essay.subtitle | xml_escape }}</summary>
+    {%- endif %}
+  </entry>
+  {%- endfor %}
+</feed>
