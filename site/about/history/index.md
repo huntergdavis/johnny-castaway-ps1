@@ -263,7 +263,7 @@ scene-relative canvas so action on both sides of the island survives random
 runtime placement. The count became **18 / 63**.
 
 `MARY 5` followed as a story-flag policy fix. The scene contains its own raft
-art and begins behind a frog-clock full wipe, so the PS1 route now clamps
+art and begins behind a [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) full wipe, so the PS1 route now clamps
 generic raft state off for `NORAFT` scenes and skips the walk prelude for
 `FIRST` full-wipe scenes. The count became **19 / 63**.
 
