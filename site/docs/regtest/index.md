@@ -432,6 +432,10 @@ ps1_test.h                         Test-instrumentation macros
   is the canonical example.
 - [API mapping]({{ '/docs/api/' | relative_url }}) — the SDL2 → PSn00bSDK
   surface the regtest binary is exercising.
+- [Lab: regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
+  — the magazine treatment of why regression testing isn't a CI
+  feature on this project but a way of working. Reciprocal of
+  the link from there to here.
 
 ## View source on GitHub
 
