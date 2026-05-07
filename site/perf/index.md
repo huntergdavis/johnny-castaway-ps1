@@ -1955,6 +1955,14 @@ and this page.
   — retrospective on which experiments moved the matrix from the
   compact baseline (`+17.4%` over target) to its current
   `{{ site.release.perf_target_speed_pct }}%` target speed.
+- [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the v0.8.1 stability follow-on that kept this matrix's mean
+  untouched while fixing a clean-rect pressure freeze the per-commit
+  matrix never reached. Soak loop story.
+- [Glossary: experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }})
+  — the long-form decision record at `docs/ps1/performance-experiment-log.md`
+  where every accepted and rejected probe got written down. Read
+  before re-trying anything that looks promising.
 - [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
   — the durable numeric source the table on this page is rendered
   from.
