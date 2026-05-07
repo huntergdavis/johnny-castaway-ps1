@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Performance battle card — Johnny Castaway PS1" />
   <meta property="og:description"  content="The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/perf/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -36,6 +36,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -61,7 +63,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Perf", "item": "https://hunterdavis.com/johnny-castaway-ps1/perf/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Performance battle card", "item": "https://hunterdavis.com/johnny-castaway-ps1/perf/" }]
 }
 </script>
 </head>
@@ -106,7 +108,8 @@
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. This page is the other ledger
+
+<p>A labor of love by Hunter Davis. This page is the other ledger
 that lives next to the <a href="../scenes/">scene ledger</a>.
 The scene ledger tracks visual signoff (pixel-perfect against host
 capture, signed off by human review). This page tracks
@@ -129,17 +132,25 @@ A scene can be timed here without being visually certified.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of v0.8.1-ps1">
   Target Speed distribution at <code>v0.8.1-ps1</code>:
-  <span class="spd-key spd-green">98 ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 ≥ 80%</span>
-  <span class="spd-key spd-red">2 &lt; 80%</span>
+  <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
+  <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-<p>The two red rows are <code class="language-plaintext highlighter-rouge">visitor3</code> high and low (around <code class="language-plaintext highlighter-rouge">72%</code>
-after the current cleanup-metadata compaction; the largest single
-optimization target left on the matrix). The yellow cluster includes
-the wide-action and <code class="language-plaintext highlighter-rouge">BUILDING2</code> rows still finishing their
-prefetch-relief, stream-window, and selective-preprocessing work.</p>
+<p>The two red rows are <a href="../scenes/visitor3/"><code class="language-plaintext highlighter-rouge">visitor3</code></a>
+high (<code class="language-plaintext highlighter-rouge">72.5%</code>) and <a href="../scenes/visitor3/"><code class="language-plaintext highlighter-rouge">visitor3</code></a>
+low (<code class="language-plaintext highlighter-rouge">72.2%</code>) after the current cleanup-metadata compaction and guarded
+generated-window read grouping; the largest single optimization target left on
+the matrix. The yellow cluster includes the wide-action and
+<a href="../scenes/building2/"><code class="language-plaintext highlighter-rouge">BUILDING2</code></a> rows still finishing
+their prefetch-relief, stream-window, and selective-preprocessing work.</p>
+
+<p>The 6 untimed rows are <a href="../scenes/mary3/"><code class="language-plaintext highlighter-rouge">MARY 3</code></a> high/low (active-loop timing not
+yet refreshed against the current pack), and <a href="../scenes/suzy1/"><code class="language-plaintext highlighter-rouge">SUZY 1</code></a> + <a href="../scenes/suzy2/"><code class="language-plaintext highlighter-rouge">SUZY 2</code></a>
+high/low (metadata-only; the SUZY mermaid scenes don’t reach a
+deterministic scene-end so they’re excluded from speed averages
+on purpose).</p>
 
 <h2 id="rollup">Rollup</h2>
 
@@ -155,35 +166,35 @@ prefetch-relief, stream-window, and selective-preprocessing work.</p>
   <tbody>
     <tr>
       <td>Scenes visually validated</td>
-      <td style="text-align: right">` / `</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">63 / 63</code> (<code class="language-plaintext highlighter-rouge">100%</code>)</td>
     </tr>
     <tr>
       <td>Validated scenes</td>
-      <td style="text-align: right">all 63 original scenes; see the live ledger above for the source rows</td>
+      <td style="text-align: right">all 63 original scenes; see the <a href="../scenes/">live ledger</a> for the source rows</td>
     </tr>
     <tr>
       <td>Scene/tide variants routed through headless perf</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">126 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">126 / 126</code> (<code class="language-plaintext highlighter-rouge">100%</code>)</td>
     </tr>
     <tr>
       <td>Timing-bearing variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">120 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">120 / 126</code> (<code class="language-plaintext highlighter-rouge">95.2%</code>)</td>
     </tr>
     <tr>
       <td>Scenes with at least one active-loop timed variant</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">60 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">60 / 63</code> (<code class="language-plaintext highlighter-rouge">95.2%</code>)</td>
     </tr>
     <tr>
       <td>Scenes with both high/low variants measured</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">63 / 63</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">63 / 63</code> (<code class="language-plaintext highlighter-rouge">100%</code>)</td>
     </tr>
     <tr>
       <td>Pending variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code> (<code class="language-plaintext highlighter-rouge">0%</code>)</td>
     </tr>
     <tr>
       <td>Blocked variants</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">0 / 126</code> (<code class="language-plaintext highlighter-rouge">0%</code>)</td>
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
@@ -301,6 +312,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
 </p>
 
 <table class="scene-perf-table">
+  <caption class="visually-hidden">
+    Headless performance matrix at v0.8.1-ps1:
+    one row per scene/tide variant, with last run, stats version,
+    over target percentage, target speed percentage, VBlanks taken,
+    blocking VBlanks, prefetch hits, due-misses, and notes.
+    Click any column header to sort ascending; click again for
+    descending. Target Speed cells are color-coded: ≥99% green,
+    ≥80% yellow, &lt;80% red.
+  </caption>
   <thead>
     <tr>
       <th>Scene</th>
@@ -2098,6 +2118,14 @@ reference manual: what each column means, how <code class="language-plaintext hi
 — retrospective on which experiments moved the matrix from the
 compact baseline (<code class="language-plaintext highlighter-rouge">+17.4%</code> over target) to its current
 <code class="language-plaintext highlighter-rouge">99.7%</code> target speed.</li>
+  <li><a href="../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>
+— the v0.8.1 stability follow-on that kept this matrix’s mean
+untouched while fixing a clean-rect pressure freeze the per-commit
+matrix never reached. Soak loop story.</li>
+  <li><a href="../docs/glossary/#experiment-log">Glossary: experiment log</a>
+— the long-form decision record at <code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code>
+where every accepted and rejected probe got written down. Read
+before re-trying anything that looks promising.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
 — the durable numeric source the table on this page is rendered
 from.</li>
@@ -2127,6 +2155,9 @@ from.</li>
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

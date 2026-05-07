@@ -17,7 +17,20 @@ When the project hit 63 / 63 scenes signed off at `v0.7.0-ps1`, the visible work
 
 The compact full-matrix baseline at the same time read **+17.4% over target / 87.1% target speed** across 120 timing-bearing scene/tide rows. That's a different kind of done. A scene that overruns its frame budget by a sixth still looks correct — pixels and audio match the host capture — but the playback rate is wrong, and on real hardware "wrong rate" eventually shows up as audio drift or a stretched walk. Validation said *the bar was met for visuals*. Performance said *most rows have more work to do*.
 
-Between then and the current post-`v0.8.1-ps1` performance branch, the headless-perf battle card moved to **+0.6% over target / 99.6% target speed** across the same 120 rows. Roughly **16.8 percentage points** of over-target gap closed; about **12.5 target-speed points** added. ACTIVITY 9 — the last validated scene and the widest one — graduated from "validated" to "optimized validated outlier." This article is what that loop actually looked like.
+Between then and `v0.8.0-ps1` (the release that promoted the
+headless optimization methodology to a baseline), the
+headless-perf battle card moved to **+0.9% over target / 99.5%
+target speed** across the same 120 rows. Roughly
+**16.5 percentage points** of over-target gap closed; about
+**12.4 target-speed points** added. ACTIVITY 9 — the last
+validated scene and the widest one — graduated from "validated"
+to "optimized validated outlier."
+[`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+followed as a clean-rect pressure stability fix that left the
+matrix mean untouched. The current post-`v0.8.1-ps1` performance branch is now
+at **+0.6% over target / 99.7% target speed**, with roughly **16.8 percentage
+points** of over-target gap closed and about **12.6 target-speed points**
+added. This article is what that loop actually looked like.
 
 ## Two ledgers, on purpose
 
@@ -104,10 +117,11 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current matrix mean is `99.6%` target speed. The remaining `0.4%`
 lives in a small number of high-leverage rows. As of `{{ site.release.tag }}`
 the only two red rows on the [battle card]({{ '/perf/' | relative_url }})
-are `VISITOR 3` high and `VISITOR 3` low, both around `69.4%` after
-the `v0.7.2` prefetch-relief refresh — that scene's wide multi-view
-stitch hits the prefetch window the hardest and is the largest single
-optimization target left. The yellow cluster (twenty-two rows between
+are `VISITOR 3` high (`72.5%`) and `VISITOR 3` low (`72.2%`) after
+cleanup-metadata compaction plus guarded high-tide generated-window read
+grouping. That scene's wide multi-view stitch hits the prefetch window the
+hardest and is the largest single optimization target left. The yellow cluster
+(twenty rows between
 `80%` and `99%`) is the rest of the wide-action surface plus the
 `BUILDING 2` and `BUILDING 4` clean-rect heavy frames, plus a couple of
 other composite-frame rows. The optimization plan at
@@ -127,3 +141,20 @@ A few things this work clarified that the validation grind didn't:
 - **A canary scene is the right unit of measurement.** FISHING 1's high-tide canary stayed on every release run as the baseline tracker. The matrix moved; the canary was the load-bearing reference frame.
 
 The disc plays. That was always the point. It also plays at near native rate now, which means it plays *the way the original looked*, on the hardware nobody thought it would. That's the point too.
+
+## Cross-links
+
+- [/perf/]({{ '/perf/' | relative_url }}) — the live battle card this article is the back-story for.
+- [/scenes/]({{ '/scenes/' | relative_url }}) — the visual signoff ledger; the parallel acceptance bar.
+- [/docs/performance/]({{ '/docs/performance/' | relative_url }}) — reference manual for what each column on the battle card means.
+- [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}) — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.
+- [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the stability follow-on that left this article's matrix mean untouched.
+- [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — the slowest two rows; the largest single optimization target left.
+- [/scenes/activity9/]({{ '/scenes/activity9/' | relative_url }}) — wide-boat scene; padded FGP3 + scoped low-tide read group case study.
+- [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — clean-rect-heavy variant; representative of the drop-prefetch unlock.
+- [/scenes/fishing1/]({{ '/scenes/fishing1/' | relative_url }}) — the canary scene the matrix tracks against every release.
+- [Glossary: FGP3]({{ '/docs/glossary/#fgp3' | relative_url }}) — the pack format most rebuilds converged on.
+- [Glossary: prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }}) — the buffer the drop-prefetch mechanism releases under clean-rect pressure.
+- [Glossary: read group]({{ '/docs/glossary/#read-group' | relative_url }}) — the CD layout primitive the ACTIVITY 9 scope-narrowing exploited.
+- [Glossary: experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }}) — the long-form table of every accepted and rejected probe.
+- [Glossary: canary scene]({{ '/docs/glossary/#canary' | relative_url }}) — the FISHING 1 high-tide load-bearing reference frame.

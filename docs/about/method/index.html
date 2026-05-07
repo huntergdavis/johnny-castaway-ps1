@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Method — Johnny Castaway PS1" />
   <meta property="og:description"  content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/method/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -102,7 +104,7 @@
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2100 words
+          ~8 min read · 2237 words
         </p>
 
       <hr class="rule" />
@@ -118,6 +120,7 @@
   <li><a href="#whats-in-a-pack" id="markdown-toc-whats-in-a-pack">What’s in a pack</a></li>
   <li><a href="#ps1-hardware-constraints-we-hit" id="markdown-toc-ps1-hardware-constraints-we-hit">PS1 hardware constraints we hit</a></li>
   <li><a href="#why-hybrid-won" id="markdown-toc-why-hybrid-won">Why hybrid won</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -398,19 +401,48 @@ few pixels missed, the backdrop-key guard that kept story-loop
 walks from running across stale islands. That is the property
 the project was reaching for.</p>
 
-<p>The second bar, <a href="../../docs/performance/">headless-perf timing</a>,
-is its own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <code class="language-plaintext highlighter-rouge">87.1%</code>
-target speed at the compact full-matrix baseline to
+<p>The second bar, the
+<a href="../../perf/">performance battle card</a>, is its
+own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <code class="language-plaintext highlighter-rouge">87.1%</code> target
+speed at the compact full-matrix baseline to
 <code class="language-plaintext highlighter-rouge">99.7%</code> target speed at
 <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
+<a href="../../docs/performance/">reference manual</a>
+explains what each column means; the
 <a href="../../lab/from-87-to-99-5/">retrospective</a>
 walks through which experiments landed (FGP3 packs, scene-local
 prefetch relief, stream-window retuning, padded residual packs,
 scoped read groups) and which did not (<code class="language-plaintext highlighter-rouge">-O2</code>, naive read-group
-probes). Visual signoff and headless perf stay separate ledgers
+probes); the
+<a href="../../lab/v081-mary4-freeze/">v0.8.1 follow-on</a>
+documents the soak loop that catches what the per-commit matrix
+doesn’t. Visual signoff and headless perf stay separate ledgers
 because their failure modes are uncorrelated; mixing them is how
 regressions ship.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../docs/dev-workflow/">Development workflow</a>
+— the author’s per-scene runbook (capture, encode, replay,
+screenshot, validate); this method page is the <em>why</em>, that
+page is the <em>what to type</em>.</li>
+  <li><a href="../../docs/formats/">File formats</a> — the
+five formats this pipeline produces and consumes (FG2 pack
+payload, pack manifest, dirty-region template, transition
+prefetch schema, SDL compat lite).</li>
+  <li><a href="../../docs/hardware/">Hardware</a> — the PS1
+envelope (33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU,
+2× CD) every constraint above traces back to.</li>
+  <li><a href="../../docs/glossary/">Glossary</a> — the
+technical vocabulary used throughout (ADS, TTM, FG2 pack,
+capture, replay, dirty-rect, FntFlush, FISHING 1 bar).</li>
+  <li><a href="../history/">History</a> — the longer
+narrative version, dated, eras-and-milestones.</li>
+  <li><a href="../status/">Status</a> — the
+component-level state at the current release.</li>
+</ul>
 
   </div>
 </article>
@@ -436,6 +468,9 @@ regressions ship.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

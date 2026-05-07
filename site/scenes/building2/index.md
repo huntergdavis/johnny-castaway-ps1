@@ -28,7 +28,8 @@ Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}
 
 ### How this scene gets validated
 
-The same way every scene does: under the FISHING 1 bar.
+The same way every scene does: under the
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 A host-side Johnny Reborn capture/export pass produces a
 base-diff `.FG2` foreground pack and a JSONL of sound events. The PS1
@@ -41,6 +42,18 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+## Notable runtime history
+
+`BUILDING 2` sits in the
+[perf battle card]({{ '/perf/' | relative_url }})'s yellow cluster
+— close to but not yet at native target speed. Its
+[clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})-heavy
+Lilliputian-sandcastle frames are explicitly named in the
+[post-validation perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+as part of the wide-action surface still finishing its
+[prefetch-relief]({{ '/docs/glossary/#prefetch-window' | relative_url }})
+and [stream-window]({{ '/docs/glossary/#stream-window' | relative_url }})
+work. The full-host sandcastle injection that the validated pack
+relies on (red flag + planes originating from the correct base)
+also forces a larger residual cleanup table, which is the underlying
+reason the row hasn't graduated from yellow to green yet.

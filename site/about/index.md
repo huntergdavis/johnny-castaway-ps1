@@ -71,7 +71,8 @@ At `{{ site.release.tag }}`, all
 **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
 scenes are signed off — every row in the
 [per-scene ledger]({{ '/scenes/' | relative_url }}) clears the
-FISHING 1 bar across every applicable variant. The hard cluster
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+across every applicable variant. The hard cluster
 near the end was the foreground-only multi-view scenes
 (`MISCGAG 1`, `MISCGAG 2`, `STAND 1`, the wide LILLIPUTIAN arrival),
 which all needed the generic normal / far-left / far-right host
@@ -124,9 +125,11 @@ A few things this project is deliberately not trying to be:
   editorial standard the prose on this site holds itself to.
   Read it before writing a new page.
 - [/about/dev-environment/]({{ '/about/dev-environment/' | relative_url }})
-  -- the actual desk behind the work, photographed. Two LLM
-  sub-agents, the dunking bird auto-poker, DuckStation,
-  editor/terminal column, build farm, bottom-monitor telemetry.
+  -- the actual desk behind the work, photographed. Six windows:
+  the Dunking Bird auto-poker, the fresh editor, two LLM
+  sub-agents (Claude + Codex), DuckStation running the latest
+  build, and a bottom-monitor system-telemetry panel — all on
+  KDE Plasma.
 - [/scenes/]({{ '/scenes/' | relative_url }}) -- live per-scene
   ledger. All 63 rows clear the FISHING 1 bar; family jump nav,
   per-scene case studies, last-verified release tag.
@@ -139,7 +142,7 @@ A few things this project is deliberately not trying to be:
   status surfaces, retired tooling, the harness era, the
   restore-pilot era, and other paths that did not become the
   active methodology.
-- [/lab/]({{ '/lab/' | relative_url }}) -- fourteen feature-length
+- [/lab/]({{ '/lab/' | relative_url }}) -- fifteen feature-length
   retrospectives, newest first. The
   [post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}),
   [the site itself as a small program]({{ '/lab/the-site-itself/' | relative_url }}),

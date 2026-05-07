@@ -29,7 +29,9 @@ A randomized long-run soak exposed a scene-load freeze after a large split
 clean-rect save. The pressure estimator was counting only foreground pack
 bounds, not the ocean wave band or the upper/lower split actually saved for
 restore. `v0.8.1` fixes that accounting and keeps the complete-scene
-performance baseline intact.
+performance baseline intact. The retrospective on what the soak found that
+the matrix didn't is at
+[/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}).
 
 - **Scene-load freeze fixed.** Large clean snapshots now account for wave-band
   expansion and split rects before allocation.
@@ -50,6 +52,7 @@ performance baseline intact.
 *2026-05-06*
 
 The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.6% over target / 99.6% target speed** — about 16.8 percentage points of over-target gap closed since the compact full-matrix baseline.
+The retrospective on which experiments moved that line is at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 
 - **63 / 63 scenes still validated** after the post-validation bugfix pass.
 - **126 / 126 variants routed**, 120 carrying active-loop timing.
@@ -101,6 +104,35 @@ The 63-scene grind ended here. Every routed scene the original Sierra game had n
 [Full notes]({{ '/source/docs/ps1/release-notes-0.7.0/' | relative_url }})
 &nbsp;·&nbsp;
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.0-ps1)
+
+### `v0.6.0-ps1` — ocean ambience
+*2026-05-01*
+
+A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
+underneath every scene. Toggleable from the pause menu; choice
+persists to the memory card. Zero per-frame CPU cost — the SPU
+loops the sample in hardware while the main CPU keeps doing
+playback work.
+
+- **Looping ocean ambience** on SPU voice slot reserved at boot.
+- **Pause → Accessibility → Ocean: ON / OFF**, persisted to memcard.
+- **Bootmode token** for capture/test discs that need a known-state run.
+
+[GitHub release]({{ site.github_url }}/releases/tag/v0.6.0-ps1)
+
+### `v0.6.1-ps1` through `v0.6.13-ps1` — the validation-cluster patches
+*2026-05-01 → 2026-05-04*
+
+The stability releases between `v0.6.0-ps1` (ocean ambience) and
+`v0.7.0-ps1` (complete scene validation) are scene-by-scene
+bring-up tags rather than feature milestones. Each one carries a
+specific scene clearing the FISHING 1 bar (FISHING 5, MARY 5,
+VISITOR 4–7, and others) plus the small bugfix needed to get the
+scene through. They aren't enumerated here because the per-scene
+narrative belongs in the [history page]({{ '/about/history/' | relative_url }})
+and the [scene ledger]({{ '/scenes/' | relative_url }}) tracks the
+final state. The full list of GitHub-tagged builds in this cluster
+is at [{{ site.repo }}/releases]({{ site.github_url }}/releases).
 
 ### `v0.5.0-ps1` — Freeplay and debug mode
 *2026-05-01*

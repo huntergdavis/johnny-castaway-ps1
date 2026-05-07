@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
   <meta property="og:description"  content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="./assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="./assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -39,6 +39,8 @@
         href="./devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="./devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="./lab/feed.xml" />
   <link rel="author" type="text/plain" href="./humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="./sitemap.xml" />
@@ -141,26 +143,26 @@
 <section class="trio">
   <figure>
     <img src="./assets/img/activity9-ps1-boat.png" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    <figcaption><a href="./scenes/activity9/">ACTIVITY 9 · boat pass</a></figcaption>
   </figure>
   <figure>
     <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
-    <figcaption>JOHNNY 6 · daydream</figcaption>
+    <figcaption><a href="./scenes/johnny6/">JOHNNY 6 · daydream</a></figcaption>
   </figure>
   <figure>
     <img src="./assets/img/fishing1-ps1-cast.png" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption>FISHING 1 · reference</figcaption>
+    <figcaption><a href="./scenes/fishing1/">FISHING 1 · reference</a></figcaption>
   </figure>
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> v0.8.1-ps1</span>
-  <span class="pill pill--ok">63 / 63 scenes validated</span>
-  <span class="pill pill--ok">99.7% target speed</span>
-  <span class="pill pill--info">PSn00bSDK 0.24</span>
-  <span class="pill pill--info">DuckStation</span>
-  <span class="pill pill--info">36 holidays</span>
-  <span class="pill pill--info">GPL-3.0</span>
+  <span><strong>Latest:</strong> <a href="./releases/">v0.8.1-ps1</a></span>
+  <a class="pill pill--ok" href="./scenes/">63 / 63 scenes validated</a>
+  <a class="pill pill--ok" href="./perf/">99.7% target speed</a>
+  <a class="pill pill--info" href="./docs/build/">PSn00bSDK 0.24</a>
+  <a class="pill pill--info" href="./play/#emulator">DuckStation</a>
+  <a class="pill pill--info" href="./docs/holidays/">36 holidays</a>
+  <a class="pill pill--info" href="./legal/">GPL-3.0</a>
 </aside>
 
 <section class="page">
@@ -178,12 +180,14 @@ its <a href="./legal/">legal page</a> reflect that.</p>
 
   <p>All <strong>63 of 63</strong>
 routed scenes the original game had are validated under the
-fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
-off by human review across every applicable variant. Current mainline work is
-bugfixing, performance, and feature polish; the <code class="language-plaintext highlighter-rouge">v0.8.1</code> line keeps long
-randomized runs stable while the <code class="language-plaintext highlighter-rouge">v0.8.0</code> performance baseline closes the last
-bit of speed gap, and most scenes already run at native rate. The
-two ledgers live separately: the
+<a href="./docs/glossary/#fishing1-bar">FISHING 1 bar</a>
+— pixel-perfect visuals plus synced SFX, signed off by human
+review across every applicable variant. Current mainline work is
+bugfixing, performance, and feature polish; the
+<a href="./lab/v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1</code> line</a>
+keeps long randomized runs stable while the <code class="language-plaintext highlighter-rouge">v0.8.0</code> performance
+baseline closes the last bit of speed gap, and most scenes already
+run at native rate. The two ledgers live separately: the
 <a href="./scenes/">scene ledger</a> tracks visual
 signoff and the
 <a href="./perf/">performance battle card</a> tracks
@@ -236,7 +240,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./lab/">Magazine-length Lab</a>
-    <p>Feature essays on LLM-assisted development, hallucination control, build farm, and regression practice.</p>
+    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="./hack/">Curious hacker path</a>
@@ -248,7 +252,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./docs/">Reference docs</a>
-    <p>Build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, the SDL2 → PSn00bSDK API mapping, and a glossary.</p>
+    <p>Seventeen reference manuals: build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
   </li>
   <li>
     <a href="./source/">Source library</a>
@@ -284,16 +288,20 @@ debug-selected gags, visitors, sound effects, holidays, tide,
 raft, and day/night state. Closed captions for every scene (off
 by default, in a <a href="./docs/captions/">fresh-authored corpus</a>
 from scene content — not lifted from any prior project). A
-holiday calendar expanded from 4 to <strong>36 holidays</strong> with movable
-feasts computed by pure algorithm — Meeus for Easter,
+<a href="./docs/holidays/">holiday calendar expanded from 4 to <strong>36 holidays</strong></a>
+with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
-pause menu reachable with Start (the original had none), with
-sub-screens for Scene Set, Freeplay Options, Controls, World
-Options, Holidays, Set Island Position, Accessibility, Sound
-Test, System, Set Time/Date, and Set RNG Seed. An optional
-ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
-transitions between scene swaps. The website credits and legal
-pages name exactly what’s owed to whom.</p>
+<a href="./docs/pause-menu/">pause menu</a> reachable
+with Start (the original had none), with sub-screens for Scene
+Set, Freeplay Options, Controls, World Options, Holidays, Set
+Island Position, Accessibility, Sound Test, System, Set Time/Date,
+and Set RNG Seed. An optional
+<a href="./releases/#v060-ps1--ocean-ambience">ocean-ambience loop</a>
+on a dedicated SPU voice. Frog-clock loading transitions between
+scene swaps. The website
+<a href="./credits/">credits</a> and
+<a href="./legal/">legal</a> pages name exactly what’s
+owed to whom.</p>
 
   <p>The full menu of what’s added vs preserved lives at
 <a href="./about/">/about/</a>. The implementations live at
@@ -334,8 +342,18 @@ work. Five most recent, newest first:</p>
   <li>
     <time datetime="2026-05-06">2026-05-06</time>
     <div>
+      <a href="./lab/v081-mary4-freeze/">v0.8.1 — what the soak found that the matrix didn't</a>
+      <span class="summary">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</span>
+      <span class="summary devlog-read-time">~2 min read · 629 words</span>
+    </div>
+  </li>
+
+  <li>
+    <time datetime="2026-05-06">2026-05-06</time>
+    <div>
       <a href="./lab/from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
       <span class="summary">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</span>
+      <span class="summary devlog-read-time">~8 min read · 2074 words</span>
     </div>
   </li>
 
@@ -344,6 +362,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/the-site-itself/">The site itself, as a small program</a>
       <span class="summary">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</span>
+      <span class="summary devlog-read-time">~8 min read · 2244 words</span>
     </div>
   </li>
 
@@ -352,6 +371,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/build-farm/">The 24/7 Build Farm</a>
       <span class="summary">Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.</span>
+      <span class="summary devlog-read-time">~1 min read · 252 words</span>
     </div>
   </li>
 
@@ -360,14 +380,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/regression-as-lifestyle/">Regression as a lifestyle</a>
       <span class="summary">On this port, tests are not a CI checkbox. They are how the work thinks.</span>
-    </div>
-  </li>
-
-  <li>
-    <time datetime="2026-04-26">2026-04-26</time>
-    <div>
-      <a href="./lab/hallucination-engineering/">Hallucination engineering</a>
-      <span class="summary">The failure mode is not that the model is weird. The failure mode is that it sounds normal.</span>
+      <span class="summary devlog-read-time">~2 min read · 739 words</span>
     </div>
   </li>
 
@@ -379,6 +392,10 @@ work. Five most recent, newest first:</p>
 
 <h2 id="latest-from-the-devlog">Latest from the devlog</h2>
 
+<p>The devlog is the verbatim worklog — what was in the author’s
+head on a particular day, with the dead ends preserved. Five
+most recent posts, newest first:</p>
+
 <ul class="devlog-list">
 
   <li>
@@ -386,6 +403,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./devlog/scene-set-expansion/">Scene Set lineup expands to seven categories — May 3, 2026</a>
       <span class="summary">Scene Set ships with the full categorical lineup: Johnny Stories, Mary Visits, Visitors, Activities, and Misc &amp; Suzy on top of the existing All Scenes and Fishing Only. Pools point at real scenes whose FG2 packs are already on disc, so they play immediately and look better in place as visual signoff lands.</span>
+      <span class="summary devlog-read-time">~1 min read · 483 words</span>
     </div>
   </li>
 
@@ -394,6 +412,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./devlog/scene-set-and-frog-clock/">Scene Set framework and an animated frog clock — May 3, 2026</a>
       <span class="summary">Pause menu gains a Scene Set row that constrains the screensaver pool by category (All Scenes / Fishing Only / …); Left/Right preview, Cross or Start commits. The frog-clock loading frame goes from a static image to a 36-vblank animation with hour and minute hands placed from the original MEANWHIL.TTM script.</span>
+      <span class="summary devlog-read-time">~3 min read · 971 words</span>
     </div>
   </li>
 
@@ -402,6 +421,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./devlog/ocean-ambience-v0-6/">Ocean Ambience — v0.6.0-ps1 — May 1, 2026</a>
       <span class="summary">A CC0-sourced 20-second ocean loop on a dedicated SPU voice. Pause-menu toggle, memcard-persisted, zero CPU cost in steady state. The screensaver's per-VBlank budget is unchanged; the SPU plays + auto-loops in hardware while the screensaver loop runs as before.</span>
+      <span class="summary devlog-read-time">~4 min read · 1175 words</span>
     </div>
   </li>
 
@@ -410,6 +430,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./devlog/scripted-pad-menu-harness/">Scripted pad input, menu screenshots, and testing the UI like a player</a>
       <span class="summary">The next test harness teaches the PS1 build to press its own controller buttons, capture every major pause-menu screen, and publish the result as player help.</span>
+      <span class="summary devlog-read-time">~1 min read · 369 words</span>
     </div>
   </li>
 
@@ -418,6 +439,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./devlog/freeplay-debug-mode/">Freeplay debug mode — May 1, 2026</a>
       <span class="summary">Direct-control Johnny moved from design sketch to a playtestable PS1 mode: analog walking, fishing, menu-driven gag/visitor catalogs, immediate world toggles, frog loading transitions, and a stricter no-per-frame-allocation rule.</span>
+      <span class="summary devlog-read-time">~3 min read · 797 words</span>
     </div>
   </li>
 
@@ -465,6 +487,9 @@ the user supplies themselves.</p>
           Devlog feed:
           <a href="./devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="./devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="./lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="./humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

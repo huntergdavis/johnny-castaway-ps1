@@ -202,6 +202,12 @@ beginning with January.
   `holidayNextId` / `holidayPrevId`.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the
   codegen step plugs into the cmake build.
+- [Lab: 35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }}) —
+  the retrospective on building the codegen pipeline; same machinery,
+  written from the inside.
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }}) —
+  the holiday-emblem sprites were drafted by an LLM sub-agent against
+  the style guide; this page records what that did and didn't cover.
 
 ## Per-holiday calendar
 

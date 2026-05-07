@@ -139,5 +139,11 @@ the project has my name on the Credits screen.
 
 - [The LLM pass]({{ '/lab/llm-pass/' | relative_url }})
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+- [The voice anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+  — the prose-side companion. Hallucination engineering is the
+  code-side discipline; voice anchoring is how the same agents
+  draft text without drifting off-voice.
+- [Voice guide]({{ '/about/voice/' | relative_url }}) — the
+  editorial bar agent-drafted prose has to survive.
 - [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
 - [Source library]({{ '/source/' | relative_url }})

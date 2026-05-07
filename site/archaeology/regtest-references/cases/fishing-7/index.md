@@ -51,6 +51,7 @@ b1eb200805be80e9220c948ae251497545d73ecd9128a72a2545def669d41659
 
 ## Cross-links
 
+- [Live scene page: `FISHING 7`]({{ '/scenes/fishing7/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

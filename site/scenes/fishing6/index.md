@@ -25,6 +25,17 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 
 (Guess.) Johnny catches a big green fish that spits water in his face. He throws it back.
 
+## Caption
+
+On-screen caption text. Confidence: HIGH in the
+[caption audit]({{ '/docs/captions/' | relative_url }}).
+
+<blockquote class="scene-caption">
+Johnny goes fishing.<br />
+He catches a big green fish.<br />
+It spits water in his face.
+</blockquote>
+
 ## Validation note
 
 The blocker was not placement or tide selection. The high/low FGP3 packs

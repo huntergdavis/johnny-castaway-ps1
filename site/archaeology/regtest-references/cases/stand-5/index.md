@@ -51,6 +51,7 @@ ba780ca42cbd2af3e3a81324d04db1f3fbf5c5cdd147afc46fabd41f5a1fabda
 
 ## Cross-links
 
+- [Live scene page: `STAND 5`]({{ '/scenes/stand5/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

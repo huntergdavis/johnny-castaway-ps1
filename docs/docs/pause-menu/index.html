@@ -7,16 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Pause menu — Johnny Castaway PS1</title>
-  <meta name="description" content="How the Johnny Castaway PS1 pause menu works in v0.5.0: controls, sub-screens, freeplay/debug integration, world options, sound test, and font sharing with captions." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/" />
+  <meta name="description" content="How the Johnny Castaway PS1 pause menu works: controls, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), freeplay/debug integration, persisted memcard options, and the embedded 8x8 font shared with captions." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/" />
 
   <meta property="og:title"        content="Pause menu — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How the Johnny Castaway PS1 pause menu works in v0.5.0: controls, sub-screens, freeplay/debug integration, world options, sound test, and font sharing with captions." />
+  <meta property="og:description"  content="How the Johnny Castaway PS1 pause menu works: controls, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), freeplay/debug integration, persisted memcard options, and the embedded 8x8 font shared with captions." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -102,7 +104,7 @@
       <h1>Pause menu</h1>
       <p class="subtitle">Compact sub-screens, Freeplay entry, world options, sound test, accessibility, system tools, and the shared font atlas.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~3 min read · 863 words
+          ~3 min read · 982 words
         </p>
 
       <hr class="rule" />
@@ -133,6 +135,7 @@ with a title, description, source asset, frame count, and memory note.</p>
   <li><a href="#accessibility" id="markdown-toc-accessibility">Accessibility</a></li>
   <li><a href="#system-pages" id="markdown-toc-system-pages">System pages</a></li>
   <li><a href="#render-pipeline" id="markdown-toc-render-pipeline">Render pipeline</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
   <li><a href="#source" id="markdown-toc-source">Source</a></li>
 </ul>
 
@@ -391,6 +394,32 @@ from its clean background and continues.</p>
 menu uses a custom embedded 8x8 font atlas in VRAM. The same atlas is shared
 with captions and other small text overlays.</p>
 
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../freeplay/">Freeplay mode</a> — the
+direct-control Johnny mode reached from the pause menu’s
+Freeplay sub-screen.</li>
+  <li><a href="../captions/">Closed captions</a> —
+the menu owns the shared 8x8 font atlas and the
+Captions: ON / OFF toggle.</li>
+  <li><a href="../holidays/">Holidays</a> — the World
+Options sub-screen’s <code class="language-plaintext highlighter-rouge">Holiday: &lt;name&gt;</code> cycler walks
+<code class="language-plaintext highlighter-rouge">gHolidays[]</code> via <code class="language-plaintext highlighter-rouge">holidayNextId</code> / <code class="language-plaintext highlighter-rouge">holidayPrevId</code>.</li>
+  <li><a href="../audio/">Audio pipeline</a> — the
+Sound Test sub-screen drives the same SPU voice rotation the
+scene runtime uses.</li>
+  <li><a href="../scripted-input/">Scripted input harness</a>
+— how the auto-builder for <code class="language-plaintext highlighter-rouge">/help/menu/</code> walks the menu
+routes deterministically.</li>
+  <li><a href="../../help/menu/">Help: menu screenshots</a>
+— captured screens of every sub-screen, generated by the
+scripted input harness.</li>
+  <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
+— war story for the controller-poll fix the menu’s
+Start / D-pad / Cross input depends on.</li>
+</ul>
+
 <h2 id="source">Source</h2>
 
 <ul>
@@ -426,6 +455,9 @@ with captions and other small text overlays.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

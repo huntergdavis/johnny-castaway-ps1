@@ -106,7 +106,13 @@ That's the voice anchor problem, and that is the solution.
 
 ## Cross-links
 
+- [Voice guide]({{ '/about/voice/' | relative_url }}) — the
+  public-facing distillation of this article's rules. Read it
+  before writing a new page on this site.
 - [Credits]({{ '/credits/' | relative_url }})
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+- [Glossary: drawCredits]({{ '/docs/glossary/#drawcredits' | relative_url }})
+  — the four-line in-game credits text the whole anchor problem
+  reduces to.
 - [The LLM pass]({{ '/lab/llm-pass/' | relative_url }})
 - [About Hunter Davis](https://hunterdavis.com/)

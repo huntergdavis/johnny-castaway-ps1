@@ -6,6 +6,13 @@ subtitle: The on-disc binary form of one captured ADS scene. 40-byte header, pal
 description: Byte-level reference for the FG2 (Foreground Pilot 2) pack payload — the on-disc binary the PS1 build reads at runtime to replay one captured ADS scene. Header layout, palette, entry table, base/diff frame format, sound-event table, sector alignment, and a worked example walking the first 64 bytes.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 A labor of love by Hunter Davis. An *FG2 pack* is the on-disc binary form
 of one captured ADS scene — the pre-baked replay of what the original Sierra
 script does when it runs through to a stop. The PS1 does not interpret ADS

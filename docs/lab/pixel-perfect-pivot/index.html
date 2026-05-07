@@ -12,11 +12,11 @@
   <meta property="og:title"        content="The pivot that almost did not happen — Johnny Castaway PS1" />
   <meta property="og:description"  content="A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,36 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "Pixel perfect pivot", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The pivot that almost did not happen", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The pivot that almost did not happen",
+  "description": "A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay.",
+  "datePublished": "2026-04-26T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/pixel-perfect-pivot/",
+  "inLanguage": "en",
+  "wordCount": 515,
+  "timeRequired": "PT2M",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
 }
 </script>
 </head>
@@ -102,7 +133,7 @@
       <h1>The pivot that almost did not happen</h1>
       <p class="subtitle">The project could have shipped at "close enough." That would have been the wrong project.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 442 words
+          ~1 min read · 484 words
         </p>
 
       <hr class="rule" />
@@ -170,8 +201,12 @@ The scene either matches or it does not. The sound either lands on the right
 frame or it does not. The runtime either survives night, tide, holiday, and
 raft variants or it does not.</p>
 
-<p>The rest of the project inherits that bar. Sixty-one scenes remain, but the
-shape of the work is no longer mysterious.</p>
+<p>The rest of the project inherited that bar. Sixty-one scenes
+remained at the time of the pivot; the
+<a href="../the-63-scene-grind/">63-scene grind</a>
+closed on <code class="language-plaintext highlighter-rouge">2026-05-05</code> with <code class="language-plaintext highlighter-rouge">ACTIVITY 9</code> as the final row, and
+the post-validation work moved to the
+<a href="../from-87-to-99-5/">performance arc</a>.</p>
 
 <h2 id="cross-links">Cross-links</h2>
 
@@ -180,6 +215,10 @@ shape of the work is no longer mysterious.</p>
   <li><a href="../../docs/formats/pack-payload/">FG2 pack payload</a></li>
   <li><a href="../../docs/performance/">Performance work</a></li>
   <li><a href="../the-63-scene-grind/">The 63-scene grind</a></li>
+  <li><a href="../from-87-to-99-5/">From 87 to 99.5</a> —
+the post-validation arc this pivot enabled.</li>
+  <li><a href="../../perf/">Performance battle card</a> —
+the live timing matrix that followed the visual ledger.</li>
 </ul>
 
   </div>
@@ -206,6 +245,9 @@ shape of the work is no longer mysterious.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

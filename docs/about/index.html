@@ -12,11 +12,11 @@
   <meta property="og:title"        content="About — Johnny Castaway PS1" />
   <meta property="og:description"  content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -169,7 +171,8 @@ At <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>, all
 <strong>63 of 63</strong>
 scenes are signed off — every row in the
 <a href="../scenes/">per-scene ledger</a> clears the
-FISHING 1 bar across every applicable variant. The hard cluster
+<a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>
+across every applicable variant. The hard cluster
 near the end was the foreground-only multi-view scenes
 (<code class="language-plaintext highlighter-rouge">MISCGAG 1</code>, <code class="language-plaintext highlighter-rouge">MISCGAG 2</code>, <code class="language-plaintext highlighter-rouge">STAND 1</code>, the wide LILLIPUTIAN arrival),
 which all needed the generic normal / far-left / far-right host
@@ -225,9 +228,11 @@ pivot, the 63-scene grind, where it stands at
 editorial standard the prose on this site holds itself to.
 Read it before writing a new page.</li>
   <li><a href="./dev-environment/">/about/dev-environment/</a>
-– the actual desk behind the work, photographed. Two LLM
-sub-agents, the dunking bird auto-poker, DuckStation,
-editor/terminal column, build farm, bottom-monitor telemetry.</li>
+– the actual desk behind the work, photographed. Six windows:
+the Dunking Bird auto-poker, the fresh editor, two LLM
+sub-agents (Claude + Codex), DuckStation running the latest
+build, and a bottom-monitor system-telemetry panel — all on
+KDE Plasma.</li>
   <li><a href="../scenes/">/scenes/</a> – live per-scene
 ledger. All 63 rows clear the FISHING 1 bar; family jump nav,
 per-scene case studies, last-verified release tag.</li>
@@ -240,7 +245,7 @@ worklogs that drove each phase, in original form.</li>
 status surfaces, retired tooling, the harness era, the
 restore-pilot era, and other paths that did not become the
 active methodology.</li>
-  <li><a href="../lab/">/lab/</a> – fourteen feature-length
+  <li><a href="../lab/">/lab/</a> – fifteen feature-length
 retrospectives, newest first. The
 <a href="../lab/from-87-to-99-5/">post-validation performance loop</a>,
 <a href="../lab/the-site-itself/">the site itself as a small program</a>,
@@ -286,6 +291,9 @@ that engine decode this port would not exist.</p>
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

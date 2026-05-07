@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Glossary — Johnny Castaway PS1" />
   <meta property="og:description"  content="Glossary for the Johnny Castaway PS1 port — pipeline, graphics, audio, hardware, build, and voice terms used across the docs and devlog." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/glossary/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -102,7 +104,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2364 words
+          ~11 min read · 2892 words
         </p>
 
       <hr class="rule" />
@@ -139,6 +141,9 @@
 <dt id="replay">Replay</dt>
 <dd>What the PS1 build does. Loads an FG2 pack from the disc, plays back every frame's diffs against its own background and overlay layers, fires sound events at the recorded ticks. The PS1 never interprets a Sierra opcode at runtime.</dd>
 
+<dt id="fgpilot">fgpilot</dt>
+<dd>Internal codename for the PS1 scene-playback runtime — the <a href="#replay">replay</a> engine implemented in <code>src/foreground_pilot.c</code>. The name comes from when the foreground-only host capture was a pilot experiment that didn't yet work; the directory was named <code>fgpilot/</code> and it stuck. As a <a href="#bootmode">BOOTMODE.TXT</a> token, <code>fgpilot &lt;slug&gt;</code> forces a specific scene (e.g. <code>fgpilot mary4</code>) instead of letting the screensaver loop pick at random; <code>fgpilot freeplay</code> boots straight into Freeplay. The public-facing name is gradually moving to "PS1 scene playback" in operator docs; the internal codename in source stays.</dd>
+
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
 
@@ -150,6 +155,12 @@
 
 <dt id="seed">Seed</dt>
 <dd>RNG seed used by the host to make a capture deterministic, so two runs of the same scene produce byte-identical packs. Override surface in the pause menu (Pause → System → Set RNG Seed) lets the runtime force the same path the host captured under, which is occasionally useful in regtest debugging.</dd>
+
+<dt id="bootmode">BOOTMODE.TXT</dt>
+<dd>A small text file the runtime reads at boot to override default state for a deterministic run. Carries one or more tokens — <code>night 1</code>, <code>lowtide 1</code>, <code>holiday N</code>, <code>raft-stage N</code>, <code>fgpilot &lt;slug&gt;</code>, <code>seed N</code>, <code>fgpilot freeplay</code>, <code>pad-script</code>, <code>pad-script-log</code>, etc. — that fix variant flags and entry points the screensaver loop would otherwise pick at random. The capture pipeline writes one before each host run; the regtest harness writes one before each headless DuckStation pass; the menu help auto-builder writes one before each pad-script run. End users never see it; release discs ship without it and let the screensaver pick its own state. The full token surface and worked examples are at <a href="../regtest/">/docs/regtest/</a>; <a href="../scripted-input/">/docs/scripted-input/</a> covers the <code>pad-script</code> token specifically.</dd>
+
+<dt id="padscript">PADSCRIPT.TXT</dt>
+<dd>The build-time deterministic-input script at <code>config/ps1/PADSCRIPT.TXT</code>, embedded into the EXE by <code>scripts/build-ps1.sh</code>. The runtime only executes it when <a href="#bootmode">BOOTMODE.TXT</a> carries the <code>pad-script</code> or <code>pad-script-log</code> token, so the file is dormant for normal release builds. Four commands — <code>wait</code>, <code>tap</code>/<code>press</code>, <code>hold</code>, <code>shot</code>/<code>screenshot</code>/<code>mark</code> — drive a button vocabulary that covers the full pad (D-pad, <code>START</code> / <code>SELECT</code>, the four face buttons, <code>L1</code>–<code>R2</code>; combine masks with <code>+</code> or <code>,</code>). Durations are frames unless suffixed with <code>s</code> (60 Hz). Used by the pause-menu screenshot harness and pad-driven regtest routes; empty for everything else. Full grammar at <a href="../scripted-input/">/docs/scripted-input/</a>.</dd>
 </dl>
 
 <h2 id="graphics">Graphics</h2>
@@ -221,6 +232,9 @@
 <h2 id="build">Build &amp; release</h2>
 
 <dl>
+<dt id="ps-exe">PS-EXE</dt>
+<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>v0.8.1-ps1</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
+
 <dt id="bin-cue">jcreborn.bin / jcreborn.cue</dt>
 <dd>The shipped CD image, a <code>.bin</code> binary track plus a <code>.cue</code> cuesheet that DuckStation (and real hardware) opens. Both files belong in the same directory. End users never need original Sierra files — the pre-baked FG2 packs are derived data, not Sierra source.</dd>
 
@@ -244,7 +258,7 @@
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.1-ps1</code> is <code>+0.9%</code>.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.1-ps1</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="../../perf/">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
@@ -278,6 +292,9 @@
 
 <dt id="promotion-rule">Promotion rule</dt>
 <dd>An optimization promotes when (a) the canary doesn't regress, (b) every visual signoff still holds, and (c) the matrix mean improves. All three must hold; mixing them is how regressions ship.</dd>
+
+<dt id="soak-test">Soak test</dt>
+<dd>A long-run randomized DuckStation pass — boot, let the screensaver loop pick scenes at random for hours, watch for freezes, hangs, drift, or memory pressure that the per-scene matrix runs miss. Not part of the per-commit regtest gate; reserved for release candidates and after structural changes (walk pipeline, prefetch policy, clean-rect estimator). The <code>v0.8.1-ps1</code> release shipped specifically because a soak surfaced a <code>MARY 4</code> random-load freeze that the matrix-bounded headless runs never exercised.</dd>
 </dl>
 
 <h2 id="voice">Voice</h2>
@@ -292,6 +309,24 @@
 <dt id="dead-end">Dead end (named out loud)</dt>
 <dd>A path that did not work, kept in the public record because dead ends are content. The <a href="../../devlog/">devlog</a> is verbatim — superseded plans, partial successes, week-long timing bugs preserved unedited. The blog convention is to name them with a short lampshade ("Bummer." "Lightbulb moment!") rather than rewrite history into a clean narrative.</dd>
 </dl>
+
+<h2 id="see-also">See also</h2>
+
+<ul>
+  <li><a href="../../scenes/">/scenes/</a> — the visual signoff
+ledger; the FISHING 1 bar in practice.</li>
+  <li><a href="../../perf/">/perf/</a> — the headless-perf
+battle card; the column headers (<code class="language-plaintext highlighter-rouge">over_target</code>, <code class="language-plaintext highlighter-rouge">blocking_vb</code>,
+<code class="language-plaintext highlighter-rouge">prefetch_hits</code>, etc.) all have entries above.</li>
+  <li><a href="../">/docs/</a> — the reference manuals
+these definitions support.</li>
+  <li><a href="../../lab/">/lab/</a> — the magazine-length
+retrospectives where many of these terms got their first
+in-context introduction.</li>
+  <li><a href="../../about/voice/">/about/voice/</a> — the
+editorial standard the entries above are written to. The voice
+that lets a definition stay terse without being curt.</li>
+</ul>
 
   </div>
 </article>
@@ -317,6 +352,9 @@
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

@@ -42,11 +42,14 @@ BigSoundBank sound 0266 (CC0)       — ocean ambience loop source.
 Last release    : {{ site.release.tag }}
 Built           : {{ site.time | date: '%Y-%m-%d' }}
 Validated       : {{ site.release.scenes_validated }} of {{ site.release.scenes_total }} scenes
-Standards       : HTML5, CSS3, Atom 1.0, Schema.org JSON-LD
+Standards       : HTML5, CSS3, Atom 1.0, JSON Feed 1.1,
+                  Schema.org JSON-LD, Open Graph
 Engine          : Jekyll {{ jekyll.version }} (no plugins beyond
                   jekyll-seo-tag, jekyll-redirect-from)
 Source          : {{ site.github_url }}/tree/main/site
-Feed            : {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.xml
+Devlog feed     : {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.xml (Atom)
+                  {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.json (JSON Feed)
+Lab feed        : {{ site.url }}{{ site.canonical_baseurl }}/lab/feed.xml (Atom)
 Code license    : GPL-3.0
 Asset license   : Sierra On-Line retains the Castaway character
                   and original art; see /legal/ for the line.

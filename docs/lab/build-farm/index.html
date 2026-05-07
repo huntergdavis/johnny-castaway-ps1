@@ -12,11 +12,11 @@
   <meta property="og:title"        content="The 24/7 Build Farm — Johnny Castaway PS1" />
   <meta property="og:description"  content="A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,36 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "Build farm", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The 24/7 Build Farm", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The 24/7 Build Farm",
+  "description": "A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure.",
+  "datePublished": "2026-04-29T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/",
+  "inLanguage": "en",
+  "wordCount": 282,
+  "timeRequired": "PT1M",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
 }
 </script>
 </head>
@@ -102,7 +133,7 @@
       <h1>The 24/7 Build Farm</h1>
       <p class="subtitle">Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 196 words
+          ~1 min read · 252 words
         </p>
 
       <hr class="rule" />
@@ -138,10 +169,13 @@ the log.</li>
 
 <ul>
   <li><a href="../../about/dev-environment/">The dev environment, photographed</a> — the farm’s bottom-monitor panel in the same field of view as the rest of the workflow.</li>
-  <li><a href="../../scenes/">Scene ledger + perf battle card</a></li>
+  <li><a href="../../scenes/">Scene ledger</a> — visual signoff (the <a href="../../docs/glossary/#fishing1-bar">FISHING 1 bar</a>).</li>
+  <li><a href="../../perf/">Performance battle card</a> — second ledger; per-scene timing against the target frame budget, sortable + color-coded.</li>
   <li><a href="../../docs/performance/">Performance plan</a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md">Performance experiment log</a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv">Scene performance matrix</a></li>
+  <li><a href="../from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a> — retrospective on the optimization arc this farm fed.</li>
+  <li><a href="../v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn’t</a> — the soak loop the farm runs alongside the per-commit matrix.</li>
 </ul>
 
   </div>
@@ -168,6 +202,9 @@ the log.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

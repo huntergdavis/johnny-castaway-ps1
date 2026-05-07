@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Lab — Johnny Castaway PS1" />
   <meta property="og:description"  content="The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="./feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -100,7 +102,7 @@
     <header class="page-header">
       <p class="eyebrow">Magazine . Methodology and reflection</p>
       <h1>Lab</h1>
-      <p class="subtitle">How a one-person PS1 fan port actually gets built. Fourteen feature articles on the craft, the failures, and the tools.</p>
+      <p class="subtitle">How a one-person PS1 fan port actually gets built. Fifteen feature articles on the craft, the failures, and the tools.</p>
       <hr class="rule" />
     </header>
 
@@ -138,13 +140,26 @@ want the raw documents behind the essays, use the
 <a href="../source/">source library</a> and the
 <a href="../resources/">resource catalog</a>.</p>
 
+<p>Subscribe via
+<a href="./feed.xml" type="application/atom+xml">Atom</a>;
+the feed is reverse-chronological with rich summaries (no embedded
+body — <code class="language-plaintext highlighter-rouge">site.html_pages</code> doesn’t pre-render content reliably the
+way <code class="language-plaintext highlighter-rouge">site.posts</code> does, so the feed is the headline-and-link
+pattern). Auto-discovery is wired into every page’s <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>, so
+most feed readers find it automatically.</p>
+
 <h2 id="contents">Contents</h2>
 
-<p>Fourteen feature articles, in reverse chronological order. The newest
+<p>Fifteen feature articles, in reverse chronological order. The newest
 sit on top; the foundational methodology pieces sit underneath. Each
 card carries the date it landed.</p>
 
 <ul class="doc-grid">
+  <li>
+    <p class="lab-date">2026-05-06</p>
+    <a href="./v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn't</a>
+    <p>The post-v0.8.0 stability fix as a war story. A randomized soak surfaced a MARY 4 scene-load freeze the per-commit matrix never reached. The fix is a clean-rect pressure estimator that mirrors the actual save path; the discipline is the lesson — matrix and soak are not redundant.</p>
+  </li>
   <li>
     <p class="lab-date">2026-05-06</p>
     <a href="./from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
@@ -258,6 +273,9 @@ codebase, see <a href="../hack/">/hack/</a>.</p>
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="./feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

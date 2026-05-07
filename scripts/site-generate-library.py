@@ -307,6 +307,9 @@ def generate_regtest_cases() -> None:
         status = meta.get("status", "")
         date = meta.get("capture_date", "")
         source_rel = rel(case_dir)
+        # Scene slug uses lowercase ADS + tag (e.g. ACTIVITY-1 → activity1).
+        # Verified all 63 cases map exactly to live scene pages.
+        scene_slug = f"{str(ads).lower()}{tag}"
 
         content = f"""---
 layout: page
@@ -361,6 +364,7 @@ with.
 
 ## Cross-links
 
+- [Live scene page: `{ads} {tag}`]({{{{ '/scenes/{scene_slug}/' | relative_url }}}}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{{{ '/archaeology/regtest-references/cases/' | relative_url }}}})
 - [Regtest reference narrative]({{{{ '/archaeology/regtest-references/' | relative_url }}}})
 - [Scene ledger]({{{{ '/scenes/' | relative_url }}}})
@@ -388,6 +392,12 @@ keeps being compared against while a scene moves from "it boots" to "it is
 signed off."
 
 <table>
+<caption class="visually-hidden">
+  Regression test case shelf: 63 preserved host baselines, one
+  per scene captured before the validated-on-PS1 bar shipped.
+  Columns are case name (linking to the case detail page), ADS
+  family, scene tag, captured frame count, and verification status.
+</caption>
 <thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
 <tbody>
 {rows}
@@ -405,18 +415,37 @@ def generate_resource_catalog() -> None:
         shutil.rmtree(target)
     target.mkdir(parents=True, exist_ok=True)
 
+    fg2_intro = (
+        "The runtime artifacts the PS1 actually replays. Each scene "
+        "contributes a high-tide pack and a low-tide pack — `<SCENE>.FG2` "
+        "and `<SCENE>LOW.FG2` (or its prefix-truncated equivalent for "
+        "scene names long enough that the 8.3 disc filename rule cuts in, "
+        "e.g. `ACTV12L.FG2`). The "
+        "[`FG2` format]({{ '/docs/glossary/#fg2-pack' | relative_url }}) "
+        "carries its own palette, frame-timing table, base-frame full "
+        "render, and per-frame diff spans; most scenes have moved to the "
+        "denser "
+        "[`FGP3` successor]({{ '/docs/glossary/#fgp3' | relative_url }}) "
+        "internally while keeping the `.FG2` filename. Per-pack runtime "
+        "timing lives on the "
+        "[performance battle card]({{ '/perf/' | relative_url }})."
+    )
+    # Fourth element is an optional intro paragraph that renders between
+    # the H2 heading and the asset table — currently used only by the
+    # FG2 pack section, which would otherwise be a 252-row table with
+    # no scaffolding for what the format is or where to find timings.
     groups = [
-        ("Original bitmap resources", ROOT / "jc_resources/extracted/bmp", "*.BMP"),
-        ("Original animation scripts", ROOT / "jc_resources/extracted/ads", "*.ADS"),
-        ("Original TTM animations", ROOT / "jc_resources/extracted/ttm", "*.TTM"),
-        ("Original screens", ROOT / "jc_resources/extracted/scr", "*.SCR"),
-        ("Original sounds", ROOT / "jc_resources/extracted/snd", "*.VAG"),
-        ("Transcoded PS1 sprite banks", ROOT / "jc_resources/transcoded", "*.PSB"),
-        ("Generated foreground packs", ROOT / "generated/ps1/foreground", "*.FG2"),
+        ("Original bitmap resources", ROOT / "jc_resources/extracted/bmp", "*.BMP", None),
+        ("Original animation scripts", ROOT / "jc_resources/extracted/ads", "*.ADS", None),
+        ("Original TTM animations", ROOT / "jc_resources/extracted/ttm", "*.TTM", None),
+        ("Original screens", ROOT / "jc_resources/extracted/scr", "*.SCR", None),
+        ("Original sounds", ROOT / "jc_resources/extracted/snd", "*.VAG", None),
+        ("Transcoded PS1 sprite banks", ROOT / "jc_resources/transcoded", "*.PSB", None),
+        ("Generated foreground packs", ROOT / "generated/ps1/foreground", "*.FG2", fg2_intro),
     ]
     sections = []
     total = 0
-    for title, directory, pattern in groups:
+    for title, directory, pattern, intro in groups:
         files = sorted(directory.glob(pattern)) if directory.exists() else []
         total += len(files)
         rows = []
@@ -428,8 +457,9 @@ def generate_resource_catalog() -> None:
                 f"<td><a href=\"{{{{ site.github_url }}}}/blob/main/{source_rel}\">source</a></td></tr>"
             )
         rows_md = "\n".join(rows) or "<tr><td colspan=\"3\">No files found.</td></tr>"
+        intro_block = f"\n{intro}\n" if intro else ""
         sections.append(f"""## {title}
-
+{intro_block}
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>

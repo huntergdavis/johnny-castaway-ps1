@@ -51,6 +51,7 @@ a62ddb2c5aaa5c9a79f8edf583b3bcb3365d2c5c1a5fe4fcb52b6936bc89170e
 
 ## Cross-links
 
+- [Live scene page: `FISHING 5`]({{ '/scenes/fishing5/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

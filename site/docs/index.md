@@ -2,8 +2,8 @@
 layout: page
 title: Docs
 eyebrow: Reference manuals
-subtitle: Build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, the SDL2 → PSn00bSDK API mapping, and a glossary. The technical surface of the PS1 port.
-description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, agents, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
+subtitle: Build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.
+description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
 ---
 
 A labor of love by Hunter Davis. The pages below are reference manuals for the
@@ -53,6 +53,34 @@ If you paid for this, you were cheated. Open source and free.
   <li>
     <a href="{{ '/docs/dev-workflow/' | relative_url }}">Development workflow</a>
     <p>The author's per-scene runbook: capture on host, encode to <code>.FG2</code>, replay on PS1, take a screenshot, validate. Honest about how long it takes and how often it breaks.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/performance/' | relative_url }}">Performance</a>
+    <p>Reference manual for the headless-perf battle card: how <code>loop_vb</code> / <code>target_vb</code> are measured, what each column means, the column-by-column glossary, and the experiment-log discipline.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/hardware/' | relative_url }}">Hardware</a>
+    <p>The PS1 envelope this port runs inside — 33.8688 MHz MIPS, 2 MB RAM, 1 MB VRAM, 512 KB SPU, no FPU, 2× CD drive at 300 KB/s. Why every constraint shows up in the build.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/audio/' | relative_url }}">Audio</a>
+    <p>SPU layout, VAG sample bank, the round-robin voice allocator, the captured <code>0xC051 PLAY_SAMPLE</code> events, and the ocean-ambience loop on its dedicated voice.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/formats/' | relative_url }}">File formats</a>
+    <p>The five binary formats the build chain produces: FG2 / FGP3 packs, the foreground capture JSONL, sound-event JSONL, scene-status YAML, and the perf-matrix CSV.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/infrastructure/' | relative_url }}">Infrastructure</a>
+    <p>The Docker dev image, the regtest container, the release script, the build-farm pattern, and what's still done by hand on every release.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/agents/' | relative_url }}">AI sub-agents</a>
+    <p>The honest accounting of where LLM sub-agents helped on this project — caption corpus drafts, holiday-emblem sprite primitives, long-form prose drafting — and what they explicitly didn't do.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/vision/' | relative_url }}">Vision-classifier</a>
+    <p>The pixel-vs-reference comparison layer that runs on top of the regtest harness: per-frame diffs, scene-state classification, and how it feeds the visual signoff bar.</p>
   </li>
   <li>
     <a href="{{ '/docs/glossary/' | relative_url }}">Glossary</a>

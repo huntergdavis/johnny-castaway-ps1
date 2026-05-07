@@ -7,16 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>FAQ — Johnny Castaway PS1</title>
-  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
+  <meta name="description" content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
 
   <meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
-  <meta property="og:description"  content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+  <meta property="og:description"  content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Faq", "item": "https://hunterdavis.com/johnny-castaway-ps1/faq/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "FAQ", "item": "https://hunterdavis.com/johnny-castaway-ps1/faq/" }]
 }
 </script>
 </head>
@@ -105,7 +107,128 @@
     </header>
 
   <div class="page-body">
-    <p>This page is information, not a forum. Questions and answers are
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is this?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. It runs on real hardware and on DuckStation. 63 of 63 scenes are validated as of v0.8.1-ps1."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why PS1?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The hardware has roughly the same headroom as a 1992 PC, but a totally different graphics pipeline. The fun was in the gap — making a 1992 Windows screensaver render natively on a PS1 GPU that doesn't know what BMPs are."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will you port other Sierra screensavers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No plans. Johnny Castaway is a special case for the author. If someone else wants to take what's here and port Surf's Up that would be cool, but it's not on this project's roadmap."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this legal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The code is GPL-3.0 and entirely original (or derived from other GPL/MPL code with attribution). The Johnny Castaway character and original Sierra assets are not included with the released disc image; the host build requires the user to supply their own original Sierra data files. The released .bin/.cue contains pre-baked playback packs only."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does '63 / 63 scenes validated' mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each scene clears the project's FISHING 1 bar — pixel-perfect visuals against the host capture, plus synced SFX, signed off by human review across every applicable variant flag (night, low-tide, holiday, raft-stage). It is a stricter bar than 'it ran once without crashing.' At v0.8.1-ps1 every row clears the bar. Performance is a separate ledger."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I run it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Download the .bin and .cue, drop both files into a folder, open the .cue in DuckStation. That's the whole quickstart."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need original Sierra files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not for the released .bin/.cue. End users get pre-baked playback packs on the disc image and never need a Sierra file. Yes for the host build used during development: you need RESOURCE.MAP and RESOURCE.001 from a legal Johnny Castaway 1.0 install."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on real PS1 hardware?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — smoke-tested on a SCPH-7501 via the TonyHax softmod path. Your mileage may vary; treat any boot success as a small miracle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which emulators are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DuckStation is the only one tested every commit. PCSX-Redux should work. ePSXe is unverified. The release smoke gauntlet runs in headless DuckStation, so that one is the reference."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it run at native rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "At v0.8.1-ps1 the headless-perf battle card averages 99.7% target speed across the 120 timing-bearing scene/tide rows — close enough that most scenes hit their original frame budget on PS1 hardware. The remaining gap is concentrated in a small set of high-leverage scenes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I file bugs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you must, the issue tracker is on GitHub. Bugs are tolerated, not invited. There is no contributor onboarding process and no 'good first issue' label."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where does the caption text come from?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The closed-caption text was authored fresh for this port from scene content. It is not lifted from any prior corpus. The caption audit shows the confidence level of every ADS-tag to caption mapping."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are there 36 holidays now instead of 4?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The original Sierra game had 4 baked-in holiday decorations (Christmas, New Year, Halloween, St. Patrick's Day). This port extends that to 36 US holidays via a code-generated table and a pure-algorithm date core (Meeus for Easter, Nth-weekday math for the others). No external date library, no expiring tables, works for 100+ years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's faithful to the original, and what's added?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Faithful: every scene the original had, in the original order, with the original variants. The art is unchanged. Added: a real pause menu reachable with Start (the original had none) with sub-screens for Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed; closed captions; thirty-two additional holidays; story-loop walking between scenes; freeplay/debug mode where the player drives Johnny directly; optional ocean-ambience loop; Scene Set pool selector; frog-clock loading transitions; full Credits page."
+      }
+    }
+  ]
+}
+</script>
+
+<p>This page is information, not a forum. Questions and answers are
 written by the author, not crowdsourced. Three sections: about
 the project, running it, and the original game.</p>
 
@@ -120,7 +243,7 @@ the project, running it, and the original game.</p>
       <li><a href="#why-ps1" id="markdown-toc-why-ps1">Why PS1?</a></li>
       <li><a href="#will-you-port-other-sierra-screensavers" id="markdown-toc-will-you-port-other-sierra-screensavers">Will you port other Sierra screensavers?</a></li>
       <li><a href="#is-this-legal" id="markdown-toc-is-this-legal">Is this legal?</a></li>
-      <li><a href="#why-is-it-only-63--63-scenes" id="markdown-toc-why-is-it-only-63--63-scenes">Why is it only 63 / 63 scenes?</a></li>
+      <li><a href="#what-does-63--63-scenes-validated-mean" id="markdown-toc-what-does-63--63-scenes-validated-mean">What does “63 / 63 scenes validated” mean?</a></li>
     </ul>
   </li>
   <li><a href="#running-it" id="markdown-toc-running-it">Running it</a>    <ul>
@@ -176,13 +299,19 @@ the user to supply their own original Sierra data files
 contains pre-baked playback packs — derived data, no Sierra
 source files. See <a href="../legal/">/legal/</a>.</p>
 
-<h3 id="why-is-it-only-63--63-scenes">Why is it only 63 / 63 scenes?</h3>
+<h3 id="what-does-63--63-scenes-validated-mean">What does “63 / 63 scenes validated” mean?</h3>
 
 <p>Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That’s a stricter bar than “it ran once
+native resolution. That’s the project’s “FISHING 1 bar” —
+pixel-perfect visuals plus synced SFX, signed off by human
+review across every applicable variant flag (night, low-tide,
+holiday, raft-stage). It is a stricter bar than “it ran once
 without crashing.” The <a href="../scenes/">scene ledger</a>
-tracks the count.</p>
+is the source of truth; at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> every row
+clears the bar. Performance — whether each scene hits its
+target frame budget — is a separate ledger at
+<a href="../perf/">/perf/</a> on purpose.</p>
 
 <hr />
 
@@ -268,22 +397,25 @@ order, with the original variants. The art is unchanged. The
 holidays’ visual style matches the existing 4 (Sierra retained
 the original sprites; the new ones were authored to fit).</p>
 
-<p><strong>Added</strong>: a real pause menu reachable with Start (the original
-had none), with sub-screens for Scene Set, Freeplay Options,
-Controls, World Options, Holidays, Set Island Position,
-Accessibility, Sound Test, System, Set Time / Date, and Set RNG
-Seed. Closed captions (off by default; see <a href="../docs/captions/">/docs/captions/</a>).
-Thirty-two additional holidays via a code-generated table and
-pure-algorithm date core. <a href="../releases/#v0420-ps1--story-loop-walking">Story-loop walking</a>
+<p><strong>Added</strong>: a real <a href="../docs/pause-menu/">pause menu</a>
+reachable with Start (the original had none), with sub-screens
+for Scene Set, Freeplay Options, Controls, World Options,
+Holidays, Set Island Position, Accessibility, Sound Test,
+System, Set Time / Date, and Set RNG Seed. Closed captions
+(off by default; see <a href="../docs/captions/">/docs/captions/</a>).
+<a href="../docs/holidays/">Thirty-two additional holidays</a>
+via a code-generated table and pure-algorithm date core.
+<a href="../releases/#v0420-ps1--story-loop-walking">Story-loop walking</a>
 between scenes (v0.4.20-ps1) — Johnny no longer teleports.
 <a href="../releases/#v050-ps1--freeplay-and-debug-mode">Freeplay / debug mode</a>
 (v0.5.0-ps1) where the player drives Johnny directly, with gag
-and visitor catalogs. Optional ocean-ambience loop on a dedicated
-SPU voice (v0.6.0-ps1). Scene Set pool selector for filtering
-the random rotation by family. Frog-clock loading transitions
-between scene swaps. A full <a href="../credits/">Credits page</a>
-that names the prior ports and toolchain authors this build
-stands on.</p>
+and visitor catalogs. Optional
+<a href="../releases/#v060-ps1--ocean-ambience">ocean-ambience loop</a>
+on a dedicated SPU voice (v0.6.0-ps1). Scene Set pool selector for
+filtering the random rotation by family. Frog-clock loading
+transitions between scene swaps. A full
+<a href="../credits/">Credits page</a> that names the
+prior ports and toolchain authors this build stands on.</p>
 
   </div>
 </article>
@@ -309,6 +441,9 @@ stands on.</p>
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

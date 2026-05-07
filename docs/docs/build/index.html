@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Build & toolchain — Johnny Castaway PS1" />
   <meta property="og:description"  content="How to build the Johnny Castaway PS1 disc image — PSn00bSDK 0.24 toolchain, the Docker dev image, cmake configuration, and the mkpsxiso CD pipeline." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/build/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Build", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/build/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Build & toolchain", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/build/" }]
 }
 </script>
 </head>
@@ -102,7 +104,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1093 words
+          ~4 min read · 1145 words
         </p>
 
       <hr class="rule" />
@@ -170,7 +172,8 @@ docker build <span class="nt">-f</span> Dockerfile.ps1 <span class="nt">-t</span
 <p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. At
 <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> the CD image is about <strong>76 MB</strong> — that
 weight is almost all foreground (FG2) packs routed onto the disc;
-the PS-EXE itself is ~84 KB. If you want the per-scene loop instead
+the <a href="../glossary/#ps-exe">PS-EXE</a> itself is <strong>208 KiB</strong> (104 × 2 KiB CD-ROM sectors). If
+you want the per-scene loop instead
 of a one-shot build, read
 <a href="../dev-workflow/">Development workflow</a>.</p>
 
@@ -420,7 +423,8 @@ docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 mipsel-none-elf-
 <span class="c"># Full build smoke test</span>
 ./build-ps1.sh
 <span class="nb">ls</span> <span class="nt">-lh</span> jcreborn.bin jcreborn.cue
-<span class="c"># expected: jcreborn.bin around 650 KB, jcreborn.cue a few hundred bytes</span>
+<span class="c"># expected: jcreborn.bin around 76 MB (mostly FG2 pack payload),</span>
+<span class="c">#           jcreborn.cue a few hundred bytes</span>
 </code></pre></div></div>
 
 <p>If both succeed, the next step is loading <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in DuckStation —
@@ -431,10 +435,17 @@ or running it through the <a href="../regtest/">headless regtest harness</a>.</p
 <ul>
   <li><a href="../dev-workflow/">Development workflow</a> — what to do
 <em>with</em> a fresh build, scene by scene.</li>
+  <li><a href="../infrastructure/">Build infrastructure</a> —
+the bigger picture: Docker images, regtest container, release
+script, what’s still done by hand on each release.</li>
+  <li><a href="../hardware/">Hardware</a> — the
+PS1 envelope the build is targeting.</li>
   <li><a href="../regtest/">Regression testing</a> — booting the disc
 image headlessly for screenshots and TTY capture.</li>
   <li><a href="../api/">API mapping</a> — what each PSn00bSDK
 library is replacing.</li>
+  <li><a href="../../lab/build-farm/">Lab: the 24/7 build farm</a>
+— the same machinery framed as methodology.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
@@ -470,6 +481,9 @@ library is replacing.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

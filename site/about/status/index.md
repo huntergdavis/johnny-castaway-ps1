@@ -69,9 +69,14 @@ Honest list, narrowed to specifics:
   HLE quirk, not a project bug, but it does mean audio-on-real-
   hardware needs verification before any release calls itself
   hardware-confirmed.
-- **Real hardware testing.** All current validation is on
-  DuckStation. A real-PSone run is on the long-term list. Until
-  then, treat hardware claims with the appropriate skepticism.
+- **Real hardware soak.** Smoke-tested on an SCPH-7501 via the
+  [TonyHax](https://github.com/socram8888/tonyhax) softmod path —
+  the disc boots and runs. Long-term observations on real
+  hardware (extended idle, real SPU register behavior, real CD
+  seek timing under random-position scene picks) are still on
+  the wishlist. The `SpuSetCommonMasterVolume` HLE divergence
+  above is a concrete reason to keep treating hardware audio as
+  unverified until the soak loop covers it.
 - **Older count-based status models** (`25/63`, `27/63`, `60/63`,
   `63/63`) from prior validation eras are *retired*, not current.
   They are preserved in

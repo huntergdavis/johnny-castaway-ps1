@@ -12,11 +12,11 @@
   <meta property="og:title"        content="ACTIVITY 9 — Bathes with a brush — Johnny Castaway PS1" />
   <meta property="og:description"  content="ACTIVITY.ADS scene 9: Bathes with a brush. Validated after wide boat stitching and source-edge repair." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/activity9-ps1-boat.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/scenes/activity9/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/activity9-ps1-boat.png" />
   <meta property="og:image:alt"    content="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/activity9-ps1-boat.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/activity9-ps1-boat.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "Activity9", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/activity9/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "ACTIVITY 9 — Bathes with a brush", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/activity9/" }]
 }
 </script>
 </head>
@@ -147,10 +149,47 @@ late bow does not flicker.</p>
 <a href="../../about/method/">the method</a> for the full validation
 workflow.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">ACTIVITY 9</code> is one of the structurally important scenes in the
+project. Two distinct retrospectives have it as their case study:</p>
+
+<ul>
+  <li><strong>The last validated scene of the 63-scene grind.</strong> It closed the
+visual-signoff sweep on <code class="language-plaintext highlighter-rouge">2026-05-05</code>. The end of the 63-scene
+grind is what cleared the path for the post-validation
+performance work; the
+<a href="../../lab/the-63-scene-grind/">grind retrospective</a>
+walks through how the foreground-only multi-view stitch family
+cleared the last cluster.</li>
+  <li><strong>An “optimized validated outlier” in <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>.</strong> The wide
+boat extends past the legacy 640px scene clip, which made the
+scene a poor fit for global stream-window settings. The
+Activity9-specific scoped low-tide
+<a href="../../docs/glossary/#read-group">read group</a>
+    <ul>
+      <li><a href="../../docs/glossary/#padded-residual">padded residual</a>
+packs let it stay green on the matrix instead of being a known
+exception. The
+<a href="../../lab/from-87-to-99-5/">perf retrospective</a>
+names this as the canonical example of “the technique generalized
+even though the win was specific.”</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Production playback stays random-position-safe — the host capture
+positions in the validation notes were evidence-gathering, not
+runtime pins.</p>
+
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" /><nav class="scene-pager" aria-label="Scene navigation">
+    <hr class="rule" /><p class="post-source">
+      Host regression reference:
+      <a href="../../archaeology/regtest-references/cases/activity-9/">ACTIVITY-9 case page</a>
+      — desktop baseline before PS1 validation.
+    </p><nav class="scene-pager" aria-label="Scene navigation">
       <div class="scene-pager-prev">
 
           <a href="../activity8/"
@@ -198,6 +237,9 @@ workflow.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

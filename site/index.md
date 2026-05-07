@@ -27,26 +27,26 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 <section class="trio">
   <figure>
     <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    <figcaption><a href="{{ '/scenes/activity9/' | relative_url }}">ACTIVITY 9 · boat pass</a></figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
-    <figcaption>JOHNNY 6 · daydream</figcaption>
+    <figcaption><a href="{{ '/scenes/johnny6/' | relative_url }}">JOHNNY 6 · daydream</a></figcaption>
   </figure>
   <figure>
     <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption>FISHING 1 · reference</figcaption>
+    <figcaption><a href="{{ '/scenes/fishing1/' | relative_url }}">FISHING 1 · reference</a></figcaption>
   </figure>
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> {{ site.release.tag }}</span>
-  <span class="pill pill--ok">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</span>
-  <span class="pill pill--ok">{{ site.release.perf_target_speed_pct }}% target speed</span>
-  <span class="pill pill--info">PSn00bSDK 0.24</span>
-  <span class="pill pill--info">DuckStation</span>
-  <span class="pill pill--info">36 holidays</span>
-  <span class="pill pill--info">GPL-3.0</span>
+  <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a></span>
+  <a class="pill pill--ok" href="{{ '/scenes/' | relative_url }}">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</a>
+  <a class="pill pill--ok" href="{{ '/perf/' | relative_url }}">{{ site.release.perf_target_speed_pct }}% target speed</a>
+  <a class="pill pill--info" href="{{ '/docs/build/' | relative_url }}">PSn00bSDK 0.24</a>
+  <a class="pill pill--info" href="{{ '/play/#emulator' | relative_url }}">DuckStation</a>
+  <a class="pill pill--info" href="{{ '/docs/holidays/' | relative_url }}">36 holidays</a>
+  <a class="pill pill--info" href="{{ '/legal/' | relative_url }}">GPL-3.0</a>
 </aside>
 
 <section class="page" markdown="1">
@@ -64,12 +64,14 @@ its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
 All **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
 routed scenes the original game had are validated under the
-fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
-off by human review across every applicable variant. Current mainline work is
-bugfixing, performance, and feature polish; the `v0.8.1` line keeps long
-randomized runs stable while the `v0.8.0` performance baseline closes the last
-bit of speed gap, and most scenes already run at native rate. The
-two ledgers live separately: the
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+— pixel-perfect visuals plus synced SFX, signed off by human
+review across every applicable variant. Current mainline work is
+bugfixing, performance, and feature polish; the
+[`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+keeps long randomized runs stable while the `v0.8.0` performance
+baseline closes the last bit of speed gap, and most scenes already
+run at native rate. The two ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
 [performance battle card]({{ '/perf/' | relative_url }}) tracks
@@ -122,7 +124,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/lab/' | relative_url }}">Magazine-length Lab</a>
-    <p>Feature essays on LLM-assisted development, hallucination control, build farm, and regression practice.</p>
+    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="{{ '/hack/' | relative_url }}">Curious hacker path</a>
@@ -134,7 +136,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, the SDL2 → PSn00bSDK API mapping, and a glossary.</p>
+    <p>Seventeen reference manuals: build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>
@@ -170,16 +172,20 @@ debug-selected gags, visitors, sound effects, holidays, tide,
 raft, and day/night state. Closed captions for every scene (off
 by default, in a [fresh-authored corpus]({{ '/docs/captions/' | relative_url }})
 from scene content — not lifted from any prior project). A
-holiday calendar expanded from 4 to **36 holidays** with movable
-feasts computed by pure algorithm — Meeus for Easter,
+[holiday calendar expanded from 4 to **36 holidays**]({{ '/docs/holidays/' | relative_url }})
+with movable feasts computed by pure algorithm — Meeus for Easter,
 Nth-weekday-of-month for the rest, no expiring date tables. A
-pause menu reachable with Start (the original had none), with
-sub-screens for Scene Set, Freeplay Options, Controls, World
-Options, Holidays, Set Island Position, Accessibility, Sound
-Test, System, Set Time/Date, and Set RNG Seed. An optional
-ocean-ambience loop on a dedicated SPU voice. Frog-clock loading
-transitions between scene swaps. The website credits and legal
-pages name exactly what's owed to whom.
+[pause menu]({{ '/docs/pause-menu/' | relative_url }}) reachable
+with Start (the original had none), with sub-screens for Scene
+Set, Freeplay Options, Controls, World Options, Holidays, Set
+Island Position, Accessibility, Sound Test, System, Set Time/Date,
+and Set RNG Seed. An optional
+[ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
+on a dedicated SPU voice. Frog-clock loading transitions between
+scene swaps. The website
+[credits]({{ '/credits/' | relative_url }}) and
+[legal]({{ '/legal/' | relative_url }}) pages name exactly what's
+owed to whom.
 
 The full menu of what's added vs preserved lives at
 [/about/]({{ '/about/' | relative_url }}). The implementations live at
@@ -217,11 +223,15 @@ work. Five most recent, newest first:
 
 <ul class="devlog-list">
   {% for article in lab_pages limit:5 %}
+  {%- assign a_words = article.content | strip_html | number_of_words -%}
+  {%- assign a_min = a_words | divided_by: 250 -%}
+  {%- if a_min < 1 %}{%- assign a_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ article.date | date: '%Y-%m-%d' }}">{{ article.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ article.url | relative_url }}">{{ article.title }}</a>
       {% if article.subtitle %}<span class="summary">{{ article.subtitle }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ a_min }} min read · {{ a_words }} words</span>
     </div>
   </li>
   {% endfor %}
@@ -233,13 +243,21 @@ work. Five most recent, newest first:
 
 ## Latest from the devlog
 
+The devlog is the verbatim worklog — what was in the author's
+head on a particular day, with the dead ends preserved. Five
+most recent posts, newest first:
+
 <ul class="devlog-list">
   {% for post in site.posts limit:5 %}
+  {%- assign p_words = post.content | strip_html | number_of_words -%}
+  {%- assign p_min = p_words | divided_by: 250 -%}
+  {%- if p_min < 1 %}{%- assign p_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       {% if post.editor_note %}<span class="summary">{{ post.editor_note }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ p_min }} min read · {{ p_words }} words</span>
     </div>
   </li>
   {% else %}

@@ -5,6 +5,10 @@ subtitle: Click a column header to sort. Target Speed cells are color-coded — 
 description: The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers.
 ---
 
+{% assign all_scenes      = site.data.scenes %}
+{% assign validated_count = all_scenes | where: "status", "validated"  | size %}
+{% assign total_count     = all_scenes | size %}
+
 A labor of love by Hunter Davis. This page is the other ledger
 that lives next to the [scene ledger]({{ '/scenes/' | relative_url }}).
 The scene ledger tracks visual signoff (pixel-perfect against host
@@ -28,17 +32,25 @@ A scene can be timed here without being visually certified.
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">98 ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 ≥ 80%</span>
-  <span class="spd-key spd-red">2 &lt; 80%</span>
+  <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
+  <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
+  <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-The two red rows are `visitor3` high and low (around `72%`
-after the current cleanup-metadata compaction; the largest single
-optimization target left on the matrix). The yellow cluster includes
-the wide-action and `BUILDING2` rows still finishing their
-prefetch-relief, stream-window, and selective-preprocessing work.
+The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
+high (`72.5%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
+low (`72.2%`) after the current cleanup-metadata compaction and guarded
+generated-window read grouping; the largest single optimization target left on
+the matrix. The yellow cluster includes the wide-action and
+[`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) rows still finishing
+their prefetch-relief, stream-window, and selective-preprocessing work.
+
+The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
+yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
+high/low (metadata-only; the SUZY mermaid scenes don't reach a
+deterministic scene-end so they're excluded from speed averages
+on purpose).
 
 ## Rollup
 
@@ -46,14 +58,14 @@ Current battle-card rollup as of 2026-05-07:
 
 | Metric | Value |
 |---|---:|
-| Scenes visually validated | `{{ validated_count }} / {{ total_count }}` |
-| Validated scenes | all 63 original scenes; see the live ledger above for the source rows |
-| Scene/tide variants routed through headless perf | `126 / 126` |
-| Timing-bearing variants | `120 / 126` |
-| Scenes with at least one active-loop timed variant | `60 / 63` |
-| Scenes with both high/low variants measured | `63 / 63` |
-| Pending variants | `0 / 126` |
-| Blocked variants | `0 / 126` |
+| Scenes visually validated | `{{ validated_count }} / {{ total_count }}` (`100%`) |
+| Validated scenes | all 63 original scenes; see the [live ledger]({{ '/scenes/' | relative_url }}) for the source rows |
+| Scene/tide variants routed through headless perf | `126 / 126` (`100%`) |
+| Timing-bearing variants | `120 / 126` (`95.2%`) |
+| Scenes with at least one active-loop timed variant | `60 / 63` (`95.2%`) |
+| Scenes with both high/low variants measured | `63 / 63` (`100%`) |
+| Pending variants | `0 / 126` (`0%`) |
+| Blocked variants | `0 / 126` (`0%`) |
 | Timing-bearing average over target | `+0.6%` (`0.5706%` exact) |
 | Timing-bearing average target speed | `99.7%` (`99.6769%` exact) |
 | Latest perf matrix run | `2026-05-07T08:52:49` |
@@ -151,6 +163,15 @@ and this page.
 </p>
 
 <table class="scene-perf-table">
+  <caption class="visually-hidden">
+    Headless performance matrix at {{ site.release.tag }}:
+    one row per scene/tide variant, with last run, stats version,
+    over target percentage, target speed percentage, VBlanks taken,
+    blocking VBlanks, prefetch hits, due-misses, and notes.
+    Click any column header to sort ascending; click again for
+    descending. Target Speed cells are color-coded: ≥99% green,
+    ≥80% yellow, &lt;80% red.
+  </caption>
   <thead>
     <tr>
       <th>Scene</th>
@@ -1947,6 +1968,14 @@ and this page.
   — retrospective on which experiments moved the matrix from the
   compact baseline (`+17.4%` over target) to its current
   `{{ site.release.perf_target_speed_pct }}%` target speed.
+- [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the v0.8.1 stability follow-on that kept this matrix's mean
+  untouched while fixing a clean-rect pressure freeze the per-commit
+  matrix never reached. Soak loop story.
+- [Glossary: experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }})
+  — the long-form decision record at `docs/ps1/performance-experiment-log.md`
+  where every accepted and rejected probe got written down. Read
+  before re-trying anything that looks promising.
 - [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
   — the durable numeric source the table on this page is rendered
   from.

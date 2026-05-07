@@ -6,6 +6,13 @@ subtitle: How the 36 holidays compute their dates with no expiring tables.
 description: Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 36 holidays from 1583 to 4099.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The problem
 
 The original 1992 Sierra screensaver shipped four holidays — New Year's
@@ -303,6 +310,10 @@ shipped with.
   holiday's own page with worked dates.
 - [Emblem gallery]({{ '/docs/holidays/emblems/' | relative_url }}) —
   the 32-icon sheet.
+- [Lab: 35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }}) —
+  the retrospective on building the codegen pipeline, the date
+  algorithms above, and the sprite primitives the emblem sheet
+  composes from.
 - [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c) —
   this file's algorithms.
 - [`src/holidays.h`]({{ site.github_url }}/blob/main/src/holidays.h) —

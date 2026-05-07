@@ -85,4 +85,8 @@ documentation.
 - [Holidays]({{ '/docs/holidays/' | relative_url }})
 - [Date-algorithm core]({{ '/docs/holidays/algorithm/' | relative_url }})
 - [Holiday emblem gallery]({{ '/docs/holidays/emblems/' | relative_url }})
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+  — the sprite primitives that compose into the emblem sheet
+  were drafted by an LLM sub-agent; that page records the
+  human-edit pass that reviewed them.
 - [4/20 Day]({{ '/docs/holidays/calendar/420-day/' | relative_url }})

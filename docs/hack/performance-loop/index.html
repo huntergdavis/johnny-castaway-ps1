@@ -12,11 +12,11 @@
   <meta property="og:title"        content="The Performance Loop — Johnny Castaway PS1" />
   <meta property="og:description"  content="The performance testing loop behind the Johnny Castaway PS1 port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/hack/performance-loop/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Hack", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/" }, { "@type": "ListItem", "position": 3, "name": "Performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/performance-loop/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Hack", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/" }, { "@type": "ListItem", "position": 3, "name": "The Performance Loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/performance-loop/" }]
 }
 </script>
 </head>
@@ -136,12 +138,35 @@ could be compared across builds.</p>
 <p>The useful loop combines:</p>
 
 <ul>
-  <li><a href="../../docs/regtest/">Regression testing</a> for repeatable boots and captures.</li>
-  <li><a href="../../docs/performance/">Performance docs</a> for counters and known bottlenecks.</li>
-  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a> for frozen host baselines.</li>
-  <li><a href="../visual-debugging/">Visual debugging</a> for the cases where numbers pass and pixels fail.</li>
-  <li><a href="../../lab/">Lab retrospectives</a> for the human side of keeping a one-person build farm honest.</li>
+  <li><a href="../../docs/regtest/">Regression testing</a> for
+repeatable boots and captures.</li>
+  <li><a href="../../perf/">The headless-perf battle card</a>
+for the live timing matrix — 126 scene/tide variants with
+sortable, color-coded <code class="language-plaintext highlighter-rouge">target_speed</code> cells.</li>
+  <li><a href="../../docs/performance/">Performance docs</a> for
+counter definitions and known bottlenecks.</li>
+  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a>
+for frozen host baselines.</li>
+  <li><a href="../visual-debugging/">Visual debugging</a>
+for the cases where numbers pass and pixels fail.</li>
+  <li><a href="../../lab/">Lab retrospectives</a> for the human
+side of keeping a one-person build farm honest. Two specific
+ones to start with:
+<a href="../../lab/from-87-to-99-5/">from 87 to 99.5</a>
+on the post-validation perf arc, and
+<a href="../../lab/v081-mary4-freeze/">the v0.8.1 MARY 4 freeze</a>
+on the
+<a href="../../docs/glossary/#soak-test">soak loop</a>
+catching what the matrix can’t.</li>
 </ul>
+
+<p>The matrix and the soak are not redundant. The matrix runs each
+variant deterministically from a clean boot — perfect for
+“is this scene slow on its own?” The soak runs the actual
+screensaver loop randomized for hours — perfect for “is this
+scene broken by its neighbors?” A release that promotes
+performance without exercising both is a release that ships the
+next state-coupling bug, signed off and timed.</p>
 
 <p>This is the same lesson as the rest of the port: make the feedback loop narrow
 enough that the machine can answer. The PS1 is not vague. It does exactly what
@@ -172,6 +197,9 @@ answer.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

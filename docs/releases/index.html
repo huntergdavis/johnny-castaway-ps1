@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Releases — Johnny Castaway PS1" />
   <meta property="og:description"  content="Every tagged release of the Johnny Castaway PS1 fan port — themes, dated headlines, and links to the full notes and downloadable disc image for each version." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/releases/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -124,6 +126,8 @@
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
       <li><a href="#v070-ps1--complete-scene-validation" id="markdown-toc-v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</a></li>
+      <li><a href="#v060-ps1--ocean-ambience" id="markdown-toc-v060-ps1--ocean-ambience"><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> — ocean ambience</a></li>
+      <li><a href="#v061-ps1-through-v0613-ps1--the-validation-cluster-patches" id="markdown-toc-v061-ps1-through-v0613-ps1--the-validation-cluster-patches"><code class="language-plaintext highlighter-rouge">v0.6.1-ps1</code> through <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> — the validation-cluster patches</a></li>
       <li><a href="#v050-ps1--freeplay-and-debug-mode" id="markdown-toc-v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</a></li>
       <li><a href="#v0420-ps1--story-loop-walking" id="markdown-toc-v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> — story-loop walking</a></li>
     </ul>
@@ -142,7 +146,9 @@
 clean-rect save. The pressure estimator was counting only foreground pack
 bounds, not the ocean wave band or the upper/lower split actually saved for
 restore. <code class="language-plaintext highlighter-rouge">v0.8.1</code> fixes that accounting and keeps the complete-scene
-performance baseline intact.</p>
+performance baseline intact. The retrospective on what the soak found that
+the matrix didn’t is at
+<a href="../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>.</p>
 
 <ul>
   <li><strong>Scene-load freeze fixed.</strong> Large clean snapshots now account for wave-band
@@ -164,7 +170,8 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
 <p><em>2026-05-06</em></p>
 
-<p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.6% over target / 99.6% target speed</strong> — about 16.8 percentage points of over-target gap closed since the compact full-matrix baseline.</p>
+<p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.6% over target / 99.6% target speed</strong> — about 16.8 percentage points of over-target gap closed since the compact full-matrix baseline.
+The retrospective on which experiments moved that line is at <a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.</p>
 
 <ul>
   <li><strong>63 / 63 scenes still validated</strong> after the post-validation bugfix pass.</li>
@@ -224,6 +231,37 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <p><a href="../source/docs/ps1/release-notes-0.7.0/">Full notes</a>
  · 
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.0-ps1">GitHub release</a></p>
+
+<h3 id="v060-ps1--ocean-ambience"><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> — ocean ambience</h3>
+<p><em>2026-05-01</em></p>
+
+<p>A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
+underneath every scene. Toggleable from the pause menu; choice
+persists to the memory card. Zero per-frame CPU cost — the SPU
+loops the sample in hardware while the main CPU keeps doing
+playback work.</p>
+
+<ul>
+  <li><strong>Looping ocean ambience</strong> on SPU voice slot reserved at boot.</li>
+  <li><strong>Pause → Accessibility → Ocean: ON / OFF</strong>, persisted to memcard.</li>
+  <li><strong>Bootmode token</strong> for capture/test discs that need a known-state run.</li>
+</ul>
+
+<p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.6.0-ps1">GitHub release</a></p>
+
+<h3 id="v061-ps1-through-v0613-ps1--the-validation-cluster-patches"><code class="language-plaintext highlighter-rouge">v0.6.1-ps1</code> through <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> — the validation-cluster patches</h3>
+<p><em>2026-05-01 → 2026-05-04</em></p>
+
+<p>The stability releases between <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> (ocean ambience) and
+<code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> (complete scene validation) are scene-by-scene
+bring-up tags rather than feature milestones. Each one carries a
+specific scene clearing the FISHING 1 bar (FISHING 5, MARY 5,
+VISITOR 4–7, and others) plus the small bugfix needed to get the
+scene through. They aren’t enumerated here because the per-scene
+narrative belongs in the <a href="../about/history/">history page</a>
+and the <a href="../scenes/">scene ledger</a> tracks the
+final state. The full list of GitHub-tagged builds in this cluster
+is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">huntergdavis/johnny-castaway-ps1/releases</a>.</p>
 
 <h3 id="v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</h3>
 <p><em>2026-05-01</em></p>
@@ -293,6 +331,9 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

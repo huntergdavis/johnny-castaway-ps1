@@ -12,11 +12,11 @@
   <meta property="og:title"        content="SDL compat lite — Johnny Castaway PS1" />
   <meta property="og:description"  content="Reference for the SDL compat lite contract — the narrow graphics surface the project's gameplay code is allowed to depend on, regardless of whether it is running against SDL2 on the host or PSn00bSDK on the PS1. Layer lifecycle, frame lifecycle, sprite drawing, primitive drawing, region save/restore, the gap matrix, and the kill list of long-standing leaks." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/formats/sdl-compat-lite/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Formats", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/formats/" }, { "@type": "ListItem", "position": 4, "name": "Sdl compat lite", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/formats/sdl-compat-lite/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Formats", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/formats/" }, { "@type": "ListItem", "position": 4, "name": "SDL compat lite", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/formats/sdl-compat-lite/" }]
 }
 </script>
 </head>
@@ -102,14 +104,39 @@
       <h1>SDL compat lite</h1>
       <p class="subtitle">The narrow set of gr* graphics functions gameplay code is allowed to call. Both the host SDL2 build and the PS1 PSn00bSDK build implement this surface.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1480 words
+          ~6 min read · 1530 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. The host capture build runs against
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#contract-surface" id="markdown-toc-contract-surface">Contract surface</a>    <ul>
+      <li><a href="#layer-lifecycle" id="markdown-toc-layer-lifecycle">Layer lifecycle</a></li>
+      <li><a href="#frame-lifecycle" id="markdown-toc-frame-lifecycle">Frame lifecycle</a></li>
+      <li><a href="#sprite-drawing" id="markdown-toc-sprite-drawing">Sprite drawing</a></li>
+      <li><a href="#primitive-drawing" id="markdown-toc-primitive-drawing">Primitive drawing</a></li>
+      <li><a href="#region-save--restore" id="markdown-toc-region-save--restore">Region save / restore</a></li>
+      <li><a href="#clip-and-offsets" id="markdown-toc-clip-and-offsets">Clip and offsets</a></li>
+    </ul>
+  </li>
+  <li><a href="#out-of-contract" id="markdown-toc-out-of-contract">Out of contract</a></li>
+  <li><a href="#current-gameplay-dependency-map" id="markdown-toc-current-gameplay-dependency-map">Current gameplay dependency map</a></li>
+  <li><a href="#gap-matrix" id="markdown-toc-gap-matrix">Gap matrix</a></li>
+  <li><a href="#which-functions-appear-in-which-build" id="markdown-toc-which-functions-appear-in-which-build">Which functions appear in which build</a></li>
+  <li><a href="#kill-list-for-long-standing-bug-sources" id="markdown-toc-kill-list-for-long-standing-bug-sources">Kill list for long-standing bug sources</a></li>
+  <li><a href="#immediate-next-implementation-targets" id="markdown-toc-immediate-next-implementation-targets">Immediate next implementation targets</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. The host capture build runs against
 SDL2 because that is what the original Johnny Castaway engine ports use,
 and SDL2 is what gives the host a pixel-accurate rendering of every
 scene to capture from. The PS1 build cannot run SDL2 — there is no
@@ -582,6 +609,9 @@ two graphics implementations get selected.</li>
           Devlog feed:
           <a href="../../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

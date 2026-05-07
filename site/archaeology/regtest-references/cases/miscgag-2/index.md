@@ -51,6 +51,7 @@ a908ce172c8e07a65c27b345b50152b3bd58553cf29253bd9c8c1c9f17ad9f70
 
 ## Cross-links
 
+- [Live scene page: `MISCGAG 2`]({{ '/scenes/miscgag2/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

@@ -12,11 +12,11 @@
   <meta property="og:title"        content="The 63-scene grind — Johnny Castaway PS1" />
   <meta property="og:description"  content="A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/the-63-scene-grind/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,36 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The 63 scene grind", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-63-scene-grind/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The 63-scene grind", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-63-scene-grind/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The 63-scene grind",
+  "description": "A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.",
+  "datePublished": "2026-04-26T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-63-scene-grind/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-63-scene-grind/",
+  "inLanguage": "en",
+  "wordCount": 668,
+  "timeRequired": "PT2M",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
 }
 </script>
 </head>
@@ -102,7 +133,7 @@
       <h1>The 63-scene grind</h1>
       <p class="subtitle">The scene-by-scene validation ledger, from five signed off to the current grind.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 469 words
+          ~2 min read · 644 words
         </p>
 
       <hr class="rule" />
@@ -114,7 +145,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#the-finite-list" id="markdown-toc-the-finite-list">The finite list</a></li>
-  <li><a href="#why-only-five-validated" id="markdown-toc-why-only-five-validated">Why only five validated</a></li>
+  <li><a href="#why-the-first-five-mattered" id="markdown-toc-why-the-first-five-mattered">Why the first five mattered</a></li>
   <li><a href="#the-daily-loop" id="markdown-toc-the-daily-loop">The daily loop</a></li>
   <li><a href="#the-grind-is-the-project" id="markdown-toc-the-grind-is-the-project">The grind is the project</a></li>
   <li><a href="#why-the-website-mirrors-it" id="markdown-toc-why-the-website-mirrors-it">Why the website mirrors it</a></li>
@@ -136,21 +167,27 @@ avoid stomping pixels. Some are mostly standing animation and some are little
 movies. They all eventually need the same thing: watch the PS1 output, compare
 against reference, fix what is wrong, mark the row.</p>
 
-<h2 id="why-only-five-validated">Why only five validated</h2>
+<h2 id="why-the-first-five-mattered">Why the first five mattered</h2>
 
 <p>At the time this essay was first drafted, five scenes were validated:
 <code class="language-plaintext highlighter-rouge">FISHING 1</code>, <code class="language-plaintext highlighter-rouge">FISHING 2</code>, <code class="language-plaintext highlighter-rouge">FISHING 3</code>, <code class="language-plaintext highlighter-rouge">FISHING 4</code>, and <code class="language-plaintext highlighter-rouge">FISHING 6</code>.
-The live ledger has since moved on; <code class="language-plaintext highlighter-rouge">FISHING 5</code> is now validated after
-its shark cleanup capture was rebuilt.</p>
+The live ledger has since moved through the rest; all 63 routed scenes
+are validated as of <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> and the headless-perf battle card is
+now its own
+<a href="../from-87-to-99-5/">post-validation arc</a>.</p>
 
-<p>That can sound small if you treat the scene count like a progress bar. It is
-not the right read. The first validated scene built the pipeline. The second
-proved the pipeline was not a one-off accident. The next three proved the
-loop could survive placement bugs, residual cleanup bugs, and real variant
-checks. The remaining fifty-eight are work, but they are work inside a known
+<p>Five out of sixty-three could sound small if you treat the scene count
+like a progress bar. It is not the right read. The first validated
+scene built the pipeline. The second proved the pipeline was not a
+one-off accident. The next three proved the loop could survive
+placement bugs, residual cleanup bugs, and real variant checks. The
+remaining fifty-eight became work, but they were work inside a known
 frame.</p>
 
-<p>The difference between “nothing is known” and “the loop is known” is enormous.</p>
+<p>The difference between “nothing is known” and “the loop is known” is
+enormous. The same difference shows up later in performance work: once
+the first row of the matrix has a number, the rest are numbers in
+context, not unknowns.</p>
 
 <h2 id="the-daily-loop">The daily loop</h2>
 
@@ -175,12 +212,14 @@ uneventful.</p>
 
 <h2 id="the-grind-is-the-project">The grind is the project</h2>
 
-<p>There is no grand final algorithm that validates the other fifty-eight. There
-will be tricks. There will be pack improvements. There will be more codegen.
-But the work is still one scene at a time.</p>
+<p>There was no grand final algorithm that validated the other fifty-eight.
+There were tricks. There were pack improvements. There was more codegen.
+But the work stayed one scene at a time, and the last cluster (the
+foreground-only multi-view scenes) closed on <code class="language-plaintext highlighter-rouge">2026-05-05</code> with
+<code class="language-plaintext highlighter-rouge">ACTIVITY 9</code> as the final row to flip green.</p>
 
-<p>That is not disappointing. It is the nature of preservation work. The only way
-to know a gag landed is to watch the gag.</p>
+<p>That is not disappointing. It is the nature of preservation work. The
+only way to know a gag landed is to watch the gag — sixty-three times.</p>
 
 <h2 id="why-the-website-mirrors-it">Why the website mirrors it</h2>
 
@@ -194,10 +233,25 @@ If a holiday has an emblem, it deserves a page.</p>
 <h2 id="cross-links">Cross-links</h2>
 
 <ul>
-  <li><a href="../../scenes/">Scene ledger</a></li>
-  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a></li>
-  <li><a href="../regression-as-lifestyle/">Regression as a lifestyle</a></li>
-  <li><a href="../../about/method/">Method</a></li>
+  <li><a href="../../scenes/">Scene ledger</a> — the live
+state of the 63 rows this essay is the back-story for.</li>
+  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a> —
+the host-side baseline preserved per scene, captured before
+PS1 validation took over.</li>
+  <li><a href="../regression-as-lifestyle/">Regression as a lifestyle</a> —
+the methodology essay on why the daily loop runs at all.</li>
+  <li><a href="../../about/method/">Method</a> — the technical
+pipeline the grind grinds against.</li>
+  <li><a href="../../releases/#v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> release</a>
+— the milestone that capped this grind: 63 / 63 signed off
+under the FISHING 1 bar.</li>
+  <li><a href="../../perf/">Performance battle card</a> and
+<a href="../from-87-to-99-5/">from-87-to-99-5 retrospective</a>
+— the second ledger that opened when this one closed.</li>
+  <li><a href="../v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn’t</a>
+— the kind of regression the validated-but-fragile post-grind
+era surfaces, and why the project added a soak loop alongside
+the per-commit matrix.</li>
 </ul>
 
   </div>
@@ -224,6 +278,9 @@ If a holiday has an emblem, it deserves a page.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

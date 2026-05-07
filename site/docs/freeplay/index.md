@@ -158,8 +158,20 @@ part of the forever-run player build.
 
 - [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — menu structure and persistence.
 - [Holidays]({{ '/docs/holidays/' | relative_url }}) — holiday overlays used by the world toggle.
+- [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the SPU
+  voice rotation freeplay's Sound Test sub-screen drives.
+- [API mapping (SDL2 → PSn00bSDK)]({{ '/docs/api/' | relative_url }})
+  — freeplay is the largest live consumer of the `gr*` graphics
+  surface.
 - [Performance]({{ '/docs/performance/' | relative_url }}) — why heap shape and VBlank cadence matter.
+- [v0.5.0-ps1 release entry]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+  — the milestone freeplay shipped in.
+- [Play]({{ '/play/' | relative_url }}) — the end-user flow:
+  Pause → Freeplay: ON.
 - [Devlog: freeplay debug mode]({{ '/devlog/freeplay-debug-mode/' | relative_url }}) — the implementation narrative.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the controller-poll fix without which
+  freeplay's D-pad / analog / button reads were unreliable.
 
 ## Source
 

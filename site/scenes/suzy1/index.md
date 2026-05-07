@@ -32,3 +32,13 @@ The blocking defect was backdrop classification: the scene was correctly
 captured, but runtime playback still painted the normal island and water
 behind it. `SUZBEACH.SCR` is now included on disc and selected by the
 FG2 runtime for SUZY scenes.
+
+## Notable runtime history
+
+`SUZY 1` high and low both appear on the
+[performance battle card]({{ '/perf/' | relative_url }}) as
+**metadata-only** rows — they don't reach a deterministic
+scene-end the way story scenes do, so they're excluded from the
+matrix's `target_speed` averages on purpose. The same applies to
+`SUZY 2`. Visual signoff (the FISHING 1 bar) holds; only the
+*timing* gate doesn't.

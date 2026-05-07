@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
   <meta property="og:description"  content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Performance", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Performance work", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" }]
 }
 </script>
 </head>
@@ -102,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3328 words
+          ~13 min read · 3398 words
         </p>
 
       <hr class="rule" />
@@ -205,9 +207,11 @@ At the time of writing it contains 600+ experiment rows going back to
 
 <p>The full scene/tide battle card is
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
-and is rendered as the perf battle card section of the <a href="../../scenes/">scene ledger</a>.
-It is not the human scene-promotion ledger; it is the timing sheet for
-headless performance work.</p>
+and is rendered as the live, sortable, color-coded battle card at
+<a href="../../perf/">/perf/</a>. It is not the human
+scene-promotion ledger at <a href="../../scenes/">/scenes/</a>;
+the two ledgers stay separate on purpose — different bars,
+different cadences, different failure modes.</p>
 
 <p>The current compiler-flag sweep is tracked in
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-o2-audit.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-o2-audit.md</code></a>
@@ -471,8 +475,8 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T06:46:25</code>; per-row freshness and stats version are shown on
-the <a href="../../scenes/">scene ledger</a>. The values below are
+run is <code class="language-plaintext highlighter-rouge">2026-05-07T08:52:49</code>; per-row freshness and stats version are shown on
+the <a href="../../perf/">battle card</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
@@ -922,6 +926,14 @@ scene playback first.</li>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
+  <li><a href="../../perf/">Performance battle card</a> — the
+live timing matrix this reference manual describes the columns
+of. 126 scene/tide variants, sortable, color-coded.</li>
+  <li><a href="../../lab/from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a>
+— the retrospective on the optimization arc, including which
+experiments landed and which got rejected.</li>
+  <li><a href="../../lab/v081-mary4-freeze/">v0.8.1: what the soak found that the matrix didn’t</a>
+— the soak-loop war story; matrix and soak are not redundant.</li>
   <li><a href="../hardware/">Hardware</a> — what the
 optimizations are running against.</li>
   <li><a href="../build/">Build &amp; toolchain</a> — how the
@@ -970,6 +982,9 @@ day-by-day there.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

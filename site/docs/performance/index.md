@@ -90,9 +90,11 @@ At the time of writing it contains 600+ experiment rows going back to
 
 The full scene/tide battle card is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
-and is rendered as the perf battle card section of the [scene ledger]({{ '/scenes/' | relative_url }}).
-It is not the human scene-promotion ledger; it is the timing sheet for
-headless performance work.
+and is rendered as the live, sortable, color-coded battle card at
+[/perf/]({{ '/perf/' | relative_url }}). It is not the human
+scene-promotion ledger at [/scenes/]({{ '/scenes/' | relative_url }});
+the two ledgers stay separate on purpose — different bars,
+different cadences, different failure modes.
 
 The current compiler-flag sweep is tracked in
 [`docs/ps1/performance-o2-audit.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.md)
@@ -345,8 +347,8 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T06:46:25`; per-row freshness and stats version are shown on
-the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
+run is `2026-05-07T08:52:49`; per-row freshness and stats version are shown on
+the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
@@ -792,6 +794,14 @@ A few things the perf work explicitly does not chase, with reasons:
 
 ## Related pages
 
+- [Performance battle card]({{ '/perf/' | relative_url }}) — the
+  live timing matrix this reference manual describes the columns
+  of. 126 scene/tide variants, sortable, color-coded.
+- [From 87 to 99.5: the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the retrospective on the optimization arc, including which
+  experiments landed and which got rejected.
+- [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the soak-loop war story; matrix and soak are not redundant.
 - [Hardware]({{ '/docs/hardware/' | relative_url }}) — what the
   optimizations are running against.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the

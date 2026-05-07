@@ -2,6 +2,7 @@
 title: Legal
 eyebrow: License + disclaimer
 subtitle: GPL-3.0 for the code; Sierra retains the character.
+description: Legal terms for the Johnny Castaway PS1 fan port — GPL-3.0 license on the project's own code, MPL-2.0 attribution for spicyjpeg's pad-poll example, the Sierra On-Line character/asset disclaimer, trademark note, takedown procedure, and the static-no-tracking privacy stance.
 ---
 
 ## License (code)
@@ -49,3 +50,14 @@ We'll comply.
 This site is statically hosted on GitHub Pages. It does not set
 cookies, run analytics, or load tracking scripts. GitHub may log
 requests; that's GitHub's policy, not ours.
+
+## Related pages
+
+- [Credits]({{ '/credits/' | relative_url }}) — the longer
+  attribution: Sierra On-Line, the prior reverse-engineering
+  ports, the toolchain authors, the AI sub-agents, and the four
+  self-hosted SIL OFL fonts.
+- [FAQ: Is this legal?]({{ '/faq/' | relative_url }}) — the
+  short author-written version of the disclaimer above.
+- [About]({{ '/about/' | relative_url }}) — what this project
+  is and isn't, in plain language.

@@ -2,6 +2,7 @@
 title: Play
 eyebrow: Download · Run
 subtitle: Latest build, quickstart, controls.
+description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
 ## Latest build
@@ -102,3 +103,18 @@ Your mileage may vary; treat any boot success as a small miracle.
 The issue tracker is at [{{ site.repo }}/issues]({{ site.github_url }}/issues).
 Bugs are tolerated, not invited — there's no contributor onboarding,
 just one author and a tip jar that doesn't exist. See the [FAQ]({{ '/faq/' | relative_url }}).
+
+## Related pages
+
+- [FAQ]({{ '/faq/' | relative_url }}) — author-written answers to
+  the common "what is this?" / "do I need Sierra files?" / "does
+  it work on real hardware?" questions.
+- [Releases]({{ '/releases/' | relative_url }}) — short notes on
+  every tagged version, with links to the full release notes.
+- [Help: menu screenshots]({{ '/help/menu/' | relative_url }}) —
+  every pause-menu sub-screen captured from the PS1 build.
+- [Freeplay reference]({{ '/docs/freeplay/' | relative_url }})
+  and [Pause menu reference]({{ '/docs/pause-menu/' | relative_url }})
+  — the full controls and sub-screen surface.
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — every scene
+  the original game had, validation status, last-verified release tag.

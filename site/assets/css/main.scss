@@ -233,6 +233,22 @@ hr.rule, .rule {
 }
 .skip-link:focus { top: 0; }
 
+/* Visually hidden but readable by screen readers. Standard a11y
+   idiom — used for table <caption>s and anywhere visual context is
+   already present in the surrounding chrome but the assistive layer
+   needs the same context as a discrete element. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Layout shell ---------- */
 .main {
   max-width: var(--col-wide);
@@ -491,6 +507,19 @@ hr.rule, .rule {
   background: var(--jc-sun);
   color: var(--jc-blue-deep);
 }
+/* When the figcaption text is itself a link to the scene page,
+   inherit the figcaption color (otherwise the default --link cyan
+   pops jarringly against the sun-yellow caption background). The
+   underline appears on hover/focus as the affordance. */
+.trio figcaption a {
+  color: inherit;
+  text-decoration: none;
+}
+.trio figcaption a:hover,
+.trio figcaption a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
 /* ---------- Status strip ---------- */
 .status-strip {
@@ -530,6 +559,31 @@ hr.rule, .rule {
 @media (prefers-color-scheme: dark) {
   .pill--ok   { color: var(--jc-palm); }
   .pill--info { color: var(--jc-cyan); }
+}
+
+/* Anchor pills: status-strip pills are <a> when they point at an
+   internal page. Drop the default underline; preserve the pill
+   class color through hover (the default a:hover rule has higher
+   specificity than .pill--ok so we re-assert color per class);
+   subtle currentColor fill on hover so the affordance reads;
+   visible focus ring for keyboard nav. */
+a.pill {
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+a.pill:hover,
+a.pill:focus-visible {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+a.pill:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+a.pill--ok:hover, a.pill--ok:focus-visible    { color: var(--jc-palm-dim); }
+a.pill--info:hover, a.pill--info:focus-visible { color: var(--jc-cyan-dim); }
+@media (prefers-color-scheme: dark) {
+  a.pill--ok:hover, a.pill--ok:focus-visible    { color: var(--jc-palm); }
+  a.pill--info:hover, a.pill--info:focus-visible { color: var(--jc-cyan); }
 }
 
 /* ---------- Tables ---------- */
@@ -601,6 +655,17 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 }
 .devlog-list a:hover { text-decoration: underline; }
 .devlog-list .summary { display: block; font-family: var(--font-body); color: var(--fg-mute); font-weight: 400; font-size: 0.95rem; margin-top: 0.2em; }
+/* Reading-time line on the devlog index uses the pixel font like
+   the per-post .reading-time hint, smaller than the editor-note
+   summary above it, so the eye reads "title / what it's about /
+   how long it is" as three distinct rows. */
+.devlog-list .devlog-read-time {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  color: var(--fg-mute);
+  margin-top: 0.15em;
+}
 
 /* ---------- "On this page" TOC ----------
  * Used in long-form pages by wrapping kramdown's {:toc} directive
@@ -752,9 +817,12 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-.scene-perf-table td.spd-green  { background: rgba(0, 168, 0, 0.18); font-weight: 700; }
-.scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.20); font-weight: 700; }
-.scene-perf-table td.spd-red    { background: rgba(252,   0, 0, 0.18); font-weight: 700; }
+.scene-perf-table td.spd-green  { background: rgba(0, 168, 0, 0.32); font-weight: 700; }
+/* Yellow background uses an orange-tinted hue because the page bg
+   is cream-yellow (--jc-sun-cream = #FFF6D9); pure yellow at low
+   opacity disappears against it. */
+.scene-perf-table td.spd-yellow { background: rgba(252, 168, 0, 0.45); font-weight: 700; }
+.scene-perf-table td.spd-red    { background: rgba(252,   0, 0, 0.42); font-weight: 700; }
 .scene-perf-legend {
   font-family: var(--font-display);
   font-size: 0.92rem;
@@ -772,9 +840,9 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   border-radius: var(--radius);
   font-weight: 700;
 }
-.scene-perf-legend .spd-key.spd-green  { background: rgba(0, 168, 0, 0.18); }
-.scene-perf-legend .spd-key.spd-yellow { background: rgba(252, 252, 0, 0.20); }
-.scene-perf-legend .spd-key.spd-red    { background: rgba(252,   0, 0, 0.18); }
+.scene-perf-legend .spd-key.spd-green  { background: rgba(0, 168, 0, 0.32); }
+.scene-perf-legend .spd-key.spd-yellow { background: rgba(252, 168, 0, 0.45); }
+.scene-perf-legend .spd-key.spd-red    { background: rgba(252,   0, 0, 0.42); }
 @media (prefers-color-scheme: dark) {
   .scene-perf-table td.spd-green  { background: rgba(0, 252, 0, 0.20); color: var(--jc-blue-deep); }
   .scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.30); color: var(--jc-blue-deep); }

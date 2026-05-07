@@ -7,16 +7,16 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
 
   <title>Credits — Johnny Castaway PS1</title>
-  <meta name="description" content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/credits/" />
+  <meta name="description" content="Acknowledgements for the Johnny Castaway PS1 fan port — Sierra On-Line for the original screensaver, the prior reverse-engineering ports (jno6809/jc_reborn, JCOS, xesf/Castaway), the toolchain authors (PSn00bSDK, DuckStation, mkpsxiso, spicyjpeg), the AI sub-agents that drafted text and emblem sprites, the four self-hosted SIL OFL fonts, and the CC0 ocean-ambience source." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/credits/" />
 
   <meta property="og:title"        content="Credits — Johnny Castaway PS1" />
-  <meta property="og:description"  content="A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0." />
+  <meta property="og:description"  content="Acknowledgements for the Johnny Castaway PS1 fan port — Sierra On-Line for the original screensaver, the prior reverse-engineering ports (jno6809/jc_reborn, JCOS, xesf/Castaway), the toolchain authors (PSn00bSDK, DuckStation, mkpsxiso, spicyjpeg), the AI sub-agents that drafted text and emblem sprites, the four self-hosted SIL OFL fonts, and the CC0 ocean-ambience source." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/credits/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
@@ -105,7 +107,24 @@
     </header>
 
   <div class="page-body">
-    <h2 id="in-the-game">In the game</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#in-the-game" id="markdown-toc-in-the-game">In the game</a></li>
+  <li><a href="#original-game" id="markdown-toc-original-game">Original game</a></li>
+  <li><a href="#prior-ports-the-giants-whose-shoulders-this-stands-on" id="markdown-toc-prior-ports-the-giants-whose-shoulders-this-stands-on">Prior ports (the giants whose shoulders this stands on)</a></li>
+  <li><a href="#toolchain" id="markdown-toc-toolchain">Toolchain</a></li>
+  <li><a href="#this-port" id="markdown-toc-this-port">This port</a></li>
+  <li><a href="#ai-sub-agents" id="markdown-toc-ai-sub-agents">AI sub-agents</a></li>
+  <li><a href="#closed-captions" id="markdown-toc-closed-captions">Closed captions</a></li>
+  <li><a href="#site-typography" id="markdown-toc-site-typography">Site typography</a></li>
+  <li><a href="#ocean-ambience" id="markdown-toc-ocean-ambience">Ocean ambience</a></li>
+</ul>
+
+</details>
+
+<h2 id="in-the-game">In the game</h2>
 
 <p>The pause menu’s Credits page reads, verbatim:</p>
 
@@ -164,6 +183,20 @@ movable holidays.</li>
   <li><strong>Hunter Davis</strong> — wrote it, broke it, fixed it again.</li>
 </ul>
 
+<h2 id="ai-sub-agents">AI sub-agents</h2>
+
+<p>LLM sub-agents — <strong>Claude</strong> (Anthropic), <strong>Gemini</strong> (Google), and
+<strong>Codex</strong> (OpenAI) — were all used extensively across this
+project. They drafted text, scaffolded code, ran parallel research
+passes, and generated the holiday-emblem sprite primitives. They
+do not own decisions, do not validate scenes, and do not sign off
+on releases. Every agent-drafted page on this site got at least
+one factual edit on review; a few got rewritten substantially.
+The disclosure surface is documented at
+<a href="../docs/agents/">/docs/agents/</a>; the
+<a href="../about/">footer</a> carries the short
+version on every page.</p>
+
 <h2 id="closed-captions">Closed captions</h2>
 
 <p>The caption text was authored fresh for this port from scene
@@ -185,8 +218,10 @@ does:</p>
   <li><strong>VT323</strong> (Peter Hull) — pixel display font, used for eyebrows, jump-nav labels, and pager hints.</li>
 </ul>
 
-<p>Subsetted to Latin and stored under <code class="language-plaintext highlighter-rouge">site/assets/fonts/</code>. The full
-license text ships next to the files in source.</p>
+<p>Subsetted to Latin and stored under <code class="language-plaintext highlighter-rouge">site/assets/fonts/</code>. The
+full SIL OFL v1.1 license body and each family’s upstream
+copyright line ship beside the woff2 files at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/site/assets/fonts/LICENSE-FONTS.txt"><code class="language-plaintext highlighter-rouge">LICENSE-FONTS.txt</code></a>.</p>
 
 <h2 id="ocean-ambience">Ocean ambience</h2>
 
@@ -231,6 +266,9 @@ matches.</p>
           Devlog feed:
           <a href="../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

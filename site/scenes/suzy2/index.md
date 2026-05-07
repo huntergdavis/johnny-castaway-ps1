@@ -34,3 +34,13 @@ Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}
 High and low tide packs were regenerated together and signed off by
 human visual + audible review. See [the method]({{ '/about/method/' | relative_url }})
 for the longer version.
+
+## Notable runtime history
+
+`SUZY 2` high and low both appear on the
+[performance battle card]({{ '/perf/' | relative_url }}) as
+**metadata-only** rows — they don't reach a deterministic
+scene-end the way story scenes do, so they're excluded from the
+matrix's `target_speed` averages on purpose. The same applies to
+`SUZY 1`. Visual signoff (the FISHING 1 bar) holds; only the
+*timing* gate doesn't.

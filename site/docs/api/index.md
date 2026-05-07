@@ -321,10 +321,19 @@ in the research directory, but it has not been implemented.
 
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how
   PSn00bSDK is installed in the dev image.
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) — the
+  underlying GPU / SPU / CD specs the mappings target.
+- [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the
+  SDL2 audio surface mapped to the PSn00bSDK SPU side.
 - [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — extensive use
   of `POLY_F4`, `SPRT`, and the OT pattern.
+- [Freeplay mode]({{ '/docs/freeplay/' | relative_url }}) — the
+  largest live consumer of the `gr*` graphics surface.
 - [Closed captions]({{ '/docs/captions/' | relative_url }}) — `SPRT`-based
   glyph rendering against a shared font atlas.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the SIO0 polling fix behind the
+  `SDL_PollEvent` → SPI driver row in the Input section.
 
 ## View source on GitHub
 

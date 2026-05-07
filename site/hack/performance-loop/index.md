@@ -34,11 +34,34 @@ could be compared across builds.
 
 The useful loop combines:
 
-- [Regression testing]({{ '/docs/regtest/' | relative_url }}) for repeatable boots and captures.
-- [Performance docs]({{ '/docs/performance/' | relative_url }}) for counters and known bottlenecks.
-- [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }}) for frozen host baselines.
-- [Visual debugging]({{ '/hack/visual-debugging/' | relative_url }}) for the cases where numbers pass and pixels fail.
-- [Lab retrospectives]({{ '/lab/' | relative_url }}) for the human side of keeping a one-person build farm honest.
+- [Regression testing]({{ '/docs/regtest/' | relative_url }}) for
+  repeatable boots and captures.
+- [The headless-perf battle card]({{ '/perf/' | relative_url }})
+  for the live timing matrix — 126 scene/tide variants with
+  sortable, color-coded `target_speed` cells.
+- [Performance docs]({{ '/docs/performance/' | relative_url }}) for
+  counter definitions and known bottlenecks.
+- [Regtest reference cases]({{ '/archaeology/regtest-references/cases/' | relative_url }})
+  for frozen host baselines.
+- [Visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  for the cases where numbers pass and pixels fail.
+- [Lab retrospectives]({{ '/lab/' | relative_url }}) for the human
+  side of keeping a one-person build farm honest. Two specific
+  ones to start with:
+  [from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  on the post-validation perf arc, and
+  [the v0.8.1 MARY 4 freeze]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  on the
+  [soak loop]({{ '/docs/glossary/#soak-test' | relative_url }})
+  catching what the matrix can't.
+
+The matrix and the soak are not redundant. The matrix runs each
+variant deterministically from a clean boot — perfect for
+"is this scene slow on its own?" The soak runs the actual
+screensaver loop randomized for hours — perfect for "is this
+scene broken by its neighbors?" A release that promotes
+performance without exercising both is a release that ships the
+next state-coupling bug, signed off and timed.
 
 This is the same lesson as the rest of the port: make the feedback loop narrow
 enough that the machine can answer. The PS1 is not vague. It does exactly what

@@ -12,11 +12,11 @@
   <meta property="og:title"        content="From 87 to 99.5: the post-validation performance loop — Johnny Castaway PS1" />
   <meta property="og:description"  content="A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,36 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99 5", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "From 87 to 99.5: the post-validation performance loop", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "From 87 to 99.5: the post-validation performance loop",
+  "description": "A retrospective on the headless-perf battle card after complete scene validation — the methodology, the accepted optimizations (FGP3, scene-local prefetch relief, stream-window retuning, padded residual packs, scoped read groups), the rejected ones (-O2, naive read-group probes), and the discipline of preserving the experiment log.",
+  "datePublished": "2026-05-06T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
+  "inLanguage": "en",
+  "wordCount": 2120,
+  "timeRequired": "PT8M",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
 }
 </script>
 </head>
@@ -102,7 +133,7 @@
       <h1>From 87 to 99.5: the post-validation performance loop</h1>
       <p class="subtitle">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1848 words
+          ~8 min read · 2074 words
         </p>
 
       <hr class="rule" />
@@ -132,6 +163,7 @@
   </li>
   <li><a href="#whats-left" id="markdown-toc-whats-left">What’s left</a></li>
   <li><a href="#what-the-loop-made-obvious" id="markdown-toc-what-the-loop-made-obvious">What the loop made obvious</a></li>
+  <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
 
 </details>
@@ -140,7 +172,20 @@
 
 <p>The compact full-matrix baseline at the same time read <strong>+17.4% over target / 87.1% target speed</strong> across 120 timing-bearing scene/tide rows. That’s a different kind of done. A scene that overruns its frame budget by a sixth still looks correct — pixels and audio match the host capture — but the playback rate is wrong, and on real hardware “wrong rate” eventually shows up as audio drift or a stretched walk. Validation said <em>the bar was met for visuals</em>. Performance said <em>most rows have more work to do</em>.</p>
 
-<p>Between then and the current post-<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> performance branch, the headless-perf battle card moved to <strong>+0.6% over target / 99.6% target speed</strong> across the same 120 rows. Roughly <strong>16.8 percentage points</strong> of over-target gap closed; about <strong>12.5 target-speed points</strong> added. ACTIVITY 9 — the last validated scene and the widest one — graduated from “validated” to “optimized validated outlier.” This article is what that loop actually looked like.</p>
+<p>Between then and <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> (the release that promoted the
+headless optimization methodology to a baseline), the
+headless-perf battle card moved to <strong>+0.9% over target / 99.5%
+target speed</strong> across the same 120 rows. Roughly
+<strong>16.5 percentage points</strong> of over-target gap closed; about
+<strong>12.4 target-speed points</strong> added. ACTIVITY 9 — the last
+validated scene and the widest one — graduated from “validated”
+to “optimized validated outlier.”
+<a href="../v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
+followed as a clean-rect pressure stability fix that left the
+matrix mean untouched. The current post-<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> performance branch is now
+at <strong>+0.6% over target / 99.7% target speed</strong>, with roughly <strong>16.8 percentage
+points</strong> of over-target gap closed and about <strong>12.6 target-speed points</strong>
+added. This article is what that loop actually looked like.</p>
 
 <h2 id="two-ledgers-on-purpose">Two ledgers, on purpose</h2>
 
@@ -233,10 +278,11 @@
 <p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.6%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.4%</code>
 lives in a small number of high-leverage rows. As of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>
 the only two red rows on the <a href="../../perf/">battle card</a>
-are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low, both around <code class="language-plaintext highlighter-rouge">69.4%</code> after
-the <code class="language-plaintext highlighter-rouge">v0.7.2</code> prefetch-relief refresh — that scene’s wide multi-view
-stitch hits the prefetch window the hardest and is the largest single
-optimization target left. The yellow cluster (twenty-two rows between
+are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high (<code class="language-plaintext highlighter-rouge">72.5%</code>) and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low (<code class="language-plaintext highlighter-rouge">72.2%</code>) after
+cleanup-metadata compaction plus guarded high-tide generated-window read
+grouping. That scene’s wide multi-view stitch hits the prefetch window the
+hardest and is the largest single optimization target left. The yellow cluster
+(twenty rows between
 <code class="language-plaintext highlighter-rouge">80%</code> and <code class="language-plaintext highlighter-rouge">99%</code>) is the rest of the wide-action surface plus the
 <code class="language-plaintext highlighter-rouge">BUILDING 2</code> and <code class="language-plaintext highlighter-rouge">BUILDING 4</code> clean-rect heavy frames, plus a couple of
 other composite-frame rows. The optimization plan at
@@ -258,6 +304,25 @@ will join the rejected log.</p>
 </ul>
 
 <p>The disc plays. That was always the point. It also plays at near native rate now, which means it plays <em>the way the original looked</em>, on the hardware nobody thought it would. That’s the point too.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../perf/">/perf/</a> — the live battle card this article is the back-story for.</li>
+  <li><a href="../../scenes/">/scenes/</a> — the visual signoff ledger; the parallel acceptance bar.</li>
+  <li><a href="../../docs/performance/">/docs/performance/</a> — reference manual for what each column on the battle card means.</li>
+  <li><a href="../the-63-scene-grind/">/lab/the-63-scene-grind/</a> — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.</li>
+  <li><a href="../v081-mary4-freeze/">/lab/v081-mary4-freeze/</a> — the stability follow-on that left this article’s matrix mean untouched.</li>
+  <li><a href="../../scenes/visitor3/">/scenes/visitor3/</a> — the slowest two rows; the largest single optimization target left.</li>
+  <li><a href="../../scenes/activity9/">/scenes/activity9/</a> — wide-boat scene; padded FGP3 + scoped low-tide read group case study.</li>
+  <li><a href="../../scenes/building4/">/scenes/building4/</a> — clean-rect-heavy variant; representative of the drop-prefetch unlock.</li>
+  <li><a href="../../scenes/fishing1/">/scenes/fishing1/</a> — the canary scene the matrix tracks against every release.</li>
+  <li><a href="../../docs/glossary/#fgp3">Glossary: FGP3</a> — the pack format most rebuilds converged on.</li>
+  <li><a href="../../docs/glossary/#prefetch-window">Glossary: prefetch window</a> — the buffer the drop-prefetch mechanism releases under clean-rect pressure.</li>
+  <li><a href="../../docs/glossary/#read-group">Glossary: read group</a> — the CD layout primitive the ACTIVITY 9 scope-narrowing exploited.</li>
+  <li><a href="../../docs/glossary/#experiment-log">Glossary: experiment log</a> — the long-form table of every accepted and rejected probe.</li>
+  <li><a href="../../docs/glossary/#canary">Glossary: canary scene</a> — the FISHING 1 high-tide load-bearing reference frame.</li>
+</ul>
 
   </div>
 </article>
@@ -283,6 +348,9 @@ will join the rejected log.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

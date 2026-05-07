@@ -12,11 +12,11 @@
   <meta property="og:title"        content="MARY 3 — Mermaid sneak-up — Johnny Castaway PS1" />
   <meta property="og:description"  content="MARY.ADS scene 3: Mermaid sneak-up. Validated on PS1 after far-right full-frame foreground recapture and low-memory clean-snapshot relief." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/scenes/mary3/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "Mary3", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/mary3/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "MARY 3 — Mermaid sneak-up", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/mary3/" }]
 }
 </script>
 </head>
@@ -143,10 +145,26 @@ freed, and the PS1 runtime drops optional prefetch buffers plus uses a
 small streaming scratch path when a large clean snapshot would otherwise
 fragment memory.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">MARY 3</code> high and low both appear on the
+<a href="../../perf/">performance battle card</a> without
+<a href="../../docs/glossary/#target-vb"><code class="language-plaintext highlighter-rouge">target_speed</code></a>
+values — they’re two of the 6 untimed rows. The reason is
+mechanical, not structural: the active-loop timing pre-dates the
+current pack and hasn’t been re-measured against the v0.7.2+
+prefetch-relief baseline yet. Visual signoff (the FISHING 1 bar)
+holds; the row will land in the green band on the next perf-matrix
+refresh that touches MARY 3 specifically.</p>
+
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" /><nav class="scene-pager" aria-label="Scene navigation">
+    <hr class="rule" /><p class="post-source">
+      Host regression reference:
+      <a href="../../archaeology/regtest-references/cases/mary-3/">MARY-3 case page</a>
+      — desktop baseline before PS1 validation.
+    </p><nav class="scene-pager" aria-label="Scene navigation">
       <div class="scene-pager-prev">
 
           <a href="../mary2/"
@@ -194,6 +212,9 @@ fragment memory.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

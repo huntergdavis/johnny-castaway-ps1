@@ -6,6 +6,13 @@ subtitle: 32 pixel-art icons, 32x32 each, in the Sierra house style.
 description: The 32-cell emblem sheet that overlays the island during a holiday window. Style guide, palette, and a per-icon table with sheet positions.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 The four original Sierra holidays (New Year's Day, St. Patrick's
 Day, Halloween, Christmas — IDs 1–4 in `holidays.yml`) keep their
 original full-island sprites. The 32 holidays added by this port
@@ -32,7 +39,7 @@ offset and blits it transparent over the screen at the
 
 ## The sheet
 
-<img src="{{ site.github_url }}/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" />
+<img src="{{ site.github_url }}/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites: 8 columns × 4 rows of 32×32 pixel-art icons in the Sierra house style." width="256" height="128" loading="lazy" decoding="async" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" />
 
 Direct link:
 [`docs/ps1/holidays-emblems/holiday-emblems-sheet.png`]({{ site.github_url }}/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png).
@@ -118,6 +125,13 @@ Tracked review copies live at
 
 - [Per-holiday calendar]({{ '/docs/holidays/' | relative_url }})
 - [Date-algorithm core]({{ '/docs/holidays/algorithm/' | relative_url }})
+- [Lab: 35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }})
+  — the codegen retrospective; the sprite-primitive composition
+  for these emblems is described from the inside there.
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+  — the emblem sprites were authored by an LLM sub-agent against
+  the style guide; this page records what that did and didn't
+  cover.
 - [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) — source of truth
 - [`scripts/holidays_art_lib.py`]({{ site.github_url }}/blob/main/scripts/holidays_art_lib.py) — shared CLUT
 - [`docs/ps1/holidays-style-guide.md`]({{ site.github_url }}/blob/main/docs/ps1/holidays-style-guide.md) — full style rules

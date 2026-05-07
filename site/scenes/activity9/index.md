@@ -46,3 +46,31 @@ late bow does not flicker.
 See the live [ledger]({{ '/scenes/' | relative_url }}) and
 [the method]({{ '/about/method/' | relative_url }}) for the full validation
 workflow.
+
+## Notable runtime history
+
+`ACTIVITY 9` is one of the structurally important scenes in the
+project. Two distinct retrospectives have it as their case study:
+
+- **The last validated scene of the 63-scene grind.** It closed the
+  visual-signoff sweep on `2026-05-05`. The end of the 63-scene
+  grind is what cleared the path for the post-validation
+  performance work; the
+  [grind retrospective]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  walks through how the foreground-only multi-view stitch family
+  cleared the last cluster.
+- **An "optimized validated outlier" in `v0.8.0-ps1`.** The wide
+  boat extends past the legacy 640px scene clip, which made the
+  scene a poor fit for global stream-window settings. The
+  Activity9-specific scoped low-tide
+  [read group]({{ '/docs/glossary/#read-group' | relative_url }})
+  + [padded residual]({{ '/docs/glossary/#padded-residual' | relative_url }})
+  packs let it stay green on the matrix instead of being a known
+  exception. The
+  [perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  names this as the canonical example of "the technique generalized
+  even though the win was specific."
+
+Production playback stays random-position-safe — the host capture
+positions in the validation notes were evidence-gathering, not
+runtime pins.

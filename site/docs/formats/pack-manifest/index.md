@@ -6,6 +6,13 @@ subtitle: The JSON sidecar that travels with each pack — scene indices, ADS na
 description: Reference for the FG2 pack manifest — the JSON sidecar describing one compiled scene pack. Required fields, resource sections, runtime requirements envelope, transition and prefetch hints, an example manifest, and how the manifest is consumed by the CD image build, the regtest harness, and runtime sanity checks.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 A labor of love by Hunter Davis. The pack manifest is the JSON file that
 sits next to each compiled FG2 pack and describes what is inside it. The
 [pack payload]({{ '/docs/formats/pack-payload/' | relative_url }}) is the

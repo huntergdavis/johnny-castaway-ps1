@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.8.0-ps1
+eyebrow: 2025-10 to v0.8.1-ps1
 subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.0-ps1.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.1-ps1.
 ---
 
 <details class="page-toc" markdown="1">
@@ -386,6 +386,11 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
+- Latest stability release: **`v0.8.1-ps1`** — clean-rect
+  pressure estimator extended to include the ocean wave band
+  and upper/lower split rects before allocation, fixing a
+  long-run scene-load freeze surfaced during randomized
+  DuckStation soak (root cause: `MARY 4` random load).
 - Last pre-v0.8.0 stability release: **`v0.7.2-ps1`** — backdrop-
   key guard so story-loop walks only run when the next scene's
   background state matches the previous rendered tide / raft /
@@ -400,7 +405,7 @@ component-completeness phases:
   `111efa9f`) -- the fishing3 overnight loop-stability release;
   confirms the current runtime can run long sessions without the
   prior scene-to-scene leak.
-- PS-EXE size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
+- [PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
   sectors) at `{{ site.release.tag }}` after legacy ADS/TTM/FG1
   paths were stripped from the linker pass.
 - Routed CD image: **~76&nbsp;MB** at `{{ site.release.tag }}`

@@ -51,6 +51,7 @@ bb6c1d59e0ffc536c8387cf6290342fd238dc276bed36a26e6b40aa984e00f8a
 
 ## Cross-links
 
+- [Live scene page: `BUILDING 7`]({{ '/scenes/building7/' | relative_url }}) — current PS1 validation status, last-verified release tag, and per-scene case study.
 - [All regtest references]({{ '/archaeology/regtest-references/cases/' | relative_url }})
 - [Regtest reference narrative]({{ '/archaeology/regtest-references/' | relative_url }})
 - [Scene ledger]({{ '/scenes/' | relative_url }})

@@ -11,10 +11,11 @@ up front. Build it, run it, then use the running program as the index.
 
 Start with the [build guide]({{ '/docs/build/' | relative_url }}). It explains
 the Docker image, PSn00bSDK 0.24, the `cmake` invocation, and the `mkpsxiso`
-step that creates the disc image. Then open the [play page]({{ '/play/' | relative_url }})
-and the [scene ledger]({{ '/scenes/' | relative_url }}). Those three pages tell
-you what the project does today, what it claims to do, and which claims are
-actually validated.
+step that creates the disc image. Then open the [play page]({{ '/play/' | relative_url }}),
+the [scene ledger]({{ '/scenes/' | relative_url }}), and the
+[performance battle card]({{ '/perf/' | relative_url }}). Those four
+pages tell you what the project does today, what it claims to do, which
+claims are actually validated, and which are actually fast.
 
 ## The First Loop
 

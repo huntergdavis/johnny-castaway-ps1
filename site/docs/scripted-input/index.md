@@ -132,3 +132,21 @@ This harness is useful because it is boring. It takes the kind of manual
 testing that usually disappears into memory and turns it into a file, a log,
 a screenshot, and a page on the website.
 
+## Related pages
+
+- [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — the
+  surface most pad-script routes traverse.
+- [Help: menu screenshots]({{ '/help/menu/' | relative_url }}) —
+  what this harness writes when it runs end-to-end.
+- [Regression testing]({{ '/docs/regtest/' | relative_url }}) —
+  the headless DuckStation runner that consumes the pad script
+  + screenshot markers.
+- [Glossary: BOOTMODE.TXT]({{ '/docs/glossary/#bootmode' | relative_url }})
+  — the boot-token surface that selects `pad-script` and
+  `pad-script-log` modes.
+- [Devlog: scripted-pad menu harness]({{ '/devlog/scripted-pad-menu-harness/' | relative_url }})
+  — the implementation narrative.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the SIO0 polling fix that this harness's
+  pad-byte merge writes into.
+

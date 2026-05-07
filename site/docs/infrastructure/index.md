@@ -164,7 +164,7 @@ The repo contains two build trees with different jobs:
 
 - **`build-ps1/`** is the PSn00bSDK cross-compile. Output is
   `jcreborn.elf` (MIPS ELF, used for symbol lookup) and `jcreborn.exe`
-  (PS-EXE format, what gets packaged onto the disc).
+  ([PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) format, what gets packaged onto the disc).
 - **`build-host/`** is a native SDL2-linked binary called `jc_reborn-host`.
   It runs the original Sierra engine, captures foreground frames per
   scene, and emits the `.FG2` packs that the PS1 replays. The host build
@@ -338,6 +338,11 @@ DuckStation's access to `jcreborn.cue`.
   experiment ledger that runs against this build.
 - [Regression testing]({{ '/docs/regtest/' | relative_url }}) — the
   headless harness that boots the disc image.
+- [Lab: the 24/7 build farm]({{ '/lab/build-farm/' | relative_url }})
+  — the same machinery framed as a methodology essay.
+- [Lab: the dunking bird]({{ '/lab/dunking-bird/' | relative_url }})
+  — the parallel-agent infrastructure that drives the build farm
+  between human review passes.
 - [Method]({{ '/about/method/' | relative_url }}) — how the project
   decides what's worth automating.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog.

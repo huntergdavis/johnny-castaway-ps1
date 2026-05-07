@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Status — Johnny Castaway PS1" />
   <meta property="og:description"  content="Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/status/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -102,7 +104,7 @@
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1419 words
+          ~5 min read · 1457 words
         </p>
 
       <hr class="rule" />
@@ -250,9 +252,14 @@ direct register writes; the divergence itself is a DuckStation
 HLE quirk, not a project bug, but it does mean audio-on-real-
 hardware needs verification before any release calls itself
 hardware-confirmed.</li>
-  <li><strong>Real hardware testing.</strong> All current validation is on
-DuckStation. A real-PSone run is on the long-term list. Until
-then, treat hardware claims with the appropriate skepticism.</li>
+  <li><strong>Real hardware soak.</strong> Smoke-tested on an SCPH-7501 via the
+<a href="https://github.com/socram8888/tonyhax">TonyHax</a> softmod path —
+the disc boots and runs. Long-term observations on real
+hardware (extended idle, real SPU register behavior, real CD
+seek timing under random-position scene picks) are still on
+the wishlist. The <code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> HLE divergence
+above is a concrete reason to keep treating hardware audio as
+unverified until the soak loop covers it.</li>
   <li><strong>Older count-based status models</strong> (<code class="language-plaintext highlighter-rouge">25/63</code>, <code class="language-plaintext highlighter-rouge">27/63</code>, <code class="language-plaintext highlighter-rouge">60/63</code>,
 <code class="language-plaintext highlighter-rouge">63/63</code>) from prior validation eras are <em>retired</em>, not current.
 They are preserved in
@@ -344,6 +351,9 @@ was fishing1 with full SFX across all variants.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

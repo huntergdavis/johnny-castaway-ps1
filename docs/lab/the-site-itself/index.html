@@ -12,11 +12,11 @@
   <meta property="og:title"        content="The site itself, as a small program — Johnny Castaway PS1" />
   <meta property="og:description"  content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,36 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The site itself", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "The site itself, as a small program", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The site itself, as a small program",
+  "description": "How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn.",
+  "datePublished": "2026-05-05T00:00:00-04:00",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
+  "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
+  "inLanguage": "en",
+  "wordCount": 2279,
+  "timeRequired": "PT9M",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Johnny Castaway PS1",
+    "url": "https://hunterdavis.com/johnny-castaway-ps1/"
+  }
 }
 </script>
 </head>
@@ -102,7 +133,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1900 words
+          ~8 min read · 2244 words
         </p>
 
       <hr class="rule" />
@@ -127,6 +158,7 @@
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
   <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
   <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
+  <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
 
 </details>
@@ -153,6 +185,7 @@
   <li>The Atom feed and JSON Feed have to work in feed readers that fetch them and need full URLs to link back to the site.</li>
   <li>The JSON-LD structured data is consumed by search engines and AI agents, which need fully qualified URIs.</li>
   <li>The redirect HTML pages (from <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter) emit <code class="language-plaintext highlighter-rouge">&lt;meta http-equiv="refresh"&gt;</code> URLs that browsers resolve as absolute.</li>
+  <li>The Open Graph and Twitter Card meta tags (<code class="language-plaintext highlighter-rouge">og:url</code>, <code class="language-plaintext highlighter-rouge">og:image</code>, <code class="language-plaintext highlighter-rouge">twitter:image</code>) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don’t resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through <code class="language-plaintext highlighter-rouge">relative_url</code> and rendered as <code class="language-plaintext highlighter-rouge">./</code> and <code class="language-plaintext highlighter-rouge">../../assets/...</code> post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.)</li>
 </ul>
 
 <p><code class="language-plaintext highlighter-rouge">site.baseurl</code> is empty during the build. So is <code class="language-plaintext highlighter-rouge">site.url + site.baseurl</code>. The fix is a separate config key that the build can’t override:</p>
@@ -193,7 +226,7 @@ apex domain:</p>
 
 <p>The site’s own feed lives one level down the tree at <code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code> (Atom) and <code class="language-plaintext highlighter-rouge">/devlog/feed.json</code> (JSON Feed). Below the delete line.</p>
 
-<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (598 URLs at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
+<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (around 600 URLs at the current release), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
 
 <h2 id="hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</h2>
 
@@ -207,6 +240,8 @@ require a refactor to reconcile.</li>
 </ul>
 
 <p>So the feeds are a Liquid template plus an XML/JSON skeleton, in <code class="language-plaintext highlighter-rouge">site/devlog/feed.xml</code> and <code class="language-plaintext highlighter-rouge">site/devlog/feed.json</code>. They iterate <code class="language-plaintext highlighter-rouge">site.posts</code>, escape strings via <code class="language-plaintext highlighter-rouge">xml_escape</code> (Atom) or <code class="language-plaintext highlighter-rouge">jsonify</code> (JSON Feed), use absolute URLs via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link rel="alternate"&gt;</code> tags in the head, validated with <code class="language-plaintext highlighter-rouge">xml.etree</code> and <code class="language-plaintext highlighter-rouge">json.load</code> respectively.</p>
+
+<p>The Lab section has its own Atom feed at <code class="language-plaintext highlighter-rouge">/lab/feed.xml</code>. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates <code class="language-plaintext highlighter-rouge">site.html_pages | sort: 'date' | reverse</code> and filters to URLs starting with <code class="language-plaintext highlighter-rouge">/lab/</code>. Embedding <code class="language-plaintext highlighter-rouge">essay.content</code> in <code class="language-plaintext highlighter-rouge">&lt;![CDATA[...]]&gt;</code> <em>should</em> work the way it does for posts, and it doesn’t. Jekyll guarantees <code class="language-plaintext highlighter-rouge">site.posts</code> are rendered before any other page consumes their <code class="language-plaintext highlighter-rouge">.content</code>; it doesn’t make that guarantee for <code class="language-plaintext highlighter-rouge">site.html_pages</code>. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code> block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with <code class="language-plaintext highlighter-rouge">&lt;summary&gt;</code> and no <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code>, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. The summary text comes from <code class="language-plaintext highlighter-rouge">page.description</code> (the same string the meta tag uses), with a fallback to <code class="language-plaintext highlighter-rouge">page.subtitle</code>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">jekyll-redirect-from</code> <em>is</em> in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin’s <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter API is already in use on <code class="language-plaintext highlighter-rouge">scenes/index.md</code>. There was a bug there, though — the plugin’s <code class="language-plaintext highlighter-rouge">absolute_url(to)</code> honors <code class="language-plaintext highlighter-rouge">site.baseurl</code>, which the build wipes, so every redirect was silently pointed at <code class="language-plaintext highlighter-rouge">hunterdavis.com/...</code> (the user-pages root) instead of <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/...</code>. The fix is a custom <code class="language-plaintext highlighter-rouge">_layouts/redirect.html</code> override that strips <code class="language-plaintext highlighter-rouge">site.url</code> from <code class="language-plaintext highlighter-rouge">page.redirect.to</code> and rebuilds the URL through <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. External redirect targets (URLs that don’t start with <code class="language-plaintext highlighter-rouge">site.url</code>) pass through unchanged.</p>
 
@@ -253,13 +288,14 @@ so the plugin emits nothing. The manual head template handles <code class="langu
 Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
 feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
 
-<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Four record types ship today:</p>
+<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Five record types ship today:</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">WebSite</code> on every page.</li>
   <li><code class="language-plaintext highlighter-rouge">SoftwareApplication</code> only on the home page (the project is a piece of software).</li>
   <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels.</li>
   <li><code class="language-plaintext highlighter-rouge">BlogPosting</code> only on devlog posts.</li>
+  <li><code class="language-plaintext highlighter-rouge">Article</code> only on lab essays — URL prefix <code class="language-plaintext highlighter-rouge">/lab/</code>, excluding the <code class="language-plaintext highlighter-rouge">/lab/</code> index, requiring <code class="language-plaintext highlighter-rouge">page.date</code>. Lab essays are dated long-form content, exactly the surface Google’s Article structured-data guidance targets, but they live in <code class="language-plaintext highlighter-rouge">site.html_pages</code> rather than <code class="language-plaintext highlighter-rouge">site.posts</code> so the <code class="language-plaintext highlighter-rouge">BlogPosting</code> predicate doesn’t catch them.</li>
 </ul>
 
 <p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page.</p>
@@ -281,6 +317,29 @@ feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p
 <h2 id="the-shape">The shape</h2>
 
 <p>None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../sitemap.xml">/sitemap.xml</a> — the
+hand-rolled sitemap this article documents.</li>
+  <li><a href="../../devlog/feed.xml">/devlog/feed.xml</a> and
+<a href="../../devlog/feed.json">/devlog/feed.json</a> —
+the no-plugin Atom + JSON Feed pair.</li>
+  <li><a href="../feed.xml">/lab/feed.xml</a> — the
+Lab section’s headlines-and-summary Atom feed; the
+site.html_pages variant of the same pattern.</li>
+  <li><a href="../../humans.txt">/humans.txt</a> — the credits-
+voice humans.txt file the article describes.</li>
+  <li><a href="../../404.html">404 page</a> —
+the self-contained fallback page described above.</li>
+  <li><a href="../../about/voice/">/about/voice/</a> — the
+prose-side companion to this article’s mechanics-side
+discipline.</li>
+  <li><a href="../dunking-bird/">Lab: the dunking bird</a> —
+the related “small program that rewards being treated like
+one” pattern, applied to keeping LLM agents productive.</li>
+</ul>
 
   </div>
 </article>
@@ -306,6 +365,9 @@ feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

@@ -26,7 +26,7 @@ If you paid for this, you were cheated. Open source and free.
 ## What "done" means for a scene
 
 The current acceptance bar is **human visual + audible signoff** on the
-scene-playback (fgpilot) path. A scene reaches `✅ / ✅` in
+scene-playback ([fgpilot]({{ '/docs/glossary/#fgpilot' | relative_url }})) path. A scene reaches `✅ / ✅` in
 [`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md)
 when the author has confirmed visuals + SFX are correct across every
 applicable variant for that scene.
@@ -36,6 +36,15 @@ not the gate. SHA256 state hashes are useful for "did this build change
 behavior" questions but not the gate. See
 [Regression testing]({{ '/docs/regtest/' | relative_url }}) for what
 those tools are good for.
+
+Performance is its own ledger, separate from the visual-signoff gate
+above. Per-scene timing lives at
+[/perf/]({{ '/perf/' | relative_url }}); a scene can be validated
+under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+without sitting in the green band on the
+matrix, and a row in the green band that fails visual review
+doesn't ship. The two ledgers stay separate on purpose — different
+bars, different cadences, different failure modes.
 
 Milestone release cadence: every **10** scenes reaching `✅ / ✅`. Smaller
 stability releases happen between scene milestones when there's something
@@ -297,7 +306,12 @@ in the archaeology and research docs.
   for Set Time / Island Pos / Seed cover variant testing without
   rebooting.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — current per-scene
-  status.
+  status (visual signoff bar).
+- [Performance battle card]({{ '/perf/' | relative_url }}) — second
+  ledger; per-scene timing against the target frame budget.
+- [Performance reference]({{ '/docs/performance/' | relative_url }}) —
+  what each `loop_vb` / `target_vb` / `blocking_vb` column means
+  and the experiment-log discipline behind the matrix.
 
 ## View source on GitHub
 

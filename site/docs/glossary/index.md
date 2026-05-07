@@ -35,6 +35,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="replay">Replay</dt>
 <dd>What the PS1 build does. Loads an FG2 pack from the disc, plays back every frame's diffs against its own background and overlay layers, fires sound events at the recorded ticks. The PS1 never interprets a Sierra opcode at runtime.</dd>
 
+<dt id="fgpilot">fgpilot</dt>
+<dd>Internal codename for the PS1 scene-playback runtime — the <a href="#replay">replay</a> engine implemented in <code>src/foreground_pilot.c</code>. The name comes from when the foreground-only host capture was a pilot experiment that didn't yet work; the directory was named <code>fgpilot/</code> and it stuck. As a <a href="#bootmode">BOOTMODE.TXT</a> token, <code>fgpilot &lt;slug&gt;</code> forces a specific scene (e.g. <code>fgpilot mary4</code>) instead of letting the screensaver loop pick at random; <code>fgpilot freeplay</code> boots straight into Freeplay. The public-facing name is gradually moving to "PS1 scene playback" in operator docs; the internal codename in source stays.</dd>
+
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
 
@@ -46,6 +49,12 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="seed">Seed</dt>
 <dd>RNG seed used by the host to make a capture deterministic, so two runs of the same scene produce byte-identical packs. Override surface in the pause menu (Pause → System → Set RNG Seed) lets the runtime force the same path the host captured under, which is occasionally useful in regtest debugging.</dd>
+
+<dt id="bootmode">BOOTMODE.TXT</dt>
+<dd>A small text file the runtime reads at boot to override default state for a deterministic run. Carries one or more tokens — <code>night 1</code>, <code>lowtide 1</code>, <code>holiday N</code>, <code>raft-stage N</code>, <code>fgpilot &lt;slug&gt;</code>, <code>seed N</code>, <code>fgpilot freeplay</code>, <code>pad-script</code>, <code>pad-script-log</code>, etc. — that fix variant flags and entry points the screensaver loop would otherwise pick at random. The capture pipeline writes one before each host run; the regtest harness writes one before each headless DuckStation pass; the menu help auto-builder writes one before each pad-script run. End users never see it; release discs ship without it and let the screensaver pick its own state. The full token surface and worked examples are at <a href="{{ '/docs/regtest/' | relative_url }}">/docs/regtest/</a>; <a href="{{ '/docs/scripted-input/' | relative_url }}">/docs/scripted-input/</a> covers the <code>pad-script</code> token specifically.</dd>
+
+<dt id="padscript">PADSCRIPT.TXT</dt>
+<dd>The build-time deterministic-input script at <code>config/ps1/PADSCRIPT.TXT</code>, embedded into the EXE by <code>scripts/build-ps1.sh</code>. The runtime only executes it when <a href="#bootmode">BOOTMODE.TXT</a> carries the <code>pad-script</code> or <code>pad-script-log</code> token, so the file is dormant for normal release builds. Four commands — <code>wait</code>, <code>tap</code>/<code>press</code>, <code>hold</code>, <code>shot</code>/<code>screenshot</code>/<code>mark</code> — drive a button vocabulary that covers the full pad (D-pad, <code>START</code> / <code>SELECT</code>, the four face buttons, <code>L1</code>–<code>R2</code>; combine masks with <code>+</code> or <code>,</code>). Durations are frames unless suffixed with <code>s</code> (60 Hz). Used by the pause-menu screenshot harness and pad-driven regtest routes; empty for everything else. Full grammar at <a href="{{ '/docs/scripted-input/' | relative_url }}">/docs/scripted-input/</a>.</dd>
 </dl>
 
 ## Graphics {#graphics}
@@ -117,6 +126,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 ## Build & release {#build}
 
 <dl>
+<dt id="ps-exe">PS-EXE</dt>
+<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>{{ site.release.tag }}</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
+
 <dt id="bin-cue">jcreborn.bin / jcreborn.cue</dt>
 <dd>The shipped CD image, a <code>.bin</code> binary track plus a <code>.cue</code> cuesheet that DuckStation (and real hardware) opens. Both files belong in the same directory. End users never need original Sierra files — the pre-baked FG2 packs are derived data, not Sierra source.</dd>
 
@@ -140,7 +152,7 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.9%</code>.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
@@ -174,6 +186,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="promotion-rule">Promotion rule</dt>
 <dd>An optimization promotes when (a) the canary doesn't regress, (b) every visual signoff still holds, and (c) the matrix mean improves. All three must hold; mixing them is how regressions ship.</dd>
+
+<dt id="soak-test">Soak test</dt>
+<dd>A long-run randomized DuckStation pass — boot, let the screensaver loop pick scenes at random for hours, watch for freezes, hangs, drift, or memory pressure that the per-scene matrix runs miss. Not part of the per-commit regtest gate; reserved for release candidates and after structural changes (walk pipeline, prefetch policy, clean-rect estimator). The <code>v0.8.1-ps1</code> release shipped specifically because a soak surfaced a <code>MARY 4</code> random-load freeze that the matrix-bounded headless runs never exercised.</dd>
 </dl>
 
 ## Voice {#voice}
@@ -188,3 +203,19 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="dead-end">Dead end (named out loud)</dt>
 <dd>A path that did not work, kept in the public record because dead ends are content. The <a href="{{ '/devlog/' | relative_url }}">devlog</a> is verbatim — superseded plans, partial successes, week-long timing bugs preserved unedited. The blog convention is to name them with a short lampshade ("Bummer." "Lightbulb moment!") rather than rewrite history into a clean narrative.</dd>
 </dl>
+
+## See also
+
+- [/scenes/]({{ '/scenes/' | relative_url }}) — the visual signoff
+  ledger; the FISHING 1 bar in practice.
+- [/perf/]({{ '/perf/' | relative_url }}) — the headless-perf
+  battle card; the column headers (`over_target`, `blocking_vb`,
+  `prefetch_hits`, etc.) all have entries above.
+- [/docs/]({{ '/docs/' | relative_url }}) — the reference manuals
+  these definitions support.
+- [/lab/]({{ '/lab/' | relative_url }}) — the magazine-length
+  retrospectives where many of these terms got their first
+  in-context introduction.
+- [/about/voice/]({{ '/about/voice/' | relative_url }}) — the
+  editorial standard the entries above are written to. The voice
+  that lets a definition stay terse without being curt.

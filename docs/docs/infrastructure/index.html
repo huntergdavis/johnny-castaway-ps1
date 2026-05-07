@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Build infrastructure & dev environment — Johnny Castaway PS1" />
   <meta property="og:description"  content="The dev environment for the Johnny Castaway PS1 port — Docker image with PSn00bSDK 0.24, CMake configuration, the mkpsxiso CD pipeline, and the release script that bumps version, tags, and publishes." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/infrastructure/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Infrastructure", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/infrastructure/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Build infrastructure & dev environment", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/infrastructure/" }]
 }
 </script>
 </head>
@@ -102,7 +104,7 @@
       <h1>Build infrastructure & dev environment</h1>
       <p class="subtitle">How a one-person fan port keeps a reproducible cross-compile pipeline together — Docker, CMake, mkpsxiso, and a release script that tags itself.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1949 words
+          ~7 min read · 1980 words
         </p>
 
       <hr class="rule" />
@@ -313,7 +315,7 @@ link time.</p>
 <ul>
   <li><strong><code class="language-plaintext highlighter-rouge">build-ps1/</code></strong> is the PSn00bSDK cross-compile. Output is
 <code class="language-plaintext highlighter-rouge">jcreborn.elf</code> (MIPS ELF, used for symbol lookup) and <code class="language-plaintext highlighter-rouge">jcreborn.exe</code>
-(PS-EXE format, what gets packaged onto the disc).</li>
+(<a href="../glossary/#ps-exe">PS-EXE</a> format, what gets packaged onto the disc).</li>
   <li><strong><code class="language-plaintext highlighter-rouge">build-host/</code></strong> is a native SDL2-linked binary called <code class="language-plaintext highlighter-rouge">jc_reborn-host</code>.
 It runs the original Sierra engine, captures foreground frames per
 scene, and emits the <code class="language-plaintext highlighter-rouge">.FG2</code> packs that the PS1 replays. The host build
@@ -522,6 +524,11 @@ output is targeting.</li>
 experiment ledger that runs against this build.</li>
   <li><a href="../regtest/">Regression testing</a> — the
 headless harness that boots the disc image.</li>
+  <li><a href="../../lab/build-farm/">Lab: the 24/7 build farm</a>
+— the same machinery framed as a methodology essay.</li>
+  <li><a href="../../lab/dunking-bird/">Lab: the dunking bird</a>
+— the parallel-agent infrastructure that drives the build farm
+between human review passes.</li>
   <li><a href="../../about/method/">Method</a> — how the project
 decides what’s worth automating.</li>
   <li><a href="../../devlog/">Devlog</a> — day-by-day worklog.</li>
@@ -563,6 +570,9 @@ decides what’s worth automating.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

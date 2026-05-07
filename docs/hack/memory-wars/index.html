@@ -12,11 +12,11 @@
   <meta property="og:title"        content="Memory Wars — Johnny Castaway PS1" />
   <meta property="og:description"  content="Memory and asset-budget guide for the Johnny Castaway PS1 port." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/hack/memory-wars/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Hack", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/" }, { "@type": "ListItem", "position": 3, "name": "Memory wars", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/memory-wars/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Hack", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/" }, { "@type": "ListItem", "position": 3, "name": "Memory Wars", "item": "https://hunterdavis.com/johnny-castaway-ps1/hack/memory-wars/" }]
 }
 </script>
 </head>
@@ -144,6 +146,15 @@ engine.</p>
   <li>Use generated tables for holiday data and scene routing.</li>
   <li>Make pack formats dumpable, because “out of memory” without a file-level explanation is just folklore.</li>
   <li>Treat VRAM allocation as explicit state, not as a magical side effect of drawing.</li>
+  <li>Drop optional prefetch buffers when a large
+<a href="../../docs/glossary/#clean-rect">clean-rect</a>
+snapshot would otherwise fragment the heap. The
+<a href="../../lab/from-87-to-99-5/">v0.8.0 clean-memory-relief drop-prefetch</a>
+pass made this a per-scene opt-in for fourteen random-position
+scenes; the
+<a href="../../lab/v081-mary4-freeze/">v0.8.1 generalization</a>
+centralized the pressure estimator after a randomized soak found a
+<code class="language-plaintext highlighter-rouge">MARY 4</code> scene-load freeze the per-commit matrix never reached.</li>
 </ul>
 
 <p>The <a href="../../resources/">resource catalog</a> is the public map of
@@ -180,6 +191,9 @@ The PS1 port started working when the answer stopped being “everywhere.”</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

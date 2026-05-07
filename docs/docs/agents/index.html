@@ -12,11 +12,11 @@
   <meta property="og:title"        content="AI sub-agents on this project — Johnny Castaway PS1" />
   <meta property="og:description"  content="An honest accounting of where and how AI sub-agents were used on the Johnny Castaway PS1 fan port — captions, holiday emblems, this website, code review — and where they were not." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/agents/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Agents", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/agents/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "AI sub-agents on this project", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/agents/" }]
 }
 </script>
 </head>
@@ -102,7 +104,7 @@
       <h1>AI sub-agents on this project</h1>
       <p class="subtitle">How LLMs were actually used. The honest version.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1880 words
+          ~7 min read · 1971 words
         </p>
 
       <hr class="rule" />
@@ -143,9 +145,8 @@ runs the validation passes, signs off on each release, and writes the
 pause-menu Credits text. He is also the only operator of any AI tooling
 involved.</p>
 
-<p>The project uses AI sub-agents — primarily Claude and Codex, on separate
-worktrees against separate branches, with occasional excursions into other
-models for specific jobs — as an unusual member of the team. The agents
+<p>The project uses AI sub-agents — Claude, Gemini, and Codex, on separate
+worktrees against separate branches — as an unusual member of the team. The agents
 draft text, scaffold code, run parallel research passes against
 documentation, and rubber-duck design questions. They do not own decisions.
 They do not pick what’s worth shipping. They do not validate scenes. The
@@ -193,18 +194,22 @@ side and the audit breakdown in detail.</p>
 
 <h3 id="the-holiday-emblem-sprites">The holiday emblem sprites</h3>
 
-<p>The 2026-04 holiday expansion grew the project from four shipped holidays
-to thirty-six. Each holiday gets a 32×32 emblem sprite in the 16-color
-EGA/VGA palette, drawn in a Sierra-screensaver-adjacent style: chunky
-pixels, bold outlines, recognizable at 32 pixels.</p>
+<p>The 2026-04 holiday expansion grew the project from four shipped
+holidays to thirty-six. The four original Sierra holidays
+(IDs 1–4: Halloween, St. Patrick’s, Christmas, New Year’s) keep
+their original full-island sprites; the thirty-two added holidays
+(IDs 5–36) each get a 32×32 transparent emblem sprite in
+the 16-color EGA/VGA palette, drawn in a Sierra-screensaver-
+adjacent style: chunky pixels, bold outlines, recognizable at
+32 pixels.</p>
 
-<p>Drawing 32 thematically distinct sprites in a constrained palette is the
-kind of work that stops being interesting after the third sprite. A
-sub-agent authored Python+PIL scripts that generated the emblems
-algorithmically — primitive shapes, palette-locked colors, a per-holiday
-“compose this from these primitives” routine. The output is the sprite
-sheet at
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/holiday-emblem-sheet.png</code></a>.
+<p>Drawing 32 thematically distinct sprites in a constrained palette
+is the kind of work that stops being interesting after the third
+sprite. A sub-agent authored Python+PIL scripts that generated the
+emblems algorithmically — primitive shapes, palette-locked colors,
+a per-holiday “compose this from these primitives” routine. The
+output is the sprite sheet at
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png"><code class="language-plaintext highlighter-rouge">docs/ps1/holidays-emblems/holiday-emblems-sheet.png</code></a>.
 The script lives at
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/holidays-emblem-sheet.py"><code class="language-plaintext highlighter-rouge">scripts/holidays-emblem-sheet.py</code></a>.</p>
 
@@ -266,10 +271,15 @@ diff the JSONL logs against baseline and produce a structured summary
 of what changed. The decision to promote or reject the experiment is
 the author’s, working from that summary plus their own read.</li>
   <li><strong>Performance experiment hypothesis generation.</strong> Some of the
-experiments listed in the <a href="../performance/">perf log</a>
-were ideas an agent suggested as plausible. The author ran them.
-Roughly half were rejected at the gate; the perf log is a complete
-record of what stuck and what didn’t.</li>
+experiments listed in the
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md">experiment log</a>
+were ideas an agent suggested as plausible. The author ran
+them. Roughly half were rejected at the gate; the
+<a href="../glossary/#experiment-log">experiment log</a>
+is a complete record of what stuck and what didn’t, and the
+<a href="../../lab/from-87-to-99-5/">post-validation perf retrospective</a>
+walks through how the matrix moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target
+to its current line.</li>
 </ul>
 
 <h2 id="what-agents-didnt-do">What agents didn’t do</h2>
@@ -370,6 +380,15 @@ shipped is the author’s.</p>
 <ul>
   <li><a href="../../about/method/">Method</a> — how the project
 decides what’s worth shipping.</li>
+  <li><a href="../../about/voice/">Voice guide</a> — the
+editorial standard agent drafts get edited against. Read this
+before writing anything that ships under the project’s name.</li>
+  <li><a href="../../lab/voice-anchor-problem/">The voice-anchor problem</a>
+— the deeper retrospective on how the four-line <code class="language-plaintext highlighter-rouge">drawCredits</code>
+text propagates voice constraints downstream.</li>
+  <li><a href="../../lab/dunking-bird/">The dunking bird</a> —
+the parallel-agent infrastructure that keeps two LLM sessions
+productive without constant operator attention.</li>
   <li><a href="../captions/">Closed captions</a> — the
 caption corpus the audit produced.</li>
   <li><a href="../holidays/">Holidays</a> — the 36-holiday
@@ -404,6 +423,9 @@ side.</li>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

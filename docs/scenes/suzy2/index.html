@@ -12,11 +12,11 @@
   <meta property="og:title"        content="SUZY 2 — Raft drifts to her — Johnny Castaway PS1" />
   <meta property="og:description"  content="SUZY.ADS scene 2: Raft drifts to her. Validated on PS1 with the SUZBEACH.SCR backdrop, static-base raft foreground capture, and synced SFX." />
   <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="./" />
-  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy2/" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -35,6 +35,8 @@
         href="../../devlog/feed.xml" />
   <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
         href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
   <link rel="author" type="text/plain" href="../../humans.txt" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
@@ -60,7 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "Suzy2", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy2/" }]
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Scenes", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/" }, { "@type": "ListItem", "position": 3, "name": "SUZY 2 — Raft drifts to her", "item": "https://hunterdavis.com/johnny-castaway-ps1/scenes/suzy2/" }]
 }
 </script>
 </head>
@@ -138,10 +140,24 @@ late audio beats.</p>
 human visual + audible review. See <a href="../../about/method/">the method</a>
 for the longer version.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">SUZY 2</code> high and low both appear on the
+<a href="../../perf/">performance battle card</a> as
+<strong>metadata-only</strong> rows — they don’t reach a deterministic
+scene-end the way story scenes do, so they’re excluded from the
+matrix’s <code class="language-plaintext highlighter-rouge">target_speed</code> averages on purpose. The same applies to
+<code class="language-plaintext highlighter-rouge">SUZY 1</code>. Visual signoff (the FISHING 1 bar) holds; only the
+<em>timing</em> gate doesn’t.</p>
+
   </div>
 
   <footer class="post-footer">
-    <hr class="rule" /><nav class="scene-pager" aria-label="Scene navigation">
+    <hr class="rule" /><p class="post-source">
+      Host regression reference:
+      <a href="../../archaeology/regtest-references/cases/suzy-2/">SUZY-2 case page</a>
+      — desktop baseline before PS1 validation.
+    </p><nav class="scene-pager" aria-label="Scene navigation">
       <div class="scene-pager-prev">
 
           <a href="../suzy1/"
@@ -189,6 +205,9 @@ for the longer version.</p>
           Devlog feed:
           <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
         </p><p class="footer-license footer-edit">

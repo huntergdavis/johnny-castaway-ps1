@@ -2,7 +2,15 @@
 title: Credits
 eyebrow: A labor of love
 subtitle: The full acknowledgements behind a small port.
+description: Acknowledgements for the Johnny Castaway PS1 fan port — Sierra On-Line for the original screensaver, the prior reverse-engineering ports (jno6809/jc_reborn, JCOS, xesf/Castaway), the toolchain authors (PSn00bSDK, DuckStation, mkpsxiso, spicyjpeg), the AI sub-agents that drafted text and emblem sprites, the four self-hosted SIL OFL fonts, and the CC0 ocean-ambience source.
 ---
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
 
 ## In the game
 
@@ -53,6 +61,20 @@ the longer version — the people whose work this project stands on.
 
 - **Hunter Davis** — wrote it, broke it, fixed it again.
 
+## AI sub-agents
+
+LLM sub-agents — **Claude** (Anthropic), **Gemini** (Google), and
+**Codex** (OpenAI) — were all used extensively across this
+project. They drafted text, scaffolded code, ran parallel research
+passes, and generated the holiday-emblem sprite primitives. They
+do not own decisions, do not validate scenes, and do not sign off
+on releases. Every agent-drafted page on this site got at least
+one factual edit on review; a few got rewritten substantially.
+The disclosure surface is documented at
+[/docs/agents/]({{ '/docs/agents/' | relative_url }}); the
+[footer]({{ '/about/' | relative_url }}) carries the short
+version on every page.
+
 ## Closed captions
 
 The caption text was authored fresh for this port from scene
@@ -72,8 +94,10 @@ does:
 - **IBM Plex Mono** (Mike Abbink + Bold Monday for IBM) — code blocks and the build-stamp meta.
 - **VT323** (Peter Hull) — pixel display font, used for eyebrows, jump-nav labels, and pager hints.
 
-Subsetted to Latin and stored under `site/assets/fonts/`. The full
-license text ships next to the files in source.
+Subsetted to Latin and stored under `site/assets/fonts/`. The
+full SIL OFL v1.1 license body and each family's upstream
+copyright line ship beside the woff2 files at
+[`LICENSE-FONTS.txt`]({{ site.github_url }}/blob/main/site/assets/fonts/LICENSE-FONTS.txt).
 
 ## Ocean ambience
 

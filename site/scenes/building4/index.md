@@ -39,6 +39,19 @@ ticks. Once that holds across all applicable variants, the scene moves
 to `validated` and a row turns green in the
 [ledger]({{ '/scenes/' | relative_url }}).
 
-Until then, this page exists so the catalogue is complete — not because
-the scene is finished. See [the method]({{ '/about/method/' | relative_url }})
-for the longer version.
+## Notable runtime history
+
+`BUILDING 4` is the scene the post-v0.7.0 random-run soak named when
+the
+[clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
+allocation pipeline first regressed under walk-clean memory
+pressure. The `v0.8.0-ps1` fix retries the large scene clean
+snapshot after releasing the stale walk clean buffer and recaptures
+the walk baseline so the scene loads cleanly even after a long
+random-position approach. `BUILDING 4` also appears on the v0.8.0
+[clean-memory-relief drop-prefetch]({{ '/lab/from-87-to-99-5/' | relative_url }})
+exception list — the per-scene opt-in that drops the prefetch
+window during large clean snapshots. The follow-on `v0.8.1-ps1`
+[stability fix]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+generalized the same pressure-estimator path for every random-
+position scene.

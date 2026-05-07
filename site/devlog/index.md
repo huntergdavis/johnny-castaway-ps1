@@ -28,6 +28,14 @@ is the source file from `docs/ps1/research/`, preserved as it was
 written. A link back to the source on GitHub sits at the bottom of
 every post.
 
+Subscribe via
+<a href="{{ '/devlog/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a>
+or
+<a href="{{ '/devlog/feed.json' | relative_url }}" type="application/feed+json">JSON Feed</a>;
+both carry full-content posts with absolute URLs. Auto-discovery
+is wired into every page's `<head>`, so most feed readers find
+them automatically.
+
 {% assign posts_by_month = site.posts | group_by_exp: "p", "p.date | date: '%Y-%m'" %}
 
 <nav class="scenes-jump" aria-label="Jump to month">
@@ -40,11 +48,15 @@ every post.
 
 <ul class="devlog-list">
   {% for post in group.items %}
+  {%- assign p_words = post.content | strip_html | number_of_words -%}
+  {%- assign p_min = p_words | divided_by: 250 -%}
+  {%- if p_min < 1 %}{%- assign p_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       {% if post.editor_note %}<span class="summary">{{ post.editor_note }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ p_min }} min read · {{ p_words }} words</span>
     </div>
   </li>
   {% endfor %}
