@@ -1973,6 +1973,11 @@ and this page.
   — the v0.8.1 stability follow-on that kept this matrix's mean
   untouched while fixing a clean-rect pressure freeze the per-commit
   matrix never reached. Soak loop story.
+- [/docs/walks/]({{ '/docs/walks/' | relative_url }}) —
+  reference manual for the walk subsystem; "Evolution by release"
+  consolidates the v0.8.0 clean-rect retry path and v0.8.1
+  wave-band/split-rect pressure accounting that the v0.8.1
+  story above generalized to fourteen random-position scenes.
 - [Glossary: experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }})
   — the long-form decision record at `docs/ps1/performance-experiment-log.md`
   where every accepted and rejected probe got written down. Read
