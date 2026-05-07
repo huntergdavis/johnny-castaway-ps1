@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.7% target speed** |
-| Latest perf matrix run | **`2026-05-07T12:08:59`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-07T13:24:41`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -283,7 +283,7 @@ low tide moves `2098/2056 -> 2087/2056`, blocking `47 -> 42`, and hidden
 refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
 original padded FGP3 pack left untouched.
 The timing-bearing average is now `+0.5746%` over target /
-`99.6729%` target speed after the current selector-cleanup canary refresh;
+`99.6729%` target speed after the current dead-readgroup prune canary refresh;
 the later VISITOR3 high guarded generated-window append `138..162` trims
 blocking `294 -> 293`, loop reads `40 -> 39`, and loop read VBlanks
 `335 -> 332` while leaving the loop-time average unchanged. The follow-up
@@ -294,7 +294,10 @@ cleanup drops a second now-dead high-tide row after the read plan proved setup
 prime coverage already owns sectors `1..97`; broad canaries remain exact-flat
 and the later `read-group-selector-single-assign-v082` cleanup keeps the
 13-case canary set exact-flat while shrinking `foregroundPilotPlay` by
-`36` bytes.
+`36` bytes. The later `activity9-dead-readgroup-prune-v082` cleanup removes
+the now-dead ACTIVITY9 low FGP3/v1 read-group selector, keeps the same
+13-case canary timing/LBAs, and recovers another `16` bytes from
+`foregroundPilotPlay`.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.8`
 percentage points of over-target gap and added about `12.6` points of target

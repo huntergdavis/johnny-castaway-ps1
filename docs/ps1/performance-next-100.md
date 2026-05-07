@@ -17,7 +17,7 @@ Current accepted fishing1 high-tide canary baseline:
 | `restore_bytes` | `251144` |
 | `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
 | `jcreborn.exe` | `215040` bytes |
-| `jcreborn.elf` | `960276` bytes |
+| `jcreborn.elf` | `960308` bytes |
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
@@ -47,7 +47,7 @@ prefetch overrun flat at `35`, and cuts loop reads `87 -> 68`. FISHING1,
 VISITOR3 high/low, WALKSTUF1 high, and BUILDING4 high canaries stayed flat.
 This checkpoint later moved to `0.5746%` over target / `99.6729%` target
 speed after the ACTIVITY9 low cleanup-metadata compaction and JOHNNY2
-clean-pressure relief plus the current selector-cleanup canary refresh; the current
+clean-pressure relief plus the current dead-readgroup prune canary refresh; the current
 rollup is tracked at the top of this file.
 
 Latest promoted VISITOR3 baseline: keep the cleanup-metadata-only FGP3/v3
@@ -85,6 +85,14 @@ stayed exact-flat on timing, pack LBAs, and the `215040` byte PS-EXE bucket,
 while `foregroundPilotPlay` shrank `11408 -> 11372` (`-36`). Treat this as
 code-headroom for generated scheduler/read-metadata probes, not a VBlank speed
 win.
+
+Latest promoted dead read-group cleanup: remove the stale ACTIVITY9 low
+FGP3/v1 `{624,636}` selector/table. Current `ACTV9LOW.FG2` is FGP3/v3 compact
+and the current baseline policy was already `none`, so the branch could never
+produce a read win. The broad 13-case canary stayed exact-flat on timing, pack
+LBAs, and the `215040` byte PS-EXE bucket while `foregroundPilotPlay` shrank
+`11372 -> 11356` (`-16`). Artifact:
+`scratch/ps1-perf-iterate/activity9-dead-readgroup-prune-v082-canaries/20260507-132441-4070377/summary.json`.
 
 Latest promoted MARY2 baseline: keep the same-layout padded FGP3 temporal
 residual conversion for both validated packs. High tide improves the

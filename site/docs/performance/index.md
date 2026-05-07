@@ -291,6 +291,7 @@ That is **-0.3% over target**, or **100.3% of target speed**. Across the
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`activity9-dead-readgroup-prune-v082`,
 `read-group-selector-single-assign-v082`,
 `visitor3-high-group138-162-slack4-v081`,
 `walkstuf1-low-primecap160-v081`,

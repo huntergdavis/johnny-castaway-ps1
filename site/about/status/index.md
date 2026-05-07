@@ -16,8 +16,8 @@ holiday, raft-stage):
 `v0.8.2-ps1` is the current release: every row in the live per-scene
 ledger is signed off, all 126 high/low scene variants are routed, and the
 headless timing-bearing average is +0.6% over target / 99.7% target speed.
-The current selector-cleanup baseline keeps the 13-case canary set exact-flat
-while shrinking the foreground hot path.
+The current dead-readgroup prune baseline keeps the 13-case canary set
+exact-flat while shrinking the foreground hot path.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

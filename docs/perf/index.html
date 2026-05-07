@@ -206,11 +206,11 @@ on purpose).</p>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-07T12:08:59</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-07T13:24:41</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>, <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-layout-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">stale-pressure2-v072c-current-refresh</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>, <code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>, <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-layout-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">stale-pressure2-v072c-current-refresh</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -248,7 +248,9 @@ Lower is better.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">visitor3-high-remove-144-160-v082</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>,
+<code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-remove-144-160-v082</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>,
 <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-fgp3-cleanup-compact-v081</code>,
@@ -510,29 +512,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>activity9</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
-      <td>+1.8%</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
+      <td>+1.9%</td>
       <td class="spd-yellow">98.2%</td>
       <td>2094/2056</td>
       <td>37</td>
       <td>23</td>
       <td>2</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+1.5%</td>
       <td class="spd-yellow">98.5%</td>
       <td>2087/2056</td>
       <td>42</td>
       <td>12</td>
       <td>6</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -650,29 +652,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+10.9%</td>
       <td class="spd-yellow">90.1%</td>
       <td>1430/1289</td>
       <td>212</td>
       <td>20</td>
       <td>39</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+11.1%</td>
       <td class="spd-yellow">90.0%</td>
       <td>1429/1286</td>
       <td>193</td>
       <td>35</td>
       <td>32</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -706,29 +708,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>building4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+5.5%</td>
       <td class="spd-yellow">94.8%</td>
       <td>2939/2786</td>
       <td>240</td>
       <td>27</td>
       <td>40</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building4</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
-      <td>+5.3%</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
+      <td>+5.2%</td>
       <td class="spd-yellow">95.0%</td>
       <td>2945/2798</td>
       <td>117</td>
       <td>114</td>
       <td>1</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -762,29 +764,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>building6</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>2520/2442</td>
       <td>62</td>
       <td>64</td>
       <td>1</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+3.2%</td>
       <td class="spd-yellow">96.9%</td>
       <td>2515/2437</td>
       <td>70</td>
       <td>66</td>
       <td>2</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>building7</code></td>
@@ -818,15 +820,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>-0.3%</td>
       <td class="spd-green">100.3%</td>
       <td>1069/1072</td>
       <td>5</td>
       <td>6</td>
       <td>0</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -874,29 +876,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>fishing3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+0.6%</td>
       <td class="spd-green">99.4%</td>
       <td>1962/1950</td>
       <td>17</td>
       <td>14</td>
       <td>1</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>fishing3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+0.1%</td>
       <td class="spd-green">99.9%</td>
       <td>1957/1955</td>
       <td>9</td>
       <td>9</td>
       <td>0</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>fishing4</code></td>
@@ -1576,7 +1578,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
@@ -1590,7 +1592,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
@@ -1632,7 +1634,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
+      <td>-3.4%</td>
       <td class="spd-green">103.5%</td>
       <td>520/538</td>
       <td>0</td>
@@ -1882,29 +1884,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+38.0%</td>
       <td class="spd-red">72.5%</td>
       <td>1406/1019</td>
       <td>293</td>
       <td>7</td>
       <td>31</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T12:08:59</td>
-      <td>read-group-selector-single-assign-v082</td>
+      <td>2026-05-07T13:24:41</td>
+      <td>activity9-dead-readgroup-prune-v082</td>
       <td>+38.4%</td>
       <td class="spd-red">72.2%</td>
       <td>1405/1015</td>
       <td>301</td>
       <td>8</td>
       <td>33</td>
-      <td>Exact-flat under read-group selector single-assignment cleanup; preserves current accepted timing/LBAs and shrinks foregroundPilotPlay by 36 bytes</td>
+      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

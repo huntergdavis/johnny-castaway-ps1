@@ -4,7 +4,7 @@
 
 
 **Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
-current selector-cleanup baseline; all 63 scenes remain validated, and the
+current dead-readgroup prune baseline; all 63 scenes remain validated, and the
 headless battle card is near target at `0.5746%` over / `99.6729%` target
 speed).
 
@@ -154,17 +154,18 @@ this page gives the narrative around it.
 
 Latest point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
-routed through headless perf, and the current selector-cleanup baseline keeps
-the 13-case canary set exact-flat while shrinking `foregroundPilotPlay` by
-`36` bytes. See [release-notes-0.8.2.md](release-notes-0.8.2.md).
+routed through headless perf, and the current dead-readgroup prune baseline
+keeps the 13-case canary set exact-flat while shrinking `foregroundPilotPlay`
+by another `16` bytes after the selector cleanup. See
+[release-notes-0.8.2.md](release-notes-0.8.2.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3/v3 metadata,
 the `192 KiB` setup-prime resident cap, and the guarded high-tide `138..162`
 read group. VISITOR3 high remains `1406/1019` with `blocking_vb=293`; low
 remains `1405/1015` with `blocking_vb=301`. BUILDING2, BUILDING4, ACTIVITY9
 low, JOHNNY2, WALKSTUF1, and related current-pack clean-pressure work are all
-preserved in the matrix. The latest selector cleanup is a code-headroom win,
-not a VBlank-speed win.
+preserved in the matrix. The latest dead-readgroup prune is a code-headroom
+win, not a VBlank-speed win.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the
