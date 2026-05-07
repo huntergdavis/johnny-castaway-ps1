@@ -163,6 +163,8 @@ The first build where Johnny no longer teleports between finished scenes. The PS
 
 ## Where to go from here
 
+- [Play]({{ '/play/' | relative_url }}) is the download page — latest `.bin` / `.cue`, DuckStation quickstart, controller map.
+- The [FAQ]({{ '/faq/' | relative_url }}) covers the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, real-hardware support.
 - The [scene ledger]({{ '/scenes/' | relative_url }}) is the live status of every scene at the current release.
 - The [history page]({{ '/about/history/' | relative_url }}) is the longer narrative — pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind.
 - The [devlog]({{ '/devlog/' | relative_url }}) is the daily worklog. Releases are the milestones; the devlog is the run-up.
