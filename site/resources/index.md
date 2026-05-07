@@ -430,6 +430,8 @@ for the practical porting path.
 
 ## Generated foreground packs
 
+The runtime artifacts the PS1 actually replays. Each scene contributes a high-tide pack and a low-tide pack — `<SCENE>.FG2` and `<SCENE>LOW.FG2` (or its prefix-truncated equivalent for scene names long enough that the 8.3 disc filename rule cuts in, e.g. `ACTV12L.FG2`). The [`FG2` format]({{ '/docs/glossary/#fg2-pack' | relative_url }}) carries its own palette, frame-timing table, base-frame full render, and per-frame diff spans; most scenes have moved to the denser [`FGP3` successor]({{ '/docs/glossary/#fgp3' | relative_url }}) internally while keeping the `.FG2` filename. Per-pack runtime timing lives on the [performance battle card]({{ '/perf/' | relative_url }}).
+
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>

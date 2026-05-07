@@ -529,6 +529,8 @@ for the practical porting path.</p>
 
 <h2 id="generated-foreground-packs">Generated foreground packs</h2>
 
+<p>The runtime artifacts the PS1 actually replays. Each scene contributes a high-tide pack and a low-tide pack — <code class="language-plaintext highlighter-rouge">&lt;SCENE&gt;.FG2</code> and <code class="language-plaintext highlighter-rouge">&lt;SCENE&gt;LOW.FG2</code> (or its prefix-truncated equivalent for scene names long enough that the 8.3 disc filename rule cuts in, e.g. <code class="language-plaintext highlighter-rouge">ACTV12L.FG2</code>). The <a href="../docs/glossary/#fg2-pack"><code class="language-plaintext highlighter-rouge">FG2</code> format</a> carries its own palette, frame-timing table, base-frame full render, and per-frame diff spans; most scenes have moved to the denser <a href="../docs/glossary/#fgp3"><code class="language-plaintext highlighter-rouge">FGP3</code> successor</a> internally while keeping the <code class="language-plaintext highlighter-rouge">.FG2</code> filename. Per-pack runtime timing lives on the <a href="../perf/">performance battle card</a>.</p>
+
 <table>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
