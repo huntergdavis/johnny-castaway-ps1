@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2439 words
+          ~10 min read · 2552 words
         </p>
 
       <hr class="rule" />
@@ -150,6 +150,9 @@
 
 <dt id="seed">Seed</dt>
 <dd>RNG seed used by the host to make a capture deterministic, so two runs of the same scene produce byte-identical packs. Override surface in the pause menu (Pause → System → Set RNG Seed) lets the runtime force the same path the host captured under, which is occasionally useful in regtest debugging.</dd>
+
+<dt id="bootmode">BOOTMODE.TXT</dt>
+<dd>A small text file the runtime reads at boot to override default state for a deterministic run. Carries one or more tokens — <code>night 1</code>, <code>lowtide 1</code>, <code>holiday N</code>, <code>raft-stage N</code>, <code>fgpilot &lt;slug&gt;</code>, <code>seed N</code>, <code>fgpilot freeplay</code>, etc. — that fix variant flags and entry points the screensaver loop would otherwise pick at random. The capture pipeline writes one before each host run; the regtest harness writes one before each headless DuckStation pass; the menu help auto-builder writes one before each pad-script run. End users never see it; release discs ship without it and let the screensaver pick its own state. The token surface is documented in [Scripted input](/docs/scripted-input/) and [Regression testing](/docs/regtest/).</dd>
 </dl>
 
 <h2 id="graphics">Graphics</h2>
