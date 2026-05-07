@@ -114,7 +114,7 @@ loops the sample in hardware while the main CPU keeps doing
 playback work.
 
 - **Looping ocean ambience** on SPU voice slot reserved at boot.
-- **Pause → Sound → Ocean: ON / OFF**, persisted to memcard.
+- **Pause → Accessibility → Ocean: ON / OFF**, persisted to memcard.
 - **Bootmode token** for capture/test discs that need a known-state run.
 
 [GitHub release]({{ site.github_url }}/releases/tag/v0.6.0-ps1)
