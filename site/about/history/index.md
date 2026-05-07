@@ -405,7 +405,7 @@ component-completeness phases:
   `111efa9f`) -- the fishing3 overnight loop-stability release;
   confirms the current runtime can run long sessions without the
   prior scene-to-scene leak.
-- PS-EXE size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
+- [PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) size: **~208&nbsp;KiB** (104 × 2&nbsp;KiB CD-ROM
   sectors) at `{{ site.release.tag }}` after legacy ADS/TTM/FG1
   paths were stripped from the linker pass.
 - Routed CD image: **~76&nbsp;MB** at `{{ site.release.tag }}`

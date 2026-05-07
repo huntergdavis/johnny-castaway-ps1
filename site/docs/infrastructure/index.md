@@ -164,7 +164,7 @@ The repo contains two build trees with different jobs:
 
 - **`build-ps1/`** is the PSn00bSDK cross-compile. Output is
   `jcreborn.elf` (MIPS ELF, used for symbol lookup) and `jcreborn.exe`
-  (PS-EXE format, what gets packaged onto the disc).
+  ([PS-EXE]({{ '/docs/glossary/#ps-exe' | relative_url }}) format, what gets packaged onto the disc).
 - **`build-host/`** is a native SDL2-linked binary called `jc_reborn-host`.
   It runs the original Sierra engine, captures foreground frames per
   scene, and emits the `.FG2` packs that the PS1 replays. The host build
