@@ -180,5 +180,9 @@ part of the forever-run player build.
 ## Source
 
 - [`src/scene_freeplay.c`]({{ site.github_url }}/blob/main/src/scene_freeplay.c)
+- [`src/walk_render.c`]({{ site.github_url }}/blob/main/src/walk_render.c)
+  · [`src/walk_render.h`]({{ site.github_url }}/blob/main/src/walk_render.h)
+  — the shared draw kernel; story-loop walks consume it through
+  `walk_pilot.c`, freeplay calls it directly with D-pad-driven coords.
 - [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c)
 - [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md)
