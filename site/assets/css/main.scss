@@ -830,6 +830,21 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   font-size: 0.85em;
   color: var(--accent);
 }
+/* Per-row permalink: the slug cell is a link to its own #perf-{slug}-{tide}
+   anchor so a reader can click and copy a stable URL to a single row. We
+   want the affordance discoverable but not 126 rows of cyan, so inherit
+   color, drop the underline, and only assert link styling on hover/focus. */
+.scene-perf-table a.scene-perf-rowlink {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--fg-mute);
+}
+.scene-perf-table a.scene-perf-rowlink:hover,
+.scene-perf-table a.scene-perf-rowlink:focus-visible {
+  color: var(--link);
+  border-bottom-color: var(--link);
+  outline: none;
+}
 .scene-perf-table td:nth-child(6),
 .scene-perf-table td:nth-child(7),
 .scene-perf-table td:nth-child(8),
