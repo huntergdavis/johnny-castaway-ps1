@@ -123,7 +123,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/lab/' | relative_url }}">Magazine-length Lab</a>
-    <p>Feature essays on LLM-assisted development, hallucination control, build farm, and regression practice.</p>
+    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="{{ '/hack/' | relative_url }}">Curious hacker path</a>
