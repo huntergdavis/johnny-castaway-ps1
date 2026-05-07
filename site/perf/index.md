@@ -563,29 +563,29 @@ and this page.
       <td><code>building5</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td class="spd-green">99.6%</td>
-      <td>3359/3346</td>
-      <td>20</td>
-      <td>20</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>3343/3348</td>
+      <td>5</td>
+      <td>5</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T02:48:00</td>
-      <td>stale-layout-v072c-current-refresh</td>
-      <td>+0.4%</td>
-      <td class="spd-green">99.6%</td>
-      <td>3359/3347</td>
-      <td>19</td>
-      <td>19</td>
+      <td>2026-05-06T17:38:07</td>
+      <td>building5-fgp3-padded-v080</td>
+      <td>-0.1%</td>
+      <td class="spd-green">100.1%</td>
+      <td>3345/3347</td>
+      <td>8</td>
+      <td>8</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>padded pal4 FGP3 temporal-residual conversion keeps the original 818670-byte CD footprint while shrinking runtime payload to 592755 bytes</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
@@ -1851,29 +1851,29 @@ and this page.
       <td><code>walkstuf1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-05T22:25:30</td>
-      <td>walkstuf1-v072-prefetch-relief</td>
-      <td>+16.1%</td>
-      <td class="spd-yellow">86.1%</td>
-      <td>1637/1410</td>
-      <td>297</td>
-      <td>67</td>
-      <td>54</td>
-      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T15:55:23</td>
+      <td>walkstuf1-fgp2-setup-prime-v080</td>
+      <td>+13.7%</td>
+      <td class="spd-yellow">88.0%</td>
+      <td>1595/1403</td>
+      <td>278</td>
+      <td>50</td>
+      <td>57</td>
+      <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-05T22:25:30</td>
-      <td>walkstuf1-v072-prefetch-relief</td>
-      <td>+16.0%</td>
-      <td class="spd-yellow">86.2%</td>
-      <td>1634/1409</td>
-      <td>304</td>
-      <td>73</td>
-      <td>55</td>
-      <td>validated FGP2/pal4 pack; walkstuf1 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T15:56:38</td>
+      <td>walkstuf1-fgp2-setup-prime-v080</td>
+      <td>+15.5%</td>
+      <td class="spd-yellow">86.6%</td>
+      <td>1614/1397</td>
+      <td>276</td>
+      <td>59</td>
+      <td>49</td>
+      <td>validated FGP2/pal4 pack; PAL4 setup-prime policy now primes the initial window while preserving stage1_window prefetch; accepted canaries exact-flat</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
