@@ -57,9 +57,9 @@ reference instead of the PS1 replay path.
 
 ## The ledger
 
-Sorted by ADS file then by tag. Scene names link to the per-scene case
-study; every scene has one, including the pending ones (which mostly
-just say "not yet validated" and label what the scene probably is).
+Sorted by ADS file then by tag. Scene names link to the per-scene
+case study — every scene has one, naming the variants and the
+host-vs-PS1 reference frames where applicable.
 
 {% assign sorted_scenes = all_scenes | sort: "tag" | sort: "ads" %}
 {% assign families = sorted_scenes | map: "ads" | uniq %}
