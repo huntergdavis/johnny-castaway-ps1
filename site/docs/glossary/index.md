@@ -126,6 +126,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 ## Build & release {#build}
 
 <dl>
+<dt id="ps-exe">PS-EXE</dt>
+<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>{{ site.release.tag }}</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
+
 <dt id="bin-cue">jcreborn.bin / jcreborn.cue</dt>
 <dd>The shipped CD image, a <code>.bin</code> binary track plus a <code>.cue</code> cuesheet that DuckStation (and real hardware) opens. Both files belong in the same directory. End users never need original Sierra files — the pre-baked FG2 packs are derived data, not Sierra source.</dd>
 
