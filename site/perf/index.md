@@ -1106,8 +1106,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:25</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(timing pending)</td>
+      <td>(timing pending)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1120,8 +1120,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:37</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(timing pending)</td>
+      <td>(timing pending)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1638,8 +1638,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:01:51</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1652,8 +1652,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:01:58</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1666,8 +1666,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:02:29</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
@@ -1680,8 +1680,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T18:02:35</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-</td>
-      <td>-</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/6</td>
       <td>0</td>
       <td>0</td>
