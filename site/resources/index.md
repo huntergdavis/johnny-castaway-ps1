@@ -29,6 +29,7 @@ for the practical porting path.
 ## Original bitmap resources
 
 <table>
+<caption class="visually-hidden">Original bitmap resources — 117 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>BACKGRND.BMP</code></td><td>92,656</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/bmp/BACKGRND.BMP">source</a></td></tr>
@@ -154,6 +155,7 @@ for the practical porting path.
 ## Original animation scripts
 
 <table>
+<caption class="visually-hidden">Original animation scripts — 10 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>ACTIVITY.ADS</code></td><td>2,558</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ads/ACTIVITY.ADS">source</a></td></tr>
@@ -172,6 +174,7 @@ for the practical porting path.
 ## Original TTM animations
 
 <table>
+<caption class="visually-hidden">Original TTM animations — 41 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>FIRE.TTM</code></td><td>952</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ttm/FIRE.TTM">source</a></td></tr>
@@ -221,6 +224,7 @@ for the practical porting path.
 ## Original screens
 
 <table>
+<caption class="visually-hidden">Original screens — 52 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>INTRO.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/INTRO.SCR">source</a></td></tr>
@@ -281,6 +285,7 @@ for the practical porting path.
 ## Original sounds
 
 <table>
+<caption class="visually-hidden">Original sounds — 24 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>OCEAN.VAG</code></td><td>126,064</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/OCEAN.VAG">source</a></td></tr>
@@ -313,6 +318,7 @@ for the practical porting path.
 ## Transcoded PS1 sprite banks
 
 <table>
+<caption class="visually-hidden">Transcoded PS1 sprite banks — 117 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>BACKGRND.PSB</code></td><td>93,176</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/transcoded/BACKGRND.PSB">source</a></td></tr>
@@ -440,6 +446,7 @@ for the practical porting path.
 The runtime artifacts the PS1 actually replays. Each scene contributes a high-tide pack and a low-tide pack — `<SCENE>.FG2` and `<SCENE>LOW.FG2` (or its prefix-truncated equivalent for scene names long enough that the 8.3 disc filename rule cuts in, e.g. `ACTV12L.FG2`). The [`FG2` format]({{ '/docs/glossary/#fg2-pack' | relative_url }}) carries its own palette, frame-timing table, base-frame full render, and per-frame diff spans; most scenes have moved to the denser [`FGP3` successor]({{ '/docs/glossary/#fgp3' | relative_url }}) internally while keeping the `.FG2` filename. Per-pack runtime timing lives on the [performance battle card]({{ '/perf/' | relative_url }}).
 
 <table>
+<caption class="visually-hidden">Generated foreground packs — 126 files, listed by name with byte size and a link to the source file on GitHub.</caption>
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 <tr><td><code>ACTIVITY1.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
