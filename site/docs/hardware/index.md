@@ -230,6 +230,10 @@ specialized compositors, not a clock change — the clock isn't going up.
 - [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
   — the retrospective on the `tx_len=5` pad-polling fix the
   hardware section above documents in one paragraph.
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  walk subsystem's persistent clean buffer is a direct response
+  to the 2 MB envelope above; the page documents why
+  re-allocating per walk fragmented the heap.
 - [Method]({{ '/about/method/' | relative_url }}) — how a one-person port
   decides what to ship.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog where most of
