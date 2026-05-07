@@ -33,7 +33,10 @@ pack-format or scheduler change.
 ## Pointers
 
 - [The dev environment, photographed]({{ '/about/dev-environment/' | relative_url }}) — the farm's bottom-monitor panel in the same field of view as the rest of the workflow.
-- [Scene ledger + perf battle card]({{ '/scenes/' | relative_url }})
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — visual signoff (the FISHING 1 bar).
+- [Performance battle card]({{ '/perf/' | relative_url }}) — second ledger; per-scene timing against the target frame budget, sortable + color-coded.
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
 - [Scene performance matrix]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
+- [From 87 to 99.5: the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}) — retrospective on the optimization arc this farm fed.
+- [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the soak loop the farm runs alongside the per-commit matrix.
