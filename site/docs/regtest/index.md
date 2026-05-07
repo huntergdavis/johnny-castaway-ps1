@@ -16,7 +16,7 @@ captures in roughly 3.6 seconds.
 
 The regtest harness is **secondary tooling** in the current rollout. The
 primary acceptance bar is human visual + audible signoff on the
-scene-playback (fgpilot) path — see
+scene-playback ([fgpilot]({{ '/docs/glossary/#fgpilot' | relative_url }})) path — see
 [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}). Regtest
 is retained for targeted diagnostics: regression hunts, deterministic
 frame-timing investigations, and per-scene snapshot generation when a

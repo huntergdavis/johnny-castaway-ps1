@@ -26,7 +26,7 @@ If you paid for this, you were cheated. Open source and free.
 ## What "done" means for a scene
 
 The current acceptance bar is **human visual + audible signoff** on the
-scene-playback (fgpilot) path. A scene reaches `✅ / ✅` in
+scene-playback ([fgpilot]({{ '/docs/glossary/#fgpilot' | relative_url }})) path. A scene reaches `✅ / ✅` in
 [`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md)
 when the author has confirmed visuals + SFX are correct across every
 applicable variant for that scene.
