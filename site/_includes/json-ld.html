@@ -126,3 +126,49 @@
 }
 </script>
 {%- endif -%}
+
+{%- comment -%}
+  Article record for lab essays. The /lab/ tree is long-form
+  retrospectives and war stories with publication dates; that's
+  exactly the surface Google's Article structured-data guidance
+  targets. Excludes the /lab/ index (which is a contents page,
+  not an article) and any page lacking a date.
+{%- endcomment -%}
+{%- assign url_prefix = page.url | slice: 0, 5 -%}
+{%- if url_prefix == '/lab/' and page.url != '/lab/' and page.date -%}
+{%- if page.image -%}
+  {%- assign article_image = site_root | append: page.image -%}
+{%- else -%}
+  {%- assign article_image = site_root | append: '/assets/img/branding/og-image.png' -%}
+{%- endif -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ page.title | jsonify }},
+  {%- if page.description %}
+  "description": {{ page.description | strip_newlines | jsonify }},
+  {%- endif %}
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "url": {{ page_abs | jsonify }},
+  "mainEntityOfPage": {{ page_abs | jsonify }},
+  "inLanguage": "en",
+  "image": {{ article_image | jsonify }},
+  "author": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": {{ site.author | jsonify }},
+    "url": "https://hunterdavis.com/"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ site_root | append: '/' | jsonify }}
+  }
+}
+</script>
+{%- endif -%}
