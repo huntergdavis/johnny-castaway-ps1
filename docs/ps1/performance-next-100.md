@@ -122,8 +122,10 @@ blocking `355 -> 353`; `208 KiB` regressed overrun `435 -> 436`, blocking
 `14 -> 13`. A later current-baseline `224 KiB` retry after cleanup compaction
 kept layout fixed and lowered reads, but regressed high `1406 -> 1410` and low
 `1405 -> 1413` with worse visible blocking. Treat `192 KiB` as the closed
-accepted cap. The next VISITOR3 work should be scheduler-owned CD timing or
-selective pack/data-shape preprocessing.
+accepted cap. The opposite cap-down retry at `184 KiB` also failed, regressing
+high to `1408` and low to `1419`, so `192 KiB` is the measured knee rather
+than just the largest safe point. The next VISITOR3 work should be
+scheduler-owned CD timing or selective pack/data-shape preprocessing.
 
 Rejected post-cap standalone group: `{158,170}` saved one nominal VISITOR3 high
 read (`45 -> 44`) but regressed loop `1450 -> 1453`, overrun `435 -> 438`,
