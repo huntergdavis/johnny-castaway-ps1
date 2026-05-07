@@ -1,9 +1,9 @@
 ---
 layout: page
 title: History
-eyebrow: 2025-10 to v0.6.5-ps1
-subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind. Quote dates where they exist.
-description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to v0.6.5-ps1.
+eyebrow: 2025-10 to v0.8.0-ps1
+subtitle: Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.
+description: Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.0-ps1.
 ---
 
 <details class="page-toc" markdown="1">
