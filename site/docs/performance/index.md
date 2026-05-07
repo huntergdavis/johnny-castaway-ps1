@@ -108,6 +108,21 @@ and its machine-readable
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.
 
+The per-pack detail analyzer
+[`scripts/analyze-fg2-preprocess-plans.py`]({{ site.github_url }}/blob/main/scripts/analyze-fg2-preprocess-plans.py)
+now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
+splits cap-hit frames from saving-heavy frames, which keeps the next
+upload-ready experiment selective instead of a whole-pack conversion. The
+current VISITOR3 frame sheet is
+[`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv).
+
+The current post-`-O2` tooling pass also records compact baseline
+fingerprints in every perf summary and classifies foreground read-plan
+candidates by observed append-start ownership, current grouped-read capacity,
+and visible-CD cost class. That makes stale-baseline comparisons, no-op read
+groups, and tight visible-cluster candidates visible before a runtime source
+edit.
+
 ## Experiments that didn't work
 
 A representative slice of rejected experiments and why each one didn't
@@ -230,10 +245,10 @@ They cluster into a few themes.
   boot tokens still enable them on demand.
 
 The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at `loop_vb=1068` against a target of
-`target_vb=1074`. The original headless perf-loop baseline was
-`loop_vb=1426`, so the FISHING 1 canary is down `358` VBlanks
-(`25.11%` loop reduction).
+fishing1 high-tide playback at `loop_vb=1069` against a target of
+`target_vb=1072`. The original headless perf-loop baseline was
+`loop_vb=1426`, so the FISHING 1 canary is down `357` VBlanks
+(`25.04%` loop reduction).
 
 ## Where it sits at {{ site.release.tag }}
 
@@ -244,27 +259,32 @@ policy = stage1_window
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 2
-prefetch.overrun_vb = 2
-loop_vb = 1068
+blocking_vb = 5
+prefetch.overrun_vb = 6
+loop_vb = 1069
 overrun_vb = 0
-target_vb = 1074
+target_vb = 1072
 restore_bytes = 251,144
-upload_bytes  = 10,680,960
-dirty_rows    = 16,689
-upload_rects  = 469
+upload_bytes  = 10,648,960
+dirty_rows    = 16,639
+upload_rects  = 460
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.9% over target /
-99.5% target speed** (`0.8692%` exact over target / `99.4529%` exact target speed).
+That is **-0.3% over target**, or **100.3% of target speed**. Across the
+120 timing-bearing battle-card rows, the average is **+0.8% over target /
+99.5% target speed** (`0.8231%` exact over target / `99.4858%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building5-fgp3-padded-v080`,
+`visitor3-low-group170-186-v080b`,
+`walkstuf1-fgp2-setup-prime-v080`,
+`visitor3-setup-prime-192k-v080`,
+`visitor3-high-group170-186-v080-current`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
@@ -288,7 +308,6 @@ perf measurements. The latest updated rows are stamped
 `stand-family-v072-current-refresh`,
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
-`walkstuf1-v072-prefetch-relief`,
 `visitor3-v072-prefetch-relief`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
@@ -307,13 +326,18 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T07:45:20`; per-row freshness and stats version are shown on
+run is `2026-05-06T17:38:07`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `activity9-lowgroup-v072c`,
+rows now use `building5-fgp3-padded-v080`,
+`visitor3-low-group170-186-v080b`,
+`walkstuf1-fgp2-setup-prime-v080`,
+`visitor3-setup-prime-192k-v080`,
+`visitor3-high-group170-186-v080-current`,
+`activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
 `building4-6-johnny6-v072c-prefetch-relief`,
@@ -337,7 +361,6 @@ rows now use `activity9-lowgroup-v072c`,
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
 `visitor3-v072-prefetch-relief`,
-`walkstuf1-v072-prefetch-relief`,
 `compact-fgp3-v66-final-frame-hold`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
@@ -352,72 +375,332 @@ rows now use `activity9-lowgroup-v072c`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Older `padded-fgp3-v1` / `compact-fgp3-v1`
 rows are historical only.
 
-| Scene | High tide | Low tide |
-|---|---:|---:|
-| `activity1` | -0.4% / 100.4% (2754/2764); blk 1 | -0.4% / 100.4% (2754/2765) |
-| `activity4` | -0.1% / 100.1% (1065/1066); blk 4 | -0.4% / 100.4% (1064/1068); blk 1 |
-| `activity5` | -1.1% / 101.1% (1730/1749); blk 2 | -1.0% / 101.0% (1731/1749); blk 2 |
-| `activity6` | +0.1% / 99.9% (912/911) | +0.1% / 99.9% (912/911) |
-| `activity7` | -0.5% / 100.5% (593/596) | -0.3% / 100.3% (594/596) |
-| `activity8` | -0.7% / 100.7% (898/904); blk 1 | -0.6% / 100.6% (899/904); blk 2 |
-| `activity9` | +2.2% / 97.9% (2101/2056); due 2; blk 44 | +1.8% / 98.2% (2093/2056); due 5; blk 43 |
-| `activity10` | +0.0% / 100.0% (1259/1259); due 1; blk 7 | -0.1% / 100.1% (1255/1256); due 2; blk 17 |
-| `activity11` | +0.5% / 99.5% (1729/1720); due 1; blk 10 | +0.7% / 99.3% (1729/1717); due 1; blk 14 |
-| `activity12` | -0.1% / 100.1% (1411/1412); blk 7 | -0.1% / 100.1% (1409/1411); due 1; blk 10 |
-| `building1` | +2.1% / 98.0% (794/778); blk 21 | +1.9% / 98.1% (794/779); blk 21 |
-| `building2` | +14.9% / 87.1% (1476/1285); due 37; blk 286 | +14.6% / 87.2% (1465/1278); due 40; blk 279 |
-| `building3` | -0.1% / 100.1% (5460/5465) | -0.1% / 100.1% (5460/5465) |
-| `building4` | +7.6% / 93.0% (2985/2774); due 40; blk 285 | +7.1% / 93.4% (2981/2784); due 14; blk 199 |
-| `building5` | +0.4% / 99.6% (3359/3346); blk 20 | +0.4% / 99.6% (3359/3347); blk 19 |
-| `building6` | +3.2% / 96.9% (2520/2442); due 1; blk 62 | +3.2% / 96.9% (2515/2437); due 2; blk 70 |
-| `building7` | -0.0% / 100.0% (3132/3133); blk 9 | -0.1% / 100.1% (3130/3133); blk 7 |
-| `fishing1` | -0.6% / 100.6% (1068/1074); blk 2 | -0.7% / 100.7% (1067/1074); blk 1 |
-| `fishing2` | -0.1% / 100.1% (1761/1763); blk 6 | -0.3% / 100.3% (1759/1765); blk 3 |
-| `fishing3` | +0.4% / 99.6% (1960/1952); due 1; blk 18 | +0.1% / 99.9% (1956/1954); blk 6 |
-| `fishing4` | -0.8% / 100.8% (835/842); blk 2 | -1.1% / 101.1% (834/843) |
-| `fishing5` | -9.4% / 110.4% (807/891) | -9.5% / 110.5% (806/891) |
-| `fishing6` | -1.2% / 101.2% (744/753) | -1.2% / 101.2% (744/753) |
-| `fishing7` | -1.4% / 101.4% (715/725) | -1.4% / 101.4% (715/725) |
-| `fishing8` | -0.8% / 100.8% (1243/1253) | -0.8% / 100.8% (1243/1253) |
-| `johnny1` | +1.5% / 98.5% (1974/1944); blk 27 | +1.5% / 98.5% (1974/1944); blk 27 |
-| `johnny2` | +0.6% / 99.4% (1761/1751); due 3; blk 16 | +0.5% / 99.5% (1758/1750); due 3; blk 16 |
-| `johnny3` | -0.3% / 100.3% (1158/1161); due 1; blk 10 | -0.8% / 100.8% (1157/1166) |
-| `johnny4` | -0.8% / 100.8% (1204/1214) | -0.8% / 100.8% (1204/1214) |
-| `johnny5` | -1.1% / 101.1% (811/820) | -1.2% / 101.2% (810/820) |
-| `johnny6` | +1.1% / 98.9% (2832/2800); blk 28 | +1.1% / 98.9% (2832/2800); blk 28 |
-| `mary1` | +0.8% / 99.2% (4867/4830); due 2; blk 47 | +0.4% / 99.6% (4860/4840); due 1; blk 31 |
-| `mary2` | +0.2% / 99.8% (2250/2246); blk 4 | +0.3% / 99.7% (2253/2246); blk 7 |
-| `mary3` | validated; perf refresh pending | validated; perf refresh pending |
-| `mary4` | -2.4% / 102.4% (1968/2016); due 3; blk 28 | -2.6% / 102.7% (1966/2019); due 3; blk 24 |
-| `mary5` | +0.6% / 99.4% (1591/1582); blk 8 | +0.5% / 99.5% (1590/1582); blk 7 |
-| `miscgag1` | -0.8% / 100.8% (953/961) | -0.8% / 100.8% (953/961) |
-| `miscgag2` | -0.3% / 100.3% (1352/1356) | -0.3% / 100.3% (1352/1356) |
-| `stand1` | -4.0% / 104.1% (194/202) | -4.0% / 104.1% (194/202) |
-| `stand2` | -2.0% / 102.1% (480/490) | -2.0% / 102.1% (480/490) |
-| `stand3` | -1.8% / 101.8% (547/557) | -1.8% / 101.8% (547/557) |
-| `stand4` | -1.5% / 101.5% (1202/1220) | -1.2% / 101.2% (1203/1218); blk 3 |
-| `stand5` | -1.2% / 101.2% (1442/1460) | -1.2% / 101.2% (1442/1460) |
-| `stand6` | -1.3% / 101.3% (1346/1364) | -1.3% / 101.3% (1346/1364) |
-| `stand7` | -3.3% / 103.5% (520/538) | -3.3% / 103.5% (520/538) |
-| `stand8` | -3.2% / 103.3% (483/499); blk 2 | -3.2% / 103.3% (483/499); blk 2 |
-| `stand9` | -3.3% / 103.5% (520/538) | -3.0% / 103.1% (522/538) |
-| `stand10` | -1.9% / 101.9% (528/538) | -1.9% / 101.9% (528/538) |
-| `stand11` | -1.9% / 101.9% (528/538) | -1.9% / 101.9% (528/538) |
-| `stand12` | -0.6% / 100.6% (1450/1459); blk 1 | -0.7% / 100.7% (1450/1460) |
-| `stand15` | -1.8% / 101.8% (444/452) | -1.8% / 101.8% (444/452) |
-| `stand16` | +0.2% / 99.8% (473/472) | +0.2% / 99.8% (473/472) |
-| `suzy1` | metadata-only | metadata-only |
-| `suzy2` | metadata-only | metadata-only |
-| `visitor1` | -0.7% / 100.7% (672/677) | -0.7% / 100.7% (672/677) |
-| `visitor3` | +44.1% / 69.4% (1455/1010); due 31; blk 363 | +44.0% / 69.4% (1453/1009); due 32; blk 365 |
-| `visitor4` | -0.9% / 100.9% (424/428) | -0.9% / 100.9% (424/428) |
-| `visitor5` | +1.9% / 98.1% (1111/1090); blk 12 | +2.0% / 98.0% (1112/1090); blk 12 |
-| `visitor6` | -0.2% / 100.2% (2043/2047); blk 1 | -0.2% / 100.2% (2043/2047); blk 1 |
-| `visitor7` | -0.4% / 100.4% (1619/1625) | -0.4% / 100.4% (1619/1625) |
-| `walkstuf1` | +16.1% / 86.1% (1637/1410); due 54; blk 297 | +16.0% / 86.2% (1634/1409); due 55; blk 304 |
-| `walkstuf2` | -2.2% / 102.2% (451/461) | -2.2% / 102.2% (451/461) |
-| `walkstuf3` | +1.9% / 98.1% (2321/2278); due 6; blk 68 | +1.1% / 98.9% (2321/2295); due 5; blk 40 |
-
+<table class="scene-table perf-summary-table">
+  <thead>
+    <tr>
+      <th>Scene</th>
+      <th>High tide</th>
+      <th>Low tide</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>activity1</code></td>
+      <td>-0.4% / 100.4% (2754/2764); blk 1</td>
+      <td>-0.4% / 100.4% (2754/2765)</td>
+    </tr>
+    <tr>
+      <td><code>activity4</code></td>
+      <td>-0.1% / 100.1% (1065/1066); blk 4</td>
+      <td>-0.4% / 100.4% (1064/1068); blk 1</td>
+    </tr>
+    <tr>
+      <td><code>activity5</code></td>
+      <td>-1.1% / 101.1% (1730/1749); blk 2</td>
+      <td>-1.0% / 101.0% (1731/1749); blk 2</td>
+    </tr>
+    <tr>
+      <td><code>activity6</code></td>
+      <td>+0.1% / 99.9% (912/911)</td>
+      <td>+0.1% / 99.9% (912/911)</td>
+    </tr>
+    <tr>
+      <td><code>activity7</code></td>
+      <td>-0.5% / 100.5% (593/596)</td>
+      <td>-0.3% / 100.3% (594/596)</td>
+    </tr>
+    <tr>
+      <td><code>activity8</code></td>
+      <td>-0.7% / 100.7% (898/904); blk 1</td>
+      <td>-0.6% / 100.6% (899/904); blk 2</td>
+    </tr>
+    <tr>
+      <td><code>activity9</code></td>
+      <td>+2.2% / 97.9% (2101/2056); due 2; blk 44</td>
+      <td>+1.8% / 98.2% (2093/2056); due 5; blk 43</td>
+    </tr>
+    <tr>
+      <td><code>activity10</code></td>
+      <td>+0.0% / 100.0% (1259/1259); due 1; blk 7</td>
+      <td>-0.1% / 100.1% (1255/1256); due 2; blk 17</td>
+    </tr>
+    <tr>
+      <td><code>activity11</code></td>
+      <td>+0.5% / 99.5% (1729/1720); due 1; blk 10</td>
+      <td>+0.7% / 99.3% (1729/1717); due 1; blk 14</td>
+    </tr>
+    <tr>
+      <td><code>activity12</code></td>
+      <td>-0.1% / 100.1% (1411/1412); blk 7</td>
+      <td>-0.1% / 100.1% (1409/1411); due 1; blk 10</td>
+    </tr>
+    <tr>
+      <td><code>building1</code></td>
+      <td>+2.1% / 98.0% (794/778); blk 21</td>
+      <td>+1.9% / 98.1% (794/779); blk 21</td>
+    </tr>
+    <tr>
+      <td><code>building2</code></td>
+      <td>+14.9% / 87.1% (1476/1285); due 37; blk 286</td>
+      <td>+14.6% / 87.2% (1465/1278); due 40; blk 279</td>
+    </tr>
+    <tr>
+      <td><code>building3</code></td>
+      <td>-0.1% / 100.1% (5460/5465)</td>
+      <td>-0.1% / 100.1% (5460/5465)</td>
+    </tr>
+    <tr>
+      <td><code>building4</code></td>
+      <td>+7.6% / 92.9% (2985/2774); due 40; blk 285</td>
+      <td>+7.1% / 93.4% (2981/2784); due 14; blk 199</td>
+    </tr>
+    <tr>
+      <td><code>building5</code></td>
+      <td>-0.1% / 100.1% (3343/3348); blk 5</td>
+      <td>-0.1% / 100.1% (3345/3347); blk 8</td>
+    </tr>
+    <tr>
+      <td><code>building6</code></td>
+      <td>+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
+      <td>+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
+    </tr>
+    <tr>
+      <td><code>building7</code></td>
+      <td>-0.0% / 100.0% (3132/3133); blk 9</td>
+      <td>-0.1% / 100.1% (3130/3133); blk 7</td>
+    </tr>
+    <tr>
+      <td><code>fishing1</code></td>
+      <td>-0.6% / 100.6% (1068/1074); blk 2</td>
+      <td>-0.7% / 100.7% (1067/1074); blk 1</td>
+    </tr>
+    <tr>
+      <td><code>fishing2</code></td>
+      <td>-0.1% / 100.1% (1761/1763); blk 6</td>
+      <td>-0.3% / 100.3% (1759/1765); blk 3</td>
+    </tr>
+    <tr>
+      <td><code>fishing3</code></td>
+      <td>+0.4% / 99.6% (1960/1952); due 1; blk 18</td>
+      <td>+0.1% / 99.9% (1956/1954); blk 6</td>
+    </tr>
+    <tr>
+      <td><code>fishing4</code></td>
+      <td>-0.8% / 100.8% (835/842); blk 2</td>
+      <td>-1.1% / 101.1% (834/843)</td>
+    </tr>
+    <tr>
+      <td><code>fishing5</code></td>
+      <td>-0.6% / 100.6% (885/890)</td>
+      <td>-0.6% / 100.6% (885/890)</td>
+    </tr>
+    <tr>
+      <td><code>fishing6</code></td>
+      <td>-1.2% / 101.2% (744/753)</td>
+      <td>-1.2% / 101.2% (744/753)</td>
+    </tr>
+    <tr>
+      <td><code>fishing7</code></td>
+      <td>-1.4% / 101.4% (715/725)</td>
+      <td>-1.4% / 101.4% (715/725)</td>
+    </tr>
+    <tr>
+      <td><code>fishing8</code></td>
+      <td>-0.8% / 100.8% (1243/1253)</td>
+      <td>-0.8% / 100.8% (1243/1253)</td>
+    </tr>
+    <tr>
+      <td><code>johnny1</code></td>
+      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
+      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
+    </tr>
+    <tr>
+      <td><code>johnny2</code></td>
+      <td>+0.6% / 99.4% (1761/1751); due 3; blk 16</td>
+      <td>+0.5% / 99.5% (1758/1750); due 3; blk 16</td>
+    </tr>
+    <tr>
+      <td><code>johnny3</code></td>
+      <td>-0.3% / 100.3% (1158/1161); due 1; blk 10</td>
+      <td>-0.8% / 100.8% (1157/1166)</td>
+    </tr>
+    <tr>
+      <td><code>johnny4</code></td>
+      <td>-0.8% / 100.8% (1204/1214)</td>
+      <td>-0.8% / 100.8% (1204/1214)</td>
+    </tr>
+    <tr>
+      <td><code>johnny5</code></td>
+      <td>-1.1% / 101.1% (811/820)</td>
+      <td>-1.2% / 101.2% (810/820)</td>
+    </tr>
+    <tr>
+      <td><code>johnny6</code></td>
+      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
+      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
+    </tr>
+    <tr>
+      <td><code>mary1</code></td>
+      <td>+0.8% / 99.2% (4867/4830); due 2; blk 47</td>
+      <td>+0.4% / 99.6% (4860/4840); due 1; blk 31</td>
+    </tr>
+    <tr>
+      <td><code>mary2</code></td>
+      <td>+0.2% / 99.8% (2250/2246); blk 4</td>
+      <td>+0.3% / 99.7% (2253/2246); blk 7</td>
+    </tr>
+    <tr>
+      <td><code>mary3</code></td>
+      <td>validated; perf refresh pending</td>
+      <td>validated; perf refresh pending</td>
+    </tr>
+    <tr>
+      <td><code>mary4</code></td>
+      <td>-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
+      <td>-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
+    </tr>
+    <tr>
+      <td><code>mary5</code></td>
+      <td>+0.6% / 99.4% (1591/1582); blk 8</td>
+      <td>+0.5% / 99.5% (1590/1582); blk 7</td>
+    </tr>
+    <tr>
+      <td><code>miscgag1</code></td>
+      <td>-0.8% / 100.8% (953/961)</td>
+      <td>-0.8% / 100.8% (953/961)</td>
+    </tr>
+    <tr>
+      <td><code>miscgag2</code></td>
+      <td>-0.3% / 100.3% (1352/1356)</td>
+      <td>-0.3% / 100.3% (1352/1356)</td>
+    </tr>
+    <tr>
+      <td><code>stand1</code></td>
+      <td>-4.0% / 104.1% (194/202)</td>
+      <td>-4.0% / 104.1% (194/202)</td>
+    </tr>
+    <tr>
+      <td><code>stand2</code></td>
+      <td>-2.0% / 102.1% (480/490)</td>
+      <td>-2.0% / 102.1% (480/490)</td>
+    </tr>
+    <tr>
+      <td><code>stand3</code></td>
+      <td>-1.8% / 101.8% (547/557)</td>
+      <td>-1.8% / 101.8% (547/557)</td>
+    </tr>
+    <tr>
+      <td><code>stand4</code></td>
+      <td>-1.5% / 101.5% (1202/1220)</td>
+      <td>-1.2% / 101.2% (1203/1218); blk 3</td>
+    </tr>
+    <tr>
+      <td><code>stand5</code></td>
+      <td>-1.2% / 101.2% (1442/1460)</td>
+      <td>-1.2% / 101.2% (1442/1460)</td>
+    </tr>
+    <tr>
+      <td><code>stand6</code></td>
+      <td>-1.3% / 101.3% (1346/1364)</td>
+      <td>-1.3% / 101.3% (1346/1364)</td>
+    </tr>
+    <tr>
+      <td><code>stand7</code></td>
+      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.3% / 103.5% (520/538)</td>
+    </tr>
+    <tr>
+      <td><code>stand8</code></td>
+      <td>-3.2% / 103.3% (483/499); blk 2</td>
+      <td>-3.2% / 103.3% (483/499); blk 2</td>
+    </tr>
+    <tr>
+      <td><code>stand9</code></td>
+      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.0% / 103.1% (522/538)</td>
+    </tr>
+    <tr>
+      <td><code>stand10</code></td>
+      <td>-1.9% / 101.9% (528/538)</td>
+      <td>-1.9% / 101.9% (528/538)</td>
+    </tr>
+    <tr>
+      <td><code>stand11</code></td>
+      <td>-1.9% / 101.9% (528/538)</td>
+      <td>-1.9% / 101.9% (528/538)</td>
+    </tr>
+    <tr>
+      <td><code>stand12</code></td>
+      <td>-0.6% / 100.6% (1450/1459); blk 1</td>
+      <td>-0.7% / 100.7% (1450/1460)</td>
+    </tr>
+    <tr>
+      <td><code>stand15</code></td>
+      <td>-1.8% / 101.8% (444/452)</td>
+      <td>-1.8% / 101.8% (444/452)</td>
+    </tr>
+    <tr>
+      <td><code>stand16</code></td>
+      <td>+0.2% / 99.8% (473/472)</td>
+      <td>+0.2% / 99.8% (473/472)</td>
+    </tr>
+    <tr>
+      <td><code>suzy1</code></td>
+      <td>metadata-only</td>
+      <td>metadata-only</td>
+    </tr>
+    <tr>
+      <td><code>suzy2</code></td>
+      <td>metadata-only</td>
+      <td>metadata-only</td>
+    </tr>
+    <tr>
+      <td><code>visitor1</code></td>
+      <td>-0.7% / 100.7% (672/677)</td>
+      <td>-0.7% / 100.7% (672/677)</td>
+    </tr>
+    <tr>
+      <td><code>visitor3</code></td>
+      <td>+42.9% / 70.0% (1450/1015); due 31; blk 355</td>
+      <td>+43.5% / 69.7% (1452/1012); due 32; blk 361</td>
+    </tr>
+    <tr>
+      <td><code>visitor4</code></td>
+      <td>-0.9% / 100.9% (424/428)</td>
+      <td>-0.9% / 100.9% (424/428)</td>
+    </tr>
+    <tr>
+      <td><code>visitor5</code></td>
+      <td>+1.9% / 98.1% (1111/1090); blk 12</td>
+      <td>+2.0% / 98.0% (1112/1090); blk 12</td>
+    </tr>
+    <tr>
+      <td><code>visitor6</code></td>
+      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
+      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
+    </tr>
+    <tr>
+      <td><code>visitor7</code></td>
+      <td>-0.4% / 100.4% (1619/1625)</td>
+      <td>-0.4% / 100.4% (1619/1625)</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf1</code></td>
+      <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
+      <td>+15.5% / 86.6% (1614/1397); due 49; blk 276</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf2</code></td>
+      <td>-2.2% / 102.2% (451/461)</td>
+      <td>-2.2% / 102.2% (451/461)</td>
+    </tr>
+    <tr>
+      <td><code>walkstuf3</code></td>
+      <td>+1.9% / 98.1% (2321/2278); due 6; blk 68</td>
+      <td>+1.1% / 98.9% (2321/2295); due 5; blk 40</td>
+    </tr>
+  </tbody>
+</table>
 Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:
 
@@ -430,7 +713,7 @@ gfx.restore_bytes = 251,144
 gfx.upload_bytes  = 8,643,840
 ```
 
-The canary now has only two visible CD/refill VBlanks, but the full battle card still has
+The FISHING1 canary remains under target, but the full battle card still has
 CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `activity9`,
 `building4`, `building6`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
@@ -438,10 +721,10 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
-1. **Generated read grouping or setup segmentation for residual indexed8
-  packs.** VISITOR3 remains the largest gap at `+445/+444` VBlanks and
-   WALKSTUF1 still has `blocking_vb=297/304`, so the next CD-shape pass
-   needs generated cost metadata rather than hand-authored ranges.
+1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
+   largest gap at `+440/+435` VBlanks, and WALKSTUF1 still has
+   `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
+   pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.

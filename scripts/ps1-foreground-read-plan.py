@@ -115,6 +115,63 @@ def phase_risk_hint(fully_covered_reads: list[dict[str, Any]]) -> str:
     return "medium-validate-phase"
 
 
+def gap_slack_class(gap_s: float | None) -> str:
+    if gap_s is None:
+        return "unknown"
+    if gap_s < 0.20:
+        return "tight"
+    if gap_s < 0.50:
+        return "short"
+    if gap_s < 1.00:
+        return "medium"
+    return "long"
+
+
+def read_seek_direction(reads: list[dict[str, Any]]) -> str:
+    lbas = [
+        int(segment["lba"])
+        for segment in reads
+        if isinstance(segment.get("lba"), int)
+    ]
+    if len(lbas) < 2:
+        return "single-or-unknown"
+
+    deltas = [later - earlier for earlier, later in zip(lbas, lbas[1:])]
+    if all(delta >= 0 for delta in deltas):
+        return "forward"
+    if all(delta <= 0 for delta in deltas):
+        return "reverse"
+    return "mixed"
+
+
+def visible_cd_cost_class(saved_reads: int,
+                          append_start_fireable: bool,
+                          first_gap_class: str,
+                          internal_gap_class: str,
+                          partial_touch_count: int,
+                          overread_sectors: int,
+                          seek_direction: str) -> str:
+    if saved_reads <= 0:
+        return "reject:no-saved-read"
+    if not append_start_fireable:
+        return "reject:no-observed-append-start"
+    if first_gap_class == "tight" or internal_gap_class == "tight":
+        return "unsafe:tight-visible-gap"
+    if seek_direction in ("reverse", "mixed"):
+        return "risky:seek-direction"
+    if partial_touch_count >= 2:
+        return "risky:multi-partial-overlap"
+    if overread_sectors > 4:
+        return "risky:overread"
+    if first_gap_class == "short" or internal_gap_class == "short":
+        return "risky:short-visible-gap"
+    if partial_touch_count > 0 or overread_sectors > 0:
+        return "balanced:validate-overlap"
+    if first_gap_class == "long" and internal_gap_class in ("long", "medium", "unknown"):
+        return "safe:long-visible-gap"
+    return "balanced:medium-visible-gap"
+
+
 def candidate_visible_cost(start: int, end: int,
                            fully_covered_reads: list[dict[str, Any]],
                            touched_reads: list[dict[str, Any]],
@@ -140,6 +197,18 @@ def candidate_visible_cost(start: int, end: int,
     )
     group_sectors = end - start
     overread_sectors = max(0, group_sectors - observed_sectors)
+    first_gap_class = gap_slack_class(first_gap)
+    internal_gap_class = gap_slack_class(min_internal_gap)
+    seek_direction = read_seek_direction(fully_covered_reads)
+    visible_cd_class = visible_cd_cost_class(
+        saved_reads,
+        append_start_fireable,
+        first_gap_class,
+        internal_gap_class,
+        partial_touch_count,
+        overread_sectors,
+        seek_direction,
+    )
 
     risk = 0
     reasons: list[str] = []
@@ -194,6 +263,10 @@ def candidate_visible_cost(start: int, end: int,
         "visible_safety_score": safety_score,
         "visible_risk_score": risk,
         "visible_risk_hint": hint,
+        "visible_cd_cost_class": visible_cd_class,
+        "first_gap_slack_class": first_gap_class,
+        "internal_gap_slack_class": internal_gap_class,
+        "read_seek_direction": seek_direction,
         "visible_risk_reasons": reasons,
         "partial_touch_count": partial_touch_count,
         "observed_read_sectors": observed_sectors,
@@ -201,6 +274,87 @@ def candidate_visible_cost(start: int, end: int,
         "first_prev_gap_s": round(first_gap, 4) if first_gap is not None else None,
         "min_internal_gap_s": round(min_internal_gap, 4) if min_internal_gap is not None else None,
         "max_internal_gap_s": round(max_internal_gap, 4) if max_internal_gap is not None else None,
+    }
+
+
+def runtime_group_metadata(start: int, end: int,
+                           saved_reads: int,
+                           append_start_fireable: bool,
+                           runtime_group_capacity_sectors: int) -> dict[str, Any]:
+    sectors = end - start
+    capacity = max(0, runtime_group_capacity_sectors)
+    fits_current_group_path = (
+        saved_reads > 0 and
+        append_start_fireable and
+        capacity > 0 and
+        sectors <= capacity
+    )
+    if saved_reads <= 0:
+        metadata_class = "reject:no-saved-read"
+    elif not append_start_fireable:
+        metadata_class = "needs-new-append-start"
+    elif capacity <= 0:
+        metadata_class = "needs-runtime-group-capacity"
+    elif sectors > capacity:
+        metadata_class = "needs-scheduler-or-larger-group-window"
+    else:
+        metadata_class = "current-read-group-compatible"
+    return {
+        "runtime_group_capacity_sectors": capacity,
+        "runtime_current_group_fit": fits_current_group_path,
+        "runtime_metadata_class": metadata_class,
+    }
+
+
+def scheduler_retry_metadata(item: dict[str, Any]) -> dict[str, Any]:
+    saved_reads = int(item.get("estimated_saved_reads") or 0)
+    if saved_reads <= 0:
+        retry_class = "reject:no-saved-read"
+    elif not item.get("append_start_fireable"):
+        retry_class = "reject:no-observed-append-start"
+    elif item.get("runtime_metadata_class") != "current-read-group-compatible":
+        retry_class = "needs-generated-or-larger-group-window"
+    else:
+        cd_class = str(item.get("visible_cd_cost_class") or "")
+        risk_reasons = set(item.get("visible_risk_reasons") or [])
+        hidden_refill_reasons = {
+            "tight-internal-gap",
+            "short-internal-gap",
+            "group-overread",
+            "partial-read-overlap",
+        }
+        if cd_class.startswith("safe:"):
+            retry_class = "standalone-candidate"
+        elif cd_class.startswith("balanced:") or cd_class == "risky:short-visible-gap":
+            retry_class = "scheduler-owned-candidate"
+        else:
+            retry_class = "high-risk:scheduler-only"
+
+    notes = {
+        "standalone-candidate": "current table may promote under strict no-regression gate",
+        "scheduler-owned-candidate": "visible timing may improve, but refill/overlap risk should be scheduler-owned",
+        "high-risk:scheduler-only": "do not test as a standalone table",
+        "needs-generated-or-larger-group-window": "requires metadata or a larger retained window before runtime can fire",
+        "reject:no-observed-append-start": "runtime will not fire from the current append start",
+        "reject:no-saved-read": "no expected read-count win",
+    }
+    return {
+        "scheduler_retry_class": retry_class,
+        "scheduler_retry_note": notes.get(retry_class, ""),
+    }
+
+
+def read_segment_summary(segment: dict[str, Any]) -> dict[str, Any]:
+    """Keep the generated read-plan JSON self-contained for runtime metadata."""
+    return {
+        "read_index": segment.get("index"),
+        "line": segment.get("line"),
+        "lba": segment.get("lba"),
+        "sectors": segment.get("sectors"),
+        "file_sector_start": segment.get("file_sector_start"),
+        "file_sector_end": segment.get("file_sector_end"),
+        "inferred_sectors": segment.get("inferred_sectors"),
+        "prev_time_delta_s": segment.get("prev_time_delta_s"),
     }
 
 
@@ -365,6 +519,14 @@ def parse_source_setup_policy() -> dict[str, Any]:
         policy["setup_prime_max_resident_bytes"] = symbols[
             "FG_SETUP_PRIME_MAX_RESIDENT_BYTES"
         ]
+    if "FG_PREFETCH_DEFAULT_WINDOW_BYTES" in symbols:
+        policy["default_window_bytes"] = symbols[
+            "FG_PREFETCH_DEFAULT_WINDOW_BYTES"
+        ]
+    if "FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES" in symbols:
+        policy["visitor3_setup_prime_max_resident_bytes"] = symbols[
+            "FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES"
+        ]
     if "FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES" in symbols:
         policy["walkstuf1_high_window_bytes"] = symbols[
             "FG_WALKSTUF1_HIGH_RESIDUAL_WINDOW_BYTES"
@@ -425,10 +587,14 @@ def parse_source_setup_policy() -> dict[str, Any]:
     return policy
 
 
-def clamp_setup_prime_bytes(source_policy: dict[str, Any], requested: int | None) -> int:
+def clamp_setup_prime_bytes(
+    source_policy: dict[str, Any],
+    requested: int | None,
+    cap_override: int | None = None,
+) -> int:
     if requested is None or requested <= 0:
         return 0
-    cap = source_policy.get("setup_prime_max_resident_bytes")
+    cap = cap_override if cap_override is not None else source_policy.get("setup_prime_max_resident_bytes")
     if isinstance(cap, int) and cap > 0 and requested > cap:
         return cap
     return int(requested)
@@ -492,19 +658,24 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
         segments = source_policy.get("fishing3_high_segments") or [(67, 73)]
         return clamp_setup_prime_bytes(source_policy, prime or 128 * 1024), list(segments), "auto:fishing3-high"
     if scene_name == "visitor3":
+        cap = source_policy.get("visitor3_setup_prime_max_resident_bytes")
+        visitor3_cap = cap if isinstance(cap, int) and cap > 0 else None
         if lowtide:
             prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
             if prime is None:
                 prime = source_policy.get("visitor3_low_prime_bytes")
-            return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024), [], "auto:visitor3-low"
+            return clamp_setup_prime_bytes(source_policy, prime or 208 * 1024, visitor3_cap), [], "auto:visitor3-low"
         prime = runtime_setup_prime_bytes(source_policy, scene_name, lowtide)
         if prime is None:
             prime = source_policy.get("visitor3_high_prime_bytes")
-        return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024), [], "auto:visitor3-high"
-    if scene_name == "walkstuf1" and scene.get("fmt") == "fgp3_indexed8_residual":
-        normal = source_policy.get(
-            "walkstuf1_low_window_bytes" if lowtide else "walkstuf1_high_window_bytes"
-        )
+        return clamp_setup_prime_bytes(source_policy, prime or 216 * 1024, visitor3_cap), [], "auto:visitor3-high"
+    if scene_name == "walkstuf1":
+        if scene.get("fmt") == "fgp3_indexed8_residual":
+            normal = source_policy.get(
+                "walkstuf1_low_window_bytes" if lowtide else "walkstuf1_high_window_bytes"
+            )
+        else:
+            normal = source_policy.get("default_window_bytes")
         base = source_policy.get("walkstuf1_setup_prime_base_bytes")
         trim = 0 if lowtide else source_policy.get("walkstuf1_high_setup_prime_trim_bytes")
         if isinstance(normal, int) and isinstance(base, int) and isinstance(trim, int):
@@ -594,7 +765,8 @@ def read_segments_from_log(cdlog: Any, log_path: Path | None, pack_lba: int | No
 
 def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, Any]],
                    coverage_ranges: list[tuple[int, int]], pack_sectors: int,
-                   window_sectors: int, top: int) -> list[dict[str, Any]]:
+                   window_sectors: int, top: int,
+                   runtime_group_capacity_sectors: int = 0) -> list[dict[str, Any]]:
     candidates: list[dict[str, Any]] = []
     uncovered_append_starts = sorted({
         int(segment["file_sector_start"])
@@ -675,6 +847,14 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             touched_reads,
             bool(append_start_reads),
         )
+        saved_reads = max(0, len(fully_covered_reads) - 1)
+        runtime_metadata = runtime_group_metadata(
+            start,
+            end,
+            saved_reads,
+            bool(append_start_reads),
+            runtime_group_capacity_sectors,
+        )
         candidates.append({
             "start_sector": start,
             "end_sector": end,
@@ -686,7 +866,7 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "first_entry": covered_entries[0]["index"] if covered_entries else None,
             "last_entry": covered_entries[-1]["index"] if covered_entries else None,
             "fully_covered_read_count": len(fully_covered_reads),
-            "estimated_saved_reads": max(0, len(fully_covered_reads) - 1),
+            "estimated_saved_reads": saved_reads,
             "touched_read_count": len(touched_reads),
             "estimated_read_vblanks": round(read_vblank_estimate, 2),
             "min_prev_gap_s": round(min(read_gaps), 4) if read_gaps else None,
@@ -694,12 +874,26 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
             "avg_prev_gap_s": round(sum(read_gaps) / len(read_gaps), 4) if read_gaps else None,
             "phase_risk_hint": phase_risk_hint(fully_covered_reads),
             "source_read_indices": [segment.get("index") for segment in fully_covered_reads],
+            "source_read_segments": [
+                read_segment_summary(segment)
+                for segment in fully_covered_reads
+            ],
+            "touched_read_segments": [
+                read_segment_summary(segment)
+                for segment in touched_reads
+            ],
             "append_start_fireable": bool(append_start_reads),
             "append_start_read_indices": [segment.get("index") for segment in append_start_reads],
+            "append_start_read_segments": [
+                read_segment_summary(segment)
+                for segment in append_start_reads
+            ],
             "nearest_observed_append_start_sector": nearest_append_start,
             "nearest_observed_append_delta_sectors": nearest_append_delta,
             **visible_cost,
+            **runtime_metadata,
         })
+        candidates[-1].update(scheduler_retry_metadata(candidates[-1]))
 
     candidates.sort(
         key=lambda item: (
@@ -716,7 +910,8 @@ def candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, 
 
 def visible_candidate_rows(entries: list[dict[str, Any]], read_segments: list[dict[str, Any]],
                            coverage_ranges: list[tuple[int, int]], pack_sectors: int,
-                           window_sectors: int, top: int) -> list[dict[str, Any]]:
+                           window_sectors: int, top: int,
+                           runtime_group_capacity_sectors: int = 0) -> list[dict[str, Any]]:
     candidates = candidate_rows(
         entries,
         read_segments,
@@ -724,6 +919,7 @@ def visible_candidate_rows(entries: list[dict[str, Any]], read_segments: list[di
         pack_sectors,
         window_sectors,
         top=max(top * 8, top),
+        runtime_group_capacity_sectors=runtime_group_capacity_sectors,
     )
     candidates.sort(
         key=lambda item: (
@@ -757,6 +953,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         pack_sectors = int(math.ceil(int(pack.get("bytes", 0)) / SECTOR_SIZE))
 
     source_policy = parse_source_setup_policy()
+    runtime_group_capacity_sectors = 0
+    group_bytes = source_policy.get("symbols", {}).get("FG_PREFETCH_GROUP_WINDOW_BYTES")
+    if isinstance(group_bytes, int) and group_bytes > 0:
+        runtime_group_capacity_sectors = int(math.ceil(group_bytes / SECTOR_SIZE))
     data_offset = int(header.get("data_offset", 0))
 
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
@@ -809,12 +1009,14 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
     candidate_sets = {
         str(window): candidate_rows(entries, read_segments, coverage_ranges,
-                                    pack_sectors, window, args.top)
+                                    pack_sectors, window, args.top,
+                                    runtime_group_capacity_sectors=runtime_group_capacity_sectors)
         for window in args.candidate_sectors
     }
     visible_candidate_sets = {
         str(window): visible_candidate_rows(entries, read_segments, coverage_ranges,
-                                            pack_sectors, window, args.top)
+                                            pack_sectors, window, args.top,
+                                            runtime_group_capacity_sectors=runtime_group_capacity_sectors)
         for window in args.candidate_sectors
     }
 
@@ -849,6 +1051,10 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "prime_range": [prime_start, prime_end],
             "setup_segments": [[start, end] for start, end in segment_ranges],
             "merged_ranges": [[start, end] for start, end in coverage_ranges],
+        },
+        "runtime_grouping": {
+            "current_group_capacity_sectors": runtime_group_capacity_sectors,
+            "current_group_capacity_bytes": runtime_group_capacity_sectors * SECTOR_SIZE,
         },
         "observed_reads": {
             "after_pack_locate_segments": len(read_segments),
@@ -944,13 +1150,18 @@ def print_human(report: dict[str, Any]) -> None:
                 f"{item['start_sector']}:{item['end_sector']} "
                 f"score={item['visible_safety_score']} "
                 f"hint={item['visible_risk_hint']} "
+                f"cd={item.get('visible_cd_cost_class')} "
                 f"saved={item['estimated_saved_reads']} "
                 f"risk={item['visible_risk_score']} "
                 f"partial={item['partial_touch_count']} "
                 f"overread={item['group_overread_sectors']} "
                 f"first_gap={first_gap} "
                 f"internal_min={internal_min} "
+                f"seek={item.get('read_seek_direction')} "
                 f"fire={'yes' if item['append_start_fireable'] else 'no'} "
+                f"fit={'yes' if item.get('runtime_current_group_fit') else 'no'} "
+                f"class={item.get('runtime_metadata_class')} "
+                f"scheduler={item.get('scheduler_retry_class')} "
                 f"reads={item['source_read_indices']}"
             )
 

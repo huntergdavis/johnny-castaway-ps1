@@ -1,31 +1,110 @@
 # PS1 Performance Next 100
 
-Date: 2026-04-27
+Date: 2026-05-06
 
 Current accepted fishing1 high-tide canary baseline:
 
 | Metric | Value |
 |---|---:|
-| `loop_vb` | `1068` |
-| `target_vb` | `1074` |
+| `loop_vb` | `1069` |
+| `target_vb` | `1072` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.56%` |
-| `blocking_vb` | `2` |
-| `prefetch_overrun_vb` | `2` |
+| `remaining_over_target` | `-0.28%` |
+| `blocking_vb` | `5` |
+| `prefetch_overrun_vb` | `6` |
 | `loop_reads` | `20` |
-| `upload_bytes` | `8643840` |
+| `upload_bytes` | `10648960` |
 | `restore_bytes` | `251144` |
 | `prefetch_buffer` | `137048` bytes for current fishing1 high-tide FGP3 playback |
-| `jcreborn.exe` | `169984` bytes |
-| `jcreborn.elf` | `796312` bytes |
+| `jcreborn.exe` | `215040` bytes |
+| `jcreborn.elf` | `954648` bytes |
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `0.8692%`
-over target / `99.4529%` target speed across `120` timing-bearing rows after
-the `activity9-lowgroup-v072c` optimization. The largest
-remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, ACTIVITY9,
-BUILDING4, BUILDING6, and generated selective preprocessing, not FISHING1.
+or long-run heap stability. The current all-scene battle card is `0.8231%`
+over target / `99.4858%` target speed across `120` timing-bearing rows after
+the `building5-fgp3-padded-v080` optimization. The largest remaining
+absolute gaps are now VISITOR3, WALKSTUF1 low, BUILDING4, WALKSTUF1 high,
+BUILDING2, BUILDING6, and generated selective preprocessing, not FISHING1.
+
+Latest promoted VISITOR3 baseline: keep the scene-local `192 KiB` setup-prime
+resident cap with the global setup-prime cap still at `128 KiB`, plus the
+accepted low-tide `170..186` grouped append. It improves
+VISITOR3 high from `1455/1010` to `1450/1015`, lowers blocking `361 -> 355`,
+lowers prefetch overrun `21 -> 14`, and lowers loop reads `52 -> 45`. It also
+improves VISITOR3 low from `1453/1009` to `1452/1012`, lowers blocking
+`365 -> 361`, lowers prefetch overrun `23 -> 19`, and lowers loop reads
+`51 -> 49`. Do not generalize this cap or group before canaries prove the
+memory residency and append cadence are safe for other scenes.
+
+Rejected cap edge: `196 KiB` regressed high-tide loop `1450 -> 1454`, overrun
+`435 -> 440`, blocking `355 -> 356`, and prefetch overrun `14 -> 17`; `200 KiB`
+regressed loop `1450 -> 1452` and overrun `435 -> 437` despite lowering
+blocking `355 -> 353`; `208 KiB` regressed overrun `435 -> 436`, blocking
+`355 -> 359`, and loop reads `45 -> 49` despite lowering prefetch overrun
+`14 -> 13`. Treat `192 KiB` as the closed accepted cap. The next VISITOR3 work
+should be scheduler-owned CD timing or selective pack/data-shape preprocessing.
+
+Rejected post-cap standalone group: `{158,170}` saved one nominal VISITOR3 high
+read (`45 -> 44`) but regressed loop `1450 -> 1453`, overrun `435 -> 438`,
+blocking `355 -> 357`, and prefetch overrun `14 -> 16`. Do not retry more
+current-fit VISITOR3 groups as source tables; the planner's scheduler-owned
+classification is now confirmed after setup-prime.
+
+Rejected low-tide small group: `{126,132}` stayed exact-flat after the accepted
+`170..186` append (`1452/1012`, blocking `361`, prefetch overrun `19`, loop
+reads `49`). This closes the smallest fireable tight-gap low-tide probe too;
+VISITOR3 should now move away from raw standalone append tables.
+
+Latest promoted WALKSTUF1 baseline: keep the PAL4/FGP2 setup-prime policy that
+applies the existing `88 KiB` setup-prime base to WALKSTUF1 even though the
+validated packs are not indexed8 residual packs. High tide improves from
+`1640/1406` to `1595/1403`, lowers overrun `234 -> 192`, blocking
+`318 -> 278`, prefetch overrun `67 -> 50`, loop reads `144 -> 136`, and
+loop read VBlanks `663 -> 601`. Low tide improves from `1631/1414` to
+`1614/1397`, lowers blocking `296 -> 276`, prefetch overrun `60 -> 59`,
+loop reads `147 -> 134`, loop read VBlanks `660 -> 605`, and due misses
+`55 -> 49`; target accounting moved with the loop, so overrun stayed `217`.
+Canaries stayed exact-flat for FISHING1 high, VISITOR3 low, and BUILDING2 low.
+Read-plan setup coverage now reports `auto:walkstuf1-*` instead of `none`.
+
+Rejected setup-owned hot segment: priming VISITOR3 high sectors `158..170`
+during setup and retaining that segment for multiple entry copies still
+regressed loop `1450 -> 1451`, overrun `435 -> 438`, and prefetch overrun
+`14 -> 19` with blocking flat at `355`. Do not retry setup segments as a local
+VISITOR3 fix; the extra resident bytes/read cadence still perturb the active
+schedule. The next VISITOR3 work should be generated scheduler metadata or a
+pack/data-shape change that reduces upload/CD work rather than relocating the
+same sector cluster into setup.
+
+Rejected post-cap larger group: VISITOR3 high `{146,170}` proved that simply
+using the larger retained setup-prime buffer as group capacity is not enough.
+It saved three reads (`45 -> 42`) but regressed loop `1450 -> 1456`, blocking
+`355 -> 358`, and prefetch overrun `14 -> 18`. Do not retry 24-sector
+VISITOR3 high groups through the current append path; the scheduler needs a
+first-class budget/ownership change before larger generated groups are viable.
+
+Rejected local direct-stage cap: VISITOR3 high with a scene-local `16 KiB`
+tight-slack direct-stage cap stayed exact-flat against the accepted 192 KiB
+setup-prime baseline (`scene_vb=1746`, `loop_vb=1450`, `blocking_vb=355`,
+`prefetch_overrun_vb=14`, `loop_reads=45`) while shifting hot foreground code.
+Do not retry VISITOR3 direct-stage caps without generated coverage metadata.
+
+Rejected BUILDING2 high setup-prime: a high-only `64 KiB` contiguous setup
+window improved raw active-loop time (`loop_vb 1468 -> 1457`) and prefetch
+overrun (`56 -> 42`), but failed the full gate by regressing overrun
+`183 -> 186`, visible blocking `301 -> 324`, and target accounting
+`1285 -> 1271`. Do not retry contiguous BUILDING2 high setup-prime sizing as
+a local source knob; the next BUILDING2 high path should be scheduler-owned
+refill timing, segmented/prepared coverage, or data-shape preprocessing.
+
+Rejected WALKSTUF3 low padded FGP3: the size gate looked good
+(`986873 -> 811444` payload bytes inside the same `994669` byte file), and
+runtime CD pressure improved (`loop_reads 72 -> 61`, `blocking_vb 45 -> 43`,
+`prefetch_overrun_vb 25 -> 19`), but full timing regressed by one VBlank
+(`scene_vb 2583 -> 2584`, `loop_vb 2320 -> 2321`). Do not promote one-sided
+WALKSTUF3 low FGP3 conversion; retry only if paired high/low conversion,
+setup residency, or scheduler ownership preserves total timing.
 
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
@@ -154,6 +233,31 @@ The current v0.7.2 default-`O2` retest of `src/holidays.c` is rejected:
 FISHING1 showed the same visible regression pattern while the ELF grew by
 `3472` bytes and the holidays object grew `25440 -> 30008`. Keep the
 translation unit at `-Os`.
+The current v0.8.0 default-`O2` retest of `src/ps1_debug.c` is rejected:
+against the refreshed `v080-current-fishing1-baseline`, FISHING1 stayed
+exact-flat at `1069/1073`, but ELF grew `954192 -> 954632` with no timing or
+work-volume win. Keep the translation unit at `-Os`.
+The current v0.8.0 default-`O2` retest of `src/utils.c` is rejected:
+FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 955436` and
+tracked hot symbols shifted by `+20` bytes. Keep the translation unit at
+`-Os`.
+The current v0.8.0 default-`O2` retest of `src/island.c` is rejected:
+FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954492` and
+tracked graphics/CD symbols shifted by `+48` bytes. Keep the translation unit
+at `-Os`; the normal cold compiler-flag queue is exhausted, leaving only
+review-only/default-off surfaces unless the link layout changes materially.
+The current v0.8.0 default-`O2` retest of `src/ps1_pad_script.c` is rejected:
+FISHING1 stayed exact-flat at `1069/1073`, but ELF grew `954192 -> 954248` and
+tracked CD helper symbols shifted by `+36` bytes. Keep the translation unit at
+`-Os`.
+The current v0.8.0 default-`O2` retest of `src/scene_freeplay.c` is rejected:
+it grew the PS-EXE bucket `215040 -> 217088`, shifted `FISHING1.FG2` LBA
+`434 -> 435`, and grew ELF `954192 -> 960236` with no timing win. Keep the
+translation unit at `-Os`.
+The current v0.8.0 default-`O2` retest of `src/scene_picker.c` is rejected:
+FISHING1 stayed exact-flat with fixed tracked hot symbols, but ELF grew
+`954192 -> 955976` with no timing or work-volume win. Keep the translation unit
+at `-Os`; the `-O2` audit queue is exhausted.
 The same unbuffered helper now also caches its file LBA once, shrinking it by
 another 32 bytes and ELF to `712332` with exact playback identity.
 Function-scoped `-Os` on `fgRuntimeFillWindowForEntry()` is rejected as an
@@ -674,7 +778,7 @@ display, tearing, frame drops, or weakened pause input.
 | 3 | Harness | Add a non-promotable trace binary for per-read frame/slack class logging. | Inline CD histograms perturb the speed binary. | Trace build explains the remaining visible read and setup-prime ownership without changing the accepted binary. |
 | 4 | Harness | Add host-side correlation from DuckStation read timestamps to frame indices. | Current CD log has LBAs but not the exact runtime frame owner. | We can prove the FGP3 zero-pressure path stays zero and name any setup-prime or cross-scene read that reintroduces pressure. |
 | 5 | Harness | Add optional full-frame hashes to reject sequential-CD false positives. | Skipping `Setloc` once looked fast but collapsed visual work. | The gate can safely retest lower-level CD continuation ideas. |
-| 6 | Harness | Gate `scene_vb` alongside `loop_vb` for setup-shift experiments. | Setup-prerender reduced loop accounting but not total time. | Future setup shifts cannot fake active-loop wins. |
+| 6 | Harness | Gate `scene_vb` alongside `loop_vb` for setup-shift experiments. | Done: `scripts/ps1-perf-iterate.sh` now baseline-gates `timing.scene_vb` and prints it in `vs baseline`. | Future setup shifts cannot fake active-loop wins; setup-prime/preload probes must preserve full-scene cost as well as active-loop cost. |
 | 7 | Harness | Add map-address tolerance bands for hot functions. | We now know fixed EXE/LBA can still regress from code-address phase. | We can identify which address shifts are dangerous. |
 | 8 | Harness | Add automated compiler-flag matrix runner that logs no-promotion outcomes. | Toolchain work needs lots of controlled probes. | Matrix results are searchable and never dirty the accepted branch on failure. |
 | 9 | Harness | Add cross-scene smoke subset after every accepted fishing1 speed win. | Fishing1 knees may not hold for fishing2/fishing3. | Fishing2/fishing3 exact cases stay within agreed pressure gates. |
@@ -788,14 +892,58 @@ near misses:
 | 9 | 11 | Continue grouped-read runtime only through selective/costed boundaries; broad 12-sector import already failed, tail `396..406` and VISITOR3 high `72..84` are accepted. |
 | 10 | 38 | Find a safe CD/code phase bucket for valid size cleanups. |
 
+## 2026-05-06 Post-O2 Generated Optimization Queue
+
+The current `-O2` audit queue is exhausted under the v0.8.0 FISHING1 canary.
+The remaining useful work is generated metadata, data-shape changes, and
+scheduler-owned timing. Use the refreshed baseline artifact
+`scratch/ps1-perf-iterate/v080-current-fishing1-baseline/20260506-120547-3872759/summary.json`
+for FISHING1 spot gates; do not compare new probes to the stale `1068/1074`
+pre-v0.8.0 row.
+
+| Priority | Experiment | Acceptance Signal |
+|---:|---|---|
+| 1 | Done first pass: every perf case records a current-baseline fingerprint with loop/target/blocking/prefetch, PS-EXE bucket, ELF bytes, FG pack LBA, and hot symbol sizes. | Baseline comparisons now label missing/dirty/different-commit baseline metadata before a false rejection/acceptance can be logged. |
+| 2 | Done first pass: read-plan candidate rows now include concrete source, touched, and append-start read segments from actual CD logs, not just pack-sector overlap. | Proposed read groups can prove `append_start_fireable=true`, actual runtime ownership, and expected `group_hits>0` before source tables are touched. |
+| 3 | Done first pass: read-plan output now classifies whether a candidate fits the current grouped-read runtime capacity or requires scheduler/larger-window metadata. | Runtime code size stops growing per experiment; groups can be enabled/disabled from pack metadata with exact FISHING1 canary layout. |
+| 4 | Done first pass: read-plan output now assigns a visible-CD cost class from first-gap slack, internal-gap slack, overread sectors, partial-touch count, and seek direction. It also emits `scheduler_retry_class`, separating direct standalone candidates from rows that need scheduler-owned refill handling first. | Raw saved-read groups are sorted by visible-risk, preventing repeats of BUILDING4/WALKSTUF1 exact-flat or regressing hand groups. BUILDING2 low `538..550` is now correctly routed as `scheduler-owned-candidate`, not a standalone table. |
+| 5 | Next VISITOR3 pass: build scheduler-owned/generated append timing for additional balanced 16/24-sector candidates without more hot hand tables. | A read-group win must lower loop or blocking without increasing visible refill; scheduler counters explain why it fired. The current detail battle card is `loop_vb=1456`, `blocking_vb=364`, `loop_read_vb=442`, `compose_vb=191`, `advance_vb=342`, and `upload_vb=11`, so CD ownership remains first priority. |
+| 6 | Generate per-scene/tide setup-prime segments from the current read-plan, capped by heap and active-loop payoff. | Setup primes are segmented and scene-local; no global cap raise or raw broad segment can regress VISITOR3/FISHING1 cadence. |
+| 7 | Add selective upload-ready x-band preprocessing for VISITOR3 first, using the matrix's high score plus rect/cap pressure columns and the per-frame hotspot report. | Upload bytes and loop time drop without shifting the FG pack LBA, increasing loop reads, or triggering the current `3` x-band cap-hit warning; cap-hit frames `134..136` should stay on the current full-width path unless the runtime format can avoid the cap. |
+| 8 | Store upload-ready bands only when per-frame payload growth is under a generated threshold. | The direct16 lane avoids WALKSTUF1-style CD pressure where whole-pack expansion cancels compositor savings. |
+| 9 | Compress upload-ready bands with a tiny pack-time RLE or residual opcode class. | VISITOR3/BUILDING2/BUILDING4 upload-byte savings survive without large sector growth. |
+| 10 | Generate exact restore bands for dirty backdrop repair, separate from upload bands. | Restore bytes fall without hot runtime overlap tests or branch-heavy row walkers. |
+| 11 | Done first pass: add rect-count and cap-pressure columns to the preprocessing matrix, not just byte volume. | Candidate upload plans now expose total x-band rects, cap hits, max rects, rects per frame, and exact interval counts before a runtime pack-format probe. |
+| 12 | Done first pass: `scripts/analyze-fg2-preprocess-plans.py` now parses FGP3 cleanup/draw payloads and emits per-frame cap/saving hotspot reports plus CSV export. | VISITOR3 detail shows cap-hit frames `134..136` save `0%` under blanket x-band. The default CSV threshold plan selects `96 / 144` frames and estimates `6114568` selected-subset upload bytes saved, so the next probe can be selective before changing runtime code. |
+| 13 | Try a pack/runtime-owned aligned PAL4 pair command class, replacing the failed runtime pair-store branch. | The hot compositor receives pre-aligned spans and avoids local branch/packing growth. |
+| 14 | Generate same-palette direct16 only for indexed8 spans whose palette lookup cost dominates and whose CD expansion stays local. | WALKSTUF1-like indexed8 rows improve without whole-pack direct16 expansion. |
+| 15 | Add a selective/keyframed FGP3 residual encoder for BUILDING6 and WALKSTUF1. | Current direct residual expansion becomes a shrinking or layout-stable data shape before benchmarking. |
+| 16 | Build a per-scene memory-residency estimator for setup primes, preprocessed bands, and retained read windows. | Experiments fail fast when combined heap pressure would recreate scene-loader BSODs or retained-window regressions. |
+| 17 | Add an automated all-canary baseline refresh command that records the artifact path into the experiment log. | Done: `scripts/ps1-perf-canary-baseline.sh` runs the standard canary set and writes `scratch/ps1-perf-iterate/latest-canary-baseline.txt` for same-commit probe gates. |
+| 18 | Split cold boot/menu/debug functions into a layout-isolated section only after proving foreground LBAs stay fixed. | Valid size cleanups stop perturbing hot CD cadence or foreground pack placement. |
+| 19 | Pad or lock foreground pack LBAs for code-shape experiments that are supposed to test CPU only. | Compiler/source experiments can separate code speed from CD layout movement. |
+| 20 | Add per-scene sound-event timing deltas to the automatic promotion gate. | Speed wins remain safe for the validated scene corpus, not just pixels and loop VBlanks. |
+| 21 | Add a generated hold-frame budget report so long holds can be used for safe setup/read work. | The scheduler spends known slack at scorecards/final holds without changing joke timing. |
+| 22 | Add a "no-stitch/static scene" capture classification to avoid expensive generated stitching where host frames never leave the island. | Host generation time drops without changing validated scene assets. |
+| 23 | Generate host-capture duration from observed scene loops instead of fixed overcapture multipliers. | Multi-loop scenes like ACTIVITY1 are complete without creating 4x redundant host packs. |
+| 24 | Add pack-death/incomplete-generation detection to host capture and pack preprocessing. | A failed generation cannot silently produce truncated frames that later pass source build. |
+| 25 | Add a random-run long-soak perf mode that samples scene IDs, loop metrics, heap, and BSOD signatures. | Performance commits get a quick broad stability gate before release merge-down. |
+| 26 | Add a generated per-family optimization matrix: visitors, buildings, activities, fishing, walkstuff, stands. | Similar scenes share data-shape probes while still preserving scene-specific flags such as raft, tide, and holiday state. |
+| 27 | Re-run the preprocessing opportunity matrix after every promoted runtime/data win. | Scores stay tied to the new baseline instead of chasing stale top candidates. |
+| 28 | Add a "rejected but informative" artifact index keyed by experiment ID and source files touched. | The next agent can avoid repeating failed local threshold/branch/source-shape probes. |
+| 29 | Promote host-only tooling improvements separately from runtime speed wins. | Better measurement and generation workflow can land without pretending to improve VBlank metrics. |
+| 30 | When a binary choice is cheap, run both variants against the same fresh baseline before logging either. | The headless loop preserves momentum while still making a defensible binary decision. |
+
 ## Retest Rules For Old Failures
 
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
-| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. VISITOR3 high `72..84` proves selective grouping can still pay, but the post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. Do not remove or disable the accepted high groups under the current matrix: the correct-baseline disable probe regressed `loop_vb 1455 -> 1456`, and the branch-removal probe exposed FISHING1 phase sensitivity. Continue only with generated metadata that proves runtime append-start ownership, direct16/selective preprocessing, or scheduler ownership. |
-| BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. Use generated grouping or preprocessing instead. |
+| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. VISITOR3 high `72..84` proves selective grouping can still pay, but the post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but the `144..156` follow-up regressed `loop_vb 1455 -> 1459` and `blocking_vb 361 -> 367` despite saving one nominal read, and `102..118` regressed `1455 -> 1457` / `blocking_vb 361 -> 366` despite saving two nominal reads. After the accepted low `170..186` append, low `{126,132}` stayed exact-flat and low `{122,138}` regressed total loop despite saving reads, so tight low-tide standalone tables are closed too. The VISITOR3-only strict x-band upload retry also regressed (`1455 -> 1461`) and grew `grDrawBackground` by `1084` bytes, so do not retry runtime scratch-packed x-aware upload. The current detail pass confirms the residual gap is still CD-first (`loop_read_vb=442`, `blocking_vb=364`) with secondary compose/advance pressure (`compose_vb=191`, `advance_vb=342`) and low upload time (`upload_vb=11`). Do not remove or disable the accepted high groups under the current matrix: the correct-baseline disable probe regressed `loop_vb 1455 -> 1456`, and the branch-removal probe exposed FISHING1 phase sensitivity. Continue only with scene-local/generated metadata that proves scheduler timing, pack/data-shape preprocessing without runtime scratch packing, or prepared visual ownership; current-fit append ownership alone is not enough. |
+| BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. The current low `603..619` group saved three nominal reads but regressed loop timing `1465 -> 1469` with fixed layout, so standalone tight clusters are closed. The cleaner low `538..550` group improved loop/blocking (`1465 -> 1461`, `334 -> 328`) but failed strict promotion because refill overrun regressed `35 -> 40`; keep it as a scheduler-owned retry candidate, not a standalone table. Use scheduler-owned grouping or selective preprocessing instead. |
+| BUILDING2 local min-slack grouped appends | Do not retry `{538,550}` with a local `minSlackVBlanks=6` guard. It was safe but exact-flat (`1465/1276`, `blocking_vb=334`, `prefetch_overrun_vb=35`) and only grew hot code. Scheduler ownership must be first-class enough to move cadence, not just a per-table guard around the current append path. |
 | BUILDING2 high standalone visible-cost groups | Do not retry `96..104`, `66..78`, `325..331`, `538..550`, or adjacent one-off hand tables. `96..104` saved one nominal read but worsened visible blocking/due misses, `66..78` was loop/blocking/read-flat with only a one-VBlank hidden-refill change, and the fresh tail candidate `538..550` stayed exact-flat while growing hot code by `44` bytes. BUILDING2 high needs scheduler-owned timing or selective upload-ready/preprocessed pack data. |
+| BUILDING4 high standalone visible-cost groups | Do not retry `{49,65}` as a high-tide one-off source table. It stayed exact-flat at `2985/2774`, `blocking_vb=285`, and `prefetch_overrun_vb=51` while growing/shifting `foregroundPilotPlay` by `+540` bytes. BUILDING4 needs generated scheduler/larger-window ownership or selective preprocessing, not isolated current-window tables. |
 | BUILDING5 raw stream windows | Do not retry scalar window sizes. High and low both regressed total loop despite lower read counts; use generated grouping or preprocessing instead. |
 | BUILDING-family raw stream windows | BUILDING4 low `36 KiB` is accepted; BUILDING6 `20/28 KiB`, BUILDING4 high `20/28 KiB`, and broad setup-prime are rejected. Retry only scene/tide-locally with fresh baselines and bounded visible-CD/refill tradeoff rules. |
 | BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
@@ -844,10 +992,13 @@ near misses:
 | Visible-cost foreground read plans | Done first pass plus append-start fireability scoring. Use `visible_candidate_sets` and require `append_start_fireable=true` before choosing new manual groups. Raw saved-read rank alone has selected exact-flat or regressing BUILDING/VISITOR/WALKSTUF candidates. |
 | VISITOR3 low read group `182..194` | Do not promote or retry as a hand-coded group. It saved one read and lowered refill overrun, but regressed loop/blocking; require generated visible-cost scoring before more VISITOR3 groups. |
 | VISITOR3 high `163..175` / low `158..170` groups | Do not retry as standalone source tables. The generated visible-cost candidates produced `group_hits=0`; high had no key timing improvement and low regressed loop/blocking/refill. Require append-start ownership metadata or scheduler-owned preload before more VISITOR3 grouping. |
+| VISITOR3 high read group `170..186` with 16-sector retained capacity | Done; keep. The first stale-canary rejection was corrected with a clean same-source control. VISITOR3 high improves `1456/1010 -> 1455/1010`, `blocking_vb 363 -> 361`, and `loop_reads 53 -> 52`; VISITOR3 low, FISHING1, FISHING3 high/low, BUILDING2 low, ACTIVITY9 low, and WALKSTUF1 high canaries match the clean control on loop timing. Do not generalize this into more hot hand tables; next VISITOR3 work should use scheduler/generated metadata. |
+| VISITOR3 low read group `170..186` with 16-sector retained capacity | Do not promote or retry as a hand-coded group. It saved one nominal read but regressed low tide `1455/1010 -> 1458/1010`, `blocking_vb 366 -> 369`, with fixed layout. The retained append cadence costs more than the saved read. |
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
-| WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. Retry only with a new shrinking encoder or an explicit layout-moving pack experiment. |
+| WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. The current high `429..441` read-group probe stayed exact-flat while shifting hot symbols, and the read plan classifies the remaining top candidates as tight-visible-gap. Retry only with a new shrinking encoder, scheduler-owned grouping, selective indexed8/data-shape preprocessing, or an explicit layout-moving pack experiment. |
 | ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |
-| ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. The exact matrix rollup moves to `0.8692%` over target / `99.4529%` target speed. |
+| ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. That checkpoint later moved to `0.8309%` over target / `99.4779%` target speed after the VISITOR3/WALKSTUF1 setup-prime and VISITOR3 low-group promotions; the current rollup is tracked at the top of this file. |
+| BUILDING5 pal4 padded FGP3 | Done; keep. Both current BUILDING5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `818670` byte CD footprint. High improves `loop_vb 3359 -> 3343`, `overrun_vb 13 -> 0`, `blocking_vb 20 -> 5`, and `loop_reads 56 -> 41`; low improves `loop_vb 3357 -> 3345`, `overrun_vb 10 -> 0`, `blocking_vb 17 -> 8`, and `loop_reads 56 -> 41`. The current exact matrix rollup is `0.8231%` over target / `99.4858%` target speed. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
@@ -865,6 +1016,9 @@ near misses:
 | Prepared visual stage-next branch | Retry only with an explicit no-slack guard and scheduler budget; v2 was correctness-clean and lowered read/late counters but left `loop_vb` flat. |
 | Prepared visual `>=4` threshold | Do not retry as a threshold-only tweak; it failed structurally before metrics. |
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
+| VISITOR3 prepared-visual `>=4` threshold after high `170..186` | Do not retry as a threshold-only tweak. The current-source probe stayed exact-flat on VISITOR3 high and low, so the remaining gap needs CD-first scheduling or generated append ownership rather than broader local prepare eligibility. |
+| VISITOR3 high `144..156` slack-gated group | Do not retry as a local min-slack table guard. Requiring `6` held VBlanks around the existing grouped append path stayed exact-flat (`1455/1010`, `blocking_vb=361`, `prefetch_overrun_vb=21`, `loop_reads=52`) while shifting hot foreground symbols. Retry only with generated scheduler ownership/refill budget metadata or a pack/data-shape change. |
+| VISITOR3 direct-stage cap `16 KiB` | Do not retry as a local scene cap. It stayed exact-flat against the 192 KiB setup-prime high-tide baseline while shifting hot code; require generated coverage/read-cost metadata before changing direct-stage policy. |
 | FG2 read group `102..110` | Do not retry as a raw hard-coded group; it saved one read but regressed visible CD pressure to `8` VBlanks. Retry only with group-cost prediction or CD-first slack ownership. |
 | FG2 read groups `384..396` and `307..317` | Do not retry as raw hard-coded groups. `384..396` did not fit/fire; `307..317` was exact-flat with code growth. Generated metadata must prove append fit and read-count movement first. |
 | Global setup-prime resident cap above `128 KiB` | Do not retry as a raw cap raise. The `192 KiB` probe saved FISHING1 reads but regressed visible loop/CD pressure and increased retained prefetch heap. |

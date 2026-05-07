@@ -168,7 +168,7 @@ enum {
 #define FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES (40UL * 1024UL)
 #define FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES (88UL * 1024UL)
 #define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
-#define FG_PREFETCH_GROUP_WINDOW_BYTES (13UL * 2048UL)
+#define FG_PREFETCH_GROUP_WINDOW_BYTES (16UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
 #define FG_SETUP_PRIME_MAX_RESIDENT_BYTES (128UL * 1024UL)
 #define FG_ACTIVITY12_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
@@ -178,6 +178,7 @@ enum {
 #define FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
 #define FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES (216UL * 1024UL)
 #define FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES (208UL * 1024UL)
+#define FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES (192UL * 1024UL)
 #define FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES (296UL * 1024UL)
 #define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
@@ -474,7 +475,12 @@ static const struct TFgPilotReadGroup kFishing3LowReadGroups12[] = {
 
 static const struct TFgPilotReadGroup kVisitor3HighReadGroups12[] = {
     {72, 84},
+    {170, 186},
     {230, 242}
+};
+
+static const struct TFgPilotReadGroup kVisitor3LowReadGroups16[] = {
+    {170, 186}
 };
 
 static const struct TFgPilotReadGroup kActivity9LowFgp3ReadGroups[] = {
@@ -1570,6 +1576,68 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
     }
 }
 
+static uint32 fgBackdropCleanRectEstimateForPack(sint16 fgX, sint16 fgY,
+                                                 uint16 fgW, uint16 fgH)
+{
+    const sint16 kWaveMinX = 129;
+    const sint16 kWaveMinY = 303;
+    const sint16 kWaveEndX = 608;
+    const sint16 kWaveEndY = 356;
+    const sint16 kUpperSplitY = 190;
+
+    sint16 fgEndX = (sint16)(fgX + fgW);
+    sint16 fgEndY = (sint16)(fgY + fgH);
+    uint32 estimate = 0;
+
+    if (fgW == 0 || fgH == 0)
+        return (uint32)(kWaveEndX - kWaveMinX) *
+               (uint32)(kWaveEndY - kWaveMinY) *
+               (uint32)sizeof(uint16);
+
+    {
+        sint16 lowerMinX = fgX;
+        sint16 lowerMinY = fgY >= kUpperSplitY ? fgY : kUpperSplitY;
+        sint16 lowerEndX = fgEndX;
+        sint16 lowerEndY = fgEndY;
+
+        if (kWaveMinX < lowerMinX) lowerMinX = kWaveMinX;
+        if (kWaveMinY < lowerMinY) lowerMinY = kWaveMinY;
+        if (kWaveEndX > lowerEndX) lowerEndX = kWaveEndX;
+        if (kWaveEndY > lowerEndY) lowerEndY = kWaveEndY;
+
+        if (lowerMinX < 0) lowerMinX = 0;
+        if (lowerMinY < 0) lowerMinY = 0;
+        if (lowerEndX > 640) lowerEndX = 640;
+        if (lowerEndY > 480) lowerEndY = 480;
+
+        if (lowerEndX > lowerMinX && lowerEndY > lowerMinY) {
+            estimate += (uint32)(lowerEndX - lowerMinX) *
+                        (uint32)(lowerEndY - lowerMinY) *
+                        (uint32)sizeof(uint16);
+        }
+    }
+
+    if (fgY < kUpperSplitY) {
+        sint16 upperMinX = fgX;
+        sint16 upperMinY = fgY;
+        sint16 upperEndX = fgEndX;
+        sint16 upperEndY = kUpperSplitY;
+
+        if (upperMinX < 0) upperMinX = 0;
+        if (upperMinY < 0) upperMinY = 0;
+        if (upperEndX > 640) upperEndX = 640;
+        if (upperEndY > 480) upperEndY = 480;
+
+        if (upperEndX > upperMinX && upperEndY > upperMinY) {
+            estimate += (uint32)(upperEndX - upperMinX) *
+                        (uint32)(upperEndY - upperMinY) *
+                        (uint32)sizeof(uint16);
+        }
+    }
+
+    return estimate;
+}
+
 static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
                                                           sint16 fgX,
                                                           sint16 fgY,
@@ -2019,8 +2087,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     uint8 i;
     uint32 requested = 0;
 
-    if (gFgRuntime.packFormat == kFgPilotPackFormatIndexed8TemporalResidual &&
-        fgSceneEquals(sceneName, "walkstuf1")) {
+    if (fgSceneEquals(sceneName, "walkstuf1")) {
         requested = (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
             (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
         return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
@@ -2048,11 +2115,14 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
          i < sizeof(kFgRuntimeSetupPrimePolicies) / sizeof(kFgRuntimeSetupPrimePolicies[0]);
          i++) {
         if (fgSceneEquals(sceneName, kFgRuntimeSetupPrimePolicies[i].sceneName)) {
+            uint32 maxResidentBytes = fgSceneEquals(sceneName, "visitor3") ?
+                FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES :
+                FG_SETUP_PRIME_MAX_RESIDENT_BYTES;
             requested = islandState.lowTide ?
                 kFgRuntimeSetupPrimePolicies[i].lowWindowBytes :
                 kFgRuntimeSetupPrimePolicies[i].highWindowBytes;
-            return requested > FG_SETUP_PRIME_MAX_RESIDENT_BYTES ?
-                FG_SETUP_PRIME_MAX_RESIDENT_BYTES : requested;
+            return requested > maxResidentBytes ?
+                maxResidentBytes : requested;
         }
     }
     return 0;
@@ -2797,6 +2867,13 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
                                 sizeof(kVisitor3HighReadGroups12[0]));
                 } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
                            islandState.lowTide &&
+                           fgSceneEquals(sceneName, "visitor3")) {
+                    gFgRuntime.streamReadGroups = kVisitor3LowReadGroups16;
+                    gFgRuntime.streamReadGroupCount =
+                        (uint8)(sizeof(kVisitor3LowReadGroups16) /
+                                sizeof(kVisitor3LowReadGroups16[0]));
+                } else if (windowBytes == FG_PREFETCH_DEFAULT_WINDOW_BYTES &&
+                           islandState.lowTide &&
                            fgSceneEquals(sceneName, "building2")) {
                     gFgRuntime.streamReadGroups = kBuilding2LowReadGroups12;
                     gFgRuntime.streamReadGroupCount =
@@ -3181,6 +3258,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     sint16 fgBoundsY = 0;
     uint16 fgBoundsW = 0;
     uint16 fgBoundsH = 0;
+    uint32 cleanRectEstimate = 0;
     uint32 perfPhaseTick = 0;
     int blackBackdrop = fgSceneUsesBlackBackdrop(sceneName);
     const char *sceneBackdropScreen = fgSceneBackdropScreen(sceneName);
@@ -3289,8 +3367,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                           "(scene metadata missing or pack header malformed)");
     }
     {
-        uint32 cleanRectEstimate =
-            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
+        cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
+                                                               fgBoundsY,
+                                                               fgBoundsW,
+                                                               fgBoundsH);
         if (!fgSceneEquals(sceneName, "building2") &&
             !fgSceneEquals(sceneName, "building4") &&
             !fgSceneEquals(sceneName, "building6") &&
@@ -3324,8 +3404,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
     } else {
-        uint32 cleanRectEstimate =
-            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
         if (!fgBackdropSaveCleanBgRectsWithPressureFallback(sceneName,
                                                             fgBoundsX,
                                                             fgBoundsY,

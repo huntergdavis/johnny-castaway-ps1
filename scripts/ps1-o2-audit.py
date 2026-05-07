@@ -117,6 +117,30 @@ REJECTED_DEFAULT_O2_TRANSLATION_UNITS = {
         "Keep whole TU at -Os; current v0.7.2 default-O2 retest rejected",
         "Whole-TU -O2 regressed FISHING1 visible CD pressure while growing ELF and the holidays object.",
     ),
+    "src/ps1_debug.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat against the refreshed v0.8.0 baseline but grew ELF with no work or speed win.",
+    ),
+    "src/utils.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked hot symbols by 20 bytes with no work or speed win.",
+    ),
+    "src/island.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked graphics/CD symbols by 48 bytes with no work or speed win.",
+    ),
+    "src/ps1_pad_script.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat but grew ELF and shifted tracked CD helper symbols by 36 bytes with no work or speed win.",
+    ),
+    "src/scene_freeplay.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 grew the PS-EXE bucket, shifted foreground LBAs, and gave no active-scene timing win.",
+    ),
+    "src/scene_picker.c": (
+        "Keep whole TU at -Os; current v0.8.0 default-O2 retest rejected",
+        "Whole-TU -O2 stayed FISHING1-flat with fixed tracked hot symbols but grew ELF with no work or speed win.",
+    ),
 }
 
 
