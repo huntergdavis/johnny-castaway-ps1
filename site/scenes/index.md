@@ -50,9 +50,15 @@ reference instead of the PS1 replay path.
 
 <ul class="scene-counts">
   <li><span class="scene-status ok">validated</span> &nbsp; {{ validated_count }} / {{ total_count }}</li>
+  {%- if bringup_count > 0 %}
   <li><span class="scene-status wip">in-bring-up</span> &nbsp; {{ bringup_count }}</li>
+  {%- endif %}
+  {%- if pending_count > 0 %}
   <li><span class="scene-status pending">pending</span> &nbsp; {{ pending_count }}</li>
+  {%- endif %}
+  {%- if blocked_count > 0 %}
   <li><span class="scene-status blocked">blocked</span> &nbsp; {{ blocked_count }}</li>
+  {%- endif %}
 </ul>
 
 ## The ledger
