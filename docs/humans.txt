@@ -41,6 +41,7 @@ Source          : https://github.com/huntergdavis/johnny-castaway-ps1/tree/main/
 Devlog feed     : https://hunterdavis.com/johnny-castaway-ps1/devlog/feed.xml (Atom)
                   https://hunterdavis.com/johnny-castaway-ps1/devlog/feed.json (JSON Feed)
 Lab feed        : https://hunterdavis.com/johnny-castaway-ps1/lab/feed.xml (Atom)
+Sitemap         : https://hunterdavis.com/johnny-castaway-ps1/sitemap.xml
 Code license    : GPL-3.0
 Asset license   : Sierra On-Line retains the Castaway character
                   and original art; see /legal/ for the line.
