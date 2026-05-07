@@ -1923,3 +1923,19 @@ and this page.
     </tr>
   </tbody>
 </table>
+
+## See also
+
+- [/scenes/]({{ '/scenes/' | relative_url }}) — the visual-signoff
+  ledger this card lives next to. Different bar, different cadence,
+  different failure modes.
+- [/docs/performance/]({{ '/docs/performance/' | relative_url }}) —
+  reference manual: what each column means, how `loop_vb` and
+  `target_vb` are measured, the column-by-column glossary.
+- [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — retrospective on which experiments moved the matrix from the
+  compact baseline (`+17.4%` over target) to its current
+  `{{ site.release.perf_target_speed_pct }}%` target speed.
+- [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
+  — the durable numeric source the table on this page is rendered
+  from.
