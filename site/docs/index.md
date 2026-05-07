@@ -2,8 +2,8 @@
 layout: page
 title: Docs
 eyebrow: Reference manuals
-subtitle: Build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, the SDL2 → PSn00bSDK API mapping, and a glossary. The technical surface of the PS1 port.
-description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, scripted input, regtest, performance, hardware, infrastructure, agents, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
+subtitle: Build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.
+description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
 ---
 
 A labor of love by Hunter Davis. The pages below are reference manuals for the
