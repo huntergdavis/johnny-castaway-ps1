@@ -51,13 +51,19 @@ the user to supply their own original Sierra data files
 contains pre-baked playback packs — derived data, no Sierra
 source files. See [/legal/]({{ '/legal/' | relative_url }}).
 
-### Why is it only {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes?
+### What does "{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated" mean?
 
 Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That's a stricter bar than "it ran once
+native resolution. That's the project's "FISHING 1 bar" —
+pixel-perfect visuals plus synced SFX, signed off by human
+review across every applicable variant flag (night, low-tide,
+holiday, raft-stage). It is a stricter bar than "it ran once
 without crashing." The [scene ledger]({{ '/scenes/' | relative_url }})
-tracks the count.
+is the source of truth; at `{{ site.release.tag }}` every row
+clears the bar. Performance — whether each scene hits its
+target frame budget — is a separate ledger at
+[/perf/]({{ '/perf/' | relative_url }}) on purpose.
 
 ---
 

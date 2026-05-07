@@ -120,7 +120,7 @@ the project, running it, and the original game.</p>
       <li><a href="#why-ps1" id="markdown-toc-why-ps1">Why PS1?</a></li>
       <li><a href="#will-you-port-other-sierra-screensavers" id="markdown-toc-will-you-port-other-sierra-screensavers">Will you port other Sierra screensavers?</a></li>
       <li><a href="#is-this-legal" id="markdown-toc-is-this-legal">Is this legal?</a></li>
-      <li><a href="#why-is-it-only-63--63-scenes" id="markdown-toc-why-is-it-only-63--63-scenes">Why is it only 63 / 63 scenes?</a></li>
+      <li><a href="#what-does-63--63-scenes-validated-mean" id="markdown-toc-what-does-63--63-scenes-validated-mean">What does “63 / 63 scenes validated” mean?</a></li>
     </ul>
   </li>
   <li><a href="#running-it" id="markdown-toc-running-it">Running it</a>    <ul>
@@ -176,13 +176,19 @@ the user to supply their own original Sierra data files
 contains pre-baked playback packs — derived data, no Sierra
 source files. See <a href="../legal/">/legal/</a>.</p>
 
-<h3 id="why-is-it-only-63--63-scenes">Why is it only 63 / 63 scenes?</h3>
+<h3 id="what-does-63--63-scenes-validated-mean">What does “63 / 63 scenes validated” mean?</h3>
 
 <p>Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That’s a stricter bar than “it ran once
+native resolution. That’s the project’s “FISHING 1 bar” —
+pixel-perfect visuals plus synced SFX, signed off by human
+review across every applicable variant flag (night, low-tide,
+holiday, raft-stage). It is a stricter bar than “it ran once
 without crashing.” The <a href="../scenes/">scene ledger</a>
-tracks the count.</p>
+is the source of truth; at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> every row
+clears the bar. Performance — whether each scene hits its
+target frame budget — is a separate ledger at
+<a href="../perf/">/perf/</a> on purpose.</p>
 
 <hr />
 
