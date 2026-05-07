@@ -29,7 +29,9 @@ A randomized long-run soak exposed a scene-load freeze after a large split
 clean-rect save. The pressure estimator was counting only foreground pack
 bounds, not the ocean wave band or the upper/lower split actually saved for
 restore. `v0.8.1` fixes that accounting and keeps the complete-scene
-performance baseline intact.
+performance baseline intact. The retrospective on what the soak found that
+the matrix didn't is at
+[/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}).
 
 - **Scene-load freeze fixed.** Large clean snapshots now account for wave-band
   expansion and split rects before allocation.
@@ -49,7 +51,7 @@ performance baseline intact.
 ### `v0.8.0-ps1` — complete-scene performance baseline
 *2026-05-06*
 
-The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.9% over target / 99.5% target speed** — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline.
+The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.9% over target / 99.5% target speed** — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline. The retrospective on which experiments moved that line is at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 
 - **63 / 63 scenes still validated** after the post-validation bugfix pass.
 - **126 / 126 variants routed**, 120 carrying active-loop timing.
