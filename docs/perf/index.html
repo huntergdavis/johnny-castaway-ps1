@@ -235,12 +235,14 @@ and this page.</p>
 <h2 id="reading-the-table">Reading the table</h2>
 
 <ul>
-  <li><strong>Over Target</strong>: how far <code class="language-plaintext highlighter-rouge">loop_vb</code> is above the captured target timing.
+  <li><strong><a href="../docs/glossary/#over-target">Over Target</a></strong>: how far <code class="language-plaintext highlighter-rouge">loop_vb</code> is above the captured target timing.
 Lower is better.</li>
-  <li><strong>Target Speed</strong>: <code class="language-plaintext highlighter-rouge">target_vb / loop_vb</code>. <code class="language-plaintext highlighter-rouge">100%</code> means exact target cadence.</li>
-  <li><strong>VBlanks</strong>: <code class="language-plaintext highlighter-rouge">loop_vb/target_vb</code>.</li>
-  <li><strong>Blocking</strong>: visible CD/blocking VBlanks.</li>
-  <li><strong>Prefetch</strong>: prefetch overrun VBlanks.</li>
+  <li><strong>Target Speed</strong>: <code class="language-plaintext highlighter-rouge">target_vb / loop_vb</code>. <code class="language-plaintext highlighter-rouge">100%</code> means exact
+<a href="../docs/glossary/#target-vb">target cadence</a>.</li>
+  <li><strong>VBlanks</strong>: <code class="language-plaintext highlighter-rouge">loop_vb/target_vb</code> — see the
+<a href="../docs/glossary/#target-vb">target_vb / loop_vb glossary entry</a>.</li>
+  <li><strong><a href="../docs/glossary/#blocking-vb">Blocking</a></strong>: visible CD/blocking VBlanks.</li>
+  <li><strong><a href="../docs/glossary/#prefetch-hits">Prefetch</a></strong>: prefetch overrun VBlanks.</li>
   <li><strong>Due</strong>: due-frame misses.</li>
   <li><strong>Latest Run</strong>: ISO timestamp derived from the headless summary path
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current

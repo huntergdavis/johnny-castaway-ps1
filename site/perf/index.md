@@ -87,12 +87,14 @@ and this page.
 
 ## Reading the table
 
-- **Over Target**: how far `loop_vb` is above the captured target timing.
+- **[Over Target]({{ '/docs/glossary/#over-target' | relative_url }})**: how far `loop_vb` is above the captured target timing.
   Lower is better.
-- **Target Speed**: `target_vb / loop_vb`. `100%` means exact target cadence.
-- **VBlanks**: `loop_vb/target_vb`.
-- **Blocking**: visible CD/blocking VBlanks.
-- **Prefetch**: prefetch overrun VBlanks.
+- **Target Speed**: `target_vb / loop_vb`. `100%` means exact
+  [target cadence]({{ '/docs/glossary/#target-vb' | relative_url }}).
+- **VBlanks**: `loop_vb/target_vb` — see the
+  [target_vb / loop_vb glossary entry]({{ '/docs/glossary/#target-vb' | relative_url }}).
+- **[Blocking]({{ '/docs/glossary/#blocking-vb' | relative_url }})**: visible CD/blocking VBlanks.
+- **[Prefetch]({{ '/docs/glossary/#prefetch-hits' | relative_url }})**: prefetch overrun VBlanks.
 - **Due**: due-frame misses.
 - **Latest Run**: ISO timestamp derived from the headless summary path
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
