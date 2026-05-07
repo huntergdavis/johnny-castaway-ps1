@@ -7,6 +7,13 @@ source_path: docs/ps1/research/VISION_CLASSIFIER_USAGE_2026-03-29.md
 description: "Operator reference for running the PS1 vision-classifier captioning pipeline end-to-end."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 Worktree:
 - `/tmp/jc_reborn_ps1_debug`
 
