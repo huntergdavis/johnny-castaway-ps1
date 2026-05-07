@@ -329,7 +329,7 @@ carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
 run is `2026-05-06T17:38:07`; per-row freshness and stats version are shown on
-the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
+the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
