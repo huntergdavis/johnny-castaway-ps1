@@ -7,6 +7,13 @@ description: A personal retrospective on Hunter Davis repeatedly porting Johnny 
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The recurring island
 
 I keep coming back to Johnny Castaway.

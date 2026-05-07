@@ -7,6 +7,13 @@ description: A retrospective on the Johnny Castaway PS1 pivot from approximate S
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Close enough was available
 
 There is a version of this project that ships much earlier.
