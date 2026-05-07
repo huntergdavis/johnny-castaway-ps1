@@ -87,8 +87,10 @@ does:
 - **IBM Plex Mono** (Mike Abbink + Bold Monday for IBM) — code blocks and the build-stamp meta.
 - **VT323** (Peter Hull) — pixel display font, used for eyebrows, jump-nav labels, and pager hints.
 
-Subsetted to Latin and stored under `site/assets/fonts/`. The full
-license text ships next to the files in source.
+Subsetted to Latin and stored under `site/assets/fonts/`. Each
+family is used under the canonical SIL OFL v1.1 with its upstream
+copyright line; the license text itself is at
+[scripts.sil.org/OFL](https://scripts.sil.org/OFL).
 
 ## Ocean ambience
 
