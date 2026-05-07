@@ -29,7 +29,7 @@ the frame. That makes it useful as a play mode and as a debugging cockpit.
 
 The normal boot still starts in screensaver mode. Press **Start**, choose
 **Freeplay: OFF**, and the game tears the current scene down, shows the
-`MEANWHIL.BMP` frog clock, builds the freeplay island, and hands control
+`MEANWHIL.BMP` [frog clock]({{ '/docs/glossary/#frog-clock' | relative_url }}), builds the freeplay island, and hands control
 to the player.
 
 Inside freeplay, press **Start** again to open the same pause menu. Choose
