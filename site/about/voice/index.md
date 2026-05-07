@@ -114,3 +114,16 @@ Three quick checks before publishing prose on this site:
 3. Did it earn its length? Long sentences are fine; long sentences without specific content are not.
 
 That's it. The disc plays. That's what mattered.
+
+## Further reading
+
+- [The voice anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+  — the long-form retrospective this guide is the public-facing
+  distillation of. Read this guide first, that essay if you want
+  the why behind the rules.
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+  — what gets drafted by an LLM and what doesn't, with the voice
+  guide as the editing-pass standard.
+- [Glossary: drawCredits]({{ '/docs/glossary/#drawcredits' | relative_url }})
+  — the four-line in-game credits text the whole voice anchors
+  on.
