@@ -242,7 +242,7 @@ def iter_rows(root: Path, closed_ranges: set[tuple[str, int, int]]) -> list[dict
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow(row)
