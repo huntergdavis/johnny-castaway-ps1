@@ -139,7 +139,7 @@ A few things this project is deliberately not trying to be:
   status surfaces, retired tooling, the harness era, the
   restore-pilot era, and other paths that did not become the
   active methodology.
-- [/lab/]({{ '/lab/' | relative_url }}) -- fourteen feature-length
+- [/lab/]({{ '/lab/' | relative_url }}) -- fifteen feature-length
   retrospectives, newest first. The
   [post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}),
   [the site itself as a small program]({{ '/lab/the-site-itself/' | relative_url }}),

@@ -2,7 +2,7 @@
 layout: page
 title: Lab
 eyebrow: Magazine . Methodology and reflection
-subtitle: How a one-person PS1 fan port actually gets built. Fourteen feature articles on the craft, the failures, and the tools.
+subtitle: How a one-person PS1 fan port actually gets built. Fifteen feature articles on the craft, the failures, and the tools.
 description: The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port.
 date: 2026-04-26
 ---
@@ -42,11 +42,16 @@ want the raw documents behind the essays, use the
 
 ## Contents
 
-Fourteen feature articles, in reverse chronological order. The newest
+Fifteen feature articles, in reverse chronological order. The newest
 sit on top; the foundational methodology pieces sit underneath. Each
 card carries the date it landed.
 
 <ul class="doc-grid">
+  <li>
+    <p class="lab-date">2026-05-06</p>
+    <a href="{{ '/lab/v081-mary4-freeze/' | relative_url }}">v0.8.1: what the soak found that the matrix didn't</a>
+    <p>The post-v0.8.0 stability fix as a war story. A randomized soak surfaced a MARY 4 scene-load freeze the per-commit matrix never reached. The fix is a clean-rect pressure estimator that mirrors the actual save path; the discipline is the lesson — matrix and soak are not redundant.</p>
+  </li>
   <li>
     <p class="lab-date">2026-05-06</p>
     <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">From 87 to 99.5: the post-validation performance loop</a>

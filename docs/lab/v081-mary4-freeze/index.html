@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+
+  <title>v0.8.1 — what the soak found that the matrix didn't — Johnny Castaway PS1</title>
+  <meta name="description" content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" />
+
+  <meta property="og:title"        content="v0.8.1 — what the soak found that the matrix didn't — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." />
+  <meta property="og:type"         content="website" />
+  <meta property="og:url"          content="./" />
+  <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="../../sitemap.xml" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/" }, { "@type": "ListItem", "position": 3, "name": "V081 mary4 freeze", "item": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../" aria-current="page">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../../docs/">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Lab · stability war story</p>
+      <h1>v0.8.1 — what the soak found that the matrix didn't</h1>
+      <p class="subtitle">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~2 min read · 556 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> was the post-validation performance baseline. All 63
+scenes signed off; <code class="language-plaintext highlighter-rouge">+0.9%</code> over target / <code class="language-plaintext highlighter-rouge">99.5%</code> target speed across
+the 120 timing-bearing rows; the <a href="../from-87-to-99-5/">retrospective</a>
+walks through how the matrix moved there. That looked like the end
+of the speed arc.</p>
+
+<p>It wasn’t. Within hours of the v0.8.0 disc going up, a randomized
+long-run <a href="../../docs/glossary/#soak-test">soak</a>
+froze. <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the fix. The story is short.</p>
+
+<h2 id="the-shape-of-the-bug">The shape of the bug</h2>
+
+<p>The screensaver picks scenes at random. The soak ran for an
+extended stretch, the picker eventually selected <code class="language-plaintext highlighter-rouge">MARY 4</code>, and the
+boot proceeded only as far as:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JCPICK ... mary4
+JCRECT 2-rect lower=(0,190,608,166) upper=(0,92,361,98)
+</code></pre></div></div>
+
+<p>The runtime then stopped. No crash, no panic. Stuck on the
+clean-rect save before scene playback could start. Heap fragmented,
+allocation refused, the runtime had nowhere to go — but the
+<a href="../../perf/">matrix</a> had nothing flagged on
+<code class="language-plaintext highlighter-rouge">MARY 4</code>. The perf rows for that scene came in green.</p>
+
+<h2 id="why-the-matrix-missed-it">Why the matrix missed it</h2>
+
+<p>The matrix runs each (scene, tide) variant from a deterministic
+boot, scene by scene, with the same routing every time. That is
+what makes its numbers comparable — every row is the same kind of
+run. It is also what makes it a poor fit for finding a bug that
+needs <em>prior heap state plus a particular random scene pick</em>. The
+matrix never enters the random-position playback path with another
+scene’s residual pressure on the heap.</p>
+
+<p>The soak does, by definition. That is the entire point of running
+one.</p>
+
+<h2 id="the-actual-fix">The actual fix</h2>
+
+<p><code class="language-plaintext highlighter-rouge">v0.8.0</code>’s clean-rect pressure estimator used <code class="language-plaintext highlighter-rouge">fgBoundsW *
+fgBoundsH * 2</code>. Cheap, wrong: it ignored the
+<a href="../../docs/glossary/#clean-rect">ocean wave band</a>
+expansion and the upper/lower split rect that wide-action scenes
+emit. On <code class="language-plaintext highlighter-rouge">MARY 4</code>’s random-load path the real clean save was over
+<code class="language-plaintext highlighter-rouge">256 KiB</code>; the estimator under-counted and didn’t release optional
+prefetch/walk memory in time.</p>
+
+<p><code class="language-plaintext highlighter-rouge">v0.8.1</code>’s <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> now computes pressure through one
+helper that mirrors the clean-save path — pack bounds, ocean wave
+band, clamping, low-tide split. <code class="language-plaintext highlighter-rouge">fgPlayOceanRuntimeScene()</code> calls
+that estimate before allocating, so wide scenes drop optional
+pressure before the heap fragments. The fix covers fourteen
+non-exempt random-position scenes (<code class="language-plaintext highlighter-rouge">activity1</code>, <code class="language-plaintext highlighter-rouge">activity5</code>,
+<code class="language-plaintext highlighter-rouge">fishing1</code>, <code class="language-plaintext highlighter-rouge">fishing2</code>, <code class="language-plaintext highlighter-rouge">fishing3</code>, <code class="language-plaintext highlighter-rouge">fishing7</code>, <code class="language-plaintext highlighter-rouge">fishing8</code>,
+<code class="language-plaintext highlighter-rouge">johnny2</code>, <code class="language-plaintext highlighter-rouge">johnny4</code>, <code class="language-plaintext highlighter-rouge">johnny5</code>, <code class="language-plaintext highlighter-rouge">mary4</code>, <code class="language-plaintext highlighter-rouge">mary5</code>, <code class="language-plaintext highlighter-rouge">visitor4</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf3</code>) — not a <code class="language-plaintext highlighter-rouge">MARY 4</code>-specific bandage.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high/low refresh on the same commit stayed exact
+to the v0.8.0 matrix baseline. The performance line did not move.</p>
+
+<h2 id="what-the-discipline-says">What the discipline says</h2>
+
+<p>The project keeps two acceptance bars on purpose: visual signoff
+and headless perf timing. The two-ledger framing on
+<a href="../../about/">/about/</a> is the public version
+of that. <code class="language-plaintext highlighter-rouge">v0.8.1</code> adds a third loop that keeps both honest:</p>
+
+<ul>
+  <li><strong>Visual signoff</strong> runs to the FISHING 1 bar. Per-scene human
+review. Catches pixel and SFX wrong.</li>
+  <li><strong>Headless matrix</strong> runs every (scene, tide) variant
+deterministically. Catches timing wrong.</li>
+  <li><strong>Soak</strong> runs the actual screensaver loop randomized for hours.
+Catches state-coupling wrong — bugs that need a particular
+history to appear.</li>
+</ul>
+
+<p>The matrix and the soak are not redundant. They are tuned for
+different bugs. The matrix proves that no scene is slow on its own;
+the soak proves that no scene is broken by its neighbors. A release
+that promotes performance without exercising the soak is a release
+that ships the next <code class="language-plaintext highlighter-rouge">MARY 4</code> freeze, signed off and timed.</p>
+
+<h2 id="the-receipts">The receipts</h2>
+
+<ul>
+  <li><a href="../../source/docs/ps1/release-notes-0.8.1/">v0.8.1-ps1 release notes</a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.1-ps1">v0.8.1-ps1 GitHub release</a></li>
+  <li><a href="../../docs/glossary/#soak-test">Glossary: soak-test</a></li>
+  <li><a href="../../docs/glossary/#clean-rect">Glossary: clean-rect</a></li>
+  <li><a href="../../perf/">/perf/</a> — the matrix the row of <code class="language-plaintext highlighter-rouge">MARY 4</code> came in green on</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (v0.8.1-ps1)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/v081-mary4-freeze/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../../docs/glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
