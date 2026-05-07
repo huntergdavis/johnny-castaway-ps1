@@ -768,6 +768,14 @@ A few things the perf work explicitly does not chase, with reasons:
 
 ## Related pages
 
+- [Performance battle card]({{ '/perf/' | relative_url }}) — the
+  live timing matrix this reference manual describes the columns
+  of. 126 scene/tide variants, sortable, color-coded.
+- [From 87 to 99.5: the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the retrospective on the optimization arc, including which
+  experiments landed and which got rejected.
+- [v0.8.1: what the soak found that the matrix didn't]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the soak-loop war story; matrix and soak are not redundant.
 - [Hardware]({{ '/docs/hardware/' | relative_url }}) — what the
   optimizations are running against.
 - [Build & toolchain]({{ '/docs/build/' | relative_url }}) — how the
