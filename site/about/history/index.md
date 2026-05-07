@@ -406,7 +406,9 @@ component-completeness phases:
 - Generated FG2 corpus on disk: **126 packs** (high-tide +
   low-tide for all 63 scenes), **~343&nbsp;MB**, routed onto
   the CD image selectively.
-- Real PS1 hardware: untested. Long-term list.
+- Real PS1 hardware: smoke-tested on a `SCPH-7501` via the
+  [TonyHax](https://github.com/socram8888/tonyhax) softmod path.
+  Long-term hardware-soak observations are still on the wishlist.
 
 This isn't done. That's fine. A labor of love by Hunter Davis. The
 original creator generously allows fan ports. If you paid for this,
