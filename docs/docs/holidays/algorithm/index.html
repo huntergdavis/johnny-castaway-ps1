@@ -104,14 +104,31 @@
       <h1>Date-algorithm core</h1>
       <p class="subtitle">How the 36 holidays compute their dates with no expiring tables.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1876 words
+          ~7 min read · 1916 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <h2 id="the-problem">The problem</h2>
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-problem" id="markdown-toc-the-problem">The problem</a></li>
+  <li><a href="#day-of-week-from-month-day-year" id="markdown-toc-day-of-week-from-month-day-year">Day-of-week from (month, day, year)</a></li>
+  <li><a href="#nth-weekday-of-month" id="markdown-toc-nth-weekday-of-month">Nth weekday of month</a></li>
+  <li><a href="#easter-sunday--meeus--jones--butcher" id="markdown-toc-easter-sunday--meeus--jones--butcher">Easter Sunday — Meeus / Jones / Butcher</a></li>
+  <li><a href="#solstice-and-equinox" id="markdown-toc-solstice-and-equinox">Solstice and equinox</a></li>
+  <li><a href="#election-day" id="markdown-toc-election-day">Election Day</a></li>
+  <li><a href="#putting-it-together" id="markdown-toc-putting-it-together">Putting it together</a></li>
+  <li><a href="#why-no-hijri--lunar-new-year--diwali" id="markdown-toc-why-no-hijri--lunar-new-year--diwali">Why no Hijri / Lunar New Year / Diwali</a></li>
+  <li><a href="#related" id="markdown-toc-related">Related</a></li>
+</ul>
+
+</details>
+
+<h2 id="the-problem">The problem</h2>
 
 <p>The original 1992 Sierra screensaver shipped four holidays — New Year’s
 Day, St. Patrick’s Day, Halloween, Christmas. Three of those are fixed

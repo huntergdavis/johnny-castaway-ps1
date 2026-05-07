@@ -6,6 +6,13 @@ subtitle: How the 36 holidays compute their dates with no expiring tables.
 description: Zeller, Meeus / Jones / Butcher Easter, Nth-weekday-of-month, and the holidayForDate dispatcher used by the Johnny Castaway PS1 port to resolve 36 holidays from 1583 to 4099.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The problem
 
 The original 1992 Sierra screensaver shipped four holidays — New Year's
