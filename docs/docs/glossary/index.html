@@ -104,7 +104,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3062 words
+          ~12 min read · 3168 words
         </p>
 
       <hr class="rule" />
@@ -149,6 +149,9 @@
 
 <dt id="frog-clock">Frog clock</dt>
 <dd>The animated loading-transition card that appears between scene swaps and during freeplay teardown/rebuild. Sierra's original engine had a static "MEANWHILE…" frame (<code>MEANWHIL.BMP</code> + a single hand sprite); the PS1 port shipped it static at first and then in <code>v0.6.x</code> turned it into a 36-VBlank animation with hour and minute hands positioned from the original <code>MEANWHIL.TTM</code> script. Plays during walk-skipping cycles too — see the <a href="../../devlog/scene-set-and-frog-clock/">scene-set-and-frog-clock devlog</a> for the sequence-reset story.</dd>
+
+<dt id="scene-picker">Scene picker</dt>
+<dd>The runtime dispatcher that decides which scene plays next. Three policies (Random / Sequential / Original Sierra), selectable from the pause menu's Scene Set sub-screen. The Original Sierra policy is a state machine that runs sequences of intermediate scenes followed by a FINAL, filters candidates by <code>FINAL</code> / <code>FIRST</code> / <code>LOWTIDE_OK</code> / <code>VARPOS_OK</code> / <code>dayNo</code>, forbids same-tag-twice-in-a-row, and retries up to 8 times when a candidate has no valid walk-in spot. Sits between the screensaver-loop scheduler and the <a href="#story-loop-walks">story-loop walk</a> driver: it picks, then walks Johnny to the next scene's start spot, then plays the <a href="#fg2-pack">FG2 pack</a>. Source at <code>src/scene_picker.c</code>; design notes at <code>docs/ps1/scene-picker-design.md</code>.</dd>
 
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
