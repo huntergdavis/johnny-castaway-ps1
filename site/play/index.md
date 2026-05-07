@@ -21,7 +21,7 @@ the GitHub release pages are at
 The CD image ships as a **.bin / .cue** pair. Both files belong in
 the same directory. Sizes shown are for the
 [`{{ site.release.tag }}`]({{ site.github_url }}/releases/tag/{{ site.release.tag }})
-upload — the `.bin` is ~76&nbsp;MB (~72&nbsp;MiB), mostly FG2 pack
+upload — the `.bin` is ~76&nbsp;MB (~72&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
 payload routed onto the disc.
 
 ## Quickstart (DuckStation) {#emulator}

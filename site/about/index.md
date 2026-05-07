@@ -17,7 +17,7 @@ cheated. The technical short version: the project does not run Sierra's
 original ADS / TTM bytecode on the PS1 at all. A desktop host runs the
 real engine, captures every visible foreground draw plus every
 `PLAY_SAMPLE` event, and writes the result into a small per-scene
-binary called an **FG2 pack**. The PS1 build loads packs from the disc
+binary called an **[FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})**. The PS1 build loads packs from the disc
 and replays them, while owning only the narrow runtime it must:
 background, wave animation, holiday overlay, controller input, SPU
 audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
