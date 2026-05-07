@@ -98,6 +98,14 @@ overrun (`56 -> 42`), but failed the full gate by regressing overrun
 a local source knob; the next BUILDING2 high path should be scheduler-owned
 refill timing, segmented/prepared coverage, or data-shape preprocessing.
 
+Rejected WALKSTUF3 low padded FGP3: the size gate looked good
+(`986873 -> 811444` payload bytes inside the same `994669` byte file), and
+runtime CD pressure improved (`loop_reads 72 -> 61`, `blocking_vb 45 -> 43`,
+`prefetch_overrun_vb 25 -> 19`), but full timing regressed by one VBlank
+(`scene_vb 2583 -> 2584`, `loop_vb 2320 -> 2321`). Do not promote one-sided
+WALKSTUF3 low FGP3 conversion; retry only if paired high/low conversion,
+setup residency, or scheduler ownership preserves total timing.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
