@@ -102,7 +102,7 @@
       <h1>Development workflow</h1>
       <p class="subtitle">The author's own per-scene loop. Capture, encode, replay, screenshot, validate.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1506 words
+          ~6 min read · 1569 words
         </p>
 
       <hr class="rule" />
@@ -160,6 +160,14 @@ not the gate. SHA256 state hashes are useful for “did this build change
 behavior” questions but not the gate. See
 <a href="../regtest/">Regression testing</a> for what
 those tools are good for.</p>
+
+<p>Performance is its own ledger, separate from the visual-signoff gate
+above. Per-scene timing lives at
+<a href="../../perf/">/perf/</a>; a scene can be validated
+under the FISHING 1 bar without sitting in the green band on the
+matrix, and a row in the green band that fails visual review
+doesn’t ship. The two ledgers stay separate on purpose — different
+bars, different cadences, different failure modes.</p>
 
 <p>Milestone release cadence: every <strong>10</strong> scenes reaching <code class="language-plaintext highlighter-rouge">✅ / ✅</code>. Smaller
 stability releases happen between scene milestones when there’s something
