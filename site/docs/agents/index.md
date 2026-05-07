@@ -152,10 +152,15 @@ was the author's.
   of what changed. The decision to promote or reject the experiment is
   the author's, working from that summary plus their own read.
 - **Performance experiment hypothesis generation.** Some of the
-  experiments listed in the [perf log]({{ '/docs/performance/' | relative_url }})
-  were ideas an agent suggested as plausible. The author ran them.
-  Roughly half were rejected at the gate; the perf log is a complete
-  record of what stuck and what didn't.
+  experiments listed in the
+  [experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+  were ideas an agent suggested as plausible. The author ran
+  them. Roughly half were rejected at the gate; the
+  [experiment log]({{ '/docs/glossary/#experiment-log' | relative_url }})
+  is a complete record of what stuck and what didn't, and the
+  [post-validation perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  walks through how the matrix moved from `+17.4%` over target
+  to its current line.
 
 ## What agents didn't do
 
