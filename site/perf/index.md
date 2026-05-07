@@ -28,6 +28,13 @@ target-speed average is at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 A scene can be timed here without being visually certified.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## At a glance
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
