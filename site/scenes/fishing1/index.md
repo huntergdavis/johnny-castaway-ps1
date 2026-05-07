@@ -89,3 +89,24 @@ Johnny goes fishing.<br />
 He catches a starfish.<br />
 He throws it back.
 </blockquote>
+
+## Notable runtime history
+
+`FISHING 1` high-tide is the
+[canary scene]({{ '/docs/glossary/#canary' | relative_url }}) for
+the entire headless-perf matrix. Re-measured on every release; its
+`loop_vb` vs `target_vb` ratio is the load-bearing reference frame
+for "did this matrix-wide change just regress the easiest path."
+The latest rollup at `{{ site.release.tag }}` lands at
+`1068 / 1074 VBlanks`, `-0.6%` over target, `100.6%` target speed,
+`blocking_vb=2` — which is what "the FISHING 1 bar" means as a
+*timing* claim alongside the visual one.
+
+The
+[perf battle card]({{ '/perf/' | relative_url }}) shows the
+per-variant rows; the
+[perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
+walks through how this scene's stability paid for the rest of the
+matrix's accepted optimizations — the
+[promotion rule]({{ '/docs/glossary/#promotion-rule' | relative_url }})
+requires that the canary doesn't move backward.

@@ -185,6 +185,27 @@ He catches a starfish.<br />
 He throws it back.
 </blockquote>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">FISHING 1</code> high-tide is the
+<a href="../../docs/glossary/#canary">canary scene</a> for
+the entire headless-perf matrix. Re-measured on every release; its
+<code class="language-plaintext highlighter-rouge">loop_vb</code> vs <code class="language-plaintext highlighter-rouge">target_vb</code> ratio is the load-bearing reference frame
+for “did this matrix-wide change just regress the easiest path.”
+The latest rollup at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> lands at
+<code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">-0.6%</code> over target, <code class="language-plaintext highlighter-rouge">100.6%</code> target speed,
+<code class="language-plaintext highlighter-rouge">blocking_vb=2</code> — which is what “the FISHING 1 bar” means as a
+<em>timing</em> claim alongside the visual one.</p>
+
+<p>The
+<a href="../../perf/">perf battle card</a> shows the
+per-variant rows; the
+<a href="../../lab/from-87-to-99-5/">perf retrospective</a>
+walks through how this scene’s stability paid for the rest of the
+matrix’s accepted optimizations — the
+<a href="../../docs/glossary/#promotion-rule">promotion rule</a>
+requires that the canary doesn’t move backward.</p>
+
   </div>
 
   <footer class="post-footer">
