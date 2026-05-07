@@ -66,10 +66,11 @@ All **{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}**
 routed scenes the original game had are validated under the
 fishing-1 bar — pixel-perfect visuals plus synced SFX, signed
 off by human review across every applicable variant. Current mainline work is
-bugfixing, performance, and feature polish; the `v0.8.1` line keeps long
-randomized runs stable while the `v0.8.0` performance baseline closes the last
-bit of speed gap, and most scenes already run at native rate. The
-two ledgers live separately: the
+bugfixing, performance, and feature polish; the
+[`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+keeps long randomized runs stable while the `v0.8.0` performance
+baseline closes the last bit of speed gap, and most scenes already
+run at native rate. The two ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
 [performance battle card]({{ '/perf/' | relative_url }}) tracks
