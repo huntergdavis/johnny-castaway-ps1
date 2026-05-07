@@ -128,7 +128,11 @@ A few things this project is deliberately not trying to be:
   sub-agents, the dunking bird auto-poker, DuckStation,
   editor/terminal column, build farm, bottom-monitor telemetry.
 - [/scenes/]({{ '/scenes/' | relative_url }}) -- live per-scene
-  ledger. What's validated, what's in bring-up, what's blocked.
+  ledger. All 63 rows clear the FISHING 1 bar; family jump nav,
+  per-scene case studies, last-verified release tag.
+- [/perf/]({{ '/perf/' | relative_url }}) -- the second ledger:
+  126-variant headless-perf battle card with sortable columns
+  and color-coded Target Speed cells.
 - [/devlog/]({{ '/devlog/' | relative_url }}) -- the dated
   worklogs that drove each phase, in original form.
 - [/archaeology/]({{ '/archaeology/' | relative_url }}) -- older
