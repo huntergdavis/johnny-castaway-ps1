@@ -142,6 +142,23 @@ ticks. Once that holds across all applicable variants, the scene moves
 to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
 <a href="../">ledger</a>.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">BUILDING 4</code> is the scene the post-v0.7.0 random-run soak named when
+the
+<a href="../../docs/glossary/#clean-rect">clean-rect</a>
+allocation pipeline first regressed under walk-clean memory
+pressure. The <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> fix retries the large scene clean
+snapshot after releasing the stale walk clean buffer and recaptures
+the walk baseline so the scene loads cleanly even after a long
+random-position approach. <code class="language-plaintext highlighter-rouge">BUILDING 4</code> also appears on the v0.8.0
+<a href="../../lab/from-87-to-99-5/">clean-memory-relief drop-prefetch</a>
+exception list — the per-scene opt-in that drops the prefetch
+window during large clean snapshots. The follow-on <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>
+<a href="../../lab/v081-mary4-freeze/">stability fix</a>
+generalized the same pressure-estimator path for every random-
+position scene.</p>
+
   </div>
 
   <footer class="post-footer">
