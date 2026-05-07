@@ -39,7 +39,7 @@ offset and blits it transparent over the screen at the
 
 ## The sheet
 
-<img src="{{ site.github_url }}/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" />
+<img src="{{ site.github_url }}/raw/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png" alt="Sheet of 32 holiday emblem sprites: 8 columns × 4 rows of 32×32 pixel-art icons in the Sierra house style." width="256" height="128" loading="lazy" decoding="async" style="image-rendering: pixelated; width: 100%; max-width: 512px; border: 3px solid var(--jc-trunk);" />
 
 Direct link:
 [`docs/ps1/holidays-emblems/holiday-emblems-sheet.png`]({{ site.github_url }}/blob/main/docs/ps1/holidays-emblems/holiday-emblems-sheet.png).
