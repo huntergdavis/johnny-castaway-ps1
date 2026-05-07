@@ -98,3 +98,6 @@ that ships the next `MARY 4` freeze, signed off and timed.
 - [Glossary: soak-test]({{ '/docs/glossary/#soak-test' | relative_url }})
 - [Glossary: clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
 - [/perf/]({{ '/perf/' | relative_url }}) — the matrix the row of `MARY 4` came in green on
+- [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}) — the broader perf retrospective; v0.8.1 is the stability follow-on that left its matrix mean untouched
+- [/scenes/mary4/]({{ '/scenes/mary4/' | relative_url }}) — the canonical scene the soak named
+- [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — the v0.8.0 prequel; same memory-pressure machinery, one generation earlier
