@@ -22,6 +22,31 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.2-ps1` — VISITOR3 guarded-read performance
+*2026-05-07*
+
+This point release promotes the next VISITOR3 high-tide guarded generated-window
+read group and ships the current upstream website/docs polish with the latest
+performance battle-card numbers.
+
+- **VISITOR3 high visible CD pressure improves.** The guarded `138..162` read
+  window lowers `blocking_vb 294 -> 293`, `loop_reads 40 -> 39`, and
+  `loop_read_vb 335 -> 332`.
+- **Loop cadence stays fixed.** VISITOR3 high remains `1406/1019` VBlanks with
+  `overrun_vb=387` and `prefetch_overrun_vb=7`.
+- **Battle card remains near target.** The 120 timing-bearing rows average
+  `+0.5706%` over target / `99.6769%` target speed.
+- **Site/docs are current with `main`.** The release includes the latest site
+  navigation, glossary, lab/feed, structured-data, and page-TOC polish.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.2-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
 ### `v0.8.1-ps1` — clean-rect pressure stability
 *2026-05-06*
 
@@ -45,8 +70,6 @@ the matrix didn't is at
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.1-ps1)
 &nbsp;·&nbsp;
 [Download .bin / .cue]({{ '/play/' | relative_url }})
-
-## Earlier milestones
 
 ### `v0.8.0-ps1` — complete-scene performance baseline
 *2026-05-06*

@@ -118,10 +118,11 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
+      <li><a href="#v082-ps1--visitor3-guarded-read-performance" id="markdown-toc-v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
+      <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
       <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
@@ -138,6 +139,33 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</h3>
+<p><em>2026-05-07</em></p>
+
+<p>This point release promotes the next VISITOR3 high-tide guarded generated-window
+read group and ships the current upstream website/docs polish with the latest
+performance battle-card numbers.</p>
+
+<ul>
+  <li><strong>VISITOR3 high visible CD pressure improves.</strong> The guarded <code class="language-plaintext highlighter-rouge">138..162</code> read
+window lowers <code class="language-plaintext highlighter-rouge">blocking_vb 294 -&gt; 293</code>, <code class="language-plaintext highlighter-rouge">loop_reads 40 -&gt; 39</code>, and
+<code class="language-plaintext highlighter-rouge">loop_read_vb 335 -&gt; 332</code>.</li>
+  <li><strong>Loop cadence stays fixed.</strong> VISITOR3 high remains <code class="language-plaintext highlighter-rouge">1406/1019</code> VBlanks with
+<code class="language-plaintext highlighter-rouge">overrun_vb=387</code> and <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb=7</code>.</li>
+  <li><strong>Battle card remains near target.</strong> The 120 timing-bearing rows average
+<code class="language-plaintext highlighter-rouge">+0.5706%</code> over target / <code class="language-plaintext highlighter-rouge">99.6769%</code> target speed.</li>
+  <li><strong>Site/docs are current with <code class="language-plaintext highlighter-rouge">main</code>.</strong> The release includes the latest site
+navigation, glossary, lab/feed, structured-data, and page-TOC polish.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.2/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.2-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</h3>
 <p><em>2026-05-06</em></p>
@@ -164,8 +192,6 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.1-ps1">GitHub release</a>
  · 
 <a href="../play/">Download .bin / .cue</a></p>
-
-<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
 <p><em>2026-05-06</em></p>

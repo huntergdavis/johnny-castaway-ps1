@@ -82,7 +82,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.8.1-ps1`** |
+| Current release | **`v0.8.2-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -92,6 +92,14 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf stats version | Newest optimized rows use `visitor3-high-group138-162-slack4-v081`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.8.2-ps1` is a performance point release after `v0.8.1-ps1`. It promotes
+the VISITOR3 high-tide guarded generated-window read group `138..162`, lowering
+visible blocking `294 -> 293`, loop reads `40 -> 39`, and loop-read VBlanks
+`335 -> 332` while keeping loop timing, pack LBAs, and the PS-EXE sector bucket
+stable. It also merges the current upstream website/docs polish into the
+performance branch and regenerates the public site with the latest battle-card
+numbers.
 
 `v0.8.1-ps1` is a stability point release on top of the complete-scene
 performance baseline. It fixes a long-run scene-load freeze by estimating the
@@ -113,8 +121,8 @@ Current performance work is focused on VISITOR3 and the remaining CD/graphics
 outliers. VISITOR3 now uses an `FGP3/v3` cleanup-compact metadata shape that
 keeps the PAL4 draw payloads and CD footprint stable while trimming active
 payload from `1552446` to `1265930` bytes, plus a guarded high-tide
-`144..160` append that lowers visible blocking `296 -> 294` without moving the
-active loop or layout. BUILDING2 now uses the same cleanup-compact format,
+generated-window `138..162` append that lowers visible blocking `294 -> 293`
+and loop reads `40 -> 39` without moving the active loop or layout. BUILDING2 now uses the same cleanup-compact format,
 trimming active payload `1296388 -> 1044638` without moving pack LBAs or the
 PS-EXE bucket. The preprocessing matrix still keeps VISITOR3 first, but the
 next larger win needs scheduler-owned CD timing or selective upload-ready bands
@@ -498,6 +506,7 @@ prefer.
 - [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](docs/ps1/performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) + [performance-o2-audit.csv](docs/ps1/performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
+- [release-notes-0.8.2.md](docs/ps1/release-notes-0.8.2.md) — VISITOR3 guarded-read performance release notes
 - [release-notes-0.8.1.md](docs/ps1/release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](docs/ps1/release-notes-0.8.0.md) — complete-scene performance baseline release notes
 
