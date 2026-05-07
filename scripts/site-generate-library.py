@@ -271,6 +271,13 @@ binary assets, the [regtest case shelf]({{{{ '/archaeology/regtest-references/ca
 for host references, and the [Curious Hacker's Guide]({{{{ '/hack/' | relative_url }}}})
 for a guided learning path through the machinery.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{{:toc}}
+</details>
+
 {sections_md}
 """
     (target / "index.md").write_text(index, encoding="utf-8")
