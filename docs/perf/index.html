@@ -129,8 +129,8 @@ A scene can be timed here without being visually certified.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of v0.8.1-ps1">
   Target Speed distribution at <code>v0.8.1-ps1</code>:
-  <span class="spd-key spd-green">98 ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 ≥ 80%</span>
+  <span class="spd-key spd-green">96 ≥ 99%</span>
+  <span class="spd-key spd-yellow">22 ≥ 80%</span>
   <span class="spd-key spd-red">2 &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
@@ -187,23 +187,23 @@ prefetch-relief and stream-window work.</p>
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.9%</code> (<code class="language-plaintext highlighter-rouge">0.8692%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.8%</code> (<code class="language-plaintext highlighter-rouge">0.8324%</code> exact)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.4529%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.4776%</code> exact)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-06T07:45:20</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-06T21:20:57</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; latest refreshed rows use the <code class="language-plaintext highlighter-rouge">v072c</code> and <code class="language-plaintext highlighter-rouge">v072b</code> prefetch-relief / current-refresh families, baseline rows remain <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>, and <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">-0.6%</code>, <code class="language-plaintext highlighter-rouge">100.6% target speed</code>, <code class="language-plaintext highlighter-rouge">blocking_vb=2</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">1069 / 1072 VBlanks</code>, <code class="language-plaintext highlighter-rouge">-0.3%</code>, <code class="language-plaintext highlighter-rouge">100.3% target speed</code>, <code class="language-plaintext highlighter-rouge">blocking_vb=5</code></td>
     </tr>
   </tbody>
 </table>
@@ -243,6 +243,7 @@ refreshed rows use <code class="language-plaintext highlighter-rouge">activity9-
 <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>,
+<code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>,
@@ -266,7 +267,6 @@ refreshed rows use <code class="language-plaintext highlighter-rouge">activity9-
 <code class="language-plaintext highlighter-rouge">walkstuf1-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mary2-v068-wide-stitch</code>,
 <code class="language-plaintext highlighter-rouge">fishing5-v065-current-ledger-overlay</code>,
-<code class="language-plaintext highlighter-rouge">johnny2-v064-validation-refresh</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
@@ -1041,29 +1041,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>johnny2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-02T19:06:01</td>
-      <td>johnny2-v064-validation-refresh</td>
-      <td>+0.6%</td>
-      <td class="spd-green">99.4%</td>
-      <td>1761/1751</td>
-      <td>16</td>
+      <td>2026-05-06T21:20:57</td>
+      <td>johnny2-fgp3-padded-v081</td>
+      <td>+2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1801/1751</td>
+      <td>369</td>
       <td>0</td>
-      <td>3</td>
-      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+      <td>144</td>
+      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1801 and exposes stale v0.6.4 matrix row</td>
     </tr>
     <tr>
       <td><code>johnny2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-02T19:06:01</td>
-      <td>johnny2-v064-validation-refresh</td>
-      <td>+0.5%</td>
-      <td class="spd-green">99.5%</td>
-      <td>1758/1750</td>
-      <td>16</td>
-      <td>1</td>
-      <td>3</td>
-      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+      <td>2026-05-06T21:20:57</td>
+      <td>johnny2-fgp3-padded-v081</td>
+      <td>+2.8%</td>
+      <td class="spd-yellow">97.3%</td>
+      <td>1800/1751</td>
+      <td>377</td>
+      <td>0</td>
+      <td>144</td>
+      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1800 and exposes stale v0.6.4 matrix row</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>

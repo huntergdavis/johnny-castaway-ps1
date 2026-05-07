@@ -28,8 +28,8 @@ A scene can be timed here without being visually certified.
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">98 ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 ≥ 80%</span>
+  <span class="spd-key spd-green">96 ≥ 99%</span>
+  <span class="spd-key spd-yellow">22 ≥ 80%</span>
   <span class="spd-key spd-red">2 &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
@@ -54,11 +54,11 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.9%` (`0.8692%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4529%` exact) |
-| Latest perf matrix run | `2026-05-06T07:45:20` |
-| Stats version | mixed across rows; latest refreshed rows use the `v072c` and `v072b` prefetch-relief / current-refresh families, baseline rows remain `compact-fgp3-v2-fullmatrix`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
+| Timing-bearing average over target | `+0.8%` (`0.8324%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.4776%` exact) |
+| Latest perf matrix run | `2026-05-06T21:20:57` |
+| Stats version | mixed across rows; newest optimized rows use `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -94,6 +94,7 @@ and this page.
   `activity4-fishing4-v072c-prefetch-relief`,
   `building4-6-johnny6-v072c-prefetch-relief`,
   `activity1-v072c-current-refresh`,
+  `johnny2-fgp3-padded-v081`,
   `mary5-fgp3-padded-v081`,
   `activity11-fgp3-padded-v081`,
   `activity11-12-v072c-prefetch-relief`,
@@ -117,7 +118,6 @@ and this page.
   `walkstuf1-v072-prefetch-relief`,
   `mary2-v068-wide-stitch`,
   `fishing5-v065-current-ledger-overlay`,
-  `johnny2-v064-validation-refresh`,
   `compact-fgp3-v66-final-frame-hold`,
   `compact-fgp3-v64-building2-group318-330`,
   `compact-fgp3-v63-building2low-prime`, and
@@ -891,29 +891,29 @@ and this page.
       <td><code>johnny2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-02T19:06:01</td>
-      <td>johnny2-v064-validation-refresh</td>
-      <td>+0.6%</td>
-      <td class="spd-green">99.4%</td>
-      <td>1761/1751</td>
-      <td>16</td>
+      <td>2026-05-06T21:20:57</td>
+      <td>johnny2-fgp3-padded-v081</td>
+      <td>+2.9%</td>
+      <td class="spd-yellow">97.2%</td>
+      <td>1801/1751</td>
+      <td>369</td>
       <td>0</td>
-      <td>3</td>
-      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+      <td>144</td>
+      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1801 and exposes stale v0.6.4 matrix row</td>
     </tr>
     <tr>
       <td><code>johnny2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-02T19:06:01</td>
-      <td>johnny2-v064-validation-refresh</td>
-      <td>+0.5%</td>
-      <td class="spd-green">99.5%</td>
-      <td>1758/1750</td>
-      <td>16</td>
-      <td>1</td>
-      <td>3</td>
-      <td>validated v0.6.4 refresh; island-pos -64 54; correctness clean</td>
+      <td>2026-05-06T21:20:57</td>
+      <td>johnny2-fgp3-padded-v081</td>
+      <td>+2.8%</td>
+      <td class="spd-yellow">97.3%</td>
+      <td>1800/1751</td>
+      <td>377</td>
+      <td>0</td>
+      <td>144</td>
+      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1800 and exposes stale v0.6.4 matrix row</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>

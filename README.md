@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.8% over target / 99.5% target speed** |
-| Latest perf matrix run | **`2026-05-06T21:07:37`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-06T21:20:57`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -241,8 +241,12 @@ padded FGP3 conversion moves high tide `3359/3346 -> 3343/3348` and low tide
 keeping the original `818670`-byte CD footprint. ACTIVITY11's padded FGP3
 conversion moves high tide `1729/1720 -> 1715/1722` and low tide
 `1729/1717 -> 1717/1722`, eliminating active-loop overrun in both rows while
-keeping the original `433970`-byte CD footprint. The timing-bearing average is
-now `+0.7939%` over target / `99.5149%` target speed;
+keeping the original `433970`-byte CD footprint. MARY5 then moves high tide
+`1591 -> 1581` and low tide `1592 -> 1581`, eliminating both active-loop
+overruns while preserving the `646602`-byte CD footprint. JOHNNY2's current
+padded FGP3 packs improve the same-commit baseline from `1833 -> 1801/1800`,
+but also replace stale v0.6.4 matrix rows. The timing-bearing average is now
+`+0.8324%` over target / `99.4776%` target speed;
 since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.6`
 percentage points of over-target gap and added about `12.4` points of target

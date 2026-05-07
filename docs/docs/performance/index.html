@@ -400,12 +400,13 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>+0.8% over target /
-99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.7939%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.5149%</code> exact target speed).</p>
+99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8324%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4776%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>,
@@ -439,7 +440,6 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">visitor3-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mary2-v068-wide-stitch</code>,
 <code class="language-plaintext highlighter-rouge">fishing5-v065-current-ledger-overlay</code>,
-<code class="language-plaintext highlighter-rouge">johnny2-v064-validation-refresh</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
@@ -454,13 +454,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T21:07:37</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T21:20:57</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>,
+rows now use <code class="language-plaintext highlighter-rouge">johnny2-fgp3-padded-v081</code>,
+<code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>,
 <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>,
@@ -494,7 +495,6 @@ rows now use <code class="language-plaintext highlighter-rouge">mary5-fgp3-padde
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">mary2-v068-wide-stitch</code>,
 <code class="language-plaintext highlighter-rouge">fishing5-v065-current-ledger-overlay</code>,
-<code class="language-plaintext highlighter-rouge">johnny2-v064-validation-refresh</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v64-building2-group318-330</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v63-building2low-prime</code>, and
 <code class="language-plaintext highlighter-rouge">indexed8-row-local-dirty-v1</code>; other refreshed rows include
@@ -646,8 +646,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>johnny2</code></td>
-      <td>+0.6% / 99.4% (1761/1751); due 3; blk 16</td>
-      <td>+0.5% / 99.5% (1758/1750); due 3; blk 16</td>
+      <td>+2.9% / 97.2% (1801/1751); due 144; blk 369</td>
+      <td>+2.8% / 97.3% (1800/1751); due 144; blk 377</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>

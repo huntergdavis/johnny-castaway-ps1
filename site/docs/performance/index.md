@@ -274,12 +274,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.8% over target /
-99.5% target speed** (`0.7939%` exact over target / `99.5149%` exact target speed).
+99.5% target speed** (`0.8324%` exact over target / `99.4776%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`johnny2-fgp3-padded-v081`,
 `mary5-fgp3-padded-v081`,
 `activity11-fgp3-padded-v081`,
 `building5-fgp3-padded-v080`,
@@ -313,7 +314,6 @@ perf measurements. The latest updated rows are stamped
 `visitor3-v072-prefetch-relief`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
-`johnny2-v064-validation-refresh`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
@@ -328,13 +328,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-06T21:07:37`; per-row freshness and stats version are shown on
+run is `2026-05-06T21:20:57`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `mary5-fgp3-padded-v081`,
+rows now use `johnny2-fgp3-padded-v081`,
+`mary5-fgp3-padded-v081`,
 `activity11-fgp3-padded-v081`,
 `building5-fgp3-padded-v080`,
 `visitor3-low-group170-186-v080b`,
@@ -368,7 +369,6 @@ rows now use `mary5-fgp3-padded-v081`,
 `compact-fgp3-v66-final-frame-hold`,
 `mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
-`johnny2-v064-validation-refresh`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and
 `indexed8-row-local-dirty-v1`; other refreshed rows include
@@ -520,8 +520,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>johnny2</code></td>
-      <td>+0.6% / 99.4% (1761/1751); due 3; blk 16</td>
-      <td>+0.5% / 99.5% (1758/1750); due 3; blk 16</td>
+      <td>+2.9% / 97.2% (1801/1751); due 144; blk 369</td>
+      <td>+2.8% / 97.3% (1800/1751); due 144; blk 377</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>
