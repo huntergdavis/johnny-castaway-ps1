@@ -14,20 +14,30 @@
     set, also overrides og:image:alt with page.image_alt (or page
     title) so screen readers and social previews land on something
     that matches what's actually shown.
+
+    URLs are absolute: Open Graph and Twitter Card consumers (Slack,
+    Discord, Facebook, X, link previewers) require fully-qualified
+    URLs and don't resolve relative paths. The build script's
+    `--baseurl ""` blanks site.baseurl, so `relative_url` would
+    produce post-relativizer paths like `../../assets/...` that
+    would be uninterpretable to those crawlers. Same workaround
+    canonical, JSON-LD, and the Atom feed already use:
+    `site.url + site.canonical_baseurl + path`.
   {%- endcomment -%}
+  {%- assign og_root = site.url | append: site.canonical_baseurl -%}
   {%- if page.image -%}
-    {%- assign og_image = page.image | relative_url -%}
+    {%- assign og_image = og_root | append: page.image -%}
     {%- assign og_image_alt = page.image_alt | default: page.title | default: site.title -%}
   {%- else -%}
-    {%- assign og_image = '/assets/img/branding/og-image.png' | relative_url -%}
+    {%- assign og_image = og_root | append: '/assets/img/branding/og-image.png' -%}
     {%- assign og_image_alt = 'Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art.' -%}
   {%- endif -%}
   {%- if page.twitter_image -%}
-    {%- assign tw_image = page.twitter_image | relative_url -%}
+    {%- assign tw_image = og_root | append: page.twitter_image -%}
   {%- elsif page.image -%}
-    {%- assign tw_image = page.image | relative_url -%}
+    {%- assign tw_image = og_root | append: page.image -%}
   {%- else -%}
-    {%- assign tw_image = '/assets/img/branding/twitter-card.png' | relative_url -%}
+    {%- assign tw_image = og_root | append: '/assets/img/branding/twitter-card.png' -%}
   {%- endif -%}
   {%- comment -%}
     Canonical URL: absolute via site.canonical_baseurl (the build's
@@ -41,7 +51,7 @@
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
   <meta property="og:type"         content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
-  <meta property="og:url"          content="{{ page.url | relative_url }}" />
+  <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
   <meta property="og:image"        content="{{ og_image }}" />
   <meta property="og:image:alt"    content="{{ og_image_alt }}" />
   <meta name="twitter:card"  content="summary_large_image" />
