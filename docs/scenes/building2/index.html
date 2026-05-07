@@ -133,7 +133,8 @@ up explicitly.</p>
 
 <h3 id="how-this-scene-gets-validated">How this scene gets validated</h3>
 
-<p>The same way every scene does: under the FISHING 1 bar.</p>
+<p>The same way every scene does: under the
+<a href="../../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
 <p>A host-side Johnny Reborn capture/export pass produces a
 base-diff <code class="language-plaintext highlighter-rouge">.FG2</code> foreground pack and a JSONL of sound events. The PS1
@@ -145,6 +146,22 @@ visuals come out frame-identical and the SFX cues land on the same
 ticks. Once that holds across all applicable variants, the scene moves
 to <code class="language-plaintext highlighter-rouge">validated</code> and a row turns green in the
 <a href="../">ledger</a>.</p>
+
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">BUILDING 2</code> sits in the
+<a href="../../perf/">perf battle card</a>’s yellow cluster
+— close to but not yet at native target speed. Its
+<a href="../../docs/glossary/#clean-rect">clean-rect</a>-heavy
+Lilliputian-sandcastle frames are explicitly named in the
+<a href="../../lab/from-87-to-99-5/">post-validation perf retrospective</a>
+as part of the wide-action surface still finishing its
+<a href="../../docs/glossary/#prefetch-window">prefetch-relief</a>
+and <a href="../../docs/glossary/#stream-window">stream-window</a>
+work. The full-host sandcastle injection that the validated pack
+relies on (red flag + planes originating from the correct base)
+also forces a larger residual cleanup table, which is the underlying
+reason the row hasn’t graduated from yellow to green yet.</p>
 
   </div>
 
