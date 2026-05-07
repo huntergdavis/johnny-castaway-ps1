@@ -123,10 +123,15 @@ long as it did.
 
 - [The dev environment, photographed]({{ '/about/dev-environment/' | relative_url }}) —
   the bird mid-double-dunk, in context with the rest of the workflow.
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }}) —
+  the agents the bird keeps tapping; what they actually wrote and
+  what they explicitly didn't.
 - [The LLM pass]({{ '/lab/llm-pass/' | relative_url }}) — what the
   pair-programming loop actually does between dunking-bird ticks.
 - [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }}) —
   the discipline that makes LLM-assisted runs trustworthy at all.
+- [The 24/7 build farm]({{ '/lab/build-farm/' | relative_url }}) —
+  what the bird keeps fed.
 - [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }}) —
   the harness on the other end of the unattended loop.
 - [Performance loop]({{ '/hack/performance-loop/' | relative_url }}) —
