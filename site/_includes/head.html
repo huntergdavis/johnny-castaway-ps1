@@ -62,6 +62,17 @@
   <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
   <meta property="og:image"        content="{{ og_image }}" />
   <meta property="og:image:alt"    content="{{ og_image_alt }}" />
+  {%- comment -%}
+    og:image:width / height: emit only when the page is using the
+    default og-image.png (1200×630) — not when a `page.image`
+    override is set, since override dimensions vary per-asset.
+    Knowing dimensions up front lets Slack/Discord/Facebook size
+    the preview slot before the image fetch lands.
+  {%- endcomment -%}
+  {%- unless page.image -%}
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  {%- endunless -%}
   <meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="{{ tw_image }}" />
 
