@@ -39,3 +39,15 @@ now clears stale sprite-surface references before BMP/layer surfaces are
 freed, and the PS1 runtime drops optional prefetch buffers plus uses a
 small streaming scratch path when a large clean snapshot would otherwise
 fragment memory.
+
+## Notable runtime history
+
+`MARY 3` high and low both appear on the
+[performance battle card]({{ '/perf/' | relative_url }}) without
+[`target_speed`]({{ '/docs/glossary/#target-vb' | relative_url }})
+values — they're two of the 6 untimed rows. The reason is
+mechanical, not structural: the active-loop timing pre-dates the
+current pack and hasn't been re-measured against the v0.7.2+
+prefetch-relief baseline yet. Visual signoff (the FISHING 1 bar)
+holds; the row will land in the green band on the next perf-matrix
+refresh that touches MARY 3 specifically.

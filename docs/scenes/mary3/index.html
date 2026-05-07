@@ -143,6 +143,18 @@ freed, and the PS1 runtime drops optional prefetch buffers plus uses a
 small streaming scratch path when a large clean snapshot would otherwise
 fragment memory.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">MARY 3</code> high and low both appear on the
+<a href="../../perf/">performance battle card</a> without
+<a href="../../docs/glossary/#target-vb"><code class="language-plaintext highlighter-rouge">target_speed</code></a>
+values — they’re two of the 6 untimed rows. The reason is
+mechanical, not structural: the active-loop timing pre-dates the
+current pack and hasn’t been re-measured against the v0.7.2+
+prefetch-relief baseline yet. Visual signoff (the FISHING 1 bar)
+holds; the row will land in the green band on the next perf-matrix
+refresh that touches MARY 3 specifically.</p>
+
   </div>
 
   <footer class="post-footer">
