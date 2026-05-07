@@ -206,7 +206,7 @@ and the PS1 is not that.
 ## Where this leaves the runtime
 
 The current build (`{{ site.release.tag }}`) lives well inside every hardware
-budget: ~84 KB of executable code, ~95 KB of audio in SPU RAM, two
+budget: ~208 KiB of executable code, ~95 KB of audio in SPU RAM, two
 640&times;480 framebuffers, and a few hundred KB of resource cache in main
 RAM. The bottleneck that remains is CD-side prefetch timing, not memory or
 CPU. If a future scene exposes a CPU bound, the next move is per-scene

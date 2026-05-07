@@ -54,7 +54,8 @@ docker build -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 \
 Output is `jcreborn.bin` + `jcreborn.cue` in the repo root. At
 `{{ site.release.tag }}` the CD image is about **76 MB** — that
 weight is almost all foreground (FG2) packs routed onto the disc;
-the PS-EXE itself is ~84 KB. If you want the per-scene loop instead
+the PS-EXE itself is **208 KiB** (104 × 2 KiB CD-ROM sectors). If
+you want the per-scene loop instead
 of a one-shot build, read
 [Development workflow]({{ '/docs/dev-workflow/' | relative_url }}).
 
@@ -234,7 +235,8 @@ docker run --rm jc-reborn-ps1-dev:amd64 mipsel-none-elf-gcc --version
 # Full build smoke test
 ./build-ps1.sh
 ls -lh jcreborn.bin jcreborn.cue
-# expected: jcreborn.bin around 650 KB, jcreborn.cue a few hundred bytes
+# expected: jcreborn.bin around 76 MB (mostly FG2 pack payload),
+#           jcreborn.cue a few hundred bytes
 ```
 
 If both succeed, the next step is loading `jcreborn.cue` in DuckStation —

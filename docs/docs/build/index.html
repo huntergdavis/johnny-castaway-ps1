@@ -104,7 +104,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1134 words
+          ~4 min read · 1145 words
         </p>
 
       <hr class="rule" />
@@ -172,7 +172,8 @@ docker build <span class="nt">-f</span> Dockerfile.ps1 <span class="nt">-t</span
 <p>Output is <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in the repo root. At
 <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> the CD image is about <strong>76 MB</strong> — that
 weight is almost all foreground (FG2) packs routed onto the disc;
-the PS-EXE itself is ~84 KB. If you want the per-scene loop instead
+the PS-EXE itself is <strong>208 KiB</strong> (104 × 2 KiB CD-ROM sectors). If
+you want the per-scene loop instead
 of a one-shot build, read
 <a href="../dev-workflow/">Development workflow</a>.</p>
 
@@ -422,7 +423,8 @@ docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 mipsel-none-elf-
 <span class="c"># Full build smoke test</span>
 ./build-ps1.sh
 <span class="nb">ls</span> <span class="nt">-lh</span> jcreborn.bin jcreborn.cue
-<span class="c"># expected: jcreborn.bin around 650 KB, jcreborn.cue a few hundred bytes</span>
+<span class="c"># expected: jcreborn.bin around 76 MB (mostly FG2 pack payload),</span>
+<span class="c">#           jcreborn.cue a few hundred bytes</span>
 </code></pre></div></div>
 
 <p>If both succeed, the next step is loading <code class="language-plaintext highlighter-rouge">jcreborn.cue</code> in DuckStation —
