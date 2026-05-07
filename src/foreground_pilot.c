@@ -1576,6 +1576,68 @@ static int fgBackdropSaveCleanBgRectsForPack(sint16 fgX, sint16 fgY, uint16 fgW,
     }
 }
 
+static uint32 fgBackdropCleanRectEstimateForPack(sint16 fgX, sint16 fgY,
+                                                 uint16 fgW, uint16 fgH)
+{
+    const sint16 kWaveMinX = 129;
+    const sint16 kWaveMinY = 303;
+    const sint16 kWaveEndX = 608;
+    const sint16 kWaveEndY = 356;
+    const sint16 kUpperSplitY = 190;
+
+    sint16 fgEndX = (sint16)(fgX + fgW);
+    sint16 fgEndY = (sint16)(fgY + fgH);
+    uint32 estimate = 0;
+
+    if (fgW == 0 || fgH == 0)
+        return (uint32)(kWaveEndX - kWaveMinX) *
+               (uint32)(kWaveEndY - kWaveMinY) *
+               (uint32)sizeof(uint16);
+
+    {
+        sint16 lowerMinX = fgX;
+        sint16 lowerMinY = fgY >= kUpperSplitY ? fgY : kUpperSplitY;
+        sint16 lowerEndX = fgEndX;
+        sint16 lowerEndY = fgEndY;
+
+        if (kWaveMinX < lowerMinX) lowerMinX = kWaveMinX;
+        if (kWaveMinY < lowerMinY) lowerMinY = kWaveMinY;
+        if (kWaveEndX > lowerEndX) lowerEndX = kWaveEndX;
+        if (kWaveEndY > lowerEndY) lowerEndY = kWaveEndY;
+
+        if (lowerMinX < 0) lowerMinX = 0;
+        if (lowerMinY < 0) lowerMinY = 0;
+        if (lowerEndX > 640) lowerEndX = 640;
+        if (lowerEndY > 480) lowerEndY = 480;
+
+        if (lowerEndX > lowerMinX && lowerEndY > lowerMinY) {
+            estimate += (uint32)(lowerEndX - lowerMinX) *
+                        (uint32)(lowerEndY - lowerMinY) *
+                        (uint32)sizeof(uint16);
+        }
+    }
+
+    if (fgY < kUpperSplitY) {
+        sint16 upperMinX = fgX;
+        sint16 upperMinY = fgY;
+        sint16 upperEndX = fgEndX;
+        sint16 upperEndY = kUpperSplitY;
+
+        if (upperMinX < 0) upperMinX = 0;
+        if (upperMinY < 0) upperMinY = 0;
+        if (upperEndX > 640) upperEndX = 640;
+        if (upperEndY > 480) upperEndY = 480;
+
+        if (upperEndX > upperMinX && upperEndY > upperMinY) {
+            estimate += (uint32)(upperEndX - upperMinX) *
+                        (uint32)(upperEndY - upperMinY) *
+                        (uint32)sizeof(uint16);
+        }
+    }
+
+    return estimate;
+}
+
 static int fgBackdropSaveCleanBgRectsWithPressureFallback(const char *sceneName,
                                                           sint16 fgX,
                                                           sint16 fgY,
@@ -3196,6 +3258,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
     sint16 fgBoundsY = 0;
     uint16 fgBoundsW = 0;
     uint16 fgBoundsH = 0;
+    uint32 cleanRectEstimate = 0;
     uint32 perfPhaseTick = 0;
     int blackBackdrop = fgSceneUsesBlackBackdrop(sceneName);
     const char *sceneBackdropScreen = fgSceneBackdropScreen(sceneName);
@@ -3304,8 +3367,10 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                           "(scene metadata missing or pack header malformed)");
     }
     {
-        uint32 cleanRectEstimate =
-            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
+        cleanRectEstimate = fgBackdropCleanRectEstimateForPack(fgBoundsX,
+                                                               fgBoundsY,
+                                                               fgBoundsW,
+                                                               fgBoundsH);
         if (!fgSceneEquals(sceneName, "building2") &&
             !fgSceneEquals(sceneName, "building4") &&
             !fgSceneEquals(sceneName, "building6") &&
@@ -3339,8 +3404,6 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
         grFreeCleanBgRects();
         grSetCleanBgBlackMode(1);
     } else {
-        uint32 cleanRectEstimate =
-            (uint32)fgBoundsW * (uint32)fgBoundsH * (uint32)sizeof(uint16);
         if (!fgBackdropSaveCleanBgRectsWithPressureFallback(sceneName,
                                                             fgBoundsX,
                                                             fgBoundsY,
