@@ -26,9 +26,8 @@ runs the validation passes, signs off on each release, and writes the
 pause-menu Credits text. He is also the only operator of any AI tooling
 involved.
 
-The project uses AI sub-agents — primarily Claude and Codex, on separate
-worktrees against separate branches, with occasional excursions into other
-models for specific jobs — as an unusual member of the team. The agents
+The project uses AI sub-agents — Claude, Gemini, and Codex, on separate
+worktrees against separate branches — as an unusual member of the team. The agents
 draft text, scaffold code, run parallel research passes against
 documentation, and rubber-duck design questions. They do not own decisions.
 They do not pick what's worth shipping. They do not validate scenes. The
