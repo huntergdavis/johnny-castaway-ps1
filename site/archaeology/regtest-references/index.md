@@ -2,15 +2,15 @@
 layout: page
 title: Regtest reference set
 eyebrow: Archaeology
-subtitle: Sixty-two frozen scene captures the regtest harness compares against to detect drift.
+subtitle: Sixty-three frozen scene captures the regtest harness compares against to detect drift.
 description: The frozen reference frames the Johnny Castaway PS1 fan port's regtest harness compares each fresh capture against, plus the metadata that lets a fresh run reproduce the conditions of the original.
 ---
 
 The regtest reference set is the harness's notion of *what each scene
 should look like, today, when nothing has drifted*. It is a directory
-per scene — sixty-two of them, indexed by ADS family and tag — and each
-directory contains the frozen capture metadata, the per-frame outcome
-record, and a self-contained HTML viewer. The frame BMPs themselves
+per scene — sixty-three of them, indexed by ADS family and tag —
+and each directory contains the frozen capture metadata, the
+per-frame outcome record, and a self-contained HTML viewer. The frame BMPs themselves
 (the actual pixels) live alongside this archaeology in
 `regtest-references/<SCENE>/frames/`, which is gitignored to keep the
 repository tractable. The files in `docs/ps1/archaeology/regtest-references/`
@@ -64,15 +64,16 @@ The ten ADS families are:
 - **VISITOR** — six scenes (VISITOR-2 is intentionally absent).
 - **WALKSTUF** — three scenes.
 
-Sixty-two directories total, each corresponding to a scene that the
-host engine could capture cleanly on 2026-03-28. The full list of 63
-scenes the project recognises includes one (`VISITOR-2`) that is not
-captureable on the host path; it does not have a reference set. That
-shortfall is documented rather than hidden.
+Sixty-three directories total, one per scene the project recognises
+(matching the 63-row [scene ledger]({{ '/scenes/' | relative_url }})).
+There is no `VISITOR-2` directory because Sierra's `VISITOR.ADS`
+skips tag `2` in the original game — it is not a captureable scene
+the project chose to drop, it is a tag the source bytecode never
+defined.
 
 ## What's in each directory
 
-Each of the sixty-two scene directories contains exactly three files in
+Each of the sixty-three scene directories contains exactly three files in
 `docs/ps1/archaeology/regtest-references/<SCENE>/`:
 
 - **`metadata.json`** — the frozen capture's identity. This holds the
@@ -152,7 +153,7 @@ Each preserved reference also has a generated shelf page under
 Those pages expose the boot string, frame count, state hash, source artifacts,
 and links back to the corresponding scene ledger entry.
 
-## The sixty-two scenes
+## The sixty-three scenes
 
 Each row links to the scene's narrative page. The "ADS" column is the
 animation script the scene comes from; the "Tag" column is its index

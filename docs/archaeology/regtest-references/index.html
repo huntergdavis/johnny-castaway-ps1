@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-07" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -100,9 +100,9 @@
     <header class="page-header">
       <p class="eyebrow">Archaeology</p>
       <h1>Regtest reference set</h1>
-      <p class="subtitle">Sixty-two frozen scene captures the regtest harness compares against to detect drift.</p>
+      <p class="subtitle">Sixty-three frozen scene captures the regtest harness compares against to detect drift.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1211 words
+          ~4 min read · 1210 words
         </p>
 
       <hr class="rule" />
@@ -111,9 +111,9 @@
   <div class="page-body">
     <p>The regtest reference set is the harness’s notion of <em>what each scene
 should look like, today, when nothing has drifted</em>. It is a directory
-per scene — sixty-two of them, indexed by ADS family and tag — and each
-directory contains the frozen capture metadata, the per-frame outcome
-record, and a self-contained HTML viewer. The frame BMPs themselves
+per scene — sixty-three of them, indexed by ADS family and tag —
+and each directory contains the frozen capture metadata, the
+per-frame outcome record, and a self-contained HTML viewer. The frame BMPs themselves
 (the actual pixels) live alongside this archaeology in
 <code class="language-plaintext highlighter-rouge">regtest-references/&lt;SCENE&gt;/frames/</code>, which is gitignored to keep the
 repository tractable. The files in <code class="language-plaintext highlighter-rouge">docs/ps1/archaeology/regtest-references/</code>
@@ -128,7 +128,7 @@ are the bookkeeping.</p>
   <li><a href="#whats-in-each-directory" id="markdown-toc-whats-in-each-directory">What’s in each directory</a></li>
   <li><a href="#how-references-get-refreshed" id="markdown-toc-how-references-get-refreshed">How references get refreshed</a></li>
   <li><a href="#how-regtest-uses-these" id="markdown-toc-how-regtest-uses-these">How regtest uses these</a></li>
-  <li><a href="#the-sixty-two-scenes" id="markdown-toc-the-sixty-two-scenes">The sixty-two scenes</a></li>
+  <li><a href="#the-sixty-three-scenes" id="markdown-toc-the-sixty-three-scenes">The sixty-three scenes</a></li>
   <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
   <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
 </ul>
@@ -178,15 +178,16 @@ in the boot strings, in the bringup status reports.</p>
   <li><strong>WALKSTUF</strong> — three scenes.</li>
 </ul>
 
-<p>Sixty-two directories total, each corresponding to a scene that the
-host engine could capture cleanly on 2026-03-28. The full list of 63
-scenes the project recognises includes one (<code class="language-plaintext highlighter-rouge">VISITOR-2</code>) that is not
-captureable on the host path; it does not have a reference set. That
-shortfall is documented rather than hidden.</p>
+<p>Sixty-three directories total, one per scene the project recognises
+(matching the 63-row <a href="../../scenes/">scene ledger</a>).
+There is no <code class="language-plaintext highlighter-rouge">VISITOR-2</code> directory because Sierra’s <code class="language-plaintext highlighter-rouge">VISITOR.ADS</code>
+skips tag <code class="language-plaintext highlighter-rouge">2</code> in the original game — it is not a captureable scene
+the project chose to drop, it is a tag the source bytecode never
+defined.</p>
 
 <h2 id="whats-in-each-directory">What’s in each directory</h2>
 
-<p>Each of the sixty-two scene directories contains exactly three files in
+<p>Each of the sixty-three scene directories contains exactly three files in
 <code class="language-plaintext highlighter-rouge">docs/ps1/archaeology/regtest-references/&lt;SCENE&gt;/</code>:</p>
 
 <ul>
@@ -272,7 +273,7 @@ exit codes and the harness invocation.</p>
 Those pages expose the boot string, frame count, state hash, source artifacts,
 and links back to the corresponding scene ledger entry.</p>
 
-<h2 id="the-sixty-two-scenes">The sixty-two scenes</h2>
+<h2 id="the-sixty-three-scenes">The sixty-three scenes</h2>
 
 <p>Each row links to the scene’s narrative page. The “ADS” column is the
 animation script the scene comes from; the “Tag” column is its index
