@@ -123,11 +123,40 @@ preserved as *authoritative current* and is what every subsequent
 scene gets brought up under.
 </section>
 
+<section class="chapter" markdown="1">
+<span class="chapter-num">2026-04-23 → 2026-05-06</span>
+## Feature build-out, validation grind, performance baseline
+
+After `v0.3.6-ps1` the work split into three overlapping arcs.
+The first was feature build-out: the holidays
+[codegen pipeline]({{ '/lab/35-holidays-codegen/' | relative_url }})
+expanding 4 to 36, the pause menu reachable with Start, the
+[SPI pad-poll fix]({{ '/lab/two-day-spi-bug/' | relative_url }}),
+[story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+that ended Johnny's between-scene teleport in **`v0.4.20-ps1`**,
+[freeplay and the debug catalogs]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+in **`v0.5.0-ps1`**, and the
+[ocean-ambience SPU loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
+in **`v0.6.0-ps1`**. The second was the
+[63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+through the v0.6.x bring-up cluster:
+**`v0.7.0-ps1`** (**2026-05-05**) declared the [scene
+ledger]({{ '/scenes/' | relative_url }}) complete — 63 of 63 scenes
+pixel-perfect under the
+[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+across every applicable variant. The third was the post-validation
+[performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }})
+that closed the headless matrix gap from `+17.4%` over target /
+`87.1%` target speed at the v0.7.0 baseline to `+0.9%` over target /
+`99.5%` target speed at **`v0.8.0-ps1`**, plus the
+[stability follow-on]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+in **`v0.8.1-ps1`** that fixed a clean-rect pressure freeze the
+per-commit matrix never reached. The lab essays on each arc are
+the deep dives; this entry is the chronological anchor.
+</section>
+
 ---
 
-The eras after `v0.3.6-ps1` — overnight loop stability work
-(`v0.3.9-ps1`), the holidays expansion, the pause menu, the SPI pad
-driver, the memory-card persistence — are continuations rather than
-distinct eras. Their dated worklogs live at
+The dated worklogs for every commit between these eras live at
 [/devlog/]({{ '/devlog/' | relative_url }}). The full narrative
 walkthrough is at [/archaeology/]({{ '/archaeology/' | relative_url }}).

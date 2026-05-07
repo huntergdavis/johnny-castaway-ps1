@@ -104,7 +104,7 @@
       <h1>Era Timeline</h1>
       <p class="subtitle">How the PS1 branch changed jobs without changing standards.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~3 min read · 870 words
+          ~4 min read · 1017 words
         </p>
 
       <hr class="rule" />
@@ -132,6 +132,7 @@ the foreground pilot started looking like the answer.</p>
   <li><a href="#validation-and-instrumentation-maximalism" id="markdown-toc-validation-and-instrumentation-maximalism">Validation and instrumentation maximalism</a></li>
   <li><a href="#binary-library-and-regression-archaeology" id="markdown-toc-binary-library-and-regression-archaeology">Binary library and regression archaeology</a></li>
   <li><a href="#foreground-playback-pivot-to-validated-baseline" id="markdown-toc-foreground-playback-pivot-to-validated-baseline">Foreground playback pivot to validated baseline</a></li>
+  <li><a href="#feature-build-out-validation-grind-performance-baseline" id="markdown-toc-feature-build-out-validation-grind-performance-baseline">Feature build-out, validation grind, performance baseline</a></li>
 </ul>
 
   </details>
@@ -234,12 +235,41 @@ preserved as <em>authoritative current</em> and is what every subsequent
 scene gets brought up under.</p>
 </section>
 
+<section class="chapter">
+  <p><span class="chapter-num">2026-04-23 → 2026-05-06</span></p>
+  <h2 id="feature-build-out-validation-grind-performance-baseline">Feature build-out, validation grind, performance baseline</h2>
+
+  <p>After <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code> the work split into three overlapping arcs.
+The first was feature build-out: the holidays
+<a href="../../lab/35-holidays-codegen/">codegen pipeline</a>
+expanding 4 to 36, the pause menu reachable with Start, the
+<a href="../../lab/two-day-spi-bug/">SPI pad-poll fix</a>,
+<a href="../../releases/#v0420-ps1--story-loop-walking">story-loop walking</a>
+that ended Johnny’s between-scene teleport in <strong><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></strong>,
+<a href="../../releases/#v050-ps1--freeplay-and-debug-mode">freeplay and the debug catalogs</a>
+in <strong><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code></strong>, and the
+<a href="../../releases/#v060-ps1--ocean-ambience">ocean-ambience SPU loop</a>
+in <strong><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code></strong>. The second was the
+<a href="../../lab/the-63-scene-grind/">63-scene grind</a>
+through the v0.6.x bring-up cluster:
+<strong><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code></strong> (<strong>2026-05-05</strong>) declared the <a href="../../scenes/">scene
+ledger</a> complete — 63 of 63 scenes
+pixel-perfect under the
+<a href="../../docs/glossary/#fishing1-bar">FISHING 1 bar</a>
+across every applicable variant. The third was the post-validation
+<a href="../../lab/from-87-to-99-5/">performance loop</a>
+that closed the headless matrix gap from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target /
+<code class="language-plaintext highlighter-rouge">87.1%</code> target speed at the v0.7.0 baseline to <code class="language-plaintext highlighter-rouge">+0.9%</code> over target /
+<code class="language-plaintext highlighter-rouge">99.5%</code> target speed at <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong>, plus the
+<a href="../../lab/v081-mary4-freeze/">stability follow-on</a>
+in <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> that fixed a clean-rect pressure freeze the
+per-commit matrix never reached. The lab essays on each arc are
+the deep dives; this entry is the chronological anchor.</p>
+</section>
+
 <hr />
 
-<p>The eras after <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code> — overnight loop stability work
-(<code class="language-plaintext highlighter-rouge">v0.3.9-ps1</code>), the holidays expansion, the pause menu, the SPI pad
-driver, the memory-card persistence — are continuations rather than
-distinct eras. Their dated worklogs live at
+<p>The dated worklogs for every commit between these eras live at
 <a href="../../devlog/">/devlog/</a>. The full narrative
 walkthrough is at <a href="../">/archaeology/</a>.</p>
 
