@@ -6,6 +6,13 @@ subtitle: The narrow set of gr* graphics functions gameplay code is allowed to c
 description: Reference for the SDL compat lite contract — the narrow graphics surface the project's gameplay code is allowed to depend on, regardless of whether it is running against SDL2 on the host or PSn00bSDK on the PS1. Layer lifecycle, frame lifecycle, sprite drawing, primitive drawing, region save/restore, the gap matrix, and the kill list of long-standing leaks.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 A labor of love by Hunter Davis. The host capture build runs against
 SDL2 because that is what the original Johnny Castaway engine ports use,
 and SDL2 is what gives the host a pixel-accurate rendering of every

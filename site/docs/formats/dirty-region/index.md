@@ -6,6 +6,13 @@ subtitle: The renderer's bookkeeping cheat-sheet. For each TTM, which rectangles
 description: Reference for the dirty-region template — the offline JSON artifact the host build derives from TTM bytecode, telling the PS1 dirty-row renderer which rectangles to track per scene. Per-pack and per-scene template shape, opcode coverage, the grRestoreBgTiles bug that surfaced prevDirty, and where the runtime consumes it.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 A labor of love by Hunter Davis. The PS1 framebuffer is small, and a full
 clear-and-redraw of all 320×200 pixels every frame is too expensive to
 sustain — the GPU can do it, but the dirty-row tile-upload path the

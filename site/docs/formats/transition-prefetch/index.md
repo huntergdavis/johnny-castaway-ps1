@@ -6,6 +6,13 @@ subtitle: The post-processed planner that says which pack to start streaming nex
 description: Reference for the transition prefetch schema — the post-processed JSON artifact that ranks pack-to-pack transitions by added bytes and working set, drives the foreground pilot's prefetch decisions, and feeds the pack manifest's prefetch_hints. Inputs, outputs, field definitions, runtime behavior on a 2x CD drive, and what happens when prefetch misses.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 A labor of love by Hunter Davis. The PS1 ships with a 2x CD-ROM drive.
 Cold-seek latency is around 150 ms; sustained read throughput is roughly
 300 KB/s. Both numbers are an order of magnitude worse than the original

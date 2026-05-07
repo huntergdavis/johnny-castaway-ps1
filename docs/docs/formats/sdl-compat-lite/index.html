@@ -104,14 +104,39 @@
       <h1>SDL compat lite</h1>
       <p class="subtitle">The narrow set of gr* graphics functions gameplay code is allowed to call. Both the host SDL2 build and the PS1 PSn00bSDK build implement this surface.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1480 words
+          ~6 min read · 1530 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. The host capture build runs against
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#contract-surface" id="markdown-toc-contract-surface">Contract surface</a>    <ul>
+      <li><a href="#layer-lifecycle" id="markdown-toc-layer-lifecycle">Layer lifecycle</a></li>
+      <li><a href="#frame-lifecycle" id="markdown-toc-frame-lifecycle">Frame lifecycle</a></li>
+      <li><a href="#sprite-drawing" id="markdown-toc-sprite-drawing">Sprite drawing</a></li>
+      <li><a href="#primitive-drawing" id="markdown-toc-primitive-drawing">Primitive drawing</a></li>
+      <li><a href="#region-save--restore" id="markdown-toc-region-save--restore">Region save / restore</a></li>
+      <li><a href="#clip-and-offsets" id="markdown-toc-clip-and-offsets">Clip and offsets</a></li>
+    </ul>
+  </li>
+  <li><a href="#out-of-contract" id="markdown-toc-out-of-contract">Out of contract</a></li>
+  <li><a href="#current-gameplay-dependency-map" id="markdown-toc-current-gameplay-dependency-map">Current gameplay dependency map</a></li>
+  <li><a href="#gap-matrix" id="markdown-toc-gap-matrix">Gap matrix</a></li>
+  <li><a href="#which-functions-appear-in-which-build" id="markdown-toc-which-functions-appear-in-which-build">Which functions appear in which build</a></li>
+  <li><a href="#kill-list-for-long-standing-bug-sources" id="markdown-toc-kill-list-for-long-standing-bug-sources">Kill list for long-standing bug sources</a></li>
+  <li><a href="#immediate-next-implementation-targets" id="markdown-toc-immediate-next-implementation-targets">Immediate next implementation targets</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. The host capture build runs against
 SDL2 because that is what the original Johnny Castaway engine ports use,
 and SDL2 is what gives the host a pixel-accurate rendering of every
 scene to capture from. The PS1 build cannot run SDL2 — there is no

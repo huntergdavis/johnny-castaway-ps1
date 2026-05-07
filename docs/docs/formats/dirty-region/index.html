@@ -104,14 +104,35 @@
       <h1>Dirty region template</h1>
       <p class="subtitle">The renderer's bookkeeping cheat-sheet. For each TTM, which rectangles get touched, which need a clean-background restore, and which scenes are clear-screen heavy.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1278 words
+          ~5 min read · 1310 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. The PS1 framebuffer is small, and a full
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#how-it-gets-generated" id="markdown-toc-how-it-gets-generated">How it gets generated</a></li>
+  <li><a href="#per-pack-artifact" id="markdown-toc-per-pack-artifact">Per-pack artifact</a>    <ul>
+      <li><a href="#summary" id="markdown-toc-summary"><code class="language-plaintext highlighter-rouge">summary</code></a></li>
+      <li><a href="#ttm_templates" id="markdown-toc-ttm_templates"><code class="language-plaintext highlighter-rouge">ttm_templates</code></a></li>
+      <li><a href="#scene_templates" id="markdown-toc-scene_templates"><code class="language-plaintext highlighter-rouge">scene_templates</code></a></li>
+    </ul>
+  </li>
+  <li><a href="#aggregate-summary-file" id="markdown-toc-aggregate-summary-file">Aggregate summary file</a></li>
+  <li><a href="#how-the-runtime-consumes-it" id="markdown-toc-how-the-runtime-consumes-it">How the runtime consumes it</a></li>
+  <li><a href="#the-grrestorebgtiles--prevdirty-bug" id="markdown-toc-the-grrestorebgtiles--prevdirty-bug">The grRestoreBgTiles / prevDirty bug</a></li>
+  <li><a href="#current-limitations" id="markdown-toc-current-limitations">Current limitations</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. The PS1 framebuffer is small, and a full
 clear-and-redraw of all 320×200 pixels every frame is too expensive to
 sustain — the GPU can do it, but the dirty-row tile-upload path the
 project uses for everything else cannot, because it is competing with

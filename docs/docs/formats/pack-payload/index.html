@@ -104,14 +104,33 @@
       <h1>FG2 pack payload</h1>
       <p class="subtitle">The on-disc binary form of one captured ADS scene. 40-byte header, palette, entry table, base-plus-diff frame stream, padded to 2048-byte CD sectors.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1988 words
+          ~8 min read · 2024 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. An <em>FG2 pack</em> is the on-disc binary form
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#on-disc-layout" id="markdown-toc-on-disc-layout">On-disc layout</a></li>
+  <li><a href="#header-fields" id="markdown-toc-header-fields">Header fields</a></li>
+  <li><a href="#palette" id="markdown-toc-palette">Palette</a></li>
+  <li><a href="#entry-table" id="markdown-toc-entry-table">Entry table</a></li>
+  <li><a href="#base--diff-frames" id="markdown-toc-base--diff-frames">Base + diff frames</a></li>
+  <li><a href="#sound-event-table" id="markdown-toc-sound-event-table">Sound-event table</a></li>
+  <li><a href="#padding--sector-alignment" id="markdown-toc-padding--sector-alignment">Padding &amp; sector alignment</a></li>
+  <li><a href="#reading-a-pack-with-a-hex-dump" id="markdown-toc-reading-a-pack-with-a-hex-dump">Reading a pack with a hex dump</a></li>
+  <li><a href="#where-this-is-used" id="markdown-toc-where-this-is-used">Where this is used</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. An <em>FG2 pack</em> is the on-disc binary form
 of one captured ADS scene — the pre-baked replay of what the original Sierra
 script does when it runs through to a stop. The PS1 does not interpret ADS
 bytecode at runtime; that work happens on a host build with full SDL2, and

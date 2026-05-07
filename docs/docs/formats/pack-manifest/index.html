@@ -104,14 +104,32 @@
       <h1>FG2 pack manifest</h1>
       <p class="subtitle">The JSON sidecar that travels with each pack — scene indices, ADS names, resource memberships, peak memory, prefetch hints. Schema version 1, draft.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1305 words
+          ~5 min read · 1329 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. The pack manifest is the JSON file that
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#required-top-level-fields" id="markdown-toc-required-top-level-fields">Required top-level fields</a></li>
+  <li><a href="#resources" id="markdown-toc-resources"><code class="language-plaintext highlighter-rouge">resources</code></a></li>
+  <li><a href="#runtime_requirements" id="markdown-toc-runtime_requirements"><code class="language-plaintext highlighter-rouge">runtime_requirements</code></a></li>
+  <li><a href="#transition_hints" id="markdown-toc-transition_hints"><code class="language-plaintext highlighter-rouge">transition_hints</code></a></li>
+  <li><a href="#prefetch_hints" id="markdown-toc-prefetch_hints"><code class="language-plaintext highlighter-rouge">prefetch_hints</code></a></li>
+  <li><a href="#example-manifest" id="markdown-toc-example-manifest">Example manifest</a></li>
+  <li><a href="#how-the-manifest-is-consumed" id="markdown-toc-how-the-manifest-is-consumed">How the manifest is consumed</a></li>
+  <li><a href="#known-limitations" id="markdown-toc-known-limitations">Known limitations</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. The pack manifest is the JSON file that
 sits next to each compiled FG2 pack and describes what is inside it. The
 <a href="../pack-payload/">pack payload</a> is the
 binary the PS1 reads at runtime; the manifest is what every other tool in

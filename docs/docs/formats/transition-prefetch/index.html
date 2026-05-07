@@ -104,14 +104,30 @@
       <h1>Transition prefetch schema</h1>
       <p class="subtitle">The post-processed planner that says which pack to start streaming next, given the current pack and the analyzer's story-order graph.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1288 words
+          ~5 min read · 1317 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p>A labor of love by Hunter Davis. The PS1 ships with a 2x CD-ROM drive.
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#inputs" id="markdown-toc-inputs">Inputs</a></li>
+  <li><a href="#outputs" id="markdown-toc-outputs">Outputs</a></li>
+  <li><a href="#field-definitions" id="markdown-toc-field-definitions">Field definitions</a></li>
+  <li><a href="#how-the-runtime-decides-what-to-load" id="markdown-toc-how-the-runtime-decides-what-to-load">How the runtime decides what to load</a></li>
+  <li><a href="#what-happens-if-prefetch-does-not-land-in-time" id="markdown-toc-what-happens-if-prefetch-does-not-land-in-time">What happens if prefetch does not land in time</a></li>
+  <li><a href="#caveats" id="markdown-toc-caveats">Caveats</a></li>
+  <li><a href="#related-references" id="markdown-toc-related-references">Related references</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<p>A labor of love by Hunter Davis. The PS1 ships with a 2x CD-ROM drive.
 Cold-seek latency is around 150 ms; sustained read throughput is roughly
 300 KB/s. Both numbers are an order of magnitude worse than the original
 DOS environment Sierra targeted. If the runtime waits until the player has
