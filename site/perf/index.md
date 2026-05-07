@@ -44,6 +44,12 @@ optimization target left on the matrix). The yellow cluster includes
 the wide-action and `BUILDING2` rows still finishing their
 prefetch-relief and stream-window work.
 
+The 6 untimed rows are `MARY 3` high/low (active-loop timing not
+yet refreshed against the current pack), and `SUZY 1` + `SUZY 2`
+high/low (metadata-only; the SUZY mermaid scenes don't reach a
+deterministic scene-end so they're excluded from speed averages
+on purpose).
+
 ## Rollup
 
 Current battle-card rollup as of 2026-05-06:
