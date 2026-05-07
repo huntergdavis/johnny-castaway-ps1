@@ -102,7 +102,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1696 words
+          ~6 min read · 1701 words
         </p>
 
       <hr class="rule" />
@@ -217,8 +217,9 @@ experiment ledger.</p>
 <code class="language-plaintext highlighter-rouge">-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding</code>. The project layers
 its own <code class="language-plaintext highlighter-rouge">-O2 -Wall -Wpedantic -ffunction-sections -fdata-sections</code> on top and
 links with <code class="language-plaintext highlighter-rouge">-Wl,--gc-sections</code> so unused engine paths get stripped at the
-linker. After that pass <code class="language-plaintext highlighter-rouge">jcreborn.elf</code> is around 690 KB; the converted
-<code class="language-plaintext highlighter-rouge">jcreborn.exe</code> lands in the 129 KB sector bucket.</p>
+linker. After that pass <code class="language-plaintext highlighter-rouge">jcreborn.elf</code> is around 924 KiB; the converted
+<code class="language-plaintext highlighter-rouge">jcreborn.exe</code> lands at 208 KiB (104 × 2 KiB CD-ROM sectors) at
+<code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code>.</p>
 
 <h3 id="graphics-gpu--vram">Graphics (GPU + VRAM)</h3>
 

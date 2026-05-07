@@ -63,8 +63,9 @@ Compiler flags inherited from PSn00bSDK's toolchain pin
 `-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding`. The project layers
 its own `-O2 -Wall -Wpedantic -ffunction-sections -fdata-sections` on top and
 links with `-Wl,--gc-sections` so unused engine paths get stripped at the
-linker. After that pass `jcreborn.elf` is around 690 KB; the converted
-`jcreborn.exe` lands in the 129 KB sector bucket.
+linker. After that pass `jcreborn.elf` is around 924 KiB; the converted
+`jcreborn.exe` lands at 208 KiB (104 × 2 KiB CD-ROM sectors) at
+`{{ site.release.tag }}`.
 
 ### Graphics (GPU + VRAM)
 

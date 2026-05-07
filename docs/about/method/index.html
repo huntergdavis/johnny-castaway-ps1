@@ -102,7 +102,7 @@
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2091 words
+          ~8 min read · 2100 words
         </p>
 
       <hr class="rule" />
@@ -378,9 +378,11 @@ precisely because static arrays push BSS into the danger zone.</li>
 <p>The PS1 does not have to be smart. The host build does the smart
 work – runs the real engine, captures the real frames, encodes the
 diffs, lays out the disc – and the PS1 just plays back. That is
-why 63 scenes can fit on a single CD-ROM at all, why the executable
-is around 84 KB after the dead ADS/TTM/FG1 paths were stripped,
-and why scene continuity bugs stopped being a runtime concern: the
+why 63 scenes can fit on a single CD-ROM at all, why the
+executable is around 208 KiB at <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> after
+the dead ADS/TTM/FG1 paths were stripped (down from a much larger
+pre-strip ELF), and why scene continuity bugs stopped being a
+runtime concern: the
 runtime no longer carries the state that those bugs lived in.</p>
 
 <p>The cost is that every scene needs a verified host capture before

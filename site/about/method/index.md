@@ -262,9 +262,11 @@ Other gotchas worth flagging in passing:
 The PS1 does not have to be smart. The host build does the smart
 work -- runs the real engine, captures the real frames, encodes the
 diffs, lays out the disc -- and the PS1 just plays back. That is
-why 63 scenes can fit on a single CD-ROM at all, why the executable
-is around 84&nbsp;KB after the dead ADS/TTM/FG1 paths were stripped,
-and why scene continuity bugs stopped being a runtime concern: the
+why 63 scenes can fit on a single CD-ROM at all, why the
+executable is around 208&nbsp;KiB at `{{ site.release.tag }}` after
+the dead ADS/TTM/FG1 paths were stripped (down from a much larger
+pre-strip ELF), and why scene continuity bugs stopped being a
+runtime concern: the
 runtime no longer carries the state that those bugs lived in.
 
 The cost is that every scene needs a verified host capture before
