@@ -289,7 +289,7 @@ def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
         raise ValueError(f"pack too small: {path}")
     unpacked = struct.unpack_from(HEADER, payload, 0)
     header = Header(*unpacked)
-    if header.magic not in (b"FGP2", b"FGP3") or header.version not in (1, 2, 3):
+    if header.magic not in (b"FGP2", b"FGP3") or header.version not in (1, 2, 3, 4):
         raise ValueError(f"unsupported pack magic/version: {path}")
     if header.table_offset + header.frame_count * ENTRY_SIZE > len(payload):
         raise ValueError(f"entry table extends beyond pack: {path}")
@@ -339,11 +339,12 @@ def parse_span_rows(data: bytes,
     return merge_rows(rows), offset, spans, pixels
 
 
-def parse_compact_cleanup_rows(data: bytes,
-                               offset: int,
-                               limit: int,
-                               base_x: int,
-                               base_y: int) -> tuple[Rows, int, int, int]:
+def parse_compact_span_rows(data: bytes,
+                            offset: int,
+                            limit: int,
+                            base_x: int,
+                            base_y: int,
+                            with_pixel_payload: bool) -> tuple[Rows, int, int, int]:
     rows = empty_rows()
     spans = 0
     pixels = 0
@@ -365,7 +366,27 @@ def parse_compact_cleanup_rows(data: bytes,
             add_screen_interval(rows, base_x + rel_x, base_x + rel_x + pixel_count, y)
             spans += 1
             pixels += pixel_count
+            if with_pixel_payload:
+                offset += (pixel_count + 1) // 2
+            if offset > limit:
+                offset = limit
+                break
     return merge_rows(rows), offset, spans, pixels
+
+
+def parse_compact_cleanup_rows(data: bytes,
+                               offset: int,
+                               limit: int,
+                               base_x: int,
+                               base_y: int) -> tuple[Rows, int, int, int]:
+    return parse_compact_span_rows(
+        data,
+        offset,
+        limit,
+        base_x,
+        base_y,
+        with_pixel_payload=False,
+    )
 
 
 def active_entries(entries: list[Entry]) -> list[Entry]:
@@ -419,7 +440,7 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
         totals["payload_bytes"] += entry.data_size
 
         if header.magic == b"FGP3":
-            if header.version == 3:
+            if header.version in (3, 4):
                 cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_compact_cleanup_rows(
                     payload,
                     entry_start,
@@ -437,15 +458,25 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
                     base_y,
                     with_pixel_payload=False,
                 )
-            draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
-                payload,
-                offset,
-                entry_end,
-                1 if header.version == 3 else header.version,
-                base_x,
-                base_y,
-                with_pixel_payload=True,
-            )
+            if header.version == 4:
+                draw_rows, _offset, draw_spans, draw_pixels = parse_compact_span_rows(
+                    payload,
+                    offset,
+                    entry_end,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=True,
+                )
+            else:
+                draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
+                    payload,
+                    offset,
+                    entry_end,
+                    1 if header.version == 3 else header.version,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=True,
+                )
             dirty_rows = union_rows(full_rows() if first else empty_rows(), cleanup_rows, draw_rows)
             restore_bytes = interval_bytes(cleanup_rows)
             restore_intervals = interval_count(cleanup_rows)
@@ -522,7 +553,7 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
 
     return {
         "magic": header.magic.decode("ascii"),
-        "encoding": "pal4" if header.version in (1, 3) else "indexed8",
+        "encoding": "pal4" if header.version in (1, 3, 4) else "indexed8",
         "frame_count": header.frame_count,
         "active_frames": len(active_entries(entries)),
         "pack_bytes": len(payload),

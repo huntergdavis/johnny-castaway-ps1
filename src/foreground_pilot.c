@@ -708,7 +708,8 @@ static int fgHeaderIsPal4TemporalResidual(const struct TFgPilotHeader *header)
 {
     return (header != NULL &&
             memcmp(header->magic, "FGP3", 4) == 0 &&
-            (header->version == 1 || header->version == 3)) ? 1 : 0;
+            (header->version == 1 ||
+             header->version == 4)) ? 1 : 0;
 }
 
 static int fgHeaderIsIndexed8TemporalResidual(const struct TFgPilotHeader *header)
@@ -2758,9 +2759,9 @@ static int foregroundPilotRuntimeStart(const char *sceneName)
             if (fgHeaderIsIndexed8Spans(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8Spans;
             else if (fgHeaderIsPal4TemporalResidual(&gFgRuntime.header))
-                gFgRuntime.packFormat = (gFgRuntime.header.version == 3) ?
-                    kFgPilotPackFormatPal4CompactTemporalResidual :
-                    kFgPilotPackFormatPal4TemporalResidual;
+                gFgRuntime.packFormat = (gFgRuntime.header.version == 4) ?
+                        kFgPilotPackFormatPal4CompactTemporalResidual :
+                        kFgPilotPackFormatPal4TemporalResidual;
             else if (fgHeaderIsIndexed8TemporalResidual(&gFgRuntime.header))
                 gFgRuntime.packFormat = kFgPilotPackFormatIndexed8TemporalResidual;
             else

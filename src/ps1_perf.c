@@ -364,17 +364,6 @@ void ps1PerfBeginScene(const char *sceneName)
     gPs1Perf.phase = PS1_PERF_PHASE_SETUP;
     gPs1Perf.packLba = PS1_PERF_UNKNOWN_LBA;
     gPs1Perf.sceneStartTick = ps1PerfTick();
-
-    printf(
-        "JCPERF scene-start scene=%s lowtide=%d night=%d holiday=%d raft=%d pos=%d,%d\n",
-        gPs1Perf.sceneName,
-        islandState.lowTide,
-        islandState.night,
-        islandState.holiday,
-        islandState.raft,
-        islandState.xPos,
-        islandState.yPos
-    );
 }
 
 void ps1PerfMarkSetupPhase(uint8 phase, uint16 elapsedVBlanks)

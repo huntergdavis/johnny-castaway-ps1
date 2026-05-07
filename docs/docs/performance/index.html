@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3400 words
+          ~13 min read · 3407 words
         </p>
 
       <hr class="rule" />
@@ -385,10 +385,10 @@ boot tokens still enable them on demand.</li>
 </ul>
 
 <p>The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1069</code> against a target of
-<code class="language-plaintext highlighter-rouge">target_vb=1072</code>. The original headless perf-loop baseline was
-<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">357</code> VBlanks
-(<code class="language-plaintext highlighter-rouge">25.04%</code> loop reduction).</p>
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1068</code> against a target of
+<code class="language-plaintext highlighter-rouge">target_vb=1074</code>. The original headless perf-loop baseline was
+<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">358</code> VBlanks
+(<code class="language-plaintext highlighter-rouge">25.11%</code> loop reduction).</p>
 
 <h2 id="where-it-sits-at-v082-ps1">Where it sits at v0.8.2-ps1</h2>
 
@@ -398,27 +398,28 @@ fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 5
-prefetch.overrun_vb = 6
-loop_vb = 1069
+blocking_vb = 2
+prefetch.overrun_vb = 2
+loop_vb = 1068
 overrun_vb = 0
-target_vb = 1072
+target_vb = 1074
 restore_bytes = 251,144
-upload_bytes  = 10,648,960
-dirty_rows    = 16,639
-upload_rects  = 460
+upload_bytes  = 10,646,400
+dirty_rows    = 16,635
+upload_rects  = 456
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+0.6% over target /
-99.7% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5746%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.6729%</code> exact target speed).</p>
+<p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
+120 timing-bearing battle-card rows, the average is <strong>+0.5% over target /
+99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.4533%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.7548%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>,
 <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>,
 <code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-group138-162-slack4-v081</code>,
@@ -477,13 +478,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T08:52:49</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-07T14:34:45</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>,
+rows now use <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>,
 <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>,
@@ -572,8 +574,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>activity9</code></td>
-      <td>+1.9% / 98.2% (2094/2056); due 2; blk 37</td>
-      <td>+1.5% / 98.5% (2087/2056); due 6; blk 42</td>
+      <td>+1.8% / 98.2% (2094/2056); due 2; blk 37</td>
+      <td>+1.3% / 98.7% (2085/2058); due 3; blk 28</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -597,8 +599,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+10.9% / 90.1% (1430/1289); due 39; blk 212</td>
-      <td>+11.1% / 90.0% (1429/1286); due 32; blk 193</td>
+      <td>+8.2% / 92.4% (1405/1298); due 32; blk 176</td>
+      <td>+7.8% / 92.8% (1395/1294); due 25; blk 144</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -817,8 +819,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+38.0% / 72.5% (1406/1019); due 31; blk 296</td>
-      <td>+38.4% / 72.2% (1405/1015); due 33; blk 301</td>
+      <td>+33.8% / 74.7% (1369/1023); due 31; blk 244</td>
+      <td>+34.5% / 74.3% (1376/1023); due 31; blk 253</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -878,9 +880,10 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 remains the
-largest gap at about <code class="language-plaintext highlighter-rouge">+390/+387</code> VBlanks, though the guarded high-tide
-generated-window <code class="language-plaintext highlighter-rouge">138..162</code> append now proves scheduler-owned groups can
-reduce visible blocking and active reads without moving layout. WALKSTUF1 still has
+largest gap at about <code class="language-plaintext highlighter-rouge">+353/+346</code> VBlanks after the FGP3/v4 draw-metadata
+compaction, though the guarded high-tide generated-window <code class="language-plaintext highlighter-rouge">138..162</code> append
+already proved scheduler-owned groups can reduce visible blocking and active
+reads without moving layout. WALKSTUF1 still has
 <code class="language-plaintext highlighter-rouge">blocking_vb=278/276</code> after the PAL4 setup-prime win, so the next CD-shape
 pass needs generated cost metadata rather than hand-authored ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier

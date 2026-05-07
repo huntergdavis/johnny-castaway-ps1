@@ -256,10 +256,10 @@ They cluster into a few themes.
   boot tokens still enable them on demand.
 
 The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at `loop_vb=1069` against a target of
-`target_vb=1072`. The original headless perf-loop baseline was
-`loop_vb=1426`, so the FISHING 1 canary is down `357` VBlanks
-(`25.04%` loop reduction).
+fishing1 high-tide playback at `loop_vb=1068` against a target of
+`target_vb=1074`. The original headless perf-loop baseline was
+`loop_vb=1426`, so the FISHING 1 canary is down `358` VBlanks
+(`25.11%` loop reduction).
 
 ## Where it sits at {{ site.release.tag }}
 
@@ -270,27 +270,28 @@ policy = stage1_window
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 5
-prefetch.overrun_vb = 6
-loop_vb = 1069
+blocking_vb = 2
+prefetch.overrun_vb = 2
+loop_vb = 1068
 overrun_vb = 0
-target_vb = 1072
+target_vb = 1074
 restore_bytes = 251,144
-upload_bytes  = 10,648,960
-dirty_rows    = 16,639
-upload_rects  = 460
+upload_bytes  = 10,646,400
+dirty_rows    = 16,635
+upload_rects  = 456
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.3% over target**, or **100.3% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.6% over target /
-99.7% target speed** (`0.5746%` exact over target / `99.6729%` exact target speed).
+That is **-0.6% over target**, or **100.6% of target speed**. Across the
+120 timing-bearing battle-card rows, the average is **+0.5% over target /
+99.8% target speed** (`0.4533%` exact over target / `99.7548%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`fgp3v4-drawcompact-all-v082`,
 `activity9-dead-readgroup-prune-v082`,
 `read-group-selector-single-assign-v082`,
 `visitor3-high-group138-162-slack4-v081`,
@@ -349,13 +350,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T08:52:49`; per-row freshness and stats version are shown on
+run is `2026-05-07T14:34:45`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-fgp3-cleanup-compact-v081`,
+rows now use `fgp3v4-drawcompact-all-v082`,
+`visitor3-fgp3-cleanup-compact-v081`,
 `walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
 `mary2-prefetch-relief-v081`,
@@ -444,8 +446,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>activity9</code></td>
-      <td>+1.9% / 98.2% (2094/2056); due 2; blk 37</td>
-      <td>+1.5% / 98.5% (2087/2056); due 6; blk 42</td>
+      <td>+1.8% / 98.2% (2094/2056); due 2; blk 37</td>
+      <td>+1.3% / 98.7% (2085/2058); due 3; blk 28</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -469,8 +471,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+10.9% / 90.1% (1430/1289); due 39; blk 212</td>
-      <td>+11.1% / 90.0% (1429/1286); due 32; blk 193</td>
+      <td>+8.2% / 92.4% (1405/1298); due 32; blk 176</td>
+      <td>+7.8% / 92.8% (1395/1294); due 25; blk 144</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -689,8 +691,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+38.0% / 72.5% (1406/1019); due 31; blk 296</td>
-      <td>+38.4% / 72.2% (1405/1015); due 33; blk 301</td>
+      <td>+33.8% / 74.7% (1369/1023); due 31; blk 244</td>
+      <td>+34.5% / 74.3% (1376/1023); due 31; blk 253</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -750,9 +752,10 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at about `+390/+387` VBlanks, though the guarded high-tide
-   generated-window `138..162` append now proves scheduler-owned groups can
-   reduce visible blocking and active reads without moving layout. WALKSTUF1 still has
+   largest gap at about `+353/+346` VBlanks after the FGP3/v4 draw-metadata
+   compaction, though the guarded high-tide generated-window `138..162` append
+   already proved scheduler-owned groups can reduce visible blocking and active
+   reads without moving layout. WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
    pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier

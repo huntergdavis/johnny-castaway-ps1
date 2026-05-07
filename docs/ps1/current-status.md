@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
-current dead-readgroup prune baseline; all 63 scenes remain validated, and the
-headless battle card is near target at `0.5746%` over / `99.6729%` target
-speed).
+current FGP3/v4 compact draw metadata baseline; all 63 scenes remain validated,
+and the headless battle card is near target at `0.4533%` over / `99.7548%`
+target speed).
 
 ## Overall
 
@@ -154,18 +154,19 @@ this page gives the narrative around it.
 
 Latest point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
-routed through headless perf, and the current dead-readgroup prune baseline
-keeps the 13-case canary set exact-flat while shrinking `foregroundPilotPlay`
-by another `16` bytes after the selector cleanup. See
+routed through headless perf, and the current FGP3/v4 compact draw metadata
+baseline moves the battle card to `0.4533%` over target / `99.7548%` target
+speed while preserving pack LBAs and the `215040` byte PS-EXE bucket. See
 [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
-Current performance baseline: VISITOR3 uses cleanup-compact FGP3/v3 metadata,
-the `192 KiB` setup-prime resident cap, and the guarded high-tide `138..162`
-read group. VISITOR3 high remains `1406/1019` with `blocking_vb=293`; low
-remains `1405/1015` with `blocking_vb=301`. BUILDING2, BUILDING4, ACTIVITY9
-low, JOHNNY2, WALKSTUF1, and related current-pack clean-pressure work are all
-preserved in the matrix. The latest dead-readgroup prune is a code-headroom
-win, not a VBlank-speed win.
+Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
+FGP3/v4 compact PAL4 draw metadata. VISITOR3 high is now `1369/1023` with
+`blocking_vb=244`; low is `1376/1023` with `blocking_vb=253`. BUILDING2
+high/low are `1405/1298` and `1395/1294`, ACTIVITY9 low is `2085/2058`, and
+the FISHING1 high control remains under target at `1068/1074`. BUILDING4,
+JOHNNY2, WALKSTUF1, and related current-pack clean-pressure work are preserved
+in the matrix; the next VISITOR3 work should target generated scheduler
+ownership or selective upload-ready bands.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the

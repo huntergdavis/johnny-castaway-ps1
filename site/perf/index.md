@@ -39,8 +39,8 @@ A scene can be timed here without being visually certified.
 </p>
 
 The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
-high (`72.5%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
-low (`72.2%`) after the current cleanup-metadata compaction and guarded
+high (`74.7%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
+low (`74.3%`) after the current FGP3/v4 draw-metadata compaction and guarded
 generated-window read grouping; the largest single optimization target left on
 the matrix. The yellow cluster includes the wide-action and
 [`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) rows still finishing
@@ -66,11 +66,11 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.5746%` exact) |
-| Timing-bearing average target speed | `99.7%` (`99.6729%` exact) |
-| Latest perf matrix run | `2026-05-07T13:24:41` |
-| Stats version | mixed across rows; newest optimized rows use `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
-| FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
+| Timing-bearing average over target | `+0.5%` (`0.4533%` exact) |
+| Timing-bearing average target speed | `99.8%` (`99.7548%` exact) |
+| Latest perf matrix run | `2026-05-07T14:34:45` |
+| Stats version | mixed across rows; newest optimized rows use `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -100,7 +100,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `activity9-dead-readgroup-prune-v082`,
+  refreshed rows use `fgp3v4-drawcompact-all-v082`,
+  `activity9-dead-readgroup-prune-v082`,
   `read-group-selector-single-assign-v082`,
   `visitor3-high-remove-144-160-v082`,
   `walkstuf1-low-primecap160-v081`,
@@ -377,15 +378,15 @@ and this page.
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+1.5%</td>
-      <td class="spd-yellow">98.5%</td>
-      <td>2087/2056</td>
-      <td>42</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>+1.3%</td>
+      <td class="spd-yellow">98.7%</td>
+      <td>2085/2058</td>
+      <td>28</td>
       <td>12</td>
-      <td>6</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>3</td>
+      <td>FGP3/v4 compact draw metadata; padded CD footprint and LBA stay fixed while active payload drops and visible CD pressure falls</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -503,29 +504,29 @@ and this page.
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+10.9%</td>
-      <td class="spd-yellow">90.1%</td>
-      <td>1430/1289</td>
-      <td>212</td>
-      <td>20</td>
-      <td>39</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>+8.2%</td>
+      <td class="spd-yellow">92.4%</td>
+      <td>1405/1298</td>
+      <td>176</td>
+      <td>19</td>
+      <td>32</td>
+      <td>FGP3/v4 compact draw metadata; padded CD footprint and LBA stay fixed while active payload drops and visible CD pressure falls</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+11.1%</td>
-      <td class="spd-yellow">90.0%</td>
-      <td>1429/1286</td>
-      <td>193</td>
-      <td>35</td>
-      <td>32</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>+7.8%</td>
+      <td class="spd-yellow">92.8%</td>
+      <td>1395/1294</td>
+      <td>144</td>
+      <td>19</td>
+      <td>25</td>
+      <td>FGP3/v4 compact draw metadata; padded CD footprint and LBA stay fixed while active payload drops and visible CD pressure falls</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -671,15 +672,15 @@ and this page.
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
-      <td>1069/1072</td>
-      <td>5</td>
-      <td>6</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>1068/1074</td>
+      <td>2</td>
+      <td>2</td>
       <td>0</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>FGP3/v4 broad canary control; timing remains under target with lower visible CD pressure</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -1735,29 +1736,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+38.0%</td>
-      <td class="spd-red">72.5%</td>
-      <td>1406/1019</td>
-      <td>293</td>
-      <td>7</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>+33.8%</td>
+      <td class="spd-red">74.7%</td>
+      <td>1369/1023</td>
+      <td>244</td>
+      <td>1</td>
       <td>31</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>FGP3/v4 compact draw metadata; padded CD footprint and LBA stay fixed while active payload drops and visible CD pressure falls</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+38.4%</td>
-      <td class="spd-red">72.2%</td>
-      <td>1405/1015</td>
-      <td>301</td>
-      <td>8</td>
-      <td>33</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>2026-05-07T14:34:45</td>
+      <td>fgp3v4-drawcompact-all-v082</td>
+      <td>+34.5%</td>
+      <td class="spd-red">74.3%</td>
+      <td>1376/1023</td>
+      <td>253</td>
+      <td>2</td>
+      <td>31</td>
+      <td>FGP3/v4 compact draw metadata; padded CD footprint and LBA stay fixed while active payload drops and visible CD pressure falls</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
