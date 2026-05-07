@@ -1,0 +1,45 @@
+---
+permalink: /sitemap.xml
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Hand-rolled XML sitemap. No jekyll-sitemap plugin because the build
+  runs with --baseurl "" (so plugin output would emit URLs without the
+  /johnny-castaway-ps1 project prefix); this template uses
+  site.canonical_baseurl directly so the absolute URLs survive the
+  build's path-portable override.
+
+  Pages opt out by setting `sitemap: false` in front matter (the feed
+  files, this file, the 404, and any redirect stubs do).
+
+  lastmod uses page/post date when present; otherwise falls back to
+  the build-day stamp via `site.time | date: '%Y-%m-%d'`. The coarse
+  stamp matches the rest of the site (generator meta, humans.txt) and
+  keeps day-of churn out of git diffs.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign build_day = site.time | date: '%Y-%m-%d' -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for page in site.html_pages -%}
+  {%- if page.sitemap == false -%}{%- continue -%}{%- endif -%}
+  {%- if page.layout == 'redirect' -%}{%- continue -%}{%- endif -%}
+  {%- if page.url == '/404.html' -%}{%- continue -%}{%- endif -%}
+  <url>
+    <loc>{{ site_root }}{{ page.url | xml_escape }}</loc>
+    {%- if page.date -%}
+    <lastmod>{{ page.date | date: '%Y-%m-%d' }}</lastmod>
+    {%- else -%}
+    <lastmod>{{ build_day }}</lastmod>
+    {%- endif -%}
+  </url>
+{%- endfor -%}
+{%- for post in site.posts -%}
+  {%- if post.sitemap == false -%}{%- continue -%}{%- endif -%}
+  <url>
+    <loc>{{ site_root }}{{ post.url | xml_escape }}</loc>
+    <lastmod>{{ post.date | date: '%Y-%m-%d' }}</lastmod>
+  </url>
+{%- endfor -%}
+</urlset>

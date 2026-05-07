@@ -20,7 +20,7 @@ fi
   --destination "$ROOT/docs"
 
 python3 "$ROOT/scripts/site-relativize-build.py" "$ROOT/docs"
-rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/sitemap.xml" "$ROOT/docs/robots.txt"
+rm -f "$ROOT/docs/feed.xml" "$ROOT/docs/robots.txt"
 # Whitespace-normalize only the website output, NOT the preserved project
 # research living at docs/ps1/, docs/archive/, docs/general/, docs/readme/.
 find "$ROOT/docs" -type f \( -name '*.html' -o -name '*.css' -o -name '*.xml' -o -name '*.json' \) \
