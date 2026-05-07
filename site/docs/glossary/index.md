@@ -35,6 +35,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="replay">Replay</dt>
 <dd>What the PS1 build does. Loads an FG2 pack from the disc, plays back every frame's diffs against its own background and overlay layers, fires sound events at the recorded ticks. The PS1 never interprets a Sierra opcode at runtime.</dd>
 
+<dt id="fgpilot">fgpilot</dt>
+<dd>Internal codename for the PS1 scene-playback runtime — the <a href="#replay">replay</a> engine implemented in <code>src/foreground_pilot.c</code>. The name comes from when the foreground-only host capture was a pilot experiment that didn't yet work; the directory was named <code>fgpilot/</code> and it stuck. As a <a href="#bootmode">BOOTMODE.TXT</a> token, <code>fgpilot &lt;slug&gt;</code> forces a specific scene (e.g. <code>fgpilot mary4</code>) instead of letting the screensaver loop pick at random; <code>fgpilot freeplay</code> boots straight into Freeplay. The public-facing name is gradually moving to "PS1 scene playback" in operator docs; the internal codename in source stays.</dd>
+
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
 
