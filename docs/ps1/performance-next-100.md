@@ -903,7 +903,7 @@ pre-v0.8.0 row.
 | 14 | Generate same-palette direct16 only for indexed8 spans whose palette lookup cost dominates and whose CD expansion stays local. | WALKSTUF1-like indexed8 rows improve without whole-pack direct16 expansion. |
 | 15 | Add a selective/keyframed FGP3 residual encoder for BUILDING6 and WALKSTUF1. | Current direct residual expansion becomes a shrinking or layout-stable data shape before benchmarking. |
 | 16 | Build a per-scene memory-residency estimator for setup primes, preprocessed bands, and retained read windows. | Experiments fail fast when combined heap pressure would recreate scene-loader BSODs or retained-window regressions. |
-| 17 | Add an automated all-canary baseline refresh command that records the artifact path into the experiment log. | Every promoted/rejected probe can cite a same-commit baseline and avoid stale symbol/loop drift. |
+| 17 | Add an automated all-canary baseline refresh command that records the artifact path into the experiment log. | Done: `scripts/ps1-perf-canary-baseline.sh` runs the standard canary set and writes `scratch/ps1-perf-iterate/latest-canary-baseline.txt` for same-commit probe gates. |
 | 18 | Split cold boot/menu/debug functions into a layout-isolated section only after proving foreground LBAs stay fixed. | Valid size cleanups stop perturbing hot CD cadence or foreground pack placement. |
 | 19 | Pad or lock foreground pack LBAs for code-shape experiments that are supposed to test CPU only. | Compiler/source experiments can separate code speed from CD layout movement. |
 | 20 | Add per-scene sound-event timing deltas to the automatic promotion gate. | Speed wins remain safe for the validated scene corpus, not just pixels and loop VBlanks. |
