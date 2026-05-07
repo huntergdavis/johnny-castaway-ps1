@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `0.6781%` over target
+- Average measured timing gap: `0.6452%` over target
 - Average estimated align4 x-band upload byte saving: `67.61%`
 
 ## Top Upload-Ready Candidates
@@ -17,10 +17,10 @@ accepted performance baseline.
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `visitor3` | `low` | 299.45 | 38.42% | 56.97% | 303.8% | 309 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
 | 2 | `visitor3` | `high` | 296.24 | 37.98% | 56.97% | 303.8% | 303 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
-| 3 | `building4` | `high` | 221.36 | 7.61% | 65.1% | 191.66% | 336 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
-| 4 | `building4` | `low` | 207.74 | 7.08% | 65.1% | 191.66% | 318 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
-| 5 | `walkstuf1` | `low` | 184.96 | 15.53% | 46.64% | 493.1% | 335 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
-| 6 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 3 | `walkstuf1` | `low` | 184.96 | 15.53% | 46.64% | 493.1% | 335 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 4 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 5 | `building4` | `high` | 166.35 | 5.49% | 65.1% | 263.02% | 267 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
+| 6 | `building4` | `low` | 153.44 | 5.25% | 65.1% | 263.02% | 231 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
 | 7 | `building2` | `low` | 153.21 | 11.12% | 67.28% | 345.12% | 228 | candidate; rect/frame 2.47 |
 | 8 | `building2` | `high` | 152.86 | 10.94% | 67.28% | 345.12% | 232 | candidate; rect/frame 2.47 |
 | 9 | `johnny2` | `low` | 130.77 | 2.80% | 74.53% | 443.76% | 377 | candidate; rect/frame 1.52 |
