@@ -82,7 +82,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.8.0-ps1`** |
+| Current release | **`v0.8.1-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -90,17 +90,22 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.8% over target / 99.5% target speed** |
 | Latest perf matrix run | **`2026-05-06T17:38:07`** (`last_run_at` in the CSV) |
 | Perf stats version | Newest optimized rows use `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
-| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered battle card) |
+| Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.8.1-ps1` is a stability point release on top of the complete-scene
+performance baseline. It fixes a long-run scene-load freeze by estimating the
+actual clean-rect backup footprint before allocation, including ocean wave-band
+expansion and upper/lower split rects. The focused MARY4 and FISHING1 pressure
+routes complete with `scene-end` and `alloc_fail=0`, and the same-commit
+VISITOR3 high/low refresh stayed at the current matrix baseline.
 
 `v0.8.0-ps1` is the complete-scene performance baseline. All 63 scenes remain
 signed off, all 126 high/low scene variants are routed, and the 120
 timing-bearing rows average **+0.8% over target / 99.5% target speed**. Since
 the compact full-matrix baseline was about **+17.4% over target / 87.1% target
 speed**, the headless optimization loop has removed about **16.6 percentage
-points** of over-target gap and added about **12.4 target-speed points**. The
-release also hardens randomized play by retrying BUILDING4-scale clean-rect
-allocation after releasing stale walk-clean memory pressure.
+points** of over-target gap and added about **12.4 target-speed points**.
 
 Current performance work is focused on VISITOR3 and the remaining CD/graphics
 outliers. The preprocessing matrix now includes x-band rect/cap pressure, which
@@ -456,6 +461,7 @@ prefer.
 - [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](docs/ps1/performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) + [performance-o2-audit.csv](docs/ps1/performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
+- [release-notes-0.8.1.md](docs/ps1/release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](docs/ps1/release-notes-0.8.0.md) — complete-scene performance baseline release notes
 
 **Platform reference** — [website /docs/](https://hunterdavis.com/johnny-castaway-ps1/docs/)

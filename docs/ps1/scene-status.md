@@ -16,7 +16,7 @@ plus synced SFX, across every applicable variant.
 
 Milestone scene releases should be cut every 10 ✅/✅ scenes under this
 bar. Smaller stability releases may happen between milestones; the
-current public release is `v0.8.0-ps1`.
+current public release is `v0.8.1-ps1`.
 
 | ADS | Tag | Slug | Visuals | SFX | Variants | Last verified | Notes |
 |-----|-----|------|:-:|:-:|---|---|---|

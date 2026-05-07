@@ -3,14 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-05 (scene ledger at 63/63; `ACTIVITY 9`
-completed the current visual + audible validation sweep. The high/low
-packs were rebuilt through an Activity9-specific wide stitch
-(`x=-500,y=54`, `x=-154,y=54`, `x=500,y=54`), then
-`patch-activity9-boat-foreground.py` filled clipped `BOAT.PSB` bow/stern
-pixels from source at the legacy clip edges, added a narrow overlap band
-to remove the stitch seam, and carried the last boat draw across
-metadata-held frames so the late bow no longer flickers).
+**Last updated:** 2026-05-06 (`v0.8.1-ps1` point release; all 63 scenes remain
+validated, and randomized long-run scene loads now account for the real
+clean-rect pressure before allocation, including ocean wave-band expansion and
+upper/lower split rects).
 
 ## Overall
 
@@ -156,16 +152,16 @@ The per-scene ledger lives in [scene-status.md](scene-status.md). That
 file is the source of truth for what is complete under the current bar;
 this page gives the narrative around it.
 
-Latest point release: `v0.8.0-ps1` is the complete-scene performance
-baseline. All 63 scenes remain validated, all 126 high/low scene variants are
-routed through the headless performance matrix, and the timing-bearing rows
-now average `+0.8231%` over target / `99.4858%` target speed after the
-post-release BUILDING5 padded-FGP3 optimization. The release also hardens
-randomized play by retrying BUILDING4-scale clean-rect allocation after
-releasing stale walk-clean memory pressure. See
-[release-notes-0.8.0.md](release-notes-0.8.0.md).
+Latest point release: `v0.8.1-ps1` is the clean-rect pressure stability
+release. All 63 scenes remain validated, and randomized long runs no longer
+under-count large split clean snapshots before scene playback. The estimator
+now mirrors the real save path: pack bounds, ocean wave band, clamping, and the
+upper/lower split are counted before optional prefetch/walk pressure is kept or
+dropped. Focused `MARY 4` and representative `FISHING 1` pressure routes
+completed with `scene-end` and `alloc_fail=0`. See
+[release-notes-0.8.1.md](release-notes-0.8.1.md).
 
-Current post-release perf branch: VISITOR3 now keeps the accepted high-tide
+Current performance baseline: VISITOR3 now keeps the accepted high-tide
 `170..186` retained read group and uses a VISITOR3-only `192 KiB` setup-prime
 resident cap. WALKSTUF1 now also gets PAL4 setup-prime coverage while keeping
 the global setup-prime cap at `128 KiB`, VISITOR3 low has the accepted
@@ -190,6 +186,11 @@ it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
 `6114568` upload bytes saved inside the selected subset.
 
 Milestone releases:
+- `v0.8.1-ps1` — clean-rect pressure stability. Large ocean clean snapshots
+  now estimate the real pressure footprint before allocation, including
+  wave-band expansion and upper/lower split rects; the fix covers the
+  random-position scenes found by the scan and keeps the `v0.8.0` performance
+  baseline compatible.
 - `v0.8.0-ps1` — complete-scene performance baseline. Keeps the 63/63
   visual + audible scene ledger intact, promotes the current 126-variant
   headless battle card, and fixes a randomized BUILDING4 clean-rect pressure

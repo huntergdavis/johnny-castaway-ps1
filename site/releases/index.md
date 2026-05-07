@@ -22,6 +22,30 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.1-ps1` — clean-rect pressure stability
+*2026-05-06*
+
+A randomized long-run soak exposed a scene-load freeze after a large split
+clean-rect save. The pressure estimator was counting only foreground pack
+bounds, not the ocean wave band or the upper/lower split actually saved for
+restore. `v0.8.1` fixes that accounting and keeps the complete-scene
+performance baseline intact.
+
+- **Scene-load freeze fixed.** Large clean snapshots now account for wave-band
+  expansion and split rects before allocation.
+- **Pressure relief is generalized.** The fix covers every random-position
+  scene with the same large-clean risk, not just the failing MARY4 route.
+- **Focused soak routes pass.** MARY4 and FISHING1 pressure routes complete
+  with `scene-end` and `alloc_fail=0`.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.1/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.1-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
 ### `v0.8.0-ps1` — complete-scene performance baseline
 *2026-05-06*
 
@@ -38,8 +62,6 @@ The first release after the post-validation polish phase to promote the headless
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.0-ps1)
 &nbsp;·&nbsp;
 [Download .bin / .cue]({{ '/play/' | relative_url }})
-
-## Earlier milestones
 
 ### `v0.7.2-ps1` — story-loop walk backdrop guard
 *2026-05-05*

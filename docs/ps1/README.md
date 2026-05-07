@@ -12,21 +12,24 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.0-ps1` |
+| Release | `v0.8.1-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
 | Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.8% over target / 99.5% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
+`v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
+randomized long-run scene-load freeze by estimating the actual clean
+background backup footprint before allocation, including ocean wave-band
+expansion and upper/lower split rects. Focused `MARY 4` and representative
+`FISHING 1` pressure routes complete with `scene-end` and `alloc_fail=0`.
+
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
 current timing-bearing rows average `+0.8231%` over target / `99.4858%`
 target speed after the post-release BUILDING5 padded-FGP3 optimization.
-The release also fixes a randomized BUILDING4 clean-rect pressure BSOD by
-releasing stale walk-clean buffers before retrying large scene clean
-snapshots.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.
@@ -217,6 +220,7 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.1.md](release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](release-notes-0.8.0.md) — complete-scene performance baseline release notes
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes
 - [freeplay-mode-design.md](freeplay-mode-design.md) — freeplay/debug mode controls, menus, memory rules, and telemetry
