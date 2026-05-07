@@ -144,6 +144,15 @@ engine.</p>
   <li>Use generated tables for holiday data and scene routing.</li>
   <li>Make pack formats dumpable, because “out of memory” without a file-level explanation is just folklore.</li>
   <li>Treat VRAM allocation as explicit state, not as a magical side effect of drawing.</li>
+  <li>Drop optional prefetch buffers when a large
+<a href="../../docs/glossary/#clean-rect">clean-rect</a>
+snapshot would otherwise fragment the heap. The
+<a href="../../lab/from-87-to-99-5/">v0.8.0 clean-memory-relief drop-prefetch</a>
+pass made this a per-scene opt-in for fourteen random-position
+scenes; the
+<a href="../../lab/v081-mary4-freeze/">v0.8.1 generalization</a>
+centralized the pressure estimator after a randomized soak found a
+<code class="language-plaintext highlighter-rouge">MARY 4</code> scene-load freeze the per-commit matrix never reached.</li>
 </ul>
 
 <p>The <a href="../../resources/">resource catalog</a> is the public map of

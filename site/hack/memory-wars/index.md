@@ -44,6 +44,15 @@ Other practical wins were smaller:
 - Use generated tables for holiday data and scene routing.
 - Make pack formats dumpable, because "out of memory" without a file-level explanation is just folklore.
 - Treat VRAM allocation as explicit state, not as a magical side effect of drawing.
+- Drop optional prefetch buffers when a large
+  [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
+  snapshot would otherwise fragment the heap. The
+  [v0.8.0 clean-memory-relief drop-prefetch]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  pass made this a per-scene opt-in for fourteen random-position
+  scenes; the
+  [v0.8.1 generalization]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  centralized the pressure estimator after a randomized soak found a
+  `MARY 4` scene-load freeze the per-commit matrix never reached.
 
 The [resource catalog]({{ '/resources/' | relative_url }}) is the public map of
 the files competing for space. The [source library]({{ '/source/' | relative_url }})
