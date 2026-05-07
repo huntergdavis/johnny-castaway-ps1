@@ -40,6 +40,14 @@ want the raw documents behind the essays, use the
 [source library]({{ '/source/' | relative_url }}) and the
 [resource catalog]({{ '/resources/' | relative_url }}).
 
+Subscribe via
+<a href="{{ '/lab/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a>;
+the feed is reverse-chronological with rich summaries (no embedded
+body — `site.html_pages` doesn't pre-render content reliably the
+way `site.posts` does, so the feed is the headline-and-link
+pattern). Auto-discovery is wired into every page's `<head>`, so
+most feed readers find it automatically.
+
 ## Contents
 
 Fifteen feature articles, in reverse chronological order. The newest
