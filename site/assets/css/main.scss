@@ -782,7 +782,18 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
-  max-width: 100%;
+  /* Break out of the .page (68ch reading column) and .main
+     (1180px content max) wrappers so the 12-column matrix can
+     use the actual viewport width. The "100vw centered via
+     50%/translate" idiom lets the table span the screen even
+     though its DOM ancestor is a narrow article. Padding is
+     subtracted so the right edge doesn't crash into the body
+     scrollbar on Windows. */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100vw - 1.4rem);
+  max-width: calc(100vw - 1.4rem);
 }
 .scene-perf-table th,
 .scene-perf-table td {
