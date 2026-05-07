@@ -354,7 +354,7 @@ component-completeness phases:
   reference: poll `tx_len` is **5**, not 4. DuckStation only
   delivers button bytes when the full 5-byte sequence comes
   from the TX buffer.
-- **Story-loop walking.** `v0.4.20-ps1` made Johnny walk between
+- **[Story-loop walking]({{ '/docs/walks/' | relative_url }}).** `v0.4.20-ps1` made Johnny walk between
   scene endpoints instead of teleporting, with palm-tree occlusion,
   wave motion, holiday restamping, and a persistent walk-erase buffer
   that survived a long DuckStation soak.
