@@ -186,6 +186,10 @@ clean-pressure freeze v0.8.1 fixed.
 - [Performance battle card]({{ '/perf/' | relative_url }}) —
   per-tide timing for every scene, including the walk-adjacent
   ones.
+- [Performance reference]({{ '/docs/performance/' | relative_url }})
+  — what each column on the battle card means; the walk
+  subsystem's persistent clean buffer is part of the same
+  pressure-accounting envelope.
 - [v0.8.1 retrospective]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — the soak-vs-matrix war story that drove the wave-band pressure
   fix.
