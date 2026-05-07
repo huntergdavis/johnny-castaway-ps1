@@ -12,12 +12,16 @@ bisect visual behavior while the rendering method was still unsettled.
 It made sense when the project needed to compare whole historical
 states and did not yet have a stable foreground playback path.
 
-That era is over. The live workflow is now scene-by-scene validation
-against the FG2/FGP3 foreground methodology, with `FISHING 1` and
-`FISHING 2` as signed-off scenes and the performance loop tracked
-separately. The full binary payload is not intended to live in the
-repo; the searchable archaeology records are enough to recover the
-story.
+That era is over. The live workflow is scene-by-scene validation
+against the FG2/FGP3 foreground methodology, capped at
+[`{{ site.release.tag }}`]({{ '/releases/' | relative_url }})
+with all
+[`{{ site.release.scenes_validated }} of {{ site.release.scenes_total }}` scenes]({{ '/scenes/' | relative_url }})
+signed off and a separate
+[performance ledger]({{ '/perf/' | relative_url }}) tracking
+target-speed convergence. The full binary payload is not intended
+to live in the repo; the searchable archaeology records are enough
+to recover the story.
 
 ## Preserved Indexes
 
