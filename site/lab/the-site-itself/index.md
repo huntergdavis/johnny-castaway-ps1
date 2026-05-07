@@ -152,3 +152,21 @@ The 404 page is therefore self-contained: `layout: null` (skips the standard chr
 ## The shape
 
 None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.
+
+## Cross-links
+
+- [/sitemap.xml]({{ '/sitemap.xml' | relative_url }}) — the
+  hand-rolled sitemap this article documents.
+- [/devlog/feed.xml]({{ '/devlog/feed.xml' | relative_url }}) and
+  [/devlog/feed.json]({{ '/devlog/feed.json' | relative_url }}) —
+  the no-plugin Atom + JSON Feed pair.
+- [/humans.txt]({{ '/humans.txt' | relative_url }}) — the credits-
+  voice humans.txt file the article describes.
+- [404 page]({{ '/typo-that-does-not-exist/' | relative_url }}) —
+  click to see the self-contained 404 in the wild.
+- [/about/voice/]({{ '/about/voice/' | relative_url }}) — the
+  prose-side companion to this article's mechanics-side
+  discipline.
+- [Lab: the dunking bird]({{ '/lab/dunking-bird/' | relative_url }}) —
+  the related "small program that rewards being treated like
+  one" pattern, applied to keeping LLM agents productive.

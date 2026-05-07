@@ -102,7 +102,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1900 words
+          ~7 min read · 1975 words
         </p>
 
       <hr class="rule" />
@@ -127,6 +127,7 @@
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
   <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
   <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
+  <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
 
 </details>
@@ -281,6 +282,26 @@ feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p
 <h2 id="the-shape">The shape</h2>
 
 <p>None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.</p>
+
+<h2 id="cross-links">Cross-links</h2>
+
+<ul>
+  <li><a href="../../sitemap.xml">/sitemap.xml</a> — the
+hand-rolled sitemap this article documents.</li>
+  <li><a href="../../devlog/feed.xml">/devlog/feed.xml</a> and
+<a href="../../devlog/feed.json">/devlog/feed.json</a> —
+the no-plugin Atom + JSON Feed pair.</li>
+  <li><a href="../../humans.txt">/humans.txt</a> — the credits-
+voice humans.txt file the article describes.</li>
+  <li><a href="../../typo-that-does-not-exist/">404 page</a> —
+click to see the self-contained 404 in the wild.</li>
+  <li><a href="../../about/voice/">/about/voice/</a> — the
+prose-side companion to this article’s mechanics-side
+discipline.</li>
+  <li><a href="../dunking-bird/">Lab: the dunking bird</a> —
+the related “small program that rewards being treated like
+one” pattern, applied to keeping LLM agents productive.</li>
+</ul>
 
   </div>
 </article>
