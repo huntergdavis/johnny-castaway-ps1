@@ -136,12 +136,35 @@ could be compared across builds.</p>
 <p>The useful loop combines:</p>
 
 <ul>
-  <li><a href="../../docs/regtest/">Regression testing</a> for repeatable boots and captures.</li>
-  <li><a href="../../docs/performance/">Performance docs</a> for counters and known bottlenecks.</li>
-  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a> for frozen host baselines.</li>
-  <li><a href="../visual-debugging/">Visual debugging</a> for the cases where numbers pass and pixels fail.</li>
-  <li><a href="../../lab/">Lab retrospectives</a> for the human side of keeping a one-person build farm honest.</li>
+  <li><a href="../../docs/regtest/">Regression testing</a> for
+repeatable boots and captures.</li>
+  <li><a href="../../perf/">The headless-perf battle card</a>
+for the live timing matrix — 126 scene/tide variants with
+sortable, color-coded <code class="language-plaintext highlighter-rouge">target_speed</code> cells.</li>
+  <li><a href="../../docs/performance/">Performance docs</a> for
+counter definitions and known bottlenecks.</li>
+  <li><a href="../../archaeology/regtest-references/cases/">Regtest reference cases</a>
+for frozen host baselines.</li>
+  <li><a href="../visual-debugging/">Visual debugging</a>
+for the cases where numbers pass and pixels fail.</li>
+  <li><a href="../../lab/">Lab retrospectives</a> for the human
+side of keeping a one-person build farm honest. Two specific
+ones to start with:
+<a href="../../lab/from-87-to-99-5/">from 87 to 99.5</a>
+on the post-validation perf arc, and
+<a href="../../lab/v081-mary4-freeze/">the v0.8.1 MARY 4 freeze</a>
+on the
+<a href="../../docs/glossary/#soak-test">soak loop</a>
+catching what the matrix can’t.</li>
 </ul>
+
+<p>The matrix and the soak are not redundant. The matrix runs each
+variant deterministically from a clean boot — perfect for
+“is this scene slow on its own?” The soak runs the actual
+screensaver loop randomized for hours — perfect for “is this
+scene broken by its neighbors?” A release that promotes
+performance without exercising both is a release that ships the
+next state-coupling bug, signed off and timed.</p>
 
 <p>This is the same lesson as the rest of the port: make the feedback loop narrow
 enough that the machine can answer. The PS1 is not vague. It does exactly what
