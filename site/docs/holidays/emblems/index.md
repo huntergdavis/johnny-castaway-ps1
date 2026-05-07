@@ -6,6 +6,13 @@ subtitle: 32 pixel-art icons, 32x32 each, in the Sierra house style.
 description: The 32-cell emblem sheet that overlays the island during a holiday window. Style guide, palette, and a per-icon table with sheet positions.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 The four original Sierra holidays (New Year's Day, St. Patrick's
 Day, Halloween, Christmas — IDs 1–4 in `holidays.yml`) keep their
 original full-island sprites. The 32 holidays added by this port

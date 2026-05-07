@@ -7,6 +7,13 @@ description: How a long-run randomized DuckStation soak surfaced a MARY 4 scene-
 date: 2026-05-06
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 `v0.8.0-ps1` was the post-validation performance baseline. All 63
 scenes signed off; `+0.9%` over target / `99.5%` target speed across
 the 120 timing-bearing rows; the [retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})

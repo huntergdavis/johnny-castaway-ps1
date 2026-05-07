@@ -74,7 +74,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "inLanguage": "en",
-  "wordCount": 651,
+  "wordCount": 673,
   "timeRequired": "PT2M",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -133,14 +133,27 @@
       <h1>v0.8.1 — what the soak found that the matrix didn't</h1>
       <p class="subtitle">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~2 min read · 607 words
+          ~2 min read · 629 words
         </p>
 
       <hr class="rule" />
     </header>
 
   <div class="page-body">
-    <p><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> was the post-validation performance baseline. All 63
+    <details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#the-shape-of-the-bug" id="markdown-toc-the-shape-of-the-bug">The shape of the bug</a></li>
+  <li><a href="#why-the-matrix-missed-it" id="markdown-toc-why-the-matrix-missed-it">Why the matrix missed it</a></li>
+  <li><a href="#the-actual-fix" id="markdown-toc-the-actual-fix">The actual fix</a></li>
+  <li><a href="#what-the-discipline-says" id="markdown-toc-what-the-discipline-says">What the discipline says</a></li>
+  <li><a href="#the-receipts" id="markdown-toc-the-receipts">The receipts</a></li>
+</ul>
+
+</details>
+
+<p><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> was the post-validation performance baseline. All 63
 scenes signed off; <code class="language-plaintext highlighter-rouge">+0.9%</code> over target / <code class="language-plaintext highlighter-rouge">99.5%</code> target speed across
 the 120 timing-bearing rows; the <a href="../from-87-to-99-5/">retrospective</a>
 walks through how the matrix moved there. That looked like the end
