@@ -51,7 +51,7 @@ the longer version — the people whose work this project stands on.
   makes a project like this thinkable in 2026.
 - **DuckStation** (Connor McLaughlin et al.) — the emulator that
   every commit gets tested against.
-- **mkpsxiso** — `.bin/.cue` packing.
+- **mkpsxiso** (Lameguy64) — `.bin/.cue` packing.
 - **spicyjpeg's pad-poll example** — the SPI driver used here is
   derived from that MPL-licensed code (see `src/spi.c`).
 - **Meeus / Jones / Butcher** — the Easter algorithm used for
