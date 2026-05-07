@@ -145,6 +145,26 @@ VISITOR3-specific synthesis helper builds the foreground source:</p>
 <p>Production island placement remains variable. The capture/test island positions
 were evidence-gathering positions, not runtime pins.</p>
 
+<h2 id="notable-runtime-history">Notable runtime history</h2>
+
+<p><code class="language-plaintext highlighter-rouge">VISITOR 3</code> is the largest single optimization target left on the
+<a href="../../perf/">performance battle card</a> at
+<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>. Both <code class="language-plaintext highlighter-rouge">visitor3</code> high and <code class="language-plaintext highlighter-rouge">visitor3</code> low
+sit in the <strong>red</strong> band — around <code class="language-plaintext highlighter-rouge">69.4%</code> target speed after the
+<code class="language-plaintext highlighter-rouge">v0.7.2</code> prefetch-relief refresh. The wide multi-view stitch (the
+red ship crossing the full scene width) hits the
+<a href="../../docs/glossary/#prefetch-window">prefetch window</a>
+the hardest of any scene; the timing gap is concentrated in the
+ship’s live crash window, not the foreground replay around it.</p>
+
+<p>The arc that moved the rest of the matrix from <code class="language-plaintext highlighter-rouge">87.1%</code> to <code class="language-plaintext highlighter-rouge">99.5%</code>
+target speed is at
+<a href="../../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.
+The named-experiment queue for <code class="language-plaintext highlighter-rouge">visitor3</code> lives in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>;
+recent rejected probes include several read-group, slack-gated, and
+setup-prime variants that didn’t beat the canary.</p>
+
   </div>
 
   <footer class="post-footer">
