@@ -68,8 +68,12 @@ The scene either matches or it does not. The sound either lands on the right
 frame or it does not. The runtime either survives night, tide, holiday, and
 raft variants or it does not.
 
-The rest of the project inherits that bar. Sixty-one scenes remain, but the
-shape of the work is no longer mysterious.
+The rest of the project inherited that bar. Sixty-one scenes
+remained at the time of the pivot; the
+[63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+closed on `2026-05-05` with `ACTIVITY 9` as the final row, and
+the post-validation work moved to the
+[performance arc]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 
 ## Cross-links
 
@@ -77,3 +81,7 @@ shape of the work is no longer mysterious.
 - [FG2 pack payload]({{ '/docs/formats/pack-payload/' | relative_url }})
 - [Performance work]({{ '/docs/performance/' | relative_url }})
 - [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+- [From 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }}) —
+  the post-validation arc this pivot enabled.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  the live timing matrix that followed the visual ledger.
