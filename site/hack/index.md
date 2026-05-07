@@ -50,7 +50,7 @@ and then make one small change that survives the loop.
 If you are learning the project, keep these open:
 
 - [Build docs]({{ '/docs/build/' | relative_url }}) for the Docker and PSn00bSDK setup.
-- [Scene ledger]({{ '/scenes/' | relative_url }}) for the work remaining and the validation bar.
+- [Scene ledger]({{ '/scenes/' | relative_url }}) for both bars side-by-side: visual signoff and the headless-perf battle card, per scene.
 - [Source library]({{ '/source/' | relative_url }}) for the complete Markdown archive, including old failed plans.
 - [Resource catalog]({{ '/resources/' | relative_url }}) for the bitmaps, ADS scripts, TTM animations, sounds, sprite banks, and generated packs.
 
