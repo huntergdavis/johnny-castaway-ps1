@@ -74,8 +74,8 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 2415,
-  "timeRequired": "PT9M",
+  "wordCount": 2667,
+  "timeRequired": "PT10M",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -133,7 +133,7 @@
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2380 words
+          ~10 min read · 2632 words
         </p>
 
       <hr class="rule" />
@@ -157,6 +157,7 @@
   <li><a href="#structured-data-without-jekyll-seo-tag" id="markdown-toc-structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></a></li>
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
   <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
+  <li><a href="#the-auto-generated-pages-and-the-f-string-rule" id="markdown-toc-the-auto-generated-pages-and-the-f-string-rule">The auto-generated pages and the f-string rule</a></li>
   <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
   <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
@@ -319,6 +320,54 @@ auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
   <li>A <code class="language-plaintext highlighter-rouge">@media print</code> block in <code class="language-plaintext highlighter-rouge">main.scss</code> flattens the palette to black-on-white, strips chrome, surfaces link URLs via <code class="language-plaintext highlighter-rouge">a::after</code>, sets <code class="language-plaintext highlighter-rouge">@page</code> margins, and hints page-break-avoidance on headings, code blocks, figures. Long worklogs save as clean PDFs without any setup.</li>
   <li>A custom <code class="language-plaintext highlighter-rouge">404.html</code> script reads <code class="language-plaintext highlighter-rouge">window.location.pathname</code> and renders it as <code class="language-plaintext highlighter-rouge">Tried: /typo/foo/</code> so a reader can see what was attempted. Degrades cleanly if JS is off.</li>
 </ul>
+
+<h2 id="the-auto-generated-pages-and-the-f-string-rule">The auto-generated pages and the f-string rule</h2>
+
+<p>Three big surfaces under <code class="language-plaintext highlighter-rouge">site/</code> aren’t hand-written:
+<code class="language-plaintext highlighter-rouge">site/source/index.md</code> (a wrapper page for every Markdown file outside
+the website tree), <code class="language-plaintext highlighter-rouge">site/resources/index.md</code> (the asset catalog with
+seven section tables), and
+<code class="language-plaintext highlighter-rouge">site/archaeology/regtest-references/cases/index.md</code> plus its 63
+per-case detail pages. They’re emitted by
+<code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code> on every build, before Jekyll runs.</p>
+
+<p>The catch is a foot-gun for any future improvement: editing those
+<code class="language-plaintext highlighter-rouge">.md</code> files in place looks fine in <code class="language-plaintext highlighter-rouge">git diff</code>, builds locally, then
+gets silently wiped on the next build because the generator
+regenerates them. I learned this the obvious way — added a TOC block
+to <code class="language-plaintext highlighter-rouge">site/resources/index.md</code>, ran the build, watched the TOC vanish.</p>
+
+<p>The rule the project follows now: any change to those three surfaces
+goes into the generator’s f-string template, not the rendered
+markdown. The cost of remembering this once is one merge; the cost of
+shipping a “fix” that quietly disappears on the next build is one
+honestly-confused contributor and a half-hour of debugging.</p>
+
+<p>The pattern looks like this — note the doubled `` because
+the f-string consumes one pair of braces, leaving Liquid the rest:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">index</span> <span class="o">=</span> <span class="sa">f</span><span class="sh">"""</span><span class="s">---
+layout: page
+title: Resource catalog
+</span><span class="gp">...</span>
+<span class="o">---</span>
+
+<span class="s">&lt;details class=</span><span class="sh">"</span><span class="s">page-toc</span><span class="sh">"</span><span class="s"> markdown=</span><span class="sh">"</span><span class="s">1</span><span class="sh">"</span><span class="s">&gt;
+&lt;summary&gt;On this page&lt;/summary&gt;
+
+* TOC
+
+&lt;/details&gt;
+
+</span><span class="si">{</span><span class="n">resource_sections</span><span class="si">}</span><span class="s">
+</span><span class="sh">"""</span>
+</code></pre></div></div>
+
+<p>Same trick for the case-shelf family jump nav (<code class="language-plaintext highlighter-rouge">&lt;nav class="scenes-jump"&gt;</code>
+with per-family counts and <code class="language-plaintext highlighter-rouge">id="ads-&lt;family&gt;"</code> on the first row of each
+group), and for the <code class="language-plaintext highlighter-rouge">&lt;caption class="visually-hidden"&gt;</code> per-table a11y
+captions on <code class="language-plaintext highlighter-rouge">/resources/</code>. All four shipped through the generator
+template, not the markdown.</p>
 
 <h2 id="the-shape">The shape</h2>
 
