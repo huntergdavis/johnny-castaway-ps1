@@ -90,9 +90,11 @@ At the time of writing it contains 600+ experiment rows going back to
 
 The full scene/tide battle card is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
-and is rendered as the perf battle card section of the [scene ledger]({{ '/scenes/' | relative_url }}).
-It is not the human scene-promotion ledger; it is the timing sheet for
-headless performance work.
+and is rendered as the live, sortable, color-coded battle card at
+[/perf/]({{ '/perf/' | relative_url }}). It is not the human
+scene-promotion ledger at [/scenes/]({{ '/scenes/' | relative_url }});
+the two ledgers stay separate on purpose — different bars,
+different cadences, different failure modes.
 
 The current compiler-flag sweep is tracked in
 [`docs/ps1/performance-o2-audit.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.md)
