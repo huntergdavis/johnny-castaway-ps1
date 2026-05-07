@@ -233,6 +233,22 @@ hr.rule, .rule {
 }
 .skip-link:focus { top: 0; }
 
+/* Visually hidden but readable by screen readers. Standard a11y
+   idiom — used for table <caption>s and anywhere visual context is
+   already present in the surrounding chrome but the assistive layer
+   needs the same context as a discrete element. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Layout shell ---------- */
 .main {
   max-width: var(--col-wide);

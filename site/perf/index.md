@@ -150,6 +150,15 @@ and this page.
 </p>
 
 <table class="scene-perf-table">
+  <caption class="visually-hidden">
+    Headless performance matrix at {{ site.release.tag }}:
+    one row per scene/tide variant, with last run, stats version,
+    over target percentage, target speed percentage, VBlanks taken,
+    blocking VBlanks, prefetch hits, due-misses, and notes.
+    Click any column header to sort ascending; click again for
+    descending. Target Speed cells are color-coded: ≥99% green,
+    ≥80% yellow, &lt;80% red.
+  </caption>
   <thead>
     <tr>
       <th>Scene</th>
