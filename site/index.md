@@ -181,7 +181,7 @@ Set, Freeplay Options, Controls, World Options, Holidays, Set
 Island Position, Accessibility, Sound Test, System, Set Time/Date,
 and Set RNG Seed. An optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
-on a dedicated SPU voice. Frog-clock loading transitions between
+on a dedicated SPU voice. [Frog-clock loading transitions]({{ '/docs/glossary/#frog-clock' | relative_url }}) between
 scene swaps. The website
 [credits]({{ '/credits/' | relative_url }}) and
 [legal]({{ '/legal/' | relative_url }}) pages name exactly what's
