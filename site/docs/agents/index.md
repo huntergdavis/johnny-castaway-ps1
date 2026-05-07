@@ -248,6 +248,15 @@ shipped is the author's.
 
 - [Method]({{ '/about/method/' | relative_url }}) — how the project
   decides what's worth shipping.
+- [Voice guide]({{ '/about/voice/' | relative_url }}) — the
+  editorial standard agent drafts get edited against. Read this
+  before writing anything that ships under the project's name.
+- [The voice-anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+  — the deeper retrospective on how the four-line `drawCredits`
+  text propagates voice constraints downstream.
+- [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }}) —
+  the parallel-agent infrastructure that keeps two LLM sessions
+  productive without constant operator attention.
 - [Closed captions]({{ '/docs/captions/' | relative_url }}) — the
   caption corpus the audit produced.
 - [Holidays]({{ '/docs/holidays/' | relative_url }}) — the 36-holiday
