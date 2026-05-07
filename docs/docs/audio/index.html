@@ -102,7 +102,7 @@
       <h1>Audio pipeline</h1>
       <p class="subtitle">SPU layout, sample preload, captured PLAY_SAMPLE replay, and where DuckStation's HLE diverges from the real hardware.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1690 words
+          ~7 min read · 1864 words
         </p>
 
       <hr class="rule" />
@@ -130,6 +130,7 @@ you were cheated. Open source and free.</p>
   <li><a href="#the-known-spu-bugs" id="markdown-toc-the-known-spu-bugs">The known SPU bugs</a></li>
   <li><a href="#duckstation-hle-vs-hardware" id="markdown-toc-duckstation-hle-vs-hardware">DuckStation HLE vs hardware</a></li>
   <li><a href="#what-hasnt-been-tackled" id="markdown-toc-what-hasnt-been-tackled">What hasn’t been tackled</a></li>
+  <li><a href="#ocean-ambience-v060-ps1" id="markdown-toc-ocean-ambience-v060-ps1">Ocean ambience (v0.6.0-ps1)</a></li>
   <li><a href="#future-considered-not-future-planned" id="markdown-toc-future-considered-not-future-planned">Future-considered, not future-planned</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
   <li><a href="#view-source-on-github" id="markdown-toc-view-source-on-github">View source on GitHub</a></li>
@@ -389,11 +390,35 @@ audio side but isn’t currently planned.</li>
   <li><strong>Hardware mute validation.</strong> Documented above. Open until the
 author runs a real-hardware capture pass with the pause menu and
 confirms the direct register write actually mutes on hardware.</li>
-  <li><strong>Music.</strong> The 430 KB of free SPU RAM could host a small streaming
+  <li><strong>Music.</strong> The remaining free SPU RAM (~300 KB after the SFX
+bank and the looping ocean ambience) could host a small streaming
 music layer or a handful of pre-mixed tracks. The author has not
 decided whether <em>Johnny Castaway</em> should have music — the original
 did not. This is a design question, not a technical one.</li>
 </ul>
+
+<h2 id="ocean-ambience-v060-ps1">Ocean ambience (v0.6.0-ps1)</h2>
+
+<p>The runtime carries one looping background track — a 20-second
+ocean-loop sample on a dedicated SPU voice slot reserved at boot.
+Toggleable via Pause → Accessibility → Ocean and persisted to the
+memcard alongside the other v6 schema settings. Zero per-frame
+CPU cost: the SPU loops the sample in hardware; the main CPU
+never touches the voice after boot.</p>
+
+<p>The on-disc artifact is <code class="language-plaintext highlighter-rouge">OCEAN.VAG</code> (~126 KB, 4-bit ADPCM at
+11.025 kHz mono). Source is BigSoundBank.com sound 0266 (CC0); the
+encoding pipeline lives in <code class="language-plaintext highlighter-rouge">scratch/ocean-ambience/</code>. The seam is
+hidden by an equal-power crossfade with the recording’s natural
+continuation, so the SPU’s hardware loop reads as unbroken ocean
+rather than a wraparound.</p>
+
+<p>Architecturally this is the second category of audio the runtime
+manages. The 23 captured SFX live in voice slots <code class="language-plaintext highlighter-rouge">0..7</code> rotated
+round-robin by <code class="language-plaintext highlighter-rouge">sound_ps1.c</code>; the ocean track lives on a fixed slot
+outside that rotation so a busy SFX scene never evicts it. The
+release entry is at
+<a href="../../releases/#v060-ps1--ocean-ambience">/releases/#v060-ps1–ocean-ambience</a>.</p>
 
 <h2 id="future-considered-not-future-planned">Future-considered, not future-planned</h2>
 

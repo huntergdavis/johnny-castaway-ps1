@@ -238,10 +238,34 @@ A few audio quality items the author knows are open:
 - **Hardware mute validation.** Documented above. Open until the
   author runs a real-hardware capture pass with the pause menu and
   confirms the direct register write actually mutes on hardware.
-- **Music.** The 430 KB of free SPU RAM could host a small streaming
+- **Music.** The remaining free SPU RAM (~300 KB after the SFX
+  bank and the looping ocean ambience) could host a small streaming
   music layer or a handful of pre-mixed tracks. The author has not
   decided whether *Johnny Castaway* should have music — the original
   did not. This is a design question, not a technical one.
+
+## Ocean ambience (v0.6.0-ps1)
+
+The runtime carries one looping background track — a 20-second
+ocean-loop sample on a dedicated SPU voice slot reserved at boot.
+Toggleable via Pause → Accessibility → Ocean and persisted to the
+memcard alongside the other v6 schema settings. Zero per-frame
+CPU cost: the SPU loops the sample in hardware; the main CPU
+never touches the voice after boot.
+
+The on-disc artifact is `OCEAN.VAG` (~126 KB, 4-bit ADPCM at
+11.025 kHz mono). Source is BigSoundBank.com sound 0266 (CC0); the
+encoding pipeline lives in `scratch/ocean-ambience/`. The seam is
+hidden by an equal-power crossfade with the recording's natural
+continuation, so the SPU's hardware loop reads as unbroken ocean
+rather than a wraparound.
+
+Architecturally this is the second category of audio the runtime
+manages. The 23 captured SFX live in voice slots `0..7` rotated
+round-robin by `sound_ps1.c`; the ocean track lives on a fixed slot
+outside that rotation so a busy SFX scene never evicts it. The
+release entry is at
+[/releases/#v060-ps1--ocean-ambience]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }}).
 
 ## Future-considered, not future-planned
 
