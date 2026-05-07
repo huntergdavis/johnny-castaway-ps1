@@ -278,8 +278,9 @@ path from the first signed-off scene to all 63 was the same
 repeatable loop on every row: capture, pack, route, replay, sign
 off. The hard work was the loop's edges — multi-view foreground
 stitches for the wide scenes, residual-cleanup pack fixes when a
-few pixels missed, the backdrop-key guard that kept story-loop
-walks from running across stale islands. That is the property
+few pixels missed, the backdrop-key guard that kept
+[story-loop walks]({{ '/docs/walks/' | relative_url }})
+from running across stale islands. That is the property
 the project was reaching for.
 
 The second bar, the
