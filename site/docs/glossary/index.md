@@ -134,10 +134,22 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dl>
 <dt id="battle-card">Battle card (headless-perf)</dt>
-<dd>The headless-DuckStation timing matrix. One row per scene/tide variant; the live aggregate is <em>average over-target %</em> and <em>average target-speed %</em> across timing-bearing rows. Visible at the bottom of <a href="{{ '/scenes/' | relative_url }}">/scenes/</a> alongside the visual signoff table. The current matrix mean is on the home-page status pill.</dd>
+<dd>The headless-DuckStation timing matrix. One row per scene/tide variant; the live aggregate is <em>average over-target %</em> and <em>average target-speed %</em> across timing-bearing rows. The live page is at <a href="{{ '/perf/' | relative_url }}">/perf/</a>, separate from the visual signoff at <a href="{{ '/scenes/' | relative_url }}">/scenes/</a> on purpose — different bars, different cadences, different failure modes. The current matrix mean is on the home-page status pill.</dd>
 
 <dt id="target-vb">target_vb / loop_vb</dt>
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
+
+<dt id="over-target">over_target</dt>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.9%</code>.</dd>
+
+<dt id="blocking-vb">blocking_vb</dt>
+<dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
+
+<dt id="prefetch-hits">prefetch_hits</dt>
+<dd>The <em>Prefetch</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a> — vblanks where the CD prefetcher hit a buffer overrun and had to wait. Distinct from <code>blocking_vb</code>: prefetch overrun means data was ready early enough but the buffer was already full; blocking means data was late. Both move with stream-window size in opposite directions.</dd>
+
+<dt id="clean-rect">Clean-rect (memory pressure)</dt>
+<dd>The runtime's per-scene allocation for "the bytes needed to restore the static background under the foreground." Wide-action scenes need a wide clean-rect; the long-soak BUILDING4 regression resolved in <code>v0.8.0</code> was a clean-rect allocation failure under post-walk memory pressure. The fix releases the stale walk-clean buffer, retries the large scene clean snapshot, and recaptures the walk baseline. The "clean-memory-relief drop-prefetch" experiment in the <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">retrospective</a> is the related performance unlock — letting the prefetch window drop to free clean-rect bytes when the scene needs them.</dd>
 
 <dt id="fgp3">FGP3 pack format</dt>
 <dd>Denser successor to the original FG2 pack format. Same per-frame foreground deltas, but with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs are FGP3 as of <code>v0.8.0-ps1</code>; the win is per-frame upload bytes, the biggest bottleneck after raw playback on a 2× CD.</dd>
