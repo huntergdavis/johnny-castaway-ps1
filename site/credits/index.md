@@ -37,12 +37,15 @@ the longer version — the people whose work this project stands on.
 
 ## Prior ports (the giants whose shoulders this stands on)
 
-- **`jno6809/jc_reborn`** — the SDL2 port that decoded the original
+- **[`jno6809/jc_reborn`](https://github.com/jno6809/jc_reborn)**
+  (Jérémie Guillaume) — the SDL2 port that decoded the original
   engine's ADS / TTM / RES bytecode. This project's host build
   is a fork of that work.
-- **`nivs1978/JCOS`** — an alternate decoding effort that helped
+- **[`nivs1978/JCOS`](https://github.com/nivs1978/Johnny-Castaway-Open-Source)**
+  (Hans Milling) — an alternate decoding effort that helped
   cross-validate frames.
-- **`xesf/Castaway`** — additional reverse-engineering notes.
+- **[`xesf/Castaway`](https://github.com/xesf/castaway)**
+  (Alexandre Fontoura) — additional reverse-engineering notes.
 - **The Sierra Chest archive** — preserved manuals and box copy.
 
 ## Toolchain
