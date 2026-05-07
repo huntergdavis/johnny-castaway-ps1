@@ -102,7 +102,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~6 min read · 1701 words
+          ~7 min read · 1753 words
         </p>
 
       <hr class="rule" />
@@ -374,8 +374,16 @@ setup that targets this hardware.</li>
 the dev environment looks like beyond the toolchain.</li>
   <li><a href="../performance/">Performance work</a> — the
 experiment ledger that lives on top of these constraints.</li>
+  <li><a href="../../perf/">Performance battle card</a> — live
+per-scene timing against the hardware budget described above.</li>
   <li><a href="../audio/">Audio pipeline</a> — SPU layout and the
 HLE-vs-hardware divergence in detail.</li>
+  <li><a href="../api/">API mapping (SDL2 → PSn00bSDK)</a>
+— the call-by-call surface between the host build and the
+hardware described here.</li>
+  <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
+— the retrospective on the <code class="language-plaintext highlighter-rouge">tx_len=5</code> pad-polling fix the
+hardware section above documents in one paragraph.</li>
   <li><a href="../../about/method/">Method</a> — how a one-person port
 decides what to ship.</li>
   <li><a href="../../devlog/">Devlog</a> — day-by-day worklog where most of

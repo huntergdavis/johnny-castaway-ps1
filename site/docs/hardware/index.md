@@ -220,8 +220,16 @@ specialized compositors, not a clock change — the clock isn't going up.
   the dev environment looks like beyond the toolchain.
 - [Performance work]({{ '/docs/performance/' | relative_url }}) — the
   experiment ledger that lives on top of these constraints.
+- [Performance battle card]({{ '/perf/' | relative_url }}) — live
+  per-scene timing against the hardware budget described above.
 - [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — SPU layout and the
   HLE-vs-hardware divergence in detail.
+- [API mapping (SDL2 → PSn00bSDK)]({{ '/docs/api/' | relative_url }})
+  — the call-by-call surface between the host build and the
+  hardware described here.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — the retrospective on the `tx_len=5` pad-polling fix the
+  hardware section above documents in one paragraph.
 - [Method]({{ '/about/method/' | relative_url }}) — how a one-person port
   decides what to ship.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog where most of
