@@ -78,13 +78,18 @@ mode added in [`v0.5.0-ps1`]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' |
 | D-pad / left analog | Walk Johnny. Movement cancels the current action immediately. |
 | L2 held | Slow walk. |
 | R2 held | Fast walk. |
-| Circle | Fish from the nearest side of the island. |
 | Select | Clear the screen, cancel transient actions, and rebuild the island. |
 | R1 + Up | Toggle day/night. |
 | R1 + Down | Toggle high/low tide. |
 | R1 + Left | Cycle raft stage. |
 | R1 + Right | Cycle holiday overlay. |
 | Start | Open pause menu. |
+
+Fishing is reached through the pause menu's **Scene Set →
+Fishing Only** option rather than a dedicated joypad button —
+the Circle-as-fish freeplay action shipped in `v0.5.0-ps1` and
+was retired during the Scene Set rewrite. See
+[/docs/freeplay/#fishing]({{ '/docs/freeplay/#fishing' | relative_url }}).
 
 The full implementation notes live at
 [Menu help guide]({{ '/help/menu/' | relative_url }}),
