@@ -7,6 +7,13 @@ description: "A practical essay on the legal and social posture of the Johnny Ca
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The line
 
 This is a fan port. It is not an official Sierra release. I do not own Johnny

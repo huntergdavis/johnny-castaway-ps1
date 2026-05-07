@@ -7,6 +7,13 @@ description: A prose-process essay about the Johnny Castaway PS1 site's voice gu
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The problem
 
 AI prose has a smell.

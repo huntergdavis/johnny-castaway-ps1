@@ -7,6 +7,13 @@ description: A debugging war story about the PS1 controller SPI/SIO0 polling bug
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## The symptom
 
 The pause menu needed the controller. Start to pause. D-pad to move. Cross to
