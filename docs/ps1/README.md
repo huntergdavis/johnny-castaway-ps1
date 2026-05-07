@@ -28,8 +28,8 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.8231%` over target / `99.4858%`
-target speed after the post-release BUILDING5 padded-FGP3 optimization.
+current timing-bearing rows average `+0.8071%` over target / `99.5018%`
+target speed after the post-release ACTIVITY11 padded-FGP3 optimization.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.

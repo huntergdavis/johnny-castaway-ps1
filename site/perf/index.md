@@ -94,6 +94,7 @@ and this page.
   `activity4-fishing4-v072c-prefetch-relief`,
   `building4-6-johnny6-v072c-prefetch-relief`,
   `activity1-v072c-current-refresh`,
+  `activity11-fgp3-padded-v081`,
   `activity11-12-v072c-prefetch-relief`,
   `stale-next-v072c-current-refresh`,
   `mary1-v072c-prefetch-relief`,
@@ -385,29 +386,29 @@ and this page.
       <td><code>activity11</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T03:40:30</td>
-      <td>activity11-12-v072c-prefetch-relief</td>
-      <td>+0.5%</td>
-      <td class="spd-green">99.5%</td>
-      <td>1729/1720</td>
-      <td>10</td>
-      <td>4</td>
-      <td>1</td>
-      <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T20:36:09</td>
+      <td>activity11-fgp3-padded-v081</td>
+      <td>-0.4%</td>
+      <td class="spd-green">100.4%</td>
+      <td>1715/1722</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>padded FGP3 active-loop win; overrun eliminated with accepted setup-prime cost</td>
     </tr>
     <tr>
       <td><code>activity11</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T03:40:30</td>
-      <td>activity11-12-v072c-prefetch-relief</td>
-      <td>+0.7%</td>
-      <td class="spd-green">99.3%</td>
-      <td>1729/1717</td>
-      <td>14</td>
-      <td>9</td>
-      <td>1</td>
-      <td>validated pack clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>2026-05-06T20:36:09</td>
+      <td>activity11-fgp3-padded-v081</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1717/1722</td>
+      <td>4</td>
+      <td>4</td>
+      <td>0</td>
+      <td>padded FGP3 active-loop win; overrun eliminated with accepted setup-prime cost</td>
     </tr>
     <tr>
       <td><code>activity12</code></td>

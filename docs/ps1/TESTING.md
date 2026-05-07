@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.8%` (`0.8231%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4858%` exact) |
-| Latest perf matrix run | `2026-05-06T17:38:07` |
-| Stats version | mixed; newest optimized rows use `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.8%` (`0.8071%` exact) |
+| Timing-bearing average target speed | `99.5%` (`99.5018%` exact) |
+| Latest perf matrix run | `2026-05-06T20:36:09` |
+| Stats version | mixed; newest optimized rows use `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -94,6 +94,7 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
+`activity11-fgp3-padded-v081`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
