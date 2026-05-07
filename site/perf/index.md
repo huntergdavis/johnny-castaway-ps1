@@ -38,14 +38,14 @@ A scene can be timed here without being visually certified.
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
 
-The two red rows are `visitor3` high (`70.0%`) and `visitor3`
+The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) high (`70.0%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
 low (`69.7%`) after the `v0.8.0` setup-prime + group 170..186
 work; the largest single optimization target left on the matrix.
-The yellow cluster includes the wide-action and `BUILDING2` rows
+The yellow cluster includes the wide-action and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) rows
 still finishing their prefetch-relief and stream-window work.
 
-The 6 untimed rows are `MARY 3` high/low (active-loop timing not
-yet refreshed against the current pack), and `SUZY 1` + `SUZY 2`
+The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
+yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
 high/low (metadata-only; the SUZY mermaid scenes don't reach a
 deterministic scene-end so they're excluded from speed averages
 on purpose).
