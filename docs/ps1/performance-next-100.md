@@ -90,6 +90,14 @@ setup-prime baseline (`scene_vb=1746`, `loop_vb=1450`, `blocking_vb=355`,
 `prefetch_overrun_vb=14`, `loop_reads=45`) while shifting hot foreground code.
 Do not retry VISITOR3 direct-stage caps without generated coverage metadata.
 
+Rejected BUILDING2 high setup-prime: a high-only `64 KiB` contiguous setup
+window improved raw active-loop time (`loop_vb 1468 -> 1457`) and prefetch
+overrun (`56 -> 42`), but failed the full gate by regressing overrun
+`183 -> 186`, visible blocking `301 -> 324`, and target accounting
+`1285 -> 1271`. Do not retry contiguous BUILDING2 high setup-prime sizing as
+a local source knob; the next BUILDING2 high path should be scheduler-owned
+refill timing, segmented/prepared coverage, or data-shape preprocessing.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
