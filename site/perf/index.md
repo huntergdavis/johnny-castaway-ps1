@@ -57,7 +57,7 @@ Current battle-card rollup as of 2026-05-06:
 | Metric | Value |
 |---|---:|
 | Scenes visually validated | `{{ validated_count }} / {{ total_count }}` (`100%`) |
-| Validated scenes | all 63 original scenes; see the live ledger above for the source rows |
+| Validated scenes | all 63 original scenes; see the [live ledger]({{ '/scenes/' | relative_url }}) for the source rows |
 | Scene/tide variants routed through headless perf | `126 / 126` (`100%`) |
 | Timing-bearing variants | `120 / 126` (`95.2%`) |
 | Scenes with at least one active-loop timed variant | `60 / 63` (`95.2%`) |
