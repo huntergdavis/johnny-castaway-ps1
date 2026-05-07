@@ -379,6 +379,7 @@ void fgBackdropEndWalk(void)
 struct TFgPilotReadGroup {
     uint16 startSector;
     uint16 endSector;
+    uint16 minSlackVBlanks;
 };
 
 struct TFgRuntimeWindowPolicy {
@@ -465,33 +466,34 @@ static const struct TFgPilotSceneFamily kFgPilotSceneFamilies[] = {
 static char gFgCompactOverlayPackPath[24];
 
 static const struct TFgPilotReadGroup kFishing3HighReadGroups12[] = {
-    {223, 234},
-    {234, 246},
-    {345, 354}
+    {223, 234, 0},
+    {234, 246, 0},
+    {345, 354, 0}
 };
 
 static const struct TFgPilotReadGroup kFishing3LowReadGroups12[] = {
-    {159, 171},
-    {163, 175},
-    {253, 265}
+    {159, 171, 0},
+    {163, 175, 0},
+    {253, 265, 0}
 };
 
 static const struct TFgPilotReadGroup kVisitor3HighReadGroups12[] = {
-    {72, 84},
-    {170, 186},
-    {230, 242}
+    {72, 84, 0},
+    {144, 160, 4},
+    {170, 186, 0},
+    {230, 242, 0}
 };
 
 static const struct TFgPilotReadGroup kVisitor3LowReadGroups16[] = {
-    {170, 186}
+    {170, 186, 0}
 };
 
 static const struct TFgPilotReadGroup kActivity9LowFgp3ReadGroups[] = {
-    {624, 636}
+    {624, 636, 0}
 };
 
 static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
-    {318, 330}
+    {318, 330, 0}
 };
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
@@ -1688,7 +1690,8 @@ static int fgRuntimeCanStageNextFrame(void)
 
 static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
                                               uint32 windowStart,
-                                              uint32 targetEnd)
+                                              uint32 targetEnd,
+                                              uint16 slackVBlanks)
 {
     uint16 startSector;
     uint8 i;
@@ -1701,6 +1704,9 @@ static uint32 fgRuntimeGroupedAppendTargetEnd(uint32 appendStart,
     for (i = 0; i < gFgRuntime.streamReadGroupCount; i++) {
         if (gFgRuntime.streamReadGroups[i].startSector == startSector) {
             uint32 candidateEnd = ((uint32)gFgRuntime.streamReadGroups[i].endSector) << 11;
+            if (gFgRuntime.streamReadGroups[i].minSlackVBlanks > 0 &&
+                slackVBlanks < gFgRuntime.streamReadGroups[i].minSlackVBlanks)
+                return targetEnd;
             if (candidateEnd > targetEnd &&
                 candidateEnd - windowStart <= gFgRuntime.streamWindowSize)
                 return candidateEnd;
@@ -1805,7 +1811,10 @@ static int fgRuntimeTryExtendWindow(uint32 windowStart,
     currentStart = gFgRuntime.streamWindowStart;
     currentEnd = currentStart + gFgRuntime.streamWindowBytes;
     targetEnd = windowStart + readBytes;
-    targetEnd = fgRuntimeGroupedAppendTargetEnd(currentEnd, windowStart, targetEnd);
+    targetEnd = fgRuntimeGroupedAppendTargetEnd(currentEnd,
+                                                windowStart,
+                                                targetEnd,
+                                                slackVBlanks);
     readBytes = targetEnd - windowStart;
 
     if (windowStart < currentStart ||

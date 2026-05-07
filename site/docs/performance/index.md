@@ -127,9 +127,10 @@ Those foreground read-plan candidates are now rolled up into
 [`docs/ps1/performance-read-candidate-matrix.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.md)
 and its machine-readable
 [`performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv).
-The current report has no standalone-safe rows; VISITOR3 and the other
-remaining read-timing candidates should be scheduler-owned or guarded instead
-of hand-authored raw table ranges.
+The current report has one standalone-safe row and keeps VISITOR3 in the
+scheduler-owned or guarded lane. Remaining read-timing candidates should not
+be promoted as raw hand-authored table ranges without the same kind of
+slack/scheduler proof.
 
 ## Experiments that didn't work
 
@@ -288,6 +289,7 @@ That is **-0.3% over target**, or **100.3% of target speed**. Across the
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-high-group144-160-slack4-v081`,
 `walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
 `activity9-low-fgp3-cleanup-compact-v081`,
@@ -744,7 +746,9 @@ prove current-pack baselines must be cleared before ranking fixed overhead.
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at about `+390/+387` VBlanks, and WALKSTUF1 still has
+   largest gap at about `+390/+387` VBlanks, though the guarded high-tide
+   `144..160` append now proves scheduler-owned groups can reduce visible
+   blocking without moving layout. WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
    pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier

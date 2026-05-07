@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **+0.6% over target / 99.7% target speed** |
-| Latest perf matrix run | **`2026-05-07T06:46:25`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized rows use `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-07T08:12:17`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized rows use `visitor3-high-group144-160-slack4-v081`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -112,13 +112,15 @@ gap and added about **12.6 target-speed points**.
 Current performance work is focused on VISITOR3 and the remaining CD/graphics
 outliers. VISITOR3 now uses an `FGP3/v3` cleanup-compact metadata shape that
 keeps the PAL4 draw payloads and CD footprint stable while trimming active
-payload from `1552446` to `1265930` bytes. BUILDING2 now uses the same
-cleanup-compact format, trimming active payload `1296388 -> 1044638` without
-moving pack LBAs or the PS-EXE bucket. The preprocessing matrix still keeps
-VISITOR3 first, but the next win needs scheduler-owned CD timing or selective
-upload-ready bands rather than another blanket runtime scratch format. The
-per-frame preprocessing analyzer now understands FGP3 cleanup/draw payloads and
-separates cap-hit frames from profitable x-band frames.
+payload from `1552446` to `1265930` bytes, plus a guarded high-tide
+`144..160` append that lowers visible blocking `296 -> 294` without moving the
+active loop or layout. BUILDING2 now uses the same cleanup-compact format,
+trimming active payload `1296388 -> 1044638` without moving pack LBAs or the
+PS-EXE bucket. The preprocessing matrix still keeps VISITOR3 first, but the
+next larger win needs scheduler-owned CD timing or selective upload-ready bands
+rather than another blanket runtime scratch format. The per-frame preprocessing
+analyzer now understands FGP3 cleanup/draw payloads and separates cap-hit
+frames from profitable x-band frames.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -271,7 +273,9 @@ refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
 original padded FGP3 pack left untouched.
 The timing-bearing average is now `+0.5706%` over target /
 `99.6769%` target speed after the WALKSTUF1 low-tide setup-prime cap retune;
-since the compact full-matrix baseline was about `+17.4%` over target /
+the later VISITOR3 high guarded `144..160` append trims blocking `296 -> 294`
+while leaving the loop-time average unchanged.
+Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.8`
 percentage points of over-target gap and added about `12.6` points of target
 speed.

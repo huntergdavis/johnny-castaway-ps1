@@ -16,7 +16,7 @@ accepted performance baseline.
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `visitor3` | `low` | 299.45 | 38.42% | 56.97% | 303.8% | 309 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
-| 2 | `visitor3` | `high` | 296.24 | 37.98% | 56.97% | 303.8% | 303 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
+| 2 | `visitor3` | `high` | 295.74 | 37.98% | 56.97% | 303.8% | 301 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
 | 3 | `walkstuf1` | `low` | 173.13 | 14.00% | 46.64% | 493.1% | 325 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
 | 4 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
 | 5 | `building4` | `high` | 166.35 | 5.49% | 65.1% | 263.02% | 267 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
