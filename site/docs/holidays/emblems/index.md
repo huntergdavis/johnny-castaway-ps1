@@ -118,6 +118,13 @@ Tracked review copies live at
 
 - [Per-holiday calendar]({{ '/docs/holidays/' | relative_url }})
 - [Date-algorithm core]({{ '/docs/holidays/algorithm/' | relative_url }})
+- [Lab: 35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }})
+  — the codegen retrospective; the sprite-primitive composition
+  for these emblems is described from the inside there.
+- [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
+  — the emblem sprites were authored by an LLM sub-agent against
+  the style guide; this page records what that did and didn't
+  cover.
 - [`holidays.yml`]({{ site.github_url }}/blob/main/holidays.yml) — source of truth
 - [`scripts/holidays_art_lib.py`]({{ site.github_url }}/blob/main/scripts/holidays_art_lib.py) — shared CLUT
 - [`docs/ps1/holidays-style-guide.md`]({{ site.github_url }}/blob/main/docs/ps1/holidays-style-guide.md) — full style rules
