@@ -102,7 +102,7 @@
       <h1>Scripted input harness</h1>
       <p class="subtitle">Headless controller routes for menu testing, screenshot capture, and repeatable PS1 bug repros.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~2 min read · 702 words
+          ~3 min read · 761 words
         </p>
 
       <hr class="rule" />
@@ -130,6 +130,7 @@ Freeplay does not know it is being tested. That is the point.</p>
   <li><a href="#when-to-use-it" id="markdown-toc-when-to-use-it">When to use it</a></li>
   <li><a href="#files-worth-reading" id="markdown-toc-files-worth-reading">Files worth reading</a></li>
   <li><a href="#the-discipline" id="markdown-toc-the-discipline">The discipline</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -290,6 +291,26 @@ boring names that can become page IDs or bug IDs.</p>
 <p>This harness is useful because it is boring. It takes the kind of manual
 testing that usually disappears into memory and turns it into a file, a log,
 a screenshot, and a page on the website.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../pause-menu/">Pause menu</a> — the
+surface most pad-script routes traverse.</li>
+  <li><a href="../../help/menu/">Help: menu screenshots</a> —
+what this harness writes when it runs end-to-end.</li>
+  <li><a href="../regtest/">Regression testing</a> —
+the headless DuckStation runner that consumes the pad script
+    <ul>
+      <li>screenshot markers.</li>
+    </ul>
+  </li>
+  <li><a href="../glossary/#bootmode">Glossary: BOOTMODE.TXT</a>
+— the boot-token surface that selects <code class="language-plaintext highlighter-rouge">pad-script</code> and
+<code class="language-plaintext highlighter-rouge">pad-script-log</code> modes.</li>
+  <li><a href="../../devlog/scripted-pad-menu-harness/">Devlog: scripted-pad menu harness</a>
+— the implementation narrative.</li>
+</ul>
 
 
   </div>
