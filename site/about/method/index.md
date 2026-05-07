@@ -46,7 +46,9 @@ straight port impossible:
    `psxapi`, `psxgte`, `psxsio`. There is no `printf` you can trust
    in a hot loop, no `malloc` worth leaning on for transients, no
    `pthread`, no `clock_gettime`. SDL's design assumptions are not
-   even close.
+   even close. The symbol-by-symbol mapping the host build hands
+   off to the PS1 build is documented at
+   [/docs/api/]({{ '/docs/api/' | relative_url }}).
 
 The first prototype tried to brute-force these problems in the runtime
 -- a faithful TTM/ADS interpreter on the PS1, replaying scenes from
