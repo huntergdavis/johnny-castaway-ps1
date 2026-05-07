@@ -94,6 +94,7 @@ and this page.
   `activity4-fishing4-v072c-prefetch-relief`,
   `building4-6-johnny6-v072c-prefetch-relief`,
   `activity1-v072c-current-refresh`,
+  `mary5-fgp3-padded-v081`,
   `activity11-fgp3-padded-v081`,
   `activity11-12-v072c-prefetch-relief`,
   `stale-next-v072c-current-refresh`,
@@ -1142,29 +1143,29 @@ and this page.
       <td><code>mary5</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T03:26:10</td>
-      <td>stale-next-v072c-current-refresh</td>
-      <td>+0.6%</td>
-      <td class="spd-green">99.4%</td>
-      <td>1591/1582</td>
-      <td>8</td>
-      <td>8</td>
+      <td>2026-05-06T21:07:37</td>
+      <td>mary5-fgp3-padded-v081</td>
+      <td>-0.3%</td>
+      <td class="spd-green">100.3%</td>
+      <td>1581/1586</td>
+      <td>5</td>
       <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>1</td>
+      <td>padded FGP3 active-loop win; overrun eliminated while preserving the 646602-byte CD footprint</td>
     </tr>
     <tr>
       <td><code>mary5</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T03:26:10</td>
-      <td>stale-next-v072c-current-refresh</td>
-      <td>+0.5%</td>
-      <td class="spd-green">99.5%</td>
-      <td>1590/1582</td>
-      <td>7</td>
-      <td>7</td>
-      <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>2026-05-06T21:07:37</td>
+      <td>mary5-fgp3-padded-v081</td>
+      <td>-0.2%</td>
+      <td class="spd-green">100.2%</td>
+      <td>1581/1584</td>
+      <td>6</td>
+      <td>2</td>
+      <td>1</td>
+      <td>padded FGP3 active-loop win; overrun eliminated while preserving the 646602-byte CD footprint</td>
     </tr>
     <tr>
       <td><code>miscgag1</code></td>

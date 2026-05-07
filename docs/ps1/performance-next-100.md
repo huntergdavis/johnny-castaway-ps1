@@ -21,11 +21,19 @@ Current accepted fishing1 high-tide canary baseline:
 
 Goal: keep the FISHING1 canary at or under target while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
-or long-run heap stability. The current all-scene battle card is `0.8071%`
-over target / `99.5018%` target speed across `120` timing-bearing rows after
-the `activity11-fgp3-padded-v081` optimization. The largest remaining
+or long-run heap stability. The current all-scene battle card is `0.7939%`
+over target / `99.5149%` target speed across `120` timing-bearing rows after
+the `mary5-fgp3-padded-v081` optimization. The largest remaining
 absolute gaps are now VISITOR3, WALKSTUF1 low, BUILDING4, WALKSTUF1 high,
 BUILDING2, BUILDING6, and generated selective preprocessing, not FISHING1.
+
+Latest promoted MARY5 baseline: keep the same-layout padded FGP3 temporal
+residual conversion for both validated packs. High tide improves active loop
+`1591 -> 1581`, eliminates overrun `9 -> 0`, lowers blocking `8 -> 5`, lowers
+prefetch overrun `8 -> 0`, and cuts loop reads `49 -> 42`; low tide improves
+active loop `1592 -> 1581`, eliminates overrun `11 -> 0`, lowers blocking
+`10 -> 6`, lowers prefetch overrun `10 -> 2`, and cuts loop reads `49 -> 42`.
+Both LBAs and the PS-EXE bucket stay fixed.
 
 Latest promoted ACTIVITY11 baseline: keep the same-layout padded FGP3 temporal
 residual conversion for both validated packs. High tide improves active loop
@@ -1009,7 +1017,8 @@ pre-v0.8.0 row.
 | ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |
 | ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. That checkpoint later moved to `0.8309%` over target / `99.4779%` target speed after the VISITOR3/WALKSTUF1 setup-prime and VISITOR3 low-group promotions; the current rollup is tracked at the top of this file. |
 | BUILDING5 pal4 padded FGP3 | Done; keep. Both current BUILDING5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `818670` byte CD footprint. High improves `loop_vb 3359 -> 3343`, `overrun_vb 13 -> 0`, `blocking_vb 20 -> 5`, and `loop_reads 56 -> 41`; low improves `loop_vb 3357 -> 3345`, `overrun_vb 10 -> 0`, `blocking_vb 17 -> 8`, and `loop_reads 56 -> 41`. This checkpoint later moved to `0.8071%` over target / `99.5018%` target speed after the ACTIVITY11 padded-FGP3 promotion; the current rollup is tracked at the top of this file. |
-| ACTIVITY11 pal4 padded FGP3 | Done; keep. Both current ACTIVITY11 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `433970` byte CD footprint. High improves `loop_vb 1729 -> 1715`, `overrun_vb 9 -> 0`, `blocking_vb 10 -> 2`, `prefetch_overrun_vb 4 -> 2`, and `loop_reads 29 -> 11`; low improves `loop_vb 1729 -> 1717`, `overrun_vb 12 -> 0`, `blocking_vb 14 -> 4`, `prefetch_overrun_vb 9 -> 4`, and `loop_reads 29 -> 11`. Full scene setup grows by `8/11` VBlanks, accepted because the active loop now lands under target. The current exact matrix rollup is `0.8071%` over target / `99.5018%` target speed. |
+| ACTIVITY11 pal4 padded FGP3 | Done; keep. Both current ACTIVITY11 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `433970` byte CD footprint. High improves `loop_vb 1729 -> 1715`, `overrun_vb 9 -> 0`, `blocking_vb 10 -> 2`, `prefetch_overrun_vb 4 -> 2`, and `loop_reads 29 -> 11`; low improves `loop_vb 1729 -> 1717`, `overrun_vb 12 -> 0`, `blocking_vb 14 -> 4`, `prefetch_overrun_vb 9 -> 4`, and `loop_reads 29 -> 11`. Full scene setup grows by `8/11` VBlanks, accepted because the active loop now lands under target. This checkpoint later moved to `0.7939%` over target / `99.5149%` target speed after the MARY5 padded-FGP3 promotion; the current rollup is tracked at the top of this file. |
+| MARY5 pal4 padded FGP3 | Done; keep. Both current MARY5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `646602` byte CD footprint. High improves `loop_vb 1591 -> 1581`, `overrun_vb 9 -> 0`, `blocking_vb 8 -> 5`, `prefetch_overrun_vb 8 -> 0`, and `loop_reads 49 -> 42`; low improves `loop_vb 1592 -> 1581`, `overrun_vb 11 -> 0`, `blocking_vb 10 -> 6`, `prefetch_overrun_vb 10 -> 2`, and `loop_reads 49 -> 42`. The current exact matrix rollup is `0.7939%` over target / `99.5149%` target speed. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
