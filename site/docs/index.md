@@ -2,8 +2,8 @@
 layout: page
 title: Docs
 eyebrow: Reference manuals
-subtitle: Build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.
-description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
+subtitle: Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.
+description: Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary.
 ---
 
 A labor of love by Hunter Davis. The pages below are reference manuals for the
@@ -37,6 +37,10 @@ If you paid for this, you were cheated. Open source and free.
   <li>
     <a href="{{ '/docs/freeplay/' | relative_url }}">Freeplay mode</a>
     <p>The runtime-driven scene where the player drives Johnny instead of watching him: controls, gag/visitor debug catalogs, world toggles, frog loading transitions, and long-run memory rules.</p>
+  </li>
+  <li>
+    <a href="{{ '/docs/walks/' | relative_url }}">Story-loop walks</a>
+    <p>How Johnny stops teleporting between scenes — the walk_pilot/walk_render split, Sierra's six-spot route table, the persistent clean buffer, and the runtime invariants (waves, palm-tree occlusion, holiday overlay re-stamping).</p>
   </li>
   <li>
     <a href="{{ '/docs/regtest/' | relative_url }}">Regression testing</a>

@@ -136,7 +136,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Seventeen reference manuals: build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
+    <p>Eighteen reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>

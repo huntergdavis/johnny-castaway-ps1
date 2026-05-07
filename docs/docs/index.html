@@ -7,10 +7,10 @@
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" />
 
   <title>Docs — Johnny Castaway PS1</title>
-  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" />
+  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" />
 
   <meta property="og:title"        content="Docs — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." />
+  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." />
   <meta property="og:type"         content="website" />
   <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
@@ -102,7 +102,7 @@
     <header class="page-header">
       <p class="eyebrow">Reference manuals</p>
       <h1>Docs</h1>
-      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.</p>
+      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.</p>
       <hr class="rule" />
     </header>
 
@@ -138,6 +138,10 @@ the project’s stance on contributions.</p>
   <li>
     <a href="./freeplay/">Freeplay mode</a>
     <p>The runtime-driven scene where the player drives Johnny instead of watching him: controls, gag/visitor debug catalogs, world toggles, frog loading transitions, and long-run memory rules.</p>
+  </li>
+  <li>
+    <a href="./walks/">Story-loop walks</a>
+    <p>How Johnny stops teleporting between scenes — the walk_pilot/walk_render split, Sierra's six-spot route table, the persistent clean buffer, and the runtime invariants (waves, palm-tree occlusion, holiday overlay re-stamping).</p>
   </li>
   <li>
     <a href="./regtest/">Regression testing</a>
