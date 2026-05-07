@@ -8,8 +8,8 @@ pressure and visible-cadence risk. It does not change the PS1 binary.
 - Candidate rows: `127`
 - Standalone probes: `1`
 - Scheduler or guarded probes: `11`
-- Scheduler-owned only: `54`
-- Closed exact ranges from experiment log: `5`
+- Scheduler-owned only: `53`
+- Closed exact ranges from experiment log: `6`
 - Deferred under-target rows: `12`
 
 Recent hand-authored table probes proved that nominal read-count wins can
@@ -40,26 +40,26 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 18 | `visitor3` | `low` | 1405/1015 | 301 | `105..111` (6s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 19 | `visitor3` | `low` | 1405/1015 | 301 | `106..112` (6s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 20 | `visitor3` | `low` | 1405/1015 | 301 | `110..116` (6s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 21 | `visitor3` | `high` | 1406/1019 | 294 | `104..120` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
-| 22 | `visitor3` | `high` | 1406/1019 | 294 | `124..140` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
-| 23 | `building4` | `high` | 2939/2786 | 240 | `531..547` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 24 | `building4` | `high` | 2939/2786 | 240 | `552..568` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 25 | `building4` | `high` | 2939/2786 | 240 | `414..426` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 26 | `building4` | `high` | 2939/2786 | 240 | `671..683` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 27 | `building4` | `high` | 2939/2786 | 240 | `525..537` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 28 | `building2` | `low` | 1429/1286 | 193 | `99..115` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 29 | `building2` | `low` | 1429/1286 | 193 | `388..404` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 30 | `building2` | `low` | 1429/1286 | 193 | `245..261` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 31 | `building2` | `low` | 1429/1286 | 193 | `216..232` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 32 | `building2` | `low` | 1429/1286 | 193 | `120..132` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 33 | `building2` | `low` | 1429/1286 | 193 | `99..111` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
-| 34 | `building2` | `low` | 1429/1286 | 193 | `382..394` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 35 | `building2` | `high` | 1430/1289 | 212 | `55..67` (12s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 36 | `building2` | `high` | 1430/1289 | 212 | `55..71` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 37 | `building2` | `high` | 1430/1289 | 212 | `60..76` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 38 | `building2` | `high` | 1430/1289 | 212 | `11..23` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 39 | `building2` | `high` | 1430/1289 | 212 | `388..404` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 40 | `building2` | `high` | 1430/1289 | 212 | `79..95` (16s) | 2 | `risky:short-visible-gap` | `scheduler-owned-only` |
+| 21 | `visitor3` | `high` | 1406/1019 | 294 | `124..140` (16s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
+| 22 | `building4` | `high` | 2939/2786 | 240 | `531..547` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 23 | `building4` | `high` | 2939/2786 | 240 | `552..568` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 24 | `building4` | `high` | 2939/2786 | 240 | `414..426` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 25 | `building4` | `high` | 2939/2786 | 240 | `671..683` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 26 | `building4` | `high` | 2939/2786 | 240 | `525..537` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 27 | `building2` | `low` | 1429/1286 | 193 | `99..115` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 28 | `building2` | `low` | 1429/1286 | 193 | `388..404` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 29 | `building2` | `low` | 1429/1286 | 193 | `245..261` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 30 | `building2` | `low` | 1429/1286 | 193 | `216..232` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 31 | `building2` | `low` | 1429/1286 | 193 | `120..132` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 32 | `building2` | `low` | 1429/1286 | 193 | `99..111` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
+| 33 | `building2` | `low` | 1429/1286 | 193 | `382..394` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 34 | `building2` | `high` | 1430/1289 | 212 | `55..67` (12s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 35 | `building2` | `high` | 1430/1289 | 212 | `55..71` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 36 | `building2` | `high` | 1430/1289 | 212 | `60..76` (16s) | 3 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 37 | `building2` | `high` | 1430/1289 | 212 | `11..23` (12s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 38 | `building2` | `high` | 1430/1289 | 212 | `388..404` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 39 | `building2` | `high` | 1430/1289 | 212 | `79..95` (16s) | 2 | `risky:short-visible-gap` | `scheduler-owned-only` |
+| 40 | `building2` | `high` | 1430/1289 | 212 | `60..66` (6s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 
 ## CSV
 
