@@ -77,10 +77,13 @@ near the end was the foreground-only multi-view scenes
 which all needed the generic normal / far-left / far-right host
 stitch before their packs replayed cleanly.
 
-The second ledger — [headless-perf timing]({{ '/docs/performance/' | relative_url }})
-— is its own bar, separate on purpose. At `{{ site.release.tag }}`
-the matrix averages `{{ site.release.perf_target_speed_pct }}%`
-target speed across the 120 timing-bearing scene/tide rows; the
+The second ledger — the
+[performance battle card]({{ '/perf/' | relative_url }}) — is its
+own bar, separate on purpose. At `{{ site.release.tag }}` the matrix
+averages `{{ site.release.perf_target_speed_pct }}%` target speed
+across the 120 timing-bearing scene/tide rows; the
+[reference manual]({{ '/docs/performance/' | relative_url }})
+explains what each column means and the
 [retrospective on how it got there]({{ '/lab/from-87-to-99-5/' | relative_url }})
 walks through which experiments landed and which didn't.
 
