@@ -67,5 +67,12 @@ plays, the work is real.
 
 - [About Hunter Davis](https://hunterdavis.com/)
 - [History]({{ '/about/history/' | relative_url }})
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) — the
+  "two megabytes of RAM, one megabyte of VRAM, a 2x CD-ROM"
+  envelope this essay closes on, documented in detail.
 - [The pivot that almost did not happen]({{ '/lab/pixel-perfect-pivot/' | relative_url }})
 - [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+- [Scene ledger]({{ '/scenes/' | relative_url }}) and
+  [performance battle card]({{ '/perf/' | relative_url }}) — the
+  two ledgers that measure what "the work is real" actually means
+  on this port.
