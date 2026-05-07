@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3163 words
+          ~13 min read · 3257 words
         </p>
 
       <hr class="rule" />
@@ -110,7 +110,7 @@
 
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page is the running summary of perf
-work on the PS1 port at v0.8.0-ps1: where the bottleneck is, what
+work on the PS1 port at v0.8.1-ps1: where the bottleneck is, what
 got measured, which experiments stayed in the build, and which got reverted.
 The full per-experiment ledger lives in the source tree; the link is at the
 bottom. The retrospective on how the matrix moved from the compact baseline
@@ -126,7 +126,7 @@ to the current battle card —
   <li><a href="#what-was-measured" id="markdown-toc-what-was-measured">What was measured</a></li>
   <li><a href="#experiments-that-didnt-work" id="markdown-toc-experiments-that-didnt-work">Experiments that didn’t work</a></li>
   <li><a href="#experiments-that-did" id="markdown-toc-experiments-that-did">Experiments that did</a></li>
-  <li><a href="#where-it-sits-at-v080-ps1" id="markdown-toc-where-it-sits-at-v080-ps1">Where it sits at v0.8.0-ps1</a></li>
+  <li><a href="#where-it-sits-at-v081-ps1" id="markdown-toc-where-it-sits-at-v081-ps1">Where it sits at v0.8.1-ps1</a></li>
   <li><a href="#scene-battle-card" id="markdown-toc-scene-battle-card">Scene Battle Card</a></li>
   <li><a href="#non-goals" id="markdown-toc-non-goals">Non-goals</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
@@ -222,6 +222,21 @@ and its machine-readable
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-opportunities.csv"><code class="language-plaintext highlighter-rouge">performance-preprocess-opportunities.csv</code></a>.
 It ranks today’s FG2/FGP3 packs for selective upload-ready or cleanup metadata
 work without changing the runtime baseline.</p>
+
+<p>The per-pack detail analyzer
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/analyze-fg2-preprocess-plans.py"><code class="language-plaintext highlighter-rouge">scripts/analyze-fg2-preprocess-plans.py</code></a>
+now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
+splits cap-hit frames from saving-heavy frames, which keeps the next
+upload-ready experiment selective instead of a whole-pack conversion. The
+current VISITOR3 frame sheet is
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-visitor3-hotspots.csv</code></a>.</p>
+
+<p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
+fingerprints in every perf summary and classifies foreground read-plan
+candidates by observed append-start ownership, current grouped-read capacity,
+and visible-CD cost class. That makes stale-baseline comparisons, no-op read
+groups, and tight visible-cluster candidates visible before a runtime source
+edit.</p>
 
 <h2 id="experiments-that-didnt-work">Experiments that didn’t work</h2>
 
@@ -357,12 +372,12 @@ boot tokens still enable them on demand.</li>
 </ul>
 
 <p>The cumulative effect is visible in the current accepted baseline:
-fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1068</code> against a target of
-<code class="language-plaintext highlighter-rouge">target_vb=1074</code>. The original headless perf-loop baseline was
-<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">358</code> VBlanks
-(<code class="language-plaintext highlighter-rouge">25.11%</code> loop reduction).</p>
+fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge">loop_vb=1069</code> against a target of
+<code class="language-plaintext highlighter-rouge">target_vb=1072</code>. The original headless perf-loop baseline was
+<code class="language-plaintext highlighter-rouge">loop_vb=1426</code>, so the FISHING 1 canary is down <code class="language-plaintext highlighter-rouge">357</code> VBlanks
+(<code class="language-plaintext highlighter-rouge">25.04%</code> loop reduction).</p>
 
-<h2 id="where-it-sits-at-v080-ps1">Where it sits at v0.8.0-ps1</h2>
+<h2 id="where-it-sits-at-v081-ps1">Where it sits at v0.8.1-ps1</h2>
 
 <p>The current accepted fishing1 high-tide run, captured in the perf log:</p>
 
@@ -370,27 +385,32 @@ fishing1 high-tide playback at <code class="language-plaintext highlighter-rouge
 buf    = 137048
 hits   = 155
 due_misses = 0
-blocking_vb = 2
-prefetch.overrun_vb = 2
-loop_vb = 1068
+blocking_vb = 5
+prefetch.overrun_vb = 6
+loop_vb = 1069
 overrun_vb = 0
-target_vb = 1074
+target_vb = 1072
 restore_bytes = 251,144
-upload_bytes  = 10,680,960
-dirty_rows    = 16,689
-upload_rects  = 469
+upload_bytes  = 10,648,960
+dirty_rows    = 16,639
+upload_rects  = 460
 trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+0.9% over target /
-99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8692%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4529%</code> exact target speed).</p>
+<p>That is <strong>-0.3% over target</strong>, or <strong>100.3% of target speed</strong>. Across the
+120 timing-bearing battle-card rows, the average is <strong>+0.8% over target /
+99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.8231%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.4858%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-06, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-setup-prime-192k-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
 <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
@@ -414,7 +434,6 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">stand-family-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor4-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stand1-v072-current-refresh</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">mary2-v068-wide-stitch</code>,
 <code class="language-plaintext highlighter-rouge">fishing5-v065-current-ledger-overlay</code>,
@@ -433,13 +452,18 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-06T07:45:20</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-06T17:38:07</code>; per-row freshness and stats version are shown on
 the <a href="../../scenes/">scene ledger</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
+rows now use <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-group170-186-v080b</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-setup-prime-192k-v080</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-group170-186-v080-current</code>,
+<code class="language-plaintext highlighter-rouge">activity9-lowgroup-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-fgp3-v072c</code>,
 <code class="language-plaintext highlighter-rouge">activity9-window-v072c</code>,
 <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>,
@@ -463,7 +487,6 @@ rows now use <code class="language-plaintext highlighter-rouge">activity9-lowgro
 <code class="language-plaintext highlighter-rouge">visitor4-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">stand1-v072-current-refresh</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-v072-prefetch-relief</code>,
-<code class="language-plaintext highlighter-rouge">walkstuf1-v072-prefetch-relief</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v66-final-frame-hold</code>,
 <code class="language-plaintext highlighter-rouge">mary2-v068-wide-stitch</code>,
 <code class="language-plaintext highlighter-rouge">fishing5-v065-current-ledger-overlay</code>,
@@ -478,333 +501,332 @@ rows now use <code class="language-plaintext highlighter-rouge">activity9-lowgro
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v58-activity9high-window20-table</code>, <code class="language-plaintext highlighter-rouge">compact-fgp3-v57-policy-table-refactor</code>, and <code class="language-plaintext highlighter-rouge">compact-fgp3-v49-walkstuf2-auto-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v29-smallprime</code>. Older <code class="language-plaintext highlighter-rouge">padded-fgp3-v1</code> / <code class="language-plaintext highlighter-rouge">compact-fgp3-v1</code>
 rows are historical only.</p>
 
-<table>
+<table class="scene-table perf-summary-table">
   <thead>
     <tr>
       <th>Scene</th>
-      <th style="text-align: right">High tide</th>
-      <th style="text-align: right">Low tide</th>
+      <th>High tide</th>
+      <th>Low tide</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity1</code></td>
-      <td style="text-align: right">-0.4% / 100.4% (2754/2764); blk 1</td>
-      <td style="text-align: right">-0.4% / 100.4% (2754/2765)</td>
+      <td><code>activity1</code></td>
+      <td>-0.4% / 100.4% (2754/2764); blk 1</td>
+      <td>-0.4% / 100.4% (2754/2765)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity4</code></td>
-      <td style="text-align: right">-0.1% / 100.1% (1065/1066); blk 4</td>
-      <td style="text-align: right">-0.4% / 100.4% (1064/1068); blk 1</td>
+      <td><code>activity4</code></td>
+      <td>-0.1% / 100.1% (1065/1066); blk 4</td>
+      <td>-0.4% / 100.4% (1064/1068); blk 1</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity5</code></td>
-      <td style="text-align: right">-1.1% / 101.1% (1730/1749); blk 2</td>
-      <td style="text-align: right">-1.0% / 101.0% (1731/1749); blk 2</td>
+      <td><code>activity5</code></td>
+      <td>-1.1% / 101.1% (1730/1749); blk 2</td>
+      <td>-1.0% / 101.0% (1731/1749); blk 2</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity6</code></td>
-      <td style="text-align: right">+0.1% / 99.9% (912/911)</td>
-      <td style="text-align: right">+0.1% / 99.9% (912/911)</td>
+      <td><code>activity6</code></td>
+      <td>+0.1% / 99.9% (912/911)</td>
+      <td>+0.1% / 99.9% (912/911)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity7</code></td>
-      <td style="text-align: right">-0.5% / 100.5% (593/596)</td>
-      <td style="text-align: right">-0.3% / 100.3% (594/596)</td>
+      <td><code>activity7</code></td>
+      <td>-0.5% / 100.5% (593/596)</td>
+      <td>-0.3% / 100.3% (594/596)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity8</code></td>
-      <td style="text-align: right">-0.7% / 100.7% (898/904); blk 1</td>
-      <td style="text-align: right">-0.6% / 100.6% (899/904); blk 2</td>
+      <td><code>activity8</code></td>
+      <td>-0.7% / 100.7% (898/904); blk 1</td>
+      <td>-0.6% / 100.6% (899/904); blk 2</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity9</code></td>
-      <td style="text-align: right">+2.2% / 97.9% (2101/2056); due 2; blk 44</td>
-      <td style="text-align: right">+1.8% / 98.2% (2093/2056); due 5; blk 43</td>
+      <td><code>activity9</code></td>
+      <td>+2.2% / 97.9% (2101/2056); due 2; blk 44</td>
+      <td>+1.8% / 98.2% (2093/2056); due 5; blk 43</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity10</code></td>
-      <td style="text-align: right">+0.0% / 100.0% (1259/1259); due 1; blk 7</td>
-      <td style="text-align: right">-0.1% / 100.1% (1255/1256); due 2; blk 17</td>
+      <td><code>activity10</code></td>
+      <td>+0.0% / 100.0% (1259/1259); due 1; blk 7</td>
+      <td>-0.1% / 100.1% (1255/1256); due 2; blk 17</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity11</code></td>
-      <td style="text-align: right">+0.5% / 99.5% (1729/1720); due 1; blk 10</td>
-      <td style="text-align: right">+0.7% / 99.3% (1729/1717); due 1; blk 14</td>
+      <td><code>activity11</code></td>
+      <td>+0.5% / 99.5% (1729/1720); due 1; blk 10</td>
+      <td>+0.7% / 99.3% (1729/1717); due 1; blk 14</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">activity12</code></td>
-      <td style="text-align: right">-0.1% / 100.1% (1411/1412); blk 7</td>
-      <td style="text-align: right">-0.1% / 100.1% (1409/1411); due 1; blk 10</td>
+      <td><code>activity12</code></td>
+      <td>-0.1% / 100.1% (1411/1412); blk 7</td>
+      <td>-0.1% / 100.1% (1409/1411); due 1; blk 10</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building1</code></td>
-      <td style="text-align: right">+2.1% / 98.0% (794/778); blk 21</td>
-      <td style="text-align: right">+1.9% / 98.1% (794/779); blk 21</td>
+      <td><code>building1</code></td>
+      <td>+2.1% / 98.0% (794/778); blk 21</td>
+      <td>+1.9% / 98.1% (794/779); blk 21</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building2</code></td>
-      <td style="text-align: right">+14.9% / 87.1% (1476/1285); due 37; blk 286</td>
-      <td style="text-align: right">+14.6% / 87.2% (1465/1278); due 40; blk 279</td>
+      <td><code>building2</code></td>
+      <td>+14.9% / 87.1% (1476/1285); due 37; blk 286</td>
+      <td>+14.6% / 87.2% (1465/1278); due 40; blk 279</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building3</code></td>
-      <td style="text-align: right">-0.1% / 100.1% (5460/5465)</td>
-      <td style="text-align: right">-0.1% / 100.1% (5460/5465)</td>
+      <td><code>building3</code></td>
+      <td>-0.1% / 100.1% (5460/5465)</td>
+      <td>-0.1% / 100.1% (5460/5465)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building4</code></td>
-      <td style="text-align: right">+7.6% / 93.0% (2985/2774); due 40; blk 285</td>
-      <td style="text-align: right">+7.1% / 93.4% (2981/2784); due 14; blk 199</td>
+      <td><code>building4</code></td>
+      <td>+7.6% / 92.9% (2985/2774); due 40; blk 285</td>
+      <td>+7.1% / 93.4% (2981/2784); due 14; blk 199</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building5</code></td>
-      <td style="text-align: right">+0.4% / 99.6% (3359/3346); blk 20</td>
-      <td style="text-align: right">+0.4% / 99.6% (3359/3347); blk 19</td>
+      <td><code>building5</code></td>
+      <td>-0.1% / 100.1% (3343/3348); blk 5</td>
+      <td>-0.1% / 100.1% (3345/3347); blk 8</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building6</code></td>
-      <td style="text-align: right">+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
-      <td style="text-align: right">+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
+      <td><code>building6</code></td>
+      <td>+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
+      <td>+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">building7</code></td>
-      <td style="text-align: right">-0.0% / 100.0% (3132/3133); blk 9</td>
-      <td style="text-align: right">-0.1% / 100.1% (3130/3133); blk 7</td>
+      <td><code>building7</code></td>
+      <td>-0.0% / 100.0% (3132/3133); blk 9</td>
+      <td>-0.1% / 100.1% (3130/3133); blk 7</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing1</code></td>
-      <td style="text-align: right">-0.6% / 100.6% (1068/1074); blk 2</td>
-      <td style="text-align: right">-0.7% / 100.7% (1067/1074); blk 1</td>
+      <td><code>fishing1</code></td>
+      <td>-0.6% / 100.6% (1068/1074); blk 2</td>
+      <td>-0.7% / 100.7% (1067/1074); blk 1</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing2</code></td>
-      <td style="text-align: right">-0.1% / 100.1% (1761/1763); blk 6</td>
-      <td style="text-align: right">-0.3% / 100.3% (1759/1765); blk 3</td>
+      <td><code>fishing2</code></td>
+      <td>-0.1% / 100.1% (1761/1763); blk 6</td>
+      <td>-0.3% / 100.3% (1759/1765); blk 3</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing3</code></td>
-      <td style="text-align: right">+0.4% / 99.6% (1960/1952); due 1; blk 18</td>
-      <td style="text-align: right">+0.1% / 99.9% (1956/1954); blk 6</td>
+      <td><code>fishing3</code></td>
+      <td>+0.4% / 99.6% (1960/1952); due 1; blk 18</td>
+      <td>+0.1% / 99.9% (1956/1954); blk 6</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing4</code></td>
-      <td style="text-align: right">-0.8% / 100.8% (835/842); blk 2</td>
-      <td style="text-align: right">-1.1% / 101.1% (834/843)</td>
+      <td><code>fishing4</code></td>
+      <td>-0.8% / 100.8% (835/842); blk 2</td>
+      <td>-1.1% / 101.1% (834/843)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing5</code></td>
-      <td style="text-align: right">-9.4% / 110.4% (807/891)</td>
-      <td style="text-align: right">-9.5% / 110.5% (806/891)</td>
+      <td><code>fishing5</code></td>
+      <td>-0.6% / 100.6% (885/890)</td>
+      <td>-0.6% / 100.6% (885/890)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing6</code></td>
-      <td style="text-align: right">-1.2% / 101.2% (744/753)</td>
-      <td style="text-align: right">-1.2% / 101.2% (744/753)</td>
+      <td><code>fishing6</code></td>
+      <td>-1.2% / 101.2% (744/753)</td>
+      <td>-1.2% / 101.2% (744/753)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing7</code></td>
-      <td style="text-align: right">-1.4% / 101.4% (715/725)</td>
-      <td style="text-align: right">-1.4% / 101.4% (715/725)</td>
+      <td><code>fishing7</code></td>
+      <td>-1.4% / 101.4% (715/725)</td>
+      <td>-1.4% / 101.4% (715/725)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">fishing8</code></td>
-      <td style="text-align: right">-0.8% / 100.8% (1243/1253)</td>
-      <td style="text-align: right">-0.8% / 100.8% (1243/1253)</td>
+      <td><code>fishing8</code></td>
+      <td>-0.8% / 100.8% (1243/1253)</td>
+      <td>-0.8% / 100.8% (1243/1253)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny1</code></td>
-      <td style="text-align: right">+1.5% / 98.5% (1974/1944); blk 27</td>
-      <td style="text-align: right">+1.5% / 98.5% (1974/1944); blk 27</td>
+      <td><code>johnny1</code></td>
+      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
+      <td>+1.5% / 98.5% (1974/1944); blk 27</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny2</code></td>
-      <td style="text-align: right">+0.6% / 99.4% (1761/1751); due 3; blk 16</td>
-      <td style="text-align: right">+0.5% / 99.5% (1758/1750); due 3; blk 16</td>
+      <td><code>johnny2</code></td>
+      <td>+0.6% / 99.4% (1761/1751); due 3; blk 16</td>
+      <td>+0.5% / 99.5% (1758/1750); due 3; blk 16</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny3</code></td>
-      <td style="text-align: right">-0.3% / 100.3% (1158/1161); due 1; blk 10</td>
-      <td style="text-align: right">-0.8% / 100.8% (1157/1166)</td>
+      <td><code>johnny3</code></td>
+      <td>-0.3% / 100.3% (1158/1161); due 1; blk 10</td>
+      <td>-0.8% / 100.8% (1157/1166)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny4</code></td>
-      <td style="text-align: right">-0.8% / 100.8% (1204/1214)</td>
-      <td style="text-align: right">-0.8% / 100.8% (1204/1214)</td>
+      <td><code>johnny4</code></td>
+      <td>-0.8% / 100.8% (1204/1214)</td>
+      <td>-0.8% / 100.8% (1204/1214)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny5</code></td>
-      <td style="text-align: right">-1.1% / 101.1% (811/820)</td>
-      <td style="text-align: right">-1.2% / 101.2% (810/820)</td>
+      <td><code>johnny5</code></td>
+      <td>-1.1% / 101.1% (811/820)</td>
+      <td>-1.2% / 101.2% (810/820)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">johnny6</code></td>
-      <td style="text-align: right">+1.1% / 98.9% (2832/2800); blk 28</td>
-      <td style="text-align: right">+1.1% / 98.9% (2832/2800); blk 28</td>
+      <td><code>johnny6</code></td>
+      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
+      <td>+1.1% / 98.9% (2832/2800); blk 28</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary1</code></td>
-      <td style="text-align: right">+0.8% / 99.2% (4867/4830); due 2; blk 47</td>
-      <td style="text-align: right">+0.4% / 99.6% (4860/4840); due 1; blk 31</td>
+      <td><code>mary1</code></td>
+      <td>+0.8% / 99.2% (4867/4830); due 2; blk 47</td>
+      <td>+0.4% / 99.6% (4860/4840); due 1; blk 31</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary2</code></td>
-      <td style="text-align: right">+0.2% / 99.8% (2250/2246); blk 4</td>
-      <td style="text-align: right">+0.3% / 99.7% (2253/2246); blk 7</td>
+      <td><code>mary2</code></td>
+      <td>+0.2% / 99.8% (2250/2246); blk 4</td>
+      <td>+0.3% / 99.7% (2253/2246); blk 7</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary3</code></td>
-      <td style="text-align: right">validated; perf refresh pending</td>
-      <td style="text-align: right">validated; perf refresh pending</td>
+      <td><code>mary3</code></td>
+      <td>validated; perf refresh pending</td>
+      <td>validated; perf refresh pending</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary4</code></td>
-      <td style="text-align: right">-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
-      <td style="text-align: right">-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
+      <td><code>mary4</code></td>
+      <td>-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
+      <td>-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">mary5</code></td>
-      <td style="text-align: right">+0.6% / 99.4% (1591/1582); blk 8</td>
-      <td style="text-align: right">+0.5% / 99.5% (1590/1582); blk 7</td>
+      <td><code>mary5</code></td>
+      <td>+0.6% / 99.4% (1591/1582); blk 8</td>
+      <td>+0.5% / 99.5% (1590/1582); blk 7</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag1</code></td>
-      <td style="text-align: right">-0.8% / 100.8% (953/961)</td>
-      <td style="text-align: right">-0.8% / 100.8% (953/961)</td>
+      <td><code>miscgag1</code></td>
+      <td>-0.8% / 100.8% (953/961)</td>
+      <td>-0.8% / 100.8% (953/961)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">miscgag2</code></td>
-      <td style="text-align: right">-0.3% / 100.3% (1352/1356)</td>
-      <td style="text-align: right">-0.3% / 100.3% (1352/1356)</td>
+      <td><code>miscgag2</code></td>
+      <td>-0.3% / 100.3% (1352/1356)</td>
+      <td>-0.3% / 100.3% (1352/1356)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand1</code></td>
-      <td style="text-align: right">-4.0% / 104.1% (194/202)</td>
-      <td style="text-align: right">-4.0% / 104.1% (194/202)</td>
+      <td><code>stand1</code></td>
+      <td>-4.0% / 104.1% (194/202)</td>
+      <td>-4.0% / 104.1% (194/202)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand2</code></td>
-      <td style="text-align: right">-2.0% / 102.1% (480/490)</td>
-      <td style="text-align: right">-2.0% / 102.1% (480/490)</td>
+      <td><code>stand2</code></td>
+      <td>-2.0% / 102.1% (480/490)</td>
+      <td>-2.0% / 102.1% (480/490)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand3</code></td>
-      <td style="text-align: right">-1.8% / 101.8% (547/557)</td>
-      <td style="text-align: right">-1.8% / 101.8% (547/557)</td>
+      <td><code>stand3</code></td>
+      <td>-1.8% / 101.8% (547/557)</td>
+      <td>-1.8% / 101.8% (547/557)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand4</code></td>
-      <td style="text-align: right">-1.5% / 101.5% (1202/1220)</td>
-      <td style="text-align: right">-1.2% / 101.2% (1203/1218); blk 3</td>
+      <td><code>stand4</code></td>
+      <td>-1.5% / 101.5% (1202/1220)</td>
+      <td>-1.2% / 101.2% (1203/1218); blk 3</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand5</code></td>
-      <td style="text-align: right">-1.2% / 101.2% (1442/1460)</td>
-      <td style="text-align: right">-1.2% / 101.2% (1442/1460)</td>
+      <td><code>stand5</code></td>
+      <td>-1.2% / 101.2% (1442/1460)</td>
+      <td>-1.2% / 101.2% (1442/1460)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand6</code></td>
-      <td style="text-align: right">-1.3% / 101.3% (1346/1364)</td>
-      <td style="text-align: right">-1.3% / 101.3% (1346/1364)</td>
+      <td><code>stand6</code></td>
+      <td>-1.3% / 101.3% (1346/1364)</td>
+      <td>-1.3% / 101.3% (1346/1364)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand7</code></td>
-      <td style="text-align: right">-3.3% / 103.5% (520/538)</td>
-      <td style="text-align: right">-3.3% / 103.5% (520/538)</td>
+      <td><code>stand7</code></td>
+      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.3% / 103.5% (520/538)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand8</code></td>
-      <td style="text-align: right">-3.2% / 103.3% (483/499); blk 2</td>
-      <td style="text-align: right">-3.2% / 103.3% (483/499); blk 2</td>
+      <td><code>stand8</code></td>
+      <td>-3.2% / 103.3% (483/499); blk 2</td>
+      <td>-3.2% / 103.3% (483/499); blk 2</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand9</code></td>
-      <td style="text-align: right">-3.3% / 103.5% (520/538)</td>
-      <td style="text-align: right">-3.0% / 103.1% (522/538)</td>
+      <td><code>stand9</code></td>
+      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.0% / 103.1% (522/538)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand10</code></td>
-      <td style="text-align: right">-1.9% / 101.9% (528/538)</td>
-      <td style="text-align: right">-1.9% / 101.9% (528/538)</td>
+      <td><code>stand10</code></td>
+      <td>-1.9% / 101.9% (528/538)</td>
+      <td>-1.9% / 101.9% (528/538)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand11</code></td>
-      <td style="text-align: right">-1.9% / 101.9% (528/538)</td>
-      <td style="text-align: right">-1.9% / 101.9% (528/538)</td>
+      <td><code>stand11</code></td>
+      <td>-1.9% / 101.9% (528/538)</td>
+      <td>-1.9% / 101.9% (528/538)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand12</code></td>
-      <td style="text-align: right">-0.6% / 100.6% (1450/1459); blk 1</td>
-      <td style="text-align: right">-0.7% / 100.7% (1450/1460)</td>
+      <td><code>stand12</code></td>
+      <td>-0.6% / 100.6% (1450/1459); blk 1</td>
+      <td>-0.7% / 100.7% (1450/1460)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand15</code></td>
-      <td style="text-align: right">-1.8% / 101.8% (444/452)</td>
-      <td style="text-align: right">-1.8% / 101.8% (444/452)</td>
+      <td><code>stand15</code></td>
+      <td>-1.8% / 101.8% (444/452)</td>
+      <td>-1.8% / 101.8% (444/452)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">stand16</code></td>
-      <td style="text-align: right">+0.2% / 99.8% (473/472)</td>
-      <td style="text-align: right">+0.2% / 99.8% (473/472)</td>
+      <td><code>stand16</code></td>
+      <td>+0.2% / 99.8% (473/472)</td>
+      <td>+0.2% / 99.8% (473/472)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">suzy1</code></td>
-      <td style="text-align: right">metadata-only</td>
-      <td style="text-align: right">metadata-only</td>
+      <td><code>suzy1</code></td>
+      <td>metadata-only</td>
+      <td>metadata-only</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">suzy2</code></td>
-      <td style="text-align: right">metadata-only</td>
-      <td style="text-align: right">metadata-only</td>
+      <td><code>suzy2</code></td>
+      <td>metadata-only</td>
+      <td>metadata-only</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor1</code></td>
-      <td style="text-align: right">-0.7% / 100.7% (672/677)</td>
-      <td style="text-align: right">-0.7% / 100.7% (672/677)</td>
+      <td><code>visitor1</code></td>
+      <td>-0.7% / 100.7% (672/677)</td>
+      <td>-0.7% / 100.7% (672/677)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor3</code></td>
-      <td style="text-align: right">+44.1% / 69.4% (1455/1010); due 31; blk 363</td>
-      <td style="text-align: right">+44.0% / 69.4% (1453/1009); due 32; blk 365</td>
+      <td><code>visitor3</code></td>
+      <td>+42.9% / 70.0% (1450/1015); due 31; blk 355</td>
+      <td>+43.5% / 69.7% (1452/1012); due 32; blk 361</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor4</code></td>
-      <td style="text-align: right">-0.9% / 100.9% (424/428)</td>
-      <td style="text-align: right">-0.9% / 100.9% (424/428)</td>
+      <td><code>visitor4</code></td>
+      <td>-0.9% / 100.9% (424/428)</td>
+      <td>-0.9% / 100.9% (424/428)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor5</code></td>
-      <td style="text-align: right">+1.9% / 98.1% (1111/1090); blk 12</td>
-      <td style="text-align: right">+2.0% / 98.0% (1112/1090); blk 12</td>
+      <td><code>visitor5</code></td>
+      <td>+1.9% / 98.1% (1111/1090); blk 12</td>
+      <td>+2.0% / 98.0% (1112/1090); blk 12</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor6</code></td>
-      <td style="text-align: right">-0.2% / 100.2% (2043/2047); blk 1</td>
-      <td style="text-align: right">-0.2% / 100.2% (2043/2047); blk 1</td>
+      <td><code>visitor6</code></td>
+      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
+      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">visitor7</code></td>
-      <td style="text-align: right">-0.4% / 100.4% (1619/1625)</td>
-      <td style="text-align: right">-0.4% / 100.4% (1619/1625)</td>
+      <td><code>visitor7</code></td>
+      <td>-0.4% / 100.4% (1619/1625)</td>
+      <td>-0.4% / 100.4% (1619/1625)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">walkstuf1</code></td>
-      <td style="text-align: right">+16.1% / 86.1% (1637/1410); due 54; blk 297</td>
-      <td style="text-align: right">+16.0% / 86.2% (1634/1409); due 55; blk 304</td>
+      <td><code>walkstuf1</code></td>
+      <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
+      <td>+15.5% / 86.6% (1614/1397); due 49; blk 276</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">walkstuf2</code></td>
-      <td style="text-align: right">-2.2% / 102.2% (451/461)</td>
-      <td style="text-align: right">-2.2% / 102.2% (451/461)</td>
+      <td><code>walkstuf2</code></td>
+      <td>-2.2% / 102.2% (451/461)</td>
+      <td>-2.2% / 102.2% (451/461)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">walkstuf3</code></td>
-      <td style="text-align: right">+1.9% / 98.1% (2321/2278); due 6; blk 68</td>
-      <td style="text-align: right">+1.1% / 98.9% (2321/2295); due 5; blk 40</td>
+      <td><code>walkstuf3</code></td>
+      <td>+1.9% / 98.1% (2321/2278); due 6; blk 68</td>
+      <td>+1.1% / 98.9% (2321/2295); due 5; blk 40</td>
     </tr>
   </tbody>
 </table>
-
 <p>Detail-tier attribution for the canary currently points at render and
 restore pressure rather than CD stalls:</p>
 
@@ -816,7 +838,7 @@ gfx.restore_bytes = 251,144
 gfx.upload_bytes  = 8,643,840
 </code></pre></div></div>
 
-<p>The canary now has only two visible CD/refill VBlanks, but the full battle card still has
+<p>The FISHING1 canary remains under target, but the full battle card still has
 CD-heavy scenes (<code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">activity9</code>,
 <code class="language-plaintext highlighter-rouge">building4</code>, <code class="language-plaintext highlighter-rouge">building6</code>). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
@@ -825,10 +847,10 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 <p>Next plausible wins, in priority order:</p>
 
 <ol>
-  <li><strong>Generated read grouping or setup segmentation for residual indexed8
-  packs.</strong> VISITOR3 remains the largest gap at <code class="language-plaintext highlighter-rouge">+445/+444</code> VBlanks and
-WALKSTUF1 still has <code class="language-plaintext highlighter-rouge">blocking_vb=297/304</code>, so the next CD-shape pass
-needs generated cost metadata rather than hand-authored ranges.</li>
+  <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 remains the
+largest gap at <code class="language-plaintext highlighter-rouge">+440/+435</code> VBlanks, and WALKSTUF1 still has
+<code class="language-plaintext highlighter-rouge">blocking_vb=278/276</code> after the PAL4 setup-prime win, so the next CD-shape
+pass needs generated cost metadata rather than hand-authored ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>
@@ -916,7 +938,7 @@ day-by-day there.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.0-ps1)
+          (v0.8.1-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:

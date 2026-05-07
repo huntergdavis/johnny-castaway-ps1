@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~9 min read · 2365 words
+          ~9 min read · 2364 words
         </p>
 
       <hr class="rule" />
@@ -244,7 +244,7 @@
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.0-ps1</code> is <code>+0.9%</code>.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.1-ps1</code> is <code>+0.9%</code>.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="../../perf/">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
@@ -253,7 +253,7 @@
 <dd>The <em>Prefetch</em> column on <a href="../../perf/">/perf/</a> — vblanks where the CD prefetcher hit a buffer overrun and had to wait. Distinct from <code>blocking_vb</code>: prefetch overrun means data was ready early enough but the buffer was already full; blocking means data was late. Both move with stream-window size in opposite directions.</dd>
 
 <dt id="clean-rect">Clean-rect (memory pressure)</dt>
-<dd>The runtime's per-scene allocation for "the bytes needed to restore the static background under the foreground." Wide-action scenes need a wide clean-rect; the long-soak BUILDING4 regression resolved in <code>v0.8.0</code> was a clean-rect allocation failure under post-walk memory pressure. The fix releases the stale walk-clean buffer, retries the large scene clean snapshot, and recaptures the walk baseline. The "clean-memory-relief drop-prefetch" experiment in the <a href="../../lab/from-87-to-99-5/">retrospective</a> is the related performance unlock — letting the prefetch window drop to free clean-rect bytes when the scene needs them.</dd>
+<dd>The runtime's per-scene allocation for "the bytes needed to restore the static background under the foreground." Wide-action scenes need a wide clean-rect; the long-soak BUILDING4 regression resolved in <code>v0.8.0</code> was a clean-rect allocation failure under post-walk memory pressure, and <code>v0.8.1</code> extends the pressure estimator to include ocean wave-band expansion plus upper/lower split rects before allocation. The "clean-memory-relief drop-prefetch" experiment in the <a href="../../lab/from-87-to-99-5/">retrospective</a> is the related performance unlock — letting the prefetch window drop to free clean-rect bytes when the scene needs them.</dd>
 
 <dt id="fgp3">FGP3 pack format</dt>
 <dd>Denser successor to the original FG2 pack format. Same per-frame foreground deltas, but with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs are FGP3 as of <code>v0.8.0-ps1</code>; the win is per-frame upload bytes, the biggest bottleneck after raw playback on a 2× CD.</dd>
@@ -311,7 +311,7 @@
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.0-ps1)
+          (v0.8.1-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:

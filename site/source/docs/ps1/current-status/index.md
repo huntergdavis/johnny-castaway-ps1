@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-completed the current visual + audible validation sweep. The high/low packs were rebuilt through an Activity9-specific wide stitch (x=-500,y=54, x=-154,y=54, x=500,y=54), then patch-activity9-boat-foreground.py filled clipped BOAT.PSB bow/stern pixels from source at the legacy clip edges, added a narrow overlap band to remove the stitch seam, and carried the last boat draw across metadata-held frames so the late bow no longer flickers).
+validated, and randomized long-run scene loads now account for the real clean-rect pressure before allocation, including ocean wave-band expansion and upper/lower split rects).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 508 |
-| Approx. words | 5529 |
+| Lines | 509 |
+| Approx. words | 5536 |
 | Code fences | 1 |
 
 ## Outline

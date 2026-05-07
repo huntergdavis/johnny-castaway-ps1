@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+  <meta name="twitter:image" content="../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -107,7 +107,7 @@
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
 
-<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> with
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> with
 <strong>63 / 63</strong> scenes signed off under the
 <a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
@@ -116,10 +116,11 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
+      <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
+      <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
       <li><a href="#v070-ps1--complete-scene-validation" id="markdown-toc-v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</a></li>
@@ -133,6 +134,32 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</h3>
+<p><em>2026-05-06</em></p>
+
+<p>A randomized long-run soak exposed a scene-load freeze after a large split
+clean-rect save. The pressure estimator was counting only foreground pack
+bounds, not the ocean wave band or the upper/lower split actually saved for
+restore. <code class="language-plaintext highlighter-rouge">v0.8.1</code> fixes that accounting and keeps the complete-scene
+performance baseline intact.</p>
+
+<ul>
+  <li><strong>Scene-load freeze fixed.</strong> Large clean snapshots now account for wave-band
+expansion and split rects before allocation.</li>
+  <li><strong>Pressure relief is generalized.</strong> The fix covers every random-position
+scene with the same large-clean risk, not just the failing MARY4 route.</li>
+  <li><strong>Focused soak routes pass.</strong> MARY4 and FISHING1 pressure routes complete
+with <code class="language-plaintext highlighter-rouge">scene-end</code> and <code class="language-plaintext highlighter-rouge">alloc_fail=0</code>.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.1/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.1-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
 <p><em>2026-05-06</em></p>
@@ -152,8 +179,6 @@
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.0-ps1">GitHub release</a>
  · 
 <a href="../play/">Download .bin / .cue</a></p>
-
-<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</h3>
 <p><em>2026-05-05</em></p>
@@ -262,7 +287,7 @@
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.0-ps1)
+          (v0.8.1-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:

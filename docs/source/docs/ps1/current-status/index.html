@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+  <meta name="twitter:image" content="../../../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -113,7 +113,7 @@ should not pretend the interesting work only happened in the polished essays.</p
 
 <p><strong>Active PS1 reference.</strong> This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.</p>
 
-<p>completed the current visual + audible validation sweep. The high/low packs were rebuilt through an Activity9-specific wide stitch (x=-500,y=54, x=-154,y=54, x=500,y=54), then patch-activity9-boat-foreground.py filled clipped BOAT.PSB bow/stern pixels from source at the legacy clip edges, added a narrow overlap band to remove the stitch seam, and carried the last boat draw across metadata-held frames so the late bow no longer flickers).</p>
+<p>validated, and randomized long-run scene loads now account for the real clean-rect pressure before allocation, including ocean wave-band expansion and upper/lower split rects).</p>
 
 <h2 id="file-facts">File facts</h2>
 
@@ -131,11 +131,11 @@ should not pretend the interesting work only happened in the polished essays.</p
     </tr>
     <tr>
       <td>Lines</td>
-      <td style="text-align: right">508</td>
+      <td style="text-align: right">509</td>
     </tr>
     <tr>
       <td>Approx. words</td>
-      <td style="text-align: right">5529</td>
+      <td style="text-align: right">5536</td>
     </tr>
     <tr>
       <td>Code fences</td>
@@ -186,7 +186,7 @@ should not pretend the interesting work only happened in the polished essays.</p
           Code: <a href="../../../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.0-ps1)
+          (v0.8.1-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:

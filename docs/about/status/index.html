@@ -16,7 +16,7 @@
   <meta property="og:image"        content="../../assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.0; built 2026-05-06" />
+  <meta name="twitter:image" content="../../assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-06" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -98,11 +98,11 @@
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Component-level state at v0.8.0-ps1</p>
+      <p class="eyebrow">Component-level state at v0.8.1-ps1</p>
       <h1>Status</h1>
       <p class="subtitle">What's working, what's broken, what's in motion -- one row per subsystem.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1401 words
+          ~5 min read · 1419 words
         </p>
 
       <hr class="rule" />
@@ -111,14 +111,16 @@
   <div class="page-body">
     <h2 id="headline">Headline</h2>
 
-<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong>. Scenes validated
+<p>Current release is <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong>. Scenes validated
 under the project’s acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant – night, low-tide,
 holiday, raft-stage):
 <strong>63 / 63</strong>.
-<code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the current release: every row in the live per-scene
-ledger is signed off, all 126 high/low scene variants are routed, and the
-headless timing-bearing average is +0.8% over target / 99.5% target speed.
+<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the current release: every row in the live per-scene
+ledger is signed off, all 126 high/low scene variants are routed, the
+headless timing-bearing average is +0.8% over target / 99.5% target speed,
+and randomized long-run scene loads now account for wave-band/split-rect clean
+pressure before allocation.
 The live ledger is at
 <a href="../../scenes/">/scenes/</a>; the per-scene workflow
 that drives the bar is in
@@ -179,7 +181,7 @@ done.”</p>
     <tr>
       <td>Story-loop walks (<code class="language-plaintext highlighter-rouge">walk_pilot.c</code>, <code class="language-plaintext highlighter-rouge">walk_render.c</code>)</td>
       <td>Working</td>
-      <td>Johnny walks between scene endpoints using Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. <code class="language-plaintext highlighter-rouge">v0.7.2</code> adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; <code class="language-plaintext highlighter-rouge">v0.8.0</code> adds a clean-rect retry path so large scenes can recover after releasing stale walk-clean pressure.</td>
+      <td>Johnny walks between scene endpoints using Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. <code class="language-plaintext highlighter-rouge">v0.7.2</code> adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; <code class="language-plaintext highlighter-rouge">v0.8.0</code> adds a clean-rect retry path; <code class="language-plaintext highlighter-rouge">v0.8.1</code> counts wave-band/split-rect clean pressure before allocation.</td>
     </tr>
     <tr>
       <td>Freeplay/debug mode (<code class="language-plaintext highlighter-rouge">scene_freeplay.c</code>)</td>
@@ -224,7 +226,7 @@ done.”</p>
     <tr>
       <td>CD packaging (mkpsxiso)</td>
       <td>Complete</td>
-      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is ~76 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
+      <td><code class="language-plaintext highlighter-rouge">config/ps1/cd_layout.xml</code>. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343 MB, of which a selected subset rides on the disc. Build outputs <code class="language-plaintext highlighter-rouge">jcreborn.bin</code> + <code class="language-plaintext highlighter-rouge">jcreborn.cue</code>. CD image at <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is ~76 MB; PS-EXE is ~208 KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass.</td>
     </tr>
   </tbody>
 </table>
@@ -236,8 +238,8 @@ done.”</p>
 <ul>
   <li><strong>Post-validation regressions.</strong> Scene coverage is complete at 63/63, but
 future bugfixes can still be needed when broader play, new features, or
-performance changes disturb a signed-off path. <code class="language-plaintext highlighter-rouge">v0.8.0</code> fixed the latest
-random-run clean-rect pressure regression; the scene ledger remains the
+performance changes disturb a signed-off path. <code class="language-plaintext highlighter-rouge">v0.8.1</code> fixed the latest
+random-run clean-rect pressure freeze; the scene ledger remains the
 acceptance source after each fix.</li>
   <li><strong>Memcard fresh-card edge cases.</strong> Save / load works on a card
 that already holds the project’s block. Behavior on a freshly
@@ -273,8 +275,9 @@ harness output is the SoT for build-and-boot regressions.</p>
 <ul>
   <li><strong>Optimization after full validation.</strong> With all 63 scenes signed off, the
 next focus is preserving pixel-perfect playback while improving speed,
-loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.0</code> sets the current
-headless baseline at +0.8% over target / 99.5% target speed. The bring-up
+loading, memory pressure, and release polish. <code class="language-plaintext highlighter-rouge">v0.8.1</code> keeps the current
+headless baseline at +0.8% over target / 99.5% target speed while fixing
+long-run large-clean pressure accounting. The bring-up
 loop remains in
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/development-workflow.md"><code class="language-plaintext highlighter-rouge">docs/ps1/development-workflow.md</code></a>.</li>
   <li><strong>Scene-by-scene FG2 routing.</strong> All 63 scenes have generated
@@ -297,8 +300,9 @@ internal code-name in <code class="language-plaintext highlighter-rouge">foregro
 playback.” The migration plan lives in
 <code class="language-plaintext highlighter-rouge">docs/ps1/ps1-branch-cleanup-plan.yaml</code> under
 <code class="language-plaintext highlighter-rouge">fgpilot_naming_migration_plan</code>.</li>
-  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene
-performance baseline and fixes random-run clean-rect pressure. <code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code>
+  <li><strong>Milestone release cadence.</strong> <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> is the clean-rect pressure
+stability point release. <code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> is the complete-scene performance
+baseline. <code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code>
 fixes stale-backdrop story-loop walks. <code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> adds the original-four
 auto holiday default and persisted holiday mode. <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> validates all
 63 scenes and
@@ -334,7 +338,7 @@ was fishing1 with full SFX across all variants.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.0-ps1)
+          (v0.8.1-ps1)
         </p>
         <p class="footer-license">
           Devlog feed:
