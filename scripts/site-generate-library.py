@@ -380,10 +380,35 @@ with.
         out.write_text(content, encoding="utf-8")
         case_rows.append((case_name, slug, ads, tag, frames, status))
 
-    rows = "\n".join(
-        f'<tr><td><a href="{{{{ \'/archaeology/regtest-references/cases/{slug}/\' | relative_url }}}}">{name}</a></td><td><code>{ads}</code></td><td>{tag}</td><td>{frames}</td><td>{status}</td></tr>'
-        for name, slug, ads, tag, frames, status in case_rows
+    # Per-family counts and jump-nav, mirroring the /scenes/ ledger pattern
+    # (commit 6faead4a4). case_rows is sorted by case_name, which means rows
+    # are family-grouped (ACTIVITY-1..ACTIVITY-9, BUILDING-1..., FISHING-1...);
+    # so the "first row per family" detection just compares against the
+    # previous row's ads value.
+    family_counts: dict[str, int] = {}
+    for _, _, ads, _, _, _ in case_rows:
+        family_counts[str(ads)] = family_counts.get(str(ads), 0) + 1
+    families_in_order = list(family_counts.keys())
+
+    jump_nav_links = " · ".join(
+        f'<a href="#ads-{fam.lower()}">{fam} <span class="scenes-jump-count">({family_counts[fam]})</span></a>'
+        for fam in families_in_order
     )
+
+    row_lines = []
+    seen_ads: set[str] = set()
+    for name, slug, ads, tag, frames, status in case_rows:
+        ads_key = str(ads)
+        if ads_key not in seen_ads:
+            seen_ads.add(ads_key)
+            tr_open = f'<tr id="ads-{ads_key.lower()}">'
+        else:
+            tr_open = '<tr>'
+        row_lines.append(
+            f'{tr_open}<td><a href="{{{{ \'/archaeology/regtest-references/cases/{slug}/\' | relative_url }}}}">{name}</a></td><td><code>{ads}</code></td><td>{tag}</td><td>{frames}</td><td>{status}</td></tr>'
+        )
+    rows = "\n".join(row_lines)
+
     index = f"""---
 layout: page
 title: Regtest reference cases
@@ -397,6 +422,11 @@ These are the host baselines preserved under
 They are not the final PS1 truth. They are the measurements the PS1 runtime
 keeps being compared against while a scene moves from "it boots" to "it is
 signed off."
+
+<nav class="scenes-jump" aria-label="Jump to ADS family">
+  <span class="scenes-jump-label">Jump to:</span>
+  {jump_nav_links}
+</nav>
 
 <table>
 <caption class="visually-hidden">
