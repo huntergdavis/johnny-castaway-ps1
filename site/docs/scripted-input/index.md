@@ -146,4 +146,7 @@ a screenshot, and a page on the website.
   `pad-script-log` modes.
 - [Devlog: scripted-pad menu harness]({{ '/devlog/scripted-pad-menu-harness/' | relative_url }})
   — the implementation narrative.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the SIO0 polling fix that this harness's
+  pad-byte merge writes into.
 

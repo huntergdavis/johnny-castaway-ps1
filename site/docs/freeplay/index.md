@@ -169,6 +169,9 @@ part of the forever-run player build.
 - [Play]({{ '/play/' | relative_url }}) — the end-user flow:
   Pause → Freeplay: ON.
 - [Devlog: freeplay debug mode]({{ '/devlog/freeplay-debug-mode/' | relative_url }}) — the implementation narrative.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the controller-poll fix without which
+  freeplay's D-pad / analog / button reads were unreliable.
 
 ## Source
 

@@ -331,6 +331,9 @@ in the research directory, but it has not been implemented.
   largest live consumer of the `gr*` graphics surface.
 - [Closed captions]({{ '/docs/captions/' | relative_url }}) — `SPRT`-based
   glyph rendering against a shared font atlas.
+- [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
+  — war story for the SIO0 polling fix behind the
+  `SDL_PollEvent` → SPI driver row in the Input section.
 
 ## View source on GitHub
 
