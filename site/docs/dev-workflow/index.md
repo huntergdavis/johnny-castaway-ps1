@@ -297,7 +297,12 @@ in the archaeology and research docs.
   for Set Time / Island Pos / Seed cover variant testing without
   rebooting.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — current per-scene
-  status.
+  status (visual signoff bar).
+- [Performance battle card]({{ '/perf/' | relative_url }}) — second
+  ledger; per-scene timing against the target frame budget.
+- [Performance reference]({{ '/docs/performance/' | relative_url }}) —
+  what each `loop_vb` / `target_vb` / `blocking_vb` column means
+  and the experiment-log discipline behind the matrix.
 
 ## View source on GitHub
 
