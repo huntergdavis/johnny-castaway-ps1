@@ -465,9 +465,20 @@ def generate_resource_catalog() -> None:
             )
         rows_md = "\n".join(rows) or "<tr><td colspan=\"3\">No files found.</td></tr>"
         intro_block = f"\n{intro}\n" if intro else ""
+        # Visually-hidden caption: a screen reader landing inside the table
+        # (e.g., from the page-toc anchor or a deep link) needs the section
+        # context the H2 above doesn't always carry into the table scope.
+        # Same idiom shipped on /perf/, /scenes/, and the regtest case shelf.
+        caption = (
+            f"<caption class=\"visually-hidden\">"
+            f"{title} — {len(files)} files, listed by name with byte size "
+            f"and a link to the source file on GitHub."
+            f"</caption>"
+        )
         sections.append(f"""## {title}
 {intro_block}
 <table>
+{caption}
 <thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
 <tbody>
 {rows_md}
