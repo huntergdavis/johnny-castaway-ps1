@@ -84,6 +84,12 @@ It saved three reads (`45 -> 42`) but regressed loop `1450 -> 1456`, blocking
 VISITOR3 high groups through the current append path; the scheduler needs a
 first-class budget/ownership change before larger generated groups are viable.
 
+Rejected local direct-stage cap: VISITOR3 high with a scene-local `16 KiB`
+tight-slack direct-stage cap stayed exact-flat against the accepted 192 KiB
+setup-prime baseline (`scene_vb=1746`, `loop_vb=1450`, `blocking_vb=355`,
+`prefetch_overrun_vb=14`, `loop_reads=45`) while shifting hot foreground code.
+Do not retry VISITOR3 direct-stage caps without generated coverage metadata.
+
 ## 2026-04-30 ASM And Toolchain Feasibility Intake
 
 Source: `/home/hunter/workspace/jc_ps1_sandbox/docs/ps1/hand-rolled-asm-feasibility.md`.
@@ -995,6 +1001,7 @@ pre-v0.8.0 row.
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | VISITOR3 prepared-visual `>=4` threshold after high `170..186` | Do not retry as a threshold-only tweak. The current-source probe stayed exact-flat on VISITOR3 high and low, so the remaining gap needs CD-first scheduling or generated append ownership rather than broader local prepare eligibility. |
 | VISITOR3 high `144..156` slack-gated group | Do not retry as a local min-slack table guard. Requiring `6` held VBlanks around the existing grouped append path stayed exact-flat (`1455/1010`, `blocking_vb=361`, `prefetch_overrun_vb=21`, `loop_reads=52`) while shifting hot foreground symbols. Retry only with generated scheduler ownership/refill budget metadata or a pack/data-shape change. |
+| VISITOR3 direct-stage cap `16 KiB` | Do not retry as a local scene cap. It stayed exact-flat against the 192 KiB setup-prime high-tide baseline while shifting hot code; require generated coverage/read-cost metadata before changing direct-stage policy. |
 | FG2 read group `102..110` | Do not retry as a raw hard-coded group; it saved one read but regressed visible CD pressure to `8` VBlanks. Retry only with group-cost prediction or CD-first slack ownership. |
 | FG2 read groups `384..396` and `307..317` | Do not retry as raw hard-coded groups. `384..396` did not fit/fire; `307..317` was exact-flat with code growth. Generated metadata must prove append fit and read-count movement first. |
 | Global setup-prime resident cap above `128 KiB` | Do not retry as a raw cap raise. The `192 KiB` probe saved FISHING1 reads but regressed visible loop/CD pressure and increased retained prefetch heap. |
