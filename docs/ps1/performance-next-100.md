@@ -61,12 +61,13 @@ BUILDING6, and
 generated selective preprocessing, not FISHING1.
 
 Latest promoted VISITOR3 scheduler pass: keep the high-tide guarded
-`144..160` grouped append with `minSlackVBlanks=4`. It leaves loop timing flat
-at `1406/1019` but lowers visible blocking `296 -> 294` with fixed foreground
+generated-window `138..162` grouped append with `minSlackVBlanks=4`. It
+leaves loop timing flat at `1406/1019` but lowers visible blocking `294 -> 293`,
+loop reads `40 -> 39`, and loop read VBlanks `335 -> 332` with fixed foreground
 LBAs and the accepted `215040` byte PS-EXE sector bucket. Treat this as proof
 that VISITOR3 groups need scheduler/slack ownership; the next VISITOR3 pass
-should widen that generated ownership model rather than adding unguarded hand
-tables.
+should continue generated ownership/data-shape work rather than adding
+unguarded hand tables.
 
 Latest promoted MARY2 baseline: keep the same-layout padded FGP3 temporal
 residual conversion for both validated packs. High tide improves the

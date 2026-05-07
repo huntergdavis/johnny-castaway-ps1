@@ -289,7 +289,7 @@ That is **-0.3% over target**, or **100.3% of target speed**. Across the
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-`visitor3-high-group144-160-slack4-v081`,
+`visitor3-high-group138-162-slack4-v081`,
 `walkstuf1-low-primecap160-v081`,
 `johnny2-prefetch-relief-v081`,
 `activity9-low-fgp3-cleanup-compact-v081`,
@@ -747,8 +747,8 @@ Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
    largest gap at about `+390/+387` VBlanks, though the guarded high-tide
-   `144..160` append now proves scheduler-owned groups can reduce visible
-   blocking without moving layout. WALKSTUF1 still has
+   generated-window `138..162` append now proves scheduler-owned groups can
+   reduce visible blocking and active reads without moving layout. WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
    pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier

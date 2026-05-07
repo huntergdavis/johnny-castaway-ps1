@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3324 words
+          ~13 min read · 3328 words
         </p>
 
       <hr class="rule" />
@@ -415,7 +415,7 @@ sound_late = 0   cd_fail = 0
 
 <p>As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
-<code class="language-plaintext highlighter-rouge">visitor3-high-group144-160-slack4-v081</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-group138-162-slack4-v081</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>,
 <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>,
 <code class="language-plaintext highlighter-rouge">activity9-low-fgp3-cleanup-compact-v081</code>,
@@ -873,8 +873,8 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 <ol>
   <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 remains the
 largest gap at about <code class="language-plaintext highlighter-rouge">+390/+387</code> VBlanks, though the guarded high-tide
-<code class="language-plaintext highlighter-rouge">144..160</code> append now proves scheduler-owned groups can reduce visible
-blocking without moving layout. WALKSTUF1 still has
+generated-window <code class="language-plaintext highlighter-rouge">138..162</code> append now proves scheduler-owned groups can
+reduce visible blocking and active reads without moving layout. WALKSTUF1 still has
 <code class="language-plaintext highlighter-rouge">blocking_vb=278/276</code> after the PAL4 setup-prime win, so the next CD-shape
 pass needs generated cost metadata rather than hand-authored ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
