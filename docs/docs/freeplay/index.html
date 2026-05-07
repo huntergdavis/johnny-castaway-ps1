@@ -104,7 +104,7 @@
       <h1>Freeplay and debug mode</h1>
       <p class="subtitle">Direct-control Johnny, plus the runtime debug menus that make it safe to test.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1157 words
+          ~4 min read · 1178 words
         </p>
 
       <hr class="rule" />
@@ -380,6 +380,10 @@ freeplay’s D-pad / analog / button reads were unreliable.</li>
 
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/scene_freeplay.c"><code class="language-plaintext highlighter-rouge">src/scene_freeplay.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.h"><code class="language-plaintext highlighter-rouge">src/walk_render.h</code></a>
+— the shared draw kernel; story-loop walks consume it through
+<code class="language-plaintext highlighter-rouge">walk_pilot.c</code>, freeplay calls it directly with D-pad-driven coords.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/freeplay-mode-design.md"><code class="language-plaintext highlighter-rouge">docs/ps1/freeplay-mode-design.md</code></a></li>
 </ul>
