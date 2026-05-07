@@ -115,10 +115,10 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 The current matrix mean is `99.5%` target speed. The remaining `0.5%`
 lives in a small number of high-leverage rows. As of `{{ site.release.tag }}`
 the only two red rows on the [battle card]({{ '/perf/' | relative_url }})
-are `VISITOR 3` high and `VISITOR 3` low, both around `69.4%` after
-the `v0.7.2` prefetch-relief refresh — that scene's wide multi-view
-stitch hits the prefetch window the hardest and is the largest single
-optimization target left. The yellow cluster (twenty rows between
+are `VISITOR 3` high (`70.0%`) and `VISITOR 3` low (`69.7%`) after
+the `v0.8.0` setup-prime + group `170..186` work — that scene's
+wide multi-view stitch hits the prefetch window the hardest and is
+the largest single optimization target left. The yellow cluster (twenty rows between
 `80%` and `99%`) is the rest of the wide-action surface plus the
 `BUILDING 2` and `BUILDING 4` clean-rect heavy frames and a couple
 of MARY composite-frame rows. The optimization plan at

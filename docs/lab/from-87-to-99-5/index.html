@@ -102,7 +102,7 @@
       <h1>From 87 to 99.5: the post-validation performance loop</h1>
       <p class="subtitle">How the project closed roughly 12 percentage points of target-speed gap after every scene was already signed off — by treating performance as a separate ledger, not a refactor.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1869 words
+          ~7 min read · 1871 words
         </p>
 
       <hr class="rule" />
@@ -244,10 +244,10 @@ looked like.</p>
 <p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.5%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.5%</code>
 lives in a small number of high-leverage rows. As of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>
 the only two red rows on the <a href="../../perf/">battle card</a>
-are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low, both around <code class="language-plaintext highlighter-rouge">69.4%</code> after
-the <code class="language-plaintext highlighter-rouge">v0.7.2</code> prefetch-relief refresh — that scene’s wide multi-view
-stitch hits the prefetch window the hardest and is the largest single
-optimization target left. The yellow cluster (twenty rows between
+are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high (<code class="language-plaintext highlighter-rouge">70.0%</code>) and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low (<code class="language-plaintext highlighter-rouge">69.7%</code>) after
+the <code class="language-plaintext highlighter-rouge">v0.8.0</code> setup-prime + group <code class="language-plaintext highlighter-rouge">170..186</code> work — that scene’s
+wide multi-view stitch hits the prefetch window the hardest and is
+the largest single optimization target left. The yellow cluster (twenty rows between
 <code class="language-plaintext highlighter-rouge">80%</code> and <code class="language-plaintext highlighter-rouge">99%</code>) is the rest of the wide-action surface plus the
 <code class="language-plaintext highlighter-rouge">BUILDING 2</code> and <code class="language-plaintext highlighter-rouge">BUILDING 4</code> clean-rect heavy frames and a couple
 of MARY composite-frame rows. The optimization plan at
