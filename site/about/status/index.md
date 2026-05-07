@@ -47,7 +47,7 @@ done."
 | TTY printf | Reliable | Restored 2026-04-25 on PSn00bSDK 0.24 + DuckStation through bounded `vprintf` plus DuckStation TTY/file logging. Gated BOOTMODE probes (`printf-test`, `logtest`). Must not be called per-frame -- text I/O alters timing. |
 | Regtest harness | Working | `config/ps1/regtest-scenes.txt` + `scripts/run-regtest.sh` drive a headless DuckStation pass. Source of truth for "boots and renders something." Not the source of truth for "looks right" -- that's still human signoff. |
 | Host capture pipeline | Working | `scripts/capture-host-scene.sh` runs the desktop build under controlled boot state; emits high/low PNG frames, `frame-meta.json`, `sound-events.jsonl`. `scripts/export-scene-foreground-pilot.sh` now defaults new scene bring-up to normal/far-left/far-right foreground-only multi-view stitching before compiling FG2. |
-| CD packaging (mkpsxiso) | Complete | `config/ps1/cd_layout.xml`. Routed scenes contribute high-tide + low-tide pack entries; routing is selective during bring-up because the full FG2 corpus is ~343&nbsp;MB. Build outputs `jcreborn.bin` + `jcreborn.cue`. CD image at the current routed set is ~9.9&nbsp;MB; PS-EXE is ~84&nbsp;KB after legacy ADS/TTM/FG1 paths were stripped. |
+| CD packaging (mkpsxiso) | Complete | `config/ps1/cd_layout.xml`. Routed scenes contribute high-tide + low-tide pack entries; the full FG2 corpus is ~343&nbsp;MB, of which a selected subset rides on the disc. Build outputs `jcreborn.bin` + `jcreborn.cue`. CD image at `{{ site.release.tag }}` is ~76&nbsp;MB; PS-EXE is ~208&nbsp;KiB after legacy ADS/TTM/FG1 paths were stripped from the linker pass. |
 
 ## What's currently broken
 
