@@ -274,12 +274,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.3% over target**, or **100.3% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **+0.6% over target /
-99.6% target speed** (`0.6400%` exact over target / `99.6118%` exact target speed).
+99.7% target speed** (`0.5830%` exact over target / `99.6672%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`johnny2-prefetch-relief-v081`,
 `activity9-low-fgp3-cleanup-compact-v081`,
 `activity9-current-v081-refresh`,
 `building4-fgp3-cleanup-compact-window-v081`,
@@ -333,13 +334,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T00:05:13`; per-row freshness and stats version are shown on
+run is `2026-05-07T04:18:16`; per-row freshness and stats version are shown on
 the [scene ledger]({{ '/scenes/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `visitor3-fgp3-cleanup-compact-v081`,
+`johnny2-prefetch-relief-v081`,
 `mary2-prefetch-relief-v081`,
 `mary2-fgp3-padded-v081`,
 `johnny2-fgp3-padded-v081`,
@@ -526,8 +528,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>johnny2</code></td>
-      <td>+2.9% / 97.2% (1801/1751); due 144; blk 369</td>
-      <td>+2.8% / 97.3% (1800/1751); due 144; blk 377</td>
+      <td>-0.6% / 100.6% (1741/1751)</td>
+      <td>-0.6% / 100.6% (1741/1751)</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>
@@ -724,15 +726,15 @@ gfx.upload_bytes  = 8,643,840
 ```
 
 The FISHING1 canary remains under target, but the full battle card still has
-CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `building4`,
-`building6`, `johnny2`). The clean-pressure relief rows prove scene-local
+CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `building4`, and
+`building6`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at `+440/+435` VBlanks, and WALKSTUF1 still has
+   largest gap at about `+390/+387` VBlanks, and WALKSTUF1 still has
    `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
    pass needs generated cost metadata rather than hand-authored ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier

@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.6400%` exact) |
-| Timing-bearing average target speed | `99.6%` (`99.6118%` exact) |
-| Latest perf matrix run | `2026-05-07T03:43:00` |
-| Stats version | mixed; newest optimized rows use `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.6%` (`0.5830%` exact) |
+| Timing-bearing average target speed | `99.7%` (`99.6672%` exact) |
+| Latest perf matrix run | `2026-05-07T04:18:16` |
+| Stats version | mixed; newest optimized rows use `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -96,6 +96,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
 `building2-fgp3-cleanup-compact-v081`,
 `visitor3-fgp3-cleanup-compact-v081`,
+`johnny2-prefetch-relief-v081`,
 `johnny2-fgp3-padded-v081`,
 `mary2-prefetch-relief-v081`,
 `mary2-fgp3-padded-v081`,

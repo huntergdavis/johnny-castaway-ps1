@@ -28,8 +28,8 @@ A scene can be timed here without being visually certified.
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">96 ≥ 99%</span>
-  <span class="spd-key spd-yellow">22 ≥ 80%</span>
+  <span class="spd-key spd-green">98 ≥ 99%</span>
+  <span class="spd-key spd-yellow">20 ≥ 80%</span>
   <span class="spd-key spd-red">2 &lt; 80%</span>
   out of 120 timing-bearing rows. 6 rows have no timing data yet.
 </p>
@@ -54,10 +54,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` |
 | Pending variants | `0 / 126` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.6400%` exact) |
-| Timing-bearing average target speed | `99.6%` (`99.6118%` exact) |
-| Latest perf matrix run | `2026-05-07T03:43:00` |
-| Stats version | mixed across rows; newest optimized rows use `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.5830%` exact) |
+| Timing-bearing average target speed | `99.7%` (`99.6672%` exact) |
+| Latest perf matrix run | `2026-05-07T04:18:16` |
+| Stats version | mixed across rows; newest optimized rows use `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
 
 The durable numeric source is
@@ -88,7 +88,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `activity9-low-fgp3-cleanup-compact-v081`,
+  refreshed rows use `johnny2-prefetch-relief-v081`,
+  `activity9-low-fgp3-cleanup-compact-v081`,
   `activity9-current-v081-refresh`,
   `building4-fgp3-cleanup-compact-window-v081`,
   `building2-fgp3-cleanup-compact-v081`,
@@ -897,29 +898,29 @@ and this page.
       <td><code>johnny2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T21:20:57</td>
-      <td>johnny2-fgp3-padded-v081</td>
-      <td>+2.9%</td>
-      <td class="spd-yellow">97.2%</td>
-      <td>1801/1751</td>
-      <td>369</td>
+      <td>2026-05-07T04:18:16</td>
+      <td>johnny2-prefetch-relief-v081</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>1741/1751</td>
       <td>0</td>
-      <td>144</td>
-      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1801 and exposes stale v0.6.4 matrix row</td>
+      <td>0</td>
+      <td>0</td>
+      <td>clean-pressure prefetch relief preserves stage1_window; blocking 369-&gt;0 due misses 144-&gt;0 loop reads 144-&gt;8</td>
     </tr>
     <tr>
       <td><code>johnny2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T21:20:57</td>
-      <td>johnny2-fgp3-padded-v081</td>
-      <td>+2.8%</td>
-      <td class="spd-yellow">97.3%</td>
-      <td>1800/1751</td>
-      <td>377</td>
+      <td>2026-05-07T04:18:16</td>
+      <td>johnny2-prefetch-relief-v081</td>
+      <td>-0.6%</td>
+      <td class="spd-green">100.6%</td>
+      <td>1741/1751</td>
       <td>0</td>
-      <td>144</td>
-      <td>padded FGP3 improves same-commit current baseline 1833-&gt;1800 and exposes stale v0.6.4 matrix row</td>
+      <td>0</td>
+      <td>0</td>
+      <td>clean-pressure prefetch relief preserves stage1_window; blocking 377-&gt;0 due misses 144-&gt;0 loop reads 144-&gt;8</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>

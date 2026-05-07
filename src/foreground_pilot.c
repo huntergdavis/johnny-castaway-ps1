@@ -884,59 +884,34 @@ static uint32 fgHeaderCleanSnapshotEstimate(const struct TFgPilotHeader *header)
            (uint32)sizeof(uint16);
 }
 
+static int __attribute__((noinline, optimize("Os")))
+fgScenePreservesPrefetchUnderCleanPressure(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "building2") ||
+           fgSceneEquals(sceneName, "building4") ||
+           fgSceneEquals(sceneName, "building6") ||
+           fgSceneEquals(sceneName, "walkstuf1") ||
+           fgSceneEquals(sceneName, "visitor3") ||
+           fgSceneEquals(sceneName, "visitor5") ||
+           fgSceneEquals(sceneName, "activity10") ||
+           fgSceneEquals(sceneName, "johnny3") ||
+           fgSceneEquals(sceneName, "johnny1") ||
+           fgSceneEquals(sceneName, "johnny2") ||
+           fgSceneEquals(sceneName, "johnny6") ||
+           fgSceneEquals(sceneName, "activity9") ||
+           fgSceneEquals(sceneName, "mary1") ||
+           fgSceneEquals(sceneName, "mary2") ||
+           fgSceneEquals(sceneName, "activity11") ||
+           fgSceneEquals(sceneName, "activity12") ||
+           fgSceneEquals(sceneName, "activity4") ||
+           fgSceneEquals(sceneName, "fishing4");
+}
+
 static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
                                          uint32 cleanBytes,
                                          uint32 maxFrameBytes)
 {
-    if (fgSceneEquals(sceneName, "building2"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "building4"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "building6"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "walkstuf1"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "visitor3"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "visitor5"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "activity10"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "johnny3"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "johnny1"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "johnny6"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "activity9"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "mary1"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "mary2"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "activity11"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "activity12"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "activity4"))
-        return 0;
-
-    if (fgSceneEquals(sceneName, "fishing4"))
+    if (fgScenePreservesPrefetchUnderCleanPressure(sceneName))
         return 0;
 
     if (cleanBytes >= FG_CLEAN_SNAPSHOT_PRESSURE_BYTES)
@@ -3384,23 +3359,7 @@ static void fgPlayOceanRuntimeScene(const char *sceneName)
                                                                fgBoundsY,
                                                                fgBoundsW,
                                                                fgBoundsH);
-        if (!fgSceneEquals(sceneName, "building2") &&
-            !fgSceneEquals(sceneName, "building4") &&
-            !fgSceneEquals(sceneName, "building6") &&
-            !fgSceneEquals(sceneName, "walkstuf1") &&
-            !fgSceneEquals(sceneName, "visitor3") &&
-            !fgSceneEquals(sceneName, "visitor5") &&
-            !fgSceneEquals(sceneName, "activity10") &&
-            !fgSceneEquals(sceneName, "johnny3") &&
-            !fgSceneEquals(sceneName, "johnny1") &&
-            !fgSceneEquals(sceneName, "johnny6") &&
-            !fgSceneEquals(sceneName, "activity9") &&
-            !fgSceneEquals(sceneName, "mary1") &&
-            !fgSceneEquals(sceneName, "mary2") &&
-            !fgSceneEquals(sceneName, "activity11") &&
-            !fgSceneEquals(sceneName, "activity12") &&
-            !fgSceneEquals(sceneName, "activity4") &&
-            !fgSceneEquals(sceneName, "fishing4") &&
+        if (!fgScenePreservesPrefetchUnderCleanPressure(sceneName) &&
             (cleanRectEstimate >= FG_LARGE_CLEAN_SNAPSHOT_BYTES ||
              fgSceneNeedsCleanMemoryRelief(sceneName, cleanRectEstimate,
                                            gFgRuntime.frameBufferSize))) {
