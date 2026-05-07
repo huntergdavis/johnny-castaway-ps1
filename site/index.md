@@ -90,7 +90,7 @@ trick. A 1992 screensaver fits onto a CD-ROM and inside 2 MB of RAM
 because all of the smart work is done on a desktop and pre-baked.
 
 The full deep-dive — pack format, hardware gotchas, the [SPI pad-poll
-fix that cost two days]({{ '/lab/two-day-spi-bug/' | relative_url }}), the dirty-rect bookkeeping that wiped framebuffers
+fix that cost two days]({{ '/lab/two-day-spi-bug/' | relative_url }}), the [dirty-rect bookkeeping]({{ '/docs/glossary/#dirty-rect' | relative_url }}) that wiped framebuffers
 on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})**.
 
 </section>
