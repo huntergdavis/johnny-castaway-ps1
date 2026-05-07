@@ -174,6 +174,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="promotion-rule">Promotion rule</dt>
 <dd>An optimization promotes when (a) the canary doesn't regress, (b) every visual signoff still holds, and (c) the matrix mean improves. All three must hold; mixing them is how regressions ship.</dd>
+
+<dt id="soak-test">Soak test</dt>
+<dd>A long-run randomized DuckStation pass — boot, let the screensaver loop pick scenes at random for hours, watch for freezes, hangs, drift, or memory pressure that the per-scene matrix runs miss. Not part of the per-commit regtest gate; reserved for release candidates and after structural changes (walk pipeline, prefetch policy, clean-rect estimator). The <code>v0.8.1-ps1</code> release shipped specifically because a soak surfaced a <code>MARY 4</code> random-load freeze that the matrix-bounded headless runs never exercised.</dd>
 </dl>
 
 ## Voice {#voice}
