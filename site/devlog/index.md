@@ -48,11 +48,15 @@ them automatically.
 
 <ul class="devlog-list">
   {% for post in group.items %}
+  {%- assign p_words = post.content | strip_html | number_of_words -%}
+  {%- assign p_min = p_words | divided_by: 250 -%}
+  {%- if p_min < 1 %}{%- assign p_min = 1 -%}{% endif %}
   <li>
     <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     <div>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
       {% if post.editor_note %}<span class="summary">{{ post.editor_note }}</span>{% endif %}
+      <span class="summary devlog-read-time">~{{ p_min }} min read · {{ p_words }} words</span>
     </div>
   </li>
   {% endfor %}

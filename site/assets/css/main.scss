@@ -655,6 +655,17 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 }
 .devlog-list a:hover { text-decoration: underline; }
 .devlog-list .summary { display: block; font-family: var(--font-body); color: var(--fg-mute); font-weight: 400; font-size: 0.95rem; margin-top: 0.2em; }
+/* Reading-time line on the devlog index uses the pixel font like
+   the per-post .reading-time hint, smaller than the editor-note
+   summary above it, so the eye reads "title / what it's about /
+   how long it is" as three distinct rows. */
+.devlog-list .devlog-read-time {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  color: var(--fg-mute);
+  margin-top: 0.15em;
+}
 
 /* ---------- "On this page" TOC ----------
  * Used in long-form pages by wrapping kramdown's {:toc} directive
