@@ -103,7 +103,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1864 words
+          ~7 min read · 1761 words
         </p>
 
       <hr class="rule" />
@@ -161,7 +161,6 @@ reference manual for the perf work is at
       <li><a href="#adding-a-scene-to-the-harness" id="markdown-toc-adding-a-scene-to-the-harness">Adding a scene to the harness</a></li>
     </ul>
   </li>
-  <li><a href="#ps1-test-instrumentation" id="markdown-toc-ps1-test-instrumentation">PS1 test instrumentation</a></li>
   <li><a href="#overlay-backed-character-checks" id="markdown-toc-overlay-backed-character-checks">Overlay-backed character checks</a></li>
   <li><a href="#frame-hash-regression-detection" id="markdown-toc-frame-hash-regression-detection">Frame-hash regression detection</a></li>
   <li><a href="#parallel-runs" id="markdown-toc-parallel-runs">Parallel runs</a></li>
@@ -466,33 +465,6 @@ ship as <code class="language-plaintext highlighter-rouge">.FG2</code> packs.</l
 the captured frames + TTY look right.</li>
 </ol>
 
-<h2 id="ps1-test-instrumentation">PS1 test instrumentation</h2>
-
-<p>When the disc is built with <code class="language-plaintext highlighter-rouge">-DPS1_TEST_BUILD=ON</code>, structured test output
-is emitted via <code class="language-plaintext highlighter-rouge">printf</code> and captured on stdout:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[TEST:SCENE] play STAND.ADS tag=2
-[TEST:FRAME] display frame=0 delay=3
-[TEST:PERF] upload tiles=2 rows=87
-[TEST:PERF] heartbeat frame=60
-[TEST:STATE] load_bmp slot=0 sprites=42
-[TEST:ERROR] fatal: out of memory
-</code></pre></div></div>
-
-<p>Categories: <code class="language-plaintext highlighter-rouge">SCENE</code> (lifecycle), <code class="language-plaintext highlighter-rouge">FRAME</code> (per-frame), <code class="language-plaintext highlighter-rouge">PERF</code> (metrics),
-<code class="language-plaintext highlighter-rouge">ERROR</code> (crashes), <code class="language-plaintext highlighter-rouge">STATE</code> (resources), <code class="language-plaintext highlighter-rouge">ASSERT</code> (invariants). All
-compiled out in normal builds via
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/ps1_test.h"><code class="language-plaintext highlighter-rouge">ps1_test.h</code></a> macros.</p>
-
-<p>To build a test-instrumented binary:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
-    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
-             cmake -DCMAKE_BUILD_TYPE=Release -DPS1_TEST_BUILD=ON .. &amp;&amp; </span><span class="se">\</span><span class="s2">
-             make -j4 jcreborn"</span>
-</code></pre></div></div>
-
 <h2 id="overlay-backed-character-checks">Overlay-backed character checks</h2>
 
 <p>For PS1 bug fixing, the preferred screenshot harness path is:</p>
@@ -605,7 +577,6 @@ scripts/analyze-regtest.py         Post-run analysis + HTML report
 scripts/regtest-compare.sh         Diff two test runs
 scripts/decode-ps1-bars.py         Telemetry overlay decoder
 scripts/check-character-screenshot.py  Overlay-backed character check
-ps1_test.h                         Test-instrumentation macros
 </code></pre></div></div>
 
 <h2 id="related-pages">Related pages</h2>

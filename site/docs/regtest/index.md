@@ -261,35 +261,6 @@ for the current per-scene ledger.
 3. Run `./scripts/regtest-scene.sh --scene "<ADS> <tag>"` once and confirm
    the captured frames + TTY look right.
 
-## PS1 test instrumentation
-
-When the disc is built with `-DPS1_TEST_BUILD=ON`, structured test output
-is emitted via `printf` and captured on stdout:
-
-```
-[TEST:SCENE] play STAND.ADS tag=2
-[TEST:FRAME] display frame=0 delay=3
-[TEST:PERF] upload tiles=2 rows=87
-[TEST:PERF] heartbeat frame=60
-[TEST:STATE] load_bmp slot=0 sprites=42
-[TEST:ERROR] fatal: out of memory
-```
-
-Categories: `SCENE` (lifecycle), `FRAME` (per-frame), `PERF` (metrics),
-`ERROR` (crashes), `STATE` (resources), `ASSERT` (invariants). All
-compiled out in normal builds via
-[`ps1_test.h`]({{ site.github_url }}/blob/main/ps1_test.h) macros.
-
-To build a test-instrumented binary:
-
-```bash
-docker run --rm --platform linux/amd64 \
-    -v "$PWD":/project jc-reborn-ps1-dev:amd64 \
-    bash -c "cd /project/build-ps1 && \
-             cmake -DCMAKE_BUILD_TYPE=Release -DPS1_TEST_BUILD=ON .. && \
-             make -j4 jcreborn"
-```
-
 ## Overlay-backed character checks
 
 For PS1 bug fixing, the preferred screenshot harness path is:
@@ -407,7 +378,6 @@ scripts/analyze-regtest.py         Post-run analysis + HTML report
 scripts/regtest-compare.sh         Diff two test runs
 scripts/decode-ps1-bars.py         Telemetry overlay decoder
 scripts/check-character-screenshot.py  Overlay-backed character check
-ps1_test.h                         Test-instrumentation macros
 ```
 
 ## Related pages
