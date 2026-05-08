@@ -132,7 +132,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form
+  notes: lilliputian-sandcastle-airport (Johnny builds a sandcastle, tiny lilliputians take it over and launch airplanes from it); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch, injecting the persistent full-host sandcastle, trimming lower sandcastle tail residue, dropping the late splash residue, and keeping the result in FGP3 residual form
 - ads: BUILDING
   tag: 3
   slug: building3
