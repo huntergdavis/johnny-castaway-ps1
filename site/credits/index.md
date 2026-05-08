@@ -74,9 +74,8 @@ do not own decisions, do not validate scenes, and do not sign off
 on releases. Every agent-drafted page on this site got at least
 one factual edit on review; a few got rewritten substantially.
 The disclosure surface is documented at
-[/docs/agents/]({{ '/docs/agents/' | relative_url }}); the
-[footer]({{ '/about/' | relative_url }}) carries the short
-version on every page.
+[/docs/agents/]({{ '/docs/agents/' | relative_url }}); every
+page's footer carries the short version.
 
 ## Closed captions
 
