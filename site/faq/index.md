@@ -270,8 +270,10 @@ The original Sierra game had 4 baked-in holiday decorations
 extends that to 36 US holidays via a code-generated table and a
 pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
-for 100+ years. See `holidays.yml` and `src/holidays.c` in the
-repository.
+for 100+ years. The full reference manual is at
+[/docs/holidays/]({{ '/docs/holidays/' | relative_url }}); see
+`holidays.yml` and `src/holidays.c` in the repository for the
+source data and the codegen output.
 
 ### What's faithful to the original, and what's added?
 
