@@ -23,7 +23,7 @@ The current release line is **`{{ site.release.tag }}`** with
 ## Latest
 
 ### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
-*2026-05-08*
+<time datetime="2026-05-08"><em>2026-05-08</em></time>
 
 This point release promotes the WALKSTUF1 compact foreground pack pass and
 records the latest VISITOR3 follow-up as a non-promoting threshold closure.
@@ -52,7 +52,7 @@ records the latest VISITOR3 follow-up as a non-promoting threshold closure.
 ## Earlier milestones
 
 ### `v0.8.2-ps1` — VISITOR3 guarded-read performance
-*2026-05-07*
+<time datetime="2026-05-07"><em>2026-05-07</em></time>
 
 This point release promotes the next VISITOR3 high-tide guarded generated-window
 read group and ships the current upstream website/docs polish with the latest
