@@ -85,7 +85,7 @@ cmake -B build-ps1 -S . \
     -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
 ```
 
-Sources split into two groups in `CMakeLists.ps1.txt`. The core engine list
+Sources split into two groups in `CMakeLists.txt`. The core engine list
 is portable C — it compiles for both the host capture binary and the PS1.
 The PS1-specific list adds the PSn00bSDK adapter modules:
 
@@ -114,7 +114,7 @@ Linked PSn00bSDK libraries:
 
 Link order matters because they're static archives. `psxgpu` first;
 `psxpress` last; everything else in the middle. See
-`CMakeLists.ps1.txt` for the canonical order.
+`CMakeLists.txt` for the canonical order.
 
 The compiler flags inherited from PSn00bSDK's toolchain file are
 `-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding`. The project layers
@@ -266,4 +266,4 @@ or running it through the [headless regtest harness]({{ '/docs/regtest/' | relat
 - [`docs/ps1/build-system.md`]({{ site.github_url }}/blob/main/docs/ps1/build-system.md)
 - [`docs/ps1/toolchain-setup.md`]({{ site.github_url }}/blob/main/docs/ps1/toolchain-setup.md)
 - [`config/ps1/Dockerfile.ps1`]({{ site.github_url }}/blob/main/config/ps1/Dockerfile.ps1)
-- [`CMakeLists.ps1.txt`]({{ site.github_url }}/blob/main/CMakeLists.ps1.txt)
+- [`CMakeLists.txt`]({{ site.github_url }}/blob/main/CMakeLists.txt)

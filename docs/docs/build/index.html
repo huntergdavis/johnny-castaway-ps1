@@ -230,7 +230,7 @@ Configuration always points at the PSn00bSDK toolchain file:</p>
     <span class="nt">-DCMAKE_TOOLCHAIN_FILE</span><span class="o">=</span>/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
 </code></pre></div></div>
 
-<p>Sources split into two groups in <code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code>. The core engine list
+<p>Sources split into two groups in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>. The core engine list
 is portable C — it compiles for both the host capture binary and the PS1.
 The PS1-specific list adds the PSn00bSDK adapter modules:</p>
 
@@ -287,7 +287,7 @@ The PS1-specific list adds the PSn00bSDK adapter modules:</p>
 
 <p>Link order matters because they’re static archives. <code class="language-plaintext highlighter-rouge">psxgpu</code> first;
 <code class="language-plaintext highlighter-rouge">psxpress</code> last; everything else in the middle. See
-<code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code> for the canonical order.</p>
+<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> for the canonical order.</p>
 
 <p>The compiler flags inherited from PSn00bSDK’s toolchain file are
 <code class="language-plaintext highlighter-rouge">-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding</code>. The project layers
@@ -456,7 +456,7 @@ library is replacing.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/build-system.md"><code class="language-plaintext highlighter-rouge">docs/ps1/build-system.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/toolchain-setup.md"><code class="language-plaintext highlighter-rouge">docs/ps1/toolchain-setup.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.ps1.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.txt</code></a></li>
 </ul>
 
   </div>
