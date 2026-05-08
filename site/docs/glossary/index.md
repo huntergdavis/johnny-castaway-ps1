@@ -234,6 +234,10 @@ Grouped by area, not alphabetical — most readers come in via one section of th
   `prefetch_hits`, etc.) all have entries above.
 - [/docs/]({{ '/docs/' | relative_url }}) — the reference manuals
   these definitions support.
+- [/about/method/]({{ '/about/method/' | relative_url }}) — the
+  methodology essay; the host-capture / FG2 pack / PS1 replay
+  pipeline and the gotchas hit on the way, written in narrative
+  form using many of the terms above.
 - [/lab/]({{ '/lab/' | relative_url }}) — the magazine-length
   retrospectives where many of these terms got their first
   in-context introduction.
