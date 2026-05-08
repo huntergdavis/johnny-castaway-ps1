@@ -166,7 +166,7 @@ The 404 page is therefore self-contained: `layout: null` (skips the standard chr
 
 ## A few small extras
 
-- A `humans.txt` at the publish root mirrors the in-game credits voice (`drawCredits`) and lists prior ports, toolchain, this site's standards, and the dynamic release/build fields. Auto-discoverable via `<link rel="author" type="text/plain">`.
+- A `humans.txt` at the publish root mirrors the in-game credits voice ([`drawCredits`]({{ '/docs/glossary/#drawcredits' | relative_url }})) and lists prior ports, toolchain, this site's standards, and the dynamic release/build fields. Auto-discoverable via `<link rel="author" type="text/plain">`.
 - A `@media print` block in `main.scss` flattens the palette to black-on-white, strips chrome, surfaces link URLs via `a::after`, sets `@page` margins, and hints page-break-avoidance on headings, code blocks, figures. Long worklogs save as clean PDFs without any setup.
 - A custom `404.html` script reads `window.location.pathname` and renders it as `Tried: /typo/foo/` so a reader can see what was attempted. Degrades cleanly if JS is off.
 - The skip link at the top of every page (`<a class="skip-link" href="#main">`) carries `tabindex="-1"` on its target `<main>` element. Without it, browsers scroll the viewport on activation but leave keyboard focus on the link itself, so the very next Tab dumps users back into the header. The matching CSS rule `main:focus { outline: none }` suppresses the otherwise-giant focus ring around the entire content area — the viewport scroll is the focus indicator, not an outline.
