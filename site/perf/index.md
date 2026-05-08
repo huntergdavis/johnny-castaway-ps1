@@ -69,10 +69,10 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `0.0%` (`-0.0694%` exact) |
-| Timing-bearing average target speed | `100.1%` (`100.1388%` exact) |
-| Latest perf matrix run | `2026-05-08T02:25:37` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `-0.1%` (`-0.0968%` exact) |
+| Timing-bearing average target speed | `100.2%` (`100.1613%` exact) |
+| Latest perf matrix run | `2026-05-08T04:24:55` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -103,7 +103,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `graphics-composite-os-v111`,
+  refreshed rows use `visitor3-tail-trim-stageguard-v127`,
+  `graphics-composite-os-v111`,
   `building2-low-group365-381-v110`,
   `building2-high-group60-72-v109`,
   `building2-high-restore-minus-current-v108`,
@@ -1751,29 +1752,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T01:53:44</td>
-      <td>building2-low-group365-381-v110</td>
-      <td>+11.0%</td>
-      <td class="spd-yellow">90.1%</td>
-      <td>1137/1024</td>
-      <td>190</td>
+      <td>2026-05-08T04:24:55</td>
+      <td>visitor3-tail-trim-stageguard-v127</td>
+      <td>+8.8%</td>
+      <td class="spd-yellow">91.9%</td>
+      <td>1118/1028</td>
+      <td>150</td>
       <td>0</td>
-      <td>31</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; local VISITOR3 read-table rows are exhausted</td>
+      <td>26</td>
+      <td>v4 draw-tail trim plus VISITOR3 stage guard; broad controls exact-flat</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T02:25:37</td>
-      <td>graphics-composite-os-v111</td>
-      <td>+10.8%</td>
-      <td class="spd-yellow">90.2%</td>
-      <td>1135/1024</td>
-      <td>184</td>
+      <td>2026-05-08T04:24:55</td>
+      <td>visitor3-tail-trim-stageguard-v127</td>
+      <td>+9.9%</td>
+      <td class="spd-yellow">91.0%</td>
+      <td>1126/1025</td>
+      <td>170</td>
       <td>0</td>
-      <td>31</td>
-      <td>Scoped composite-helper -Os pass; pack LBA and PS-EXE bucket preserved</td>
+      <td>29</td>
+      <td>v4 draw-tail trim plus VISITOR3 stage guard; broad controls exact-flat</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

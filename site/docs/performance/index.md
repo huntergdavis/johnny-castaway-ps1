@@ -306,13 +306,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **0.0% over target /
-100.1% target speed** (`-0.0694%` exact over target / `100.1388%` exact target speed).
+120 timing-bearing battle-card rows, the average is **-0.1% over target /
+100.2% target speed** (`-0.0968%` exact over target / `100.1613%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
@@ -384,13 +385,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T02:25:37`; per-row freshness and stats version are shown on
+run is `2026-05-08T04:24:55`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `graphics-composite-os-v111`,
+rows now use `visitor3-tail-trim-stageguard-v127`,
+`graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
 `building2-high-restore-minus-current-v108`,
@@ -737,8 +739,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+11.0% / 90.1% (1137/1024); due 31; blk 190</td>
-      <td>+10.8% / 90.2% (1135/1024); due 31; blk 184</td>
+      <td>+8.8% / 91.9% (1118/1028); due 26; blk 150</td>
+      <td>+9.9% / 91.0% (1126/1025); due 29; blk 170</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -799,24 +801,23 @@ Next plausible wins, in priority order:
 
 1. **Generated read grouping or setup/data-shape work.** WALKSTUF1 is now the
    largest gap at `+197/+186` VBlanks after the low `160 KiB` and high
-   `144 KiB` setup-prime cap retunes. VISITOR3 remains next at `+116/+115`
-   VBlanks after restore-minus-current cleanup; its local C read-table rows are
-   exhausted, so the next CD-shape pass needs generated scheduler ownership,
-   selective preprocessing, or pack data-shape work rather than hand-authored
-   ranges. The default selective upload-ready plan is footprint-closed as a
+   `144 KiB` setup-prime cap retunes. VISITOR3 remains a top outlier at
+   `+90/+101` VBlanks after the tail-trim stageguard pass; its local C
+   read-table rows are exhausted, so the next CD-shape pass needs generated
+   scheduler ownership, selective preprocessing, or further pack data-shape
+   work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
    same-layout append because `2462072` bytes of payload plus rect metadata
    exceed the current `814847` bytes of VISITOR3 pack slack per tide. The
    budgeted analyzer target keeps this same-footprint lane alive with `74`
    selected frames, `814184` payload+rect bytes, and `3858104` modeled upload
    bytes saved before runtime implementation. The empty-hold no-op recast is
    closed because the current packs expose `0` zero-visual-work entries. The
-   packed-draw metadata probe proves a real VISITOR3 byte-reduction signal, but
-   its v7 runtime decoder crosses the PS-EXE sector bucket and shifts every
-   following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
-   C-runtime shape is rejected until it can be made layout-neutral. A
-   layout-neutral packed-delta retry keeps LBAs and the PS-EXE bucket fixed, but
-   its function-scoped PAL4 span `-Os` trade regresses VISITOR3 high while
-   improving low tide, so that C-side shape is closed too. An entry-origin
+   packed-draw metadata probes prove a real VISITOR3 byte-reduction signal:
+   the v4 draw-tail trim plus VISITOR3 stage guard is now promoted, while the
+   v7 runtime decoder shape remains rejected because it perturbs BUILDING2 and
+   BUILDING4 canaries. A layout-neutral packed-delta retry keeps LBAs and the
+   PS-EXE bucket fixed, but its function-scoped PAL4 span `-Os` trade regresses
+   VISITOR3 high while improving low tide, so that C-side shape is closed too. An entry-origin
    recentering size gate also saves `0` bytes on current VISITOR3 high/low
    FGP3/v4 payloads, so that zero-runtime-code coordinate-shift lane is closed
    before emulator time.
@@ -845,7 +846,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now 0.0% over target / 100.1% target speed, with several worse
+  average is now -0.1% over target / 100.2% target speed, with several worse
   CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

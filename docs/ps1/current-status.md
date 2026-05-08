@@ -4,11 +4,11 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.2-ps1` performance point release plus the
-current VISITOR3 offscreen draw clips, BUILDING4 restore-minus-current pack
-baseline, WALKSTUF1 high setup-prime retune, BUILDING2 high/low grouped read
-work, and VISITOR3 low code-shape pass; all 63 scenes remain validated, and
-the headless battle card is under target at `-0.0694%` over / `100.1388%`
-target speed).
+current VISITOR3 v4 draw-tail trim stageguard pass, VISITOR3 offscreen draw
+clips, BUILDING4 restore-minus-current pack baseline, WALKSTUF1 high
+setup-prime retune, BUILDING2 high/low grouped read work, and VISITOR3 low
+code-shape pass; all 63 scenes remain validated, and the headless battle card
+is under target at `-0.0968%` over / `100.1613%` target speed).
 
 ## Overall
 
@@ -168,17 +168,18 @@ removing the stale VISITOR3 low read group `170..186` and shrinking
 over target / `100.0972%` target speed by retuning only WALKSTUF1 high-tide
 setup priming. The later VISITOR3 high/low offscreen draw clips, BUILDING2
 high restore-minus-current pass, BUILDING2 high `60..72` grouped-read pass,
-BUILDING2 low `365..381` grouped-read pass, and VISITOR3 low code-shape pass
-move the current matrix to `-0.0694%` over target / `100.1388%` target speed.
+BUILDING2 low `365..381` grouped-read pass, VISITOR3 low code-shape pass, and
+VISITOR3 v4 draw-tail trim stageguard pass move the current matrix to
+`-0.0968%` over target / `100.1613%` target speed.
 See
 [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
-`-Os` background composite helpers. VISITOR3 high is now `1137/1024` with
-`blocking_vb=190`; low is `1135/1024` with `blocking_vb=184`. BUILDING2
-high/low are `1349/1316` and `1383/1304`,
+`-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
+stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
+`1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and `1383/1304`,
 ACTIVITY9 low is `2085/2058`, and the FISHING1 high control remains under
 target at `1068/1074`. BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and

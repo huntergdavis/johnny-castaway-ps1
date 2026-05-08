@@ -179,9 +179,9 @@ enum {
 #define FG_FISHING6_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
 #define FG_FISHING7_HIGH_SETUP_PRIME_WINDOW_BYTES (328UL * 1024UL)
 #define FG_JOHNNY3_HIGH_SETUP_PRIME_WINDOW_BYTES (312UL * 1024UL)
-#define FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES (216UL * 1024UL)
+#define FG_VISITOR3_HIGH_SETUP_PRIME_WINDOW_BYTES (232UL * 1024UL)
 #define FG_VISITOR3_LOW_SETUP_PRIME_WINDOW_BYTES (208UL * 1024UL)
-#define FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES (192UL * 1024UL)
+#define FG_VISITOR3_SETUP_PRIME_MAX_RESIDENT_BYTES (232UL * 1024UL)
 #define FG_VISITOR1_HIGH_SETUP_PRIME_WINDOW_BYTES (296UL * 1024UL)
 #define FG_VISITOR7_HIGH_SETUP_PRIME_WINDOW_BYTES (368UL * 1024UL)
 #define FG_SETUP_PRIME_AUTO_PACK_BYTES (288UL * 1024UL)
@@ -2313,6 +2313,15 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
         }
         fgRuntimeSetStagedFrame(nextFrameIndex, entry);
         return 1;
+    }
+
+    if (fgSceneEquals(gFgRuntime.sceneName, "visitor3") &&
+        slackVBlanks < FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS) {
+        if (ps1PerfEnabled) {
+            ps1PerfMarkPrefetchAttempt(slackVBlanks, slackVBlanks, 0);
+            ps1PerfMarkPrefetchSkipNoSlack();
+        }
+        return 0;
     }
 
     if (ps1PerfEnabled)
