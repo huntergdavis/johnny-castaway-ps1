@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <meta charset="utf-8">
+  <!-- Mobile fallback: when both JS is disabled and meta-refresh
+       is blocked, the user sees the H1 + manual "Click here" link
+       below. Without viewport, that fallback renders at desktop
+       scale on mobile. The viewport meta costs nothing on the
+       happy path (which redirects in 0 seconds anyway). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Redirecting&hellip;</title>
   <link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/scenes/">
   <script>location="https://hunterdavis.com/johnny-castaway-ps1/scenes/"</script>
