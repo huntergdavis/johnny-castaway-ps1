@@ -56,77 +56,77 @@ card carries the date it landed.
 
 <ul class="doc-grid">
   <li>
-    <p class="lab-date">2026-05-06</p>
+    <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>
     <a href="{{ '/lab/v081-mary4-freeze/' | relative_url }}">v0.8.1: what the soak found that the matrix didn't</a>
     <p>The post-v0.8.0 stability fix as a war story. A randomized soak surfaced a MARY 4 scene-load freeze the per-commit matrix never reached. The fix is a clean-rect pressure estimator that mirrors the actual save path; the discipline is the lesson — matrix and soak are not redundant.</p>
   </li>
   <li>
-    <p class="lab-date">2026-05-06</p>
+    <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>
     <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">From 87 to 99.5: the post-validation performance loop</a>
     <p>How the headless-perf battle card moved from +17.4% over target to +0.9% after every scene was already signed off — the single biggest unlock (clean-memory-relief drop-prefetch), the methodology, the accepted experiments, and the rejected ones.</p>
   </li>
   <li>
-    <p class="lab-date">2026-05-05</p>
+    <p class="lab-date"><time datetime="2026-05-05">2026-05-05</time></p>
     <a href="{{ '/lab/the-site-itself/' | relative_url }}">The site itself, as a small program</a>
     <p>The path-portable build, the canonical_baseurl trick, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn. A handful of decisions that keep the deployment stable and low-noise.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-29</p>
+    <p class="lab-date"><time datetime="2026-04-29">2026-04-29</time></p>
     <a href="{{ '/lab/build-farm/' | relative_url }}">The 24/7 build farm</a>
     <p>Docker, multiple branches, headless DuckStation. How a one-person project keeps a build matrix running around the clock.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/the-63-scene-grind/' | relative_url }}">The 63-scene grind</a>
     <p>From five signed off to all 63. What the daily loop looked like on a project of finite scenes and finite evenings, written from inside the grind.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/pixel-perfect-pivot/' | relative_url }}">The pivot that almost didn't happen</a>
     <p>How the project nearly shipped at "looks similar" before pixel-perfect became the bar. A retrospective on the choice that defined everything else.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/two-day-spi-bug/' | relative_url }}">The two-day SPI bug</a>
     <p>A war story about the PS1 controller pad-poll TX length. DuckStation only delivers button bytes when you send the full five-byte sequence. Spicyjpeg's example is wrong about that.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/35-holidays-codegen/' | relative_url }}">35 holidays in 4 weeks: a codegen study</a>
     <p>From four shipped holidays to thirty-six in a month, via Meeus, Zeller, and a YAML file that compiles to a C struct array.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/why-i-keep-porting-johnny/' | relative_url }}">Why I keep porting Johnny Castaway</a>
     <p>Dreamcast, picture frame, embedded Linux, PS1. The same screensaver, four times. What I'm actually doing when I do it again.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/fan-port-in-public/' | relative_url }}">Building a fan port in public</a>
     <p>Disclaimers, the original creator, GPL-3.0 inheritance, "if you paid for this, you were cheated." How shipping a fan port works without lawyers in 2026.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/dunking-bird/' | relative_url }}">The dunking bird</a>
     <p>A dumb hack the author wrote that pokes multiple LLM agents in parallel so they keep working instead of going idle. Used a lot during the perf branch's long unattended runs.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/llm-pass/' | relative_url }}">The LLM pass</a>
     <p>How a one-person fan port uses AI sub-agents without lying about it. The methodology essay; the docs version is at <a href="{{ '/docs/agents/' | relative_url }}">/docs/agents/</a>.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/hallucination-engineering/' | relative_url }}">Hallucination engineering</a>
     <p>Mitigating LLM-driven dev's specific failure mode: confident wrong answers. War stories, mitigations, what the year of practice teaches.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/regression-as-lifestyle/' | relative_url }}">Regression as a lifestyle</a>
     <p>Continuous regtest is not a CI feature. On this project it's a way of working — frame-by-frame screenshot diffs are the heartbeat.</p>
   </li>
   <li>
-    <p class="lab-date">2026-04-26</p>
+    <p class="lab-date"><time datetime="2026-04-26">2026-04-26</time></p>
     <a href="{{ '/lab/voice-anchor-problem/' | relative_url }}">The voice anchor problem</a>
     <p>Keeping a project's voice consistent when half the prose was drafted by AI sub-agents. The drawCredits text, the voice guide, the audit pass.</p>
   </li>
