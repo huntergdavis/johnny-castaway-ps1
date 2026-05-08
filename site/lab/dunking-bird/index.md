@@ -59,7 +59,7 @@ deterministic, and most iterations are uninteresting.
 The full
 [experiment ledger](https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md)
 on the perf branch has a few hundred entries. Most of them are
-single-knob probes — window size 22 KB, slack guard 4 VBlanks,
+single-knob probes — window size 22 KB, slack guard 4 [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}),
 that kind of thing. Each individual run takes minutes. The decision
 that follows takes seconds. The cumulative time spent staring at a
 terminal waiting for the next "do not promote" line is real, and that
