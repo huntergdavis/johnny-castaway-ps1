@@ -98,7 +98,7 @@ Pulled from the live narrative in
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
   loading, memory pressure, and release polish. `{{ site.release.tag }}`
-  has the headless baseline at slightly under target — `{{ site.release.perf_target_speed_pct }}%`
+  has the public-capped headless baseline at `{{ site.release.perf_target_speed_pct }}%`
   target speed across the 120 timing-bearing rows after the v0.8.2 + v0.8.3
   VISITOR3 + WALKSTUF1 outlier closures. The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
