@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-post-release BUILDING1 and VISITOR5 compact-FGP3/no-autoprime perf follow-ups; all 63 scenes remain validated, and the public headless battle card is +0.5215% over target / 99.4812% target speed).
+post-release BUILDING1, VISITOR5, BUILDING2 low, and WALKSTUF3 high perf follow-ups; all 63 scenes remain validated, and the public headless battle card is +0.4860% over target / 99.5164% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 558 |
-| Approx. words | 6010 |
+| Lines | 565 |
+| Approx. words | 6081 |
 | Code fences | 1 |
 
 ## Outline

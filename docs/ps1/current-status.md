@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
-post-release BUILDING1 and VISITOR5 compact-FGP3/no-autoprime perf follow-ups;
-all 63 scenes remain validated, and the public headless battle card is
-`+0.5215%` over target / `99.4812%` target speed).
+post-release BUILDING1, VISITOR5, BUILDING2 low, and WALKSTUF3 high perf
+follow-ups; all 63 scenes remain validated, and the public headless battle card
+is `+0.4860%` over target / `99.5164%` target speed).
 
 ## Overall
 
@@ -164,12 +164,17 @@ skipping auto-resident setup prime for that scene: high moves `792/778 ->
 784/782`, low moves `794/779 -> 787/782`, and both rows are now green. The
 newer VISITOR5 high-only compact-FGP3/no-autoprime pass keeps low tide on the
 prior pack while moving high `1111/1090 -> 1104/1092`, cutting overrun
-`21 -> 12`, blocking `12 -> 11`, and loop-read time `123 -> 91`. The public
-battle card is now `+0.5215%` over target / `99.4812%` target speed while
-preserving fixed pack LBAs and the `215040` byte PS-EXE bucket.
+`21 -> 12`, blocking `12 -> 11`, and loop-read time `123 -> 91`. The newer
+BUILDING2 low restore-minus-current/slack-4 pass moves low `1383/1304 ->
+1349/1316`, cutting blocking `118 -> 83` and hidden refill `5 -> 1`. The
+latest WALKSTUF3 high compact-FGP3/v4 pass moves current-layout control
+`2325/2282 -> 2310/2290`, cutting overrun `43 -> 20`, blocking `65 -> 47`,
+hidden refill `32 -> 18`, and loop reads `74 -> 37`. The public battle card
+is now `+0.4860%` over target / `99.5164%` target speed while preserving fixed
+pack LBAs and the `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.88`
-public over-target points and added about `12.38` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `16.91`
+public over-target points and added about `12.42` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -189,16 +194,18 @@ FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
 stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
-`1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and `1383/1304`,
-ACTIVITY9 low is `2085/2058`, WALKSTUF1 high/low are now `1491/1426` and
-`1489/1427`, and the FISHING1 high control sits at the public cap
+`1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and
+`1349/1316`, ACTIVITY9 low is `2085/2058`, WALKSTUF1 high/low are now
+`1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
+`2321/2293`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
 low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
-matrix; the next true outliers are VISITOR3, BUILDING2, residual WALKSTUF1
-work, BUILDING6, and selective upload-ready bands. VISITOR3 local C
+matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
+BUILDING6, BUILDING2 residual work, VISITOR5 low, ACTIVITY9 high, WALKSTUF3
+low, and selective upload-ready bands. VISITOR3 local C
 read-table rows and threshold-only fallthrough probes are now exhausted; the
 next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
 data-shape/preprocess route.

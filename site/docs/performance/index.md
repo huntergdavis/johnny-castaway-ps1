@@ -307,14 +307,16 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.5% over target / 99.5% target speed** (`0.5215%`
-exact public over target / `99.4812%` exact public target speed); the raw
-signed optimization matrix is `-0.2471%` / `100.2478%`.
+the public average is **+0.5% over target / 99.5% target speed** (`0.4860%`
+exact public over target / `99.5164%` exact public target speed); the raw
+signed optimization matrix is `-0.2825%` / `100.2833%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf3-high-compact-fgp3-v163`,
+`building2-low-restore-window-slack4-v160`,
 `visitor5-high-compact-fgp3-noautoprime-v158`,
 `building1-compact-fgp3-noautoprime-v157`,
 `mary3-preserve-window-slack8-v149`,
@@ -390,7 +392,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-08T13:01:12`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-08T14:46:19`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -398,7 +400,9 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor5-high-compact-fgp3-noautoprime-v158`,
+rows now use `walkstuf3-high-compact-fgp3-v163`,
+`building2-low-restore-window-slack4-v160`,
+`visitor5-high-compact-fgp3-noautoprime-v158`,
 `building1-compact-fgp3-noautoprime-v157`,
 `mary3-preserve-window-slack8-v149`,
 `visitor3-tail-trim-stageguard-v127`,
@@ -530,7 +534,7 @@ rows are historical only.
     <tr>
       <td><code>building2</code></td>
       <td>+2.5% / 97.6% (1349/1316); due 7; blk 48</td>
-      <td>+6.1% / 94.3% (1383/1304); due 22; blk 118</td>
+      <td>+2.5% / 97.6% (1349/1316); due 19; blk 83</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -784,8 +788,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf3</code></td>
-      <td>+1.9% / 98.1% (2321/2278); due 6; blk 68</td>
-      <td>+1.1% / 98.9% (2321/2295); due 5; blk 40</td>
+      <td>+0.9% / 99.1% (2310/2290); due 6; blk 47</td>
+      <td>+1.2% / 98.8% (2321/2293); due 5; blk 41</td>
     </tr>
   </tbody>
 </table>
