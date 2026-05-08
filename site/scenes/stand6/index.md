@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 6 — Looks at the palm
+title: STAND 6 — Looks out at the ocean, scratches head
 ads: STAND
 tag: 6
 slug: stand6
 status: validated
-description: "STAND.ADS scene 6: Looks at the palm. Validated on PS1."
+description: "STAND.ADS scene 6: Johnny looks out at the ocean and scratches his head. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_B SE: taps a foot and looks at the palm tree.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny looks out at the ocean and scratches his head — a confused-looking idle pose in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "looks at the palm" caption-mapping guess was wrong (he's looking out at the ocean, not at the palm tree).
 
 ## Validation notes
 
