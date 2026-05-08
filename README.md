@@ -160,6 +160,13 @@ and low `1140 -> 1163`, while full dedupe removed `144068` active bytes yet
 regressed high/low to `1158/1024` and `1165/1024`. VISITOR3 payload reuse now
 needs a scheduler-costed pack planner rather than another layout-neutral offset
 rewrite.
+The offscreen-clip lane is closed as well. Clipping VISITOR3 compact residuals
+to the visible screen can reduce logical payload `737600 -> 655911` per tide,
+but the size-shrinking version converts visible wins into hidden prefetch
+overrun (`0 -> 72/77`), and the data-size-preserving draw-only version
+repeatedly regresses low tide to `1151/1024` with `blocking_vb 194 -> 200`.
+Runtime clipping already makes those pixels invisible; a future retry needs a
+scheduler-costed pack planner that preserves low-tide CD phase.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key

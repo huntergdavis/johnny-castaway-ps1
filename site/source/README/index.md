@@ -21,8 +21,8 @@ A PS1 port of Sierra's classic Johnny Castaway screen saver, using a hybrid scen
 | Field | Value |
 |---|---:|
 | Source path | `README.md` |
-| Lines | 664 |
-| Approx. words | 5870 |
+| Lines | 671 |
+| Approx. words | 5943 |
 | Code fences | 1 |
 
 ## Outline
