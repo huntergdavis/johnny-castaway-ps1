@@ -362,7 +362,12 @@ payloads, closing that safer no-op variant. The setup-owned `97..109` segment
 retry is exact-flat too, closing the remaining local version of that read-plan
 candidate. The large-payload sector-alignment probe then proves that reducing
 modeled sectors by padding is not sufficient: it regresses VISITOR3 high/low
-cadence despite fixed file size and LBAs.
+cadence despite fixed file size and LBAs. The following packed-draw metadata
+probe finally finds a real VISITOR3 byte-reduction signal (`737600 -> 659455`
+payload bytes per tide and `1139 -> 1127` / `1140 -> 1124` loop VBlanks), but
+its new runtime decoder crosses the PS-EXE sector bucket and shifts foreground
+LBAs, regressing BUILDING2 and BUILDING4 canaries, so it is logged but not
+promoted.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

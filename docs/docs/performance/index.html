@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3716 words
+          ~15 min read · 3759 words
         </p>
 
       <hr class="rule" />
@@ -925,7 +925,11 @@ exceed the current <code class="language-plaintext highlighter-rouge">814847</co
 budgeted analyzer target keeps this same-footprint lane alive with <code class="language-plaintext highlighter-rouge">74</code>
 selected frames, <code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, and <code class="language-plaintext highlighter-rouge">3858104</code> modeled upload
 bytes saved before runtime implementation. The empty-hold no-op recast is
-closed because the current packs expose <code class="language-plaintext highlighter-rouge">0</code> zero-visual-work entries.</li>
+closed because the current packs expose <code class="language-plaintext highlighter-rouge">0</code> zero-visual-work entries. The
+packed-draw metadata probe proves a real VISITOR3 byte-reduction signal, but
+its v7 runtime decoder crosses the PS-EXE sector bucket and shifts every
+following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
+C-runtime shape is rejected until it can be made layout-neutral.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

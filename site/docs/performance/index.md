@@ -797,7 +797,11 @@ Next plausible wins, in priority order:
    budgeted analyzer target keeps this same-footprint lane alive with `74`
    selected frames, `814184` payload+rect bytes, and `3858104` modeled upload
    bytes saved before runtime implementation. The empty-hold no-op recast is
-   closed because the current packs expose `0` zero-visual-work entries.
+   closed because the current packs expose `0` zero-visual-work entries. The
+   packed-draw metadata probe proves a real VISITOR3 byte-reduction signal, but
+   its v7 runtime decoder crosses the PS-EXE sector bucket and shifts every
+   following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
+   C-runtime shape is rejected until it can be made layout-neutral.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.
