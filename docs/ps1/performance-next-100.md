@@ -63,6 +63,11 @@ active payload stayed `737600 -> 737600` for both packs. That means the earlier
 entry-prune speed signal cannot be made cadence-preserving by simply replacing
 payloads with empty holds.
 
+The VISITOR3 zero-runtime-code entry-origin shift gate is closed too. Re-centering
+each FGP3/v4 entry and subtracting the shift from compact cleanup/draw
+coordinates saves `0` bytes on both current tides (`737600 -> 737600`), so
+there is no pack payload or CD-duration win to benchmark.
+
 Fresh low-tide scalar cap retry: `168 KiB` is not promotable. It preserves
 layout but stays exact-flat at `1895`, `1604/1407`, `blocking_vb=271`,
 `prefetch_overrun_vb=54`, and `loop_reads=132`, so the current WALKSTUF1
@@ -1267,6 +1272,7 @@ pre-v0.8.0 row.
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The analyzer now exact-knapsacks the default-selected VISITOR3 rows against the pack's `814847` bytes of zero-tail slack and selects `74 / 96` frames using `814184` bytes, leaving `663` bytes of slack and retaining `3858104` modeled upload bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows and full VISITOR3/canary validation. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
 | VISITOR3 no-op empty-hold recast | Do not promote. The pack-side scanner found `0` current VISITOR3 high/low FGP3/v4 payload entries with both cleanup and draw pixel counts at zero, so active payload stays `737600 -> 737600` and no binary runtime probe is available. The old prune win removed entries that still carry real cleanup/draw work under the current data shape. |
+| VISITOR3 entry-origin recentering | Do not promote. A host-side size gate over current VISITOR3 high/low FGP3/v4 compact cleanup/draw streams found no legal origin shift that reduces compact-u16 metadata; both tides stay `active_payload 737600 -> 737600`, `saved=0`, `changed_entries=0`. |
 | Dirty upload rect cap `8 -> 24` | Do not promote. VISITOR3 analyzer estimated only a tiny loop-level upload-byte reduction from eliminating the three cap-hit frames, and the runtime probe was exact-flat on VISITOR3 high/low (`1357/1023` and `1361/1023`) with no key metric improvement. Move upload work to generated selective upload-ready payloads or restore/compose coalescing rather than global rect-cap tweaks. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |

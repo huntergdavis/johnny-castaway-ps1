@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3791 words
+          ~15 min read · 3816 words
         </p>
 
       <hr class="rule" />
@@ -932,7 +932,10 @@ following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
 C-runtime shape is rejected until it can be made layout-neutral. A
 layout-neutral packed-delta retry keeps LBAs and the PS-EXE bucket fixed, but
 its function-scoped PAL4 span <code class="language-plaintext highlighter-rouge">-Os</code> trade regresses VISITOR3 high while
-improving low tide, so that C-side shape is closed too.</li>
+improving low tide, so that C-side shape is closed too. An entry-origin
+recentering size gate also saves <code class="language-plaintext highlighter-rouge">0</code> bytes on current VISITOR3 high/low
+FGP3/v4 payloads, so that zero-runtime-code coordinate-shift lane is closed
+before emulator time.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

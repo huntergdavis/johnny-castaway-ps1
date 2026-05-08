@@ -804,7 +804,10 @@ Next plausible wins, in priority order:
    C-runtime shape is rejected until it can be made layout-neutral. A
    layout-neutral packed-delta retry keeps LBAs and the PS-EXE bucket fixed, but
    its function-scoped PAL4 span `-Os` trade regresses VISITOR3 high while
-   improving low tide, so that C-side shape is closed too.
+   improving low tide, so that C-side shape is closed too. An entry-origin
+   recentering size gate also saves `0` bytes on current VISITOR3 high/low
+   FGP3/v4 payloads, so that zero-runtime-code coordinate-shift lane is closed
+   before emulator time.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.
