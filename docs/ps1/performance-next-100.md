@@ -46,6 +46,13 @@ ACTIVITY9 low, and FISHING1 high controls stayed exact-flat. The next true
 rows are WALKSTUF1 low/high, VISITOR3, BUILDING2, BUILDING6, and selective
 upload-ready preprocessing.
 
+Fresh low-tide scalar cap retry: `168 KiB` is not promotable. It preserves
+layout but stays exact-flat at `1895`, `1604/1407`, `blocking_vb=271`,
+`prefetch_overrun_vb=54`, and `loop_reads=132`, so the current WALKSTUF1
+setup-prime knees are `160 KiB` low and `144 KiB` high. Do not keep raising
+contiguous WALKSTUF1 caps without a generated segmented plan or a pack-shape
+change.
+
 Recent promoted BUILDING4 restore-minus-current baseline: subtract current
 PAL4 draw spans from each frame's compact cleanup prefix in both BUILDING4
 FGP3/v4 packs while preserving the padded `1714154` byte CD footprint, pack
@@ -1221,6 +1228,7 @@ pre-v0.8.0 row.
 | BUILDING4 restore-minus-current cleanup | Done; keep as pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame while leaving draw pixels, padded pack size, pack LBAs, and PS-EXE size fixed. BUILDING4 high/low improve to `2844/2816` and `2855/2815`, blocking drops to `37/46`, active payload drops `1032442 -> 855284`, and runtime restore bytes drop `1229878 -> 546950`. This checkpoint later moved to `-0.0231%` over target / `100.0972%` target speed after VISITOR3 code-headroom and WALKSTUF1 high setup-prime cap promotions. |
 | WALKSTUF1 high setup-prime cap 144 KiB | Done; keep as a high-tide-only setup-prime cap retune, not a shared WALKSTUF1 policy. High improves `1595/1402 -> 1592/1406`, `overrun_vb 193 -> 186`, `blocking_vb 277 -> 275`, `loop_reads 136 -> 134`, and `due_misses 56 -> 55`; low stays exact-flat at `1604/1407`. Current exact matrix rollup is `-0.0231%` over target / `100.0972%` target speed. |
 | WALKSTUF1 high setup-prime cap 152 KiB | Do not promote. Raising the high-only cap from `144 KiB` to `152 KiB` extends setup coverage to sectors `2..76` and nominally cuts high loop reads `134 -> 133`, but regresses high `scene_vb 1880 -> 1884`, `loop_vb 1592 -> 1595`, `target_vb 1406 -> 1405`, `blocking_vb 275 -> 286`, and `due_misses 55 -> 57`. Treat `144 KiB` as the high-cap knee. |
+| WALKSTUF1 low setup-prime cap 168 KiB | Do not promote. Raising the low-only cap from `160 KiB` to `168 KiB` preserves pack LBA and PS-EXE bucket but is exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |
 | Dirty upload rect cap `8 -> 24` | Do not promote. VISITOR3 analyzer estimated only a tiny loop-level upload-byte reduction from eliminating the three cap-hit frames, and the runtime probe was exact-flat on VISITOR3 high/low (`1357/1023` and `1361/1023`) with no key metric improvement. Move upload work to generated selective upload-ready payloads or restore/compose coalescing rather than global rect-cap tweaks. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |
