@@ -144,7 +144,7 @@ the desktop engine -- the same engine, on a host that has gigabytes
 of RAM and a real OS -- as the authoritative renderer. Capture every
 visible foreground draw. Capture every `0xC051 PLAY_SAMPLE` opcode
 the TTM interpreter fired. Encode the result into a small per-scene
-binary (an **FG2 pack**: full-render base frames plus per-frame
+binary (an **[FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})**: full-render base frames plus per-frame
 indexed-pixel diff spans plus a sound-event table). Ship the packs
 on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
