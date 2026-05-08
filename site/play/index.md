@@ -5,6 +5,13 @@ subtitle: Latest build, quickstart, controls.
 description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Latest build
 
 **{{ site.release.tag }}** ({%- if site.release.release_date -%}released <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time>{%- endif -%}) — short notes on
