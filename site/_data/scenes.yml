@@ -326,7 +326,7 @@
   - black backdrop
   - high/low pack parity
   last_verified: '2026-05-02'
-  notes: visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
+  notes: the-end-scroll (the Day 11 finale: frog clock, sunset silhouette, plane overhead, Johnny parachutes down, and the "The End" title card); visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
 - ads: JOHNNY
   tag: 2
   slug: johnny2
