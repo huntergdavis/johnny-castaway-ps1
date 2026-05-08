@@ -375,7 +375,7 @@
   - high/low pack parity
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows
+  notes: sends-sos-bottle (Johnny writes a fresh SOS and sends the bottle out); visual + audible signoff after rebuilding high/low packs at the current-position host capture so the thrown-bottle splash is in frame; full-frame keyed foreground-only overlay fixes stale lower-band overpaint, and SOS note timing now holds on the note instead of the blank post-bubble rows
 - ads: JOHNNY
   tag: 6
   slug: johnny6
