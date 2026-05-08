@@ -231,7 +231,7 @@ runs in headless DuckStation, so that one is the reference.
 ### Does it run at native rate?
 
 At {{ site.release.tag }} the headless-perf battle card averages
-**{{ site.release.perf_target_speed_pct }}% target speed** across
+**[{{ site.release.perf_target_speed_pct }}% target speed]({{ '/docs/glossary/#target-speed' | relative_url }})** across
 the 120 timing-bearing scene/tide rows — close enough that most
 scenes hit their original frame budget on PS1 hardware. The
 remaining gap is concentrated in a small set of high-leverage
