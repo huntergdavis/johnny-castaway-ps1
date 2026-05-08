@@ -14,7 +14,7 @@ the next baseline.
 
 The useful part is discipline. A candidate optimization is not "faster"
 because it feels faster once. It is faster when the headless harness
-shows fewer VBlanks, no new blocking reads, no worse [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) metrics,
+shows fewer [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}), no new blocking reads, no worse [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) metrics,
 and no visual regression when the human pass catches up. Rejected tests
 still get logged because a failed idea can become valid after a later
 pack-format or scheduler change.
