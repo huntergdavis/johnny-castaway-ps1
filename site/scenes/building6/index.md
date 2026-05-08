@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: BUILDING 6 — Edge sleep
+title: BUILDING 6 — Lilliputians tie Johnny up (no-bird variant)
 ads: BUILDING
 tag: 6
 slug: building6
 status: validated
-description: "BUILDING.ADS scene 6: Edge sleep. Validated on PS1."
+description: "BUILDING.ADS scene 6: Lilliputians tie Johnny down while he sleeps — the no-bird variant of the BUILDING 4 gag. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-05 after regenerating high/low packs through the
@@ -18,11 +18,9 @@ route.
 - ADS dispatch: <code>BUILDING.ADS scene 6</code>
 - Slug: <code>building6</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; weak caption fit.) Sleep / walk-to-edge filler scene; mapping is uncertain.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Same Gulliver gag as BUILDING 4: Johnny sleeps on the sand and tiny lilliputians swarm in and tie him down with ropes. This time no bird beat — just the lilliputians and the ropes. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "edge sleep" caption-mapping guess was wrong.
 
 ### How this scene gets validated
 
