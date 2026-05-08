@@ -26,7 +26,7 @@ DuckStation. The numbers that matter, in the order you usually trip over them:
 
 - **CPU:** MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
 - **System RAM:** 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.
-- **VRAM:** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
+- **[VRAM]({{ '/docs/glossary/#vram' | relative_url }}):** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
   of that on their own.
 - **SPU RAM:** 512 KB, owned by the audio co-processor. ADPCM samples only.
 - **CD drive:** 2x speed, 300 KB/s sustained, ~150 ms cold seek.
