@@ -9,7 +9,7 @@ Current accepted fishing1 high-tide canary baseline:
 | `loop_vb` | `1068` |
 | `target_vb` | `1074` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.56%` |
+| `remaining_over_target` | `0.0% public` (`-0.56%` raw signed) |
 | `blocking_vb` | `2` |
 | `prefetch_overrun_vb` | `2` |
 | `loop_reads` | `20` |
@@ -19,18 +19,19 @@ Current accepted fishing1 high-tide canary baseline:
 | `jcreborn.exe` | `215040` bytes |
 | `jcreborn.elf` | `951708` bytes |
 
-Goal: keep the FISHING1 canary at or under target while reducing the remaining
+Goal: keep the FISHING1 canary at the public 100% cap or better while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
 or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
 Current all-scene rollup after the WALKSTUF1 compact FGP3/v4 pass:
-`-0.2497%` average over target / `100.2899%` target speed across `120`
-timing-bearing rows. Since the compact full-matrix baseline was about
+`+0.5576%` public average over target / `99.4669%` public target speed across
+`120` timing-bearing rows. The raw signed optimization matrix remains
+`-0.2497%` / `100.2899%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.65` over-target points and added about `13.19`
-target-speed points.
+removed about `16.84` public over-target points and added about `12.37`
+public target-speed points.
 
 Latest promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
 PAL4/FGP2 packs to padded compact FGP3/v4 restore-minus-current packs inside
@@ -147,16 +148,20 @@ frame/range-specific direct-stage policy, or a pack/data-shape reduction that
 lowers refill cost first.
 
 Current WALKSTUF1 preprocess footprint gate: the default selective x-band
-upload-ready model remains unsafe as a raw append, but the missing shrinking
-precondition is now partly satisfied by the compact FGP3/v4 pack transform.
-The old PAL4/FGP2 packs had only `1` byte of zero-tail slack, while the
-default threshold plan selected `153 / 216` frames and needed `5684096`
-payload-plus-rect bytes to retain `9900992` modeled upload bytes saved. Raw
-foreground-only upload payloads are also unsafe here: selected draw-covered
+upload-ready model now has compact-pack zero-tail budget, but it remains unsafe
+as a raw append. The old PAL4/FGP2 packs had only `1` byte of zero-tail slack;
+the compact FGP3/v4 packs now expose `611305` zero-tail bytes per tide, and the
+budgeted selective model fits `609192 / 611305` bytes while selecting `39`
+frames, saving `1991904` modeled upload bytes from `2600320` selected runtime
+bytes (`76.6%` saved), and retaining `59.45%` of the default selected savings.
+Restore-minus-current cleanup is exhausted for this pack shape
+(`restore_runtime_bytes == restore_minus_current_exact_bytes == 525826`).
+Raw foreground-only upload payloads are still unsafe: selected draw-covered
 x-band bytes and all-draw-covered selected frames are both `0`. Keep raw
 same-footprint WALKSTUF1 upload-ready append work closed until there is a safe
-background-owned pixel source or generated scheduler metadata; use the compact
-pack as the new baseline for any future WALKSTUF1 preprocessing lane.
+background-owned/precomposed pixel source, ownership metadata, generated
+scheduler support, or MoveImage-safe motion data; use the compact pack as the
+new baseline for any future WALKSTUF1 preprocessing lane.
 
 Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
@@ -201,6 +206,15 @@ candidate both kept high at `1422`, `1118/1028`, `blocking_vb=150`,
 `loop_reads=31`. Keep the guard at `6` and do not spend more VISITOR3 cycles
 on local threshold-only fallthrough probes.
 
+Current VISITOR3 retained-window slack gate: a VISITOR3-only `20 KiB`
+compact-residual window with a `12` VBlank refill slack guard is rejected. It
+kept layout and hidden prefetch overrun fixed, but moved more direct-stage work
+into active visible CD: high regressed `loop_vb 1118 -> 1131`, overrun
+`90 -> 102`, blocking `150 -> 210`, and reads `27 -> 39`; low regressed
+`1126 -> 1139`, overrun `101 -> 106`, blocking `170 -> 212`, and reads
+`31 -> 41`. Do not retry scalar VISITOR3 window/slack retunes; the next
+VISITOR3 path needs generated scheduler ownership or pack/data-shape work.
+
 Current BUILDING2 low restore-minus-current gate: the low-tide pack transform
 is still too hidden-refill expensive under the current scheduler, even though
 the visible signal is strong. A size-preserving `BUIL2LOW.FG2` cleanup-minus-
@@ -208,8 +222,12 @@ current candidate cuts active payload `789906 -> 674798` and modeled restore
 bytes `937272 -> 474572`; low improves to `1346/1311`, overrun `35`, blocking
 `50`, and `loop_reads=52`, with high tide flat. Strict promotion is blocked by
 hidden `prefetch_overrun_vb 5 -> 13`. The temporary `144 KiB` setup-prime and
-BUILDING2-low stage-guard salvages did not reduce that hidden debt. Treat this
-as a generated scheduler/refill-ownership target, not a pack-only promotion.
+BUILDING2-low stage-guard salvages did not reduce that hidden debt. A later
+BUILDING2-low window-refill slack guard did remove hidden refill (`5 -> 0`)
+while keeping layout fixed, but it pushed too much work into visible cadence:
+low moved `1383/1304 -> 1360/1313` with blocking `118 -> 180` and due misses
+`22 -> 43`. Treat this as a generated scheduler/refill-ownership target, not a
+pack-only or local slack-guard promotion.
 
 The VISITOR3 no-op empty-hold recast is also closed under the current packs.
 `scripts/compact-fgp3-zero-noop-entries.py` found `0` high-tide and `0`
@@ -1212,14 +1230,14 @@ display, tearing, frame drops, or weakened pause input.
 | 177 | VISITOR3 payload order planner | Reorder payload bodies inside the existing padded pack while preserving entry offsets through an indirection table. | Duplicate read clusters may be layout-driven; current direct offset order is fragile. |
 | 178 | VISITOR3 safe no-op cadence replacement | Replace removed visual-work entries with explicit hold metadata plus generated refill reservations. | The old no-op prune speed signal failed because cadence shortened and stole refill slack. |
 | 179 | VISITOR3 compact parser split | Restore the accepted packed compositor byte-for-byte and add any new compact/upload parser in a separate cold path. | Prior compact data wins failed when shared PAL4 hot code moved. |
-| 180 | WALKSTUF1 shrinking FGP2 encoder | Build a PAL4/FGP2-specific compactor before upload-ready append work. | WALKSTUF1 has only `1` byte slack, so every useful append first needs a shrinking transform. |
+| 180 | WALKSTUF1 safe precomposed encoder | Build a background-owned/precomposed payload source before upload-ready append work. | The compact pack now has `611305` bytes of slack, but raw foreground-only upload bytes are still unsafe. |
 | 181 | WALKSTUF1 direct-stage frame policy | Generate per-frame direct-stage caps instead of changing the global `8 KiB` threshold. | Scalar caps showed the right blocking signal but too much hidden refill debt. |
 | 182 | WALKSTUF1 late-cluster sidecar groups | Emit generated scheduler metadata for the top low/high clusters without adding hot C table branches. | The guarded hand table did not fire and still shifted phase. |
-| 183 | WALKSTUF1 explicit layout-moving run | Permit a controlled pack-size/layout change for a compressed or upload-ready WALKSTUF1 variant. | Same-footprint is impossible with `1` byte slack; a measured LBA move may be cheaper than no path. |
+| 183 | WALKSTUF1 explicit layout-moving run | Permit a controlled pack-size/layout change for a precomposed or motion-data WALKSTUF1 variant. | Same-footprint budget exists after compaction, but safety metadata or compression may still need a measured LBA move. |
 | 184 | BUILDING2 low hidden-refill owner trace | Add trace-only ownership for the hidden `5 -> 13` refill debt in the rejected low restore-minus-current transform. | The visible win is huge; the only blocker is hidden scheduler ownership. |
 | 185 | BUILDING2 low dual-pass scheduler | First apply restore-minus-current, then generated refill reservations around the shortened render cadence. | The transform makes due frames shorter; the scheduler must move hidden reads into that new space. |
-| 186 | BUILDING6 FGP2 zero-shift residual | Implement a PAL4 residual/keyframe encoder for BUILDING6 instead of converting wholesale to FGP3. | Motion analysis predicts a strong host-only payload/upload win, while direct FGP3 expands. |
-| 187 | BUILDING6 keyframe cadence sweep | Choose every-N full frames plus residuals from motion analysis and size-gate against the current pack. | May capture most of the `66%` payload signal without a full format rewrite. |
+| 186 | BUILDING6 FGP2 zero-shift residual | Implement a PAL4 residual/keyframe encoder for BUILDING6 instead of converting wholesale to FGP3. | v146 motion analysis predicts `680717` compose bytes and `11701120` upload bytes saved in the zero-shift runtime model, while direct FGP3 expands. |
+| 187 | BUILDING6 keyframe cadence sweep | Choose every-N full frames plus residuals from motion analysis and size-gate against the current pack. | v146 reports `242 / 305` candidate pairs and `64.85%` modeled pair-payload savings, enough to justify a generated format. |
 | 188 | BUILDING6 generated window ownership | Use read-plan metadata to schedule early `15..39` coverage without a scalar `48 KiB` window. | The raw larger window saved reads but paid them visibly. |
 | 189 | Cross-outlier safe-pixel analyzer | Extend draw-covered accounting to background-owned/precomposed feasibility across VISITOR3, WALKSTUF1, and BUILDING6. | The same unsafe-raw-upload lesson now blocks multiple top outliers. |
 | 190 | Pack-side payload entropy matrix | Report per-scene compressibility for active payload, upload bands, and rect metadata. | Decides whether compression, layout movement, or scheduler metadata is the best next path per outlier. |
@@ -1227,6 +1245,36 @@ display, tearing, frame drops, or weakened pause input.
 | 192 | Layout-pinned failure replay | For each major rejected code-shape win, rerun with explicit EXE padding and FG LBA pinning before closing permanently. | Separates true codegen regressions from CD-layout phase regressions. |
 | 193 | Long-run memory-pressure telemetry | Log heap/free-largest/scene index to `scratch` during 1+ hour scene cycling. | Recent long runs likely die after `10-15` scenes from memory pressure; the optimization loop needs durable crash evidence. |
 | 194 | Outlier rotation gate | When VISITOR3 has no safe immediate lane, automatically rotate to WALKSTUF1, BUILDING2 low, and BUILDING6 while preserving VISITOR3 ideas. | Prevents the headless path from stalling on one scene after scalar/source lanes are exhausted. |
+| 195 | Generated FG scheduler sidecar v1 | Emit a compact cold sidecar of per-entry read deadlines, slack class, and max safe append size. | Replaces hot C range tables with data that can be packed or compressed without crossing the PS-EXE bucket. |
+| 196 | Deadline-aware append simulator | Replay `JCPERF2` held-loop, due-miss, and blocking counters from summaries before a runtime probe. | VISITOR3 and BUILDING6 both show saved reads can still worsen visible cadence. |
+| 197 | Scene-local refill reservation map | Reserve VBlank ranges for CD refill before shortening compose work with data-shape transforms. | BUILDING2 low restore-minus-current failed because the faster renderer starved presentation/refill timing. |
+| 198 | Precomposed band ownership builder | Generate upload bands from final clean background plus foreground, with tide/night/holiday keying. | VISITOR3 and WALKSTUF1 raw foreground-only bands fail because selected pixels are background-owned. |
+| 199 | Background-state hash gate | Store a hash/key for any precomposed payload and reject it at runtime if scene state differs. | Prevents baking ocean/holiday/night pixels into reusable foreground packs without proof. |
+| 200 | Compact ownership bitmap RLE | Encode per-band ownership as row-local runs rather than per-pixel masks. | Safe precomposed upload needs ownership proof without consuming the entire zero-tail budget. |
+| 201 | Upload-band entropy codec matrix | Compare row RLE, x-delta, nibble plane, and LZ-style codecs on VISITOR3/WALKSTUF1/BUILDING6 selected bands. | The next payload format should be chosen from measured compressed sizes, not intuition. |
+| 202 | Rect-template dictionary | Deduplicate repeated upload rect layouts across selected frames. | VISITOR3 and WALKSTUF1 rect metadata consumes meaningful same-footprint budget. |
+| 203 | Per-frame rect cap planner | Generate frame-specific upload rect caps and fallback full-width rows for cap-hit frames. | Avoids global dirty rect cap tweaks that were exact-flat or too costly. |
+| 204 | CD-layout padded sandbox | Add an automated branch mode that pads the PS-EXE and foreground files to hold LBAs fixed while testing code-shape ideas. | Many probes failed because code size shifted layout before the algorithm could be judged. |
+| 205 | Hot-symbol drift budget report | Emit a per-run diff of hot function sizes and addresses into the summary JSON. | Makes code-shape failures actionable without manually checking maps after every probe. |
+| 206 | Scratch log compactor | Summarize each long run's scene index, RSS, heap, largest free block, and last completed frame into a CSV. | Long-run crash diagnosis needs parseable breadcrumbs, not only terminal output. |
+| 207 | FG pack zero-tail ledger | Track zero-tail slack, active payload, and last nonzero byte for every foreground pack after each accepted commit. | Prevents repeating stale slack assumptions like the pre-compact WALKSTUF1 `1` byte result. |
+| 208 | Motion mirror invariant harness | Host-replay MoveImage/residual candidates against the RAM background mirror and dirty state. | BUILDING6 and WALKSTUF1 motion signals are unusable until mirror correctness is proved. |
+| 209 | Zero-shift residual FGP2 extension | Add a minimal PAL4 residual entry type for zero-shift frames before true translation. | Zero-shift avoids old/new position cleanup complexity while capturing a large share of motion savings. |
+| 210 | Nonzero motion cleanup prototype | Emit old-position cleanup plus new residual upload for a tiny BUILDING6 candidate range. | Tests the hardest MoveImage invariant on a bounded high-value pair before full format work. |
+| 211 | Motion keyframe interval search | Choose keyframes by payload, upload rows, and due-miss risk instead of fixed every-N cadence. | The best motion frames are clustered; fixed cadence may waste pack budget. |
+| 212 | BUILDING6 explicit layout-moving motion pack | Allow a measured pack growth for one BUILDING6 tide if zero-shift residual cannot fit in-place. | The v146 signal is large enough that a controlled LBA move may still net positive. |
+| 213 | BUILDING2 low refill-placement sidecar | Generate a tide-specific refill schedule for the restore-minus-current candidate, then replay it before emulator. | This targets the exact `blocking_vb 118 -> 180` / `due_misses 22 -> 43` failure. |
+| 214 | BUILDING2 restore-window hybrid | Combine restore-minus-current with smaller staged chunks rather than delaying all window work with a slack guard. | v144 proved a local guard fixes hidden debt but starves visible cadence. |
+| 215 | VISITOR3 yacht-frame micro-target | Build a one- or two-frame precomposed/scheduler sidecar around the highest upload/read hotspots only. | A tiny proof may promote where full selective upload is too format-heavy. |
+| 216 | VISITOR3 read-cluster cold metadata | Move `315..331` / `333..349` class data into a packed cold blob decoded only at scene start. | Keeps generated scheduling without growing hot `foregroundPilotPlay` branches. |
+| 217 | VISITOR3 late-loop hold retimer | Test generated hold retiming only when the next payload is already resident. | Attempts to absorb late clusters without shortening cadence or increasing due misses. |
+| 218 | WALKSTUF1 precomposed safety micro-target | Pick the top few budgeted v145 frames and generate owned/precomposed bands only for those frames. | Proves the safety path before consuming the full `609192` byte budget. |
+| 219 | WALKSTUF1 motion-vs-upload comparator | Compare compact precomposed upload, zero-shift residual, and scheduler sidecar on the same top frames. | Prevents building the wrong generated format for a scene with multiple signals. |
+| 220 | Cross-scene format selector | Classify each outlier as scheduler-owned, precomposed-upload-owned, zero-shift-motion-owned, or layout-moving. | The remaining outliers no longer share one scalar fix lane. |
+| 221 | Generated metadata compression fuzzer | Randomize sidecar encodings and score bytes, decode cost, and hot-symbol impact. | Keeps metadata out of the PS-EXE bucket while preserving runtime simplicity. |
+| 222 | Broad-canary auto-minimizer | When a candidate fails broad controls, bisect canaries and metrics to isolate layout drift vs true runtime coupling. | Speeds up log-only determinations and avoids rerunning irrelevant scenes. |
+| 223 | Baseline promotion ledger script | Automatically update README/site/CSV rollups and total improvement text from the accepted summary. | Reduces manual drift after every successful headless commit. |
+| 224 | No-runtime determination template | Generate experiment-log rows from scratch artifacts for failed size/safety gates. | Makes headless logging faster when a candidate is blocked before emulator time. |
 
 ## Impact-Prioritized Order
 
@@ -1419,6 +1467,8 @@ pre-v0.8.0 row.
 | BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
 | BUILDING6 `48 KiB` window plus `15..39` group | Do not retry as a larger scalar retained-window probe. The fresh v136 test saved many reads but regressed both visible cadence and hidden refill on both tides, so current BUILDING6 refill placement is scheduler-owned rather than capacity-owned. |
 | BUILDING6 pal4 padded FGP3 | Do not retry as a same-layout padded conversion under current validated packs. The v0.7.2 high/low packs expand `1444370 -> 1601445` bytes (`-10.87%` saved), so this lane needs selective/keyframed residual encoding or an explicit layout-changing experiment. |
+| BUILDING6 selective upload-ready append | Do not promote or retry as a raw same-footprint append. v146 shows both current packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `3354208` payload-plus-rect bytes for `92` frames and `5708192` modeled upload bytes saved; raw foreground-only safety still reports `0` selected draw-covered bytes and `0` all-draw-covered selected frames. |
+| BUILDING6 motion-comp host signal | Do not implement direct runtime MoveImage from the current analyzer alone. v146 reports a strong host-only signal (`242 / 305` candidate pairs, `64.85%` pair-payload savings; zero-shift runtime model saves `680717` compose bytes and `11701120` upload bytes), but runtime promotion needs a new pack format that preserves old-position cleanup, RAM mirror correctness, dirty tracking, and CD/layout budget. |
 | PAL4 aligned pair stores | Do not retry as a local branch in `grCompositePacked4OpaqueRun()`. It shrank ELF but regressed BUILDING4 high cadence; retry only after pack-generated aligned command classes or a pair LUT removes the hot-path branch/packing cost. |
 | PAL4 pair-LUT halfword compositor | Do not retry as a local C inner-loop swap. Reusing `palLutSierra` improved VISITOR3 high blocking only (`191 -> 188`) with flat loop timing and regressed low tide `1140 -> 1142`; keep PAL4 compose work on generated aligned command classes, selective direct16/upload-ready data, or layout-neutral assembly/codegen. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
@@ -1492,6 +1542,7 @@ pre-v0.8.0 row.
 | BUILDING2 high read group `60..72` | Done; keep as a high-tide-only retained stream group. The range was the only current scheduler-or-guarded matrix candidate with zero overread and medium visible gaps after the v108 pack pass. It grows `foregroundPilotPlay` by `12` bytes but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 high improves `1353/1311 -> 1349/1316`, `overrun_vb 42 -> 33`, `blocking_vb 56 -> 48`, `prefetch_overrun_vb 20 -> 12`, and `loop_reads 62 -> 61`; VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | BUILDING2 low restore-minus-current retry | Do not promote as a pack-only change. It improves low as far as `1383 -> 1346`, overrun `79 -> 35`, blocking `118 -> 50`, and loop reads `55 -> 52`, but hidden refill regresses `5 -> 13`; temporary setup-prime and stage-guard salvages did not fix that. Retry only with generated scheduler/refill ownership or a second data-shape change that reduces active CD pressure before shortening the render cadence. |
+| BUILDING2 low restore-minus-current plus window slack `5` | Do not promote or retry as a local slack guard. It fixes the strict hidden-refill blocker (`prefetch_overrun_vb 5 -> 0`) and improves loop/overrun (`1383/1304 -> 1360/1313`, overrun `79 -> 47`), but it starves active presentation and regresses visible blocking `118 -> 180` plus due misses `22 -> 43`. This proves the low transform needs generated refill placement, not simply fewer low-slack window reads. |
 | BUILDING6 `48 KiB` window plus `15..39` read group | Do not promote or retry as a scalar window/group change. It reduced loop reads from `74 -> 32` high and `73 -> 31` low, but regressed high `2520/2442 -> 2568/2443`, blocking `62 -> 115`, hidden refill `64 -> 117`, and low `2515/2437 -> 2565/2445`, blocking `70 -> 115`, hidden refill `66 -> 96`. BUILDING6 needs generated scheduler ownership or a shrinking/selective FGP2 data-shape encoder before another read-count group. |
 | VISITOR3 low scoped composite-helper `-Os` | Done; keep as code-shape plus low-tide timing win. `grCompositeToBackground()` shrinks `0xbf4 -> 0x5b0`, `grCompositeToBackgroundFlip()` shrinks `0xc60 -> 0x63c`, and `jcreborn.elf` shrinks `960556 -> 951708` while the PS-EXE bucket remains `215040`. VISITOR3 low improves `1138/1024 -> 1135/1024`, `overrun_vb 114 -> 111`, `blocking_vb 191 -> 184`, and `loop_read_vb 200 -> 194`; VISITOR3 high, BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the current VISITOR3 baseline. FGP3/v4 zero draw-tail bytes are trimmed while both packs stay `1555450` bytes and LBAs stay fixed; high setup-prime residency rises to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevents no-slack prefetch debt. VISITOR3 high improves `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improves `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both keep `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
@@ -1503,11 +1554,12 @@ pre-v0.8.0 row.
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
 | WALKSTUF1 low read group `297..313` with `minSlack=8` | Do not promote or retry as a hand table. The safe slack guard prevented the group from firing (`group_hits=0`), while the source branch still shifted low target enough to regress overrun by one VBlank. WALKSTUF1 read clusters need generated scheduler metadata, not another hot source-table branch. |
-| WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. Both current PAL4/FGP2 packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `5684096` payload-plus-rect bytes per tide for `153 / 216` frames and `9900992` modeled upload bytes saved. The exact budget selects `0` frames, and raw foreground-only safety reports `0` selected draw-covered x-band bytes. Retry only with compression/shrinking pack data, explicit layout movement, a safe pixel source, or generated scheduler ownership. |
+| WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. The current compact FGP3/v4 packs now expose `611305` zero-tail bytes and can fit a `609192` byte budgeted x-band subset for `39` frames with `1991904` modeled upload bytes saved, but raw foreground-only safety still reports `0` selected draw-covered x-band bytes and `0` all-draw-covered selected frames. Compact slack is a byte budget, not a safety proof; retry only with safe background-owned/precomposed pixels, ownership metadata, generated scheduler ownership, or MoveImage-safe motion data. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The current v140 analyzer exact-knapsacks the default-selected VISITOR3 rows against the post-tail-trim pack slack: high selects `75 / 117` default frames using `888880 / 891012` bytes and retaining `6290232` modeled upload bytes saved, while low selects `74 / 117` frames using `853848 / 854114` bytes and retaining `6166528` modeled bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows, a safe background-owned/precomposed pixel source, and full VISITOR3/canary validation. |
 | VISITOR3 runtime dirty-upload narrowing | Do not retry as a source-side optimization. The live uploader already has row-level dirty X metadata, but exact narrow intervals for current VISITOR3 would create about `131996` upload rects over the loop, and scratch-packed x-band variants have already failed from code-size, copy, and cadence cost. Upload-byte work must be pack-emitted or precomposed, not packed from tile rows during `grDrawBackground()`. |
 | VISITOR3 v140 current-window read-plan refresh | Do not promote or retry another hand-authored source table. The refreshed read-plan from v127 found `0` candidates that are append-start fireable, current-window-sized, and low-risk. The rows that fit and fire are the late tight-cluster class, including the already-rejected high `315..331` and low `333..349` shapes, and remain `high-risk:scheduler-only`. |
+| VISITOR3 `20 KiB` retained window with `12` VBlank slack | Do not promote or retry as scalar window/slack tuning. It improved total scene duration by shortening setup/load shape, but active loop regressed on both tides: high `1118 -> 1131`, blocking `150 -> 210`, reads `27 -> 39`; low `1126 -> 1139`, blocking `170 -> 212`, reads `31 -> 41`. Hidden refill stayed `0` and layout stayed fixed, so the failure is scheduler/CD ownership, not binary layout. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
@@ -1518,6 +1570,7 @@ pre-v0.8.0 row.
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |
 | BUILDING6 `48 KiB` window plus `15..39` group | Do not promote or retry as a scalar larger-window path. It saved reads but regressed high to `2568/2443` with hidden refill `117` and low to `2565/2445` with hidden refill `96`; require generated scheduler ownership or a shrinking/selective FGP2 encoder first. |
 | BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
+| BUILDING6 v146 upload/motion refresh | Do not spend emulator time on raw BUILDING6 upload append. Same-footprint slack is still `1` byte and safe-pixel coverage is still `0`; the actionable path is generated zero-shift/motion residual format work or scheduler ownership, not another scalar source probe. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
 | BUILDING4 high read group `821..837` | Do not promote or retry as a standalone hand-coded group. A fresh current-code read-plan marked it low-visible-risk, but the corrected source probe under BUILDING4 high's `24 KiB` window plus `32 KiB` retained group capacity stayed exact-flat (`2985/2774`, `blocking_vb=285`, `prefetch_overrun_vb=51`, `loop_reads=93`, `due_misses=40`) and only grew/shifted code. BUILDING4 needs scheduler-owned append timing or generated ownership metadata, not more one-off range tables. |
 | BUILDING4 high read group `57..69` | Do not promote or retry as a standalone hand-coded group. Append-start fireability was true, but BUILDING4 high stayed exact-flat while hot-code growth/phase made FISHING1, WALKSTUF1, and ACTIVITY9 canaries fail. Fireability is necessary but not sufficient; require scheduler-owned append timing or generated metadata before more BUILDING4 hand tables. |

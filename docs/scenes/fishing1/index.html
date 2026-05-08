@@ -207,9 +207,9 @@ the entire headless-perf matrix. Re-measured on every release; its
 <code class="language-plaintext highlighter-rouge">loop_vb</code> vs <code class="language-plaintext highlighter-rouge">target_vb</code> ratio is the load-bearing reference frame
 for “did this matrix-wide change just regress the easiest path.”
 The latest rollup at <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> lands at
-<code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">-0.6%</code> over target, <code class="language-plaintext highlighter-rouge">100.6%</code> target speed,
-<code class="language-plaintext highlighter-rouge">blocking_vb=2</code> — which is what “the FISHING 1 bar” means as a
-<em>timing</em> claim alongside the visual one.</p>
+<code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">0.0%</code> public over target, <code class="language-plaintext highlighter-rouge">100.0%</code> public target
+speed, <code class="language-plaintext highlighter-rouge">blocking_vb=2</code> — the raw signed CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. That is
+what “the FISHING 1 bar” means as a <em>timing</em> claim alongside the visual one.</p>
 
 <p>The
 <a href="../../perf/">perf battle card</a> shows the

@@ -305,9 +305,11 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.6% over target**, or **[100.6% of target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. Across the
-120 timing-bearing battle-card rows, the average is **-0.2% over target /
-100.3% target speed** (`-0.2497%` exact over target / `100.2899%` exact target speed).
+That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
+CSV row is `-0.6%` / `100.6%`. Across the 120 timing-bearing battle-card rows,
+the public average is **+0.6% over target / 99.5% target speed** (`0.5576%`
+exact public over target / `99.4669%` exact public target speed); the raw
+signed optimization matrix remains `-0.2497%` / `100.2899%`.
 
 ## Scene Battle Card
 
@@ -385,10 +387,12 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T04:24:55`; per-row freshness and stats version are shown on
+run is `2026-05-08T06:36:32`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
-`over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
-out when nonzero.
+public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
+and `due` called out when nonzero. Faster-than-target rows display
+`0.0% / 100.0%`; their raw signed values remain in
+`docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
 rows now use `visitor3-tail-trim-stageguard-v127`,
@@ -398,7 +402,7 @@ rows now use `visitor3-tail-trim-stageguard-v127`,
 `building2-high-restore-minus-current-v108`,
 `visitor3-low-offscreen-exitright-v106`,
 `visitor3-high-offscreen-drawclip-v105`,
-`walkstuf1-high-primecap144-v089`,
+`walkstuf1-compact-fgp3-v141`,
 `visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
@@ -464,18 +468,18 @@ rows are historical only.
   <tbody>
     <tr>
       <td><code>activity1</code></td>
-      <td>-0.4% / 100.4% (2754/2764); blk 1</td>
-      <td>-0.4% / 100.4% (2754/2765)</td>
+      <td>0.0% / 100.0% (2754/2764); blk 1</td>
+      <td>0.0% / 100.0% (2754/2765)</td>
     </tr>
     <tr>
       <td><code>activity4</code></td>
-      <td>-0.1% / 100.1% (1065/1066); blk 4</td>
-      <td>-0.4% / 100.4% (1064/1068); blk 1</td>
+      <td>0.0% / 100.0% (1065/1066); blk 4</td>
+      <td>0.0% / 100.0% (1064/1068); blk 1</td>
     </tr>
     <tr>
       <td><code>activity5</code></td>
-      <td>-1.1% / 101.1% (1730/1749); blk 2</td>
-      <td>-1.0% / 101.0% (1731/1749); blk 2</td>
+      <td>0.0% / 100.0% (1730/1749); blk 2</td>
+      <td>0.0% / 100.0% (1731/1749); blk 2</td>
     </tr>
     <tr>
       <td><code>activity6</code></td>
@@ -484,33 +488,33 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>activity7</code></td>
-      <td>-0.5% / 100.5% (593/596)</td>
-      <td>-0.3% / 100.3% (594/596)</td>
+      <td>0.0% / 100.0% (593/596)</td>
+      <td>0.0% / 100.0% (594/596)</td>
     </tr>
     <tr>
       <td><code>activity8</code></td>
-      <td>-0.7% / 100.7% (898/904); blk 1</td>
-      <td>-0.6% / 100.6% (899/904); blk 2</td>
+      <td>0.0% / 100.0% (898/904); blk 1</td>
+      <td>0.0% / 100.0% (899/904); blk 2</td>
     </tr>
     <tr>
       <td><code>activity9</code></td>
-      <td>+1.8% / 98.2% (2094/2056); due 2; blk 37</td>
+      <td>+1.9% / 98.2% (2094/2056); due 2; blk 37</td>
       <td>+1.3% / 98.7% (2085/2058); due 3; blk 29</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
-      <td>+0.0% / 100.0% (1259/1259); due 1; blk 7</td>
-      <td>-0.1% / 100.1% (1255/1256); due 2; blk 17</td>
+      <td>0.0% / 100.0% (1259/1259); due 1; blk 7</td>
+      <td>0.0% / 100.0% (1255/1256); due 2; blk 17</td>
     </tr>
     <tr>
       <td><code>activity11</code></td>
-      <td>-0.4% / 100.4% (1715/1722); blk 2</td>
-      <td>-0.3% / 100.3% (1717/1722); blk 4</td>
+      <td>0.0% / 100.0% (1715/1722); blk 2</td>
+      <td>0.0% / 100.0% (1717/1722); blk 4</td>
     </tr>
     <tr>
       <td><code>activity12</code></td>
-      <td>-0.1% / 100.1% (1411/1412); blk 7</td>
-      <td>-0.1% / 100.1% (1409/1411); due 1; blk 10</td>
+      <td>0.0% / 100.0% (1411/1412); blk 7</td>
+      <td>0.0% / 100.0% (1409/1411); due 1; blk 10</td>
     </tr>
     <tr>
       <td><code>building1</code></td>
@@ -524,8 +528,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building3</code></td>
-      <td>-0.1% / 100.1% (5460/5465)</td>
-      <td>-0.1% / 100.1% (5460/5465)</td>
+      <td>0.0% / 100.0% (5460/5465)</td>
+      <td>0.0% / 100.0% (5460/5465)</td>
     </tr>
     <tr>
       <td><code>building4</code></td>
@@ -534,8 +538,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building5</code></td>
-      <td>-0.1% / 100.1% (3343/3348); blk 5</td>
-      <td>-0.1% / 100.1% (3345/3347); blk 8</td>
+      <td>0.0% / 100.0% (3343/3348); blk 5</td>
+      <td>0.0% / 100.0% (3345/3347); blk 8</td>
     </tr>
     <tr>
       <td><code>building6</code></td>
@@ -544,18 +548,18 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building7</code></td>
-      <td>-0.0% / 100.0% (3132/3133); blk 9</td>
-      <td>-0.1% / 100.1% (3130/3133); blk 7</td>
+      <td>0.0% / 100.0% (3132/3133); blk 9</td>
+      <td>0.0% / 100.0% (3130/3133); blk 7</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
-      <td>-0.6% / 100.6% (1068/1074); blk 2</td>
-      <td>-0.7% / 100.7% (1067/1074); blk 1</td>
+      <td>0.0% / 100.0% (1068/1074); blk 2</td>
+      <td>0.0% / 100.0% (1067/1074); blk 1</td>
     </tr>
     <tr>
       <td><code>fishing2</code></td>
-      <td>-0.1% / 100.1% (1761/1763); blk 6</td>
-      <td>-0.3% / 100.3% (1759/1765); blk 3</td>
+      <td>0.0% / 100.0% (1761/1763); blk 6</td>
+      <td>0.0% / 100.0% (1759/1765); blk 3</td>
     </tr>
     <tr>
       <td><code>fishing3</code></td>
@@ -564,28 +568,28 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>fishing4</code></td>
-      <td>-0.8% / 100.8% (835/842); blk 2</td>
-      <td>-1.1% / 101.1% (834/843)</td>
+      <td>0.0% / 100.0% (835/842); blk 2</td>
+      <td>0.0% / 100.0% (834/843)</td>
     </tr>
     <tr>
       <td><code>fishing5</code></td>
-      <td>-0.6% / 100.6% (885/890)</td>
-      <td>-0.6% / 100.6% (885/890)</td>
+      <td>0.0% / 100.0% (885/890)</td>
+      <td>0.0% / 100.0% (885/890)</td>
     </tr>
     <tr>
       <td><code>fishing6</code></td>
-      <td>-1.2% / 101.2% (744/753)</td>
-      <td>-1.2% / 101.2% (744/753)</td>
+      <td>0.0% / 100.0% (744/753)</td>
+      <td>0.0% / 100.0% (744/753)</td>
     </tr>
     <tr>
       <td><code>fishing7</code></td>
-      <td>-1.4% / 101.4% (715/725)</td>
-      <td>-1.4% / 101.4% (715/725)</td>
+      <td>0.0% / 100.0% (715/725)</td>
+      <td>0.0% / 100.0% (715/725)</td>
     </tr>
     <tr>
       <td><code>fishing8</code></td>
-      <td>-0.8% / 100.8% (1243/1253)</td>
-      <td>-0.8% / 100.8% (1243/1253)</td>
+      <td>0.0% / 100.0% (1243/1253)</td>
+      <td>0.0% / 100.0% (1243/1253)</td>
     </tr>
     <tr>
       <td><code>johnny1</code></td>
@@ -594,23 +598,23 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>johnny2</code></td>
-      <td>-0.6% / 100.6% (1741/1751)</td>
-      <td>-0.6% / 100.6% (1741/1751)</td>
+      <td>0.0% / 100.0% (1741/1751)</td>
+      <td>0.0% / 100.0% (1741/1751)</td>
     </tr>
     <tr>
       <td><code>johnny3</code></td>
-      <td>-0.3% / 100.3% (1158/1161); due 1; blk 10</td>
-      <td>-0.8% / 100.8% (1157/1166)</td>
+      <td>0.0% / 100.0% (1158/1161); due 1; blk 10</td>
+      <td>0.0% / 100.0% (1157/1166)</td>
     </tr>
     <tr>
       <td><code>johnny4</code></td>
-      <td>-0.8% / 100.8% (1204/1214)</td>
-      <td>-0.8% / 100.8% (1204/1214)</td>
+      <td>0.0% / 100.0% (1204/1214)</td>
+      <td>0.0% / 100.0% (1204/1214)</td>
     </tr>
     <tr>
       <td><code>johnny5</code></td>
-      <td>-1.1% / 101.1% (811/820)</td>
-      <td>-1.2% / 101.2% (810/820)</td>
+      <td>0.0% / 100.0% (811/820)</td>
+      <td>0.0% / 100.0% (810/820)</td>
     </tr>
     <tr>
       <td><code>johnny6</code></td>
@@ -624,98 +628,98 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>mary2</code></td>
-      <td>-0.3% / 100.3% (2241/2248); blk 2</td>
-      <td>-0.4% / 100.4% (2242/2250); blk 2</td>
+      <td>0.0% / 100.0% (2241/2248); blk 2</td>
+      <td>0.0% / 100.0% (2242/2250); blk 2</td>
     </tr>
     <tr>
       <td><code>mary3</code></td>
-      <td>measured</td>
-      <td>measured</td>
+      <td>no active loop</td>
+      <td>no active loop</td>
     </tr>
     <tr>
       <td><code>mary4</code></td>
-      <td>-2.4% / 102.4% (1968/2016); due 3; blk 28</td>
-      <td>-2.6% / 102.7% (1966/2019); due 3; blk 24</td>
+      <td>0.0% / 100.0% (1968/2016); due 3; blk 28</td>
+      <td>0.0% / 100.0% (1966/2019); due 3; blk 24</td>
     </tr>
     <tr>
       <td><code>mary5</code></td>
-      <td>-0.3% / 100.3% (1581/1586); due 1; blk 5</td>
-      <td>-0.2% / 100.2% (1581/1584); due 1; blk 6</td>
+      <td>0.0% / 100.0% (1581/1586); due 1; blk 5</td>
+      <td>0.0% / 100.0% (1581/1584); due 1; blk 6</td>
     </tr>
     <tr>
       <td><code>miscgag1</code></td>
-      <td>-0.8% / 100.8% (953/961)</td>
-      <td>-0.8% / 100.8% (953/961)</td>
+      <td>0.0% / 100.0% (953/961)</td>
+      <td>0.0% / 100.0% (953/961)</td>
     </tr>
     <tr>
       <td><code>miscgag2</code></td>
-      <td>-0.3% / 100.3% (1352/1356)</td>
-      <td>-0.3% / 100.3% (1352/1356)</td>
+      <td>0.0% / 100.0% (1352/1356)</td>
+      <td>0.0% / 100.0% (1352/1356)</td>
     </tr>
     <tr>
       <td><code>stand1</code></td>
-      <td>-4.0% / 104.1% (194/202)</td>
-      <td>-4.0% / 104.1% (194/202)</td>
+      <td>0.0% / 100.0% (194/202)</td>
+      <td>0.0% / 100.0% (194/202)</td>
     </tr>
     <tr>
       <td><code>stand2</code></td>
-      <td>-2.0% / 102.1% (480/490)</td>
-      <td>-2.0% / 102.1% (480/490)</td>
+      <td>0.0% / 100.0% (480/490)</td>
+      <td>0.0% / 100.0% (480/490)</td>
     </tr>
     <tr>
       <td><code>stand3</code></td>
-      <td>-1.8% / 101.8% (547/557)</td>
-      <td>-1.8% / 101.8% (547/557)</td>
+      <td>0.0% / 100.0% (547/557)</td>
+      <td>0.0% / 100.0% (547/557)</td>
     </tr>
     <tr>
       <td><code>stand4</code></td>
-      <td>-1.5% / 101.5% (1202/1220)</td>
-      <td>-1.2% / 101.2% (1203/1218); blk 3</td>
+      <td>0.0% / 100.0% (1202/1220)</td>
+      <td>0.0% / 100.0% (1203/1218); blk 3</td>
     </tr>
     <tr>
       <td><code>stand5</code></td>
-      <td>-1.2% / 101.2% (1442/1460)</td>
-      <td>-1.2% / 101.2% (1442/1460)</td>
+      <td>0.0% / 100.0% (1442/1460)</td>
+      <td>0.0% / 100.0% (1442/1460)</td>
     </tr>
     <tr>
       <td><code>stand6</code></td>
-      <td>-1.3% / 101.3% (1346/1364)</td>
-      <td>-1.3% / 101.3% (1346/1364)</td>
+      <td>0.0% / 100.0% (1346/1364)</td>
+      <td>0.0% / 100.0% (1346/1364)</td>
     </tr>
     <tr>
       <td><code>stand7</code></td>
-      <td>-3.3% / 103.5% (520/538)</td>
-      <td>-3.3% / 103.5% (520/538)</td>
+      <td>0.0% / 100.0% (520/538)</td>
+      <td>0.0% / 100.0% (520/538)</td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
-      <td>-3.2% / 103.3% (483/499); blk 2</td>
-      <td>-3.2% / 103.3% (483/499); blk 2</td>
+      <td>0.0% / 100.0% (483/499); blk 2</td>
+      <td>0.0% / 100.0% (483/499); blk 2</td>
     </tr>
     <tr>
       <td><code>stand9</code></td>
-      <td>-3.3% / 103.5% (520/538)</td>
-      <td>-3.0% / 103.1% (522/538)</td>
+      <td>0.0% / 100.0% (520/538)</td>
+      <td>0.0% / 100.0% (522/538)</td>
     </tr>
     <tr>
       <td><code>stand10</code></td>
-      <td>-1.9% / 101.9% (528/538)</td>
-      <td>-1.9% / 101.9% (528/538)</td>
+      <td>0.0% / 100.0% (528/538)</td>
+      <td>0.0% / 100.0% (528/538)</td>
     </tr>
     <tr>
       <td><code>stand11</code></td>
-      <td>-1.9% / 101.9% (528/538)</td>
-      <td>-1.9% / 101.9% (528/538)</td>
+      <td>0.0% / 100.0% (528/538)</td>
+      <td>0.0% / 100.0% (528/538)</td>
     </tr>
     <tr>
       <td><code>stand12</code></td>
-      <td>-0.6% / 100.6% (1450/1459); blk 1</td>
-      <td>-0.7% / 100.7% (1450/1460)</td>
+      <td>0.0% / 100.0% (1450/1459); blk 1</td>
+      <td>0.0% / 100.0% (1450/1460)</td>
     </tr>
     <tr>
       <td><code>stand15</code></td>
-      <td>-1.8% / 101.8% (444/452)</td>
-      <td>-1.8% / 101.8% (444/452)</td>
+      <td>0.0% / 100.0% (444/452)</td>
+      <td>0.0% / 100.0% (444/452)</td>
     </tr>
     <tr>
       <td><code>stand16</code></td>
@@ -724,28 +728,28 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>suzy1</code></td>
-      <td>measured</td>
-      <td>measured</td>
+      <td>no active loop</td>
+      <td>no active loop</td>
     </tr>
     <tr>
       <td><code>suzy2</code></td>
-      <td>measured</td>
-      <td>measured</td>
+      <td>no active loop</td>
+      <td>no active loop</td>
     </tr>
     <tr>
       <td><code>visitor1</code></td>
-      <td>-0.7% / 100.7% (672/677)</td>
-      <td>-0.7% / 100.7% (672/677)</td>
+      <td>0.0% / 100.0% (672/677)</td>
+      <td>0.0% / 100.0% (672/677)</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>+8.8% / 91.9% (1118/1028); due 26; blk 150</td>
-      <td>+9.9% / 91.0% (1126/1025); due 29; blk 170</td>
+      <td>+9.8% / 91.0% (1126/1025); due 29; blk 170</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
-      <td>-0.9% / 100.9% (424/428)</td>
-      <td>-0.9% / 100.9% (424/428)</td>
+      <td>0.0% / 100.0% (424/428)</td>
+      <td>0.0% / 100.0% (424/428)</td>
     </tr>
     <tr>
       <td><code>visitor5</code></td>
@@ -754,23 +758,23 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor6</code></td>
-      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
-      <td>-0.2% / 100.2% (2043/2047); blk 1</td>
+      <td>0.0% / 100.0% (2043/2047); blk 1</td>
+      <td>0.0% / 100.0% (2043/2047); blk 1</td>
     </tr>
     <tr>
       <td><code>visitor7</code></td>
-      <td>-0.4% / 100.4% (1619/1625)</td>
-      <td>-0.4% / 100.4% (1619/1625)</td>
+      <td>0.0% / 100.0% (1619/1625)</td>
+      <td>0.0% / 100.0% (1619/1625)</td>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+13.2% / 88.3% (1592/1406); due 55; blk 275</td>
-      <td>+14.0% / 87.7% (1604/1407); due 50; blk 270</td>
+      <td>+4.6% / 95.6% (1491/1426); due 13; blk 85</td>
+      <td>+4.3% / 95.8% (1489/1427); due 12; blk 86</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>
-      <td>-2.2% / 102.2% (451/461)</td>
-      <td>-2.2% / 102.2% (451/461)</td>
+      <td>0.0% / 100.0% (451/461)</td>
+      <td>0.0% / 100.0% (451/461)</td>
     </tr>
     <tr>
       <td><code>walkstuf3</code></td>
@@ -791,21 +795,21 @@ gfx.restore_bytes = 251,144
 gfx.upload_bytes  = 8,643,840
 ```
 
-The FISHING1 canary remains under target, but the full battle card still has
-CD-heavy scenes (`walkstuf1`, `visitor3`, `building2`, `building4`, and
-`building6`). The clean-pressure relief rows prove scene-local
+The FISHING1 canary remains at the public `100.0%` cap with raw signed
+headroom, but the full battle card still has CD-heavy scenes (`visitor3`,
+`building2`, `building6`, `walkstuf1`, and `building4`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
-1. **Generated read grouping or setup/data-shape work.** WALKSTUF1 is now the
-   largest gap at `+197/+186` VBlanks after the low `160 KiB` and high
-   `144 KiB` setup-prime cap retunes. VISITOR3 remains a top outlier at
-   `+90/+101` VBlanks after the tail-trim stageguard pass; its local C
+1. **Generated read grouping or setup/data-shape work.** VISITOR3 is now the
+   largest gap at `+90/+101` VBlanks after the tail-trim stageguard pass; its local C
    read-table rows are exhausted, so the next CD-shape pass needs generated
    scheduler ownership, selective preprocessing, or further pack data-shape
-   work rather than hand-authored ranges. The default selective upload-ready plan is footprint-closed as a
+   work rather than hand-authored ranges. BUILDING2, BUILDING6, and WALKSTUF1
+   remain the next wide-action/read-pressure rows after the WALKSTUF1 compact
+   pack pass cut that scene to `+65/+62` VBlanks. The default selective upload-ready plan is footprint-closed as a
    same-layout append because `2462072` bytes of payload plus rect metadata
    exceed the current `814847` bytes of VISITOR3 pack slack per tide. The
    budgeted analyzer target keeps this same-footprint lane alive with `74`
@@ -846,8 +850,8 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now -0.1% over target / 100.2% target speed, with several worse
-  CD-bound outliers; compressing the timing files would expose the same
+  public average is now +0.6% over target / 99.5% target speed, with several
+  worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
   from the active public path. The PS1 executable links only the

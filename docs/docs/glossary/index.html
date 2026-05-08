@@ -102,7 +102,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3777 words
+          ~15 min read · 3848 words
         </p>
 
       <hr class="rule" />
@@ -271,13 +271,13 @@
 
 <dl>
 <dt id="battle-card">Battle card (headless-perf)</dt>
-<dd>The headless-DuckStation timing matrix. One row per scene/tide variant; the live aggregate is <em>average over-target %</em> and <em>average target-speed %</em> across timing-bearing rows. The live page is at <a href="../../perf/">/perf/</a>, separate from the visual signoff at <a href="../../scenes/">/scenes/</a> on purpose — different bars, different cadences, different failure modes. The current matrix mean is on the home-page status pill.</dd>
+<dd>The headless-DuckStation timing matrix. One row per scene/tide variant; the live aggregate is <em>average public over-target %</em> and <em>average public target-speed %</em> across timing-bearing rows. Public reporting caps faster-than-target rows at native speed so the website never claims playback faster than intended; the raw signed values remain in the CSV for optimization analysis. The live page is at <a href="../../perf/">/perf/</a>, separate from the visual signoff at <a href="../../scenes/">/scenes/</a> on purpose — different bars, different cadences, different failure modes. The current matrix mean is on the home-page status pill.</dd>
 
 <dt id="target-vb">target_vb / loop_vb</dt>
-<dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
+<dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their raw ratio is the row's internal <em>target speed %</em>; their raw difference is <em>over target %</em>. Anything above zero on over-target means the row missed. The public <a href="../../perf/">/perf/</a> display caps faster-than-target rows at <code>100.0%</code> speed and <code>0.0%</code> over target.</dd>
 
 <dt id="target-speed">target_speed</dt>
-<dd>The user-facing perf column: <code>target_vb / loop_vb × 100%</code>. <code>100%</code> means the run hit native cadence exactly; below means it slipped. The <em>Target Speed</em> column on <a href="../../perf/">/perf/</a> color-codes ≥99% green, ≥95% orange, ≥90% yellow, &lt;90% red. The matrix-wide mean across timing-bearing rows is the home page status pill at <code>100.3%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying values.</dd>
+<dd>The user-facing perf column: <code>min(100%, target_vb / loop_vb × 100%)</code>. <code>100%</code> means the run hit or beat native cadence; below means it slipped. The <em>Target Speed</em> column on <a href="../../perf/">/perf/</a> color-codes ≥99% green, ≥95% orange, ≥90% yellow, &lt;90% red. The matrix-wide public mean across timing-bearing rows is the home page status pill at <code>99.5%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying raw values.</dd>
 
 <dt id="scene-end">Scene-end</dt>
 <dd>The runtime event marking one full <a href="#fg2-pack">FG2 pack</a> loop completion. Triggers a <code>JCPERF</code>/<code>JCPERF2</code> TTY dump (vblank counts, CD/compose/upload/wait counters, <code>blocking_vb</code>, <code>alloc_fail</code>) and finalizes the row's perf-matrix entry; the <a href="#regtest">regtest harness</a> uses it as the natural pivot point for state-hash capture. Story scenes reach scene-end deterministically; the <a href="../../scenes/suzy1/">SUZY</a> mermaid scenes do not (no terminal frame), which is why their /perf/ rows are metadata-only and excluded from the matrix's <em>target_speed</em> averages on purpose.</dd>
@@ -286,7 +286,7 @@
 <dd>The structured TTY printf records the runtime emits at <a href="#scene-end">scene-end</a>. <code>JCPERF</code> is the original line: vblank totals, <code>target_vb</code>/<code>loop_vb</code>, <code>over_target</code>, <code>blocking_vb</code>, <code>alloc_fail</code>. <code>JCPERF2</code> is the v0.8.0-era extension: stream-window, prefetch-hits, read-group, plus the clean-rect pressure split (wave-band, upper, lower) added in <code>v0.8.1</code>. Both are flat <code>key=value</code> sequences on a single line so the headless DuckStation runner can grep them out of <code>tty.log</code> with no parser; <a href="#regtest">regtest</a> + the <a href="../../lab/build-farm/">build farm</a> consume them to fill the <a href="../../perf/">/perf/</a> matrix and gate promotion on no-worse aggregates.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.3-ps1</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; raw negative CSV values mean the run finished <em>under</em> the budget. Public reporting caps those faster rows at <code>0.0%</code> so fast scenes do not offset slow-scene debt. The matrix-wide public aggregate at <code>v0.8.3-ps1</code> is <code>+0.6%</code> across the 120 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="../../perf/">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>

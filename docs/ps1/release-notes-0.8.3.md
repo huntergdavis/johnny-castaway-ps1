@@ -7,7 +7,8 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and the current 120 timing-bearing rows average
-`-0.2497%` over target / `100.2899%` target speed.
+`+0.5576%` public over target / `99.4669%` public target speed. The raw signed
+optimization matrix remains `-0.2497%` over target / `100.2899%` target speed.
 
 ## Headline
 
@@ -23,8 +24,8 @@ the headless perf matrix, and the current 120 timing-bearing rows average
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `17.65` over-target points and added about
-  `13.19` target-speed points.
+  methodology has removed about `16.84` public over-target points and added
+  about `12.37` public target-speed points.
 
 ## Follow-Up Closure
 
