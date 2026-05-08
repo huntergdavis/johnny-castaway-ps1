@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About
-eyebrow: What this is . How it works
+eyebrow: What this is · How it works
 subtitle: A fan port of Sierra's Johnny Castaway to the original PlayStation, built as a hybrid host-and-replay pipeline.
 description: A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0.
 ---
