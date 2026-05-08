@@ -27,10 +27,13 @@ validated scene and the widest one — graduated from "validated"
 to "optimized validated outlier."
 [`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched. The current post-`v0.8.1-ps1` performance branch is now
-at **+0.6% over target / 99.7% target speed**, with roughly **16.8 percentage
-points** of over-target gap closed and about **12.6 target-speed points**
-added. This article is what that loop actually looked like.
+matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
+the VISITOR3 and WALKSTUF1 outliers. The current branch at
+`{{ site.release.tag }}` is at **-0.3% over target /
+{{ site.release.perf_target_speed_pct }}% target speed**, with
+roughly **17.7 percentage points** of over-target gap closed and
+about **13.2 target-speed points** added. This article is what
+that loop actually looked like.
 
 ## Two ledgers, on purpose
 
@@ -114,13 +117,16 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 
 ## What's left
 
-The current matrix mean is `100.0%` target speed. The remaining positive
-over-target VBlanks live in a small number of high-leverage rows. As of
-`{{ site.release.tag }}` there are no red rows left on the
-[battle card]({{ '/perf/' | relative_url }}). `WALKSTUF 1`, `VISITOR 3`,
-`BUILDING 4`, `BUILDING 2`, and `BUILDING 6` make up the yellow cluster between
-`80%` and `99%`, with VISITOR3 now at roughly `89.9%`/`89.8%` after the
-pack-side restore-minus-current cleanup. The optimization plan at
+The current matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
+The matrix-wide aggregate is now slightly under target — the remaining
+work is in a small number of high-leverage yellow rows that still slip.
+As of `{{ site.release.tag }}` there are no red rows left on the
+[battle card]({{ '/perf/' | relative_url }}). `VISITOR 3`,
+`BUILDING 2`, `BUILDING 6`, and `WALKSTUF 1` make up the yellow cluster
+between `80%` and `99%`, with VISITOR3 now at roughly `91.9%`/`91.0%`
+after the pack-side restore-minus-current cleanup, and WALKSTUF1
+at `95.6%`/`95.8%` after its v0.8.3 compact-FGP3/v4 pass. The
+optimization plan at
 `docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.
