@@ -123,6 +123,16 @@
   <meta property="article:section"        content="{% if og_is_lab_essay %}Lab{% else %}Devlog{% endif %}" />
   {%- endif %}
   <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
+  {%- comment -%}
+    og:locale. Open Graph spec property that tells social
+    consumers (LinkedIn, Facebook, embed cards) the language
+    region of the content. The site is English-only; en_US
+    matches the inLanguage="en" already set in WebSite +
+    BlogPosting + Article + CreativeWork JSON-LD records.
+    Without this, consumers either guess from page text or
+    show no locale signal.
+  {%- endcomment -%}
+  <meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="{{ og_image }}" />
   <meta property="og:image:alt"    content="{{ og_image_alt }}" />
   {%- comment -%}
