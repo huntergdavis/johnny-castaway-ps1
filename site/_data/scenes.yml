@@ -790,7 +790,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
+  notes: throws-coconut-at-plane-it-crashes (Johnny sees a plane overhead, throws a coconut at it, and the plane crashes); visual + audible signoff after regenerating high/low packs through the generic multi-view stitch; scene-specific hold redistribution keeps the coconut impact and downed-plane motion readable without changing total scene duration
 - ads: VISITOR
   tag: 6
   slug: visitor6
