@@ -26,16 +26,22 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
 
 <section class="trio" aria-label="Selected PS1 captures">
   <figure>
-    <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption><a href="{{ '/scenes/activity9/' | relative_url }}">ACTIVITY 9 · boat pass</a></figcaption>
+    <a href="{{ '/scenes/activity9/' | relative_url }}">
+      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+      <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
-    <figcaption><a href="{{ '/scenes/johnny1/' | relative_url }}">JOHNNY 1 · frog clock</a></figcaption>
+    <a href="{{ '/scenes/johnny1/' | relative_url }}">
+      <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      <figcaption>JOHNNY 1 · frog clock</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption><a href="{{ '/scenes/fishing1/' | relative_url }}">FISHING 1 · reference</a></figcaption>
+    <a href="{{ '/scenes/fishing1/' | relative_url }}">
+      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
+      <figcaption>FISHING 1 · reference</figcaption>
+    </a>
   </figure>
 </section>
 
