@@ -40,14 +40,15 @@ A scene can be timed here without being visually certified.
 
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
 BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`
-and low `365..381` grouped-read passes, and the VISITOR3 low scoped
-composite-helper pass. The slowest rows are now
-`walkstuf1` low/high (`87.7%` / `88.3%`) and
+and low `365..381` grouped-read passes, the VISITOR3 low scoped
+composite-helper pass, and the WALKSTUF1 compact FGP3/v4 restore-minus-current
+pass. The slowest rows are now
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
-(`90.2%` / `90.1%`). The yellow cluster includes the remaining wide-action,
-[`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) low/high, BUILDING6,
-[`BUILDING4`]({{ '/scenes/building4/' | relative_url }}), and ACTIVITY9 rows
-still finishing scheduler-owned read timing and selective-preprocessing work.
+(`91.0%` / `91.9%`), [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
+low (`94.3%`), and `walkstuf1` high/low (`95.6%` / `95.8%`). The yellow
+cluster includes the remaining wide-action, BUILDING6, BUILDING2, WALKSTUF1,
+and VISITOR3 rows still finishing scheduler-owned read timing and
+selective-preprocessing work.
 
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
@@ -69,10 +70,10 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `-0.1%` (`-0.0968%` exact) |
-| Timing-bearing average target speed | `100.2%` (`100.1613%` exact) |
-| Latest perf matrix run | `2026-05-08T04:24:55` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `-0.2%` (`-0.2497%` exact) |
+| Timing-bearing average target speed | `100.3%` (`100.2899%` exact) |
+| Latest perf matrix run | `2026-05-08T06:36:32` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -110,7 +111,7 @@ and this page.
   `building2-high-restore-minus-current-v108`,
   `visitor3-low-offscreen-exitright-v106`,
   `visitor3-high-offscreen-drawclip-v105`,
-  `walkstuf1-high-primecap144-v089`,
+  `walkstuf1-compact-fgp3-v141`,
   `visitor3-low-readgroup-prune-v088`,
   `building4-restore-minus-current-v087`,
   `visitor3-restore-minus-current-v086`,
@@ -120,7 +121,6 @@ and this page.
   `activity9-dead-readgroup-prune-v082`,
   `read-group-selector-single-assign-v082`,
   `visitor3-high-remove-144-160-v082`,
-  `walkstuf1-low-primecap160-v081`,
   `johnny2-prefetch-relief-v081`,
   `activity9-low-fgp3-cleanup-compact-v081`,
   `activity9-current-v081-refresh`,
@@ -1892,29 +1892,29 @@ and this page.
       <td><code>walkstuf1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T20:00:51</td>
-      <td>walkstuf1-high-primecap144-v089</td>
-      <td>+13.2%</td>
-      <td class="spd-yellow">88.3%</td>
-      <td>1592/1406</td>
-      <td>275</td>
-      <td>51</td>
-      <td>55</td>
-      <td>validated FGP2/pal4 pack; high-tide setup-prime cap raised to 144 KiB, extending setup coverage to sectors 2..74 while preserving low-tide and broad canary timing</td>
+      <td>2026-05-08T06:35:26</td>
+      <td>walkstuf1-compact-fgp3-v141</td>
+      <td>+4.6%</td>
+      <td class="spd-yellow">95.6%</td>
+      <td>1491/1426</td>
+      <td>85</td>
+      <td>32</td>
+      <td>13</td>
+      <td>padded compact FGP3/v4 restore-minus-current pack; active candidate 923959 bytes inside original footprint; VISITOR3 high canary drift reproduced with original FGP2 control</td>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T06:46:25</td>
-      <td>walkstuf1-low-primecap160-v081</td>
-      <td>+14.0%</td>
-      <td class="spd-yellow">87.7%</td>
-      <td>1604/1407</td>
-      <td>270</td>
-      <td>55</td>
-      <td>50</td>
-      <td>validated FGP2/pal4 pack; low-tide setup-prime cap raised to 160 KiB, extending setup coverage to sectors 2..78 while preserving stage1_window prefetch and exact-flat high/canary rows</td>
+      <td>2026-05-08T06:36:32</td>
+      <td>walkstuf1-compact-fgp3-v141</td>
+      <td>+4.3%</td>
+      <td class="spd-yellow">95.8%</td>
+      <td>1489/1427</td>
+      <td>86</td>
+      <td>27</td>
+      <td>12</td>
+      <td>padded compact FGP3/v4 restore-minus-current pack; active candidate 923959 bytes inside original footprint; broad non-WALKSTUF controls exact-flat except unrelated VISITOR3 high control drift</td>
     </tr>
     <tr>
       <td><code>walkstuf2</code></td>

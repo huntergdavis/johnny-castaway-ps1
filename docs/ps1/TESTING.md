@@ -76,10 +76,10 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `-0.1%` (`-0.0968%` exact) |
-| Timing-bearing average target speed | `100.2%` (`100.1613%` exact) |
-| Latest perf matrix run | `2026-05-08T04:24:55` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `-0.2%` (`-0.2497%` exact) |
+| Timing-bearing average target speed | `100.3%` (`100.2899%` exact) |
+| Latest perf matrix run | `2026-05-08T06:36:32` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
@@ -101,7 +101,7 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `building2-high-restore-minus-current-v108`,
 `visitor3-low-offscreen-exitright-v106`,
 `visitor3-high-offscreen-drawclip-v105`,
-`walkstuf1-high-primecap144-v089`,
+`walkstuf1-compact-fgp3-v141`,
 `visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
@@ -142,7 +142,6 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `building5-fgp3-padded-v080`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-v072-prefetch-relief`,
-`walkstuf1-low-primecap160-v081`,
 `walkstuf1-fgp2-setup-prime-v080`,
 `fishing5-v065-current-ledger-overlay`,
 `compact-fgp3-v66-final-frame-hold`,

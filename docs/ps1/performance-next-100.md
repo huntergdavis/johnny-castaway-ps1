@@ -25,12 +25,27 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the VISITOR3 tail-trim stageguard pass:
-`-0.0968%` average over target / `100.1613%` target speed across `120`
+Current all-scene rollup after the WALKSTUF1 compact FGP3/v4 pass:
+`-0.2497%` average over target / `100.2899%` target speed across `120`
 timing-bearing rows. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.50` over-target points and added about `13.06`
+removed about `17.65` over-target points and added about `13.19`
 target-speed points.
+
+Latest promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
+PAL4/FGP2 packs to padded compact FGP3/v4 restore-minus-current packs inside
+the original `1535263` byte footprints. The compaction chain trims active
+candidate bytes to `923959` while preserving pack LBAs `24744/25494` and the
+`215040` byte PS-EXE bucket. High improves `loop_vb 1592 -> 1491`,
+`target_vb 1406 -> 1426`, `overrun_vb 186 -> 65`, `blocking_vb 275 -> 85`,
+`prefetch_overrun_vb 51 -> 32`, `loop_reads 134 -> 69`, `loop_read_vb
+586 -> 300`, and `due_misses 55 -> 13`. Low improves `1604 -> 1489`,
+`1407 -> 1427`, `197 -> 62`, `270 -> 86`, `55 -> 27`, `132 -> 69`,
+`604 -> 305`, and `50 -> 12`. The broad non-WALKSTUF controls stayed
+exact-flat except VISITOR3 high, and that VISITOR3 drift reproduced with the
+original WALKSTUF1 FGP2 packs restored, so it is not attributed to the compact
+candidate. The next top rows are VISITOR3 low/high, BUILDING2 low, WALKSTUF1
+high/low, and BUILDING6 high/low.
 
 Latest promoted VISITOR3 tail-trim stageguard baseline: trim all-zero draw
 tails inside the existing VISITOR3 FGP3/v4 payloads, raise the high-tide
@@ -107,7 +122,7 @@ PS-EXE bucket is unchanged. High improves `loop_vb 1139 -> 1137`,
 `overrun_vb 115 -> 113`, and `blocking_vb 191 -> 190`. This is now the
 VISITOR3 high baseline.
 
-Latest promoted WALKSTUF1 high setup-prime baseline: give high tide its own
+Prior promoted WALKSTUF1 high setup-prime baseline: give high tide its own
 `144 KiB` setup-prime resident cap instead of falling back to the global
 foreground setup-prime cap. The retune increases high-tide setup coverage to
 sectors `2..74` without moving the `1535263` byte FGP2/PAL4 pack, pack LBA
@@ -117,10 +132,8 @@ at `1880`, improves `loop_vb 1595 -> 1592`, `target_vb 1402 -> 1406`,
 `loop_read_vb 602 -> 586`, and `due_misses 56 -> 55`. Low stays exact-flat at
 `1895`, `1604/1407`, `blocking_vb=271`, `prefetch_overrun_vb=54`, and
 `loop_reads=132`. VISITOR3 high/low, BUILDING2 high/low, BUILDING4 high/low,
-ACTIVITY9 low, and FISHING1 high controls stayed exact-flat. The next true
-rows are WALKSTUF1 low/high, remaining VISITOR3 scheduler/data-shape work,
-BUILDING2 low/high scheduler-owned candidates, BUILDING6, and selective
-upload-ready preprocessing.
+ACTIVITY9 low, and FISHING1 high controls stayed exact-flat. This baseline is
+now superseded by `walkstuf1-compact-fgp3-v141`.
 
 Latest rejected WALKSTUF1 direct-stage threshold sweep: the current scalar
 `8 KiB` direct-stage cap remains the measured knee. A `6 KiB` global cap fixed
@@ -134,16 +147,16 @@ frame/range-specific direct-stage policy, or a pack/data-shape reduction that
 lowers refill cost first.
 
 Current WALKSTUF1 preprocess footprint gate: the default selective x-band
-upload-ready model has high theoretical value, but the current PAL4/FGP2 packs
-cannot carry it layout-neutrally. Both tides have only `1` byte of zero-tail
-slack, while the default threshold plan selects `153 / 216` frames and needs
-`5684096` payload-plus-rect bytes to retain `9900992` modeled upload bytes
-saved. The exact same-footprint budget selects `0` frames. Raw foreground-only
-upload payloads are also unsafe here: selected draw-covered x-band bytes and
-all-draw-covered selected frames are both `0`. Close raw same-footprint
-WALKSTUF1 upload-ready append work until there is a shrinking/compressed pack
-transform, explicit layout movement, a safe background-owned pixel source, or
-generated scheduler metadata.
+upload-ready model remains unsafe as a raw append, but the missing shrinking
+precondition is now partly satisfied by the compact FGP3/v4 pack transform.
+The old PAL4/FGP2 packs had only `1` byte of zero-tail slack, while the
+default threshold plan selected `153 / 216` frames and needed `5684096`
+payload-plus-rect bytes to retain `9900992` modeled upload bytes saved. Raw
+foreground-only upload payloads are also unsafe here: selected draw-covered
+x-band bytes and all-draw-covered selected frames are both `0`. Keep raw
+same-footprint WALKSTUF1 upload-ready append work closed until there is a safe
+background-owned pixel source or generated scheduler metadata; use the compact
+pack as the new baseline for any future WALKSTUF1 preprocessing lane.
 
 Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
@@ -257,9 +270,10 @@ accepted profiles. This checkpoint later moved to `-0.0694%` over target /
 `100.1388%` target speed after the VISITOR3 low read-table prune, WALKSTUF1
 high setup-prime cap retune, VISITOR3 high/low offscreen draw clips, BUILDING2
 high restore-minus-current cleanup, BUILDING2 high/low grouped-read passes, and
-the VISITOR3 low scoped composite-helper pass; it then moved to `-0.0968%`
-over target / `100.1613%` target speed after the VISITOR3 tail-trim
-stageguard pass. The current rollup is tracked above.
+the VISITOR3 low scoped composite-helper pass, to `-0.0968%` over target /
+`100.1613%` target speed after the VISITOR3 tail-trim stageguard pass, and to
+`-0.2497%` over target / `100.2899%` target speed after the WALKSTUF1 compact
+FGP3/v4 pass. The current rollup is tracked above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
 format for both validated packs and retune the scene-local stream windows to
@@ -320,8 +334,9 @@ VISITOR3 low exit-right offscreen draw clip moves it to `-0.0266%` over target
 cleanup plus BUILDING2 high/low grouped-read passes move it to `-0.0670%` over
 target / `100.1368%` target speed. The later VISITOR3 low scoped
 composite-helper pass moves it to `-0.0694%` over target / `100.1388%` target
-speed, and the later VISITOR3 tail-trim stageguard pass moves it to
-`-0.0968%` over target / `100.1613%` target speed.
+speed, the later VISITOR3 tail-trim stageguard pass moves it to `-0.0968%`
+over target / `100.1613%` target speed, and the WALKSTUF1 compact FGP3/v4
+pass moves it to `-0.2497%` over target / `100.2899%` target speed.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -855,10 +870,12 @@ restore-skip as an FGP3/side-metadata problem, not a runtime reparse problem.
 The all-scene preprocessing opportunity matrix is now the pack-format targeting
 surface. It parses current `FGP2`/`FGP3` packs and ranks selective upload-ready
 or cleanup-metadata experiments against the measured battle card. The first
-pass says the highest-upside generated graphics targets are WALKSTUF1 low/high,
-VISITOR3 low/high, BUILDING4 high/low, BUILDING6 high/low, and BUILDING2
-high/low. Do not retry whole-payload direct16; use selective/compressed bands
-or setup-resident upload-ready slices.
+pass originally pointed at WALKSTUF1 low/high, VISITOR3 low/high, BUILDING4
+high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1
+compact pass, the current top generated graphics/scheduler targets are
+VISITOR3 low/high, BUILDING2 low, WALKSTUF1 high/low, and BUILDING6 high/low.
+Do not retry whole-payload direct16; use selective/compressed bands or
+setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired
 under the retained 11-sector capacity, and `307..317` kept every timing/read
 counter exact while growing `foregroundPilotPlay` by `432` bytes. The direct
@@ -1447,7 +1464,7 @@ pre-v0.8.0 row.
 | BUILDING5 pal4 padded FGP3 | Done; keep. Both current BUILDING5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `818670` byte CD footprint. High improves `loop_vb 3359 -> 3343`, `overrun_vb 13 -> 0`, `blocking_vb 20 -> 5`, and `loop_reads 56 -> 41`; low improves `loop_vb 3357 -> 3345`, `overrun_vb 10 -> 0`, `blocking_vb 17 -> 8`, and `loop_reads 56 -> 41`. This checkpoint later moved to `0.8071%` over target / `99.5018%` target speed after the ACTIVITY11 padded-FGP3 promotion; the current rollup is tracked at the top of this file. |
 | ACTIVITY11 pal4 padded FGP3 | Done; keep. Both current ACTIVITY11 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `433970` byte CD footprint. High improves `loop_vb 1729 -> 1715`, `overrun_vb 9 -> 0`, `blocking_vb 10 -> 2`, `prefetch_overrun_vb 4 -> 2`, and `loop_reads 29 -> 11`; low improves `loop_vb 1729 -> 1717`, `overrun_vb 12 -> 0`, `blocking_vb 14 -> 4`, `prefetch_overrun_vb 9 -> 4`, and `loop_reads 29 -> 11`. Full scene setup grows by `8/11` VBlanks, accepted because the active loop now lands under target. This checkpoint later moved to `0.7939%` over target / `99.5149%` target speed after the MARY5 padded-FGP3 promotion; the current rollup is tracked at the top of this file. |
 | MARY5 pal4 padded FGP3 | Done; keep. Both current MARY5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `646602` byte CD footprint. High improves `loop_vb 1591 -> 1581`, `overrun_vb 9 -> 0`, `blocking_vb 8 -> 5`, `prefetch_overrun_vb 8 -> 0`, and `loop_reads 49 -> 42`; low improves `loop_vb 1592 -> 1581`, `overrun_vb 11 -> 0`, `blocking_vb 10 -> 6`, `prefetch_overrun_vb 10 -> 2`, and `loop_reads 49 -> 42`. This checkpoint later moved to `0.8228%` over target / `99.4872%` target speed after the JOHNNY2/MARY2 stale-row refreshes and MARY2 prefetch relief; the current rollup is tracked at the top of this file. |
-| JOHNNY2 pal4 padded FGP3 + clean-pressure relief | Done; keep. Both current JOHNNY2 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `288637` byte CD footprint. Against the same-commit FGP2 control, high improves `loop_vb 1833 -> 1801`, `overrun_vb 82 -> 50`, and `blocking_vb 401 -> 369`; low improves `1833 -> 1800`, `82 -> 49`, and `399 -> 377`. The follow-up JOHNNY2-local clean-pressure relief preserves `stage1_window` prefetch and moves both tides to `1741/1751`, with blocking `369/377 -> 0`, due misses `144 -> 0`, and loop reads `144 -> 8`. Current exact matrix rollup is `-0.0968%` over target / `100.1613%` target speed. |
+| JOHNNY2 pal4 padded FGP3 + clean-pressure relief | Done; keep. Both current JOHNNY2 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `288637` byte CD footprint. Against the same-commit FGP2 control, high improves `loop_vb 1833 -> 1801`, `overrun_vb 82 -> 50`, and `blocking_vb 401 -> 369`; low improves `1833 -> 1800`, `82 -> 49`, and `399 -> 377`. The follow-up JOHNNY2-local clean-pressure relief preserves `stage1_window` prefetch and moves both tides to `1741/1751`, with blocking `369/377 -> 0`, due misses `144 -> 0`, and loop reads `144 -> 8`. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | MARY2 pal4 padded FGP3 + prefetch relief | Done; keep. Both current MARY2 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `582189` byte CD footprint. Against the same-commit FGP2 control, the FGP3 step improves high `scene_vb 2638 -> 2583`, `loop_vb 2385 -> 2330`, and low `loop_vb 2384 -> 2327`. The follow-up MARY2-local clean-pressure relief restores `stage1_window` prefetch and moves high/low to `2241/2248` and `2242/2250`, with blocking `668/662 -> 2/2` and due misses `233 -> 0`. This checkpoint later moved to `0.7400%` over target / `99.5291%` target speed after the VISITOR3 cleanup-metadata compaction; the current rollup is tracked at the top of this file. |
 | VISITOR3 FGP3/v3 cleanup-metadata compaction | Done; keep. Both current VISITOR3 validated packs keep their `1555450`-byte CD footprint and PAL4 draw payloads, but cleanup row/span metadata is compact-u16 encoded. Runtime active payload drops `1552446 -> 1265930`; high improves `1450/1015 -> 1406/1019`, `blocking_vb 355 -> 296`, `prefetch_overrun_vb 14 -> 7`, and `loop_reads 45 -> 40`; low improves `1452/1012 -> 1405/1015`, `blocking_vb 361 -> 301`, `prefetch_overrun_vb 19 -> 8`, and `loop_reads 49 -> 44`. Full compact draw metadata is rejected for now because the extra compositor code moved non-VISITOR canaries. This checkpoint later moved to `0.6781%` over target / `99.5777%` target speed after the BUILDING2 cleanup-metadata compaction; the current rollup is tracked at the top of this file. |
 | VISITOR3 pack-only FGP3 padding trim | Do not promote. Trimming both current packs saved `573032` trailing zero bytes but regressed high `1406 -> 1409` and low `1405 -> 1412`; keep the same-layout padded files unless a format change reduces active runtime work. |
@@ -1455,20 +1472,21 @@ pre-v0.8.0 row.
 | BUILDING4 FGP3/v3 cleanup-metadata compaction plus stream-window retune | Done; keep. Both current BUILDING4 validated packs keep their `1714154`-byte CD footprint and use compact-u16 cleanup metadata while preserving existing PAL4 draw spans. Active payload drops `1705426 -> 1370198`; high improves `2985/2774 -> 2939/2786`, `blocking_vb 285 -> 240`, `prefetch_overrun_vb 51 -> 27`, and `overrun_vb 211 -> 153`; low improves `2981/2784 -> 2945/2798`, `blocking_vb 199 -> 117`, `prefetch_overrun_vb 119 -> 114`, and `overrun_vb 197 -> 147`. The compact payload needed smaller scene-local windows (`24 -> 20 KiB` high, `36 -> 32 KiB` low) to keep hidden refill under the strict gate. This checkpoint later moved to `0.4096%` over target / `99.7860%` target speed after ACTIVITY9 low cleanup-metadata compaction, JOHNNY2 clean-pressure relief, WALKSTUF1 low-primecap, selector cleanup, FGP3/v4 draw-metadata compaction, and compact decoder inline promotion; the current rollup is tracked at the top of this file. |
 | ACTIVITY9 low FGP3/v3 cleanup-metadata compaction | Done; keep as a tide-specific no-new-runtime-code pack-shape win. The paired high/low attempt is rejected because high regressed, but compacting only `ACTV9LOW.FG2` keeps the `1745484`-byte CD footprint, keeps ACTIVITY9 high flat at `2094/2056`, and improves low `2098/2056 -> 2087/2056`, `blocking_vb 47 -> 42`, `prefetch_overrun_vb 19 -> 12`, and active payload `1453793 -> 1196583`. Standard canaries across FISHING1, VISITOR3 high/low, WALKSTUF1 high/low, BUILDING2 high/low, BUILDING4 high/low, BUILDING6 high/low, and ACTIVITY9 high/low passed. This checkpoint later moved to `0.4096%` over target / `99.7860%` target speed after JOHNNY2 clean-pressure relief, WALKSTUF1 low-primecap, selector cleanup, FGP3/v4 draw-metadata compaction, and compact decoder inline promotion; the current rollup is tracked at the top of this file. |
 | FGP3/v4 compact draw metadata for current compact residual packs | Done; keep. Current FGP3/v3 compact residual packs now use FGP3/v4 draw row/span metadata, preserving padded CD footprints and LBAs while reducing active metadata. VISITOR3 high/low improve to `1369/1023` and `1376/1023`, BUILDING2 high/low improve to `1405/1298` and `1395/1294`, ACTIVITY9 low improves to `2085/2058`, and the FISHING1 high control remains under target at `1068/1074`. This checkpoint later moved to `0.4096%` over target / `99.7860%` target speed after the compact decoder inline promotion; the current rollup is tracked at the top of this file. |
-| Compact FGP3/v4 metadata reader inline | Done; keep. `grReadCompactSpanU16` is now a default inline helper instead of a noinline `-Os` helper. VISITOR3 high/low improve to `1357/1023` and `1361/1023`, BUILDING2 high/low improve to `1394/1301` and `1385/1303`, ACTIVITY9 low remains timing-flat at `2085/2058` with an accepted `blocking_vb 28 -> 29`, and FISHING1 high remains exact-flat under target at `1068/1074`. This checkpoint later moved to `-0.0968%` over target / `100.1613%` target speed after later VISITOR3, BUILDING4, BUILDING2, WALKSTUF1, and code-shape promotions. |
-| VISITOR3 high read-group table prune | Done; keep as code headroom. The remaining high-tide local table (`138..162`, `170..186`, `230..242`) is exhausted after compact-u16 inline and no longer changes runtime metrics. Removing it keeps VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, and FISHING1 high exact-flat while shrinking `foregroundPilotPlay` by `48` bytes. This checkpoint later moved to `-0.0968%` over target / `100.1613%` target speed after later VISITOR3, BUILDING4, BUILDING2, WALKSTUF1, and code-shape promotions. |
+| Compact FGP3/v4 metadata reader inline | Done; keep. `grReadCompactSpanU16` is now a default inline helper instead of a noinline `-Os` helper. VISITOR3 high/low improve to `1357/1023` and `1361/1023`, BUILDING2 high/low improve to `1394/1301` and `1385/1303`, ACTIVITY9 low remains timing-flat at `2085/2058` with an accepted `blocking_vb 28 -> 29`, and FISHING1 high remains exact-flat under target at `1068/1074`. This checkpoint later moved to `-0.2497%` over target / `100.2899%` target speed after later VISITOR3, BUILDING4, BUILDING2, WALKSTUF1, and code-shape promotions. |
+| VISITOR3 high read-group table prune | Done; keep as code headroom. The remaining high-tide local table (`138..162`, `170..186`, `230..242`) is exhausted after compact-u16 inline and no longer changes runtime metrics. Removing it keeps VISITOR3 high/low, BUILDING2 high/low, ACTIVITY9 low, and FISHING1 high exact-flat while shrinking `foregroundPilotPlay` by `48` bytes. This checkpoint later moved to `-0.2497%` over target / `100.2899%` target speed after later VISITOR3, BUILDING4, BUILDING2, WALKSTUF1, and code-shape promotions. |
 | VISITOR3 restore-minus-current cleanup | Done; keep as pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame while leaving draw pixels, padded pack size, pack LBAs, and PS-EXE size fixed. VISITOR3 high/low improve to `1139/1024` and `1140/1024`, blocking drops to `191/194`, prefetch overrun drops to `0/0`, active payload drops `981514 -> 737600`, and runtime restore bytes drop `973290 -> 498676`. This checkpoint later moved to `-0.0670%` over target / `100.1368%` target speed after later BUILDING4, BUILDING2, WALKSTUF1, and VISITOR3 draw-clip promotions. |
 | BUILDING4 restore-minus-current cleanup | Done; keep as pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame while leaving draw pixels, padded pack size, pack LBAs, and PS-EXE size fixed. BUILDING4 high/low improve to `2844/2816` and `2855/2815`, blocking drops to `37/46`, active payload drops `1032442 -> 855284`, and runtime restore bytes drop `1229878 -> 546950`. This checkpoint later moved to `-0.0670%` over target / `100.1368%` target speed after later VISITOR3, BUILDING2, and WALKSTUF1 promotions. |
-| WALKSTUF1 high setup-prime cap 144 KiB | Done; keep as a high-tide-only setup-prime cap retune, not a shared WALKSTUF1 policy. High improves `1595/1402 -> 1592/1406`, `overrun_vb 193 -> 186`, `blocking_vb 277 -> 275`, `loop_reads 136 -> 134`, and `due_misses 56 -> 55`; low stays exact-flat at `1604/1407`. Current exact matrix rollup after later BUILDING2 and VISITOR3 promotions is `-0.0968%` over target / `100.1613%` target speed. |
-| VISITOR3 high-only offscreen draw clip | Done; keep as a high-tide-only pack-data trim. The transform preserves `VISITOR3.FG2` size, entry sizes, offsets, pack LBA `22472`, and the `215040` byte PS-EXE bucket, while zeroing clipped draw tails for `17` high-tide entries. High improves `1139/1024 -> 1137/1024`, `overrun_vb 115 -> 113`, and `blocking_vb 191 -> 190`; low and broad controls stay exact-flat. Current exact matrix rollup after the later low-tide and BUILDING2 promotions is `-0.0968%` over target / `100.1613%` target speed. |
-| VISITOR3 low exit-right offscreen draw clip | Done; keep as a low-tide pack-data trim limited to entries `139..143`. The transform preserves `VIST3LOW.FG2` size, entry sizes, offsets, pack LBA `23232`, and the `215040` byte PS-EXE bucket, while zeroing clipped exit-right draw tails. Low improves `1140/1024 -> 1138/1024`, `overrun_vb 116 -> 114`, and `blocking_vb 194 -> 191`; high and broad controls stay exact-flat. Low `ship-left` and combined `ship-and-exit` subsets are rejected because they regress low to `1151/1024`. Current exact matrix rollup after the later scoped composite-helper pass is `-0.0968%` over target / `100.1613%` target speed. |
-| BUILDING2 high restore-minus-current cleanup | Done; keep as a high-tide-only pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame only in `BUILDING2.FG2`, preserving the `1303332` byte CD footprint, pack LBA `6180`, and the `215040` byte PS-EXE bucket. High improves `1394/1301 -> 1353/1311`, `overrun_vb 93 -> 42`, `blocking_vb 138 -> 56`, and `loop_reads 68 -> 62`; low stays on the prior pack because the both-tide transform regressed hidden prefetch overrun `8 -> 13`. Current exact matrix rollup after later BUILDING2 grouped-read and VISITOR3 code-shape promotions is `-0.0968%` over target / `100.1613%` target speed. |
-| BUILDING2 high read group `60..72` | Done; keep as a high-tide-only retained stream group. The range was the only current scheduler-or-guarded matrix candidate with zero overread and medium visible gaps after the v108 pack pass. It grows `foregroundPilotPlay` by `12` bytes but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 high improves `1353/1311 -> 1349/1316`, `overrun_vb 42 -> 33`, `blocking_vb 56 -> 48`, `prefetch_overrun_vb 20 -> 12`, and `loop_reads 62 -> 61`; VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup after later BUILDING2 low and VISITOR3 low promotions is `-0.0968%` over target / `100.1613%` target speed. |
-| BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup after the later VISITOR3 low scoped composite-helper pass is `-0.0968%` over target / `100.1613%` target speed. |
+| WALKSTUF1 high setup-prime cap 144 KiB | Superseded by the compact FGP3/v4 WALKSTUF1 baseline. Keep as a historical high-tide-only setup-prime retune, not a shared WALKSTUF1 policy. High improved `1595/1402 -> 1592/1406`, `overrun_vb 193 -> 186`, `blocking_vb 277 -> 275`, `loop_reads 136 -> 134`, and `due_misses 56 -> 55`; low stayed exact-flat at `1604/1407`. |
+| VISITOR3 high-only offscreen draw clip | Done; keep as a high-tide-only pack-data trim. The transform preserves `VISITOR3.FG2` size, entry sizes, offsets, pack LBA `22472`, and the `215040` byte PS-EXE bucket, while zeroing clipped draw tails for `17` high-tide entries. High improves `1139/1024 -> 1137/1024`, `overrun_vb 115 -> 113`, and `blocking_vb 191 -> 190`; low and broad controls stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| VISITOR3 low exit-right offscreen draw clip | Done; keep as a low-tide pack-data trim limited to entries `139..143`. The transform preserves `VIST3LOW.FG2` size, entry sizes, offsets, pack LBA `23232`, and the `215040` byte PS-EXE bucket, while zeroing clipped exit-right draw tails. Low improves `1140/1024 -> 1138/1024`, `overrun_vb 116 -> 114`, and `blocking_vb 194 -> 191`; high and broad controls stay exact-flat. Low `ship-left` and combined `ship-and-exit` subsets are rejected because they regress low to `1151/1024`. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| BUILDING2 high restore-minus-current cleanup | Done; keep as a high-tide-only pack-side data-shape win. FGP3/v4 cleanup spans now omit intervals redrawn by the same current frame only in `BUILDING2.FG2`, preserving the `1303332` byte CD footprint, pack LBA `6180`, and the `215040` byte PS-EXE bucket. High improves `1394/1301 -> 1353/1311`, `overrun_vb 93 -> 42`, `blocking_vb 138 -> 56`, and `loop_reads 68 -> 62`; low stays on the prior pack because the both-tide transform regressed hidden prefetch overrun `8 -> 13`. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| BUILDING2 high read group `60..72` | Done; keep as a high-tide-only retained stream group. The range was the only current scheduler-or-guarded matrix candidate with zero overread and medium visible gaps after the v108 pack pass. It grows `foregroundPilotPlay` by `12` bytes but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 high improves `1353/1311 -> 1349/1316`, `overrun_vb 42 -> 33`, `blocking_vb 56 -> 48`, `prefetch_overrun_vb 20 -> 12`, and `loop_reads 62 -> 61`; VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| BUILDING2 low read group `365..381` | Done; keep as a low-tide-only retained stream group. The range was the top remaining BUILDING2 low row after v109 and passed focused plus broad strict gates despite its partial-overlap/overread risk. It grows `foregroundPilotPlay` by `8` bytes versus v109 but keeps the `215040` byte PS-EXE bucket and all canary pack LBAs fixed. BUILDING2 low improves `1385/1303 -> 1383/1304`, `overrun_vb 82 -> 79`, `blocking_vb 121 -> 118`, `prefetch_overrun_vb 8 -> 5`, `loop_reads 57 -> 55`, and `due_misses 23 -> 22`; VISITOR3 high/low, BUILDING2 high, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | BUILDING2 low restore-minus-current retry | Do not promote as a pack-only change. It improves low as far as `1383 -> 1346`, overrun `79 -> 35`, blocking `118 -> 50`, and loop reads `55 -> 52`, but hidden refill regresses `5 -> 13`; temporary setup-prime and stage-guard salvages did not fix that. Retry only with generated scheduler/refill ownership or a second data-shape change that reduces active CD pressure before shortening the render cadence. |
 | BUILDING6 `48 KiB` window plus `15..39` read group | Do not promote or retry as a scalar window/group change. It reduced loop reads from `74 -> 32` high and `73 -> 31` low, but regressed high `2520/2442 -> 2568/2443`, blocking `62 -> 115`, hidden refill `64 -> 117`, and low `2515/2437 -> 2565/2445`, blocking `70 -> 115`, hidden refill `66 -> 96`. BUILDING6 needs generated scheduler ownership or a shrinking/selective FGP2 data-shape encoder before another read-count group. |
-| VISITOR3 low scoped composite-helper `-Os` | Done; keep as code-shape plus low-tide timing win. `grCompositeToBackground()` shrinks `0xbf4 -> 0x5b0`, `grCompositeToBackgroundFlip()` shrinks `0xc60 -> 0x63c`, and `jcreborn.elf` shrinks `960556 -> 951708` while the PS-EXE bucket remains `215040`. VISITOR3 low improves `1138/1024 -> 1135/1024`, `overrun_vb 114 -> 111`, `blocking_vb 191 -> 184`, and `loop_read_vb 200 -> 194`; VISITOR3 high, BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.0968%` over target / `100.1613%` target speed. |
-| VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the new VISITOR3 baseline. FGP3/v4 zero draw-tail bytes are trimmed while both packs stay `1555450` bytes and LBAs stay fixed; high setup-prime residency rises to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevents no-slack prefetch debt. VISITOR3 high improves `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improves `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both keep `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.0968%` over target / `100.1613%` target speed. |
+| VISITOR3 low scoped composite-helper `-Os` | Done; keep as code-shape plus low-tide timing win. `grCompositeToBackground()` shrinks `0xbf4 -> 0x5b0`, `grCompositeToBackgroundFlip()` shrinks `0xc60 -> 0x63c`, and `jcreborn.elf` shrinks `960556 -> 951708` while the PS-EXE bucket remains `215040`. VISITOR3 low improves `1138/1024 -> 1135/1024`, `overrun_vb 114 -> 111`, `blocking_vb 191 -> 184`, and `loop_read_vb 200 -> 194`; VISITOR3 high, BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the current VISITOR3 baseline. FGP3/v4 zero draw-tail bytes are trimmed while both packs stay `1555450` bytes and LBAs stay fixed; high setup-prime residency rises to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevents no-slack prefetch debt. VISITOR3 high improves `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improves `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both keep `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
+| WALKSTUF1 compact FGP3/v4 restore-minus-current | Done; keep as the current WALKSTUF1 baseline. Both PAL4/FGP2 packs are compacted into FGP3/v4 restore-minus-current packs and padded back to the original `1535263` byte footprint, preserving pack LBAs and the `215040` byte PS-EXE bucket. High improves `1592/1406 -> 1491/1426`, `overrun_vb 186 -> 65`, `blocking_vb 275 -> 85`, `prefetch_overrun_vb 51 -> 32`, `loop_reads 134 -> 69`, and `due_misses 55 -> 13`; low improves `1604/1407 -> 1489/1427`, `197 -> 62`, `270 -> 86`, `55 -> 27`, `132 -> 69`, and `50 -> 12`. The broad non-WALKSTUF controls stayed exact-flat except VISITOR3 high; that same drift reproduced with original WALKSTUF1 FGP2 packs restored, so it is tracked as unrelated current-control drift. Current exact matrix rollup is `-0.2497%` over target / `100.2899%` target speed. |
 | VISITOR3 cleanup-only offscreen clip | Do not promote. Clipping only offscreen FGP3/v4 cleanup spans preserves pack sizes, entry offsets, LBAs, and PS-EXE bytes while trimming `5526` bytes, `58513` cleanup pixels, and `1299` cleanup spans per tide, but both focused v106 gates are exact-flat: high remains `1137/1024` with `blocking_vb=190`, low remains `1138/1024` with `blocking_vb=191`. Treat this as safe but inert; future offscreen work needs draw/CD phase ownership or a different measured counter. |
 | WALKSTUF1 high setup-prime cap 152 KiB | Do not promote. Raising the high-only cap from `144 KiB` to `152 KiB` extends setup coverage to sectors `2..76` and nominally cuts high loop reads `134 -> 133`, but regresses high `scene_vb 1880 -> 1884`, `loop_vb 1592 -> 1595`, `target_vb 1406 -> 1405`, `blocking_vb 275 -> 286`, and `due_misses 55 -> 57`. Treat `144 KiB` as the high-cap knee. |
 | WALKSTUF1 low setup-prime cap 168 KiB | Do not promote. Raising the low-only cap from `160 KiB` to `168 KiB` preserves pack LBA and PS-EXE bucket but is exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |

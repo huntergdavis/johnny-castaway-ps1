@@ -61,6 +61,8 @@ def compact_rows_pixel_count(payload: bytes, offset: int, limit: int, *, has_pix
 def payload_has_no_visual_work(payload: bytes) -> bool:
     limit = len(payload)
     cleanup_pixels, draw_offset = compact_rows_pixel_count(payload, 0, limit, has_pixels=False)
+    if draw_offset == limit:
+        return cleanup_pixels == 0
     draw_pixels, end_offset = compact_rows_pixel_count(payload, draw_offset, limit, has_pixels=True)
     if end_offset != limit:
         raise ValueError("payload has trailing bytes")
