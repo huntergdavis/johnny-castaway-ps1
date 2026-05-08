@@ -3,6 +3,15 @@ layout: default
 ---
 <article class="page">
   <header class="page-header">
+    {%- comment -%}
+      Look up the current scene's row in site.data.scenes so we can
+      surface last_verified as a machine-readable <time> element in
+      the header. The body prose still carries the human-readable
+      "Validated on YYYY-MM-DD …" sentence; this gives crawlers,
+      AI agents, and quick-scan readers the same fact at a glance
+      without parsing prose.
+    {%- endcomment -%}
+    {%- assign current_scene = site.data.scenes | where: "slug", page.slug | first -%}
     <p class="eyebrow">
       Scene · {{ page.ads }} {{ page.tag }}
       {% if page.status == "validated" %}
@@ -10,6 +19,20 @@ layout: default
       {% else %}
         <span class="pill pill--wip">not yet validated</span>
       {% endif %}
+      {%- comment -%}
+        last_verified is usually an ISO date (2026-05-05) but can
+        also be a release tag (v0.3.6-ps1) for scenes that pre-date
+        the per-scene daily-validation phase. Tags get a styled span
+        rather than a <time> element since the HTML5 datetime
+        attribute requires an ISO-shaped value.
+      {%- endcomment -%}
+      {%- if current_scene.last_verified -%}
+        {%- if current_scene.last_verified contains '-ps1' -%}
+          <span class="scene-verified scene-verified--tag">{{ current_scene.last_verified }}</span>
+        {%- else -%}
+          <time class="scene-verified" datetime="{{ current_scene.last_verified }}">{{ current_scene.last_verified }}</time>
+        {%- endif -%}
+      {%- endif -%}
     </p>
     <h1>{{ page.title }}</h1>
     {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
