@@ -351,7 +351,7 @@
   - raft-stage
   - variable island position
   last_verified: '2026-05-02'
-  notes: visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required
+  notes: writes-letter-to-suzy (Johnny writes a letter to Suzy and sends it off); visual + audible signoff after right-shift island probe confirmed the full source pixels are present; no captured-position pin is required
 - ads: JOHNNY
   tag: 4
   slug: johnny4

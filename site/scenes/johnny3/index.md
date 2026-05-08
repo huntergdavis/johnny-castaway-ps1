@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: JOHNNY 3 — His own SOS returns
+title: JOHNNY 3 — Writes and sends a letter to Suzy
 ads: JOHNNY
 tag: 3
 slug: johnny3
 status: validated
-description: "JOHNNY.ADS scene 3: His own SOS returns. Validated with variable island placement."
+description: "JOHNNY.ADS scene 3: Johnny writes and sends a letter to Suzy. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-02 after visual and audible signoff. A right-shifted
@@ -18,11 +18,9 @@ requirement.
 - ADS dispatch: <code>JOHNNY.ADS scene 3</code>
 - Slug: <code>johnny3</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 6.) A bottle washes ashore — it's the same SOS Johnny sent earlier.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny sits down, writes a letter to Suzy, and sends it off the island. Confirmed by direct on-PS1 playback observation; the earlier "his own SOS returns" caption-mapping guess was wrong — this scene is the outbound Suzy-letter beat, not a returning SOS bottle.
 
 ### Validation note
 
