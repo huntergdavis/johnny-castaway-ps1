@@ -133,5 +133,5 @@ design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob
 ---
 
 The site is text-only on purpose — no portraits, no contributor
-avatars. The drawCredits voice is plainspoken, and the chrome
+avatars. The [drawCredits]({{ '/docs/glossary/#drawcredits' | relative_url }}) voice is plainspoken, and the chrome
 matches.
