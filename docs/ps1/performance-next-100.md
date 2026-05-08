@@ -813,6 +813,12 @@ it lowered hidden refill overrun but regressed visible loop and blocking
 (`1958 -> 1998`, `452 -> 477`). Do not spend more time on raw saved-read
 groups for WALKSTUF1 low unless the generator can model visible cadence; move
 that lane toward scheduler ownership or upload-ready/direct16 pack data.
+The current compact-pack WALKSTUF1 `201..213` group is also rejected as a
+local source table. It gives a real low-tide loop signal (`1489 -> 1486`,
+overrun `62 -> 59`, reads `69 -> 67`) but regresses visible blocking
+`86 -> 89` and hidden refill `27 -> 28`; guards at `8` and `12` VBlanks
+produce the same profile. Keep this range for generated scheduler ownership,
+not a hot C table.
 The naive WALKSTUF1 low direct16 FGP3/v3 probe is also rejected: removing
 palette lookups did not matter enough to offset the pack growth
 (`2.16 MB -> 2.92 MB`) and extra CD pressure (`loop_reads 62 -> 85`,
