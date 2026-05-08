@@ -44,7 +44,7 @@ optimized variant that had brought peak runtime usage down to about
 the console's 2&nbsp;MB main RAM left ~1.65&nbsp;MB of headroom for
 resource caching above the engine's working set.
 
-The first phase was infrastructure. PSn00bSDK 0.24 was selected over
+The first phase was infrastructure. [PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }}) 0.24 was selected over
 the official Sony SDK -- modern, open source, CMake-friendly. A
 precompiled macOS toolchain was attempted and abandoned (missing
 `cc1` / `cc1plus`); building from source needed Linux. The fix was
