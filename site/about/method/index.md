@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Method
-eyebrow: Host-capture . FG2 pack . PS1 replay
+eyebrow: Host-capture · FG2 pack · PS1 replay
 subtitle: How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.
 description: Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both.
 ---

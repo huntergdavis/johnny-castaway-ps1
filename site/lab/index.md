@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Lab
-eyebrow: Magazine . Methodology and reflection
+eyebrow: Magazine · Methodology and reflection
 subtitle: How a one-person PS1 fan port actually gets built. Fifteen feature articles on the craft, the failures, and the tools.
 description: The Lab section of the Johnny Castaway PS1 site — long-form essays on methodology, infrastructure, war stories, and the LLM-augmented dev practice behind a one-person fan port.
 date: 2026-04-26
