@@ -252,6 +252,13 @@ low moved `1383/1304 -> 1360/1313` with blocking `118 -> 180` and due misses
 `22 -> 43`. Treat this as a generated scheduler/refill-ownership target, not a
 pack-only or local slack-guard promotion.
 
+Current BUILDING2 low chained tail-group gate: adding a follow-up retained
+read group `381..397` after the accepted `365..381` group is rejected. It
+reduced low-tide `loop_reads 55 -> 54`, but regressed `scene_vb 1657 -> 1661`,
+`loop_vb 1383 -> 1387`, overrun `79 -> 83`, and blocking `118 -> 122` while
+leaving hidden refill at `5`. Do not retry this tail group as a local source
+table; saved reads after `365..381` still need scheduler-owned placement.
+
 The VISITOR3 no-op empty-hold recast is also closed under the current packs.
 `scripts/compact-fgp3-zero-noop-entries.py` found `0` high-tide and `0`
 low-tide FGP3/v4 entries whose cleanup and draw pixel counts are both zero;
