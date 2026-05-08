@@ -259,6 +259,8 @@ About]({{ '/about/#what-this-isnt' | relative_url }}).
 
 The closed-caption text was authored fresh for this port from
 scene content. It is not lifted from any prior corpus. The
+full reference manual is at
+[/docs/captions/]({{ '/docs/captions/' | relative_url }}); the
 [caption audit]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of {{ site.release.tag }}).
