@@ -51,7 +51,7 @@ the matrix didn't is at
 ### `v0.8.0-ps1` — complete-scene performance baseline
 <time datetime="2026-05-06"><em>2026-05-06</em></time>
 
-The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.9% over target / 99.5% target speed** — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline. The retrospective on which experiments moved that line is at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
+The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.9% over target / [99.5% target speed]({{ '/docs/glossary/#target-speed' | relative_url }})** — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline. The retrospective on which experiments moved that line is at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 
 - **63 / 63 scenes still validated** after the post-validation bugfix pass.
 - **126 / 126 variants routed**, 120 carrying active-loop timing.
