@@ -565,7 +565,7 @@
   - validation route `x=-154,y=54`
   - no-stitch host export with full-frame foreground-only overlay
   last_verified: '2026-05-04'
-  notes: visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
+  notes: stands-front-looks-out (Johnny stands at the front of the island and looks out over the ocean); visual signoff after regenerating high/low packs through the STAND no-stitch fast path; first no-stitch attempt faded Johnny's legs because pure base-diff treated frame-0 static pixels as background, so the fast path now keeps a single-position foreground-only overlay
 - ads: STAND
   tag: 6
   slug: stand6

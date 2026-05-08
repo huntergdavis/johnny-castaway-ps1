@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 5 — Looks out over the ocean
+title: STAND 5 — Standing at front of island, looking out over the ocean
 ads: STAND
 tag: 5
 slug: stand5
 status: validated
-description: "STAND.ADS scene 5: Looks out over the ocean. Validated on PS1."
+description: "STAND.ADS scene 5: Johnny stands at the front of the island and looks out over the ocean. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -15,11 +15,9 @@ Validated on 2026-05-04.
 - ADS dispatch: <code>STAND.ADS scene 5</code>
 - Slug: <code>stand5</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Idle at SPOT_B S: looks out to sea, adjusts hat and pants.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny stands at the front of the island and looks out over the ocean — the look-out-to-sea idle pose in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "looks out over the ocean" caption-mapping with the front-of-island position made explicit.
 
 ## Validation notes
 
