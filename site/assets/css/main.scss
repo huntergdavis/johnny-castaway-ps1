@@ -549,12 +549,17 @@ main:focus { outline: none; }
    inherit the figcaption color (otherwise the default --link cyan
    pops jarringly against the sun-yellow caption background). The
    underline appears on hover/focus as the affordance. */
-.trio figcaption a {
+/* Trio figures wrap the <img> + <figcaption> in a single <a> so the
+   entire card is one click target — caption styling is inherited
+   (no nested anchors), and the hover/focus underline lands on the
+   caption text only since the image isn't a phrase-content target. */
+.trio figure > a {
   color: inherit;
   text-decoration: none;
+  display: block;
 }
-.trio figcaption a:hover,
-.trio figcaption a:focus-visible {
+.trio figure > a:hover figcaption,
+.trio figure > a:focus-visible figcaption {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
