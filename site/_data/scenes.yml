@@ -643,7 +643,7 @@
   - existing committed FG2 pack (host export quirk)
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
+  notes: stands-looks-at-raft-and-around (Johnny looks at his raft and then looks around); visual signoff on the normal high-tide/night route. The host engine exits `STAND.ADS:10` after only 2 frames, so re-running the no-stitch export produces an empty 92-byte pack; the previously-committed 96 KB pack was kept and validated as-is.
 - ads: STAND
   tag: 11
   slug: stand11

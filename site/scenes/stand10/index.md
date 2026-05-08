@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 10 — Looks at his raft
+title: STAND 10 — Looks at his raft, looks around
 ads: STAND
 tag: 10
 slug: stand10
 status: validated
-description: "STAND.ADS scene 10: Looks at his raft. Validated on PS1."
+description: "STAND.ADS scene 10: Johnny looks at his raft and then looks around. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_D NE: looks at his raft.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny stands and looks at his raft, then looks around the rest of the island — an idle pose tied to the raft-build progression. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "looks at his raft" caption-mapping with the look-around tail confirmed.
 
 ## Validation notes
 
