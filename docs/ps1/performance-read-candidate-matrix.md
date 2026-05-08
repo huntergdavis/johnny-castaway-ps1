@@ -9,7 +9,7 @@ pressure and visible-cadence risk. It does not change the PS1 binary.
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
 - Scheduler-owned only: `38`
-- Closed exact ranges from experiment log: `3`
+- Closed exact ranges from experiment log: `4`
 - Deferred under-target rows: `12`
 
 Recent hand-authored table probes proved that nominal read-count wins can
@@ -58,8 +58,8 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 36 | `activity9` | `low` | 2085/2058 | 29 | `245..257` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 37 | `activity9` | `low` | 2085/2058 | 29 | `251..263` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 38 | `activity9` | `low` | 2085/2058 | 29 | `279..291` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 39 | `visitor3` | `low` | 1126/1025 | 170 | `333..349` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 40 | `visitor3` | `high` | 1118/1028 | 150 | `315..331` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 39 | `visitor3` | `low` | 1126/1025 | 170 | `317..341` (24s) | 3 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 40 | `visitor3` | `low` | 1126/1025 | 170 | `333..349` (16s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 
 ## CSV
 
