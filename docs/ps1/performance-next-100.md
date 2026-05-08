@@ -1136,6 +1136,7 @@ pre-v0.8.0 row.
 | BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
 | BUILDING6 pal4 padded FGP3 | Do not retry as a same-layout padded conversion under current validated packs. The v0.7.2 high/low packs expand `1444370 -> 1601445` bytes (`-10.87%` saved), so this lane needs selective/keyframed residual encoding or an explicit layout-changing experiment. |
 | PAL4 aligned pair stores | Do not retry as a local branch in `grCompositePacked4OpaqueRun()`. It shrank ELF but regressed BUILDING4 high cadence; retry only after pack-generated aligned command classes or a pair LUT removes the hot-path branch/packing cost. |
+| PAL4 pair-LUT halfword compositor | Do not retry as a local C inner-loop swap. Reusing `palLutSierra` improved VISITOR3 high blocking only (`191 -> 188`) with flat loop timing and regressed low tide `1140 -> 1142`; keep PAL4 compose work on generated aligned command classes, selective direct16/upload-ready data, or layout-neutral assembly/codegen. |
 | Smaller windows | Group metadata preserves due-frame coverage. |
 | Prepared-frame cleanup | Explicit render/CD budget exists. |
 | Direct-stage read-into-window | Group/tail-preserving merge keeps `blocking_reads=4`. |
