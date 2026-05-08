@@ -101,7 +101,7 @@
       <h1>Glossary</h1>
       <p class="subtitle">The specific technical terms the rest of the docs use without scaffolding. Written in the project's own voice.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3625 words
+          ~14 min read · 3696 words
         </p>
 
       <hr class="rule" />
@@ -271,6 +271,9 @@
 
 <dt id="target-vb">target_vb / loop_vb</dt>
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
+
+<dt id="target-speed">target_speed</dt>
+<dd>The user-facing perf column: <code>target_vb / loop_vb × 100%</code>. <code>100%</code> means the run hit native cadence exactly; below means it slipped. The <em>Target Speed</em> column on <a href="../../perf/">/perf/</a> color-codes ≥99% green, ≥80% yellow, &lt;80% red. The matrix-wide mean across timing-bearing rows is the home page status pill at <code>99.5%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying values.</dd>
 
 <dt id="scene-end">Scene-end</dt>
 <dd>The runtime event marking one full <a href="#fg2-pack">FG2 pack</a> loop completion. Triggers a <code>JCPERF</code>/<code>JCPERF2</code> TTY dump (vblank counts, CD/compose/upload/wait counters, <code>blocking_vb</code>, <code>alloc_fail</code>) and finalizes the row's perf-matrix entry; the <a href="#regtest">regtest harness</a> uses it as the natural pivot point for state-hash capture. Story scenes reach scene-end deterministically; the <a href="../../scenes/suzy1/">SUZY</a> mermaid scenes do not (no terminal frame), which is why their /perf/ rows are metadata-only and excluded from the matrix's <em>target_speed</em> averages on purpose.</dd>
