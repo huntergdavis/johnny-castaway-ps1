@@ -92,7 +92,7 @@ loads those packs from the disc and replays them against its own
 background, wave animation, holiday overlay, captions, and SPU audio.
 
 The PS1 never interprets Sierra's bytecode at runtime. That's the whole
-trick. A 1992 screensaver fits onto a CD-ROM and inside 2 MB of RAM
+trick. A 1992 screensaver fits onto a CD-ROM and inside [2 MB of RAM]({{ '/docs/hardware/' | relative_url }})
 because all of the smart work is done on a desktop and pre-baked.
 
 The full deep-dive — pack format, hardware gotchas, the [SPI pad-poll
