@@ -78,7 +78,7 @@ Bracketing Stage 1, before the relief work landed, was a wave of `*-current-refr
 
 ### FGP3 pack format conversions
 
-The original FG2 pack format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.
+The original [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }}) format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.
 
 ### Scene-local prefetch relief
 
