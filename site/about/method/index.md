@@ -161,7 +161,7 @@ Concretely, a pack contains:
   This is what `foreground_pilot.c` uses to fire `soundPlay()` on
   cue.
 - **Frame-meta tail.** Source frame timing in milliseconds, used at
-  capture-validate time and preserved in the pack so a regtest can
+  capture-validate time and preserved in the pack so a [regtest]({{ '/docs/glossary/#regtest' | relative_url }}) can
   confirm the on-PS1 cadence still matches the host capture.
 
 The runtime also carries a small companion JSON sidecar (`pack_index`
