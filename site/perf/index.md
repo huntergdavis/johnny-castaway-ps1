@@ -39,7 +39,8 @@ A scene can be timed here without being visually certified.
 </p>
 
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
-BUILDING2 restore-minus-current pack passes. The slowest rows are now
+BUILDING2 restore-minus-current pack passes plus the BUILDING2 high `60..72`
+grouped-read pass. The slowest rows are now
 `walkstuf1` low/high (`87.7%` / `88.3%`) and
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
 (`90.0%` / `90.1%`). The yellow cluster includes the remaining wide-action,
@@ -67,10 +68,10 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `0.0%` (`-0.0595%` exact) |
-| Timing-bearing average target speed | `100.1%` (`100.1296%` exact) |
-| Latest perf matrix run | `2026-05-08T01:07:35` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `0.0%` (`-0.0650%` exact) |
+| Timing-bearing average target speed | `100.1%` (`100.1351%` exact) |
+| Latest perf matrix run | `2026-05-08T01:35:06` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -101,7 +102,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building2-high-restore-minus-current-v108`,
+  refreshed rows use `building2-high-group60-72-v109`,
+  `building2-high-restore-minus-current-v108`,
   `visitor3-low-offscreen-exitright-v106`,
   `visitor3-high-offscreen-drawclip-v105`,
   `walkstuf1-high-primecap144-v089`,

@@ -14,7 +14,7 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-current VISITOR3 offscreen draw clips, BUILDING4 restore-minus-current pack baseline, WALKSTUF1 high setup-prime retune, and BUILDING2 high restore-minus-current cleanup; all 63 scenes remain validated, and the headless battle card is under target at -0.0595% over / 100.1296% target speed).
+current VISITOR3 offscreen draw clips, BUILDING4 restore-minus-current pack baseline, WALKSTUF1 high setup-prime retune, and BUILDING2 high restore-minus-current cleanup plus 60..72 grouped read; all 63 scenes remain validated, and the headless battle card is under target at -0.0650% over / 100.1351% target speed).
 
 ## File facts
 
@@ -22,7 +22,7 @@ current VISITOR3 offscreen draw clips, BUILDING4 restore-minus-current pack base
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
 | Lines | 538 |
-| Approx. words | 5798 |
+| Approx. words | 5809 |
 | Code fences | 1 |
 
 ## Outline
