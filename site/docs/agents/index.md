@@ -260,7 +260,7 @@ shipped is the author's.
   for. Same disclosure scope; magazine treatment instead of
   reference list.
 - [The voice-anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
-  — the deeper retrospective on how the four-line `drawCredits`
+  — the deeper retrospective on how the four-line [`drawCredits`]({{ '/docs/glossary/#drawcredits' | relative_url }})
   text propagates voice constraints downstream.
 - [The dunking bird]({{ '/lab/dunking-bird/' | relative_url }}) —
   the parallel-agent infrastructure that keeps two LLM sessions
