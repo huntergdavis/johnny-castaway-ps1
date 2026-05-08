@@ -363,7 +363,7 @@
   - high/low pack parity
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin
+  notes: own-sos-returns (Johnny's own SOS bottle washes back onto the shore); visual + audible signoff after rebuilding high/low packs with a full-frame keyed foreground-only overlay; stale bottle overpaint and full-host SOS bubble blue-line contamination are fixed without adding a runtime island-position pin
 - ads: JOHNNY
   tag: 5
   slug: johnny5

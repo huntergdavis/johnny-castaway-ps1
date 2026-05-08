@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: JOHNNY 4 — Writes a fresh SOS
+title: JOHNNY 4 — His own SOS bottle washes back
 ads: JOHNNY
 tag: 4
 slug: johnny4
 status: validated
-description: "JOHNNY.ADS scene 4: Writes a fresh SOS. Validated after full-frame foreground-only capture cleanup."
+description: "JOHNNY.ADS scene 4: Johnny's own SOS bottle washes back onto the shore. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-03 after visual and audible signoff.
@@ -15,11 +15,9 @@ Validated on 2026-05-03 after visual and audible signoff.
 - ADS dispatch: <code>JOHNNY.ADS scene 4</code>
 - Slug: <code>johnny4</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny writes a new message in a bottle and throws it back out.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny's SOS bottle — the one he tossed out earlier — washes back onto the shore. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "writes a fresh SOS" caption-mapping guess was wrong (that's the outbound beat; this scene is the gag where the bottle comes back to him).
 
 ### Validation note
 
