@@ -416,7 +416,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
+  notes: mary-visits-fishing-mistaken-for-fish-boot (Mary swims up while Johnny is fishing; he mistakes her for a fish on the line, then ends up reeling in a boot); 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
 - ads: MARY
   tag: 3
   slug: mary3
