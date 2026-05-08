@@ -260,6 +260,10 @@ or running it through the [headless regtest harness]({{ '/docs/regtest/' | relat
 
 ## View source on GitHub
 
+- [`build-ps1.sh`]({{ site.github_url }}/blob/main/build-ps1.sh)
+  · [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
+  — the two wrapper scripts most of this page describes (clean
+  build vs rebuild+launch).
 - [`docs/ps1/build-system.md`]({{ site.github_url }}/blob/main/docs/ps1/build-system.md)
 - [`docs/ps1/toolchain-setup.md`]({{ site.github_url }}/blob/main/docs/ps1/toolchain-setup.md)
 - [`Dockerfile.ps1`]({{ site.github_url }}/blob/main/Dockerfile.ps1)
