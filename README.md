@@ -135,6 +135,9 @@ of padded pack slack per tide. The follow-up budgeted analyzer target fits that
 same slack by selecting `74 / 96` default-selected frames, using `814184`
 payload+rect bytes, leaving `663` bytes of slack, and retaining `3858104`
 modeled upload bytes saved.
+The VISITOR3 no-op entry-prune probe is also closed: it reduced active payload
+and visible high-tide blocking, but failed the gate by moving the cost into
+hidden prefetch overrun (`0 -> 56` high, `0 -> 17` low).
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -333,7 +336,9 @@ table row without changing timing; the WALKSTUF1 high setup-prime cap becomes
 the current baseline; the VISITOR3 default selective upload-ready footprint
 gate rejects the naive same-footprint append; and the budgeted VISITOR3
 analyzer target now proves a smaller `74`-frame subset can fit inside the
-current pack slack before runtime-format work begins.
+current pack slack before runtime-format work begins. A follow-up no-op
+entry-prune probe is rejected because it shortens VISITOR3 cadence without
+owning the hidden refill schedule.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

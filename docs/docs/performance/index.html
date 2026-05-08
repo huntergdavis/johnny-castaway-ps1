@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3567 words
+          ~14 min read · 3616 words
         </p>
 
       <hr class="rule" />
@@ -243,6 +243,12 @@ same-footprint budgeted target too: <code class="language-plaintext highlighter-
 modeled upload bytes saved. The next probe should implement that smaller
 subset, compress the payload, use a shrinking pack transform, or deliberately
 run a layout-moving experiment.</p>
+
+<p>A tempting VISITOR3 shortcut was rejected: pruning visually no-op FGP3 entries
+reduced active payload and high-tide visible blocking, but hidden prefetch
+overrun regressed from <code class="language-plaintext highlighter-rouge">0</code> to <code class="language-plaintext highlighter-rouge">56</code> high and <code class="language-plaintext highlighter-rouge">17</code> low. That confirms the next
+VISITOR3 route needs explicit scheduler ownership or budgeted upload-ready data,
+not isolated entry-count pruning.</p>
 
 <p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan

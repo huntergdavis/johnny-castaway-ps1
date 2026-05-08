@@ -127,6 +127,12 @@ modeled upload bytes saved. The next probe should implement that smaller
 subset, compress the payload, use a shrinking pack transform, or deliberately
 run a layout-moving experiment.
 
+A tempting VISITOR3 shortcut was rejected: pruning visually no-op FGP3 entries
+reduced active payload and high-tide visible blocking, but hidden prefetch
+overrun regressed from `0` to `56` high and `17` low. That confirms the next
+VISITOR3 route needs explicit scheduler ownership or budgeted upload-ready data,
+not isolated entry-count pruning.
+
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
 candidates by observed append-start ownership, current grouped-read capacity,
