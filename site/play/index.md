@@ -70,10 +70,12 @@ optional and reachable with **Start**.
 | Cross             | Confirm / select                                 |
 | Circle            | Back from any menu or submenu                    |
 
-Inside the pause menu you can: enter or exit Freeplay, mute sound,
-toggle closed captions, force day/night, tide, raft, and holidays,
-advance to the next scene, set the in-game date, move the island
-anchor, set the RNG seed, and open the sound test.
+Inside the pause menu you can: enter or exit Freeplay, choose a
+Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits,
+Visitors, Activities, or Misc & Suzy), mute sound, toggle closed
+captions, force day/night, tide, raft, and holidays, advance to
+the next scene, set the in-game date, move the island anchor, set
+the RNG seed, and open the sound test.
 
 ## Freeplay controls
 
