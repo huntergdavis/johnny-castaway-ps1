@@ -171,7 +171,7 @@ through CMake with PSn00bSDK’s toolchain file; CD packaging via
 layer, leave the engine alone. That principle held: only three files
 needed real porting – <code class="language-plaintext highlighter-rouge">graphics_ps1.c</code>, <code class="language-plaintext highlighter-rouge">events_ps1.c</code>,
 <code class="language-plaintext highlighter-rouge">sound_ps1.c</code> – plus a CD I/O reimplementation in <code class="language-plaintext highlighter-rouge">cdrom_ps1.c</code>
-(~2,280 lines, replacing <code class="language-plaintext highlighter-rouge">fopen</code> / <code class="language-plaintext highlighter-rouge">fread</code> against CD sectors).
+(~2,570 lines, replacing <code class="language-plaintext highlighter-rouge">fopen</code> / <code class="language-plaintext highlighter-rouge">fread</code> against CD sectors).
 Roughly 4,000+ lines of upstream engine code went unchanged. By the
 end of Phase 4 the game booted on DuckStation and loaded resources
 from the CD image.</p>
