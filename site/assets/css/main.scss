@@ -816,6 +816,20 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
     background: rgba(255, 255, 255, 0.04);
   }
 }
+/* Row-hover highlight: pairs with zebra striping above. The cursor
+   can wander across many columns; lighting the row under the cursor
+   makes "which row am I on?" unambiguous. Stronger tint than zebra
+   so it visibly overrides the alternating background. */
+.scene-table tbody tr:hover,
+.scene-perf-table tbody tr:hover {
+  background: rgba(0, 168, 168, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:hover,
+  .scene-perf-table tbody tr:hover {
+    background: rgba(0, 255, 255, 0.10);
+  }
+}
 /* Anchored ADS rows scroll into view past the sticky header. */
 .scene-table tr[id] { scroll-margin-top: 5rem; }
 .scene-table td.scene-tag, .scene-table th.scene-tag {
