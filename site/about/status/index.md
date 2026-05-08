@@ -122,8 +122,10 @@ Pulled from the live narrative in
   playback." The migration plan lives in
   `docs/ps1/ps1-branch-cleanup-plan.yaml` under
   `fgpilot_naming_migration_plan`.
-- **Milestone release cadence.** `v0.8.1-ps1` is the clean-rect pressure
-  stability point release. `v0.8.0-ps1` is the complete-scene performance
+- **Milestone release cadence.** `v0.8.3-ps1` is the WALKSTUF1 compact
+  foreground performance pass. `v0.8.2-ps1` is the VISITOR3 guarded-read
+  performance pass. `v0.8.1-ps1` is the clean-rect pressure stability
+  point release. `v0.8.0-ps1` is the complete-scene performance
   baseline. `v0.7.2-ps1`
   fixes stale-backdrop story-loop walks. `v0.7.1-ps1` adds the original-four
   auto holiday default and persisted holiday mode. `v0.7.0-ps1` validates all
