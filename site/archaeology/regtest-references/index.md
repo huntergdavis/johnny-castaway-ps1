@@ -162,7 +162,7 @@ on 2026-03-28 against the host build of that day.
 
 <table>
 <thead>
-<tr><th>Scene</th><th>ADS</th><th>Tag</th><th>Reference dir</th></tr>
+<tr><th scope="col">Scene</th><th scope="col">ADS</th><th scope="col">Tag</th><th scope="col">Reference dir</th></tr>
 </thead>
 <tbody>
 <tr><td><a href="{{ '/scenes/activity1/' | relative_url }}">ACTIVITY-1</a></td><td>ACTIVITY.ADS</td><td>1</td><td><a href="{{ site.github_url }}/tree/main/docs/ps1/archaeology/regtest-references/ACTIVITY-1/">ACTIVITY-1/</a></td></tr>

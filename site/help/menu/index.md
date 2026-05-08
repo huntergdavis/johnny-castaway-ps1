@@ -64,7 +64,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Scene Set is the only main-menu row that takes Left/Right input directly. Left and Right preview a pending value (the row shows it bracketed: <code>&lt;Fishing Only&gt;</code>); an asterisk marks the preview as un-applied. <strong>Cross</strong> or <strong>Start</strong> commits the change, fires a frog-clock loading transition, and the next scene comes from the new pool.</p>
 <p>Navigating away with Up/Down without committing discards the preview — you cannot accidentally change the pool just by scrolling past this row.</p>
 <table class="scene-set-table">
-<thead><tr><th>Set</th><th>Pool</th><th>Visual signoff</th></tr></thead>
+<thead><tr><th scope="col">Set</th><th scope="col">Pool</th><th scope="col">Visual signoff</th></tr></thead>
 <tbody>
 <tr><td><code>All Scenes</code></td><td>Catch-all — every routed scene the original game had</td><td>All ✅</td></tr>
 <tr><td><code>Fishing Only</code></td><td><code>fishing1</code>..<code>fishing8</code></td><td>All ✅</td></tr>

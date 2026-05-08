@@ -435,7 +435,7 @@ signed off."
   Columns are case name (linking to the case detail page), ADS
   family, scene tag, captured frame count, and verification status.
 </caption>
-<thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
+<thead><tr><th scope="col">Case</th><th scope="col">ADS</th><th scope="col">Tag</th><th scope="col">Frames</th><th scope="col">Status</th></tr></thead>
 <tbody>
 {rows}
 </tbody>
@@ -509,7 +509,7 @@ def generate_resource_catalog() -> None:
 {intro_block}
 <table>
 {caption}
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 {rows_md}
 </tbody>
