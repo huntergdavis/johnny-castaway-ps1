@@ -198,6 +198,7 @@ enum {
 /* MARY3 keeps prefetch under clean pressure; 8 VBlanks is the strict-safe
  * window-refill knee that avoids hidden refill debt on both tides. */
 #define FG_MARY3_WINDOW_MIN_SLACK_VBLANKS 8
+#define FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS 4
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
@@ -857,9 +858,11 @@ static int fgSceneEquals(const char *a, const char *b)
 
 static uint16 fgRuntimeWindowMinSlackVBlanks(void)
 {
-    return fgSceneEquals(gFgRuntime.sceneName, "mary3") ?
-        FG_MARY3_WINDOW_MIN_SLACK_VBLANKS :
-        FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;
+    if (fgSceneEquals(gFgRuntime.sceneName, "mary3"))
+        return FG_MARY3_WINDOW_MIN_SLACK_VBLANKS;
+    if (islandState.lowTide && fgSceneEquals(gFgRuntime.sceneName, "building2"))
+        return FG_BUILDING2_LOW_WINDOW_MIN_SLACK_VBLANKS;
+    return FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;
 }
 
 static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)

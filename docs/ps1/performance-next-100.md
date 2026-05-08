@@ -25,15 +25,23 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the VISITOR5 high-only compact-FGP3/no-autoprime
-promotion: `+0.5215%` public average over target / `99.4812%` public target
+Current all-scene rollup after the BUILDING2 low restore-minus-current/slack-4
+promotion: `+0.4933%` public average over target / `99.5091%` public target
 speed across all `126` timing-bearing rows. The raw signed optimization matrix
-is `-0.2471%` / `100.2478%`. Since the compact full-matrix baseline was about
+is `-0.2752%` / `100.2759%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `16.88` public over-target points and added about `12.38`
+removed about `16.91` public over-target points and added about `12.41`
 public target-speed points.
 
-Latest promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
+Latest promoted BUILDING2 low restore-minus-current/slack-4 baseline: keep the
+padded `1303332` byte `BUIL2LOW.FG2` footprint and fixed pack LBA while reducing
+active payload `789906 -> 674798`. The scene-local low-tide window guard uses a
+`4` VBlank held-slack threshold so the pack-side win promotes without hidden
+refill debt: low improves `loop_vb 1383 -> 1349`, `target_vb 1304 -> 1316`,
+`overrun_vb 79 -> 33`, `blocking_vb 118 -> 83`, `prefetch_overrun_vb 5 -> 1`,
+`loop_reads 55 -> 54`, `loop_read_vb 251 -> 227`, and `due_misses 22 -> 19`.
+
+Recent promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
 PAL4/FGP2 packs to padded compact FGP3/v4 restore-minus-current packs inside
 the original `1535263` byte footprints. The compaction chain trims active
 candidate bytes to `923959` while preserving pack LBAs `24744/25494` and the
@@ -395,9 +403,10 @@ the VISITOR3 low scoped composite-helper pass, to `-0.0968%` over target /
 FGP3/v4 pass. The missing-scene timing refresh and MARY3 guarded
 prefetch-preserve follow-up then move the raw signed matrix to `-0.2159%` /
 `100.2547%`, the BUILDING1 compact-FGP3/no-autoprime pass moves it to
-`-0.2404%` / `100.2410%`, and the VISITOR5 high-only compact-FGP3/no-autoprime
-pass moves it to `-0.2471%` / `100.2478%`. The current rollup is tracked
-above.
+`-0.2404%` / `100.2410%`, the VISITOR5 high-only compact-FGP3/no-autoprime pass
+moves it to `-0.2471%` / `100.2478%`, and the BUILDING2 low
+restore-minus-current/slack-4 pass moves it to `-0.2752%` / `100.2759%`. The
+current rollup is tracked above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
 format for both validated packs and retune the scene-local stream windows to
@@ -464,9 +473,10 @@ pass moves it to `-0.2497%` over target / `100.2899%` target speed. The
 missing-scene timing refresh and MARY3 guarded prefetch-preserve follow-up move
 the raw signed matrix to `-0.2159%` over target / `100.2547%` target speed,
 the BUILDING1 compact-FGP3/no-autoprime pass moves it to `-0.2404%` /
-`100.2410%`, and the VISITOR5 high-only compact-FGP3/no-autoprime pass moves
-the current raw signed matrix to `-0.2471%` over target / `100.2478%` target
-speed.
+`100.2410%`, the VISITOR5 high-only compact-FGP3/no-autoprime pass moves it to
+`-0.2471%` over target / `100.2478%` target speed, and the BUILDING2 low
+restore-minus-current/slack-4 pass moves the current raw signed matrix to
+`-0.2752%` over target / `100.2759%` target speed.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
