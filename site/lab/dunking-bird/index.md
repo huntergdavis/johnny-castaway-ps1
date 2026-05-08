@@ -7,6 +7,13 @@ description: Dunking bird is a small piece of software the author wrote to keep 
 date: 2026-04-26
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## What it is
 
 <figure>
@@ -44,7 +51,7 @@ This page is just about why it kept showing up on this project.
 
 Performance work on the PS1 port is unglamorous. Most of it is the same
 loop, run a thousand times: build, boot a headless DuckStation under
-Docker, run a scene to scene-end, capture `JCPERF` / `JCPERF2` lines,
+Docker, run a scene to [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}), capture [`JCPERF` / `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines,
 parse them, summarize, decide whether the change beat the baseline,
 record the result, change one thing, do it again. The loop is mostly
 deterministic, and most iterations are uninteresting.
@@ -52,7 +59,7 @@ deterministic, and most iterations are uninteresting.
 The full
 [experiment ledger](https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md)
 on the perf branch has a few hundred entries. Most of them are
-single-knob probes — window size 22 KB, slack guard 4 VBlanks,
+single-knob probes — window size 22 KB, slack guard 4 [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}),
 that kind of thing. Each individual run takes minutes. The decision
 that follows takes seconds. The cumulative time spent staring at a
 terminal waiting for the next "do not promote" line is real, and that

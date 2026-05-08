@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The LLM pass
-eyebrow: Lab . Advanced development techniques
+eyebrow: Lab · Advanced development techniques
 subtitle: How I use AI sub-agents on a one-person PS1 port without pretending they are magic.
 description: "A methodology essay on the LLM-assisted development workflow behind Johnny Castaway PS1: parallel agents, review loops, hallucination control, and where the human stays in charge."
 date: 2026-04-26
@@ -39,7 +39,7 @@ part is not one giant algorithm. The hard part is surface area.
 There are Sierra resource formats, ADS scripts, TTM animation commands,
 PSn00bSDK GPU rules, SPU sample layout, CD-ROM seek behavior, Docker image
 setup, DuckStation TTY logging, 63 scenes, 36 holidays, captions, pause menu
-state, memory-card persistence, and a regtest harness that grew like ivy over
+state, memory-card persistence, and a [regtest harness]({{ '/docs/glossary/#regtest' | relative_url }}) that grew like ivy over
 four months. A human can understand all of it, but not all at once.
 
 Sub-agents are useful when the work decomposes cleanly:
@@ -126,6 +126,10 @@ the taste, the release bar, the legal posture, or the Credits screen.
 - [AI sub-agents on this project]({{ '/docs/agents/' | relative_url }})
 - [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }})
 - [The voice anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+- [35 holidays in 4 weeks]({{ '/lab/35-holidays-codegen/' | relative_url }})
+  — case study; the codegen pipeline whose sprite primitives an
+  LLM sub-agent drafted under the methodology this essay
+  describes.
 - [Voice guide]({{ '/about/voice/' | relative_url }}) — the
   public-facing distillation of the voice rules an LLM pass has
   to land inside.

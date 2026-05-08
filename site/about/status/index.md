@@ -33,17 +33,17 @@ done."
 
 | Component | Status | Notes |
 |---|---|---|
-| Build system (Docker + CMake + mkpsxiso) | Complete | `Dockerfile.ps1` on `linux/amd64`; PSn00bSDK 0.24; `scripts/rebuild-and-let-run.sh` is the one-command entry. |
-| CD-ROM I/O (`cdrom_ps1.c`, ~2,280 lines) | Complete | Reimplements `fopen`/`fread` against CD sectors. `CdSearchFile` / `CdRead` / `CdSync` integration. The rest of `resource.c` is unchanged from upstream. |
-| Renderer (`graphics_ps1.c`, ~3,300+ lines) | Complete | 4-bit indexed sprite format (`indexedPixels`), palette LUT compositing, 4-pixel unrolled inner loop, opaque sprite fast-path, dirty-rect background restore (~80-95% reduction in per-frame data movement), black-backdrop temporal cleanup for full-screen scenes like `JOHNNY 1`, and `grForceFullRedrawNextFrame` for pause-menu resume. `FntFlush` is empirically broken in the scene-runtime context -- do not regress on-screen text to it. |
-| Audio (`sound_ps1.c`, ~184 lines) + SPU | Working | All 23 VAG SFX preloaded into SPU RAM at boot. Round-robin over 8 voices. Captured `0xC051 PLAY_SAMPLE` events ship in the FG2 pack and fire from `foreground_pilot.c` with a 3-frame key-on delay. Mute writes the SPU master-volume registers directly because `SpuSetCommonMasterVolume` is not honored by DuckStation HLE. The VAG encoder (`scripts/wav2vag.py`) was extensively debugged during the `v0.3.6-ps1` milestone (commit `355227fa`); see that commit for the full bug list. |
+| Build system (Docker + CMake + mkpsxiso) | Complete | `config/ps1/Dockerfile.ps1` on `linux/amd64`; PSn00bSDK 0.24; `scripts/rebuild-and-let-run.sh` is the one-command entry. |
+| CD-ROM I/O (`cdrom_ps1.c`, ~2,570 lines) | Complete | Reimplements `fopen`/`fread` against CD sectors. `CdSearchFile` / `CdRead` / `CdSync` integration. The rest of `resource.c` is unchanged from upstream. |
+| Renderer (`graphics_ps1.c`, ~4,900+ lines) | Complete | 4-bit indexed sprite format (`indexedPixels`), palette LUT compositing, 4-pixel unrolled inner loop, opaque sprite fast-path, dirty-rect background restore (~80-95% reduction in per-frame data movement), black-backdrop temporal cleanup for full-screen scenes like `JOHNNY 1`, and `grForceFullRedrawNextFrame` for pause-menu resume. `FntFlush` is empirically broken in the scene-runtime context -- do not regress on-screen text to it. |
+| Audio (`sound_ps1.c`, ~445 lines) + SPU | Working | All 23 VAG SFX preloaded into SPU RAM at boot. Round-robin over 8 voices. Captured `0xC051 PLAY_SAMPLE` events ship in the FG2 pack and fire from `foreground_pilot.c` with a 3-frame key-on delay. Mute writes the SPU master-volume registers directly because `SpuSetCommonMasterVolume` is not honored by DuckStation HLE. The VAG encoder (`scripts/wav2vag.py`) was extensively debugged during the `v0.3.6-ps1` milestone (commit `355227fa`); see that commit for the full bug list. |
 | Input (`events_ps1.c` + `src/spi.c`) | Complete | Direct SPI driver, timer-2 + SIO0 IRQ at 250 Hz, lifted from spicyjpeg's `pads` example. The BIOS pad path (`InitPAD`/`StartPAD`) is unusable in PSn00bSDK 0.24 + DuckStation. Poll TX is `tx_len=5`, not 4 -- DuckStation only delivers button bytes when the full 5-byte sequence comes from the TX buffer. |
 | Closed captions (`src/ps1_captions.{c,h}`) | Working | On/off via Pause -> Accessibility -> Captions. Dark band at the bottom of the frame for ~5 seconds at scene start with descriptive subtitle text. Glyph atlas shared with the pause menu. Caption corpus from the upstream `closed_captions` branch of `jc_reborn`; the original sequential ADS-tag map had ~20 mismatches and was re-audited (`docs/ps1/caption-audit-2026-04-26.yaml`). HIGH-confidence matches dominate; LOW-confidence slots remain on STAND idles and a few VISITOR / WALKSTUF edges. |
 | Holidays (36 of them, code-generated) | Working | Holiday emblem sprite sheet packed into the PS1 holiday overlay. Selectable via Pause -> World Options -> Holidays and `BOOTMODE.TXT`. Generation is offline; design notes in `docs/ps1/holidays-expansion-design.md`. |
-| Story-loop walks (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. `v0.7.2` adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; `v0.8.0` adds a clean-rect retry path; `v0.8.1` counts wave-band/split-rect clean pressure before allocation. |
-| Freeplay/debug mode (`scene_freeplay.c`) | Working | `v0.5.0-ps1` promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, frog-clock loading transitions, and a no-allocation steady-state frame loop. |
-| Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Compact sub-screens: Freeplay Options, World Options, Accessibility, Sound Test, System, and the date/island/seed editors. |
-| Memcard persistence (`memcard.c`) | Working / expanding | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work. |
+| [Story-loop walks]({{ '/docs/walks/' | relative_url }}) (`walk_pilot.c`, `walk_render.c`) | Working | Johnny walks between scene endpoints using Sierra's original `walk_data.h` routes instead of teleporting. The runtime restores from a persistent tight clean buffer, keeps waves moving, re-stamps holiday overlays behind Johnny during walk frames, and covers Johnny behind the palm trunk/leaves. `v0.7.2` adds a backdrop-key guard so walks only run when the next scene matches the previous rendered tide, raft, night, holiday, and island X/Y state; `v0.8.0` adds a clean-rect retry path; `v0.8.1` counts wave-band/split-rect clean pressure before allocation. |
+| Freeplay/debug mode (`scene_freeplay.c`) | Working | `v0.5.0-ps1` promotes direct-control Johnny: D-pad/analog walking, L2/R2 speed modifiers, fishing, immediate R1+D-pad world toggles, gag/visitor debug catalogs, sound test, Select clear-screen rebuild, [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) loading transitions, and a no-allocation steady-state frame loop. |
+| Pause menu (`pause_menu.c`) | Complete | Start opens the overlay mid-scene; custom embedded 8x8 ASCII font (because `FntFlush` is broken in scene context); `POLY_F4` dim quad + panel quads. Eleven sub-screens: Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed. |
+| [Memcard]({{ '/docs/glossary/#memcard' | relative_url }}) persistence (`memcard.c`) | Working / expanding | Pause-menu choices persist to `bu00:` block 0. Save/load wired; restore-on-boot wired. v6 saves persist holiday mode separately from manual holiday id. Broader menu-option persistence remains future work. |
 | Telemetry / debug overlay | Complete | Five-panel overlay; gated by `debugMode`. Toggle with Select. The historical visual-debug substrate when TTY printf was unsafe; still the right tool for per-frame state. |
 | Perf instrumentation (`ps1_perf.c`) | Complete | Level-gated `JCPERF` / `JCPERF2` TTY lines. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Set via `ps1PerfSetLevel`. Off in normal operation; the user feeds `JCPERF` output to a perf-debug agent when chasing regressions. |
 | TTY printf | Reliable | Restored 2026-04-25 on PSn00bSDK 0.24 + DuckStation through bounded `vprintf` plus DuckStation TTY/file logging. Gated BOOTMODE probes (`printf-test`, `logtest`). Must not be called per-frame -- text I/O alters timing. |
@@ -140,3 +140,26 @@ Pulled from the live narrative in
 
 For dated context on any of the above, see
 [/devlog/]({{ '/devlog/' | relative_url }}).
+
+## Related pages
+
+- [About: Method]({{ '/about/method/' | relative_url }}) —
+  the canonical methodology essay this status page tracks
+  the implementation of.
+- [About: History]({{ '/about/history/' | relative_url }}) —
+  how the components above got to "complete" or "in motion."
+- [About: dev environment]({{ '/about/dev-environment/' | relative_url }})
+  — the workflow photograph behind every row in the
+  component-level table.
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — the visual
+  signoff bar; the per-scene status the table summarizes.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  the second ledger; per-scene/tide timing for every
+  component listed under "performance" above.
+- [Releases]({{ '/releases/' | relative_url }}) — short
+  notes on every tagged version named in the milestone-cadence
+  list above.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for `FntFlush`, `clean-rect`,
+  `fgpilot`, `BOOTMODE.TXT`, and the rest of the terms
+  this page uses without scaffolding.

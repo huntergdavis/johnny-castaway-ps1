@@ -44,21 +44,21 @@ optimized variant that had brought peak runtime usage down to about
 the console's 2&nbsp;MB main RAM left ~1.65&nbsp;MB of headroom for
 resource caching above the engine's working set.
 
-The first phase was infrastructure. PSn00bSDK 0.24 was selected over
+The first phase was infrastructure. [PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }}) 0.24 was selected over
 the official Sony SDK -- modern, open source, CMake-friendly. A
 precompiled macOS toolchain was attempted and abandoned (missing
 `cc1` / `cc1plus`); building from source needed Linux. The fix was
-Docker: `Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
+Docker: `config/ps1/Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK's toolchain file; CD packaging via
-mkpsxiso; one shell script (`build-ps1.sh`, later
+[mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script (`build-ps1.sh`, later
 `rebuild-and-let-run.sh`) on top.
 
 Core implementation came next. The plan was: port only the platform
 layer, leave the engine alone. That principle held: only three files
 needed real porting -- `graphics_ps1.c`, `events_ps1.c`,
 `sound_ps1.c` -- plus a CD I/O reimplementation in `cdrom_ps1.c`
-(~2,280 lines, replacing `fopen` / `fread` against CD sectors).
+(~2,570 lines, replacing `fopen` / `fread` against CD sectors).
 Roughly 4,000+ lines of upstream engine code went unchanged. By the
 end of Phase 4 the game booted on DuckStation and loaded resources
 from the CD image.
@@ -144,13 +144,13 @@ the desktop engine -- the same engine, on a host that has gigabytes
 of RAM and a real OS -- as the authoritative renderer. Capture every
 visible foreground draw. Capture every `0xC051 PLAY_SAMPLE` opcode
 the TTM interpreter fired. Encode the result into a small per-scene
-binary (an **FG2 pack**: full-render base frames plus per-frame
+binary (an **[FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})**: full-render base frames plus per-frame
 indexed-pixel diff spans plus a sound-event table). Ship the packs
 on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
 controller input, SPU playback.
 
-Internally this was called `fgpilot` (after the `foreground_pilot.c`
+Internally this was called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }}) (after the `foreground_pilot.c`
 runtime); externally it is "PS1 scene playback." The decisive
 property is that the PS1 stops carrying state that the desktop
 engine built up across scenes. The disappearing-Johnny class doesn't
@@ -263,7 +263,7 @@ scene-relative canvas so action on both sides of the island survives random
 runtime placement. The count became **18 / 63**.
 
 `MARY 5` followed as a story-flag policy fix. The scene contains its own raft
-art and begins behind a frog-clock full wipe, so the PS1 route now clamps
+art and begins behind a [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) full wipe, so the PS1 route now clamps
 generic raft state off for `NORAFT` scenes and skips the walk prelude for
 `FIRST` full-wipe scenes. The count became **19 / 63**.
 
@@ -354,7 +354,7 @@ component-completeness phases:
   reference: poll `tx_len` is **5**, not 4. DuckStation only
   delivers button bytes when the full 5-byte sequence comes
   from the TX buffer.
-- **Story-loop walking.** `v0.4.20-ps1` made Johnny walk between
+- **[Story-loop walking]({{ '/docs/walks/' | relative_url }}).** `v0.4.20-ps1` made Johnny walk between
   scene endpoints instead of teleporting, with palm-tree occlusion,
   wave motion, holiday restamping, and a persistent walk-erase buffer
   that survived a long DuckStation soak.
@@ -419,6 +419,23 @@ component-completeness phases:
 - Real PS1 hardware: smoke-tested on a `SCPH-7501` via the
   [TonyHax](https://github.com/socram8888/tonyhax) softmod path.
   Long-term hardware-soak observations are still on the wishlist.
+
+## Related pages
+
+- [Method]({{ '/about/method/' | relative_url }}) — the *what* and
+  the *why* of the hybrid pipeline this history walked toward.
+- [Status]({{ '/about/status/' | relative_url }}) — the current
+  per-component state at `{{ site.release.tag }}`.
+- [Releases]({{ '/releases/' | relative_url }}) — every tagged
+  version with theme line and headline bullets.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — magazine treatment of the validation arc that runs from
+  *First scenes validated* through the v0.7.0 cap.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the post-validation performance loop that defined the
+  v0.8.0 baseline above.
+- [Lab: v0.8.1 — what the soak found]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the stability follow-on that motivated the latest line.
 
 This isn't done. That's fine. A labor of love by Hunter Davis. The
 original creator generously allows fan ports. If you paid for this,

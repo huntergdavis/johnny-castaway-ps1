@@ -80,7 +80,7 @@ Combinations use `+` or `,`.
 ## Why `shot` exists
 
 DuckStation regtest captures frames at an interval. The PS1 script cannot
-force DuckStation to dump a PNG on that exact VBlank, so it does the next best
+force DuckStation to dump a PNG on that exact [VBlank]({{ '/docs/glossary/#vblank' | relative_url }}), so it does the next best
 thing: it prints a sparse marker into TTY.
 
 ```text
@@ -149,4 +149,8 @@ a screenshot, and a page on the website.
 - [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
   — war story for the SIO0 polling fix that this harness's
   pad-byte merge writes into.
+- [Lab: regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
+  — magazine treatment of why scripted-input + frame-diff
+  regression are how this project gets work done. Reciprocal
+  of the link from there to here.
 

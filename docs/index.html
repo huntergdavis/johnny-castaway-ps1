@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Johnny Castaway PS1 — fan port</title>
-  <meta name="description" content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/" />
-
-  <meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
-  <meta property="og:description"  content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/" />
+  <meta name="description" content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/" /><meta property="og:title"        content="Johnny Castaway PS1 — a fan port" />
+  <meta property="og:description"  content="A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="./assets/fonts/bitter-latin-700-normal.woff2" />
@@ -41,7 +38,9 @@
         href="./devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="./lab/feed.xml" />
-  <link rel="author" type="text/plain" href="./humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="./lab/feed.json" />
+  <link rel="author" type="text/plain" href="./humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="./sitemap.xml" />
 
@@ -74,6 +73,7 @@
   "applicationSubCategory": "Screensaver",
   "operatingSystem": "Sony PlayStation",
   "softwareVersion": "0.8.2",
+  "dateModified": "2026-05-08",
   "isAccessibleForFree": true,
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
   "codeRepository": "https://github.com/huntergdavis/johnny-castaway-ps1",
@@ -123,14 +123,14 @@
   </div>
 </header>
 
-  <main id="main" class="main">
-    <section class="hero">
+  <main id="main" class="main" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
   <div class="hero-frame">
     <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" fetchpriority="high" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v0.8.2</p>
-    <h1>Johnny Castaway PS1</h1>
+    <h1 id="hero-title">Johnny Castaway PS1</h1>
     <p class="tagline">A ground-up PlayStation 1 port of Sierra's Johnny Castaway — one scene at a time.</p>
     <div class="hero-cta">
       <a class="btn btn--primary" href="./play/">Download &amp; play</a>
@@ -140,23 +140,29 @@
   </div>
 </section>
 
-<section class="trio">
+<section class="trio" aria-label="Selected PS1 captures">
   <figure>
-    <img src="./assets/img/activity9-ps1-boat.png" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption><a href="./scenes/activity9/">ACTIVITY 9 · boat pass</a></figcaption>
+    <a href="./scenes/activity9/">
+      <img src="./assets/img/activity9-ps1-boat.png" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+      <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="./assets/img/johnny6-ps1-date-dream.png" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
-    <figcaption><a href="./scenes/johnny6/">JOHNNY 6 · daydream</a></figcaption>
+    <a href="./scenes/johnny1/">
+      <img src="./assets/img/johnny1-ps1-frog-clock.png" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      <figcaption>JOHNNY 1 · frog clock</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="./assets/img/fishing1-ps1-cast.png" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption><a href="./scenes/fishing1/">FISHING 1 · reference</a></figcaption>
+    <a href="./scenes/fishing1/">
+      <img src="./assets/img/fishing1-ps1-cast.png" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      <figcaption>FISHING 1 · reference</figcaption>
+    </a>
   </figure>
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> <a href="./releases/">v0.8.2-ps1</a></span>
+  <span><strong>Latest:</strong> <a href="./releases/">v0.8.2-ps1</a> <small>· <time datetime="2026-05-08">2026-05-08</time></small></span>
   <a class="pill pill--ok" href="./scenes/">63 / 63 scenes validated</a>
   <a class="pill pill--ok" href="./perf/">100.3% target speed</a>
   <a class="pill pill--info" href="./docs/build/">PSn00bSDK 0.24</a>
@@ -174,7 +180,7 @@ on a tiny island. It runs in tiny vignettes — a fishing line, a passing
 ship, a holiday decoration — quietly, all day.</p>
 
   <p>This is a port of those vignettes to the original Sony PlayStation,
-running on real hardware or on DuckStation. It is a fan project: the
+running on <a href="./play/#real-ps1-hardware">real hardware</a> or on <a href="./docs/glossary/#duckstation">DuckStation</a>. It is a fan project: the
 character belongs to the original creator, and the site’s chrome and
 its <a href="./legal/">legal page</a> reflect that.</p>
 
@@ -185,8 +191,8 @@ routed scenes the original game had are validated under the
 review across every applicable variant. Current mainline work is
 bugfixing, performance, and feature polish; the
 <a href="./lab/v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1</code> line</a>
-keeps long randomized runs stable while the <code class="language-plaintext highlighter-rouge">v0.8.0</code> performance
-baseline closes the last bit of speed gap, and most scenes already
+keeps long randomized runs stable while the <a href="./releases/#v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0</code> performance
+baseline</a> closes the last bit of speed gap, and most scenes already
 run at native rate. The two ledgers live separately: the
 <a href="./scenes/">scene ledger</a> tracks visual
 signoff and the
@@ -195,18 +201,18 @@ headless DuckStation timing for every scene/tide variant.</p>
 
   <h2 id="how-it-works-the-short-version">How it works (the short version)</h2>
 
-  <p>A <em>host build</em> of the original engine plays each scene under capture
-mode and dumps <strong>FG2 packs</strong> — small binary files that record every
+  <p>A <em><a href="./docs/glossary/#host-build">host build</a></em> of the original engine plays each scene under capture
+mode and dumps <strong><a href="./docs/glossary/#fg2-pack">FG2 packs</a></strong> — small binary files that record every
 visible draw, every sound trigger, every frame timing. The PS1 build
 loads those packs from the disc and replays them against its own
 background, wave animation, holiday overlay, captions, and SPU audio.</p>
 
   <p>The PS1 never interprets Sierra’s bytecode at runtime. That’s the whole
-trick. A 1992 screensaver fits onto a CD-ROM and inside 2 MB of RAM
+trick. A 1992 screensaver fits onto a CD-ROM and inside <a href="./docs/hardware/">2 MB of RAM</a>
 because all of the smart work is done on a desktop and pre-baked.</p>
 
-  <p>The full deep-dive — pack format, hardware gotchas, the SPI pad-poll
-fix that cost two days, the dirty-rect bookkeeping that wiped framebuffers
+  <p>The full deep-dive — pack format, hardware gotchas, the <a href="./lab/two-day-spi-bug/">SPI pad-poll
+fix that cost two days</a>, the <a href="./docs/glossary/#dirty-rect">dirty-rect bookkeeping</a> that wiped framebuffers
 on resume — lives at <strong><a href="./about/method/">/about/method/</a></strong>.</p>
 
 </section>
@@ -221,6 +227,10 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   <li>
     <a href="./play/">Just play it</a>
     <p>Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart, controller map. Five minutes.</p>
+  </li>
+  <li>
+    <a href="./faq/">FAQ</a>
+    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
   </li>
   <li>
     <a href="./about/method/">How the port works</a>
@@ -240,7 +250,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./lab/">Magazine-length Lab</a>
-    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
+    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="./hack/">Curious hacker path</a>
@@ -252,7 +262,7 @@ on resume — lives at <strong><a href="./about/method/">/about/method/</a></str
   </li>
   <li>
     <a href="./docs/">Reference docs</a>
-    <p>Seventeen reference manuals: build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
+    <p>Eighteen reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
   </li>
   <li>
     <a href="./source/">Source library</a>
@@ -297,7 +307,7 @@ Set, Freeplay Options, Controls, World Options, Holidays, Set
 Island Position, Accessibility, Sound Test, System, Set Time/Date,
 and Set RNG Seed. An optional
 <a href="./releases/#v060-ps1--ocean-ambience">ocean-ambience loop</a>
-on a dedicated SPU voice. Frog-clock loading transitions between
+on a dedicated SPU voice. <a href="./docs/glossary/#frog-clock">Frog-clock loading transitions</a> between
 scene swaps. The website
 <a href="./credits/">credits</a> and
 <a href="./legal/">legal</a> pages name exactly what’s
@@ -344,7 +354,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/v081-mary4-freeze/">v0.8.1 — what the soak found that the matrix didn't</a>
       <span class="summary">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</span>
-      <span class="summary devlog-read-time">~2 min read · 629 words</span>
+      <span class="summary devlog-read-time">~2 min read · 663 words</span>
     </div>
   </li>
 
@@ -362,7 +372,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/the-site-itself/">The site itself, as a small program</a>
       <span class="summary">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</span>
-      <span class="summary devlog-read-time">~8 min read · 2244 words</span>
+      <span class="summary devlog-read-time">~13 min read · 3275 words</span>
     </div>
   </li>
 
@@ -371,7 +381,7 @@ work. Five most recent, newest first:</p>
     <div>
       <a href="./lab/build-farm/">The 24/7 Build Farm</a>
       <span class="summary">Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.</span>
-      <span class="summary devlog-read-time">~1 min read · 252 words</span>
+      <span class="summary devlog-read-time">~1 min read · 279 words</span>
     </div>
   </li>
 
@@ -481,7 +491,7 @@ the user supplies themselves.</p>
           Code: <a href="./legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="./releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -489,9 +499,12 @@ the user supplies themselves.</p>
           <a href="./devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="./lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="./lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="./lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="./humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="./sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/index.md" rel="noopener">Edit this page on GitHub</a> →

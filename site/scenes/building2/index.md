@@ -8,7 +8,7 @@ status: validated
 description: "BUILDING.ADS scene 2: Lilliputian sandcastle scene. Validated on PS1 after full-host sandcastle injection and cleanup."
 ---
 
-Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
 multi-view stitch, with the persistent full-host sandcastle injected so the
 red flag and planes originate from the correct base. The pack stays in FGP3
@@ -46,7 +46,7 @@ to `validated` and a row turns green in the
 
 `BUILDING 2` sits in the
 [perf battle card]({{ '/perf/' | relative_url }})'s yellow cluster
-— close to but not yet at native target speed. Its
+— close to but not yet at native [target speed]({{ '/docs/glossary/#target-speed' | relative_url }}). Its
 [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})-heavy
 Lilliputian-sandcastle frames are explicitly named in the
 [post-validation perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})

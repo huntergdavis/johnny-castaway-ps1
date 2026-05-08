@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Hallucination engineering
-eyebrow: Lab . Advanced development techniques
+eyebrow: Lab · Advanced development techniques
 subtitle: The failure mode is not that the model is weird. The failure mode is that it sounds normal.
 description: "A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline."
 date: 2026-04-26
@@ -53,7 +53,7 @@ anti-hallucination tool.
 Every Markdown source file gets a web wrapper with a source path, outline,
 word count, and category. The regtest references get one page per preserved
 case. The resource catalog lists the BMPs, ADS scripts, TTM animations, VAG
-samples, PSB sprite banks, and FG2 packs. That gives the next agent something
+samples, PSB sprite banks, and [FG2 packs]({{ '/docs/glossary/#fg2-pack' | relative_url }}). That gives the next agent something
 specific to search instead of asking it to infer the archive from memory.
 
 Generated shelves are not glamorous. They are the difference between "there

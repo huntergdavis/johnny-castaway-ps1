@@ -186,7 +186,7 @@ source files. See [/legal/]({{ '/legal/' | relative_url }}).
 
 Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That's the project's "FISHING 1 bar" —
+native resolution. That's the project's "[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})" —
 pixel-perfect visuals plus synced SFX, signed off by human
 review across every applicable variant flag (night, low-tide,
 holiday, raft-stage). It is a stricter bar than "it ran once
@@ -231,7 +231,7 @@ runs in headless DuckStation, so that one is the reference.
 ### Does it run at native rate?
 
 At {{ site.release.tag }} the headless-perf battle card averages
-**{{ site.release.perf_target_speed_pct }}% target speed** across
+**[{{ site.release.perf_target_speed_pct }}% target speed]({{ '/docs/glossary/#target-speed' | relative_url }})** across
 the 120 timing-bearing scene/tide rows — close enough that most
 scenes hit their original frame budget on PS1 hardware. The
 remaining gap is concentrated in a small set of high-leverage
@@ -249,7 +249,7 @@ If you must, the issue tracker is at
 [{{ site.repo }}/issues]({{ site.github_url }}/issues). Bugs are
 tolerated, not invited. There is no contributor onboarding
 process and no "good first issue" label — see the [non-goals on
-About]({{ '/about/' | relative_url }}).
+About]({{ '/about/#what-this-isnt' | relative_url }}).
 
 ---
 
@@ -259,6 +259,8 @@ About]({{ '/about/' | relative_url }}).
 
 The closed-caption text was authored fresh for this port from
 scene content. It is not lifted from any prior corpus. The
+full reference manual is at
+[/docs/captions/]({{ '/docs/captions/' | relative_url }}); the
 [caption audit]({{ site.github_url }}/blob/main/docs/ps1/caption-audit-2026-04-26.yaml)
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of {{ site.release.tag }}).
@@ -270,8 +272,10 @@ The original Sierra game had 4 baked-in holiday decorations
 extends that to 36 US holidays via a code-generated table and a
 pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
-for 100+ years. See `holidays.yml` and `src/holidays.c` in the
-repository.
+for 100+ years. The full reference manual is at
+[/docs/holidays/]({{ '/docs/holidays/' | relative_url }}); see
+`holidays.yml` and `src/holidays.c` in the repository for the
+source data and the codegen output.
 
 ### What's faithful to the original, and what's added?
 
@@ -288,9 +292,9 @@ System, Set Time / Date, and Set RNG Seed. Closed captions
 (off by default; see [/docs/captions/]({{ '/docs/captions/' | relative_url }})).
 [Thirty-two additional holidays]({{ '/docs/holidays/' | relative_url }})
 via a code-generated table and pure-algorithm date core.
-[Story-loop walking]({{ '/releases/#v0420-ps1--story-loop-walking' | relative_url }})
+[Story-loop walking]({{ '/docs/walks/' | relative_url }})
 between scenes (v0.4.20-ps1) — Johnny no longer teleports.
-[Freeplay / debug mode]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' | relative_url }})
+[Freeplay / debug mode]({{ '/docs/freeplay/' | relative_url }})
 (v0.5.0-ps1) where the player drives Johnny directly, with gag
 and visitor catalogs. Optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
@@ -299,3 +303,28 @@ filtering the random rotation by family. Frog-clock loading
 transitions between scene swaps. A full
 [Credits page]({{ '/credits/' | relative_url }}) that names the
 prior ports and toolchain authors this build stands on.
+
+## Related pages
+
+- [Play]({{ '/play/' | relative_url }}) — the canonical
+  download + quickstart page for the "How do I run it?" answer.
+- [Scenes]({{ '/scenes/' | relative_url }}) — live ledger
+  with per-scene case studies for the "What does
+  {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} validated mean?" answer.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  126-variant matrix with sortable, color-coded target speed
+  for the "Does it run at native rate?" answer.
+- [Legal]({{ '/legal/' | relative_url }}) — the canonical
+  licensing surface (GPL-3.0 + Sierra disclaimer + takedown
+  procedure) for the "Is this legal?" answer.
+- [Credits]({{ '/credits/' | relative_url }}) — the full
+  attribution behind the "What's faithful, what's added?"
+  answer above: prior ports, toolchain authors, AI sub-agents,
+  fonts, ocean ambience source.
+- [About]({{ '/about/' | relative_url }}) — the project
+  overview if you want the long-form version of "What is
+  this?".
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for terms (`FG2 pack`, `FISHING 1 bar`,
+  `target speed`, `host build`) used throughout the answers
+  above.

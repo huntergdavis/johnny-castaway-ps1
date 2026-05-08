@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Docs — Johnny Castaway PS1</title>
-  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" />
-
-  <meta property="og:title"        content="Docs — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/" />
+  <meta name="description" content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/" /><meta property="og:title"        content="Docs — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference manuals for the Johnny Castaway PS1 port — build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, the per-scene workflow, and a glossary of project vocabulary." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
 
@@ -96,13 +95,13 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
       <p class="eyebrow">Reference manuals</p>
       <h1>Docs</h1>
-      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.</p>
+      <p class="subtitle">Build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary. The technical surface of the PS1 port.</p>
       <hr class="rule" />
     </header>
 
@@ -133,11 +132,15 @@ the project’s stance on contributions.</p>
   </li>
   <li>
     <a href="./pause-menu/">Pause menu</a>
-    <p>State machine, compact sub-screens, Freeplay entry/exit, World Options, Sound Test, Accessibility, System, and the shared font atlas used by captions.</p>
+    <p>State machine, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), Freeplay entry/exit, and the shared font atlas used by captions.</p>
   </li>
   <li>
     <a href="./freeplay/">Freeplay mode</a>
     <p>The runtime-driven scene where the player drives Johnny instead of watching him: controls, gag/visitor debug catalogs, world toggles, frog loading transitions, and long-run memory rules.</p>
+  </li>
+  <li>
+    <a href="./walks/">Story-loop walks</a>
+    <p>How Johnny stops teleporting between scenes — the walk_pilot/walk_render split, Sierra's six-spot route table, the persistent clean buffer, and the runtime invariants (waves, palm-tree occlusion, holiday overlay re-stamping).</p>
   </li>
   <li>
     <a href="./regtest/">Regression testing</a>
@@ -169,7 +172,7 @@ the project’s stance on contributions.</p>
   </li>
   <li>
     <a href="./formats/">File formats</a>
-    <p>The five binary formats the build chain produces: FG2 / FGP3 packs, the foreground capture JSONL, sound-event JSONL, scene-status YAML, and the perf-matrix CSV.</p>
+    <p>The five spec pages behind the build chain: the FG2 / FGP3 pack payload, the pack-manifest sidecar, the dirty-region template, the transition-prefetch schema, and the SDL-compat-lite shim spec.</p>
   </li>
   <li>
     <a href="./infrastructure/">Infrastructure</a>
@@ -245,7 +248,7 @@ the <a href="../lab/">Lab</a>.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -253,9 +256,12 @@ the <a href="../lab/">Lab</a>.</p>
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/index.md" rel="noopener">Edit this page on GitHub</a> →

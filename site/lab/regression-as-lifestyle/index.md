@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Regression as a lifestyle
-eyebrow: Lab . Advanced development techniques
+eyebrow: Lab · Advanced development techniques
 subtitle: On this port, tests are not a CI checkbox. They are how the work thinks.
 description: "A methodology essay about the Johnny Castaway PS1 regression suite: host references, DuckStation capture, frame metadata, perf logs, and human review."
 date: 2026-04-26

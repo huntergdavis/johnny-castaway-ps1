@@ -1,11 +1,18 @@
 ---
 layout: page
 title: The voice anchor problem
-eyebrow: Lab . Prose engineering
+eyebrow: Lab · Prose engineering
 subtitle: Keeping a giant AI-assisted site from sounding like a brochure.
 description: A prose-process essay about the Johnny Castaway PS1 site's voice guide, drawCredits anchor, Hunter Davis writing style, and AI-drafted documentation review.
 date: 2026-04-26
 ---
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
 
 ## The problem
 

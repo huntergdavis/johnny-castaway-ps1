@@ -54,7 +54,7 @@ layout: default
         {% if page.previous %}
           <a href="{{ page.previous.url | relative_url }}" rel="prev">
             <span class="scene-pager-dir" aria-hidden="true">← older</span>
-            <span class="scene-pager-tag">{{ page.previous.date | date: "%Y-%m-%d" }}</span>
+            <span class="scene-pager-tag"><time datetime="{{ page.previous.date | date: '%Y-%m-%d' }}">{{ page.previous.date | date: "%Y-%m-%d" }}</time></span>
           </a>
         {% endif %}
       </div>
@@ -65,7 +65,7 @@ layout: default
         {% if page.next %}
           <a href="{{ page.next.url | relative_url }}" rel="next">
             <span class="scene-pager-dir" aria-hidden="true">newer →</span>
-            <span class="scene-pager-tag">{{ page.next.date | date: "%Y-%m-%d" }}</span>
+            <span class="scene-pager-tag"><time datetime="{{ page.next.date | date: '%Y-%m-%d' }}">{{ page.next.date | date: "%Y-%m-%d" }}</time></span>
           </a>
         {% endif %}
       </div>

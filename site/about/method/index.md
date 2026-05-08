@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Method
-eyebrow: Host-capture . FG2 pack . PS1 replay
+eyebrow: Host-capture · FG2 pack · PS1 replay
 subtitle: How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.
 description: Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both.
 ---
@@ -25,7 +25,7 @@ portable; the upstream that this project descends from,
 [jno6809/jc_reborn](https://github.com/jno6809/jc_reborn), runs on top
 of SDL2.
 
-A PS1 port is not "swap SDL2 for PSn00bSDK." Three things make a
+A PS1 port is not "swap SDL2 for [PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }})." Three things make a
 straight port impossible:
 
 1. **No comparable graphics pipeline.** The PS1 GPU does not draw
@@ -46,7 +46,9 @@ straight port impossible:
    `psxapi`, `psxgte`, `psxsio`. There is no `printf` you can trust
    in a hot loop, no `malloc` worth leaning on for transients, no
    `pthread`, no `clock_gettime`. SDL's design assumptions are not
-   even close.
+   even close. The symbol-by-symbol mapping the [host build]({{ '/docs/glossary/#host-build' | relative_url }}) hands
+   off to the PS1 build is documented at
+   [/docs/api/]({{ '/docs/api/' | relative_url }}).
 
 The first prototype tried to brute-force these problems in the runtime
 -- a faithful TTM/ADS interpreter on the PS1, replaying scenes from
@@ -159,7 +161,7 @@ Concretely, a pack contains:
   This is what `foreground_pilot.c` uses to fire `soundPlay()` on
   cue.
 - **Frame-meta tail.** Source frame timing in milliseconds, used at
-  capture-validate time and preserved in the pack so a regtest can
+  capture-validate time and preserved in the pack so a [regtest]({{ '/docs/glossary/#regtest' | relative_url }}) can
   confirm the on-PS1 cadence still matches the host capture.
 
 The runtime also carries a small companion JSON sidecar (`pack_index`
@@ -231,7 +233,7 @@ the open items. See commit `355227fa` for the full bug list.
 **TTY printf is the only real debug surface, and it has a price.**
 For most of 2026-Q1 the project ran with `debugMode=0` and
 "visual debugging" -- colored pixels via `LoadImage`, the
-five-panel telemetry overlay, gated `JCPERF` summaries during
+five-panel telemetry overlay, gated [`JCPERF`]({{ '/docs/glossary/#jcperf' | relative_url }}) summaries during
 scene transitions only. Per-frame `vprintf` was outright
 destabilizing scene playback (unbounded format buffers, hot-path
 text I/O changing timing). As of 2026-04-25, bounded `vprintf`
@@ -244,7 +246,7 @@ per frame; that's why `ps1_perf` is level-gated
 Other gotchas worth flagging in passing:
 
 - The PSn00bSDK 0.24 toolchain runs in Docker on `linux/amd64`
-  (`Dockerfile.ps1`). Native macOS toolchains were attempted and
+  (`config/ps1/Dockerfile.ps1`). Native macOS toolchains were attempted and
   abandoned -- missing `cc1` / `cc1plus`, source builds need
   Linux. Docker was the cheapest path that worked.
 - 4-bit indexed sprite format (`indexedPixels`) saved roughly 4x
@@ -278,14 +280,15 @@ path from the first signed-off scene to all 63 was the same
 repeatable loop on every row: capture, pack, route, replay, sign
 off. The hard work was the loop's edges — multi-view foreground
 stitches for the wide scenes, residual-cleanup pack fixes when a
-few pixels missed, the backdrop-key guard that kept story-loop
-walks from running across stale islands. That is the property
+few pixels missed, the backdrop-key guard that kept
+[story-loop walks]({{ '/docs/walks/' | relative_url }})
+from running across stale islands. That is the property
 the project was reaching for.
 
 The second bar, the
 [performance battle card]({{ '/perf/' | relative_url }}), is its
-own ledger. It moved from `+17.4%` over target / `87.1%` target
-speed at the compact full-matrix baseline to
+own ledger. It moved from `+17.4%` over target / [`87.1%` target
+speed]({{ '/docs/glossary/#target-speed' | relative_url }}) at the compact full-matrix baseline to
 `{{ site.release.perf_target_speed_pct }}%` target speed at
 `{{ site.release.tag }}` — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
@@ -322,3 +325,7 @@ regressions ship.
   narrative version, dated, eras-and-milestones.
 - [Status]({{ '/about/status/' | relative_url }}) — the
   component-level state at the current release.
+- [Lab: the pivot that almost didn't happen]({{ '/lab/pixel-perfect-pivot/' | relative_url }})
+  — magazine retrospective on the choice between "looks similar"
+  and pixel-perfect-with-host-capture that defined the rest of
+  this method. The decision behind every section above.

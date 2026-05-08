@@ -7,6 +7,13 @@ source_path: docs/ps1/research/VALIDATION_LOG_2026-03-29.md
 description: "Validation log of all 63 PS1 scenes against the canonical Linux reference, with per-scene findings and build state."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Mission
 Validate all 63 PS1 scenes against the canonical Linux reference set.
 

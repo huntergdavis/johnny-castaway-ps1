@@ -52,7 +52,7 @@ pixel offset into the sheet. The slug column links to the holiday's
 own page.
 
 <table>
-<thead><tr><th>ID</th><th>Holiday</th><th>Short name</th><th>Cell</th><th>(x, y)</th><th>Description</th></tr></thead>
+<thead><tr><th scope="col">ID</th><th scope="col">Holiday</th><th scope="col">Short name</th><th scope="col">Cell</th><th scope="col">(x, y)</th><th scope="col">Description</th></tr></thead>
 <tbody>
 <tr><td>5</td><td><a href="{{ '/docs/holidays/calendar/elvis-bday/' | relative_url }}">Elvis's Birthday</a></td><td><code>ELVIS BDAY</code></td><td>0</td><td>(0, 0)</td><td>Small guitar and music note.</td></tr>
 <tr><td>6</td><td><a href="{{ '/docs/holidays/calendar/mlk-day/' | relative_url }}">MLK Jr. Day</a></td><td><code>MLK DAY</code></td><td>1</td><td>(32, 0)</td><td>Tiny podium with speech paper and dove.</td></tr>

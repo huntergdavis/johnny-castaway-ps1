@@ -7,7 +7,7 @@ description: How audio works on the Johnny Castaway PS1 fan port — SPU RAM lay
 ---
 
 A labor of love by Hunter Davis. This page describes the audio pipeline:
-the SPU constraints, the conversion path from WAV to VAG, the runtime
+the SPU constraints, the conversion path from WAV to [VAG]({{ '/docs/glossary/#vag' | relative_url }}), the runtime
 preload, and the playback path during scene replay. If you paid for this,
 you were cheated. Open source and free.
 
@@ -20,7 +20,7 @@ you were cheated. Open source and free.
 
 ## The SPU
 
-The PS1's Sound Processing Unit is a separate processor with its own RAM
+The PS1's [Sound Processing Unit]({{ '/docs/glossary/#spu' | relative_url }}) is a separate processor with its own RAM
 and its own job. Specs:
 
 - **Voices:** 24 simultaneous, each with hardware ADSR.
@@ -249,7 +249,7 @@ A few audio quality items the author knows are open:
 The runtime carries one looping background track — a 20-second
 ocean-loop sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
-memcard alongside the other v6 schema settings. Zero per-frame
+[memcard]({{ '/docs/glossary/#memcard' | relative_url }}) alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.
 
@@ -285,8 +285,14 @@ are noted in case the project ever needs them.
   `psxspu` gets linked.
 - [Method]({{ '/about/method/' | relative_url }}) — how the
   audio acceptance bar fits the project's overall standard.
-- [Devlog]({{ '/devlog/' | relative_url }}) — the SPU debugging pass
-  is documented there.
+- [v0.6.0-ps1 release entry]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
+  — the milestone the ocean-ambience loop shipped in.
+- [Devlog: ocean ambience v0.6]({{ '/devlog/ocean-ambience-v0-6/' | relative_url }})
+  — the implementation worklog for the dedicated SPU voice that
+  drives the ambience loop. Pairs with the Ocean ambience H2 above.
+- [Glossary: VAG]({{ '/docs/glossary/#vag' | relative_url }})
+  · [Glossary: SPU]({{ '/docs/glossary/#spu' | relative_url }})
+  · [Glossary: PLAY_SAMPLE]({{ '/docs/glossary/#play-sample' | relative_url }})
 
 ## View source on GitHub
 

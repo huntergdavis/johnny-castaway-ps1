@@ -8,7 +8,7 @@ status: validated
 description: "MISCGAG.ADS scene 1: Pocket fan, melts. Validated after generic multi-view pack regeneration."
 ---
 
-Validated on `2026-05-03` under the FISHING 1 bar.
+Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 

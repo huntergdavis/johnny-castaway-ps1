@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Freeplay and debug mode — Johnny Castaway PS1</title>
-  <meta name="description" content="Freeplay and debug mode in the Johnny Castaway PS1 port: controls, pause-menu catalogs, world toggles, loading transitions, and long-run memory rules." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/" />
-
-  <meta property="og:title"        content="Freeplay and debug mode — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Freeplay and debug mode in the Johnny Castaway PS1 port: controls, pause-menu catalogs, world toggles, loading transitions, and long-run memory rules." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/" />
+  <meta name="description" content="Freeplay and debug mode in the Johnny Castaway PS1 port: controls, pause-menu catalogs, world toggles, loading transitions, and long-run memory rules." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/" /><meta property="og:title"        content="Freeplay and debug mode — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Freeplay and debug mode in the Johnny Castaway PS1 port: controls, pause-menu catalogs, world toggles, loading transitions, and long-run memory rules." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/freeplay/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Freeplay and debug mode</h1>
       <p class="subtitle">Direct-control Johnny, plus the runtime debug menus that make it safe to test.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1128 words
+          ~4 min read · 1196 words
         </p>
 
       <hr class="rule" />
@@ -144,7 +143,7 @@ the frame. That makes it useful as a play mode and as a debugging cockpit.</p>
 
 <p>The normal boot still starts in screensaver mode. Press <strong>Start</strong>, choose
 <strong>Freeplay: OFF</strong>, and the game tears the current scene down, shows the
-<code class="language-plaintext highlighter-rouge">MEANWHIL.BMP</code> frog clock, builds the freeplay island, and hands control
+<code class="language-plaintext highlighter-rouge">MEANWHIL.BMP</code> <a href="../glossary/#frog-clock">frog clock</a>, builds the freeplay island, and hands control
 to the player.</p>
 
 <p>Inside freeplay, press <strong>Start</strong> again to open the same pause menu. Choose
@@ -169,8 +168,8 @@ described, and selected without memorizing button chords.</p>
 <table>
   <thead>
     <tr>
-      <th>Control</th>
-      <th>Action</th>
+      <th scope="col">Control</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -223,8 +222,8 @@ global; no freeplay submenu is allowed to invent a second meaning for Circle.</p
 <table>
   <thead>
     <tr>
-      <th>Menu</th>
-      <th>Purpose</th>
+      <th scope="col">Menu</th>
+      <th scope="col">Purpose</th>
     </tr>
   </thead>
   <tbody>
@@ -259,9 +258,11 @@ global; no freeplay submenu is allowed to invent a second meaning for Circle.</p
   </tbody>
 </table>
 
-<p>This split is intentional. The joypad is for walking, fishing, clearing,
-and the four immediate world toggles. Everything with a catalog or
-metadata lives in a menu.</p>
+<p>This split is intentional. The joypad is for walking, clearing, and the
+four immediate world toggles. Everything with a catalog or metadata
+lives in a menu — including fishing, which moved off Circle to the
+Scene Set selector during the Scene Set rewrite (see the “Fishing”
+section below).</p>
 
 <h2 id="what-the-debug-catalogs-expose">What the debug catalogs expose</h2>
 
@@ -289,9 +290,10 @@ the menu.</p>
 
 <p>The Scene Set lineup also covers the rest of the catalog by family:
 <em>Johnny Stories</em>, <em>Mary Visits</em>, <em>Visitors</em>, <em>Activities</em>, and <em>Misc &amp;
-Suzy</em>. Pools include scenes whose FG2 packs ship but whose visuals
-aren’t fully signed off yet — they play as-is and improve in place as
-scenes are validated.</p>
+Suzy</em>. At <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> every scene in every pool clears
+the <a href="../glossary/#fishing1-bar">FISHING 1 bar</a>
+— the pools are reader-preference filters, not staging areas for
+unvalidated content.</p>
 
 <h2 id="rendering-and-memory-rules">Rendering and memory rules</h2>
 
@@ -327,8 +329,8 @@ compared with the normal screensaver cadence.</p>
 <table>
   <thead>
     <tr>
-      <th>Boot token</th>
-      <th>Effect</th>
+      <th scope="col">Boot token</th>
+      <th scope="col">Effect</th>
     </tr>
   </thead>
   <tbody>
@@ -354,6 +356,10 @@ part of the forever-run player build.</p>
 <h2 id="related-pages">Related pages</h2>
 
 <ul>
+  <li><a href="../walks/">Story-loop walks</a> — the
+other consumer of <code class="language-plaintext highlighter-rouge">walk_render</code>. Same draw kernel; story-loop
+walks consume the pre-baked Sierra path table while freeplay
+drives <code class="language-plaintext highlighter-rouge">(x, y)</code> from the D-pad per <a href="../glossary/#vblank">VBlank</a>.</li>
   <li><a href="../pause-menu/">Pause menu</a> — menu structure and persistence.</li>
   <li><a href="../holidays/">Holidays</a> — holiday overlays used by the world toggle.</li>
   <li><a href="../audio/">Audio pipeline</a> — the SPU
@@ -376,6 +382,10 @@ freeplay’s D-pad / analog / button reads were unreliable.</li>
 
 <ul>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/scene_freeplay.c"><code class="language-plaintext highlighter-rouge">src/scene_freeplay.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.h"><code class="language-plaintext highlighter-rouge">src/walk_render.h</code></a>
+— the shared draw kernel; story-loop walks consume it through
+<code class="language-plaintext highlighter-rouge">walk_pilot.c</code>, freeplay calls it directly with D-pad-driven coords.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/pause_menu.c"><code class="language-plaintext highlighter-rouge">src/pause_menu.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/freeplay-mode-design.md"><code class="language-plaintext highlighter-rouge">docs/ps1/freeplay-mode-design.md</code></a></li>
 </ul>
@@ -398,7 +408,7 @@ freeplay’s D-pad / analog / button reads were unreliable.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -406,9 +416,12 @@ freeplay’s D-pad / analog / button reads were unreliable.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/freeplay/index.md" rel="noopener">Edit this page on GitHub</a> →

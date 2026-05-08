@@ -46,7 +46,7 @@ For input bugs, replace "run the scene" with "write the controller route."
 `PADSCRIPT.TXT` can say `wait 30s`, `tap START`, `tap DOWN`, `tap CROSS`, and
 `shot freeplay-options 30`. The PS1 runtime presses those buttons through its
 real pad path, DuckStation captures frames, and the reporter pulls the first
-PNG at or after each `JCPADSHOT` marker. That is how the menu help page is
+PNG at or after each [`JCPADSHOT`]({{ '/docs/glossary/#jcpadshot' | relative_url }}) marker. That is how the menu help page is
 made, and it is also how a flaky "I pressed this and it crashed" report turns
 into a repeatable artifact.
 
@@ -58,3 +58,33 @@ all anyone had was a log line.
 For the essay version, read
 [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
 and [The 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }}).
+
+## Related pages
+
+- [Hack: start here]({{ '/hack/start-here/' | relative_url }})
+  — first-day flow if you haven't already done the build and
+  boot loop.
+- [Hack: learn C from Johnny]({{ '/hack/learn-c/' | relative_url }})
+  — "make state visible" applied to the source: small structs,
+  explicit ownership, telemetry overlays.
+- [Hack: memory wars]({{ '/hack/memory-wars/' | relative_url }})
+  — visual debugging mattered most when the bug was a stale
+  buffer or fragmented heap that text logs couldn't surface.
+- [Hack: performance loop]({{ '/hack/performance-loop/' | relative_url }})
+  — the headless iteration that consumes the screenshots and
+  state hashes the visual stack produces.
+- [Hack: port to a new platform]({{ '/hack/port-to-a-new-platform/' | relative_url }})
+  — the visual debugging discipline travels even when the
+  toolchain doesn't.
+- [Regression testing]({{ '/docs/regtest/' | relative_url }}) —
+  the headless DuckStation harness that drives most of the
+  screenshot capture above.
+- [Scripted input harness]({{ '/docs/scripted-input/' | relative_url }})
+  — the `PADSCRIPT.TXT` example in the workflow section.
+- [Vision-classifier]({{ '/docs/vision/' | relative_url }}) —
+  the per-frame detection layer that runs on top of the
+  screenshots.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for `BOOTMODE`, `PADSCRIPT.TXT`, `regtest`,
+  `JCPADSHOT`, and the rest of the harness vocabulary used
+  above.

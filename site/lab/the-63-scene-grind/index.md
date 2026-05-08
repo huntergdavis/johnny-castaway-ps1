@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The 63-scene grind
-eyebrow: Lab . Retrospective
+eyebrow: Lab · Retrospective
 subtitle: The scene-by-scene validation ledger, from five signed off to the current grind.
 description: A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.
 date: 2026-04-26
@@ -101,7 +101,7 @@ The grind becomes navigable when every unit has a shelf.
   pipeline the grind grinds against.
 - [`v0.7.0-ps1` release]({{ '/releases/#v070-ps1--complete-scene-validation' | relative_url }})
   — the milestone that capped this grind: 63 / 63 signed off
-  under the FISHING 1 bar.
+  under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 - [Performance battle card]({{ '/perf/' | relative_url }}) and
   [from-87-to-99-5 retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
   — the second ledger that opened when this one closed.

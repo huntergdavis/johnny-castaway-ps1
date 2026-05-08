@@ -1,6 +1,6 @@
 ---
 layout: scene
-title: VISITOR 3 - Yacht couple, photos
+title: VISITOR 3 — Yacht couple, photos
 ads: VISITOR
 tag: 3
 slug: visitor3
@@ -44,10 +44,12 @@ were evidence-gathering positions, not runtime pins.
 
 `VISITOR 3` remains one of the high-leverage yellow-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
-`{{ site.release.tag }}`. After the FGP3/v4 compact metadata work and the
-pack-side restore-minus-current cleanup, `visitor3` high and low now run
-around `89.9%` and `89.8%` target speed instead of sitting in the red band.
-The wide multi-view stitch (the red ship crossing the full scene width) hits the
+`{{ site.release.tag }}`. After the FGP3/v4 compact metadata work, the
+pack-side restore-minus-current cleanup, offscreen clips, code-shape pass, and
+v4 draw-tail stage guard, `visitor3` high and low now run around
+[`91.9%` and `91.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+instead of sitting in the red band. The wide multi-view stitch (the red ship
+crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
 harder than most scenes; the remaining timing gap is concentrated in the
 ship's live crash window and same-frame cleanup/restore work.

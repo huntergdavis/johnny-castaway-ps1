@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Scripted input harness — Johnny Castaway PS1</title>
-  <meta name="description" content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/" />
-
-  <meta property="og:title"        content="Scripted input harness — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/" />
+  <meta name="description" content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/" /><meta property="og:title"        content="Scripted input harness — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How Johnny Castaway PS1 scripts controller input inside the PS1 executable, drives DuckStation regtest, and captures marker-aligned menu screenshots." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/scripted-input/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Scripted input harness</h1>
       <p class="subtitle">Headless controller routes for menu testing, screenshot capture, and repeatable PS1 bug repros.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~3 min read · 781 words
+          ~3 min read · 810 words
         </p>
 
       <hr class="rule" />
@@ -179,9 +178,9 @@ shot freeplay-options 30
 <table>
   <thead>
     <tr>
-      <th>Command</th>
-      <th>Example</th>
-      <th>What it does</th>
+      <th scope="col">Command</th>
+      <th scope="col">Example</th>
+      <th scope="col">What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -215,7 +214,7 @@ Combinations use <code class="language-plaintext highlighter-rouge">+</code> or 
 <h2 id="why-shot-exists">Why <code class="language-plaintext highlighter-rouge">shot</code> exists</h2>
 
 <p>DuckStation regtest captures frames at an interval. The PS1 script cannot
-force DuckStation to dump a PNG on that exact VBlank, so it does the next best
+force DuckStation to dump a PNG on that exact <a href="../glossary/#vblank">VBlank</a>, so it does the next best
 thing: it prints a sparse marker into TTY.</p>
 
 <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JCPADSHOT label=world-options frame=5875 tick=5875
@@ -252,8 +251,8 @@ routes and the screenshots those routes produce.</p>
 <table>
   <thead>
     <tr>
-      <th>File</th>
-      <th>Why</th>
+      <th scope="col">File</th>
+      <th scope="col">Why</th>
     </tr>
   </thead>
   <tbody>
@@ -315,6 +314,10 @@ the headless DuckStation runner that consumes the pad script
   <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
 — war story for the SIO0 polling fix that this harness’s
 pad-byte merge writes into.</li>
+  <li><a href="../../lab/regression-as-lifestyle/">Lab: regression as a lifestyle</a>
+— magazine treatment of why scripted-input + frame-diff
+regression are how this project gets work done. Reciprocal
+of the link from there to here.</li>
 </ul>
 
 
@@ -336,7 +339,7 @@ pad-byte merge writes into.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -344,9 +347,12 @@ pad-byte merge writes into.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/scripted-input/index.md" rel="noopener">Edit this page on GitHub</a> →

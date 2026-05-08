@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The Binary Library
-eyebrow: Archaeology . Retired validation era
+eyebrow: Archaeology · Retired validation era
 subtitle: The heavy regression corpus was useful, expensive, and ultimately replaced by scene-by-scene pixel validation.
 description: "A short archaeology note for the Johnny Castaway PS1 binary-library era: what it was, why it existed, and why the project no longer ships the full corpus."
 ---

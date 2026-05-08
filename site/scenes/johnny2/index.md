@@ -8,7 +8,7 @@ status: validated
 description: "JOHNNY.ADS scene 2: First SOS bottle. Validated on PS1 scene playback."
 ---
 
-Validated on 2026-05-02 under the FISHING 1 bar.
+Validated on 2026-05-02 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 This scene is pinned to the host-captured island position
 `x=-64,y=54`. The high/low FG2 packs use lower-band keyed overlay

@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Performance work — Johnny Castaway PS1</title>
-  <meta name="description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" />
-
-  <meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" />
+  <meta name="description" content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" /><meta property="og:title"        content="Performance work — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Performance work on the Johnny Castaway PS1 fan port — frame budget, perf instrumentation, the experiment ledger of what was tried and what landed in the runtime." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/performance/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3832 words
+          ~15 min read · 3865 words
         </p>
 
       <hr class="rule" />
@@ -152,7 +151,7 @@ CD’s, and it gets spent in seek latency, not transfer time.</p>
 <p>The frame budget at 60 Hz is 16.6 ms. <em>Johnny Castaway</em> is a 1992 VGA
 screensaver — at the source level, foreground content changes roughly four
 times per second. The PS1 still has to draw a frame at 60 Hz, but it can
-hold the same content frame after frame for many VBlanks at a stretch. The
+hold the same content frame after frame for many <a href="../glossary/#vblank">VBlanks</a> at a stretch. The
 VBlank cadence is the rendering loop’s heartbeat; the <em>interesting</em> timing
 is which VBlanks have actual work in them and which are held idle.</p>
 
@@ -178,8 +177,8 @@ gated so it adds zero cost when off.</p>
 <p>Three signal sources:</p>
 
 <ul>
-  <li><strong>TTY printf</strong> at scene-start and scene-end with structured <code class="language-plaintext highlighter-rouge">JCPERF</code> /
-<code class="language-plaintext highlighter-rouge">JCPERF2</code> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
+  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
+<code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
 on-demand records cross the TTY surface; per-frame text is forbidden in
 hot paths because it perturbs timing.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">ps1_perf</code> module counters</strong> for VBlank-level metrics: <code class="language-plaintext highlighter-rouge">loop_vb</code>,
@@ -433,9 +432,9 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
-<p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>-0.1% over target /
-100.2% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.0968%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.1613%</code> exact target speed).</p>
+<p>That is <strong>-0.6% over target</strong>, or <strong><a href="../glossary/#target-speed">100.6% of target speed</a></strong>. Across the
+120 timing-bearing battle-card rows, the average is <strong>-0.2% over target /
+100.3% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.2497%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.2899%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
@@ -584,9 +583,9 @@ rows are historical only.</p>
 <table class="scene-table perf-summary-table">
   <thead>
     <tr>
-      <th>Scene</th>
-      <th>High tide</th>
-      <th>Low tide</th>
+      <th scope="col">Scene</th>
+      <th scope="col">High tide</th>
+      <th scope="col">Low tide</th>
     </tr>
   </thead>
   <tbody>
@@ -1010,6 +1009,11 @@ PS1 binary is produced.</li>
 the wrapper around the perf iterate script.</li>
   <li><a href="../audio/">Audio pipeline</a> — the SPU side,
 which has its own scheduling concerns.</li>
+  <li><a href="../walks/">Story-loop walks</a> — the
+walk subsystem’s persistent clean buffer is part of the same
+pressure-accounting envelope the matrix above measures; the v0.8.0
+clean-rect retry path and v0.8.1 wave-band/split-rect pressure
+changes are documented there.</li>
   <li><a href="../vision/">Vision-classifier work</a> — the
 validation layer that runs against perf-experiment outputs.</li>
   <li><a href="../../devlog/">Devlog</a> — perf work shows up
@@ -1044,7 +1048,7 @@ day-by-day there.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -1052,9 +1056,12 @@ day-by-day there.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/performance/index.md" rel="noopener">Edit this page on GitHub</a> →

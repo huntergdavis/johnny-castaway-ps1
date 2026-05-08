@@ -4,19 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Current PS1 Prerender Pilot Status — April 16, 2026 — Johnny Castaway PS1</title>
-  <meta name="description" content="Prerender-pilot-era status snapshot from 2026-04-16. Historical context between two validation eras." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/" />
-
-  <meta property="og:title"        content="Current PS1 Prerender Pilot Status — April 16, 2026 — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Prerender-pilot-era status snapshot from 2026-04-16. Historical context between two validation eras." />
-  <meta property="og:type"         content="article" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/" />
+  <meta name="description" content="Prerender-pilot-era status snapshot from 2026-04-16. Historical context between two validation eras." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/" /><meta property="og:title"        content="Current PS1 Prerender Pilot Status — April 16, 2026 — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Prerender-pilot-era status snapshot from 2026-04-16. Historical context between two validation eras." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-04-16T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Devlog" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +36,9 @@
         href="../feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -74,8 +75,10 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/devlog/current-status-2026-04-16/",
   "inLanguage": "en",
-  "wordCount": 266,
+  "wordCount": 282,
   "timeRequired": "PT1M",
+  "articleSection": "Devlog",
+  "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
     "name": "Hunter Davis",
@@ -124,7 +127,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
   <header class="page-header">
     <p class="eyebrow">
@@ -136,7 +139,7 @@
     <h1>Current PS1 Prerender Pilot Status — April 16, 2026</h1>
 
     <p class="reading-time" aria-label="Estimated reading time">
-      ~1 min read · 205 words
+      ~1 min read · 221 words
     </p>
     <hr class="rule" />
   </header>
@@ -155,6 +158,20 @@ between the restore-pilot era and the fgpilot/full-SFX baseline. For
 current status see the <a href="../../source/docs/ps1/scene-status/">scene-status shelf page</a>
 and <a href="../../source/docs/ps1/current-status/">current-status shelf page</a>.</p>
 </blockquote>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#validated-now" id="markdown-toc-validated-now">Validated now</a></li>
+  <li><a href="#current-blocker" id="markdown-toc-current-blocker">Current blocker</a></li>
+  <li><a href="#failed-recent-experiments" id="markdown-toc-failed-recent-experiments">Failed recent experiments</a></li>
+  <li><a href="#current-conclusion" id="markdown-toc-current-conclusion">Current conclusion</a></li>
+  <li><a href="#working-reference-command" id="markdown-toc-working-reference-command">Working reference command</a></li>
+  <li><a href="#guardrails" id="markdown-toc-guardrails">Guardrails</a></li>
+</ul>
+
+</details>
 
 <p>Date: 2026-04-16</p>
 
@@ -227,7 +244,7 @@ then
 
           <a href="../foreground-top-layer-log/" rel="prev">
             <span class="scene-pager-dir" aria-hidden="true">← older</span>
-            <span class="scene-pager-tag">2026-04-13</span>
+            <span class="scene-pager-tag"><time datetime="2026-04-13">2026-04-13</time></span>
           </a>
 
       </div>
@@ -238,7 +255,7 @@ then
 
           <a href="../ocean-restore-plan/" rel="next">
             <span class="scene-pager-dir" aria-hidden="true">newer →</span>
-            <span class="scene-pager-tag">2026-04-16</span>
+            <span class="scene-pager-tag"><time datetime="2026-04-16">2026-04-16</time></span>
           </a>
 
       </div>
@@ -268,7 +285,7 @@ then
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -276,9 +293,12 @@ then
           <a href="../feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/_posts/2026-04-16-current-status-2026-04-16.md" rel="noopener">Edit this page on GitHub</a> →

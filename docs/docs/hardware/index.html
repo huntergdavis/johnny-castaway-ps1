@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>PS1 hardware constraints — Johnny Castaway PS1</title>
-  <meta name="description" content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/" />
-
-  <meta property="og:title"        content="PS1 hardware constraints — Johnny Castaway PS1" />
-  <meta property="og:description"  content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/" />
+  <meta name="description" content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/" /><meta property="og:title"        content="PS1 hardware constraints — Johnny Castaway PS1" />
+  <meta property="og:description"  content="PlayStation 1 hardware specs as they apply to the Johnny Castaway PS1 fan port — CPU, RAM, VRAM, SPU, CD drive — plus the gotchas the project hit in practice." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/hardware/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>PS1 hardware constraints</h1>
       <p class="subtitle">What the original PlayStation actually gives you, and what bites in practice when you try to use it for a 1992 screensaver port.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1753 words
+          ~7 min read · 1805 words
         </p>
 
       <hr class="rule" />
@@ -155,11 +154,11 @@ DuckStation. The numbers that matter, in the order you usually trip over them:</
 <ul>
   <li><strong>CPU:</strong> MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.</li>
   <li><strong>System RAM:</strong> 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.</li>
-  <li><strong>VRAM:</strong> 1 MB, owned by the GPU. Two 640×480 framebuffers eat 600 KB
+  <li><strong><a href="../glossary/#vram">VRAM</a>:</strong> 1 MB, owned by the GPU. Two 640×480 framebuffers eat 600 KB
 of that on their own.</li>
   <li><strong>SPU RAM:</strong> 512 KB, owned by the audio co-processor. ADPCM samples only.</li>
   <li><strong>CD drive:</strong> 2x speed, 300 KB/s sustained, ~150 ms cold seek.</li>
-  <li><strong>Controller:</strong> SIO0 serial bus, polled at vblank-ish rates.</li>
+  <li><strong>Controller:</strong> SIO0 serial bus, polled at <a href="../glossary/#vblank">vblank</a>-ish rates.</li>
 </ul>
 
 <p>For <em>Johnny Castaway</em>, a 1992 16-color VGA screensaver running at roughly 4 fps
@@ -183,8 +182,8 @@ experiment ledger.</p>
 <table>
   <thead>
     <tr>
-      <th>Component</th>
-      <th>Spec</th>
+      <th scope="col">Component</th>
+      <th scope="col">Spec</th>
     </tr>
   </thead>
   <tbody>
@@ -386,10 +385,19 @@ hardware described here.</li>
   <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
 — the retrospective on the <code class="language-plaintext highlighter-rouge">tx_len=5</code> pad-polling fix the
 hardware section above documents in one paragraph.</li>
+  <li><a href="../walks/">Story-loop walks</a> — the
+walk subsystem’s persistent clean buffer is a direct response
+to the 2 MB envelope above; the page documents why
+re-allocating per walk fragmented the heap.</li>
   <li><a href="../../about/method/">Method</a> — how a one-person port
 decides what to ship.</li>
   <li><a href="../../devlog/">Devlog</a> — day-by-day worklog where most of
 these bugs got triaged.</li>
+  <li><a href="../glossary/">Glossary</a> —
+definitions for hardware-specific terms used above
+(<code class="language-plaintext highlighter-rouge">SPU</code>, <code class="language-plaintext highlighter-rouge">VRAM</code>, <code class="language-plaintext highlighter-rouge">VBlank</code>, <code class="language-plaintext highlighter-rouge">OT</code>, <code class="language-plaintext highlighter-rouge">mkpsxiso</code>, <code class="language-plaintext highlighter-rouge">PSn00bSDK</code>,
+<code class="language-plaintext highlighter-rouge">TonyHax</code>, <code class="language-plaintext highlighter-rouge">SPI driver</code>, <code class="language-plaintext highlighter-rouge">tx_len</code>). Grouped by area, not
+alphabetical.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
@@ -416,7 +424,7 @@ these bugs got triaged.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -424,9 +432,12 @@ these bugs got triaged.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/hardware/index.md" rel="noopener">Edit this page on GitHub</a> →

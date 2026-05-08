@@ -5,10 +5,17 @@ subtitle: Latest build, quickstart, controls.
 description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pair, DuckStation quickstart, controller map, freeplay controls, and the smoke-test path on real PS1 hardware via TonyHax.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Latest build
 
-**{{ site.release.tag }}** — short notes on this and earlier
-versions are at [/releases/]({{ '/releases/' | relative_url }});
+**{{ site.release.tag }}** ({%- if site.release.release_date -%}released <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time>{%- endif -%}) — short notes on
+this and earlier versions are at [/releases/]({{ '/releases/' | relative_url }});
 the GitHub release pages are at
 [{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
@@ -21,8 +28,8 @@ the GitHub release pages are at
 The CD image ships as a **.bin / .cue** pair. Both files belong in
 the same directory. Sizes shown are for the
 [`{{ site.release.tag }}`]({{ site.github_url }}/releases/tag/{{ site.release.tag }})
-upload — the `.bin` is ~75&nbsp;MB, mostly FG2 pack payload routed
-onto the disc.
+upload — the `.bin` is ~76&nbsp;MB (~72&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
+payload routed onto the disc.
 
 ## Quickstart (DuckStation) {#emulator}
 
@@ -63,10 +70,12 @@ optional and reachable with **Start**.
 | Cross             | Confirm / select                                 |
 | Circle            | Back from any menu or submenu                    |
 
-Inside the pause menu you can: enter or exit Freeplay, mute sound,
-toggle closed captions, force day/night, tide, raft, and holidays,
-advance to the next scene, set the in-game date, move the island
-anchor, set the RNG seed, and open the sound test.
+Inside the pause menu you can: enter or exit Freeplay, choose a
+Scene Set (All Scenes, Fishing Only, Johnny Stories, Mary Visits,
+Visitors, Activities, or Misc & Suzy), mute sound, toggle closed
+captions, force day/night, tide, raft, and holidays, advance to
+the next scene, set the in-game date, move the island anchor, set
+the RNG seed, and open the sound test.
 
 ## Freeplay controls
 
@@ -78,13 +87,18 @@ mode added in [`v0.5.0-ps1`]({{ '/releases/#v050-ps1--freeplay-and-debug-mode' |
 | D-pad / left analog | Walk Johnny. Movement cancels the current action immediately. |
 | L2 held | Slow walk. |
 | R2 held | Fast walk. |
-| Circle | Fish from the nearest side of the island. |
 | Select | Clear the screen, cancel transient actions, and rebuild the island. |
 | R1 + Up | Toggle day/night. |
 | R1 + Down | Toggle high/low tide. |
 | R1 + Left | Cycle raft stage. |
 | R1 + Right | Cycle holiday overlay. |
 | Start | Open pause menu. |
+
+Fishing is reached through the pause menu's **Scene Set →
+Fishing Only** option rather than a dedicated joypad button —
+the Circle-as-fish freeplay action shipped in `v0.5.0-ps1` and
+was retired during the Scene Set rewrite. See
+[/docs/freeplay/#fishing]({{ '/docs/freeplay/#fishing' | relative_url }}).
 
 The full implementation notes live at
 [Menu help guide]({{ '/help/menu/' | relative_url }}),

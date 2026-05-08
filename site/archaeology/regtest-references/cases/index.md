@@ -12,6 +12,11 @@ They are not the final PS1 truth. They are the measurements the PS1 runtime
 keeps being compared against while a scene moves from "it boots" to "it is
 signed off."
 
+<nav class="scenes-jump" aria-label="Jump to ADS family">
+  <span class="scenes-jump-label">Jump to:</span>
+  <a href="#ads-activity">ACTIVITY <span class="scenes-jump-count">(10)</span></a> · <a href="#ads-building">BUILDING <span class="scenes-jump-count">(7)</span></a> · <a href="#ads-fishing">FISHING <span class="scenes-jump-count">(8)</span></a> · <a href="#ads-johnny">JOHNNY <span class="scenes-jump-count">(6)</span></a> · <a href="#ads-mary">MARY <span class="scenes-jump-count">(5)</span></a> · <a href="#ads-miscgag">MISCGAG <span class="scenes-jump-count">(2)</span></a> · <a href="#ads-stand">STAND <span class="scenes-jump-count">(14)</span></a> · <a href="#ads-suzy">SUZY <span class="scenes-jump-count">(2)</span></a> · <a href="#ads-visitor">VISITOR <span class="scenes-jump-count">(6)</span></a> · <a href="#ads-walkstuf">WALKSTUF <span class="scenes-jump-count">(3)</span></a>
+</nav>
+
 <table>
 <caption class="visually-hidden">
   Regression test case shelf: 63 preserved host baselines, one
@@ -19,9 +24,9 @@ signed off."
   Columns are case name (linking to the case detail page), ADS
   family, scene tag, captured frame count, and verification status.
 </caption>
-<thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
+<thead><tr><th scope="col">Case</th><th scope="col">ADS</th><th scope="col">Tag</th><th scope="col">Frames</th><th scope="col">Status</th></tr></thead>
 <tbody>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-1/' | relative_url }}">ACTIVITY-1</a></td><td><code>ACTIVITY</code></td><td>1</td><td>356</td><td>verified</td></tr>
+<tr id="ads-activity"><td><a href="{{ '/archaeology/regtest-references/cases/activity-1/' | relative_url }}">ACTIVITY-1</a></td><td><code>ACTIVITY</code></td><td>1</td><td>356</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-10/' | relative_url }}">ACTIVITY-10</a></td><td><code>ACTIVITY</code></td><td>10</td><td>267</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-11/' | relative_url }}">ACTIVITY-11</a></td><td><code>ACTIVITY</code></td><td>11</td><td>384</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-12/' | relative_url }}">ACTIVITY-12</a></td><td><code>ACTIVITY</code></td><td>12</td><td>260</td><td>verified</td></tr>
@@ -31,14 +36,14 @@ signed off."
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-7/' | relative_url }}">ACTIVITY-7</a></td><td><code>ACTIVITY</code></td><td>7</td><td>115</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-8/' | relative_url }}">ACTIVITY-8</a></td><td><code>ACTIVITY</code></td><td>8</td><td>147</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-9/' | relative_url }}">ACTIVITY-9</a></td><td><code>ACTIVITY</code></td><td>9</td><td>296</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/building-1/' | relative_url }}">BUILDING-1</a></td><td><code>BUILDING</code></td><td>1</td><td>157</td><td>verified</td></tr>
+<tr id="ads-building"><td><a href="{{ '/archaeology/regtest-references/cases/building-1/' | relative_url }}">BUILDING-1</a></td><td><code>BUILDING</code></td><td>1</td><td>157</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-2/' | relative_url }}">BUILDING-2</a></td><td><code>BUILDING</code></td><td>2</td><td>415</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-3/' | relative_url }}">BUILDING-3</a></td><td><code>BUILDING</code></td><td>3</td><td>229</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-4/' | relative_url }}">BUILDING-4</a></td><td><code>BUILDING</code></td><td>4</td><td>629</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-5/' | relative_url }}">BUILDING-5</a></td><td><code>BUILDING</code></td><td>5</td><td>621</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-6/' | relative_url }}">BUILDING-6</a></td><td><code>BUILDING</code></td><td>6</td><td>514</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/building-7/' | relative_url }}">BUILDING-7</a></td><td><code>BUILDING</code></td><td>7</td><td>753</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-1/' | relative_url }}">FISHING-1</a></td><td><code>FISHING</code></td><td>1</td><td>82</td><td>verified</td></tr>
+<tr id="ads-fishing"><td><a href="{{ '/archaeology/regtest-references/cases/fishing-1/' | relative_url }}">FISHING-1</a></td><td><code>FISHING</code></td><td>1</td><td>82</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-2/' | relative_url }}">FISHING-2</a></td><td><code>FISHING</code></td><td>2</td><td>67</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-3/' | relative_url }}">FISHING-3</a></td><td><code>FISHING</code></td><td>3</td><td>396</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-4/' | relative_url }}">FISHING-4</a></td><td><code>FISHING</code></td><td>4</td><td>141</td><td>verified</td></tr>
@@ -46,20 +51,20 @@ signed off."
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-6/' | relative_url }}">FISHING-6</a></td><td><code>FISHING</code></td><td>6</td><td>119</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-7/' | relative_url }}">FISHING-7</a></td><td><code>FISHING</code></td><td>7</td><td>64</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/fishing-8/' | relative_url }}">FISHING-8</a></td><td><code>FISHING</code></td><td>8</td><td>155</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-1/' | relative_url }}">JOHNNY-1</a></td><td><code>JOHNNY</code></td><td>1</td><td>119</td><td>verified</td></tr>
+<tr id="ads-johnny"><td><a href="{{ '/archaeology/regtest-references/cases/johnny-1/' | relative_url }}">JOHNNY-1</a></td><td><code>JOHNNY</code></td><td>1</td><td>119</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-2/' | relative_url }}">JOHNNY-2</a></td><td><code>JOHNNY</code></td><td>2</td><td>301</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-3/' | relative_url }}">JOHNNY-3</a></td><td><code>JOHNNY</code></td><td>3</td><td>222</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-4/' | relative_url }}">JOHNNY-4</a></td><td><code>JOHNNY</code></td><td>4</td><td>199</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-5/' | relative_url }}">JOHNNY-5</a></td><td><code>JOHNNY</code></td><td>5</td><td>171</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/johnny-6/' | relative_url }}">JOHNNY-6</a></td><td><code>JOHNNY</code></td><td>6</td><td>89</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/mary-1/' | relative_url }}">MARY-1</a></td><td><code>MARY</code></td><td>1</td><td>251</td><td>verified</td></tr>
+<tr id="ads-mary"><td><a href="{{ '/archaeology/regtest-references/cases/mary-1/' | relative_url }}">MARY-1</a></td><td><code>MARY</code></td><td>1</td><td>251</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/mary-2/' | relative_url }}">MARY-2</a></td><td><code>MARY</code></td><td>2</td><td>436</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/mary-3/' | relative_url }}">MARY-3</a></td><td><code>MARY</code></td><td>3</td><td>448</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/mary-4/' | relative_url }}">MARY-4</a></td><td><code>MARY</code></td><td>4</td><td>326</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/mary-5/' | relative_url }}">MARY-5</a></td><td><code>MARY</code></td><td>5</td><td>409</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/miscgag-1/' | relative_url }}">MISCGAG-1</a></td><td><code>MISCGAG</code></td><td>1</td><td>109</td><td>verified</td></tr>
+<tr id="ads-miscgag"><td><a href="{{ '/archaeology/regtest-references/cases/miscgag-1/' | relative_url }}">MISCGAG-1</a></td><td><code>MISCGAG</code></td><td>1</td><td>109</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/miscgag-2/' | relative_url }}">MISCGAG-2</a></td><td><code>MISCGAG</code></td><td>2</td><td>216</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-1/' | relative_url }}">STAND-1</a></td><td><code>STAND</code></td><td>1</td><td>8</td><td>verified</td></tr>
+<tr id="ads-stand"><td><a href="{{ '/archaeology/regtest-references/cases/stand-1/' | relative_url }}">STAND-1</a></td><td><code>STAND</code></td><td>1</td><td>8</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-10/' | relative_url }}">STAND-10</a></td><td><code>STAND</code></td><td>10</td><td>25</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-11/' | relative_url }}">STAND-11</a></td><td><code>STAND</code></td><td>11</td><td>25</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-12/' | relative_url }}">STAND-12</a></td><td><code>STAND</code></td><td>12</td><td>42</td><td>verified</td></tr>
@@ -73,15 +78,15 @@ signed off."
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-7/' | relative_url }}">STAND-7</a></td><td><code>STAND</code></td><td>7</td><td>25</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-8/' | relative_url }}">STAND-8</a></td><td><code>STAND</code></td><td>8</td><td>23</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/stand-9/' | relative_url }}">STAND-9</a></td><td><code>STAND</code></td><td>9</td><td>25</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/suzy-1/' | relative_url }}">SUZY-1</a></td><td><code>SUZY</code></td><td>1</td><td>184</td><td>verified</td></tr>
+<tr id="ads-suzy"><td><a href="{{ '/archaeology/regtest-references/cases/suzy-1/' | relative_url }}">SUZY-1</a></td><td><code>SUZY</code></td><td>1</td><td>184</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/suzy-2/' | relative_url }}">SUZY-2</a></td><td><code>SUZY</code></td><td>2</td><td>140</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-1/' | relative_url }}">VISITOR-1</a></td><td><code>VISITOR</code></td><td>1</td><td>129</td><td>verified</td></tr>
+<tr id="ads-visitor"><td><a href="{{ '/archaeology/regtest-references/cases/visitor-1/' | relative_url }}">VISITOR-1</a></td><td><code>VISITOR</code></td><td>1</td><td>129</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-3/' | relative_url }}">VISITOR-3</a></td><td><code>VISITOR</code></td><td>3</td><td>204</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-4/' | relative_url }}">VISITOR-4</a></td><td><code>VISITOR</code></td><td>4</td><td>72</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-5/' | relative_url }}">VISITOR-5</a></td><td><code>VISITOR</code></td><td>5</td><td>291</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-6/' | relative_url }}">VISITOR-6</a></td><td><code>VISITOR</code></td><td>6</td><td>286</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/visitor-7/' | relative_url }}">VISITOR-7</a></td><td><code>VISITOR</code></td><td>7</td><td>227</td><td>verified</td></tr>
-<tr><td><a href="{{ '/archaeology/regtest-references/cases/walkstuf-1/' | relative_url }}">WALKSTUF-1</a></td><td><code>WALKSTUF</code></td><td>1</td><td>366</td><td>verified</td></tr>
+<tr id="ads-walkstuf"><td><a href="{{ '/archaeology/regtest-references/cases/walkstuf-1/' | relative_url }}">WALKSTUF-1</a></td><td><code>WALKSTUF</code></td><td>1</td><td>366</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/walkstuf-2/' | relative_url }}">WALKSTUF-2</a></td><td><code>WALKSTUF</code></td><td>2</td><td>81</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/walkstuf-3/' | relative_url }}">WALKSTUF-3</a></td><td><code>WALKSTUF</code></td><td>3</td><td>447</td><td>verified</td></tr>
 </tbody>

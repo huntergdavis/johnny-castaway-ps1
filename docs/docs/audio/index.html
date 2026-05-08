@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Audio pipeline — Johnny Castaway PS1</title>
-  <meta name="description" content="How audio works on the Johnny Castaway PS1 fan port — SPU RAM layout, the VAG sample preload at boot, the host-captured sound-event replay path, and the DuckStation HLE divergence." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/audio/" />
-
-  <meta property="og:title"        content="Audio pipeline — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How audio works on the Johnny Castaway PS1 fan port — SPU RAM layout, the VAG sample preload at boot, the host-captured sound-event replay path, and the DuckStation HLE divergence." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/audio/" />
+  <meta name="description" content="How audio works on the Johnny Castaway PS1 fan port — SPU RAM layout, the VAG sample preload at boot, the host-captured sound-event replay path, and the DuckStation HLE divergence." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/audio/" /><meta property="og:title"        content="Audio pipeline — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How audio works on the Johnny Castaway PS1 fan port — SPU RAM layout, the VAG sample preload at boot, the host-captured sound-event replay path, and the DuckStation HLE divergence." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/audio/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Audio pipeline</h1>
       <p class="subtitle">SPU layout, sample preload, captured PLAY_SAMPLE replay, and where DuckStation's HLE diverges from the real hardware.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1864 words
+          ~7 min read · 1899 words
         </p>
 
       <hr class="rule" />
@@ -112,7 +111,7 @@
 
   <div class="page-body">
     <p>A labor of love by Hunter Davis. This page describes the audio pipeline:
-the SPU constraints, the conversion path from WAV to VAG, the runtime
+the SPU constraints, the conversion path from WAV to <a href="../glossary/#vag">VAG</a>, the runtime
 preload, and the playback path during scene replay. If you paid for this,
 you were cheated. Open source and free.</p>
 
@@ -142,7 +141,7 @@ you were cheated. Open source and free.</p>
 
 <h2 id="the-spu">The SPU</h2>
 
-<p>The PS1’s Sound Processing Unit is a separate processor with its own RAM
+<p>The PS1’s <a href="../glossary/#spu">Sound Processing Unit</a> is a separate processor with its own RAM
 and its own job. Specs:</p>
 
 <ul>
@@ -404,7 +403,7 @@ did not. This is a design question, not a technical one.</li>
 <p>The runtime carries one looping background track — a 20-second
 ocean-loop sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
-memcard alongside the other v6 schema settings. Zero per-frame
+<a href="../glossary/#memcard">memcard</a> alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.</p>
 
@@ -441,8 +440,14 @@ audio scheduling shows up as <code class="language-plaintext highlighter-rouge">
 <code class="language-plaintext highlighter-rouge">psxspu</code> gets linked.</li>
   <li><a href="../../about/method/">Method</a> — how the
 audio acceptance bar fits the project’s overall standard.</li>
-  <li><a href="../../devlog/">Devlog</a> — the SPU debugging pass
-is documented there.</li>
+  <li><a href="../../releases/#v060-ps1--ocean-ambience">v0.6.0-ps1 release entry</a>
+— the milestone the ocean-ambience loop shipped in.</li>
+  <li><a href="../../devlog/ocean-ambience-v0-6/">Devlog: ocean ambience v0.6</a>
+— the implementation worklog for the dedicated SPU voice that
+drives the ambience loop. Pairs with the Ocean ambience H2 above.</li>
+  <li><a href="../glossary/#vag">Glossary: VAG</a>
+· <a href="../glossary/#spu">Glossary: SPU</a>
+· <a href="../glossary/#play-sample">Glossary: PLAY_SAMPLE</a></li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
@@ -472,7 +477,7 @@ is documented there.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -480,9 +485,12 @@ is documented there.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/audio/index.md" rel="noopener">Edit this page on GitHub</a> →

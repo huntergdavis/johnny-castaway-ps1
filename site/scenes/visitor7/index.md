@@ -8,7 +8,7 @@ status: validated
 description: "VISITOR.ADS scene 7: Coconut tree impact. Validated on PS1 with regenerated high/low FG2 packs."
 ---
 
-VISITOR 7 is validated under the current PS1 scene bar.
+Validated on 2026-05-04 under the current PS1 scene bar.
 
 ## Pack identifiers
 

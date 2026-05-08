@@ -7,6 +7,13 @@ source_path: docs/ps1/research/FOREGROUND_TIMING_PLAN_2026-04-13.md
 description: "Plan to bring fgpilot foreground timing back in line with host baseline after the fishing1 visual win."
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 Current validated baseline:
 
 - `fgpilot fishing1` is visually correct.

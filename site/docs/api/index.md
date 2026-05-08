@@ -173,7 +173,7 @@ SpuSetMute(SPU_OFF);
 SpuSetCommonMasterVolume(0x3FFF, 0x3FFF);
 ```
 
-### Sound load (work in progress)
+### Sound load
 
 ```c
 /* SDL2 */
@@ -189,7 +189,7 @@ SpuWrite(vag_data, vag_size);
 SpuIsTransferCompleted(SPU_TRANSFER_WAIT);
 ```
 
-### Sound playback (work in progress)
+### Sound playback
 
 ```c
 /* SDL2 */
@@ -334,6 +334,11 @@ in the research directory, but it has not been implemented.
 - [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
   — war story for the SIO0 polling fix behind the
   `SDL_PollEvent` → SPI driver row in the Input section.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  definitions for the project-specific terms referenced
+  throughout this page (`OT`, `SPRT`, `FntFlush`, `SPI driver`,
+  `tx_len`, `VAG`, `SPU`, `VRAM`, etc.). Grouped by area, not
+  alphabetical.
 
 ## View source on GitHub
 

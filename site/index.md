@@ -4,7 +4,7 @@ title: Johnny Castaway PS1
 description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-and-replay pipeline. Open source, GPL-3.0.
 ---
 
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <div class="hero-frame">
     <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}"
          width="1127" height="677"
@@ -14,7 +14,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
   <div class="hero-text">
     <p class="hero-eyebrow">A fan port · v{{ site.release.version }}</p>
-    <h1>{{ site.title }}</h1>
+    <h1 id="hero-title">{{ site.title }}</h1>
     <p class="tagline">{{ site.tagline }}</p>
     <div class="hero-cta">
       <a class="btn btn--primary" href="{{ '/play/' | relative_url }}">Download &amp; play</a>
@@ -24,23 +24,29 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </div>
 </section>
 
-<section class="trio">
+<section class="trio" aria-label="Selected PS1 captures">
   <figure>
-    <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
-    <figcaption><a href="{{ '/scenes/activity9/' | relative_url }}">ACTIVITY 9 · boat pass</a></figcaption>
+    <a href="{{ '/scenes/activity9/' | relative_url }}">
+      <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island." />
+      <figcaption>ACTIVITY 9 · boat pass</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/johnny6-ps1-date-dream.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="JOHNNY 6 running on PS1: Johnny dreams about his island date." />
-    <figcaption><a href="{{ '/scenes/johnny6/' | relative_url }}">JOHNNY 6 · daydream</a></figcaption>
+    <a href="{{ '/scenes/johnny1/' | relative_url }}">
+      <img src="{{ '/assets/img/johnny1-ps1-frog-clock.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Frog clock loading transition running on PS1, between two scenes." />
+      <figcaption>JOHNNY 1 · frog clock</figcaption>
+    </a>
   </figure>
   <figure>
-    <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
-    <figcaption><a href="{{ '/scenes/fishing1/' | relative_url }}">FISHING 1 · reference</a></figcaption>
+    <a href="{{ '/scenes/fishing1/' | relative_url }}">
+      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
+      <figcaption>FISHING 1 · reference</figcaption>
+    </a>
   </figure>
 </section>
 
 <aside class="status-strip" aria-label="Project status">
-  <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a></span>
+  <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a> <small>· <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time></small></span>
   <a class="pill pill--ok" href="{{ '/scenes/' | relative_url }}">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</a>
   <a class="pill pill--ok" href="{{ '/perf/' | relative_url }}">{{ site.release.perf_target_speed_pct }}% target speed</a>
   <a class="pill pill--info" href="{{ '/docs/build/' | relative_url }}">PSn00bSDK 0.24</a>
@@ -58,7 +64,7 @@ on a tiny island. It runs in tiny vignettes — a fishing line, a passing
 ship, a holiday decoration — quietly, all day.
 
 This is a port of those vignettes to the original Sony PlayStation,
-running on real hardware or on DuckStation. It is a fan project: the
+running on [real hardware]({{ '/play/#real-ps1-hardware' | relative_url }}) or on [DuckStation]({{ '/docs/glossary/#duckstation' | relative_url }}). It is a fan project: the
 character belongs to the original creator, and the site's chrome and
 its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
@@ -69,8 +75,8 @@ routed scenes the original game had are validated under the
 review across every applicable variant. Current mainline work is
 bugfixing, performance, and feature polish; the
 [`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
-keeps long randomized runs stable while the `v0.8.0` performance
-baseline closes the last bit of speed gap, and most scenes already
+keeps long randomized runs stable while the [`v0.8.0` performance
+baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }}) closes the last bit of speed gap, and most scenes already
 run at native rate. The two ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
@@ -79,18 +85,18 @@ headless DuckStation timing for every scene/tide variant.
 
 ## How it works (the short version)
 
-A *host build* of the original engine plays each scene under capture
-mode and dumps **FG2 packs** — small binary files that record every
+A *[host build]({{ '/docs/glossary/#host-build' | relative_url }})* of the original engine plays each scene under capture
+mode and dumps **[FG2 packs]({{ '/docs/glossary/#fg2-pack' | relative_url }})** — small binary files that record every
 visible draw, every sound trigger, every frame timing. The PS1 build
 loads those packs from the disc and replays them against its own
 background, wave animation, holiday overlay, captions, and SPU audio.
 
 The PS1 never interprets Sierra's bytecode at runtime. That's the whole
-trick. A 1992 screensaver fits onto a CD-ROM and inside 2 MB of RAM
+trick. A 1992 screensaver fits onto a CD-ROM and inside [2 MB of RAM]({{ '/docs/hardware/' | relative_url }})
 because all of the smart work is done on a desktop and pre-baked.
 
-The full deep-dive — pack format, hardware gotchas, the SPI pad-poll
-fix that cost two days, the dirty-rect bookkeeping that wiped framebuffers
+The full deep-dive — pack format, hardware gotchas, the [SPI pad-poll
+fix that cost two days]({{ '/lab/two-day-spi-bug/' | relative_url }}), the [dirty-rect bookkeeping]({{ '/docs/glossary/#dirty-rect' | relative_url }}) that wiped framebuffers
 on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})**.
 
 </section>
@@ -105,6 +111,10 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   <li>
     <a href="{{ '/play/' | relative_url }}">Just play it</a>
     <p>Latest <code>.bin</code> + <code>.cue</code>, DuckStation quickstart, controller map. Five minutes.</p>
+  </li>
+  <li>
+    <a href="{{ '/faq/' | relative_url }}">FAQ</a>
+    <p>Author-written answers to the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, does it run at native rate, where do I file bugs.</p>
   </li>
   <li>
     <a href="{{ '/about/method/' | relative_url }}">How the port works</a>
@@ -124,7 +134,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/lab/' | relative_url }}">Magazine-length Lab</a>
-    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
+    <p>Fifteen feature essays: post-validation perf retrospectives, the soak loop and the v0.8.1 freeze, the 63-scene grind, regression-as-lifestyle, the pixel-perfect pivot, the two-day SPI bug, the site as a small program, voice + hallucination engineering, the LLM pass, the build farm, the dunking bird, why this is the fifth port, holiday codegen, and what fan-porting in public looks like.</p>
   </li>
   <li>
     <a href="{{ '/hack/' | relative_url }}">Curious hacker path</a>
@@ -136,7 +146,7 @@ on resume — lives at **[/about/method/]({{ '/about/method/' | relative_url }})
   </li>
   <li>
     <a href="{{ '/docs/' | relative_url }}">Reference docs</a>
-    <p>Seventeen reference manuals: build, captions, holidays, pause menu, freeplay, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
+    <p>Eighteen reference manuals: build, captions, holidays, pause menu, freeplay, story-loop walks, regtest, scripted input, performance, hardware, audio, infrastructure, file formats, AI sub-agents, vision-classifier, the SDL2 → PSn00bSDK API mapping, dev workflow, and a glossary.</p>
   </li>
   <li>
     <a href="{{ '/source/' | relative_url }}">Source library</a>
@@ -181,7 +191,7 @@ Set, Freeplay Options, Controls, World Options, Holidays, Set
 Island Position, Accessibility, Sound Test, System, Set Time/Date,
 and Set RNG Seed. An optional
 [ocean-ambience loop]({{ '/releases/#v060-ps1--ocean-ambience' | relative_url }})
-on a dedicated SPU voice. Frog-clock loading transitions between
+on a dedicated SPU voice. [Frog-clock loading transitions]({{ '/docs/glossary/#frog-clock' | relative_url }}) between
 scene swaps. The website
 [credits]({{ '/credits/' | relative_url }}) and
 [legal]({{ '/legal/' | relative_url }}) pages name exactly what's

@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>API mapping (SDL2 → PSn00bSDK) — Johnny Castaway PS1</title>
-  <meta name="description" content="SDL2 to PSn00bSDK mapping reference for the Johnny Castaway PS1 port — graphics, input, audio, and file I/O surfaces with side-by-side code examples." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/api/" />
-
-  <meta property="og:title"        content="API mapping (SDL2 → PSn00bSDK) — Johnny Castaway PS1" />
-  <meta property="og:description"  content="SDL2 to PSn00bSDK mapping reference for the Johnny Castaway PS1 port — graphics, input, audio, and file I/O surfaces with side-by-side code examples." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/api/" />
+  <meta name="description" content="SDL2 to PSn00bSDK mapping reference for the Johnny Castaway PS1 port — graphics, input, audio, and file I/O surfaces with side-by-side code examples." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/api/" /><meta property="og:title"        content="API mapping (SDL2 → PSn00bSDK) — Johnny Castaway PS1" />
+  <meta property="og:description"  content="SDL2 to PSn00bSDK mapping reference for the Johnny Castaway PS1 port — graphics, input, audio, and file I/O surfaces with side-by-side code examples." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/api/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>API mapping (SDL2 → PSn00bSDK)</h1>
       <p class="subtitle">Every SDL2 symbol the upstream engine called, mapped to the PSn00bSDK call that replaced it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1287 words
+          ~5 min read · 1301 words
         </p>
 
       <hr class="rule" />
@@ -145,8 +144,8 @@ the call site.</p>
   </li>
   <li><a href="#audio" id="markdown-toc-audio">Audio</a>    <ul>
       <li><a href="#initialization-2" id="markdown-toc-initialization-2">Initialization</a></li>
-      <li><a href="#sound-load-work-in-progress" id="markdown-toc-sound-load-work-in-progress">Sound load (work in progress)</a></li>
-      <li><a href="#sound-playback-work-in-progress" id="markdown-toc-sound-playback-work-in-progress">Sound playback (work in progress)</a></li>
+      <li><a href="#sound-load" id="markdown-toc-sound-load">Sound load</a></li>
+      <li><a href="#sound-playback" id="markdown-toc-sound-playback">Sound playback</a></li>
     </ul>
   </li>
   <li><a href="#file-io" id="markdown-toc-file-io">File I/O</a>    <ul>
@@ -174,10 +173,10 @@ the call site.</p>
 <table>
   <thead>
     <tr>
-      <th>SDL2</th>
-      <th>PSn00bSDK</th>
-      <th>Status</th>
-      <th>Notes</th>
+      <th scope="col">SDL2</th>
+      <th scope="col">PSn00bSDK</th>
+      <th scope="col">Status</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -292,10 +291,10 @@ the call site.</p>
 <table>
   <thead>
     <tr>
-      <th>SDL2</th>
-      <th>PSn00bSDK</th>
-      <th>Status</th>
-      <th>Notes</th>
+      <th scope="col">SDL2</th>
+      <th scope="col">PSn00bSDK</th>
+      <th scope="col">Status</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -365,10 +364,10 @@ the call site.</p>
 <table>
   <thead>
     <tr>
-      <th>SDL2</th>
-      <th>PSn00bSDK</th>
-      <th>Status</th>
-      <th>Notes</th>
+      <th scope="col">SDL2</th>
+      <th scope="col">PSn00bSDK</th>
+      <th scope="col">Status</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -411,7 +410,7 @@ the call site.</p>
 <span class="n">SpuSetCommonMasterVolume</span><span class="p">(</span><span class="mh">0x3FFF</span><span class="p">,</span> <span class="mh">0x3FFF</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h3 id="sound-load-work-in-progress">Sound load (work in progress)</h3>
+<h3 id="sound-load">Sound load</h3>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* SDL2 */</span>
 <span class="n">Mix_Chunk</span> <span class="o">*</span><span class="n">sound</span> <span class="o">=</span> <span class="n">Mix_LoadWAV</span><span class="p">(</span><span class="s">"sound.wav"</span><span class="p">);</span>
@@ -426,7 +425,7 @@ the call site.</p>
 <span class="n">SpuIsTransferCompleted</span><span class="p">(</span><span class="n">SPU_TRANSFER_WAIT</span><span class="p">);</span>
 </code></pre></div></div>
 
-<h3 id="sound-playback-work-in-progress">Sound playback (work in progress)</h3>
+<h3 id="sound-playback">Sound playback</h3>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* SDL2 */</span>
 <span class="n">Mix_PlayChannel</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">sound</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
@@ -441,10 +440,10 @@ the call site.</p>
 <table>
   <thead>
     <tr>
-      <th>Standard C</th>
-      <th>PSn00bSDK</th>
-      <th>Status</th>
-      <th>Notes</th>
+      <th scope="col">Standard C</th>
+      <th scope="col">PSn00bSDK</th>
+      <th scope="col">Status</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -507,9 +506,9 @@ the call site.</p>
 <table>
   <thead>
     <tr>
-      <th>Aspect</th>
-      <th>SDL2</th>
-      <th>PS1</th>
+      <th scope="col">Aspect</th>
+      <th scope="col">SDL2</th>
+      <th scope="col">PS1</th>
     </tr>
   </thead>
   <tbody>
@@ -556,8 +555,8 @@ much longer than the SDL host counterpart.</p>
 <table>
   <thead>
     <tr>
-      <th>Function</th>
-      <th>What it does</th>
+      <th scope="col">Function</th>
+      <th scope="col">What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -617,8 +616,8 @@ much longer than the SDL host counterpart.</p>
 <table>
   <thead>
     <tr>
-      <th>Function</th>
-      <th>What it does</th>
+      <th scope="col">Function</th>
+      <th scope="col">What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -666,8 +665,8 @@ much longer than the SDL host counterpart.</p>
 <table>
   <thead>
     <tr>
-      <th>Function</th>
-      <th>What it does</th>
+      <th scope="col">Function</th>
+      <th scope="col">What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -695,8 +694,8 @@ much longer than the SDL host counterpart.</p>
 <table>
   <thead>
     <tr>
-      <th>Function</th>
-      <th>What it does</th>
+      <th scope="col">Function</th>
+      <th scope="col">What it does</th>
     </tr>
   </thead>
   <tbody>
@@ -750,6 +749,11 @@ glyph rendering against a shared font atlas.</li>
   <li><a href="../../lab/two-day-spi-bug/">Lab: the two-day SPI bug</a>
 — war story for the SIO0 polling fix behind the
 <code class="language-plaintext highlighter-rouge">SDL_PollEvent</code> → SPI driver row in the Input section.</li>
+  <li><a href="../glossary/">Glossary</a> —
+definitions for the project-specific terms referenced
+throughout this page (<code class="language-plaintext highlighter-rouge">OT</code>, <code class="language-plaintext highlighter-rouge">SPRT</code>, <code class="language-plaintext highlighter-rouge">FntFlush</code>, <code class="language-plaintext highlighter-rouge">SPI driver</code>,
+<code class="language-plaintext highlighter-rouge">tx_len</code>, <code class="language-plaintext highlighter-rouge">VAG</code>, <code class="language-plaintext highlighter-rouge">SPU</code>, <code class="language-plaintext highlighter-rouge">VRAM</code>, etc.). Grouped by area, not
+alphabetical.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
@@ -780,7 +784,7 @@ glyph rendering against a shared font atlas.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -788,9 +792,12 @@ glyph rendering against a shared font atlas.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/api/index.md" rel="noopener">Edit this page on GitHub</a> →

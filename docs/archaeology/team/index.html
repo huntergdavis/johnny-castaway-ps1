@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>The Team — Johnny Castaway PS1</title>
-  <meta name="description" content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/archaeology/team/" />
-
-  <meta property="og:title"        content="The Team — Johnny Castaway PS1" />
-  <meta property="og:description"  content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/archaeology/team/" />
+  <meta name="description" content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/archaeology/team/" /><meta property="og:title"        content="The Team — Johnny Castaway PS1" />
+  <meta property="og:description"  content="An honest accounting of who actually contributed to the Johnny Castaway PS1 fan port — the author, the prior reverse-engineering ports, the toolchain authors, and the AI assistants that helped draft." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/archaeology/team/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>The Team</h1>
       <p class="subtitle">A small newsroom-lab, with a single byline.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~3 min read · 920 words
+          ~4 min read · 1015 words
         </p>
 
       <hr class="rule" />
@@ -141,6 +140,7 @@ matters and is worth being honest about.</p>
   <li><a href="#the-toolchain-authors" id="markdown-toc-the-toolchain-authors">The toolchain authors</a></li>
   <li><a href="#the-ai-assistants" id="markdown-toc-the-ai-assistants">The AI assistants</a></li>
   <li><a href="#the-reader" id="markdown-toc-the-reader">The reader</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -246,6 +246,29 @@ anyone’s photo on it. Hunter’s name is on the credits screen. The
 prior ports are linked from the <a href="../../credits/">Credits page</a>.
 That’s the whole accounting.</p>
 
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../../credits/">Credits</a> — the full
+acknowledgements page; toolchain authors, prior ports,
+AI sub-agents, fonts, ocean-ambience source.</li>
+  <li><a href="../../about/voice/">About: Voice</a> —
+the editorial standard the prose-drafted-by-agents had
+to be edited up to.</li>
+  <li><a href="../../docs/agents/">Docs: AI sub-agents</a>
+— honest accounting of where the agents helped on this
+project and where they didn’t.</li>
+  <li><a href="../../lab/llm-pass/">Lab: the LLM pass</a>
+— methodology essay on running parallel agents under
+human review.</li>
+  <li><a href="../../lab/voice-anchor-problem/">Lab: voice-anchor problem</a>
+— long-form retrospective on keeping a single voice
+across human + agent prose.</li>
+  <li><a href="../../lab/dunking-bird/">Lab: dunking-bird</a>
+— the auto-poker that keeps the agents productive
+between human review passes.</li>
+</ul>
+
   </div>
 </article>
 
@@ -264,7 +287,7 @@ That’s the whole accounting.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -272,9 +295,12 @@ That’s the whole accounting.</p>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/archaeology/team/index.md" rel="noopener">Edit this page on GitHub</a> →

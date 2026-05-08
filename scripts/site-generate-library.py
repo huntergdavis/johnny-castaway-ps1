@@ -271,6 +271,13 @@ binary assets, the [regtest case shelf]({{{{ '/archaeology/regtest-references/ca
 for host references, and the [Curious Hacker's Guide]({{{{ '/hack/' | relative_url }}}})
 for a guided learning path through the machinery.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{{:toc}}
+</details>
+
 {sections_md}
 """
     (target / "index.md").write_text(index, encoding="utf-8")
@@ -373,10 +380,35 @@ with.
         out.write_text(content, encoding="utf-8")
         case_rows.append((case_name, slug, ads, tag, frames, status))
 
-    rows = "\n".join(
-        f'<tr><td><a href="{{{{ \'/archaeology/regtest-references/cases/{slug}/\' | relative_url }}}}">{name}</a></td><td><code>{ads}</code></td><td>{tag}</td><td>{frames}</td><td>{status}</td></tr>'
-        for name, slug, ads, tag, frames, status in case_rows
+    # Per-family counts and jump-nav, mirroring the /scenes/ ledger pattern
+    # (commit 6faead4a4). case_rows is sorted by case_name, which means rows
+    # are family-grouped (ACTIVITY-1..ACTIVITY-9, BUILDING-1..., FISHING-1...);
+    # so the "first row per family" detection just compares against the
+    # previous row's ads value.
+    family_counts: dict[str, int] = {}
+    for _, _, ads, _, _, _ in case_rows:
+        family_counts[str(ads)] = family_counts.get(str(ads), 0) + 1
+    families_in_order = list(family_counts.keys())
+
+    jump_nav_links = " · ".join(
+        f'<a href="#ads-{fam.lower()}">{fam} <span class="scenes-jump-count">({family_counts[fam]})</span></a>'
+        for fam in families_in_order
     )
+
+    row_lines = []
+    seen_ads: set[str] = set()
+    for name, slug, ads, tag, frames, status in case_rows:
+        ads_key = str(ads)
+        if ads_key not in seen_ads:
+            seen_ads.add(ads_key)
+            tr_open = f'<tr id="ads-{ads_key.lower()}">'
+        else:
+            tr_open = '<tr>'
+        row_lines.append(
+            f'{tr_open}<td><a href="{{{{ \'/archaeology/regtest-references/cases/{slug}/\' | relative_url }}}}">{name}</a></td><td><code>{ads}</code></td><td>{tag}</td><td>{frames}</td><td>{status}</td></tr>'
+        )
+    rows = "\n".join(row_lines)
+
     index = f"""---
 layout: page
 title: Regtest reference cases
@@ -391,6 +423,11 @@ They are not the final PS1 truth. They are the measurements the PS1 runtime
 keeps being compared against while a scene moves from "it boots" to "it is
 signed off."
 
+<nav class="scenes-jump" aria-label="Jump to ADS family">
+  <span class="scenes-jump-label">Jump to:</span>
+  {jump_nav_links}
+</nav>
+
 <table>
 <caption class="visually-hidden">
   Regression test case shelf: 63 preserved host baselines, one
@@ -398,7 +435,7 @@ signed off."
   Columns are case name (linking to the case detail page), ADS
   family, scene tag, captured frame count, and verification status.
 </caption>
-<thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
+<thead><tr><th scope="col">Case</th><th scope="col">ADS</th><th scope="col">Tag</th><th scope="col">Frames</th><th scope="col">Status</th></tr></thead>
 <tbody>
 {rows}
 </tbody>
@@ -458,10 +495,21 @@ def generate_resource_catalog() -> None:
             )
         rows_md = "\n".join(rows) or "<tr><td colspan=\"3\">No files found.</td></tr>"
         intro_block = f"\n{intro}\n" if intro else ""
+        # Visually-hidden caption: a screen reader landing inside the table
+        # (e.g., from the page-toc anchor or a deep link) needs the section
+        # context the H2 above doesn't always carry into the table scope.
+        # Same idiom shipped on /perf/, /scenes/, and the regtest case shelf.
+        caption = (
+            f"<caption class=\"visually-hidden\">"
+            f"{title} — {len(files)} files, listed by name with byte size "
+            f"and a link to the source file on GitHub."
+            f"</caption>"
+        )
         sections.append(f"""## {title}
 {intro_block}
 <table>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+{caption}
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 {rows_md}
 </tbody>
@@ -489,6 +537,13 @@ Pair this with the [source library]({{{{ '/source/' | relative_url }}}}) for
 Markdown documentation, the [scene ledger]({{{{ '/scenes/' | relative_url }}}})
 for runtime status, and the [Curious Hacker's Guide]({{{{ '/hack/' | relative_url }}}})
 for the practical porting path.
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{{:toc}}
+</details>
 
 {resource_sections}
 """

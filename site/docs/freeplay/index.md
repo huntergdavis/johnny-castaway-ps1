@@ -29,7 +29,7 @@ the frame. That makes it useful as a play mode and as a debugging cockpit.
 
 The normal boot still starts in screensaver mode. Press **Start**, choose
 **Freeplay: OFF**, and the game tears the current scene down, shows the
-`MEANWHIL.BMP` frog clock, builds the freeplay island, and hands control
+`MEANWHIL.BMP` [frog clock]({{ '/docs/glossary/#frog-clock' | relative_url }}), builds the freeplay island, and hands control
 to the player.
 
 Inside freeplay, press **Start** again to open the same pause menu. Choose
@@ -81,9 +81,11 @@ The pause menu carries the rest of freeplay/debug mode:
 | Accessibility | Closed captions, sound mute, ocean ambience, and the Sound Test selector. |
 | Controls | On-device reference for the freeplay controls above. |
 
-This split is intentional. The joypad is for walking, fishing, clearing,
-and the four immediate world toggles. Everything with a catalog or
-metadata lives in a menu.
+This split is intentional. The joypad is for walking, clearing, and the
+four immediate world toggles. Everything with a catalog or metadata
+lives in a menu — including fishing, which moved off Circle to the
+Scene Set selector during the Scene Set rewrite (see the "Fishing"
+section below).
 
 ## What the debug catalogs expose
 
@@ -111,9 +113,10 @@ the menu.
 
 The Scene Set lineup also covers the rest of the catalog by family:
 *Johnny Stories*, *Mary Visits*, *Visitors*, *Activities*, and *Misc &
-Suzy*. Pools include scenes whose FG2 packs ship but whose visuals
-aren't fully signed off yet — they play as-is and improve in place as
-scenes are validated.
+Suzy*. At `{{ site.release.tag }}` every scene in every pool clears
+the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+— the pools are reader-preference filters, not staging areas for
+unvalidated content.
 
 ## Rendering and memory rules
 
@@ -156,6 +159,10 @@ part of the forever-run player build.
 
 ## Related pages
 
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  other consumer of `walk_render`. Same draw kernel; story-loop
+  walks consume the pre-baked Sierra path table while freeplay
+  drives `(x, y)` from the D-pad per [VBlank]({{ '/docs/glossary/#vblank' | relative_url }}).
 - [Pause menu]({{ '/docs/pause-menu/' | relative_url }}) — menu structure and persistence.
 - [Holidays]({{ '/docs/holidays/' | relative_url }}) — holiday overlays used by the world toggle.
 - [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the SPU
@@ -176,5 +183,9 @@ part of the forever-run player build.
 ## Source
 
 - [`src/scene_freeplay.c`]({{ site.github_url }}/blob/main/src/scene_freeplay.c)
+- [`src/walk_render.c`]({{ site.github_url }}/blob/main/src/walk_render.c)
+  · [`src/walk_render.h`]({{ site.github_url }}/blob/main/src/walk_render.h)
+  — the shared draw kernel; story-loop walks consume it through
+  `walk_pilot.c`, freeplay calls it directly with D-pad-driven coords.
 - [`src/pause_menu.c`]({{ site.github_url }}/blob/main/src/pause_menu.c)
 - [`docs/ps1/freeplay-mode-design.md`]({{ site.github_url }}/blob/main/docs/ps1/freeplay-mode-design.md)

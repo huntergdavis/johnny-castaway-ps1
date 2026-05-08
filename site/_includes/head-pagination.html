@@ -5,15 +5,18 @@
   tags inside the body — head-level hints feed into crawl-pattern
   understanding and assistive-tech "next page" controls.
 
-  Three sections of this site emit body-level pagers, and this
-  include mirrors each one's logic:
+  Four sections of this site emit head-level pagination:
 
     - scene pages (layout: scene), via _data/scenes.yml sorted
       by tag then ads (matching the index page's sort);
     - devlog posts (layout: post), via Jekyll's built-in
       page.previous (older) / page.next (newer);
     - regtest cases under /archaeology/regtest-references/cases/,
-      via site.pages filtered by URL prefix and lex-sorted.
+      via site.pages filtered by URL prefix and lex-sorted;
+    - lab essays under /lab/<essay>/, dated long-form articles
+      with the same older/newer chronology as devlog posts but
+      stored as html_pages (so page.previous/page.next don't
+      apply); walked via date-sorted site.pages.
 
   Absolute URLs everywhere so they match the canonical link form.
 {%- endcomment -%}
@@ -69,5 +72,29 @@
   {%- endif -%}
   {%- if case_next -%}
   <link rel="next" href="{{ site_root }}{{ case_next.url }}" />
+  {%- endif -%}
+
+{%- else -%}
+  {%- assign lab_pfx = page.url | slice: 0, 5 -%}
+  {%- if lab_pfx == '/lab/' and page.url != '/lab/' and page.date -%}
+    {%- assign lab_essays = site.pages | where_exp: 'p', 'p.url contains "/lab/"' | where_exp: 'p', 'p.url != "/lab/"' | where_exp: 'p', 'p.date' | sort: 'date' -%}
+    {%- assign lab_prev = nil -%}
+    {%- assign lab_next = nil -%}
+    {%- assign lab_reached = false -%}
+    {%- for essay in lab_essays -%}
+      {%- if lab_reached and lab_next == nil -%}
+        {%- assign lab_next = essay -%}
+      {%- elsif essay.url == page.url -%}
+        {%- assign lab_reached = true -%}
+      {%- elsif lab_reached == false -%}
+        {%- assign lab_prev = essay -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if lab_prev -%}
+  <link rel="prev" href="{{ site_root }}{{ lab_prev.url }}" />
+    {%- endif -%}
+    {%- if lab_next -%}
+  <link rel="next" href="{{ site_root }}{{ lab_next.url }}" />
+    {%- endif -%}
   {%- endif -%}
 {%- endif -%}

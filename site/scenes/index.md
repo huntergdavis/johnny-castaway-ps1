@@ -72,7 +72,13 @@ host-vs-PS1 reference frames where applicable.
 
 <nav class="scenes-jump" aria-label="Jump to ADS family">
   <span class="scenes-jump-label">Jump to:</span>
-  {% for fam in families %}<a href="#ads-{{ fam | downcase }}">{{ fam }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+  {%- comment -%}
+    Per-family count appended after the ADS name so a reader
+    knows what's in each section before clicking. Counts come
+    from the same sorted_scenes assign used to build the table,
+    so they stay in sync if scenes.yml changes.
+  {%- endcomment -%}
+  {% for fam in families %}{% assign fam_count = sorted_scenes | where: "ads", fam | size %}<a href="#ads-{{ fam | downcase }}">{{ fam }} <span class="scenes-jump-count">({{ fam_count }})</span></a>{% unless forloop.last %} · {% endunless %}{% endfor %}
 </nav>
 
 <table class="scene-table">
@@ -85,11 +91,11 @@ host-vs-PS1 reference frames where applicable.
   </caption>
   <thead>
     <tr>
-      <th class="scene-tag">ADS · tag</th>
-      <th class="scene-name">Scene</th>
-      <th class="scene-status">Status</th>
-      <th>Last verified</th>
-      <th>Notes</th>
+      <th scope="col" class="scene-tag">ADS · tag</th>
+      <th scope="col" class="scene-name">Scene</th>
+      <th scope="col" class="scene-status">Status</th>
+      <th scope="col">Last verified</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -108,7 +114,7 @@ host-vs-PS1 reference frames where applicable.
         <td class="scene-tag">{{ s.ads }} {{ s.tag }}</td>
         <td class="scene-name"><a href="{{ '/scenes/' | append: s.slug | append: '/' | relative_url }}">{{ s.slug }}</a></td>
         <td class="scene-status {{ cls }}">{{ s.status }}</td>
-        <td>{% if s.last_verified != "" %}<code>{{ s.last_verified }}</code>{% else %}—{% endif %}</td>
+        <td>{% if s.last_verified != "" %}{% if s.last_verified contains '-ps1' %}<code>{{ s.last_verified }}</code>{% else %}<time datetime="{{ s.last_verified }}"><code>{{ s.last_verified }}</code></time>{% endif %}{% else %}—{% endif %}</td>
         <td>{{ s.notes }}</td>
       </tr>
     {% endfor %}
@@ -133,7 +139,7 @@ their failure modes are uncorrelated.
 
 - `validated` — clears the FISHING 1 bar across every applicable
   variant. Frame-diff and SFX-cue diff both clean.
-- `in-bring-up` — the scene's FG2 pack loops without dropping frames
+- `in-bring-up` — the scene's [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }}) loops without dropping frames
   and the tide variant looks correct, but it has not yet been signed
   off as fishing-1-bar-equivalent. The next likely promotion to
   `validated`.
@@ -148,7 +154,7 @@ their failure modes are uncorrelated.
 **Variant flags** (used on the per-scene pages, derived from the source
 table):
 
-- `night` — dusk/night palette swap (BOOTMODE `night 1`).
+- `night` — dusk/night palette swap ([BOOTMODE]({{ '/docs/glossary/#bootmode' | relative_url }}) `night 1`).
 - `low-tide` — tide-state variant; the shoreline geometry shifts
   (BOOTMODE `lowtide 1`).
 - `holiday` — holiday overlay variants (christmas, halloween, etc.;

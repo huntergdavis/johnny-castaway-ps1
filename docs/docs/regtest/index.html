@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Regression testing — Johnny Castaway PS1</title>
-  <meta name="description" content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/" />
-
-  <meta property="og:title"        content="Regression testing — Johnny Castaway PS1" />
-  <meta property="og:description"  content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/" />
+  <meta name="description" content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/" /><meta property="og:title"        content="Regression testing — Johnny Castaway PS1" />
+  <meta property="og:description"  content="The PS1 port's headless regtest harness — duckstation-regtest in Docker, frame capture, telemetry decode, scene-scoped runners, and how to add a scene to the manifest." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/regtest/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1814 words
+          ~7 min read · 1761 words
         </p>
 
       <hr class="rule" />
@@ -162,7 +161,6 @@ reference manual for the perf work is at
       <li><a href="#adding-a-scene-to-the-harness" id="markdown-toc-adding-a-scene-to-the-harness">Adding a scene to the harness</a></li>
     </ul>
   </li>
-  <li><a href="#ps1-test-instrumentation" id="markdown-toc-ps1-test-instrumentation">PS1 test instrumentation</a></li>
   <li><a href="#overlay-backed-character-checks" id="markdown-toc-overlay-backed-character-checks">Overlay-backed character checks</a></li>
   <li><a href="#frame-hash-regression-detection" id="markdown-toc-frame-hash-regression-detection">Frame-hash regression detection</a></li>
   <li><a href="#parallel-runs" id="markdown-toc-parallel-runs">Parallel runs</a></li>
@@ -181,8 +179,8 @@ reference manual for the perf work is at
 <table>
   <thead>
     <tr>
-      <th>Artifact</th>
-      <th>What</th>
+      <th scope="col">Artifact</th>
+      <th scope="col">What</th>
     </tr>
   </thead>
   <tbody>
@@ -272,7 +270,7 @@ do not know whether a human or a test script pressed Start.</p>
 
 <p>It stages a temporary boot mode, waits 30 seconds, presses Start, walks the
 major pause-menu screens, emits delayed
-<code class="language-plaintext highlighter-rouge">JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code> markers, runs DuckStation
+<a href="../glossary/#jcpadshot"><code class="language-plaintext highlighter-rouge">JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code></a> markers, runs DuckStation
 regtest headlessly, copies the first captured PNG at or after each marker
 into <code class="language-plaintext highlighter-rouge">site/assets/img/help/menu/</code>, and rewrites
 <a href="../../help/menu/">Menu help guide</a>. The staged boot files
@@ -354,9 +352,9 @@ and only reviewing the actual scene window. The wrapper materializes a
 <table>
   <thead>
     <tr>
-      <th>Option</th>
-      <th>Default</th>
-      <th>Description</th>
+      <th scope="col">Option</th>
+      <th scope="col">Default</th>
+      <th scope="col">Description</th>
     </tr>
   </thead>
   <tbody>
@@ -466,33 +464,6 @@ ship as <code class="language-plaintext highlighter-rouge">.FG2</code> packs.</l
   <li>Run <code class="language-plaintext highlighter-rouge">./scripts/regtest-scene.sh --scene "&lt;ADS&gt; &lt;tag&gt;"</code> once and confirm
 the captured frames + TTY look right.</li>
 </ol>
-
-<h2 id="ps1-test-instrumentation">PS1 test instrumentation</h2>
-
-<p>When the disc is built with <code class="language-plaintext highlighter-rouge">-DPS1_TEST_BUILD=ON</code>, structured test output
-is emitted via <code class="language-plaintext highlighter-rouge">printf</code> and captured on stdout:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[TEST:SCENE] play STAND.ADS tag=2
-[TEST:FRAME] display frame=0 delay=3
-[TEST:PERF] upload tiles=2 rows=87
-[TEST:PERF] heartbeat frame=60
-[TEST:STATE] load_bmp slot=0 sprites=42
-[TEST:ERROR] fatal: out of memory
-</code></pre></div></div>
-
-<p>Categories: <code class="language-plaintext highlighter-rouge">SCENE</code> (lifecycle), <code class="language-plaintext highlighter-rouge">FRAME</code> (per-frame), <code class="language-plaintext highlighter-rouge">PERF</code> (metrics),
-<code class="language-plaintext highlighter-rouge">ERROR</code> (crashes), <code class="language-plaintext highlighter-rouge">STATE</code> (resources), <code class="language-plaintext highlighter-rouge">ASSERT</code> (invariants). All
-compiled out in normal builds via
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/ps1_test.h"><code class="language-plaintext highlighter-rouge">ps1_test.h</code></a> macros.</p>
-
-<p>To build a test-instrumented binary:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
-    <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
-             cmake -DCMAKE_BUILD_TYPE=Release -DPS1_TEST_BUILD=ON .. &amp;&amp; </span><span class="se">\</span><span class="s2">
-             make -j4 jcreborn"</span>
-</code></pre></div></div>
 
 <h2 id="overlay-backed-character-checks">Overlay-backed character checks</h2>
 
@@ -606,7 +577,6 @@ scripts/analyze-regtest.py         Post-run analysis + HTML report
 scripts/regtest-compare.sh         Diff two test runs
 scripts/decode-ps1-bars.py         Telemetry overlay decoder
 scripts/check-character-screenshot.py  Overlay-backed character check
-ps1_test.h                         Test-instrumentation macros
 </code></pre></div></div>
 
 <h2 id="related-pages">Related pages</h2>
@@ -632,11 +602,18 @@ v0.8.1 <a href="../../lab/v081-mary4-freeze/">MARY 4 freeze retrospective</a>
 is the canonical example.</li>
   <li><a href="../api/">API mapping</a> — the SDL2 → PSn00bSDK
 surface the regtest binary is exercising.</li>
+  <li><a href="../../lab/regression-as-lifestyle/">Lab: regression as a lifestyle</a>
+— the magazine treatment of why regression testing isn’t a CI
+feature on this project but a way of working. Reciprocal of
+the link from there to here.</li>
 </ul>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+— the Docker wrapper this page documents; full option set
+in the body’s Command-line options section.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-harness.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-quickstart.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-quickstart.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a></li>
@@ -661,7 +638,7 @@ surface the regtest binary is exercising.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -669,9 +646,12 @@ surface the regtest binary is exercising.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/regtest/index.md" rel="noopener">Edit this page on GitHub</a> →

@@ -11,7 +11,7 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <nav class="scenes-jump" aria-label="Jump to glossary section">
   <span class="scenes-jump-label">Jump to:</span>
-  <a href="#pipeline">Pipeline</a> · <a href="#graphics">Graphics</a> · <a href="#audio">Audio</a> · <a href="#hardware">Hardware</a> · <a href="#build">Build</a> · <a href="#performance">Performance</a> · <a href="#voice">Voice</a>
+  <a href="#pipeline">Pipeline</a> · <a href="#graphics">Graphics</a> · <a href="#audio">Audio</a> · <a href="#hardware">Hardware</a> · <a href="#build">Build</a> · <a href="#performance">Performance</a> · <a href="#voice">Voice</a> · <a href="#see-also">See also</a>
 </nav>
 
 ## Pipeline {#pipeline}
@@ -24,7 +24,7 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dd>Sierra's <em>Tagged Text Machine</em> bytecode — the lower-level animation primitives an `ADS` scene tag dispatches into. Each TTM script is a sequence of opcodes (load resource, draw rect, blit, sleep N ticks, play sample, etc.). The host build runs the real TTM interpreter to capture every visible draw; the PS1 build replays the captured stream.</dd>
 
 <dt id="fg2-pack">FG2 pack</dt>
-<dd>The per-scene foreground binary the PS1 loads off the disc. One <code>fg2.high</code> and one <code>fg2.low</code> per scene (high-tide and low-tide variants). Carries its own palette, frame-timing table, base-frame full-render, and per-frame diff spans. The whole runtime trick of this port is that the PS1 replays packs instead of running TTM.</dd>
+<dd>The per-scene foreground binary the PS1 loads off the disc. One <code>fg2.high</code> and one <code>fg2.low</code> per scene (high-tide and low-tide variants). Carries its own palette, frame-timing table, base-frame full-render, and per-frame diff spans. The whole runtime trick of this port is that the PS1 replays packs instead of running TTM. Most scenes have moved to the denser <a href="#fgp3">FGP3 successor format</a> internally while keeping the <code>.FG2</code> filename.</dd>
 
 <dt id="host-build">Host build</dt>
 <dd>The desktop-side Linux build, forked from <a href="https://github.com/jno6809/jc_reborn">jno6809/jc_reborn</a>. Runs the original Sierra bytecode against the original Sierra data files (<code>RESOURCE.MAP</code>, <code>RESOURCE.001</code>) under a <em>capture mode</em> that records every draw and every <code>PLAY_SAMPLE</code> into <a href="#fg2-pack">FG2 packs</a>. Required to develop new scenes; not needed to play the released disc.</dd>
@@ -37,6 +37,15 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="fgpilot">fgpilot</dt>
 <dd>Internal codename for the PS1 scene-playback runtime — the <a href="#replay">replay</a> engine implemented in <code>src/foreground_pilot.c</code>. The name comes from when the foreground-only host capture was a pilot experiment that didn't yet work; the directory was named <code>fgpilot/</code> and it stuck. As a <a href="#bootmode">BOOTMODE.TXT</a> token, <code>fgpilot &lt;slug&gt;</code> forces a specific scene (e.g. <code>fgpilot mary4</code>) instead of letting the screensaver loop pick at random; <code>fgpilot freeplay</code> boots straight into Freeplay. The public-facing name is gradually moving to "PS1 scene playback" in operator docs; the internal codename in source stays.</dd>
+
+<dt id="story-loop-walks">Story-loop walks</dt>
+<dd>The runtime path that moves Johnny between scenes instead of teleporting him. Fires after the screensaver-loop <a href="#scene-picker">scene picker</a> has chosen the next scene and before that scene's <a href="#fg2-pack">FG2 pack</a> plays. Uses Sierra's pre-baked <code>walk_data.h</code> route table from the original engine; the PS1-side modules are <code>src/walk_pilot.c</code> (state) and <code>src/walk_render.c</code> (per-frame draw, also reused by Freeplay direct-control walks). Shipped in <code>v0.4.20-ps1</code>; v0.7.2 added a backdrop-key guard, v0.8.0 a clean-rect retry path, v0.8.1 wave-band/split-rect pressure accounting. Full reference at <a href="{{ '/docs/walks/' | relative_url }}">/docs/walks/</a>.</dd>
+
+<dt id="frog-clock">Frog clock</dt>
+<dd>The animated loading-transition card that appears between scene swaps and during freeplay teardown/rebuild. Sierra's original engine had a static "MEANWHILE…" frame (<code>MEANWHIL.BMP</code> + a single hand sprite); the PS1 port shipped it static at first and then in <code>v0.6.x</code> turned it into a 36-VBlank animation with hour and minute hands positioned from the original <code>MEANWHIL.TTM</code> script. Plays during walk-skipping cycles too — see the <a href="{{ '/devlog/scene-set-and-frog-clock/' | relative_url }}">scene-set-and-frog-clock devlog</a> for the sequence-reset story.</dd>
+
+<dt id="scene-picker">Scene picker</dt>
+<dd>The runtime dispatcher that decides which scene plays next. Three policies (Random / Sequential / Original Sierra), selectable from the pause menu's Scene Set sub-screen. The Original Sierra policy is a state machine that runs sequences of intermediate scenes followed by a FINAL, filters candidates by <code>FINAL</code> / <code>FIRST</code> / <code>LOWTIDE_OK</code> / <code>VARPOS_OK</code> / <code>dayNo</code>, forbids same-tag-twice-in-a-row, and retries up to 8 times when a candidate has no valid walk-in spot. Sits between the screensaver-loop scheduler and the <a href="#story-loop-walks">story-loop walk</a> driver: it picks, then walks Johnny to the next scene's start spot, then plays the <a href="#fg2-pack">FG2 pack</a>. Source at <code>src/scene_picker.c</code>; design notes at <code>docs/ps1/scene-picker-design.md</code>.</dd>
 
 <dt id="fishing1-bar">The FISHING 1 bar</dt>
 <dd>The project's internal acceptance bar for "scene validated." Pixel-perfect visuals against the host-captured reference, plus SFX cues that land on the same engine ticks, signed off by human visual + audible review across every variant flag that applies to the scene (night palette, low-tide shoreline, holiday overlay, raft-stage progression). Named because <code>FISHING 1</code> was the first scene to clear it.</dd>
@@ -55,6 +64,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="padscript">PADSCRIPT.TXT</dt>
 <dd>The build-time deterministic-input script at <code>config/ps1/PADSCRIPT.TXT</code>, embedded into the EXE by <code>scripts/build-ps1.sh</code>. The runtime only executes it when <a href="#bootmode">BOOTMODE.TXT</a> carries the <code>pad-script</code> or <code>pad-script-log</code> token, so the file is dormant for normal release builds. Four commands — <code>wait</code>, <code>tap</code>/<code>press</code>, <code>hold</code>, <code>shot</code>/<code>screenshot</code>/<code>mark</code> — drive a button vocabulary that covers the full pad (D-pad, <code>START</code> / <code>SELECT</code>, the four face buttons, <code>L1</code>–<code>R2</code>; combine masks with <code>+</code> or <code>,</code>). Durations are frames unless suffixed with <code>s</code> (60 Hz). Used by the pause-menu screenshot harness and pad-driven regtest routes; empty for everything else. Full grammar at <a href="{{ '/docs/scripted-input/' | relative_url }}">/docs/scripted-input/</a>.</dd>
+
+<dt id="jcpadshot">JCPADSHOT</dt>
+<dd>The screenshot-marker TTY line emitted by <a href="#padscript">PADSCRIPT.TXT</a>'s <code>shot</code> / <code>screenshot</code> / <code>mark</code> commands. Format: <code>JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code>. The headless harness greps these out of <code>tty.log</code> and copies the first captured PNG at or after each marker frame into the published asset path; that's how the auto-built <a href="{{ '/help/menu/' | relative_url }}">menu help guide</a> knows which captured frame matches which sub-screen. Disambiguation: <code>JCPADSHOT</code> is a marker, not a diagnostic dump — distinct from <a href="#jcspi-jcpad">JCPAD</a> (the pad-layer cooked-event diagnostic) despite the prefix collision.</dd>
 </dl>
 
 ## Graphics {#graphics}
@@ -110,6 +122,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="duckstation">DuckStation</dt>
 <dd>Connor McLaughlin et al.'s PS1 emulator. Every commit is regtested against headless DuckStation; visual + audible signoff happens against the GUI build. The project's runtime works around several DuckStation HLE quirks (SPU master-volume isn't honored, the BIOS pad path is unusable, etc.).</dd>
 
+<dt id="vblank">VBlank</dt>
+<dd>The GPU's vertical blanking interrupt — fires once per refresh (NTSC: 60 Hz, PAL: 50 Hz; this project targets NTSC). The runtime's atomic time unit: every per-scene timing measurement on <a href="{{ '/perf/' | relative_url }}">/perf/</a> is counted in vblanks (<code>target_vb</code>, <code>loop_vb</code>, <code>blocking_vb</code>, <code>prefetch_overrun_vb</code>), pack frame durations are stored as vblank counts, and the foreground-pilot cadence is a vblank-aligned scheduler. Replaces the host build's wall-clock timing — the PS1 has no reliable monotonic clock outside the GPU IRQ surface, so VBlank IS the clock. Cross-references the perf-side entries: <a href="#target-vb">target_vb / loop_vb</a>, <a href="#blocking-vb">blocking_vb</a>, <a href="#prefetch-hits">prefetch_hits</a>.</dd>
+
 <dt id="mkpsxiso">mkpsxiso</dt>
 <dd>The CD-image packager. Reads <code>config/ps1/cd_layout.xml</code> + the compiled PS-EXE + the asset bundle and produces <code>jcreborn.bin</code> / <code>jcreborn.cue</code>.</dd>
 
@@ -119,8 +134,14 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="tx-len">tx_len</dt>
 <dd>The number of TX bytes the SPI poll sends before reading button bytes back. Must be 5, not 4 — DuckStation only delivers the actual button state when the full five-byte sequence comes from the TX buffer. The two-day lab essay on this is at <a href="{{ '/lab/two-day-spi-bug/' | relative_url }}">/lab/two-day-spi-bug/</a>.</dd>
 
+<dt id="jcspi-jcpad">JCSPI / JCPAD</dt>
+<dd>The two TTY-record companions to <a href="#jcperf">JCPERF/JCPERF2</a>. <code>JCSPI</code> dumps the diagnostic state of the <a href="#spi">SPI driver</a> (poll counters, IRQ rate, last button bytes) — useful when chasing controller-poll bugs like the two-day <a href="#tx-len">tx_len</a> bug. <code>JCPAD</code> dumps the pad layer above SPI (cooked button events, hold tracking, repeat suppression). Both fire from the gated <code>printf()</code> path restored in 2026-04-25, are off by default, and are ignored by the headless <a href="#regtest">regtest</a> + <a href="{{ '/lab/build-farm/' | relative_url }}">build farm</a> consumers (which only parse <code>JCPERF</code>). Distinct from <code>JCPADSHOT</code>, the screenshot-marker line emitted by the <a href="{{ '/docs/scripted-input/' | relative_url }}">scripted-input harness</a>'s <code>shot</code> command.</dd>
+
 <dt id="tonyhax">TonyHax</dt>
 <dd>The softmod path used to boot homebrew on retail PS1 hardware. The project is smoke-tested on a SCPH-7501 via TonyHax. Treat any boot success as a small miracle.</dd>
+
+<dt id="memcard">Memcard</dt>
+<dd>The PS1 Memory Card — 128 KB of removable battery-backed flash, addressed via SIO0 like the controller. The project persists pause-menu user choices (Scene Set pool, holiday-overlay mode, ocean ambience toggle, accessibility flags, time/date, RNG seed) into a v6-schema save block. PSn00bSDK exposes the read/write surface via <code>McRead*</code> / <code>McWrite*</code>; this project's wrapper lives in <code>src/memcard.c</code> + <code>src/memcard.h</code>. DuckStation emulates a virtual memcard per save slot; on real hardware any standard 1-block .MCR file works. Saved blocks survive across releases as long as the schema version doesn't bump.</dd>
 </dl>
 
 ## Build & release {#build}
@@ -151,6 +172,15 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="target-vb">target_vb / loop_vb</dt>
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
+<dt id="target-speed">target_speed</dt>
+<dd>The user-facing perf column: <code>target_vb / loop_vb × 100%</code>. <code>100%</code> means the run hit native cadence exactly; below means it slipped. The <em>Target Speed</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a> color-codes ≥99% green, ≥80% yellow, &lt;80% red. The matrix-wide mean across timing-bearing rows is the home page status pill at <code>{{ site.release.perf_target_speed_pct }}%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying values.</dd>
+
+<dt id="scene-end">Scene-end</dt>
+<dd>The runtime event marking one full <a href="#fg2-pack">FG2 pack</a> loop completion. Triggers a <code>JCPERF</code>/<code>JCPERF2</code> TTY dump (vblank counts, CD/compose/upload/wait counters, <code>blocking_vb</code>, <code>alloc_fail</code>) and finalizes the row's perf-matrix entry; the <a href="#regtest">regtest harness</a> uses it as the natural pivot point for state-hash capture. Story scenes reach scene-end deterministically; the <a href="{{ '/scenes/suzy1/' | relative_url }}">SUZY</a> mermaid scenes do not (no terminal frame), which is why their /perf/ rows are metadata-only and excluded from the matrix's <em>target_speed</em> averages on purpose.</dd>
+
+<dt id="jcperf">JCPERF / JCPERF2</dt>
+<dd>The structured TTY printf records the runtime emits at <a href="#scene-end">scene-end</a>. <code>JCPERF</code> is the original line: vblank totals, <code>target_vb</code>/<code>loop_vb</code>, <code>over_target</code>, <code>blocking_vb</code>, <code>alloc_fail</code>. <code>JCPERF2</code> is the v0.8.0-era extension: stream-window, prefetch-hits, read-group, plus the clean-rect pressure split (wave-band, upper, lower) added in <code>v0.8.1</code>. Both are flat <code>key=value</code> sequences on a single line so the headless DuckStation runner can grep them out of <code>tty.log</code> with no parser; <a href="#regtest">regtest</a> + the <a href="{{ '/lab/build-farm/' | relative_url }}">build farm</a> consume them to fill the <a href="{{ '/perf/' | relative_url }}">/perf/</a> matrix and gate promotion on no-worse aggregates.</dd>
+
 <dt id="over-target">over_target</dt>
 <dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="{{ '/perf/' | relative_url }}">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>{{ site.release.tag }}</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
@@ -164,7 +194,7 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dd>The runtime's per-scene allocation for "the bytes needed to restore the static background under the foreground." Wide-action scenes need a wide clean-rect; the long-soak BUILDING4 regression resolved in <code>v0.8.0</code> was a clean-rect allocation failure under post-walk memory pressure, and <code>v0.8.1</code> extends the pressure estimator to include ocean wave-band expansion plus upper/lower split rects before allocation. The "clean-memory-relief drop-prefetch" experiment in the <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">retrospective</a> is the related performance unlock — letting the prefetch window drop to free clean-rect bytes when the scene needs them.</dd>
 
 <dt id="fgp3">FGP3 pack format</dt>
-<dd>Denser successor to the original FG2 pack format. Same per-frame foreground deltas, but with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs are FGP3 as of <code>v0.8.0-ps1</code>; the win is per-frame upload bytes, the biggest bottleneck after raw playback on a 2× CD.</dd>
+<dd>Denser successor to the original <a href="#fg2-pack">FG2 pack format</a>. Same per-frame foreground deltas, but with a smaller header and a residual cleanup table that replaces the runtime's "did I miss a pixel" rebuild. Most scenes' high-tide and low-tide packs are FGP3 as of <code>v0.8.0-ps1</code>; the win is per-frame upload bytes, the biggest bottleneck after raw playback on a 2× CD.</dd>
 
 <dt id="prefetch-window">Prefetch window</dt>
 <dd>The streaming budget the runtime uses to read pack data ahead of the playback frame. Originally global (one number across all scenes); the scene-local relief pass made it a per-scene setting backed by measurement. Smaller per-scene buffers, fewer evictions when the next scene is loading.</dd>
@@ -213,6 +243,10 @@ Grouped by area, not alphabetical — most readers come in via one section of th
   `prefetch_hits`, etc.) all have entries above.
 - [/docs/]({{ '/docs/' | relative_url }}) — the reference manuals
   these definitions support.
+- [/about/method/]({{ '/about/method/' | relative_url }}) — the
+  methodology essay; the host-capture / FG2 pack / PS1 replay
+  pipeline and the gotchas hit on the way, written in narrative
+  form using many of the terms above.
 - [/lab/]({{ '/lab/' | relative_url }}) — the magazine-length
   retrospectives where many of these terms got their first
   in-context introduction.

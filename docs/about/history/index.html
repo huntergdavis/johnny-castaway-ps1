@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>History — Johnny Castaway PS1</title>
-  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.1-ps1." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" />
-
-  <meta property="og:title"        content="History — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.1-ps1." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/history/" />
+  <meta name="description" content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.1-ps1." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:title"        content="History — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Project history of the Johnny Castaway PS1 fan port — from the upstream jc_reborn engine decode through the hybrid host-and-replay pivot to the post-validation performance baseline at v0.8.1-ps1." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/history/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>History</h1>
       <p class="subtitle">Pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind, the post-validation performance loop. Quote dates where they exist.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3036 words
+          ~12 min read · 3127 words
         </p>
 
       <hr class="rule" />
@@ -121,6 +120,7 @@
   <li><a href="#first-scenes-validated" id="markdown-toc-first-scenes-validated">First scenes validated</a></li>
   <li><a href="#the-63-scene-grind" id="markdown-toc-the-63-scene-grind">The 63-scene grind</a></li>
   <li><a href="#where-it-stands-at-v082-ps1" id="markdown-toc-where-it-stands-at-v082-ps1">Where it stands at v0.8.2-ps1</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -156,21 +156,21 @@ optimized variant that had brought peak runtime usage down to about
 the console’s 2 MB main RAM left ~1.65 MB of headroom for
 resource caching above the engine’s working set.</p>
 
-<p>The first phase was infrastructure. PSn00bSDK 0.24 was selected over
+<p>The first phase was infrastructure. <a href="../../docs/glossary/#psn00bsdk">PSn00bSDK</a> 0.24 was selected over
 the official Sony SDK – modern, open source, CMake-friendly. A
 precompiled macOS toolchain was attempted and abandoned (missing
 <code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code>); building from source needed Linux. The fix was
-Docker: <code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>, which works on Intel Mac,
+Docker: <code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK’s toolchain file; CD packaging via
-mkpsxiso; one shell script (<code class="language-plaintext highlighter-rouge">build-ps1.sh</code>, later
+<a href="../../docs/glossary/#mkpsxiso">mkpsxiso</a>; one shell script (<code class="language-plaintext highlighter-rouge">build-ps1.sh</code>, later
 <code class="language-plaintext highlighter-rouge">rebuild-and-let-run.sh</code>) on top.</p>
 
 <p>Core implementation came next. The plan was: port only the platform
 layer, leave the engine alone. That principle held: only three files
 needed real porting – <code class="language-plaintext highlighter-rouge">graphics_ps1.c</code>, <code class="language-plaintext highlighter-rouge">events_ps1.c</code>,
 <code class="language-plaintext highlighter-rouge">sound_ps1.c</code> – plus a CD I/O reimplementation in <code class="language-plaintext highlighter-rouge">cdrom_ps1.c</code>
-(~2,280 lines, replacing <code class="language-plaintext highlighter-rouge">fopen</code> / <code class="language-plaintext highlighter-rouge">fread</code> against CD sectors).
+(~2,570 lines, replacing <code class="language-plaintext highlighter-rouge">fopen</code> / <code class="language-plaintext highlighter-rouge">fread</code> against CD sectors).
 Roughly 4,000+ lines of upstream engine code went unchanged. By the
 end of Phase 4 the game booted on DuckStation and loaded resources
 from the CD image.</p>
@@ -257,13 +257,13 @@ the desktop engine – the same engine, on a host that has gigabytes
 of RAM and a real OS – as the authoritative renderer. Capture every
 visible foreground draw. Capture every <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code> opcode
 the TTM interpreter fired. Encode the result into a small per-scene
-binary (an <strong>FG2 pack</strong>: full-render base frames plus per-frame
+binary (an <strong><a href="../../docs/glossary/#fg2-pack">FG2 pack</a></strong>: full-render base frames plus per-frame
 indexed-pixel diff spans plus a sound-event table). Ship the packs
 on the CD. On the PS1, replay the packs and own only the narrow
 runtime surface: background, wave animation, holiday overlay,
 controller input, SPU playback.</p>
 
-<p>Internally this was called <code class="language-plaintext highlighter-rouge">fgpilot</code> (after the <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code>
+<p>Internally this was called <a href="../../docs/glossary/#fgpilot"><code class="language-plaintext highlighter-rouge">fgpilot</code></a> (after the <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code>
 runtime); externally it is “PS1 scene playback.” The decisive
 property is that the PS1 stops carrying state that the desktop
 engine built up across scenes. The disappearing-Johnny class doesn’t
@@ -376,7 +376,7 @@ scene-relative canvas so action on both sides of the island survives random
 runtime placement. The count became <strong>18 / 63</strong>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">MARY 5</code> followed as a story-flag policy fix. The scene contains its own raft
-art and begins behind a frog-clock full wipe, so the PS1 route now clamps
+art and begins behind a <a href="../../docs/glossary/#frog-clock">frog-clock</a> full wipe, so the PS1 route now clamps
 generic raft state off for <code class="language-plaintext highlighter-rouge">NORAFT</code> scenes and skips the walk prelude for
 <code class="language-plaintext highlighter-rouge">FIRST</code> full-wipe scenes. The count became <strong>19 / 63</strong>.</p>
 
@@ -467,7 +467,7 @@ unusable in PSn00bSDK 0.24 + DuckStation. One change from the
 reference: poll <code class="language-plaintext highlighter-rouge">tx_len</code> is <strong>5</strong>, not 4. DuckStation only
 delivers button bytes when the full 5-byte sequence comes
 from the TX buffer.</li>
-  <li><strong>Story-loop walking.</strong> <code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> made Johnny walk between
+  <li><strong><a href="../../docs/walks/">Story-loop walking</a>.</strong> <code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> made Johnny walk between
 scene endpoints instead of teleporting, with palm-tree occlusion,
 wave motion, holiday restamping, and a persistent walk-erase buffer
 that survived a long DuckStation soak.</li>
@@ -536,6 +536,25 @@ the CD image selectively.</li>
 Long-term hardware-soak observations are still on the wishlist.</li>
 </ul>
 
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../method/">Method</a> — the <em>what</em> and
+the <em>why</em> of the hybrid pipeline this history walked toward.</li>
+  <li><a href="../status/">Status</a> — the current
+per-component state at <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code>.</li>
+  <li><a href="../../releases/">Releases</a> — every tagged
+version with theme line and headline bullets.</li>
+  <li><a href="../../lab/the-63-scene-grind/">Lab: the 63-scene grind</a>
+— magazine treatment of the validation arc that runs from
+<em>First scenes validated</em> through the v0.7.0 cap.</li>
+  <li><a href="../../lab/from-87-to-99-5/">Lab: from 87 to 99.5</a>
+— the post-validation performance loop that defined the
+v0.8.0 baseline above.</li>
+  <li><a href="../../lab/v081-mary4-freeze/">Lab: v0.8.1 — what the soak found</a>
+— the stability follow-on that motivated the latest line.</li>
+</ul>
+
 <p>This isn’t done. That’s fine. A labor of love by Hunter Davis. The
 original creator generously allows fan ports. If you paid for this,
 you were cheated. Open source and free.</p>
@@ -558,7 +577,7 @@ you were cheated. Open source and free.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -566,9 +585,12 @@ you were cheated. Open source and free.</p>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/history/index.md" rel="noopener">Edit this page on GitHub</a> →

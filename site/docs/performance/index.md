@@ -37,7 +37,7 @@ CD's, and it gets spent in seek latency, not transfer time.
 The frame budget at 60 Hz is 16.6 ms. *Johnny Castaway* is a 1992 VGA
 screensaver — at the source level, foreground content changes roughly four
 times per second. The PS1 still has to draw a frame at 60 Hz, but it can
-hold the same content frame after frame for many VBlanks at a stretch. The
+hold the same content frame after frame for many [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}) at a stretch. The
 VBlank cadence is the rendering loop's heartbeat; the *interesting* timing
 is which VBlanks have actual work in them and which are held idle.
 
@@ -62,8 +62,8 @@ gated so it adds zero cost when off.
 
 Three signal sources:
 
-- **TTY printf** at scene-start and scene-end with structured `JCPERF` /
-  `JCPERF2` records. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
+- **TTY printf** at scene-start and [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) with structured [`JCPERF` /
+  `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) records. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
   on-demand records cross the TTY surface; per-frame text is forbidden in
   hot paths because it perturbs timing.
 - **`ps1_perf` module counters** for VBlank-level metrics: `loop_vb`,
@@ -305,9 +305,9 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **-0.1% over target /
-100.2% target speed** (`-0.0968%` exact over target / `100.1613%` exact target speed).
+That is **-0.6% over target**, or **[100.6% of target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. Across the
+120 timing-bearing battle-card rows, the average is **-0.2% over target /
+100.3% target speed** (`-0.2497%` exact over target / `100.2899%` exact target speed).
 
 ## Scene Battle Card
 
@@ -456,9 +456,9 @@ rows are historical only.
 <table class="scene-table perf-summary-table">
   <thead>
     <tr>
-      <th>Scene</th>
-      <th>High tide</th>
-      <th>Low tide</th>
+      <th scope="col">Scene</th>
+      <th scope="col">High tide</th>
+      <th scope="col">Low tide</th>
     </tr>
   </thead>
   <tbody>
@@ -878,6 +878,11 @@ A few things the perf work explicitly does not chase, with reasons:
   the wrapper around the perf iterate script.
 - [Audio pipeline]({{ '/docs/audio/' | relative_url }}) — the SPU side,
   which has its own scheduling concerns.
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  walk subsystem's persistent clean buffer is part of the same
+  pressure-accounting envelope the matrix above measures; the v0.8.0
+  clean-rect retry path and v0.8.1 wave-band/split-rect pressure
+  changes are documented there.
 - [Vision-classifier work]({{ '/docs/vision/' | relative_url }}) — the
   validation layer that runs against perf-experiment outputs.
 - [Devlog]({{ '/devlog/' | relative_url }}) — perf work shows up

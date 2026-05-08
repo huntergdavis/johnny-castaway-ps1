@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Help — Johnny Castaway PS1</title>
-  <meta name="description" content="Johnny Castaway PS1 player help, pause-menu screenshots, controls, and scripted-input test documentation." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/help/" />
-
-  <meta property="og:title"        content="Help — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Johnny Castaway PS1 player help, pause-menu screenshots, controls, and scripted-input test documentation." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/help/" />
+  <meta name="description" content="Johnny Castaway PS1 player help, pause-menu screenshots, controls, and scripted-input test documentation." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/help/" /><meta property="og:title"        content="Help — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Johnny Castaway PS1 player help, pause-menu screenshots, controls, and scripted-input test documentation." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/help/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -120,6 +119,14 @@ just watching it.</p>
   <li>
     <a href="../play/#controls">Controls</a>
     <p>The quick player-facing control map for normal screensaver mode and Freeplay.</p>
+  </li>
+  <li>
+    <a href="../docs/pause-menu/">Pause menu reference</a>
+    <p>What every pause-menu sub-screen does — Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</p>
+  </li>
+  <li>
+    <a href="../docs/captions/">Closed captions</a>
+    <p>Off by default; toggle from Pause → Accessibility → Captions. Dark text band at scene start; corpus authored fresh for this port. The 30 HIGH / 21 MED / 12 LOW confidence breakdown for every scene.</p>
   </li>
   <li>
     <a href="../docs/freeplay/">Freeplay reference</a>
@@ -158,7 +165,7 @@ pipeline needs attention before a release goes out.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -166,9 +173,12 @@ pipeline needs attention before a release goes out.</p>
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/help/index.md" rel="noopener">Edit this page on GitHub</a> →

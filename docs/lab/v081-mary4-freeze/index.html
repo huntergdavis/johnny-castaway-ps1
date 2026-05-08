@@ -4,19 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>v0.8.1 — what the soak found that the matrix didn't — Johnny Castaway PS1</title>
-  <meta name="description" content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" />
-
-  <meta property="og:title"        content="v0.8.1 — what the soak found that the matrix didn't — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" />
+  <meta name="description" content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" /><meta property="og:title"        content="v0.8.1 — what the soak found that the matrix didn't — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How a long-run randomized DuckStation soak surfaced a MARY 4 scene-load freeze in the Johnny Castaway PS1 fan port that the bounded headless-perf matrix never exercised, and the clean-rect pressure estimator that v0.8.1-ps1 shipped to fix it." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-05-06T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Lab" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,11 +36,13 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
-
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" />
 
   <script type="application/ld+json">
 {
@@ -74,8 +75,9 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "inLanguage": "en",
-  "wordCount": 673,
+  "wordCount": 733,
   "timeRequired": "PT2M",
+  "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -125,15 +127,19 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
       <p class="eyebrow">Lab · stability war story</p>
       <h1>v0.8.1 — what the soak found that the matrix didn't</h1>
       <p class="subtitle">A randomized DuckStation soak found a scene-load freeze the per-commit perf matrix never reached. The fix is small. The discipline is the lesson.</p>
+        <p class="pub-date">
+          Published <time datetime="2026-05-06">May 6, 2026</time>
+        </p>
+
         <p class="reading-time" aria-label="Estimated reading time">
-          ~2 min read · 629 words
+          ~2 min read · 663 words
         </p>
 
       <hr class="rule" />
@@ -154,7 +160,7 @@
 </details>
 
 <p><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> was the post-validation performance baseline. All 63
-scenes signed off; <code class="language-plaintext highlighter-rouge">+0.9%</code> over target / <code class="language-plaintext highlighter-rouge">99.5%</code> target speed across
+scenes signed off; <code class="language-plaintext highlighter-rouge">+0.9%</code> over target / <a href="../../docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">99.5%</code> target speed</a> across
 the 120 timing-bearing rows; the <a href="../from-87-to-99-5/">retrospective</a>
 walks through how the matrix moved there. That looked like the end
 of the speed arc.</p>
@@ -250,9 +256,32 @@ that ships the next <code class="language-plaintext highlighter-rouge">MARY 4</c
   <li><a href="../the-63-scene-grind/">/lab/the-63-scene-grind/</a> — the visual-validation grind that came before all the perf work; v0.7.0 capped it</li>
   <li><a href="../../scenes/mary4/">/scenes/mary4/</a> — the canonical scene the soak named</li>
   <li><a href="../../scenes/building4/">/scenes/building4/</a> — the v0.8.0 prequel; same memory-pressure machinery, one generation earlier</li>
+  <li><a href="../../docs/walks/">/docs/walks/</a> — reference manual for the walk subsystem whose persistent clean buffer the “prefetch/walk memory” line above belongs to; Evolution by release covers the v0.8.0 retry path and v0.8.1 pressure fix in one place</li>
 </ul>
 
   </div>
+  <footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Lab essay navigation">
+    <div class="scene-pager-prev">
+
+        <a href="../from-87-to-99-5/" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← older</span>
+          <span class="scene-pager-tag">From 87 to 99.5: the post-validation performance loop</span>
+        </a>
+
+    </div>
+    <div class="scene-pager-up">
+      <a href="../">↑ lab index</a>
+    </div>
+    <div class="scene-pager-next">
+
+    </div>
+    <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
+  </nav>
+</footer>
+
+
 </article>
 
   </main>
@@ -270,7 +299,7 @@ that ships the next <code class="language-plaintext highlighter-rouge">MARY 4</c
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -278,9 +307,12 @@ that ships the next <code class="language-plaintext highlighter-rouge">MARY 4</c
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/v081-mary4-freeze/index.md" rel="noopener">Edit this page on GitHub</a> →

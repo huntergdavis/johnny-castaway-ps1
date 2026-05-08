@@ -3,6 +3,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  {%- comment -%}
+    Tell the UA the page supports both schemes so native widgets
+    (scrollbars, form controls, and the address-bar tint between
+    page transitions) honor the user's prefers-color-scheme. The
+    site CSS already has @media(prefers-color-scheme: dark)
+    blocks; this meta is the declaration that matches the styles.
+  {%- endcomment -%}
+  <meta name="color-scheme" content="light dark" />
+  {%- comment -%}
+    iOS Safari auto-linkifies any 7-or-more-digit numeric run as a
+    `tel:` phone-call link. The site is dense with numbers that
+    aren't phone numbers — VBlank counts (1068/1074), KiB sizes
+    (208 KiB), frame indices, line counts, percentages — and a
+    surprise tap-to-call popup is the wrong affordance for any of
+    them. Standard meta-tag opt-out.
+  {%- endcomment -%}
+  <meta name="format-detection" content="telephone=no" />
 
   <title>{% if page.title and page.url != "/" %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — fan port{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description }}" />
@@ -48,14 +65,104 @@
   {%- endcomment -%}
   <link rel="canonical" href="{{ site.url }}{{ site.canonical_baseurl }}{{ page.url }}" />
 
+  {%- comment -%}
+    Robots directives. The /source/ shelf is 337 auto-generated
+    wrapper pages — one per project Markdown file outside the
+    website tree — whose body is mostly the rendered source plus
+    a "view on GitHub" link. Indexing all of them dilutes search
+    rank with thin/near-duplicate content. `noindex, follow` tells
+    crawlers to discover the wrappers (so internal links keep
+    flowing PageRank) but not to surface them in search results.
+    The /source/ landing page itself (the canonical catalog) stays
+    indexable.
+  {%- endcomment -%}
+  {%- assign robots_source_prefix = page.url | slice: 0, 8 -%}
+  {%- if robots_source_prefix == '/source/' and page.url != '/source/' -%}
+  <meta name="robots" content="noindex, follow" />
+  {%- endif -%}
+
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
-  <meta property="og:type"         content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+  {%- comment -%}
+    og:site_name. Persistent site identifier rendered alongside the
+    per-page title in LinkedIn / Slack / Discord / Facebook / X /
+    embed cards. Open Graph spec property the previous head was
+    missing — without it those consumers fall back to the URL host
+    or display nothing site-level. Stable across all 600+ pages.
+  {%- endcomment -%}
+  <meta property="og:site_name"    content="{{ site.title }}" />
+  {%- comment -%}
+    og:type — article for dated long-form content, website for
+    everything else. Devlog posts have layout=post; lab essays use
+    layout=page but are dated retrospectives that should advertise
+    as articles for social-sharing consumers (LinkedIn, Slack, X,
+    Facebook) that surface published dates and authorship on
+    article-typed cards. The /lab/ index itself has no `date:` and
+    correctly falls through to website.
+  {%- endcomment -%}
+  {%- assign og_lab_prefix = page.url | slice: 0, 5 -%}
+  {%- assign og_is_lab_essay = false -%}
+  {%- if og_lab_prefix == '/lab/' and page.url != '/lab/' and page.date -%}
+    {%- assign og_is_lab_essay = true -%}
+  {%- endif -%}
+  {%- assign og_is_article = false -%}
+  {%- if page.layout == 'post' or og_is_lab_essay -%}
+    {%- assign og_is_article = true -%}
+  {%- endif -%}
+  <meta property="og:type"         content="{% if og_is_article %}article{% else %}website{% endif %}" />
+  {%- if og_is_article %}
+  {%- comment -%}
+    OG Article extension — gives LinkedIn / Facebook / Slack the
+    structured fields they render in dated-article cards: ISO
+    published timestamp, author name, content section. site.author
+    is the project's primary attribution. article:section is "Lab"
+    or "Devlog" so consumers can group by category.
+  {%- endcomment -%}
+  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
+  <meta property="article:author"         content="{{ site.author | default: 'Hunter Davis' }}" />
+  <meta property="article:section"        content="{% if og_is_lab_essay %}Lab{% else %}Devlog{% endif %}" />
+  {%- endif %}
   <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
+  {%- comment -%}
+    og:locale. Open Graph spec property that tells social
+    consumers (LinkedIn, Facebook, embed cards) the language
+    region of the content. The site is English-only; en_US
+    matches the inLanguage="en" already set in WebSite +
+    BlogPosting + Article + CreativeWork JSON-LD records.
+    Without this, consumers either guess from page text or
+    show no locale signal.
+  {%- endcomment -%}
+  <meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="{{ og_image }}" />
   <meta property="og:image:alt"    content="{{ og_image_alt }}" />
+  {%- comment -%}
+    og:image:width / height. Two cases:
+    - Default (no page.image): use the og-image.png dimensions.
+    - Page override: emit only if the page frontmatter provides
+      both image_width and image_height. Dimensions vary per
+      asset, so this is opt-in rather than a guess.
+    Knowing dimensions up front lets Slack/Discord/Facebook size
+    the preview slot before the image fetch lands.
+  {%- endcomment -%}
+  {%- if page.image -%}
+    {%- if page.image_width and page.image_height -%}
+  <meta property="og:image:width"  content="{{ page.image_width }}" />
+  <meta property="og:image:height" content="{{ page.image_height }}" />
+    {%- endif -%}
+  {%- else -%}
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  {%- endif -%}
   <meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="{{ tw_image }}" />
+  {%- comment -%}
+    twitter:image:alt — accessibility property the Twitter/X card
+    spec recommends for summary_large_image. Twitter/X does NOT
+    fall back to og:image:alt; without this tag, screen-reader
+    users on those platforms get no description of the social
+    card image. Reuses the same alt text computed for og:image:alt.
+  {%- endcomment -%}
+  <meta name="twitter:image:alt" content="{{ og_image_alt }}" />
 
   {%- comment -%}
     Forensic build stamp. Lets anyone debugging a deployed page see
@@ -66,6 +173,16 @@
     forensic value while keeping in-day commits byte-stable.
   {%- endcomment -%}
   <meta name="generator" content="Jekyll {{ jekyll.version }}; johnny-castaway-ps1 v{{ site.release.version }}; built {{ site.time | date: '%Y-%m-%d' }}" />
+
+  {%- comment -%}
+    DNS prefetch for github.com. Every page links to GitHub: the
+    footer repo link, the per-page "Edit this page on GitHub"
+    footer link, the View-source-on-GitHub block on doc pages,
+    and /play/'s `.bin` / `.cue` download buttons. Prefetching
+    DNS for github.com shaves ~20-50 ms off the click-to-load
+    path the first time a reader follows any of those links.
+  {%- endcomment -%}
+  <link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />
@@ -101,7 +218,16 @@
         href="{{ '/devlog/feed.json' | relative_url }}" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="{{ '/lab/feed.xml' | relative_url }}" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="{{ '/lab/feed.json' | relative_url }}" />
   <link rel="author" type="text/plain" href="{{ '/humans.txt' | relative_url }}" />
+  {%- comment -%}
+    IndieWeb / Mastodon-style identity verification. `<link rel="me">`
+    points at the author's primary personal site, completing the
+    handshake when that site links back. The author URL matches the
+    one used in the JSON-LD author.url field on every page.
+  {%- endcomment -%}
+  <link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="{{ '/sitemap.xml' | relative_url }}" />
 

@@ -4,19 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>The site itself, as a small program — Johnny Castaway PS1</title>
-  <meta name="description" content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" />
-
-  <meta property="og:title"        content="The site itself, as a small program — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" />
+  <meta name="description" content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" /><meta property="og:title"        content="The site itself, as a small program — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How the Johnny Castaway PS1 site is built — the canonical_baseurl trick, the path-portable build, the no-plugin Atom feed, the pager pattern shared across catalogs, and the build-stamp coarsening that kills per-commit churn." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-05-05T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Lab" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,11 +36,13 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
-
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/" />
 
   <script type="application/ld+json">
 {
@@ -74,8 +75,9 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 2279,
-  "timeRequired": "PT9M",
+  "wordCount": 3342,
+  "timeRequired": "PT13M",
+  "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -125,15 +127,19 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
       <p class="eyebrow">Methodology · the site</p>
       <h1>The site itself, as a small program</h1>
       <p class="subtitle">A handful of decisions that keep this Jekyll deployment portable, low-noise, and free of plugins it doesn't need.</p>
+        <p class="pub-date">
+          Published <time datetime="2026-05-05">May 5, 2026</time>
+        </p>
+
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2244 words
+          ~13 min read · 3275 words
         </p>
 
       <hr class="rule" />
@@ -152,11 +158,12 @@
   <li><a href="#the-canonical_baseurl-workaround" id="markdown-toc-the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</a></li>
   <li><a href="#the-build-script-removes-two-files" id="markdown-toc-the-build-script-removes-two-files">The build script removes two files</a></li>
   <li><a href="#hand-rolled-feeds-no-plugin" id="markdown-toc-hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</a></li>
-  <li><a href="#the-pager-pattern-shared-across-three-catalogs" id="markdown-toc-the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</a></li>
+  <li><a href="#the-pager-pattern-shared-across-four-catalogs" id="markdown-toc-the-pager-pattern-shared-across-four-catalogs">The pager pattern, shared across four catalogs</a></li>
   <li><a href="#the-build-stamp-and-the-git-churn-it-caused" id="markdown-toc-the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</a></li>
   <li><a href="#structured-data-without-jekyll-seo-tag" id="markdown-toc-structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></a></li>
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
-  <li><a href="#three-small-extras" id="markdown-toc-three-small-extras">Three small extras</a></li>
+  <li><a href="#a-few-small-extras" id="markdown-toc-a-few-small-extras">A few small extras</a></li>
+  <li><a href="#the-auto-generated-pages-and-the-f-string-rule" id="markdown-toc-the-auto-generated-pages-and-the-f-string-rule">The auto-generated pages and the f-string rule</a></li>
   <li><a href="#the-shape" id="markdown-toc-the-shape">The shape</a></li>
   <li><a href="#cross-links" id="markdown-toc-cross-links">Cross-links</a></li>
 </ul>
@@ -185,7 +192,7 @@
   <li>The Atom feed and JSON Feed have to work in feed readers that fetch them and need full URLs to link back to the site.</li>
   <li>The JSON-LD structured data is consumed by search engines and AI agents, which need fully qualified URIs.</li>
   <li>The redirect HTML pages (from <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter) emit <code class="language-plaintext highlighter-rouge">&lt;meta http-equiv="refresh"&gt;</code> URLs that browsers resolve as absolute.</li>
-  <li>The Open Graph and Twitter Card meta tags (<code class="language-plaintext highlighter-rouge">og:url</code>, <code class="language-plaintext highlighter-rouge">og:image</code>, <code class="language-plaintext highlighter-rouge">twitter:image</code>) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don’t resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through <code class="language-plaintext highlighter-rouge">relative_url</code> and rendered as <code class="language-plaintext highlighter-rouge">./</code> and <code class="language-plaintext highlighter-rouge">../../assets/...</code> post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.)</li>
+  <li>The Open Graph and Twitter Card meta tags (<code class="language-plaintext highlighter-rouge">og:url</code>, <code class="language-plaintext highlighter-rouge">og:image</code>, <code class="language-plaintext highlighter-rouge">twitter:image</code>) are read by Slack, Discord, Facebook, X, and assorted link-previewer crawlers fetching the page out-of-band. They require fully qualified URLs and don’t resolve relative paths against any reasonable context. (This one was missed for a while: the meta tags shipped through <code class="language-plaintext highlighter-rouge">relative_url</code> and rendered as <code class="language-plaintext highlighter-rouge">./</code> and <code class="language-plaintext highlighter-rouge">../../assets/...</code> post-relativize, silently breaking every social preview until somebody actually inspected the rendered HTML.) The head template also emits <code class="language-plaintext highlighter-rouge">og:image:width</code> / <code class="language-plaintext highlighter-rouge">og:image:height</code> so consumers can size the preview slot before the image fetch lands — <code class="language-plaintext highlighter-rouge">1200×630</code> for the default branding card; per-asset values from <code class="language-plaintext highlighter-rouge">image_width</code> / <code class="language-plaintext highlighter-rouge">image_height</code> frontmatter on the five pages that override <code class="language-plaintext highlighter-rouge">page.image</code>. Lab essays and devlog posts additionally promote to <code class="language-plaintext highlighter-rouge">og:type=article</code> and emit the OG Article extension fields (<code class="language-plaintext highlighter-rouge">article:published_time</code> from <code class="language-plaintext highlighter-rouge">page.date</code>, <code class="language-plaintext highlighter-rouge">article:author</code>, <code class="language-plaintext highlighter-rouge">article:section</code> of <code class="language-plaintext highlighter-rouge">Lab</code> or <code class="language-plaintext highlighter-rouge">Devlog</code>) so dated-article cards surface authorship and freshness; the index pages and reference manuals stay <code class="language-plaintext highlighter-rouge">og:type=website</code>. The head also emits <code class="language-plaintext highlighter-rouge">og:site_name</code> so the site identifier renders above the per-page title in cards (without it, consumers fall back to the URL host), <code class="language-plaintext highlighter-rouge">og:locale=en_US</code> to match the <code class="language-plaintext highlighter-rouge">inLanguage="en"</code> set in JSON-LD, and <code class="language-plaintext highlighter-rouge">twitter:image:alt</code> because Twitter/X does not fall back to <code class="language-plaintext highlighter-rouge">og:image:alt</code> and screen-reader users on those platforms otherwise heard nothing for the social card image.</li>
 </ul>
 
 <p><code class="language-plaintext highlighter-rouge">site.baseurl</code> is empty during the build. So is <code class="language-plaintext highlighter-rouge">site.url + site.baseurl</code>. The fix is a separate config key that the build can’t override:</p>
@@ -226,7 +233,9 @@ apex domain:</p>
 
 <p>The site’s own feed lives one level down the tree at <code class="language-plaintext highlighter-rouge">/devlog/feed.xml</code> (Atom) and <code class="language-plaintext highlighter-rouge">/devlog/feed.json</code> (JSON Feed). Below the delete line.</p>
 
-<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (around 600 URLs at the current release), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
+<p>The third file in this list used to be <code class="language-plaintext highlighter-rouge">sitemap.xml</code> and the <code class="language-plaintext highlighter-rouge">rm</code> originally removed all three. That changed when the site grew a hand-rolled <code class="language-plaintext highlighter-rouge">/sitemap.xml</code> (around 260 URLs at the current release — down from ~600 because the /source/ wrapper shelf was excluded once it picked up <code class="language-plaintext highlighter-rouge">noindex, follow</code> so the sitemap stopped advertising URLs the head told crawlers not to index), generated from a Liquid template at <code class="language-plaintext highlighter-rouge">site/sitemap.xml</code> that uses <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code> directly so it survives the <code class="language-plaintext highlighter-rouge">--baseurl ""</code> build override. Pages opt out via <code class="language-plaintext highlighter-rouge">sitemap: false</code> front matter (the feeds, the sitemap itself, the 404, redirect stubs). <code class="language-plaintext highlighter-rouge">lastmod</code> uses <code class="language-plaintext highlighter-rouge">page.date</code> when present and falls back to the build-day stamp. The <code class="language-plaintext highlighter-rouge">&lt;link rel="sitemap"&gt;</code> autodiscovery tag in <code class="language-plaintext highlighter-rouge">_includes/head.html</code> points at it. The <code class="language-plaintext highlighter-rouge">rm</code> line stopped touching <code class="language-plaintext highlighter-rouge">sitemap.xml</code> so the hand-rolled one survives the build pass.</p>
+
+<p>The build script also runs two perl post-process passes after Jekyll and the relativizer. One is purely cosmetic — strip trailing whitespace, normalize file-trailing newlines — to keep git diffs minimal. The other is an a11y normalization: every <code class="language-plaintext highlighter-rouge">&lt;th&gt;</code> in the rendered HTML gets <code class="language-plaintext highlighter-rouge">scope="col"</code> added. Kramdown markdown tables across 460+ pages emit bare <code class="language-plaintext highlighter-rouge">&lt;th&gt;</code> cells; WCAG H63 wants column headers to declare scope so screen readers correctly associate header→cell relationships when navigating across rows. Adding the attribute in source markdown isn’t reasonable across 460 surfaces, and kramdown has no scope-emit option. A single regex pass at the end of the build is the right place: <code class="language-plaintext highlighter-rouge">s|&lt;th&gt;|&lt;th scope="col"&gt;|g</code>. Safe because the site has no row-headers in use; already-marked cells don’t match. Skip the preserved project research paths where we don’t own the markup. After the pass: ~700 <code class="language-plaintext highlighter-rouge">&lt;th scope="col"&gt;</code> cells across the rendered output, zero bare <code class="language-plaintext highlighter-rouge">&lt;th&gt;</code>. The same idiom — site-wide HTML normalization in one perl pass — is where similar future adjustments should land.</p>
 
 <h2 id="hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</h2>
 
@@ -241,13 +250,13 @@ require a refactor to reconcile.</li>
 
 <p>So the feeds are a Liquid template plus an XML/JSON skeleton, in <code class="language-plaintext highlighter-rouge">site/devlog/feed.xml</code> and <code class="language-plaintext highlighter-rouge">site/devlog/feed.json</code>. They iterate <code class="language-plaintext highlighter-rouge">site.posts</code>, escape strings via <code class="language-plaintext highlighter-rouge">xml_escape</code> (Atom) or <code class="language-plaintext highlighter-rouge">jsonify</code> (JSON Feed), use absolute URLs via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery <code class="language-plaintext highlighter-rouge">&lt;link rel="alternate"&gt;</code> tags in the head, validated with <code class="language-plaintext highlighter-rouge">xml.etree</code> and <code class="language-plaintext highlighter-rouge">json.load</code> respectively.</p>
 
-<p>The Lab section has its own Atom feed at <code class="language-plaintext highlighter-rouge">/lab/feed.xml</code>. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates <code class="language-plaintext highlighter-rouge">site.html_pages | sort: 'date' | reverse</code> and filters to URLs starting with <code class="language-plaintext highlighter-rouge">/lab/</code>. Embedding <code class="language-plaintext highlighter-rouge">essay.content</code> in <code class="language-plaintext highlighter-rouge">&lt;![CDATA[...]]&gt;</code> <em>should</em> work the way it does for posts, and it doesn’t. Jekyll guarantees <code class="language-plaintext highlighter-rouge">site.posts</code> are rendered before any other page consumes their <code class="language-plaintext highlighter-rouge">.content</code>; it doesn’t make that guarantee for <code class="language-plaintext highlighter-rouge">site.html_pages</code>. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code> block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with <code class="language-plaintext highlighter-rouge">&lt;summary&gt;</code> and no <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code>, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. The summary text comes from <code class="language-plaintext highlighter-rouge">page.description</code> (the same string the meta tag uses), with a fallback to <code class="language-plaintext highlighter-rouge">page.subtitle</code>.</p>
+<p>The Lab section has its own Atom feed at <code class="language-plaintext highlighter-rouge">/lab/feed.xml</code> and a JSON Feed counterpart at <code class="language-plaintext highlighter-rouge">/lab/feed.json</code>. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates <code class="language-plaintext highlighter-rouge">site.html_pages | sort: 'date' | reverse</code> and filters to URLs starting with <code class="language-plaintext highlighter-rouge">/lab/</code>. Embedding <code class="language-plaintext highlighter-rouge">essay.content</code> in <code class="language-plaintext highlighter-rouge">&lt;![CDATA[...]]&gt;</code> <em>should</em> work the way it does for posts, and it doesn’t. Jekyll guarantees <code class="language-plaintext highlighter-rouge">site.posts</code> are rendered before any other page consumes their <code class="language-plaintext highlighter-rouge">.content</code>; it doesn’t make that guarantee for <code class="language-plaintext highlighter-rouge">site.html_pages</code>. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code> block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with <code class="language-plaintext highlighter-rouge">&lt;summary&gt;</code> and no <code class="language-plaintext highlighter-rouge">&lt;content&gt;</code>, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. JSON Feed 1.1 has the same allowance — <code class="language-plaintext highlighter-rouge">summary</code> without <code class="language-plaintext highlighter-rouge">content_html</code>. Both Lab feeds ship the headlines-and-summary pivot together; the summary text comes from <code class="language-plaintext highlighter-rouge">page.description</code> (the same string the meta tag uses), with a fallback to <code class="language-plaintext highlighter-rouge">page.subtitle</code>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">jekyll-redirect-from</code> <em>is</em> in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin’s <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter API is already in use on <code class="language-plaintext highlighter-rouge">scenes/index.md</code>. There was a bug there, though — the plugin’s <code class="language-plaintext highlighter-rouge">absolute_url(to)</code> honors <code class="language-plaintext highlighter-rouge">site.baseurl</code>, which the build wipes, so every redirect was silently pointed at <code class="language-plaintext highlighter-rouge">hunterdavis.com/...</code> (the user-pages root) instead of <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/...</code>. The fix is a custom <code class="language-plaintext highlighter-rouge">_layouts/redirect.html</code> override that strips <code class="language-plaintext highlighter-rouge">site.url</code> from <code class="language-plaintext highlighter-rouge">page.redirect.to</code> and rebuilds the URL through <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. External redirect targets (URLs that don’t start with <code class="language-plaintext highlighter-rouge">site.url</code>) pass through unchanged.</p>
 
-<h2 id="the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</h2>
+<h2 id="the-pager-pattern-shared-across-four-catalogs">The pager pattern, shared across four catalogs</h2>
 
-<p>The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:</p>
+<p>The site has four indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references, 15 lab essays. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:</p>
 
 <ul>
   <li>Scene pages compute prev/next from <code class="language-plaintext highlighter-rouge">_data/scenes.yml</code>, sorted by <code class="language-plaintext highlighter-rouge">sort: 'tag' | sort: 'ads'</code> (the same order the index renders).</li>
@@ -257,12 +266,21 @@ prefix, lex-sorted (matching the index table). The case shelf detail pages
 live under <code class="language-plaintext highlighter-rouge">_layouts/page.html</code>, which conditionally includes the case pager
 only when the URL is under the cases path. Whitespace-control on the Liquid
 <code class="language-plaintext highlighter-rouge">if</code> block keeps non-case pages byte-identical.</li>
+  <li>Lab essays compute prev/next the way devlog posts would if Jekyll’s
+built-in <code class="language-plaintext highlighter-rouge">page.previous</code> / <code class="language-plaintext highlighter-rouge">page.next</code> worked for them — but lab
+essays live under <code class="language-plaintext highlighter-rouge">site.html_pages</code> (layout: page) rather than
+<code class="language-plaintext highlighter-rouge">site.posts</code>, so the built-in doesn’t apply. Same flag-tracking
+walker the regtest case pager uses, sorted by <code class="language-plaintext highlighter-rouge">page.date</code> ascending,
+with the older/newer label convention from the devlog pager. The
+head-pagination include uses the same walker on the same sorted
+list, so head-level <code class="language-plaintext highlighter-rouge">&lt;link rel="prev"&gt;</code> and the body-level
+<code class="language-plaintext highlighter-rouge">&lt;a rel="prev"&gt;</code> always land on identical pairs.</li>
 </ul>
 
 <table>
   <tbody>
     <tr>
-      <td>All three pagers reuse one CSS class — <code class="language-plaintext highlighter-rouge">.scene-pager</code> — because the layout is identical (3-col grid, collapses to prev</td>
+      <td>All four pagers reuse one CSS class — <code class="language-plaintext highlighter-rouge">.scene-pager</code> — because the layout is identical (3-col grid, collapses to prev</td>
       <td>next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to <code class="language-plaintext highlighter-rouge">.page-pager</code> is on the backlog.</td>
     </tr>
   </tbody>
@@ -285,20 +303,26 @@ only when the URL is under the cases path. Whitespace-control on the Liquid
 
 <p><code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code> is in the Gemfile but the <code class="language-plaintext highlighter-rouge">seo</code> Liquid tag is never invoked,
 so the plugin emits nothing. The manual head template handles <code class="language-plaintext highlighter-rouge">&lt;title&gt;</code>, OG,
-Twitter card, canonical, theme-color, favicons, fonts, the build stamp, the
-feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
+Twitter card, canonical, the <code class="language-plaintext highlighter-rouge">theme-color</code> light/dark pair plus the matching
+<code class="language-plaintext highlighter-rouge">color-scheme: light dark</code> meta (so native UA widgets — scrollbars, form
+controls, address-bar tint between navigations — honor the user’s
+<code class="language-plaintext highlighter-rouge">prefers-color-scheme</code>), favicons, fonts, the build stamp, the feed
+auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p>
 
-<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Five record types ship today:</p>
+<p>The JSON-LD include uses the multi-block strategy: each schema type gets its own <code class="language-plaintext highlighter-rouge">&lt;script type="application/ld+json"&gt;</code> tag. Crawlers merge multiple blocks per page, so there’s no comma juggling between conditionally-emitted records. Six record types ship today:</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">WebSite</code> on every page.</li>
   <li><code class="language-plaintext highlighter-rouge">SoftwareApplication</code> only on the home page (the project is a piece of software).</li>
-  <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels.</li>
+  <li><code class="language-plaintext highlighter-rouge">BreadcrumbList</code> on every non-home page; positions are derived from splitting <code class="language-plaintext highlighter-rouge">page.url</code> on <code class="language-plaintext highlighter-rouge">/</code>, with cumulative trail and titlecased segment labels. The leaf segment uses <code class="language-plaintext highlighter-rouge">page.title</code> rather than slug-capitalization so Google’s rich-result trail reads <code class="language-plaintext highlighter-rouge">Home &gt; Lab &gt; The two-day SPI bug</code> instead of <code class="language-plaintext highlighter-rouge">Home &gt; Lab &gt; Two day spi bug</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">BlogPosting</code> only on devlog posts.</li>
   <li><code class="language-plaintext highlighter-rouge">Article</code> only on lab essays — URL prefix <code class="language-plaintext highlighter-rouge">/lab/</code>, excluding the <code class="language-plaintext highlighter-rouge">/lab/</code> index, requiring <code class="language-plaintext highlighter-rouge">page.date</code>. Lab essays are dated long-form content, exactly the surface Google’s Article structured-data guidance targets, but they live in <code class="language-plaintext highlighter-rouge">site.html_pages</code> rather than <code class="language-plaintext highlighter-rouge">site.posts</code> so the <code class="language-plaintext highlighter-rouge">BlogPosting</code> predicate doesn’t catch them.</li>
+  <li><code class="language-plaintext highlighter-rouge">FAQPage</code> only on <code class="language-plaintext highlighter-rouge">/faq/</code>, mirroring the page’s 14 H3 questions with summary answers. Google retired generic-site FAQ rich results in 2023, but Bing, AI agents, and knowledge graphs still consume FAQPage; zero user-visible bytes.</li>
 </ul>
 
-<p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page.</p>
+<p><code class="language-plaintext highlighter-rouge">Article</code> and <code class="language-plaintext highlighter-rouge">BlogPosting</code> both also carry <code class="language-plaintext highlighter-rouge">wordCount</code> and <code class="language-plaintext highlighter-rouge">timeRequired</code> (ISO-8601 <code class="language-plaintext highlighter-rouge">PT[N]M</code>) — the same counts the <code class="language-plaintext highlighter-rouge">~N min read · M words</code> page-header hint exposes visibly. Computed once at the top of the include and reused across both records.</p>
+
+<p>All user strings flow through <code class="language-plaintext highlighter-rouge">jsonify</code> so titles and descriptions with quotes, backslashes, or em-dashes can’t break the JSON. Validated with strict <code class="language-plaintext highlighter-rouge">json.loads</code> across home / a devlog post / about / a scene / a regtest case page / <code class="language-plaintext highlighter-rouge">/faq/</code>.</p>
 
 <h2 id="the-404-pages-problem">The 404 page’s problem</h2>
 
@@ -306,13 +330,64 @@ feed auto-discovery, the humans.txt link, and a separate include for JSON-LD.</p
 
 <p>The 404 page is therefore self-contained: <code class="language-plaintext highlighter-rouge">layout: null</code> (skips the standard chrome), inline minimal CSS (no external stylesheet to also possibly fail), and absolute URLs everywhere via <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. It uses the original Sierra “The End” scroll graphic as the hero — Johnny waving from his island at sunset is exactly the right vibe for <em>the page got marooned</em>.</p>
 
-<h2 id="three-small-extras">Three small extras</h2>
+<h2 id="a-few-small-extras">A few small extras</h2>
 
 <ul>
-  <li>A <code class="language-plaintext highlighter-rouge">humans.txt</code> at the publish root mirrors the in-game credits voice (<code class="language-plaintext highlighter-rouge">drawCredits</code>) and lists prior ports, toolchain, this site’s standards, and the dynamic release/build fields. Auto-discoverable via <code class="language-plaintext highlighter-rouge">&lt;link rel="author" type="text/plain"&gt;</code>.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">humans.txt</code> at the publish root mirrors the in-game credits voice (<a href="../../docs/glossary/#drawcredits"><code class="language-plaintext highlighter-rouge">drawCredits</code></a>) and lists prior ports, toolchain, this site’s standards, and the dynamic release/build fields. Auto-discoverable via <code class="language-plaintext highlighter-rouge">&lt;link rel="author" type="text/plain"&gt;</code>.</li>
   <li>A <code class="language-plaintext highlighter-rouge">@media print</code> block in <code class="language-plaintext highlighter-rouge">main.scss</code> flattens the palette to black-on-white, strips chrome, surfaces link URLs via <code class="language-plaintext highlighter-rouge">a::after</code>, sets <code class="language-plaintext highlighter-rouge">@page</code> margins, and hints page-break-avoidance on headings, code blocks, figures. Long worklogs save as clean PDFs without any setup.</li>
   <li>A custom <code class="language-plaintext highlighter-rouge">404.html</code> script reads <code class="language-plaintext highlighter-rouge">window.location.pathname</code> and renders it as <code class="language-plaintext highlighter-rouge">Tried: /typo/foo/</code> so a reader can see what was attempted. Degrades cleanly if JS is off.</li>
+  <li>The skip link at the top of every page (<code class="language-plaintext highlighter-rouge">&lt;a class="skip-link" href="#main"&gt;</code>) carries <code class="language-plaintext highlighter-rouge">tabindex="-1"</code> on its target <code class="language-plaintext highlighter-rouge">&lt;main&gt;</code> element. Without it, browsers scroll the viewport on activation but leave keyboard focus on the link itself, so the very next Tab dumps users back into the header. The matching CSS rule <code class="language-plaintext highlighter-rouge">main:focus { outline: none }</code> suppresses the otherwise-giant focus ring around the entire content area — the viewport scroll is the focus indicator, not an outline.</li>
+  <li>Scene pages surface their <code class="language-plaintext highlighter-rouge">last_verified</code> field from <code class="language-plaintext highlighter-rouge">_data/scenes.yml</code> as a <code class="language-plaintext highlighter-rouge">&lt;time class="scene-verified" datetime="YYYY-MM-DD"&gt;</code> element in the eyebrow row, parallel to the JSON-LD that crawlers consume but visible-and-machine-readable for humans and assistive tech. The one canary scene whose <code class="language-plaintext highlighter-rouge">last_verified</code> is a release tag (<code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code>, predating the per-scene daily-validation phase) downgrades to a styled <code class="language-plaintext highlighter-rouge">&lt;span&gt;</code> since HTML5’s <code class="language-plaintext highlighter-rouge">datetime</code> attribute requires an ISO-shaped value.</li>
+  <li>Lab essays render a visible <code class="language-plaintext highlighter-rouge">Published &lt;time datetime="…"&gt;…&lt;/time&gt;</code> line in the page header above the existing reading-time hint. The frontmatter already carried <code class="language-plaintext highlighter-rouge">date:</code> for JSON-LD; the visible echo means a reader landing cold on a war-story retrospective can see at a glance whether they’re reading a 3-day-old or a 3-month-old essay without scrolling to the meta layer.</li>
 </ul>
+
+<h2 id="the-auto-generated-pages-and-the-f-string-rule">The auto-generated pages and the f-string rule</h2>
+
+<p>Three big surfaces under <code class="language-plaintext highlighter-rouge">site/</code> aren’t hand-written:
+<code class="language-plaintext highlighter-rouge">site/source/index.md</code> (a wrapper page for every Markdown file outside
+the website tree), <code class="language-plaintext highlighter-rouge">site/resources/index.md</code> (the asset catalog with
+seven section tables), and
+<code class="language-plaintext highlighter-rouge">site/archaeology/regtest-references/cases/index.md</code> plus its 63
+per-case detail pages. They’re emitted by
+<code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code> on every build, before Jekyll runs.</p>
+
+<p>The catch is a foot-gun for any future improvement: editing those
+<code class="language-plaintext highlighter-rouge">.md</code> files in place looks fine in <code class="language-plaintext highlighter-rouge">git diff</code>, builds locally, then
+gets silently wiped on the next build because the generator
+regenerates them. I learned this the obvious way — added a TOC block
+to <code class="language-plaintext highlighter-rouge">site/resources/index.md</code>, ran the build, watched the TOC vanish.</p>
+
+<p>The rule the project follows now: any change to those three surfaces
+goes into the generator’s f-string template, not the rendered
+markdown. The cost of remembering this once is one merge; the cost of
+shipping a “fix” that quietly disappears on the next build is one
+honestly-confused contributor and a half-hour of debugging.</p>
+
+<p>The pattern looks like this — note the doubled `` because
+the f-string consumes one pair of braces, leaving Liquid the rest:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">index</span> <span class="o">=</span> <span class="sa">f</span><span class="sh">"""</span><span class="s">---
+layout: page
+title: Resource catalog
+</span><span class="gp">...</span>
+<span class="o">---</span>
+
+<span class="s">&lt;details class=</span><span class="sh">"</span><span class="s">page-toc</span><span class="sh">"</span><span class="s"> markdown=</span><span class="sh">"</span><span class="s">1</span><span class="sh">"</span><span class="s">&gt;
+&lt;summary&gt;On this page&lt;/summary&gt;
+
+* TOC
+
+&lt;/details&gt;
+
+</span><span class="si">{</span><span class="n">resource_sections</span><span class="si">}</span><span class="s">
+</span><span class="sh">"""</span>
+</code></pre></div></div>
+
+<p>Same trick for the case-shelf family jump nav (<code class="language-plaintext highlighter-rouge">&lt;nav class="scenes-jump"&gt;</code>
+with per-family counts and <code class="language-plaintext highlighter-rouge">id="ads-&lt;family&gt;"</code> on the first row of each
+group), and for the <code class="language-plaintext highlighter-rouge">&lt;caption class="visually-hidden"&gt;</code> per-table a11y
+captions on <code class="language-plaintext highlighter-rouge">/resources/</code>. All four shipped through the generator
+template, not the markdown.</p>
 
 <h2 id="the-shape">The shape</h2>
 
@@ -326,8 +401,9 @@ hand-rolled sitemap this article documents.</li>
   <li><a href="../../devlog/feed.xml">/devlog/feed.xml</a> and
 <a href="../../devlog/feed.json">/devlog/feed.json</a> —
 the no-plugin Atom + JSON Feed pair.</li>
-  <li><a href="../feed.xml">/lab/feed.xml</a> — the
-Lab section’s headlines-and-summary Atom feed; the
+  <li><a href="../feed.xml">/lab/feed.xml</a> and
+<a href="../feed.json">/lab/feed.json</a> — the
+Lab section’s headlines-and-summary Atom + JSON Feed pair; the
 site.html_pages variant of the same pattern.</li>
   <li><a href="../../humans.txt">/humans.txt</a> — the credits-
 voice humans.txt file the article describes.</li>
@@ -342,6 +418,33 @@ one” pattern, applied to keeping LLM agents productive.</li>
 </ul>
 
   </div>
+  <footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Lab essay navigation">
+    <div class="scene-pager-prev">
+
+        <a href="../build-farm/" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← older</span>
+          <span class="scene-pager-tag">The 24/7 Build Farm</span>
+        </a>
+
+    </div>
+    <div class="scene-pager-up">
+      <a href="../">↑ lab index</a>
+    </div>
+    <div class="scene-pager-next">
+
+        <a href="../from-87-to-99-5/" rel="next">
+          <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+          <span class="scene-pager-tag">From 87 to 99.5: the post-validation performance loop</span>
+        </a>
+
+    </div>
+    <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
+  </nav>
+</footer>
+
+
 </article>
 
   </main>
@@ -359,7 +462,7 @@ one” pattern, applied to keeping LLM agents productive.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -367,9 +470,12 @@ one” pattern, applied to keeping LLM agents productive.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/the-site-itself/index.md" rel="noopener">Edit this page on GitHub</a> →

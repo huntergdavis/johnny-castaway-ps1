@@ -5,6 +5,13 @@ subtitle: GPL-3.0 for the code; Sierra retains the character.
 description: Legal terms for the Johnny Castaway PS1 fan port — GPL-3.0 license on the project's own code, MPL-2.0 attribution for spicyjpeg's pad-poll example, the Sierra On-Line character/asset disclaimer, trademark note, takedown procedure, and the static-no-tracking privacy stance.
 ---
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## License (code)
 
 The code in this project is licensed under the
@@ -41,9 +48,8 @@ of their respective owners. Their use here is descriptive only.
 ## How to file a takedown
 
 If you represent the original creator or a successor in interest
-and want this work taken down, file a GitHub issue or email the
-contact in [SECURITY.md]({{ site.github_url }}/blob/main/SECURITY.md).
-We'll comply.
+and want this work taken down, [file a GitHub issue]({{ site.github_url }}/issues/new)
+on the project repo. We'll comply.
 
 ## Privacy
 

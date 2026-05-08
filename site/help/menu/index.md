@@ -14,6 +14,37 @@ The point is not just documentation. It is a test. If Start stops opening the me
 
 The default capture script starts in normal screensaver playback, waits 30 seconds, opens the pause menu, then walks each major screen with D-pad, Cross, and Circle. It intentionally captures catalog entry pages once, not every gag or visitor row.
 
+<nav class="scenes-jump" aria-label="Jump to a specific menu screen">
+<span class="scenes-jump-label">Jump to:</span>
+<a href="#pause-main">Pause Menu</a>
+·
+<a href="#scene-set">Scene Set</a>
+·
+<a href="#freeplay-options">Freeplay Options</a>
+·
+<a href="#freeplay-gags">Freeplay Gags</a>
+·
+<a href="#freeplay-visitors">Freeplay Visitors</a>
+·
+<a href="#controls">Controls</a>
+·
+<a href="#world-options">World Options</a>
+·
+<a href="#holidays">Holidays</a>
+·
+<a href="#island-position">Set Island Position</a>
+·
+<a href="#accessibility">Accessibility</a>
+·
+<a href="#sound-test">Sound Test</a>
+·
+<a href="#system">System</a>
+·
+<a href="#set-time-date">Set Time / Date</a>
+·
+<a href="#set-rng-seed">Set RNG Seed</a>
+</nav>
+
 <div class="menu-guide">
 <section class="menu-shot" id="pause-main">
 <h2>Pause Menu</h2>
@@ -33,7 +64,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <p>Scene Set is the only main-menu row that takes Left/Right input directly. Left and Right preview a pending value (the row shows it bracketed: <code>&lt;Fishing Only&gt;</code>); an asterisk marks the preview as un-applied. <strong>Cross</strong> or <strong>Start</strong> commits the change, fires a frog-clock loading transition, and the next scene comes from the new pool.</p>
 <p>Navigating away with Up/Down without committing discards the preview — you cannot accidentally change the pool just by scrolling past this row.</p>
 <table class="scene-set-table">
-<thead><tr><th>Set</th><th>Pool</th><th>Visual signoff</th></tr></thead>
+<thead><tr><th scope="col">Set</th><th scope="col">Pool</th><th scope="col">Visual signoff</th></tr></thead>
 <tbody>
 <tr><td><code>All Scenes</code></td><td>Catch-all — every routed scene the original game had</td><td>All ✅</td></tr>
 <tr><td><code>Fishing Only</code></td><td><code>fishing1</code>..<code>fishing8</code></td><td>All ✅</td></tr>
@@ -44,7 +75,7 @@ The default capture script starts in normal screensaver playback, waits 30 secon
 <tr><td><code>Misc &amp; Suzy</code></td><td><code>suzy1</code>, <code>suzy2</code>, <code>miscgag1</code>, <code>miscgag2</code></td><td>All ✅; combined because each family alone is just two scenes</td></tr>
 </tbody>
 </table>
-<p>At <code>{{ site.release.tag }}</code> every pool above is fully validated under the FISHING 1 bar — pixel-perfect visuals plus synced SFX, signed off across every applicable variant. The sets exist as filtering preferences (someone who wants only the fishing scenes for a given afternoon) rather than as workarounds for unvalidated content. The live status of every routed scene is in the <a href="{{ '/scenes/' | relative_url }}">scene ledger</a>.</p>
+<p>At <code>{{ site.release.tag }}</code> every pool above is fully validated under the <a href="{{ '/docs/glossary/#fishing1-bar' | relative_url }}">FISHING 1 bar</a> — pixel-perfect visuals plus synced SFX, signed off across every applicable variant. The sets exist as filtering preferences (someone who wants only the fishing scenes for a given afternoon) rather than as workarounds for unvalidated content. The live status of every routed scene is in the <a href="{{ '/scenes/' | relative_url }}">scene ledger</a>.</p>
 </section>
 
 <section class="menu-shot" id="freeplay-options">

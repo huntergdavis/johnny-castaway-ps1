@@ -20,6 +20,13 @@ binary assets, the [regtest case shelf]({{ '/archaeology/regtest-references/case
 for host references, and the [Curious Hacker's Guide]({{ '/hack/' | relative_url }})
 for a guided learning path through the machinery.
 
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
+
 ## Active PS1 reference
 
 <ul class="doc-grid">

@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>FAQ — Johnny Castaway PS1</title>
-  <meta name="description" content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
-
-  <meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/faq/" />
+  <meta name="description" content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/faq/" /><meta property="og:title"        content="FAQ — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Frequently asked questions about the Johnny Castaway PS1 fan port — what it is, why PS1, legality, how to run it, emulator support, real hardware, target speed, where to file bugs, and what's added vs preserved from the original 1992 Sierra screensaver." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/faq/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -261,6 +260,7 @@ the project, running it, and the original game.</p>
       <li><a href="#whats-faithful-to-the-original-and-whats-added" id="markdown-toc-whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</a></li>
     </ul>
   </li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
 </ul>
 
 </details>
@@ -303,7 +303,7 @@ source files. See <a href="../legal/">/legal/</a>.</p>
 
 <p>Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That’s the project’s “FISHING 1 bar” —
+native resolution. That’s the project’s “<a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>” —
 pixel-perfect visuals plus synced SFX, signed off by human
 review across every applicable variant flag (night, low-tide,
 holiday, raft-stage). It is a stricter bar than “it ran once
@@ -348,7 +348,7 @@ runs in headless DuckStation, so that one is the reference.</p>
 <h3 id="does-it-run-at-native-rate">Does it run at native rate?</h3>
 
 <p>At v0.8.2-ps1 the headless-perf battle card averages
-<strong>100.3% target speed</strong> across
+<strong><a href="../docs/glossary/#target-speed">100.3% target speed</a></strong> across
 the 120 timing-bearing scene/tide rows — close enough that most
 scenes hit their original frame budget on PS1 hardware. The
 remaining gap is concentrated in a small set of high-leverage
@@ -365,7 +365,7 @@ baseline of 87.1%.</p>
 <p>If you must, the issue tracker is at
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/issues">huntergdavis/johnny-castaway-ps1/issues</a>. Bugs are
 tolerated, not invited. There is no contributor onboarding
-process and no “good first issue” label — see the <a href="../about/">non-goals on
+process and no “good first issue” label — see the <a href="../about/#what-this-isnt">non-goals on
 About</a>.</p>
 
 <hr />
@@ -376,6 +376,8 @@ About</a>.</p>
 
 <p>The closed-caption text was authored fresh for this port from
 scene content. It is not lifted from any prior corpus. The
+full reference manual is at
+<a href="../docs/captions/">/docs/captions/</a>; the
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml">caption audit</a>
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of v0.8.2-ps1).</p>
@@ -387,8 +389,10 @@ shows the confidence level of every ADS-tag → caption mapping
 extends that to 36 US holidays via a code-generated table and a
 pure-algorithm date core (Meeus for Easter, Nth-weekday math for
 the others). No external date library, no expiring tables, works
-for 100+ years. See <code class="language-plaintext highlighter-rouge">holidays.yml</code> and <code class="language-plaintext highlighter-rouge">src/holidays.c</code> in the
-repository.</p>
+for 100+ years. The full reference manual is at
+<a href="../docs/holidays/">/docs/holidays/</a>; see
+<code class="language-plaintext highlighter-rouge">holidays.yml</code> and <code class="language-plaintext highlighter-rouge">src/holidays.c</code> in the repository for the
+source data and the codegen output.</p>
 
 <h3 id="whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</h3>
 
@@ -405,9 +409,9 @@ System, Set Time / Date, and Set RNG Seed. Closed captions
 (off by default; see <a href="../docs/captions/">/docs/captions/</a>).
 <a href="../docs/holidays/">Thirty-two additional holidays</a>
 via a code-generated table and pure-algorithm date core.
-<a href="../releases/#v0420-ps1--story-loop-walking">Story-loop walking</a>
+<a href="../docs/walks/">Story-loop walking</a>
 between scenes (v0.4.20-ps1) — Johnny no longer teleports.
-<a href="../releases/#v050-ps1--freeplay-and-debug-mode">Freeplay / debug mode</a>
+<a href="../docs/freeplay/">Freeplay / debug mode</a>
 (v0.5.0-ps1) where the player drives Johnny directly, with gag
 and visitor catalogs. Optional
 <a href="../releases/#v060-ps1--ocean-ambience">ocean-ambience loop</a>
@@ -416,6 +420,33 @@ filtering the random rotation by family. Frog-clock loading
 transitions between scene swaps. A full
 <a href="../credits/">Credits page</a> that names the
 prior ports and toolchain authors this build stands on.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../play/">Play</a> — the canonical
+download + quickstart page for the “How do I run it?” answer.</li>
+  <li><a href="../scenes/">Scenes</a> — live ledger
+with per-scene case studies for the “What does
+63 / 63 validated mean?” answer.</li>
+  <li><a href="../perf/">Performance battle card</a> —
+126-variant matrix with sortable, color-coded target speed
+for the “Does it run at native rate?” answer.</li>
+  <li><a href="../legal/">Legal</a> — the canonical
+licensing surface (GPL-3.0 + Sierra disclaimer + takedown
+procedure) for the “Is this legal?” answer.</li>
+  <li><a href="../credits/">Credits</a> — the full
+attribution behind the “What’s faithful, what’s added?”
+answer above: prior ports, toolchain authors, AI sub-agents,
+fonts, ocean ambience source.</li>
+  <li><a href="../about/">About</a> — the project
+overview if you want the long-form version of “What is
+this?”.</li>
+  <li><a href="../docs/glossary/">Glossary</a> —
+vocabulary anchor for terms (<code class="language-plaintext highlighter-rouge">FG2 pack</code>, <code class="language-plaintext highlighter-rouge">FISHING 1 bar</code>,
+<code class="language-plaintext highlighter-rouge">target speed</code>, <code class="language-plaintext highlighter-rouge">host build</code>) used throughout the answers
+above.</li>
+</ul>
 
   </div>
 </article>
@@ -435,7 +466,7 @@ prior ports and toolchain authors this build stands on.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -443,9 +474,12 @@ prior ports and toolchain authors this build stands on.</p>
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/faq/index.md" rel="noopener">Edit this page on GitHub</a> →

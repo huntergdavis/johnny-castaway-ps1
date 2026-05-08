@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The 24/7 Build Farm
-eyebrow: Lab . Infrastructure
+eyebrow: Lab · Infrastructure
 subtitle: Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.
 description: "A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure."
 date: 2026-04-29
@@ -14,7 +14,7 @@ the next baseline.
 
 The useful part is discipline. A candidate optimization is not "faster"
 because it feels faster once. It is faster when the headless harness
-shows fewer VBlanks, no new blocking reads, no worse scene-end metrics,
+shows fewer [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}), no new blocking reads, no worse [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) metrics,
 and no visual regression when the human pass catches up. Rejected tests
 still get logged because a failed idea can become valid after a later
 pack-format or scheduler change.
@@ -23,7 +23,7 @@ pack-format or scheduler change.
 
 - Build the PS1 executable and CD image in the Docker toolchain.
 - Run headless DuckStation against the selected scene or scene matrix.
-- Parse `JCPERF` and `JCPERF2` logs into VBlank, CD, compose, upload,
+- Parse [`JCPERF` and `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) logs into VBlank, CD, compose, upload,
   wait, and blocking counters.
 - Promote only changes that beat the current baseline without violating
   deterministic playback.
@@ -36,6 +36,10 @@ pack-format or scheduler change.
 - [Scene ledger]({{ '/scenes/' | relative_url }}) — visual signoff (the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})).
 - [Performance battle card]({{ '/perf/' | relative_url }}) — second ledger; per-scene timing against the target frame budget, sortable + color-coded.
 - [Performance plan]({{ '/docs/performance/' | relative_url }})
+- [Regression testing]({{ '/docs/regtest/' | relative_url }}) —
+  the headless DuckStation runner the farm orchestrates around
+  every commit; the harness produces frame PNGs, state hashes,
+  and `JCPERF` logs the loop above parses.
 - [Performance experiment log]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
 - [Scene performance matrix]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
 - [From 87 to 99.5: the post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}) — retrospective on the optimization arc this farm fed.

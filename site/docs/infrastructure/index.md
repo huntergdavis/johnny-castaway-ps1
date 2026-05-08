@@ -48,7 +48,7 @@ PS1 BIOS file for testing.
 
 This is not a high-throughput build. A clean Docker rebuild of the PS1
 executable plus CD image is around 20 seconds on a recent laptop. The
-overhead of running `docker run` per step (CMake configure, make, mkpsxiso)
+overhead of running `docker run` per step (CMake configure, make, [mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}))
 is real but irrelevant for a one-person workflow. What matters is that
 every build is the same build.
 
@@ -109,7 +109,7 @@ docker build -f config/ps1/Dockerfile.ps1 \
 ./scripts/build-ps1.sh
 
 # 4. Boot it
-#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).
+#    Open DuckStation, File → Start File…, point at jcreborn.cue (NOT .bin).
 ```
 
 `scripts/build-ps1.sh` is the wrapper. It runs three Docker invocations in
@@ -210,7 +210,7 @@ faster than a full executable rebuild and is the day-to-day inner loop.
 
 ## The wrapper scripts
 
-The `scripts/` directory contains roughly 130 shell and Python files at
+The `scripts/` directory contains roughly 155 shell and Python files at
 the time of writing. The ones that matter for daily build work:
 
 | Script | Purpose |

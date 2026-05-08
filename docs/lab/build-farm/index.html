@@ -4,19 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>The 24/7 Build Farm — Johnny Castaway PS1</title>
-  <meta name="description" content="A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" />
-
-  <meta property="og:title"        content="The 24/7 Build Farm — Johnny Castaway PS1" />
-  <meta property="og:description"  content="A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" />
+  <meta name="description" content="A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" /><meta property="og:title"        content="The 24/7 Build Farm — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="article" /><meta property="article:published_time" content="2026-04-29T00:00:00-04:00" />
+  <meta property="article:author"         content="Hunter Davis" />
+  <meta property="article:section"        content="Lab" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,11 +36,13 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
-
+  <link rel="prev" href="https://hunterdavis.com/johnny-castaway-ps1/lab/regression-as-lifestyle/" /><link rel="next" href="https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/" />
 
   <script type="application/ld+json">
 {
@@ -74,8 +75,9 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/build-farm/",
   "inLanguage": "en",
-  "wordCount": 282,
+  "wordCount": 340,
   "timeRequired": "PT1M",
+  "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
     "@type": "Person",
@@ -125,15 +127,19 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Lab . Infrastructure</p>
+      <p class="eyebrow">Lab · Infrastructure</p>
       <h1>The 24/7 Build Farm</h1>
       <p class="subtitle">Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.</p>
+        <p class="pub-date">
+          Published <time datetime="2026-04-29">April 29, 2026</time>
+        </p>
+
         <p class="reading-time" aria-label="Estimated reading time">
-          ~1 min read · 252 words
+          ~1 min read · 279 words
         </p>
 
       <hr class="rule" />
@@ -147,7 +153,7 @@ the next baseline.</p>
 
 <p>The useful part is discipline. A candidate optimization is not “faster”
 because it feels faster once. It is faster when the headless harness
-shows fewer VBlanks, no new blocking reads, no worse scene-end metrics,
+shows fewer <a href="../../docs/glossary/#vblank">VBlanks</a>, no new blocking reads, no worse <a href="../../docs/glossary/#scene-end">scene-end</a> metrics,
 and no visual regression when the human pass catches up. Rejected tests
 still get logged because a failed idea can become valid after a later
 pack-format or scheduler change.</p>
@@ -157,7 +163,7 @@ pack-format or scheduler change.</p>
 <ul>
   <li>Build the PS1 executable and CD image in the Docker toolchain.</li>
   <li>Run headless DuckStation against the selected scene or scene matrix.</li>
-  <li>Parse <code class="language-plaintext highlighter-rouge">JCPERF</code> and <code class="language-plaintext highlighter-rouge">JCPERF2</code> logs into VBlank, CD, compose, upload,
+  <li>Parse <a href="../../docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> and <code class="language-plaintext highlighter-rouge">JCPERF2</code></a> logs into VBlank, CD, compose, upload,
 wait, and blocking counters.</li>
   <li>Promote only changes that beat the current baseline without violating
 deterministic playback.</li>
@@ -172,6 +178,10 @@ the log.</li>
   <li><a href="../../scenes/">Scene ledger</a> — visual signoff (the <a href="../../docs/glossary/#fishing1-bar">FISHING 1 bar</a>).</li>
   <li><a href="../../perf/">Performance battle card</a> — second ledger; per-scene timing against the target frame budget, sortable + color-coded.</li>
   <li><a href="../../docs/performance/">Performance plan</a></li>
+  <li><a href="../../docs/regtest/">Regression testing</a> —
+the headless DuckStation runner the farm orchestrates around
+every commit; the harness produces frame PNGs, state hashes,
+and <code class="language-plaintext highlighter-rouge">JCPERF</code> logs the loop above parses.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md">Performance experiment log</a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv">Scene performance matrix</a></li>
   <li><a href="../from-87-to-99-5/">From 87 to 99.5: the post-validation performance loop</a> — retrospective on the optimization arc this farm fed.</li>
@@ -179,6 +189,33 @@ the log.</li>
 </ul>
 
   </div>
+  <footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Lab essay navigation">
+    <div class="scene-pager-prev">
+
+        <a href="../regression-as-lifestyle/" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← older</span>
+          <span class="scene-pager-tag">Regression as a lifestyle</span>
+        </a>
+
+    </div>
+    <div class="scene-pager-up">
+      <a href="../">↑ lab index</a>
+    </div>
+    <div class="scene-pager-next">
+
+        <a href="../the-site-itself/" rel="next">
+          <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+          <span class="scene-pager-tag">The site itself, as a small program</span>
+        </a>
+
+    </div>
+    <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
+  </nav>
+</footer>
+
+
 </article>
 
   </main>
@@ -196,7 +233,7 @@ the log.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -204,9 +241,12 @@ the log.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/lab/build-farm/index.md" rel="noopener">Edit this page on GitHub</a> →

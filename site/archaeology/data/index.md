@@ -142,7 +142,7 @@ shape without opening every file.
   entries, originally 118 GB of payloads, deleted on 2026-04-22 with
   the index preserved).
 - [Regtest reference set]({{ '/archaeology/regtest-references/' | relative_url }}) —
-  the sixty-two frozen scene captures the regtest harness compares
+  the sixty-three frozen scene captures the regtest harness compares
   fresh runs against, with a per-scene table.
 - [Host-script review]({{ '/archaeology/host-script-review/' | relative_url }}) —
   the bundled snapshot of the host-side identification and

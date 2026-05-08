@@ -21,7 +21,7 @@ on end without a person at the keyboard.
 For a while, `printf` was both the obvious tool and part of the problem. Too
 much unbounded TTY output could destabilize the runtime. That forced the
 project into visual debugging first. Later, bounded performance logs came
-back as `JCPERF` and `JCPERF2` lines with explicit levels:
+back as [`JCPERF` and `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines with explicit levels:
 
 - Summary logs for scene setup and teardown.
 - Detail logs for frame behavior.
@@ -67,3 +67,35 @@ This is the same lesson as the rest of the port: make the feedback loop narrow
 enough that the machine can answer. The PS1 is not vague. It does exactly what
 you told it to do. The hard part is arranging your tools so you can hear the
 answer.
+
+## Related pages
+
+- [Hack: start here]({{ '/hack/start-here/' | relative_url }})
+  — first-day flow if you haven't already done the build and
+  boot loop.
+- [Hack: learn C from Johnny]({{ '/hack/learn-c/' | relative_url }})
+  — the `printf`-as-tool-with-blast-radius habit reads
+  differently after the visual-debugging detour above.
+- [Hack: visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  — the screenshot-and-overlay loop the matrix runs alongside.
+- [Hack: memory wars]({{ '/hack/memory-wars/' | relative_url }})
+  — most of the matrix's interesting failures trace back to
+  the budget overruns this page's siblings document.
+- [Hack: port to a new platform]({{ '/hack/port-to-a-new-platform/' | relative_url }})
+  — the loop discipline travels even when the toolchain
+  doesn't.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  live 126-variant matrix the loop above writes into.
+- [Performance reference]({{ '/docs/performance/' | relative_url }})
+  — column meanings, counter definitions, experiment-log
+  discipline.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the retrospective on the optimization arc this loop drove.
+- [Lab: build farm]({{ '/lab/build-farm/' | relative_url }})
+  — the 24/7 Docker-runner machinery wrapped around the loop.
+- [Lab: dunking bird]({{ '/lab/dunking-bird/' | relative_url }})
+  — the parallel-agent infrastructure that keeps the loop
+  productive between human review passes.
+- [Glossary: JCPERF / JCPERF2]({{ '/docs/glossary/#jcperf' | relative_url }})
+  · [Glossary: scene-end]({{ '/docs/glossary/#scene-end' | relative_url }})
+  · [Glossary: soak-test]({{ '/docs/glossary/#soak-test' | relative_url }})

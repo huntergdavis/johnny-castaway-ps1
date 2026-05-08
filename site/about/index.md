@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About
-eyebrow: What this is . How it works
+eyebrow: What this is · How it works
 subtitle: A fan port of Sierra's Johnny Castaway to the original PlayStation, built as a hybrid host-and-replay pipeline.
 description: A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0.
 ---
@@ -17,11 +17,11 @@ cheated. The technical short version: the project does not run Sierra's
 original ADS / TTM bytecode on the PS1 at all. A desktop host runs the
 real engine, captures every visible foreground draw plus every
 `PLAY_SAMPLE` event, and writes the result into a small per-scene
-binary called an **FG2 pack**. The PS1 build loads packs from the disc
+binary called an **[FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})**. The PS1 build loads packs from the disc
 and replays them, while owning only the narrow runtime it must:
 background, wave animation, holiday overlay, controller input, SPU
 audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
-inside 2&nbsp;MB of RAM at all.
+inside [2&nbsp;MB of RAM]({{ '/docs/hardware/' | relative_url }}) at all.
 
 Current release: `{{ site.release.tag }}`. Validated scenes:
 `{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}`
@@ -81,7 +81,7 @@ stitch before their packs replayed cleanly.
 The second ledger — the
 [performance battle card]({{ '/perf/' | relative_url }}) — is its
 own bar, separate on purpose. At `{{ site.release.tag }}` the matrix
-averages `{{ site.release.perf_target_speed_pct }}%` target speed
+averages `{{ site.release.perf_target_speed_pct }}%` [target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the 120 timing-bearing scene/tide rows; the
 [reference manual]({{ '/docs/performance/' | relative_url }})
 explains what each column means and the
@@ -156,6 +156,16 @@ A few things this project is deliberately not trying to be:
 - [/source/]({{ '/source/' | relative_url }}) and
   [/resources/]({{ '/resources/' | relative_url }}) -- the complete
   documentation shelf and asset catalog.
+- [/play/]({{ '/play/' | relative_url }}) -- the download page:
+  latest `.bin` / `.cue`, DuckStation quickstart, controller
+  map, freeplay controls, real-hardware notes.
+- [/faq/]({{ '/faq/' | relative_url }}) -- author-written
+  answers to "what is this," "do I need Sierra files," "is this
+  legal," "does it run at native rate," and the other recurring
+  questions.
+- [/releases/]({{ '/releases/' | relative_url }}) -- short notes
+  on every tagged version with links to the full release notes
+  and the disc image.
 
 The repository is at
 [{{ site.repo }}]({{ site.github_url }}). Open source under GPL-3.0,

@@ -8,7 +8,7 @@ status: validated
 description: "MARY.ADS scene 5: Goodbye. Validated after multi-view stitch and story-flag policy fixes."
 ---
 
-Validated on `2026-05-03` under the FISHING 1 bar.
+Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 

@@ -15,7 +15,7 @@ date: 2026-05-06
 </details>
 
 `v0.8.0-ps1` was the post-validation performance baseline. All 63
-scenes signed off; `+0.9%` over target / `99.5%` target speed across
+scenes signed off; `+0.9%` over target / [`99.5%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }}) across
 the 120 timing-bearing rows; the [retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
 walks through how the matrix moved there. That looked like the end
 of the speed arc.
@@ -109,3 +109,4 @@ that ships the next `MARY 4` freeze, signed off and timed.
 - [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}) — the visual-validation grind that came before all the perf work; v0.7.0 capped it
 - [/scenes/mary4/]({{ '/scenes/mary4/' | relative_url }}) — the canonical scene the soak named
 - [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — the v0.8.0 prequel; same memory-pressure machinery, one generation earlier
+- [/docs/walks/]({{ '/docs/walks/' | relative_url }}) — reference manual for the walk subsystem whose persistent clean buffer the "prefetch/walk memory" line above belongs to; Evolution by release covers the v0.8.0 retry path and v0.8.1 pressure fix in one place

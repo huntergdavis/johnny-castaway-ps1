@@ -8,7 +8,7 @@ status: validated
 description: "BUILDING.ADS scene 4: Sand castle vs. lilliputians. Validated on PS1 after generic multi-view capture and terminal cleanup."
 ---
 
-Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
 multi-view stitch, then converted to FGP3 with an explicit terminal cleanup
 frame so the final Johnny/bird foreground row restores cleanly.
@@ -44,7 +44,8 @@ to `validated` and a row turns green in the
 `BUILDING 4` is the scene the post-v0.7.0 random-run soak named when
 the
 [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
-allocation pipeline first regressed under walk-clean memory
+allocation pipeline first regressed under
+[walk-clean]({{ '/docs/walks/' | relative_url }}) memory
 pressure. The `v0.8.0-ps1` fix retries the large scene clean
 snapshot after releasing the stale walk clean buffer and recaptures
 the walk baseline so the scene loads cleanly even after a long

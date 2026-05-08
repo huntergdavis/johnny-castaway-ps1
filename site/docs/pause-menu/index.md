@@ -69,6 +69,7 @@ instead of trying to carry every toggle in one tall list:
 | Entry | Purpose |
 |---|---|
 | Resume | Close the menu and continue. |
+| Scene Set | Constrain the screensaver-loop's random pool to a category — `All Scenes` (default), `Fishing Only`, `Johnny Stories`, `Mary Visits`, `Visitors`, `Activities`, or `Misc & Suzy`. Left/Right previews; Cross or Start commits and fires a [frog-clock]({{ '/docs/glossary/#frog-clock' | relative_url }}) loading transition. Drives the [scene picker]({{ '/docs/glossary/#scene-picker' | relative_url }}) policy. |
 | Freeplay ON/OFF | Enter freeplay from normal mode, or exit freeplay back to the screensaver loop. |
 | Freeplay Options | Gags, visitors, controls, and clear-screen tools. |
 | World Options | Day/night, tide, raft, holiday, date/time, island position. |
@@ -141,7 +142,7 @@ System keeps the less frequent operations away from the high-use screens:
 
 | Page | Purpose |
 |---|---|
-| Save Settings | Writes supported options to memcard. |
+| Save Settings | Writes supported options to [memcard]({{ '/docs/glossary/#memcard' | relative_url }}). |
 | Reset Current Scene | Restart the current story loop. |
 | Next Scene | Ask the screensaver loop to pick another scene. |
 | Set RNG Seed | Pin the random sequence for repeatable testing. |

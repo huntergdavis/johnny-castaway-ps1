@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Menu help guide — Johnny Castaway PS1</title>
-  <meta name="description" content="Johnny Castaway PS1 menu help guide with headless regtest screenshots and control descriptions." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/help/menu/" />
-
-  <meta property="og:title"        content="Menu help guide — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Johnny Castaway PS1 menu help guide with headless regtest screenshots and control descriptions." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/help/menu/" />
+  <meta name="description" content="Johnny Castaway PS1 menu help guide with headless regtest screenshots and control descriptions." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/help/menu/" /><meta property="og:title"        content="Menu help guide — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Johnny Castaway PS1 menu help guide with headless regtest screenshots and control descriptions." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/help/menu/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -114,6 +113,37 @@
 <h2 id="the-route">The route</h2>
 
 <p>The default capture script starts in normal screensaver playback, waits 30 seconds, opens the pause menu, then walks each major screen with D-pad, Cross, and Circle. It intentionally captures catalog entry pages once, not every gag or visitor row.</p>
+
+<nav class="scenes-jump" aria-label="Jump to a specific menu screen">
+<span class="scenes-jump-label">Jump to:</span>
+<a href="#pause-main">Pause Menu</a>
+·
+<a href="#scene-set">Scene Set</a>
+·
+<a href="#freeplay-options">Freeplay Options</a>
+·
+<a href="#freeplay-gags">Freeplay Gags</a>
+·
+<a href="#freeplay-visitors">Freeplay Visitors</a>
+·
+<a href="#controls">Controls</a>
+·
+<a href="#world-options">World Options</a>
+·
+<a href="#holidays">Holidays</a>
+·
+<a href="#island-position">Set Island Position</a>
+·
+<a href="#accessibility">Accessibility</a>
+·
+<a href="#sound-test">Sound Test</a>
+·
+<a href="#system">System</a>
+·
+<a href="#set-time-date">Set Time / Date</a>
+·
+<a href="#set-rng-seed">Set RNG Seed</a>
+</nav>
 
 <div class="menu-guide">
 <section class="menu-shot" id="pause-main">
@@ -134,7 +164,7 @@
 <p>Scene Set is the only main-menu row that takes Left/Right input directly. Left and Right preview a pending value (the row shows it bracketed: <code>&lt;Fishing Only&gt;</code>); an asterisk marks the preview as un-applied. <strong>Cross</strong> or <strong>Start</strong> commits the change, fires a frog-clock loading transition, and the next scene comes from the new pool.</p>
 <p>Navigating away with Up/Down without committing discards the preview — you cannot accidentally change the pool just by scrolling past this row.</p>
 <table class="scene-set-table">
-<thead><tr><th>Set</th><th>Pool</th><th>Visual signoff</th></tr></thead>
+<thead><tr><th scope="col">Set</th><th scope="col">Pool</th><th scope="col">Visual signoff</th></tr></thead>
 <tbody>
 <tr><td><code>All Scenes</code></td><td>Catch-all — every routed scene the original game had</td><td>All ✅</td></tr>
 <tr><td><code>Fishing Only</code></td><td><code>fishing1</code>..<code>fishing8</code></td><td>All ✅</td></tr>
@@ -145,7 +175,7 @@
 <tr><td><code>Misc &amp; Suzy</code></td><td><code>suzy1</code>, <code>suzy2</code>, <code>miscgag1</code>, <code>miscgag2</code></td><td>All ✅; combined because each family alone is just two scenes</td></tr>
 </tbody>
 </table>
-<p>At <code>v0.8.2-ps1</code> every pool above is fully validated under the FISHING 1 bar — pixel-perfect visuals plus synced SFX, signed off across every applicable variant. The sets exist as filtering preferences (someone who wants only the fishing scenes for a given afternoon) rather than as workarounds for unvalidated content. The live status of every routed scene is in the <a href="../../scenes/">scene ledger</a>.</p>
+<p>At <code>v0.8.2-ps1</code> every pool above is fully validated under the <a href="../../docs/glossary/#fishing1-bar">FISHING 1 bar</a> — pixel-perfect visuals plus synced SFX, signed off across every applicable variant. The sets exist as filtering preferences (someone who wants only the fishing scenes for a given afternoon) rather than as workarounds for unvalidated content. The live status of every routed scene is in the <a href="../../scenes/">scene ledger</a>.</p>
 </section>
 
 <section class="menu-shot" id="freeplay-options">
@@ -309,7 +339,7 @@
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -317,9 +347,12 @@
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/help/menu/index.md" rel="noopener">Edit this page on GitHub</a> →

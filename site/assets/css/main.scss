@@ -233,6 +233,29 @@ hr.rule, .rule {
 }
 .skip-link:focus { top: 0; }
 
+/* <main> carries tabindex="-1" so the skip-link can move keyboard
+   focus into it (without tabindex, the viewport scrolls but focus
+   stays on the link). Suppress the resulting outline — the scroll
+   itself is the focus indicator, and a ring around the entire main
+   block looks like a bug. */
+main:focus { outline: none; }
+
+/* Machine-readable last-verified date in scene eyebrow row.
+   Visually subordinate (muted, smaller) so the pill stays the
+   primary status signal; carries a real <time datetime="..."> for
+   crawlers, AI agents, and assistive tech. */
+.scene-verified {
+  margin-left: 0.5em;
+  font-family: var(--font-pixel);
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+}
+.scene-verified::before {
+  content: "· ";
+  color: var(--fg-mute);
+}
+
 /* Visually hidden but readable by screen readers. Standard a11y
    idiom — used for table <caption>s and anywhere visual context is
    already present in the surrounding chrome but the assistive layer
@@ -282,6 +305,21 @@ hr.rule, .rule {
   color: var(--fg-mute);
   font-size: 0.85rem;
   margin: 0.6rem 0 0;
+}
+
+/* Visible publication date for lab essays. Mirrors .reading-time
+   styling so the two header-metadata lines read as parallel — pub
+   date on top, reading-time below. Tighter top margin since it
+   sits directly under subtitle. */
+.pub-date {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0;
+}
+.pub-date + .reading-time {
+  margin-top: 0.2rem;
 }
 
 /* ---------- Header ---------- */
@@ -511,12 +549,17 @@ hr.rule, .rule {
    inherit the figcaption color (otherwise the default --link cyan
    pops jarringly against the sun-yellow caption background). The
    underline appears on hover/focus as the affordance. */
-.trio figcaption a {
+/* Trio figures wrap the <img> + <figcaption> in a single <a> so the
+   entire card is one click target — caption styling is inherited
+   (no nested anchors), and the hover/focus underline lands on the
+   caption text only since the image isn't a phrase-content target. */
+.trio figure > a {
   color: inherit;
   text-decoration: none;
+  display: block;
 }
-.trio figcaption a:hover,
-.trio figcaption a:focus-visible {
+.trio figure > a:hover figcaption,
+.trio figure > a:focus-visible figcaption {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -740,11 +783,76 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   text-decoration: none;
   font-weight: 700;
 }
+/* Per-family count next to each ADS name on /scenes/ jump nav.
+   Visually subordinate to the family name itself: lighter weight,
+   muted color, smaller. Inherits link color on hover so the whole
+   anchor reads as one click target. */
+.scenes-jump-count {
+  font-weight: 400;
+  color: var(--fg-mute);
+  font-size: 0.92em;
+}
+.scenes-jump a:hover .scenes-jump-count,
+.scenes-jump a:focus-visible .scenes-jump-count {
+  color: inherit;
+}
 
 /* ---------- Scene table ---------- */
 .scene-table {
   font-family: var(--font-display);
   font-size: 0.95rem;
+}
+/* Zebra striping for the 63-row scene ledger and 126-row perf matrix.
+   Subtle alternating background on data rows makes left-to-right
+   scanning easier when the eye has to track 5+ columns across many
+   rows. Light-mode uses a faint dark tint; dark-mode inverts. */
+.scene-table tbody tr:nth-child(even),
+.scene-perf-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:nth-child(even),
+  .scene-perf-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+/* Row-hover highlight: pairs with zebra striping above. The cursor
+   can wander across many columns; lighting the row under the cursor
+   makes "which row am I on?" unambiguous. Stronger tint than zebra
+   so it visibly overrides the alternating background. */
+.scene-table tbody tr:hover,
+.scene-perf-table tbody tr:hover {
+  background: rgba(0, 168, 168, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:hover,
+  .scene-perf-table tbody tr:hover {
+    background: rgba(0, 255, 255, 0.10);
+  }
+}
+
+/* Target highlight for direct-anchor navigation. Family jump nav,
+   per-row perf links, glossary entry deep-links — clicking any of
+   them scrolls the target into view but leaves "you are here"
+   ambiguous. A persistent left-border + accent-color background
+   marks the landed row/dt unmistakably without obstructing reading.
+   Sun-yellow tint in light mode (the project palette's brightest
+   accent), dim equivalent in dark mode. */
+.scene-table tbody tr:target,
+.scene-perf-table tbody tr:target,
+.scenes-jump:target,
+dt:target {
+  background: rgba(252, 252, 0, 0.15);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:target,
+  .scene-perf-table tbody tr:target,
+  .scenes-jump:target,
+  dt:target {
+    background: rgba(252, 252, 0, 0.10);
+    box-shadow: inset 4px 0 0 var(--jc-sun);
+  }
 }
 /* Anchored ADS rows scroll into view past the sticky header. */
 .scene-table tr[id] { scroll-margin-top: 5rem; }
@@ -782,7 +890,18 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
-  max-width: 100%;
+  /* Break out of the .page (68ch reading column) and .main
+     (1180px content max) wrappers so the 12-column matrix can
+     use the actual viewport width. The "100vw centered via
+     50%/translate" idiom lets the table span the screen even
+     though its DOM ancestor is a narrow article. Padding is
+     subtracted so the right edge doesn't crash into the body
+     scrollbar on Windows. */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100vw - 1.4rem);
+  max-width: calc(100vw - 1.4rem);
 }
 .scene-perf-table th,
 .scene-perf-table td {
@@ -790,6 +909,17 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   border-bottom: 1px solid var(--fg-mute);
   white-space: nowrap;
   vertical-align: top;
+}
+/* Long-content columns wrap so the 12-column table fits more
+   viewports without the user thinking the per-row detail is
+   gone. Stats Version (col 5) holds verbose pack-version slugs;
+   Notes (col 12) holds prose. The numeric columns and short
+   identifiers stay `nowrap` so per-row alignment reads cleanly. */
+.scene-perf-table td:nth-child(5),
+.scene-perf-table td:nth-child(12) {
+  white-space: normal;
+  max-width: 32ch;
+  word-break: break-word;
 }
 .scene-perf-table th {
   text-align: left;
@@ -807,6 +937,21 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
 .scene-perf-table .sort-marker {
   font-size: 0.85em;
   color: var(--accent);
+}
+/* Per-row permalink: the slug cell is a link to its own #perf-{slug}-{tide}
+   anchor so a reader can click and copy a stable URL to a single row. We
+   want the affordance discoverable but not 126 rows of cyan, so inherit
+   color, drop the underline, and only assert link styling on hover/focus. */
+.scene-perf-table a.scene-perf-rowlink {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--fg-mute);
+}
+.scene-perf-table a.scene-perf-rowlink:hover,
+.scene-perf-table a.scene-perf-rowlink:focus-visible {
+  color: var(--link);
+  border-bottom-color: var(--link);
+  outline: none;
 }
 .scene-perf-table td:nth-child(6),
 .scene-perf-table td:nth-child(7),

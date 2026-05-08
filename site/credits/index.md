@@ -37,12 +37,15 @@ the longer version — the people whose work this project stands on.
 
 ## Prior ports (the giants whose shoulders this stands on)
 
-- **`jno6809/jc_reborn`** — the SDL2 port that decoded the original
+- **[`jno6809/jc_reborn`](https://github.com/jno6809/jc_reborn)**
+  (Jérémie Guillaume) — the SDL2 port that decoded the original
   engine's ADS / TTM / RES bytecode. This project's host build
   is a fork of that work.
-- **`nivs1978/JCOS`** — an alternate decoding effort that helped
+- **[`nivs1978/JCOS`](https://github.com/nivs1978/Johnny-Castaway-Open-Source)**
+  (Hans Milling) — an alternate decoding effort that helped
   cross-validate frames.
-- **`xesf/Castaway`** — additional reverse-engineering notes.
+- **[`xesf/Castaway`](https://github.com/xesf/castaway)**
+  (Alexandre Fontoura) — additional reverse-engineering notes.
 - **The Sierra Chest archive** — preserved manuals and box copy.
 
 ## Toolchain
@@ -51,7 +54,7 @@ the longer version — the people whose work this project stands on.
   makes a project like this thinkable in 2026.
 - **DuckStation** (Connor McLaughlin et al.) — the emulator that
   every commit gets tested against.
-- **mkpsxiso** — `.bin/.cue` packing.
+- **mkpsxiso** (Lameguy64) — `.bin/.cue` packing.
 - **spicyjpeg's pad-poll example** — the SPI driver used here is
   derived from that MPL-licensed code (see `src/spi.c`).
 - **Meeus / Jones / Butcher** — the Easter algorithm used for
@@ -71,9 +74,8 @@ do not own decisions, do not validate scenes, and do not sign off
 on releases. Every agent-drafted page on this site got at least
 one factual edit on review; a few got rewritten substantially.
 The disclosure surface is documented at
-[/docs/agents/]({{ '/docs/agents/' | relative_url }}); the
-[footer]({{ '/about/' | relative_url }}) carries the short
-version on every page.
+[/docs/agents/]({{ '/docs/agents/' | relative_url }}); every
+page's footer carries the short version.
 
 ## Closed captions
 
@@ -112,8 +114,24 @@ so the SPU's hardware loop reads as unbroken ocean rather than a
 wraparound. Encoding pipeline lives in `scratch/ocean-ambience/`;
 design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob/main/docs/ps1/background-music-feasibility.md).
 
+## Related pages
+
+- [Legal]({{ '/legal/' | relative_url }}) — the licensing
+  companion to this attribution: GPL-3.0 on the project's own
+  code, MPL-2.0 on the SPI driver derivation, the Sierra
+  character disclaimer, the takedown procedure.
+- [Voice]({{ '/about/voice/' | relative_url }}) — the editorial
+  standard the credits voice anchors. Why this page reads
+  plainspoken instead of marketing-speak.
+- [humans.txt]({{ '/humans.txt' | relative_url }}) — the same
+  attribution surface in the IndieWeb-standard humans.txt
+  format, mirroring this page's content.
+- [FAQ — Is this legal?]({{ '/faq/#is-this-legal' | relative_url }})
+  — the short author-written restatement of the fan-port
+  stance.
+
 ---
 
 The site is text-only on purpose — no portraits, no contributor
-avatars. The drawCredits voice is plainspoken, and the chrome
+avatars. The [drawCredits]({{ '/docs/glossary/#drawcredits' | relative_url }}) voice is plainspoken, and the chrome
 matches.

@@ -48,7 +48,7 @@ performance battle-card numbers.
 ## Earlier milestones
 
 ### `v0.8.1-ps1` — clean-rect pressure stability
-*2026-05-06*
+<time datetime="2026-05-06"><em>2026-05-06</em></time>
 
 A randomized long-run soak exposed a scene-load freeze after a large split
 clean-rect save. The pressure estimator was counting only foreground pack
@@ -72,7 +72,7 @@ the matrix didn't is at
 [Download .bin / .cue]({{ '/play/' | relative_url }})
 
 ### `v0.8.0-ps1` — complete-scene performance baseline
-*2026-05-06*
+<time datetime="2026-05-06"><em>2026-05-06</em></time>
 
 The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average **+0.6% over target / 99.6% target speed** — about 16.8 percentage points of over-target gap closed since the compact full-matrix baseline.
 The retrospective on which experiments moved that line is at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
@@ -90,9 +90,9 @@ The retrospective on which experiments moved that line is at [/lab/from-87-to-99
 [Download .bin / .cue]({{ '/play/' | relative_url }})
 
 ### `v0.7.2-ps1` — story-loop walk backdrop guard
-*2026-05-05*
+<time datetime="2026-05-05"><em>2026-05-05</em></time>
 
-A randomized story-loop walking regression let Johnny walk over water and leave repeated walking poses when the next scene's island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.
+A randomized [story-loop walking]({{ '/docs/walks/' | relative_url }}) regression let Johnny walk over water and leave repeated walking poses when the next scene's island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.
 
 - **Walks now require a matching backdrop key.** Inter-scene walks only run when tide, raft, night, holiday, and island X/Y all match the previous rendered scene.
 - **Scene-policy changes force a clean scene load.** Moving from a variable-position scene to a fixed/left-island/no-raft/tide/holiday variant inside the same sequence no longer draws Johnny over stale water.
@@ -103,7 +103,7 @@ A randomized story-loop walking regression let Johnny walk over water and leave 
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.2-ps1)
 
 ### `v0.7.1-ps1` — persisted holiday mode and first-run defaults
-*2026-05-05*
+<time datetime="2026-05-05"><em>2026-05-05</em></time>
 
 Memory-card schema bumped to v6 to separate the holiday *policy* from the manual override, so the pause menu can offer five distinct holiday modes. New boots default to `AUTO DATE:ORIG4` — Sierra's original four overlays, automatic by date.
 
@@ -116,7 +116,7 @@ Memory-card schema bumped to v6 to separate the holiday *policy* from the manual
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.1-ps1)
 
 ### `v0.7.0-ps1` — complete scene validation
-*2026-05-05*
+<time datetime="2026-05-05"><em>2026-05-05</em></time>
 
 The 63-scene grind ended here. Every routed scene the original Sierra game had now plays pixel-perfect on the PS1 with synced SFX across every applicable variant. The retrospective on what the daily loop actually looked like is at [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}).
 
@@ -129,7 +129,7 @@ The 63-scene grind ended here. Every routed scene the original Sierra game had n
 [GitHub release]({{ site.github_url }}/releases/tag/v0.7.0-ps1)
 
 ### `v0.6.0-ps1` — ocean ambience
-*2026-05-01*
+<time datetime="2026-05-01"><em>2026-05-01</em></time>
 
 A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
 underneath every scene. Toggleable from the pause menu; choice
@@ -144,7 +144,7 @@ playback work.
 [GitHub release]({{ site.github_url }}/releases/tag/v0.6.0-ps1)
 
 ### `v0.6.1-ps1` through `v0.6.13-ps1` — the validation-cluster patches
-*2026-05-01 → 2026-05-04*
+<em><time datetime="2026-05-01">2026-05-01</time> → <time datetime="2026-05-04">2026-05-04</time></em>
 
 The stability releases between `v0.6.0-ps1` (ocean ambience) and
 `v0.7.0-ps1` (complete scene validation) are scene-by-scene
@@ -158,7 +158,7 @@ final state. The full list of GitHub-tagged builds in this cluster
 is at [{{ site.repo }}/releases]({{ site.github_url }}/releases).
 
 ### `v0.5.0-ps1` — Freeplay and debug mode
-*2026-05-01*
+<time datetime="2026-05-01"><em>2026-05-01</em></time>
 
 The release that turned the project from a passive screensaver port into something a player could touch. Direct-control Johnny via D-pad / analog, gag and visitor debug catalogs in the pause menu, controllable world state, and a no-allocation steady-state freeplay loop.
 
@@ -172,7 +172,7 @@ The release that turned the project from a passive screensaver port into somethi
 [GitHub release]({{ site.github_url }}/releases/tag/v0.5.0-ps1)
 
 ### `v0.4.20-ps1` — story-loop walking
-*2026-04-30*
+<time datetime="2026-04-30"><em>2026-04-30</em></time>
 
 The first build where Johnny no longer teleports between finished scenes. The PS1 screensaver loop now carries his spot and heading forward, runs Sierra's original `walk_data.h` route table, and visibly walks him across the island before the next FG2 scene begins.
 
@@ -187,6 +187,8 @@ The first build where Johnny no longer teleports between finished scenes. The PS
 
 ## Where to go from here
 
+- [Play]({{ '/play/' | relative_url }}) is the download page — latest `.bin` / `.cue`, DuckStation quickstart, controller map.
+- The [FAQ]({{ '/faq/' | relative_url }}) covers the recurring questions: what this is, why PS1, is this legal, do I need Sierra files, real-hardware support.
 - The [scene ledger]({{ '/scenes/' | relative_url }}) is the live status of every scene at the current release.
 - The [history page]({{ '/about/history/' | relative_url }}) is the longer narrative — pre-port era, first PS1 attempts, the hybrid pivot, the 63-scene grind.
 - The [devlog]({{ '/devlog/' | relative_url }}) is the daily worklog. Releases are the milestones; the devlog is the run-up.

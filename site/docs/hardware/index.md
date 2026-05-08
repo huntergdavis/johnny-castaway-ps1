@@ -26,11 +26,11 @@ DuckStation. The numbers that matter, in the order you usually trip over them:
 
 - **CPU:** MIPS R3000A at 33.8688 MHz. 32-bit, no hardware floating point.
 - **System RAM:** 2 MB. Not 2 GB. Not 2 hundred MB. Two megabytes.
-- **VRAM:** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
+- **[VRAM]({{ '/docs/glossary/#vram' | relative_url }}):** 1 MB, owned by the GPU. Two 640&times;480 framebuffers eat 600 KB
   of that on their own.
 - **SPU RAM:** 512 KB, owned by the audio co-processor. ADPCM samples only.
 - **CD drive:** 2x speed, 300 KB/s sustained, ~150 ms cold seek.
-- **Controller:** SIO0 serial bus, polled at vblank-ish rates.
+- **Controller:** SIO0 serial bus, polled at [vblank]({{ '/docs/glossary/#vblank' | relative_url }})-ish rates.
 
 For *Johnny Castaway*, a 1992 16-color VGA screensaver running at roughly 4 fps
 of foreground change, that's an embarrassment of riches in some axes (a 33 MHz
@@ -230,10 +230,19 @@ specialized compositors, not a clock change — the clock isn't going up.
 - [Lab: the two-day SPI bug]({{ '/lab/two-day-spi-bug/' | relative_url }})
   — the retrospective on the `tx_len=5` pad-polling fix the
   hardware section above documents in one paragraph.
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) — the
+  walk subsystem's persistent clean buffer is a direct response
+  to the 2 MB envelope above; the page documents why
+  re-allocating per walk fragmented the heap.
 - [Method]({{ '/about/method/' | relative_url }}) — how a one-person port
   decides what to ship.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog where most of
   these bugs got triaged.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  definitions for hardware-specific terms used above
+  (`SPU`, `VRAM`, `VBlank`, `OT`, `mkpsxiso`, `PSn00bSDK`,
+  `TonyHax`, `SPI driver`, `tx_len`). Grouped by area, not
+  alphabetical.
 
 ## View source on GitHub
 

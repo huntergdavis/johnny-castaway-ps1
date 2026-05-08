@@ -60,3 +60,34 @@ person trying to verify the port.
 Read [The performance loop]({{ '/hack/performance-loop/' | relative_url }})
 next. Platform ports are less about big rewrites than about feedback loops that
 are tight enough to survive frustration.
+
+## Related pages
+
+- [Hack: start here]({{ '/hack/start-here/' | relative_url }})
+  — first-day flow for the PS1 build, useful even if you're
+  here to port elsewhere — the decision framework above sits
+  on top of having actually done one port.
+- [Hack: learn C from Johnny]({{ '/hack/learn-c/' | relative_url }})
+  — the C habits that travel: ownership, explicit state,
+  small structs, dumpable formats.
+- [Hack: visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  — the screenshot-and-overlay workflow that lets you verify
+  "frame 37" before the port is even running.
+- [Hack: memory wars]({{ '/hack/memory-wars/' | relative_url }})
+  — what changes when 2 MB / 1 MB / 512 KB becomes whatever
+  envelope your target offers.
+- [Hack: performance loop]({{ '/hack/performance-loop/' | relative_url }})
+  — the feedback loop the closing paragraph above points at.
+- [About / Method]({{ '/about/method/' | relative_url }}) —
+  the canonical methodology essay the page's "PS1 answer
+  pointed toward foreground packs" line references.
+- [Why I keep porting Johnny]({{ '/lab/why-i-keep-porting-johnny/' | relative_url }})
+  — the long-form reflection on the question this page
+  formalizes: what kind of target is this?
+- [Pixel-perfect pivot]({{ '/lab/pixel-perfect-pivot/' | relative_url }})
+  — the retrospective on the "looks similar" vs
+  "pixel-perfect-with-host-capture" decision that defined the
+  PS1 answer.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for `host build`, `FG2 pack`, `regtest`,
+  the terms the decision framework uses without scaffolding.

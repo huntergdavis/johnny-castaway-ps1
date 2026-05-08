@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Method — Johnny Castaway PS1</title>
-  <meta name="description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/method/" />
-
-  <meta property="og:title"        content="Method — Johnny Castaway PS1" />
-  <meta property="og:description"  content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/method/" />
+  <meta name="description" content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/method/" /><meta property="og:title"        content="Method — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Technical deep-dive on the Johnny Castaway PS1 port — hybrid host-capture pipeline, FG2 pack format, and the PS1 hardware constraints that shaped both." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/method/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,15 +95,15 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">Host-capture . FG2 pack . PS1 replay</p>
+      <p class="eyebrow">Host-capture · FG2 pack · PS1 replay</p>
       <h1>Method</h1>
       <p class="subtitle">How a 1992 Windows screensaver ends up running on a 1994 console without an emulator under it.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2237 words
+          ~9 min read · 2284 words
         </p>
 
       <hr class="rule" />
@@ -137,7 +136,7 @@ portable; the upstream that this project descends from,
 <a href="https://github.com/jno6809/jc_reborn">jno6809/jc_reborn</a>, runs on top
 of SDL2.</p>
 
-<p>A PS1 port is not “swap SDL2 for PSn00bSDK.” Three things make a
+<p>A PS1 port is not “swap SDL2 for <a href="../../docs/glossary/#psn00bsdk">PSn00bSDK</a>.” Three things make a
 straight port impossible:</p>
 
 <ol>
@@ -159,7 +158,9 @@ open-source SDK; it gives you <code class="language-plaintext highlighter-rouge"
 <code class="language-plaintext highlighter-rouge">psxapi</code>, <code class="language-plaintext highlighter-rouge">psxgte</code>, <code class="language-plaintext highlighter-rouge">psxsio</code>. There is no <code class="language-plaintext highlighter-rouge">printf</code> you can trust
 in a hot loop, no <code class="language-plaintext highlighter-rouge">malloc</code> worth leaning on for transients, no
 <code class="language-plaintext highlighter-rouge">pthread</code>, no <code class="language-plaintext highlighter-rouge">clock_gettime</code>. SDL’s design assumptions are not
-even close.</li>
+even close. The symbol-by-symbol mapping the <a href="../../docs/glossary/#host-build">host build</a> hands
+off to the PS1 build is documented at
+<a href="../../docs/api/">/docs/api/</a>.</li>
 </ol>
 
 <p>The first prototype tried to brute-force these problems in the runtime
@@ -275,7 +276,7 @@ volume)</code> triples lifted from the captured <code class="language-plaintext 
 This is what <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> uses to fire <code class="language-plaintext highlighter-rouge">soundPlay()</code> on
 cue.</li>
   <li><strong>Frame-meta tail.</strong> Source frame timing in milliseconds, used at
-capture-validate time and preserved in the pack so a regtest can
+capture-validate time and preserved in the pack so a <a href="../../docs/glossary/#regtest">regtest</a> can
 confirm the on-PS1 cadence still matches the host capture.</li>
 </ul>
 
@@ -348,7 +349,7 @@ the open items. See commit <code class="language-plaintext highlighter-rouge">35
 <p><strong>TTY printf is the only real debug surface, and it has a price.</strong>
 For most of 2026-Q1 the project ran with <code class="language-plaintext highlighter-rouge">debugMode=0</code> and
 “visual debugging” – colored pixels via <code class="language-plaintext highlighter-rouge">LoadImage</code>, the
-five-panel telemetry overlay, gated <code class="language-plaintext highlighter-rouge">JCPERF</code> summaries during
+five-panel telemetry overlay, gated <a href="../../docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code></a> summaries during
 scene transitions only. Per-frame <code class="language-plaintext highlighter-rouge">vprintf</code> was outright
 destabilizing scene playback (unbounded format buffers, hot-path
 text I/O changing timing). As of 2026-04-25, bounded <code class="language-plaintext highlighter-rouge">vprintf</code>
@@ -362,7 +363,7 @@ per frame; that’s why <code class="language-plaintext highlighter-rouge">ps1_p
 
 <ul>
   <li>The PSn00bSDK 0.24 toolchain runs in Docker on <code class="language-plaintext highlighter-rouge">linux/amd64</code>
-(<code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code>). Native macOS toolchains were attempted and
+(<code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code>). Native macOS toolchains were attempted and
 abandoned – missing <code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code>, source builds need
 Linux. Docker was the cheapest path that worked.</li>
   <li>4-bit indexed sprite format (<code class="language-plaintext highlighter-rouge">indexedPixels</code>) saved roughly 4x
@@ -397,14 +398,15 @@ path from the first signed-off scene to all 63 was the same
 repeatable loop on every row: capture, pack, route, replay, sign
 off. The hard work was the loop’s edges — multi-view foreground
 stitches for the wide scenes, residual-cleanup pack fixes when a
-few pixels missed, the backdrop-key guard that kept story-loop
-walks from running across stale islands. That is the property
+few pixels missed, the backdrop-key guard that kept
+<a href="../../docs/walks/">story-loop walks</a>
+from running across stale islands. That is the property
 the project was reaching for.</p>
 
 <p>The second bar, the
 <a href="../../perf/">performance battle card</a>, is its
-own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <code class="language-plaintext highlighter-rouge">87.1%</code> target
-speed at the compact full-matrix baseline to
+own ledger. It moved from <code class="language-plaintext highlighter-rouge">+17.4%</code> over target / <a href="../../docs/glossary/#target-speed"><code class="language-plaintext highlighter-rouge">87.1%</code> target
+speed</a> at the compact full-matrix baseline to
 <code class="language-plaintext highlighter-rouge">100.3%</code> target speed at
 <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
@@ -442,6 +444,10 @@ capture, replay, dirty-rect, FntFlush, FISHING 1 bar).</li>
 narrative version, dated, eras-and-milestones.</li>
   <li><a href="../status/">Status</a> — the
 component-level state at the current release.</li>
+  <li><a href="../../lab/pixel-perfect-pivot/">Lab: the pivot that almost didn’t happen</a>
+— magazine retrospective on the choice between “looks similar”
+and pixel-perfect-with-host-capture that defined the rest of
+this method. The decision behind every section above.</li>
 </ul>
 
   </div>
@@ -462,7 +468,7 @@ component-level state at the current release.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -470,9 +476,12 @@ component-level state at the current release.</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/method/index.md" rel="noopener">Edit this page on GitHub</a> →

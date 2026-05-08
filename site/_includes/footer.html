@@ -12,7 +12,7 @@
           Code: <a href="{{ '/legal/' | relative_url }}">GPL-3.0</a> ·
           Source: <a href="{{ site.github_url }}" rel="noopener">GitHub</a> ·
           {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated
-          ({{ site.release.tag }})
+          (<a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -20,11 +20,33 @@
           <a href="{{ '/devlog/feed.json' | relative_url }}" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="{{ '/lab/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a>
+          <a href="{{ '/lab/feed.xml' | relative_url }}" type="application/atom+xml">Atom</a> ·
+          <a href="{{ '/lab/feed.json' | relative_url }}" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="{{ '/humans.txt' | relative_url }}" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="{{ '/sitemap.xml' | relative_url }}" type="application/xml">sitemap</a>
         </p>
-        {%- if page.path -%}
+        {%- comment -%}
+          Suppress the Edit-on-GitHub link on auto-generated pages
+          (`scripts/site-generate-library.py` writes them on every
+          build). Editing the source `.md` directly would be wiped on
+          the next build, so the link mis-promises a working
+          contribution path. The three generated surfaces:
+
+          - /source/<wrapper>/      (one wrapper per project Markdown)
+          - /resources/             (the asset catalog index)
+          - /archaeology/regtest-references/cases/<slug>/  (case shelf)
+
+          Same URL-prefix gate idiom as the noindex pass in head.html.
+        {%- endcomment -%}
+        {%- assign footer_skip_edit = false -%}
+        {%- if page.url == '/resources/' -%}{%- assign footer_skip_edit = true -%}{%- endif -%}
+        {%- assign source_pfx = page.url | slice: 0, 8 -%}
+        {%- if source_pfx == '/source/' -%}{%- assign footer_skip_edit = true -%}{%- endif -%}
+        {%- assign cases_pfx = page.url | slice: 0, 38 -%}
+        {%- if cases_pfx == '/archaeology/regtest-references/cases/' -%}{%- assign footer_skip_edit = true -%}{%- endif -%}
+        {%- if page.path and footer_skip_edit == false -%}
         <p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="{{ site.github_url }}/edit/main/site/{{ page.path }}" rel="noopener">Edit this page on GitHub</a> →

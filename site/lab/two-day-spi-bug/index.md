@@ -1,11 +1,18 @@
 ---
 layout: page
 title: The two-day SPI bug
-eyebrow: Lab . War story
+eyebrow: Lab · War story
 subtitle: The controller worked everywhere except where it mattered.
 description: A debugging war story about the PS1 controller SPI/SIO0 polling bug that blocked the Johnny Castaway PS1 pause menu.
 date: 2026-04-26
 ---
+
+<details class="page-toc" markdown="1">
+<summary>On this page</summary>
+
+* TOC
+{:toc}
+</details>
 
 ## The symptom
 

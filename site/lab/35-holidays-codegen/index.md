@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 35 holidays in 4 weeks
-eyebrow: Lab . Codegen study
+eyebrow: Lab · Codegen study
 subtitle: A small YAML file, a calendar engine, and a sprite sheet full of tiny props.
 description: A codegen retrospective on expanding Johnny Castaway PS1 from four original holiday overlays to a 36-holiday calendar with generated tables and emblem sprites.
 date: 2026-04-26
@@ -89,4 +89,7 @@ documentation.
   — the sprite primitives that compose into the emblem sheet
   were drafted by an LLM sub-agent; that page records the
   human-edit pass that reviewed them.
+- [The LLM pass]({{ '/lab/llm-pass/' | relative_url }})
+  — the methodology essay whose loop this codegen story is one
+  case study of.
 - [4/20 Day]({{ '/docs/holidays/calendar/420-day/' | relative_url }})

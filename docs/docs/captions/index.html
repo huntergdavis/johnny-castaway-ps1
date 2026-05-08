@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>Closed captions — Johnny Castaway PS1</title>
-  <meta name="description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" />
-
-  <meta property="og:title"        content="Closed captions — Johnny Castaway PS1" />
-  <meta property="og:description"  content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" />
+  <meta name="description" content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" /><meta property="og:title"        content="Closed captions — Johnny Castaway PS1" />
+  <meta property="og:description"  content="How closed captions work in the Johnny Castaway PS1 port — caption corpus, ADS-tag mapping, the 2026-04-26 audit, and the SPRT-based render path." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/captions/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../../sitemap.xml" />
 
@@ -96,7 +95,7 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
@@ -104,7 +103,7 @@
       <h1>Closed captions</h1>
       <p class="subtitle">Caption corpus, ADS-tag map, and the dark-band overlay that draws them.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1182 words
+          ~4 min read · 1205 words
         </p>
 
       <hr class="rule" />
@@ -207,8 +206,8 @@ group they describe and then to <code class="language-plaintext highlighter-roug
 <table>
   <thead>
     <tr>
-      <th>Rating</th>
-      <th>Meaning</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Meaning</th>
     </tr>
   </thead>
   <tbody>
@@ -241,12 +240,12 @@ genuinely interchangeable from the corpus.</p>
 <table>
   <thead>
     <tr>
-      <th>ADS file</th>
+      <th scope="col">ADS file</th>
       <th style="text-align: right">Entries</th>
       <th style="text-align: right">HIGH</th>
       <th style="text-align: right">MED</th>
       <th style="text-align: right">LOW</th>
-      <th>Notes</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
@@ -420,6 +419,9 @@ the per-scene loop validates that captions fire on the right ADS tags.</li>
 corpus and the 2026-04-26 audit’s confidence ratings were drafted
 by an LLM sub-agent and then human-edited; this page records what
 that did and didn’t cover.</li>
+  <li><a href="../../lab/llm-pass/">Lab: the LLM pass</a>
+— magazine treatment of the same disclosure, with the caption
+corpus named as one of the canonical agent-drafted artifacts.</li>
   <li><a href="../../about/voice/">Voice guide</a> — the editorial
 standard the caption text is held to (short lines, plainspoken,
 describes-the-gag-not-the-frame).</li>
@@ -451,7 +453,7 @@ describes-the-gag-not-the-frame).</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -459,9 +461,12 @@ describes-the-gag-not-the-frame).</li>
           <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/captions/index.md" rel="noopener">Edit this page on GitHub</a> →

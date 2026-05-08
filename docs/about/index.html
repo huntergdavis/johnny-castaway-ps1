@@ -4,19 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
 
   <title>About — Johnny Castaway PS1</title>
-  <meta name="description" content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/" />
-
-  <meta property="og:title"        content="About — Johnny Castaway PS1" />
-  <meta property="og:description"  content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." />
-  <meta property="og:type"         content="website" />
-  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/" />
+  <meta name="description" content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/about/" /><meta property="og:title"        content="About — Johnny Castaway PS1" />
+  <meta property="og:description"  content="A ground-up PS1 fan port of Sierra's 1992 Johnny Castaway screensaver. Hybrid host-capture and PS1-replay. Open source, GPL-3.0." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/about/" /><meta property="og:locale"       content="en_US" />
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
-  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
-  <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -37,7 +34,9 @@
         href="../devlog/feed.json" />
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="../lab/feed.xml" />
-  <link rel="author" type="text/plain" href="../humans.txt" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="../sitemap.xml" />
 
@@ -96,11 +95,11 @@
   </div>
 </header>
 
-  <main id="main" class="main">
+  <main id="main" class="main" tabindex="-1">
     <article class="page">
 
     <header class="page-header">
-      <p class="eyebrow">What this is . How it works</p>
+      <p class="eyebrow">What this is · How it works</p>
       <h1>About</h1>
       <p class="subtitle">A fan port of Sierra's Johnny Castaway to the original PlayStation, built as a hybrid host-and-replay pipeline.</p>
       <hr class="rule" />
@@ -118,11 +117,11 @@ cheated. The technical short version: the project does not run Sierra’s
 original ADS / TTM bytecode on the PS1 at all. A desktop host runs the
 real engine, captures every visible foreground draw plus every
 <code class="language-plaintext highlighter-rouge">PLAY_SAMPLE</code> event, and writes the result into a small per-scene
-binary called an <strong>FG2 pack</strong>. The PS1 build loads packs from the disc
+binary called an <strong><a href="../docs/glossary/#fg2-pack">FG2 pack</a></strong>. The PS1 build loads packs from the disc
 and replays them, while owning only the narrow runtime it must:
 background, wave animation, holiday overlay, controller input, SPU
 audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
-inside 2 MB of RAM at all.</p>
+inside <a href="../docs/hardware/">2 MB of RAM</a> at all.</p>
 
 <p>Current release: <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code>. Validated scenes:
 <code class="language-plaintext highlighter-rouge">63 / 63</code>
@@ -181,7 +180,7 @@ stitch before their packs replayed cleanly.</p>
 <p>The second ledger — the
 <a href="../perf/">performance battle card</a> — is its
 own bar, separate on purpose. At <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> the matrix
-averages <code class="language-plaintext highlighter-rouge">100.3%</code> target speed
+averages <code class="language-plaintext highlighter-rouge">100.3%</code> <a href="../docs/glossary/#target-speed">target speed</a>
 across the 120 timing-bearing scene/tide rows; the
 <a href="../docs/performance/">reference manual</a>
 explains what each column means and the
@@ -259,6 +258,16 @@ understand the debugging loops.</li>
   <li><a href="../source/">/source/</a> and
 <a href="../resources/">/resources/</a> – the complete
 documentation shelf and asset catalog.</li>
+  <li><a href="../play/">/play/</a> – the download page:
+latest <code class="language-plaintext highlighter-rouge">.bin</code> / <code class="language-plaintext highlighter-rouge">.cue</code>, DuckStation quickstart, controller
+map, freeplay controls, real-hardware notes.</li>
+  <li><a href="../faq/">/faq/</a> – author-written
+answers to “what is this,” “do I need Sierra files,” “is this
+legal,” “does it run at native rate,” and the other recurring
+questions.</li>
+  <li><a href="../releases/">/releases/</a> – short notes
+on every tagged version with links to the full release notes
+and the disc image.</li>
 </ul>
 
 <p>The repository is at
@@ -285,7 +294,7 @@ that engine decode this port would not exist.</p>
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (v0.8.2-ps1)
+          (<a href="../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:
@@ -293,9 +302,12 @@ that engine decode this port would not exist.</p>
           <a href="../devlog/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           Lab feed:
-          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a>
+          <a href="../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../lab/feed.json" type="application/feed+json">JSON</a>
           &nbsp;·&nbsp;
           <a href="../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../sitemap.xml" type="application/xml">sitemap</a>
         </p><p class="footer-license footer-edit">
           Spotted a typo or a stale claim?
           <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/about/index.md" rel="noopener">Edit this page on GitHub</a> →

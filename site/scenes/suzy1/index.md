@@ -8,7 +8,7 @@ status: validated
 description: "SUZY.ADS scene 1: Sunbathing daydream. Validated on 2026-05-04."
 ---
 
-Validated on 2026-05-04 under the FISHING 1 bar.
+Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 SUZY 1 is not an island/ocean scene. The PS1 runtime now loads the
 source `SUZBEACH.SCR` screen as the clean backdrop for SUZY scenes,

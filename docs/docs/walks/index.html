@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0000A8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#040056" media="(prefers-color-scheme: dark)" /><meta name="color-scheme" content="light dark" /><meta name="format-detection" content="telephone=no" />
+
+  <title>Story-loop walks — Johnny Castaway PS1</title>
+  <meta name="description" content="Reference manual for the Johnny Castaway PS1 port's story-loop walk subsystem — walk_pilot, walk_render, the six-spot route table from the original Sierra walk_data, and the runtime invariants (persistent clean buffer, ocean waves, palm-tree occlusion, holiday overlay re-stamping) that keep walks visually correct." /><link rel="canonical" href="https://hunterdavis.com/johnny-castaway-ps1/docs/walks/" /><meta property="og:title"        content="Story-loop walks — Johnny Castaway PS1" />
+  <meta property="og:description"  content="Reference manual for the Johnny Castaway PS1 port's story-loop walk subsystem — walk_pilot, walk_render, the six-spot route table from the original Sierra walk_data, and the runtime invariants (persistent clean buffer, ocean waves, palm-tree occlusion, holiday overlay re-stamping) that keep walks visually correct." /><meta property="og:site_name"    content="Johnny Castaway PS1" /><meta property="og:type"         content="website" />
+  <meta property="og:url"          content="https://hunterdavis.com/johnny-castaway-ps1/docs/walks/" /><meta property="og:locale"       content="en_US" />
+  <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
+  <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
+
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/bitter-latin-700-normal.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="../../assets/fonts/inter-latin-400-normal.woff2" />
+
+  <link rel="stylesheet" href="../../assets/css/main.css" />
+  <script defer src="../../assets/js/key-nav.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/branding/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/branding/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/branding/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/branding/apple-touch-icon.png" />
+
+  <link rel="alternate" type="application/atom+xml" title="Devlog (Atom)"
+        href="../../devlog/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Devlog (JSON Feed)"
+        href="../../devlog/feed.json" />
+  <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
+        href="../../lab/feed.xml" />
+  <link rel="alternate" type="application/feed+json" title="Lab (JSON Feed)"
+        href="../../lab/feed.json" />
+  <link rel="author" type="text/plain" href="../../humans.txt" /><link rel="me" href="https://hunterdavis.com/" />
+  <link rel="sitemap" type="application/xml" title="Sitemap"
+        href="../../sitemap.xml" />
+
+
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Johnny Castaway PS1",
+  "url": "https://hunterdavis.com/johnny-castaway-ps1/",
+  "description": "A fan port of Sierra's 1992 Johnny Castaway screensaver to the original PlayStation. Built with PSn00bSDK. Runs on DuckStation. Open source under GPL-3.0.",
+  "inLanguage": "en",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "author": {
+    "@type": "Person",
+    "name": "Hunter Davis",
+    "url": "https://hunterdavis.com/"
+  }
+}
+</script><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hunterdavis.com/johnny-castaway-ps1/" }, { "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/" }, { "@type": "ListItem", "position": 3, "name": "Story-loop walks", "item": "https://hunterdavis.com/johnny-castaway-ps1/docs/walks/" }]
+}
+</script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-title" href="../../">
+      <span class="site-title-main">JOHNNY CASTAWAY</span>
+      <span class="site-title-sub">PS1</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="../../">Home</a></li>
+        <li><a href="../../play/">Play</a></li>
+        <li><a href="../../help/">Help</a></li>
+        <li><a href="../../about/">About</a></li>
+        <li><a href="../../scenes/">Scenes</a></li>
+        <li><a href="../../devlog/">Devlog</a></li>
+        <li><a href="../../archaeology/">Archaeology</a></li>
+        <li><a href="../../lab/">Lab</a></li>
+        <li><a href="../../hack/">Hack</a></li>
+        <li><a href="../" aria-current="page">Docs</a></li>
+      </ul>
+    </nav>
+    <a class="site-gh"
+       href="https://github.com/huntergdavis/johnny-castaway-ps1"
+       aria-label="Source code on GitHub"
+       rel="noopener">GitHub →</a>
+  </div>
+</header>
+
+  <main id="main" class="main" tabindex="-1">
+    <article class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">Reference</p>
+      <h1>Story-loop walks</h1>
+      <p class="subtitle">How Johnny stops teleporting between scenes — the walk subsystem, the spot graph, and the runtime invariants the kernel has to preserve.</p>
+        <p class="reading-time" aria-label="Estimated reading time">
+          ~5 min read · 1263 words
+        </p>
+
+      <hr class="rule" />
+    </header>
+
+  <div class="page-body">
+    <p>A labor of love by Hunter Davis. The original <em>Johnny Castaway</em>
+screensaver did not move Johnny between scenes. Each scene started
+with him already at his start spot. When the next scene picked a
+different spot, the engine teleported him there. This page documents
+the PS1 build’s <em>story-loop walks</em> — the path that replaced that
+teleport with a real walk, using Sierra’s own pre-baked route table
+from <code class="language-plaintext highlighter-rouge">walk_data.h</code>.</p>
+
+<p>If you paid for this, you were cheated. Open source and free.</p>
+
+<details class="page-toc">
+  <summary>On this page</summary>
+
+<ul id="markdown-toc">
+  <li><a href="#what-this-is" id="markdown-toc-what-this-is">What this is</a></li>
+  <li><a href="#modules" id="markdown-toc-modules">Modules</a></li>
+  <li><a href="#the-spot-graph" id="markdown-toc-the-spot-graph">The spot graph</a></li>
+  <li><a href="#runtime-invariants" id="markdown-toc-runtime-invariants">Runtime invariants</a></li>
+  <li><a href="#evolution-by-release" id="markdown-toc-evolution-by-release">Evolution by release</a></li>
+  <li><a href="#how-to-debug" id="markdown-toc-how-to-debug">How to debug</a></li>
+  <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
+  <li><a href="#source-on-github" id="markdown-toc-source-on-github">Source on GitHub</a></li>
+</ul>
+
+</details>
+
+<h2 id="what-this-is">What this is</h2>
+
+<p>Story-loop walks fire <strong>between scenes</strong>, not inside them. The
+screensaver-loop <a href="../glossary/#scene-picker">scene picker</a> decides what’s next, asks the walk
+subsystem to move Johnny from his current <code class="language-plaintext highlighter-rouge">(spot, heading)</code> to the
+next scene’s start <code class="language-plaintext highlighter-rouge">(spot, heading)</code>, and only then plays the next
+scene’s <a href="../glossary/#fg2-pack">FG2 pack</a>.</p>
+
+<p>The walk happens against the live island background — ocean still
+animating, holiday overlay still on screen if applicable, the palm
+tree’s trunk and leaves still occluding correctly when Johnny passes
+behind them. Pause works, mute works, the captions are off (no
+caption fires during a walk). When the walk finishes, the next scene
+loads its pack as if Johnny had always been at the new spot.</p>
+
+<p>Freeplay’s direct-control walking is a different surface — same
+draw kernel, but the player drives <code class="language-plaintext highlighter-rouge">(x, y)</code> per <a href="../glossary/#vblank">VBlank</a> from the
+D-pad instead of consuming a pre-baked path. See
+<a href="../freeplay/">/docs/freeplay/</a>.</p>
+
+<p>The feature shipped in
+<a href="../../releases/#v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></a>
+and gained three runtime guards in subsequent releases (see
+<a href="#evolution-by-release">Evolution by release</a> below).</p>
+
+<h2 id="modules">Modules</h2>
+
+<p>The walk subsystem lives in four files under <code class="language-plaintext highlighter-rouge">src/</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">File</th>
+      <th style="text-align: right">Lines</th>
+      <th scope="col">Owner</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walk_data.h</code></td>
+      <td style="text-align: right">533</td>
+      <td>Sierra (via <code class="language-plaintext highlighter-rouge">jc_reborn</code>)</td>
+      <td>Pre-baked spot graph, shortest-path bookmarks, per-segment frame tables. Unchanged from the upstream engine decode.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walk.c</code> / <code class="language-plaintext highlighter-rouge">walk.h</code></td>
+      <td style="text-align: right">195 / 25</td>
+      <td>upstream</td>
+      <td>The original walk state machine. Consumes <code class="language-plaintext highlighter-rouge">walk_data.h</code>; produces a per-tick <code class="language-plaintext highlighter-rouge">(x, y, sprite_idx, heading)</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walk_pilot.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
+      <td style="text-align: right">354 / 84</td>
+      <td>this port</td>
+      <td>Story-loop walk driver. Wraps <code class="language-plaintext highlighter-rouge">walk.c</code> for the screensaver loop, owns the persistent walk-area clean buffer, and feeds <code class="language-plaintext highlighter-rouge">walk_render</code> one frame at a time.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">walk_render.c</code> / <code class="language-plaintext highlighter-rouge">.h</code></td>
+      <td style="text-align: right">119 / 75</td>
+      <td>this port</td>
+      <td>Per-frame draw kernel. Restores the island background, stamps the JOHNWALK sprite, and re-stamps the palm trunk + leaves on top when Johnny is between SPOT_3 and SPOT_4. Used by both walk_pilot and freeplay.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The split between <code class="language-plaintext highlighter-rouge">walk_pilot</code> (state) and <code class="language-plaintext highlighter-rouge">walk_render</code> (pixel push)
+is deliberate. Freeplay reuses <code class="language-plaintext highlighter-rouge">walk_render</code> directly — same kernel,
+different driver — and walk_pilot’s clean-buffer ownership stays out
+of freeplay’s allocation budget.</p>
+
+<h2 id="the-spot-graph">The spot graph</h2>
+
+<p>Johnny stands at one of six spots on the island, labelled <code class="language-plaintext highlighter-rouge">A</code>
+through <code class="language-plaintext highlighter-rouge">F</code> in the source. The graph is intentionally sparse —
+not every (from, to) pair has a direct path. <code class="language-plaintext highlighter-rouge">calcPath</code> falls back
+to shortest-path routing through the bookmarks table when there’s
+no direct entry.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       A     B     C     D     E     F
+   A   .    68    38     .     0    17       (no direct A→D)
+   B  109    .   133     .     .     .       (B is leaf-like)
+   C  163  196     .   211   224   245       (C is the hub)
+   D    .    .   278     .   289   302       (no direct D→A, D→B)
+   E  332    .   356   381     .   394       (no direct E→B)
+   F  423    .   443   457   463     .       (no direct F→B)
+</code></pre></div></div>
+
+<p>The numbers are byte offsets into <code class="language-plaintext highlighter-rouge">walkDataPath[]</code>, not frame
+counts. Each entry points at a sequence of <code class="language-plaintext highlighter-rouge">(x, y, sprite_idx)</code>
+tuples the kernel walks through one tick at a time.</p>
+
+<p>The full pre-flight audit, the per-spot canonical <code class="language-plaintext highlighter-rouge">(x, y)</code>
+coordinates, and the heading conventions are documented in the
+upstream source doc — see
+<a href="../../source/docs/ps1/walk-spot-coordinates/">walk-spot-coordinates</a>
+for the deep dive.</p>
+
+<h2 id="runtime-invariants">Runtime invariants</h2>
+
+<p>The walk render kernel has to keep four things true on every walk
+frame, against the live island. Breaking any of them shows up
+immediately as a visual regression:</p>
+
+<ul>
+  <li><strong>Waves keep moving.</strong> The ocean wave-band animates per VBlank
+the same as during a scene; walks don’t freeze the backdrop.</li>
+  <li><strong>Holiday overlay re-stamps.</strong> If a holiday emblem is on screen,
+the kernel re-stamps it <em>behind</em> Johnny each walk frame so he
+visibly walks past it instead of erasing it.</li>
+  <li><strong>Palm-tree occlusion holds.</strong> When Johnny passes between
+<code class="language-plaintext highlighter-rouge">SPOT_3</code> and <code class="language-plaintext highlighter-rouge">SPOT_4</code>, <code class="language-plaintext highlighter-rouge">walkRenderFrame</code> stamps the palm trunk
+and leaves <em>after</em> the walking sprite so the tree visibly
+covers him. The <code class="language-plaintext highlighter-rouge">behindTree</code> flag in the kernel signature is
+the toggle.</li>
+  <li><strong>The walk-area clean buffer is persistent.</strong> Earlier designs
+re-allocated the buffer per walk start; that fragmented the
+heap and made later walks lose their erase baseline. Current
+design captures one tight walk-area buffer during scene setup
+and refreshes its pixels only when island state changes.
+<code class="language-plaintext highlighter-rouge">walkPilotCaptureCleanWalkAreaIfStale</code> is the entry point —
+it compares the current <code class="language-plaintext highlighter-rouge">(raft, lowTide, night, holidayId,
+xPos, yPos)</code> to the last capture and re-snapshots only on
+drift.</li>
+</ul>
+
+<p>The state-key is the <code class="language-plaintext highlighter-rouge">(raft, lowTide, night, holidayId, xPos,
+yPos)</code> tuple — six fields. Any change invalidates the cached
+clean buffer and forces a re-snapshot.</p>
+
+<h2 id="evolution-by-release">Evolution by release</h2>
+
+<p>The walk subsystem grew runtime guards over the v0.4.20 → v0.8.1
+releases:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code></strong> — story-loop walks land. Johnny stops
+teleporting between scenes. Footstep audio shipped here too
+but was removed wholesale before any sample-ID audit
+(see the historical
+<a href="../../source/docs/ps1/walk-implementation-plan/">walk-implementation-plan</a>
+for the original Phase 4 footsteps record).</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code></strong> — backdrop-key guard. Walks now run only
+when the next scene matches the previous rendered tide,
+raft, night, holiday, and island X/Y state. A scene that
+changes any of those flags skips the walk; the next scene
+starts at its own start spot directly. Without this guard
+some walks rendered against a stale backdrop, e.g. low-tide
+Johnny walking on an in-progress high-tide ocean.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code></strong> — clean-rect retry path. If the per-walk
+clean-buffer allocation fails first try, the kernel waits one
+frame and retries instead of dropping the walk. Reduced the
+fail-rate-under-pressure from “occasionally noticeable” to
+“not seen since this shipped.”</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> — wave-band/split-rect pressure accounting.
+The clean-rect pressure estimator was counting only foreground
+pack bounds, not the ocean wave band or the upper/lower split
+rects actually saved for restoration. The MARY 4 random-load
+freeze
+(<a href="../../lab/v081-mary4-freeze/">retrospective</a>)
+was the canary. Fix is centralized in a helper that mirrors
+the actual save path; covers all 14 random-position scenes.</li>
+</ul>
+
+<h2 id="how-to-debug">How to debug</h2>
+
+<p>The BSOD log snapshot ships three diagnostic accessors that print
+the walk subsystem’s state at the moment of failure:
+<code class="language-plaintext highlighter-rouge">walkPilotCleanBufferAllocated</code>, <code class="language-plaintext highlighter-rouge">walkPilotCleanBufferBytes</code>, and
+<code class="language-plaintext highlighter-rouge">walkPilotJohnwalkSlotLoaded</code>. Look for them in any TTY/file log
+captured during a freeze — the values say whether the persistent
+clean buffer was alive at the point of the bug.</p>
+
+<p>For visual debugging, the
+<a href="../regtest/">regtest harness</a> captures
+frame PNGs every N frames; comparing two consecutive walk
+captures usually reveals stale-backdrop bleed-through. The
+<a href="../scripted-input/">scripted-input harness</a>
+can drive a deterministic walk by replaying a fixed pad-script.</p>
+
+<p>For repros that the bounded matrix can’t reach, run a
+<a href="../glossary/#soak-test">soak</a> — long
+randomized DuckStation pass — and watch for the kind of
+clean-pressure freeze v0.8.1 fixed.</p>
+
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../freeplay/">Freeplay reference</a> —
+the other consumer of <code class="language-plaintext highlighter-rouge">walk_render</code>. Same kernel, D-pad input
+instead of pre-baked path.</li>
+  <li><a href="../hardware/">Hardware envelope</a> —
+why the persistent clean buffer matters: 2 MB total RAM, every
+re-allocation is a fragmentation risk.</li>
+  <li><a href="../../perf/">Performance battle card</a> —
+per-tide timing for every scene, including the walk-adjacent
+ones.</li>
+  <li><a href="../performance/">Performance reference</a>
+— what each column on the battle card means; the walk
+subsystem’s persistent clean buffer is part of the same
+pressure-accounting envelope.</li>
+  <li><a href="../../lab/v081-mary4-freeze/">v0.8.1 retrospective</a>
+— the soak-vs-matrix war story that drove the wave-band pressure
+fix.</li>
+  <li><a href="../glossary/#clean-rect">Glossary: clean-rect</a>
+· <a href="../glossary/#bootmode">Glossary: BOOTMODE.TXT</a></li>
+</ul>
+
+<h2 id="source-on-github">Source on GitHub</h2>
+
+<ul>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_pilot.h"><code class="language-plaintext highlighter-rouge">src/walk_pilot.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_pilot.c"><code class="language-plaintext highlighter-rouge">src/walk_pilot.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.h"><code class="language-plaintext highlighter-rouge">src/walk_render.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.h"><code class="language-plaintext highlighter-rouge">src/walk.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.c"><code class="language-plaintext highlighter-rouge">src/walk.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_data.h"><code class="language-plaintext highlighter-rouge">src/walk_data.h</code></a> — the upstream Sierra route table.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-implementation-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-implementation-plan.md</code></a> — original walk port plan, with the Phase 4 footsteps record kept for historical accuracy.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-spot-coordinates.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-spot-coordinates.md</code></a> — pre-flight audit and per-spot coordinates.</li>
+</ul>
+
+  </div>
+</article>
+
+  </main>
+  <footer class="site-footer" role="contentinfo">
+  <div class="site-footer-inner">
+    <hr class="rule" />
+    <div class="footer-grid">
+      <div class="footer-col">
+        <p class="footer-credit">
+          A labor of love by <strong>Hunter Davis</strong>.<br />
+          The Johnny Castaway character belongs to its original creator;
+          this port ships only the code that drives it.
+        </p>
+        <p class="footer-license">
+          Code: <a href="../../legal/">GPL-3.0</a> ·
+          Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
+          63 / 63 scenes validated
+          (<a href="../../releases/">v0.8.2-ps1</a>)
+        </p>
+        <p class="footer-license">
+          Devlog feed:
+          <a href="../../devlog/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../devlog/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          Lab feed:
+          <a href="../../lab/feed.xml" type="application/atom+xml">Atom</a> ·
+          <a href="../../lab/feed.json" type="application/feed+json">JSON</a>
+          &nbsp;·&nbsp;
+          <a href="../../humans.txt" type="text/plain">humans.txt</a>
+          &nbsp;·&nbsp;
+          <a href="../../sitemap.xml" type="application/xml">sitemap</a>
+        </p><p class="footer-license footer-edit">
+          Spotted a typo or a stale claim?
+          <a href="https://github.com/huntergdavis/johnny-castaway-ps1/edit/main/site/docs/walks/index.md" rel="noopener">Edit this page on GitHub</a> →
+        </p><p class="footer-transparency">
+          <strong>Transparency.</strong> Claude, Gemini, and OpenAI Codex
+          were all used extensively across this project — for programming,
+          debugging support, and generating the prose on this website.
+          The decisions, the merge bar, and the final read-through are
+          Hunter's. The first drafts often were not.
+        </p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          <li><a href="../../help/">Help</a></li>
+          <li><a href="../../perf/">Battle card</a></li>
+          <li><a href="../../releases/">Releases</a></li>
+          <li><a href="../../faq/">FAQ</a></li>
+          <li><a href="../../credits/">Credits</a></li>
+          <li><a href="../../hack/">Hack</a></li>
+          <li><a href="../glossary/">Glossary</a></li>
+          <li><a href="../../source/">Source library</a></li>
+          <li><a href="../../resources/">Resources</a></li>
+          <li><a href="../../archaeology/regtest-references/cases/">Regtest cases</a></li>
+          <li><a href="../../legal/">Legal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

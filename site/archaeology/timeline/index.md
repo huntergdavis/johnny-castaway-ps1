@@ -160,3 +160,21 @@ the deep dives; this entry is the chronological anchor.
 The dated worklogs for every commit between these eras live at
 [/devlog/]({{ '/devlog/' | relative_url }}). The full narrative
 walkthrough is at [/archaeology/]({{ '/archaeology/' | relative_url }}).
+
+## Related pages
+
+- [About: History]({{ '/about/history/' | relative_url }}) —
+  the narrative-prose companion to this dated chronology.
+- [Releases]({{ '/releases/' | relative_url }}) — short
+  notes on every tagged version named above.
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — the
+  visual-signoff bar the v0.7.0 milestone certified.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  the second ledger that opened after v0.7.0.
+- [Lab: the 63-scene grind]({{ '/lab/the-63-scene-grind/' | relative_url }})
+  — retrospective on the bring-up era between v0.4 and v0.7.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — retrospective on the v0.8.0 performance arc.
+- [Lab: v0.8.1 MARY 4 freeze]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — stability follow-on; the soak loop catching what the
+  per-commit matrix didn't.
