@@ -7,7 +7,7 @@ description: How audio works on the Johnny Castaway PS1 fan port — SPU RAM lay
 ---
 
 A labor of love by Hunter Davis. This page describes the audio pipeline:
-the SPU constraints, the conversion path from WAV to VAG, the runtime
+the SPU constraints, the conversion path from WAV to [VAG]({{ '/docs/glossary/#vag' | relative_url }}), the runtime
 preload, and the playback path during scene replay. If you paid for this,
 you were cheated. Open source and free.
 
