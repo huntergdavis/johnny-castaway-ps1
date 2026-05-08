@@ -139,7 +139,7 @@
 <h2 id="latest">Latest</h2>
 
 <h3 id="v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</h3>
-<p><em>2026-05-06</em></p>
+<p><time datetime="2026-05-06"><em>2026-05-06</em></time></p>
 
 <p>A randomized long-run soak exposed a scene-load freeze after a large split
 clean-rect save. The pressure estimator was counting only foreground pack
@@ -167,7 +167,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
-<p><em>2026-05-06</em></p>
+<p><time datetime="2026-05-06"><em>2026-05-06</em></time></p>
 
 <p>The first release after the post-validation polish phase to promote the headless optimization methodology as a release baseline. All 63 scenes stay green under the visual + audible bar, and all 126 high/low variants are now routed through the perf matrix. Timing-bearing rows now average <strong>+0.9% over target / 99.5% target speed</strong> — about 16.5 percentage points of over-target gap closed since the compact full-matrix baseline. The retrospective on which experiments moved that line is at <a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.</p>
 
@@ -186,7 +186,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</h3>
-<p><em>2026-05-05</em></p>
+<p><time datetime="2026-05-05"><em>2026-05-05</em></time></p>
 
 <p>A randomized <a href="../docs/walks/">story-loop walking</a> regression let Johnny walk over water and leave repeated walking poses when the next scene’s island backdrop state differed from the framebuffer left by the previous scene. The fix was a backdrop key — the runtime remembers the tide / raft / night / holiday / island position that produced the previous frame and refuses to start a walk unless the next scene matches.</p>
 
@@ -201,7 +201,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.2-ps1">GitHub release</a></p>
 
 <h3 id="v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</h3>
-<p><em>2026-05-05</em></p>
+<p><time datetime="2026-05-05"><em>2026-05-05</em></time></p>
 
 <p>Memory-card schema bumped to v6 to separate the holiday <em>policy</em> from the manual override, so the pause menu can offer five distinct holiday modes. New boots default to <code class="language-plaintext highlighter-rouge">AUTO DATE:ORIG4</code> — Sierra’s original four overlays, automatic by date.</p>
 
@@ -216,7 +216,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.1-ps1">GitHub release</a></p>
 
 <h3 id="v070-ps1--complete-scene-validation"><code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> — complete scene validation</h3>
-<p><em>2026-05-05</em></p>
+<p><time datetime="2026-05-05"><em>2026-05-05</em></time></p>
 
 <p>The 63-scene grind ended here. Every routed scene the original Sierra game had now plays pixel-perfect on the PS1 with synced SFX across every applicable variant. The retrospective on what the daily loop actually looked like is at <a href="../lab/the-63-scene-grind/">/lab/the-63-scene-grind/</a>.</p>
 
@@ -231,7 +231,7 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.7.0-ps1">GitHub release</a></p>
 
 <h3 id="v060-ps1--ocean-ambience"><code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> — ocean ambience</h3>
-<p><em>2026-05-01</em></p>
+<p><time datetime="2026-05-01"><em>2026-05-01</em></time></p>
 
 <p>A 20-second CC0 ocean-loop sample plays on a dedicated SPU voice
 underneath every scene. Toggleable from the pause menu; choice
@@ -248,7 +248,7 @@ playback work.</p>
 <p><a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.6.0-ps1">GitHub release</a></p>
 
 <h3 id="v061-ps1-through-v0613-ps1--the-validation-cluster-patches"><code class="language-plaintext highlighter-rouge">v0.6.1-ps1</code> through <code class="language-plaintext highlighter-rouge">v0.6.13-ps1</code> — the validation-cluster patches</h3>
-<p><em>2026-05-01 → 2026-05-04</em></p>
+<p><em><time datetime="2026-05-01">2026-05-01</time> → <time datetime="2026-05-04">2026-05-04</time></em></p>
 
 <p>The stability releases between <code class="language-plaintext highlighter-rouge">v0.6.0-ps1</code> (ocean ambience) and
 <code class="language-plaintext highlighter-rouge">v0.7.0-ps1</code> (complete scene validation) are scene-by-scene
@@ -262,7 +262,7 @@ final state. The full list of GitHub-tagged builds in this cluster
 is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">huntergdavis/johnny-castaway-ps1/releases</a>.</p>
 
 <h3 id="v050-ps1--freeplay-and-debug-mode"><code class="language-plaintext highlighter-rouge">v0.5.0-ps1</code> — Freeplay and debug mode</h3>
-<p><em>2026-05-01</em></p>
+<p><time datetime="2026-05-01"><em>2026-05-01</em></time></p>
 
 <p>The release that turned the project from a passive screensaver port into something a player could touch. Direct-control Johnny via D-pad / analog, gag and visitor debug catalogs in the pause menu, controllable world state, and a no-allocation steady-state freeplay loop.</p>
 
@@ -278,7 +278,7 @@ is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">hun
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.5.0-ps1">GitHub release</a></p>
 
 <h3 id="v0420-ps1--story-loop-walking"><code class="language-plaintext highlighter-rouge">v0.4.20-ps1</code> — story-loop walking</h3>
-<p><em>2026-04-30</em></p>
+<p><time datetime="2026-04-30"><em>2026-04-30</em></time></p>
 
 <p>The first build where Johnny no longer teleports between finished scenes. The PS1 screensaver loop now carries his spot and heading forward, runs Sierra’s original <code class="language-plaintext highlighter-rouge">walk_data.h</code> route table, and visibly walks him across the island before the next FG2 scene begins.</p>
 
