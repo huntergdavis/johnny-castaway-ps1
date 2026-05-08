@@ -38,7 +38,7 @@ That is the anchor.
 ## Why it matters
 
 The site is large now. About pages, archaeology chapters, 63 scene pages, 36
-holiday pages, lab essays, generated source wrappers, regtest case pages. Some
+holiday pages, lab essays, generated source wrappers, [regtest case pages]({{ '/archaeology/regtest-references/cases/' | relative_url }}). Some
 of that prose started as agent drafts. Some of it came from old worklogs. Some
 of it is generated from structured files.
 
