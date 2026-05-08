@@ -446,7 +446,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed
+  notes: raft-work-hurts-mary (Johnny works on his raft to get home; Mary sees this and is heartbroken that he plans to leave); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch; normal, far-left, and far-right foreground-only captures restore both sides of the island-relative action, and far-right stress playback at `x=300,y=54` passed
 - ads: MARY
   tag: 5
   slug: mary5

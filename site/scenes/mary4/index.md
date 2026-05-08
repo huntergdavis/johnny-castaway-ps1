@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MARY 4 — Heartbroken at the raft
+title: MARY 4 — Mary's feelings hurt as Johnny works on the raft
 ads: MARY
 tag: 4
 slug: mary4
 status: validated
-description: "MARY.ADS scene 4: Heartbroken at the raft. Validated with generic multi-view scene-relative stitching."
+description: "MARY.ADS scene 4: Johnny works on his raft to get off the island; Mary sees and is heartbroken that he plans to leave. Validated 2026-05-08."
 ---
 
 Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}): pixel-perfect human
@@ -19,11 +19,9 @@ visual signoff plus synced captured SFX.
 - Low-tide pack: <code>MARY4LOW.FG2</code>
 - Source-table note: generic multi-view scene-relative stitch; production island placement remains variable
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 7.) Johnny works on the raft; the mermaid is heartbroken nearby.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny is working on the raft, fixing it up so he can sail home. Mary the mermaid surfaces and sees what he's doing — and her feelings are hurt by the realization that he plans to leave the island. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior "heartbroken at the raft" caption-mapping with the cause (the raft work) made explicit.
 
 ## Validation notes
 
