@@ -210,7 +210,7 @@ faster than a full executable rebuild and is the day-to-day inner loop.
 
 ## The wrapper scripts
 
-The `scripts/` directory contains roughly 130 shell and Python files at
+The `scripts/` directory contains roughly 155 shell and Python files at
 the time of writing. The ones that matter for daily build work:
 
 | Script | Purpose |
