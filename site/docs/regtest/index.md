@@ -439,6 +439,9 @@ ps1_test.h                         Test-instrumentation macros
 
 ## View source on GitHub
 
+- [`scripts/run-regtest.sh`]({{ site.github_url }}/blob/main/scripts/run-regtest.sh)
+  — the Docker wrapper this page documents; full option set
+  in the body's Command-line options section.
 - [`docs/ps1/regtest-harness.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-harness.md)
 - [`docs/ps1/regtest-quickstart.md`]({{ site.github_url }}/blob/main/docs/ps1/regtest-quickstart.md)
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md)
