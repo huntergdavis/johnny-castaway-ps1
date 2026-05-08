@@ -154,7 +154,7 @@ the project, running it, and the original game.
 
 A port of Sierra's 1992 *Johnny Castaway* screensaver to the
 original PlayStation. It runs on real hardware and on
-DuckStation. {{ site.release.scenes_validated }} of {{ site.release.scenes_total }}
+[DuckStation]({{ '/docs/glossary/#duckstation' | relative_url }}). {{ site.release.scenes_validated }} of {{ site.release.scenes_total }}
 scenes are validated as of {{ site.release.tag }}.
 
 ### Why PS1?
