@@ -115,7 +115,7 @@ The menu documentation harness is the first user:
 
 It stages a temporary boot mode, waits 30 seconds, presses Start, walks the
 major pause-menu screens, emits delayed
-`JCPADSHOT label=<name> frame=<n> tick=<n>` markers, runs DuckStation
+[`JCPADSHOT label=<name> frame=<n> tick=<n>`]({{ '/docs/glossary/#jcpadshot' | relative_url }}) markers, runs DuckStation
 regtest headlessly, copies the first captured PNG at or after each marker
 into `site/assets/img/help/menu/`, and rewrites
 [Menu help guide]({{ '/help/menu/' | relative_url }}). The staged boot files
