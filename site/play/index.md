@@ -7,8 +7,8 @@ description: Download the latest Johnny Castaway PS1 fan port — .bin / .cue pa
 
 ## Latest build
 
-**{{ site.release.tag }}** — short notes on this and earlier
-versions are at [/releases/]({{ '/releases/' | relative_url }});
+**{{ site.release.tag }}** ({%- if site.release.release_date -%}released <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time>{%- endif -%}) — short notes on
+this and earlier versions are at [/releases/]({{ '/releases/' | relative_url }});
 the GitHub release pages are at
 [{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
