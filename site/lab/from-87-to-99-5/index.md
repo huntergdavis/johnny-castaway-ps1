@@ -28,11 +28,13 @@ to "optimized validated outlier."
 [`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 followed as a clean-rect pressure stability fix that left the
 matrix mean untouched, and the v0.8.2 + v0.8.3 follow-ons closed
-the VISITOR3 and WALKSTUF1 outliers. The current branch at
-`{{ site.release.tag }}` is at **-0.3% over target /
+the VISITOR3 and WALKSTUF1 outliers. The current public-capped
+average at `{{ site.release.tag }}` is **+0.6% over target /
 {{ site.release.perf_target_speed_pct }}% target speed**, with
-roughly **17.7 percentage points** of over-target gap closed and
-about **13.2 target-speed points** added. This article is what
+roughly **16.8 percentage points** of over-target gap closed and
+about **12.4 target-speed points** added. The optimization-side
+raw signed average sits past target — the public number is the
+conservative read this site publishes. This article is what
 that loop actually looked like.
 
 ## Two ledgers, on purpose
@@ -117,8 +119,8 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 
 ## What's left
 
-The current matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
-The matrix-wide aggregate is now slightly under target — the remaining
+The current public-capped matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
+The matrix-wide aggregate is essentially at target — the remaining
 work is in a small number of high-leverage rows that still slip.
 As of `{{ site.release.tag }}` there are no red rows left on the
 [battle card]({{ '/perf/' | relative_url }}). The three yellow rows
