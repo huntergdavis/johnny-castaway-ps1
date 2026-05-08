@@ -8,7 +8,7 @@ status: validated
 description: "VISITOR.ADS scene 6: Coconut tree impact. Validated on PS1/DuckStation with full-host impact-delta capture."
 ---
 
-Validated on 2026-05-04 under the FISHING 1 bar.
+Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 

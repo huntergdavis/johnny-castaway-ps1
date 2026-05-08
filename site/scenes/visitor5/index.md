@@ -8,7 +8,7 @@ status: validated
 description: "VISITOR.ADS scene 5: Visitor takes Johnny. Validated on PS1/DuckStation with readable coconut impact timing."
 ---
 
-Validated on 2026-05-04 under the FISHING 1 bar.
+Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 

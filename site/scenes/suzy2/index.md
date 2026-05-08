@@ -8,7 +8,7 @@ status: validated
 description: "SUZY.ADS scene 2: Raft drifts to her. Validated on PS1 with the SUZBEACH.SCR backdrop, static-base raft foreground capture, and synced SFX."
 ---
 
-Validated on 2026-05-04 under the FISHING 1 bar.
+Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 SUZY 2 is a scene-specific backdrop case: the runtime loads
 `SUZBEACH.SCR` instead of painting the normal island/ocean background.

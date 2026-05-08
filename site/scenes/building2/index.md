@@ -8,7 +8,7 @@ status: validated
 description: "BUILDING.ADS scene 2: Lilliputian sandcastle scene. Validated on PS1 after full-host sandcastle injection and cleanup."
 ---
 
-Validated on 2026-05-05 under the FISHING 1 bar. The high/low packs were
+Validated on 2026-05-05 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}). The high/low packs were
 regenerated through the generic normal/far-left/far-right foreground-only
 multi-view stitch, with the persistent full-host sandcastle injected so the
 red flag and planes originate from the correct base. The pack stays in FGP3
