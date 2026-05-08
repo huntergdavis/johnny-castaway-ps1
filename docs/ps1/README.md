@@ -12,14 +12,27 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.2-ps1` |
+| Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **-0.1% over target / 100.2% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **-0.2% over target / 100.3% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
-`v0.8.2-ps1` is the current performance point release after `v0.8.1-ps1`.
+`v0.8.3-ps1` is the current performance point release after `v0.8.2-ps1`.
+It keeps all 63 scenes visually/audibly validated, preserves the routed
+126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
+restore-minus-current pack baseline. The public battle card is now
+`-0.2497%` over target / `100.2899%` target speed across 120 timing-bearing
+rows, about `17.65` over-target points removed and `13.19` target-speed
+points added since the compact full-matrix baseline.
+
+The latest VISITOR3 follow-up, `visitor3-fallthrough5-v142`, is closed as a
+non-promoting exact-flat threshold probe. The accepted fallthrough guard stays
+at `6` VBlanks; future VISITOR3 work remains generated scheduler ownership,
+safe upload/precomposed payloads, or another pack/data-shape reduction.
+
+`v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and is now followed by the FGP3/v4 compact
 metadata reader inline baseline, VISITOR3 pack-side restore-minus-current
@@ -240,6 +253,8 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.3.md](release-notes-0.8.3.md) — WALKSTUF1 compact foreground release notes
+- [release-notes-0.8.2.md](release-notes-0.8.2.md) — VISITOR3 guarded-read performance release notes
 - [release-notes-0.8.1.md](release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](release-notes-0.8.0.md) — complete-scene performance baseline release notes
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes

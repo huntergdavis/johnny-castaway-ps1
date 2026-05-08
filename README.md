@@ -82,7 +82,7 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 
 | | |
 |---|---|
-| Current release | **`v0.8.2-ps1`** |
+| Current release | **`v0.8.3-ps1`** |
 | Reference scene | **`FISHING 1`** — pixel-perfect visuals + synced SFX across every applicable variant (night / low-tide / holiday / raft-stage) |
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
@@ -92,6 +92,20 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Perf stats version | Newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
+
+`v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. It promotes
+`walkstuf1-compact-fgp3-v141`, converting both WALKSTUF1 PAL4/FGP2 packs into
+padded compact FGP3/v4 restore-minus-current packs while preserving the
+`1535263` byte pack footprints, pack LBAs, and the `215040` byte PS-EXE
+bucket. The current public rollup is `-0.2497%` over target / `100.2899%`
+target speed across 120 timing-bearing rows: about **17.65 percentage points**
+of over-target gap removed and **13.19 target-speed points** added since the
+compact full-matrix baseline.
+
+The follow-up VISITOR3 fallthrough-threshold probe did not promote:
+`visitor3-fallthrough5-v142` stayed exact-flat on both tides, so the runtime
+keeps the accepted `6` VBlank fallthrough guard and the WALKSTUF1 compact pass
+remains the release baseline.
 
 `v0.8.2-ps1` is a performance point release after `v0.8.1-ps1`. It promotes
 the VISITOR3 high-tide guarded generated-window read group `138..162`, lowering
@@ -660,6 +674,7 @@ prefer.
 - [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) + [performance-preprocess-opportunities.csv](docs/ps1/performance-preprocess-opportunities.csv) — current FG2/FGP3 pack-time preprocessing target sheet
 - [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) + [performance-o2-audit.csv](docs/ps1/performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [docs/ps1/README.md](docs/ps1/README.md) — branch entrypoint
+- [release-notes-0.8.3.md](docs/ps1/release-notes-0.8.3.md) — WALKSTUF1 compact foreground release notes
 - [release-notes-0.8.2.md](docs/ps1/release-notes-0.8.2.md) — VISITOR3 guarded-read performance release notes
 - [release-notes-0.8.1.md](docs/ps1/release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](docs/ps1/release-notes-0.8.0.md) — complete-scene performance baseline release notes

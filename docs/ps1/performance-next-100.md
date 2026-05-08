@@ -192,6 +192,15 @@ still the measured knee after the v127 tail-trim stageguard pass. Retesting
 point; VISITOR3 needs generated scheduler ownership or a pack/data-shape change
 to reduce the remaining `150/170` visible blocking.
 
+Current VISITOR3 fallthrough guard gate: lowering
+`FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS` from `6` to `5` after the
+WALKSTUF1 compact pass is rejected as exact-flat. The fresh control and
+candidate both kept high at `1422`, `1118/1028`, `blocking_vb=150`,
+`prefetch_overrun_vb=0`, and `loop_reads=27`; low stayed `1426`,
+`1126/1025`, `blocking_vb=170`, `prefetch_overrun_vb=0`, and
+`loop_reads=31`. Keep the guard at `6` and do not spend more VISITOR3 cycles
+on local threshold-only fallthrough probes.
+
 Current BUILDING2 low restore-minus-current gate: the low-tide pack transform
 is still too hidden-refill expensive under the current scheduler, even though
 the visible signal is strong. A size-preserving `BUIL2LOW.FG2` cleanup-minus-

@@ -22,6 +22,35 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
+*2026-05-08*
+
+This point release promotes the WALKSTUF1 compact foreground pack pass and
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.
+
+- **WALKSTUF1 gets compact FGP3/v4 packs.** Both tides move from PAL4/FGP2 to
+  padded compact FGP3/v4 restore-minus-current packs while preserving the
+  `1535263` byte pack footprints, original LBAs, and the `215040` byte PS-EXE
+  bucket.
+- **The outlier gap drops sharply.** WALKSTUF1 high improves `1592/1406 ->
+  1491/1426`; low improves `1604/1407 -> 1489/1427`.
+- **Visible CD pressure falls.** High blocking drops `275 -> 85`; low blocking
+  drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
+- **Battle card is now under target.** The 120 timing-bearing rows average
+  `-0.2497%` over target / `100.2899%` target speed.
+- **VISITOR3 threshold probing is closed for this baseline.** Lowering the
+  fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
+  keeps the accepted guard and moves future VISITOR3 work back to generated
+  scheduler/data-shape lanes.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.3-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
 ### `v0.8.2-ps1` — VISITOR3 guarded-read performance
 *2026-05-07*
 
@@ -44,8 +73,6 @@ performance battle-card numbers.
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.2-ps1)
 &nbsp;·&nbsp;
 [Download .bin / .cue]({{ '/play/' | relative_url }})
-
-## Earlier milestones
 
 ### `v0.8.1-ps1` — clean-rect pressure stability
 <time datetime="2026-05-06"><em>2026-05-06</em></time>

@@ -117,10 +117,11 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v082-ps1--visitor3-guarded-read-performance" id="markdown-toc-v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</a></li>
+      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
+      <li><a href="#v082-ps1--visitor3-guarded-read-performance" id="markdown-toc-v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</a></li>
       <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
       <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
@@ -138,6 +139,37 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</h3>
+<p><em>2026-05-08</em></p>
+
+<p>This point release promotes the WALKSTUF1 compact foreground pack pass and
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.</p>
+
+<ul>
+  <li><strong>WALKSTUF1 gets compact FGP3/v4 packs.</strong> Both tides move from PAL4/FGP2 to
+padded compact FGP3/v4 restore-minus-current packs while preserving the
+<code class="language-plaintext highlighter-rouge">1535263</code> byte pack footprints, original LBAs, and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE
+bucket.</li>
+  <li><strong>The outlier gap drops sharply.</strong> WALKSTUF1 high improves <code class="language-plaintext highlighter-rouge">1592/1406 -&gt;
+1491/1426</code>; low improves <code class="language-plaintext highlighter-rouge">1604/1407 -&gt; 1489/1427</code>.</li>
+  <li><strong>Visible CD pressure falls.</strong> High blocking drops <code class="language-plaintext highlighter-rouge">275 -&gt; 85</code>; low blocking
+drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; loop reads drop from <code class="language-plaintext highlighter-rouge">134/132</code> to <code class="language-plaintext highlighter-rouge">69/69</code>.</li>
+  <li><strong>Battle card is now under target.</strong> The 120 timing-bearing rows average
+<code class="language-plaintext highlighter-rouge">-0.2497%</code> over target / <code class="language-plaintext highlighter-rouge">100.2899%</code> target speed.</li>
+  <li><strong>VISITOR3 threshold probing is closed for this baseline.</strong> Lowering the
+fallthrough guard from <code class="language-plaintext highlighter-rouge">6</code> to <code class="language-plaintext highlighter-rouge">5</code> VBlanks stayed exact-flat, so the runtime
+keeps the accepted guard and moves future VISITOR3 work back to generated
+scheduler/data-shape lanes.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.3/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.3-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</h3>
 <p><em>2026-05-07</em></p>
@@ -163,8 +195,6 @@ navigation, glossary, lab/feed, structured-data, and page-TOC polish.</li>
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.2-ps1">GitHub release</a>
  · 
 <a href="../play/">Download .bin / .cue</a></p>
-
-<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</h3>
 <p><time datetime="2026-05-06"><em>2026-05-06</em></time></p>
