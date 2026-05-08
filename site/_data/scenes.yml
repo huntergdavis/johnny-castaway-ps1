@@ -462,7 +462,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition
+  notes: packs-raft-says-goodbye (Johnny finishes packing the raft and says goodbye to Mary before sailing off); visual + audible signoff after rebuilding high/low packs through the generic multi-view scene-relative stitch with raft-stage `0`; runtime story-flag policy now clamps `NORAFT` scenes to no generic raft even when a broad `raft-stage` token is present, and `FIRST` scenes skip the walk-in before the frog/full-wipe transition
 - ads: MISCGAG
   tag: 1
   slug: miscgag1

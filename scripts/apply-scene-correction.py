@@ -107,7 +107,7 @@ def update_scene_page(slug, title, description, body):
     # block, since the correction asserts the truth.
     pat = re.compile(
         r"## What this scene (probably )?is\s*\n\n.*?(?=\n#{2,} |\Z)",
-        re.S,
+        re.S | re.I,
     )
     # Emit a single trailing newline; the lookahead leaves the
     # newline-before-heading in place, so this produces exactly one

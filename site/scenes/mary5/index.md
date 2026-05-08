@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MARY 5 — Goodbye
+title: MARY 5 — Packs the raft and says goodbye
 ads: MARY
 tag: 5
 slug: mary5
 status: validated
-description: "MARY.ADS scene 5: Goodbye. Validated after multi-view stitch and story-flag policy fixes."
+description: "MARY.ADS scene 5: Johnny finishes packing the raft and says goodbye to Mary before sailing off. Validated 2026-05-08."
 ---
 
 Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -15,12 +15,9 @@ Validated on `2026-05-03` under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1
 - ADS dispatch: <code>MARY.ADS scene 5</code>
 - Slug: <code>mary5</code>
 
-## What This Scene Is
+## What this scene is
 
-Mary's day-8 goodbye scene. Johnny leaves on the scene's own raft art,
-so the generic island raft is not applicable.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Mary's day-8 goodbye scene. Johnny finishes packing the raft and says goodbye to Mary before sailing off the island; the scene uses its own raft art, so the generic island raft is not applicable. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior HIGH-confidence caption-mapping.
 
 ## Validation Notes
 
