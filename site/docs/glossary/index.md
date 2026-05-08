@@ -133,6 +133,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="tonyhax">TonyHax</dt>
 <dd>The softmod path used to boot homebrew on retail PS1 hardware. The project is smoke-tested on a SCPH-7501 via TonyHax. Treat any boot success as a small miracle.</dd>
+
+<dt id="memcard">Memcard</dt>
+<dd>The PS1 Memory Card — 128 KB of removable battery-backed flash, addressed via SIO0 like the controller. The project persists pause-menu user choices (Scene Set pool, holiday-overlay mode, ocean ambience toggle, accessibility flags, time/date, RNG seed) into a v6-schema save block. PSn00bSDK exposes the read/write surface via <code>McRead*</code> / <code>McWrite*</code>; this project's wrapper lives in <code>src/memcard.c</code> + <code>src/memcard.h</code>. DuckStation emulates a virtual memcard per save slot; on real hardware any standard 1-block .MCR file works. Saved blocks survive across releases as long as the schema version doesn't bump.</dd>
 </dl>
 
 ## Build & release {#build}
