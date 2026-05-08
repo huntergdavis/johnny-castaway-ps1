@@ -21,7 +21,7 @@ binary called an **[FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})**
 and replays them, while owning only the narrow runtime it must:
 background, wave animation, holiday overlay, controller input, SPU
 audio. That trade is why a 63-scene screensaver fits onto a CD-ROM and
-inside 2&nbsp;MB of RAM at all.
+inside [2&nbsp;MB of RAM]({{ '/docs/hardware/' | relative_url }}) at all.
 
 Current release: `{{ site.release.tag }}`. Validated scenes:
 `{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}`
