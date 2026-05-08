@@ -86,7 +86,7 @@ headless DuckStation timing for every scene/tide variant.
 ## How it works (the short version)
 
 A *[host build]({{ '/docs/glossary/#host-build' | relative_url }})* of the original engine plays each scene under capture
-mode and dumps **FG2 packs** — small binary files that record every
+mode and dumps **[FG2 packs]({{ '/docs/glossary/#fg2-pack' | relative_url }})** — small binary files that record every
 visible draw, every sound trigger, every frame timing. The PS1 build
 loads those packs from the disc and replays them against its own
 background, wave animation, holiday overlay, captions, and SPU audio.
