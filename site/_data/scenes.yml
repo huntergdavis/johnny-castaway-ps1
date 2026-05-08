@@ -117,7 +117,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route
+  notes: sandcastle-slumps-stomp (Johnny tries to build a sandcastle, it slumps mid-build, and he stomps on it in frustration); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; sandcastle scene played cleanly on the normal high-tide/night route
 - ads: BUILDING
   tag: 2
   slug: building2
