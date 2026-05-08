@@ -42,6 +42,9 @@
   "applicationSubCategory": "Screensaver",
   "operatingSystem": "Sony PlayStation",
   "softwareVersion": {{ site.release.version | jsonify }},
+  {%- if site.release.release_date %}
+  "dateModified": {{ site.release.release_date | jsonify }},
+  {%- endif %}
   "isAccessibleForFree": true,
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
   "codeRepository": {{ site.github_url | jsonify }},
