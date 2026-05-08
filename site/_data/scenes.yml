@@ -730,7 +730,7 @@
   - high/low pack parity
   - static-base foreground overlay for `MRAFT.BMP`
   last_verified: '2026-05-04'
-  notes: visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
+  notes: raft-arrives-meets-suzy (Johnny drifts in on his raft and is reunited with Suzy); visual + audible signoff after regenerating high/low packs with a full-frame foreground-only overlay that includes static scene-local raft art; Johnny now rides the raft instead of floating, and SFX playback uses mixer headroom to avoid clipped overlapping samples
 - ads: VISITOR
   tag: 1
   slug: visitor1
