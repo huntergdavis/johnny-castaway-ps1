@@ -148,6 +148,16 @@
   {%- endcomment -%}
   <meta name="generator" content="Jekyll {{ jekyll.version }}; johnny-castaway-ps1 v{{ site.release.version }}; built {{ site.time | date: '%Y-%m-%d' }}" />
 
+  {%- comment -%}
+    DNS prefetch for github.com. Every page links to GitHub: the
+    footer repo link, the per-page "Edit this page on GitHub"
+    footer link, the View-source-on-GitHub block on doc pages,
+    and /play/'s `.bin` / `.cue` download buttons. Prefetching
+    DNS for github.com shaves ~20-50 ms off the click-to-load
+    path the first time a reader follows any of those links.
+  {%- endcomment -%}
+  <link rel="dns-prefetch" href="//github.com" />
+
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="{{ '/assets/fonts/bitter-latin-700-normal.woff2' | relative_url }}" />
   <link rel="preload" as="font" type="font/woff2" crossorigin
