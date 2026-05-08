@@ -64,7 +64,7 @@ on a tiny island. It runs in tiny vignettes — a fishing line, a passing
 ship, a holiday decoration — quietly, all day.
 
 This is a port of those vignettes to the original Sony PlayStation,
-running on real hardware or on DuckStation. It is a fan project: the
+running on real hardware or on [DuckStation]({{ '/docs/glossary/#duckstation' | relative_url }}). It is a fan project: the
 character belongs to the original creator, and the site's chrome and
 its [legal page]({{ '/legal/' | relative_url }}) reflect that.
 
