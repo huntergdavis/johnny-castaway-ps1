@@ -718,7 +718,7 @@
   - scene-specific `SUZBEACH.SCR` backdrop
   - high/low pack parity
   last_verified: '2026-05-04'
-  notes: visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
+  notes: suzy-finds-letter-from-johnny (Suzy back home finds a letter that Johnny sent her from the island); visual signoff after regenerating high/low packs and routing SUZY scenes through their source beach backdrop instead of the island/ocean runtime path
 - ads: SUZY
   tag: 2
   slug: suzy2

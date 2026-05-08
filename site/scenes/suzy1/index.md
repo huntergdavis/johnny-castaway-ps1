@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: SUZY 1 — Sunbathing daydream
+title: SUZY 1 — Suzy finds a letter from Johnny
 ads: SUZY
 tag: 1
 slug: suzy1
 status: validated
-description: "SUZY.ADS scene 1: Sunbathing daydream. Validated on 2026-05-04."
+description: "SUZY.ADS scene 1: Suzy back home finds a letter that Johnny sent her from the island. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -19,11 +19,9 @@ then replays the foreground pack over that beach background.
 - ADS dispatch: <code>SUZY.ADS scene 1</code>
 - Slug: <code>suzy1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 3.) A redhead sunbathes, finds a bottle, daydreams of a volcano island and a handsome man.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Suzy, back home, finds a letter that Johnny sent her from the island — the inbound side of the JOHNNY 3 letter-to-Suzy gag. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "sunbathing daydream" caption-mapping guess was wrong.
 
 ### Validation notes
 
