@@ -401,7 +401,7 @@
   - validation route `x=-124,y=37`
   - raft-stage `5`
   last_verified: '2026-05-03'
-  notes: visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required
+  notes: date-with-mary-the-mermaid (Johnny goes on a date with Mary the mermaid at the shoreline); visual + audible signoff on the legacy MARY1 route; no pack or runtime changes required
 - ads: MARY
   tag: 2
   slug: mary2
