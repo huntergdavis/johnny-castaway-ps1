@@ -45,3 +45,24 @@ Every window above maps to one of the bars the project actually measures.
 The two-ledger discipline ([visual signoff and headless perf stay separate]({{ '/about/method/#why-hybrid-won' | relative_url }})) shows up in the layout: the right side of the screen is what the player will see, the middle and left are what makes it true, the bottom is the cost of keeping it true.
 
 This is what most of the [post-validation performance loop]({{ '/lab/from-87-to-99-5/' | relative_url }}) looked like. Not a methodology diagram — a desk.
+
+## Related pages
+
+- [Lab: dunking-bird]({{ '/lab/dunking-bird/' | relative_url }})
+  — the methodology essay behind the auto-poker visible in
+  the screenshot's task list.
+- [Lab: build-farm]({{ '/lab/build-farm/' | relative_url }})
+  — the 24/7 Docker-runner machinery the bottom-monitor
+  panel watches.
+- [Lab: the LLM pass]({{ '/lab/llm-pass/' | relative_url }})
+  — methodology for the two LLM sub-agent windows in the
+  middle of the frame.
+- [Lab: from 87 to 99.5]({{ '/lab/from-87-to-99-5/' | relative_url }})
+  — the post-validation performance retrospective this
+  workflow drove.
+- [Docs: AI sub-agents]({{ '/docs/agents/' | relative_url }})
+  — the honest accounting of where the agents helped and
+  where they didn't.
+- [About: Method]({{ '/about/method/' | relative_url }})
+  — the two-ledger discipline (visual signoff + headless
+  perf) the screen layout above maps to.
