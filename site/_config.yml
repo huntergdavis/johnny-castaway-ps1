@@ -23,6 +23,11 @@ canonical_baseurl: "/johnny-castaway-ps1"
 release:
   version: "0.8.1"
   tag: "v0.8.1-ps1"
+  # ISO date the current `tag` shipped (matches the date on
+  # /releases/). Surfaced on the home status strip and in the
+  # SoftwareApplication JSON-LD `dateModified` field. Update
+  # alongside `version` and `tag` on each milestone release.
+  release_date: "2026-05-06"
   scenes_validated: 63
   scenes_total: 63
   # Headless-perf battle-card snapshot at the current release tag.
