@@ -431,7 +431,7 @@
   - host capture/test island position `x=80,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 uses low-memory clean-snapshot relief, and the late dinner/thought beat holds on the readable frames
+  notes: visual + audible signoff after rebuilding high/low packs from a far-right full-frame keyed foreground-only capture; host capture now invalidates stale captured sprite surfaces before BMP/layer frees, MARY3 now preserves prefetch under clean pressure with an 8-VBlank guard, and the late dinner/thought beat holds on the readable frames
 - ads: MARY
   tag: 4
   slug: mary4

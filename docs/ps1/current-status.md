@@ -4,9 +4,10 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release with the
-WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline plus the
-missing-scene timing refresh; all 63 scenes remain validated, and the public
-headless battle card is `+0.6248%` over target / `99.4019%` target speed).
+WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline plus the MARY3
+guarded prefetch-preserve follow-up; all 63 scenes remain validated, and the
+public headless battle card is `+0.5526%` over target / `99.4709%` target
+speed).
 
 ## Overall
 
@@ -63,8 +64,8 @@ variable-position safe.
 `MARY 3` was rebuilt from a far-right full-frame keyed foreground-only
 host capture (`x=80,y=54`) so the action left of the island is complete.
 The host capture ledger now invalidates stale sprite-surface references
-before BMP/layer frees, and the PS1 runtime uses low-memory
-clean-snapshot relief for this large pack.
+before BMP/layer frees, and the current PS1 perf path preserves stage/window
+prefetch under clean pressure with an 8-VBlank MARY3 window guard.
 `MARY 4` uses the generic multi-view scene-relative stitch: normal,
 far-left, and far-right foreground-only host views are merged into one
 pack so island-relative action is complete across runtime placements.
@@ -155,14 +156,16 @@ this page gives the narrative around it.
 Latest point release: `v0.8.3-ps1` is the WALKSTUF1 compact foreground
 performance release. All 63 scenes remain validated, all 126 high/low variants
 remain routed through headless perf, and the promoted
-`walkstuf1-compact-fgp3-v141` pass remains the latest promoted runtime/data
-win, and the follow-up missing-scene refresh moves the public battle card to
-`+0.6248%` over target / `99.4019%` target speed while preserving WALKSTUF1
-pack LBAs, the original `1535263` byte footprints, and the `215040` byte
-PS-EXE bucket.
+`walkstuf1-compact-fgp3-v141` pass remains the latest promoted pack/data win.
+The MARY3 guarded prefetch-preserve follow-up then moves high/low from
+`2402/2295` and `2402/2296` to `2296/2294` and `2297/2295`, collapsing
+blocking `690/693 -> 53/51` while keeping hidden refill overrun at zero. The
+public battle card is now `+0.5526%` over target / `99.4709%` target speed
+while preserving WALKSTUF1 pack LBAs, the original `1535263` byte footprints,
+and the `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.78`
-public over-target points and added about `12.30` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `16.85`
+public over-target points and added about `12.37` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain

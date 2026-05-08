@@ -7,9 +7,9 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.6248%` public over target / `99.4019%` public target speed after the
-missing-scene timing refresh. The raw signed optimization matrix is
-`-0.1436%` over target / `100.1857%` target speed.
+`+0.5526%` public over target / `99.4709%` public target speed after the MARY3
+guarded prefetch-preserve follow-up. The raw signed optimization matrix is
+`-0.2159%` over target / `100.2547%` target speed.
 
 ## Headline
 
@@ -25,8 +25,11 @@ missing-scene timing refresh. The raw signed optimization matrix is
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `16.84` public over-target points and added
+  methodology has removed about `16.85` public over-target points and added
   about `12.37` public target-speed points.
+- **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
+  MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
+  `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
 
 ## Follow-Up Closure
 

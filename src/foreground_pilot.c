@@ -195,8 +195,9 @@ enum {
 #define fgRuntimeWindowReadSize() (gFgRuntime.streamWindowReadSize)
 /* Below 3 VBlanks, window refills are more likely to become visible delay. */
 #define FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS 3
-#define fgRuntimeWindowSlackEligible(slackVBlanks) \
-    (((slackVBlanks) >= FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS) ? 1 : 0)
+/* MARY3 keeps prefetch under clean pressure; 8 VBlanks is the strict-safe
+ * window-refill knee that avoids hidden refill debt on both tides. */
+#define FG_MARY3_WINDOW_MIN_SLACK_VBLANKS 8
 #define FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS 6
 #define FG_PREFETCH_DIRECT_STAGE_MAX_BYTES (8UL * 1024UL)
 #define FG_PREPARE_PRESENT_MIN_SLACK_VBLANKS 4
@@ -854,6 +855,18 @@ static int fgSceneEquals(const char *a, const char *b)
     return a && b && strcmp(a, b) == 0;
 }
 
+static uint16 fgRuntimeWindowMinSlackVBlanks(void)
+{
+    return fgSceneEquals(gFgRuntime.sceneName, "mary3") ?
+        FG_MARY3_WINDOW_MIN_SLACK_VBLANKS :
+        FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS;
+}
+
+static int fgRuntimeWindowSlackEligible(uint16 slackVBlanks)
+{
+    return slackVBlanks >= fgRuntimeWindowMinSlackVBlanks();
+}
+
 static int fgSceneUsesBlackBackdrop(const char *sceneName)
 {
     return fgSceneEquals(sceneName, "johnny1") ||
@@ -899,6 +912,7 @@ fgScenePreservesPrefetchUnderCleanPressure(const char *sceneName)
            fgSceneEquals(sceneName, "activity11") ||
            fgSceneEquals(sceneName, "activity12") ||
            fgSceneEquals(sceneName, "activity4") ||
+           fgSceneEquals(sceneName, "mary3") ||
            fgSceneEquals(sceneName, "fishing4");
 }
 
@@ -916,11 +930,7 @@ static int fgSceneNeedsCleanMemoryRelief(const char *sceneName,
         maxFrameBytes >= FG_LARGE_FRAME_PAYLOAD_BYTES)
         return 1;
 
-    /* MARY3 is the first validated case of a wide indexed8 scene whose
-     * clean-background snapshot and max payload together exceed the normal
-     * prefetch budget. Keep this explicit so future archaeology knows why
-     * the low-memory path exists. */
-    return fgSceneEquals(sceneName, "mary3");
+    return 0;
 }
 
 static void fgDropPressureCachesForCleanSnapshot(const char *sceneName,
@@ -2256,7 +2266,7 @@ static int fgRuntimeTryStageNextFrame(uint16 *outElapsedVBlanks)
                     ps1PerfMarkPrefetchSkipNoSlack();
                 return 0;
             }
-            if (slackVBlanks == FG_PREFETCH_WINDOW_MIN_SLACK_VBLANKS &&
+            if (slackVBlanks == fgRuntimeWindowMinSlackVBlanks() &&
                 entry->dataSize <= FG_PREFETCH_DIRECT_STAGE_MAX_BYTES) {
                 stageTick = fgReadTickCounter();
                 if (ps1PerfEnabled)

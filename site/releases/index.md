@@ -37,9 +37,9 @@ records the latest VISITOR3 follow-up as a non-promoting threshold closure.
 - **Visible CD pressure falls.** High blocking drops `275 -> 85`; low blocking
   drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
 - **Battle card is now public-capped at native speed.** After the follow-up
-  missing-scene timing refresh, all 126 timing-bearing rows average `+0.6248%`
-  public over target / `99.4019%` public target speed; the raw signed CSV is
-  `-0.1436%` / `100.1857%` for optimization work.
+  MARY3 guarded prefetch-preserve follow-up, all 126 timing-bearing rows
+  average `+0.5526%` public over target / `99.4709%` public target speed; the
+  raw signed CSV is `-0.2159%` / `100.2547%` for optimization work.
 - **VISITOR3 threshold probing is closed for this baseline.** Lowering the
   fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
   keeps the accepted guard and moves future VISITOR3 work back to generated

@@ -48,8 +48,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">103 (81.7%) ≥ 99%</span>
-  <span class="spd-key spd-orange">20 (15.9%) ≥ 95%</span>
+  <span class="spd-key spd-green">105 (83.3%) ≥ 99%</span>
+  <span class="spd-key spd-orange">18 (14.3%) ≥ 95%</span>
   <span class="spd-key spd-yellow">3 (2.4%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -63,9 +63,10 @@ pass. The three yellow rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
 (`91.0%` / `91.9%`) and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
 low (`94.3%`); the orange band (95–99%) holds `walkstuf1` high/low
-(`95.6%` / `95.8%`), MARY3 high/low (`95.5%` / `95.6%`), plus the remaining wide-action, BUILDING6,
-BUILDING2, WALKSTUF1, and VISITOR3 rows still finishing scheduler-
-owned read timing and selective-preprocessing work.
+(`95.6%` / `95.8%`), BUILDING6 high/low, BUILDING2 high, and the remaining
+wide-action rows still finishing scheduler-owned read timing and
+selective-preprocessing work. MARY3 high/low moved into green after the
+guarded prefetch-preserve pass.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -86,10 +87,10 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.6248%` exact, public-capped) |
-| Timing-bearing average target speed | `99.4%` (`99.4019%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T09:40:12` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.5526%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.4709%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T11:12:57` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -125,7 +126,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `missing-scenes-current-v001`,
+  refreshed rows use `mary3-preserve-window-slack8-v149`,
+  `missing-scenes-current-v001`,
   `visitor3-tail-trim-stageguard-v127`,
   `graphics-composite-os-v111`,
   `building2-low-group365-381-v110`,
@@ -1159,29 +1161,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-mary3-high"><code>mary3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-08T09:29:31</td>
-      <td>missing-scenes-current-v001</td>
-      <td>4.7%</td>
-      <td class="spd-orange">95.5%</td>
-      <td>2402/2295</td>
-      <td>690</td>
+      <td>2026-05-08T11:12:57</td>
+      <td>mary3-preserve-window-slack8-v149</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.9%</td>
+      <td>2296/2294</td>
+      <td>53</td>
       <td>0</td>
-      <td>255</td>
-      <td></td>
+      <td>13</td>
+      <td>MARY3 prefetch preserved with 8-VBlank window guard</td>
     </tr>
     <tr id="perf-mary3-low">
       <td><a class="scene-perf-rowlink" href="#perf-mary3-low"><code>mary3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-08T09:29:31</td>
-      <td>missing-scenes-current-v001</td>
-      <td>4.6%</td>
-      <td class="spd-orange">95.6%</td>
-      <td>2402/2296</td>
-      <td>693</td>
+      <td>2026-05-08T11:12:57</td>
+      <td>mary3-preserve-window-slack8-v149</td>
+      <td>+0.1%</td>
+      <td class="spd-green">99.9%</td>
+      <td>2297/2295</td>
+      <td>51</td>
       <td>0</td>
-      <td>255</td>
-      <td></td>
+      <td>13</td>
+      <td>MARY3 prefetch preserved with 8-VBlank window guard</td>
     </tr>
     <tr id="perf-mary4-high">
       <td><a class="scene-perf-rowlink" href="#perf-mary4-high"><code>mary4</code></a></td>

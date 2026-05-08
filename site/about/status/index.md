@@ -13,11 +13,12 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.8.2-ps1` is the current release: every row in the live per-scene
-ledger is signed off, all 126 high/low scene variants are routed, and the
-headless timing-bearing average is +0.6% over target / 99.7% target speed.
-The current dead-readgroup prune baseline keeps the 13-case canary set
-exact-flat while shrinking the foreground hot path.
+`{{ site.release.tag }}` is the current release: every row in the live
+per-scene ledger is signed off, all 126 high/low scene variants are routed,
+and the headless timing-bearing average is +0.6% over target /
+{{ site.release.perf_target_speed_pct }}% target speed. The current MARY3
+guarded prefetch-preserve baseline keeps hidden refill debt at zero while
+moving both MARY3 tides into the green band.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -100,7 +101,8 @@ Pulled from the live narrative in
   loading, memory pressure, and release polish. `{{ site.release.tag }}`
   has the headless baseline at slightly under target — `{{ site.release.perf_target_speed_pct }}%`
   target speed across all 126 timing-bearing rows after the v0.8.2 + v0.8.3
-  VISITOR3 + WALKSTUF1 outlier closures and the missing-scene timing refresh.
+  VISITOR3 + WALKSTUF1 outlier closures, the missing-scene timing refresh, and
+  the MARY3 guarded prefetch-preserve pass.
   The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

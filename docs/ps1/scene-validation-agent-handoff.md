@@ -348,7 +348,8 @@ Symptoms:
 
 Examples:
 
-- `MARY 3`: large pack required low-memory clean-snapshot relief.
+- `MARY 3`: large pack originally used clean-snapshot relief during validation;
+  current perf keeps prefetch under clean pressure with an 8-VBlank guard.
 - Scene loader path previously held frog/menu resources too long before direct playback.
 
 Fixes:

@@ -5,7 +5,7 @@ ads: MARY
 tag: 3
 slug: mary3
 status: validated
-description: "MARY.ADS scene 3: Mermaid sneak-up. Validated on PS1 after far-right full-frame foreground recapture and low-memory clean-snapshot relief."
+description: "MARY.ADS scene 3: Mermaid sneak-up. Validated on PS1 after far-right full-frame foreground recapture; current perf uses guarded prefetch preservation."
 ---
 
 Validated on 2026-05-03.
