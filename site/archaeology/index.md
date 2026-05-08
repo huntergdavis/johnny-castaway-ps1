@@ -254,7 +254,7 @@ fires SPU voices on the captured audio cues, and otherwise owns only
 the narrow native runtime — background tiles, wave animation, holiday
 overlays, input, pause menu.
 
-This is the *hybrid pipeline*. Internally it's called `fgpilot`
+This is the *hybrid pipeline*. Internally it's called [`fgpilot`]({{ '/docs/glossary/#fgpilot' | relative_url }})
 because that's what the directory was named when it was a pilot
 experiment that didn't yet work. The name stuck. The project is
 gradually migrating it to *PS1 scene playback* in operator-facing
