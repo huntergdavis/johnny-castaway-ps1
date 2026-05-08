@@ -110,7 +110,7 @@ and this page.
   line.
 - **[Over Target]({{ '/docs/glossary/#over-target' | relative_url }})**: how far `loop_vb` is above the captured target timing.
   Lower is better.
-- **Target Speed**: `target_vb / loop_vb`. `100%` means exact
+- **[Target Speed]({{ '/docs/glossary/#target-speed' | relative_url }})**: `target_vb / loop_vb`. `100%` means exact
   [target cadence]({{ '/docs/glossary/#target-vb' | relative_url }}).
 - **[VBlanks]({{ '/docs/glossary/#vblank' | relative_url }})**: `loop_vb/target_vb` — see the
   [target_vb / loop_vb glossary entry]({{ '/docs/glossary/#target-vb' | relative_url }}).
