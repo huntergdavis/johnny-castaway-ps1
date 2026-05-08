@@ -94,7 +94,7 @@ The build script also runs two perl post-process passes after Jekyll and the rel
 
 So the feeds are a Liquid template plus an XML/JSON skeleton, in `site/devlog/feed.xml` and `site/devlog/feed.json`. They iterate `site.posts`, escape strings via `xml_escape` (Atom) or `jsonify` (JSON Feed), use absolute URLs via `site.canonical_baseurl`, and carry full HTML post content in CDATA (Atom) or as a JSON string field (JSON Feed). About thirty lines each. They get auto-discovery `<link rel="alternate">` tags in the head, validated with `xml.etree` and `json.load` respectively.
 
-The Lab section has its own Atom feed at `/lab/feed.xml`. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates `site.html_pages | sort: 'date' | reverse` and filters to URLs starting with `/lab/`. Embedding `essay.content` in `<![CDATA[...]]>` *should* work the way it does for posts, and it doesn't. Jekyll guarantees `site.posts` are rendered before any other page consumes their `.content`; it doesn't make that guarantee for `site.html_pages`. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every `<content>` block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with `<summary>` and no `<content>`, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. The summary text comes from `page.description` (the same string the meta tag uses), with a fallback to `page.subtitle`.
+The Lab section has its own Atom feed at `/lab/feed.xml` and a JSON Feed counterpart at `/lab/feed.json`. Same pattern, with one wrinkle: lab essays are pages, not posts, so the feed iterates `site.html_pages | sort: 'date' | reverse` and filters to URLs starting with `/lab/`. Embedding `essay.content` in `<![CDATA[...]]>` *should* work the way it does for posts, and it doesn't. Jekyll guarantees `site.posts` are rendered before any other page consumes their `.content`; it doesn't make that guarantee for `site.html_pages`. The first build of the lab feed shipped with raw Markdown and un-rendered Liquid in every `<content>` block. The fix is to drop the body. Atom 1.0 explicitly allows a feed with `<summary>` and no `<content>`, which is the headlines-and-link-back pattern most readers expect for long-form articles anyway. JSON Feed 1.1 has the same allowance — `summary` without `content_html`. Both Lab feeds ship the headlines-and-summary pivot together; the summary text comes from `page.description` (the same string the meta tag uses), with a fallback to `page.subtitle`.
 
 `jekyll-redirect-from` *is* in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin's `redirect_from:` frontmatter API is already in use on `scenes/index.md`. There was a bug there, though — the plugin's `absolute_url(to)` honors `site.baseurl`, which the build wipes, so every redirect was silently pointed at `hunterdavis.com/...` (the user-pages root) instead of `hunterdavis.com/johnny-castaway-ps1/...`. The fix is a custom `_layouts/redirect.html` override that strips `site.url` from `page.redirect.to` and rebuilds the URL through `site.canonical_baseurl`. External redirect targets (URLs that don't start with `site.url`) pass through unchanged.
 
@@ -233,8 +233,9 @@ None of this is novel work. Every piece is a Jekyll trick somebody else has done
 - [/devlog/feed.xml]({{ '/devlog/feed.xml' | relative_url }}) and
   [/devlog/feed.json]({{ '/devlog/feed.json' | relative_url }}) —
   the no-plugin Atom + JSON Feed pair.
-- [/lab/feed.xml]({{ '/lab/feed.xml' | relative_url }}) — the
-  Lab section's headlines-and-summary Atom feed; the
+- [/lab/feed.xml]({{ '/lab/feed.xml' | relative_url }}) and
+  [/lab/feed.json]({{ '/lab/feed.json' | relative_url }}) — the
+  Lab section's headlines-and-summary Atom + JSON Feed pair; the
   site.html_pages variant of the same pattern.
 - [/humans.txt]({{ '/humans.txt' | relative_url }}) — the credits-
   voice humans.txt file the article describes.
