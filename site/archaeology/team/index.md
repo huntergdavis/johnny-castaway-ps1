@@ -134,3 +134,24 @@ work this port could not have existed without. The site doesn't put
 anyone's photo on it. Hunter's name is on the credits screen. The
 prior ports are linked from the [Credits page]({{ '/credits/' | relative_url }}).
 That's the whole accounting.
+
+## Related pages
+
+- [Credits]({{ '/credits/' | relative_url }}) — the full
+  acknowledgements page; toolchain authors, prior ports,
+  AI sub-agents, fonts, ocean-ambience source.
+- [About: Voice]({{ '/about/voice/' | relative_url }}) —
+  the editorial standard the prose-drafted-by-agents had
+  to be edited up to.
+- [Docs: AI sub-agents]({{ '/docs/agents/' | relative_url }})
+  — honest accounting of where the agents helped on this
+  project and where they didn't.
+- [Lab: the LLM pass]({{ '/lab/llm-pass/' | relative_url }})
+  — methodology essay on running parallel agents under
+  human review.
+- [Lab: voice-anchor problem]({{ '/lab/voice-anchor-problem/' | relative_url }})
+  — long-form retrospective on keeping a single voice
+  across human + agent prose.
+- [Lab: dunking-bird]({{ '/lab/dunking-bird/' | relative_url }})
+  — the auto-poker that keeps the agents productive
+  between human review passes.
