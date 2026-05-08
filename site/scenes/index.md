@@ -91,11 +91,11 @@ host-vs-PS1 reference frames where applicable.
   </caption>
   <thead>
     <tr>
-      <th class="scene-tag">ADS · tag</th>
-      <th class="scene-name">Scene</th>
-      <th class="scene-status">Status</th>
-      <th>Last verified</th>
-      <th>Notes</th>
+      <th scope="col" class="scene-tag">ADS · tag</th>
+      <th scope="col" class="scene-name">Scene</th>
+      <th scope="col" class="scene-status">Status</th>
+      <th scope="col">Last verified</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
