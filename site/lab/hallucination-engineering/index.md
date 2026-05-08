@@ -53,7 +53,7 @@ anti-hallucination tool.
 Every Markdown source file gets a web wrapper with a source path, outline,
 word count, and category. The regtest references get one page per preserved
 case. The resource catalog lists the BMPs, ADS scripts, TTM animations, VAG
-samples, PSB sprite banks, and FG2 packs. That gives the next agent something
+samples, PSB sprite banks, and [FG2 packs]({{ '/docs/glossary/#fg2-pack' | relative_url }}). That gives the next agent something
 specific to search instead of asking it to infer the archive from memory.
 
 Generated shelves are not glamorous. They are the difference between "there
