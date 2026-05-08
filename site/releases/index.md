@@ -43,6 +43,10 @@ records the latest VISITOR3 follow-up as a non-promoting threshold closure.
   keeps the accepted guard and moves future VISITOR3 work back to generated
   scheduler/data-shape lanes.
 
+The post-validation perf retrospective at
+[/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})
+covers v0.8.0 → v0.8.3 as one continuous arc.
+
 [Full notes]({{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }})
 &nbsp;·&nbsp;
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.3-ps1)
@@ -67,6 +71,11 @@ performance battle-card numbers.
   `+0.5706%` over target / `99.6769%` target speed.
 - **Site/docs are current with `main`.** The release includes the latest site
   navigation, glossary, lab/feed, structured-data, and page-TOC polish.
+
+The post-validation perf retrospective at
+[/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})
+covers this and the v0.8.3 follow-on as continuations of the
+v0.8.0 baseline arc.
 
 [Full notes]({{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }})
 &nbsp;·&nbsp;
