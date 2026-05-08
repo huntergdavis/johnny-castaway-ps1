@@ -128,6 +128,10 @@ high/low remain `1139/1024` and `1140/1024`; BUILDING4 high/low remain
 `1385/1303`; ACTIVITY9 low remains `2085/2058`; and FISHING1 high remains
 under target at `1068/1074`. The next true rows are WALKSTUF1 low/high,
 VISITOR3 scheduler-owned/data-shape work, BUILDING2, and BUILDING6.
+The current VISITOR3 default selective upload-ready plan is closed as a
+same-footprint append: it saves a modeled `6114568` upload bytes, but its
+`2462072` bytes of payload plus rect metadata exceed the current `814847` bytes
+of padded pack slack per tide.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -322,8 +326,11 @@ and `1140/1024` with fixed padded pack sizes, fixed LBAs, and no PS-EXE change.
 The BUILDING4 restore-minus-current follow-up removes the same redundant
 current-frame cleanup from BUILDING4 and moves the matrix slightly under
 target; the stale VISITOR3 low read-group prune closes the last local VISITOR3
-table row without changing timing; and the WALKSTUF1 high setup-prime cap now
-becomes the current baseline.
+table row without changing timing; the WALKSTUF1 high setup-prime cap becomes
+the current baseline; and the VISITOR3 default selective upload-ready footprint
+gate now proves that the next VISITOR3 graphics probe needs a smaller subset,
+compression, a shrinking pack transform, or a deliberate layout-moving
+experiment instead of a naive same-footprint append.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

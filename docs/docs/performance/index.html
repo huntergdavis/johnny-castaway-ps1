@@ -16,7 +16,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." />
   <meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-07" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3418 words
+          ~14 min read · 3507 words
         </p>
 
       <hr class="rule" />
@@ -233,7 +233,13 @@ now parses both FGP2 and FGP3 temporal-residual payloads. Its VISITOR3 output
 splits cap-hit frames from saving-heavy frames, which keeps the next
 upload-ready experiment selective instead of a whole-pack conversion. The
 current VISITOR3 frame sheet is
-<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-visitor3-hotspots.csv</code></a>.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-visitor3-hotspots.csv</code></a>.
+The current default VISITOR3 selective plan is still too large for a
+same-footprint append: it models <code class="language-plaintext highlighter-rouge">6114568</code> selected upload bytes saved, but the
+upload-ready payload plus rect metadata needs <code class="language-plaintext highlighter-rouge">2462072</code> bytes per tide against
+only <code class="language-plaintext highlighter-rouge">814847</code> bytes of padded zero-tail slack. The next probe needs a smaller
+selected subset, compression, a shrinking pack transform, or an explicit
+layout-moving experiment.</p>
 
 <p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
@@ -897,7 +903,9 @@ largest gap at <code class="language-plaintext highlighter-rouge">+197/+186</cod
 VBlanks after restore-minus-current cleanup; its local C read-table rows are
 exhausted, so the next CD-shape pass needs generated scheduler ownership,
 selective preprocessing, or pack data-shape work rather than hand-authored
-ranges.</li>
+ranges. The default selective upload-ready plan is footprint-closed as a
+same-layout append because <code class="language-plaintext highlighter-rouge">2462072</code> bytes of payload plus rect metadata
+exceed the current <code class="language-plaintext highlighter-rouge">814847</code> bytes of VISITOR3 pack slack per tide.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

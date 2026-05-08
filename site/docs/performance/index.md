@@ -117,6 +117,12 @@ splits cap-hit frames from saving-heavy frames, which keeps the next
 upload-ready experiment selective instead of a whole-pack conversion. The
 current VISITOR3 frame sheet is
 [`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv).
+The current default VISITOR3 selective plan is still too large for a
+same-footprint append: it models `6114568` selected upload bytes saved, but the
+upload-ready payload plus rect metadata needs `2462072` bytes per tide against
+only `814847` bytes of padded zero-tail slack. The next probe needs a smaller
+selected subset, compression, a shrinking pack transform, or an explicit
+layout-moving experiment.
 
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
@@ -769,7 +775,9 @@ Next plausible wins, in priority order:
    VBlanks after restore-minus-current cleanup; its local C read-table rows are
    exhausted, so the next CD-shape pass needs generated scheduler ownership,
    selective preprocessing, or pack data-shape work rather than hand-authored
-   ranges.
+   ranges. The default selective upload-ready plan is footprint-closed as a
+   same-layout append because `2462072` bytes of payload plus rect metadata
+   exceed the current `814847` bytes of VISITOR3 pack slack per tide.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.

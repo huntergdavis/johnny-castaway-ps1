@@ -21,8 +21,8 @@ current BUILDING4 restore-minus-current pack baseline, VISITOR3 read-table headr
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 525 |
-| Approx. words | 5676 |
+| Lines | 530 |
+| Approx. words | 5731 |
 | Code fences | 1 |
 
 ## Outline

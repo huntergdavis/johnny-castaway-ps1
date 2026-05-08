@@ -196,7 +196,12 @@ non-cap frames (`121..133`, where align4 x-band saves roughly `65..75%`). The
 first tracked threshold plan is
 [performance-preprocess-visitor3-hotspots.csv](performance-preprocess-visitor3-hotspots.csv):
 it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
-`6114568` upload bytes saved inside the selected subset.
+`6114568` upload bytes saved inside the selected subset. The same current
+size gate rejects the default upload-ready append as layout-neutral: the
+payload plus rect metadata would need `2462072` bytes per tide against only
+`814847` bytes of padded zero-tail slack. The next VISITOR3 graphics probe
+therefore needs a smaller budgeted subset, compression, a shrinking pack
+transform, or an explicit layout-moving experiment with full canaries.
 
 Milestone releases:
 - `v0.8.2-ps1` — VISITOR3 guarded-read performance and docs/site sync. Lowers
