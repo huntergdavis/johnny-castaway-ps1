@@ -23,6 +23,19 @@ layout: default
         {%- assign reading_words = content | strip_html | number_of_words -%}
         {%- assign reading_min = reading_words | divided_by: 250 -%}
         {%- if reading_min < 1 %}{% assign reading_min = 1 %}{% endif %}
+        {%- comment -%}
+          Visible publication date for lab essays. The frontmatter
+          carries `date:` and JSON-LD already exposes datePublished,
+          but the rendered header showed nothing — readers landing
+          cold on a war-story retrospective had no signal of when
+          it was written. Gated to /lab/ essays only; lab index has
+          no date and is excluded by rt_lab's existing exclusion.
+        {%- endcomment -%}
+        {% if rt_lab and page.date %}
+        <p class="pub-date">
+          Published <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+        </p>
+        {% endif %}
         <p class="reading-time" aria-label="Estimated reading time">
           ~{{ reading_min }} min read · {{ reading_words }} words
         </p>

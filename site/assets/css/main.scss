@@ -307,6 +307,21 @@ main:focus { outline: none; }
   margin: 0.6rem 0 0;
 }
 
+/* Visible publication date for lab essays. Mirrors .reading-time
+   styling so the two header-metadata lines read as parallel — pub
+   date on top, reading-time below. Tighter top margin since it
+   sits directly under subtitle. */
+.pub-date {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0;
+}
+.pub-date + .reading-time {
+  margin-top: 0.2rem;
+}
+
 /* ---------- Header ---------- */
 .site-header {
   background: var(--bg-alt);
