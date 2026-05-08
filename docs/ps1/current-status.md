@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
-current VISITOR3 restore-minus-current pack baseline; all 63 scenes remain
-validated, and the headless battle card is near target at `0.0502%` over /
-`100.0292%` target speed).
+current BUILDING4 restore-minus-current pack baseline; all 63 scenes remain
+validated, and the headless battle card is slightly under target at
+`-0.0193%` over / `100.0943%` target speed).
 
 ## Overall
 
@@ -155,8 +155,10 @@ this page gives the narrative around it.
 Latest point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
 routed through headless perf, and the current VISITOR3 restore-minus-current
-pack baseline moves the battle card to `0.0502%` over target / `100.0292%`
-target speed while preserving pack LBAs and the `215040` byte PS-EXE bucket. See
+pack baseline moved the battle card to `0.0502%` over target / `100.0292%`
+target speed while preserving pack LBAs and the `215040` byte PS-EXE bucket. The
+subsequent BUILDING4 restore-minus-current pack pass moves the current matrix to
+`-0.0193%` over target / `100.0943%` target speed. See
 [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
@@ -165,9 +167,12 @@ pack-side cleanup spans with current-frame redraw coverage removed. VISITOR3
 high is now `1139/1024` with `blocking_vb=191`; low is `1140/1024` with
 `blocking_vb=194`. BUILDING2 high/low are `1394/1301` and `1385/1303`,
 ACTIVITY9 low is `2085/2058`, and the FISHING1 high control remains under
-target at `1068/1074`. BUILDING4, JOHNNY2, WALKSTUF1, and related current-pack
-clean-pressure work are preserved in the matrix; the next VISITOR3 work should
-target generated scheduler ownership or selective upload-ready bands.
+target at `1068/1074`. BUILDING4 now uses the same pack-side
+restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
+low is `2855/2815` with `blocking_vb=46`. JOHNNY2, WALKSTUF1, and related
+current-pack clean-pressure work are preserved in the matrix; the next true
+outliers are WALKSTUF1, VISITOR3, BUILDING2, BUILDING6, and selective
+upload-ready bands.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the

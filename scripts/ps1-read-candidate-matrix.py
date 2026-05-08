@@ -20,8 +20,8 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = (
     REPO_ROOT
-    / "scratch/ps1-perf-iterate/visitor3-restore-minus-current-v086-broad/"
-      "20260507-171251-1205609"
+    / "scratch/ps1-perf-iterate/building4-restore-minus-current-v087-broad/"
+      "20260507-183004-1637867"
 )
 DEFAULT_CSV = REPO_ROOT / "docs/ps1/performance-read-candidate-matrix.csv"
 DEFAULT_MD = REPO_ROOT / "docs/ps1/performance-read-candidate-matrix.md"

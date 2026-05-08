@@ -284,13 +284,14 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
-120 timing-bearing battle-card rows, the average is **+0.1% over target /
-100.0% target speed** (`0.0502%` exact over target / `100.0292%` exact target speed).
+120 timing-bearing battle-card rows, the average is **0.0% over target /
+100.1% target speed** (`-0.0193%` exact over target / `100.0943%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
 `visitor3-high-readgroup-prune-v084`,
 `compact-u16-inline-v083`,
@@ -353,13 +354,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T17:12:51`; per-row freshness and stats version are shown on
+run is `2026-05-07T18:30:04`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-restore-minus-current-v086`,
+rows now use `building4-restore-minus-current-v087`,
+`visitor3-restore-minus-current-v086`,
 `visitor3-high-readgroup-prune-v084`,
 `fgp3v4-drawcompact-all-v082`,
 `compact-u16-inline-v083`,
@@ -487,8 +489,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building4</code></td>
-      <td>+5.5% / 94.8% (2939/2786); due 40; blk 240</td>
-      <td>+5.2% / 95.0% (2945/2798); due 1; blk 117</td>
+      <td>+1.0% / 99.0% (2844/2816); due 1; blk 37</td>
+      <td>+1.4% / 98.6% (2855/2815); due 1; blk 46</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -517,8 +519,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>fishing3</code></td>
-      <td>+0.4% / 99.6% (1960/1952); due 1; blk 18</td>
-      <td>+0.1% / 99.9% (1956/1954); blk 6</td>
+      <td>+0.6% / 99.4% (1962/1950); due 1; blk 17</td>
+      <td>+0.1% / 99.9% (1957/1955); blk 9</td>
     </tr>
     <tr>
       <td><code>fishing4</code></td>
@@ -642,8 +644,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>stand7</code></td>
-      <td>-3.4% / 103.5% (520/538)</td>
-      <td>-3.4% / 103.5% (520/538)</td>
+      <td>-3.3% / 103.5% (520/538)</td>
+      <td>-3.3% / 103.5% (520/538)</td>
     </tr>
     <tr>
       <td><code>stand8</code></td>
@@ -652,7 +654,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>stand9</code></td>
-      <td>-3.4% / 103.5% (520/538)</td>
+      <td>-3.3% / 103.5% (520/538)</td>
       <td>-3.0% / 103.1% (522/538)</td>
     </tr>
     <tr>
@@ -789,7 +791,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  average is now +0.1% over target / 100.0% target speed, with several worse
+  average is now 0.0% over target / 100.1% target speed, with several worse
   CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

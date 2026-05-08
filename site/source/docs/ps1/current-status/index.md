@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-current VISITOR3 restore-minus-current pack baseline; all 63 scenes remain validated, and the headless battle card is near target at 0.0502% over / 100.0292% target speed).
+current BUILDING4 restore-minus-current pack baseline; all 63 scenes remain validated, and the headless battle card is slightly under target at -0.0193% over / 100.0943% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 509 |
-| Approx. words | 5526 |
+| Lines | 514 |
+| Approx. words | 5568 |
 | Code fences | 1 |
 
 ## Outline
