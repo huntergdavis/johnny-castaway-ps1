@@ -114,7 +114,7 @@ host-vs-PS1 reference frames where applicable.
         <td class="scene-tag">{{ s.ads }} {{ s.tag }}</td>
         <td class="scene-name"><a href="{{ '/scenes/' | append: s.slug | append: '/' | relative_url }}">{{ s.slug }}</a></td>
         <td class="scene-status {{ cls }}">{{ s.status }}</td>
-        <td>{% if s.last_verified != "" %}<code>{{ s.last_verified }}</code>{% else %}—{% endif %}</td>
+        <td>{% if s.last_verified != "" %}{% if s.last_verified contains '-ps1' %}<code>{{ s.last_verified }}</code>{% else %}<time datetime="{{ s.last_verified }}"><code>{{ s.last_verified }}</code></time>{% endif %}{% else %}—{% endif %}</td>
         <td>{{ s.notes }}</td>
       </tr>
     {% endfor %}
