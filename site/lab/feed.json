@@ -1,0 +1,68 @@
+---
+permalink: /lab/feed.json
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  JSON Feed (jsonfeed.org/version/1.1) for the Lab section.
+  Mirrors /devlog/feed.json structure, but iterates
+  `site.html_pages` (lab essays use `layout: page`, not posts) the
+  same way /lab/feed.xml does — filter by `/lab/` URL prefix,
+  exclude the /lab/ index, require a date.
+
+  Headlines + summary feed (no embedded body): when iterating
+  site.html_pages from another page's render, Jekyll does not
+  guarantee that each entry's `.content` has been processed yet,
+  so embedding it produces raw Markdown + un-rendered Liquid.
+  JSON Feed 1.1 allows entries with `summary` and no `content_html`,
+  matching the Atom feed's pivot. Readers see headlines + dates +
+  summaries; clicking through fetches the full essay.
+
+  All URLs absolute via site.canonical_baseurl (the build's
+  --baseurl "" override blanks site.baseurl). Strings flow through
+  `jsonify` so titles or descriptions with quotes/backslashes can't
+  break the JSON. Newest-first ordering matches the Lab index.
+{%- endcomment -%}
+{%- assign site_root = site.url | append: site.canonical_baseurl -%}
+{%- assign feed_url  = site_root | append: '/lab/feed.json' -%}
+{%- assign lab_url   = site_root | append: '/lab/' -%}
+{%- assign all_lab   = site.html_pages | sort: 'date' | reverse -%}
+{%- assign lab_essays = '' | split: '' -%}
+{%- for entry in all_lab -%}
+  {%- assign url_prefix = entry.url | slice: 0, 5 -%}
+  {%- if url_prefix == '/lab/' and entry.url != '/lab/' and entry.date -%}
+    {%- assign lab_essays = lab_essays | push: entry -%}
+  {%- endif -%}
+{%- endfor -%}
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": {{ site.title | append: ' — Lab' | jsonify }},
+  "description": "Long-form retrospectives, war stories, and methodology essays from the Johnny Castaway PS1 port.",
+  "home_page_url": {{ lab_url | jsonify }},
+  "feed_url": {{ feed_url | jsonify }},
+  "language": "en",
+  "authors": [
+    {
+      "name": {{ site.author | jsonify }},
+      "url": "https://hunterdavis.com/"
+    }
+  ],
+  "items": [
+    {%- for essay in lab_essays -%}
+    {%- assign essay_abs = site_root | append: essay.url -%}
+    {
+      "id": {{ essay_abs | jsonify }},
+      "url": {{ essay_abs | jsonify }},
+      "title": {{ essay.title | jsonify }},
+      "date_published": "{{ essay.date | date_to_xmlschema }}"
+      {%- if essay.description -%}
+      ,
+      "summary": {{ essay.description | strip_newlines | jsonify }}
+      {%- elsif essay.subtitle -%}
+      ,
+      "summary": {{ essay.subtitle | strip_newlines | jsonify }}
+      {%- endif %}
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor %}
+  ]
+}
