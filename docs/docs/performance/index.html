@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3816 words
+          ~15 min read · 3826 words
         </p>
 
       <hr class="rule" />
@@ -268,8 +268,8 @@ edit.</p>
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.md</code></a>
 and its machine-readable
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.csv"><code class="language-plaintext highlighter-rouge">performance-read-candidate-matrix.csv</code></a>.
-The current report has one standalone-safe row and keeps VISITOR3 in the
-scheduler-owned or guarded lane. Remaining read-timing candidates should not
+The current report has one guarded BUILDING2 candidate, no standalone-safe
+rows, and keeps VISITOR3 in the scheduler-owned or closed lane. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
 slack/scheduler proof.</p>
 
@@ -435,12 +435,15 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>0.0% over target /
-100.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.0231%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.0972%</code> exact target speed).</p>
+100.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.0595%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.1296%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
-<p>As of 2026-05-07, all 126 scene/tide variants have current headless
+<p>As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">building2-high-restore-minus-current-v108</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-offscreen-exitright-v106</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-offscreen-drawclip-v105</code>,
 <code class="language-plaintext highlighter-rouge">walkstuf1-high-primecap144-v089</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-readgroup-prune-v088</code>,
 <code class="language-plaintext highlighter-rouge">building4-restore-minus-current-v087</code>,
@@ -506,13 +509,16 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T20:03:56</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-08T01:07:35</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-primecap144-v089</code>,
+rows now use <code class="language-plaintext highlighter-rouge">building2-high-restore-minus-current-v108</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-offscreen-exitright-v106</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-offscreen-drawclip-v105</code>,
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-primecap144-v089</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-readgroup-prune-v088</code>,
 <code class="language-plaintext highlighter-rouge">building4-restore-minus-current-v087</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,

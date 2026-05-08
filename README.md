@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **0.0% over target / 100.1% target speed** |
-| Latest perf matrix run | **`2026-05-08T00:29:28`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized/code-headroom rows use `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-08T01:07:35`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized/code-headroom rows use `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -114,21 +114,22 @@ timing-bearing rows average **0.0% over target / 100.1% target speed** after
 the VISITOR3, BUILDING2, BUILDING4, ACTIVITY9, and JOHNNY2 clean-pressure
 promotions. Since the compact full-matrix
 baseline was about **+17.4% over target / 87.1% target speed**, the headless
-optimization loop has removed about **17.42 percentage points** of over-target
-gap and added about **13.00 target-speed points**.
+optimization loop has removed about **17.46 percentage points** of over-target
+gap and added about **13.03 target-speed points**.
 
 Current performance work is focused on VISITOR3 and the remaining top
-outliers. The current promoted pack-only pass clips VISITOR3 high offscreen
-draw spans and low-tide exit-right draw spans while preserving entry sizes,
-pack LBAs, and the `215040` byte PS-EXE bucket. VISITOR3 high improves
-`1139/1024 -> 1137/1024`, overrun `115 -> 113`, and blocking `191 -> 190`;
-VISITOR3 low improves `1140/1024 -> 1138/1024`, overrun `116 -> 114`, and
-blocking `194 -> 191`. The current public rollup is `-0.0266%` over target /
-`100.0998%` target speed. BUILDING4 high/low remain `2844/2816` and
-`2855/2815`; BUILDING2 high/low remain `1394/1301` and `1385/1303`; ACTIVITY9
-low remains `2085/2058`; and FISHING1 high remains under target at
-`1068/1074`. The next true rows are remaining VISITOR3
-scheduler/data-shape work, WALKSTUF1 low/high, BUILDING2, and BUILDING6.
+outliers. The current promoted pack-only pass removes BUILDING2 high-tide
+cleanup spans that are redrawn by the same current frame while preserving the
+`1303332` byte pack footprint, pack LBA `6180`, and the `215040` byte PS-EXE
+bucket. BUILDING2 high improves `1394/1301 -> 1353/1311`, overrun
+`93 -> 42`, and blocking `138 -> 56`; BUILDING2 low is intentionally left on
+the prior pack because the both-tide transform improved visible timing but
+regressed hidden prefetch overrun. The current public rollup is `-0.0595%`
+over target / `100.1296%` target speed. VISITOR3 high/low remain
+`1137/1024` and `1138/1024`; BUILDING4 high/low remain `2844/2816` and
+`2855/2815`; ACTIVITY9 low remains `2085/2058`; and FISHING1 high remains
+under target at `1068/1074`. The next true rows are WALKSTUF1 low/high,
+remaining VISITOR3 scheduler/data-shape work, BUILDING2 low, and BUILDING6.
 The current VISITOR3 default selective upload-ready plan is closed as a
 same-footprint append: it saves a modeled `6114568` upload bytes, but its
 `2462072` bytes of payload plus rect metadata exceed the current `814847` bytes
@@ -324,14 +325,17 @@ ACTIVITY9 low now promotes the same cleanup-compact FGP3/v3 metadata shape:
 low tide moves `2098/2056 -> 2087/2056`, blocking `47 -> 42`, and hidden
 refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
 original padded FGP3 pack left untouched.
-The timing-bearing average is now `-0.0266%` over target /
-`100.0998%` target speed after the VISITOR3 low exit-right offscreen draw
-clip. That pack-only pass moves VISITOR3 low tide from `1140/1024` to
-`1138/1024`, cuts overrun `116 -> 114`, lowers blocking `194 -> 191`, and
-keeps VISITOR3 high plus BUILDING2, BUILDING4, ACTIVITY9, and FISHING1
-controls flat. The earlier high-only offscreen draw clip moves VISITOR3 high
-from `1139/1024` to `1137/1024`, cuts overrun `115 -> 113`, and lowers
-blocking `191 -> 190`. The earlier WALKSTUF1 high setup-prime cap retune moves high tide from `1595/1402`
+The timing-bearing average is now `-0.0595%` over target /
+`100.1296%` target speed after the BUILDING2 high restore-minus-current pack
+pass. That pack-only pass moves BUILDING2 high from `1394/1301` to
+`1353/1311`, cuts overrun `93 -> 42`, lowers blocking `138 -> 56`, and keeps
+VISITOR3 high/low, BUILDING2 low, BUILDING4 high/low, ACTIVITY9 low, and
+FISHING1 high controls flat. The earlier VISITOR3 low exit-right offscreen
+draw clip moves VISITOR3 low tide from `1140/1024` to `1138/1024`, cuts
+overrun `116 -> 114`, and lowers blocking `194 -> 191`. The earlier
+high-only offscreen draw clip moves VISITOR3 high from `1139/1024` to
+`1137/1024`, cuts overrun `115 -> 113`, and lowers blocking `191 -> 190`.
+The earlier WALKSTUF1 high setup-prime cap retune moves high tide from `1595/1402`
 to `1592/1406`, cuts overrun
 `193 -> 186`, lowers loop reads `136 -> 134`, and keeps low tide exact-flat at
 `1604/1407`. The current VISITOR3 low read-group prune keeps the prior
@@ -410,8 +414,8 @@ VISITOR3 low `1140/1024 -> 1138/1024` and `blocking_vb 194 -> 191`; high tide
 and the broad controls stay flat. The low `ship-left` and `ship-and-exit`
 subsets are rejected because they reproduce the bad `1151/1024` cadence.
 Since the compact full-matrix baseline was about `+17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.43`
-percentage points of over-target gap and added about `13.00` points of target
+`87.1%` target speed, the headless methodology has removed about `17.46`
+percentage points of over-target gap and added about `13.03` points of target
 speed.
 
 The current planning pass also fingerprints perf baselines before comparison

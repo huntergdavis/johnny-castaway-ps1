@@ -38,14 +38,14 @@ A scene can be timed here without being visually certified.
   out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
 </p>
 
-No timing-bearing row is in the red band after the VISITOR3 and BUILDING4
-restore-minus-current pack passes. The slowest rows are now `walkstuf1` low/high
-(`87.7%` / `88.3%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
-low/high (`89.8%` / `89.9%`). The yellow cluster includes the remaining
-wide-action, [`BUILDING2`]({{ '/scenes/building2/' | relative_url }}),
-BUILDING6, [`BUILDING4`]({{ '/scenes/building4/' | relative_url }}), and
-ACTIVITY9 rows still finishing scheduler-owned read timing and
-selective-preprocessing work.
+No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
+BUILDING2 restore-minus-current pack passes. The slowest rows are now
+`walkstuf1` low/high (`87.7%` / `88.3%`) and
+[`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
+(`90.0%` / `90.1%`). The yellow cluster includes the remaining wide-action,
+[`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) low/high, BUILDING6,
+[`BUILDING4`]({{ '/scenes/building4/' | relative_url }}), and ACTIVITY9 rows
+still finishing scheduler-owned read timing and selective-preprocessing work.
 
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
@@ -55,7 +55,7 @@ on purpose).
 
 ## Rollup
 
-Current battle-card rollup as of 2026-05-07:
+Current battle-card rollup as of 2026-05-08:
 
 | Metric | Value |
 |---|---:|
@@ -67,10 +67,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `0.0%` (`-0.0231%` exact) |
-| Timing-bearing average target speed | `100.1%` (`100.0972%` exact) |
-| Latest perf matrix run | `2026-05-07T20:03:56` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `0.0%` (`-0.0595%` exact) |
+| Timing-bearing average target speed | `100.1%` (`100.1296%` exact) |
+| Latest perf matrix run | `2026-05-08T01:07:35` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -101,7 +101,10 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `walkstuf1-high-primecap144-v089`,
+  refreshed rows use `building2-high-restore-minus-current-v108`,
+  `visitor3-low-offscreen-exitright-v106`,
+  `visitor3-high-offscreen-drawclip-v105`,
+  `walkstuf1-high-primecap144-v089`,
   `visitor3-low-readgroup-prune-v088`,
   `building4-restore-minus-current-v087`,
   `visitor3-restore-minus-current-v086`,

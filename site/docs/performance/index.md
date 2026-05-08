@@ -151,8 +151,8 @@ Those foreground read-plan candidates are now rolled up into
 [`docs/ps1/performance-read-candidate-matrix.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.md)
 and its machine-readable
 [`performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv).
-The current report has one standalone-safe row and keeps VISITOR3 in the
-scheduler-owned or guarded lane. Remaining read-timing candidates should not
+The current report has one guarded BUILDING2 candidate, no standalone-safe
+rows, and keeps VISITOR3 in the scheduler-owned or closed lane. Remaining read-timing candidates should not
 be promoted as raw hand-authored table ranges without the same kind of
 slack/scheduler proof.
 
@@ -307,12 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **0.0% over target /
-100.1% target speed** (`-0.0231%` exact over target / `100.0972%` exact target speed).
+100.1% target speed** (`-0.0595%` exact over target / `100.1296%` exact target speed).
 
 ## Scene Battle Card
 
-As of 2026-05-07, all 126 scene/tide variants have current headless
+As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building2-high-restore-minus-current-v108`,
+`visitor3-low-offscreen-exitright-v106`,
+`visitor3-high-offscreen-drawclip-v105`,
 `walkstuf1-high-primecap144-v089`,
 `visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
@@ -378,13 +381,16 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T20:03:56`; per-row freshness and stats version are shown on
+run is `2026-05-08T01:07:35`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf1-high-primecap144-v089`,
+rows now use `building2-high-restore-minus-current-v108`,
+`visitor3-low-offscreen-exitright-v106`,
+`visitor3-high-offscreen-drawclip-v105`,
+`walkstuf1-high-primecap144-v089`,
 `visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
