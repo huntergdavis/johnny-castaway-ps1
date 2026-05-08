@@ -45,7 +45,7 @@ were evidence-gathering positions, not runtime pins.
 `VISITOR 3` is the largest single optimization target left on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
 `{{ site.release.tag }}`. Both `visitor3` high and `visitor3` low
-sit in the **red** band — around `69.4%` target speed after the
+sit in the **red** band — around [`69.4%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }}) after the
 `v0.7.2` prefetch-relief refresh. The wide multi-view stitch (the
 red ship crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
