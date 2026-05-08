@@ -23,8 +23,10 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and is now followed by the FGP3/v4 compact
 metadata reader inline baseline, VISITOR3 pack-side restore-minus-current
-cleanup, and BUILDING4 pack-side restore-minus-current cleanup: `-0.0193%`
-over target / `100.0943%` target speed across 120 timing-bearing rows.
+cleanup, BUILDING4 pack-side restore-minus-current cleanup, VISITOR3
+read-table headroom cleanup, and WALKSTUF1 high setup-prime cap retune:
+`-0.0231%` over target / `100.0972%` target speed across 120 timing-bearing
+rows.
 
 `v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
 randomized long-run scene-load freeze by estimating the actual clean
@@ -35,11 +37,12 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows now average `-0.0193%` over target / `100.0943%`
+current timing-bearing rows now average `-0.0231%` over target / `100.0972%`
 target speed after the post-release VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, JOHNNY2 clean-pressure, WALKSTUF1, selector-cleanup, FGP3/v4
 compact draw metadata, compact decoder inline, and pack-side
-restore-minus-current promotions.
+restore-minus-current promotions plus the current WALKSTUF1 high-tide
+setup-prime cap promotion.
 MARY2's padded FGP3 conversion exposed a clean-memory prefetch miss; the
 MARY2-local relief restores `stage1_window`, moves high/low to `2241/2248`
 and `2242/2250`, and collapses due misses from `233` to `0`.

@@ -285,12 +285,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **0.0% over target /
-100.1% target speed** (`-0.0193%` exact over target / `100.0943%` exact target speed).
+100.1% target speed** (`-0.0231%` exact over target / `100.0972%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf1-high-primecap144-v089`,
 `visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
@@ -355,13 +356,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-07T19:27:04`; per-row freshness and stats version are shown on
+run is `2026-05-07T20:03:56`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `visitor3-low-readgroup-prune-v088`,
+rows now use `walkstuf1-high-primecap144-v089`,
+`visitor3-low-readgroup-prune-v088`,
 `building4-restore-minus-current-v087`,
 `visitor3-restore-minus-current-v086`,
 `visitor3-high-readgroup-prune-v084`,
@@ -726,7 +728,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
+      <td>+13.2% / 88.3% (1592/1406); due 55; blk 275</td>
       <td>+14.0% / 87.7% (1604/1407); due 50; blk 270</td>
     </tr>
     <tr>
@@ -754,20 +756,20 @@ gfx.upload_bytes  = 8,643,840
 ```
 
 The FISHING1 canary remains under target, but the full battle card still has
-CD-heavy scenes (`visitor3`, `walkstuf1`, `building2`, `building4`, and
+CD-heavy scenes (`walkstuf1`, `visitor3`, `building2`, `building4`, and
 `building6`). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.
 
 Next plausible wins, in priority order:
 
-1. **Generated read grouping or setup/data-shape work.** VISITOR3 remains the
-   largest gap at about `+338/+334` VBlanks after the FGP3/v4 draw-metadata
-   compaction and compact decoder inline pass, though the guarded high-tide generated-window `138..162` append
-   already proved scheduler-owned groups can reduce visible blocking and active
-   reads without moving layout. WALKSTUF1 still has
-   `blocking_vb=278/276` after the PAL4 setup-prime win, so the next CD-shape
-   pass needs generated cost metadata rather than hand-authored ranges.
+1. **Generated read grouping or setup/data-shape work.** WALKSTUF1 is now the
+   largest gap at `+197/+186` VBlanks after the low `160 KiB` and high
+   `144 KiB` setup-prime cap retunes. VISITOR3 remains next at `+116/+115`
+   VBlanks after restore-minus-current cleanup; its local C read-table rows are
+   exhausted, so the next CD-shape pass needs generated scheduler ownership,
+   selective preprocessing, or pack data-shape work rather than hand-authored
+   ranges.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.

@@ -169,6 +169,7 @@ enum {
 #define FG_WALKSTUF1_LOW_RESIDUAL_WINDOW_BYTES (40UL * 1024UL)
 #define FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES (88UL * 1024UL)
 #define FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES (4UL * 1024UL)
+#define FG_WALKSTUF1_HIGH_SETUP_PRIME_MAX_RESIDENT_BYTES (144UL * 1024UL)
 #define FG_WALKSTUF1_LOW_SETUP_PRIME_MAX_RESIDENT_BYTES (160UL * 1024UL)
 #define FG_PREFETCH_GROUP_WINDOW_BYTES (16UL * 2048UL)
 #define FG_SETUP_PRIME_WINDOW_BYTES (320UL * 1024UL)
@@ -2066,7 +2067,7 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     if (fgSceneEquals(sceneName, "walkstuf1")) {
         uint32 maxResidentBytes = islandState.lowTide ?
             FG_WALKSTUF1_LOW_SETUP_PRIME_MAX_RESIDENT_BYTES :
-            FG_SETUP_PRIME_MAX_RESIDENT_BYTES;
+            FG_WALKSTUF1_HIGH_SETUP_PRIME_MAX_RESIDENT_BYTES;
         requested = (normalWindowBytes << 2) + FG_WALKSTUF1_SETUP_PRIME_BASE_BYTES -
             (islandState.lowTide ? 0 : FG_WALKSTUF1_HIGH_SETUP_PRIME_TRIM_BYTES);
         return requested > maxResidentBytes ? maxResidentBytes : requested;

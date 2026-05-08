@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `-0.0193%` over target
+- Average measured timing gap: `-0.0231%` over target
 - Average estimated align4 x-band upload byte saving: `67.61%`
 
 ## Top Upload-Ready Candidates
@@ -16,7 +16,7 @@ accepted performance baseline.
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
 | 1 | `walkstuf1` | `low` | 173.13 | 14.00% | 46.64% | 493.1% | 325 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
-| 2 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 2 | `walkstuf1` | `high` | 168.25 | 13.23% | 46.64% | 493.1% | 326 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
 | 3 | `visitor3` | `low` | 114.59 | 11.33% | 56.97% | 593.04% | 194 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
 | 4 | `visitor3` | `high` | 113.27 | 11.23% | 56.97% | 593.04% | 191 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
 | 5 | `building2` | `high` | 102.07 | 7.15% | 67.28% | 488.66% | 158 | candidate; rect/frame 2.47 |

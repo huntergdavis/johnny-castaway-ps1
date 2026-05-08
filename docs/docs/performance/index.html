@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3422 words
+          ~13 min read · 3418 words
         </p>
 
       <hr class="rule" />
@@ -413,12 +413,13 @@ sound_late = 0   cd_fail = 0
 
 <p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
 120 timing-bearing battle-card rows, the average is <strong>0.0% over target /
-100.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.0193%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.0943%</code> exact target speed).</p>
+100.1% target speed</strong> (<code class="language-plaintext highlighter-rouge">-0.0231%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.0972%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">walkstuf1-high-primecap144-v089</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-low-readgroup-prune-v088</code>,
 <code class="language-plaintext highlighter-rouge">building4-restore-minus-current-v087</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,
@@ -483,13 +484,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T19:27:04</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-07T20:03:56</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor3-low-readgroup-prune-v088</code>,
+rows now use <code class="language-plaintext highlighter-rouge">walkstuf1-high-primecap144-v089</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-low-readgroup-prune-v088</code>,
 <code class="language-plaintext highlighter-rouge">building4-restore-minus-current-v087</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
@@ -854,7 +856,7 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>walkstuf1</code></td>
-      <td>+13.7% / 88.0% (1595/1403); due 57; blk 278</td>
+      <td>+13.2% / 88.3% (1592/1406); due 55; blk 275</td>
       <td>+14.0% / 87.7% (1604/1407); due 50; blk 270</td>
     </tr>
     <tr>
@@ -881,7 +883,7 @@ gfx.upload_bytes  = 8,643,840
 </code></pre></div></div>
 
 <p>The FISHING1 canary remains under target, but the full battle card still has
-CD-heavy scenes (<code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">building4</code>, and
+CD-heavy scenes (<code class="language-plaintext highlighter-rouge">walkstuf1</code>, <code class="language-plaintext highlighter-rouge">visitor3</code>, <code class="language-plaintext highlighter-rouge">building2</code>, <code class="language-plaintext highlighter-rouge">building4</code>, and
 <code class="language-plaintext highlighter-rouge">building6</code>). The clean-pressure relief rows prove scene-local
 CD policy can recover large due-miss collapses, while the refreshed stale rows
 prove current-pack baselines must be cleared before ranking fixed overhead.</p>
@@ -889,13 +891,13 @@ prove current-pack baselines must be cleared before ranking fixed overhead.</p>
 <p>Next plausible wins, in priority order:</p>
 
 <ol>
-  <li><strong>Generated read grouping or setup/data-shape work.</strong> VISITOR3 remains the
-largest gap at about <code class="language-plaintext highlighter-rouge">+338/+334</code> VBlanks after the FGP3/v4 draw-metadata
-compaction and compact decoder inline pass, though the guarded high-tide generated-window <code class="language-plaintext highlighter-rouge">138..162</code> append
-already proved scheduler-owned groups can reduce visible blocking and active
-reads without moving layout. WALKSTUF1 still has
-<code class="language-plaintext highlighter-rouge">blocking_vb=278/276</code> after the PAL4 setup-prime win, so the next CD-shape
-pass needs generated cost metadata rather than hand-authored ranges.</li>
+  <li><strong>Generated read grouping or setup/data-shape work.</strong> WALKSTUF1 is now the
+largest gap at <code class="language-plaintext highlighter-rouge">+197/+186</code> VBlanks after the low <code class="language-plaintext highlighter-rouge">160 KiB</code> and high
+<code class="language-plaintext highlighter-rouge">144 KiB</code> setup-prime cap retunes. VISITOR3 remains next at <code class="language-plaintext highlighter-rouge">+116/+115</code>
+VBlanks after restore-minus-current cleanup; its local C read-table rows are
+exhausted, so the next CD-shape pass needs generated scheduler ownership,
+selective preprocessing, or pack data-shape work rather than hand-authored
+ranges.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

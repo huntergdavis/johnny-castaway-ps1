@@ -4,9 +4,10 @@
 
 
 **Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
-current BUILDING4 restore-minus-current pack baseline and VISITOR3 read-table
-headroom pass; all 63 scenes remain validated, and the headless battle card is
-slightly under target at `-0.0193%` over / `100.0943%` target speed).
+current BUILDING4 restore-minus-current pack baseline, VISITOR3 read-table
+headroom pass, and WALKSTUF1 high setup-prime retune; all 63 scenes remain
+validated, and the headless battle card is slightly under target at `-0.0231%`
+over / `100.0972%` target speed).
 
 ## Overall
 
@@ -157,11 +158,14 @@ release. All 63 scenes remain validated, all 126 high/low variants remain
 routed through headless perf, and the current VISITOR3 restore-minus-current
 pack baseline moved the battle card to `0.0502%` over target / `100.0292%`
 target speed while preserving pack LBAs and the `215040` byte PS-EXE bucket. The
-subsequent BUILDING4 restore-minus-current pack pass moves the current matrix to
-`-0.0193%` over target / `100.0943%` target speed. The current
+subsequent BUILDING4 restore-minus-current pack pass moved the matrix to
+`-0.0193%` over target / `100.0943%` target speed. The
 `visitor3-low-readgroup-prune-v088` pass keeps those numbers exact-flat while
 removing the stale VISITOR3 low read group `170..186` and shrinking
-`foregroundPilotPlay` by `36` bytes. See [release-notes-0.8.2.md](release-notes-0.8.2.md).
+`foregroundPilotPlay` by `36` bytes. The current
+`walkstuf1-high-primecap144-v089` pass moves the public matrix to `-0.0231%`
+over target / `100.0972%` target speed by retuning only WALKSTUF1 high-tide
+setup priming. See [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
@@ -171,9 +175,12 @@ high is now `1139/1024` with `blocking_vb=191`; low is `1140/1024` with
 ACTIVITY9 low is `2085/2058`, and the FISHING1 high control remains under
 target at `1068/1074`. BUILDING4 now uses the same pack-side
 restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
-low is `2855/2815` with `blocking_vb=46`. JOHNNY2, WALKSTUF1, and related
+low is `2855/2815` with `blocking_vb=46`. WALKSTUF1 high now uses a
+high-tide-only `144 KiB` setup-prime cap and improves to `1592/1406` with
+`blocking_vb=275`, `prefetch_overrun_vb=51`, `loop_reads=134`, and
+`due_misses=55`; WALKSTUF1 low remains `1604/1407`. JOHNNY2 and related
 current-pack clean-pressure work are preserved in the matrix; the next true
-outliers are WALKSTUF1, VISITOR3, BUILDING2, BUILDING6, and selective
+outliers are WALKSTUF1 low/high, VISITOR3, BUILDING2, BUILDING6, and selective
 upload-ready bands. VISITOR3 local C read-table rows are now exhausted; the
 next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
 data-shape/preprocess route.
