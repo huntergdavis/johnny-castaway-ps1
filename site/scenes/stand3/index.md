@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 3 — Lifts hat
+title: STAND 3 — Standing at edge of island, adjusts hat
 ads: STAND
 tag: 3
 slug: stand3
 status: validated
-description: "STAND.ADS scene 3: Lifts hat. Validated on PS1."
+description: "STAND.ADS scene 3: Johnny stands at the edge of the island and adjusts his hat. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -15,11 +15,9 @@ Validated on 2026-05-04.
 - ADS dispatch: <code>STAND.ADS scene 3</code>
 - Slug: <code>stand3</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Short idle at SPOT_A NW: lifts his hat.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny stands at the edge of the island and adjusts his hat — one of the idle standing-pose beats in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior "lifts hat" caption-mapping with the edge-of-island position made explicit.
 
 ## Validation notes
 
