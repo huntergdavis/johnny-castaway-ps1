@@ -73,7 +73,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/the-site-itself/",
   "inLanguage": "en",
-  "wordCount": 3142,
+  "wordCount": 3227,
   "timeRequired": "PT12M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
@@ -137,7 +137,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~12 min read · 3075 words
+          ~12 min read · 3160 words
         </p>
 
       <hr class="rule" />
@@ -156,7 +156,7 @@
   <li><a href="#the-canonical_baseurl-workaround" id="markdown-toc-the-canonical_baseurl-workaround">The <code class="language-plaintext highlighter-rouge">canonical_baseurl</code> workaround</a></li>
   <li><a href="#the-build-script-removes-two-files" id="markdown-toc-the-build-script-removes-two-files">The build script removes two files</a></li>
   <li><a href="#hand-rolled-feeds-no-plugin" id="markdown-toc-hand-rolled-feeds-no-plugin">Hand-rolled feeds, no plugin</a></li>
-  <li><a href="#the-pager-pattern-shared-across-three-catalogs" id="markdown-toc-the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</a></li>
+  <li><a href="#the-pager-pattern-shared-across-four-catalogs" id="markdown-toc-the-pager-pattern-shared-across-four-catalogs">The pager pattern, shared across four catalogs</a></li>
   <li><a href="#the-build-stamp-and-the-git-churn-it-caused" id="markdown-toc-the-build-stamp-and-the-git-churn-it-caused">The build stamp and the git churn it caused</a></li>
   <li><a href="#structured-data-without-jekyll-seo-tag" id="markdown-toc-structured-data-without-jekyll-seo-tag">Structured data without <code class="language-plaintext highlighter-rouge">jekyll-seo-tag</code></a></li>
   <li><a href="#the-404-pages-problem" id="markdown-toc-the-404-pages-problem">The 404 page’s problem</a></li>
@@ -252,9 +252,9 @@ require a refactor to reconcile.</li>
 
 <p><code class="language-plaintext highlighter-rouge">jekyll-redirect-from</code> <em>is</em> in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin’s <code class="language-plaintext highlighter-rouge">redirect_from:</code> frontmatter API is already in use on <code class="language-plaintext highlighter-rouge">scenes/index.md</code>. There was a bug there, though — the plugin’s <code class="language-plaintext highlighter-rouge">absolute_url(to)</code> honors <code class="language-plaintext highlighter-rouge">site.baseurl</code>, which the build wipes, so every redirect was silently pointed at <code class="language-plaintext highlighter-rouge">hunterdavis.com/...</code> (the user-pages root) instead of <code class="language-plaintext highlighter-rouge">hunterdavis.com/johnny-castaway-ps1/...</code>. The fix is a custom <code class="language-plaintext highlighter-rouge">_layouts/redirect.html</code> override that strips <code class="language-plaintext highlighter-rouge">site.url</code> from <code class="language-plaintext highlighter-rouge">page.redirect.to</code> and rebuilds the URL through <code class="language-plaintext highlighter-rouge">site.canonical_baseurl</code>. External redirect targets (URLs that don’t start with <code class="language-plaintext highlighter-rouge">site.url</code>) pass through unchanged.</p>
 
-<h2 id="the-pager-pattern-shared-across-three-catalogs">The pager pattern, shared across three catalogs</h2>
+<h2 id="the-pager-pattern-shared-across-four-catalogs">The pager pattern, shared across four catalogs</h2>
 
-<p>The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:</p>
+<p>The site has four indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references, 15 lab essays. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:</p>
 
 <ul>
   <li>Scene pages compute prev/next from <code class="language-plaintext highlighter-rouge">_data/scenes.yml</code>, sorted by <code class="language-plaintext highlighter-rouge">sort: 'tag' | sort: 'ads'</code> (the same order the index renders).</li>
@@ -264,12 +264,21 @@ prefix, lex-sorted (matching the index table). The case shelf detail pages
 live under <code class="language-plaintext highlighter-rouge">_layouts/page.html</code>, which conditionally includes the case pager
 only when the URL is under the cases path. Whitespace-control on the Liquid
 <code class="language-plaintext highlighter-rouge">if</code> block keeps non-case pages byte-identical.</li>
+  <li>Lab essays compute prev/next the way devlog posts would if Jekyll’s
+built-in <code class="language-plaintext highlighter-rouge">page.previous</code> / <code class="language-plaintext highlighter-rouge">page.next</code> worked for them — but lab
+essays live under <code class="language-plaintext highlighter-rouge">site.html_pages</code> (layout: page) rather than
+<code class="language-plaintext highlighter-rouge">site.posts</code>, so the built-in doesn’t apply. Same flag-tracking
+walker the regtest case pager uses, sorted by <code class="language-plaintext highlighter-rouge">page.date</code> ascending,
+with the older/newer label convention from the devlog pager. The
+head-pagination include uses the same walker on the same sorted
+list, so head-level <code class="language-plaintext highlighter-rouge">&lt;link rel="prev"&gt;</code> and the body-level
+<code class="language-plaintext highlighter-rouge">&lt;a rel="prev"&gt;</code> always land on identical pairs.</li>
 </ul>
 
 <table>
   <tbody>
     <tr>
-      <td>All three pagers reuse one CSS class — <code class="language-plaintext highlighter-rouge">.scene-pager</code> — because the layout is identical (3-col grid, collapses to prev</td>
+      <td>All four pagers reuse one CSS class — <code class="language-plaintext highlighter-rouge">.scene-pager</code> — because the layout is identical (3-col grid, collapses to prev</td>
       <td>next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to <code class="language-plaintext highlighter-rouge">.page-pager</code> is on the backlog.</td>
     </tr>
   </tbody>
