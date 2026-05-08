@@ -114,6 +114,22 @@ so the SPU's hardware loop reads as unbroken ocean rather than a
 wraparound. Encoding pipeline lives in `scratch/ocean-ambience/`;
 design rationale in [background-music-feasibility.md]({{ site.github_url }}/blob/main/docs/ps1/background-music-feasibility.md).
 
+## Related pages
+
+- [Legal]({{ '/legal/' | relative_url }}) — the licensing
+  companion to this attribution: GPL-3.0 on the project's own
+  code, MPL-2.0 on the SPI driver derivation, the Sierra
+  character disclaimer, the takedown procedure.
+- [Voice]({{ '/about/voice/' | relative_url }}) — the editorial
+  standard the credits voice anchors. Why this page reads
+  plainspoken instead of marketing-speak.
+- [humans.txt]({{ '/humans.txt' | relative_url }}) — the same
+  attribution surface in the IndieWeb-standard humans.txt
+  format, mirroring this page's content.
+- [FAQ — Is this legal?]({{ '/faq/#is-this-legal' | relative_url }})
+  — the short author-written restatement of the fan-port
+  stance.
+
 ---
 
 The site is text-only on purpose — no portraits, no contributor
