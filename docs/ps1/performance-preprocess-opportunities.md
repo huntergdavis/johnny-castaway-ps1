@@ -8,7 +8,7 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `126`
-- Average measured timing gap: `-0.3158%` over target
+- Average measured timing gap: `-0.3228%` over target
 - Average estimated align4 x-band upload byte saving: `66.75%`
 
 ## Top Upload-Ready Candidates
@@ -25,16 +25,16 @@ accepted performance baseline.
 | 8 | `walkstuf3` | `low` | 37.28 | 1.22% | 77.8% | 581.73% | 62 | large upload-ready payload; needs compression/selective bands; rect/frame 3.21 |
 | 9 | `building2` | `high` | 37.2 | 2.51% | 67.28% | 589.07% | 60 | large upload-ready payload; needs compression/selective bands; rect/frame 2.47 |
 | 10 | `building4` | `high` | 34.98 | 0.99% | 65.1% | 481.57% | 67 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
-| 11 | `activity9` | `high` | 34.25 | 1.85% | 50.66% | 560.7% | 60 | x-band rect cap pressure; needs selective bands; rect/frame 3.48 |
-| 12 | `walkstuf3` | `high` | 32.49 | 0.87% | 81.22% | 565.34% | 65 | large upload-ready payload; needs compression/selective bands; rect/frame 2.09 |
-| 13 | `building6` | `low` | 31.77 | 1.18% | 60.41% | 482.98% | 57 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
-| 14 | `johnny6` | `high` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate; rect/frame 1.52 |
-| 15 | `johnny6` | `low` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate; rect/frame 1.52 |
-| 16 | `mary1` | `low` | 29.84 | 0.41% | 80.45% | 268.49% | 55 | candidate; rect/frame 1.61 |
-| 17 | `johnny1` | `high` | 29.73 | 1.54% | 54.11% | 339.7% | 54 | candidate; rect/frame 1.5 |
-| 18 | `johnny1` | `low` | 29.73 | 1.54% | 54.11% | 339.7% | 54 | candidate; rect/frame 1.5 |
-| 19 | `building6` | `high` | 28.1 | 1.02% | 60.41% | 482.98% | 52 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
-| 20 | `activity9` | `low` | 23.93 | 1.31% | 50.66% | 919.43% | 41 | x-band rect cap pressure; needs selective bands; rect/frame 3.48 |
+| 11 | `walkstuf3` | `high` | 32.49 | 0.87% | 81.22% | 565.34% | 65 | large upload-ready payload; needs compression/selective bands; rect/frame 2.09 |
+| 12 | `building6` | `low` | 31.77 | 1.18% | 60.41% | 482.98% | 57 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
+| 13 | `johnny6` | `high` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate; rect/frame 1.52 |
+| 14 | `johnny6` | `low` | 31.56 | 1.14% | 54.86% | 310.08% | 56 | candidate; rect/frame 1.52 |
+| 15 | `mary1` | `low` | 29.84 | 0.41% | 80.45% | 268.49% | 55 | candidate; rect/frame 1.61 |
+| 16 | `johnny1` | `high` | 29.73 | 1.54% | 54.11% | 339.7% | 54 | candidate; rect/frame 1.5 |
+| 17 | `johnny1` | `low` | 29.73 | 1.54% | 54.11% | 339.7% | 54 | candidate; rect/frame 1.5 |
+| 18 | `building6` | `high` | 28.1 | 1.02% | 60.41% | 482.98% | 52 | x-band rect cap pressure; needs selective bands; rect/frame 1.63 |
+| 19 | `activity9` | `low` | 23.93 | 1.31% | 50.66% | 919.43% | 41 | x-band rect cap pressure; needs selective bands; rect/frame 3.48 |
+| 20 | `visitor5` | `low` | 22.57 | 2.02% | 75.3% | 584.49% | 24 | large upload-ready payload; needs compression/selective bands; rect/frame 1.76 |
 
 ## Read Before Acting
 

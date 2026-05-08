@@ -7,10 +7,10 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4527%` public over target / `99.5662%` public target speed after the MARY3,
-BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, and BUILDING6 compact
-follow-ups. The raw signed optimization matrix is `-0.3158%` over target /
-`100.3500%` target speed.
+`+0.4457%` public over target / `99.5730%` public target speed after the MARY3,
+BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
+and ACTIVITY9 high compact follow-ups. The raw signed optimization matrix is
+`-0.3228%` over target / `100.3568%` target speed.
 
 ## Headline
 

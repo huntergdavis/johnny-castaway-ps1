@@ -25,13 +25,24 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the BUILDING6 compact-FGP3/v4 promotion:
-`+0.4527%` public average over target / `99.5662%` public target speed across
+Current all-scene rollup after the ACTIVITY9 high compact-FGP3/v4 promotion:
+`+0.4457%` public average over target / `99.5730%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.3158%` / `100.3500%`. Since the compact full-matrix baseline was about
+`-0.3228%` / `100.3568%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
 removed about `16.95` public over-target points and added about `12.47`
 public target-speed points.
+
+Latest promoted ACTIVITY9 high compact-FGP3/v4 baseline: convert
+`ACTIVITY9.FG2` to padded compact FGP3/v4 restore-minus-current data while
+preserving the `1745484` byte CD footprint. The compaction chain trims active
+payload `1453793 -> 776893`, cleanup spans `112361 -> 36308`, cleanup pixels
+`697279 -> 194715`, and modeled restore bytes `1394558 -> 389430`. High
+improves `loop_vb 2094 -> 2082`, `target_vb 2056 -> 2062`, `overrun_vb
+38 -> 20`, `blocking_vb 37 -> 24`, `prefetch_overrun_vb 23 -> 17`,
+`loop_reads 52 -> 25`, `loop_read_vb 378 -> 187`, and `due_misses 2 -> 1`.
+Low tide stayed exact-flat as a canary at `2085/2058`. Pack LBA stays `3108`,
+sectors stay `853`, and the PS-EXE bucket stays `215040`.
 
 Latest promoted BUILDING6 compact-FGP3/v4 baseline: convert both packs to
 padded compact FGP3/v4 restore-minus-current data inside the original
@@ -99,8 +110,8 @@ the PS-EXE bucket stays `215040`. Low tide was verified exact-flat when its
 original FGP2 pack was restored. Broad VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, and FISHING1 canaries stayed on their accepted profiles. The next
 top rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low
-residual work, VISITOR5 low, ACTIVITY9 high, JOHNNY1 high/low, BUILDING4 low,
-BUILDING6 high/low residual work, and remaining under-99 rows.
+residual work, VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, BUILDING6
+high/low residual work, ACTIVITY9 low, and remaining under-99 rows.
 
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
 `BUILDING1.FG2` and `BUIL1LOW.FG2` to padded compact FGP3/v4
@@ -428,8 +439,9 @@ prefetch-preserve follow-up then move the raw signed matrix to `-0.2159%` /
 `-0.2404%` / `100.2410%`, the VISITOR5 high-only compact-FGP3/no-autoprime pass
 moves it to `-0.2471%` / `100.2478%`, and the BUILDING2 low
 restore-minus-current/slack-4 pass moves it to `-0.2752%` / `100.2759%`. The
-WALKSTUF3 high compact-FGP3/v4 pass moves it to `-0.2825%` / `100.2833%`, and
-the BUILDING6 compact-FGP3/v4 pass moves it to `-0.3158%` / `100.3500%`. The
+WALKSTUF3 high compact-FGP3/v4 pass moves it to `-0.2825%` / `100.2833%`, the
+BUILDING6 compact-FGP3/v4 pass moves it to `-0.3158%` / `100.3500%`, and the
+ACTIVITY9 high compact-FGP3/v4 pass moves it to `-0.3228%` / `100.3568%`. The
 current rollup is tracked above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
@@ -466,7 +478,7 @@ High improves `loop_vb 1450 -> 1406`, `overrun_vb 435 -> 387`,
 `blocking_vb 355 -> 296`, and `prefetch_overrun_vb 14 -> 7`; low improves
 `1452 -> 1405`, `440 -> 390`, `361 -> 301`, and `19 -> 8`. The largest
 remaining absolute gaps are now VISITOR3, WALKSTUF1, BUILDING2, BUILDING4,
-VISITOR5 low, ACTIVITY9 high, and generated selective preprocessing, not
+VISITOR5 low, ACTIVITY9 low, and generated selective preprocessing, not
 FISHING1.
 
 Latest promoted compact-residual baseline: convert every current FGP3/v3
@@ -501,9 +513,11 @@ the BUILDING1 compact-FGP3/no-autoprime pass moves it to `-0.2404%` /
 `-0.2471%` over target / `100.2478%` target speed, and the BUILDING2 low
 restore-minus-current/slack-4 pass moves the raw signed matrix to `-0.2752%`
 over target / `100.2759%` target speed. The WALKSTUF3 high compact-FGP3/v4
-pass then moves it to `-0.2825%` over target / `100.2833%` target speed, and
-the BUILDING6 compact-FGP3/v4 pass moves the current raw signed matrix to
-`-0.3158%` over target / `100.3500%` target speed.
+pass then moves it to `-0.2825%` over target / `100.2833%` target speed, the
+BUILDING6 compact-FGP3/v4 pass moves it to `-0.3158%` over target /
+`100.3500%` target speed, and the ACTIVITY9 high compact-FGP3/v4 pass moves
+the current raw signed matrix to `-0.3228%` over target / `100.3568%` target
+speed.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -1044,10 +1058,11 @@ The all-scene preprocessing opportunity matrix is now the pack-format targeting
 surface. It parses current `FGP2`/`FGP3` packs and ranks selective upload-ready
 or cleanup-metadata experiments against the measured battle card. The first
 pass originally pointed at WALKSTUF1 low/high, VISITOR3 low/high, BUILDING4
-high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1 and
-BUILDING6 compact passes, the current top generated graphics/scheduler targets
-are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low, VISITOR5 low,
-ACTIVITY9 high, JOHNNY1 high/low, and BUILDING6 high/low residual work.
+high/low, BUILDING6 high/low, and BUILDING2 high/low. After the WALKSTUF1,
+BUILDING6, and ACTIVITY9 high compact passes, the current top generated
+graphics/scheduler targets are VISITOR3 low/high, WALKSTUF1 high/low,
+BUILDING2 high/low, VISITOR5 low, JOHNNY1 high/low, BUILDING6 high/low
+residual work, and ACTIVITY9 low residual work.
 Do not retry whole-payload direct16; use selective/compressed bands or
 setup-resident upload-ready slices.
 Two more hard-coded read-group probes are now rejected: `384..396` never fired

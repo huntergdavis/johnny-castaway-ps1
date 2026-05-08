@@ -87,9 +87,9 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Scenes fully validated under the reference bar | **63 / 63** (`ACTIVITY 1`, `ACTIVITY 4`, `ACTIVITY 5`, `ACTIVITY 6`, `ACTIVITY 7`, `ACTIVITY 8`, `ACTIVITY 9`, `ACTIVITY 10`, `ACTIVITY 11`, `ACTIVITY 12`, `BUILDING 1`, `BUILDING 2`, `BUILDING 3`, `BUILDING 4`, `BUILDING 5`, `BUILDING 6`, `BUILDING 7`, `FISHING 1`, `FISHING 2`, `FISHING 3`, `FISHING 4`, `FISHING 5`, `FISHING 6`, `FISHING 7`, `FISHING 8`, `JOHNNY 1`, `JOHNNY 2`, `JOHNNY 3`, `JOHNNY 4`, `JOHNNY 5`, `JOHNNY 6`, `MARY 1`, `MARY 2`, `MARY 3`, `MARY 4`, `MARY 5`, `MISCGAG 1`, `MISCGAG 2`, `STAND 1`, `STAND 2`, `STAND 3`, `STAND 4`, `STAND 5`, `STAND 6`, `STAND 7`, `STAND 8`, `STAND 9`, `STAND 10`, `STAND 11`, `STAND 12`, `STAND 15`, `STAND 16`, `SUZY 1`, `SUZY 2`, `VISITOR 1`, `VISITOR 3`, `VISITOR 4`, `VISITOR 5`, `VISITOR 6`, `VISITOR 7`, `WALKSTUF 1`, `WALKSTUF 2`, `WALKSTUF 3`) |
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
-| Headless perf battle card | **126 / 126** scene/tide variants routed; **126 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; public-capped timing-bearing average is **+0.5% over target / 99.6% target speed** |
-| Latest perf matrix run | **`2026-05-08T15:26:52`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized/code-headroom rows use `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Headless perf battle card | **126 / 126** scene/tide variants routed; **126 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; public-capped timing-bearing average is **+0.4% over target / 99.6% target speed** |
+| Latest perf matrix run | **`2026-05-08T16:19:16`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized/code-headroom rows use `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -100,10 +100,11 @@ padded compact FGP3/v4 restore-minus-current packs while preserving the
 bucket. After the MARY3 guarded prefetch-preserve promotion, the BUILDING1
 compact-FGP3/no-autoprime follow-up, the VISITOR5 high-only compact
 FGP3/no-autoprime follow-up, the BUILDING2 low restore-minus-current slack-4
-follow-up, the WALKSTUF3 high compact-FGP3 follow-up, and the BUILDING6
-compact-FGP3/v4 follow-up, the current public-capped rollup is `+0.4527%` over
-target / `99.5662%` target speed across all 126 timing-bearing rows; the raw
-signed CSV records `-0.3158%` over target / `100.3500%` target speed for
+follow-up, the WALKSTUF3 high compact-FGP3 follow-up, the BUILDING6
+compact-FGP3/v4 follow-up, and the ACTIVITY9 high compact-FGP3/v4 follow-up,
+the current public-capped rollup is `+0.4457%` over target / `99.5730%` target
+speed across all 126 timing-bearing rows; the raw signed CSV records
+`-0.3228%` over target / `100.3568%` target speed for
 internal optimization analysis.
 
 The follow-up VISITOR3 fallthrough-threshold probe did not promote:
@@ -128,7 +129,7 @@ VISITOR3 high/low refresh stayed at the current matrix baseline.
 
 `v0.8.0-ps1` is the complete-scene performance baseline. All 63 scenes remain
 signed off, all 126 high/low scene variants are routed, and the current 126
-timing-bearing rows average **+0.5% over target / 99.6% target speed** under
+timing-bearing rows average **+0.4% over target / 99.6% target speed** under
 the public cap that prevents faster-than-target rows from reporting above
 100%. Since the compact full-matrix baseline was about **+17.4% over target /
 87.1% target speed**, the public-capped view has removed about **16.95
@@ -137,14 +138,21 @@ points**.
 
 Current performance work is focused on VISITOR3 and the remaining top
 outliers. The current promoted source/data pass is
-`building6-compact-fgp3-v165`: it converts both BUILDING6 packs to padded
-compact FGP3/v4 restore-minus-current data inside the original `1444370` byte
-footprint. High improves `2520/2442 -> 2482/2457`, cuts blocking `62 -> 25`,
-hidden refill `64 -> 27`, loop reads `74 -> 42`, and due misses `1 -> 0`; low
-improves `2515/2437 -> 2485/2456`, cuts blocking `70 -> 28`, hidden refill
-`66 -> 29`, loop reads `73 -> 42`, and due misses `2 -> 0`. Pack LBAs stay
-fixed at `10754/11460`, sectors stay `706`, and the `215040` byte PS-EXE
-bucket is unchanged. The earlier WALKSTUF3 high compact pass converts the
+`activity9-high-compact-fgp3-v167`: it converts ACTIVITY9 high to padded
+compact FGP3/v4 restore-minus-current data inside the original `1745484` byte
+footprint while leaving low tide exact-flat as a canary. High improves
+`2094/2056 -> 2082/2062`, cuts overrun `38 -> 20`, blocking `37 -> 24`,
+hidden refill `23 -> 17`, loop reads `52 -> 25`, loop-read time `378 -> 187`,
+and due misses `2 -> 1`; pack LBA stays fixed at `3108`, sectors stay `853`,
+and the `215040` byte PS-EXE bucket is unchanged. The previous BUILDING6
+compact pass converts both BUILDING6 packs to padded compact FGP3/v4
+restore-minus-current data inside the original `1444370` byte footprint. High
+improves `2520/2442 -> 2482/2457`, cuts blocking `62 -> 25`, hidden refill
+`64 -> 27`, loop reads `74 -> 42`, and due misses `1 -> 0`; low improves
+`2515/2437 -> 2485/2456`, cuts blocking `70 -> 28`, hidden refill `66 -> 29`,
+loop reads `73 -> 42`, and due misses `2 -> 0`. Pack LBAs stay fixed at
+`10754/11460`, sectors stay `706`, and the `215040` byte PS-EXE bucket is
+unchanged. The earlier WALKSTUF3 high compact pass converts the
 high-tide pack to padded compact FGP3/v4 restore-minus-current data while
 preserving the `1026922` byte footprint and current pack LBA. High improves
 current-layout control `2325/2282 -> 2310/2290`, cuts overrun `43 -> 20`,
@@ -172,11 +180,11 @@ from `1111/1090` to `1104/1092`, cutting overrun `21 -> 12`, blocking
 newer BUILDING2 low restore-minus-current/slack-4 pass moves low from
 `1383/1304` to `1349/1316`, cutting overrun `79 -> 33`, blocking `118 -> 83`,
 hidden refill `5 -> 1`, loop reads `55 -> 54`, and loop-read time `251 -> 227`.
-The current public-capped rollup is `+0.4527%` over target / `99.5662%` target
-speed; the raw signed optimization matrix is `-0.3158%` / `100.3500%`. The next
+The current public-capped rollup is `+0.4457%` over target / `99.5730%` target
+speed; the raw signed optimization matrix is `-0.3228%` / `100.3568%`. The next
 true rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
-VISITOR5 low, ACTIVITY9 high, JOHNNY1 high/low, BUILDING4 low, BUILDING6
-high/low, and remaining generated scheduler/data-shape work.
+VISITOR5 low, JOHNNY1 high/low, BUILDING4 low, BUILDING6 high/low, ACTIVITY9
+low, and remaining generated scheduler/data-shape work.
 The current VISITOR3 default selective upload-ready plan is closed as a
 same-footprint append: it saves a modeled `6114568` upload bytes, but its
 `2462072` bytes of payload plus rect metadata exceed the current `814847` bytes
@@ -373,16 +381,20 @@ blocking `240 -> 37`, and hidden refill overrun `27 -> 30`; low tide moves
 `114 -> 38`.
 ACTIVITY9 low now promotes the same cleanup-compact FGP3/v3 metadata shape:
 low tide moves `2098/2056 -> 2087/2056`, blocking `47 -> 42`, and hidden
-refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
-original padded FGP3 pack left untouched.
-The public-capped timing-bearing average is now `+0.4527%` over target /
-`99.5662%` target speed after the BUILDING6 compact-FGP3/v4 promotion.
-The raw signed optimization matrix is `-0.3158%` / `100.3500%`. The latest
-BUILDING6 pass moves high `2520/2442 -> 2482/2457` and low `2515/2437 ->
-2485/2456`, cuts blocking `62/70 -> 25/28`, hidden refill `64/66 -> 27/29`,
-loop reads `74/73 -> 42/42`, and due misses `1/2 -> 0/0` while preserving the
-`1444370` byte pack footprints, fixed LBAs, and the `215040` byte PS-EXE
-bucket. The prior WALKSTUF3 high pass moves current-layout control
+refill overrun `19 -> 12`; the later ACTIVITY9 high compact-FGP3/v4 pass moves
+high tide to `2082/2062` while preserving the original padded pack footprint.
+The public-capped timing-bearing average is now `+0.4457%` over target /
+`99.5730%` target speed after the ACTIVITY9 high compact-FGP3/v4 promotion.
+The raw signed optimization matrix is `-0.3228%` / `100.3568%`. The latest
+ACTIVITY9 high pass moves `2094/2056 -> 2082/2062`, cuts overrun `38 -> 20`,
+blocking `37 -> 24`, hidden refill `23 -> 17`, loop reads `52 -> 25`, and due
+misses `2 -> 1` while preserving the `1745484` byte pack footprint, fixed LBA
+`3108`, and the `215040` byte PS-EXE bucket. The prior BUILDING6 pass moves
+high `2520/2442 -> 2482/2457` and low `2515/2437 -> 2485/2456`, cuts blocking
+`62/70 -> 25/28`, hidden refill `64/66 -> 27/29`, loop reads `74/73 -> 42/42`,
+and due misses `1/2 -> 0/0` while preserving the `1444370` byte pack
+footprints, fixed LBAs, and the `215040` byte PS-EXE bucket. The prior
+WALKSTUF3 high pass moves current-layout control
 `2325/2282 -> 2310/2290`, cuts overrun `43 -> 20`, blocking `65 -> 47`, hidden
 refill `32 -> 18`, loop reads `74 -> 37`, and loop-read time `378 -> 183`
 while preserving the `1026922` byte footprint and current pack LBA. The MARY3 pass

@@ -15,17 +15,20 @@ holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
 `{{ site.release.tag }}` is the current release: every row in the live
 per-scene ledger is signed off, all 126 high/low scene variants are routed,
-and the headless timing-bearing average is +0.5% over target /
+and the headless timing-bearing average is +0.4% over target /
 {{ site.release.perf_target_speed_pct }}% target speed. The current
 post-release BUILDING1 compact-FGP3/no-autoprime follow-up moves both
 BUILDING1 tides into the green band, and the newer VISITOR5 high-only compact
 FGP3/no-autoprime follow-up cuts that high-tide overrun without moving low
 tide. The newer BUILDING2 low restore-minus-current/slack-4 pass moves low
 back into the orange band, and the latest WALKSTUF3 high compact-FGP3/v4 pass
-moves high into green. The latest BUILDING6 compact-FGP3/v4 pass cuts both
+moves high into green. The BUILDING6 compact-FGP3/v4 pass cuts both
 tides to `2482/2457` and `2485/2456`, clearing due misses and moving both rows
-to the bottom of the orange band while preserving fixed pack LBAs. The MARY3
-guarded prefetch-preserve baseline keeps hidden refill debt at zero.
+to the bottom of the orange band while preserving fixed pack LBAs. The latest
+ACTIVITY9 high compact-FGP3/v4 pass moves high to `2082/2062`, cuts blocking
+`37 -> 24`, and moves the row into green while low tide stays exact-flat as a
+canary. The MARY3 guarded prefetch-preserve baseline keeps hidden refill debt
+at zero.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in

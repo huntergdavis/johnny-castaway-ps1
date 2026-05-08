@@ -48,8 +48,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">108 (85.7%) ≥ 99%</span>
-  <span class="spd-key spd-orange">16 (12.7%) ≥ 95%</span>
+  <span class="spd-key spd-green">109 (86.5%) ≥ 99%</span>
+  <span class="spd-key spd-orange">15 (11.9%) ≥ 95%</span>
   <span class="spd-key spd-yellow">2 (1.6%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -70,7 +70,8 @@ BUILDING6 high/low at the bottom of the band, and the remaining wide-action
 rows still finishing scheduler-owned read timing and selective-preprocessing
 work. MARY3 high/low moved into green after the guarded prefetch-preserve pass,
 BUILDING1 high/low moved into green after the compact-FGP3/no-autoprime pass,
-and WALKSTUF3 high moved into green after the compact-FGP3/v4 pass.
+WALKSTUF3 high moved into green after the compact-FGP3/v4 pass, and ACTIVITY9
+high moved into green after the compact-FGP3/v4 restore-minus-current pass.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -91,10 +92,10 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.5%` (`0.4527%` exact, public-capped) |
-| Timing-bearing average target speed | `99.6%` (`99.5662%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T15:26:52` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.4%` (`0.4457%` exact, public-capped) |
+| Timing-bearing average target speed | `99.6%` (`99.5730%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T16:19:16` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `activity9-high-compact-fgp3-v167`, `building6-compact-fgp3-v165`, `walkstuf3-high-compact-fgp3-v163`, `building2-low-restore-window-slack4-v160`, `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -130,7 +131,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building6-compact-fgp3-v165`,
+  refreshed rows use `activity9-high-compact-fgp3-v167`,
+  `building6-compact-fgp3-v165`,
   `walkstuf3-high-compact-fgp3-v163`,
   `building2-low-restore-window-slack4-v160`,
   `visitor5-high-compact-fgp3-noautoprime-v158`,
@@ -414,15 +416,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-activity9-high"><code>activity9</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T13:24:41</td>
-      <td>activity9-dead-readgroup-prune-v082</td>
-      <td>+1.8%</td>
-      <td class="spd-orange">98.2%</td>
-      <td>2094/2056</td>
-      <td>37</td>
-      <td>23</td>
-      <td>2</td>
-      <td>Exact-flat after pruning dead ACTIVITY9 low FGP3/v1 read-group selector; preserves accepted timing/LBAs and shrinks foregroundPilotPlay by 16 bytes</td>
+      <td>2026-05-08T16:19:16</td>
+      <td>activity9-high-compact-fgp3-v167</td>
+      <td>+1.0%</td>
+      <td class="spd-green">99.0%</td>
+      <td>2082/2062</td>
+      <td>24</td>
+      <td>17</td>
+      <td>1</td>
+      <td>Compact FGP3/v4 restore-minus-current high-tide pack; preserves footprint, LBA, and PS-EXE bucket while low tide stays exact-flat as a canary</td>
     </tr>
     <tr id="perf-activity9-low">
       <td><a class="scene-perf-rowlink" href="#perf-activity9-low"><code>activity9</code></a></td>

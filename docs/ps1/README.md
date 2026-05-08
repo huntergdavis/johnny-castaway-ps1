@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.5% public over target / 99.6% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.4% public over target / 99.6% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,20 +23,22 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.4527%` over target / `99.5662%` target speed across all 126
+`+0.4457%` over target / `99.5730%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
-WALKSTUF3 high, and BUILDING6 compact follow-ups; the raw signed optimization
-matrix is `-0.3158%` / `100.3500%`. That is about `16.95` public over-target
+WALKSTUF3 high, BUILDING6 compact, and ACTIVITY9 high compact follow-ups; the
+raw signed optimization matrix is `-0.3228%` / `100.3568%`. That is about
+`16.95` public over-target
 points removed and `12.47` public target-speed points added since the compact
 full-matrix baseline.
 
-The latest BUILDING6 follow-up, `building6-compact-fgp3-v165`, converts both
-packs to compact FGP3/v4 restore-minus-current data inside the original
-`1444370` byte footprints. High moves `2520/2442 -> 2482/2457`; low moves
-`2515/2437 -> 2485/2456`; both keep fixed LBAs and clear due misses. VISITOR3
-local threshold/read-table probes remain closed until generated scheduler
-ownership, safe upload/precomposed payloads, or another pack/data-shape
-reduction is ready.
+The latest ACTIVITY9 high follow-up, `activity9-high-compact-fgp3-v167`,
+converts the high-tide pack to compact FGP3/v4 restore-minus-current data
+inside the original `1745484` byte footprint. High moves `2094/2056 ->
+2082/2062`, cuts blocking `37 -> 24`, hidden refill `23 -> 17`, loop reads
+`52 -> 25`, and due misses `2 -> 1`; low tide stayed exact-flat as a canary.
+VISITOR3 local threshold/read-table probes remain closed until generated
+scheduler ownership, safe upload/precomposed payloads, or another
+pack/data-shape reduction is ready.
 
 `v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed

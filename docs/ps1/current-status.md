@@ -4,9 +4,10 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
-post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, and BUILDING6
-compact-FGP3 perf follow-ups; all 63 scenes remain validated, and the public
-headless battle card is `+0.4527%` over target / `99.5662%` target speed).
+post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
+and ACTIVITY9 high compact-FGP3 perf follow-ups; all 63 scenes remain
+validated, and the public headless battle card is `+0.4457%` over target /
+`99.5730%` target speed).
 
 ## Overall
 
@@ -173,9 +174,13 @@ hidden refill `32 -> 18`, and loop reads `74 -> 37`. The newer BUILDING6
 compact-FGP3/v4 pass converts both packs inside the original `1444370` byte
 footprint, moves high `2520/2442 -> 2482/2457` and low `2515/2437 ->
 2485/2456`, cuts blocking `62/70 -> 25/28`, hidden refill `64/66 -> 27/29`,
-loop reads `74/73 -> 42/42`, and keeps LBAs `10754/11460`. The public battle
-card is now `+0.4527%` over target / `99.5662%` target speed while preserving
-fixed pack LBAs and the `215040` byte PS-EXE bucket.
+loop reads `74/73 -> 42/42`, and keeps LBAs `10754/11460`. The latest
+ACTIVITY9 high compact-FGP3/v4 pass keeps the original `1745484` byte
+footprint and LBA `3108`, moves high `2094/2056 -> 2082/2062`, cuts blocking
+`37 -> 24`, hidden refill `23 -> 17`, loop reads `52 -> 25`, and keeps low
+tide exact-flat as a canary. The public battle card is now `+0.4457%` over
+target / `99.5730%` target speed while preserving fixed pack LBAs and the
+`215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `16.95`
 public over-target points and added about `12.47` public target-speed points.
@@ -199,7 +204,8 @@ pack-side cleanup spans with current-frame redraw coverage removed plus scoped
 `-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
 stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
 `1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and
-`1349/1316`, ACTIVITY9 low is `2085/2058`, WALKSTUF1 high/low are now
+`1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2085/2058`, WALKSTUF1
+high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
 `2321/2293`, and the FISHING1 high control sits at the public cap
 (`1068/1074`, raw signed under target). BUILDING4 now uses the same pack-side
@@ -208,8 +214,8 @@ low is `2855/2815` with `blocking_vb=46`. The earlier WALKSTUF1 high
 `144 KiB` setup-prime retune is superseded by the compact-pack baseline.
 JOHNNY2 and related current-pack clean-pressure work are preserved in the
 matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
-BUILDING2 residual work, VISITOR5 low, ACTIVITY9 high, JOHNNY1 high/low,
-BUILDING4 low, BUILDING6 residual work, and selective upload-ready bands.
+BUILDING2 residual work, VISITOR5 low, JOHNNY1 high/low, BUILDING4 low,
+BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
 VISITOR3 local C
 read-table rows and threshold-only fallthrough probes are now exhausted; the
 next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
