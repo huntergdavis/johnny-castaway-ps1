@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: VISITOR 6 — Coconut tree impact
+title: VISITOR 6 — Shakes tree, cracks coconut on it, eats
 ads: VISITOR
 tag: 6
 slug: visitor6
 status: validated
-description: "VISITOR.ADS scene 6: Coconut tree impact. Validated on PS1/DuckStation with full-host impact-delta capture."
+description: "VISITOR.ADS scene 6: Johnny shakes the palm, drops a coconut, cracks it on the trunk, and eats it. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -15,14 +15,9 @@ Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-b
 - ADS dispatch: <code>VISITOR.ADS scene 6</code>
 - Slug: <code>visitor6</code>
 
-## What This Scene Is
+## What this scene is
 
-Johnny shakes the palm tree; the coconut/tree impact is partly owned by
-background-visible host layers instead of foreground-only actor draws.
-
-The old catalogue label on this page described the schooner/partygoer scene.
-Live validation showed that label belongs elsewhere in the current mapping.
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny shakes the palm tree until a coconut drops. He picks it up, cracks it open against the trunk, and eats the coconut meat. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; sharpens the prior "coconut tree impact" caption-mapping with the full shake-crack-eat sequence made explicit.
 
 ### How this scene gets validated
 
