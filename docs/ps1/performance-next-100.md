@@ -133,6 +133,18 @@ caps for WALKSTUF1; retry only with generated scheduler ownership,
 frame/range-specific direct-stage policy, or a pack/data-shape reduction that
 lowers refill cost first.
 
+Current WALKSTUF1 preprocess footprint gate: the default selective x-band
+upload-ready model has high theoretical value, but the current PAL4/FGP2 packs
+cannot carry it layout-neutrally. Both tides have only `1` byte of zero-tail
+slack, while the default threshold plan selects `153 / 216` frames and needs
+`5684096` payload-plus-rect bytes to retain `9900992` modeled upload bytes
+saved. The exact same-footprint budget selects `0` frames. Raw foreground-only
+upload payloads are also unsafe here: selected draw-covered x-band bytes and
+all-draw-covered selected frames are both `0`. Close raw same-footprint
+WALKSTUF1 upload-ready append work until there is a shrinking/compressed pack
+transform, explicit layout movement, a safe background-owned pixel source, or
+generated scheduler metadata.
+
 Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
 pack-emitted upload pixels are not safe under the current FGP3 data. The
@@ -1397,6 +1409,7 @@ pre-v0.8.0 row.
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
 | WALKSTUF1 low read group `297..313` with `minSlack=8` | Do not promote or retry as a hand table. The safe slack guard prevented the group from firing (`group_hits=0`), while the source branch still shifted low target enough to regress overrun by one VBlank. WALKSTUF1 read clusters need generated scheduler metadata, not another hot source-table branch. |
+| WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. Both current PAL4/FGP2 packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `5684096` payload-plus-rect bytes per tide for `153 / 216` frames and `9900992` modeled upload bytes saved. The exact budget selects `0` frames, and raw foreground-only safety reports `0` selected draw-covered x-band bytes. Retry only with compression/shrinking pack data, explicit layout movement, a safe pixel source, or generated scheduler ownership. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The analyzer now exact-knapsacks the default-selected VISITOR3 rows against the pack's `814847` bytes of zero-tail slack and selects `74 / 96` frames using `814184` bytes, leaving `663` bytes of slack and retaining `3858104` modeled upload bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows and full VISITOR3/canary validation. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
