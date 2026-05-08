@@ -145,6 +145,14 @@
   {%- endif -%}
   <meta name="twitter:card"  content="summary_large_image" />
   <meta name="twitter:image" content="{{ tw_image }}" />
+  {%- comment -%}
+    twitter:image:alt — accessibility property the Twitter/X card
+    spec recommends for summary_large_image. Twitter/X does NOT
+    fall back to og:image:alt; without this tag, screen-reader
+    users on those platforms get no description of the social
+    card image. Reuses the same alt text computed for og:image:alt.
+  {%- endcomment -%}
+  <meta name="twitter:image:alt" content="{{ og_image_alt }}" />
 
   {%- comment -%}
     Forensic build stamp. Lets anyone debugging a deployed page see
