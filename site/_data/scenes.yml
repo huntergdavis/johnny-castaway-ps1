@@ -177,7 +177,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; raft/mermaid repair scene played cleanly on the normal high-tide/night validation route
+  notes: builds-fire-sits-by-it (Johnny gathers driftwood, builds a small fire on the beach, and sits next to it). Visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; played cleanly on the normal high-tide/night validation route. The earlier "raft/mermaid repair" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: BUILDING
   tag: 6
   slug: building6
