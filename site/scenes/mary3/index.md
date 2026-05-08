@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: MARY 3 — Mermaid sneak-up
+title: MARY 3 — Mary and Johnny exchange gifts and plan a date
 ads: MARY
 tag: 3
 slug: mary3
 status: validated
-description: "MARY.ADS scene 3: Mermaid sneak-up. Validated on PS1 after far-right full-frame foreground recapture and low-memory clean-snapshot relief."
+description: "MARY.ADS scene 3: Mary and Johnny exchange gifts at the shoreline and make plans to go on a date. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-03.
@@ -17,9 +17,7 @@ Validated on 2026-05-03.
 
 ## What this scene is
 
-Johnny is fishing; the mermaid swims up behind him. He thinks it's a fish.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Mary the mermaid surfaces at the shoreline; she and Johnny exchange small gifts and make plans to go on a date together. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "mermaid sneak-up" caption-mapping guess was wrong.
 
 ## Validation notes
 
