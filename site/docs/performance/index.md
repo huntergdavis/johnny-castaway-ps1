@@ -380,9 +380,9 @@ rows are historical only.
 <table class="scene-table perf-summary-table">
   <thead>
     <tr>
-      <th>Scene</th>
-      <th>High tide</th>
-      <th>Low tide</th>
+      <th scope="col">Scene</th>
+      <th scope="col">High tide</th>
+      <th scope="col">Low tide</th>
     </tr>
   </thead>
   <tbody>

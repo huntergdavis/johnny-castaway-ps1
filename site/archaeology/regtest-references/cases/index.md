@@ -24,7 +24,7 @@ signed off."
   Columns are case name (linking to the case detail page), ADS
   family, scene tag, captured frame count, and verification status.
 </caption>
-<thead><tr><th>Case</th><th>ADS</th><th>Tag</th><th>Frames</th><th>Status</th></tr></thead>
+<thead><tr><th scope="col">Case</th><th scope="col">ADS</th><th scope="col">Tag</th><th scope="col">Frames</th><th scope="col">Status</th></tr></thead>
 <tbody>
 <tr id="ads-activity"><td><a href="{{ '/archaeology/regtest-references/cases/activity-1/' | relative_url }}">ACTIVITY-1</a></td><td><code>ACTIVITY</code></td><td>1</td><td>356</td><td>verified</td></tr>
 <tr><td><a href="{{ '/archaeology/regtest-references/cases/activity-10/' | relative_url }}">ACTIVITY-10</a></td><td><code>ACTIVITY</code></td><td>10</td><td>267</td><td>verified</td></tr>

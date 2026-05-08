@@ -30,7 +30,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Original bitmap resources — 117 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>BACKGRND.BMP</code></td><td>92,656</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/bmp/BACKGRND.BMP">source</a></td></tr>
 <tr><td><code>BOAT.BMP</code></td><td>7,564</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/bmp/BOAT.BMP">source</a></td></tr>
@@ -156,7 +156,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Original animation scripts — 10 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>ACTIVITY.ADS</code></td><td>2,558</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ads/ACTIVITY.ADS">source</a></td></tr>
 <tr><td><code>BUILDING.ADS</code></td><td>4,512</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ads/BUILDING.ADS">source</a></td></tr>
@@ -175,7 +175,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Original TTM animations — 41 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>FIRE.TTM</code></td><td>952</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ttm/FIRE.TTM">source</a></td></tr>
 <tr><td><code>FISHWALK.TTM</code></td><td>968</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/ttm/FISHWALK.TTM">source</a></td></tr>
@@ -225,7 +225,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Original screens — 52 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>INTRO.SCR</code></td><td>153,600</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/INTRO.SCR">source</a></td></tr>
 <tr><td><code>ISLAND2.SCR</code></td><td>112,000</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/scr/ISLAND2.SCR">source</a></td></tr>
@@ -286,7 +286,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Original sounds — 24 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>OCEAN.VAG</code></td><td>126,064</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/OCEAN.VAG">source</a></td></tr>
 <tr><td><code>SOUND00.VAG</code></td><td>5,952</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/extracted/snd/SOUND00.VAG">source</a></td></tr>
@@ -319,7 +319,7 @@ for the practical porting path.
 
 <table>
 <caption class="visually-hidden">Transcoded PS1 sprite banks — 117 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>BACKGRND.PSB</code></td><td>93,176</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/transcoded/BACKGRND.PSB">source</a></td></tr>
 <tr><td><code>BOAT.PSB</code></td><td>7,592</td><td><a href="{{ site.github_url }}/blob/main/jc_resources/transcoded/BOAT.PSB">source</a></td></tr>
@@ -447,7 +447,7 @@ The runtime artifacts the PS1 actually replays. Each scene contributes a high-ti
 
 <table>
 <caption class="visually-hidden">Generated foreground packs — 126 files, listed by name with byte size and a link to the source file on GitHub.</caption>
-<thead><tr><th>File</th><th>Bytes</th><th>Link</th></tr></thead>
+<thead><tr><th scope="col">File</th><th scope="col">Bytes</th><th scope="col">Link</th></tr></thead>
 <tbody>
 <tr><td><code>ACTIVITY1.FG2</code></td><td>263,730</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY1.FG2">source</a></td></tr>
 <tr><td><code>ACTIVITY10.FG2</code></td><td>280,883</td><td><a href="{{ site.github_url }}/blob/main/generated/ps1/foreground/ACTIVITY10.FG2">source</a></td></tr>
