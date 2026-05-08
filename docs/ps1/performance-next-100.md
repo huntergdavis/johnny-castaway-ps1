@@ -155,6 +155,22 @@ restored background/cleanup pixels, which are dynamic at runtime. Do not build
 that as a raw append; continue with a safe pixel-source/data-shape change,
 compression plus ownership, or generated scheduler metadata.
 
+Current VISITOR3 v140 upload/read-plan closure: after the v127 tail-trim
+stageguard pass, the same analyzer finds more padded payload budget but the
+safety constraint is unchanged. The default selective x-band model selects
+`117` frames and needs `3394200` bytes for `10602536` modeled upload bytes
+saved. The current same-footprint budgeted model selects high `75` frames
+using `888880 / 891012` bytes for `6290232` saved bytes, and low `74` frames
+using `853848 / 854114` bytes for `6166528` saved bytes, but both tides still
+have `0` draw-covered selected x-band bytes. Runtime dirty-upload narrowing is
+not a substitute: exact interval upload would create about `131996` loop rects,
+and prior scratch-packed x-band probes already proved the copy/code-size cost
+is worse than full-width tile bands. The refreshed v140 read-plan also found no
+candidate that is append-start fireable, current-window-sized, and low-risk;
+the fireable current-fit rows are the already-closed late tight clusters. Close
+VISITOR3 runtime dirty-upload and hand read-table work until generated
+scheduler ownership or safe background-owned/precomposed upload data exists.
+
 Current VISITOR3 low setup-prime gate: the accepted `208 KiB` low-tide cap is
 still the measured knee after the v127 tail-trim stageguard pass. Retesting
 `216 KiB` preserved high tide but regressed low `1126 -> 1127` and blocking
@@ -1155,6 +1171,36 @@ display, tearing, frame drops, or weakened pause input.
 | 162 | FGP3 move/residual pack | Encode nonzero translation candidates only for walking scenes. | Analyzer proves walking packs, not fishing1, are the first real MoveImage targets. |
 | 163 | Motion cleanup masks | Emit old-position cleanup bands for move/residual frames. | GPU move is unsafe unless old pixels are restored and dirty state remains exact. |
 | 164 | RAM mirror motion proof | Prototype host-side replay that keeps RAM mirror and displayed image identical after move/residual frames. | Blocks runtime MoveImage until the mirror invariant is solved. |
+| 165 | VISITOR3 precomposed x-band payload | Generate upload-ready bands from the final clean-plus-foreground composite, not foreground-only spans. | The v140 budget fits `74-75` frames but raw pixels are unsafe because background-owned pixels are required. |
+| 166 | VISITOR3 background ownership mask | Emit per-band ownership bits that prove which pixels come from clean background, cleanup restore, or current draw. | Lets upload-ready data include only pixels that are deterministic for tide/night/holiday state. |
+| 167 | VISITOR3 x-band compression probe | Compress selected precomposed bands with row-local RLE or nibble-delta coding and size-gate against current slack. | Current uncompressed budget barely fits only because payload was trimmed; compression can leave metadata safety margin. |
+| 168 | VISITOR3 cap-hit frame split | Keep cap-hit frames on full-width upload and emit precomposed bands only for non-cap selected ranges. | Avoids repeating rect-cap failures around frames `128..130` and `141..142`. |
+| 169 | VISITOR3 late-cluster scheduler sidecar | Generate a tiny per-entry read-deadline sidecar for the late `315..331` / `333..349` class instead of C tables. | The ranges are useful only when the scheduler owns timing and can avoid visible-gap theft. |
+| 170 | VISITOR3 hidden-budget simulator | Replay held-frame slack, staged reads, and prepared-present work from perf logs to choose generated groups before a PS1 run. | Blocks source probes where saved reads convert directly into hidden refill debt. |
+| 171 | VISITOR3 layout-moving upload experiment | Deliberately allow the upload-ready append to grow the pack and run full canaries with fixed documented LBA movement. | Same-footprint constraints may be more expensive than a measured layout-moving experiment. |
+| 172 | VISITOR3 compact upload rect table | Store upload rect metadata as per-frame deltas and shared band templates. | Rect metadata, not just pixels, consumes the tight same-footprint budget. |
+| 173 | VISITOR3 frame-127 tail isolation | Test a targeted precomposed or scheduler sidecar for the high-value frame-127/126/125 upload hotspot only. | The top few frames carry disproportionate modeled upload savings and may fit as a smaller proof. |
+| 174 | VISITOR3 background-state keying | Key precomposed payloads by tide/night/holiday/island state and prove VISITOR3 only uses the matching background state. | Prevents baking dynamic ocean or holiday pixels into an unsafe foreground pack. |
+| 175 | VISITOR3 setup-prime segmented coverage | Prime selected late sectors rather than raising contiguous high/low caps. | `256 KiB` high regressed despite saving a read, so contiguous prime phase is the problem. |
+| 176 | VISITOR3 tail-cluster deferral | For late tight clusters, test extending the previous long hold only when the next payload is already resident. | Attempts to absorb read timing without changing scene cadence globally. |
+| 177 | VISITOR3 payload order planner | Reorder payload bodies inside the existing padded pack while preserving entry offsets through an indirection table. | Duplicate read clusters may be layout-driven; current direct offset order is fragile. |
+| 178 | VISITOR3 safe no-op cadence replacement | Replace removed visual-work entries with explicit hold metadata plus generated refill reservations. | The old no-op prune speed signal failed because cadence shortened and stole refill slack. |
+| 179 | VISITOR3 compact parser split | Restore the accepted packed compositor byte-for-byte and add any new compact/upload parser in a separate cold path. | Prior compact data wins failed when shared PAL4 hot code moved. |
+| 180 | WALKSTUF1 shrinking FGP2 encoder | Build a PAL4/FGP2-specific compactor before upload-ready append work. | WALKSTUF1 has only `1` byte slack, so every useful append first needs a shrinking transform. |
+| 181 | WALKSTUF1 direct-stage frame policy | Generate per-frame direct-stage caps instead of changing the global `8 KiB` threshold. | Scalar caps showed the right blocking signal but too much hidden refill debt. |
+| 182 | WALKSTUF1 late-cluster sidecar groups | Emit generated scheduler metadata for the top low/high clusters without adding hot C table branches. | The guarded hand table did not fire and still shifted phase. |
+| 183 | WALKSTUF1 explicit layout-moving run | Permit a controlled pack-size/layout change for a compressed or upload-ready WALKSTUF1 variant. | Same-footprint is impossible with `1` byte slack; a measured LBA move may be cheaper than no path. |
+| 184 | BUILDING2 low hidden-refill owner trace | Add trace-only ownership for the hidden `5 -> 13` refill debt in the rejected low restore-minus-current transform. | The visible win is huge; the only blocker is hidden scheduler ownership. |
+| 185 | BUILDING2 low dual-pass scheduler | First apply restore-minus-current, then generated refill reservations around the shortened render cadence. | The transform makes due frames shorter; the scheduler must move hidden reads into that new space. |
+| 186 | BUILDING6 FGP2 zero-shift residual | Implement a PAL4 residual/keyframe encoder for BUILDING6 instead of converting wholesale to FGP3. | Motion analysis predicts a strong host-only payload/upload win, while direct FGP3 expands. |
+| 187 | BUILDING6 keyframe cadence sweep | Choose every-N full frames plus residuals from motion analysis and size-gate against the current pack. | May capture most of the `66%` payload signal without a full format rewrite. |
+| 188 | BUILDING6 generated window ownership | Use read-plan metadata to schedule early `15..39` coverage without a scalar `48 KiB` window. | The raw larger window saved reads but paid them visibly. |
+| 189 | Cross-outlier safe-pixel analyzer | Extend draw-covered accounting to background-owned/precomposed feasibility across VISITOR3, WALKSTUF1, and BUILDING6. | The same unsafe-raw-upload lesson now blocks multiple top outliers. |
+| 190 | Pack-side payload entropy matrix | Report per-scene compressibility for active payload, upload bands, and rect metadata. | Decides whether compression, layout movement, or scheduler metadata is the best next path per outlier. |
+| 191 | Hot-code budget ledger | Track remaining bytes in the `215040` PS-EXE bucket and which cold removals can fund each new parser. | Many valid ideas fail simply by crossing a sector bucket or moving hot symbols. |
+| 192 | Layout-pinned failure replay | For each major rejected code-shape win, rerun with explicit EXE padding and FG LBA pinning before closing permanently. | Separates true codegen regressions from CD-layout phase regressions. |
+| 193 | Long-run memory-pressure telemetry | Log heap/free-largest/scene index to `scratch` during 1+ hour scene cycling. | Recent long runs likely die after `10-15` scenes from memory pressure; the optimization loop needs durable crash evidence. |
+| 194 | Outlier rotation gate | When VISITOR3 has no safe immediate lane, automatically rotate to WALKSTUF1, BUILDING2 low, and BUILDING6 while preserving VISITOR3 ideas. | Prevents the headless path from stalling on one scene after scalar/source lanes are exhausted. |
 
 ## Impact-Prioritized Order
 
@@ -1432,7 +1478,9 @@ pre-v0.8.0 row.
 | WALKSTUF1 low read group `297..313` with `minSlack=8` | Do not promote or retry as a hand table. The safe slack guard prevented the group from firing (`group_hits=0`), while the source branch still shifted low target enough to regress overrun by one VBlank. WALKSTUF1 read clusters need generated scheduler metadata, not another hot source-table branch. |
 | WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. Both current PAL4/FGP2 packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `5684096` payload-plus-rect bytes per tide for `153 / 216` frames and `9900992` modeled upload bytes saved. The exact budget selects `0` frames, and raw foreground-only safety reports `0` selected draw-covered x-band bytes. Retry only with compression/shrinking pack data, explicit layout movement, a safe pixel source, or generated scheduler ownership. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
-| VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The analyzer now exact-knapsacks the default-selected VISITOR3 rows against the pack's `814847` bytes of zero-tail slack and selects `74 / 96` frames using `814184` bytes, leaving `663` bytes of slack and retaining `3858104` modeled upload bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows and full VISITOR3/canary validation. |
+| VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The current v140 analyzer exact-knapsacks the default-selected VISITOR3 rows against the post-tail-trim pack slack: high selects `75 / 117` default frames using `888880 / 891012` bytes and retaining `6290232` modeled upload bytes saved, while low selects `74 / 117` frames using `853848 / 854114` bytes and retaining `6166528` modeled bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows, a safe background-owned/precomposed pixel source, and full VISITOR3/canary validation. |
+| VISITOR3 runtime dirty-upload narrowing | Do not retry as a source-side optimization. The live uploader already has row-level dirty X metadata, but exact narrow intervals for current VISITOR3 would create about `131996` upload rects over the loop, and scratch-packed x-band variants have already failed from code-size, copy, and cadence cost. Upload-byte work must be pack-emitted or precomposed, not packed from tile rows during `grDrawBackground()`. |
+| VISITOR3 v140 current-window read-plan refresh | Do not promote or retry another hand-authored source table. The refreshed read-plan from v127 found `0` candidates that are append-start fireable, current-window-sized, and low-risk. The rows that fit and fire are the late tight-cluster class, including the already-rejected high `315..331` and low `333..349` shapes, and remain `high-risk:scheduler-only`. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
