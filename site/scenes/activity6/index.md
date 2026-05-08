@@ -6,7 +6,7 @@ tag: 6
 slug: activity6
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 6: Reads, falls asleep, coconut bonk. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 6: Johnny sits under the palm reading, falls asleep, and a coconut drops on his head. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
@@ -19,11 +19,9 @@ static-Johnny base on the reads/falls-asleep/coconut-bonk loop.
 - ADS dispatch: <code>ACTIVITY.ADS scene 6</code>
 - Slug: <code>activity6</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny reads under the tree, falls asleep, and a coconut drops on his head.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny sits under the palm tree reading a book, falls asleep, and a coconut drops onto his head. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior caption-mapping guess.
 
 ### How this scene gets validated
 
