@@ -216,3 +216,53 @@
 }
 </script>
 {%- endif -%}
+
+{%- comment -%}
+  CreativeWork record for scene pages. Each /scenes/<slug>/ documents
+  one named ADS scene with a description, a validation date sourced
+  from _data/scenes.yml, and (for the four scenes that override
+  page.image) a unique hero capture. WebSite + BreadcrumbList already
+  carry the navigation surface; CreativeWork adds the content
+  surface so crawlers can identify each scene as a discrete piece of
+  work tied to a specific dated validation.
+
+  Excludes /scenes/ itself (the ledger; not a CreativeWork).
+{%- endcomment -%}
+{%- if page.layout == 'scene' -%}
+{%- assign current_scene = site.data.scenes | where: "slug", page.slug | first -%}
+{%- if page.image -%}
+  {%- assign scene_image = site_root | append: page.image -%}
+{%- else -%}
+  {%- assign scene_image = site_root | append: '/assets/img/branding/og-image.png' -%}
+{%- endif -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": {{ page.title | jsonify }},
+  {%- if page.description %}
+  "description": {{ page.description | strip_newlines | jsonify }},
+  {%- endif %}
+  "url": {{ page_abs | jsonify }},
+  "mainEntityOfPage": {{ page_abs | jsonify }},
+  "inLanguage": "en",
+  "image": {{ scene_image | jsonify }},
+  {%- comment -%}
+    dateCreated: emit only when last_verified is ISO-shaped. The
+    one canary scene (FISHING 1) has a release tag (`v0.3.6-ps1`),
+    which is not a valid Schema.org dateCreated value — Schema
+    expects ISO 8601. Detect via `contains '-ps1'` and skip.
+  {%- endcomment -%}
+  {%- assign sv_skip = false -%}
+  {%- if current_scene.last_verified contains '-ps1' -%}{%- assign sv_skip = true -%}{%- endif -%}
+  {%- if current_scene.last_verified and sv_skip == false %}
+  "dateCreated": {{ current_scene.last_verified | jsonify }},
+  {%- endif %}
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": {{ site.title | jsonify }},
+    "url": {{ site_root | append: '/' | jsonify }}
+  }
+}
+</script>
+{%- endif -%}
