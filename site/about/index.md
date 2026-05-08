@@ -81,7 +81,7 @@ stitch before their packs replayed cleanly.
 The second ledger — the
 [performance battle card]({{ '/perf/' | relative_url }}) — is its
 own bar, separate on purpose. At `{{ site.release.tag }}` the matrix
-averages `{{ site.release.perf_target_speed_pct }}%` target speed
+averages `{{ site.release.perf_target_speed_pct }}%` [target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 across the 120 timing-bearing scene/tide rows; the
 [reference manual]({{ '/docs/performance/' | relative_url }})
 explains what each column means and the
