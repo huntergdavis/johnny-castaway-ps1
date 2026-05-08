@@ -611,7 +611,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
+  notes: stands-right-looks-around-scratches-head (Johnny stands on the right side of the island, looks around, and scratches his head); visual signoff on the normal high-tide/night route after adding a per-frame wave tick to the FG2 runtime so STAND-class no-stitch scenes get animated water from the engine rather than from the foreground-only pack
 - ads: STAND
   tag: 9
   slug: stand9
