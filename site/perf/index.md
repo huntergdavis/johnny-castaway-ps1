@@ -58,7 +58,7 @@ The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) high
 low (`69.7%`) after the `v0.8.0` setup-prime + group 170..186
 work; the largest single optimization target left on the matrix.
 The yellow cluster includes the wide-action and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) rows
-still finishing their prefetch-relief and stream-window work.
+still finishing their prefetch-relief and [stream-window]({{ '/docs/glossary/#stream-window' | relative_url }}) work.
 
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
