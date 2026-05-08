@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.8.2-ps1
+eyebrow: Component-level state at v0.8.3-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
