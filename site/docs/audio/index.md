@@ -20,7 +20,7 @@ you were cheated. Open source and free.
 
 ## The SPU
 
-The PS1's Sound Processing Unit is a separate processor with its own RAM
+The PS1's [Sound Processing Unit]({{ '/docs/glossary/#spu' | relative_url }}) is a separate processor with its own RAM
 and its own job. Specs:
 
 - **Voices:** 24 simultaneous, each with hardware ADSR.
