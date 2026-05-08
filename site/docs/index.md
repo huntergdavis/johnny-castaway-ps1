@@ -72,7 +72,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/formats/' | relative_url }}">File formats</a>
-    <p>The five binary formats the build chain produces: FG2 / FGP3 packs, the foreground capture JSONL, sound-event JSONL, scene-status YAML, and the perf-matrix CSV.</p>
+    <p>The five spec pages behind the build chain: the FG2 / FGP3 pack payload, the pack-manifest sidecar, the dirty-region template, the transition-prefetch schema, and the SDL-compat-lite shim spec.</p>
   </li>
   <li>
     <a href="{{ '/docs/infrastructure/' | relative_url }}">Infrastructure</a>
