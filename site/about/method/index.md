@@ -25,7 +25,7 @@ portable; the upstream that this project descends from,
 [jno6809/jc_reborn](https://github.com/jno6809/jc_reborn), runs on top
 of SDL2.
 
-A PS1 port is not "swap SDL2 for PSn00bSDK." Three things make a
+A PS1 port is not "swap SDL2 for [PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }})." Three things make a
 straight port impossible:
 
 1. **No comparable graphics pipeline.** The PS1 GPU does not draw
