@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3667 words
+          ~14 min read · 3716 words
         </p>
 
       <hr class="rule" />
@@ -252,7 +252,10 @@ deliberate layout-moving experiment.</p>
 reduced active payload and high-tide visible blocking, but hidden prefetch
 overrun regressed from <code class="language-plaintext highlighter-rouge">0</code> to <code class="language-plaintext highlighter-rouge">56</code> high and <code class="language-plaintext highlighter-rouge">17</code> low. That confirms the next
 VISITOR3 route needs explicit scheduler ownership or budgeted upload-ready data,
-not isolated entry-count pruning.</p>
+not isolated entry-count pruning. The safer pack-side empty-hold recast also
+found <code class="language-plaintext highlighter-rouge">0</code> current VISITOR3 high/low entries whose cleanup and draw pixel counts
+are both zero, so there is no cadence-preserving no-op payload to erase under
+the current FGP3/v4 data.</p>
 
 <p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
@@ -921,7 +924,8 @@ same-layout append because <code class="language-plaintext highlighter-rouge">24
 exceed the current <code class="language-plaintext highlighter-rouge">814847</code> bytes of VISITOR3 pack slack per tide. The
 budgeted analyzer target keeps this same-footprint lane alive with <code class="language-plaintext highlighter-rouge">74</code>
 selected frames, <code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, and <code class="language-plaintext highlighter-rouge">3858104</code> modeled upload
-bytes saved before runtime implementation.</li>
+bytes saved before runtime implementation. The empty-hold no-op recast is
+closed because the current packs expose <code class="language-plaintext highlighter-rouge">0</code> zero-visual-work entries.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

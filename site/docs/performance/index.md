@@ -135,7 +135,10 @@ A tempting VISITOR3 shortcut was rejected: pruning visually no-op FGP3 entries
 reduced active payload and high-tide visible blocking, but hidden prefetch
 overrun regressed from `0` to `56` high and `17` low. That confirms the next
 VISITOR3 route needs explicit scheduler ownership or budgeted upload-ready data,
-not isolated entry-count pruning.
+not isolated entry-count pruning. The safer pack-side empty-hold recast also
+found `0` current VISITOR3 high/low entries whose cleanup and draw pixel counts
+are both zero, so there is no cadence-preserving no-op payload to erase under
+the current FGP3/v4 data.
 
 The current post-`-O2` tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
@@ -793,7 +796,8 @@ Next plausible wins, in priority order:
    exceed the current `814847` bytes of VISITOR3 pack slack per tide. The
    budgeted analyzer target keeps this same-footprint lane alive with `74`
    selected frames, `814184` payload+rect bytes, and `3858104` modeled upload
-   bytes saved before runtime implementation.
+   bytes saved before runtime implementation. The empty-hold no-op recast is
+   closed because the current packs expose `0` zero-visual-work entries.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.

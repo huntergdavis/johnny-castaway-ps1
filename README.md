@@ -141,7 +141,10 @@ background pixels that are dynamic at runtime or the already-rejected runtime
 scratch-packing path.
 The VISITOR3 no-op entry-prune probe is also closed: it reduced active payload
 and visible high-tide blocking, but failed the gate by moving the cost into
-hidden prefetch overrun (`0 -> 56` high, `0 -> 17` low).
+hidden prefetch overrun (`0 -> 56` high, `0 -> 17` low). The safer empty-hold
+recast is closed too: the current VISITOR3 high/low FGP3/v4 payloads have `0`
+entries with both cleanup and draw pixel counts at zero, so there is no
+cadence-preserving no-op payload to erase under the current assets.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -344,7 +347,9 @@ current pack slack before runtime-format work begins. The raw foreground-only
 upload payload route is now rejected because none of those selected x-bands are
 fully draw-covered; they depend on restored background pixels. A follow-up
 no-op entry-prune probe is rejected because it shortens VISITOR3 cadence
-without owning the hidden refill schedule.
+without owning the hidden refill schedule. The pack-side empty-hold recast also
+finds `0` eligible zero-visual-work entries in the current VISITOR3 high/low
+payloads, closing that safer no-op variant.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target
