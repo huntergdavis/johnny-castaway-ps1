@@ -246,7 +246,7 @@ per frame; that's why `ps1_perf` is level-gated
 Other gotchas worth flagging in passing:
 
 - The PSn00bSDK 0.24 toolchain runs in Docker on `linux/amd64`
-  (`Dockerfile.ps1`). Native macOS toolchains were attempted and
+  (`config/ps1/Dockerfile.ps1`). Native macOS toolchains were attempted and
   abandoned -- missing `cc1` / `cc1plus`, source builds need
   Linux. Docker was the cheapest path that worked.
 - 4-bit indexed sprite format (`indexedPixels`) saved roughly 4x

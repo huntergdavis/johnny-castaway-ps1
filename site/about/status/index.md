@@ -33,7 +33,7 @@ done."
 
 | Component | Status | Notes |
 |---|---|---|
-| Build system (Docker + CMake + mkpsxiso) | Complete | `Dockerfile.ps1` on `linux/amd64`; PSn00bSDK 0.24; `scripts/rebuild-and-let-run.sh` is the one-command entry. |
+| Build system (Docker + CMake + mkpsxiso) | Complete | `config/ps1/Dockerfile.ps1` on `linux/amd64`; PSn00bSDK 0.24; `scripts/rebuild-and-let-run.sh` is the one-command entry. |
 | CD-ROM I/O (`cdrom_ps1.c`, ~2,570 lines) | Complete | Reimplements `fopen`/`fread` against CD sectors. `CdSearchFile` / `CdRead` / `CdSync` integration. The rest of `resource.c` is unchanged from upstream. |
 | Renderer (`graphics_ps1.c`, ~4,900+ lines) | Complete | 4-bit indexed sprite format (`indexedPixels`), palette LUT compositing, 4-pixel unrolled inner loop, opaque sprite fast-path, dirty-rect background restore (~80-95% reduction in per-frame data movement), black-backdrop temporal cleanup for full-screen scenes like `JOHNNY 1`, and `grForceFullRedrawNextFrame` for pause-menu resume. `FntFlush` is empirically broken in the scene-runtime context -- do not regress on-screen text to it. |
 | Audio (`sound_ps1.c`, ~445 lines) + SPU | Working | All 23 VAG SFX preloaded into SPU RAM at boot. Round-robin over 8 voices. Captured `0xC051 PLAY_SAMPLE` events ship in the FG2 pack and fire from `foreground_pilot.c` with a 3-frame key-on delay. Mute writes the SPU master-volume registers directly because `SpuSetCommonMasterVolume` is not honored by DuckStation HLE. The VAG encoder (`scripts/wav2vag.py`) was extensively debugged during the `v0.3.6-ps1` milestone (commit `355227fa`); see that commit for the full bug list. |

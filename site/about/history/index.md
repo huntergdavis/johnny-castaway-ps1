@@ -48,7 +48,7 @@ The first phase was infrastructure. PSn00bSDK 0.24 was selected over
 the official Sony SDK -- modern, open source, CMake-friendly. A
 precompiled macOS toolchain was attempted and abandoned (missing
 `cc1` / `cc1plus`); building from source needed Linux. The fix was
-Docker: `Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
+Docker: `config/ps1/Dockerfile.ps1` on `linux/amd64`, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK's toolchain file; CD packaging via
 [mkpsxiso]({{ '/docs/glossary/#mkpsxiso' | relative_url }}); one shell script (`build-ps1.sh`, later
