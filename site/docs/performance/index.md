@@ -62,8 +62,8 @@ gated so it adds zero cost when off.
 
 Three signal sources:
 
-- **TTY printf** at scene-start and [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) with structured `JCPERF` /
-  `JCPERF2` records. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
+- **TTY printf** at scene-start and [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) with structured [`JCPERF` /
+  `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) records. Levels: `OFF`, `SUMMARY`, `DETAIL`, `DEBUG`. Only the
   on-demand records cross the TTY surface; per-frame text is forbidden in
   hot paths because it perturbs timing.
 - **`ps1_perf` module counters** for VBlank-level metrics: `loop_vb`,

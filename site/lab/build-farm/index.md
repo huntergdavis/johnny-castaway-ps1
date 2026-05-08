@@ -23,7 +23,7 @@ pack-format or scheduler change.
 
 - Build the PS1 executable and CD image in the Docker toolchain.
 - Run headless DuckStation against the selected scene or scene matrix.
-- Parse `JCPERF` and `JCPERF2` logs into VBlank, CD, compose, upload,
+- Parse [`JCPERF` and `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) logs into VBlank, CD, compose, upload,
   wait, and blocking counters.
 - Promote only changes that beat the current baseline without violating
   deterministic playback.

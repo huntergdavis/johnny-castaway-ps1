@@ -349,7 +349,7 @@ the open items. See commit <code class="language-plaintext highlighter-rouge">35
 <p><strong>TTY printf is the only real debug surface, and it has a price.</strong>
 For most of 2026-Q1 the project ran with <code class="language-plaintext highlighter-rouge">debugMode=0</code> and
 “visual debugging” – colored pixels via <code class="language-plaintext highlighter-rouge">LoadImage</code>, the
-five-panel telemetry overlay, gated <code class="language-plaintext highlighter-rouge">JCPERF</code> summaries during
+five-panel telemetry overlay, gated <a href="../../docs/glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code></a> summaries during
 scene transitions only. Per-frame <code class="language-plaintext highlighter-rouge">vprintf</code> was outright
 destabilizing scene playback (unbounded format buffers, hot-path
 text I/O changing timing). As of 2026-04-25, bounded <code class="language-plaintext highlighter-rouge">vprintf</code>

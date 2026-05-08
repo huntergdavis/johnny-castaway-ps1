@@ -21,7 +21,7 @@ on end without a person at the keyboard.
 For a while, `printf` was both the obvious tool and part of the problem. Too
 much unbounded TTY output could destabilize the runtime. That forced the
 project into visual debugging first. Later, bounded performance logs came
-back as `JCPERF` and `JCPERF2` lines with explicit levels:
+back as [`JCPERF` and `JCPERF2`]({{ '/docs/glossary/#jcperf' | relative_url }}) lines with explicit levels:
 
 - Summary logs for scene setup and teardown.
 - Detail logs for frame behavior.
