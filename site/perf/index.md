@@ -35,6 +35,15 @@ A scene can be timed here without being visually certified.
 {:toc}
 </details>
 
+<noscript>
+<p><em>Note:</em> the column-header click-to-sort affordance the
+subtitle mentions requires JavaScript. Without it, the matrix
+below is fully readable but cells stay in source order. The
+durable numeric source is the
+<a href="https://github.com/{{ site.repo }}/blob/main/docs/ps1/performance-scene-matrix.csv">CSV</a>
+linked in the Rollup section.</p>
+</noscript>
+
 ## At a glance
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
