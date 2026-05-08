@@ -29,7 +29,7 @@ legal page says it.
 The public repository ships GPL-3.0 code, scripts, docs, generated PS1 runtime
 artifacts, and release disc images.
 
-The development host build requires original Sierra data files supplied by the
+The development [host build]({{ '/docs/glossary/#host-build' | relative_url }}) requires original Sierra data files supplied by the
 user. The repo does not pretend those assets are GPL. The legal posture is
 plain because it has to be plain. A fan project gets very little room for
 cuteness here.
