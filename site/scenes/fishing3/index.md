@@ -16,7 +16,7 @@ Third scene to clear the FISHING 1 bar. The loop holds together, the tide-state 
 
 ## Validation
 
-This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) — pixel-perfect visuals plus synced SFX across every applicable variant.
+This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}) — pixel-perfect visuals plus synced SFX across every applicable variant.
 
 ## Pack identifiers
 
