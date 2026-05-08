@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Why I keep porting Johnny Castaway
-eyebrow: Lab . Personal history
+eyebrow: Lab · Personal history
 subtitle: Dreamcast, embedded Linux, picture frames, text edition, PS1. Same little island. Different machines.
 description: A personal retrospective on Hunter Davis repeatedly porting Johnny Castaway across Dreamcast, embedded Linux, picture frames, text editions, and now PlayStation 1.
 date: 2026-04-26

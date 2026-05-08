@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The 63-scene grind
-eyebrow: Lab . Retrospective
+eyebrow: Lab · Retrospective
 subtitle: The scene-by-scene validation ledger, from five signed off to the current grind.
 description: A retrospective on the finite scene-by-scene validation grind behind Johnny Castaway PS1.
 date: 2026-04-26

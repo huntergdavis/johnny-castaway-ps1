@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Hallucination engineering
-eyebrow: Lab . Advanced development techniques
+eyebrow: Lab · Advanced development techniques
 subtitle: The failure mode is not that the model is weird. The failure mode is that it sounds normal.
 description: "A practical essay on controlling LLM hallucinations in a real C/PS1 port: source-first prompts, generated indexes, build gates, and review discipline."
 date: 2026-04-26
