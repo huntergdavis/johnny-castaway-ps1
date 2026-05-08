@@ -299,3 +299,28 @@ filtering the random rotation by family. Frog-clock loading
 transitions between scene swaps. A full
 [Credits page]({{ '/credits/' | relative_url }}) that names the
 prior ports and toolchain authors this build stands on.
+
+## Related pages
+
+- [Play]({{ '/play/' | relative_url }}) — the canonical
+  download + quickstart page for the "How do I run it?" answer.
+- [Scenes]({{ '/scenes/' | relative_url }}) — live ledger
+  with per-scene case studies for the "What does
+  {{ site.release.scenes_validated }} / {{ site.release.scenes_total }} validated mean?" answer.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  126-variant matrix with sortable, color-coded target speed
+  for the "Does it run at native rate?" answer.
+- [Legal]({{ '/legal/' | relative_url }}) — the canonical
+  licensing surface (GPL-3.0 + Sierra disclaimer + takedown
+  procedure) for the "Is this legal?" answer.
+- [Credits]({{ '/credits/' | relative_url }}) — the full
+  attribution behind the "What's faithful, what's added?"
+  answer above: prior ports, toolchain authors, AI sub-agents,
+  fonts, ocean ambience source.
+- [About]({{ '/about/' | relative_url }}) — the project
+  overview if you want the long-form version of "What is
+  this?".
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for terms (`FG2 pack`, `FISHING 1 bar`,
+  `target speed`, `host build`) used throughout the answers
+  above.
