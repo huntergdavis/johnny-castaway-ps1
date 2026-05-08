@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-07 (`v0.8.2-ps1` performance point release plus the
-current BUILDING4 restore-minus-current pack baseline; all 63 scenes remain
-validated, and the headless battle card is slightly under target at
-`-0.0193%` over / `100.0943%` target speed).
+current BUILDING4 restore-minus-current pack baseline and VISITOR3 read-table
+headroom pass; all 63 scenes remain validated, and the headless battle card is
+slightly under target at `-0.0193%` over / `100.0943%` target speed).
 
 ## Overall
 
@@ -158,8 +158,10 @@ routed through headless perf, and the current VISITOR3 restore-minus-current
 pack baseline moved the battle card to `0.0502%` over target / `100.0292%`
 target speed while preserving pack LBAs and the `215040` byte PS-EXE bucket. The
 subsequent BUILDING4 restore-minus-current pack pass moves the current matrix to
-`-0.0193%` over target / `100.0943%` target speed. See
-[release-notes-0.8.2.md](release-notes-0.8.2.md).
+`-0.0193%` over target / `100.0943%` target speed. The current
+`visitor3-low-readgroup-prune-v088` pass keeps those numbers exact-flat while
+removing the stale VISITOR3 low read group `170..186` and shrinking
+`foregroundPilotPlay` by `36` bytes. See [release-notes-0.8.2.md](release-notes-0.8.2.md).
 
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
@@ -172,7 +174,9 @@ restore-minus-current cleanup: high is `2844/2816` with `blocking_vb=37`, and
 low is `2855/2815` with `blocking_vb=46`. JOHNNY2, WALKSTUF1, and related
 current-pack clean-pressure work are preserved in the matrix; the next true
 outliers are WALKSTUF1, VISITOR3, BUILDING2, BUILDING6, and selective
-upload-ready bands.
+upload-ready bands. VISITOR3 local C read-table rows are now exhausted; the
+next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
+data-shape/preprocess route.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the
