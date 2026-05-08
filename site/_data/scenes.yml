@@ -147,7 +147,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route
+  notes: rolls-over-and-naps (Johnny lies down on the sand, rolls over, and takes a nap); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch; long sleeping/idle beat played cleanly on the normal low-tide/night validation route
 - ads: BUILDING
   tag: 4
   slug: building4
