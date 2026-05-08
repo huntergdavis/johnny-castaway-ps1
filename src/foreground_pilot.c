@@ -2073,6 +2073,11 @@ static uint32 fgRuntimeStreamWindowBytes(const char *sceneName,
     return requestedWindowBytes;
 }
 
+static int fgRuntimeSkipsAutoFgp3SetupPrime(const char *sceneName)
+{
+    return fgSceneEquals(sceneName, "building1");
+}
+
 static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
                                              uint32 normalWindowBytes)
 {
@@ -2091,7 +2096,8 @@ static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
     if (normalWindowBytes != FG_PREFETCH_DEFAULT_WINDOW_BYTES)
         return 0;
 
-    if (fgRuntimeUsesTemporalResidual()) {
+    if (fgRuntimeUsesTemporalResidual() &&
+        !fgRuntimeSkipsAutoFgp3SetupPrime(sceneName)) {
         uint32 payloadEnd = fgRuntimePackPayloadEndBytes();
         uint32 windowStart = fgSectorAlignDown(gFgRuntime.header.dataOffset);
         if (payloadEnd > windowStart) {

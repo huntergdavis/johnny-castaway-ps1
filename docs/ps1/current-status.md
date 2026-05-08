@@ -3,11 +3,10 @@
 > 🌐 **Rendered version:** **[/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/)** — this doc rendered on the project website with cross-links and prose context. The GitHub copy here is the source.
 
 
-**Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release with the
-WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline plus the MARY3
-guarded prefetch-preserve follow-up; all 63 scenes remain validated, and the
-public headless battle card is `+0.5526%` over target / `99.4709%` target
-speed).
+**Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
+post-release BUILDING1 compact-FGP3/no-autoprime perf follow-up; all 63 scenes
+remain validated, and the public headless battle card is `+0.5281%` over
+target / `99.4747%` target speed).
 
 ## Overall
 
@@ -155,16 +154,18 @@ this page gives the narrative around it.
 
 Latest point release: `v0.8.3-ps1` is the WALKSTUF1 compact foreground
 performance release. All 63 scenes remain validated, all 126 high/low variants
-remain routed through headless perf, and the promoted
-`walkstuf1-compact-fgp3-v141` pass remains the latest promoted pack/data win.
-The MARY3 guarded prefetch-preserve follow-up then moves high/low from
-`2402/2295` and `2402/2296` to `2296/2294` and `2297/2295`, collapsing
-blocking `690/693 -> 53/51` while keeping hidden refill overrun at zero. The
-public battle card is now `+0.5526%` over target / `99.4709%` target speed
-while preserving WALKSTUF1 pack LBAs, the original `1535263` byte footprints,
-and the `215040` byte PS-EXE bucket.
+remain routed through headless perf. The promoted
+`walkstuf1-compact-fgp3-v141` pass remains the release pack/data win, and the
+MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
+`2402/2296` to `2296/2294` and `2297/2295`, collapsing blocking
+`690/693 -> 53/51` while keeping hidden refill overrun at zero. The latest
+post-release BUILDING1 pass converts both packs to compact FGP3/v4 while
+skipping auto-resident setup prime for that scene: high moves `792/778 ->
+784/782`, low moves `794/779 -> 787/782`, and both rows are now green. The
+public battle card is now `+0.5281%` over target / `99.4747%` target speed
+while preserving fixed pack LBAs and the `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.85`
+`87.1%` target speed, the headless methodology has removed about `16.87`
 public over-target points and added about `12.37` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance

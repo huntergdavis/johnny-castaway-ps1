@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.6% over target / 99.5% target speed** (`0.5526%`
-exact public over target / `99.4709%` exact public target speed); the raw
-signed optimization matrix is `-0.2159%` / `100.2547%`.
+the public average is **+0.5% over target / 99.5% target speed** (`0.5281%`
+exact public over target / `99.4747%` exact public target speed); the raw
+signed optimization matrix is `-0.2404%` / `100.2410%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building1-compact-fgp3-noautoprime-v157`,
 `mary3-preserve-window-slack8-v149`,
 `missing-scenes-current-v001`,
 `visitor3-tail-trim-stageguard-v127`,
@@ -388,7 +389,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-08T11:12:57`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-08T12:22:52`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -396,7 +397,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `mary3-preserve-window-slack8-v149`,
+rows now use `building1-compact-fgp3-noautoprime-v157`,
+`mary3-preserve-window-slack8-v149`,
 `visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
@@ -853,7 +855,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.6% over target / 99.5% target speed, with several
+  public average is now +0.5% over target / 99.5% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

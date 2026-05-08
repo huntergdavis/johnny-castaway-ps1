@@ -87,10 +87,10 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.5526%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4709%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T11:12:57` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.5%` (`0.5281%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.4747%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T12:22:52` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -126,7 +126,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `mary3-preserve-window-slack8-v149`,
+  refreshed rows use `building1-compact-fgp3-noautoprime-v157`,
+  `mary3-preserve-window-slack8-v149`,
   `missing-scenes-current-v001`,
   `visitor3-tail-trim-stageguard-v127`,
   `graphics-composite-os-v111`,
@@ -517,29 +518,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-building1-high"><code>building1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T00:38:12</td>
-      <td>stale-top-v072b-current-refresh</td>
-      <td>+2.1%</td>
-      <td class="spd-orange">98.0%</td>
-      <td>794/778</td>
-      <td>21</td>
-      <td>21</td>
-      <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>2026-05-08T12:22:52</td>
+      <td>building1-compact-fgp3-noautoprime-v157</td>
+      <td>+0.3%</td>
+      <td class="spd-green">99.7%</td>
+      <td>784/782</td>
+      <td>15</td>
+      <td>9</td>
+      <td>1</td>
+      <td>compact FGP3/v4 pack with BUILDING1 auto-prime disabled</td>
     </tr>
     <tr id="perf-building1-low">
       <td><a class="scene-perf-rowlink" href="#perf-building1-low"><code>building1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-06T00:38:12</td>
-      <td>stale-top-v072b-current-refresh</td>
-      <td>+1.9%</td>
-      <td class="spd-orange">98.1%</td>
-      <td>794/779</td>
-      <td>21</td>
-      <td>21</td>
-      <td>0</td>
-      <td>current validated pack refresh; baseline correction</td>
+      <td>2026-05-08T12:22:52</td>
+      <td>building1-compact-fgp3-noautoprime-v157</td>
+      <td>+0.6%</td>
+      <td class="spd-green">99.4%</td>
+      <td>787/782</td>
+      <td>16</td>
+      <td>14</td>
+      <td>1</td>
+      <td>compact FGP3/v4 pack with BUILDING1 auto-prime disabled</td>
     </tr>
     <tr id="perf-building2-high">
       <td><a class="scene-perf-rowlink" href="#perf-building2-high"><code>building2</code></a></td>

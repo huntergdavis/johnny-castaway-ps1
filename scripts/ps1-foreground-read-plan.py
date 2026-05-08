@@ -724,6 +724,10 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
     return 0, [], "none"
 
 
+def skips_auto_fgp3_setup_prime(scene_name: str | None) -> bool:
+    return scene_name == "building1"
+
+
 def fg_pack_payload_end(header: dict[str, Any], entries: list[dict[str, Any]]) -> int:
     payload_end = 0
     for entry in entries:
@@ -973,7 +977,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     data_offset = int(header.get("data_offset", 0))
 
     auto_prime_bytes, auto_segments, auto_policy = default_setup_policy(case)
-    if pack.get("magic") == "FGP3":
+    scene = case.get("sections", {}).get("scene", {})
+    scene_name = scene.get("scene")
+    if pack.get("magic") == "FGP3" and not skips_auto_fgp3_setup_prime(scene_name):
         auto_pack_limit = int(
             source_policy.get("symbols", {}).get("FG_SETUP_PRIME_AUTO_PACK_BYTES") or
             source_policy.get("symbols", {}).get("FG_SETUP_PRIME_SMALL_PACK_BYTES") or
