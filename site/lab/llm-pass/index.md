@@ -39,7 +39,7 @@ part is not one giant algorithm. The hard part is surface area.
 There are Sierra resource formats, ADS scripts, TTM animation commands,
 PSn00bSDK GPU rules, SPU sample layout, CD-ROM seek behavior, Docker image
 setup, DuckStation TTY logging, 63 scenes, 36 holidays, captions, pause menu
-state, memory-card persistence, and a regtest harness that grew like ivy over
+state, memory-card persistence, and a [regtest harness]({{ '/docs/glossary/#regtest' | relative_url }}) that grew like ivy over
 four months. A human can understand all of it, but not all at once.
 
 Sub-agents are useful when the work decomposes cleanly:
