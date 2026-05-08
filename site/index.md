@@ -81,7 +81,9 @@ promoted the headless optimization methodology, and the
 v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
 outliers — the matrix now averages
 [`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
-at native rate or better. The two ledgers live separately: the
+across the timing-bearing rows (public-capped; the
+optimization-side raw signed average is past target). The two
+ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
 [performance battle card]({{ '/perf/' | relative_url }}) tracks
