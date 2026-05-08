@@ -42,15 +42,15 @@ were evidence-gathering positions, not runtime pins.
 
 ## Notable runtime history
 
-`VISITOR 3` is the largest single optimization target left on the
+`VISITOR 3` remains one of the high-leverage yellow-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
-`{{ site.release.tag }}`. Both `visitor3` high and `visitor3` low
-sit in the **red** band — around `69.4%` target speed after the
-`v0.7.2` prefetch-relief refresh. The wide multi-view stitch (the
-red ship crossing the full scene width) hits the
+`{{ site.release.tag }}`. After the FGP3/v4 compact metadata work and the
+pack-side restore-minus-current cleanup, `visitor3` high and low now run
+around `89.9%` and `89.8%` target speed instead of sitting in the red band.
+The wide multi-view stitch (the red ship crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
-the hardest of any scene; the timing gap is concentrated in the
-ship's live crash window, not the foreground replay around it.
+harder than most scenes; the remaining timing gap is concentrated in the
+ship's live crash window and same-frame cleanup/restore work.
 
 The arc that moved the rest of the matrix from `87.1%` to `99.5%`
 target speed is at

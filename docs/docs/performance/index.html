@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~13 min read · 3416 words
+          ~13 min read · 3418 words
         </p>
 
       <hr class="rule" />
@@ -412,13 +412,14 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>-0.6% over target</strong>, or <strong>100.6% of target speed</strong>. Across the
-120 timing-bearing battle-card rows, the average is <strong>+0.4% over target /
-99.8% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.4096%</code> exact over target / <code class="language-plaintext highlighter-rouge">99.7860%</code> exact target speed).</p>
+120 timing-bearing battle-card rows, the average is <strong>+0.1% over target /
+100.0% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.0502%</code> exact over target / <code class="language-plaintext highlighter-rouge">100.0292%</code> exact target speed).</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-07, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
 <code class="language-plaintext highlighter-rouge">compact-u16-inline-v083</code>,
 <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>,
@@ -480,13 +481,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
 metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-07T16:30:49</code>; per-row freshness and stats version are shown on
+run is <code class="language-plaintext highlighter-rouge">2026-05-07T17:12:51</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code> and <code class="language-plaintext highlighter-rouge">due</code> called
 out when nonzero.</p>
 
 <p>The complete matrix pass is <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>; accepted follow-up
-rows now use <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
+rows now use <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
 <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>,
 <code class="language-plaintext highlighter-rouge">compact-u16-inline-v083</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-fgp3-cleanup-compact-v081</code>,
@@ -823,8 +825,8 @@ rows are historical only.</p>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+32.6% / 75.4% (1357/1023); due 31; blk 246</td>
-      <td>+33.0% / 75.2% (1361/1023); due 31; blk 250</td>
+      <td>+11.2% / 89.9% (1139/1024); due 31; blk 191</td>
+      <td>+11.3% / 89.8% (1140/1024); due 31; blk 194</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -917,7 +919,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-average is now +0.4% over target / 99.8% target speed, with several worse
+average is now +0.1% over target / 100.0% target speed, with several worse
 CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

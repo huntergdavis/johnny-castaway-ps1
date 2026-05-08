@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-current compact FGP3/v4 metadata reader inline baseline; all 63 scenes remain validated, and the headless battle card is near target at 0.4096% over / 99.7860% target speed).
+current VISITOR3 restore-minus-current pack baseline; all 63 scenes remain validated, and the headless battle card is near target at 0.0502% over / 100.0292% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 508 |
-| Approx. words | 5524 |
+| Lines | 509 |
+| Approx. words | 5526 |
 | Code fences | 1 |
 
 ## Outline

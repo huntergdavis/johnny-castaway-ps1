@@ -8,19 +8,19 @@ accepted performance baseline.
 
 - Source CSV: `docs/ps1/performance-preprocess-opportunities.csv`
 - Measured timing rows included: `120`
-- Average measured timing gap: `0.4096%` over target
+- Average measured timing gap: `0.0502%` over target
 - Average estimated align4 x-band upload byte saving: `67.61%`
 
 ## Top Upload-Ready Candidates
 
 | Rank | Scene | Tide | Score | Gap | Upload Save | Payload Growth | Visible VB | Notes |
 |---:|---|---|---:|---:|---:|---:|---:|---|
-| 1 | `visitor3` | `low` | 255.57 | 33.04% | 56.97% | 420.82% | 252 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
-| 2 | `visitor3` | `high` | 252.05 | 32.65% | 56.97% | 420.82% | 247 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
-| 3 | `walkstuf1` | `low` | 173.13 | 14.00% | 46.64% | 493.1% | 325 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
-| 4 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
-| 5 | `building4` | `high` | 166.35 | 5.49% | 65.1% | 381.78% | 267 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
-| 6 | `building4` | `low` | 153.44 | 5.25% | 65.1% | 381.78% | 231 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
+| 1 | `walkstuf1` | `low` | 173.13 | 14.00% | 46.64% | 493.1% | 325 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 2 | `walkstuf1` | `high` | 171.55 | 13.68% | 46.64% | 493.1% | 328 | x-band rect cap pressure; needs selective bands; rect/frame 2.85 |
+| 3 | `building4` | `high` | 166.35 | 5.49% | 65.1% | 381.78% | 267 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
+| 4 | `building4` | `low` | 153.44 | 5.25% | 65.1% | 381.78% | 231 | x-band rect cap pressure; needs selective bands; rect/frame 1.7 |
+| 5 | `visitor3` | `low` | 114.59 | 11.33% | 56.97% | 593.04% | 194 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
+| 6 | `visitor3` | `high` | 113.27 | 11.23% | 56.97% | 593.04% | 191 | x-band rect cap pressure; needs selective bands; rect/frame 1.5 |
 | 7 | `building2` | `high` | 102.07 | 7.15% | 67.28% | 488.66% | 158 | candidate; rect/frame 2.47 |
 | 8 | `building2` | `low` | 87.42 | 6.29% | 67.28% | 488.66% | 129 | candidate; rect/frame 2.47 |
 | 9 | `building6` | `low` | 68.45 | 3.20% | 44.17% | 810.26% | 136 | x-band rect cap pressure; needs selective bands; rect/frame 2.52 |

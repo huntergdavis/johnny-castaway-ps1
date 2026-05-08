@@ -33,18 +33,18 @@ A scene can be timed here without being visually certified.
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
   <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
-  <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
+  <span class="spd-key spd-yellow">22 (18.3%) ≥ 80%</span>
+  <span class="spd-key spd-red">0 (0.0%) &lt; 80%</span>
   out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
 </p>
 
-The two red rows are [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
-high (`75.4%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
-low (`75.2%`) after the current FGP3/v4 draw-metadata compaction, compact
-decoder inline pass, and stale read-group pruning; the largest single optimization target left on
-the matrix. The yellow cluster includes the wide-action and
-[`BUILDING2`]({{ '/scenes/building2/' | relative_url }}) rows still finishing
-their prefetch-relief, stream-window, and selective-preprocessing work.
+No timing-bearing row is in the red band after the VISITOR3
+restore-minus-current pack pass. The slowest rows are now `walkstuf1` low/high
+(`87.7%` / `88.0%`) and [`visitor3`]({{ '/scenes/visitor3/' | relative_url }})
+low/high (`89.8%` / `89.9%`). The yellow cluster includes the remaining
+wide-action, [`BUILDING4`]({{ '/scenes/building4/' | relative_url }}),
+[`BUILDING2`]({{ '/scenes/building2/' | relative_url }}), and BUILDING6 rows
+still finishing prefetch-relief, stream-window, and selective-preprocessing work.
 
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
@@ -66,10 +66,10 @@ Current battle-card rollup as of 2026-05-07:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.4%` (`0.4096%` exact) |
-| Timing-bearing average target speed | `99.8%` (`99.7860%` exact) |
-| Latest perf matrix run | `2026-05-07T16:30:49` |
-| Stats version | mixed across rows; newest optimized rows use `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.1%` (`0.0502%` exact) |
+| Timing-bearing average target speed | `100.0%` (`100.0292%` exact) |
+| Latest perf matrix run | `2026-05-07T17:12:51` |
+| Stats version | mixed across rows; newest optimized rows use `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -100,7 +100,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-high-readgroup-prune-v084`,
+  refreshed rows use `visitor3-restore-minus-current-v086`,
+  `visitor3-high-readgroup-prune-v084`,
   `compact-u16-inline-v083`,
   `fgp3v4-drawcompact-all-v082`,
   `activity9-dead-readgroup-prune-v082`,
@@ -380,15 +381,15 @@ and this page.
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2085/2058</td>
       <td>29</td>
       <td>12</td>
       <td>3</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -506,29 +507,29 @@ and this page.
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+7.2%</td>
       <td class="spd-yellow">93.3%</td>
       <td>1394/1301</td>
       <td>138</td>
       <td>20</td>
       <td>25</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+6.3%</td>
       <td class="spd-yellow">94.1%</td>
       <td>1385/1303</td>
       <td>121</td>
       <td>8</td>
       <td>23</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -674,15 +675,15 @@ and this page.
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>-0.6%</td>
       <td class="spd-green">100.6%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>Exact-flat canary after pruning exhausted VISITOR3 high read groups; remains under target with fixed layout</td>
+      <td>Exact-flat under-target control after VISITOR3 restore-minus-current cleanup</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -1738,29 +1739,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
-      <td>+32.6%</td>
-      <td class="spd-red">75.4%</td>
-      <td>1357/1023</td>
-      <td>246</td>
-      <td>1</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
+      <td>+11.2%</td>
+      <td class="spd-yellow">89.9%</td>
+      <td>1139/1024</td>
+      <td>191</td>
+      <td>0</td>
       <td>31</td>
-      <td>Exact-flat after pruning exhausted high-tide read-group table; compact-u16 inline timing/LBAs preserved and foregroundPilotPlay shrinks by 48 bytes</td>
+      <td>FGP3/v4 pack-side restore-minus-current cleanup; active payload 981514-&gt;737600, runtime restore_bytes 973290-&gt;498676, fixed padded footprint/LBA</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
-      <td>+33.0%</td>
-      <td class="spd-red">75.2%</td>
-      <td>1361/1023</td>
-      <td>250</td>
-      <td>2</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
+      <td>+11.3%</td>
+      <td class="spd-yellow">89.8%</td>
+      <td>1140/1024</td>
+      <td>194</td>
+      <td>0</td>
       <td>31</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; compact-u16 inline timing/LBAs preserved and foregroundPilotPlay shrinks by 48 bytes</td>
+      <td>FGP3/v4 pack-side restore-minus-current cleanup; active payload 981514-&gt;737600, runtime restore_bytes 973290-&gt;498676, fixed padded footprint/LBA</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

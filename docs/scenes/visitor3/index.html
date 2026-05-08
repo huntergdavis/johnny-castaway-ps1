@@ -149,15 +149,15 @@ were evidence-gathering positions, not runtime pins.</p>
 
 <h2 id="notable-runtime-history">Notable runtime history</h2>
 
-<p><code class="language-plaintext highlighter-rouge">VISITOR 3</code> is the largest single optimization target left on the
+<p><code class="language-plaintext highlighter-rouge">VISITOR 3</code> remains one of the high-leverage yellow-band rows on the
 <a href="../../perf/">performance battle card</a> at
-<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code>. Both <code class="language-plaintext highlighter-rouge">visitor3</code> high and <code class="language-plaintext highlighter-rouge">visitor3</code> low
-sit in the <strong>red</strong> band — around <code class="language-plaintext highlighter-rouge">69.4%</code> target speed after the
-<code class="language-plaintext highlighter-rouge">v0.7.2</code> prefetch-relief refresh. The wide multi-view stitch (the
-red ship crossing the full scene width) hits the
+<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code>. After the FGP3/v4 compact metadata work and the
+pack-side restore-minus-current cleanup, <code class="language-plaintext highlighter-rouge">visitor3</code> high and low now run
+around <code class="language-plaintext highlighter-rouge">89.9%</code> and <code class="language-plaintext highlighter-rouge">89.8%</code> target speed instead of sitting in the red band.
+The wide multi-view stitch (the red ship crossing the full scene width) hits the
 <a href="../../docs/glossary/#prefetch-window">prefetch window</a>
-the hardest of any scene; the timing gap is concentrated in the
-ship’s live crash window, not the foreground replay around it.</p>
+harder than most scenes; the remaining timing gap is concentrated in the
+ship’s live crash window and same-frame cleanup/restore work.</p>
 
 <p>The arc that moved the rest of the matrix from <code class="language-plaintext highlighter-rouge">87.1%</code> to <code class="language-plaintext highlighter-rouge">99.5%</code>
 target speed is at

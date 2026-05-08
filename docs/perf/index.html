@@ -123,7 +123,7 @@ are uncorrelated.</p>
 <p>The reference manual for the perf work is at
 <a href="../docs/performance/">/docs/performance/</a>;
 the retrospective on the optimization loop that moved this matrix
-from the compact baseline to its current <code class="language-plaintext highlighter-rouge">99.8%</code>
+from the compact baseline to its current <code class="language-plaintext highlighter-rouge">100.0%</code>
 target-speed average is at
 <a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.
 A scene can be timed here without being visually certified.</p>
@@ -133,18 +133,18 @@ A scene can be timed here without being visually certified.</p>
 <p class="scene-perf-legend" aria-label="Target speed distribution as of v0.8.2-ps1">
   Target Speed distribution at <code>v0.8.2-ps1</code>:
   <span class="spd-key spd-green">98 (81.7%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">20 (16.7%) ≥ 80%</span>
-  <span class="spd-key spd-red">2 (1.7%) &lt; 80%</span>
+  <span class="spd-key spd-yellow">22 (18.3%) ≥ 80%</span>
+  <span class="spd-key spd-red">0 (0.0%) &lt; 80%</span>
   out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
 </p>
 
-<p>The two red rows are <a href="../scenes/visitor3/"><code class="language-plaintext highlighter-rouge">visitor3</code></a>
-high (<code class="language-plaintext highlighter-rouge">75.4%</code>) and <a href="../scenes/visitor3/"><code class="language-plaintext highlighter-rouge">visitor3</code></a>
-low (<code class="language-plaintext highlighter-rouge">75.2%</code>) after the current FGP3/v4 draw-metadata compaction, compact
-decoder inline pass, and stale read-group pruning; the largest single optimization target left on
-the matrix. The yellow cluster includes the wide-action and
-<a href="../scenes/building2/"><code class="language-plaintext highlighter-rouge">BUILDING2</code></a> rows still finishing
-their prefetch-relief, stream-window, and selective-preprocessing work.</p>
+<p>No timing-bearing row is in the red band after the VISITOR3
+restore-minus-current pack pass. The slowest rows are now <code class="language-plaintext highlighter-rouge">walkstuf1</code> low/high
+(<code class="language-plaintext highlighter-rouge">87.7%</code> / <code class="language-plaintext highlighter-rouge">88.0%</code>) and <a href="../scenes/visitor3/"><code class="language-plaintext highlighter-rouge">visitor3</code></a>
+low/high (<code class="language-plaintext highlighter-rouge">89.8%</code> / <code class="language-plaintext highlighter-rouge">89.9%</code>). The yellow cluster includes the remaining
+wide-action, <a href="../scenes/building4/"><code class="language-plaintext highlighter-rouge">BUILDING4</code></a>,
+<a href="../scenes/building2/"><code class="language-plaintext highlighter-rouge">BUILDING2</code></a>, and BUILDING6 rows
+still finishing prefetch-relief, stream-window, and selective-preprocessing work.</p>
 
 <p>The 6 untimed rows are <a href="../scenes/mary3/"><code class="language-plaintext highlighter-rouge">MARY 3</code></a> high/low (active-loop timing not
 yet refreshed against the current pack), and <a href="../scenes/suzy1/"><code class="language-plaintext highlighter-rouge">SUZY 1</code></a> + <a href="../scenes/suzy2/"><code class="language-plaintext highlighter-rouge">SUZY 2</code></a>
@@ -198,19 +198,19 @@ on purpose).</p>
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.4%</code> (<code class="language-plaintext highlighter-rouge">0.4096%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.1%</code> (<code class="language-plaintext highlighter-rouge">0.0502%</code> exact)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.8%</code> (<code class="language-plaintext highlighter-rouge">99.7860%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">100.0%</code> (<code class="language-plaintext highlighter-rouge">100.0292%</code> exact)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-07T16:30:49</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">2026-05-07T17:12:51</code></td>
     </tr>
     <tr>
       <td>Stats version</td>
-      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>, <code class="language-plaintext highlighter-rouge">compact-u16-inline-v083</code>, <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>, <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>, <code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>, <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-layout-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">stale-pressure2-v072c-current-refresh</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
+      <td style="text-align: right">mixed across rows; newest optimized rows use <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>, <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>, <code class="language-plaintext highlighter-rouge">compact-u16-inline-v083</code>, <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>, <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>, <code class="language-plaintext highlighter-rouge">read-group-selector-single-assign-v082</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-low-primecap160-v081</code>, <code class="language-plaintext highlighter-rouge">johnny2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary2-prefetch-relief-v081</code>, <code class="language-plaintext highlighter-rouge">mary5-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">activity11-fgp3-padded-v081</code>, <code class="language-plaintext highlighter-rouge">building5-fgp3-padded-v080</code>, <code class="language-plaintext highlighter-rouge">walkstuf1-fgp2-setup-prime-v080</code>, <code class="language-plaintext highlighter-rouge">activity4-fishing4-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">building4-6-johnny6-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">activity1-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">activity11-12-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-next-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">mary1-v072c-prefetch-relief</code>, <code class="language-plaintext highlighter-rouge">stale-layout-v072c-current-refresh</code>, <code class="language-plaintext highlighter-rouge">stale-pressure2-v072c-current-refresh</code>, and earlier matrix refresh versions. Per-row version is in the <a href="#reading-the-table"><code class="language-plaintext highlighter-rouge">Stats Version</code> column below</a> and the <a href="#reading-the-table">enumeration</a> is in the table-key section.</td>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
@@ -248,7 +248,8 @@ Lower is better.</li>
 (<code class="language-plaintext highlighter-rouge">scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS</code>); <code class="language-plaintext highlighter-rouge">-</code> means no current
 matrix run has been recorded for that variant.</li>
   <li><strong>Stats Version</strong>: performance/layout version for that row. The latest
-refreshed rows use <code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
+refreshed rows use <code class="language-plaintext highlighter-rouge">visitor3-restore-minus-current-v086</code>,
+<code class="language-plaintext highlighter-rouge">visitor3-high-readgroup-prune-v084</code>,
 <code class="language-plaintext highlighter-rouge">compact-u16-inline-v083</code>,
 <code class="language-plaintext highlighter-rouge">fgp3v4-drawcompact-all-v082</code>,
 <code class="language-plaintext highlighter-rouge">activity9-dead-readgroup-prune-v082</code>,
@@ -529,15 +530,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2085/2058</td>
       <td>29</td>
       <td>12</td>
       <td>3</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -655,29 +656,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+7.2%</td>
       <td class="spd-yellow">93.3%</td>
       <td>1394/1301</td>
       <td>138</td>
       <td>20</td>
       <td>25</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>+6.3%</td>
       <td class="spd-yellow">94.1%</td>
       <td>1385/1303</td>
       <td>121</td>
       <td>8</td>
       <td>23</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; preserves compact-u16 inline timing/LBAs and shrinks foregroundPilotPlay by 48 bytes</td>
+      <td>Exact-flat control after VISITOR3 restore-minus-current cleanup; preserves compact-u16 inline timing and fixed layout</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -823,15 +824,15 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
       <td>-0.6%</td>
       <td class="spd-green">100.6%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>Exact-flat canary after pruning exhausted VISITOR3 high read groups; remains under target with fixed layout</td>
+      <td>Exact-flat under-target control after VISITOR3 restore-minus-current cleanup</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -1887,29 +1888,29 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
-      <td>+32.6%</td>
-      <td class="spd-red">75.4%</td>
-      <td>1357/1023</td>
-      <td>246</td>
-      <td>1</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
+      <td>+11.2%</td>
+      <td class="spd-yellow">89.9%</td>
+      <td>1139/1024</td>
+      <td>191</td>
+      <td>0</td>
       <td>31</td>
-      <td>Exact-flat after pruning exhausted high-tide read-group table; compact-u16 inline timing/LBAs preserved and foregroundPilotPlay shrinks by 48 bytes</td>
+      <td>FGP3/v4 pack-side restore-minus-current cleanup; active payload 981514-&gt;737600, runtime restore_bytes 973290-&gt;498676, fixed padded footprint/LBA</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T16:30:49</td>
-      <td>visitor3-high-readgroup-prune-v084</td>
-      <td>+33.0%</td>
-      <td class="spd-red">75.2%</td>
-      <td>1361/1023</td>
-      <td>250</td>
-      <td>2</td>
+      <td>2026-05-07T17:12:51</td>
+      <td>visitor3-restore-minus-current-v086</td>
+      <td>+11.3%</td>
+      <td class="spd-yellow">89.8%</td>
+      <td>1140/1024</td>
+      <td>194</td>
+      <td>0</td>
       <td>31</td>
-      <td>Exact-flat after pruning exhausted VISITOR3 high read groups; compact-u16 inline timing/LBAs preserved and foregroundPilotPlay shrinks by 48 bytes</td>
+      <td>FGP3/v4 pack-side restore-minus-current cleanup; active payload 981514-&gt;737600, runtime restore_bytes 973290-&gt;498676, fixed padded footprint/LBA</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
@@ -2122,7 +2123,7 @@ reference manual: what each column means, how <code class="language-plaintext hi
   <li><a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>
 — retrospective on which experiments moved the matrix from the
 compact baseline (<code class="language-plaintext highlighter-rouge">+17.4%</code> over target) to its current
-<code class="language-plaintext highlighter-rouge">99.8%</code> target speed.</li>
+<code class="language-plaintext highlighter-rouge">100.0%</code> target speed.</li>
   <li><a href="../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>
 — the v0.8.1 stability follow-on that kept this matrix’s mean
 untouched while fixing a clean-rect pressure freeze the per-commit
