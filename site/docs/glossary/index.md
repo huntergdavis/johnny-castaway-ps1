@@ -119,6 +119,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="duckstation">DuckStation</dt>
 <dd>Connor McLaughlin et al.'s PS1 emulator. Every commit is regtested against headless DuckStation; visual + audible signoff happens against the GUI build. The project's runtime works around several DuckStation HLE quirks (SPU master-volume isn't honored, the BIOS pad path is unusable, etc.).</dd>
 
+<dt id="vblank">VBlank</dt>
+<dd>The GPU's vertical blanking interrupt — fires once per refresh (NTSC: 60 Hz, PAL: 50 Hz; this project targets NTSC). The runtime's atomic time unit: every per-scene timing measurement on <a href="{{ '/perf/' | relative_url }}">/perf/</a> is counted in vblanks (<code>target_vb</code>, <code>loop_vb</code>, <code>blocking_vb</code>, <code>prefetch_overrun_vb</code>), pack frame durations are stored as vblank counts, and the foreground-pilot cadence is a vblank-aligned scheduler. Replaces the host build's wall-clock timing — the PS1 has no reliable monotonic clock outside the GPU IRQ surface, so VBlank IS the clock. Cross-references the perf-side entries: <a href="#target-vb">target_vb / loop_vb</a>, <a href="#blocking-vb">blocking_vb</a>, <a href="#prefetch-hits">prefetch_hits</a>.</dd>
+
 <dt id="mkpsxiso">mkpsxiso</dt>
 <dd>The CD-image packager. Reads <code>config/ps1/cd_layout.xml</code> + the compiled PS-EXE + the asset bundle and produces <code>jcreborn.bin</code> / <code>jcreborn.cue</code>.</dd>
 
