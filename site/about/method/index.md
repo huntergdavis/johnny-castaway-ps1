@@ -46,7 +46,7 @@ straight port impossible:
    `psxapi`, `psxgte`, `psxsio`. There is no `printf` you can trust
    in a hot loop, no `malloc` worth leaning on for transients, no
    `pthread`, no `clock_gettime`. SDL's design assumptions are not
-   even close. The symbol-by-symbol mapping the host build hands
+   even close. The symbol-by-symbol mapping the [host build]({{ '/docs/glossary/#host-build' | relative_url }}) hands
    off to the PS1 build is documented at
    [/docs/api/]({{ '/docs/api/' | relative_url }}).
 
