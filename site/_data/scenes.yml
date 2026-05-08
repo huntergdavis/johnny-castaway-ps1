@@ -707,7 +707,7 @@
   - no-stitch host export with full-frame foreground-only overlay
   - runtime FG2 wave-tick
   last_verified: '2026-05-04'
-  notes: visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick
+  notes: stands-spyglass-right (Johnny stands on the right side of the island and looks around with a spyglass); visual signoff on the normal high-tide/night route after regenerating high/low packs through the STAND no-stitch fast path; center spyglass idle loop played cleanly with the runtime wave tick
 - ads: SUZY
   tag: 1
   slug: suzy1
