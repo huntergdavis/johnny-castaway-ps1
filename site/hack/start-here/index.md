@@ -55,3 +55,27 @@ format. Do not begin by cleaning up style. The first useful contribution to
 your own understanding is a local run that you can compare against a known
 state. Once you can reproduce `FISHING 1`, the rest of the codebase has a
 scale.
+
+## Related pages
+
+- [Hack: learn C from Johnny]({{ '/hack/learn-c/' | relative_url }})
+  — guided tour through plain-C modules in this codebase, the
+  natural next stop once the build runs.
+- [Hack: visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  — the screenshot-and-overlay loop the rest of the project's
+  bug-fixing loop runs on top of.
+- [Hack: memory wars]({{ '/hack/memory-wars/' | relative_url }})
+  — the 2 MB / 1 MB / 512 KB hardware envelope this codebase
+  was shaped by.
+- [Hack: performance loop]({{ '/hack/performance-loop/' | relative_url }})
+  — the headless-perf iteration that now drives most ongoing work.
+- [Hack: port to a new platform]({{ '/hack/port-to-a-new-platform/' | relative_url }})
+  — what changes if you take what's here and target some other
+  weird machine.
+- [Build & toolchain]({{ '/docs/build/' | relative_url }}) —
+  the canonical reference for the cmake + Docker + mkpsxiso
+  pipeline mentioned above.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for the terms (`FG2 pack`, `FISHING 1 bar`,
+  `host build`, `regtest`, `scene picker`) the loop above leans
+  on without scaffolding.
