@@ -307,12 +307,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **0.0% over target /
-100.1% target speed** (`-0.0650%` exact over target / `100.1351%` exact target speed).
+100.1% target speed** (`-0.0670%` exact over target / `100.1368%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
 `building2-high-restore-minus-current-v108`,
 `visitor3-low-offscreen-exitright-v106`,
@@ -382,13 +383,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T01:35:06`; per-row freshness and stats version are shown on
+run is `2026-05-08T01:53:44`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `building2-high-group60-72-v109`,
+rows now use `building2-low-group365-381-v110`,
+`building2-high-group60-72-v109`,
 `building2-high-restore-minus-current-v108`,
 `visitor3-low-offscreen-exitright-v106`,
 `visitor3-high-offscreen-drawclip-v105`,
@@ -513,8 +515,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building2</code></td>
-      <td>+7.1% / 93.3% (1394/1301); due 25; blk 138</td>
-      <td>+6.3% / 94.1% (1385/1303); due 23; blk 121</td>
+      <td>+2.5% / 97.6% (1349/1316); due 7; blk 48</td>
+      <td>+6.1% / 94.3% (1383/1304); due 22; blk 118</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -733,8 +735,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor3</code></td>
-      <td>+11.2% / 89.9% (1139/1024); due 31; blk 191</td>
-      <td>+11.3% / 89.8% (1140/1024); due 31; blk 194</td>
+      <td>+11.0% / 90.1% (1137/1024); due 31; blk 190</td>
+      <td>+11.1% / 90.0% (1138/1024); due 31; blk 191</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

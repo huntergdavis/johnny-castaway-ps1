@@ -40,7 +40,7 @@ A scene can be timed here without being visually certified.
 
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
 BUILDING2 restore-minus-current pack passes plus the BUILDING2 high `60..72`
-grouped-read pass. The slowest rows are now
+and low `365..381` grouped-read passes. The slowest rows are now
 `walkstuf1` low/high (`87.7%` / `88.3%`) and
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
 (`90.0%` / `90.1%`). The yellow cluster includes the remaining wide-action,
@@ -68,10 +68,10 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `0.0%` (`-0.0650%` exact) |
-| Timing-bearing average target speed | `100.1%` (`100.1351%` exact) |
-| Latest perf matrix run | `2026-05-08T01:35:06` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `0.0%` (`-0.0670%` exact) |
+| Timing-bearing average target speed | `100.1%` (`100.1368%` exact) |
+| Latest perf matrix run | `2026-05-08T01:53:44` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 The durable numeric source is
@@ -102,7 +102,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building2-high-group60-72-v109`,
+  refreshed rows use `building2-low-group365-381-v110`,
+  `building2-high-group60-72-v109`,
   `building2-high-restore-minus-current-v108`,
   `visitor3-low-offscreen-exitright-v106`,
   `visitor3-high-offscreen-drawclip-v105`,
@@ -390,15 +391,15 @@ and this page.
       <td><code>activity9</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
       <td>+1.3%</td>
       <td class="spd-yellow">98.7%</td>
       <td>2085/2058</td>
       <td>29</td>
       <td>12</td>
       <td>3</td>
-      <td>Exact-flat control after WALKSTUF1 high setup-prime cap retune; fixed layout preserved</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
     </tr>
     <tr>
       <td><code>activity10</code></td>
@@ -516,29 +517,29 @@ and this page.
       <td><code>building2</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
-      <td>+7.1%</td>
-      <td class="spd-yellow">93.3%</td>
-      <td>1394/1301</td>
-      <td>138</td>
-      <td>20</td>
-      <td>25</td>
-      <td>Exact-flat control after WALKSTUF1 high setup-prime cap retune; fixed layout preserved</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
+      <td>+2.5%</td>
+      <td class="spd-yellow">97.6%</td>
+      <td>1349/1316</td>
+      <td>48</td>
+      <td>12</td>
+      <td>7</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; high `60..72` group remains the accepted baseline</td>
     </tr>
     <tr>
       <td><code>building2</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
-      <td>+6.3%</td>
-      <td class="spd-yellow">94.1%</td>
-      <td>1385/1303</td>
-      <td>121</td>
-      <td>8</td>
-      <td>23</td>
-      <td>Exact-flat control after WALKSTUF1 high setup-prime cap retune; fixed layout preserved</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
+      <td>+6.1%</td>
+      <td class="spd-yellow">94.3%</td>
+      <td>1383/1304</td>
+      <td>118</td>
+      <td>5</td>
+      <td>22</td>
+      <td>Promoted low `365..381` grouped-read pass; fixed layout preserved</td>
     </tr>
     <tr>
       <td><code>building3</code></td>
@@ -572,29 +573,29 @@ and this page.
       <td><code>building4</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
       <td>+1.0%</td>
       <td class="spd-green">99.0%</td>
       <td>2844/2816</td>
       <td>37</td>
       <td>30</td>
       <td>1</td>
-      <td>Exact-flat after WALKSTUF1 high setup-prime cap retune; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
     </tr>
     <tr>
       <td><code>building4</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
       <td>+1.4%</td>
       <td class="spd-yellow">98.6%</td>
       <td>2855/2815</td>
       <td>46</td>
       <td>38</td>
       <td>1</td>
-      <td>Exact-flat after WALKSTUF1 high setup-prime cap retune; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
     </tr>
     <tr>
       <td><code>building5</code></td>
@@ -684,15 +685,15 @@ and this page.
       <td><code>fishing1</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
       <td>-0.6%</td>
       <td class="spd-green">100.6%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>Under-target control after WALKSTUF1 high setup-prime cap retune; fixed layout preserved</td>
+      <td>Under-target broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
     </tr>
     <tr>
       <td><code>fishing1</code></td>
@@ -1748,29 +1749,29 @@ and this page.
       <td><code>visitor3</code></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
-      <td>+11.2%</td>
-      <td class="spd-yellow">89.9%</td>
-      <td>1139/1024</td>
-      <td>191</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
+      <td>+11.0%</td>
+      <td class="spd-yellow">90.1%</td>
+      <td>1137/1024</td>
+      <td>190</td>
       <td>0</td>
       <td>31</td>
-      <td>Exact-flat after WALKSTUF1 high setup-prime cap retune; local VISITOR3 read-table rows are exhausted</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; local VISITOR3 read-table rows are exhausted</td>
     </tr>
     <tr>
       <td><code>visitor3</code></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-05-07T20:03:56</td>
-      <td>walkstuf1-high-primecap144-v089</td>
-      <td>+11.3%</td>
-      <td class="spd-yellow">89.8%</td>
-      <td>1140/1024</td>
-      <td>194</td>
+      <td>2026-05-08T01:53:44</td>
+      <td>building2-low-group365-381-v110</td>
+      <td>+11.1%</td>
+      <td class="spd-yellow">90.0%</td>
+      <td>1138/1024</td>
+      <td>191</td>
       <td>0</td>
       <td>31</td>
-      <td>Exact-flat after WALKSTUF1 high setup-prime cap retune; local VISITOR3 read-table rows are exhausted</td>
+      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; local VISITOR3 read-table rows are exhausted</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>

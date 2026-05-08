@@ -483,7 +483,8 @@ static const struct TFgPilotReadGroup kBuilding2HighReadGroups12[] = {
 };
 
 static const struct TFgPilotReadGroup kBuilding2LowReadGroups12[] = {
-    {318, 330, 0}
+    {318, 330, 0},
+    {365, 381, 0}
 };
 
 static void fgApplySceneRelativeOffsets(struct TFgPilotHeader *header,
