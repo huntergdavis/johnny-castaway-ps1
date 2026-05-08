@@ -131,6 +131,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 <dt id="tx-len">tx_len</dt>
 <dd>The number of TX bytes the SPI poll sends before reading button bytes back. Must be 5, not 4 — DuckStation only delivers the actual button state when the full five-byte sequence comes from the TX buffer. The two-day lab essay on this is at <a href="{{ '/lab/two-day-spi-bug/' | relative_url }}">/lab/two-day-spi-bug/</a>.</dd>
 
+<dt id="jcspi-jcpad">JCSPI / JCPAD</dt>
+<dd>The two TTY-record companions to <a href="#jcperf">JCPERF/JCPERF2</a>. <code>JCSPI</code> dumps the diagnostic state of the <a href="#spi">SPI driver</a> (poll counters, IRQ rate, last button bytes) — useful when chasing controller-poll bugs like the two-day <a href="#tx-len">tx_len</a> bug. <code>JCPAD</code> dumps the pad layer above SPI (cooked button events, hold tracking, repeat suppression). Both fire from the gated <code>printf()</code> path restored in 2026-04-25, are off by default, and are ignored by the headless <a href="#regtest">regtest</a> + <a href="{{ '/lab/build-farm/' | relative_url }}">build farm</a> consumers (which only parse <code>JCPERF</code>). Distinct from <code>JCPADSHOT</code>, the screenshot-marker line emitted by the <a href="{{ '/docs/scripted-input/' | relative_url }}">scripted-input harness</a>'s <code>shot</code> command.</dd>
+
 <dt id="tonyhax">TonyHax</dt>
 <dd>The softmod path used to boot homebrew on retail PS1 hardware. The project is smoke-tested on a SCPH-7501 via TonyHax. Treat any boot success as a small miracle.</dd>
 
