@@ -46,7 +46,7 @@ For input bugs, replace "run the scene" with "write the controller route."
 `PADSCRIPT.TXT` can say `wait 30s`, `tap START`, `tap DOWN`, `tap CROSS`, and
 `shot freeplay-options 30`. The PS1 runtime presses those buttons through its
 real pad path, DuckStation captures frames, and the reporter pulls the first
-PNG at or after each `JCPADSHOT` marker. That is how the menu help page is
+PNG at or after each [`JCPADSHOT`]({{ '/docs/glossary/#jcpadshot' | relative_url }}) marker. That is how the menu help page is
 made, and it is also how a flaky "I pressed this and it crashed" report turns
 into a repeatable artifact.
 
