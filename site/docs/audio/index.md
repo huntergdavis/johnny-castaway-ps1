@@ -249,7 +249,7 @@ A few audio quality items the author knows are open:
 The runtime carries one looping background track — a 20-second
 ocean-loop sample on a dedicated SPU voice slot reserved at boot.
 Toggleable via Pause → Accessibility → Ocean and persisted to the
-memcard alongside the other v6 schema settings. Zero per-frame
+[memcard]({{ '/docs/glossary/#memcard' | relative_url }}) alongside the other v6 schema settings. Zero per-frame
 CPU cost: the SPU loops the sample in hardware; the main CPU
 never touches the voice after boot.
 
