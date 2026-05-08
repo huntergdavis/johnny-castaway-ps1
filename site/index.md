@@ -75,8 +75,8 @@ routed scenes the original game had are validated under the
 review across every applicable variant. Current mainline work is
 bugfixing, performance, and feature polish; the
 [`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
-keeps long randomized runs stable while the `v0.8.0` performance
-baseline closes the last bit of speed gap, and most scenes already
+keeps long randomized runs stable while the [`v0.8.0` performance
+baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }}) closes the last bit of speed gap, and most scenes already
 run at native rate. The two ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
