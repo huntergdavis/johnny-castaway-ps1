@@ -98,9 +98,9 @@ The Lab section has its own Atom feed at `/lab/feed.xml`. Same pattern, with one
 
 `jekyll-redirect-from` *is* in the Gemfile, because the redirect HTML pages it generates are tedious to write by hand and the plugin's `redirect_from:` frontmatter API is already in use on `scenes/index.md`. There was a bug there, though — the plugin's `absolute_url(to)` honors `site.baseurl`, which the build wipes, so every redirect was silently pointed at `hunterdavis.com/...` (the user-pages root) instead of `hunterdavis.com/johnny-castaway-ps1/...`. The fix is a custom `_layouts/redirect.html` override that strips `site.url` from `page.redirect.to` and rebuilds the URL through `site.canonical_baseurl`. External redirect targets (URLs that don't start with `site.url`) pass through unchanged.
 
-## The pager pattern, shared across three catalogs
+## The pager pattern, shared across four catalogs
 
-The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:
+The site has four indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case references, 15 lab essays. Each was, at some point, a wall of leaves you could only enter via the index page and exit by going back. So each got a prev/up/next pager:
 
 - Scene pages compute prev/next from `_data/scenes.yml`, sorted by `sort: 'tag' | sort: 'ads'` (the same order the index renders).
 - Devlog posts use Jekyll's built-in `page.previous` / `page.next`. Caveat: those are sourced from the posts collection's `docs` array, which is sorted oldest-first, so `page.previous` is the *older* post and `page.next` is the *newer* one. Labels here say "older" and "newer" by direction in time, not "prev" and "next" by Jekyll's array semantics — the convention is too easy to invert.
@@ -109,8 +109,17 @@ The site has three indexed catalogs: 63 scenes, 23 devlog posts, 63 regtest case
   live under `_layouts/page.html`, which conditionally includes the case pager
   only when the URL is under the cases path. Whitespace-control on the Liquid
   `if` block keeps non-case pages byte-identical.
+- Lab essays compute prev/next the way devlog posts would if Jekyll's
+  built-in `page.previous` / `page.next` worked for them — but lab
+  essays live under `site.html_pages` (layout: page) rather than
+  `site.posts`, so the built-in doesn't apply. Same flag-tracking
+  walker the regtest case pager uses, sorted by `page.date` ascending,
+  with the older/newer label convention from the devlog pager. The
+  head-pagination include uses the same walker on the same sorted
+  list, so head-level `<link rel="prev">` and the body-level
+  `<a rel="prev">` always land on identical pairs.
 
-All three pagers reuse one CSS class — `.scene-pager` — because the layout is identical (3-col grid, collapses to prev|next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to `.page-pager` is on the backlog.
+All four pagers reuse one CSS class — `.scene-pager` — because the layout is identical (3-col grid, collapses to prev|next over up on narrow viewports). The class name has lost its specificity but the structure is right. Renaming to `.page-pager` is on the backlog.
 
 Above that, a 30-line progressive-enhancement script (`assets/js/key-nav.js`) listens for ArrowLeft/ArrowRight and follows the page's `<a rel="prev">` / `<a rel="next">` links. It doesn't know which pager fired — it queries by `rel` attribute. Skip-out conditions: any modifier key, focus inside an editable element. Works on any future pager that emits the same `rel` attributes without needing a code update.
 
