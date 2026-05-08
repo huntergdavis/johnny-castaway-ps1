@@ -29,7 +29,7 @@ If you paid for this, you were cheated. Open source and free.
 - **Docker Desktop** (or rootless Docker on Linux). The build never runs
   natively on the host.
 - **Git**, to clone the repository.
-- **DuckStation** for testing — the regtest image carries its own copy, but
+- **[DuckStation]({{ '/docs/glossary/#duckstation' | relative_url }})** for testing — the regtest image carries its own copy, but
   for live development you launch the desktop emulator yourself. Get a real
   PS1 BIOS file separately; the project does not redistribute one.
 
