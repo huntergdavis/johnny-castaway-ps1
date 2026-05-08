@@ -122,6 +122,17 @@ rows are WALKSTUF1 low/high, remaining VISITOR3 scheduler/data-shape work,
 BUILDING2 low/high scheduler-owned candidates, BUILDING6, and selective
 upload-ready preprocessing.
 
+Latest rejected WALKSTUF1 direct-stage threshold sweep: the current scalar
+`8 KiB` direct-stage cap remains the measured knee. A `6 KiB` global cap fixed
+layout and reduced active blocking, but moved too much work into hidden refill:
+high regressed `1592 -> 1594` with `prefetch_overrun_vb 51 -> 75`, and low
+regressed `1604 -> 1607` with `54 -> 81`. A `7 KiB` cap kept loop time and
+hidden overrun flat, but only reduced blocking by `1/4` VBlanks and regressed
+target-relative overrun by one VBlank on both tides. Close scalar direct-stage
+caps for WALKSTUF1; retry only with generated scheduler ownership,
+frame/range-specific direct-stage policy, or a pack/data-shape reduction that
+lowers refill cost first.
+
 Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
 pack-emitted upload pixels are not safe under the current FGP3 data. The
@@ -1384,6 +1395,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 low setup-prime cap 168 KiB | Do not promote. Raising the low-only cap from `160 KiB` to `168 KiB` preserves pack LBA and PS-EXE bucket but is exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |
 | WALKSTUF1 low no-direct-stage branch | Do not promote as a broad scene-name check. It improves low visible metrics (`1604 -> 1601`, `blocking_vb 271 -> 214`, `due_misses 50 -> 34`) but regresses hidden refill (`prefetch_overrun_vb 54 -> 79`) and crosses the PS-EXE bucket. Keep the signal; retry only with a narrower direct-stage threshold or generated scheduler metadata. |
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
+| Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The analyzer now exact-knapsacks the default-selected VISITOR3 rows against the pack's `814847` bytes of zero-tail slack and selects `74 / 96` frames using `814184` bytes, leaving `663` bytes of slack and retaining `3858104` modeled upload bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows and full VISITOR3/canary validation. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
