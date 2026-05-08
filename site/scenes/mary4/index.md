@@ -8,7 +8,7 @@ status: validated
 description: "MARY.ADS scene 4: Heartbroken at the raft. Validated with generic multi-view scene-relative stitching."
 ---
 
-Validated 2026-05-03 under the FISHING 1 bar: pixel-perfect human
+Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}): pixel-perfect human
 visual signoff plus synced captured SFX.
 
 ## Pack identifiers
