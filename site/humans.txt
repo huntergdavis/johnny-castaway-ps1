@@ -50,6 +50,7 @@ Source          : {{ site.github_url }}/tree/main/site
 Devlog feed     : {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.xml (Atom)
                   {{ site.url }}{{ site.canonical_baseurl }}/devlog/feed.json (JSON Feed)
 Lab feed        : {{ site.url }}{{ site.canonical_baseurl }}/lab/feed.xml (Atom)
+                  {{ site.url }}{{ site.canonical_baseurl }}/lab/feed.json (JSON Feed)
 Sitemap         : {{ site.url }}{{ site.canonical_baseurl }}/sitemap.xml
 Code license    : GPL-3.0
 Asset license   : Sierra On-Line retains the Castaway character
