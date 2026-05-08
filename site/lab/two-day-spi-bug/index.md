@@ -19,7 +19,7 @@ date: 2026-04-26
 The pause menu needed the controller. Start to pause. D-pad to move. Cross to
 select. Basic stuff.
 
-The PSn00bSDK pad path looked like the obvious answer: `InitPAD`, `StartPAD`,
+The [PSn00bSDK]({{ '/docs/glossary/#psn00bsdk' | relative_url }}) pad path looked like the obvious answer: `InitPAD`, `StartPAD`,
 read `pad_buff`, move on. It worked in examples. It looked correct. It did not
 work reliably in this runtime.
 
