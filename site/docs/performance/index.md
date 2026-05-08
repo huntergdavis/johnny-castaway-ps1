@@ -274,7 +274,7 @@ trip = 0   fallback = 0   frame_mismatch = 0
 sound_late = 0   cd_fail = 0
 ```
 
-That is **-0.3% over target**, or **100.3% of target speed**. Across the
+That is **-0.3% over target**, or **[100.3% of target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. Across the
 120 timing-bearing battle-card rows, the average is **+0.8% over target /
 99.5% target speed** (`0.8231%` exact over target / `99.4858%` exact target speed).
 
