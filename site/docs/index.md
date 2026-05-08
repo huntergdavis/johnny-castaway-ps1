@@ -32,7 +32,7 @@ If you paid for this, you were cheated. Open source and free.
   </li>
   <li>
     <a href="{{ '/docs/pause-menu/' | relative_url }}">Pause menu</a>
-    <p>State machine, compact sub-screens, Freeplay entry/exit, World Options, Sound Test, Accessibility, System, and the shared font atlas used by captions.</p>
+    <p>State machine, eleven sub-screens (Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed), Freeplay entry/exit, and the shared font atlas used by captions.</p>
   </li>
   <li>
     <a href="{{ '/docs/freeplay/' | relative_url }}">Freeplay mode</a>
