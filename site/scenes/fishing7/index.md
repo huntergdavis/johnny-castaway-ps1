@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: FISHING 7 — Octopus chokes Johnny
+title: FISHING 7 — Catches a starfish (right-side variant), throws it back
 ads: FISHING
 tag: 7
 slug: fishing7
 status: validated
-description: "FISHING.ADS scene 7: Octopus chokes Johnny. Validated on PS1 with random-position-safe scene playback."
+description: "FISHING.ADS scene 7: Johnny fishes off the right side of the island, hooks a starfish, and throws it back. Validated 2026-05-08."
 ---
 
 Validated on PS1 under the current scene bar. The high/low packs were
@@ -19,11 +19,9 @@ normal random island placement.
 - ADS dispatch: <code>FISHING.ADS scene 7</code>
 - Slug: <code>fishing7</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny pulls in fish, then an angry octopus that chokes him; Johnny climbs the palm tree to escape.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny casts a line off the right side of the island, hooks a starfish, and tosses it back into the water. A right-side variant of the FISHING 1 starfish gag. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "octopus chokes Johnny" caption-mapping guess was wrong.
 
 ### Validation Notes
 

@@ -300,7 +300,7 @@
   - host capture/test island position `x=-300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
+  notes: fishes-right-side-catches-starfish-throws-back (Johnny fishes off the right side of the island, hooks a starfish, and throws it back); visual + audible signoff after rebuilding high/low packs from a far-left full-frame foreground-only capture; far-left stress playback proved the recaptured scene-relative pixels are complete, so the old runtime island-position pin is removed
 - ads: FISHING
   tag: 8
   slug: fishing8
