@@ -75,9 +75,13 @@ routed scenes the original game had are validated under the
 review across every applicable variant. Current mainline work is
 bugfixing, performance, and feature polish; the
 [`v0.8.1` line]({{ '/lab/v081-mary4-freeze/' | relative_url }})
-keeps long randomized runs stable while the [`v0.8.0` performance
-baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }}) closes the last bit of speed gap, and most scenes already
-run at native rate. The two ledgers live separately: the
+keeps long randomized runs stable, the [`v0.8.0` performance
+baseline]({{ '/releases/#v080-ps1--complete-scene-performance-baseline' | relative_url }})
+promoted the headless optimization methodology, and the
+v0.8.2 + v0.8.3 follow-ons closed the VISITOR3 and WALKSTUF1
+outliers — the matrix now averages
+[`{{ site.release.perf_target_speed_pct }}%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+at native rate or better. The two ledgers live separately: the
 [scene ledger]({{ '/scenes/' | relative_url }}) tracks visual
 signoff and the
 [performance battle card]({{ '/perf/' | relative_url }}) tracks
