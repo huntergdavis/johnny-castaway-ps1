@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release with the
-WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline; all 63 scenes
-remain validated, and the public headless battle card is `+0.5576%` over
-target / `99.4669%` target speed).
+WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline plus the
+missing-scene timing refresh; all 63 scenes remain validated, and the public
+headless battle card is `+0.6248%` over target / `99.4019%` target speed).
 
 ## Overall
 
@@ -155,12 +155,14 @@ this page gives the narrative around it.
 Latest point release: `v0.8.3-ps1` is the WALKSTUF1 compact foreground
 performance release. All 63 scenes remain validated, all 126 high/low variants
 remain routed through headless perf, and the promoted
-`walkstuf1-compact-fgp3-v141` pass moves the public battle card to `+0.5576%`
-over target / `99.4669%` target speed while preserving WALKSTUF1 pack LBAs,
-the original `1535263` byte footprints, and the `215040` byte PS-EXE bucket.
+`walkstuf1-compact-fgp3-v141` pass remains the latest promoted runtime/data
+win, and the follow-up missing-scene refresh moves the public battle card to
+`+0.6248%` over target / `99.4019%` target speed while preserving WALKSTUF1
+pack LBAs, the original `1535263` byte footprints, and the `215040` byte
+PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.84`
-public over-target points and added about `12.37` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `16.78`
+public over-target points and added about `12.30` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain

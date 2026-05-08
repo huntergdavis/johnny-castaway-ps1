@@ -36,9 +36,7 @@ FG2 runtime for SUZY scenes.
 ## Notable runtime history
 
 `SUZY 1` high and low both appear on the
-[performance battle card]({{ '/perf/' | relative_url }}) as
-**metadata-only** rows — they don't reach a deterministic
-scene-end the way story scenes do, so they're excluded from the
-matrix's `target_speed` averages on purpose. The same applies to
-`SUZY 2`. Visual signoff (the FISHING 1 bar) holds; only the
-*timing* gate doesn't.
+[performance battle card]({{ '/perf/' | relative_url }}) as measured rows.
+They need a longer `12000`-frame matrix budget because the valid scene-end
+lands after the default `7200`-frame timing window. The current rows are close
+to target at `5763/5738` VBlanks for both tides.

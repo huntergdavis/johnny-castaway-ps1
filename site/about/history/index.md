@@ -378,7 +378,7 @@ component-completeness phases:
   [/scenes/]({{ '/scenes/' | relative_url }}).
 - Performance baseline:
   **{{ site.release.perf_target_speed_pct }}%** target speed across
-  the 120 timing-bearing scene/tide rows on the headless-perf
+  all 126 timing-bearing scene/tide rows on the headless-perf
   battle card. The retrospective is at
   [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 - Performance-baseline release: **`v0.8.0-ps1`** — promoted the
@@ -387,8 +387,9 @@ component-completeness phases:
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
 - Latest performance release: **`v0.8.3-ps1`** — promoted the
-  WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
-  bearing rows now average slightly under target at
+  WALKSTUF1 compact FGP3/v4 foreground packs; after the follow-up
+  missing-scene timing refresh, all 126 timing-bearing rows now average
+  slightly under target at
   `{{ site.release.perf_target_speed_pct }}%` target speed.
 - Previous performance release: **`v0.8.2-ps1`** — promoted the
   VISITOR3 guarded-read path and kept the 63-scene validation bar

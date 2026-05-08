@@ -48,11 +48,11 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">99 (82.5%) ≥ 99%</span>
-  <span class="spd-key spd-orange">18 (15.0%) ≥ 95%</span>
-  <span class="spd-key spd-yellow">3 (2.5%) ≥ 90%</span>
+  <span class="spd-key spd-green">103 (81.7%) ≥ 99%</span>
+  <span class="spd-key spd-orange">20 (15.9%) ≥ 95%</span>
+  <span class="spd-key spd-yellow">3 (2.4%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
-  out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
+  out of 126 timing-bearing rows. Every row now contributes to speed averages.
 </p>
 
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
@@ -63,15 +63,14 @@ pass. The three yellow rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
 (`91.0%` / `91.9%`) and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
 low (`94.3%`); the orange band (95–99%) holds `walkstuf1` high/low
-(`95.6%` / `95.8%`) plus the remaining wide-action, BUILDING6,
+(`95.6%` / `95.8%`), MARY3 high/low (`95.5%` / `95.6%`), plus the remaining wide-action, BUILDING6,
 BUILDING2, WALKSTUF1, and VISITOR3 rows still finishing scheduler-
 owned read timing and selective-preprocessing work.
 
-The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
-yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
-high/low (metadata-only; the SUZY mermaid scenes don't reach a
-deterministic [scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) so they're excluded from speed averages
-on purpose).
+All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
+needs a longer `12000`-frame matrix budget because its valid
+[scene-end]({{ '/docs/glossary/#scene-end' | relative_url }}) lands after the
+default `7200`-frame timing window.
 
 ## Rollup
 
@@ -82,15 +81,15 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes visually validated | `{{ validated_count }} / {{ total_count }}` (`100%`) |
 | Validated scenes | all 63 original scenes; see the [live ledger]({{ '/scenes/' | relative_url }}) for the source rows |
 | Scene/tide variants routed through headless perf | `126 / 126` (`100%`) |
-| Timing-bearing variants | `120 / 126` (`95.2%`) |
-| Scenes with at least one active-loop timed variant | `60 / 63` (`95.2%`) |
+| Timing-bearing variants | `126 / 126` (`100%`) |
+| Scenes with at least one active-loop timed variant | `63 / 63` (`100%`) |
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.6%` (`0.5576%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4669%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T06:36:32` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.6%` (`0.6248%` exact, public-capped) |
+| Timing-bearing average target speed | `99.4%` (`99.4019%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T09:40:12` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -126,7 +125,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `visitor3-tail-trim-stageguard-v127`,
+  refreshed rows use `missing-scenes-current-v001`,
+  `visitor3-tail-trim-stageguard-v127`,
   `graphics-composite-os-v111`,
   `building2-low-group365-381-v110`,
   `building2-high-group60-72-v109`,
@@ -1159,29 +1159,29 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-mary3-high"><code>mary3</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T17:45:25</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/0</td>
+      <td>2026-05-08T09:29:31</td>
+      <td>missing-scenes-current-v001</td>
+      <td>4.7%</td>
+      <td class="spd-orange">95.5%</td>
+      <td>2402/2295</td>
+      <td>690</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
+      <td>255</td>
+      <td></td>
     </tr>
     <tr id="perf-mary3-low">
       <td><a class="scene-perf-rowlink" href="#perf-mary3-low"><code>mary3</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T17:45:37</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/0</td>
+      <td>2026-05-08T09:29:31</td>
+      <td>missing-scenes-current-v001</td>
+      <td>4.6%</td>
+      <td class="spd-orange">95.6%</td>
+      <td>2402/2296</td>
+      <td>693</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>validated 2026-05-03 after x=80 full-frame foreground-only recapture and low-memory clean-snapshot relief; active-loop timing still needs refresh</td>
+      <td>255</td>
+      <td></td>
     </tr>
     <tr id="perf-mary4-high">
       <td><a class="scene-perf-rowlink" href="#perf-mary4-high"><code>mary4</code></a></td>
@@ -1691,57 +1691,57 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-suzy1-high"><code>suzy1</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T18:01:51</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/6</td>
+      <td>2026-05-08T09:40:12</td>
+      <td>missing-scenes-current-v001</td>
+      <td>0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>5763/5738</td>
+      <td>21</td>
+      <td>21</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+      <td></td>
     </tr>
     <tr id="perf-suzy1-low">
       <td><a class="scene-perf-rowlink" href="#perf-suzy1-low"><code>suzy1</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T18:01:58</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/6</td>
+      <td>2026-05-08T09:40:12</td>
+      <td>missing-scenes-current-v001</td>
+      <td>0.4%</td>
+      <td class="spd-green">99.6%</td>
+      <td>5763/5738</td>
+      <td>21</td>
+      <td>21</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+      <td></td>
     </tr>
     <tr id="perf-suzy2-high">
       <td><a class="scene-perf-rowlink" href="#perf-suzy2-high"><code>suzy2</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-04-29T18:02:29</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/6</td>
+      <td>2026-05-08T09:32:10</td>
+      <td>missing-scenes-current-v001</td>
+      <td>0.8%</td>
+      <td class="spd-green">99.2%</td>
+      <td>2655/2633</td>
+      <td>19</td>
+      <td>19</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+      <td></td>
     </tr>
     <tr id="perf-suzy2-low">
       <td><a class="scene-perf-rowlink" href="#perf-suzy2-low"><code>suzy2</code></a></td>
       <td>low</td>
       <td>measured</td>
-      <td>2026-04-29T18:02:35</td>
-      <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(no active loop)</td>
-      <td>(no active loop)</td>
-      <td>0/6</td>
+      <td>2026-05-08T09:32:10</td>
+      <td>missing-scenes-current-v001</td>
+      <td>0.8%</td>
+      <td class="spd-green">99.2%</td>
+      <td>2655/2633</td>
+      <td>19</td>
+      <td>19</td>
       <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>metadata-only; no active-loop timing; excluded from speed averages</td>
+      <td></td>
     </tr>
     <tr id="perf-visitor1-high">
       <td><a class="scene-perf-rowlink" href="#perf-visitor1-high"><code>visitor1</code></a></td>

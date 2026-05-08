@@ -12,6 +12,7 @@ ORDER="list"
 LIMIT=""
 SEED="${REGTEST_SEED:-1}"
 FRAMES="${PS1_PERF_FRAMES:-7200}"
+SUZY1_MIN_FRAMES="${PS1_PERF_SUZY1_FRAMES:-12000}"
 TIMEOUT="${PS1_PERF_TIMEOUT:-220}"
 OUTPUT_ROOT="${PS1_PERF_OUTPUT_DIR:-$PROJECT_ROOT/scratch/ps1-perf-iterate}"
 SHEET="$PROJECT_ROOT/docs/ps1/performance-scene-matrix.csv"
@@ -40,6 +41,9 @@ Options:
   --limit N                  Run only the first N generated cases.
   --seed N                   Seed for random order and boot strings (default: REGTEST_SEED or 1).
   --frames N                 Emulated frames per case (default: PS1_PERF_FRAMES or 7200).
+                             suzy1 cases are raised to PS1_PERF_SUZY1_FRAMES
+                             or 12000 when this value is lower, because that
+                             scene reaches JCPERF2 after the default budget.
   --timeout N                Wall-clock timeout per case (default: PS1_PERF_TIMEOUT or 220).
   --output DIR               Perf output root (default: scratch/ps1-perf-iterate).
   --sheet PATH               CSV sheet to refresh after a successful run.
@@ -125,6 +129,18 @@ if ! [[ "$CASE_RETRIES" =~ ^[0-9]+$ ]]; then
     echo "ERROR: --retries must be a non-negative integer." >&2
     exit 1
 fi
+if ! [[ "$FRAMES" =~ ^[0-9]+$ ]] || [ "$FRAMES" -lt 1 ]; then
+    echo "ERROR: --frames must be a positive integer." >&2
+    exit 1
+fi
+if ! [[ "$SUZY1_MIN_FRAMES" =~ ^[0-9]+$ ]] || [ "$SUZY1_MIN_FRAMES" -lt 1 ]; then
+    echo "ERROR: PS1_PERF_SUZY1_FRAMES must be a positive integer." >&2
+    exit 1
+fi
+if ! [[ "$TIMEOUT" =~ ^[0-9]+$ ]] || [ "$TIMEOUT" -lt 1 ]; then
+    echo "ERROR: --timeout must be a positive integer." >&2
+    exit 1
+fi
 if ! [[ "$JOBS" =~ ^[0-9]+$ ]] || [ "$JOBS" -lt 1 ]; then
     echo "ERROR: --jobs must be a positive integer." >&2
     exit 1
@@ -206,11 +222,38 @@ if [ "${#CASE_ARGS[@]}" -eq 0 ]; then
     exit 1
 fi
 
+case_frame_budget() {
+    local case_value="$1"
+    local label="${case_value%%::*}"
+    local frames="$FRAMES"
+
+    if [[ "$label" == suzy1-* ]] && [ "$frames" -lt "$SUZY1_MIN_FRAMES" ]; then
+        frames="$SUZY1_MIN_FRAMES"
+    fi
+    printf '%s\n' "$frames"
+}
+
+max_case_frame_budget() {
+    local max_frames="$FRAMES"
+    local case_frames
+
+    for ((i = 0; i < ${#CASE_ARGS[@]}; i += 2)); do
+        case_frames="$(case_frame_budget "${CASE_ARGS[$((i + 1))]}")"
+        if [ "$case_frames" -gt "$max_frames" ]; then
+            max_frames="$case_frames"
+        fi
+    done
+    printf '%s\n' "$max_frames"
+}
+
 run_case_with_retries() {
     local case_flag="$1"
     local case_value="$2"
     local case_status=1
+    local case_frames
     local attempt
+
+    case_frames="$(case_frame_budget "$case_value")"
 
     for ((attempt = 0; attempt <= CASE_RETRIES; attempt += 1)); do
         if [ "$attempt" -gt 0 ]; then
@@ -218,7 +261,7 @@ run_case_with_retries() {
         fi
         "$SCRIPT_DIR/ps1-perf-iterate.sh" \
             "$case_flag" "$case_value" \
-            --frames "$FRAMES" \
+            --frames "$case_frames" \
             --timeout "$TIMEOUT" \
             --output "$OUTPUT_ROOT" \
             "${PERF_ARGS[@]}"
@@ -295,13 +338,17 @@ elif [ "$CONTINUE_ON_FAIL" -eq 1 ]; then
     fi
 else
     PERF_STATUS=1
+    BATCH_FRAMES="$(max_case_frame_budget)"
+    if [ "$BATCH_FRAMES" -gt "$FRAMES" ]; then
+        echo "Using --frames $BATCH_FRAMES for this batch because at least one case needs the longer scene budget." >&2
+    fi
     for ((attempt = 0; attempt <= CASE_RETRIES; attempt += 1)); do
         if [ "$attempt" -gt 0 ]; then
             echo "WARN: retrying full case batch attempt $((attempt + 1))/$((CASE_RETRIES + 1))" >&2
         fi
         "$SCRIPT_DIR/ps1-perf-iterate.sh" \
             "${CASE_ARGS[@]}" \
-            --frames "$FRAMES" \
+            --frames "$BATCH_FRAMES" \
             --timeout "$TIMEOUT" \
             --output "$OUTPUT_ROOT" \
             "${PERF_ARGS[@]}"

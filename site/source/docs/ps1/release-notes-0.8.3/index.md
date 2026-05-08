@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-v0.8.3-ps1 is a performance point release after v0.8.2-ps1. All 63 scenes remain validated, all 126 high/low scene variants remain routed through the headless perf matrix, and the current 120 timing-bearing rows average +0.5576% public over target / 99.4669% public target speed. The raw signed optimization matrix remains -0.2497% over target / 100.2899% target speed.
+v0.8.3-ps1 is a performance point release after v0.8.2-ps1. All 63 scenes remain validated, all 126 high/low scene variants remain routed through the headless perf matrix, and all 126 timing-bearing rows now average +0.6248% public over target / 99.4019% public target speed after the missing-scene timing refresh. The raw signed optimization matrix is -0.1436% over target / 100.1857% target speed.
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/release-notes-0.8.3.md` |
-| Lines | 62 |
-| Approx. words | 362 |
+| Lines | 63 |
+| Approx. words | 367 |
 | Code fences | 0 |
 
 ## Outline

@@ -356,7 +356,7 @@ across every applicable variant — the daily-loop story is in
 The
 [headless-perf battle card]({{ '/perf/' | relative_url }}) averages
 **{{ site.release.perf_target_speed_pct }}% target speed** across
-the 120 timing-bearing scene/tide rows; the post-validation
+all 126 timing-bearing scene/tide rows; the post-validation
 optimization loop that closed the gap from `87.1%` is documented
 at [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 The remaining gap lives in `VISITOR 3` (high and low) and a yellow

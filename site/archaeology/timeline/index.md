@@ -155,7 +155,8 @@ per-commit matrix never reached. **`v0.8.2-ps1`** and
 **`v0.8.3-ps1`** (**2026-05-07** / **2026-05-08**) closed the
 VISITOR3 and WALKSTUF1 outliers — the matrix mean now sits at
 `{{ site.release.perf_target_speed_pct }}%` target speed,
-slightly under target across the 120 timing-bearing rows.
+slightly under target across all 126 timing-bearing rows after the
+missing-scene timing refresh.
 The lab essays on each arc are the deep dives; this entry is
 the chronological anchor.
 </section>

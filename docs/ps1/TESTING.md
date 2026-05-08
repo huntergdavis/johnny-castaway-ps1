@@ -72,14 +72,14 @@ Current battle-card rollup as of 2026-05-08:
 | Metric | Value |
 |---|---:|
 | Scene/tide variants routed through headless perf | `126 / 126` |
-| Timing-bearing variants | `120 / 126` |
-| Scenes with at least one active-loop timed variant | `60 / 63` |
+| Timing-bearing variants | `126 / 126` |
+| Scenes with at least one active-loop timed variant | `63 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.6%` (`0.5576%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4669%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T06:36:32` |
-| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| Timing-bearing average over target | `+0.6%` (`0.6248%` exact, public-capped) |
+| Timing-bearing average target speed | `99.4%` (`99.4019%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T09:40:12` |
+| Stats version | mixed; newest optimized/code-headroom rows use `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=2` |
 
 Public reporting caps faster-than-target rows at `0.0%` over target /
@@ -157,10 +157,9 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v61-fishing3low-group163-175`,
 `compact-fgp3-v60-visitor3high-group230-242`,
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
-`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. Four routed rows (`suzy1`, `suzy2`,
-high/low) complete without active-loop timing and are excluded from speed
-averages even though the route/gate itself passes; `mary3` is visually
-validated but still needs a perf-matrix refresh.
+`compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`. All 126 routed rows now carry active-loop timing. `suzy1` needs the longer
+`12000`-frame matrix budget because its valid scene end lands after the default
+`7200`-frame window.
 
 ## Secondary (historical): headless regtest harness
 

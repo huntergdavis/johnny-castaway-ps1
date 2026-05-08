@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3922 words
+          ~15 min read · 3919 words
         </p>
 
       <hr class="rule" />
@@ -432,15 +432,16 @@ sound_late = 0   cd_fail = 0
 </code></pre></div></div>
 
 <p>That is <strong>0.0% public over target</strong>, or <strong><a href="../glossary/#target-speed">100.0% public target speed</a></strong>. The raw signed
-CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 120 timing-bearing battle-card rows,
-the public average is <strong>+0.6% over target / 99.5% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.5576%</code>
-exact public over target / <code class="language-plaintext highlighter-rouge">99.4669%</code> exact public target speed); the raw
-signed optimization matrix remains <code class="language-plaintext highlighter-rouge">-0.2497%</code> / <code class="language-plaintext highlighter-rouge">100.2899%</code>.</p>
+CSV row is <code class="language-plaintext highlighter-rouge">-0.6%</code> / <code class="language-plaintext highlighter-rouge">100.6%</code>. Across the 126 timing-bearing battle-card rows,
+the public average is <strong>+0.6% over target / 99.4% target speed</strong> (<code class="language-plaintext highlighter-rouge">0.6248%</code>
+exact public over target / <code class="language-plaintext highlighter-rouge">99.4019%</code> exact public target speed); the raw
+signed optimization matrix is <code class="language-plaintext highlighter-rouge">-0.1436%</code> / <code class="language-plaintext highlighter-rouge">100.1857%</code>.</p>
 
 <h2 id="scene-battle-card">Scene Battle Card</h2>
 
 <p>As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+<code class="language-plaintext highlighter-rouge">missing-scenes-current-v001</code>,
 <code class="language-plaintext highlighter-rouge">visitor3-tail-trim-stageguard-v127</code>,
 <code class="language-plaintext highlighter-rouge">graphics-composite-os-v111</code>,
 <code class="language-plaintext highlighter-rouge">building2-low-group365-381-v110</code>,
@@ -509,11 +510,10 @@ perf measurements. The latest updated rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v59-visitor3high-group72-84</code>, <code class="language-plaintext highlighter-rouge">indexed8-tile-local-compose-v1</code>,
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v58-activity9high-window20-table</code>, <code class="language-plaintext highlighter-rouge">compact-fgp3-v57-policy-table-refactor</code>, and <code class="language-plaintext highlighter-rouge">compact-fgp3-v49-walkstuf2-auto-prime</code> through <code class="language-plaintext highlighter-rouge">compact-fgp3-v29-smallprime</code>, and the full-matrix baseline rows are stamped
 <code class="language-plaintext highlighter-rouge">compact-fgp3-v2-fullmatrix</code>. 63 of 63 scenes have at least one routed
-variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
-carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code> high/low complete as
-metadata-only routes and are excluded from speed averages. <code class="language-plaintext highlighter-rouge">mary3</code> is visually
-validated but still needs a perf-matrix refresh. The latest matrix
-run is <code class="language-plaintext highlighter-rouge">2026-05-08T06:36:32</code>; per-row freshness and stats version are shown on
+variant, and 63 scenes have both high- and low-tide variants routed. All 126
+rows now carry active-loop timing; <code class="language-plaintext highlighter-rouge">suzy1</code> needs the longer <code class="language-plaintext highlighter-rouge">12000</code>-frame
+matrix budget because its valid scene-end lands after the default <code class="language-plaintext highlighter-rouge">7200</code>-frame
+window. The latest matrix run is <code class="language-plaintext highlighter-rouge">2026-05-08T09:40:12</code>; per-row freshness and stats version are shown on
 the <a href="../../perf/">battle card</a>. The values below are
 public-capped <code class="language-plaintext highlighter-rouge">over target / target speed (loop_vb/target_vb)</code>, with <code class="language-plaintext highlighter-rouge">blk</code>
 and <code class="language-plaintext highlighter-rouge">due</code> called out when nonzero. Faster-than-target rows display
@@ -959,10 +959,10 @@ still restores 251 KB and uploads 8.5 MB; larger scenes carry more upload
 pressure.</li>
   <li><strong>Specialized indexed8 and PAL4 compositors.</strong> The pack-format wins reduce
 bytes, but dense scenes still pay per-span/per-pixel runtime costs.</li>
-  <li><strong>Remaining metadata-only scene diagnosis.</strong> <code class="language-plaintext highlighter-rouge">suzy1</code> and <code class="language-plaintext highlighter-rouge">suzy2</code>
-still complete without active-loop timing, so their packs are not yet part
-of the speed average. <code class="language-plaintext highlighter-rouge">mary3</code> moved out of that class visually and needs a
-fresh matrix row.</li>
+  <li><strong>MARY3 clean-pressure data-shape work.</strong> MARY3 high/low are now measured
+rows and sit behind VISITOR3 and BUILDING2 low in the outlier list. Raw
+prefetch preservation is not strict-safe yet because it trades visible
+blocking for hidden refill overrun.</li>
 </ol>
 
 <p>The author considers the current build comfortable for the validated scenes,
@@ -978,7 +978,7 @@ pressure.</p>
   <li><strong>Frame dropping.</strong> Violates pixel-perfect playback. The acceptance
 bar requires every captured entry to render on its captured beat.</li>
   <li><strong>Timing compression before throughput work.</strong> The timing-bearing matrix
-public average is now +0.6% over target / 99.5% target speed, with several
+public average is now +0.6% over target / 99.4% target speed, with several
 worse CD-bound outliers; compressing the timing files would expose the same
 throughput bottleneck without fixing it.</li>
   <li><strong>Reintroducing FG1 / ADS / TTM runtime paths.</strong> Those are retired

@@ -306,15 +306,16 @@ sound_late = 0   cd_fail = 0
 ```
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
-CSV row is `-0.6%` / `100.6%`. Across the 120 timing-bearing battle-card rows,
-the public average is **+0.6% over target / 99.5% target speed** (`0.5576%`
-exact public over target / `99.4669%` exact public target speed); the raw
-signed optimization matrix remains `-0.2497%` / `100.2899%`.
+CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
+the public average is **+0.6% over target / 99.4% target speed** (`0.6248%`
+exact public over target / `99.4019%` exact public target speed); the raw
+signed optimization matrix is `-0.1436%` / `100.1857%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`missing-scenes-current-v001`,
 `visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
@@ -383,11 +384,10 @@ perf measurements. The latest updated rows are stamped
 `compact-fgp3-v59-visitor3high-group72-84`, `indexed8-tile-local-compose-v1`,
 `compact-fgp3-v58-activity9high-window20-table`, `compact-fgp3-v57-policy-table-refactor`, and `compact-fgp3-v49-walkstuf2-auto-prime` through `compact-fgp3-v29-smallprime`, and the full-matrix baseline rows are stamped
 `compact-fgp3-v2-fullmatrix`. 63 of 63 scenes have at least one routed
-variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
-carry active-loop timing; `suzy1` and `suzy2` high/low complete as
-metadata-only routes and are excluded from speed averages. `mary3` is visually
-validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T06:36:32`; per-row freshness and stats version are shown on
+variant, and 63 scenes have both high- and low-tide variants routed. All 126
+rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
+matrix budget because its valid scene-end lands after the default `7200`-frame
+window. The latest matrix run is `2026-05-08T09:40:12`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -833,10 +833,10 @@ Next plausible wins, in priority order:
    pressure.
 4. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
    bytes, but dense scenes still pay per-span/per-pixel runtime costs.
-5. **Remaining metadata-only scene diagnosis.** `suzy1` and `suzy2`
-   still complete without active-loop timing, so their packs are not yet part
-   of the speed average. `mary3` moved out of that class visually and needs a
-   fresh matrix row.
+5. **MARY3 clean-pressure data-shape work.** MARY3 high/low are now measured
+   rows and sit behind VISITOR3 and BUILDING2 low in the outlier list. Raw
+   prefetch preservation is not strict-safe yet because it trades visible
+   blocking for hidden refill overrun.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
@@ -850,7 +850,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.6% over target / 99.5% target speed, with several
+  public average is now +0.6% over target / 99.4% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired

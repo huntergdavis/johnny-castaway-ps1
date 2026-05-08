@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.6% public over target / 99.5% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.6% public over target / 99.4% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,10 +23,11 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.5576%` over target / `99.4669%` target speed across 120 timing-bearing
-rows; the raw signed optimization matrix remains `-0.2497%` / `100.2899%`.
-That is about `16.84` public over-target points removed and `12.37` public
-target-speed points added since the compact full-matrix baseline.
+`+0.6248%` over target / `99.4019%` target speed across all 126
+timing-bearing rows; the raw signed optimization matrix is `-0.1436%` /
+`100.1857%`. That is about `16.78` public over-target points removed and
+`12.30` public target-speed points added since the compact full-matrix
+baseline.
 
 The latest VISITOR3 follow-up, `visitor3-fallthrough5-v142`, is closed as a
 non-promoting exact-flat threshold probe. The accepted fallthrough guard stays

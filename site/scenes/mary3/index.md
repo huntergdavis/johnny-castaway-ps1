@@ -43,11 +43,8 @@ fragment memory.
 ## Notable runtime history
 
 `MARY 3` high and low both appear on the
-[performance battle card]({{ '/perf/' | relative_url }}) without
-[`target_speed`]({{ '/docs/glossary/#target-vb' | relative_url }})
-values — they're two of the 6 untimed rows. The reason is
-mechanical, not structural: the active-loop timing pre-dates the
-current pack and hasn't been re-measured against the v0.7.2+
-prefetch-relief baseline yet. Visual signoff (the FISHING 1 bar)
-holds; the row will land in the green band on the next perf-matrix
-refresh that touches MARY 3 specifically.
+[performance battle card]({{ '/perf/' | relative_url }}) as measured rows.
+The current refresh confirms the scene is not a playback bug, but it is a
+real perf outlier: high is `2402/2295` VBlanks and low is `2402/2296`, with
+heavy visible CD blocking from the clean-pressure path. Visual signoff (the
+FISHING 1 bar) still holds.
