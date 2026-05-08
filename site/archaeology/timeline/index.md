@@ -151,8 +151,13 @@ that closed the headless matrix gap from `+17.4%` over target /
 `99.5%` target speed at **`v0.8.0-ps1`**, plus the
 [stability follow-on]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 in **`v0.8.1-ps1`** that fixed a clean-rect pressure freeze the
-per-commit matrix never reached. The lab essays on each arc are
-the deep dives; this entry is the chronological anchor.
+per-commit matrix never reached. **`v0.8.2-ps1`** and
+**`v0.8.3-ps1`** (**2026-05-07** / **2026-05-08**) closed the
+VISITOR3 and WALKSTUF1 outliers — the matrix mean now sits at
+`{{ site.release.perf_target_speed_pct }}%` target speed,
+slightly under target across the 120 timing-bearing rows.
+The lab essays on each arc are the deep dives; this entry is
+the chronological anchor.
 </section>
 
 ---
