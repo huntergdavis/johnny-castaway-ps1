@@ -106,7 +106,7 @@ def update_scene_page(slug, title, description, body):
     # "Caption mapping confidence" line so we replace the whole guessy
     # block, since the correction asserts the truth.
     pat = re.compile(
-        r"## What this scene (probably )?is\s*\n\n.*?(?=\n## |\Z)",
+        r"## What this scene (probably )?is\s*\n\n.*?(?=\n#{2,} |\Z)",
         re.S,
     )
     new_section = f"## What this scene is\n\n{body}\n\n"
@@ -118,8 +118,14 @@ def update_scene_page(slug, title, description, body):
 
 def update_scene_status(slug, short_desc):
     text = SCENE_STATUS.read_text()
-    # Find the row by `| slug |` token — the slug column is the third pipe-cell.
-    pat = re.compile(rf"^(\| [A-Z]+ \| \d+ \| {re.escape(slug)} \| .*?\| )(.*?)( \|)$", re.M)
+    # Find the row by `| slug |` token. The notes column is the 8th cell —
+    # after slug we must skip 4 cells (done, sfx, variants, last_verified)
+    # before reaching notes. Use greedy `[^|]+` so each skipped cell consumes
+    # its full content (otherwise non-greedy lands the prepend in `done`).
+    pat = re.compile(
+        rf"^(\| [A-Z]+ \| \d+ \| {re.escape(slug)} \| (?:[^|]+\| ){{4}})(.*?)( \|)$",
+        re.M,
+    )
     m = pat.search(text)
     if not m:
         raise SystemExit(f"no scene-status row for {slug}")
