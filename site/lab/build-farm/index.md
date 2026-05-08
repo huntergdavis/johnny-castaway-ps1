@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The 24/7 Build Farm
-eyebrow: Lab . Infrastructure
+eyebrow: Lab · Infrastructure
 subtitle: Docker builds, headless DuckStation, and the boring machinery that lets one person test a PS1 port continuously.
 description: "A short lab note on the Johnny Castaway PS1 build farm: Dockerized toolchains, headless emulator runs, performance logs, and why the project treats regression testing as infrastructure."
 date: 2026-04-29

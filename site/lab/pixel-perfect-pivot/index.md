@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The pivot that almost did not happen
-eyebrow: Lab . Retrospective
+eyebrow: Lab · Retrospective
 subtitle: The project could have shipped at "close enough." That would have been the wrong project.
 description: A retrospective on the Johnny Castaway PS1 pivot from approximate SDL-to-PS1 porting toward host-captured, pixel-perfect foreground replay.
 date: 2026-04-26

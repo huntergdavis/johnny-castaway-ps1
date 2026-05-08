@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Building a fan port in public
-eyebrow: Lab . Legal and social shape
+eyebrow: Lab · Legal and social shape
 subtitle: GPL code, Sierra assets, original creators, and the Credits screen that says the quiet part plainly.
 description: "A practical essay on the legal and social posture of the Johnny Castaway PS1 fan port: GPL code, original Sierra assets, release artifacts, and public disclaimers."
 date: 2026-04-26

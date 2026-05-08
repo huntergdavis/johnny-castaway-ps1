@@ -1,7 +1,7 @@
 ---
 layout: page
 title: The LLM pass
-eyebrow: Lab . Advanced development techniques
+eyebrow: Lab · Advanced development techniques
 subtitle: How I use AI sub-agents on a one-person PS1 port without pretending they are magic.
 description: "A methodology essay on the LLM-assisted development workflow behind Johnny Castaway PS1: parallel agents, review loops, hallucination control, and where the human stays in charge."
 date: 2026-04-26
