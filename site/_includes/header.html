@@ -8,11 +8,10 @@
       <ul>
         <li><a href="{{ '/'             | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Home</a></li>
         <li><a href="{{ '/play/'        | relative_url }}"{% if page.url contains '/play/'        %} aria-current="page"{% endif %}>Play</a></li>
-        <li><a href="{{ '/help/'        | relative_url }}"{% if page.url contains '/help/'        %} aria-current="page"{% endif %}>Help</a></li>
         <li><a href="{{ '/about/'       | relative_url }}"{% if page.url contains '/about/'       %} aria-current="page"{% endif %}>About</a></li>
         <li><a href="{{ '/scenes/'      | relative_url }}"{% if page.url contains '/scenes/'      %} aria-current="page"{% endif %}>Scenes</a></li>
+        <li><a href="{{ '/perf/'        | relative_url }}"{% if page.url contains '/perf/'        %} aria-current="page"{% endif %}>Perf</a></li>
         <li><a href="{{ '/devlog/'      | relative_url }}"{% if page.url contains '/devlog/'      %} aria-current="page"{% endif %}>Devlog</a></li>
-        <li><a href="{{ '/archaeology/' | relative_url }}"{% if page.url contains '/archaeology/' %} aria-current="page"{% endif %}>Archaeology</a></li>
         <li><a href="{{ '/lab/'         | relative_url }}"{% if page.url contains '/lab/'         %} aria-current="page"{% endif %}>Lab</a></li>
         <li><a href="{{ '/hack/'        | relative_url }}"{% if page.url contains '/hack/'        %} aria-current="page"{% endif %}>Hack</a></li>
         <li><a href="{{ '/docs/'        | relative_url }}"{% if page.url contains '/docs/'        %} aria-current="page"{% endif %}>Docs</a></li>
