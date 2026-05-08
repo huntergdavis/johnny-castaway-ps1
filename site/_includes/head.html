@@ -58,7 +58,37 @@
 
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
-  <meta property="og:type"         content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+  {%- comment -%}
+    og:type — article for dated long-form content, website for
+    everything else. Devlog posts have layout=post; lab essays use
+    layout=page but are dated retrospectives that should advertise
+    as articles for social-sharing consumers (LinkedIn, Slack, X,
+    Facebook) that surface published dates and authorship on
+    article-typed cards. The /lab/ index itself has no `date:` and
+    correctly falls through to website.
+  {%- endcomment -%}
+  {%- assign og_lab_prefix = page.url | slice: 0, 5 -%}
+  {%- assign og_is_lab_essay = false -%}
+  {%- if og_lab_prefix == '/lab/' and page.url != '/lab/' and page.date -%}
+    {%- assign og_is_lab_essay = true -%}
+  {%- endif -%}
+  {%- assign og_is_article = false -%}
+  {%- if page.layout == 'post' or og_is_lab_essay -%}
+    {%- assign og_is_article = true -%}
+  {%- endif -%}
+  <meta property="og:type"         content="{% if og_is_article %}article{% else %}website{% endif %}" />
+  {%- if og_is_article %}
+  {%- comment -%}
+    OG Article extension — gives LinkedIn / Facebook / Slack the
+    structured fields they render in dated-article cards: ISO
+    published timestamp, author name, content section. site.author
+    is the project's primary attribution. article:section is "Lab"
+    or "Devlog" so consumers can group by category.
+  {%- endcomment -%}
+  <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
+  <meta property="article:author"         content="{{ site.author | default: 'Hunter Davis' }}" />
+  <meta property="article:section"        content="{% if og_is_lab_essay %}Lab{% else %}Devlog{% endif %}" />
+  {%- endif %}
   <meta property="og:url"          content="{{ og_root }}{{ page.url }}" />
   <meta property="og:image"        content="{{ og_image }}" />
   <meta property="og:image:alt"    content="{{ og_image_alt }}" />
