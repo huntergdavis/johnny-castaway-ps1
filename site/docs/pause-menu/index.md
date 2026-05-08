@@ -142,7 +142,7 @@ System keeps the less frequent operations away from the high-use screens:
 
 | Page | Purpose |
 |---|---|
-| Save Settings | Writes supported options to memcard. |
+| Save Settings | Writes supported options to [memcard]({{ '/docs/glossary/#memcard' | relative_url }}). |
 | Reset Current Scene | Restart the current story loop. |
 | Next Scene | Ask the screensaver loop to pick another scene. |
 | Set RNG Seed | Pin the random sequence for repeatable testing. |
