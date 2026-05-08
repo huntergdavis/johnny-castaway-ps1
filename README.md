@@ -150,6 +150,10 @@ The VISITOR3 `97..109` setup-owned segment retry is closed as well: a dedicated
 flat against the current baseline (`1139/1024` and `1140/1024`), so that
 read-plan candidate now requires generated scheduler ownership or a payload
 shape change rather than another local setup/grouped-read variant.
+A data-only sector-alignment probe is also closed: spending `38957` bytes of
+pack slack to align the large late payloads cut modeled uncovered sectors
+`306 -> 294`, but shifted the measured CD phase and regressed VISITOR3 high/low
+to `1143/1024` and `1151/1024`.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -356,7 +360,9 @@ without owning the hidden refill schedule. The pack-side empty-hold recast also
 finds `0` eligible zero-visual-work entries in the current VISITOR3 high/low
 payloads, closing that safer no-op variant. The setup-owned `97..109` segment
 retry is exact-flat too, closing the remaining local version of that read-plan
-candidate.
+candidate. The large-payload sector-alignment probe then proves that reducing
+modeled sectors by padding is not sufficient: it regresses VISITOR3 high/low
+cadence despite fixed file size and LBAs.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

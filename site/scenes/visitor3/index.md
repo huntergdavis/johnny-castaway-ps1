@@ -62,4 +62,5 @@ setup-prime variants that didn't beat the canary. The current `97..109`
 read-plan cluster is closed for local runtime changes too: both grouped-read
 and setup-owned persistent-segment probes measured exact-flat, so the next
 useful lane needs generated scheduler ownership or a real payload/data-shape
-change.
+change. A data-only sector-alignment probe also failed: it reduced modeled
+uncovered sectors but shifted CD phase and regressed both tide variants.
