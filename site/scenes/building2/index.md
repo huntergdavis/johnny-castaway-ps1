@@ -44,9 +44,10 @@ to `validated` and a row turns green in the
 
 ## Notable runtime history
 
-`BUILDING 2` sits in the
-[perf battle card]({{ '/perf/' | relative_url }})'s yellow cluster
-— close to but not yet at native [target speed]({{ '/docs/glossary/#target-speed' | relative_url }}). Its
+`BUILDING 2` straddles the
+[perf battle card]({{ '/perf/' | relative_url }})'s orange and yellow
+bands — high tide at orange (`97.6%`) and low tide at yellow
+(`94.3%`), close to but not yet at native [target speed]({{ '/docs/glossary/#target-speed' | relative_url }}). Its
 [clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})-heavy
 Lilliputian-sandcastle frames are explicitly named in the
 [post-validation perf retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
@@ -56,4 +57,4 @@ and [stream-window]({{ '/docs/glossary/#stream-window' | relative_url }})
 work. The full-host sandcastle injection that the validated pack
 relies on (red flag + planes originating from the correct base)
 also forces a larger residual cleanup table, which is the underlying
-reason the row hasn't graduated from yellow to green yet.
+reason the rows haven't graduated to green yet.
