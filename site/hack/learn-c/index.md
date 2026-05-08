@@ -54,3 +54,31 @@ Alignment is not a courtesy.
 For the long-form version of the tool-and-habit side, read
 [Regression as a lifestyle]({{ '/lab/regression-as-lifestyle/' | relative_url }})
 and [Hallucination engineering]({{ '/lab/hallucination-engineering/' | relative_url }}).
+
+## Related pages
+
+- [Hack: start here]({{ '/hack/start-here/' | relative_url }})
+  — first-day flow if you haven't already done the build and
+  boot loop.
+- [Hack: visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  — the "make state visible" habit applied to PS1 specifically:
+  screenshot scripts, overlays, frame diffs.
+- [Hack: memory wars]({{ '/hack/memory-wars/' | relative_url }})
+  — the ownership question above gets sharp on a 2 MB machine;
+  this is where C habits meet hardware.
+- [Hack: performance loop]({{ '/hack/performance-loop/' | relative_url }})
+  — the headless iteration the `printf`-as-tool-with-blast-radius
+  habit feeds into.
+- [Hack: port to a new platform]({{ '/hack/port-to-a-new-platform/' | relative_url }})
+  — the C habits above are the part of this project that
+  travels; this page covers what doesn't.
+- [API mapping (SDL2 → PSn00bSDK)]({{ '/docs/api/' | relative_url }})
+  — the canonical seam reference the Boundaries section above
+  points readers at.
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) —
+  the 2 MB / 1 MB / 512 KB envelope every C decision in this
+  codebase ultimately answers to.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for project-specific terms (`FG2 pack`,
+  `host build`, `dirty-rect`, `FntFlush`) that show up in any
+  reading of the source.
