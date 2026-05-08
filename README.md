@@ -154,6 +154,12 @@ A data-only sector-alignment probe is also closed: spending `38957` bytes of
 pack slack to align the large late payloads cut modeled uncovered sectors
 `306 -> 294`, but shifted the measured CD phase and regressed VISITOR3 high/low
 to `1143/1024` and `1151/1024`.
+The duplicate-payload table-reuse lane is closed too: phase-preserving dedupe
+removed `5006` active bytes and one loop read but regressed high `1139 -> 1140`
+and low `1140 -> 1163`, while full dedupe removed `144068` active bytes yet
+regressed high/low to `1158/1024` and `1165/1024`. VISITOR3 payload reuse now
+needs a scheduler-costed pack planner rather than another layout-neutral offset
+rewrite.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -373,7 +379,10 @@ but it regresses VISITOR3 high (`1139 -> 1148`) while improving low tide
 (`1140 -> 1135`), so that C-side packed-draw route is also rejected. A
 zero-runtime-code entry-origin shift gate saves `0` payload bytes on the current
 VISITOR3 high/low FGP3/v4 packs, so that coordinate recentering lane is closed
-before emulator time.
+before emulator time. The follow-up duplicate-payload table-reuse probe is also
+rejected: exact duplicate bodies exist, but reusing them shifts enough payload
+phase to regress VISITOR3 even with fixed pack size, fixed LBAs, fixed PS-EXE
+bucket, and one fewer loop read.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target
