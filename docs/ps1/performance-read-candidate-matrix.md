@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/visitor3-high-offscreen-drawclip-v105-readplans`
+- Source artifact root: `scratch/ps1-perf-iterate/visitor3-low-offscreen-exitright-v106-readplans`
 - Candidate rows: `73`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -47,9 +47,9 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 25 | `activity9` | `low` | 2085/2058 | 29 | `245..257` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 26 | `activity9` | `low` | 2085/2058 | 29 | `251..263` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 27 | `activity9` | `low` | 2085/2058 | 29 | `279..291` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 28 | `visitor3` | `low` | 1140/1024 | 194 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 29 | `visitor3` | `low` | 1140/1024 | 194 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 30 | `visitor3` | `low` | 1140/1024 | 194 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 28 | `visitor3` | `low` | 1138/1024 | 191 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 29 | `visitor3` | `low` | 1138/1024 | 191 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 30 | `visitor3` | `low` | 1138/1024 | 191 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
 | 31 | `visitor3` | `high` | 1137/1024 | 190 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
 | 32 | `visitor3` | `high` | 1137/1024 | 190 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
 | 33 | `visitor3` | `high` | 1137/1024 | 190 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |

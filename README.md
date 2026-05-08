@@ -88,8 +88,8 @@ Load `jcreborn.cue` in [DuckStation](https://www.duckstation.org/) (or any PS1 e
 | Per-scene ledger | [scene-status.md](docs/ps1/scene-status.md) · [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/) (rendered) |
 | Narrative status | [current-status.md](docs/ps1/current-status.md) · [/about/status/](https://hunterdavis.com/johnny-castaway-ps1/about/status/) (rendered) |
 | Headless perf battle card | **126 / 126** scene/tide variants routed; **120 / 126** have active-loop timing; **63 / 63** scenes have both tide variants measured; timing-bearing average is **0.0% over target / 100.1% target speed** |
-| Latest perf matrix run | **`2026-05-08T00:01:36`** (`last_run_at` in the CSV) |
-| Perf stats version | Newest optimized/code-headroom rows use `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
+| Latest perf matrix run | **`2026-05-08T00:29:28`** (`last_run_at` in the CSV) |
+| Perf stats version | Newest optimized/code-headroom rows use `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-high-primecap144-v089`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `walkstuf1-low-primecap160-v081`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; the full row-level version history is in `performance-scene-matrix.csv` |
 | Perf source of truth | [performance-scene-matrix.csv](docs/ps1/performance-scene-matrix.csv) · [performance-experiment-log.md](docs/ps1/performance-experiment-log.md) · [performance-read-candidate-matrix.md](docs/ps1/performance-read-candidate-matrix.md) · [performance-preprocess-opportunities.md](docs/ps1/performance-preprocess-opportunities.md) · [performance-o2-audit.md](docs/ps1/performance-o2-audit.md) · [/perf/](https://hunterdavis.com/johnny-castaway-ps1/perf/) (rendered battle card) |
 | Primary acceptance gate | human visual + audible signoff |
 
@@ -118,16 +118,17 @@ optimization loop has removed about **17.42 percentage points** of over-target
 gap and added about **13.00 target-speed points**.
 
 Current performance work is focused on VISITOR3 and the remaining top
-outliers. The current promoted pack-only pass clips high-tide VISITOR3
-offscreen draw spans while preserving entry sizes, pack LBA, and the
-`215040` byte PS-EXE bucket. VISITOR3 high improves `1139/1024 -> 1137/1024`,
-overrun `115 -> 113`, and blocking `191 -> 190`; VISITOR3 low stays
-exact-flat at `1140/1024`. The current public rollup is `-0.0249%` over
-target / `100.0985%` target speed. BUILDING4 high/low remain `2844/2816` and
+outliers. The current promoted pack-only pass clips VISITOR3 high offscreen
+draw spans and low-tide exit-right draw spans while preserving entry sizes,
+pack LBAs, and the `215040` byte PS-EXE bucket. VISITOR3 high improves
+`1139/1024 -> 1137/1024`, overrun `115 -> 113`, and blocking `191 -> 190`;
+VISITOR3 low improves `1140/1024 -> 1138/1024`, overrun `116 -> 114`, and
+blocking `194 -> 191`. The current public rollup is `-0.0266%` over target /
+`100.0998%` target speed. BUILDING4 high/low remain `2844/2816` and
 `2855/2815`; BUILDING2 high/low remain `1394/1301` and `1385/1303`; ACTIVITY9
 low remains `2085/2058`; and FISHING1 high remains under target at
-`1068/1074`. The next true rows are VISITOR3 low/scheduler-owned data-shape
-work, WALKSTUF1 low/high, BUILDING2, and BUILDING6.
+`1068/1074`. The next true rows are remaining VISITOR3
+scheduler/data-shape work, WALKSTUF1 low/high, BUILDING2, and BUILDING6.
 The current VISITOR3 default selective upload-ready plan is closed as a
 same-footprint append: it saves a modeled `6114568` upload bytes, but its
 `2462072` bytes of payload plus rect metadata exceed the current `814847` bytes
@@ -160,14 +161,14 @@ and low `1140 -> 1163`, while full dedupe removed `144068` active bytes yet
 regressed high/low to `1158/1024` and `1165/1024`. VISITOR3 payload reuse now
 needs a scheduler-costed pack planner rather than another layout-neutral offset
 rewrite.
-The broad offscreen-clip lane is closed, but the high-only subset is promoted.
-Clipping VISITOR3 compact residuals to the visible screen can reduce logical
-payload `737600 -> 655911` per tide, but the size-shrinking version converts
-visible wins into hidden prefetch overrun (`0 -> 72/77`), and applying the
-data-size-preserving draw-only version to both tides repeatedly regresses low
-tide to `1151/1024` with `blocking_vb 194 -> 200`. Keeping that same
-entry-size-preserving draw clip only in high tide improves high to
-`1137/1024` while low remains exact-flat.
+The broad offscreen-clip lane is closed, but tide-specific safe subsets are
+promoted. Clipping VISITOR3 compact residuals to the visible screen can reduce
+logical payload `737600 -> 655911` per tide, but the size-shrinking version
+converts visible wins into hidden prefetch overrun (`0 -> 72/77`), and the low
+`ship-left` subset deterministically regresses low tide to `1151/1024`.
+Keeping the entry-size-preserving draw clip in high tide improves high to
+`1137/1024`; applying only low-tide exit-right entries `139..143` improves low
+to `1138/1024` while high and broad controls remain flat.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -323,12 +324,14 @@ ACTIVITY9 low now promotes the same cleanup-compact FGP3/v3 metadata shape:
 low tide moves `2098/2056 -> 2087/2056`, blocking `47 -> 42`, and hidden
 refill overrun `19 -> 12`; high tide is refreshed at `2094/2056` with the
 original padded FGP3 pack left untouched.
-The timing-bearing average is now `-0.0249%` over target /
-`100.0985%` target speed after the VISITOR3 high-only offscreen draw clip.
-That pack-only pass moves VISITOR3 high tide from `1139/1024` to `1137/1024`,
-cuts overrun `115 -> 113`, lowers blocking `191 -> 190`, and keeps VISITOR3
-low plus BUILDING2, BUILDING4, ACTIVITY9, and FISHING1 controls flat. The
-earlier WALKSTUF1 high setup-prime cap retune moves high tide from `1595/1402`
+The timing-bearing average is now `-0.0266%` over target /
+`100.0998%` target speed after the VISITOR3 low exit-right offscreen draw
+clip. That pack-only pass moves VISITOR3 low tide from `1140/1024` to
+`1138/1024`, cuts overrun `116 -> 114`, lowers blocking `194 -> 191`, and
+keeps VISITOR3 high plus BUILDING2, BUILDING4, ACTIVITY9, and FISHING1
+controls flat. The earlier high-only offscreen draw clip moves VISITOR3 high
+from `1139/1024` to `1137/1024`, cuts overrun `115 -> 113`, and lowers
+blocking `191 -> 190`. The earlier WALKSTUF1 high setup-prime cap retune moves high tide from `1595/1402`
 to `1592/1406`, cuts overrun
 `193 -> 186`, lowers loop reads `136 -> 134`, and keeps low tide exact-flat at
 `1604/1407`. The current VISITOR3 low read-group prune keeps the prior
@@ -400,8 +403,14 @@ The high-only offscreen draw-clip follow-up is promoted: it preserves the
 LBA `22472`, and the `215040` byte PS-EXE bucket while trimming offscreen
 draw work in `17` entries. It improves VISITOR3 high `1139/1024 -> 1137/1024`
 and `blocking_vb 191 -> 190`; low tide and the broad controls stay flat.
+The low exit-right follow-up is also promoted: it preserves the `1555450` byte
+low-tide pack footprint, all entry sizes and offsets, pack LBA `23232`, and
+the `215040` byte PS-EXE bucket while trimming entries `139..143`. It improves
+VISITOR3 low `1140/1024 -> 1138/1024` and `blocking_vb 194 -> 191`; high tide
+and the broad controls stay flat. The low `ship-left` and `ship-and-exit`
+subsets are rejected because they reproduce the bad `1151/1024` cadence.
 Since the compact full-matrix baseline was about `+17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `17.42`
+`87.1%` target speed, the headless methodology has removed about `17.43`
 percentage points of over-target gap and added about `13.00` points of target
 speed.
 
