@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: ACTIVITY 11 — Rain dance
+title: ACTIVITY 11 — Bird steals Johnny's clothes
 ads: ACTIVITY
 tag: 11
 slug: activity11
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 11: Rain dance. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 11: A bird swoops in and steals Johnny's clothes. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
@@ -20,11 +20,9 @@ backdrop.
 - ADS dispatch: <code>ACTIVITY.ADS scene 11</code>
 - Slug: <code>activity11</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny does a long rain-dance / heat-relief sequence starting from the spawn spot.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+A bird swoops in and steals Johnny's clothes off the island. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "rain dance" caption-mapping guess was wrong.
 
 ### How this scene gets validated
 

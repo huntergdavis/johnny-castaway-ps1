@@ -93,7 +93,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop
+  notes: bird-steals-clothes (a bird swoops in and steals Johnny's clothes off the island); visual + audible signoff after re-exporting high/low packs with a frame-wide keyed overlay (`KEYED_OVERLAY_RECT="0,0,640,480"`); fixes stale Johnny/bird-outline residue that the foreground-only diff carried against the moving rain backdrop
 - ads: ACTIVITY
   tag: 12
   slug: activity12
