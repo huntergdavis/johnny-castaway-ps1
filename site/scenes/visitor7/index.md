@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: VISITOR 7 — Coconut tree impact
+title: VISITOR 7 — Cracks a coconut on the tree, eats it (no-shake variant)
 ads: VISITOR
 tag: 7
 slug: visitor7
 status: validated
-description: "VISITOR.ADS scene 7: Coconut tree impact. Validated on PS1 with regenerated high/low FG2 packs."
+description: "VISITOR.ADS scene 7: Johnny cracks a coconut on the palm trunk and eats it — no-shake variant of VISITOR 6. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04 under the current PS1 scene bar.
@@ -14,6 +14,10 @@ Validated on 2026-05-04 under the current PS1 scene bar.
 
 - ADS dispatch: <code>VISITOR.ADS scene 7</code>
 - Slug: <code>visitor7</code>
+
+## What this scene is
+
+Johnny already has a coconut. He cracks it open against the palm trunk and eats the coconut meat — the no-shake variant of the VISITOR 6 sequence. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; both scenes are coconut-eat beats but the shake-tree prelude is only on VISITOR 6.
 
 ## Validation Notes
 
