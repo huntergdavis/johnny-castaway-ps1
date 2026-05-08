@@ -140,3 +140,26 @@ Pulled from the live narrative in
 
 For dated context on any of the above, see
 [/devlog/]({{ '/devlog/' | relative_url }}).
+
+## Related pages
+
+- [About: Method]({{ '/about/method/' | relative_url }}) —
+  the canonical methodology essay this status page tracks
+  the implementation of.
+- [About: History]({{ '/about/history/' | relative_url }}) —
+  how the components above got to "complete" or "in motion."
+- [About: dev environment]({{ '/about/dev-environment/' | relative_url }})
+  — the workflow photograph behind every row in the
+  component-level table.
+- [Scene ledger]({{ '/scenes/' | relative_url }}) — the visual
+  signoff bar; the per-scene status the table summarizes.
+- [Performance battle card]({{ '/perf/' | relative_url }}) —
+  the second ledger; per-scene/tide timing for every
+  component listed under "performance" above.
+- [Releases]({{ '/releases/' | relative_url }}) — short
+  notes on every tagged version named in the milestone-cadence
+  list above.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  vocabulary anchor for `FntFlush`, `clean-rect`,
+  `fgpilot`, `BOOTMODE.TXT`, and the rest of the terms
+  this page uses without scaffolding.
