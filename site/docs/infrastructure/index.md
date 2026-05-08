@@ -109,7 +109,7 @@ docker build -f config/ps1/Dockerfile.ps1 \
 ./scripts/build-ps1.sh
 
 # 4. Boot it
-#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).
+#    Open DuckStation, File → Start File…, point at jcreborn.cue (NOT .bin).
 ```
 
 `scripts/build-ps1.sh` is the wrapper. It runs three Docker invocations in
