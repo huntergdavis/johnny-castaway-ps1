@@ -238,6 +238,11 @@ specialized compositors, not a clock change — the clock isn't going up.
   decides what to ship.
 - [Devlog]({{ '/devlog/' | relative_url }}) — day-by-day worklog where most of
   these bugs got triaged.
+- [Glossary]({{ '/docs/glossary/' | relative_url }}) —
+  definitions for hardware-specific terms used above
+  (`SPU`, `VRAM`, `VBlank`, `OT`, `mkpsxiso`, `PSn00bSDK`,
+  `TonyHax`, `SPI driver`, `tx_len`). Grouped by area, not
+  alphabetical.
 
 ## View source on GitHub
 
