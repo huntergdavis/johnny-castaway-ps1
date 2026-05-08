@@ -55,7 +55,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the bathes-and-seagull-steals-clothes loop
+  notes: reads-book-upside-down (Johnny sits and reads a book — but the book is upside-down). Visual + audible signoff after re-exporting high/low packs through the no-stitch fast path with frame-wide keyed overlay; fixes ghosted Johnny pose residue on the right side of the island from base-diff against the static-Johnny base on the reads-book-upside-down loop. The earlier "bathes / seagull steals clothes" mapping was wrong — corrected from direct on-PS1 observation while capturing the chapter-select thumbnail.
 - ads: ACTIVITY
   tag: 8
   slug: activity8
