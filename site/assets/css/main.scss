@@ -802,6 +802,20 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
   font-family: var(--font-display);
   font-size: 0.95rem;
 }
+/* Zebra striping for the 63-row scene ledger and 126-row perf matrix.
+   Subtle alternating background on data rows makes left-to-right
+   scanning easier when the eye has to track 5+ columns across many
+   rows. Light-mode uses a faint dark tint; dark-mode inverts. */
+.scene-table tbody tr:nth-child(even),
+.scene-perf-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:nth-child(even),
+  .scene-perf-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
 /* Anchored ADS rows scroll into view past the sticky header. */
 .scene-table tr[id] { scroll-margin-top: 5rem; }
 .scene-table td.scene-tag, .scene-table th.scene-tag {
