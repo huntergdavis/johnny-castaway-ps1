@@ -37,7 +37,7 @@ CD's, and it gets spent in seek latency, not transfer time.
 The frame budget at 60 Hz is 16.6 ms. *Johnny Castaway* is a 1992 VGA
 screensaver — at the source level, foreground content changes roughly four
 times per second. The PS1 still has to draw a frame at 60 Hz, but it can
-hold the same content frame after frame for many VBlanks at a stretch. The
+hold the same content frame after frame for many [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}) at a stretch. The
 VBlank cadence is the rendering loop's heartbeat; the *interesting* timing
 is which VBlanks have actual work in them and which are held idle.
 

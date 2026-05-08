@@ -30,7 +30,7 @@ DuckStation. The numbers that matter, in the order you usually trip over them:
   of that on their own.
 - **SPU RAM:** 512 KB, owned by the audio co-processor. ADPCM samples only.
 - **CD drive:** 2x speed, 300 KB/s sustained, ~150 ms cold seek.
-- **Controller:** SIO0 serial bus, polled at vblank-ish rates.
+- **Controller:** SIO0 serial bus, polled at [vblank]({{ '/docs/glossary/#vblank' | relative_url }})-ish rates.
 
 For *Johnny Castaway*, a 1992 16-color VGA screensaver running at roughly 4 fps
 of foreground change, that's an embarrassment of riches in some axes (a 33 MHz

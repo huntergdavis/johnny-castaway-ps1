@@ -39,7 +39,7 @@ caption fires during a walk). When the walk finishes, the next scene
 loads its pack as if Johnny had always been at the new spot.
 
 Freeplay's direct-control walking is a different surface — same
-draw kernel, but the player drives `(x, y)` per VBlank from the
+draw kernel, but the player drives `(x, y)` per [VBlank]({{ '/docs/glossary/#vblank' | relative_url }}) from the
 D-pad instead of consuming a pre-baked path. See
 [/docs/freeplay/]({{ '/docs/freeplay/' | relative_url }}).
 
