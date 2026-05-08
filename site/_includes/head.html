@@ -65,6 +65,22 @@
   {%- endcomment -%}
   <link rel="canonical" href="{{ site.url }}{{ site.canonical_baseurl }}{{ page.url }}" />
 
+  {%- comment -%}
+    Robots directives. The /source/ shelf is 337 auto-generated
+    wrapper pages — one per project Markdown file outside the
+    website tree — whose body is mostly the rendered source plus
+    a "view on GitHub" link. Indexing all of them dilutes search
+    rank with thin/near-duplicate content. `noindex, follow` tells
+    crawlers to discover the wrappers (so internal links keep
+    flowing PageRank) but not to surface them in search results.
+    The /source/ landing page itself (the canonical catalog) stays
+    indexable.
+  {%- endcomment -%}
+  {%- assign robots_source_prefix = page.url | slice: 0, 8 -%}
+  {%- if robots_source_prefix == '/source/' and page.url != '/source/' -%}
+  <meta name="robots" content="noindex, follow" />
+  {%- endif -%}
+
   <meta property="og:title"        content="{% if page.title and page.url != '/' %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — a fan port{% endif %}" />
   <meta property="og:description"  content="{{ page.description | default: site.description }}" />
   {%- comment -%}
