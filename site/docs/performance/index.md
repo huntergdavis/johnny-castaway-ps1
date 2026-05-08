@@ -123,9 +123,13 @@ upload-ready payload plus rect metadata needs `2462072` bytes per tide against
 only `814847` bytes of padded zero-tail slack. The analyzer now emits the
 same-footprint budgeted target too: `74 / 96` default-selected frames fit in
 `814184` payload+rect bytes, leave `663` bytes of slack, and retain `3858104`
-modeled upload bytes saved. The next probe should implement that smaller
-subset, compress the payload, use a shrinking pack transform, or deliberately
-run a layout-moving experiment.
+modeled upload bytes saved. The analyzer now also reports whether those x-band
+uploads are safe to emit from foreground data alone. For VISITOR3, `0`
+selected x-band bytes are fully covered by current opaque draw spans, so a raw
+pack-emitted upload payload would have to bake restored background pixels that
+are dynamic at runtime. The next probe should use a different generated data
+shape, explicit scheduler ownership, compression plus a safe pixel source, or a
+deliberate layout-moving experiment.
 
 A tempting VISITOR3 shortcut was rejected: pruning visually no-op FGP3 entries
 reduced active payload and high-tide visible blocking, but hidden prefetch

@@ -869,6 +869,113 @@ def xband_upload_plan(rows: RowIntervals, align: int) -> dict[str, int]:
     }
 
 
+def xband_upload_bands(rows: RowIntervals,
+                       align: int) -> tuple[list[tuple[int, int, int, int, int]], bool]:
+    bounds = row_presence_bounds(rows)
+    bands: list[tuple[int, int, int, int, int]] = []
+    capped = False
+
+    for tile in range(TILE_COUNT):
+        if bounds[tile] is None or capped:
+            continue
+        y, max_y = bounds[tile]
+        while y <= max_y:
+            while y <= max_y and not rows[tile][y]:
+                y += 1
+            if y > max_y:
+                break
+            start_y = y
+            scan_y = y + 1
+            last_dirty_y = y
+            clean_gap = 0
+            while scan_y <= max_y:
+                if rows[tile][scan_y]:
+                    last_dirty_y = scan_y
+                    clean_gap = 0
+                else:
+                    clean_gap += 1
+                    if clean_gap > UPLOAD_BAND_MERGE_GAP:
+                        break
+                scan_y += 1
+            y = last_dirty_y
+            if len(bands) >= UPLOAD_MAX_RECTS:
+                capped = True
+                break
+
+            band_min_x: int | None = None
+            band_max_x: int | None = None
+            for band_y in range(start_y, y + 1):
+                for start, end in rows[tile][band_y]:
+                    band_min_x = start if band_min_x is None else min(band_min_x, start)
+                    band_max_x = end if band_max_x is None else max(band_max_x, end)
+            if band_min_x is not None and band_max_x is not None:
+                band_min_x = max(0, align_down(band_min_x, align))
+                band_max_x = min(TILE_W, align_up(band_max_x, align))
+                bands.append((tile, start_y, y, band_min_x, band_max_x))
+            y += 1
+
+    return bands, capped
+
+
+def row_intervals_cover_range(row: list[tuple[int, int]],
+                              start: int,
+                              end: int) -> bool:
+    covered_to = start
+    for interval_start, interval_end in merge_intervals(row):
+        if interval_end <= covered_to:
+            continue
+        if interval_start > covered_to:
+            return False
+        covered_to = max(covered_to, interval_end)
+        if covered_to >= end:
+            return True
+    return covered_to >= end
+
+
+def xband_draw_covered_plan(rows: RowIntervals,
+                            draw_rows: RowIntervals,
+                            align: int) -> dict[str, int]:
+    bands, capped = xband_upload_bands(rows, align)
+    if capped:
+        return {
+            "bytes": 0,
+            "rects": 0,
+            "draw_covered_bytes": 0,
+            "draw_covered_rects": 0,
+            "all_draw_covered": 0,
+            "cap_hit": 1,
+            "align_px": align,
+        }
+
+    total_bytes = 0
+    draw_covered_bytes = 0
+    draw_covered_rects = 0
+
+    for tile, start_y, end_y, min_x, max_x in bands:
+        band_bytes = (max_x - min_x) * (end_y - start_y + 1) * 2
+        total_bytes += band_bytes
+        covered = True
+        for y in range(start_y, end_y + 1):
+            if not row_intervals_cover_range(draw_rows[tile][y], min_x, max_x):
+                covered = False
+                break
+        if covered:
+            draw_covered_rects += 1
+            draw_covered_bytes += band_bytes
+
+    return {
+        "bytes": total_bytes,
+        "rects": len(bands),
+        "draw_covered_bytes": draw_covered_bytes,
+        "draw_covered_rects": draw_covered_rects,
+        "all_draw_covered": (
+            1 if bands and draw_covered_rects == len(bands) else 0
+        ),
+        "cap_hit": 0,
+        "align_px": align,
+    }
+
+
 def pct_saved(current: int, proposed: int) -> float:
     if current <= 0:
         return 0.0
@@ -977,6 +1084,16 @@ def build_budgeted_selective_plan(selective_frames: list[dict[str, Any]],
     selected_rects = sum(
         int(row["xband_exact_align4_rects"]) for row in selected_frames
     )
+    selected_draw_covered_bytes = sum(
+        int(row["xband_exact_align4_draw_covered_bytes"]) for row in selected_frames
+    )
+    selected_draw_covered_rects = sum(
+        int(row["xband_exact_align4_draw_covered_rects"]) for row in selected_frames
+    )
+    selected_all_draw_covered_frames = sum(
+        1 for row in selected_frames
+        if int(row["xband_exact_align4_all_draw_covered"])
+    )
     default_saved_bytes = sum(
         int(row["xband_exact_align4_saved_bytes"]) for row in selective_frames
     )
@@ -996,6 +1113,9 @@ def build_budgeted_selective_plan(selective_frames: list[dict[str, Any]],
         "selected_saved_bytes": best_saved,
         "selected_saved_percent": pct_saved(selected_runtime_bytes, selected_xband_bytes),
         "selected_xband_rects": selected_rects,
+        "selected_draw_covered_xband_bytes": selected_draw_covered_bytes,
+        "selected_draw_covered_xband_rects": selected_draw_covered_rects,
+        "selected_all_draw_covered_frame_count": selected_all_draw_covered_frames,
         "estimated_payload_plus_rect_metadata_bytes": best_cost,
         "remaining_payload_budget_bytes": max_payload_bytes - best_cost,
         "default_selective_frame_count": len(selective_frames),
@@ -1015,7 +1135,9 @@ def build_budgeted_selective_plan(selective_frames: list[dict[str, Any]],
         )[:hotspot_limit],
         "note": (
             "Exact 0/1 knapsack over the threshold-selected x-band rows; "
-            "use this when the pack extension must fit a fixed payload budget."
+            "use this when the pack extension must fit a fixed payload budget. "
+            "Draw-covered bytes are the subset safe to emit from foreground "
+            "pack data alone without baking restored background pixels."
         ),
     }
     return plan, selected_frame_indices
@@ -1042,6 +1164,9 @@ def write_frame_hotspot_csv(path: Path,
         "xband_exact_align4_bytes",
         "xband_exact_align4_rects",
         "xband_exact_align4_cap_hit",
+        "xband_exact_align4_draw_covered_bytes",
+        "xband_exact_align4_draw_covered_rects",
+        "xband_exact_align4_all_draw_covered",
         "xband_exact_align4_saved_bytes",
         "xband_exact_align4_saved_percent",
         "exact_interval_upload_bytes",
@@ -1051,7 +1176,7 @@ def write_frame_hotspot_csv(path: Path,
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         for row in sorted(rows, key=lambda item: int(item["frame_index"])):
             out = {name: row.get(name, "") for name in fieldnames}
@@ -1185,6 +1310,9 @@ def main() -> None:
         "upload_xband_exact_bytes_align16": 0,
         "upload_xband_exact_rects": 0,
         "upload_xband_exact_cap_hits": 0,
+        "upload_xband_exact_draw_covered_bytes_align4": 0,
+        "upload_xband_exact_draw_covered_rects": 0,
+        "upload_xband_exact_all_draw_covered_frames_align4": 0,
         "upload_exact_interval_bytes": 0,
         "upload_exact_interval_rects": 0,
         "upload_extent_row_bytes": 0,
@@ -1235,6 +1363,7 @@ def main() -> None:
         x_exact_1 = xband_upload_plan(union_exact, 1)
         x_exact_4 = xband_upload_plan(union_exact, 4)
         x_exact_16 = xband_upload_plan(union_exact, 16)
+        x_draw_covered_4 = xband_draw_covered_plan(union_exact, exact_rows, 4)
         exact_interval_bytes = interval_bytes(union_exact)
         exact_interval_rects = interval_count(union_exact)
         x_exact_4_cap_hit = x_exact_4.get("xband_cap_hit", x_exact_4.get("cap_hit", 0))
@@ -1255,6 +1384,15 @@ def main() -> None:
         totals["upload_xband_exact_bytes_align16"] += x_exact_16["bytes"]
         totals["upload_xband_exact_rects"] += x_exact_4["rects"]
         totals["upload_xband_exact_cap_hits"] += x_exact_4_cap_hit
+        totals["upload_xband_exact_draw_covered_bytes_align4"] += (
+            x_draw_covered_4["draw_covered_bytes"]
+        )
+        totals["upload_xband_exact_draw_covered_rects"] += (
+            x_draw_covered_4["draw_covered_rects"]
+        )
+        totals["upload_xband_exact_all_draw_covered_frames_align4"] += (
+            x_draw_covered_4["all_draw_covered"]
+        )
         totals["upload_exact_interval_bytes"] += exact_interval_bytes
         totals["upload_exact_interval_rects"] += exact_interval_rects
         totals["upload_extent_row_bytes"] += extent_bytes(intervals_to_extents(union_exact))
@@ -1311,6 +1449,9 @@ def main() -> None:
             "xband_exact_align4_bytes": x_exact_4["bytes"],
             "xband_exact_align4_rects": x_exact_4["rects"],
             "xband_exact_align4_cap_hit": x_exact_4_cap_hit,
+            "xband_exact_align4_draw_covered_bytes": x_draw_covered_4["draw_covered_bytes"],
+            "xband_exact_align4_draw_covered_rects": x_draw_covered_4["draw_covered_rects"],
+            "xband_exact_align4_all_draw_covered": x_draw_covered_4["all_draw_covered"],
             "xband_exact_align4_saved_bytes": saved_bytes,
             "xband_exact_align4_saved_percent": pct_saved(full_plan["bytes"], x_exact_4["bytes"]),
             "exact_interval_upload_bytes": exact_interval_bytes,
@@ -1405,6 +1546,19 @@ def main() -> None:
             "saved_percent": pct_saved(current_upload, totals["upload_xband_exact_bytes_align4"]),
             "note": "Requires exact visual-change metadata; this is closer to an FGP3 direct-upload payload.",
         },
+        "upload_xband_exact_draw_covered_align4": {
+            "bytes": totals["upload_xband_exact_draw_covered_bytes_align4"],
+            "rects": totals["upload_xband_exact_draw_covered_rects"],
+            "all_draw_covered_frames": (
+                totals["upload_xband_exact_all_draw_covered_frames_align4"]
+            ),
+            "note": (
+                "Subset of x-band rectangles whose aligned upload area is fully "
+                "covered by current opaque draw spans. Only this subset can be "
+                "emitted from foreground pack data alone without also capturing "
+                "the restored background pixels."
+            ),
+        },
         "upload_exact_interval_ideal": {
             "bytes": totals["upload_exact_interval_bytes"],
             "rects": totals["upload_exact_interval_rects"],
@@ -1450,6 +1604,16 @@ def main() -> None:
     selective_runtime_bytes = sum(row["runtime_full_width_bytes"] for row in selective_frames)
     selective_xband_bytes = sum(row["xband_exact_align4_bytes"] for row in selective_frames)
     selective_rects = sum(row["xband_exact_align4_rects"] for row in selective_frames)
+    selective_draw_covered_bytes = sum(
+        row["xband_exact_align4_draw_covered_bytes"] for row in selective_frames
+    )
+    selective_draw_covered_rects = sum(
+        row["xband_exact_align4_draw_covered_rects"] for row in selective_frames
+    )
+    selective_all_draw_covered_frames = sum(
+        1 for row in selective_frames
+        if row["xband_exact_align4_all_draw_covered"]
+    )
     selective_saved_bytes = selective_runtime_bytes - selective_xband_bytes
     selective_payload_bytes = selective_xband_bytes + selective_rects * 8
     selective_plan = {
@@ -1468,6 +1632,9 @@ def main() -> None:
         "selected_saved_bytes": selective_saved_bytes,
         "selected_saved_percent": pct_saved(selective_runtime_bytes, selective_xband_bytes),
         "selected_xband_rects": selective_rects,
+        "selected_draw_covered_xband_bytes": selective_draw_covered_bytes,
+        "selected_draw_covered_xband_rects": selective_draw_covered_rects,
+        "selected_all_draw_covered_frame_count": selective_all_draw_covered_frames,
         "estimated_payload_plus_rect_metadata_bytes": selective_payload_bytes,
         "excluded_cap_hit_frames": compress_ranges([
             int(row["frame_index"]) for row in frame_hotspots
@@ -1552,6 +1719,7 @@ def main() -> None:
         "budgeted_selective_xband_align4_plan": budgeted_selective_plan,
         "red_team": [
             "Pack-emitted narrow multi-row uploads cannot read directly from current tile RAM; the rows are strided.",
+            "Pack-emitted raw upload pixels are safe from foreground data alone only when an aligned x-band is fully covered by current opaque draw spans; cleanup/background pixels are dynamic.",
             "An FGP3 direct-upload payload lowers runtime work but increases pack/CD bytes, so CD pressure must be gated.",
             "Restore-under-current skipping is only safe against exact opaque current spans, not row min/max dirty extents.",
             "FGP3 cleanup rows are already explicit; FGP2 coalesced restore profiles are not generated for FGP3 packs.",

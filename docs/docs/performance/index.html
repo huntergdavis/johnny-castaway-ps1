@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3616 words
+          ~14 min read · 3667 words
         </p>
 
       <hr class="rule" />
@@ -240,9 +240,13 @@ upload-ready payload plus rect metadata needs <code class="language-plaintext hi
 only <code class="language-plaintext highlighter-rouge">814847</code> bytes of padded zero-tail slack. The analyzer now emits the
 same-footprint budgeted target too: <code class="language-plaintext highlighter-rouge">74 / 96</code> default-selected frames fit in
 <code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, leave <code class="language-plaintext highlighter-rouge">663</code> bytes of slack, and retain <code class="language-plaintext highlighter-rouge">3858104</code>
-modeled upload bytes saved. The next probe should implement that smaller
-subset, compress the payload, use a shrinking pack transform, or deliberately
-run a layout-moving experiment.</p>
+modeled upload bytes saved. The analyzer now also reports whether those x-band
+uploads are safe to emit from foreground data alone. For VISITOR3, <code class="language-plaintext highlighter-rouge">0</code>
+selected x-band bytes are fully covered by current opaque draw spans, so a raw
+pack-emitted upload payload would have to bake restored background pixels that
+are dynamic at runtime. The next probe should use a different generated data
+shape, explicit scheduler ownership, compression plus a safe pixel source, or a
+deliberate layout-moving experiment.</p>
 
 <p>A tempting VISITOR3 shortcut was rejected: pruning visually no-op FGP3 entries
 reduced active payload and high-tide visible blocking, but hidden prefetch

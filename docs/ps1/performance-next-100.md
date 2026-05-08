@@ -46,6 +46,16 @@ ACTIVITY9 low, and FISHING1 high controls stayed exact-flat. The next true
 rows are WALKSTUF1 low/high, VISITOR3, BUILDING2, BUILDING6, and selective
 upload-ready preprocessing.
 
+Current VISITOR3 preprocess safety gate: the same-footprint budgeted
+upload-ready target remains a useful byte ceiling, but raw foreground-only
+pack-emitted upload pixels are not safe under the current FGP3 data. The
+analyzer now reports draw-covered x-band feasibility; both VISITOR3 tides show
+`0` selected draw-covered bytes for the default `96`-frame selective plan and
+the `74`-frame budgeted plan. The modeled `3858104` byte win depends on
+restored background/cleanup pixels, which are dynamic at runtime. Do not build
+that as a raw append; continue with a safe pixel-source/data-shape change,
+compression plus ownership, or generated scheduler metadata.
+
 Fresh low-tide scalar cap retry: `168 KiB` is not promotable. It preserves
 layout but stays exact-flat at `1895`, `1604/1407`, `blocking_vb=271`,
 `prefetch_overrun_vb=54`, and `loop_reads=132`, so the current WALKSTUF1
