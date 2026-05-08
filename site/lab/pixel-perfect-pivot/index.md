@@ -40,7 +40,7 @@ foreground packs, not reinterpret the whole Sierra runtime at scene time.
 
 ## The host-and-replay move
 
-The host build does what the desktop is good at. It runs the decoded Sierra
+The [host build]({{ '/docs/glossary/#host-build' | relative_url }}) does what the desktop is good at. It runs the decoded Sierra
 engine, captures foreground frames, records sound events, and writes compact
 FG2 packs.
 
