@@ -131,7 +131,10 @@ VISITOR3 scheduler-owned/data-shape work, BUILDING2, and BUILDING6.
 The current VISITOR3 default selective upload-ready plan is closed as a
 same-footprint append: it saves a modeled `6114568` upload bytes, but its
 `2462072` bytes of payload plus rect metadata exceed the current `814847` bytes
-of padded pack slack per tide.
+of padded pack slack per tide. The follow-up budgeted analyzer target fits that
+same slack by selecting `74 / 96` default-selected frames, using `814184`
+payload+rect bytes, leaving `663` bytes of slack, and retaining `3858104`
+modeled upload bytes saved.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -327,10 +330,10 @@ The BUILDING4 restore-minus-current follow-up removes the same redundant
 current-frame cleanup from BUILDING4 and moves the matrix slightly under
 target; the stale VISITOR3 low read-group prune closes the last local VISITOR3
 table row without changing timing; the WALKSTUF1 high setup-prime cap becomes
-the current baseline; and the VISITOR3 default selective upload-ready footprint
-gate now proves that the next VISITOR3 graphics probe needs a smaller subset,
-compression, a shrinking pack transform, or a deliberate layout-moving
-experiment instead of a naive same-footprint append.
+the current baseline; the VISITOR3 default selective upload-ready footprint
+gate rejects the naive same-footprint append; and the budgeted VISITOR3
+analyzer target now proves a smaller `74`-frame subset can fit inside the
+current pack slack before runtime-format work begins.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

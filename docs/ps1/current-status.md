@@ -199,9 +199,13 @@ it selects `96 / 144` frames, excludes the `3` cap-hit frames, and estimates
 `6114568` upload bytes saved inside the selected subset. The same current
 size gate rejects the default upload-ready append as layout-neutral: the
 payload plus rect metadata would need `2462072` bytes per tide against only
-`814847` bytes of padded zero-tail slack. The next VISITOR3 graphics probe
-therefore needs a smaller budgeted subset, compression, a shrinking pack
-transform, or an explicit layout-moving experiment with full canaries.
+`814847` bytes of padded zero-tail slack. The analyzer now also emits a
+same-footprint budgeted subset for that exact slack: `74 / 96`
+default-selected frames fit in `814184` payload+rect bytes, leave `663` bytes
+of slack, and retain `3858104` modeled upload bytes saved. The next VISITOR3
+graphics probe should implement that smaller subset, compress the payload, use
+a shrinking pack transform, or deliberately run a layout-moving experiment
+with full canaries.
 
 Milestone releases:
 - `v0.8.2-ps1` — VISITOR3 guarded-read performance and docs/site sync. Lowers

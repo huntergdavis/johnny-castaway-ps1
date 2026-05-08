@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~14 min read · 3507 words
+          ~14 min read · 3567 words
         </p>
 
       <hr class="rule" />
@@ -237,9 +237,12 @@ current VISITOR3 frame sheet is
 The current default VISITOR3 selective plan is still too large for a
 same-footprint append: it models <code class="language-plaintext highlighter-rouge">6114568</code> selected upload bytes saved, but the
 upload-ready payload plus rect metadata needs <code class="language-plaintext highlighter-rouge">2462072</code> bytes per tide against
-only <code class="language-plaintext highlighter-rouge">814847</code> bytes of padded zero-tail slack. The next probe needs a smaller
-selected subset, compression, a shrinking pack transform, or an explicit
-layout-moving experiment.</p>
+only <code class="language-plaintext highlighter-rouge">814847</code> bytes of padded zero-tail slack. The analyzer now emits the
+same-footprint budgeted target too: <code class="language-plaintext highlighter-rouge">74 / 96</code> default-selected frames fit in
+<code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, leave <code class="language-plaintext highlighter-rouge">663</code> bytes of slack, and retain <code class="language-plaintext highlighter-rouge">3858104</code>
+modeled upload bytes saved. The next probe should implement that smaller
+subset, compress the payload, use a shrinking pack transform, or deliberately
+run a layout-moving experiment.</p>
 
 <p>The current post-<code class="language-plaintext highlighter-rouge">-O2</code> tooling pass also records compact baseline
 fingerprints in every perf summary and classifies foreground read-plan
@@ -905,7 +908,10 @@ exhausted, so the next CD-shape pass needs generated scheduler ownership,
 selective preprocessing, or pack data-shape work rather than hand-authored
 ranges. The default selective upload-ready plan is footprint-closed as a
 same-layout append because <code class="language-plaintext highlighter-rouge">2462072</code> bytes of payload plus rect metadata
-exceed the current <code class="language-plaintext highlighter-rouge">814847</code> bytes of VISITOR3 pack slack per tide.</li>
+exceed the current <code class="language-plaintext highlighter-rouge">814847</code> bytes of VISITOR3 pack slack per tide. The
+budgeted analyzer target keeps this same-footprint lane alive with <code class="language-plaintext highlighter-rouge">74</code>
+selected frames, <code class="language-plaintext highlighter-rouge">814184</code> payload+rect bytes, and <code class="language-plaintext highlighter-rouge">3858104</code> modeled upload
+bytes saved before runtime implementation.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

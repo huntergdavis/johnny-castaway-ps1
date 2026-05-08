@@ -893,9 +893,138 @@ def compress_ranges(values: list[int]) -> list[dict[str, int]]:
     return ranges
 
 
+def trailing_zero_slack(data: bytes) -> tuple[int, int]:
+    last_nonzero_plus_one = len(data)
+    while last_nonzero_plus_one > 0 and data[last_nonzero_plus_one - 1] == 0:
+        last_nonzero_plus_one -= 1
+    return len(data) - last_nonzero_plus_one, last_nonzero_plus_one
+
+
+def payload_plus_rect_metadata(row: dict[str, Any]) -> int:
+    return (
+        int(row["xband_exact_align4_bytes"]) +
+        int(row["xband_exact_align4_rects"]) * 8
+    )
+
+
+def better_budget_state(candidate: tuple[int, int, int],
+                        incumbent: tuple[int, int, int] | None) -> bool:
+    if incumbent is None:
+        return True
+    candidate_saved, candidate_count, _candidate_mask = candidate
+    incumbent_saved, incumbent_count, _incumbent_mask = incumbent
+    return (candidate_saved, candidate_count) > (incumbent_saved, incumbent_count)
+
+
+def build_budgeted_selective_plan(selective_frames: list[dict[str, Any]],
+                                  max_payload_bytes: int,
+                                  hotspot_limit: int) -> tuple[dict[str, Any], set[int]]:
+    candidates = [
+        row for row in selective_frames
+        if payload_plus_rect_metadata(row) > 0 and
+        int(row["xband_exact_align4_saved_bytes"]) > 0
+    ]
+    states: dict[int, tuple[int, int, int]] = {0: (0, 0, 0)}
+    for item_index, row in enumerate(candidates):
+        item_cost = payload_plus_rect_metadata(row)
+        item_saved = int(row["xband_exact_align4_saved_bytes"])
+        if item_cost > max_payload_bytes:
+            continue
+        additions: dict[int, tuple[int, int, int]] = {}
+        for base_cost, (base_saved, base_count, base_mask) in states.items():
+            new_cost = base_cost + item_cost
+            if new_cost > max_payload_bytes:
+                continue
+            new_state = (
+                base_saved + item_saved,
+                base_count + 1,
+                base_mask | (1 << item_index),
+            )
+            current = additions.get(new_cost, states.get(new_cost))
+            if better_budget_state(new_state, current):
+                additions[new_cost] = new_state
+        states.update(additions)
+
+        pruned: dict[int, tuple[int, int, int]] = {}
+        best_saved = -1
+        best_count = -1
+        for cost in sorted(states):
+            saved, count, mask = states[cost]
+            if saved > best_saved or (saved == best_saved and count > best_count):
+                pruned[cost] = (saved, count, mask)
+                best_saved = saved
+                best_count = count
+        states = pruned
+
+    best_cost, best_state = max(
+        states.items(),
+        key=lambda item: (item[1][0], -item[0], item[1][1]),
+    )
+    best_saved, _best_count, best_mask = best_state
+    selected_frames = [
+        row for item_index, row in enumerate(candidates)
+        if (best_mask >> item_index) & 1
+    ]
+    selected_frame_indices = {
+        int(row["frame_index"]) for row in selected_frames
+    }
+    selected_runtime_bytes = sum(
+        int(row["runtime_full_width_bytes"]) for row in selected_frames
+    )
+    selected_xband_bytes = sum(
+        int(row["xband_exact_align4_bytes"]) for row in selected_frames
+    )
+    selected_rects = sum(
+        int(row["xband_exact_align4_rects"]) for row in selected_frames
+    )
+    default_saved_bytes = sum(
+        int(row["xband_exact_align4_saved_bytes"]) for row in selective_frames
+    )
+    default_payload_bytes = sum(payload_plus_rect_metadata(row) for row in selective_frames)
+    plan = {
+        "align_px": 4,
+        "max_payload_plus_rect_metadata_bytes": max_payload_bytes,
+        "selected_frame_count": len(selected_frames),
+        "selected_frame_ranges": compress_ranges([
+            int(row["frame_index"]) for row in selected_frames
+        ]),
+        "selected_source_frame_ranges": compress_ranges([
+            int(row["source_frame"]) for row in selected_frames
+        ]),
+        "selected_runtime_full_width_bytes": selected_runtime_bytes,
+        "selected_xband_bytes": selected_xband_bytes,
+        "selected_saved_bytes": best_saved,
+        "selected_saved_percent": pct_saved(selected_runtime_bytes, selected_xband_bytes),
+        "selected_xband_rects": selected_rects,
+        "estimated_payload_plus_rect_metadata_bytes": best_cost,
+        "remaining_payload_budget_bytes": max_payload_bytes - best_cost,
+        "default_selective_frame_count": len(selective_frames),
+        "default_selective_payload_plus_rect_metadata_bytes": default_payload_bytes,
+        "default_selective_saved_bytes": default_saved_bytes,
+        "retained_default_saved_percent": (
+            (best_saved * 100.0 / default_saved_bytes) if default_saved_bytes else 0.0
+        ),
+        "retained_default_payload_percent": (
+            (best_cost * 100.0 / default_payload_bytes) if default_payload_bytes else 0.0
+        ),
+        "excluded_default_selected_frame_count": len(selective_frames) - len(selected_frames),
+        "top_selected_frames": sorted(
+            selected_frames,
+            key=lambda row: row["xband_exact_align4_saved_bytes"],
+            reverse=True,
+        )[:hotspot_limit],
+        "note": (
+            "Exact 0/1 knapsack over the threshold-selected x-band rows; "
+            "use this when the pack extension must fit a fixed payload budget."
+        ),
+    }
+    return plan, selected_frame_indices
+
+
 def write_frame_hotspot_csv(path: Path,
                             rows: list[dict[str, Any]],
-                            selected_frame_indices: set[int]) -> None:
+                            selected_frame_indices: set[int],
+                            budgeted_frame_indices: set[int] | None) -> None:
     fieldnames = [
         "frame_index",
         "source_frame",
@@ -918,6 +1047,7 @@ def write_frame_hotspot_csv(path: Path,
         "exact_interval_upload_bytes",
         "exact_interval_upload_rects",
         "selective_plan",
+        "budgeted_selective_plan",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as handle:
@@ -932,6 +1062,16 @@ def write_frame_hotspot_csv(path: Path,
                 if row["xband_exact_align4_cap_hit"]
                 else "excluded_threshold"
             )
+            if budgeted_frame_indices is None:
+                out["budgeted_selective_plan"] = ""
+            else:
+                out["budgeted_selective_plan"] = (
+                    "selected"
+                    if int(row["frame_index"]) in budgeted_frame_indices
+                    else "excluded_budget"
+                    if int(row["frame_index"]) in selected_frame_indices
+                    else out["selective_plan"]
+                )
             writer.writerow(out)
 
 
@@ -975,10 +1115,32 @@ def main() -> None:
         type=Path,
         help="Write all per-frame x-band plan rows to CSV.",
     )
+    parser.add_argument(
+        "--selective-max-payload-bytes",
+        type=int,
+        default=0,
+        help=(
+            "Optional max payload+rect-metadata budget for a budgeted exact "
+            "knapsack subset of the threshold-selected x-band plan."
+        ),
+    )
+    parser.add_argument(
+        "--selective-budget-from-zero-tail",
+        action="store_true",
+        help="Use the pack's trailing zero padding as the selective payload budget.",
+    )
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output.")
     args = parser.parse_args()
+    if args.selective_max_payload_bytes < 0:
+        parser.error("--selective-max-payload-bytes must be non-negative")
+    if args.selective_budget_from_zero_tail and args.selective_max_payload_bytes:
+        parser.error(
+            "--selective-budget-from-zero-tail and --selective-max-payload-bytes "
+            "are mutually exclusive"
+        )
 
     payload, header, entries = parse_pack(args.pack)
+    pack_zero_tail_bytes, pack_last_nonzero_plus_one = trailing_zero_slack(payload)
     apply_scene_relative = (
         (header.flags & FLAG_SCENE_RELATIVE) != 0 and
         not args.no_scene_relative_offset
@@ -1320,12 +1482,30 @@ def main() -> None:
     selected_frame_indices = {
         int(row["frame_index"]) for row in selective_frames
     }
+    budgeted_selective_plan = None
+    budgeted_frame_indices = None
+    budget = args.selective_max_payload_bytes
+    if args.selective_budget_from_zero_tail:
+        budget = pack_zero_tail_bytes
+    if budget > 0:
+        budgeted_selective_plan, budgeted_frame_indices = build_budgeted_selective_plan(
+            selective_frames,
+            budget,
+            hotspot_limit,
+        )
     if args.output_frame_csv is not None:
-        write_frame_hotspot_csv(args.output_frame_csv, frame_hotspots, selected_frame_indices)
+        write_frame_hotspot_csv(
+            args.output_frame_csv,
+            frame_hotspots,
+            selected_frame_indices,
+            budgeted_frame_indices,
+        )
 
     result: dict[str, Any] = {
         "pack": str(args.pack),
         "pack_bytes": len(payload),
+        "pack_zero_tail_slack_bytes": pack_zero_tail_bytes,
+        "pack_last_nonzero_plus_one": pack_last_nonzero_plus_one,
         "pack_metadata_bytes": pack_metadata_bytes,
         "active_payload_bytes": payload_bytes,
         "header": {
@@ -1369,6 +1549,7 @@ def main() -> None:
         "frame_saving_hotspots": frame_saving_hotspots,
         "frame_hotspots": frame_cap_hotspots,
         "selective_xband_align4_plan": selective_plan,
+        "budgeted_selective_xband_align4_plan": budgeted_selective_plan,
         "red_team": [
             "Pack-emitted narrow multi-row uploads cannot read directly from current tile RAM; the rows are strided.",
             "An FGP3 direct-upload payload lowers runtime work but increases pack/CD bytes, so CD pressure must be gated.",
