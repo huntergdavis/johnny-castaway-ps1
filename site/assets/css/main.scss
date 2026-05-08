@@ -233,6 +233,13 @@ hr.rule, .rule {
 }
 .skip-link:focus { top: 0; }
 
+/* <main> carries tabindex="-1" so the skip-link can move keyboard
+   focus into it (without tabindex, the viewport scrolls but focus
+   stays on the link). Suppress the resulting outline — the scroll
+   itself is the focus indicator, and a ring around the entire main
+   block looks like a bug. */
+main:focus { outline: none; }
+
 /* Visually hidden but readable by screen readers. Standard a11y
    idiom — used for table <caption>s and anywhere visual context is
    already present in the surrounding chrome but the assistive layer
