@@ -104,7 +104,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1162 words
+          ~4 min read · 1167 words
         </p>
 
       <hr class="rule" />
@@ -159,11 +159,10 @@ git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
 <span class="nb">cd </span>johnny-castaway-ps1
 
 <span class="c"># 2. Build the dev Docker image (one-time, ~5 min)</span>
-docker build <span class="nt">-f</span> Dockerfile.ps1 <span class="nt">-t</span> jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    <span class="nt">--platform</span> linux/amd64 <span class="nb">.</span>
+./scripts/build-docker-image.sh
 
-<span class="c"># 3. Build the PS1 executable + CD image</span>
-./build-ps1.sh
+<span class="c"># 3. Build the PS1 executable + CD image + launch DuckStation</span>
+./scripts/rebuild-and-let-run.sh
 
 <span class="c"># 4. Boot it</span>
 <span class="c">#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).</span>
@@ -179,7 +178,7 @@ of a one-shot build, read
 
 <h2 id="the-docker-image">The Docker image</h2>
 
-<p><code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> is built <code class="language-plaintext highlighter-rouge">--platform linux/amd64</code> so it works on every host
+<p><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code> is built <code class="language-plaintext highlighter-rouge">--platform linux/amd64</code> so it works on every host
 architecture the author owns. It’s based on Ubuntu 22.04 and installs:</p>
 
 <table>
@@ -357,8 +356,8 @@ for the routing step.</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">build-ps1.sh</code></td>
-      <td>Clean rebuild of executable + CD image. The “make me a fresh disc” button.</td>
+      <td><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></td>
+      <td>Rebuild executable + CD + launch DuckStation with a temporary TTY-logging config. The “make me a fresh disc and run it” button; the day-to-day scene-work entry.</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></td>
@@ -369,13 +368,13 @@ for the routing step.</p>
       <td>Re-run <code class="language-plaintext highlighter-rouge">mkpsxiso</code> against the current <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.exe</code>. Faster than a full rebuild when only the layout XML changed.</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></td>
-      <td>Rebuild + CD + launch DuckStation with a temporary TTY-logging config. Used for day-to-day scene work.</td>
+      <td><code class="language-plaintext highlighter-rouge">scripts/build-docker-image.sh</code></td>
+      <td>Build the dev Docker image from <code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code>. Run once after clone, then again when the Dockerfile changes.</td>
     </tr>
   </tbody>
 </table>
 
-<p>The clean build path inside <code class="language-plaintext highlighter-rouge">build-ps1.sh</code>:</p>
+<p>The clean build path inside <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code>:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project <span class="se">\</span>
     jc-reborn-ps1-dev:amd64 bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; rm -rf build-ps1"</span>
@@ -421,7 +420,7 @@ docker run <span class="nt">--rm</span> jc-reborn-ps1-dev:amd64 mipsel-none-elf-
 <span class="c"># expected: mipsel-none-elf-gcc (GCC) 12.3.0</span>
 
 <span class="c"># Full build smoke test</span>
-./build-ps1.sh
+./scripts/rebuild-and-let-run.sh
 <span class="nb">ls</span> <span class="nt">-lh</span> jcreborn.bin jcreborn.cue
 <span class="c"># expected: jcreborn.bin around 76 MB (mostly FG2 pack payload),</span>
 <span class="c">#           jcreborn.cue a few hundred bytes</span>
@@ -451,13 +450,13 @@ library is replacing.</li>
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/build-ps1.sh"><code class="language-plaintext highlighter-rouge">build-ps1.sh</code></a>
-· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/rebuild-and-let-run.sh"><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></a>
-— the two wrapper scripts most of this page describes (clean
-build vs rebuild+launch).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/rebuild-and-let-run.sh"><code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-ps1.sh"><code class="language-plaintext highlighter-rouge">scripts/build-ps1.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-docker-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-docker-image.sh</code></a>
+— the wrapper scripts the body walks the reader through.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/build-system.md"><code class="language-plaintext highlighter-rouge">docs/ps1/build-system.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/toolchain-setup.md"><code class="language-plaintext highlighter-rouge">docs/ps1/toolchain-setup.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.ps1"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/CMakeLists.ps1.txt"><code class="language-plaintext highlighter-rouge">CMakeLists.ps1.txt</code></a></li>
 </ul>
 

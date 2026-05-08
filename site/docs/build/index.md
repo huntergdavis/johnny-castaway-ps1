@@ -41,11 +41,10 @@ git clone https://github.com/huntergdavis/johnny-castaway-ps1.git
 cd johnny-castaway-ps1
 
 # 2. Build the dev Docker image (one-time, ~5 min)
-docker build -f Dockerfile.ps1 -t jc-reborn-ps1-dev:amd64 \
-    --platform linux/amd64 .
+./scripts/build-docker-image.sh
 
-# 3. Build the PS1 executable + CD image
-./build-ps1.sh
+# 3. Build the PS1 executable + CD image + launch DuckStation
+./scripts/rebuild-and-let-run.sh
 
 # 4. Boot it
 #    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).
@@ -61,7 +60,7 @@ of a one-shot build, read
 
 ## The Docker image
 
-`Dockerfile.ps1` is built `--platform linux/amd64` so it works on every host
+`config/ps1/Dockerfile.ps1` is built `--platform linux/amd64` so it works on every host
 architecture the author owns. It's based on Ubuntu 22.04 and installs:
 
 | Component                       | Version     | Source |
@@ -179,12 +178,12 @@ for the routing step.
 
 | Script                           | What it does |
 |----------------------------------|--------------|
-| `build-ps1.sh`                   | Clean rebuild of executable + CD image. The "make me a fresh disc" button. |
+| `scripts/rebuild-and-let-run.sh` | Rebuild executable + CD + launch DuckStation with a temporary TTY-logging config. The "make me a fresh disc and run it" button; the day-to-day scene-work entry. |
 | `scripts/build-ps1.sh`           | Incremental executable build only. No CD authoring. |
 | `scripts/make-cd-image.sh`       | Re-run `mkpsxiso` against the current `build-ps1/jcreborn.exe`. Faster than a full rebuild when only the layout XML changed. |
-| `scripts/rebuild-and-let-run.sh` | Rebuild + CD + launch DuckStation with a temporary TTY-logging config. Used for day-to-day scene work. |
+| `scripts/build-docker-image.sh`  | Build the dev Docker image from `config/ps1/Dockerfile.ps1`. Run once after clone, then again when the Dockerfile changes. |
 
-The clean build path inside `build-ps1.sh`:
+The clean build path inside `scripts/rebuild-and-let-run.sh`:
 
 ```bash
 docker run --rm --platform linux/amd64 -v "$PWD":/project \
@@ -233,7 +232,7 @@ docker run --rm jc-reborn-ps1-dev:amd64 mipsel-none-elf-gcc --version
 # expected: mipsel-none-elf-gcc (GCC) 12.3.0
 
 # Full build smoke test
-./build-ps1.sh
+./scripts/rebuild-and-let-run.sh
 ls -lh jcreborn.bin jcreborn.cue
 # expected: jcreborn.bin around 76 MB (mostly FG2 pack payload),
 #           jcreborn.cue a few hundred bytes
@@ -260,11 +259,11 @@ or running it through the [headless regtest harness]({{ '/docs/regtest/' | relat
 
 ## View source on GitHub
 
-- [`build-ps1.sh`]({{ site.github_url }}/blob/main/build-ps1.sh)
-  · [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
-  — the two wrapper scripts most of this page describes (clean
-  build vs rebuild+launch).
+- [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
+  · [`scripts/build-ps1.sh`]({{ site.github_url }}/blob/main/scripts/build-ps1.sh)
+  · [`scripts/build-docker-image.sh`]({{ site.github_url }}/blob/main/scripts/build-docker-image.sh)
+  — the wrapper scripts the body walks the reader through.
 - [`docs/ps1/build-system.md`]({{ site.github_url }}/blob/main/docs/ps1/build-system.md)
 - [`docs/ps1/toolchain-setup.md`]({{ site.github_url }}/blob/main/docs/ps1/toolchain-setup.md)
-- [`Dockerfile.ps1`]({{ site.github_url }}/blob/main/Dockerfile.ps1)
+- [`config/ps1/Dockerfile.ps1`]({{ site.github_url }}/blob/main/config/ps1/Dockerfile.ps1)
 - [`CMakeLists.ps1.txt`]({{ site.github_url }}/blob/main/CMakeLists.ps1.txt)
