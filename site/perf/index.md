@@ -103,7 +103,7 @@ and this page.
   Lower is better.
 - **Target Speed**: `target_vb / loop_vb`. `100%` means exact
   [target cadence]({{ '/docs/glossary/#target-vb' | relative_url }}).
-- **VBlanks**: `loop_vb/target_vb` — see the
+- **[VBlanks]({{ '/docs/glossary/#vblank' | relative_url }})**: `loop_vb/target_vb` — see the
   [target_vb / loop_vb glossary entry]({{ '/docs/glossary/#target-vb' | relative_url }}).
 - **[Blocking]({{ '/docs/glossary/#blocking-vb' | relative_url }})**: visible CD/blocking VBlanks.
 - **[Prefetch]({{ '/docs/glossary/#prefetch-hits' | relative_url }})**: prefetch overrun VBlanks.

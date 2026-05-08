@@ -19,7 +19,7 @@ script does when it runs through to a stop. The PS1 does not interpret ADS
 bytecode at runtime; that work happens on a host build with full SDL2, and
 the result of every frame gets serialized into a flat binary file. At
 runtime the console reads the binary, walks an entry table, and presents one
-frame per VBlank window. There is no script, no thread scheduler, no
+frame per [VBlank]({{ '/docs/glossary/#vblank' | relative_url }}) window. There is no script, no thread scheduler, no
 TTM/SCR composition step. Just `read sector → upload pixels → wait`.
 
 The format is called *FG2* because it is the second iteration of the
