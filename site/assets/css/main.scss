@@ -963,10 +963,13 @@ dt:target {
   font-variant-numeric: tabular-nums;
 }
 .scene-perf-table td.spd-green  { background: rgba(0, 168, 0, 0.32); font-weight: 700; }
-/* Yellow background uses an orange-tinted hue because the page bg
-   is cream-yellow (--jc-sun-cream = #FFF6D9); pure yellow at low
-   opacity disappears against it. */
-.scene-perf-table td.spd-yellow { background: rgba(252, 168, 0, 0.45); font-weight: 700; }
+/* Orange = the in-between band (95–99%). Slightly darker / more
+   saturated than yellow to read as a distinct tier. */
+.scene-perf-table td.spd-orange { background: rgba(252, 132, 0, 0.50); font-weight: 700; }
+/* Yellow background uses a saturated yellow at high opacity because
+   the page bg is cream-yellow (--jc-sun-cream = #FFF6D9); pure yellow
+   at low opacity disappears against it. */
+.scene-perf-table td.spd-yellow { background: rgba(252, 232, 0, 0.65); font-weight: 700; }
 .scene-perf-table td.spd-red    { background: rgba(252,   0, 0, 0.42); font-weight: 700; }
 .scene-perf-legend {
   font-family: var(--font-display);
@@ -986,10 +989,12 @@ dt:target {
   font-weight: 700;
 }
 .scene-perf-legend .spd-key.spd-green  { background: rgba(0, 168, 0, 0.32); }
-.scene-perf-legend .spd-key.spd-yellow { background: rgba(252, 168, 0, 0.45); }
+.scene-perf-legend .spd-key.spd-orange { background: rgba(252, 132, 0, 0.50); }
+.scene-perf-legend .spd-key.spd-yellow { background: rgba(252, 232, 0, 0.65); }
 .scene-perf-legend .spd-key.spd-red    { background: rgba(252,   0, 0, 0.42); }
 @media (prefers-color-scheme: dark) {
   .scene-perf-table td.spd-green  { background: rgba(0, 252, 0, 0.20); color: var(--jc-blue-deep); }
+  .scene-perf-table td.spd-orange { background: rgba(252, 168, 0, 0.32); color: var(--jc-blue-deep); }
   .scene-perf-table td.spd-yellow { background: rgba(252, 252, 0, 0.30); color: var(--jc-blue-deep); }
   .scene-perf-table td.spd-red    { background: rgba(252,  0,  0, 0.32); color: var(--jc-sun-cream); }
 }
