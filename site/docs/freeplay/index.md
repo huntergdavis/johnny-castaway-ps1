@@ -113,9 +113,10 @@ the menu.
 
 The Scene Set lineup also covers the rest of the catalog by family:
 *Johnny Stories*, *Mary Visits*, *Visitors*, *Activities*, and *Misc &
-Suzy*. Pools include scenes whose FG2 packs ship but whose visuals
-aren't fully signed off yet — they play as-is and improve in place as
-scenes are validated.
+Suzy*. At `{{ site.release.tag }}` every scene in every pool clears
+the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})
+— the pools are reader-preference filters, not staging areas for
+unvalidated content.
 
 ## Rendering and memory rules
 
