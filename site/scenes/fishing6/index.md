@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: FISHING 6 — Big green fish
+title: FISHING 6 — Fish spits water in his face, thrown back
 ads: FISHING
 tag: 6
 slug: fishing6
 status: validated
-description: "FISHING.ADS scene 6: Big green fish. Validated under the FISHING 1 bar."
+description: "FISHING.ADS scene 6: Johnny catches a fish; it spits water in his face and he throws it back. Validated 2026-05-08."
 ---
 
 ## Validated
@@ -21,9 +21,9 @@ This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) —
 - High-tide pack: <code>FG/FISHING6.FG2</code>
 - Low-tide pack: <code>FG/FISH6LOW.FG2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny catches a big green fish that spits water in his face. He throws it back.
+Johnny casts a line and reels in a fish. The fish squirts water in his face, and he tosses it back into the ocean. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the prior "big green fish" caption-mapping had the fish right but missed the squirt-and-toss beats that make the gag.
 
 ## Caption
 
