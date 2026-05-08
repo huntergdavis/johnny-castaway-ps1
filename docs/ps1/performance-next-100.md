@@ -155,6 +155,14 @@ restored background/cleanup pixels, which are dynamic at runtime. Do not build
 that as a raw append; continue with a safe pixel-source/data-shape change,
 compression plus ownership, or generated scheduler metadata.
 
+Current VISITOR3 low setup-prime gate: the accepted `208 KiB` low-tide cap is
+still the measured knee after the v127 tail-trim stageguard pass. Retesting
+`216 KiB` preserved high tide but regressed low `1126 -> 1127` and blocking
+`170 -> 173`; retesting `200 KiB` regressed low to `1152/1024`, blocking
+`191`, and hidden refill `3`. Do not retry scalar low-prime sizes around this
+point; VISITOR3 needs generated scheduler ownership or a pack/data-shape change
+to reduce the remaining `150/170` visible blocking.
+
 The VISITOR3 no-op empty-hold recast is also closed under the current packs.
 `scripts/compact-fgp3-zero-noop-entries.py` found `0` high-tide and `0`
 low-tide FGP3/v4 entries whose cleanup and draw pixel counts are both zero;
@@ -1412,6 +1420,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. Both current PAL4/FGP2 packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `5684096` payload-plus-rect bytes per tide for `153 / 216` frames and `9900992` modeled upload bytes saved. The exact budget selects `0` frames, and raw foreground-only safety reports `0` selected draw-covered x-band bytes. Retry only with compression/shrinking pack data, explicit layout movement, a safe pixel source, or generated scheduler ownership. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The analyzer now exact-knapsacks the default-selected VISITOR3 rows against the pack's `814847` bytes of zero-tail slack and selects `74 / 96` frames using `814184` bytes, leaving `663` bytes of slack and retaining `3858104` modeled upload bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows and full VISITOR3/canary validation. |
+| VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 no-op FGP3 entry prune | Do not promote. Removing the visually no-op entries reduced VISITOR3 high `loop_vb 1139 -> 1115`, `blocking_vb 191 -> 123`, `loop_reads 33 -> 29`, and active payload `737600 -> 659318`, but the shortened cadence created hidden refill debt: high `prefetch_overrun_vb 0 -> 56`, low `0 -> 17`. Treat this as evidence that VISITOR3 needs scheduler-owned prefetch placement or budgeted upload-ready data, not isolated entry-count pruning. |
 | VISITOR3 no-op empty-hold recast | Do not promote. The pack-side scanner found `0` current VISITOR3 high/low FGP3/v4 payload entries with both cleanup and draw pixel counts at zero, so active payload stays `737600 -> 737600` and no binary runtime probe is available. The old prune win removed entries that still carry real cleanup/draw work under the current data shape. |
 | VISITOR3 entry-origin recentering | Do not promote. A host-side size gate over current VISITOR3 high/low FGP3/v4 compact cleanup/draw streams found no legal origin shift that reduces compact-u16 metadata; both tides stay `active_payload 737600 -> 737600`, `saved=0`, `changed_entries=0`. |
