@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: ACTIVITY 12 — Belly-flop dive
+title: ACTIVITY 12 — Bird on head, Johnny clubs himself
 ads: ACTIVITY
 tag: 12
 slug: activity12
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 12: Belly-flop dive. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 12: A bird lands on Johnny's head and he clubs himself trying to hit the bird. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff on the existing on-disc
@@ -18,11 +18,9 @@ rework needed.
 - ADS dispatch: <code>ACTIVITY.ADS scene 12</code>
 - Slug: <code>activity12</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny climbs the palm and does a belly-flop instead of a clean dive.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+A bird lands on Johnny's head; he swings a club at it and ends up clobbering his own head instead. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "belly-flop dive" caption-mapping guess was wrong (that gag is ACTIVITY 1).
 
 ### How this scene gets validated
 
