@@ -104,7 +104,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3759 words
+          ~15 min read · 3791 words
         </p>
 
       <hr class="rule" />
@@ -929,7 +929,10 @@ closed because the current packs expose <code class="language-plaintext highligh
 packed-draw metadata probe proves a real VISITOR3 byte-reduction signal, but
 its v7 runtime decoder crosses the PS-EXE sector bucket and shifts every
 following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
-C-runtime shape is rejected until it can be made layout-neutral.</li>
+C-runtime shape is rejected until it can be made layout-neutral. A
+layout-neutral packed-delta retry keeps LBAs and the PS-EXE bucket fixed, but
+its function-scoped PAL4 span <code class="language-plaintext highlighter-rouge">-Os</code> trade regresses VISITOR3 high while
+improving low tide, so that C-side shape is closed too.</li>
   <li><strong>FG2-specific present pipeline with explicit slack budgeting.</strong> Earlier
 present-prep experiments regressed because they stole CD prefetch slack;
 the next scheduler needs separate render-prep and CD-prefetch budgets.</li>

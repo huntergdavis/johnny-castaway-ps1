@@ -801,7 +801,10 @@ Next plausible wins, in priority order:
    packed-draw metadata probe proves a real VISITOR3 byte-reduction signal, but
    its v7 runtime decoder crosses the PS-EXE sector bucket and shifts every
    following foreground LBA; BUILDING2 and BUILDING4 canaries regress, so that
-   C-runtime shape is rejected until it can be made layout-neutral.
+   C-runtime shape is rejected until it can be made layout-neutral. A
+   layout-neutral packed-delta retry keeps LBAs and the PS-EXE bucket fixed, but
+   its function-scoped PAL4 span `-Os` trade regresses VISITOR3 high while
+   improving low tide, so that C-side shape is closed too.
 2. **FG2-specific present pipeline with explicit slack budgeting.** Earlier
    present-prep experiments regressed because they stole CD prefetch slack;
    the next scheduler needs separate render-prep and CD-prefetch budgets.

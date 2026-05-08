@@ -367,7 +367,10 @@ probe finally finds a real VISITOR3 byte-reduction signal (`737600 -> 659455`
 payload bytes per tide and `1139 -> 1127` / `1140 -> 1124` loop VBlanks), but
 its new runtime decoder crosses the PS-EXE sector bucket and shifts foreground
 LBAs, regressing BUILDING2 and BUILDING4 canaries, so it is logged but not
-promoted.
+promoted. A layout-neutral retry keeps pack LBAs and the `215040` byte PS-EXE
+bucket fixed with a smaller payload marker and function-scoped PAL4 span `-Os`,
+but it regresses VISITOR3 high (`1139 -> 1148`) while improving low tide
+(`1140 -> 1135`), so that C-side packed-draw route is also rejected.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target
