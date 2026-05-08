@@ -15,7 +15,7 @@ date: 2026-05-06
 </details>
 
 `v0.8.0-ps1` was the post-validation performance baseline. All 63
-scenes signed off; `+0.9%` over target / `99.5%` target speed across
+scenes signed off; `+0.9%` over target / [`99.5%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }}) across
 the 120 timing-bearing rows; the [retrospective]({{ '/lab/from-87-to-99-5/' | relative_url }})
 walks through how the matrix moved there. That looked like the end
 of the speed arc.
