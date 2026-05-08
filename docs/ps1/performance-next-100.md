@@ -259,6 +259,14 @@ reduced low-tide `loop_reads 55 -> 54`, but regressed `scene_vb 1657 -> 1661`,
 leaving hidden refill at `5`. Do not retry this tail group as a local source
 table; saved reads after `365..381` still need scheduler-owned placement.
 
+Current BUILDING2 low mid-cluster group gate: the `204..220` group has the
+same strict blocker as restore-minus-current. Guards at `8` and `7` VBlanks
+were exact-flat (`1383/1304`, `blocking_vb=118`, `prefetch_overrun_vb=5`).
+Unguarded grouping reduced visible blocking `118 -> 108`, `loop_reads 55 ->
+53`, and due misses `22 -> 18`, but regressed target-relative overrun `79 ->
+82` and hidden refill `5 -> 13`. Treat this as another generated scheduler
+placement target, not a hand-authored read group.
+
 The VISITOR3 no-op empty-hold recast is also closed under the current packs.
 `scripts/compact-fgp3-zero-noop-entries.py` found `0` high-tide and `0`
 low-tide FGP3/v4 entries whose cleanup and draw pixel counts are both zero;
