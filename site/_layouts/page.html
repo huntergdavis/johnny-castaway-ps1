@@ -46,13 +46,21 @@ layout: default
   <div class="page-body">
     {{ content }}
   </div>{% comment %}
-    Section-specific pagers. The detail pages of the regtest case
-    shelf get a prev/next walker like the scene and devlog pages
-    do. The index page itself (no slug after `/cases/`) does not.
-    No whitespace-trim modifiers on the outer if/endif: pages that
-    don't take this branch must remain byte-identical so unrelated
-    commits don't churn 500+ HTMLs.
+    Section-specific pagers. Two surfaces use page.html and need a
+    chronological/lex prev-next walker like the scene + devlog
+    pagers:
+
+      - Regtest case detail pages — lex-sorted by URL.
+      - Lab essay detail pages — date-sorted (oldest first),
+        matching the head-pagination include's order.
+
+    The index pages themselves don't need pagers (they're the
+    walking-target). No whitespace-trim modifiers on the outer
+    if/endif so non-matching pages stay byte-identical and
+    unrelated commits don't churn HTMLs.
   {% endcomment %}{% if page.url contains '/archaeology/regtest-references/cases/' and page.url != '/archaeology/regtest-references/cases/' %}
   {% include regtest-case-pager.html %}
+  {% endif %}{% assign lab_pager_pfx = page.url | slice: 0, 5 %}{% if lab_pager_pfx == '/lab/' and page.url != '/lab/' and page.date %}
+  {% include lab-essay-pager.html %}
   {% endif %}
 </article>

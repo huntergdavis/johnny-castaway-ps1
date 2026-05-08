@@ -1,0 +1,60 @@
+{%- comment -%}
+  Per-essay prev/next walker for /lab/<essay>/ pages. Lab essays
+  are dated long-form articles like devlog posts, but they live
+  in `site.html_pages` (layout: page) rather than `site.posts`,
+  so Jekyll's built-in page.previous/page.next doesn't apply.
+
+  Date-sort the lab essays ascending (oldest first) and walk
+  with the same flag-tracking idiom the head-pagination include
+  uses, so the body and head pagination land on the same prev /
+  next pair on every page.
+
+  Convention: prev = older, next = newer — matching post.html's
+  devlog pager. Reader walking forward in time (oldest → newest)
+  hits "newer →"; reader walking backward hits "← older".
+
+  Reuses the .scene-pager class — pure layout, same shape as the
+  scene + devlog + regtest-case pagers.
+
+  Page template includes this conditionally; only /lab/<essay>/
+  pages need it (the /lab/ index doesn't).
+{%- endcomment -%}
+{%- assign lab_essays = site.pages | where_exp: 'p', 'p.url contains "/lab/"' | where_exp: 'p', 'p.url != "/lab/"' | where_exp: 'p', 'p.date' | sort: 'date' -%}
+{%- assign lab_prev = nil -%}
+{%- assign lab_next = nil -%}
+{%- assign lab_reached = false -%}
+{%- for essay in lab_essays -%}
+  {%- if lab_reached and lab_next == nil -%}
+    {%- assign lab_next = essay -%}
+  {%- elsif essay.url == page.url -%}
+    {%- assign lab_reached = true -%}
+  {%- elsif lab_reached == false -%}
+    {%- assign lab_prev = essay -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<footer class="post-footer">
+  <hr class="rule" />
+  <nav class="scene-pager" aria-label="Lab essay navigation">
+    <div class="scene-pager-prev">
+      {% if lab_prev %}
+        <a href="{{ lab_prev.url | relative_url }}" rel="prev">
+          <span class="scene-pager-dir" aria-hidden="true">← older</span>
+          <span class="scene-pager-tag">{{ lab_prev.title }}</span>
+        </a>
+      {% endif %}
+    </div>
+    <div class="scene-pager-up">
+      <a href="{{ '/lab/' | relative_url }}">↑ lab index</a>
+    </div>
+    <div class="scene-pager-next">
+      {% if lab_next %}
+        <a href="{{ lab_next.url | relative_url }}" rel="next">
+          <span class="scene-pager-dir" aria-hidden="true">newer →</span>
+          <span class="scene-pager-tag">{{ lab_next.title }}</span>
+        </a>
+      {% endif %}
+    </div>
+    <p class="scene-pager-hint" hidden>← / → arrow keys also walk these essays.</p>
+  </nav>
+</footer>
