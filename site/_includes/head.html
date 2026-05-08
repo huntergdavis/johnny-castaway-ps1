@@ -11,6 +11,15 @@
     blocks; this meta is the declaration that matches the styles.
   {%- endcomment -%}
   <meta name="color-scheme" content="light dark" />
+  {%- comment -%}
+    iOS Safari auto-linkifies any 7-or-more-digit numeric run as a
+    `tel:` phone-call link. The site is dense with numbers that
+    aren't phone numbers — VBlank counts (1068/1074), KiB sizes
+    (208 KiB), frame indices, line counts, percentages — and a
+    surprise tap-to-call popup is the wrong affordance for any of
+    them. Standard meta-tag opt-out.
+  {%- endcomment -%}
+  <meta name="format-detection" content="telephone=no" />
 
   <title>{% if page.title and page.url != "/" %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }} — fan port{% endif %}</title>
   <meta name="description" content="{{ page.description | default: site.description }}" />
