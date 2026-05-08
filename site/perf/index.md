@@ -175,18 +175,18 @@ and this page.
   </caption>
   <thead>
     <tr>
-      <th>Scene</th>
-      <th>Tide</th>
-      <th>Status</th>
-      <th>Latest Run</th>
-      <th>Stats Version</th>
-      <th>Over Target</th>
-      <th>Target Speed</th>
-      <th>VBlanks</th>
-      <th>Blocking</th>
-      <th>Prefetch</th>
-      <th>Due</th>
-      <th>Notes</th>
+      <th scope="col">Scene</th>
+      <th scope="col">Tide</th>
+      <th scope="col">Status</th>
+      <th scope="col">Latest Run</th>
+      <th scope="col">Stats Version</th>
+      <th scope="col">Over Target</th>
+      <th scope="col">Target Speed</th>
+      <th scope="col">VBlanks</th>
+      <th scope="col">Blocking</th>
+      <th scope="col">Prefetch</th>
+      <th scope="col">Due</th>
+      <th scope="col">Notes</th>
     </tr>
   </thead>
   <tbody>
