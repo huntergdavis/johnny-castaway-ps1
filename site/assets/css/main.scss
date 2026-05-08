@@ -240,6 +240,22 @@ hr.rule, .rule {
    block looks like a bug. */
 main:focus { outline: none; }
 
+/* Machine-readable last-verified date in scene eyebrow row.
+   Visually subordinate (muted, smaller) so the pill stays the
+   primary status signal; carries a real <time datetime="..."> for
+   crawlers, AI agents, and assistive tech. */
+.scene-verified {
+  margin-left: 0.5em;
+  font-family: var(--font-pixel);
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+}
+.scene-verified::before {
+  content: "· ";
+  color: var(--fg-mute);
+}
+
 /* Visually hidden but readable by screen readers. Standard a11y
    idiom — used for table <caption>s and anywhere visual context is
    already present in the surrounding chrome but the assistive layer
