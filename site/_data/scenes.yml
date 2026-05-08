@@ -831,7 +831,7 @@
   sfx: done
   variants: []
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him
+  notes: yacht-party-drunk-pass-out (Johnny parties with a yacht full of people, returns to the island drunk, and passes out); visual + audible signoff after re-exporting high/low packs with -500/+300 stitch positions and a range-gated Johnny-bbox hold (frames 63-165, glitch threshold 1000) so Johnny stays drawn in his rest position while the boat+mermaid scene plays out and the foreground-only diff drops him
 - ads: WALKSTUF
   tag: 2
   slug: walkstuf2

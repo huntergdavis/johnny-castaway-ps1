@@ -1,12 +1,12 @@
 ---
 layout: scene
-title: WALKSTUF 1 — Jogs around the island
+title: WALKSTUF 1 — Parties on a yacht, comes back drunk, passes out
 ads: WALKSTUF
 tag: 1
 slug: walkstuf1
 status: validated
 last_verified: "2026-05-05"
-description: "WALKSTUF.ADS scene 1: Jogs around the island. Validated 2026-05-05."
+description: "WALKSTUF.ADS scene 1: Johnny parties on a passing yacht, returns to the island drunk, and passes out. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff after re-exporting
@@ -20,11 +20,9 @@ out and the foreground-only diff drops him.
 - ADS dispatch: <code>WALKSTUF.ADS scene 1</code>
 - Slug: <code>walkstuf1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Johnny jogs around the island in a grey jogging outfit.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+A yacht pulls up; Johnny boards and parties with the crowd on board. He comes back to the island visibly drunk, staggers a few steps, and passes out on the sand. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "jogs around the island" caption-mapping guess was wrong (no jogging in the on-PS1 pack).
 
 ### How this scene gets validated
 
