@@ -161,7 +161,7 @@ resource caching above the engine’s working set.</p>
 the official Sony SDK – modern, open source, CMake-friendly. A
 precompiled macOS toolchain was attempted and abandoned (missing
 <code class="language-plaintext highlighter-rouge">cc1</code> / <code class="language-plaintext highlighter-rouge">cc1plus</code>); building from source needed Linux. The fix was
-Docker: <code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>, which works on Intel Mac,
+Docker: <code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>, which works on Intel Mac,
 Apple Silicon (Rosetta), Linux x86-64, and WSL2. Build configured
 through CMake with PSn00bSDK’s toolchain file; CD packaging via
 <a href="../../docs/glossary/#mkpsxiso">mkpsxiso</a>; one shell script (<code class="language-plaintext highlighter-rouge">build-ps1.sh</code>, later
