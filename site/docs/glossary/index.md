@@ -64,6 +64,9 @@ Grouped by area, not alphabetical — most readers come in via one section of th
 
 <dt id="padscript">PADSCRIPT.TXT</dt>
 <dd>The build-time deterministic-input script at <code>config/ps1/PADSCRIPT.TXT</code>, embedded into the EXE by <code>scripts/build-ps1.sh</code>. The runtime only executes it when <a href="#bootmode">BOOTMODE.TXT</a> carries the <code>pad-script</code> or <code>pad-script-log</code> token, so the file is dormant for normal release builds. Four commands — <code>wait</code>, <code>tap</code>/<code>press</code>, <code>hold</code>, <code>shot</code>/<code>screenshot</code>/<code>mark</code> — drive a button vocabulary that covers the full pad (D-pad, <code>START</code> / <code>SELECT</code>, the four face buttons, <code>L1</code>–<code>R2</code>; combine masks with <code>+</code> or <code>,</code>). Durations are frames unless suffixed with <code>s</code> (60 Hz). Used by the pause-menu screenshot harness and pad-driven regtest routes; empty for everything else. Full grammar at <a href="{{ '/docs/scripted-input/' | relative_url }}">/docs/scripted-input/</a>.</dd>
+
+<dt id="jcpadshot">JCPADSHOT</dt>
+<dd>The screenshot-marker TTY line emitted by <a href="#padscript">PADSCRIPT.TXT</a>'s <code>shot</code> / <code>screenshot</code> / <code>mark</code> commands. Format: <code>JCPADSHOT label=&lt;name&gt; frame=&lt;n&gt; tick=&lt;n&gt;</code>. The headless harness greps these out of <code>tty.log</code> and copies the first captured PNG at or after each marker frame into the published asset path; that's how the auto-built <a href="{{ '/help/menu/' | relative_url }}">menu help guide</a> knows which captured frame matches which sub-screen. Disambiguation: <code>JCPADSHOT</code> is a marker, not a diagnostic dump — distinct from <a href="#jcspi-jcpad">JCPAD</a> (the pad-layer cooked-event diagnostic) despite the prefix collision.</dd>
 </dl>
 
 ## Graphics {#graphics}
