@@ -386,7 +386,11 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
-- Latest performance release: **`v0.8.2-ps1`** — promoted the
+- Latest performance release: **`v0.8.3-ps1`** — promoted the
+  WALKSTUF1 compact FGP3/v4 foreground packs; the 120 timing-
+  bearing rows now average slightly under target at
+  `{{ site.release.perf_target_speed_pct }}%` target speed.
+- Previous performance release: **`v0.8.2-ps1`** — promoted the
   VISITOR3 guarded-read path and kept the 63-scene validation bar
   intact while the headless battle card stayed near target.
 - Latest stability release: **`v0.8.1-ps1`** — clean-rect
