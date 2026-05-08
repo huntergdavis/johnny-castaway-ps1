@@ -830,6 +830,30 @@ dd { margin: 0.3em 0 0; padding-left: 0; }
     background: rgba(0, 255, 255, 0.10);
   }
 }
+
+/* Target highlight for direct-anchor navigation. Family jump nav,
+   per-row perf links, glossary entry deep-links — clicking any of
+   them scrolls the target into view but leaves "you are here"
+   ambiguous. A persistent left-border + accent-color background
+   marks the landed row/dt unmistakably without obstructing reading.
+   Sun-yellow tint in light mode (the project palette's brightest
+   accent), dim equivalent in dark mode. */
+.scene-table tbody tr:target,
+.scene-perf-table tbody tr:target,
+.scenes-jump:target,
+dt:target {
+  background: rgba(252, 252, 0, 0.15);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+@media (prefers-color-scheme: dark) {
+  .scene-table tbody tr:target,
+  .scene-perf-table tbody tr:target,
+  .scenes-jump:target,
+  dt:target {
+    background: rgba(252, 252, 0, 0.10);
+    box-shadow: inset 4px 0 0 var(--jc-sun);
+  }
+}
 /* Anchored ADS rows scroll into view past the sticky header. */
 .scene-table tr[id] { scroll-margin-top: 5rem; }
 .scene-table td.scene-tag, .scene-table th.scene-tag {
