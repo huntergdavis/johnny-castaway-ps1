@@ -1573,7 +1573,8 @@ static void grCompositeDirectOpaqueSingleColumn(const uint16 *srcPixels,
  * - bgTile3: x=0-319, y=240-479
  * - bgTile4: x=320-639, y=240-479
  */
-void grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY)
+void __attribute__((optimize("Os")))
+grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY)
 {
     if (!sprite) return;
     if (!sprite->pixels && !sprite->indexedPixels) return;
@@ -2716,7 +2717,8 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
 /*
  * Composite sprite to background tiles with horizontal flip
  */
-void grCompositeToBackgroundFlip(PS1Surface *sprite, sint16 screenX, sint16 screenY)
+void __attribute__((optimize("Os")))
+grCompositeToBackgroundFlip(PS1Surface *sprite, sint16 screenX, sint16 screenY)
 {
     if (!sprite) return;
     if (!sprite->pixels && !sprite->indexedPixels) return;

@@ -4,7 +4,7 @@ This host-side report aggregates the current `foreground-read-plan.json`
 artifacts and ranks candidate retained-window read groups by scene
 pressure and visible-cadence risk. It does not change the PS1 binary.
 
-- Source artifact root: `scratch/ps1-perf-iterate/building2-low-group365-381-v110-broad/20260508-015344-4170683`
+- Source artifact root: `scratch/ps1-perf-iterate/graphics-composite-os-v111-broad/20260508-022537-157560`
 - Candidate rows: `71`
 - Standalone probes: `0`
 - Scheduler or guarded probes: `0`
@@ -23,7 +23,7 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 1 | `building2` | `low` | 1383/1304 | 118 | `204..220` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 2 | `building2` | `low` | 1383/1304 | 118 | `95..111` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 3 | `building2` | `low` | 1383/1304 | 118 | `138..154` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 4 | `building2` | `low` | 1383/1304 | 118 | `247..263` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
+| 4 | `building2` | `low` | 1383/1304 | 118 | `242..258` (16s) | 2 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 5 | `building2` | `low` | 1383/1304 | 118 | `284..296` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 6 | `building2` | `low` | 1383/1304 | 118 | `187..199` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 7 | `building2` | `low` | 1383/1304 | 118 | `74..86` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
@@ -47,12 +47,12 @@ still regress `loop_vb` and visible `blocking_vb`. Treat `risky` and
 | 25 | `activity9` | `low` | 2085/2058 | 29 | `245..257` (12s) | 1 | `risky:short-visible-gap` | `scheduler-owned-only` |
 | 26 | `activity9` | `low` | 2085/2058 | 29 | `251..263` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
 | 27 | `activity9` | `low` | 2085/2058 | 29 | `279..291` (12s) | 1 | `unsafe:tight-visible-gap` | `scheduler-owned-only` |
-| 28 | `visitor3` | `low` | 1138/1024 | 191 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 29 | `visitor3` | `low` | 1138/1024 | 191 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 30 | `visitor3` | `low` | 1138/1024 | 191 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 31 | `visitor3` | `high` | 1137/1024 | 190 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
-| 32 | `visitor3` | `high` | 1137/1024 | 190 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
-| 33 | `visitor3` | `high` | 1137/1024 | 190 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 28 | `visitor3` | `high` | 1137/1024 | 190 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 29 | `visitor3` | `high` | 1137/1024 | 190 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 30 | `visitor3` | `high` | 1137/1024 | 190 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 31 | `visitor3` | `low` | 1135/1024 | 184 | `97..121` (24s) | 2 | `unsafe:tight-visible-gap` | `closed-by-experiment-log` |
+| 32 | `visitor3` | `low` | 1135/1024 | 184 | `97..109` (12s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
+| 33 | `visitor3` | `low` | 1135/1024 | 184 | `97..113` (16s) | 1 | `balanced:validate-overlap` | `closed-by-experiment-log` |
 | 34 | `activity9` | `low` | 2085/2058 | 29 | `229..245` (16s) | 1 | `balanced:medium-visible-gap` | `closed-by-experiment-log` |
 | 35 | `fishing1` | `high` | 1068/1074 | 2 | `146..170` (24s) | 3 | `risky:short-visible-gap` | `defer-under-target` |
 | 36 | `fishing1` | `high` | 1068/1074 | 2 | `158..182` (24s) | 3 | `risky:short-visible-gap` | `defer-under-target` |

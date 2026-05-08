@@ -307,12 +307,13 @@ sound_late = 0   cd_fail = 0
 
 That is **-0.6% over target**, or **100.6% of target speed**. Across the
 120 timing-bearing battle-card rows, the average is **0.0% over target /
-100.1% target speed** (`-0.0670%` exact over target / `100.1368%` exact target speed).
+100.1% target speed** (`-0.0694%` exact over target / `100.1388%` exact target speed).
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`graphics-composite-os-v111`,
 `building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
 `building2-high-restore-minus-current-v108`,
@@ -383,13 +384,14 @@ variant, and 63 scenes have both high- and low-tide variants routed. 120 rows
 carry active-loop timing; `suzy1` and `suzy2` high/low complete as
 metadata-only routes and are excluded from speed averages. `mary3` is visually
 validated but still needs a perf-matrix refresh. The latest matrix
-run is `2026-05-08T01:53:44`; per-row freshness and stats version are shown on
+run is `2026-05-08T02:25:37`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 `over target / target speed (loop_vb/target_vb)`, with `blk` and `due` called
 out when nonzero.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `building2-low-group365-381-v110`,
+rows now use `graphics-composite-os-v111`,
+`building2-low-group365-381-v110`,
 `building2-high-group60-72-v109`,
 `building2-high-restore-minus-current-v108`,
 `visitor3-low-offscreen-exitright-v106`,
@@ -736,7 +738,7 @@ rows are historical only.
     <tr>
       <td><code>visitor3</code></td>
       <td>+11.0% / 90.1% (1137/1024); due 31; blk 190</td>
-      <td>+11.1% / 90.0% (1138/1024); due 31; blk 191</td>
+      <td>+10.8% / 90.2% (1135/1024); due 31; blk 184</td>
     </tr>
     <tr>
       <td><code>visitor4</code></td>
