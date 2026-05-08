@@ -63,7 +63,7 @@ project. Two distinct retrospectives have it as their case study:
   cleared the last cluster.
 - **An "optimized validated outlier" in `v0.8.0-ps1`.** The wide
   boat extends past the legacy 640px scene clip, which made the
-  scene a poor fit for global stream-window settings. The
+  scene a poor fit for global [stream-window]({{ '/docs/glossary/#stream-window' | relative_url }}) settings. The
   Activity9-specific scoped low-tide
   [read group]({{ '/docs/glossary/#read-group' | relative_url }})
   + [padded residual]({{ '/docs/glossary/#padded-residual' | relative_url }})
