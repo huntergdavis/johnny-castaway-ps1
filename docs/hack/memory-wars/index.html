@@ -164,6 +164,42 @@ preserves the older memory notes and false starts.</p>
 The better question is: where does the data live when nobody is looking at it?
 The PS1 port started working when the answer stopped being “everywhere.”</p>
 
+<h2 id="related-pages">Related pages</h2>
+
+<ul>
+  <li><a href="../start-here/">Hack: start here</a>
+— first-day flow if you haven’t already done the build and
+boot loop.</li>
+  <li><a href="../learn-c/">Hack: learn C from Johnny</a>
+— the ownership-and-explicit-state habits that make the
+budget above tractable in C.</li>
+  <li><a href="../visual-debugging/">Hack: visual debugging</a>
+— most fragmentation and clean-rect regressions surfaced
+through the screenshot loop, not text logs.</li>
+  <li><a href="../performance-loop/">Hack: performance loop</a>
+— the matrix that grades every memory change against the
+same target-speed bar.</li>
+  <li><a href="../port-to-a-new-platform/">Hack: port to a new platform</a>
+— what changes when 2 MB / 1 MB / 512 KB becomes some other
+envelope.</li>
+  <li><a href="../../docs/hardware/">Hardware</a> —
+the canonical envelope reference: bus widths, SPU RAM
+sectors, CD seek timing, VRAM frame layout.</li>
+  <li><a href="../../docs/performance/">Performance reference</a>
+— where each <code class="language-plaintext highlighter-rouge">loop_vb</code> / <code class="language-plaintext highlighter-rouge">target_vb</code> / <code class="language-plaintext highlighter-rouge">blocking_vb</code> column
+comes from and how memory pressure shows up in those columns.</li>
+  <li><a href="../../docs/walks/">Story-loop walks</a> —
+the persistent clean buffer named in the v0.8.0 / v0.8.1
+Evolution-by-release section is a direct response to this
+page’s “VRAM allocation as explicit state” rule.</li>
+  <li><a href="../../lab/v081-mary4-freeze/">v0.8.1 retrospective</a>
+— the soak loop that found the clean-rect pressure freeze,
+driven by exactly the budget-overrun story above.</li>
+  <li><a href="../../docs/glossary/#clean-rect">Glossary: clean-rect</a>
+· <a href="../../docs/glossary/#vram">Glossary: VRAM</a>
+· <a href="../../docs/glossary/#spu">Glossary: SPU</a></li>
+</ul>
+
   </div>
 </article>
 

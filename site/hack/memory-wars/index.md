@@ -63,3 +63,37 @@ preserves the older memory notes and false starts.
 On a small machine, "can I compute this?" is usually the wrong first question.
 The better question is: where does the data live when nobody is looking at it?
 The PS1 port started working when the answer stopped being "everywhere."
+
+## Related pages
+
+- [Hack: start here]({{ '/hack/start-here/' | relative_url }})
+  — first-day flow if you haven't already done the build and
+  boot loop.
+- [Hack: learn C from Johnny]({{ '/hack/learn-c/' | relative_url }})
+  — the ownership-and-explicit-state habits that make the
+  budget above tractable in C.
+- [Hack: visual debugging]({{ '/hack/visual-debugging/' | relative_url }})
+  — most fragmentation and clean-rect regressions surfaced
+  through the screenshot loop, not text logs.
+- [Hack: performance loop]({{ '/hack/performance-loop/' | relative_url }})
+  — the matrix that grades every memory change against the
+  same target-speed bar.
+- [Hack: port to a new platform]({{ '/hack/port-to-a-new-platform/' | relative_url }})
+  — what changes when 2 MB / 1 MB / 512 KB becomes some other
+  envelope.
+- [Hardware]({{ '/docs/hardware/' | relative_url }}) —
+  the canonical envelope reference: bus widths, SPU RAM
+  sectors, CD seek timing, VRAM frame layout.
+- [Performance reference]({{ '/docs/performance/' | relative_url }})
+  — where each `loop_vb` / `target_vb` / `blocking_vb` column
+  comes from and how memory pressure shows up in those columns.
+- [Story-loop walks]({{ '/docs/walks/' | relative_url }}) —
+  the persistent clean buffer named in the v0.8.0 / v0.8.1
+  Evolution-by-release section is a direct response to this
+  page's "VRAM allocation as explicit state" rule.
+- [v0.8.1 retrospective]({{ '/lab/v081-mary4-freeze/' | relative_url }})
+  — the soak loop that found the clean-rect pressure freeze,
+  driven by exactly the budget-overrun story above.
+- [Glossary: clean-rect]({{ '/docs/glossary/#clean-rect' | relative_url }})
+  · [Glossary: VRAM]({{ '/docs/glossary/#vram' | relative_url }})
+  · [Glossary: SPU]({{ '/docs/glossary/#spu' | relative_url }})
