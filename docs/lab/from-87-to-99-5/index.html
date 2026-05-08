@@ -245,7 +245,7 @@ looked like.</p>
 
 <h3 id="fgp3-pack-format-conversions">FGP3 pack format conversions</h3>
 
-<p>The original FG2 pack format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime’s “did I miss a pixel” rebuild. Most scenes’ high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.</p>
+<p>The original <a href="../../docs/glossary/#fg2-pack">FG2 pack</a> format carried per-frame foreground deltas as a sparse rect-and-pixel stream. FGP3 is a denser variant: the same frame deltas, but compressed with a smaller header and a residual cleanup table that replaces the runtime’s “did I miss a pixel” rebuild. Most scenes’ high-tide and low-tide packs got rebuilt as FGP3. The win is per-frame upload bytes, which on a 2× CD pipeline is the biggest single bottleneck after raw playback.</p>
 
 <h3 id="scene-local-prefetch-relief">Scene-local prefetch relief</h3>
 
