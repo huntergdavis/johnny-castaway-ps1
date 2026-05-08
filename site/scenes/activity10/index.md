@@ -6,7 +6,7 @@ tag: 10
 slug: activity10
 status: validated
 last_verified: "2026-05-05"
-description: "ACTIVITY.ADS scene 10: Reads; seagull steals book. Validated 2026-05-05."
+description: "ACTIVITY.ADS scene 10: Johnny sits reading and a seagull swoops in and steals the book. Validated 2026-05-08."
 ---
 
 Validated 2026-05-05. Visual + audible signoff on the existing on-disc
@@ -18,11 +18,9 @@ rework needed.
 - ADS dispatch: <code>ACTIVITY.ADS scene 10</code>
 - Slug: <code>activity10</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Reads under the tree; a seagull lifts the book away from him.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny sits reading on the island and a seagull swoops in and snatches the book away. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior caption-mapping guess.
 
 ### How this scene gets validated
 
