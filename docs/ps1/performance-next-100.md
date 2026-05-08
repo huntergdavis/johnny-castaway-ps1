@@ -67,6 +67,15 @@ to `88/88` loop reads with `40/42` due misses. BUILDING6 now needs a
 genuinely shrinking/selective/keyframed encoder, generated scheduler
 ownership, or a motion format with RAM-mirror/dirty-state proof.
 
+Latest VISITOR5 compact-FGP3 decision: do not promote paired compact FGP3/v4
+under the current setup-prime policy. Both packs fit inside the original
+`354227` byte footprint as `279245` active-byte compact residual assets, and
+active loops improve (`1112 -> 1102` high, `1111 -> 1104` low), but full scene
+time regresses `1369 -> 1382` high and `1370 -> 1385` low; low also regresses
+`blocking_vb 7 -> 10` and `prefetch_overrun_vb 7 -> 10`. Retry only
+high-tide-only, with setup-prime capped/disabled, or with generated scheduler
+ownership.
+
 Latest promoted VISITOR3 tail-trim stageguard baseline: trim all-zero draw
 tails inside the existing VISITOR3 FGP3/v4 payloads, raise the high-tide
 setup-prime resident budget to `232 KiB`, and skip VISITOR3 hidden large-stage
@@ -1577,6 +1586,7 @@ pre-v0.8.0 row.
 | VISITOR3 low read group `170..186` with 16-sector retained capacity | Do not promote or retry as a hand-coded group. It saved one nominal read but regressed low tide `1455/1010 -> 1458/1010`, `blocking_vb 366 -> 369`, with fixed layout. The retained append cadence costs more than the saved read. |
 | ACTIVITY9 high `434..450` / low `841..853` groups | Do not retry as standalone hand-coded groups. Under `activity9-window-v072c`, high fired but regressed `loop_vb 2185 -> 2209`, `blocking_vb 117 -> 123`, and `prefetch_overrun_vb 14 -> 17`; low stayed exact-flat and failed the improvement gate. ACTIVITY9 residual CD work needs scheduler-owned read timing, generated append-start ownership metadata, or selective preprocessing/upload-ready pack data. |
 | WALKSTUF1 pal4 padded FGP3 | Do not retry direct pal4 temporal-residual conversion for the current validated packs. Both high and low expand `1530775 -> 1712687` payload bytes, so padding back to the old file size would corrupt the pack. The current high `429..441` read-group probe stayed exact-flat while shifting hot symbols, and the read plan classifies the remaining top candidates as tight-visible-gap. Retry only with a new shrinking encoder, scheduler-owned grouping, selective indexed8/data-shape preprocessing, or an explicit layout-moving pack experiment. |
+| VISITOR5 paired compact FGP3/v4 | Do not promote under the current setup-prime policy. Both packs fit inside the original `354227` byte footprint, and active loop improves (`1112 -> 1102` high, `1111 -> 1104` low), but full scene cost regresses (`1369 -> 1382`, `1370 -> 1385`) and low-tide CD/refill regresses (`blocking_vb 7 -> 10`, `prefetch_overrun_vb 7 -> 10`). Retry only high-tide-only, setup-prime capped/disabled, or with generated scheduler ownership. |
 | ACTIVITY9 pal4 padded FGP3 | Done; keep. Both validated wide-stitched ACTIVITY9 packs shrink as FGP3 temporal residuals and fit when padded back to the original `1745484` byte CD footprint. Runtime payload drops `1740180 -> 1453793`; high improves `2185/2049 -> 2101/2056`, low improves `2197/2054 -> 2103/2053`, and the exact matrix rollup moves to `0.8745%` over target / `99.4479%` target speed. |
 | ACTIVITY9 low FGP3 read group `624..636` | Done; keep. Under the padded FGP3 data shape, the low-tide grouped append reduces visible CD pressure: `loop_vb 2103 -> 2093`, target accounting `2053 -> 2056`, `blocking_vb 60 -> 43`, `prefetch_overrun_vb 18 -> 14`, and `due_misses 7 -> 5`. That checkpoint later moved to `0.8309%` over target / `99.4779%` target speed after the VISITOR3/WALKSTUF1 setup-prime and VISITOR3 low-group promotions; the current rollup is tracked at the top of this file. |
 | BUILDING5 pal4 padded FGP3 | Done; keep. Both current BUILDING5 validated packs shrink as FGP3 temporal residuals and fit when padded back to the original `818670` byte CD footprint. High improves `loop_vb 3359 -> 3343`, `overrun_vb 13 -> 0`, `blocking_vb 20 -> 5`, and `loop_reads 56 -> 41`; low improves `loop_vb 3357 -> 3345`, `overrun_vb 10 -> 0`, `blocking_vb 17 -> 8`, and `loop_reads 56 -> 41`. This checkpoint later moved to `0.8071%` over target / `99.5018%` target speed after the ACTIVITY11 padded-FGP3 promotion; the current rollup is tracked at the top of this file. |
