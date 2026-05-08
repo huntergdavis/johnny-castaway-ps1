@@ -1,6 +1,6 @@
 ---
 layout: scene
-title: VISITOR 3 - Yacht couple, photos
+title: VISITOR 3 — Yacht couple, photos
 ads: VISITOR
 tag: 3
 slug: visitor3
