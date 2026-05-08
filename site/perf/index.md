@@ -48,8 +48,8 @@ linked in the Rollup section.</p>
 
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
-  <span class="spd-key spd-green">105 (83.3%) ≥ 99%</span>
-  <span class="spd-key spd-orange">18 (14.3%) ≥ 95%</span>
+  <span class="spd-key spd-green">107 (84.9%) ≥ 99%</span>
+  <span class="spd-key spd-orange">16 (12.7%) ≥ 95%</span>
   <span class="spd-key spd-yellow">3 (2.4%) ≥ 90%</span>
   <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 126 timing-bearing rows. Every row now contributes to speed averages.
@@ -58,15 +58,17 @@ linked in the Rollup section.</p>
 No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
 BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`
 and low `365..381` grouped-read passes, the VISITOR3 low scoped
-composite-helper pass, and the WALKSTUF1 compact FGP3/v4 restore-minus-current
-pass. The three yellow rows (90–95%) are
+composite-helper pass, the WALKSTUF1 compact FGP3/v4 restore-minus-current
+pass, and the BUILDING1/VISITOR5 compact-FGP3 no-autoprime follow-ups. The
+three yellow rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
 (`91.0%` / `91.9%`) and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
 low (`94.3%`); the orange band (95–99%) holds `walkstuf1` high/low
-(`95.6%` / `95.8%`), BUILDING6 high/low, BUILDING2 high, and the remaining
-wide-action rows still finishing scheduler-owned read timing and
-selective-preprocessing work. MARY3 high/low moved into green after the
-guarded prefetch-preserve pass.
+(`95.6%` / `95.8%`), BUILDING6 high/low, BUILDING2 high, VISITOR5 high/low,
+and the remaining wide-action rows still finishing scheduler-owned read timing
+and selective-preprocessing work. MARY3 high/low moved into green after the
+guarded prefetch-preserve pass, and BUILDING1 high/low moved into green after
+the compact-FGP3/no-autoprime pass.
 
 All 126 rows now carry active-loop timing. [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }})
 needs a longer `12000`-frame matrix budget because its valid
@@ -87,10 +89,10 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `+0.5%` (`0.5281%` exact, public-capped) |
-| Timing-bearing average target speed | `99.5%` (`99.4747%` exact, public-capped) |
-| Latest perf matrix run | `2026-05-08T12:22:52` |
-| Stats version | mixed across rows; newest optimized/code-headroom rows use `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
+| Timing-bearing average over target | `+0.5%` (`0.5215%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.4812%` exact, public-capped) |
+| Latest perf matrix run | `2026-05-08T13:01:12` |
+| Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor5-high-compact-fgp3-noautoprime-v158`, `building1-compact-fgp3-noautoprime-v157`, `mary3-preserve-window-slack8-v149`, `missing-scenes-current-v001`, `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
 | FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
@@ -126,7 +128,8 @@ and this page.
   (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`); `-` means no current
   matrix run has been recorded for that variant.
 - **Stats Version**: performance/layout version for that row. The latest
-  refreshed rows use `building1-compact-fgp3-noautoprime-v157`,
+  refreshed rows use `visitor5-high-compact-fgp3-noautoprime-v158`,
+  `building1-compact-fgp3-noautoprime-v157`,
   `mary3-preserve-window-slack8-v149`,
   `missing-scenes-current-v001`,
   `visitor3-tail-trim-stageguard-v127`,
@@ -1834,15 +1837,15 @@ and this page.
       <td><a class="scene-perf-rowlink" href="#perf-visitor5-high"><code>visitor5</code></a></td>
       <td>high</td>
       <td>measured</td>
-      <td>2026-05-06T00:23:01</td>
-      <td>visitor5-v072-prefetch-relief</td>
-      <td>+1.9%</td>
-      <td class="spd-orange">98.1%</td>
-      <td>1111/1090</td>
-      <td>12</td>
-      <td>12</td>
+      <td>2026-05-08T13:01:12</td>
+      <td>visitor5-high-compact-fgp3-noautoprime-v158</td>
+      <td>+1.1%</td>
+      <td class="spd-orange">98.9%</td>
+      <td>1104/1092</td>
+      <td>11</td>
+      <td>11</td>
       <td>0</td>
-      <td>validated pack; visitor5 clean-snapshot relief exception restores stage1_window prefetch with accepted hidden-refill tradeoff</td>
+      <td>padded compact FGP3/v4 high pack with VISITOR5 auto-prime disabled; paired low compact rejected</td>
     </tr>
     <tr id="perf-visitor5-low">
       <td><a class="scene-perf-rowlink" href="#perf-visitor5-low"><code>visitor5</code></a></td>

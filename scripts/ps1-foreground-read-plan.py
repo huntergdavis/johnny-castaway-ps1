@@ -725,7 +725,7 @@ def default_setup_policy(case: dict[str, Any]) -> tuple[int, list[tuple[int, int
 
 
 def skips_auto_fgp3_setup_prime(scene_name: str | None) -> bool:
-    return scene_name == "building1"
+    return scene_name in {"building1", "visitor5"}
 
 
 def fg_pack_payload_end(header: dict[str, Any], entries: list[dict[str, Any]]) -> int:

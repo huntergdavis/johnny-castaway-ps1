@@ -18,8 +18,10 @@ per-scene ledger is signed off, all 126 high/low scene variants are routed,
 and the headless timing-bearing average is +0.5% over target /
 {{ site.release.perf_target_speed_pct }}% target speed. The current
 post-release BUILDING1 compact-FGP3/no-autoprime follow-up moves both
-BUILDING1 tides into the green band while the MARY3 guarded
-prefetch-preserve baseline keeps hidden refill debt at zero.
+BUILDING1 tides into the green band, and the newer VISITOR5 high-only compact
+FGP3/no-autoprime follow-up cuts that high-tide overrun without moving low
+tide. The MARY3 guarded prefetch-preserve baseline keeps hidden refill debt
+at zero.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -103,8 +105,8 @@ Pulled from the live narrative in
   has the headless baseline at slightly under target — `{{ site.release.perf_target_speed_pct }}%`
   target speed across all 126 timing-bearing rows after the v0.8.2 + v0.8.3
   VISITOR3 + WALKSTUF1 outlier closures, the missing-scene timing refresh, the
-  MARY3 guarded prefetch-preserve pass, and the BUILDING1 compact-FGP3/no-autoprime
-  follow-up.
+  MARY3 guarded prefetch-preserve pass, the BUILDING1 compact-FGP3/no-autoprime
+  follow-up, and the VISITOR5 high-only compact-FGP3/no-autoprime follow-up.
   The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated

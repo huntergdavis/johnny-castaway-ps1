@@ -25,12 +25,12 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the BUILDING1 compact-FGP3/no-autoprime
-promotion: `+0.5281%` public average over target / `99.4747%` public target
+Current all-scene rollup after the VISITOR5 high-only compact-FGP3/no-autoprime
+promotion: `+0.5215%` public average over target / `99.4812%` public target
 speed across all `126` timing-bearing rows. The raw signed optimization matrix
-is `-0.2404%` / `100.2410%`. Since the compact full-matrix baseline was about
+is `-0.2471%` / `100.2478%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `16.87` public over-target points and added about `12.37`
+removed about `16.88` public over-target points and added about `12.38`
 public target-speed points.
 
 Latest promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
@@ -56,6 +56,21 @@ for this scene. High improves `loop_vb 2402 -> 2296`, `target_vb 2295 ->
 `prefetch_overrun_vb=0`. A `7` VBlank slack retry was rejected because high
 tide regressed against this baseline.
 
+Latest promoted VISITOR5 high-only compact FGP3/no-autoprime baseline:
+convert `VISITOR5.FG2` to a padded compact FGP3/v4 restore-minus-current pack
+inside the original `354227` byte footprint, but leave `VIST5LOW.FG2` on the
+prior FGP2 baseline because the paired low-tide compact candidate regressed CD
+debt. VISITOR5 now skips automatic FGP3 setup-prime only when the active pack
+is FGP3. High improves `scene_vb 1369 -> 1361`, `loop_vb 1111 -> 1104`,
+`target_vb 1090 -> 1092`, `overrun_vb 21 -> 12`, `blocking_vb 12 -> 11`,
+`prefetch_overrun_vb 12 -> 11`, `loop_reads 25 -> 19`, and `loop_read_vb
+123 -> 91`; pack LBA stays fixed at `24082`, pack bytes stay `354227`, and
+the PS-EXE bucket stays `215040`. Low tide was verified exact-flat when its
+original FGP2 pack was restored. Broad VISITOR3, BUILDING2, BUILDING4,
+ACTIVITY9, and FISHING1 canaries stayed on their accepted profiles. The next
+top rows are VISITOR3 low/high, BUILDING2 low, WALKSTUF1 high/low, BUILDING6
+high/low, VISITOR5 low, and remaining under-99 rows.
+
 Latest promoted BUILDING1 compact FGP3/no-autoprime baseline: convert
 `BUILDING1.FG2` and `BUIL1LOW.FG2` to padded compact FGP3/v4
 restore-minus-current packs inside the original `318131` byte footprints, but
@@ -67,8 +82,7 @@ and `loop_reads 23 -> 17`; low improves `794 -> 787`, `779 -> 782`,
 `15 -> 5`, `21 -> 16`, `21 -> 14`, and `23 -> 17`. Full scene time also
 improves `1028 -> 1020` high and `1032 -> 1025` low. Broad VISITOR3,
 BUILDING2, BUILDING4, ACTIVITY9, and FISHING1 canaries stayed on their
-accepted profiles. The next top rows are VISITOR3 low/high, BUILDING2 low,
-WALKSTUF1 high/low, BUILDING6 high/low, and remaining under-99 rows.
+accepted profiles.
 
 Latest BUILDING6 direct-FGP3 decision: do not promote either same-footprint or
 layout-moving direct PAL4 temporal-residual conversion. The conversion expands
@@ -80,14 +94,15 @@ to `88/88` loop reads with `40/42` due misses. BUILDING6 now needs a
 genuinely shrinking/selective/keyframed encoder, generated scheduler
 ownership, or a motion format with RAM-mirror/dirty-state proof.
 
-Latest VISITOR5 compact-FGP3 decision: do not promote paired compact FGP3/v4
-under the current setup-prime policy. Both packs fit inside the original
+Latest VISITOR5 paired compact-FGP3 decision: do not promote low tide or the
+paired high/low compact FGP3/v4 shape. Both packs fit inside the original
 `354227` byte footprint as `279245` active-byte compact residual assets, and
-active loops improve (`1112 -> 1102` high, `1111 -> 1104` low), but full scene
-time regresses `1369 -> 1382` high and `1370 -> 1385` low; low also regresses
-`blocking_vb 7 -> 10` and `prefetch_overrun_vb 7 -> 10`. Retry only
-high-tide-only, with setup-prime capped/disabled, or with generated scheduler
-ownership.
+active loops improve in the original setup-prime run (`1112 -> 1102` high,
+`1111 -> 1104` low), but full scene time regresses `1369 -> 1382` high and
+`1370 -> 1385` low. The no-autoprime paired retry fixes high but makes low CD
+debt worse (`blocking_vb 7 -> 15`, `prefetch_overrun_vb 7 -> 15`). Keep the
+promoted high-only no-autoprime variant and retry low only with generated
+scheduler ownership or another data shape.
 
 Closed BUILDING1 compact-FGP3 setup-prime variant: do not promote paired
 compact FGP3/v4 under the current auto-resident setup-prime policy. The
@@ -379,8 +394,10 @@ the VISITOR3 low scoped composite-helper pass, to `-0.0968%` over target /
 `-0.2497%` over target / `100.2899%` target speed after the WALKSTUF1 compact
 FGP3/v4 pass. The missing-scene timing refresh and MARY3 guarded
 prefetch-preserve follow-up then move the raw signed matrix to `-0.2159%` /
-`100.2547%`, and the BUILDING1 compact-FGP3/no-autoprime pass moves it to
-`-0.2404%` / `100.2410%`. The current rollup is tracked above.
+`100.2547%`, the BUILDING1 compact-FGP3/no-autoprime pass moves it to
+`-0.2404%` / `100.2410%`, and the VISITOR5 high-only compact-FGP3/no-autoprime
+pass moves it to `-0.2471%` / `100.2478%`. The current rollup is tracked
+above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
 format for both validated packs and retune the scene-local stream windows to
@@ -446,8 +463,10 @@ over target / `100.1613%` target speed, and the WALKSTUF1 compact FGP3/v4
 pass moves it to `-0.2497%` over target / `100.2899%` target speed. The
 missing-scene timing refresh and MARY3 guarded prefetch-preserve follow-up move
 the raw signed matrix to `-0.2159%` over target / `100.2547%` target speed,
-and the BUILDING1 compact-FGP3/no-autoprime pass moves the current raw signed
-matrix to `-0.2404%` over target / `100.2410%` target speed.
+the BUILDING1 compact-FGP3/no-autoprime pass moves it to `-0.2404%` /
+`100.2410%`, and the VISITOR5 high-only compact-FGP3/no-autoprime pass moves
+the current raw signed matrix to `-0.2471%` over target / `100.2478%` target
+speed.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need

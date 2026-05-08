@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.5% over target / 99.5% target speed** (`0.5281%`
-exact public over target / `99.4747%` exact public target speed); the raw
-signed optimization matrix is `-0.2404%` / `100.2410%`.
+the public average is **+0.5% over target / 99.5% target speed** (`0.5215%`
+exact public over target / `99.4812%` exact public target speed); the raw
+signed optimization matrix is `-0.2471%` / `100.2478%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`visitor5-high-compact-fgp3-noautoprime-v158`,
 `building1-compact-fgp3-noautoprime-v157`,
 `mary3-preserve-window-slack8-v149`,
 `missing-scenes-current-v001`,
@@ -389,7 +390,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-08T12:22:52`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-08T13:01:12`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -397,7 +398,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `building1-compact-fgp3-noautoprime-v157`,
+rows now use `visitor5-high-compact-fgp3-noautoprime-v158`,
+`building1-compact-fgp3-noautoprime-v157`,
 `mary3-preserve-window-slack8-v149`,
 `visitor3-tail-trim-stageguard-v127`,
 `graphics-composite-os-v111`,
@@ -757,7 +759,7 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>visitor5</code></td>
-      <td>+1.9% / 98.1% (1111/1090); blk 12</td>
+      <td>+1.1% / 98.9% (1104/1092); blk 11</td>
       <td>+2.0% / 98.0% (1112/1090); blk 12</td>
     </tr>
     <tr>

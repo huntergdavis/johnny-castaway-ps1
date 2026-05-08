@@ -4,9 +4,9 @@
 
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
-post-release BUILDING1 compact-FGP3/no-autoprime perf follow-up; all 63 scenes
-remain validated, and the public headless battle card is `+0.5281%` over
-target / `99.4747%` target speed).
+post-release BUILDING1 and VISITOR5 compact-FGP3/no-autoprime perf follow-ups;
+all 63 scenes remain validated, and the public headless battle card is
+`+0.5215%` over target / `99.4812%` target speed).
 
 ## Overall
 
@@ -162,11 +162,14 @@ MARY3 guarded prefetch-preserve follow-up moves high/low from `2402/2295` and
 post-release BUILDING1 pass converts both packs to compact FGP3/v4 while
 skipping auto-resident setup prime for that scene: high moves `792/778 ->
 784/782`, low moves `794/779 -> 787/782`, and both rows are now green. The
-public battle card is now `+0.5281%` over target / `99.4747%` target speed
-while preserving fixed pack LBAs and the `215040` byte PS-EXE bucket.
+newer VISITOR5 high-only compact-FGP3/no-autoprime pass keeps low tide on the
+prior pack while moving high `1111/1090 -> 1104/1092`, cutting overrun
+`21 -> 12`, blocking `12 -> 11`, and loop-read time `123 -> 91`. The public
+battle card is now `+0.5215%` over target / `99.4812%` target speed while
+preserving fixed pack LBAs and the `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.87`
-public over-target points and added about `12.37` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `16.88`
+public over-target points and added about `12.38` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain

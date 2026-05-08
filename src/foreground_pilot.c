@@ -2075,7 +2075,8 @@ static uint32 fgRuntimeStreamWindowBytes(const char *sceneName,
 
 static int fgRuntimeSkipsAutoFgp3SetupPrime(const char *sceneName)
 {
-    return fgSceneEquals(sceneName, "building1");
+    return fgSceneEquals(sceneName, "building1") ||
+           fgSceneEquals(sceneName, "visitor5");
 }
 
 static uint32 fgRuntimeSetupPrimeWindowBytes(const char *sceneName,
