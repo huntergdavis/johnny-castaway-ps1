@@ -186,7 +186,7 @@ source files. See [/legal/]({{ '/legal/' | relative_url }}).
 
 Each scene needs a clean host capture, a clean PS1 replay
 through every variant, and a no-corruption second pass at
-native resolution. That's the project's "FISHING 1 bar" —
+native resolution. That's the project's "[FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }})" —
 pixel-perfect visuals plus synced SFX, signed off by human
 review across every applicable variant flag (night, low-tide,
 holiday, raft-stage). It is a stricter bar than "it ran once
