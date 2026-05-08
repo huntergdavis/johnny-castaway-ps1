@@ -76,7 +76,7 @@ Early on, logging was dangerous. Too much text through DuckStation's TTY path
 changed timing or destabilized the run. That forced a weird era of framebuffer
 debugging: colored bars, one-pixel markers, screenshots decoded after the
 fact. Once bounded, gated TTY logging became reliable, performance work
-changed shape. The runtime could say exactly how many VBlanks went to render,
+changed shape. The runtime could say exactly how many [VBlanks]({{ '/docs/glossary/#vblank' | relative_url }}) went to render,
 restore, present wait, prefetch overrun, and blocking CD reads.
 
 That is when the project stopped arguing by vibe.
