@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **-0.2% over target / 100.3% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.6% public over target / 99.5% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,9 +23,10 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`-0.2497%` over target / `100.2899%` target speed across 120 timing-bearing
-rows, about `17.65` over-target points removed and `13.19` target-speed
-points added since the compact full-matrix baseline.
+`+0.5576%` over target / `99.4669%` target speed across 120 timing-bearing
+rows; the raw signed optimization matrix remains `-0.2497%` / `100.2899%`.
+That is about `16.84` public over-target points removed and `12.37` public
+target-speed points added since the compact full-matrix baseline.
 
 The latest VISITOR3 follow-up, `visitor3-fallthrough5-v142`, is closed as a
 non-promoting exact-flat threshold probe. The accepted fallthrough guard stays
@@ -41,9 +42,8 @@ read-table headroom cleanup, WALKSTUF1 high setup-prime cap retune, VISITOR3
 high/low offscreen draw clips, BUILDING2 high restore-minus-current cleanup,
 the BUILDING2 high `60..72` grouped-read pass, and the BUILDING2 low
 `365..381` grouped-read pass, the VISITOR3 low code-shape pass, and the
-current VISITOR3 v4 draw-tail trim plus stage guard:
-`-0.0968%` over target / `100.1613%` target speed across 120 timing-bearing
-rows.
+VISITOR3 v4 draw-tail trim plus stage guard. Those internal checkpoints are
+superseded by the current public-capped `v0.8.3` rollup above.
 
 `v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
 randomized long-run scene-load freeze by estimating the actual clean
@@ -54,8 +54,8 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows now average `-0.0968%` over target / `100.1613%`
-target speed after the post-release VISITOR3, BUILDING2, BUILDING4,
+current timing-bearing rows now use the public-capped `v0.8.3` rollup above
+after the post-release VISITOR3, BUILDING2, BUILDING4,
 ACTIVITY9, JOHNNY2 clean-pressure, WALKSTUF1, selector-cleanup, FGP3/v4
 compact draw metadata, compact decoder inline, and pack-side
 restore-minus-current promotions plus the current grouped-read and VISITOR3

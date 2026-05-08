@@ -100,9 +100,9 @@ the entire headless-perf matrix. Re-measured on every release; its
 `loop_vb` vs `target_vb` ratio is the load-bearing reference frame
 for "did this matrix-wide change just regress the easiest path."
 The latest rollup at `{{ site.release.tag }}` lands at
-`1068 / 1074 VBlanks`, `-0.6%` over target, `100.6%` target speed,
-`blocking_vb=2` — which is what "the FISHING 1 bar" means as a
-*timing* claim alongside the visual one.
+`1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target
+speed, `blocking_vb=2` — the raw signed CSV row is `-0.6%` / `100.6%`. That is
+what "the FISHING 1 bar" means as a *timing* claim alongside the visual one.
 
 The
 [perf battle card]({{ '/perf/' | relative_url }}) shows the

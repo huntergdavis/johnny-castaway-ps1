@@ -9,7 +9,7 @@ Current accepted fishing1 high-tide canary baseline:
 | `loop_vb` | `1068` |
 | `target_vb` | `1074` |
 | `remaining_overrun_vb` | `0` |
-| `remaining_over_target` | `-0.56%` |
+| `remaining_over_target` | `0.0% public` (`-0.56%` raw signed) |
 | `blocking_vb` | `2` |
 | `prefetch_overrun_vb` | `2` |
 | `loop_reads` | `20` |
@@ -19,18 +19,19 @@ Current accepted fishing1 high-tide canary baseline:
 | `jcreborn.exe` | `215040` bytes |
 | `jcreborn.elf` | `951708` bytes |
 
-Goal: keep the FISHING1 canary at or under target while reducing the remaining
+Goal: keep the FISHING1 canary at the public 100% cap or better while reducing the remaining
 matrix-wide gaps without changing pixels, sound event timing, scene identity,
 or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
 Current all-scene rollup after the WALKSTUF1 compact FGP3/v4 pass:
-`-0.2497%` average over target / `100.2899%` target speed across `120`
-timing-bearing rows. Since the compact full-matrix baseline was about
+`+0.5576%` public average over target / `99.4669%` public target speed across
+`120` timing-bearing rows. The raw signed optimization matrix remains
+`-0.2497%` / `100.2899%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `17.65` over-target points and added about `13.19`
-target-speed points.
+removed about `16.84` public over-target points and added about `12.37`
+public target-speed points.
 
 Latest promoted WALKSTUF1 compact FGP3/v4 baseline: convert both WALKSTUF1
 PAL4/FGP2 packs to padded compact FGP3/v4 restore-minus-current packs inside

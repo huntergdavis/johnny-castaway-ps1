@@ -23,7 +23,7 @@ If you paid for this, you were cheated. Open source and free.
 The reference manual for the perf work is at
 [/docs/performance/]({{ '/docs/performance/' | relative_url }});
 the retrospective on the optimization loop that moved this matrix
-from the compact baseline to its current `{{ site.release.perf_target_speed_pct }}%`
+from the compact baseline to its current public-capped `{{ site.release.perf_target_speed_pct }}%`
 target-speed average is at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }}).
 A scene can be timed here without being visually certified.
@@ -86,11 +86,11 @@ Current battle-card rollup as of <time datetime="2026-05-08">2026-05-08</time>:
 | Scenes with both high/low variants measured | `63 / 63` (`100%`) |
 | Pending variants | `0 / 126` (`0%`) |
 | Blocked variants | `0 / 126` (`0%`) |
-| Timing-bearing average over target | `-0.2%` (`-0.2497%` exact) |
-| Timing-bearing average target speed | `100.3%` (`100.2899%` exact) |
+| Timing-bearing average over target | `+0.6%` (`0.5576%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.4669%` exact, public-capped) |
 | Latest perf matrix run | `2026-05-08T06:36:32` |
 | Stats version | mixed across rows; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `johnny2-prefetch-relief-v081`, `mary2-prefetch-relief-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, `walkstuf1-fgp2-setup-prime-v080`, `activity4-fishing4-v072c-prefetch-relief`, `building4-6-johnny6-v072c-prefetch-relief`, `activity1-v072c-current-refresh`, `activity11-12-v072c-prefetch-relief`, `stale-next-v072c-current-refresh`, `mary1-v072c-prefetch-relief`, `stale-layout-v072c-current-refresh`, `stale-pressure2-v072c-current-refresh`, and earlier matrix refresh versions. Per-row version is in the [`Stats Version` column below](#reading-the-table) and the [enumeration](#reading-the-table) is in the table-key section. |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
+| FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0%` public over target, `100.0%` public target speed, `blocking_vb=2` |
 
 The durable numeric source is
 [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv).
@@ -114,10 +114,8 @@ and this page.
   row — useful when filing a follow-up against one variant. Same
   anchors are linked from each scene page's "Performance battle card"
   line.
-- **[Over Target]({{ '/docs/glossary/#over-target' | relative_url }})**: how far `loop_vb` is above the captured target timing.
-  Lower is better.
-- **[Target Speed]({{ '/docs/glossary/#target-speed' | relative_url }})**: `target_vb / loop_vb`. `100%` means exact
-  [target cadence]({{ '/docs/glossary/#target-vb' | relative_url }}).
+- **[Over Target]({{ '/docs/glossary/#over-target' | relative_url }})**: how far `loop_vb` is above the captured target timing. Public site values are capped at `0.0%` for faster-than-target rows so fast scenes do not create negative debt. Lower is better.
+- **[Target Speed]({{ '/docs/glossary/#target-speed' | relative_url }})**: public display of `target_vb / loop_vb`, capped at `100%` so no row reports faster than intended playback. The raw signed ratio remains in the CSV for optimization analysis.
 - **[VBlanks]({{ '/docs/glossary/#vblank' | relative_url }})**: `loop_vb/target_vb` — see the
   [target_vb / loop_vb glossary entry]({{ '/docs/glossary/#target-vb' | relative_url }}).
 - **[Blocking]({{ '/docs/glossary/#blocking-vb' | relative_url }})**: visible CD/blocking VBlanks.
@@ -237,8 +235,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:01:15</td>
       <td>activity1-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2754/2764</td>
       <td>1</td>
       <td>1</td>
@@ -251,8 +249,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:01:15</td>
       <td>activity1-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2754/2765</td>
       <td>0</td>
       <td>0</td>
@@ -265,8 +263,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1065/1066</td>
       <td>4</td>
       <td>4</td>
@@ -279,8 +277,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1064/1068</td>
       <td>1</td>
       <td>1</td>
@@ -293,8 +291,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1730/1749</td>
       <td>2</td>
       <td>2</td>
@@ -307,8 +305,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-1.0%</td>
-      <td class="spd-green">101.0%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1731/1749</td>
       <td>2</td>
       <td>2</td>
@@ -349,8 +347,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.5%</td>
-      <td class="spd-green">100.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>593/596</td>
       <td>0</td>
       <td>0</td>
@@ -363,8 +361,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>594/596</td>
       <td>0</td>
       <td>0</td>
@@ -377,8 +375,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>898/904</td>
       <td>1</td>
       <td>1</td>
@@ -391,8 +389,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>899/904</td>
       <td>2</td>
       <td>2</td>
@@ -425,7 +423,7 @@ and this page.
       <td>29</td>
       <td>12</td>
       <td>3</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-activity10-high">
       <td><a class="scene-perf-rowlink" href="#perf-activity10-high"><code>activity10</code></a></td>
@@ -433,7 +431,7 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>+0.0%</td>
+      <td>0.0%</td>
       <td class="spd-green">100.0%</td>
       <td>1259/1259</td>
       <td>7</td>
@@ -447,8 +445,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1255/1256</td>
       <td>17</td>
       <td>4</td>
@@ -461,8 +459,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T20:36:09</td>
       <td>activity11-fgp3-padded-v081</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1715/1722</td>
       <td>2</td>
       <td>2</td>
@@ -475,8 +473,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T20:36:09</td>
       <td>activity11-fgp3-padded-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1717/1722</td>
       <td>4</td>
       <td>4</td>
@@ -489,8 +487,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:40:30</td>
       <td>activity11-12-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1411/1412</td>
       <td>7</td>
       <td>7</td>
@@ -503,8 +501,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:40:30</td>
       <td>activity11-12-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1409/1411</td>
       <td>10</td>
       <td>6</td>
@@ -551,7 +549,7 @@ and this page.
       <td>48</td>
       <td>12</td>
       <td>7</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; high `60..72` group remains the accepted baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
@@ -565,7 +563,7 @@ and this page.
       <td>118</td>
       <td>5</td>
       <td>22</td>
-      <td>Promoted low `365..381` grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>
@@ -573,8 +571,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>5460/5465</td>
       <td>0</td>
       <td>0</td>
@@ -587,8 +585,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>5460/5465</td>
       <td>0</td>
       <td>0</td>
@@ -607,7 +605,7 @@ and this page.
       <td>37</td>
       <td>30</td>
       <td>1</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building4-low">
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
@@ -621,7 +619,7 @@ and this page.
       <td>46</td>
       <td>38</td>
       <td>1</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>
@@ -629,8 +627,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T17:38:07</td>
       <td>building5-fgp3-padded-v080</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3343/3348</td>
       <td>5</td>
       <td>5</td>
@@ -643,8 +641,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T17:38:07</td>
       <td>building5-fgp3-padded-v080</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3345/3347</td>
       <td>8</td>
       <td>8</td>
@@ -685,7 +683,7 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.0%</td>
+      <td>0.0%</td>
       <td class="spd-green">100.0%</td>
       <td>3132/3133</td>
       <td>9</td>
@@ -699,8 +697,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3130/3133</td>
       <td>7</td>
       <td>7</td>
@@ -713,13 +711,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-08T01:53:44</td>
       <td>building2-low-group365-381-v110</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>Under-target broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-fishing1-low">
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-low"><code>fishing1</code></a></td>
@@ -727,8 +725,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1067/1074</td>
       <td>1</td>
       <td>1</td>
@@ -741,8 +739,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1761/1763</td>
       <td>6</td>
       <td>6</td>
@@ -755,8 +753,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1759/1765</td>
       <td>3</td>
       <td>3</td>
@@ -797,8 +795,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>835/842</td>
       <td>2</td>
       <td>2</td>
@@ -811,8 +809,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>834/843</td>
       <td>0</td>
       <td>0</td>
@@ -825,8 +823,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-02T22:39:34</td>
       <td>fishing5-v065-current-ledger-overlay</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>885/890</td>
       <td>0</td>
       <td>0</td>
@@ -839,8 +837,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-02T22:39:34</td>
       <td>fishing5-v065-current-ledger-overlay</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>885/890</td>
       <td>0</td>
       <td>0</td>
@@ -853,8 +851,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>744/753</td>
       <td>0</td>
       <td>0</td>
@@ -867,8 +865,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>744/753</td>
       <td>0</td>
       <td>0</td>
@@ -881,8 +879,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-1.4%</td>
-      <td class="spd-green">101.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>715/725</td>
       <td>0</td>
       <td>0</td>
@@ -895,8 +893,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-1.4%</td>
-      <td class="spd-green">101.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>715/725</td>
       <td>0</td>
       <td>0</td>
@@ -909,8 +907,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1243/1253</td>
       <td>0</td>
       <td>0</td>
@@ -923,8 +921,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1243/1253</td>
       <td>0</td>
       <td>0</td>
@@ -965,8 +963,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-07T04:18:16</td>
       <td>johnny2-prefetch-relief-v081</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1741/1751</td>
       <td>0</td>
       <td>0</td>
@@ -979,8 +977,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-07T04:18:16</td>
       <td>johnny2-prefetch-relief-v081</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1741/1751</td>
       <td>0</td>
       <td>0</td>
@@ -993,8 +991,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1158/1161</td>
       <td>10</td>
       <td>6</td>
@@ -1007,8 +1005,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1157/1166</td>
       <td>0</td>
       <td>0</td>
@@ -1021,8 +1019,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1204/1214</td>
       <td>0</td>
       <td>0</td>
@@ -1035,8 +1033,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1204/1214</td>
       <td>0</td>
       <td>0</td>
@@ -1049,8 +1047,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>811/820</td>
       <td>0</td>
       <td>0</td>
@@ -1063,8 +1061,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>810/820</td>
       <td>0</td>
       <td>0</td>
@@ -1133,8 +1131,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T22:29:02</td>
       <td>mary2-prefetch-relief-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2241/2248</td>
       <td>2</td>
       <td>2</td>
@@ -1147,8 +1145,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T22:29:02</td>
       <td>mary2-prefetch-relief-v081</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2242/2250</td>
       <td>2</td>
       <td>2</td>
@@ -1161,8 +1159,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:25</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(timing pending)</td>
-      <td>(timing pending)</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1175,8 +1173,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:45:37</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(timing pending)</td>
-      <td>(timing pending)</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1189,8 +1187,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:46:07</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-2.4%</td>
-      <td class="spd-green">102.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1968/2016</td>
       <td>28</td>
       <td>12</td>
@@ -1203,8 +1201,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-29T17:46:13</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-2.6%</td>
-      <td class="spd-green">102.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1966/2019</td>
       <td>24</td>
       <td>10</td>
@@ -1217,8 +1215,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T21:07:37</td>
       <td>mary5-fgp3-padded-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1581/1586</td>
       <td>5</td>
       <td>0</td>
@@ -1231,8 +1229,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T21:07:37</td>
       <td>mary5-fgp3-padded-v081</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1581/1584</td>
       <td>6</td>
       <td>2</td>
@@ -1245,8 +1243,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>953/961</td>
       <td>0</td>
       <td>0</td>
@@ -1259,8 +1257,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>953/961</td>
       <td>0</td>
       <td>0</td>
@@ -1273,8 +1271,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-30T06:58:15</td>
       <td>compact-fgp3-v31-auto224</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1352/1356</td>
       <td>0</td>
       <td>0</td>
@@ -1287,8 +1285,8 @@ and this page.
       <td>measured</td>
       <td>2026-04-30T06:58:15</td>
       <td>compact-fgp3-v31-auto224</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1352/1356</td>
       <td>0</td>
       <td>0</td>
@@ -1301,13 +1299,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:17:25</td>
       <td>stand1-v072-current-refresh</td>
-      <td>-4.0%</td>
-      <td class="spd-green">104.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>194/202</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td></td>
     </tr>
     <tr id="perf-stand1-low">
       <td><a class="scene-perf-rowlink" href="#perf-stand1-low"><code>stand1</code></a></td>
@@ -1315,13 +1313,13 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:17:25</td>
       <td>stand1-v072-current-refresh</td>
-      <td>-4.0%</td>
-      <td class="spd-green">104.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>194/202</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td></td>
     </tr>
     <tr id="perf-stand2-high">
       <td><a class="scene-perf-rowlink" href="#perf-stand2-high"><code>stand2</code></a></td>
@@ -1329,8 +1327,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-2.0%</td>
-      <td class="spd-green">102.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>480/490</td>
       <td>0</td>
       <td>0</td>
@@ -1343,8 +1341,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-2.0%</td>
-      <td class="spd-green">102.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>480/490</td>
       <td>0</td>
       <td>0</td>
@@ -1357,8 +1355,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>547/557</td>
       <td>0</td>
       <td>0</td>
@@ -1371,8 +1369,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>547/557</td>
       <td>0</td>
       <td>0</td>
@@ -1385,8 +1383,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.5%</td>
-      <td class="spd-green">101.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1202/1220</td>
       <td>0</td>
       <td>0</td>
@@ -1399,8 +1397,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1203/1218</td>
       <td>3</td>
       <td>3</td>
@@ -1413,8 +1411,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1442/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1427,8 +1425,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1442/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1441,8 +1439,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.3%</td>
-      <td class="spd-green">101.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1346/1364</td>
       <td>0</td>
       <td>0</td>
@@ -1455,8 +1453,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.3%</td>
-      <td class="spd-green">101.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1346/1364</td>
       <td>0</td>
       <td>0</td>
@@ -1469,8 +1467,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1483,8 +1481,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1497,8 +1495,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.2%</td>
-      <td class="spd-green">103.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>483/499</td>
       <td>2</td>
       <td>2</td>
@@ -1511,8 +1509,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.2%</td>
-      <td class="spd-green">103.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>483/499</td>
       <td>2</td>
       <td>2</td>
@@ -1525,8 +1523,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1539,8 +1537,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.0%</td>
-      <td class="spd-green">103.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>522/538</td>
       <td>0</td>
       <td>0</td>
@@ -1553,8 +1551,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1567,8 +1565,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1581,8 +1579,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1595,8 +1593,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1609,8 +1607,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1450/1459</td>
       <td>1</td>
       <td>1</td>
@@ -1623,8 +1621,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1450/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1637,8 +1635,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>444/452</td>
       <td>0</td>
       <td>0</td>
@@ -1651,8 +1649,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>444/452</td>
       <td>0</td>
       <td>0</td>
@@ -1749,8 +1747,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>672/677</td>
       <td>0</td>
       <td>0</td>
@@ -1763,8 +1761,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>672/677</td>
       <td>0</td>
       <td>0</td>
@@ -1805,8 +1803,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:27:49</td>
       <td>visitor4-v072-current-refresh</td>
-      <td>-0.9%</td>
-      <td class="spd-green">100.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>424/428</td>
       <td>0</td>
       <td>0</td>
@@ -1819,8 +1817,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-05T23:27:49</td>
       <td>visitor4-v072-current-refresh</td>
-      <td>-0.9%</td>
-      <td class="spd-green">100.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>424/428</td>
       <td>0</td>
       <td>0</td>
@@ -1861,8 +1859,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2043/2047</td>
       <td>1</td>
       <td>1</td>
@@ -1875,8 +1873,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2043/2047</td>
       <td>1</td>
       <td>1</td>
@@ -1889,8 +1887,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1619/1625</td>
       <td>0</td>
       <td>0</td>
@@ -1903,8 +1901,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1619/1625</td>
       <td>0</td>
       <td>0</td>
@@ -1945,8 +1943,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-2.2%</td>
-      <td class="spd-green">102.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>451/461</td>
       <td>0</td>
       <td>0</td>
@@ -1959,8 +1957,8 @@ and this page.
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-2.2%</td>
-      <td class="spd-green">102.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>451/461</td>
       <td>0</td>
       <td>0</td>
@@ -2008,7 +2006,7 @@ and this page.
   `target_vb` are measured, the column-by-column glossary.
 - [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})
   — retrospective on which experiments moved the matrix from the
-  compact baseline (`+17.4%` over target) to its current
+  compact baseline (`+17.4%` over target) to its current public-capped
   `{{ site.release.perf_target_speed_pct }}%` target speed.
 - [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — the v0.8.1 stability follow-on that kept this matrix's mean

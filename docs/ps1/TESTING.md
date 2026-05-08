@@ -76,11 +76,16 @@ Current battle-card rollup as of 2026-05-08:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `-0.2%` (`-0.2497%` exact) |
-| Timing-bearing average target speed | `100.3%` (`100.2899%` exact) |
+| Timing-bearing average over target | `+0.6%` (`0.5576%` exact, public-capped) |
+| Timing-bearing average target speed | `99.5%` (`99.4669%` exact, public-capped) |
 | Latest perf matrix run | `2026-05-08T06:36:32` |
 | Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
-| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
+| FISHING 1 canary | `1068 / 1074 VBlanks`, `0.0% public over target`, `100.0% public target speed`, `blocking_vb=2` |
+
+Public reporting caps faster-than-target rows at `0.0%` over target /
+`100.0%` target speed so the website never presents playback faster than
+native cadence. The CSV keeps the raw signed `over_target_*` values for
+optimization analysis.
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,

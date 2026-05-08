@@ -122,7 +122,7 @@ are uncorrelated.</p>
 <p>The reference manual for the perf work is at
 <a href="../docs/performance/">/docs/performance/</a>;
 the retrospective on the optimization loop that moved this matrix
-from the compact baseline to its current <code class="language-plaintext highlighter-rouge">100.3%</code>
+from the compact baseline to its current public-capped <code class="language-plaintext highlighter-rouge">99.5%</code>
 target-speed average is at
 <a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>.
 A scene can be timed here without being visually certified.</p>
@@ -223,11 +223,11 @@ on purpose).</p>
     </tr>
     <tr>
       <td>Timing-bearing average over target</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">-0.2%</code> (<code class="language-plaintext highlighter-rouge">-0.2497%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">+0.6%</code> (<code class="language-plaintext highlighter-rouge">0.5576%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Timing-bearing average target speed</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">100.3%</code> (<code class="language-plaintext highlighter-rouge">100.2899%</code> exact)</td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">99.5%</code> (<code class="language-plaintext highlighter-rouge">99.4669%</code> exact, public-capped)</td>
     </tr>
     <tr>
       <td>Latest perf matrix run</td>
@@ -239,7 +239,7 @@ on purpose).</p>
     </tr>
     <tr>
       <td>FISHING 1 canary</td>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">-0.6%</code>, <code class="language-plaintext highlighter-rouge">100.6% target speed</code>, <code class="language-plaintext highlighter-rouge">blocking_vb=2</code></td>
+      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">1068 / 1074 VBlanks</code>, <code class="language-plaintext highlighter-rouge">0.0%</code> public over target, <code class="language-plaintext highlighter-rouge">100.0%</code> public target speed, <code class="language-plaintext highlighter-rouge">blocking_vb=2</code></td>
     </tr>
   </tbody>
 </table>
@@ -267,10 +267,8 @@ and this page.</p>
 row — useful when filing a follow-up against one variant. Same
 anchors are linked from each scene page’s “Performance battle card”
 line.</li>
-  <li><strong><a href="../docs/glossary/#over-target">Over Target</a></strong>: how far <code class="language-plaintext highlighter-rouge">loop_vb</code> is above the captured target timing.
-Lower is better.</li>
-  <li><strong><a href="../docs/glossary/#target-speed">Target Speed</a></strong>: <code class="language-plaintext highlighter-rouge">target_vb / loop_vb</code>. <code class="language-plaintext highlighter-rouge">100%</code> means exact
-<a href="../docs/glossary/#target-vb">target cadence</a>.</li>
+  <li><strong><a href="../docs/glossary/#over-target">Over Target</a></strong>: how far <code class="language-plaintext highlighter-rouge">loop_vb</code> is above the captured target timing. Public site values are capped at <code class="language-plaintext highlighter-rouge">0.0%</code> for faster-than-target rows so fast scenes do not create negative debt. Lower is better.</li>
+  <li><strong><a href="../docs/glossary/#target-speed">Target Speed</a></strong>: public display of <code class="language-plaintext highlighter-rouge">target_vb / loop_vb</code>, capped at <code class="language-plaintext highlighter-rouge">100%</code> so no row reports faster than intended playback. The raw signed ratio remains in the CSV for optimization analysis.</li>
   <li><strong><a href="../docs/glossary/#vblank">VBlanks</a></strong>: <code class="language-plaintext highlighter-rouge">loop_vb/target_vb</code> — see the
 <a href="../docs/glossary/#target-vb">target_vb / loop_vb glossary entry</a>.</li>
   <li><strong><a href="../docs/glossary/#blocking-vb">Blocking</a></strong>: visible CD/blocking VBlanks.</li>
@@ -391,8 +389,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:01:15</td>
       <td>activity1-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2754/2764</td>
       <td>1</td>
       <td>1</td>
@@ -405,8 +403,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:01:15</td>
       <td>activity1-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2754/2765</td>
       <td>0</td>
       <td>0</td>
@@ -419,8 +417,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1065/1066</td>
       <td>4</td>
       <td>4</td>
@@ -433,8 +431,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1064/1068</td>
       <td>1</td>
       <td>1</td>
@@ -447,8 +445,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1730/1749</td>
       <td>2</td>
       <td>2</td>
@@ -461,8 +459,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-1.0%</td>
-      <td class="spd-green">101.0%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1731/1749</td>
       <td>2</td>
       <td>2</td>
@@ -503,8 +501,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.5%</td>
-      <td class="spd-green">100.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>593/596</td>
       <td>0</td>
       <td>0</td>
@@ -517,8 +515,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>594/596</td>
       <td>0</td>
       <td>0</td>
@@ -531,8 +529,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>898/904</td>
       <td>1</td>
       <td>1</td>
@@ -545,8 +543,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>899/904</td>
       <td>2</td>
       <td>2</td>
@@ -579,7 +577,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>29</td>
       <td>12</td>
       <td>3</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-activity10-high">
       <td><a class="scene-perf-rowlink" href="#perf-activity10-high"><code>activity10</code></a></td>
@@ -587,7 +585,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>+0.0%</td>
+      <td>0.0%</td>
       <td class="spd-green">100.0%</td>
       <td>1259/1259</td>
       <td>7</td>
@@ -601,8 +599,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1255/1256</td>
       <td>17</td>
       <td>4</td>
@@ -615,8 +613,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T20:36:09</td>
       <td>activity11-fgp3-padded-v081</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1715/1722</td>
       <td>2</td>
       <td>2</td>
@@ -629,8 +627,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T20:36:09</td>
       <td>activity11-fgp3-padded-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1717/1722</td>
       <td>4</td>
       <td>4</td>
@@ -643,8 +641,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:40:30</td>
       <td>activity11-12-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1411/1412</td>
       <td>7</td>
       <td>7</td>
@@ -657,8 +655,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:40:30</td>
       <td>activity11-12-v072c-prefetch-relief</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1409/1411</td>
       <td>10</td>
       <td>6</td>
@@ -705,7 +703,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>48</td>
       <td>12</td>
       <td>7</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; high `60..72` group remains the accepted baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building2-low">
       <td><a class="scene-perf-rowlink" href="#perf-building2-low"><code>building2</code></a></td>
@@ -719,7 +717,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>118</td>
       <td>5</td>
       <td>22</td>
-      <td>Promoted low `365..381` grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-building3-high">
       <td><a class="scene-perf-rowlink" href="#perf-building3-high"><code>building3</code></a></td>
@@ -727,8 +725,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>5460/5465</td>
       <td>0</td>
       <td>0</td>
@@ -741,8 +739,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>5460/5465</td>
       <td>0</td>
       <td>0</td>
@@ -761,7 +759,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>37</td>
       <td>30</td>
       <td>1</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building4-low">
       <td><a class="scene-perf-rowlink" href="#perf-building4-low"><code>building4</code></a></td>
@@ -775,7 +773,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>46</td>
       <td>38</td>
       <td>1</td>
-      <td>Exact-flat broad control after BUILDING2 low grouped-read pass; BUILDING4 restore-minus-current cleanup remains the accepted pack baseline</td>
+      <td></td>
     </tr>
     <tr id="perf-building5-high">
       <td><a class="scene-perf-rowlink" href="#perf-building5-high"><code>building5</code></a></td>
@@ -783,8 +781,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T17:38:07</td>
       <td>building5-fgp3-padded-v080</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3343/3348</td>
       <td>5</td>
       <td>5</td>
@@ -797,8 +795,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T17:38:07</td>
       <td>building5-fgp3-padded-v080</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3345/3347</td>
       <td>8</td>
       <td>8</td>
@@ -839,7 +837,7 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.0%</td>
+      <td>0.0%</td>
       <td class="spd-green">100.0%</td>
       <td>3132/3133</td>
       <td>9</td>
@@ -853,8 +851,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>3130/3133</td>
       <td>7</td>
       <td>7</td>
@@ -867,13 +865,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-08T01:53:44</td>
       <td>building2-low-group365-381-v110</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1068/1074</td>
       <td>2</td>
       <td>2</td>
       <td>0</td>
-      <td>Under-target broad control after BUILDING2 low grouped-read pass; fixed layout preserved</td>
+      <td></td>
     </tr>
     <tr id="perf-fishing1-low">
       <td><a class="scene-perf-rowlink" href="#perf-fishing1-low"><code>fishing1</code></a></td>
@@ -881,8 +879,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1067/1074</td>
       <td>1</td>
       <td>1</td>
@@ -895,8 +893,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.1%</td>
-      <td class="spd-green">100.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1761/1763</td>
       <td>6</td>
       <td>6</td>
@@ -909,8 +907,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T03:26:10</td>
       <td>stale-next-v072c-current-refresh</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1759/1765</td>
       <td>3</td>
       <td>3</td>
@@ -951,8 +949,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>835/842</td>
       <td>2</td>
       <td>2</td>
@@ -965,8 +963,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T04:41:05</td>
       <td>activity4-fishing4-v072c-prefetch-relief</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>834/843</td>
       <td>0</td>
       <td>0</td>
@@ -979,8 +977,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-02T22:39:34</td>
       <td>fishing5-v065-current-ledger-overlay</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>885/890</td>
       <td>0</td>
       <td>0</td>
@@ -993,8 +991,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-02T22:39:34</td>
       <td>fishing5-v065-current-ledger-overlay</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>885/890</td>
       <td>0</td>
       <td>0</td>
@@ -1007,8 +1005,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>744/753</td>
       <td>0</td>
       <td>0</td>
@@ -1021,8 +1019,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>744/753</td>
       <td>0</td>
       <td>0</td>
@@ -1035,8 +1033,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-1.4%</td>
-      <td class="spd-green">101.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>715/725</td>
       <td>0</td>
       <td>0</td>
@@ -1049,8 +1047,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-1.4%</td>
-      <td class="spd-green">101.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>715/725</td>
       <td>0</td>
       <td>0</td>
@@ -1063,8 +1061,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1243/1253</td>
       <td>0</td>
       <td>0</td>
@@ -1077,8 +1075,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1243/1253</td>
       <td>0</td>
       <td>0</td>
@@ -1119,8 +1117,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-07T04:18:16</td>
       <td>johnny2-prefetch-relief-v081</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1741/1751</td>
       <td>0</td>
       <td>0</td>
@@ -1133,8 +1131,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-07T04:18:16</td>
       <td>johnny2-prefetch-relief-v081</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1741/1751</td>
       <td>0</td>
       <td>0</td>
@@ -1147,8 +1145,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1158/1161</td>
       <td>10</td>
       <td>6</td>
@@ -1161,8 +1159,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:47:28</td>
       <td>activity10-johnny3-v072-prefetch-relief</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1157/1166</td>
       <td>0</td>
       <td>0</td>
@@ -1175,8 +1173,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1204/1214</td>
       <td>0</td>
       <td>0</td>
@@ -1189,8 +1187,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1204/1214</td>
       <td>0</td>
       <td>0</td>
@@ -1203,8 +1201,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.1%</td>
-      <td class="spd-green">101.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>811/820</td>
       <td>0</td>
       <td>0</td>
@@ -1217,8 +1215,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>810/820</td>
       <td>0</td>
       <td>0</td>
@@ -1287,8 +1285,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T22:29:02</td>
       <td>mary2-prefetch-relief-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2241/2248</td>
       <td>2</td>
       <td>2</td>
@@ -1301,8 +1299,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T22:29:02</td>
       <td>mary2-prefetch-relief-v081</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2242/2250</td>
       <td>2</td>
       <td>2</td>
@@ -1315,8 +1313,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-29T17:45:25</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(timing pending)</td>
-      <td>(timing pending)</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1329,8 +1327,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-29T17:45:37</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>(timing pending)</td>
-      <td>(timing pending)</td>
+      <td>(no active loop)</td>
+      <td>(no active loop)</td>
       <td>0/0</td>
       <td>0</td>
       <td>0</td>
@@ -1343,8 +1341,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-29T17:46:07</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-2.4%</td>
-      <td class="spd-green">102.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1968/2016</td>
       <td>28</td>
       <td>12</td>
@@ -1357,8 +1355,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-29T17:46:13</td>
       <td>compact-fgp3-v2-fullmatrix</td>
-      <td>-2.6%</td>
-      <td class="spd-green">102.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1966/2019</td>
       <td>24</td>
       <td>10</td>
@@ -1371,8 +1369,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T21:07:37</td>
       <td>mary5-fgp3-padded-v081</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1581/1586</td>
       <td>5</td>
       <td>0</td>
@@ -1385,8 +1383,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T21:07:37</td>
       <td>mary5-fgp3-padded-v081</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1581/1584</td>
       <td>6</td>
       <td>2</td>
@@ -1399,8 +1397,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>953/961</td>
       <td>0</td>
       <td>0</td>
@@ -1413,8 +1411,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-0.8%</td>
-      <td class="spd-green">100.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>953/961</td>
       <td>0</td>
       <td>0</td>
@@ -1427,8 +1425,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-30T06:58:15</td>
       <td>compact-fgp3-v31-auto224</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1352/1356</td>
       <td>0</td>
       <td>0</td>
@@ -1441,8 +1439,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-04-30T06:58:15</td>
       <td>compact-fgp3-v31-auto224</td>
-      <td>-0.3%</td>
-      <td class="spd-green">100.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1352/1356</td>
       <td>0</td>
       <td>0</td>
@@ -1455,13 +1453,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:17:25</td>
       <td>stand1-v072-current-refresh</td>
-      <td>-4.0%</td>
-      <td class="spd-green">104.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>194/202</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td></td>
     </tr>
     <tr id="perf-stand1-low">
       <td><a class="scene-perf-rowlink" href="#perf-stand1-low"><code>stand1</code></a></td>
@@ -1469,13 +1467,13 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:17:25</td>
       <td>stand1-v072-current-refresh</td>
-      <td>-4.0%</td>
-      <td class="spd-green">104.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>194/202</td>
       <td>0</td>
       <td>0</td>
       <td>0</td>
-      <td>current validated 18-entry host-deadline pack refresh; baseline correction</td>
+      <td></td>
     </tr>
     <tr id="perf-stand2-high">
       <td><a class="scene-perf-rowlink" href="#perf-stand2-high"><code>stand2</code></a></td>
@@ -1483,8 +1481,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-2.0%</td>
-      <td class="spd-green">102.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>480/490</td>
       <td>0</td>
       <td>0</td>
@@ -1497,8 +1495,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-2.0%</td>
-      <td class="spd-green">102.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>480/490</td>
       <td>0</td>
       <td>0</td>
@@ -1511,8 +1509,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>547/557</td>
       <td>0</td>
       <td>0</td>
@@ -1525,8 +1523,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>547/557</td>
       <td>0</td>
       <td>0</td>
@@ -1539,8 +1537,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.5%</td>
-      <td class="spd-green">101.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1202/1220</td>
       <td>0</td>
       <td>0</td>
@@ -1553,8 +1551,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1203/1218</td>
       <td>3</td>
       <td>3</td>
@@ -1567,8 +1565,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1442/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1581,8 +1579,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.2%</td>
-      <td class="spd-green">101.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1442/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1595,8 +1593,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.3%</td>
-      <td class="spd-green">101.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1346/1364</td>
       <td>0</td>
       <td>0</td>
@@ -1609,8 +1607,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-1.3%</td>
-      <td class="spd-green">101.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1346/1364</td>
       <td>0</td>
       <td>0</td>
@@ -1623,8 +1621,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1637,8 +1635,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1651,8 +1649,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.2%</td>
-      <td class="spd-green">103.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>483/499</td>
       <td>2</td>
       <td>2</td>
@@ -1665,8 +1663,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.2%</td>
-      <td class="spd-green">103.3%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>483/499</td>
       <td>2</td>
       <td>2</td>
@@ -1679,8 +1677,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.3%</td>
-      <td class="spd-green">103.5%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>520/538</td>
       <td>0</td>
       <td>0</td>
@@ -1693,8 +1691,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-3.0%</td>
-      <td class="spd-green">103.1%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>522/538</td>
       <td>0</td>
       <td>0</td>
@@ -1707,8 +1705,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1721,8 +1719,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1735,8 +1733,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1749,8 +1747,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:34:06</td>
       <td>stand-family-v072-current-refresh</td>
-      <td>-1.9%</td>
-      <td class="spd-green">101.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>528/538</td>
       <td>0</td>
       <td>0</td>
@@ -1763,8 +1761,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.6%</td>
-      <td class="spd-green">100.6%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1450/1459</td>
       <td>1</td>
       <td>1</td>
@@ -1777,8 +1775,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T01:14:22</td>
       <td>stale-zero2-v072b-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1450/1460</td>
       <td>0</td>
       <td>0</td>
@@ -1791,8 +1789,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>444/452</td>
       <td>0</td>
       <td>0</td>
@@ -1805,8 +1803,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:55:09</td>
       <td>stale-zero-v072b-current-refresh</td>
-      <td>-1.8%</td>
-      <td class="spd-green">101.8%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>444/452</td>
       <td>0</td>
       <td>0</td>
@@ -1903,8 +1901,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>672/677</td>
       <td>0</td>
       <td>0</td>
@@ -1917,8 +1915,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:47:29</td>
       <td>mismatch-top-v072-current-refresh</td>
-      <td>-0.7%</td>
-      <td class="spd-green">100.7%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>672/677</td>
       <td>0</td>
       <td>0</td>
@@ -1959,8 +1957,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:27:49</td>
       <td>visitor4-v072-current-refresh</td>
-      <td>-0.9%</td>
-      <td class="spd-green">100.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>424/428</td>
       <td>0</td>
       <td>0</td>
@@ -1973,8 +1971,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-05T23:27:49</td>
       <td>visitor4-v072-current-refresh</td>
-      <td>-0.9%</td>
-      <td class="spd-green">100.9%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>424/428</td>
       <td>0</td>
       <td>0</td>
@@ -2015,8 +2013,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2043/2047</td>
       <td>1</td>
       <td>1</td>
@@ -2029,8 +2027,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.2%</td>
-      <td class="spd-green">100.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>2043/2047</td>
       <td>1</td>
       <td>1</td>
@@ -2043,8 +2041,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1619/1625</td>
       <td>0</td>
       <td>0</td>
@@ -2057,8 +2055,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T02:48:00</td>
       <td>stale-layout-v072c-current-refresh</td>
-      <td>-0.4%</td>
-      <td class="spd-green">100.4%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>1619/1625</td>
       <td>0</td>
       <td>0</td>
@@ -2099,8 +2097,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-2.2%</td>
-      <td class="spd-green">102.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>451/461</td>
       <td>0</td>
       <td>0</td>
@@ -2113,8 +2111,8 @@ include <code class="language-plaintext highlighter-rouge">compact-fgp3-v62-fish
       <td>measured</td>
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
-      <td>-2.2%</td>
-      <td class="spd-green">102.2%</td>
+      <td>0.0%</td>
+      <td class="spd-green">100.0%</td>
       <td>451/461</td>
       <td>0</td>
       <td>0</td>
@@ -2163,8 +2161,8 @@ reference manual: what each column means, how <code class="language-plaintext hi
 <code class="language-plaintext highlighter-rouge">target_vb</code> are measured, the column-by-column glossary.</li>
   <li><a href="../lab/from-87-to-99-5/">/lab/from-87-to-99-5/</a>
 — retrospective on which experiments moved the matrix from the
-compact baseline (<code class="language-plaintext highlighter-rouge">+17.4%</code> over target) to its current
-<code class="language-plaintext highlighter-rouge">100.3%</code> target speed.</li>
+compact baseline (<code class="language-plaintext highlighter-rouge">+17.4%</code> over target) to its current public-capped
+<code class="language-plaintext highlighter-rouge">99.5%</code> target speed.</li>
   <li><a href="../lab/v081-mary4-freeze/">/lab/v081-mary4-freeze/</a>
 — the v0.8.1 stability follow-on that kept this matrix’s mean
 untouched while fixing a clean-rect pressure freeze the per-commit
