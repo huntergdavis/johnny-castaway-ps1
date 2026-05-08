@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 7 — Lifts hat, looks around
+title: STAND 7 — Looks right, lifts hat
 ads: STAND
 tag: 7
 slug: stand7
 status: validated
-description: "STAND.ADS scene 7: Lifts hat, looks around. Validated on PS1."
+description: "STAND.ADS scene 7: Johnny looks to the right and lifts his hat. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-04.
@@ -17,9 +17,7 @@ Validated on 2026-05-04.
 
 ## What this scene is
 
-Idle at SPOT_C NE: lifts hat, looks around.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **LOW**.
+Johnny looks to the right and lifts his hat — a directional variant of the standing-pose hat-lift beat in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; sharpens the prior "lifts hat, looks around" caption-mapping with the look-right direction made explicit.
 
 ## Validation notes
 
