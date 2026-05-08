@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: JOHNNY 2 — First SOS bottle
+title: JOHNNY 2 — Bottle washes up; Johnny puts an SOS note inside
 ads: JOHNNY
 tag: 2
 slug: johnny2
 status: validated
-description: "JOHNNY.ADS scene 2: First SOS bottle. Validated on PS1 scene playback."
+description: "JOHNNY.ADS scene 2: a bottle washes up on the shore; Johnny puts an SOS note inside and tosses it back into the ocean. Validated 2026-05-08."
 ---
 
 Validated on 2026-05-02 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -20,11 +20,9 @@ the island/SOS thought bubbles.
 - ADS dispatch: <code>JOHNNY.ADS scene 2</code>
 - Slug: <code>johnny2</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess; day 2.) Johnny finds a bottle, writes an SOS, corks it, throws it out to sea.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+A bottle washes up on the shore. Johnny picks it up, puts an SOS note inside, and tosses it back into the ocean. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches and sharpens the prior "first SOS bottle" caption-mapping guess.
 
 ### How this scene was validated
 
