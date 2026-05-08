@@ -147,16 +147,20 @@ frame/range-specific direct-stage policy, or a pack/data-shape reduction that
 lowers refill cost first.
 
 Current WALKSTUF1 preprocess footprint gate: the default selective x-band
-upload-ready model remains unsafe as a raw append, but the missing shrinking
-precondition is now partly satisfied by the compact FGP3/v4 pack transform.
-The old PAL4/FGP2 packs had only `1` byte of zero-tail slack, while the
-default threshold plan selected `153 / 216` frames and needed `5684096`
-payload-plus-rect bytes to retain `9900992` modeled upload bytes saved. Raw
-foreground-only upload payloads are also unsafe here: selected draw-covered
+upload-ready model now has compact-pack zero-tail budget, but it remains unsafe
+as a raw append. The old PAL4/FGP2 packs had only `1` byte of zero-tail slack;
+the compact FGP3/v4 packs now expose `611305` zero-tail bytes per tide, and the
+budgeted selective model fits `609192 / 611305` bytes while selecting `39`
+frames, saving `1991904` modeled upload bytes from `2600320` selected runtime
+bytes (`76.6%` saved), and retaining `59.45%` of the default selected savings.
+Restore-minus-current cleanup is exhausted for this pack shape
+(`restore_runtime_bytes == restore_minus_current_exact_bytes == 525826`).
+Raw foreground-only upload payloads are still unsafe: selected draw-covered
 x-band bytes and all-draw-covered selected frames are both `0`. Keep raw
 same-footprint WALKSTUF1 upload-ready append work closed until there is a safe
-background-owned pixel source or generated scheduler metadata; use the compact
-pack as the new baseline for any future WALKSTUF1 preprocessing lane.
+background-owned/precomposed pixel source, ownership metadata, generated
+scheduler support, or MoveImage-safe motion data; use the compact pack as the
+new baseline for any future WALKSTUF1 preprocessing lane.
 
 Current VISITOR3 preprocess safety gate: the same-footprint budgeted
 upload-ready target remains a useful byte ceiling, but raw foreground-only
@@ -1517,7 +1521,7 @@ pre-v0.8.0 row.
 | Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Direct-stage caps 6 KiB and 7 KiB | Do not promote or retry as scalar thresholds. `6 KiB` repeats the hidden-refill failure on both WALKSTUF1 tides despite visible blocking relief, and `7 KiB` is too small a blocking win with target-relative overrun regressions. Keep `8 KiB` until generated scheduler/read-cost metadata can choose frame/range-specific coverage. |
 | WALKSTUF1 low read group `297..313` with `minSlack=8` | Do not promote or retry as a hand table. The safe slack guard prevented the group from firing (`group_hits=0`), while the source branch still shifted low target enough to regress overrun by one VBlank. WALKSTUF1 read clusters need generated scheduler metadata, not another hot source-table branch. |
-| WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. Both current PAL4/FGP2 packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `5684096` payload-plus-rect bytes per tide for `153 / 216` frames and `9900992` modeled upload bytes saved. The exact budget selects `0` frames, and raw foreground-only safety reports `0` selected draw-covered x-band bytes. Retry only with compression/shrinking pack data, explicit layout movement, a safe pixel source, or generated scheduler ownership. |
+| WALKSTUF1 selective upload-ready same-footprint append | Do not promote or retry as a raw same-footprint append. The current compact FGP3/v4 packs now expose `611305` zero-tail bytes and can fit a `609192` byte budgeted x-band subset for `39` frames with `1991904` modeled upload bytes saved, but raw foreground-only safety still reports `0` selected draw-covered x-band bytes and `0` all-draw-covered selected frames. Compact slack is a byte budget, not a safety proof; retry only with safe background-owned/precomposed pixels, ownership metadata, generated scheduler ownership, or MoveImage-safe motion data. |
 | VISITOR3 default selective upload-ready append | Do not promote as a layout-neutral pack append. The current threshold plan selects `96 / 144` frames and estimates `6114568` selected upload bytes saved, but the upload-ready payload plus rect metadata needs `2462072` bytes per tide against only `814847` bytes of padded zero-tail slack. Retry only as a smaller budgeted subset, compressed upload payload, shrinking pack transform, or explicit layout-moving experiment. |
 | VISITOR3 budgeted selective upload-ready target | Done as host-side implementation target, not runtime behavior. The current v140 analyzer exact-knapsacks the default-selected VISITOR3 rows against the post-tail-trim pack slack: high selects `75 / 117` default frames using `888880 / 891012` bytes and retaining `6290232` modeled upload bytes saved, while low selects `74 / 117` frames using `853848 / 854114` bytes and retaining `6166528` modeled bytes saved. Runtime promotion still needs a generated pack format with pre-contiguous rows, a safe background-owned/precomposed pixel source, and full VISITOR3/canary validation. |
 | VISITOR3 runtime dirty-upload narrowing | Do not retry as a source-side optimization. The live uploader already has row-level dirty X metadata, but exact narrow intervals for current VISITOR3 would create about `131996` upload rects over the loop, and scratch-packed x-band variants have already failed from code-size, copy, and cadence cost. Upload-byte work must be pack-emitted or precomposed, not packed from tile rows during `grDrawBackground()`. |
