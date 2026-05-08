@@ -1,7 +1,7 @@
 ---
 title: Performance battle card
 eyebrow: Headless · 126-variant matrix
-subtitle: Click a column header to sort. Target Speed cells are color-coded — ≥99% green, ≥80% yellow, <80% red.
+subtitle: Click a column header to sort. Target Speed cells are color-coded — ≥99% green, ≥95% orange, ≥90% yellow, <90% red.
 description: The Johnny Castaway PS1 fan port headless-perf battle card — 126 scene/tide variants timed against target frame budget, color-coded, with sortable column headers.
 ---
 
@@ -49,8 +49,9 @@ linked in the Rollup section.</p>
 <p class="scene-perf-legend" aria-label="Target speed distribution as of {{ site.release.tag }}">
   Target Speed distribution at <code>{{ site.release.tag }}</code>:
   <span class="spd-key spd-green">99 (82.5%) ≥ 99%</span>
-  <span class="spd-key spd-yellow">21 (17.5%) ≥ 80%</span>
-  <span class="spd-key spd-red">0 (0.0%) &lt; 80%</span>
+  <span class="spd-key spd-orange">18 (15.0%) ≥ 95%</span>
+  <span class="spd-key spd-yellow">3 (2.5%) ≥ 90%</span>
+  <span class="spd-key spd-red">0 (0.0%) &lt; 90%</span>
   out of 120 timing-bearing rows. 6 metadata-only rows are excluded from speed averages.
 </p>
 
@@ -58,13 +59,13 @@ No timing-bearing row is in the red band after the VISITOR3, BUILDING4, and
 BUILDING2 restore-minus-current pack passes, the BUILDING2 high `60..72`
 and low `365..381` grouped-read passes, the VISITOR3 low scoped
 composite-helper pass, and the WALKSTUF1 compact FGP3/v4 restore-minus-current
-pass. The slowest rows are now
+pass. The three yellow rows (90–95%) are
 [`visitor3`]({{ '/scenes/visitor3/' | relative_url }}) low/high
-(`91.0%` / `91.9%`), [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
-low (`94.3%`), and `walkstuf1` high/low (`95.6%` / `95.8%`). The yellow
-cluster includes the remaining wide-action, BUILDING6, BUILDING2, WALKSTUF1,
-and VISITOR3 rows still finishing scheduler-owned read timing and
-selective-preprocessing work.
+(`91.0%` / `91.9%`) and [`BUILDING2`]({{ '/scenes/building2/' | relative_url }})
+low (`94.3%`); the orange band (95–99%) holds `walkstuf1` high/low
+(`95.6%` / `95.8%`) plus the remaining wide-action, BUILDING6,
+BUILDING2, WALKSTUF1, and VISITOR3 rows still finishing scheduler-
+owned read timing and selective-preprocessing work.
 
 The 6 untimed rows are [`MARY 3`]({{ '/scenes/mary3/' | relative_url }}) high/low (active-loop timing not
 yet refreshed against the current pack), and [`SUZY 1`]({{ '/scenes/suzy1/' | relative_url }}) + [`SUZY 2`]({{ '/scenes/suzy2/' | relative_url }})
@@ -199,8 +200,9 @@ and this page.
 <p class="scene-perf-legend" aria-label="Target speed legend">
   Target Speed colour key:
   <span class="spd-key spd-green">≥ 99% (at target)</span>
-  <span class="spd-key spd-yellow">≥ 80% (close)</span>
-  <span class="spd-key spd-red">&lt; 80% (well below)</span>
+  <span class="spd-key spd-orange">≥ 95% (close)</span>
+  <span class="spd-key spd-yellow">≥ 90% (slipping)</span>
+  <span class="spd-key spd-red">&lt; 90% (well below)</span>
   Rows without timing data show "—" and stay uncolored.
 </p>
 
@@ -212,7 +214,7 @@ and this page.
     blocking VBlanks, prefetch hits, due-misses, and notes.
     Click any column header to sort ascending; click again for
     descending. Target Speed cells are color-coded: ≥99% green,
-    ≥80% yellow, &lt;80% red.
+    ≥95% orange, ≥90% yellow, &lt;90% red.
   </caption>
   <thead>
     <tr>
@@ -406,7 +408,7 @@ and this page.
       <td>2026-05-07T13:24:41</td>
       <td>activity9-dead-readgroup-prune-v082</td>
       <td>+1.8%</td>
-      <td class="spd-yellow">98.2%</td>
+      <td class="spd-orange">98.2%</td>
       <td>2094/2056</td>
       <td>37</td>
       <td>23</td>
@@ -420,7 +422,7 @@ and this page.
       <td>2026-05-08T01:53:44</td>
       <td>building2-low-group365-381-v110</td>
       <td>+1.3%</td>
-      <td class="spd-yellow">98.7%</td>
+      <td class="spd-orange">98.7%</td>
       <td>2085/2058</td>
       <td>29</td>
       <td>12</td>
@@ -518,7 +520,7 @@ and this page.
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
       <td>+2.1%</td>
-      <td class="spd-yellow">98.0%</td>
+      <td class="spd-orange">98.0%</td>
       <td>794/778</td>
       <td>21</td>
       <td>21</td>
@@ -532,7 +534,7 @@ and this page.
       <td>2026-05-06T00:38:12</td>
       <td>stale-top-v072b-current-refresh</td>
       <td>+1.9%</td>
-      <td class="spd-yellow">98.1%</td>
+      <td class="spd-orange">98.1%</td>
       <td>794/779</td>
       <td>21</td>
       <td>21</td>
@@ -546,7 +548,7 @@ and this page.
       <td>2026-05-08T01:53:44</td>
       <td>building2-low-group365-381-v110</td>
       <td>+2.5%</td>
-      <td class="spd-yellow">97.6%</td>
+      <td class="spd-orange">97.6%</td>
       <td>1349/1316</td>
       <td>48</td>
       <td>12</td>
@@ -616,7 +618,7 @@ and this page.
       <td>2026-05-08T01:53:44</td>
       <td>building2-low-group365-381-v110</td>
       <td>+1.4%</td>
-      <td class="spd-yellow">98.6%</td>
+      <td class="spd-orange">98.6%</td>
       <td>2855/2815</td>
       <td>46</td>
       <td>38</td>
@@ -658,7 +660,7 @@ and this page.
       <td>2026-05-07T13:24:41</td>
       <td>activity9-dead-readgroup-prune-v082</td>
       <td>+3.2%</td>
-      <td class="spd-yellow">96.9%</td>
+      <td class="spd-orange">96.9%</td>
       <td>2520/2442</td>
       <td>62</td>
       <td>64</td>
@@ -672,7 +674,7 @@ and this page.
       <td>2026-05-07T13:24:41</td>
       <td>activity9-dead-readgroup-prune-v082</td>
       <td>+3.2%</td>
-      <td class="spd-yellow">96.9%</td>
+      <td class="spd-orange">96.9%</td>
       <td>2515/2437</td>
       <td>70</td>
       <td>66</td>
@@ -938,7 +940,7 @@ and this page.
       <td>2026-05-06T02:08:50</td>
       <td>johnny1-v072c-prefetch-relief</td>
       <td>+1.5%</td>
-      <td class="spd-yellow">98.5%</td>
+      <td class="spd-orange">98.5%</td>
       <td>1974/1944</td>
       <td>27</td>
       <td>27</td>
@@ -952,7 +954,7 @@ and this page.
       <td>2026-05-06T02:08:50</td>
       <td>johnny1-v072c-prefetch-relief</td>
       <td>+1.5%</td>
-      <td class="spd-yellow">98.5%</td>
+      <td class="spd-orange">98.5%</td>
       <td>1974/1944</td>
       <td>27</td>
       <td>27</td>
@@ -1078,7 +1080,7 @@ and this page.
       <td>2026-05-06T04:15:06</td>
       <td>building4-6-johnny6-v072c-prefetch-relief</td>
       <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
+      <td class="spd-orange">98.9%</td>
       <td>2832/2800</td>
       <td>28</td>
       <td>28</td>
@@ -1092,7 +1094,7 @@ and this page.
       <td>2026-05-06T04:15:06</td>
       <td>building4-6-johnny6-v072c-prefetch-relief</td>
       <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
+      <td class="spd-orange">98.9%</td>
       <td>2832/2800</td>
       <td>28</td>
       <td>28</td>
@@ -1834,7 +1836,7 @@ and this page.
       <td>2026-05-06T00:23:01</td>
       <td>visitor5-v072-prefetch-relief</td>
       <td>+1.9%</td>
-      <td class="spd-yellow">98.1%</td>
+      <td class="spd-orange">98.1%</td>
       <td>1111/1090</td>
       <td>12</td>
       <td>12</td>
@@ -1848,7 +1850,7 @@ and this page.
       <td>2026-05-06T00:23:01</td>
       <td>visitor5-v072-prefetch-relief</td>
       <td>+2.0%</td>
-      <td class="spd-yellow">98.0%</td>
+      <td class="spd-orange">98.0%</td>
       <td>1112/1090</td>
       <td>12</td>
       <td>12</td>
@@ -1918,7 +1920,7 @@ and this page.
       <td>2026-05-08T06:35:26</td>
       <td>walkstuf1-compact-fgp3-v141</td>
       <td>+4.6%</td>
-      <td class="spd-yellow">95.6%</td>
+      <td class="spd-orange">95.6%</td>
       <td>1491/1426</td>
       <td>85</td>
       <td>32</td>
@@ -1932,7 +1934,7 @@ and this page.
       <td>2026-05-08T06:36:32</td>
       <td>walkstuf1-compact-fgp3-v141</td>
       <td>+4.3%</td>
-      <td class="spd-yellow">95.8%</td>
+      <td class="spd-orange">95.8%</td>
       <td>1489/1427</td>
       <td>86</td>
       <td>27</td>
@@ -1974,7 +1976,7 @@ and this page.
       <td>2026-05-06T02:23:47</td>
       <td>stale-pressure2-v072c-current-refresh</td>
       <td>+1.9%</td>
-      <td class="spd-yellow">98.1%</td>
+      <td class="spd-orange">98.1%</td>
       <td>2321/2278</td>
       <td>68</td>
       <td>36</td>
@@ -1988,7 +1990,7 @@ and this page.
       <td>2026-05-06T02:23:47</td>
       <td>stale-pressure2-v072c-current-refresh</td>
       <td>+1.1%</td>
-      <td class="spd-yellow">98.9%</td>
+      <td class="spd-orange">98.9%</td>
       <td>2321/2295</td>
       <td>40</td>
       <td>20</td>
