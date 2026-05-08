@@ -55,7 +55,7 @@ The loop is:
 
 1. Pick a scene.
 2. Capture or refresh the host reference.
-3. Generate or inspect the FG2 pack.
+3. Generate or inspect the [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }}).
 4. Wire the runtime if this scene needs a new path.
 5. Build the disc.
 6. Boot DuckStation.
