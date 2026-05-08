@@ -8,7 +8,7 @@ status: validated
 description: "VISITOR.ADS scene 4: Coconut plane gag. Validated on PS1/DuckStation."
 ---
 
-Validated on 2026-05-04 under the FISHING 1 bar.
+Validated on 2026-05-04 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 

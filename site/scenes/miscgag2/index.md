@@ -8,7 +8,7 @@ status: validated
 description: "MISCGAG.ADS scene 2: Towel, toe, shark. Validated after generic multi-view pack regeneration."
 ---
 
-Validated on 2026-05-03 under the FISHING 1 bar.
+Validated on 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
 
 ## Pack identifiers
 
