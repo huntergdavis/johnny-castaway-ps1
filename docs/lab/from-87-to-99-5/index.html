@@ -75,7 +75,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2148,
+  "wordCount": 2171,
   "timeRequired": "PT8M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
@@ -138,7 +138,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2065 words
+          ~8 min read · 2088 words
         </p>
 
       <hr class="rule" />
@@ -285,14 +285,16 @@ that loop actually looked like.</p>
 
 <p>The current matrix mean is <code class="language-plaintext highlighter-rouge">100.3%</code> target speed.
 The matrix-wide aggregate is now slightly under target — the remaining
-work is in a small number of high-leverage yellow rows that still slip.
+work is in a small number of high-leverage rows that still slip.
 As of <code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> there are no red rows left on the
-<a href="../../perf/">battle card</a>. <code class="language-plaintext highlighter-rouge">VISITOR 3</code>,
-<code class="language-plaintext highlighter-rouge">BUILDING 2</code>, <code class="language-plaintext highlighter-rouge">BUILDING 6</code>, and <code class="language-plaintext highlighter-rouge">WALKSTUF 1</code> make up the yellow cluster
-between <code class="language-plaintext highlighter-rouge">80%</code> and <code class="language-plaintext highlighter-rouge">99%</code>, with VISITOR3 now at roughly <code class="language-plaintext highlighter-rouge">91.9%</code>/<code class="language-plaintext highlighter-rouge">91.0%</code>
-after the pack-side restore-minus-current cleanup, and WALKSTUF1
-at <code class="language-plaintext highlighter-rouge">95.6%</code>/<code class="language-plaintext highlighter-rouge">95.8%</code> after its v0.8.3 compact-FGP3/v4 pass. The
-optimization plan at
+<a href="../../perf/">battle card</a>. The three yellow rows
+(<code class="language-plaintext highlighter-rouge">90</code>–<code class="language-plaintext highlighter-rouge">95%</code>) are VISITOR3 high/low at roughly <code class="language-plaintext highlighter-rouge">91.9%</code>/<code class="language-plaintext highlighter-rouge">91.0%</code> after
+the pack-side restore-minus-current cleanup and BUILDING2 low at
+<code class="language-plaintext highlighter-rouge">94.3%</code>. The eighteen orange rows (<code class="language-plaintext highlighter-rouge">95</code>–<code class="language-plaintext highlighter-rouge">99%</code>) include WALKSTUF1
+at <code class="language-plaintext highlighter-rouge">95.6%</code>/<code class="language-plaintext highlighter-rouge">95.8%</code> after its v0.8.3 compact-FGP3/v4 pass, BUILDING2
+high at <code class="language-plaintext highlighter-rouge">97.6%</code>, and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1
+/ VISITOR3 / wide-action cluster still finishing scheduler-owned read
+timing and selective-preprocessing work. The optimization plan at
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code> § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
