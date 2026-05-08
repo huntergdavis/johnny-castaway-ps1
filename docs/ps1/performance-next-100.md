@@ -61,6 +61,13 @@ but regresses hidden prefetch overrun `54 -> 79` and crosses the PS-EXE bucket.
 Retry this only as a narrower/code-size-neutral guard or generated scheduler
 metadata that avoids converting visible blocking into hidden overrun.
 
+The narrower scalar follow-up, lowering `FG_PREFETCH_DIRECT_STAGE_MAX_BYTES`
+from `8 KiB` to `4 KiB`, is also rejected. It keeps layout fixed and improves
+blocking `271 -> 233`, but worsens `scene_vb 1895 -> 1898`, `loop_vb
+1604 -> 1607`, target accounting `1407 -> 1405`, and hidden prefetch overrun
+`54 -> 81`. Treat the direct-stage byte threshold as closed under the current
+scheduler.
+
 Recent promoted BUILDING4 restore-minus-current baseline: subtract current
 PAL4 draw spans from each frame's compact cleanup prefix in both BUILDING4
 FGP3/v4 packs while preserving the padded `1714154` byte CD footprint, pack
@@ -1238,6 +1245,7 @@ pre-v0.8.0 row.
 | WALKSTUF1 high setup-prime cap 152 KiB | Do not promote. Raising the high-only cap from `144 KiB` to `152 KiB` extends setup coverage to sectors `2..76` and nominally cuts high loop reads `134 -> 133`, but regresses high `scene_vb 1880 -> 1884`, `loop_vb 1592 -> 1595`, `target_vb 1406 -> 1405`, `blocking_vb 275 -> 286`, and `due_misses 55 -> 57`. Treat `144 KiB` as the high-cap knee. |
 | WALKSTUF1 low setup-prime cap 168 KiB | Do not promote. Raising the low-only cap from `160 KiB` to `168 KiB` preserves pack LBA and PS-EXE bucket but is exact-flat at `1895`, `1604/1407`, `overrun_vb=197`, `blocking_vb=271`, `prefetch_overrun_vb=54`, `loop_reads=132`, and `due_misses=50`. Treat `160 KiB` as the low-cap ceiling under the current contiguous setup-prime policy. |
 | WALKSTUF1 low no-direct-stage branch | Do not promote as a broad scene-name check. It improves low visible metrics (`1604 -> 1601`, `blocking_vb 271 -> 214`, `due_misses 50 -> 34`) but regresses hidden refill (`prefetch_overrun_vb 54 -> 79`) and crosses the PS-EXE bucket. Keep the signal; retry only with a narrower direct-stage threshold or generated scheduler metadata. |
+| Direct-stage cap 4 KiB | Do not promote. It preserves layout and lowers WALKSTUF1 low blocking, but regresses active timing (`1604 -> 1607`) and hidden refill (`54 -> 81`). Keep the global cap at `8 KiB`; frame/range-specific scheduling is required. |
 | Dirty upload rect cap `8 -> 24` | Do not promote. VISITOR3 analyzer estimated only a tiny loop-level upload-byte reduction from eliminating the three cap-hit frames, and the runtime probe was exact-flat on VISITOR3 high/low (`1357/1023` and `1361/1023`) with no key metric improvement. Move upload work to generated selective upload-ready payloads or restore/compose coalescing rather than global rect-cap tweaks. |
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |
