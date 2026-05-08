@@ -315,7 +315,7 @@
   - host capture/test island position `x=-300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe
+  notes: fishes-right-side-catches-fish (Johnny fishes off the right side of the island and reels in a fish); visual + audible signoff after the same full-frame foreground-only recapture pattern as `FISHING 7`; pack completeness is proven at the far-left stress position and production playback stays random-position safe
 - ads: JOHNNY
   tag: 1
   slug: johnny1

@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: FISHING 8 — Another boot
+title: FISHING 8 — Catches a fish (right-side variant)
 ads: FISHING
 tag: 8
 slug: fishing8
 status: validated
-description: "FISHING.ADS scene 8: Another boot. Validated on PS1 with random-position-safe scene playback."
+description: "FISHING.ADS scene 8: Johnny fishes off the right side of the island and reels in a fish. Validated 2026-05-08."
 ---
 
 Validated on PS1 under the current scene bar. The high/low packs were
@@ -19,11 +19,9 @@ normal random island placement.
 - ADS dispatch: <code>FISHING.ADS scene 8</code>
 - Slug: <code>fishing8</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) A second 'caught a boot' variant; near-duplicate of FISHING 2.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **HIGH**.
+Johnny casts a line off the right side of the island and reels in a fish. A right-side fishing variant. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "another boot" caption-mapping guess was wrong (the boot gag isn't this scene).
 
 ### Validation Notes
 
