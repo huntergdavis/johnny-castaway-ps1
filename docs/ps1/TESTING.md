@@ -67,7 +67,7 @@ mean no current headless perf summary has been recorded for that scene/tide.
 The rendered website battle card is
 [/scenes/](https://hunterdavis.com/johnny-castaway-ps1/scenes/).
 
-Current battle-card rollup as of 2026-05-06:
+Current battle-card rollup as of 2026-05-08:
 
 | Metric | Value |
 |---|---:|
@@ -76,11 +76,11 @@ Current battle-card rollup as of 2026-05-06:
 | Scenes with at least one active-loop timed variant | `60 / 63` |
 | Scenes with both high/low variants measured | `63 / 63` |
 | Blocked variants | `0 / 126` |
-| Timing-bearing average over target | `+0.8%` (`0.8231%` exact) |
-| Timing-bearing average target speed | `99.5%` (`99.4858%` exact) |
-| Latest perf matrix run | `2026-05-06T17:38:07` |
-| Stats version | mixed; newest optimized rows use `building5-fgp3-padded-v080`, `visitor3-low-group170-186-v080b`, `walkstuf1-fgp2-setup-prime-v080`, and `visitor3-setup-prime-192k-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
-| FISHING 1 canary | `1069 / 1072 VBlanks`, `-0.3%`, `100.3% target speed`, `blocking_vb=5` |
+| Timing-bearing average over target | `-0.2%` (`-0.2497%` exact) |
+| Timing-bearing average target speed | `100.3%` (`100.2899%` exact) |
+| Latest perf matrix run | `2026-05-08T06:36:32` |
+| Stats version | mixed; newest optimized/code-headroom rows use `visitor3-tail-trim-stageguard-v127`, `graphics-composite-os-v111`, `building2-low-group365-381-v110`, `building2-high-group60-72-v109`, `building2-high-restore-minus-current-v108`, `visitor3-low-offscreen-exitright-v106`, `visitor3-high-offscreen-drawclip-v105`, `walkstuf1-compact-fgp3-v141`, `visitor3-low-readgroup-prune-v088`, `building4-restore-minus-current-v087`, `visitor3-restore-minus-current-v086`, `visitor3-high-readgroup-prune-v084`, `compact-u16-inline-v083`, `fgp3v4-drawcompact-all-v082`, `activity9-dead-readgroup-prune-v082`, `read-group-selector-single-assign-v082`, `visitor3-high-remove-72-84-v082`, `visitor3-high-remove-144-160-v082`, `johnny2-prefetch-relief-v081`, `activity9-low-fgp3-cleanup-compact-v081`, `building4-fgp3-cleanup-compact-window-v081`, `building2-fgp3-cleanup-compact-v081`, `visitor3-fgp3-cleanup-compact-v081`, `mary2-prefetch-relief-v081`, `mary2-fgp3-padded-v081`, `johnny2-fgp3-padded-v081`, `mary5-fgp3-padded-v081`, `activity11-fgp3-padded-v081`, `building5-fgp3-padded-v080`, and `walkstuf1-fgp2-setup-prime-v080`; full row-level versions remain in `performance-scene-matrix.csv` |
+| FISHING 1 canary | `1068 / 1074 VBlanks`, `-0.6%`, `100.6% target speed`, `blocking_vb=2` |
 
 Reporting rule: after every accepted perf optimization, or every rejected
 experiment worth preserving, update `performance-scene-matrix.csv`,
@@ -94,6 +94,31 @@ headless run directory (`scratch/ps1-perf-iterate/YYYYMMDD-HHMMSS`), so stale
 scene rows are visible on the rendered battle card.
 Rows also carry `stats_version`; the current full matrix baseline is
 `compact-fgp3-v2-fullmatrix`, and the latest refreshed follow-up rows now use
+`visitor3-tail-trim-stageguard-v127`,
+`graphics-composite-os-v111`,
+`building2-low-group365-381-v110`,
+`building2-high-group60-72-v109`,
+`building2-high-restore-minus-current-v108`,
+`visitor3-low-offscreen-exitright-v106`,
+`visitor3-high-offscreen-drawclip-v105`,
+`walkstuf1-compact-fgp3-v141`,
+`visitor3-low-readgroup-prune-v088`,
+`building4-restore-minus-current-v087`,
+`visitor3-restore-minus-current-v086`,
+`visitor3-high-readgroup-prune-v084`,
+`compact-u16-inline-v083`,
+`fgp3v4-drawcompact-all-v082`,
+`visitor3-high-remove-144-160-v082`,
+`building2-fgp3-cleanup-compact-v081`,
+`visitor3-fgp3-cleanup-compact-v081`,
+`johnny2-prefetch-relief-v081`,
+`johnny2-fgp3-padded-v081`,
+`mary2-prefetch-relief-v081`,
+`mary2-fgp3-padded-v081`,
+`mary5-fgp3-padded-v081`,
+`activity11-fgp3-padded-v081`,
+`activity9-low-fgp3-cleanup-compact-v081`,
+`activity9-current-v081-refresh`,
 `activity9-lowgroup-v072c`,
 `activity9-fgp3-v072c`,
 `activity9-window-v072c`,
@@ -115,13 +140,10 @@ Rows also carry `stats_version`; the current full matrix baseline is
 `visitor4-v072-current-refresh`,
 `stand1-v072-current-refresh`,
 `building5-fgp3-padded-v080`,
-`visitor3-low-group170-186-v080b`,
 `visitor3-setup-prime-192k-v080`,
 `visitor3-v072-prefetch-relief`,
 `walkstuf1-fgp2-setup-prime-v080`,
-`mary2-v068-wide-stitch`,
 `fishing5-v065-current-ledger-overlay`,
-`johnny2-v064-validation-refresh`,
 `compact-fgp3-v66-final-frame-hold`,
 `compact-fgp3-v64-building2-group318-330`,
 `compact-fgp3-v63-building2low-prime`, and `indexed8-row-local-dirty-v1`; other refreshed rows include

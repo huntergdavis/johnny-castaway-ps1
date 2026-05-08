@@ -12,12 +12,38 @@ background, waves, holiday overlay, and SFX playback.
 
 | | |
 |---|---|
-| Release | `v0.8.1-ps1` |
+| Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **+0.8% over target / 99.5% target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **120 / 126** timing-bearing; **-0.2% over target / 100.3% target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
+
+`v0.8.3-ps1` is the current performance point release after `v0.8.2-ps1`.
+It keeps all 63 scenes visually/audibly validated, preserves the routed
+126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
+restore-minus-current pack baseline. The public battle card is now
+`-0.2497%` over target / `100.2899%` target speed across 120 timing-bearing
+rows, about `17.65` over-target points removed and `13.19` target-speed
+points added since the compact full-matrix baseline.
+
+The latest VISITOR3 follow-up, `visitor3-fallthrough5-v142`, is closed as a
+non-promoting exact-flat threshold probe. The accepted fallthrough guard stays
+at `6` VBlanks; future VISITOR3 work remains generated scheduler ownership,
+safe upload/precomposed payloads, or another pack/data-shape reduction.
+
+`v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
+It keeps all 63 scenes visually/audibly validated, preserves the routed
+126-variant headless matrix, and is now followed by the FGP3/v4 compact
+metadata reader inline baseline, VISITOR3 pack-side restore-minus-current
+cleanup, BUILDING4 pack-side restore-minus-current cleanup, VISITOR3
+read-table headroom cleanup, WALKSTUF1 high setup-prime cap retune, VISITOR3
+high/low offscreen draw clips, BUILDING2 high restore-minus-current cleanup,
+the BUILDING2 high `60..72` grouped-read pass, and the BUILDING2 low
+`365..381` grouped-read pass, the VISITOR3 low code-shape pass, and the
+current VISITOR3 v4 draw-tail trim plus stage guard:
+`-0.0968%` over target / `100.1613%` target speed across 120 timing-bearing
+rows.
 
 `v0.8.1-ps1` is a clean-rect pressure stability point release. It fixes a
 randomized long-run scene-load freeze by estimating the actual clean
@@ -28,8 +54,15 @@ expansion and upper/lower split rects. Focused `MARY 4` and representative
 `v0.8.0-ps1` is the complete-scene performance baseline. Every original
 scene remains validated under the visual + audible signoff bar, every high
 and low tide scene variant is routed through the headless matrix, and the
-current timing-bearing rows average `+0.8231%` over target / `99.4858%`
-target speed after the post-release BUILDING5 padded-FGP3 optimization.
+current timing-bearing rows now average `-0.0968%` over target / `100.1613%`
+target speed after the post-release VISITOR3, BUILDING2, BUILDING4,
+ACTIVITY9, JOHNNY2 clean-pressure, WALKSTUF1, selector-cleanup, FGP3/v4
+compact draw metadata, compact decoder inline, and pack-side
+restore-minus-current promotions plus the current grouped-read and VISITOR3
+code-shape/data-shape promotions.
+MARY2's padded FGP3 conversion exposed a clean-memory prefetch miss; the
+MARY2-local relief restores `stage1_window`, moves high/low to `2241/2248`
+and `2242/2250`, and collapses due misses from `233` to `0`.
 
 `v0.7.2-ps1` fixes the story-loop walking regression where Johnny could walk
 over water when the next scene used a different island backdrop key.
@@ -220,6 +253,8 @@ Freeplay mode is launched from the pause menu:
 - [performance-o2-audit.md](performance-o2-audit.md) + [performance-o2-audit.csv](performance-o2-audit.csv) — current `-O2` / `-Os` sweep queue
 - [development-workflow.md](development-workflow.md) — operator loop for bringing up a new scene
 - [TESTING.md](TESTING.md) — validation strategy (primary = human signoff; regtest = legacy)
+- [release-notes-0.8.3.md](release-notes-0.8.3.md) — WALKSTUF1 compact foreground release notes
+- [release-notes-0.8.2.md](release-notes-0.8.2.md) — VISITOR3 guarded-read performance release notes
 - [release-notes-0.8.1.md](release-notes-0.8.1.md) — clean-rect pressure stability release notes
 - [release-notes-0.8.0.md](release-notes-0.8.0.md) — complete-scene performance baseline release notes
 - [walk-implementation-plan.md](walk-implementation-plan.md) — story-loop walk connector, including `v0.4.20` implementation notes

@@ -42,15 +42,17 @@ were evidence-gathering positions, not runtime pins.
 
 ## Notable runtime history
 
-`VISITOR 3` is the largest single optimization target left on the
+`VISITOR 3` remains one of the high-leverage yellow-band rows on the
 [performance battle card]({{ '/perf/' | relative_url }}) at
-`{{ site.release.tag }}`. Both `visitor3` high and `visitor3` low
-sit in the **red** band — around [`69.4%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }}) after the
-`v0.7.2` prefetch-relief refresh. The wide multi-view stitch (the
-red ship crossing the full scene width) hits the
+`{{ site.release.tag }}`. After the FGP3/v4 compact metadata work, the
+pack-side restore-minus-current cleanup, offscreen clips, code-shape pass, and
+v4 draw-tail stage guard, `visitor3` high and low now run around
+[`91.9%` and `91.0%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+instead of sitting in the red band. The wide multi-view stitch (the red ship
+crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})
-the hardest of any scene; the timing gap is concentrated in the
-ship's live crash window, not the foreground replay around it.
+harder than most scenes; the remaining timing gap is concentrated in the
+ship's live crash window and same-frame cleanup/restore work.
 
 The arc that moved the rest of the matrix from `87.1%` to `99.5%`
 target speed is at
@@ -58,4 +60,9 @@ target speed is at
 The named-experiment queue for `visitor3` lives in
 [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md);
 recent rejected probes include several read-group, slack-gated, and
-setup-prime variants that didn't beat the canary.
+setup-prime variants that didn't beat the canary. The current `97..109`
+read-plan cluster is closed for local runtime changes too: both grouped-read
+and setup-owned persistent-segment probes measured exact-flat, so the next
+useful lane needs generated scheduler ownership or a real payload/data-shape
+change. A data-only sector-alignment probe also failed: it reduced modeled
+uncovered sectors but shifted CD phase and regressed both tide variants.

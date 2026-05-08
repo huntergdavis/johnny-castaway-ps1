@@ -27,8 +27,10 @@ validated scene and the widest one — graduated from "validated"
 to "optimized validated outlier."
 [`v0.8.1-ps1`]({{ '/lab/v081-mary4-freeze/' | relative_url }})
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched. This article is what that loop actually
-looked like.
+matrix mean untouched. The current post-`v0.8.1-ps1` performance branch is now
+at **+0.6% over target / 99.7% target speed**, with roughly **16.8 percentage
+points** of over-target gap closed and about **12.6 target-speed points**
+added. This article is what that loop actually looked like.
 
 ## Two ledgers, on purpose
 
@@ -112,16 +114,13 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 
 ## What's left
 
-The current matrix mean is `99.5%` target speed. The remaining `0.5%`
-lives in a small number of high-leverage rows. As of `{{ site.release.tag }}`
-the only two red rows on the [battle card]({{ '/perf/' | relative_url }})
-are `VISITOR 3` high (`70.0%`) and `VISITOR 3` low (`69.7%`) after
-the `v0.8.0` setup-prime + group `170..186` work — that scene's
-wide multi-view stitch hits the prefetch window the hardest and is
-the largest single optimization target left. The yellow cluster (twenty rows between
-`80%` and `99%`) is the rest of the wide-action surface plus the
-`BUILDING 2` and `BUILDING 4` clean-rect heavy frames and a couple
-of MARY composite-frame rows. The optimization plan at
+The current matrix mean is `100.0%` target speed. The remaining positive
+over-target VBlanks live in a small number of high-leverage rows. As of
+`{{ site.release.tag }}` there are no red rows left on the
+[battle card]({{ '/perf/' | relative_url }}). `WALKSTUF 1`, `VISITOR 3`,
+`BUILDING 4`, `BUILDING 2`, and `BUILDING 6` make up the yellow cluster between
+`80%` and `99%`, with VISITOR3 now at roughly `89.9%`/`89.8%` after the
+pack-side restore-minus-current cleanup. The optimization plan at
 `docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.
@@ -146,7 +145,7 @@ The disc plays. That was always the point. It also plays at near native rate now
 - [/docs/performance/]({{ '/docs/performance/' | relative_url }}) — reference manual for what each column on the battle card means.
 - [/lab/the-63-scene-grind/]({{ '/lab/the-63-scene-grind/' | relative_url }}) — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.
 - [/lab/v081-mary4-freeze/]({{ '/lab/v081-mary4-freeze/' | relative_url }}) — the stability follow-on that left this article's matrix mean untouched.
-- [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — the slowest two rows; the largest single optimization target left.
+- [/scenes/visitor3/]({{ '/scenes/visitor3/' | relative_url }}) — formerly the red outlier, now a yellow-band pack/data-shape target.
 - [/scenes/activity9/]({{ '/scenes/activity9/' | relative_url }}) — wide-boat scene; padded FGP3 + scoped low-tide read group case study.
 - [/scenes/building4/]({{ '/scenes/building4/' | relative_url }}) — clean-rect-heavy variant; representative of the drop-prefetch unlock.
 - [/scenes/fishing1/]({{ '/scenes/fishing1/' | relative_url }}) — the canary scene the matrix tracks against every release.

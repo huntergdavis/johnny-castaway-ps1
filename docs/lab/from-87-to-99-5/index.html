@@ -15,7 +15,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -75,7 +75,7 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/from-87-to-99-5/",
   "inLanguage": "en",
-  "wordCount": 2127,
+  "wordCount": 2119,
   "timeRequired": "PT8M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
@@ -139,7 +139,7 @@
         </p>
 
         <p class="reading-time" aria-label="Estimated reading time">
-          ~8 min read · 2044 words
+          ~8 min read · 2036 words
         </p>
 
       <hr class="rule" />
@@ -188,8 +188,10 @@ validated scene and the widest one — graduated from “validated”
 to “optimized validated outlier.”
 <a href="../v081-mary4-freeze/"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></a>
 followed as a clean-rect pressure stability fix that left the
-matrix mean untouched. This article is what that loop actually
-looked like.</p>
+matrix mean untouched. The current post-<code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> performance branch is now
+at <strong>+0.6% over target / 99.7% target speed</strong>, with roughly <strong>16.8 percentage
+points</strong> of over-target gap closed and about <strong>12.6 target-speed points</strong>
+added. This article is what that loop actually looked like.</p>
 
 <h2 id="two-ledgers-on-purpose">Two ledgers, on purpose</h2>
 
@@ -279,21 +281,18 @@ looked like.</p>
 
 <h2 id="whats-left">What’s left</h2>
 
-<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">99.5%</code> target speed. The remaining <code class="language-plaintext highlighter-rouge">0.5%</code>
-lives in a small number of high-leverage rows. As of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>
-the only two red rows on the <a href="../../perf/">battle card</a>
-are <code class="language-plaintext highlighter-rouge">VISITOR 3</code> high (<code class="language-plaintext highlighter-rouge">70.0%</code>) and <code class="language-plaintext highlighter-rouge">VISITOR 3</code> low (<code class="language-plaintext highlighter-rouge">69.7%</code>) after
-the <code class="language-plaintext highlighter-rouge">v0.8.0</code> setup-prime + group <code class="language-plaintext highlighter-rouge">170..186</code> work — that scene’s
-wide multi-view stitch hits the prefetch window the hardest and is
-the largest single optimization target left. The yellow cluster (twenty rows between
-<code class="language-plaintext highlighter-rouge">80%</code> and <code class="language-plaintext highlighter-rouge">99%</code>) is the rest of the wide-action surface plus the
-<code class="language-plaintext highlighter-rouge">BUILDING 2</code> and <code class="language-plaintext highlighter-rouge">BUILDING 4</code> clean-rect heavy frames and a couple
-of MARY composite-frame rows. The optimization plan at
+<p>The current matrix mean is <code class="language-plaintext highlighter-rouge">100.0%</code> target speed. The remaining positive
+over-target VBlanks live in a small number of high-leverage rows. As of
+<code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> there are no red rows left on the
+<a href="../../perf/">battle card</a>. <code class="language-plaintext highlighter-rouge">WALKSTUF 1</code>, <code class="language-plaintext highlighter-rouge">VISITOR 3</code>,
+<code class="language-plaintext highlighter-rouge">BUILDING 4</code>, <code class="language-plaintext highlighter-rouge">BUILDING 2</code>, and <code class="language-plaintext highlighter-rouge">BUILDING 6</code> make up the yellow cluster between
+<code class="language-plaintext highlighter-rouge">80%</code> and <code class="language-plaintext highlighter-rouge">99%</code>, with VISITOR3 now at roughly <code class="language-plaintext highlighter-rouge">89.9%</code>/<code class="language-plaintext highlighter-rouge">89.8%</code> after the
+pack-side restore-minus-current cleanup. The optimization plan at
 <code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code> § 7 and § 8 lists about
 thirty named experiments still on the bench. Some will land, some
 will join the rejected log.</p>
 
-<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">99.5%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
+<p>The home-page status strip carries the current target-speed pill (<code class="language-plaintext highlighter-rouge">100.3%</code> as of <code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code>); the live battle card is at <a href="../../perf/">/perf/</a>.</p>
 
 <h2 id="what-the-loop-made-obvious">What the loop made obvious</h2>
 
@@ -316,7 +315,7 @@ will join the rejected log.</p>
   <li><a href="../../docs/performance/">/docs/performance/</a> — reference manual for what each column on the battle card means.</li>
   <li><a href="../the-63-scene-grind/">/lab/the-63-scene-grind/</a> — the prequel essay; the daily loop that closed the visual ledger and made this performance retrospective possible.</li>
   <li><a href="../v081-mary4-freeze/">/lab/v081-mary4-freeze/</a> — the stability follow-on that left this article’s matrix mean untouched.</li>
-  <li><a href="../../scenes/visitor3/">/scenes/visitor3/</a> — the slowest two rows; the largest single optimization target left.</li>
+  <li><a href="../../scenes/visitor3/">/scenes/visitor3/</a> — formerly the red outlier, now a yellow-band pack/data-shape target.</li>
   <li><a href="../../scenes/activity9/">/scenes/activity9/</a> — wide-boat scene; padded FGP3 + scoped low-tide read group case study.</li>
   <li><a href="../../scenes/building4/">/scenes/building4/</a> — clean-rect-heavy variant; representative of the drop-prefetch unlock.</li>
   <li><a href="../../scenes/fishing1/">/scenes/fishing1/</a> — the canary scene the matrix tracks against every release.</li>
@@ -372,7 +371,7 @@ will join the rejected log.</p>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.1-ps1</a>)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

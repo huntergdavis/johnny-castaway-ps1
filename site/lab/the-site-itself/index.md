@@ -239,8 +239,8 @@ None of this is novel work. Every piece is a Jekyll trick somebody else has done
   site.html_pages variant of the same pattern.
 - [/humans.txt]({{ '/humans.txt' | relative_url }}) — the credits-
   voice humans.txt file the article describes.
-- [404 page]({{ '/typo-that-does-not-exist/' | relative_url }}) —
-  click to see the self-contained 404 in the wild.
+- [404 page]({{ '/404.html' | relative_url }}) —
+  the self-contained fallback page described above.
 - [/about/voice/]({{ '/about/voice/' | relative_url }}) — the
   prose-side companion to this article's mechanics-side
   discipline.

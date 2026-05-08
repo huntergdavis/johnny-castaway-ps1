@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Status
-eyebrow: Component-level state at v0.8.1-ps1
+eyebrow: Component-level state at v0.8.2-ps1
 subtitle: What's working, what's broken, what's in motion -- one row per subsystem.
 description: Component-level status of the Johnny Castaway PS1 port — renderer, audio, input, captions, holidays, pause menu, memcard, regtest, host capture, CD packaging.
 ---
@@ -13,11 +13,11 @@ under the project's acceptance bar (pixel-perfect visuals plus synced
 SFX, signed off across every applicable variant -- night, low-tide,
 holiday, raft-stage):
 **{{ site.release.scenes_validated }} / {{ site.release.scenes_total }}**.
-`v0.8.1-ps1` is the current release: every row in the live per-scene
-ledger is signed off, all 126 high/low scene variants are routed, the
-headless timing-bearing average is +0.8% over target / 99.5% target speed,
-and randomized long-run scene loads now account for wave-band/split-rect clean
-pressure before allocation.
+`v0.8.2-ps1` is the current release: every row in the live per-scene
+ledger is signed off, all 126 high/low scene variants are routed, and the
+headless timing-bearing average is +0.6% over target / 99.7% target speed.
+The current dead-readgroup prune baseline keeps the 13-case canary set
+exact-flat while shrinking the foreground hot path.
 The live ledger is at
 [/scenes/]({{ '/scenes/' | relative_url }}); the per-scene workflow
 that drives the bar is in
@@ -98,7 +98,7 @@ Pulled from the live narrative in
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
   loading, memory pressure, and release polish. `v0.8.1` keeps the current
-  headless baseline at +0.8% over target / 99.5% target speed while fixing
+  headless baseline at +0.6% over target / 99.6% target speed while fixing
   long-run large-clean pressure accounting. The bring-up
   loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).

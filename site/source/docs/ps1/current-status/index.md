@@ -14,15 +14,15 @@ should not pretend the interesting work only happened in the polished essays.
 
 **Active PS1 reference.** This is active engineering documentation for the PS1 port. It is close enough to the code that stale claims here become real bugs.
 
-validated, and randomized long-run scene loads now account for the real clean-rect pressure before allocation, including ocean wave-band expansion and upper/lower split rects).
+WALKSTUF1 compact FGP3/v4 restore-minus-current pack baseline; all 63 scenes remain validated, and the headless battle card is under target at -0.2497% over / 100.2899% target speed).
 
 ## File facts
 
 | Field | Value |
 |---|---:|
 | Source path | `docs/ps1/current-status.md` |
-| Lines | 509 |
-| Approx. words | 5536 |
+| Lines | 557 |
+| Approx. words | 5974 |
 | Code fences | 1 |
 
 ## Outline

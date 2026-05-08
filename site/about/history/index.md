@@ -386,6 +386,9 @@ component-completeness phases:
   all 126 high/low scene variants through the perf matrix; clean-
   memory-relief drop-prefetch turned the post-validation perf
   arc from `+17.4%` over target to `+0.9%` over target.
+- Latest performance release: **`v0.8.2-ps1`** — promoted the
+  VISITOR3 guarded-read path and kept the 63-scene validation bar
+  intact while the headless battle card stayed near target.
 - Latest stability release: **`v0.8.1-ps1`** — clean-rect
   pressure estimator extended to include the ocean wave band
   and upper/lower split rects before allocation, fixing a

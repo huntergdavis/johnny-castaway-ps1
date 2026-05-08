@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -108,7 +108,7 @@
   <div class="page-body">
     <p>A labor of love by Hunter Davis. The project tags milestones every ~10 newly validated scenes and cuts smaller stability releases between them when the runtime needs a fix that doesn’t change the validated set. Below is the short version of what each tag carried — the full notes live alongside the source for anyone who wants the root-cause-and-mitigation depth.</p>
 
-<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code></strong> with
+<p>The current release line is <strong><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code></strong> with
 <strong>63 / 63</strong> scenes signed off under the
 <a href="../docs/glossary/#fishing1-bar">FISHING 1 bar</a>.</p>
 
@@ -117,10 +117,12 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
+      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
+      <li><a href="#v082-ps1--visitor3-guarded-read-performance" id="markdown-toc-v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</a></li>
+      <li><a href="#v081-ps1--clean-rect-pressure-stability" id="markdown-toc-v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</a></li>
       <li><a href="#v080-ps1--complete-scene-performance-baseline" id="markdown-toc-v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</a></li>
       <li><a href="#v072-ps1--story-loop-walk-backdrop-guard" id="markdown-toc-v072-ps1--story-loop-walk-backdrop-guard"><code class="language-plaintext highlighter-rouge">v0.7.2-ps1</code> — story-loop walk backdrop guard</a></li>
       <li><a href="#v071-ps1--persisted-holiday-mode-and-first-run-defaults" id="markdown-toc-v071-ps1--persisted-holiday-mode-and-first-run-defaults"><code class="language-plaintext highlighter-rouge">v0.7.1-ps1</code> — persisted holiday mode and first-run defaults</a></li>
@@ -137,6 +139,62 @@
 </details>
 
 <h2 id="latest">Latest</h2>
+
+<h3 id="v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</h3>
+<p><em>2026-05-08</em></p>
+
+<p>This point release promotes the WALKSTUF1 compact foreground pack pass and
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.</p>
+
+<ul>
+  <li><strong>WALKSTUF1 gets compact FGP3/v4 packs.</strong> Both tides move from PAL4/FGP2 to
+padded compact FGP3/v4 restore-minus-current packs while preserving the
+<code class="language-plaintext highlighter-rouge">1535263</code> byte pack footprints, original LBAs, and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE
+bucket.</li>
+  <li><strong>The outlier gap drops sharply.</strong> WALKSTUF1 high improves <code class="language-plaintext highlighter-rouge">1592/1406 -&gt;
+1491/1426</code>; low improves <code class="language-plaintext highlighter-rouge">1604/1407 -&gt; 1489/1427</code>.</li>
+  <li><strong>Visible CD pressure falls.</strong> High blocking drops <code class="language-plaintext highlighter-rouge">275 -&gt; 85</code>; low blocking
+drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; loop reads drop from <code class="language-plaintext highlighter-rouge">134/132</code> to <code class="language-plaintext highlighter-rouge">69/69</code>.</li>
+  <li><strong>Battle card is now under target.</strong> The 120 timing-bearing rows average
+<code class="language-plaintext highlighter-rouge">-0.2497%</code> over target / <code class="language-plaintext highlighter-rouge">100.2899%</code> target speed.</li>
+  <li><strong>VISITOR3 threshold probing is closed for this baseline.</strong> Lowering the
+fallthrough guard from <code class="language-plaintext highlighter-rouge">6</code> to <code class="language-plaintext highlighter-rouge">5</code> VBlanks stayed exact-flat, so the runtime
+keeps the accepted guard and moves future VISITOR3 work back to generated
+scheduler/data-shape lanes.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.3/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.3-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
+
+<h2 id="earlier-milestones">Earlier milestones</h2>
+
+<h3 id="v082-ps1--visitor3-guarded-read-performance"><code class="language-plaintext highlighter-rouge">v0.8.2-ps1</code> — VISITOR3 guarded-read performance</h3>
+<p><em>2026-05-07</em></p>
+
+<p>This point release promotes the next VISITOR3 high-tide guarded generated-window
+read group and ships the current upstream website/docs polish with the latest
+performance battle-card numbers.</p>
+
+<ul>
+  <li><strong>VISITOR3 high visible CD pressure improves.</strong> The guarded <code class="language-plaintext highlighter-rouge">138..162</code> read
+window lowers <code class="language-plaintext highlighter-rouge">blocking_vb 294 -&gt; 293</code>, <code class="language-plaintext highlighter-rouge">loop_reads 40 -&gt; 39</code>, and
+<code class="language-plaintext highlighter-rouge">loop_read_vb 335 -&gt; 332</code>.</li>
+  <li><strong>Loop cadence stays fixed.</strong> VISITOR3 high remains <code class="language-plaintext highlighter-rouge">1406/1019</code> VBlanks with
+<code class="language-plaintext highlighter-rouge">overrun_vb=387</code> and <code class="language-plaintext highlighter-rouge">prefetch_overrun_vb=7</code>.</li>
+  <li><strong>Battle card remains near target.</strong> The 120 timing-bearing rows average
+<code class="language-plaintext highlighter-rouge">+0.5706%</code> over target / <code class="language-plaintext highlighter-rouge">99.6769%</code> target speed.</li>
+  <li><strong>Site/docs are current with <code class="language-plaintext highlighter-rouge">main</code>.</strong> The release includes the latest site
+navigation, glossary, lab/feed, structured-data, and page-TOC polish.</li>
+</ul>
+
+<p><a href="../source/docs/ps1/release-notes-0.8.2/">Full notes</a>
+ · 
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.2-ps1">GitHub release</a>
+ · 
+<a href="../play/">Download .bin / .cue</a></p>
 
 <h3 id="v081-ps1--clean-rect-pressure-stability"><code class="language-plaintext highlighter-rouge">v0.8.1-ps1</code> — clean-rect pressure stability</h3>
 <p><time datetime="2026-05-06"><em>2026-05-06</em></time></p>
@@ -163,8 +221,6 @@ with <code class="language-plaintext highlighter-rouge">scene-end</code> and <co
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.1-ps1">GitHub release</a>
  · 
 <a href="../play/">Download .bin / .cue</a></p>
-
-<h2 id="earlier-milestones">Earlier milestones</h2>
 
 <h3 id="v080-ps1--complete-scene-performance-baseline"><code class="language-plaintext highlighter-rouge">v0.8.0-ps1</code> — complete-scene performance baseline</h3>
 <p><time datetime="2026-05-06"><em>2026-05-06</em></time></p>
@@ -325,7 +381,7 @@ is at <a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases">hun
           Code: <a href="../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="./">v0.8.1-ps1</a>)
+          (<a href="./">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

@@ -13,7 +13,7 @@
   <meta property="og:image"        content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png" />
   <meta property="og:image:alt"    content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" /><meta name="twitter:card"  content="summary_large_image" />
-  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.1; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
+  <meta name="twitter:image" content="https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/twitter-card.png" /><meta name="twitter:image:alt" content="Johnny Castaway fishing on a tiny island under a palm tree, rendered in pixel art." /><meta name="generator" content="Jekyll 4.4.1; johnny-castaway-ps1 v0.8.2; built 2026-05-08" /><link rel="dns-prefetch" href="//github.com" />
 
   <link rel="preload" as="font" type="font/woff2" crossorigin
         href="../../assets/fonts/bitter-latin-700-normal.woff2" />
@@ -253,7 +253,7 @@
 
 <dl>
 <dt id="ps-exe">PS-EXE</dt>
-<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>v0.8.1-ps1</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
+<dd>PlayStation executable format. A small 2 KB header (load address, entry point, code size, stack base) followed by the binary code/data, padded to 2 KiB CD-ROM sectors. The project's <code>jcreborn.exe</code> is 208 KiB (104 sectors) at <code>v0.8.2-ps1</code>, produced by <code>mips-mipsel-none-elf-gcc</code> through the <a href="#psn00bsdk">PSn00bSDK</a> linker and bundled onto the disc by <a href="#mkpsxiso">mkpsxiso</a> per <code>config/ps1/cd_layout.xml</code>. The BIOS loads it from disc into main RAM at boot and jumps to the entry point.</dd>
 
 <dt id="bin-cue">jcreborn.bin / jcreborn.cue</dt>
 <dd>The shipped CD image, a <code>.bin</code> binary track plus a <code>.cue</code> cuesheet that DuckStation (and real hardware) opens. Both files belong in the same directory. End users never need original Sierra files — the pre-baked FG2 packs are derived data, not Sierra source.</dd>
@@ -278,7 +278,7 @@
 <dd><code>target_vb</code> is the vblanks a scene <em>should</em> take at native rate (computed from the host capture's frame count). <code>loop_vb</code> is what the run actually took. Their ratio is the row's <em>target speed %</em>; their difference is <em>over target %</em>. Anything above zero on over-target means the row missed.</dd>
 
 <dt id="target-speed">target_speed</dt>
-<dd>The user-facing perf column: <code>target_vb / loop_vb × 100%</code>. <code>100%</code> means the run hit native cadence exactly; below means it slipped. The <em>Target Speed</em> column on <a href="../../perf/">/perf/</a> color-codes ≥99% green, ≥80% yellow, &lt;80% red. The matrix-wide mean across timing-bearing rows is the home page status pill at <code>99.5%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying values.</dd>
+<dd>The user-facing perf column: <code>target_vb / loop_vb × 100%</code>. <code>100%</code> means the run hit native cadence exactly; below means it slipped. The <em>Target Speed</em> column on <a href="../../perf/">/perf/</a> color-codes ≥99% green, ≥80% yellow, &lt;80% red. The matrix-wide mean across timing-bearing rows is the home page status pill at <code>100.3%</code>; SUZY mermaid scenes are excluded from the average because they lack a deterministic <a href="#scene-end">scene-end</a>. See <a href="#target-vb">target_vb / loop_vb</a> for the underlying values.</dd>
 
 <dt id="scene-end">Scene-end</dt>
 <dd>The runtime event marking one full <a href="#fg2-pack">FG2 pack</a> loop completion. Triggers a <code>JCPERF</code>/<code>JCPERF2</code> TTY dump (vblank counts, CD/compose/upload/wait counters, <code>blocking_vb</code>, <code>alloc_fail</code>) and finalizes the row's perf-matrix entry; the <a href="#regtest">regtest harness</a> uses it as the natural pivot point for state-hash capture. Story scenes reach scene-end deterministically; the <a href="../../scenes/suzy1/">SUZY</a> mermaid scenes do not (no terminal frame), which is why their /perf/ rows are metadata-only and excluded from the matrix's <em>target_speed</em> averages on purpose.</dd>
@@ -287,7 +287,7 @@
 <dd>The structured TTY printf records the runtime emits at <a href="#scene-end">scene-end</a>. <code>JCPERF</code> is the original line: vblank totals, <code>target_vb</code>/<code>loop_vb</code>, <code>over_target</code>, <code>blocking_vb</code>, <code>alloc_fail</code>. <code>JCPERF2</code> is the v0.8.0-era extension: stream-window, prefetch-hits, read-group, plus the clean-rect pressure split (wave-band, upper, lower) added in <code>v0.8.1</code>. Both are flat <code>key=value</code> sequences on a single line so the headless DuckStation runner can grep them out of <code>tty.log</code> with no parser; <a href="#regtest">regtest</a> + the <a href="../../lab/build-farm/">build farm</a> consume them to fill the <a href="../../perf/">/perf/</a> matrix and gate promotion on no-worse aggregates.</dd>
 
 <dt id="over-target">over_target</dt>
-<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.1-ps1</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
+<dd>The percentage by which <code>loop_vb</code> exceeded <code>target_vb</code>. The <em>Over Target</em> column on <a href="../../perf/">/perf/</a>. Lower is better; <code>0%</code> means exact target cadence; negative means the run finished <em>under</em> the budget. The matrix-wide aggregate at <code>v0.8.2-ps1</code> is <code>+0.8%</code> across the 120 timing-bearing rows.</dd>
 
 <dt id="blocking-vb">blocking_vb</dt>
 <dd>The number of vblanks where the renderer was blocked waiting for the CD prefetcher to land the next pack chunk. The <em>Blocking</em> column on <a href="../../perf/">/perf/</a>. <code>0</code> is ideal; non-zero values are usually traceable to a too-small stream-window or a wide-action scene whose pack chunk crossed a read group boundary.</dd>
@@ -379,7 +379,7 @@ that lets a definition stay terse without being curt.</li>
           Code: <a href="../../legal/">GPL-3.0</a> ·
           Source: <a href="https://github.com/huntergdavis/johnny-castaway-ps1" rel="noopener">GitHub</a> ·
           63 / 63 scenes validated
-          (<a href="../../releases/">v0.8.1-ps1</a>)
+          (<a href="../../releases/">v0.8.2-ps1</a>)
         </p>
         <p class="footer-license">
           Devlog feed:

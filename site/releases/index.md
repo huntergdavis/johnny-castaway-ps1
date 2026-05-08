@@ -22,6 +22,58 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
+### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
+*2026-05-08*
+
+This point release promotes the WALKSTUF1 compact foreground pack pass and
+records the latest VISITOR3 follow-up as a non-promoting threshold closure.
+
+- **WALKSTUF1 gets compact FGP3/v4 packs.** Both tides move from PAL4/FGP2 to
+  padded compact FGP3/v4 restore-minus-current packs while preserving the
+  `1535263` byte pack footprints, original LBAs, and the `215040` byte PS-EXE
+  bucket.
+- **The outlier gap drops sharply.** WALKSTUF1 high improves `1592/1406 ->
+  1491/1426`; low improves `1604/1407 -> 1489/1427`.
+- **Visible CD pressure falls.** High blocking drops `275 -> 85`; low blocking
+  drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
+- **Battle card is now under target.** The 120 timing-bearing rows average
+  `-0.2497%` over target / `100.2899%` target speed.
+- **VISITOR3 threshold probing is closed for this baseline.** Lowering the
+  fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
+  keeps the accepted guard and moves future VISITOR3 work back to generated
+  scheduler/data-shape lanes.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.3-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
+## Earlier milestones
+
+### `v0.8.2-ps1` — VISITOR3 guarded-read performance
+*2026-05-07*
+
+This point release promotes the next VISITOR3 high-tide guarded generated-window
+read group and ships the current upstream website/docs polish with the latest
+performance battle-card numbers.
+
+- **VISITOR3 high visible CD pressure improves.** The guarded `138..162` read
+  window lowers `blocking_vb 294 -> 293`, `loop_reads 40 -> 39`, and
+  `loop_read_vb 335 -> 332`.
+- **Loop cadence stays fixed.** VISITOR3 high remains `1406/1019` VBlanks with
+  `overrun_vb=387` and `prefetch_overrun_vb=7`.
+- **Battle card remains near target.** The 120 timing-bearing rows average
+  `+0.5706%` over target / `99.6769%` target speed.
+- **Site/docs are current with `main`.** The release includes the latest site
+  navigation, glossary, lab/feed, structured-data, and page-TOC polish.
+
+[Full notes]({{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }})
+&nbsp;·&nbsp;
+[GitHub release]({{ site.github_url }}/releases/tag/v0.8.2-ps1)
+&nbsp;·&nbsp;
+[Download .bin / .cue]({{ '/play/' | relative_url }})
+
 ### `v0.8.1-ps1` — clean-rect pressure stability
 <time datetime="2026-05-06"><em>2026-05-06</em></time>
 
@@ -45,8 +97,6 @@ the matrix didn't is at
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.1-ps1)
 &nbsp;·&nbsp;
 [Download .bin / .cue]({{ '/play/' | relative_url }})
-
-## Earlier milestones
 
 ### `v0.8.0-ps1` — complete-scene performance baseline
 <time datetime="2026-05-06"><em>2026-05-06</em></time>

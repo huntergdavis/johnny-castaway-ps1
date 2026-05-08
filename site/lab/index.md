@@ -63,7 +63,7 @@ card carries the date it landed.
   <li>
     <p class="lab-date"><time datetime="2026-05-06">2026-05-06</time></p>
     <a href="{{ '/lab/from-87-to-99-5/' | relative_url }}">From 87 to 99.5: the post-validation performance loop</a>
-    <p>How the headless-perf battle card moved from +17.4% over target to +0.9% after every scene was already signed off — the single biggest unlock (clean-memory-relief drop-prefetch), the methodology, the accepted experiments, and the rejected ones.</p>
+    <p>How the headless-perf battle card moved from +17.4% over target to +0.8% after every scene was already signed off — the single biggest unlock (clean-memory-relief drop-prefetch), the methodology, the accepted experiments, and the rejected ones.</p>
   </li>
   <li>
     <p class="lab-date"><time datetime="2026-05-05">2026-05-05</time></p>

@@ -73,6 +73,18 @@ def read_u16(data: bytes, offset: int) -> int:
     return struct.unpack_from("<H", data, offset)[0]
 
 
+def read_compact_u16(data: bytes, offset: int, limit: int) -> tuple[int | None, int]:
+    if offset >= limit:
+        return None, offset
+    value = data[offset]
+    offset += 1
+    if value != 0xFF:
+        return value, offset
+    if offset + 2 > limit:
+        return None, limit
+    return read_u16(data, offset), offset + 2
+
+
 def safe_int(value: str) -> int:
     if value == "":
         return 0
@@ -277,7 +289,7 @@ def parse_pack(path: Path) -> tuple[bytes, Header, list[Entry]]:
         raise ValueError(f"pack too small: {path}")
     unpacked = struct.unpack_from(HEADER, payload, 0)
     header = Header(*unpacked)
-    if header.magic not in (b"FGP2", b"FGP3") or header.version not in (1, 2):
+    if header.magic not in (b"FGP2", b"FGP3") or header.version not in (1, 2, 3, 4):
         raise ValueError(f"unsupported pack magic/version: {path}")
     if header.table_offset + header.frame_count * ENTRY_SIZE > len(payload):
         raise ValueError(f"entry table extends beyond pack: {path}")
@@ -325,6 +337,56 @@ def parse_span_rows(data: bytes,
                 offset = limit
                 break
     return merge_rows(rows), offset, spans, pixels
+
+
+def parse_compact_span_rows(data: bytes,
+                            offset: int,
+                            limit: int,
+                            base_x: int,
+                            base_y: int,
+                            with_pixel_payload: bool) -> tuple[Rows, int, int, int]:
+    rows = empty_rows()
+    spans = 0
+    pixels = 0
+    if offset + 2 > limit:
+        return rows, offset, spans, pixels
+    row_count = read_u16(data, offset)
+    offset += 2
+    for _row in range(row_count):
+        rel_y, offset = read_compact_u16(data, offset, limit)
+        span_count, offset = read_compact_u16(data, offset, limit)
+        if rel_y is None or span_count is None:
+            break
+        y = base_y + rel_y
+        for _span in range(span_count):
+            rel_x, offset = read_compact_u16(data, offset, limit)
+            pixel_count, offset = read_compact_u16(data, offset, limit)
+            if rel_x is None or pixel_count is None:
+                break
+            add_screen_interval(rows, base_x + rel_x, base_x + rel_x + pixel_count, y)
+            spans += 1
+            pixels += pixel_count
+            if with_pixel_payload:
+                offset += (pixel_count + 1) // 2
+            if offset > limit:
+                offset = limit
+                break
+    return merge_rows(rows), offset, spans, pixels
+
+
+def parse_compact_cleanup_rows(data: bytes,
+                               offset: int,
+                               limit: int,
+                               base_x: int,
+                               base_y: int) -> tuple[Rows, int, int, int]:
+    return parse_compact_span_rows(
+        data,
+        offset,
+        limit,
+        base_x,
+        base_y,
+        with_pixel_payload=False,
+    )
 
 
 def active_entries(entries: list[Entry]) -> list[Entry]:
@@ -378,24 +440,43 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
         totals["payload_bytes"] += entry.data_size
 
         if header.magic == b"FGP3":
-            cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_span_rows(
-                payload,
-                entry_start,
-                entry_end,
-                header.version,
-                base_x,
-                base_y,
-                with_pixel_payload=False,
-            )
-            draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
-                payload,
-                offset,
-                entry_end,
-                header.version,
-                base_x,
-                base_y,
-                with_pixel_payload=True,
-            )
+            if header.version in (3, 4):
+                cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_compact_cleanup_rows(
+                    payload,
+                    entry_start,
+                    entry_end,
+                    base_x,
+                    base_y,
+                )
+            else:
+                cleanup_rows, offset, cleanup_spans, cleanup_pixels = parse_span_rows(
+                    payload,
+                    entry_start,
+                    entry_end,
+                    header.version,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=False,
+                )
+            if header.version == 4:
+                draw_rows, _offset, draw_spans, draw_pixels = parse_compact_span_rows(
+                    payload,
+                    offset,
+                    entry_end,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=True,
+                )
+            else:
+                draw_rows, _offset, draw_spans, draw_pixels = parse_span_rows(
+                    payload,
+                    offset,
+                    entry_end,
+                    1 if header.version == 3 else header.version,
+                    base_x,
+                    base_y,
+                    with_pixel_payload=True,
+                )
             dirty_rows = union_rows(full_rows() if first else empty_rows(), cleanup_rows, draw_rows)
             restore_bytes = interval_bytes(cleanup_rows)
             restore_intervals = interval_count(cleanup_rows)
@@ -472,7 +553,7 @@ def analyze_pack(path: Path, island_x: int, island_y: int) -> dict[str, Any]:
 
     return {
         "magic": header.magic.decode("ascii"),
-        "encoding": "pal4" if header.version == 1 else "indexed8",
+        "encoding": "pal4" if header.version in (1, 3, 4) else "indexed8",
         "frame_count": header.frame_count,
         "active_frames": len(active_entries(entries)),
         "pack_bytes": len(payload),
@@ -664,6 +745,19 @@ def write_markdown(path: Path, rows: list[dict[str, Any]], csv_path: Path) -> No
         "  `docs/ps1/performance-preprocess-visitor3-hotspots.csv`. Its default",
         "  threshold plan selects `96 / 144` frames, excludes `3` cap-hit frames, and",
         "  estimates `6114568` selected-subset upload bytes saved.",
+        "- The current VISITOR3 default selective upload-ready footprint does not fit",
+        "  as a layout-neutral append: it needs `2462072` payload+rect bytes per pack",
+        "  against `814847` bytes of padded zero-tail slack. The next runtime probe",
+        "  needs the now-modeled smaller subset, compression, or an explicit",
+        "  layout-moving experiment.",
+        "- The same-footprint VISITOR3 budgeted subset now has an exact analyzer",
+        "  target: `74 / 96` default-selected frames fit in `814184` payload+rect",
+        "  bytes, leaving `663` bytes of slack and retaining `3858104` modeled",
+        "  upload bytes saved (`63.1%` of the default plan's savings).",
+        "- The raw pack-emitted upload-ready lane is blocked for VISITOR3 under",
+        "  the current FGP3 data: `0` selected x-band bytes are fully covered by",
+        "  current opaque draw spans, so the modeled win depends on restored",
+        "  background/cleanup pixels that are dynamic at runtime.",
         "- This matrix should guide the next generated pack-format experiment, not",
         "  more hand-authored scene branches.",
         "",

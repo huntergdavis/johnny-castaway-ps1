@@ -1573,7 +1573,8 @@ static void grCompositeDirectOpaqueSingleColumn(const uint16 *srcPixels,
  * - bgTile3: x=0-319, y=240-479
  * - bgTile4: x=320-639, y=240-479
  */
-void grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY)
+void __attribute__((optimize("Os")))
+grCompositeToBackground(PS1Surface *sprite, sint16 screenX, sint16 screenY)
 {
     if (!sprite) return;
     if (!sprite->pixels && !sprite->indexedPixels) return;
@@ -1834,6 +1835,33 @@ static uint16 grReadPackedSpanU16(const uint8 *p)
     return (uint16)((uint16)p[0] | ((uint16)p[1] << 8));
 }
 
+static uint8 grPacked4SpanMetadataCompact = 0;
+
+static inline int
+grReadCompactSpanU16(const uint8 *data,
+                     uint32 dataSize,
+                     uint32 *offset,
+                     uint16 *outValue)
+{
+    uint8 value;
+
+    if (*offset >= dataSize)
+        return 0;
+
+    value = data[*offset];
+    *offset = *offset + 1u;
+    if (value != 0xffu) {
+        *outValue = value;
+        return 1;
+    }
+
+    if (*offset + 2u > dataSize)
+        return 0;
+    *outValue = grReadPackedSpanU16(data + *offset);
+    *offset = *offset + 2u;
+    return 1;
+}
+
 static inline void grCompositePacked4OpaqueRun(uint16 *dst,
                                                const uint8 *packedPixels,
                                                int srcPixel,
@@ -1936,6 +1964,7 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
     uint16 perfSpans = 0;
     uint32 perfPixels = 0;
     int perfTrack = ps1PerfEnabled;
+    int compactMetadata = grPacked4SpanMetadataCompact;
 
     if (spanData == NULL || palette == NULL || spanDataSize < 2)
         return;
@@ -1955,11 +1984,17 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         int rowRightDirtyStart = 640;
         int rowRightDirtyEnd = 319;
 
-        if (offset + 4u > spanDataSize)
-            return;
-        relY = grReadPackedSpanU16(spanData + offset);
-        spanCount = grReadPackedSpanU16(spanData + offset + 2u);
-        offset += 4u;
+        if (compactMetadata) {
+            if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relY) ||
+                !grReadCompactSpanU16(spanData, spanDataSize, &offset, &spanCount))
+                return;
+        } else {
+            if (offset + 4u > spanDataSize)
+                return;
+            relY = grReadPackedSpanU16(spanData + offset);
+            spanCount = grReadPackedSpanU16(spanData + offset + 2u);
+            offset += 4u;
+        }
         rowScreenY = (int)screenY + (int)relY;
         if (rowScreenY >= 0 && rowScreenY < 480) {
             int tileLocalY;
@@ -1990,11 +2025,17 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
             int dirtyStart;
             int dirtyEnd;
 
-            if (offset + 4u > spanDataSize)
-                return;
-            relX = grReadPackedSpanU16(spanData + offset);
-            pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
-            offset += 4u;
+            if (compactMetadata) {
+                if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relX) ||
+                    !grReadCompactSpanU16(spanData, spanDataSize, &offset, &pixelCount))
+                    return;
+            } else {
+                if (offset + 4u > spanDataSize)
+                    return;
+                relX = grReadPackedSpanU16(spanData + offset);
+                pixelCount = grReadPackedSpanU16(spanData + offset + 2u);
+                offset += 4u;
+            }
             if (perfTrack) {
                 perfSpans++;
                 perfPixels += pixelCount;
@@ -2069,6 +2110,17 @@ void grCompositePacked4SpansToBackground(const uint8 *spanData, uint32 spanDataS
         ps1PerfMarkCompose(rowCount, perfSpans, perfPixels, spanDataSize);
 }
 
+static void grCompositePacked4CompactSpansToBackground(const uint8 *spanData,
+                                                       uint32 spanDataSize,
+                                                       const uint16 *palette,
+                                                       sint16 screenX,
+                                                       sint16 screenY)
+{
+    grPacked4SpanMetadataCompact = 1;
+    grCompositePacked4SpansToBackground(spanData, spanDataSize, palette, screenX, screenY);
+    grPacked4SpanMetadataCompact = 0;
+}
+
 void grBeginResidualCleanBgFrame(void)
 {
     grClearCurrDirtyState();
@@ -2128,6 +2180,55 @@ void grCompositePacked4TemporalResidualToBackground(const uint8 *spanData, uint3
                                             palette,
                                             screenX,
                                             screenY);
+}
+
+void __attribute__((optimize("Os")))
+grCompositePacked4CompactTemporalResidualToBackground(const uint8 *spanData,
+                                                      uint32 spanDataSize,
+                                                      const uint16 *palette,
+                                                      sint16 screenX,
+                                                      sint16 screenY)
+{
+    uint32 offset = 0;
+    uint32 restoredBytes = 0;
+    uint16 cleanupRows;
+
+    if (spanData == NULL || palette == NULL || spanDataSize < 2)
+        return;
+
+    cleanupRows = grReadPackedSpanU16(spanData);
+    offset = 2;
+    for (uint16 row = 0; row < cleanupRows; row++) {
+        uint16 relY;
+        uint16 spanCount;
+        int rowScreenY;
+
+        if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relY) ||
+            !grReadCompactSpanU16(spanData, spanDataSize, &offset, &spanCount))
+            return;
+        rowScreenY = (int)screenY + (int)relY;
+
+        for (uint16 span = 0; span < spanCount; span++) {
+            uint16 relX;
+            uint16 pixelCount;
+
+            if (!grReadCompactSpanU16(spanData, spanDataSize, &offset, &relX) ||
+                !grReadCompactSpanU16(spanData, spanDataSize, &offset, &pixelCount))
+                return;
+            restoredBytes += grRestoreCleanBgSpanFromRects((int)screenX + (int)relX,
+                                                           rowScreenY,
+                                                           (int)pixelCount);
+        }
+    }
+
+    if (ps1PerfEnabled)
+        ps1PerfMarkRestore(restoredBytes);
+    if (offset < spanDataSize)
+        grCompositePacked4CompactSpansToBackground(spanData + offset,
+                                                   spanDataSize - offset,
+                                                   palette,
+                                                   screenX,
+                                                   screenY);
 }
 
 static inline void grCompositeIndexed8OpaqueRun(uint16 *dst,
@@ -2616,7 +2717,8 @@ void grDrawSprite(PS1Surface *sfc, struct TTtmSlot *ttmSlot, sint16 x, sint16 y,
 /*
  * Composite sprite to background tiles with horizontal flip
  */
-void grCompositeToBackgroundFlip(PS1Surface *sprite, sint16 screenX, sint16 screenY)
+void __attribute__((optimize("Os")))
+grCompositeToBackgroundFlip(PS1Surface *sprite, sint16 screenX, sint16 screenY)
 {
     if (!sprite) return;
     if (!sprite->pixels && !sprite->indexedPixels) return;

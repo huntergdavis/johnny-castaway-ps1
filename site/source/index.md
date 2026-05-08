@@ -2,7 +2,7 @@
 layout: page
 title: Source library
 eyebrow: Every Markdown file gets a page
-subtitle: 337 source documents, wrapped for the website instead of buried in the repository tree.
+subtitle: 339 source documents, wrapped for the website instead of buried in the repository tree.
 description: Generated source-library index for every Markdown documentation file in the Johnny Castaway PS1 repository.
 ---
 
@@ -50,6 +50,7 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/performance-o2-audit/' | relative_url }}">PS1 -O2 Audit</a><p><code>docs/ps1/performance-o2-audit.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-optimization-plan/' | relative_url }}">PS1 Scene Playback Performance Optimization Plan</a><p><code>docs/ps1/performance-optimization-plan.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/performance-preprocess-opportunities/' | relative_url }}">PS1 Foreground Preprocess Opportunity Matrix</a><p><code>docs/ps1/performance-preprocess-opportunities.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/performance-read-candidate-matrix/' | relative_url }}">PS1 Foreground Read Candidate Matrix</a><p><code>docs/ps1/performance-read-candidate-matrix.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/project-history/' | relative_url }}">PS1 Port - Project History</a><p><code>docs/ps1/project-history.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/README/' | relative_url }}">Johnny Reborn — PlayStation 1 Port</a><p><code>docs/ps1/README.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/regtest-harness/' | relative_url }}">PS1 Regression Test Harness</a><p><code>docs/ps1/regtest-harness.md</code></p></li>
@@ -61,6 +62,8 @@ for a guided learning path through the machinery.
 <li><a href="{{ '/source/docs/ps1/release-notes-0.7.2/' | relative_url }}">v0.7.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.7.2.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.0/' | relative_url }}">v0.8.0-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.0.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-notes-0.8.1/' | relative_url }}">v0.8.1-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.1.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.2/' | relative_url }}">v0.8.2-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.2.md</code></p></li>
+<li><a href="{{ '/source/docs/ps1/release-notes-0.8.3/' | relative_url }}">v0.8.3-ps1 Release Notes</a><p><code>docs/ps1/release-notes-0.8.3.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/release-plan-0.7.1/' | relative_url }}">v0.7.1-ps1 Feature Notes</a><p><code>docs/ps1/release-plan-0.7.1.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-explorer-design/' | relative_url }}">Scene Explorer — design doc</a><p><code>docs/ps1/scene-explorer-design.md</code></p></li>
 <li><a href="{{ '/source/docs/ps1/scene-picker-design/' | relative_url }}">Scene Picker Algorithms — Research + Design (v2)</a><p><code>docs/ps1/scene-picker-design.md</code></p></li>
@@ -409,7 +412,6 @@ for a guided learning path through the machinery.
 ## Repository note
 
 <ul class="doc-grid">
-<li><a href="{{ '/source/models/Qwen2.5-VL-3B-Instruct-ov-int4/README/' | relative_url }}">Choose GPU instead of CPU in the line below to run the model on Intel integrated or discrete GPU</a><p><code>models/Qwen2.5-VL-3B-Instruct-ov-int4/README.md</code></p></li>
 <li><a href="{{ '/source/tests/README/' | relative_url }}">Johnny Reborn Test Suite</a><p><code>tests/README.md</code></p></li>
 <li><a href="{{ '/source/tests/VISUAL_TESTING/' | relative_url }}">Visual Regression Testing</a><p><code>tests/VISUAL_TESTING.md</code></p></li>
 </ul>
