@@ -57,6 +57,16 @@ for this scene. High improves `loop_vb 2402 -> 2296`, `target_vb 2295 ->
 tide regressed against this baseline. The next top rows are VISITOR3 low/high,
 BUILDING2 low, WALKSTUF1 high/low, and BUILDING6 high/low.
 
+Latest BUILDING6 direct-FGP3 decision: do not promote either same-footprint or
+layout-moving direct PAL4 temporal-residual conversion. The conversion expands
+both packs `1444370 -> 1601445` bytes and the explicit layout-moving probe
+regressed high `2520/2442 -> 2618/2418`, `overrun_vb 78 -> 200`, and
+`blocking_vb 62 -> 283`; low regressed `2515/2437 -> 2621/2419`,
+`78 -> 202`, and `70 -> 292`. Hidden refill fell, but active reads worsened
+to `88/88` loop reads with `40/42` due misses. BUILDING6 now needs a
+genuinely shrinking/selective/keyframed encoder, generated scheduler
+ownership, or a motion format with RAM-mirror/dirty-state proof.
+
 Latest promoted VISITOR3 tail-trim stageguard baseline: trim all-zero draw
 tails inside the existing VISITOR3 FGP3/v4 payloads, raise the high-tide
 setup-prime resident budget to `232 KiB`, and skip VISITOR3 hidden large-stage
@@ -1515,7 +1525,7 @@ pre-v0.8.0 row.
 | BUILDING-family raw stream windows | BUILDING4 low `36 KiB` is accepted; BUILDING6 `20/28 KiB`, BUILDING4 high `20/28 KiB`, and broad setup-prime are rejected. Retry only scene/tide-locally with fresh baselines and bounded visible-CD/refill tradeoff rules. |
 | BUILDING6 high group `505..517` | Do not retry as a one-off hard-coded group. It fit the existing window and stayed exact-flat, so read-plan rank alone is insufficient for BUILDING6; require generated visible-cost metadata or scheduler-owned grouping first. |
 | BUILDING6 `48 KiB` window plus `15..39` group | Do not retry as a larger scalar retained-window probe. The fresh v136 test saved many reads but regressed both visible cadence and hidden refill on both tides, so current BUILDING6 refill placement is scheduler-owned rather than capacity-owned. |
-| BUILDING6 pal4 padded FGP3 | Do not retry as a same-layout padded conversion under current validated packs. The v0.7.2 high/low packs expand `1444370 -> 1601445` bytes (`-10.87%` saved), so this lane needs selective/keyframed residual encoding or an explicit layout-changing experiment. |
+| BUILDING6 pal4 padded/direct FGP3 | Do not retry as direct temporal-residual conversion under current validated packs, with or without layout movement. The size gate expands both packs `1444370 -> 1601445`, and the v154 explicit layout-moving probe regressed high `2520 -> 2618`, blocking `62 -> 283`, and low `2515 -> 2621`, blocking `70 -> 292`. Retry only with a genuinely shrinking selective/keyframed encoder, generated scheduler ownership, or a motion format that proves RAM-mirror/dirty-state safety. |
 | BUILDING6 selective upload-ready append | Do not promote or retry as a raw same-footprint append. v146 shows both current packs leave only `1` byte of zero-tail slack, while the default selected x-band plan needs `3354208` payload-plus-rect bytes for `92` frames and `5708192` modeled upload bytes saved; raw foreground-only safety still reports `0` selected draw-covered bytes and `0` all-draw-covered selected frames. |
 | BUILDING6 motion-comp host signal | Do not implement direct runtime MoveImage from the current analyzer alone. v146 reports a strong host-only signal (`242 / 305` candidate pairs, `64.85%` pair-payload savings; zero-shift runtime model saves `680717` compose bytes and `11701120` upload bytes), but runtime promotion needs a new pack format that preserves old-position cleanup, RAM mirror correctness, dirty tracking, and CD/layout budget. |
 | PAL4 aligned pair stores | Do not retry as a local branch in `grCompositePacked4OpaqueRun()`. It shrank ELF but regressed BUILDING4 high cadence; retry only after pack-generated aligned command classes or a pair LUT removes the hot-path branch/packing cost. |
@@ -1619,7 +1629,7 @@ pre-v0.8.0 row.
 | ACTIVITY9 high FGP3 read group `447..463` | Do not retry under the current data shape. It was tested with the low FGP3 group and stayed exact-flat on high tide, so only the low table was promoted. Revisit only after ACTIVITY9 high pack data, append-start ownership metadata, or scheduler timing changes. |
 | ACTIVITY9 FGP3/v3 cleanup-metadata compaction | Do not promote as a paired high/low pack change under the current gate. It saved `257210` active payload bytes per tide and improved low `loop_vb 2098 -> 2087`, but high regressed `2094 -> 2099` with stable layout. Retry only with a high-tide window/cadence retune or explicit tide-specific promotion logic that keeps high flat. |
 | BUILDING6 `48 KiB` window plus `15..39` group | Do not promote or retry as a scalar larger-window path. It saved reads but regressed high to `2568/2443` with hidden refill `117` and low to `2565/2445` with hidden refill `96`; require generated scheduler ownership or a shrinking/selective FGP2 encoder first. |
-| BUILDING6 pal4 padded FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, so preserving CD layout would require truncation. Retry only with a shrinking encoder, selective residual/keyframe strategy, or explicit layout-moving experiment. |
+| BUILDING6 pal4 padded/direct FGP3 | Do not benchmark direct pal4 temporal-residual conversion under the current validated packs. The size gate expands `1444370 -> 1601445`, and accepting layout movement was measured in v154 and still failed: high `2520/2442 -> 2618/2418`, blocking `62 -> 283`; low `2515/2437 -> 2621/2419`, blocking `70 -> 292`. Retry only with a shrinking/selective/keyframed encoder, generated scheduler ownership, or a motion format with RAM-mirror/dirty-state proof. |
 | BUILDING6 v146 upload/motion refresh | Do not spend emulator time on raw BUILDING6 upload append. Same-footprint slack is still `1` byte and safe-pixel coverage is still `0`; the actionable path is generated zero-shift/motion residual format work or scheduler ownership, not another scalar source probe. |
 | BUILDING4 high read group `537..561` | Do not promote or retry as a raw 24-sector hand-coded group. It saved two reads but regressed loop, blocking, and refill pressure; require generated scheduler/cost metadata before larger BUILDING4 high append groups. |
 | BUILDING4 high read group `821..837` | Do not promote or retry as a standalone hand-coded group. A fresh current-code read-plan marked it low-visible-risk, but the corrected source probe under BUILDING4 high's `24 KiB` window plus `32 KiB` retained group capacity stayed exact-flat (`2985/2774`, `blocking_vb=285`, `prefetch_overrun_vb=51`, `loop_reads=93`, `due_misses=40`) and only grew/shifted code. BUILDING4 needs scheduler-owned append timing or generated ownership metadata, not more one-off range tables. |
