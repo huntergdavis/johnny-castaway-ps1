@@ -162,7 +162,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
+  notes: lilliputians-tie-up-sleeping-johnny (Gulliver-style: Johnny sleeps on the sand, tiny lilliputians tie him down with ropes); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
 - ads: BUILDING
   tag: 5
   slug: building5
