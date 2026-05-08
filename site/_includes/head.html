@@ -183,6 +183,13 @@
   <link rel="alternate" type="application/atom+xml" title="Lab (Atom)"
         href="{{ '/lab/feed.xml' | relative_url }}" />
   <link rel="author" type="text/plain" href="{{ '/humans.txt' | relative_url }}" />
+  {%- comment -%}
+    IndieWeb / Mastodon-style identity verification. `<link rel="me">`
+    points at the author's primary personal site, completing the
+    handshake when that site links back. The author URL matches the
+    one used in the JSON-LD author.url field on every page.
+  {%- endcomment -%}
+  <link rel="me" href="https://hunterdavis.com/" />
   <link rel="sitemap" type="application/xml" title="Sitemap"
         href="{{ '/sitemap.xml' | relative_url }}" />
 
