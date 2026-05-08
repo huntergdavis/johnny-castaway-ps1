@@ -315,6 +315,12 @@ in the archaeology and research docs.
 
 ## View source on GitHub
 
+- [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
+  — the inner-loop wrapper this page references throughout
+  the per-scene runbook.
+- [`scripts/export-scene-foreground-pilot.sh`]({{ site.github_url }}/blob/main/scripts/export-scene-foreground-pilot.sh)
+  — host-side capture-and-pack script that produces per-scene
+  FG2 packs.
 - [`docs/ps1/development-workflow.md`]({{ site.github_url }}/blob/main/docs/ps1/development-workflow.md) — original.
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md) — the active strategy.
 - [`docs/ps1/scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) — per-scene ledger.
