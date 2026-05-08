@@ -97,10 +97,10 @@ Pulled from the live narrative in
 
 - **Optimization after full validation.** With all 63 scenes signed off, the
   next focus is preserving pixel-perfect playback while improving speed,
-  loading, memory pressure, and release polish. `v0.8.1` keeps the current
-  headless baseline at +0.6% over target / 99.6% target speed while fixing
-  long-run large-clean pressure accounting. The bring-up
-  loop remains in
+  loading, memory pressure, and release polish. `{{ site.release.tag }}`
+  has the headless baseline at slightly under target — `{{ site.release.perf_target_speed_pct }}%`
+  target speed across the 120 timing-bearing rows after the v0.8.2 + v0.8.3
+  VISITOR3 + WALKSTUF1 outlier closures. The bring-up loop remains in
   [`docs/ps1/development-workflow.md`](https://github.com/{{ site.repo }}/blob/main/docs/ps1/development-workflow.md).
 - **Scene-by-scene FG2 routing.** All 63 scenes have generated
   high-tide and low-tide FG2 packs sitting in the corpus; routing
