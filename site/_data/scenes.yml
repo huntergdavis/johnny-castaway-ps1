@@ -75,7 +75,7 @@
   - host capture/test island positions `x=-500,y=54`, `x=-154,y=54`, `x=500,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers
+  notes: rain-dance-boat-naked (Johnny in costume rain-dances, a boat carrying a couple passes by, he drops the costume, and the embarrassed couple sails on); visual + audible signoff after rebuilding high/low packs through an Activity9-specific wide stitch; `patch-activity9-boat-foreground.py` fills BOAT.PSB bow/stern pixels from source at the legacy clip edges, adds a narrow overlap band to remove the vertical seam, and carries the last BOAT draw across metadata-held frames so the late boat bow no longer flickers
 - ads: ACTIVITY
   tag: 10
   slug: activity10

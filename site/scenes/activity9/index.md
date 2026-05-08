@@ -1,13 +1,13 @@
 ---
 layout: scene
-title: ACTIVITY 9 — Bathes with a brush
+title: ACTIVITY 9 — Rain dance, boat with couple passes, costume drops, naked
 ads: ACTIVITY
 tag: 9
 slug: activity9
 status: validated
-description: "ACTIVITY.ADS scene 9: Bathes with a brush. Validated after wide boat stitching and source-edge repair."
+description: "ACTIVITY.ADS scene 9: Johnny in costume rain-dances; a boat carrying a couple passes by, he drops the costume, and the couple keeps sailing. Validated 2026-05-08."
 image: /assets/img/activity9-ps1-boat.png
-image_alt: "ACTIVITY 9 running on PS1: Johnny bathes while a boat passes the island."
+image_alt: "ACTIVITY 9 running on PS1: Johnny rain-dances while a boat carrying a couple passes the island."
 image_width: 1127
 image_height: 677
 ---
@@ -16,8 +16,8 @@ Validated on 2026-05-05 under the current visual + audible signoff bar.
 
 <figure class="scene-hero">
   <img src="{{ '/assets/img/activity9-ps1-boat.png' | relative_url }}"
-       width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1 at night: Johnny stands on the island with the raft visible on the shore as a wide boat with a passenger passes by the moonlit ocean." />
-  <figcaption>ACTIVITY 9 on PS1 hardware. Wide boat passing the night-palette island; raft visible on the shore.</figcaption>
+       width="1127" height="677" loading="lazy" decoding="async" alt="ACTIVITY 9 running on PS1 at night: Johnny in costume on the island as a wide boat carrying a couple passes by the moonlit ocean." />
+  <figcaption>ACTIVITY 9 on PS1 hardware. Costumed Johnny mid-rain-dance as the wide boat with passengers passes the night-palette island.</figcaption>
 </figure>
 
 ## Pack identifiers
@@ -27,9 +27,7 @@ Validated on 2026-05-05 under the current visual + audible signoff bar.
 
 ## What this scene is
 
-Bathes in the ocean while a wide boat passes through the scene.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny puts on a costume and starts a rain dance. A boat carrying a couple passes by — Johnny drops his costume and is left naked in the surf, and the embarrassed couple keeps sailing past. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; the earlier "bathes with a brush" caption-mapping guess was wrong. The boat is real — that's why this scene needed the Activity9-specific wide stitch and `patch-activity9-boat-foreground.py`.
 
 ## Validation notes
 

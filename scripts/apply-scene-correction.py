@@ -109,7 +109,10 @@ def update_scene_page(slug, title, description, body):
         r"## What this scene (probably )?is\s*\n\n.*?(?=\n#{2,} |\Z)",
         re.S,
     )
-    new_section = f"## What this scene is\n\n{body}\n\n"
+    # Emit a single trailing newline; the lookahead leaves the
+    # newline-before-heading in place, so this produces exactly one
+    # blank line before the next heading.
+    new_section = f"## What this scene is\n\n{body}\n"
     if not pat.search(text):
         raise SystemExit(f"no 'What this scene is' section in {page}")
     text = pat.sub(new_section, text, count=1)
