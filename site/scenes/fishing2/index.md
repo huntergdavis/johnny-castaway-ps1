@@ -1,18 +1,20 @@
 ---
 layout: scene
-title: FISHING 2 — A life raft drifts past
+title: FISHING 2 — Hooks a Titanic life preserver
 ads: FISHING
 tag: 2
 slug: fishing2
 status: validated
-description: "FISHING.ADS scene 2: A life raft drifts past. Validated under the FISHING 1 bar."
+description: "FISHING.ADS scene 2: Johnny fishes and reels in a Titanic-stenciled life preserver ring. Validated under the FISHING 1 bar."
 ---
 
 ## What happens
 
-Johnny is fishing again. While he waits, a small life raft drifts past in the water behind him. He doesn't see it. The raft drifts on out of frame, and Johnny eventually reels in nothing and walks back.
+Johnny casts a line, and after a beat reels in a round life-preserver ring stenciled `TITANIC` instead of a fish. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail.
 
-Second scene to clear the FISHING 1 bar. Same fishing-pose loop as scene 1, but with a different background animation layered in. Confirmed pixel-stable and SFX-synced across night, low-tide, holiday, and raft-stage variants.
+(The on-screen caption block below — preserved from the Sierra original — says "He catches a boot," which is a different fishing gag in the game. The caption-to-scene mapping in the original audit appears to be approximate; the on-PS1 pack for FISHING.ADS scene 2 plays the Titanic life-preserver beat.)
+
+Second scene to clear the FISHING 1 bar. Same fishing-pose loop as scene 1, but with a different reel-in object. Confirmed pixel-stable and SFX-synced across night, low-tide, holiday, and raft-stage variants.
 
 ## Validation
 
