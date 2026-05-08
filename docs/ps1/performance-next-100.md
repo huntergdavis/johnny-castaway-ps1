@@ -189,6 +189,17 @@ the fireable current-fit rows are the already-closed late tight clusters. Close
 VISITOR3 runtime dirty-upload and hand read-table work until generated
 scheduler ownership or safe background-owned/precomposed upload data exists.
 
+Current VISITOR3 v148 late-cluster setup/group closure: retesting the top
+low-tide `333..349` cluster confirms the planner's `high-risk:scheduler-only`
+classification. A low-tide retained read group saved reads (`31 -> 29`) but
+regressed active loop `1126 -> 1130`, overrun `101 -> 105`, and blocking
+`170 -> 171`. A one-shot setup segment for `159..171` stayed loop-flat while
+adding setup cost (`scene_vb 1426 -> 1434`), and a persistent setup segment for
+`333..349` regressed loop `1126 -> 1129`, blocking `170 -> 174`, and hidden
+refill `0 -> 2`. Do not retry VISITOR3 late clusters through local source
+tables or setup segments; the next attempt needs generated scheduler ownership
+or safe precomposed/background-owned pack data.
+
 Current VISITOR3 low setup-prime gate: the accepted `208 KiB` low-tide cap is
 still the measured knee after the v127 tail-trim stageguard pass. Retesting
 `216 KiB` preserved high tide but regressed low `1126 -> 1127` and blocking
