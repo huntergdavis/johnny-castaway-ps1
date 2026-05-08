@@ -39,7 +39,7 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </figure>
   <figure>
     <a href="{{ '/scenes/fishing1/' | relative_url }}">
-      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="Johnny casting a fishing line off the island, sun overhead, palm tree in frame." />
+      <img src="{{ '/assets/img/fishing1-ps1-cast.png' | relative_url }}" width="1127" height="677" loading="lazy" decoding="async" alt="FISHING 1 running on PS1: Johnny casts a fishing line off the island, sun overhead, palm tree in frame." />
       <figcaption>FISHING 1 · reference</figcaption>
     </a>
   </figure>
