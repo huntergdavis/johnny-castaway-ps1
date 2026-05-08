@@ -15,7 +15,7 @@ background, waves, holiday overlay, and SFX playback.
 | Release | `v0.8.3-ps1` |
 | Reference scene | `FISHING 1` — pixel-perfect visuals + synced SFX across night / low-tide / holiday / raft-stage |
 | Scenes fully validated under the reference bar | **63 / 63** |
-| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.6% public over target / 99.5% public target speed** |
+| Headless perf battle card | **126 / 126** variants routed; **126 / 126** timing-bearing; **+0.5% public over target / 99.6% public target speed** |
 | Pack corpus | High/low packs generated and routed for all 63 scenes |
 | Full ledger | [scene-status.md](scene-status.md) |
 
@@ -23,16 +23,20 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.5526%` over target / `99.4709%` target speed across all 126
-timing-bearing rows after the MARY3 guarded prefetch-preserve promotion; the
-raw signed optimization matrix is `-0.2159%` / `100.2547%`. That is about
-`16.85` public over-target points removed and `12.37` public target-speed
-points added since the compact full-matrix baseline.
+`+0.4527%` over target / `99.5662%` target speed across all 126
+timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
+WALKSTUF3 high, and BUILDING6 compact follow-ups; the raw signed optimization
+matrix is `-0.3158%` / `100.3500%`. That is about `16.95` public over-target
+points removed and `12.47` public target-speed points added since the compact
+full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-fallthrough5-v142`, is closed as a
-non-promoting exact-flat threshold probe. The accepted fallthrough guard stays
-at `6` VBlanks; future VISITOR3 work remains generated scheduler ownership,
-safe upload/precomposed payloads, or another pack/data-shape reduction.
+The latest BUILDING6 follow-up, `building6-compact-fgp3-v165`, converts both
+packs to compact FGP3/v4 restore-minus-current data inside the original
+`1444370` byte footprints. High moves `2520/2442 -> 2482/2457`; low moves
+`2515/2437 -> 2485/2456`; both keep fixed LBAs and clear due misses. VISITOR3
+local threshold/read-table probes remain closed until generated scheduler
+ownership, safe upload/precomposed payloads, or another pack/data-shape
+reduction is ready.
 
 `v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed

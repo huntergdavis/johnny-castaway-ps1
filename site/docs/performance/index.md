@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.5% over target / 99.5% target speed** (`0.4860%`
-exact public over target / `99.5164%` exact public target speed); the raw
-signed optimization matrix is `-0.2825%` / `100.2833%`.
+the public average is **+0.5% over target / 99.6% target speed** (`0.4527%`
+exact public over target / `99.5662%` exact public target speed); the raw
+signed optimization matrix is `-0.3158%` / `100.3500%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`building6-compact-fgp3-v165`,
 `walkstuf3-high-compact-fgp3-v163`,
 `building2-low-restore-window-slack4-v160`,
 `visitor5-high-compact-fgp3-noautoprime-v158`,
@@ -392,7 +393,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-08T14:46:19`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-08T15:26:52`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -400,7 +401,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `walkstuf3-high-compact-fgp3-v163`,
+rows now use `building6-compact-fgp3-v165`,
+`walkstuf3-high-compact-fgp3-v163`,
 `building2-low-restore-window-slack4-v160`,
 `visitor5-high-compact-fgp3-noautoprime-v158`,
 `building1-compact-fgp3-noautoprime-v157`,
@@ -553,8 +555,8 @@ rows are historical only.
     </tr>
     <tr>
       <td><code>building6</code></td>
-      <td>+3.2% / 96.9% (2520/2442); due 1; blk 62</td>
-      <td>+3.2% / 96.9% (2515/2437); due 2; blk 70</td>
+      <td>+1.0% / 99.0% (2482/2457); blk 25</td>
+      <td>+1.2% / 98.8% (2485/2456); blk 28</td>
     </tr>
     <tr>
       <td><code>building7</code></td>
@@ -844,10 +846,12 @@ Next plausible wins, in priority order:
 4. **Specialized indexed8 and PAL4 compositors.** The pack-format wins reduce
    bytes, but dense scenes still pay per-span/per-pixel runtime costs.
 5. **Generated scheduler ownership for the remaining under-99 rows.** MARY3 is
-   now green after the guarded prefetch-preserve pass. The remaining hard rows
-   are VISITOR3 low/high, BUILDING2 low, WALKSTUF1 high/low, and BUILDING6,
-   where hand-authored read groups and scalar window changes have repeatedly
-   shifted cadence instead of safely removing work.
+   now green after the guarded prefetch-preserve pass, and BUILDING6 moved to
+   the bottom of the orange band after compact-pack promotion. The remaining
+   hard rows are VISITOR3 low/high, WALKSTUF1 high/low, BUILDING2 high/low,
+   VISITOR5 low, ACTIVITY9 high, JOHNNY1 high/low, BUILDING4 low, and BUILDING6
+   high/low, where hand-authored read groups and scalar window changes have
+   repeatedly shifted cadence instead of safely removing work.
 
 The author considers the current build comfortable for the validated scenes,
 not yet headroom-clean. The canary bottleneck is no longer raw CD stall; the
@@ -861,7 +865,7 @@ A few things the perf work explicitly does not chase, with reasons:
 - **Frame dropping.** Violates pixel-perfect playback. The acceptance
   bar requires every captured entry to render on its captured beat.
 - **Timing compression before throughput work.** The timing-bearing matrix
-  public average is now +0.5% over target / 99.5% target speed, with several
+  public average is now +0.5% over target / 99.6% target speed, with several
   worse CD-bound outliers; compressing the timing files would expose the same
   throughput bottleneck without fixing it.
 - **Reintroducing FG1 / ADS / TTM runtime paths.** Those are retired
