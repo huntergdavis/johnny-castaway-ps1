@@ -507,7 +507,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected
+  notes: stands-at-edge (Johnny stands at the edge of the island, idle); visual signoff after regenerating high/low packs through the generic multi-view stitch; source pack is a short 35-frame / 169-vblank idle loop with no captured SFX events, so the hard-to-see reset is expected
 - ads: STAND
   tag: 2
   slug: stand2

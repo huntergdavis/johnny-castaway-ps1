@@ -1,11 +1,11 @@
 ---
 layout: scene
-title: STAND 1 — Edge of the island
+title: STAND 1 — Standing at the edge of the island
 ads: STAND
 tag: 1
 slug: stand1
 status: validated
-description: "STAND.ADS scene 1: Edge of the island. Validated on PS1 scene playback."
+description: "STAND.ADS scene 1: Johnny stands at the edge of the island. Validated 2026-05-08."
 ---
 
 Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}).
@@ -15,11 +15,9 @@ Validated 2026-05-03 under the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar'
 - ADS dispatch: <code>STAND.ADS scene 1</code>
 - Slug: <code>stand1</code>
 
-## What this scene probably is
+## What this scene is
 
-(Guess.) Idle stance at SPOT_A SW: taps a foot, tips his hat. Stand-style filler.
-
-Caption mapping confidence in the [audit]({{ '/docs/captions/' | relative_url }}): **MED**.
+Johnny stands at the edge of the island, idle — one of the standing-pose loops in the STAND family. Confirmed by direct on-PS1 playback observation while capturing the chapter-select thumbnail; matches the prior "edge of the island" caption-mapping.
 
 ## Validation Notes
 
