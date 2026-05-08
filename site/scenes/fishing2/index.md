@@ -17,7 +17,7 @@ Second scene to clear the FISHING 1 bar. Same fishing-pose loop as scene 1, but 
 ## Validation
 
 Validated as of `2026-04-23`. Variants exercised: night, low-tide, holiday, raft-stage.
-This scene clears the [FISHING 1 bar]({{ '/about/method/' | relative_url }}) — pixel-perfect visuals plus synced SFX across every applicable variant.
+This scene clears the [FISHING 1 bar]({{ '/docs/glossary/#fishing1-bar' | relative_url }}) — pixel-perfect visuals plus synced SFX across every applicable variant.
 
 ## Pack identifiers
 
