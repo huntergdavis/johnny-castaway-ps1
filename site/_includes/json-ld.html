@@ -118,6 +118,18 @@
 {%- assign jsonld_iso_dur = 'PT' | append: jsonld_minutes | append: 'M' -%}
 
 {%- if page.layout == 'post' and page.date -%}
+{%- comment -%}
+  BlogPosting `image` field. Google's Article-family structured-data
+  validation recommends this for BlogPosting (it's required for
+  Article). Per-post override via `page.image` frontmatter (same
+  field the OG card system reads); falls back to the branded site
+  OG image so every post emits a valid record.
+{%- endcomment -%}
+{%- if page.image -%}
+  {%- assign post_image = site_root | append: page.image -%}
+{%- else -%}
+  {%- assign post_image = site_root | append: '/assets/img/branding/og-image.png' -%}
+{%- endif -%}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -132,6 +144,7 @@
   "inLanguage": "en",
   "wordCount": {{ jsonld_words }},
   "timeRequired": {{ jsonld_iso_dur | jsonify }},
+  "image": {{ post_image | jsonify }},
   "author": {
     "@type": "Person",
     "name": {{ site.author | jsonify }},
