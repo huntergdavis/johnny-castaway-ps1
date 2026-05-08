@@ -33,7 +33,7 @@ that needs annual republishing was not acceptable.
 So every date is computed from a pure algorithm at runtime. No
 year-specific data, no embedded calendar. The whole core lives in
 [`src/holidays.c`]({{ site.github_url }}/blob/main/src/holidays.c) —
-roughly 200 lines of C, no allocations, no PS1 dependencies.
+roughly 320 lines of C, no allocations, no PS1 dependencies.
 
 ## Day-of-week from (month, day, year)
 

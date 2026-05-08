@@ -58,7 +58,7 @@ Core implementation came next. The plan was: port only the platform
 layer, leave the engine alone. That principle held: only three files
 needed real porting -- `graphics_ps1.c`, `events_ps1.c`,
 `sound_ps1.c` -- plus a CD I/O reimplementation in `cdrom_ps1.c`
-(~2,280 lines, replacing `fopen` / `fread` against CD sectors).
+(~2,570 lines, replacing `fopen` / `fread` against CD sectors).
 Roughly 4,000+ lines of upstream engine code went unchanged. By the
 end of Phase 4 the game booted on DuckStation and loaded resources
 from the CD image.

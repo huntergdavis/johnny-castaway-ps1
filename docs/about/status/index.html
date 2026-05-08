@@ -151,17 +151,17 @@ done.”</p>
       <td><code class="language-plaintext highlighter-rouge">Dockerfile.ps1</code> on <code class="language-plaintext highlighter-rouge">linux/amd64</code>; PSn00bSDK 0.24; <code class="language-plaintext highlighter-rouge">scripts/rebuild-and-let-run.sh</code> is the one-command entry.</td>
     </tr>
     <tr>
-      <td>CD-ROM I/O (<code class="language-plaintext highlighter-rouge">cdrom_ps1.c</code>, ~2,280 lines)</td>
+      <td>CD-ROM I/O (<code class="language-plaintext highlighter-rouge">cdrom_ps1.c</code>, ~2,570 lines)</td>
       <td>Complete</td>
       <td>Reimplements <code class="language-plaintext highlighter-rouge">fopen</code>/<code class="language-plaintext highlighter-rouge">fread</code> against CD sectors. <code class="language-plaintext highlighter-rouge">CdSearchFile</code> / <code class="language-plaintext highlighter-rouge">CdRead</code> / <code class="language-plaintext highlighter-rouge">CdSync</code> integration. The rest of <code class="language-plaintext highlighter-rouge">resource.c</code> is unchanged from upstream.</td>
     </tr>
     <tr>
-      <td>Renderer (<code class="language-plaintext highlighter-rouge">graphics_ps1.c</code>, ~3,300+ lines)</td>
+      <td>Renderer (<code class="language-plaintext highlighter-rouge">graphics_ps1.c</code>, ~4,900+ lines)</td>
       <td>Complete</td>
       <td>4-bit indexed sprite format (<code class="language-plaintext highlighter-rouge">indexedPixels</code>), palette LUT compositing, 4-pixel unrolled inner loop, opaque sprite fast-path, dirty-rect background restore (~80-95% reduction in per-frame data movement), black-backdrop temporal cleanup for full-screen scenes like <code class="language-plaintext highlighter-rouge">JOHNNY 1</code>, and <code class="language-plaintext highlighter-rouge">grForceFullRedrawNextFrame</code> for pause-menu resume. <code class="language-plaintext highlighter-rouge">FntFlush</code> is empirically broken in the scene-runtime context – do not regress on-screen text to it.</td>
     </tr>
     <tr>
-      <td>Audio (<code class="language-plaintext highlighter-rouge">sound_ps1.c</code>, ~184 lines) + SPU</td>
+      <td>Audio (<code class="language-plaintext highlighter-rouge">sound_ps1.c</code>, ~445 lines) + SPU</td>
       <td>Working</td>
       <td>All 23 VAG SFX preloaded into SPU RAM at boot. Round-robin over 8 voices. Captured <code class="language-plaintext highlighter-rouge">0xC051 PLAY_SAMPLE</code> events ship in the FG2 pack and fire from <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> with a 3-frame key-on delay. Mute writes the SPU master-volume registers directly because <code class="language-plaintext highlighter-rouge">SpuSetCommonMasterVolume</code> is not honored by DuckStation HLE. The VAG encoder (<code class="language-plaintext highlighter-rouge">scripts/wav2vag.py</code>) was extensively debugged during the <code class="language-plaintext highlighter-rouge">v0.3.6-ps1</code> milestone (commit <code class="language-plaintext highlighter-rouge">355227fa</code>); see that commit for the full bug list.</td>
     </tr>
