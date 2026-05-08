@@ -177,8 +177,8 @@ gated so it adds zero cost when off.</p>
 <p>Three signal sources:</p>
 
 <ul>
-  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <code class="language-plaintext highlighter-rouge">JCPERF</code> /
-<code class="language-plaintext highlighter-rouge">JCPERF2</code> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
+  <li><strong>TTY printf</strong> at scene-start and <a href="../glossary/#scene-end">scene-end</a> with structured <a href="../glossary/#jcperf"><code class="language-plaintext highlighter-rouge">JCPERF</code> /
+<code class="language-plaintext highlighter-rouge">JCPERF2</code></a> records. Levels: <code class="language-plaintext highlighter-rouge">OFF</code>, <code class="language-plaintext highlighter-rouge">SUMMARY</code>, <code class="language-plaintext highlighter-rouge">DETAIL</code>, <code class="language-plaintext highlighter-rouge">DEBUG</code>. Only the
 on-demand records cross the TTY surface; per-frame text is forbidden in
 hot paths because it perturbs timing.</li>
   <li><strong><code class="language-plaintext highlighter-rouge">ps1_perf</code> module counters</strong> for VBlank-level metrics: <code class="language-plaintext highlighter-rouge">loop_vb</code>,
