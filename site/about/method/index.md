@@ -287,8 +287,8 @@ the project was reaching for.
 
 The second bar, the
 [performance battle card]({{ '/perf/' | relative_url }}), is its
-own ledger. It moved from `+17.4%` over target / `87.1%` target
-speed at the compact full-matrix baseline to
+own ledger. It moved from `+17.4%` over target / [`87.1%` target
+speed]({{ '/docs/glossary/#target-speed' | relative_url }}) at the compact full-matrix baseline to
 `{{ site.release.perf_target_speed_pct }}%` target speed at
 `{{ site.release.tag }}` — closed without changing pixels, sound
 event timing, scene identity, or long-run heap stability. The
