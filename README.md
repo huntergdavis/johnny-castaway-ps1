@@ -145,6 +145,11 @@ hidden prefetch overrun (`0 -> 56` high, `0 -> 17` low). The safer empty-hold
 recast is closed too: the current VISITOR3 high/low FGP3/v4 payloads have `0`
 entries with both cleanup and draw pixel counts at zero, so there is no
 cadence-preserving no-op payload to erase under the current assets.
+The VISITOR3 `97..109` setup-owned segment retry is closed as well: a dedicated
+`24 KiB` persistent setup cache kept high/low layout fixed but measured exact
+flat against the current baseline (`1139/1024` and `1140/1024`), so that
+read-plan candidate now requires generated scheduler ownership or a payload
+shape change rather than another local setup/grouped-read variant.
 
 `v0.7.2-ps1` is a story-loop walking bugfix release. It prevents Johnny from
 walking across stale island backdrops by comparing the full backdrop key
@@ -349,7 +354,9 @@ fully draw-covered; they depend on restored background pixels. A follow-up
 no-op entry-prune probe is rejected because it shortens VISITOR3 cadence
 without owning the hidden refill schedule. The pack-side empty-hold recast also
 finds `0` eligible zero-visual-work entries in the current VISITOR3 high/low
-payloads, closing that safer no-op variant.
+payloads, closing that safer no-op variant. The setup-owned `97..109` segment
+retry is exact-flat too, closing the remaining local version of that read-plan
+candidate.
 Since the compact full-matrix baseline was about `+17.4%` over target /
 `87.1%` target speed, the headless methodology has removed about `17.42`
 percentage points of over-target gap and added about `13.00` points of target

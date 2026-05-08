@@ -58,4 +58,8 @@ target speed is at
 The named-experiment queue for `visitor3` lives in
 [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md);
 recent rejected probes include several read-group, slack-gated, and
-setup-prime variants that didn't beat the canary.
+setup-prime variants that didn't beat the canary. The current `97..109`
+read-plan cluster is closed for local runtime changes too: both grouped-read
+and setup-owned persistent-segment probes measured exact-flat, so the next
+useful lane needs generated scheduler ownership or a real payload/data-shape
+change.
