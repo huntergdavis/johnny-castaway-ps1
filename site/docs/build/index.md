@@ -47,7 +47,7 @@ cd johnny-castaway-ps1
 ./scripts/rebuild-and-let-run.sh
 
 # 4. Boot it
-#    Open DuckStation, File → Start Disc, point at jcreborn.cue (NOT .bin).
+#    Open DuckStation, File → Start File…, point at jcreborn.cue (NOT .bin).
 ```
 
 Output is `jcreborn.bin` + `jcreborn.cue` in the repo root. At
