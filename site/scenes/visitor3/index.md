@@ -46,9 +46,9 @@ were evidence-gathering positions, not runtime pins.
 [performance battle card]({{ '/perf/' | relative_url }}) at
 `{{ site.release.tag }}`. After the compact metadata work, motion-copy payloads,
 high-only frame `117` target-hull promotion, the v214 high setup-prime pass,
-and the v216 guarded low second setup segment, `visitor3` high and low now run
-around
-[`95.0%` and `94.2%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
+the v216 guarded low second setup segment, and the v227 low frame-125/frame-126
+resident re-anchor, `visitor3` high and low now run around
+[`95.0%` and `94.5%` target speed]({{ '/docs/glossary/#target-speed' | relative_url }})
 instead of sitting in the red band. The wide multi-view stitch (the red ship
 crossing the full scene width) hits the
 [prefetch window]({{ '/docs/glossary/#prefetch-window' | relative_url }})

@@ -7,12 +7,12 @@
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.3930%` public over target / `99.6194%` public target speed after the MARY3,
+`+0.3751%` public over target / `99.6354%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v213. The raw signed optimization matrix is `-0.3755%` over target /
-`100.4032%` target speed.
+v227. The raw signed optimization matrix is `-0.3934%` over target /
+`100.4192%` target speed.
 
 ## Headline
 
@@ -28,8 +28,8 @@ v213. The raw signed optimization matrix is `-0.3755%` over target /
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `17.00` public over-target points and added
-  about `12.52` public target-speed points.
+  methodology has removed about `17.03` public over-target points and added
+  about `12.54` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
   `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
@@ -54,13 +54,14 @@ v213. The raw signed optimization matrix is `-0.3755%` over target /
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
   `117` plus high-only re-anchored frames `127`, `126`, and `125`, then adds high/low
   persistent setup segments for sectors `277..293` and `281..305`, the high
-  `320 KiB` setup-prime cap, and the guarded low second segment `150..174`.
+  `320 KiB` setup-prime cap, the guarded low second segment `150..174`, and
+  the low frame-125/frame-126 resident re-anchor.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
   `1118/1028 -> 1089/1035`, cuts blocking `150 -> 83`, loop reads `27 -> 15`,
-  and due misses `26 -> 15`; low moves `1126/1025 -> 1098/1034`, cuts blocking
-  `170 -> 112`, loop reads `31 -> 20`, and due misses `29 -> 19`.
+  and due misses `26 -> 15`; low moves `1126/1025 -> 1095/1035`, cuts blocking
+  `170 -> 108`, loop reads `31 -> 19`, and due misses `29 -> 18`.
 
 ## Follow-Up Closure
 
@@ -167,6 +168,16 @@ low refill eligibility to `4` VBlanks. It accepts low setup time
 drop `23 -> 20`, loop-read time drops `131 -> 119`, due misses drop `22 -> 19`,
 and hidden refill remains `0`.
 
+The follow-up `visitor3-low-f125126-resident-v227` promotes the low-side
+frame-125/frame-126 resident re-anchor inside the accepted `150..174` setup
+segment with no runtime-source change. Frame `125` drops `16828 -> 1799`
+bytes, frame `126` drops `16828 -> 1312` bytes, active low payload drops by
+`30545` bytes, and the pack footprint, LBA, sound offset, and `215040` byte
+PS-EXE bucket stay fixed. The active loop improves `1098/1034 -> 1095/1035`,
+overrun drops `64 -> 60`, blocking drops `112 -> 108`, loop reads drop
+`20 -> 19`, loop-read time drops `119 -> 115`, due misses drop `19 -> 18`, and
+hidden refill remains `0`.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -196,6 +207,12 @@ and hidden refill remains `0`.
   plus `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-tail-rerun/20260509-075859-1871481/summary.json`.
 - VISITOR3 high setup-prime v213 broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-high288-low208-v213-broad/20260509-093115-2397654/summary.json`.
+- VISITOR3 low resident re-anchor focused gate:
+  `scratch/ps1-perf-iterate/visitor3-low-f125126-resident-v227-focused/20260509-122159-3376401/summary.json`.
+- VISITOR3 low resident re-anchor broad gate:
+  `scratch/ps1-perf-iterate/visitor3-low-f125126-resident-v227-broad/20260509-122307-3383321/summary.json`.
+- VISITOR3 low resident re-anchor current-control drift check:
+  `scratch/ps1-perf-iterate/visitor3-low-f125126-resident-v227-current-control/20260509-123359-3447654/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 

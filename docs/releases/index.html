@@ -158,21 +158,22 @@ drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; lo
   <li><strong>Battle card is now public-capped at native speed.</strong> After the follow-up
 MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
 ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
-VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime passes through
-v216, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3783%</code> public over target /
-<code class="language-plaintext highlighter-rouge">99.6326%</code> public target speed; the raw signed CSV is <code class="language-plaintext highlighter-rouge">-0.3903%</code> /
-<code class="language-plaintext highlighter-rouge">100.4164%</code> for
+VISITOR3 motion-copy/code-headroom/CD-pressure/setup-prime/resident-reanchor
+passes through v227, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.3751%</code> public
+over target / <code class="language-plaintext highlighter-rouge">99.6354%</code> public target speed; the raw signed CSV is
+<code class="language-plaintext highlighter-rouge">-0.3934%</code> / <code class="language-plaintext highlighter-rouge">100.4192%</code> for
 optimization work.</li>
   <li><strong>VISITOR3 motion-copy payloads are promoted.</strong> Frames <code class="language-plaintext highlighter-rouge">119..123</code> in both
 VISITOR3 tides, high-tide frame <code class="language-plaintext highlighter-rouge">115</code>, shared frames <code class="language-plaintext highlighter-rouge">118</code>/<code class="language-plaintext highlighter-rouge">124</code>, and
 high-only frame <code class="language-plaintext highlighter-rouge">117</code>, high-only re-anchored frames <code class="language-plaintext highlighter-rouge">127</code>/<code class="language-plaintext highlighter-rouge">126</code>/<code class="language-plaintext highlighter-rouge">125</code>, and
-the high-only <code class="language-plaintext highlighter-rouge">320 KiB</code> setup-prime cap plus the guarded low <code class="language-plaintext highlighter-rouge">150..174</code>
-second setup segment now move already-composited
+the high-only <code class="language-plaintext highlighter-rouge">320 KiB</code> setup-prime cap, the guarded low <code class="language-plaintext highlighter-rouge">150..174</code>
+second setup segment, and the low frame-125/frame-126 resident re-anchor now
+move already-composited
 background rows or CD residency out of the active loop;
 the v204/v205 setup segments keep low sectors <code class="language-plaintext highlighter-rouge">281..305</code> and high sectors
 <code class="language-plaintext highlighter-rouge">277..293</code> resident before the active loop. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt;
-1089/1035</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1098/1034</code>, blocking drops
-<code class="language-plaintext highlighter-rouge">150/170 -&gt; 83/112</code>, and the packs
+1089/1035</code>, low improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1095/1035</code>, blocking drops
+<code class="language-plaintext highlighter-rouge">150/170 -&gt; 83/108</code>, and the packs
 keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
 </ul>
 
