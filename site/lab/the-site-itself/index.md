@@ -222,6 +222,46 @@ group), and for the `<caption class="visually-hidden">` per-table a11y
 captions on `/resources/`. All four shipped through the generator
 template, not the markdown.
 
+## The chapter-select manifest gap and the in-loop tool
+
+The `v0.8.4-ps1` chapter-select grind shipped a custom thumbnail and a
+reconciled scene-page lead for all 63 scenes, plus one bug-fix nobody
+expected: a third of the thumbnail SCRs were on disk but never made it
+onto the CD because nothing referenced them. The CD ISO is built from
+`config/ps1/cd_layout.xml`, which lists every file by name. The
+thumbnail-builder script wrote `SX*.SCR` files into the host
+filesystem, but only 42 of the 63 had ever been added to the manifest;
+the other 21 were silent passengers on disk that the build skipped.
+The user found this by walking Scene Explorer and reporting "stand 2-5
+and 58-63 don't load."
+
+The site-engineering takeaway is small but concrete: when one source
+of truth (the host filesystem) emits files and a different source of
+truth (the manifest) enumerates which of them ship, a parity check is
+worth keeping. A one-line shell pipeline — `comm -23 <(ls
+jc_resources/extracted/scr/SX*.SCR | xargs -n1 basename | sort)
+<(grep -oE "SX[A-Z]+[0-9]+\.SCR" config/ps1/cd_layout.xml | sort -u)`
+— would have caught the gap before any user did. That check is a
+candidate for the build script's pre-flight cluster, alongside the
+existing site-redteam pass.
+
+The other small piece worth recording: the loop's 5-surface helper at
+`scripts/apply-scene-correction.py` updates the per-scene `index.md`,
+the scenes-data YAML, the scene-status table, the thumbnail SCR, and
+a local progress tracker in one pass. Every write is an exact-string
+match, deliberately — re-running the helper on an already-corrected
+scene fails noisily because the old strings aren't there to match.
+That's not an accident; it's the design. When the cost of a silent
+re-run is "your prior fix is gone and you don't know," idempotent
+failure is more honest than idempotent success.
+
+The same pattern shows up in this site's redirect override (the
+custom `_layouts/redirect.html` strips a known-stale prefix and
+fails on any URL without it) and in the per-scene OG-image
+overrides (the head template skips the override if `page.image` is
+unset rather than guessing). Different surfaces, same instinct: a
+loud failure beats a quiet wrong answer.
+
 ## The shape
 
 None of this is novel work. Every piece is a Jekyll trick somebody else has done somewhere. The point of writing it down here is that, taken together, these pieces make the site ship-stable, path-portable, low-noise in git, and cheap to extend — and any future me adding a new section to the site will see the existing patterns and follow them instead of inventing a new one. The site is a small program. It rewards being treated like one.
