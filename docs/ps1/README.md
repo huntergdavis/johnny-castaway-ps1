@@ -23,24 +23,24 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.3751%` over target / `99.6354%` target speed across all 126
+`+0.3720%` over target / `99.6381%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
 low/high setup-segment, high frame-126/frame-125 re-anchor, and high
 setup-prime plus guarded low second-segment and low frame-125/frame-126
-resident re-anchor follow-ups; the raw signed optimization matrix is
-`-0.3934%` / `100.4192%`.
+resident re-anchor plus frame-118 resident-copy follow-ups; the raw signed
+optimization matrix is `-0.3965%` / `100.4219%`.
 That is about `17.03` public over-target points removed and `12.54` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-low-f125126-resident-v227`, repacks
-the low-tide frame-125/frame-126 re-anchor payloads so they live inside the
-already accepted `150..174` low setup segment. It preserves both `1555450` byte
-pack footprints, later offsets, fixed LBAs `22472/23232`, and the `215040`
-byte PS-EXE bucket while moving low `1098/1034 -> 1095/1035`. It cuts overrun
-`64 -> 60`, blocking `112 -> 108`, loop reads `20 -> 19`, loop-read time
-`119 -> 115`, and due misses `19 -> 18` while keeping hidden refill at `0`.
+The latest VISITOR3 follow-up, `visitor3-low-f118-resident-copy-v234`, copies
+the low-tide frame-118 payload unchanged into the already accepted `150..174`
+low setup segment. It preserves both `1555450` byte pack footprints, later
+offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket while
+moving low `1095/1035 -> 1091/1035`. It cuts overrun `60 -> 56`, blocking
+`108 -> 103`, loop reads `19 -> 18`, loop-read time `115 -> 110`, and due
+misses `18 -> 17` while keeping hidden refill at `0`.
 High remains on the v214 setup-prime profile at `1089/1035`, `blocking_vb=83`,
 loop-read time `83`, and due misses `15`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
