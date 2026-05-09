@@ -307,14 +307,15 @@ sound_late = 0   cd_fail = 0
 
 That is **0.0% public over target**, or **[100.0% public target speed]({{ '/docs/glossary/#target-speed' | relative_url }})**. The raw signed
 CSV row is `-0.6%` / `100.6%`. Across the 126 timing-bearing battle-card rows,
-the public average is **+0.4% over target / 99.6% target speed** (`0.4457%`
-exact public over target / `99.5730%` exact public target speed); the raw
-signed optimization matrix is `-0.3228%` / `100.3568%`.
+the public average is **+0.4% over target / 99.6% target speed** (`0.4412%`
+exact public over target / `99.5774%` exact public target speed); the raw
+signed optimization matrix is `-0.3273%` / `100.3612%`.
 
 ## Scene Battle Card
 
 As of 2026-05-08, all 126 scene/tide variants have current headless
 perf measurements. The latest updated rows are stamped
+`walkstuf3-low-compact-fgp3-v171`,
 `activity9-high-compact-fgp3-v167`,
 `building6-compact-fgp3-v165`,
 `walkstuf3-high-compact-fgp3-v163`,
@@ -394,7 +395,7 @@ perf measurements. The latest updated rows are stamped
 variant, and 63 scenes have both high- and low-tide variants routed. All 126
 rows now carry active-loop timing; `suzy1` needs the longer `12000`-frame
 matrix budget because its valid scene-end lands after the default `7200`-frame
-window. The latest matrix run is `2026-05-08T16:19:16`; per-row freshness and stats version are shown on
+window. The latest matrix run is `2026-05-08T16:59:36`; per-row freshness and stats version are shown on
 the [battle card]({{ '/perf/' | relative_url }}). The values below are
 public-capped `over target / target speed (loop_vb/target_vb)`, with `blk`
 and `due` called out when nonzero. Faster-than-target rows display
@@ -402,7 +403,8 @@ and `due` called out when nonzero. Faster-than-target rows display
 `docs/ps1/performance-scene-matrix.csv`.
 
 The complete matrix pass is `compact-fgp3-v2-fullmatrix`; accepted follow-up
-rows now use `activity9-high-compact-fgp3-v167`,
+rows now use `walkstuf3-low-compact-fgp3-v171`,
+`activity9-high-compact-fgp3-v167`,
 `building6-compact-fgp3-v165`,
 `walkstuf3-high-compact-fgp3-v163`,
 `building2-low-restore-window-slack4-v160`,

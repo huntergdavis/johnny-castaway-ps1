@@ -118,15 +118,15 @@ The full list of rejected probes lives in `docs/ps1/performance-experiment-log.m
 ## What's left
 
 The current matrix mean is `{{ site.release.perf_target_speed_pct }}%` target speed.
-The matrix-wide aggregate is now slightly under target — the remaining
+The matrix-wide aggregate is now slightly under target -- the remaining
 work is in a small number of high-leverage rows that still slip.
 As of `{{ site.release.tag }}` there are no red rows left on the
 [battle card]({{ '/perf/' | relative_url }}). The two yellow rows
 (`90`–`95%`) are VISITOR3 high/low at roughly `91.9%`/`91.0%` after
-the pack-side restore-minus-current cleanup. The sixteen orange rows
+the pack-side restore-minus-current cleanup. The fourteen orange rows
 (`95`–`99%`) include WALKSTUF1 at `95.6%`/`95.8%` after its v0.8.3
-compact-FGP3/v4 pass, BUILDING2 high/low at `97.6%`, WALKSTUF3 low at
-`98.8%`, and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1 /
+compact-FGP3/v4 pass, BUILDING2 high/low at `97.6%`, VISITOR5 high/low,
+and the rest of the BUILDING2 / BUILDING6 / WALKSTUF1 /
 VISITOR3 / wide-action cluster still finishing scheduler-owned read
 timing and selective-preprocessing work. The optimization plan at
 `docs/ps1/performance-optimization-plan.md` § 7 and § 8 lists about

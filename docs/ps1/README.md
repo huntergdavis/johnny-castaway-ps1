@@ -23,19 +23,19 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.4457%` over target / `99.5730%` target speed across all 126
+`+0.4412%` over target / `99.5774%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
-WALKSTUF3 high, BUILDING6 compact, and ACTIVITY9 high compact follow-ups; the
-raw signed optimization matrix is `-0.3228%` / `100.3568%`. That is about
-`16.95` public over-target
-points removed and `12.47` public target-speed points added since the compact
+WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
+compact follow-ups; the raw signed optimization matrix is `-0.3273%` /
+`100.3612%`. That is about `16.96` public over-target
+points removed and `12.48` public target-speed points added since the compact
 full-matrix baseline.
 
-The latest ACTIVITY9 high follow-up, `activity9-high-compact-fgp3-v167`,
-converts the high-tide pack to compact FGP3/v4 restore-minus-current data
-inside the original `1745484` byte footprint. High moves `2094/2056 ->
-2082/2062`, cuts blocking `37 -> 24`, hidden refill `23 -> 17`, loop reads
-`52 -> 25`, and due misses `2 -> 1`; low tide stayed exact-flat as a canary.
+The latest WALKSTUF3 low follow-up, `walkstuf3-low-compact-fgp3-v171`,
+converts the low-tide pack to compact FGP3/v4 restore-minus-current data inside
+the original `994669` byte footprint. Low moves `2321/2293 -> 2310/2295`, cuts
+blocking `41 -> 26`, hidden refill `21 -> 17`, loop reads `72 -> 29`, and due
+misses `5 -> 2`; WALKSTUF3 high and broad controls stayed exact-flat.
 VISITOR3 local threshold/read-table probes remain closed until generated
 scheduler ownership, safe upload/precomposed payloads, or another
 pack/data-shape reduction is ready.
