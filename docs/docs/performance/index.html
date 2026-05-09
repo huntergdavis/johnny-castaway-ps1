@@ -102,7 +102,7 @@
       <h1>Performance work</h1>
       <p class="subtitle">What "performance" means on a 33 MHz machine, what got measured, what got tried, and what stuck.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~15 min read · 3922 words
+          ~16 min read · 4086 words
         </p>
       
       <hr class="rule" />
@@ -1025,12 +1025,44 @@ day-by-day there.</li>
 
 <h2 id="view-source-on-github">View source on GitHub</h2>
 
+<p>The body cites a dozen files; this section collects them. Grouped
+by purpose — plan and ledgers, runtime, iterate gate, the scene
+matrix, the compiler-flag and preprocessing sweeps, the read-plan
+rollup, and the regtest runner.</p>
+
 <ul>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-optimization-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-optimization-plan.md</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-experiment-log.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-experiment-log.md</code></a>
+— the optimization plan and the 600+ experiment ledger.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_perf.c"><code class="language-plaintext highlighter-rouge">src/ps1_perf.c</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a>
+— runtime: the JCPERF/JCPERF2 instrumentation and the FG2 dispatcher
+whose per-frame budget the matrix measures.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/ps1-perf-iterate.sh"><code class="language-plaintext highlighter-rouge">scripts/ps1-perf-iterate.sh</code></a>
+— the experiment gate every probe goes through (run → compare →
+promote-or-reject).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-scene-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-scene-matrix.csv</code></a>
+— the full scene/tide battle card; rendered as the live sortable
+matrix at <a href="/johnny-castaway-ps1/perf/">/perf/</a>.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-o2-audit.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-o2-audit.md</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-o2-audit.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-o2-audit.csv</code></a>
+— current compiler-flag sweep, regenerated from
+<code class="language-plaintext highlighter-rouge">build-ps1/compile_commands.json</code> + <code class="language-plaintext highlighter-rouge">build-ps1/jcreborn.map</code>
+before each <code class="language-plaintext highlighter-rouge">-O2</code> probe.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-opportunities.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-opportunities.md</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-opportunities.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-opportunities.csv</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/analyze-fg2-preprocess-plans.py"><code class="language-plaintext highlighter-rouge">scripts/analyze-fg2-preprocess-plans.py</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-preprocess-visitor3-hotspots.csv</code></a>
+— pack-time graphics preprocessing target sheet, the FGP2/FGP3
+per-pack analyzer, and the VISITOR3 cap-hit / saving-heavy frame
+sheet.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.md"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.md</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/performance-read-candidate-matrix.csv"><code class="language-plaintext highlighter-rouge">docs/ps1/performance-read-candidate-matrix.csv</code></a>
+— foreground read-plan candidates classified by append-start
+ownership, grouped-read capacity, and visible-CD cost class.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
+— headless DuckStation runner that captures PNGs and ingests
+TTY records into per-run summary JSON files.</li>
 </ul>
 
   </div>

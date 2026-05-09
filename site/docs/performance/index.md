@@ -894,8 +894,40 @@ A few things the perf work explicitly does not chase, with reasons:
 
 ## View source on GitHub
 
+The body cites a dozen files; this section collects them. Grouped
+by purpose — plan and ledgers, runtime, iterate gate, the scene
+matrix, the compiler-flag and preprocessing sweeps, the read-plan
+rollup, and the regtest runner.
+
 - [`docs/ps1/performance-optimization-plan.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-optimization-plan.md)
-- [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+  · [`docs/ps1/performance-experiment-log.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-experiment-log.md)
+  — the optimization plan and the 600+ experiment ledger.
 - [`src/ps1_perf.c`]({{ site.github_url }}/blob/main/src/ps1_perf.c)
-- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  · [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  — runtime: the JCPERF/JCPERF2 instrumentation and the FG2 dispatcher
+  whose per-frame budget the matrix measures.
 - [`scripts/ps1-perf-iterate.sh`]({{ site.github_url }}/blob/main/scripts/ps1-perf-iterate.sh)
+  — the experiment gate every probe goes through (run → compare →
+  promote-or-reject).
+- [`docs/ps1/performance-scene-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-scene-matrix.csv)
+  — the full scene/tide battle card; rendered as the live sortable
+  matrix at [/perf/]({{ '/perf/' | relative_url }}).
+- [`docs/ps1/performance-o2-audit.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.md)
+  · [`docs/ps1/performance-o2-audit.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-o2-audit.csv)
+  — current compiler-flag sweep, regenerated from
+  `build-ps1/compile_commands.json` + `build-ps1/jcreborn.map`
+  before each `-O2` probe.
+- [`docs/ps1/performance-preprocess-opportunities.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-opportunities.md)
+  · [`docs/ps1/performance-preprocess-opportunities.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-opportunities.csv)
+  · [`scripts/analyze-fg2-preprocess-plans.py`]({{ site.github_url }}/blob/main/scripts/analyze-fg2-preprocess-plans.py)
+  · [`docs/ps1/performance-preprocess-visitor3-hotspots.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-preprocess-visitor3-hotspots.csv)
+  — pack-time graphics preprocessing target sheet, the FGP2/FGP3
+  per-pack analyzer, and the VISITOR3 cap-hit / saving-heavy frame
+  sheet.
+- [`docs/ps1/performance-read-candidate-matrix.md`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.md)
+  · [`docs/ps1/performance-read-candidate-matrix.csv`]({{ site.github_url }}/blob/main/docs/ps1/performance-read-candidate-matrix.csv)
+  — foreground read-plan candidates classified by append-start
+  ownership, grouped-read capacity, and visible-CD cost class.
+- [`scripts/run-regtest.sh`]({{ site.github_url }}/blob/main/scripts/run-regtest.sh)
+  — headless DuckStation runner that captures PNGs and ingests
+  TTY records into per-run summary JSON files.
