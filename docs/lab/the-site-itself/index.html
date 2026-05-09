@@ -177,7 +177,7 @@
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle <span class="nb">exec </span>jekyll build <span class="nt">--trace</span> <span class="nt">--baseurl</span> <span class="s2">""</span> <span class="nt">--destination</span> <span class="s2">"</span><span class="nv">$ROOT</span><span class="s2">/docs"</span>
 </code></pre></div></div>
 
-<p>Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at <code class="language-plaintext highlighter-rouge">/</code>, and a small Python pass — <code class="language-plaintext highlighter-rouge">scripts/site-relativize-build.py</code> — rewrites those to file-relative paths (<code class="language-plaintext highlighter-rouge">./play/</code>, <code class="language-plaintext highlighter-rouge">../assets/css/main.css</code>). The output bundle has no embedded knowledge of where it lives. It can be served at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/</code>, at <code class="language-plaintext highlighter-rouge">/</code>, at <code class="language-plaintext highlighter-rouge">/anywhere/</code>, and every internal link resolves against the actual served path.</p>
+<p>Why blank the baseurl at build time? Because every URL in every page then comes out root-relative starting at <code class="language-plaintext highlighter-rouge">/</code>, and a small Python pass — <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/site-relativize-build.py"><code class="language-plaintext highlighter-rouge">scripts/site-relativize-build.py</code></a> — rewrites those to file-relative paths (<code class="language-plaintext highlighter-rouge">./play/</code>, <code class="language-plaintext highlighter-rouge">../assets/css/main.css</code>). The output bundle has no embedded knowledge of where it lives. It can be served at <code class="language-plaintext highlighter-rouge">/johnny-castaway-ps1/</code>, at <code class="language-plaintext highlighter-rouge">/</code>, at <code class="language-plaintext highlighter-rouge">/anywhere/</code>, and every internal link resolves against the actual served path.</p>
 
 <p>That’s a useful property for a project hosted at GitHub Pages, where the publish prefix isn’t stable across renames or forks. It’s also a useful property if anyone ever clones the bundle to host it as a backup, or if the canonical URL ever moves.</p>
 
@@ -349,7 +349,7 @@ the website tree), <code class="language-plaintext highlighter-rouge">site/resou
 seven section tables), and
 <code class="language-plaintext highlighter-rouge">site/archaeology/regtest-references/cases/index.md</code> plus its 63
 per-case detail pages. They’re emitted by
-<code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code> on every build, before Jekyll runs.</p>
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/site-generate-library.py"><code class="language-plaintext highlighter-rouge">scripts/site-generate-library.py</code></a> on every build, before Jekyll runs.</p>
 
 <p>The catch is a foot-gun for any future improvement: editing those
 <code class="language-plaintext highlighter-rouge">.md</code> files in place looks fine in <code class="language-plaintext highlighter-rouge">git diff</code>, builds locally, then
@@ -413,7 +413,7 @@ candidate for the build script’s pre-flight cluster, alongside the
 existing site-redteam pass.</p>
 
 <p>The other small piece worth recording: the loop’s 5-surface helper at
-<code class="language-plaintext highlighter-rouge">scripts/apply-scene-correction.py</code> updates the per-scene <code class="language-plaintext highlighter-rouge">index.md</code>,
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/apply-scene-correction.py"><code class="language-plaintext highlighter-rouge">scripts/apply-scene-correction.py</code></a> updates the per-scene <code class="language-plaintext highlighter-rouge">index.md</code>,
 the scenes-data YAML, the scene-status table, the thumbnail SCR, and
 a local progress tracker in one pass. Every write is an exact-string
 match, deliberately — re-running the helper on an already-corrected
