@@ -6,7 +6,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
 ---
 
 {%- comment -%}
-  Schema.org FAQPage structured data. Mirrors the 15 H3 questions
+  Schema.org FAQPage structured data. Mirrors the 16 H3 questions
   on this page with 1â€“2 sentence summary answers. Google retired
   FAQ rich results for general sites in 2023, but Bing, AI agents,
   and embedded knowledge graphs still consume FAQPage. Hand-mirrored
@@ -129,6 +129,14 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "The original Sierra game had 4 baked-in holiday decorations (Christmas, New Year, Halloween, St. Patrick's Day). This port extends that to 36 US holidays via a code-generated table and a pure-algorithm date core (Meeus for Easter, Nth-weekday math for the others). No external date library, no expiring tables, works for 100+ years."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I jump to a specific scene?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open the pause menu with Start, choose Scene Explorer, and step through with LEFT/RIGHT (one scene at a time) or L1/R1 (one scene family at a time). Cross plays the highlighted scene once; Triangle loops it. Each entry shows a captured-on-PS1 thumbnail and the scene title; the 63 thumbnails were each captured during the v0.8.4-ps1 chapter-select grind."
       }
     },
     {
@@ -312,6 +320,23 @@ for 100+ years. The full reference manual is at
 [/docs/holidays/]({{ '/docs/holidays/' | relative_url }}); see
 `holidays.yml` and `src/holidays.c` in the repository for the
 source data and the codegen output.
+
+### How do I jump to a specific scene?
+
+Open the pause menu with **Start** and choose **Scene Explorer**.
+Step through with **LEFT / RIGHT** (one scene at a time) or
+**L1 / R1** (one scene family at a time â€” Fishing, Johnny, Mary,
+Visitor, Activity, Stand, Walkstuf, etc.). **Cross** plays the
+highlighted scene once; **Triangle** plays it on a loop.
+**Circle** or **Start** backs out of the picker.
+
+Each entry shows a captured-on-PS1 thumbnail and the scene title.
+The 63 thumbnails ship as `SCR\SX<abbrev><tag>.SCR` files on the
+disc; each one was captured during the
+[`v0.8.4-ps1` chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+so the picker is showing real on-PS1 footage of the pack, not a
+generated frame. Full reference at
+[/docs/pause-menu/#scene-explorer]({{ '/docs/pause-menu/#scene-explorer' | relative_url }}).
 
 ### What's faithful to the original, and what's added?
 

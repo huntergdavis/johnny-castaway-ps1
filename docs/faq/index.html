@@ -224,6 +224,14 @@
     },
     {
       "@type": "Question",
+      "name": "How do I jump to a specific scene?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open the pause menu with Start, choose Scene Explorer, and step through with LEFT/RIGHT (one scene at a time) or L1/R1 (one scene family at a time). Cross plays the highlighted scene once; Triangle loops it. Each entry shows a captured-on-PS1 thumbnail and the scene title; the 63 thumbnails were each captured during the v0.8.4-ps1 chapter-select grind."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "What's faithful to the original, and what's added?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -265,6 +273,7 @@ the project, running it, and the original game.</p>
       <li><a href="#where-does-the-caption-text-come-from" id="markdown-toc-where-does-the-caption-text-come-from">Where does the caption text come from?</a></li>
       <li><a href="#why-does-the-scene-title-differ-from-the-on-screen-caption-sometimes" id="markdown-toc-why-does-the-scene-title-differ-from-the-on-screen-caption-sometimes">Why does the scene title differ from the on-screen caption sometimes?</a></li>
       <li><a href="#why-are-there-36-holidays-now-instead-of-4" id="markdown-toc-why-are-there-36-holidays-now-instead-of-4">Why are there 36 holidays now instead of 4?</a></li>
+      <li><a href="#how-do-i-jump-to-a-specific-scene" id="markdown-toc-how-do-i-jump-to-a-specific-scene">How do I jump to a specific scene?</a></li>
       <li><a href="#whats-faithful-to-the-original-and-whats-added" id="markdown-toc-whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</a></li>
     </ul>
   </li>
@@ -429,6 +438,23 @@ for 100+ years. The full reference manual is at
 <a href="/johnny-castaway-ps1/docs/holidays/">/docs/holidays/</a>; see
 <code class="language-plaintext highlighter-rouge">holidays.yml</code> and <code class="language-plaintext highlighter-rouge">src/holidays.c</code> in the repository for the
 source data and the codegen output.</p>
+
+<h3 id="how-do-i-jump-to-a-specific-scene">How do I jump to a specific scene?</h3>
+
+<p>Open the pause menu with <strong>Start</strong> and choose <strong>Scene Explorer</strong>.
+Step through with <strong>LEFT / RIGHT</strong> (one scene at a time) or
+<strong>L1 / R1</strong> (one scene family at a time — Fishing, Johnny, Mary,
+Visitor, Activity, Stand, Walkstuf, etc.). <strong>Cross</strong> plays the
+highlighted scene once; <strong>Triangle</strong> plays it on a loop.
+<strong>Circle</strong> or <strong>Start</strong> backs out of the picker.</p>
+
+<p>Each entry shows a captured-on-PS1 thumbnail and the scene title.
+The 63 thumbnails ship as <code class="language-plaintext highlighter-rouge">SCR\SX&lt;abbrev&gt;&lt;tag&gt;.SCR</code> files on the
+disc; each one was captured during the
+<a href="/johnny-castaway-ps1/lab/chapter-select-grind/"><code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code> chapter-select grind</a>
+so the picker is showing real on-PS1 footage of the pack, not a
+generated frame. Full reference at
+<a href="/johnny-castaway-ps1/docs/pause-menu/#scene-explorer">/docs/pause-menu/#scene-explorer</a>.</p>
 
 <h3 id="whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</h3>
 
