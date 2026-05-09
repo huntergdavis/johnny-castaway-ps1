@@ -136,7 +136,7 @@ description: Frequently asked questions about the Johnny Castaway PS1 fan port â
       "name": "What's faithful to the original, and what's added?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Faithful: every scene the original had, in the original order, with the original variants. The art is unchanged. Added: a real pause menu reachable with Start (the original had none) with sub-screens for Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed; closed captions; thirty-two additional holidays; story-loop walking between scenes; freeplay/debug mode where the player drives Johnny directly; optional ocean-ambience loop; Scene Set pool selector; frog-clock loading transitions; full Credits page."
+        "text": "Faithful: every scene the original had, in the original order, with the original variants. The art is unchanged. Added: a real pause menu reachable with Start (the original had none) with sub-screens for Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed; closed captions; thirty-two additional holidays; story-loop walking between scenes; freeplay/debug mode where the player drives Johnny directly; optional ocean-ambience loop; Scene Set pool selector; frog-clock loading transitions; full Credits page."
       }
     }
   ]
@@ -322,9 +322,9 @@ the original sprites; the new ones were authored to fit).
 
 **Added**: a real [pause menu]({{ '/docs/pause-menu/' | relative_url }})
 reachable with Start (the original had none), with sub-screens
-for Scene Set, Freeplay Options, Controls, World Options,
-Holidays, Set Island Position, Accessibility, Sound Test,
-System, Set Time / Date, and Set RNG Seed. Closed captions
+for Scene Set, Scene Explorer, Freeplay Options, Controls,
+World Options, Holidays, Set Island Position, Accessibility,
+Sound Test, System, Set Time / Date, and Set RNG Seed. Closed captions
 (off by default; see [/docs/captions/]({{ '/docs/captions/' | relative_url }})).
 [Thirty-two additional holidays]({{ '/docs/holidays/' | relative_url }})
 via a code-generated table and pure-algorithm date core.

@@ -22,7 +22,7 @@ just watching it.
   </li>
   <li>
     <a href="{{ '/docs/pause-menu/' | relative_url }}">Pause menu reference</a>
-    <p>What every pause-menu sub-screen does — Scene Set, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</p>
+    <p>What every pause-menu sub-screen does — Scene Set, Scene Explorer, Freeplay Options, Controls, World Options, Holidays, Set Island Position, Accessibility, Sound Test, System, Set Time/Date, Set RNG Seed.</p>
   </li>
   <li>
     <a href="{{ '/docs/captions/' | relative_url }}">Closed captions</a>
