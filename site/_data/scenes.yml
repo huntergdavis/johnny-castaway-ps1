@@ -162,7 +162,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-05'
-  notes: lilliputians-tie-up-sleeping-johnny (Gulliver-style: Johnny sleeps on the sand, tiny lilliputians tie him down with ropes); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly
+  notes: 'lilliputians-tie-up-sleeping-johnny (Gulliver-style: Johnny sleeps on the sand, tiny lilliputians tie him down with ropes); visual signoff after regenerating high/low packs through the generic normal/far-left/far-right foreground-only multi-view stitch and converting to FGP3 with an explicit terminal cleanup frame so the final Johnny/bird row restores cleanly'
 - ads: BUILDING
   tag: 5
   slug: building5
@@ -326,7 +326,7 @@
   - black backdrop
   - high/low pack parity
   last_verified: '2026-05-02'
-  notes: the-end-scroll (the Day 11 finale: frog clock, sunset silhouette, plane overhead, Johnny parachutes down, and the "The End" title card); visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init
+  notes: 'the-end-scroll (the Day 11 finale: frog clock, sunset silhouette, plane overhead, Johnny parachutes down, and the "The End" title card); visual signoff after full-screen black-backdrop playback fixed placement/scaling and removed the clean-rect memory pressure; saved memcard mute is applied before audio init'
 - ads: JOHNNY
   tag: 2
   slug: johnny2
@@ -416,7 +416,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=80,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-03'
-  notes: mary-visits-fishing-mistaken-for-fish-boot (Mary swims up while Johnny is fishing; he mistakes her for a fish on the line, then ends up reeling in a boot); 'visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'
+  notes: 'mary-visits-fishing-mistaken-for-fish-boot (Mary swims up while Johnny is fishing; he mistakes her for a fish on the line, then ends up reeling in a boot); ''visual + audible signoff after rebuilding high/low packs from a wide scene-relative multi-view stitch: foreground-only captures restore the line, mermaid, boot/splash, and lower-water action across island placements, while full-host bubble injection restores the fish thought-bubble shell; far-right and true far-left stress playback passed'''
 - ads: MARY
   tag: 3
   slug: mary3
@@ -760,7 +760,7 @@
   - host capture/test island positions `x=-154,y=54`, `x=-300,y=54`, `x=300,y=54`
   - production variable island position
   last_verified: '2026-05-04'
-  notes: waves-small-boat-actually-huge (Johnny waves down what he thinks is a small boat in the distance, only to discover it's actually a huge boat much closer than it looked); 'visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'
+  notes: 'waves-small-boat-actually-huge (Johnny waves down what he thinks is a small boat in the distance, only to discover it''s actually a huge boat much closer than it looked); ''visual + audible signoff after VISITOR3-specific multi-view synthesis: foreground-only views preserve clean moving sprites, the helper accumulates the red ship hull from full-host live crash frames, FGP3 temporal cleanup clears the post-crash blank rows, and hold timing keeps the real frame-158 splash visible without stale right-splash residue'''
 - ads: VISITOR
   tag: 4
   slug: visitor4
