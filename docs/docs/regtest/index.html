@@ -102,7 +102,7 @@
       <h1>Regression testing</h1>
       <p class="subtitle">Headless DuckStation in Docker, frame PNGs, SHA256 state hashes, and the per-scene wrapper.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~7 min read · 1761 words
+          ~7 min read · 1842 words
         </p>
       
       <hr class="rule" />
@@ -613,10 +613,28 @@ the link from there to here.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/run-regtest.sh"><code class="language-plaintext highlighter-rouge">scripts/run-regtest.sh</code></a>
 — the Docker wrapper this page documents; full option set
 in the body’s Command-line options section.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/regtest-scene.sh"><code class="language-plaintext highlighter-rouge">scripts/regtest-scene.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/regtest-all-scenes.sh"><code class="language-plaintext highlighter-rouge">scripts/regtest-all-scenes.sh</code></a>
+— single-scene runner and parallel orchestrator.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/build-regtest-image.sh"><code class="language-plaintext highlighter-rouge">scripts/build-regtest-image.sh</code></a>
+— one-time Docker image build wrapper (the page’s first command).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/analyze-regtest.py"><code class="language-plaintext highlighter-rouge">scripts/analyze-regtest.py</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/regtest-compare.sh"><code class="language-plaintext highlighter-rouge">scripts/regtest-compare.sh</code></a>
+— post-run analysis + HTML report and run-vs-run diff.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/decode-ps1-bars.py"><code class="language-plaintext highlighter-rouge">scripts/decode-ps1-bars.py</code></a>
+— telemetry overlay decoder (used when frames carry the on-screen
+perf bars from <code class="language-plaintext highlighter-rouge">src/ps1_debug.c</code>).</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/scripts/check-character-screenshot.py"><code class="language-plaintext highlighter-rouge">scripts/check-character-screenshot.py</code></a>
+— overlay-backed character check the body’s “Overlay-backed
+character checks” section walks through.</li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/Dockerfile.regtest"><code class="language-plaintext highlighter-rouge">config/ps1/Dockerfile.regtest</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-config.sh"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-config.sh</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a>
+— the regtest Docker image build, default frame-counts/timeouts
+config, and 63-scene manifest with status + boot route.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-harness.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-harness.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/regtest-quickstart.md"><code class="language-plaintext highlighter-rouge">docs/ps1/regtest-quickstart.md</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/TESTING.md"><code class="language-plaintext highlighter-rouge">docs/ps1/TESTING.md</code></a></li>
-  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/config/ps1/regtest-scenes.txt"><code class="language-plaintext highlighter-rouge">config/ps1/regtest-scenes.txt</code></a></li>
 </ul>
 
   </div>
