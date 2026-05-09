@@ -44,7 +44,7 @@ The captions module shares VRAM with the [pause menu]({{ '/docs/pause-menu/' | r
 on first use it calls `pauseMenuEnsureFontUploaded()` so the captions don't
 need to wait for the user to open the pause menu before subtitles can render.
 The font lives at VRAM `(640, 256)` with a CLUT at `(640, 360)` — those
-constants are exported from `pause_menu.h`.
+constants are exported from [`pause_menu.h`]({{ site.github_url }}/blob/main/src/pause_menu.h).
 
 When captions are disabled or no scene is active, `captionsRender()` returns
 immediately. It is zero-cost when off.
@@ -171,7 +171,7 @@ substantial fraction of the audit's confidence ratings:
 The corpus and on-screen captions themselves did not change in
 `v0.8.4-ps1`. What changed is the website's *description* of which
 caption belongs to which scene — the per-scene `index.md` titles +
-bodies, the `scenes.yml` notes, the `scene-status.md` Notes column,
+bodies, the [`scenes.yml`]({{ site.github_url }}/blob/main/site/_data/scenes.yml) notes, the [`scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) Notes column,
 and the in-game [Scene Explorer]({{ '/docs/glossary/#scene-explorer' | relative_url }})'s display strings (regenerated from
 those sources). The `captionSceneMap[]` array in
 [`src/ps1_captions.c`]({{ site.github_url }}/blob/main/src/ps1_captions.c)
