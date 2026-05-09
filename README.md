@@ -128,12 +128,14 @@ Full pipeline — pack format byte layout, hardware constraints hit on the way, 
 ## Pause menu
 
 <p align="center">
-  <img src="docs/readme/pause-menu.png" width="62%" alt="Pause menu overlay running on PS1, showing Resume, Freeplay, Freeplay Options, World Options, Accessibility, and System">
+  <img src="docs/readme/scene-explorer.png" width="72%" alt="Scene Explorer running on PS1: top band reads SCENE EXPLORER, 5/63 * validated, FISHING 5 Eaten by a shark, Family Fishing, Frames 69; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2, navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back">
 </p>
 
-Press **Start** mid-scene. Twelve sub-screens are reachable from the main pause overlay:
+<p align="center">Pause → <strong>Scene Explorer</strong>: jump straight to any of the 63 scenes. Each entry shows the captured-on-PS1 thumbnail, family, frame count, and pack name. New in <code>v0.8.4-ps1</code>; full reference at <a href="https://hunterdavis.com/johnny-castaway-ps1/docs/pause-menu/#scene-explorer">/docs/pause-menu/#scene-explorer</a>.</p>
 
-- **Scene Set** · **Scene Explorer** — pool selector across seven categories, plus the chapter-select grid that jumps to any of the 63 scenes (each with an on-PS1-captured thumbnail, new in `v0.8.4-ps1`).
+Press **Start** mid-scene. Twelve sub-screens reachable from the main pause overlay:
+
+- **Scene Set** · **Scene Explorer** — pool selector across seven categories, plus the chapter-select grid above.
 - **Freeplay: ON / OFF** · **Freeplay Options** — direct-control Johnny mode plus its gag, visitor, and controls catalogs.
 - **World Options** — day/night, tide, raft stage, holidays, island position.
 - **Accessibility** — captions, sound, ocean ambience, Sound Test.

@@ -45,6 +45,25 @@ description: A ground-up PlayStation 1 port of Sierra's 1992 Johnny Castaway scr
   </figure>
 </section>
 
+<figure style="margin: 2rem auto; text-align: center;" aria-label="Scene Explorer running on PS1">
+  <a href="{{ '/docs/pause-menu/#scene-explorer' | relative_url }}">
+    <img src="{{ '/assets/img/scene-explorer-fishing5.png' | relative_url }}"
+         width="640" height="448"
+         loading="lazy"
+         decoding="async"
+         style="max-width: 100%; height: auto;"
+         alt="Scene Explorer on PS1: top band reads SCENE EXPLORER, 5 of 63 validated, FISHING 5 — Eaten by a shark, Family Fishing, Frames 69; the captured-on-PS1 thumbnail of FISHING 5 (shark on the right side of the island chewing Johnny) sits in the middle; bottom band reads Pack FG/FISHING5.FG2, navigation hints LEFT/RIGHT scene, L1/R1 family, X play, Triangle loop, O back." />
+  </a>
+  <figcaption style="margin-top: 0.75rem; font-size: 0.95em;">
+    <strong>Scene Explorer</strong> — Pause &rarr; Scene Explorer jumps
+    straight to any of the 63 scenes. Each entry shows a
+    captured-on-PS1 thumbnail, family, and frame count. New in
+    <a href="{{ '/releases/#v084-ps1--custom-chapter-select-thumbnails-for-all-63-scenes' | relative_url }}"><code>v0.8.4-ps1</code></a>;
+    this screenshot was itself captured headlessly via
+    <a href="{{ '/docs/scripted-input/' | relative_url }}">the scripted-input harness</a>.
+  </figcaption>
+</figure>
+
 <aside class="status-strip" aria-label="Project status">
   <span><strong>Latest:</strong> <a href="{{ '/releases/' | relative_url }}">{{ site.release.tag }}</a> <small>· <time datetime="{{ site.release.release_date }}">{{ site.release.release_date }}</time></small></span>
   <a class="pill pill--ok" href="{{ '/scenes/' | relative_url }}">{{ site.release.scenes_validated }} / {{ site.release.scenes_total }} scenes validated</a>
