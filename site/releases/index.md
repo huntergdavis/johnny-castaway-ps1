@@ -56,6 +56,9 @@ No perf code or pack content changed; the 120 timing-bearing rows on
 over target / `99.4669%` public target speed as v0.8.3-ps1. Scene
 validation scope is unchanged: 63 / 63 remain signed off.
 
+The retrospective on the loop is at
+[/lab/chapter-select-grind/]({{ '/lab/chapter-select-grind/' | relative_url }}).
+
 [Full notes]({{ '/source/docs/ps1/release-notes-0.8.4/' | relative_url }})
 &nbsp;·&nbsp;
 [GitHub release]({{ site.github_url }}/releases/tag/v0.8.4-ps1)
