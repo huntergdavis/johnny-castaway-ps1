@@ -232,7 +232,7 @@ the time of writing. The ones that matter for daily build work:
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/build-ps1.sh` | Clean rebuild of executable + CD image. The "make me a fresh disc" button. |
+| `scripts/build-ps1.sh` | Clean rebuild of the PS1 executable (`jcreborn.elf` + `jcreborn.exe`). Does not produce the CD image — `make-cd-image.sh` is the next step. |
 | `scripts/make-cd-image.sh` | Re-run `mkpsxiso` against the current `build-ps1/jcreborn.exe`. Faster than a full rebuild when only the layout XML changed. |
 | `scripts/rebuild-and-let-run.sh` | Rebuild + CD + launch DuckStation with a temporary TTY-logging config. Day-to-day scene work. |
 | `scripts/build-host.sh` | Build the SDL2 capture binary. Independent of the PS1 image. |
@@ -371,5 +371,17 @@ DuckStation's access to `jcreborn.cue`.
 - [`config/ps1/Dockerfile.ps1`]({{ site.github_url }}/blob/main/config/ps1/Dockerfile.ps1)
 - [`config/ps1/Dockerfile.regtest`]({{ site.github_url }}/blob/main/config/ps1/Dockerfile.regtest)
 - [`CMakeLists.txt`]({{ site.github_url }}/blob/main/CMakeLists.txt)
-- [`scripts/release.sh`]({{ site.github_url }}/blob/main/scripts/release.sh)
 - [`scripts/build-ps1.sh`]({{ site.github_url }}/blob/main/scripts/build-ps1.sh)
+  · [`scripts/make-cd-image.sh`]({{ site.github_url }}/blob/main/scripts/make-cd-image.sh)
+  · [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
+  — the day-to-day build pipeline (executable, CD image, all-in-one
+  wrapper).
+- [`scripts/build-host.sh`]({{ site.github_url }}/blob/main/scripts/build-host.sh)
+  — separate SDL2 host capture binary.
+- [`scripts/build-docker-image.sh`]({{ site.github_url }}/blob/main/scripts/build-docker-image.sh)
+  · [`scripts/build-regtest-image.sh`]({{ site.github_url }}/blob/main/scripts/build-regtest-image.sh)
+  — the two `docker build` wrappers (dev image + regtest image).
+- [`scripts/run-regtest.sh`]({{ site.github_url }}/blob/main/scripts/run-regtest.sh)
+  — the headless DuckStation harness runner.
+- [`scripts/release.sh`]({{ site.github_url }}/blob/main/scripts/release.sh)
+  — full release flow (bump VERSION, tag, push, attach assets).
