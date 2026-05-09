@@ -208,6 +208,14 @@
     },
     {
       "@type": "Question",
+      "name": "Why does the scene title differ from the on-screen caption sometimes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The on-screen caption text is fixed and the scene-page title is what the pack actually plays on PS1. They lined up sequentially for most scenes but the v0.8.4-ps1 chapter-select grind found the audit's caption-to-scene mapping was wrong on several rows. FISHING 2 is the canonical example: the on-screen caption says he catches a boot, but the on-PS1 pack reels in a Titanic life preserver. Repointing the runtime caption mapping is open work."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Why are there 36 holidays now instead of 4?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -255,6 +263,7 @@ the project, running it, and the original game.</p>
   </li>
   <li><a href="#original-game" id="markdown-toc-original-game">Original game</a>    <ul>
       <li><a href="#where-does-the-caption-text-come-from" id="markdown-toc-where-does-the-caption-text-come-from">Where does the caption text come from?</a></li>
+      <li><a href="#why-does-the-scene-title-differ-from-the-on-screen-caption-sometimes" id="markdown-toc-why-does-the-scene-title-differ-from-the-on-screen-caption-sometimes">Why does the scene title differ from the on-screen caption sometimes?</a></li>
       <li><a href="#why-are-there-36-holidays-now-instead-of-4" id="markdown-toc-why-are-there-36-holidays-now-instead-of-4">Why are there 36 holidays now instead of 4?</a></li>
       <li><a href="#whats-faithful-to-the-original-and-whats-added" id="markdown-toc-whats-faithful-to-the-original-and-whats-added">What’s faithful to the original, and what’s added?</a></li>
     </ul>
@@ -380,6 +389,34 @@ full reference manual is at
 <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/caption-audit-2026-04-26.yaml">caption audit</a>
 shows the confidence level of every ADS-tag → caption mapping
 (30 HIGH / 21 MED / 12 LOW as of v0.8.4-ps1).</p>
+
+<h3 id="why-does-the-scene-title-differ-from-the-on-screen-caption-sometimes">Why does the scene title differ from the on-screen caption sometimes?</h3>
+
+<p>Two different sources of truth, and they don’t always agree.</p>
+
+<p>The <strong>scene-page title</strong> at <code class="language-plaintext highlighter-rouge">/scenes/&lt;slug&gt;/</code> is what the pack
+actually plays on PS1, confirmed during the
+<a href="/johnny-castaway-ps1/lab/chapter-select-grind/">v0.8.4-ps1 chapter-select grind</a>.
+The <strong>on-screen caption</strong> that draws in the dark band at the bottom of
+the framebuffer is whatever <code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>
+routes that ADS+tag to.</p>
+
+<p>For most scenes those line up. For a few they don’t, because the
+2026-04-26 caption audit picked its mapping from text alone — without
+runtime evidence of which pack played which gag. The clearest example
+is <code class="language-plaintext highlighter-rouge">FISHING 2</code>: the on-screen caption block says “He catches a boot,”
+but the on-PS1 pack reels in a Titanic-stenciled life preserver. The
+“boot” line actually fits <code class="language-plaintext highlighter-rouge">MARY 2</code>, where Mary the mermaid swims up
+while Johnny is fishing and he ends up reeling in a boot after the
+confusion.</p>
+
+<p>The post-validation runtime corrections section at
+<a href="/johnny-castaway-ps1/docs/captions/#post-validation-runtime-corrections-v084-ps1">/docs/captions/</a>
+lists the named mismaps. Repointing <code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> so the
+on-screen caption matches the on-PS1 gag is open work — <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>
+fixed the website’s <em>description</em> of every scene, not the runtime
+mapping itself.</p>
 
 <h3 id="why-are-there-36-holidays-now-instead-of-4">Why are there 36 holidays now instead of 4?</h3>
 
