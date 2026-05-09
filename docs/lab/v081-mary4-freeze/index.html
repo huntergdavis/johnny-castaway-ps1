@@ -75,8 +75,8 @@
   "url": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "mainEntityOfPage": "https://hunterdavis.com/johnny-castaway-ps1/lab/v081-mary4-freeze/",
   "inLanguage": "en",
-  "wordCount": 738,
-  "timeRequired": "PT2M",
+  "wordCount": 756,
+  "timeRequired": "PT3M",
   "articleSection": "Lab",
   "image": "https://hunterdavis.com/johnny-castaway-ps1/assets/img/branding/og-image.png",
   "author": {
@@ -138,7 +138,7 @@
         </p>
         
         <p class="reading-time" aria-label="Estimated reading time">
-          ~2 min read · 663 words
+          ~2 min read · 681 words
         </p>
       
       <hr class="rule" />
@@ -207,7 +207,7 @@ emit. On <code class="language-plaintext highlighter-rouge">MARY 4</code>’s ra
 <code class="language-plaintext highlighter-rouge">256 KiB</code>; the estimator under-counted and didn’t release optional
 prefetch/walk memory in time.</p>
 
-<p><code class="language-plaintext highlighter-rouge">v0.8.1</code>’s <code class="language-plaintext highlighter-rouge">foreground_pilot.c</code> now computes pressure through one
+<p><code class="language-plaintext highlighter-rouge">v0.8.1</code>’s <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">foreground_pilot.c</code></a> now computes pressure through one
 helper that mirrors the clean-save path — pack bounds, ocean wave
 band, clamping, low-tide split. <code class="language-plaintext highlighter-rouge">fgPlayOceanRuntimeScene()</code> calls
 that estimate before allocating, so wide scenes drop optional
@@ -248,6 +248,7 @@ that ships the next <code class="language-plaintext highlighter-rouge">MARY 4</c
 <ul>
   <li><a href="/johnny-castaway-ps1/source/docs/ps1/release-notes-0.8.1/">v0.8.1-ps1 release notes</a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/releases/tag/v0.8.1-ps1">v0.8.1-ps1 GitHub release</a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/foreground_pilot.c"><code class="language-plaintext highlighter-rouge">src/foreground_pilot.c</code></a> — the file the fix lives in; the centralized pressure helper the body describes (<code class="language-plaintext highlighter-rouge">fgPlayOceanRuntimeScene</code> allocation site).</li>
   <li><a href="/johnny-castaway-ps1/docs/glossary/#soak-test">Glossary: soak-test</a></li>
   <li><a href="/johnny-castaway-ps1/docs/glossary/#clean-rect">Glossary: clean-rect</a></li>
   <li><a href="/johnny-castaway-ps1/perf/">/perf/</a> — the matrix the row of <code class="language-plaintext highlighter-rouge">MARY 4</code> came in green on</li>
