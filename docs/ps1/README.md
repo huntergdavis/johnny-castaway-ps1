@@ -27,21 +27,21 @@ restore-minus-current pack baseline. The public battle card is now
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
 compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy plus
-low/high setup-segment follow-ups; the raw signed optimization matrix is
+low/high setup-segment and high frame-126 re-anchor follow-ups; the raw signed
+optimization matrix is
 `-0.3723%` / `100.4004%`.
 That is about `17.00` public over-target points removed and `12.52` public
 target-speed points added since the compact full-matrix baseline.
 
-The latest VISITOR3 follow-up, `visitor3-high-segment277-293-v205`, adds a
-persistent high-tide setup segment for sectors `277..293` on top of the
-motion-copy baseline and the v204 low segment for sectors `281..305`. It
-preserves both `1555450` byte pack footprints, later offsets, fixed LBAs
-`22472/23232`, and the `215040` byte PS-EXE bucket while keeping high
-`1101/1030` and low `1102/1032`. It trades high setup scene time `1405 ->
-1414` for same-loop CD-pressure relief: blocking `114 -> 108`, loop reads
-`22 -> 20`, loop-read time `116 -> 108`, and due misses `21 -> 20`; low
-remains on the v204 profile with blocking `124`, loop-read time `131`, and due
-misses `22`.
+The latest VISITOR3 follow-up, `visitor3-high-reanchor-f126-v206`, adds a
+high-only frame `126` re-anchor payload on top of the motion-copy baseline,
+the v205 high setup segment for sectors `277..293`, and the v204 low segment
+for sectors `281..305`. It preserves both `1555450` byte pack footprints,
+later offsets, fixed LBAs `22472/23232`, and the `215040` byte PS-EXE bucket
+while keeping high `1101/1030` and low `1102/1032`. It cuts high active payload
+`527206 -> 511690`, blocking `108 -> 107`, and loop-read time `108 -> 107`;
+low remains on the v204 profile with blocking `124`, loop-read time `131`, and
+due misses `22`.
 VISITOR3 remains the top outlier, but local threshold/read-table/tail-atlas,
 metadata-shrink, row-copy, and generic narrow-upload probes stay closed; future
 work should build on scene-owned motion/precomposed data or generated scheduler

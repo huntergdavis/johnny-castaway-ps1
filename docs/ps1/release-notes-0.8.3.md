@@ -11,7 +11,7 @@ the headless perf matrix, and all 126 timing-bearing rows now average
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
 ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
 compact, and VISITOR3 motion-copy/code-headroom/CD-pressure follow-ups through
-v205. The raw signed optimization matrix is `-0.3723%` over target /
+v206. The raw signed optimization matrix is `-0.3723%` over target /
 `100.4004%` target speed.
 
 ## Headline
@@ -49,15 +49,15 @@ v205. The raw signed optimization matrix is `-0.3723%` over target /
   `1745484` byte footprint and LBA fixed while moving low `2085/2058 ->
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
-- **VISITOR3 motion-copy and setup-segment payloads promoted.** The latest follow-up keeps the
+- **VISITOR3 motion-copy, setup-segment, and re-anchor payloads promoted.** The latest follow-up keeps the
   v181 frames `119..123` motion-copy payloads in both tides, adds high-tide
   frame `115`, shared frame `124`, shared frame `118`, and high-only frame
-  `117` plus high-only re-anchored frame `127` motion-copy payloads, then adds
-  high/low persistent setup segments for sectors `277..293` and `281..305`.
+  `117` plus high-only re-anchored frames `127` and `126`, then adds high/low
+  persistent setup segments for sectors `277..293` and `281..305`.
   Both packs
   remain `1555450` bytes with fixed LBAs `22472/23232` and the `215040` byte
   PS-EXE bucket. High moves
-  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 108`, loop reads `27 -> 20`,
+  `1118/1028 -> 1101/1030`, cuts blocking `150 -> 107`, loop reads `27 -> 20`,
   and due misses `26 -> 20`; low moves `1126/1025 -> 1102/1032`, cuts blocking
   `170 -> 124`, loop reads `31 -> 23`, and due misses `29 -> 22`.
 
@@ -125,6 +125,14 @@ total `scene_vb 1405 -> 1414`. Wider high segments `261..285` and `269..285`
 cut more active CD work but were rejected because both introduced hidden refill
 debt (`prefetch_overrun_vb 0 -> 3`).
 
+The follow-up `visitor3-high-reanchor-f126-v206` promotes another high-only
+re-anchor payload after v205. Frame `126`/source `172` widens from
+`x=185,w=162` to `x=154,w=193` and becomes a sparse-in-place target-hull
+motion-copy payload. It keeps high visible timing flat at `1414`, `1101/1030`
+with `overrun_vb=71`, while cutting active payload `527206 -> 511690`,
+blocking `108 -> 107`, and loop-read time `108 -> 107`. Low and the broad
+canaries remain flat.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -145,6 +153,8 @@ debt (`prefetch_overrun_vb 0 -> 3`).
   `scratch/ps1-perf-iterate/visitor3-high-f117-target-hull-v193-broad/20260509-014222-3940374/summary.json`.
 - VISITOR3 high setup-segment broad no-regression gate:
   `scratch/ps1-perf-iterate/visitor3-high-segment277-293-v205-broad-norequire-rerun/20260509-061624-1296310/summary.json`.
+- VISITOR3 high frame-126 re-anchor broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-high-reanchor-f126-v206-broad-norequire/20260509-071828-1639276/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
