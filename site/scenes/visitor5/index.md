@@ -41,3 +41,14 @@ so the coconut impact and downed-plane motion stay readable without
 changing total scene duration.
 
 See [the method]({{ '/about/method/' | relative_url }}) for the longer version.
+
+## Notable runtime history
+
+`VISITOR 5` is one of the four canonical caption-mapping mismatches
+the v0.8.4-ps1 chapter-select grind caught. The original audit had the
+"coconut plane hit" caption attached to `VISITOR 4`, but watching every
+pack play on hardware showed `VISITOR 4` is just a coconut rolling off
+the island into the ocean — the throw-coconut-at-plane gag that
+brings down the plane lives here. The
+[chapter-select-grind retrospective]({{ '/lab/chapter-select-grind/' | relative_url }})
+walks through the named mismaps and how the on-PS1 loop surfaced them.
