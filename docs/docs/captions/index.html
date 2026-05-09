@@ -102,7 +102,7 @@
       <h1>Closed captions</h1>
       <p class="subtitle">Caption corpus, ADS-tag map, and the dark-band overlay that draws them.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~4 min read · 1205 words
+          ~7 min read · 1786 words
         </p>
       
       <hr class="rule" />
@@ -128,6 +128,7 @@ Johnny is doing.</p>
       <li><a href="#confidence-by-ads-file" id="markdown-toc-confidence-by-ads-file">Confidence by ADS file</a></li>
     </ul>
   </li>
+  <li><a href="#post-validation-runtime-corrections-v084-ps1" id="markdown-toc-post-validation-runtime-corrections-v084-ps1">Post-validation runtime corrections (v0.8.4-ps1)</a></li>
   <li><a href="#how-to-add-a-caption" id="markdown-toc-how-to-add-a-caption">How to add a caption</a></li>
   <li><a href="#the-render-path" id="markdown-toc-the-render-path">The render path</a></li>
   <li><a href="#related-pages" id="markdown-toc-related-pages">Related pages</a></li>
@@ -343,6 +344,76 @@ genuinely interchangeable from the corpus.</p>
 <code class="language-plaintext highlighter-rouge">VISITOR 5</code>, <code class="language-plaintext highlighter-rouge">WALKSTUF 2</code>, <code class="language-plaintext highlighter-rouge">WALKSTUF 3</code> — got assignments anyway, on the
 “least bad” principle. They’re the most likely sites for future blanking
 when runtime evidence makes a better mapping possible.</p>
+
+<h2 id="post-validation-runtime-corrections-v084-ps1">Post-validation runtime corrections (v0.8.4-ps1)</h2>
+
+<p>The audit was a structural fix — the off-by-one cascade is gone, every
+ADS+tag has <em>some</em> mapping, and the corpus + render path work as
+designed. What the audit could not resolve from text alone was whether
+the caption it picked actually described the gag the pack plays.</p>
+
+<p>That second-order check arrived in <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>, when the
+<a href="/johnny-castaway-ps1/lab/chapter-select-grind/">chapter-select grind</a>
+walked all 63 packs on PS1 hardware and reconciled every scene-page
+title and body against the disc. The runtime evidence overturned a
+substantial fraction of the audit’s confidence ratings:</p>
+
+<ul>
+  <li><strong>Four flat mismaps named.</strong> <code class="language-plaintext highlighter-rouge">FISHING 2</code>’s pack reels in a Titanic
+life preserver, not a boot — the boot is at <code class="language-plaintext highlighter-rouge">MARY 2</code>. <code class="language-plaintext highlighter-rouge">FISHING 3</code>
+is the octopus-steals-fish beat, not a crab snapping a nose.
+<code class="language-plaintext highlighter-rouge">VISITOR 4</code> is just a coconut rolling into the ocean — the
+coconut-plane-hit is <code class="language-plaintext highlighter-rouge">VISITOR 5</code>. <code class="language-plaintext highlighter-rouge">WALKSTUF 1</code> is a yacht-party-
+and-pass-out beat — the jog is <code class="language-plaintext highlighter-rouge">WALKSTUF 3</code>.</li>
+  <li><strong>Two HIGH-confidence FISHING entries were exact text-pack
+mismatches.</strong> <code class="language-plaintext highlighter-rouge">FISHING 2</code> and <code class="language-plaintext highlighter-rouge">FISHING 3</code> were both rated HIGH
+because the audit anchored on caught-object keywords (“boot”,
+“crab”). The keyword <em>was</em> in the corpus; the pack just doesn’t
+play it. The structural strength of HIGH (unambiguous keyword
+match) didn’t survive contact with the runtime.</li>
+  <li><strong>Multiple ACTIVITY / BUILDING / VISITOR MED entries flipped.</strong>
+ACTIVITY 5 (rain dance, not climb/look/dive), ACTIVITY 7 (book
+upside-down, not bathes/seagull), ACTIVITY 11 (bird-steals-
+clothes, not rain dance), ACTIVITY 12 (bird-on-head, not belly-
+flop), BUILDING 2 (lilliputian airport, not boot-roast), BUILDING 5
+(builds fire, not raft/mermaid), BUILDING 7 (grills fish, not
+raft-build), VISITOR 1 (misses speedboat, not lilliputian arrival),
+VISITOR 3 (perspective gag, not yacht/photos).</li>
+  <li><strong>One audit <code class="language-plaintext highlighter-rouge">NO_MATCH</code> candidate turned out to be a clear gag.</strong>
+<code class="language-plaintext highlighter-rouge">VISITOR 5</code> was on the “future blanking” list above; on PS1 it’s
+the unambiguous coconut-plane-hit beat that’s been miscredited to
+<code class="language-plaintext highlighter-rouge">VISITOR 4</code> since the audit shipped.</li>
+  <li><strong>JOHNNY 3 / 4 were swapped.</strong> The audit had <code class="language-plaintext highlighter-rouge">JOHNNY 3</code> as “his
+own SOS returns” and <code class="language-plaintext highlighter-rouge">JOHNNY 4</code> as “writes a fresh SOS”. On PS1
+it’s the other way around: JOHNNY 3 writes the letter to Suzy, and
+the SOS returns at JOHNNY 4.</li>
+  <li><strong>STAND idles read better than the audit could prove.</strong> All 14
+STAND entries got concrete two-axis labels (position × pose:
+edge-of-island / front / right / left × adjusts-pants / adjusts-
+hat / looks-around / scratches-head / spyglass) once watched on
+hardware. The 8 LOW-rated rows are now distinguishable from each
+other in a way the corpus alone could not support.</li>
+</ul>
+
+<p>The corpus and on-screen captions themselves did not change in
+<code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>. What changed is the website’s <em>description</em> of which
+caption belongs to which scene — the per-scene <code class="language-plaintext highlighter-rouge">index.md</code> titles +
+bodies, the <code class="language-plaintext highlighter-rouge">scenes.yml</code> notes, the <code class="language-plaintext highlighter-rouge">scene-status.md</code> Notes column,
+and the in-game Scene Explorer’s display strings (regenerated from
+those sources). The <code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> array in
+<a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/ps1_captions.c"><code class="language-plaintext highlighter-rouge">src/ps1_captions.c</code></a>
+was not updated as part of <code class="language-plaintext highlighter-rouge">v0.8.4-ps1</code>; the runtime continues to
+play whatever caption the audit’s mapping picked. Repointing the
+<code class="language-plaintext highlighter-rouge">captionSceneMap[]</code> rows where the caption text contradicts the
+runtime gag (notably <code class="language-plaintext highlighter-rouge">FISHING 2</code> → MARY’s boot, <code class="language-plaintext highlighter-rouge">FISHING 3</code> → the
+crab caption belongs elsewhere or stays as <code class="language-plaintext highlighter-rouge">NO_MATCH</code>) is open work.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">2026-04-26</code> audit’s confidence ratings should now be read as
+“how well the caption corpus maps to the audit’s notion of what each
+scene should be,” not “how well the caption text describes what the
+scene actually plays.” The audit was a necessary structural fix; the
+chapter-select grind was the runtime cross-check the audit had
+explicitly anticipated.</p>
 
 <h2 id="how-to-add-a-caption">How to add a caption</h2>
 
