@@ -22,11 +22,12 @@ The current release line is **`{{ site.release.tag }}`** with
 
 ## Latest
 
-### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance
+### `v0.8.3-ps1` — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads
 <time datetime="2026-05-08"><em>2026-05-08</em></time>
 
 This point release promotes the WALKSTUF1 compact foreground pack pass and
-records the latest VISITOR3 follow-up as a non-promoting threshold closure.
+records the later VISITOR3 motion-copy payload follow-up as the current
+headless performance baseline.
 
 - **WALKSTUF1 gets compact FGP3/v4 packs.** Both tides move from PAL4/FGP2 to
   padded compact FGP3/v4 restore-minus-current packs while preserving the
@@ -38,14 +39,15 @@ records the latest VISITOR3 follow-up as a non-promoting threshold closure.
   drops `270 -> 86`; loop reads drop from `134/132` to `69/69`.
 - **Battle card is now public-capped at native speed.** After the follow-up
   MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-  ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, and ACTIVITY9 low compact
-  passes, all 126 timing-bearing rows average `+0.4353%` public over target /
-  `99.5831%` public target speed; the raw signed CSV is `-0.3331%` /
-  `100.3669%` for optimization work.
-- **VISITOR3 threshold probing is closed for this baseline.** Lowering the
-  fallthrough guard from `6` to `5` VBlanks stayed exact-flat, so the runtime
-  keeps the accepted guard and moves future VISITOR3 work back to generated
-  scheduler/data-shape lanes.
+  ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
+  VISITOR3 motion-copy passes, all 126 timing-bearing rows average `+0.4064%`
+  public over target / `99.6077%` public target speed; the raw signed CSV is
+  `-0.3621%` / `100.3916%` for optimization work.
+- **VISITOR3 motion-copy payloads are promoted.** Frames `119..123` in both
+  VISITOR3 tides now move already-composited background rows and draw only the
+  residual foreground payload. High improves `1118/1028 -> 1105/1031`, low
+  improves `1126/1025 -> 1108/1028`, blocking drops `150/170 -> 129/143`, and
+  the packs keep fixed LBAs and the `215040` byte PS-EXE bucket.
 
 The post-validation perf retrospective at
 [/lab/from-87-to-99-5/]({{ '/lab/from-87-to-99-5/' | relative_url }})

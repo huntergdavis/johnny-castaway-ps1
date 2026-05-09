@@ -5,9 +5,9 @@
 
 **Last updated:** 2026-05-08 (`v0.8.3-ps1` performance point release plus the
 post-release BUILDING1, VISITOR5, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, and ACTIVITY9 low compact-FGP3 perf
-follow-ups; all 63 scenes remain validated, and the public headless battle card
-is `+0.4353%` over target / `99.5831%` target speed).
+ACTIVITY9 high, WALKSTUF3 low, JOHNNY1, ACTIVITY9 low, and VISITOR3
+motion-copy perf follow-ups; all 63 scenes remain validated, and the public
+headless battle card is `+0.4064%` over target / `99.6077%` target speed).
 
 ## Overall
 
@@ -188,12 +188,17 @@ keeps the original `994669` byte footprint and LBA `26906`, moves low
 green. The latest JOHNNY1 compact-FGP3/v4 pass keeps both original `448370`
 byte footprints, moves high/low `1977/1943 -> 1974/1945`, cuts blocking
 `31 -> 26`, hidden refill `31 -> 26`, loop reads `16 -> 7`, loop-read time
-`95 -> 56`, and keeps LBAs `13982/14201`. The public battle card is now
-`+0.4353%` over target / `99.5831%` target speed while preserving fixed pack LBAs and the
+`95 -> 56`, and keeps LBAs `13982/14201`. The latest VISITOR3 motion-copy
+payload pass rewrites yacht translation frames `119..123` in both tides,
+preserves both `1555450` byte pack footprints and LBAs `22472/23232`, moves
+high `1118/1028 -> 1105/1031`, moves low `1126/1025 -> 1108/1028`, cuts
+blocking `150/170 -> 129/143`, loop reads `27/31 -> 23/27`, and due misses
+`26/29 -> 22/25`. The public battle card is now
+`+0.4064%` over target / `99.6077%` target speed while preserving fixed pack LBAs and the
 `215040` byte PS-EXE bucket.
 Since the compact full-matrix baseline was about `17.4%` over target /
-`87.1%` target speed, the headless methodology has removed about `16.96`
-public over-target points and added about `12.48` public target-speed points.
+`87.1%` target speed, the headless methodology has removed about `16.99`
+public over-target points and added about `12.51` public target-speed points.
 
 Prior point release: `v0.8.2-ps1` is the VISITOR3 guarded-read performance
 release. All 63 scenes remain validated, all 126 high/low variants remain
@@ -211,9 +216,10 @@ See
 Current performance baseline: VISITOR3 uses cleanup-compact FGP3 data plus
 FGP3/v4 compact PAL4 draw metadata, an inlined compact metadata decoder, and
 pack-side cleanup spans with current-frame redraw coverage removed plus scoped
-`-Os` background composite helpers, v4 draw-tail trimming, and a VISITOR3
-stage guard. VISITOR3 high is now `1118/1028` with `blocking_vb=150`; low is
-`1126/1025` with `blocking_vb=170`. BUILDING2 high/low are `1349/1316` and
+`-Os` background composite helpers, v4 draw-tail trimming, a VISITOR3 stage
+guard, and the motion-copy FGP3 payload for yacht translation frames `119..123`.
+VISITOR3 high is now `1105/1031` with `blocking_vb=129`; low is
+`1108/1028` with `blocking_vb=143`. BUILDING2 high/low are `1349/1316` and
 `1349/1316`, ACTIVITY9 high/low are `2082/2062` and `2075/2061`, WALKSTUF1
 high/low are now
 `1491/1426` and `1489/1427`, WALKSTUF3 high/low are `2310/2290` and
@@ -227,9 +233,9 @@ matrix; the next true outliers are VISITOR3, residual WALKSTUF1 work,
 BUILDING2 residual work, VISITOR5 low, JOHNNY1 residual read/data-shape work, BUILDING4 low,
 BUILDING6 residual work, ACTIVITY9 low, and selective upload-ready bands.
 VISITOR3 local C
-read-table rows and threshold-only fallthrough probes are now exhausted; the
-next VISITOR3 attempt needs scheduler-owned generated metadata or a pack-side
-data-shape/preprocess route.
+read-table rows, threshold-only fallthrough probes, and terminal tail-atlas
+repoints are now exhausted; the next VISITOR3 attempt should extend the
+scene-owned motion/precomposed-data path or add generated scheduler ownership.
 
 The preprocessing opportunity matrix now includes x-band rect totals, cap
 hits, rects per frame, and exact-upload interval counts. VISITOR3 remains the

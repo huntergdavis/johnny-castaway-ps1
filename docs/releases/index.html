@@ -116,7 +116,7 @@
 
 <ul id="markdown-toc">
   <li><a href="#latest" id="markdown-toc-latest">Latest</a>    <ul>
-      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</a></li>
+      <li><a href="#v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads" id="markdown-toc-v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads</a></li>
     </ul>
   </li>
   <li><a href="#earlier-milestones" id="markdown-toc-earlier-milestones">Earlier milestones</a>    <ul>
@@ -139,11 +139,12 @@
 
 <h2 id="latest">Latest</h2>
 
-<h3 id="v083-ps1--walkstuf1-compact-foreground-performance"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance</h3>
+<h3 id="v083-ps1--walkstuf1-compact-foreground-performance-plus-visitor3-motion-payloads"><code class="language-plaintext highlighter-rouge">v0.8.3-ps1</code> — WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads</h3>
 <p><time datetime="2026-05-08"><em>2026-05-08</em></time></p>
 
 <p>This point release promotes the WALKSTUF1 compact foreground pack pass and
-records the latest VISITOR3 follow-up as a non-promoting threshold closure.</p>
+records the later VISITOR3 motion-copy payload follow-up as the current
+headless performance baseline.</p>
 
 <ul>
   <li><strong>WALKSTUF1 gets compact FGP3/v4 packs.</strong> Both tides move from PAL4/FGP2 to
@@ -156,14 +157,15 @@ bucket.</li>
 drops <code class="language-plaintext highlighter-rouge">270 -&gt; 86</code>; loop reads drop from <code class="language-plaintext highlighter-rouge">134/132</code> to <code class="language-plaintext highlighter-rouge">69/69</code>.</li>
   <li><strong>Battle card is now public-capped at native speed.</strong> After the follow-up
 MARY3, BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6,
-ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, and ACTIVITY9 low compact
-passes, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.4353%</code> public over target /
-<code class="language-plaintext highlighter-rouge">99.5831%</code> public target speed; the raw signed CSV is <code class="language-plaintext highlighter-rouge">-0.3331%</code> /
-<code class="language-plaintext highlighter-rouge">100.3669%</code> for optimization work.</li>
-  <li><strong>VISITOR3 threshold probing is closed for this baseline.</strong> Lowering the
-fallthrough guard from <code class="language-plaintext highlighter-rouge">6</code> to <code class="language-plaintext highlighter-rouge">5</code> VBlanks stayed exact-flat, so the runtime
-keeps the accepted guard and moves future VISITOR3 work back to generated
-scheduler/data-shape lanes.</li>
+ACTIVITY9 high, WALKSTUF3 low, JOHNNY1 compact, ACTIVITY9 low compact, and
+VISITOR3 motion-copy passes, all 126 timing-bearing rows average <code class="language-plaintext highlighter-rouge">+0.4064%</code>
+public over target / <code class="language-plaintext highlighter-rouge">99.6077%</code> public target speed; the raw signed CSV is
+<code class="language-plaintext highlighter-rouge">-0.3621%</code> / <code class="language-plaintext highlighter-rouge">100.3916%</code> for optimization work.</li>
+  <li><strong>VISITOR3 motion-copy payloads are promoted.</strong> Frames <code class="language-plaintext highlighter-rouge">119..123</code> in both
+VISITOR3 tides now move already-composited background rows and draw only the
+residual foreground payload. High improves <code class="language-plaintext highlighter-rouge">1118/1028 -&gt; 1105/1031</code>, low
+improves <code class="language-plaintext highlighter-rouge">1126/1025 -&gt; 1108/1028</code>, blocking drops <code class="language-plaintext highlighter-rouge">150/170 -&gt; 129/143</code>, and
+the packs keep fixed LBAs and the <code class="language-plaintext highlighter-rouge">215040</code> byte PS-EXE bucket.</li>
 </ul>
 
 <p>The post-validation perf retrospective at

@@ -23,25 +23,23 @@ background, waves, holiday overlay, and SFX playback.
 It keeps all 63 scenes visually/audibly validated, preserves the routed
 126-variant headless matrix, and promotes the WALKSTUF1 compact FGP3/v4
 restore-minus-current pack baseline. The public battle card is now
-`+0.4353%` over target / `99.5831%` target speed across all 126
+`+0.4064%` over target / `99.6077%` target speed across all 126
 timing-bearing rows after the MARY3, BUILDING1, VISITOR5 high, BUILDING2 low,
 WALKSTUF3 high, BUILDING6 compact, ACTIVITY9 high compact, and WALKSTUF3 low
-compact, JOHNNY1 compact, and ACTIVITY9 low compact follow-ups; the raw signed optimization matrix is `-0.3331%` /
-`100.3669%`. That is about `16.96` public over-target
-points removed and `12.48` public target-speed points added since the compact
-full-matrix baseline.
+compact, JOHNNY1 compact, ACTIVITY9 low compact, and VISITOR3 motion-copy
+follow-ups; the raw signed optimization matrix is `-0.3621%` / `100.3916%`.
+That is about `16.99` public over-target points removed and `12.51` public
+target-speed points added since the compact full-matrix baseline.
 
-The latest ACTIVITY9 low follow-up, `activity9-low-compact-fgp3-v174`,
-converts `ACTV9LOW.FG2` to compact FGP3/v4 restore-minus-current data inside
-the original `1745484` byte footprint. Low moves `2085/2058 -> 2075/2061`,
-cuts blocking `29 -> 17`, keeps hidden refill flat at `12`, cuts loop reads
-`59 -> 47`, and due misses `3 -> 1`; VISITOR3, BUILDING2, BUILDING4,
-ACTIVITY9 high, and FISHING1 canaries stayed on their accepted profiles. The
-previous JOHNNY1 compact pass keeps both black-backdrop tides at `1974/1945`
-with lower CD pressure.
-VISITOR3 local threshold/read-table probes remain closed until generated
-scheduler ownership, safe upload/precomposed payloads, or another
-pack/data-shape reduction is ready.
+The latest VISITOR3 follow-up, `visitor3-motion-x-v181`, adds a compact
+motion-copy FGP3 payload for yacht translation frames `119..123`. It preserves
+both `1555450` byte pack footprints, fixed LBAs `22472/23232`, and the
+`215040` byte PS-EXE bucket while moving high `1118/1028 -> 1105/1031`, low
+`1126/1025 -> 1108/1028`, blocking `150/170 -> 129/143`, loop reads
+`27/31 -> 23/27`, and due misses `26/29 -> 22/25`. VISITOR3 remains the top
+outlier, but local threshold/read-table/tail-atlas probes stay closed; future
+work should build on scene-owned motion/precomposed data or generated scheduler
+ownership.
 
 `v0.8.2-ps1` is the prior performance point release after `v0.8.1-ps1`.
 It keeps all 63 scenes visually/audibly validated, preserves the routed

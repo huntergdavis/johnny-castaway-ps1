@@ -25,13 +25,30 @@ or long-run heap stability. The previous MARY2 checkpoint was `0.8228%` over
 target / `99.4872%` target speed across `120` timing-bearing rows after the
 `mary2-prefetch-relief-v081` refresh.
 
-Current all-scene rollup after the ACTIVITY9 low compact-FGP3/v4 promotion:
-`+0.4353%` public average over target / `99.5831%` public target speed across
+Current all-scene rollup after the VISITOR3 motion-copy payload promotion:
+`+0.4064%` public average over target / `99.6077%` public target speed across
 all `126` timing-bearing rows. The raw signed optimization matrix is
-`-0.3331%` / `100.3669%`. Since the compact full-matrix baseline was about
+`-0.3621%` / `100.3916%`. Since the compact full-matrix baseline was about
 `17.4%` over target / `87.1%` target speed, the headless methodology has
-removed about `16.96` public over-target points and added about `12.48`
+removed about `16.99` public over-target points and added about `12.51`
 public target-speed points.
+
+Latest promoted VISITOR3 motion-copy payload baseline: add a scene-specific
+FGP3 marker payload that treats frames `119..123` as horizontal translations of
+the already-composited background state, then restores the newly exposed clean
+background spans and draws only residual pixels. Both VISITOR3 tides preserve
+the original `1555450` byte CD footprint, fixed LBAs `22472/23232`, and the
+`215040` byte PS-EXE bucket. The pack rewrite trims `74730` active payload
+bytes per tide; high improves `scene_vb 1422 -> 1409`, `loop_vb 1118 -> 1105`,
+`target_vb 1028 -> 1031`, `overrun_vb 90 -> 74`, `blocking_vb 150 -> 129`,
+`loop_reads 27 -> 23`, `loop_read_vb 153 -> 132`, and `due_misses 26 -> 22`.
+Low improves `scene_vb 1426 -> 1408`, `loop_vb 1126 -> 1108`, `target_vb
+1025 -> 1028`, `overrun_vb 101 -> 80`, `blocking_vb 170 -> 143`, `loop_reads
+31 -> 27`, `loop_read_vb 179 -> 152`, and `due_misses 29 -> 25`. Hidden refill
+stays `prefetch_overrun_vb=0` on both tides. The focused promotion gate is
+`scratch/ps1-perf-iterate/visitor3-motion-x-v181-focused/20260508-202531-2127593/summary.json`;
+the broad no-regression gate is
+`scratch/ps1-perf-iterate/visitor3-motion-x-v181-broad-norequire/20260508-203050-2158325/summary.json`.
 
 Latest promoted ACTIVITY9 low compact-FGP3/v4 baseline: convert `ACTV9LOW.FG2`
 to padded compact FGP3/v4 restore-minus-current data while preserving the
@@ -334,9 +351,10 @@ restored background/cleanup pixels, which are dynamic at runtime. Do not build
 that as a raw append; continue with a safe pixel-source/data-shape change,
 compression plus ownership, or generated scheduler metadata.
 
-Current VISITOR3 v175 upload/read-plan closure: after the ACTIVITY9 low
-compact-FGP3/v4 promotion, the same analyzer still finds enough padded payload
-budget but the safety constraint is unchanged. Artifacts:
+Current VISITOR3 upload/read-plan closure: after the v181 motion-copy promotion,
+the refreshed matrix still ranks VISITOR3 as the top preprocessing target, but
+the v175 raw foreground-only append safety failure remains binding until a new
+motion-aware analyzer proves ownership. Artifacts:
 `scratch/visitor3-preprocess-safety-v175/visitor3-high.json` and
 `scratch/visitor3-preprocess-safety-v175/visitor3-low.json`. The default
 selective x-band model selects `117` frames and needs `3394200` bytes for
@@ -367,15 +385,15 @@ Do not retry VISITOR3 late clusters through local source tables, guarded
 source groups, or setup segments; the next attempt needs generated scheduler
 ownership or safe precomposed/background-owned pack data.
 
-Current VISITOR3 low setup-prime gate: the accepted `208 KiB` low-tide cap is
-still the measured knee after the v127 tail-trim stageguard pass. Retesting
+Closed VISITOR3 low setup-prime gate: the accepted `208 KiB` low-tide cap was
+the measured knee before the v181 motion-copy payload pass. Retesting
 `216 KiB` preserved high tide but regressed low `1126 -> 1127` and blocking
 `170 -> 173`; retesting `200 KiB` regressed low to `1152/1024`, blocking
 `191`, and hidden refill `3`. Do not retry scalar low-prime sizes around this
 point; VISITOR3 needs generated scheduler ownership or a pack/data-shape change
-to reduce the remaining `150/170` visible blocking.
+to reduce the remaining `129/143` visible blocking.
 
-Current VISITOR3 fallthrough guard gate: lowering
+Closed VISITOR3 fallthrough guard gate: lowering
 `FG_PREFETCH_FALLTHROUGH_MIN_SLACK_VBLANKS` from `6` to `5` after the
 WALKSTUF1 compact pass is rejected as exact-flat. The fresh control and
 candidate both kept high at `1422`, `1118/1028`, `blocking_vb=150`,
@@ -384,7 +402,7 @@ candidate both kept high at `1422`, `1118/1028`, `blocking_vb=150`,
 `loop_reads=31`. Keep the guard at `6` and do not spend more VISITOR3 cycles
 on local threshold-only fallthrough probes.
 
-Current VISITOR3 retained-window slack gate: a VISITOR3-only `20 KiB`
+Closed VISITOR3 retained-window slack gate: a VISITOR3-only `20 KiB`
 compact-residual window with a `12` VBlank refill slack guard is rejected. It
 kept layout and hidden prefetch overrun fixed, but moved more direct-stage work
 into active visible CD: high regressed `loop_vb 1118 -> 1131`, overrun
@@ -513,7 +531,8 @@ BUILDING6 compact-FGP3/v4 pass moves it to `-0.3158%` / `100.3500%`, the
 ACTIVITY9 high compact-FGP3/v4 pass moves it to `-0.3228%` / `100.3568%`, the
 WALKSTUF3 low compact-FGP3/v4 pass moves it to `-0.3273%` / `100.3612%`, and
 the JOHNNY1 compact-FGP3/v4 pass moves it to `-0.3281%` / `100.3620%`. The
-ACTIVITY9 low compact-FGP3/v4 pass moves it to `-0.3331%` / `100.3669%`.
+ACTIVITY9 low compact-FGP3/v4 pass moves it to `-0.3331%` / `100.3669%`, and
+the VISITOR3 motion-copy payload pass moves it to `-0.3621%` / `100.3916%`.
 The current rollup is tracked above.
 
 Earlier promoted BUILDING4 cleanup-compact baseline: keep the cleanup-metadata-only FGP3/v3
@@ -593,7 +612,9 @@ compact-FGP3/v4 pass moves the raw signed matrix to `-0.3273%` over target /
 `100.3612%` target speed, and the JOHNNY1 compact-FGP3/v4 pass moves the
 raw signed matrix to `-0.3281%` over target / `100.3620%` target speed. The
 ACTIVITY9 low compact-FGP3/v4 pass moves the current raw signed matrix to
-`-0.3331%` over target / `100.3669%` target speed.
+`-0.3331%` over target / `100.3669%` target speed, and the VISITOR3
+motion-copy payload pass moves it to `-0.3621%` over target / `100.3916%`
+target speed.
 
 Latest promoted VISITOR3 scheduler pass: the old high-tide guarded generated
 window `138..162` and later `72..84` cleanup proved VISITOR3 groups need
@@ -1719,13 +1740,43 @@ pre-v0.8.0 row.
 | 28 | Add a "rejected but informative" artifact index keyed by experiment ID and source files touched. | The next agent can avoid repeating failed local threshold/branch/source-shape probes. |
 | 29 | Promote host-only tooling improvements separately from runtime speed wins. | Better measurement and generation workflow can land without pretending to improve VBlank metrics. |
 | 30 | When a binary choice is cheap, run both variants against the same fresh baseline before logging either. | The headless loop preserves momentum while still making a defensible binary decision. |
+| 31 | Extend VISITOR3 motion-copy to low frames `114..118` only. | The promoted `119..123` codec proves motion rows can reduce both reads and blocking; low still has larger residual blocking than high. |
+| 32 | Extend VISITOR3 motion-copy to high precursor frames `117..118` only. | High may have one more safe translate cluster before the promoted motion span without touching the later tail phase. |
+| 33 | Generate a VISITOR3 motion opcode emitter instead of hand-authored pack surgery. | The next motion experiment should be reproducible and should emit per-row copy, cleanup, and residual bytes from host frame diffs. |
+| 34 | Build a VISITOR3 motion eligibility heatmap by frame, row, and signed X delta. | The decoder is only useful where row translation dominates; heatmap evidence should choose frames before emulator time. |
+| 35 | Add a motion-copy visual fuzz gate that replays random frame start states. | In-place background moves are stateful, so promotion needs proof beyond the normal linear loop. |
+| 36 | Add a VISITOR3 residual dictionary for repeated tiny draw spans after motion-copy. | v181 still carries residual draw bytes; a scene-local dictionary could remove repeated visitor edge/splash fragments. |
+| 37 | Add a VISITOR3 cleanup-row coalescer inside motion payloads. | Exposed-background restore spans may be merged or represented as row deltas cheaper than full cleanup commands. |
+| 38 | Try a VISITOR3 post-motion precomposed strip for the small exposed edge. | A packed clean strip could replace multiple cleanup spans when the exposed background is static for the cluster. |
+| 39 | Split VISITOR3 motion decoder into a cold marker parser plus hot row-copy helper. | The current source stayed in the sector bucket by `noinline`; tighter isolation may reclaim code or speed. |
+| 40 | Write a tiny MIPS row-copy helper for VISITOR3 motion spans. | Horizontal copies dominate v181 work and are safe to specialize if C pointer loops remain expensive. |
+| 41 | Add a VISITOR3 background-mirror row cache for motion-copy source rows. | If row source lookup/tile checks dominate, per-row tile pointers can remove branchy pixel lookup. |
+| 42 | Emit VISITOR3 motion rows sorted by direction and tile locality. | In-place overlapping copies require direction; grouping same direction may improve cache/code path predictability. |
+| 43 | Test VISITOR3 frame `124` keyframe reshaping after motion-copy. | v181 shifts the terminal cluster boundary; one downstream keyframe may now be too large or badly phased. |
+| 44 | Test VISITOR3 motion-copy plus one-sector early preload for the first residual after frame `123`. | The motion payload may create enough slack to preload the next unavoidable residual without tail-atlas phase debt. |
+| 45 | Add a VISITOR3 no-regression control that pins WALKSTUF1 labels to same-commit controls. | The v181 broad run exposed stale-label drift; future gates should not waste time on unrelated baseline mismatch. |
+| 46 | Try low-only VISITOR3 motion frame expansion under unchanged high pack. | The low row remains worse; splitting tides avoids high code/data interactions when chasing low-specific frames. |
+| 47 | Try high-only VISITOR3 motion frame expansion under unchanged low pack. | High may tolerate one more translated frame and should not wait for low eligibility. |
+| 48 | Add a motion-copy pack validator that checks source/destination row overlap legality. | A generated codec needs static guarantees that each copy direction preserves source pixels. |
+| 49 | Add a motion-copy size predictor that includes decoder text growth. | v181 nearly crossed the PS-EXE bucket; future pack wins need code-size accounting before runtime gates. |
+| 50 | Test direct dirty-row marking from motion-copy spans. | Moving background pixels dirties known rows; marking only moved/restored rows may cut later upload work. |
+| 51 | Test VISITOR3 motion-copy with upload-ready x-band emission for the moved strip only. | Full x-band append is unsafe, but the motion delta may expose a smaller owned strip with deterministic pixels. |
+| 52 | Build a VISITOR3 phase-aware residual layout within the existing footprint. | Tail duplication failed because it moved payload later; a layout optimizer should prefer earlier sectors for residuals that remain reads. |
+| 53 | Add a VISITOR3 per-entry read deadline table generated from v181 CD logs. | Motion-copy changed which reads matter; deadline metadata can target the new blocking cluster rather than stale sectors. |
+| 54 | Try a VISITOR3 two-keyframe mini-format for the walking visitor silhouette. | If motion-copy leaves repeated silhouette residuals, a scene-specific keyframe plus XOR/delta may beat PAL4 residual. |
+| 55 | Test a VISITOR3 residual transparency mask run-length format. | The remaining residual likely has sparse transparent edges where PAL4 compact spans still carry metadata overhead. |
+| 56 | Add a generated "motion plus erase" opcode for rows where the old sprite area is fully clean background. | Copying the moved pixels and erasing the trail can be encoded together instead of separate copy and cleanup commands. |
+| 57 | Measure VISITOR3 compose/restore counters per v181 frame. | Frame-level detail should identify whether the next 10% is CD payload, row-copy CPU, cleanup restore, or upload. |
+| 58 | Try VISITOR3 motion-copy after an artificial code-padding sweep. | If helper addresses are phase-sensitive, padding may make a larger decoder safe without regressing controls. |
+| 59 | Build a cross-scene motion-copy detector but gate only VISITOR3 first. | Other scenes can validate the generator while VISITOR3 remains the only runtime promotion target. |
+| 60 | Add a one-command VISITOR3 motion experiment runner. | Repeated pack surgery, visual verification, build bucket check, focused gate, broad gate, CSV refresh, and docs update should be scripted before the next swing. |
 
 ## Retest Rules For Old Failures
 
 | Old Failure Class | Retry Only After |
 |---|---|
 | Raw larger windows | Group metadata plus cost predictor exists. |
-| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but the `144..156` follow-up regressed `loop_vb 1455 -> 1459` and `blocking_vb 361 -> 367` despite saving one nominal read, and `102..118` regressed `1455 -> 1457` / `blocking_vb 361 -> 366` despite saving two nominal reads. After the accepted low `170..186` append, low `{126,132}` stayed exact-flat and low `{122,138}` regressed total loop despite saving reads, so tight low-tide standalone tables are closed too. The v0.8.1 larger-window extension of accepted high `{170,186}` to `{170,194}` also failed: high stayed `loop_vb=1450` while `blocking_vb 355 -> 356` and `prefetch_overrun_vb 14 -> 16`; do not extend that accepted table under the current runtime. The contained-large-entry staging probe proved duplicate VISITOR3 CD work exists (`loop_reads -1`, `due_misses -7` on both tides) but failed promotion because `loop_vb` stayed flat and hidden refill jumped to `prefetch_overrun_vb 75/79`; do not retry large resident-window staging without explicit scheduler budgeting. The VISITOR3-only strict x-band upload retry also regressed (`1455 -> 1461`) and grew `grDrawBackground` by `1084` bytes, so do not retry runtime scratch-packed x-aware upload. The promoted cleanup-metadata-only FGP3/v3 data shape improves both tides without moving LBAs or PS-EXE bucket, while the fuller compact draw+cleanup variant is rejected because the extra compositor code disturbed non-VISITOR canaries. The guarded high `144..160` append was superseded by `138..162` and removed; do not turn either shape into an unguarded standalone table. The low `{105,121}` guard with `minSlackVBlanks=6` and current low `{106,122}` guard with `minSlackVBlanks=8` both stayed exact-flat, while high `{104,120}` with `minSlackVBlanks=4` regressed `loop_vb 1406 -> 1410` and `blocking_vb 294 -> 300` despite saving two nominal reads, so all are closed as local guarded tables. Duplicate-payload table reuse is closed: one-read/byte wins regressed high/low cadence even with fixed layout. Broad offscreen clipping is closed as a both-tide transform: shrinking payload creates hidden refill overrun. The high-only data-size-preserving draw clip is accepted, the low-side retry proves only exit-right `139..143` is safe, the later scoped composite-helper `-Os` pass moves low to `1135/1024`, and the v4 draw-tail trim plus VISITOR3 stage guard is now promoted while standalone v7/runtime packed-draw shapes remain rejected. Continue VISITOR3 from the new `1118/1028` high and `1126/1025` low baseline with scene-local/generated metadata, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership; current-fit append ownership alone is not enough. |
+| VISITOR3 raw stream windows and standalone groups | Do not retry scalar window sizes; fresh-baseline high/low sweeps failed. The old VISITOR3 high `72..84` row is now removed because setup-prime coverage already owns sectors `1..97`; use coverage checks before adding or keeping local rows. The post-recovery generated groups high `163..175` and low `158..170` both reported `group_hits=0`, with low regressing visible timing. The later high `170..186` larger-group probe is accepted against same-source canaries, but the `144..156` follow-up regressed `loop_vb 1455 -> 1459` and `blocking_vb 361 -> 367` despite saving one nominal read, and `102..118` regressed `1455 -> 1457` / `blocking_vb 361 -> 366` despite saving two nominal reads. After the accepted low `170..186` append, low `{126,132}` stayed exact-flat and low `{122,138}` regressed total loop despite saving reads, so tight low-tide standalone tables are closed too. The v0.8.1 larger-window extension of accepted high `{170,186}` to `{170,194}` also failed: high stayed `loop_vb=1450` while `blocking_vb 355 -> 356` and `prefetch_overrun_vb 14 -> 16`; do not extend that accepted table under the current runtime. The contained-large-entry staging probe proved duplicate VISITOR3 CD work exists (`loop_reads -1`, `due_misses -7` on both tides) but failed promotion because `loop_vb` stayed flat and hidden refill jumped to `prefetch_overrun_vb 75/79`; do not retry large resident-window staging without explicit scheduler budgeting. The VISITOR3-only strict x-band upload retry also regressed (`1455 -> 1461`) and grew `grDrawBackground` by `1084` bytes, so do not retry runtime scratch-packed x-aware upload. The promoted cleanup-metadata-only FGP3/v3 data shape improves both tides without moving LBAs or PS-EXE bucket, while the fuller compact draw+cleanup variant is rejected because the extra compositor code disturbed non-VISITOR canaries. The guarded high `144..160` append was superseded by `138..162` and removed; do not turn either shape into an unguarded standalone table. The low `{105,121}` guard with `minSlackVBlanks=6` and current low `{106,122}` guard with `minSlackVBlanks=8` both stayed exact-flat, while high `{104,120}` with `minSlackVBlanks=4` regressed `loop_vb 1406 -> 1410` and `blocking_vb 294 -> 300` despite saving two nominal reads, so all are closed as local guarded tables. Duplicate-payload table reuse is closed: one-read/byte wins regressed high/low cadence even with fixed layout. Broad offscreen clipping is closed as a both-tide transform: shrinking payload creates hidden refill overrun. The high-only data-size-preserving draw clip is accepted, the low-side retry proves only exit-right `139..143` is safe, the later scoped composite-helper `-Os` pass moves low to `1135/1024`, and the v4 draw-tail trim plus VISITOR3 stage guard was superseded by the v181 motion-copy payload promotion while standalone v7/runtime packed-draw shapes remain rejected. Continue VISITOR3 from the new `1105/1031` high and `1108/1028` low baseline with scene-local/generated metadata, motion-copy expansion, pack data-shape preprocessing without runtime scratch packing, or prepared visual ownership; current-fit append ownership alone is not enough. |
 | BUILDING2 raw stream windows | Do not retry scalar window sizes. High regressed all tested sizes, and low's parameter-only `32 KiB` win failed as compiled default source. The current low `603..619` group saved three nominal reads but regressed loop timing `1465 -> 1469` with fixed layout, so standalone tight clusters are closed. The cleaner low `538..550` group improved loop/blocking (`1465 -> 1461`, `334 -> 328`) but failed strict promotion because refill overrun regressed `35 -> 40`; keep it as a scheduler-owned retry candidate, not a standalone table. The cleanup-metadata FGP3/v3 data shape is now accepted for BUILDING2, so future BUILDING2 work should start from `1430/1289` high and `1429/1286` low, not the older FGP3/v1 baseline. Use scheduler-owned grouping or selective preprocessing instead. |
 | BUILDING2 local min-slack grouped appends | Do not retry `{538,550}` with a local `minSlackVBlanks=6` guard. It was safe but exact-flat (`1465/1276`, `blocking_vb=334`, `prefetch_overrun_vb=35`) and only grew hot code. Scheduler ownership must be first-class enough to move cadence, not just a per-table guard around the current append path. |
 | BUILDING2 high standalone visible-cost groups | Do not retry `96..104`, `66..78`, `325..331`, `538..550`, or adjacent one-off hand tables. `96..104` saved one nominal read but worsened visible blocking/due misses, `66..78` was loop/blocking/read-flat with only a one-VBlank hidden-refill change, and the fresh tail candidate `538..550` stayed exact-flat while growing hot code by `44` bytes. BUILDING2 high needs scheduler-owned timing or selective upload-ready/preprocessed pack data. |
@@ -1816,7 +1867,7 @@ pre-v0.8.0 row.
 | BUILDING2 low restore-minus-current plus window slack `5` | Do not promote or retry as a local slack guard. It fixes the strict hidden-refill blocker (`prefetch_overrun_vb 5 -> 0`) and improves loop/overrun (`1383/1304 -> 1360/1313`, overrun `79 -> 47`), but it starves active presentation and regresses visible blocking `118 -> 180` plus due misses `22 -> 43`. This proves the low transform needs generated refill placement, not simply fewer low-slack window reads. |
 | BUILDING6 `48 KiB` window plus `15..39` read group | Do not promote or retry as a scalar window/group change. It reduced loop reads from `74 -> 32` high and `73 -> 31` low, but regressed high `2520/2442 -> 2568/2443`, blocking `62 -> 115`, hidden refill `64 -> 117`, and low `2515/2437 -> 2565/2445`, blocking `70 -> 115`, hidden refill `66 -> 96`. BUILDING6 needs generated scheduler ownership or a shrinking/selective FGP2 data-shape encoder before another read-count group. |
 | VISITOR3 low scoped composite-helper `-Os` | Done; keep as code-shape plus low-tide timing win. `grCompositeToBackground()` shrinks `0xbf4 -> 0x5b0`, `grCompositeToBackgroundFlip()` shrinks `0xc60 -> 0x63c`, and `jcreborn.elf` shrinks `960556 -> 951708` while the PS-EXE bucket remains `215040`. VISITOR3 low improves `1138/1024 -> 1135/1024`, `overrun_vb 114 -> 111`, `blocking_vb 191 -> 184`, and `loop_read_vb 200 -> 194`; VISITOR3 high, BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
-| VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the current VISITOR3 baseline. FGP3/v4 zero draw-tail bytes are trimmed while both packs stay `1555450` bytes and LBAs stay fixed; high setup-prime residency rises to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevents no-slack prefetch debt. VISITOR3 high improves `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improves `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both keep `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stay exact-flat. The current rollup is tracked at the top of this file. |
+| VISITOR3 v4 draw-tail trim + stage guard | Done; keep as the superseded VISITOR3 baseline that v181 built on. FGP3/v4 zero draw-tail bytes were trimmed while both packs stayed `1555450` bytes and LBAs stayed fixed; high setup-prime residency rose to `232 KiB`, and a VISITOR3-only hidden large-stage guard prevented no-slack prefetch debt. VISITOR3 high improved `1137/1024 -> 1118/1028`, `overrun_vb 113 -> 90`, `blocking_vb 190 -> 150`, `loop_reads 33 -> 27`, and `loop_read_vb 200 -> 153`; low improved `1135/1024 -> 1126/1025`, `111 -> 101`, `184 -> 170`, `33 -> 31`, and `194 -> 179`. Both kept `prefetch_overrun_vb=0`, and BUILDING2 high/low, BUILDING4 high/low, ACTIVITY9 low, and FISHING1 high stayed exact-flat. The current rollup is tracked at the top of this file. |
 | WALKSTUF1 compact FGP3/v4 restore-minus-current | Done; keep as the current WALKSTUF1 baseline. Both PAL4/FGP2 packs are compacted into FGP3/v4 restore-minus-current packs and padded back to the original `1535263` byte footprint, preserving pack LBAs and the `215040` byte PS-EXE bucket. High improves `1592/1406 -> 1491/1426`, `overrun_vb 186 -> 65`, `blocking_vb 275 -> 85`, `prefetch_overrun_vb 51 -> 32`, `loop_reads 134 -> 69`, and `due_misses 55 -> 13`; low improves `1604/1407 -> 1489/1427`, `197 -> 62`, `270 -> 86`, `55 -> 27`, `132 -> 69`, and `50 -> 12`. The broad non-WALKSTUF controls stayed exact-flat except VISITOR3 high; that same drift reproduced with original WALKSTUF1 FGP2 packs restored, so it is tracked as unrelated current-control drift. The current rollup is tracked at the top of this file. |
 | MARY3 guarded prefetch-preserve | Done; keep as the current MARY3 baseline. MARY3 now preserves stage/window prefetch under clean pressure, but uses an `8` VBlank scene-local window-refill guard to keep hidden refill debt at zero. High improves `2402/2295 -> 2296/2294`, `overrun_vb 107 -> 2`, `blocking_vb 690 -> 53`, `loop_reads 255 -> 44`, and `due_misses 255 -> 13`; low improves `2402/2296 -> 2297/2295`, `106 -> 2`, `693 -> 51`, `255 -> 44`, and `255 -> 13`. The `7` VBlank retry is rejected because high tide regressed against the slack-8 baseline. The current rollup is tracked at the top of this file. |
 | VISITOR3 cleanup-only offscreen clip | Do not promote. Clipping only offscreen FGP3/v4 cleanup spans preserves pack sizes, entry offsets, LBAs, and PS-EXE bytes while trimming `5526` bytes, `58513` cleanup pixels, and `1299` cleanup spans per tide, but both focused v106 gates are exact-flat: high remains `1137/1024` with `blocking_vb=190`, low remains `1138/1024` with `blocking_vb=191`. Treat this as safe but inert; future offscreen work needs draw/CD phase ownership or a different measured counter. |
@@ -1834,6 +1885,7 @@ pre-v0.8.0 row.
 | VISITOR3 v140 current-window read-plan refresh | Do not promote or retry another hand-authored source table. The refreshed read-plan from v127 found `0` candidates that are append-start fireable, current-window-sized, and low-risk. The rows that fit and fire are the late tight-cluster class, including the already-rejected high `315..331` and low `333..349` shapes, and remain `high-risk:scheduler-only`. |
 | VISITOR3 setup-owned tail atlas | Do not retry manual zero-tail atlases through setup segments. The v178 25-sector atlas removed reads but regressed high and failed low full-scene/hidden-refill gates; the v179 7-sector terminal atlas still regressed both tides. Tail residency needs phase-transition preload, a real scheduler sidecar, or precomposed data, not another scene-start setup segment. |
 | VISITOR3 pack-only tail duplication | Do not retry as a layout-only tail move. The v180 no-source duplication of frames `139..144` kept pack sizes/LBAs fixed but regressed high/low to `1122/1027` and `1130/1024`, added `prefetch_overrun_vb=3` on both tides, and raised blocking by `+4` on both. The terminal payload phase is negative unless paired with scheduler ownership or precomposed data. |
+| VISITOR3 motion-copy frames `119..123` | Done; keep as the current VISITOR3 baseline. The v181 scene-specific compact motion marker moves already-composited background rows, restores exposed clean spans, and draws only residual pixels. Both packs stay `1555450` bytes, LBAs stay `22472/23232`, and the PS-EXE bucket stays `215040`; high improves `1118/1028 -> 1105/1031`, blocking `150 -> 129`, reads `27 -> 23`, and due misses `26 -> 22`; low improves `1126/1025 -> 1108/1028`, blocking `170 -> 143`, reads `31 -> 27`, and due misses `29 -> 25`. Next retries should expand motion-copy through generated eligibility, not hand-tail repoints. |
 | VISITOR3 `20 KiB` retained window with `12` VBlank slack | Do not promote or retry as scalar window/slack tuning. It improved total scene duration by shortening setup/load shape, but active loop regressed on both tides: high `1118 -> 1131`, blocking `150 -> 210`, reads `27 -> 39`; low `1126 -> 1139`, blocking `170 -> 212`, reads `31 -> 41`. Hidden refill stayed `0` and layout stayed fixed, so the failure is scheduler/CD ownership, not binary layout. |
 | VISITOR3 low setup-prime `200 KiB` / `216 KiB` | Do not promote or retry as scalar low-prime tuning. `216 KiB` regressed low `1126 -> 1127` and blocking `170 -> 173`; `200 KiB` regressed low to `1152/1024`, blocking `191`, and hidden refill `3`. Keep the accepted `208 KiB` low cap. |
 | VISITOR3 high setup-prime `256 KiB` after stage guard | Do not retry as scalar high-prime tuning. With the v127 stage guard active, `256 KiB` reduced high loop reads by one but regressed high to `1131/1027`, overrun `104`, blocking `155`, and hidden refill `3`. Keep high at `232 KiB`; larger residency is phase-negative under the current scheduler. |
@@ -1863,7 +1915,7 @@ pre-v0.8.0 row.
 | Prepared visual positive-slack stage-next branch | Do not retry as a local guard; it reproduced v2's flat timing and code growth. |
 | VISITOR3 prepared-visual `>=4` threshold after high `170..186` | Do not retry as a threshold-only tweak. The current-source probe stayed exact-flat on VISITOR3 high and low, so the remaining gap needs CD-first scheduling or generated append ownership rather than broader local prepare eligibility. |
 | VISITOR3 prepared-present threshold `5` after cleanup compaction | Do not retry as a threshold-only tweak. It stayed exact-flat at the current `1406/1405` VISITOR3 high/low baseline, so the scheduler needs generated CD ownership or pack/data-shape work rather than another local slack constant. |
-| VISITOR3 prepared-present threshold `3` or `5` after v127 | Do not retry as a local slack-constant tweak. Both sides of the accepted `4` threshold stayed exact-flat on the current v127 VISITOR3 baseline (`1118/1028` high and `1126/1025` low), with blocking, reads, hidden refill, pack LBAs, and PS-EXE bucket unchanged. Continue only through generated scheduler ownership or safe pack/data-shape work. |
+| VISITOR3 prepared-present threshold `3` or `5` after v127 | Do not retry as a local slack-constant tweak. Both sides of the accepted `4` threshold stayed exact-flat on the pre-v181 VISITOR3 baseline (`1118/1028` high and `1126/1025` low), with blocking, reads, hidden refill, pack LBAs, and PS-EXE bucket unchanged. Continue only through generated scheduler ownership or safe pack/data-shape work. |
 | VISITOR3 high `144..156` current-window group after cleanup compaction | Do not retry as a source-table append. The fresh post-BUILDING4 baseline probe stayed exact-flat on VISITOR3 high/low (`1406/1019` and `1405/1015`), reported `group_hits=0`, and only shifted hot symbols by `+4` bytes. Retry this sector cluster only if scheduler-owned refill metadata changes when the append is attempted. |
 | VISITOR3 resident-window staging reuse | Do not retry as a broad local staging eligibility change. It saved one VISITOR3 high duplicate read and reduced blocking, but turned hidden refill into `prefetch_overrun_vb 7 -> 40` and regressed low tide `loop_vb 1405 -> 1409`. Retry only with explicit generated refill budget/cadence ownership, not by treating every resident large entry as stageable. |
 | VISITOR3 high read group `97..113` | Do not retry as a source-table group. It saved reads (`40 -> 38`) but regressed high tide `loop_vb 1406 -> 1421` and `blocking_vb 296 -> 309` with stable layout. Early VISITOR3 clusters are visible-gap-sensitive; use scheduler-owned refill timing or data-shape work instead. |

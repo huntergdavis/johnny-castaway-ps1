@@ -2,16 +2,16 @@
 
 **Date:** 2026-05-08
 **Tag:** `v0.8.3-ps1`
-**Theme:** WALKSTUF1 compact foreground performance
+**Theme:** WALKSTUF1 compact foreground performance plus VISITOR3 motion payloads
 
 `v0.8.3-ps1` is a performance point release after `v0.8.2-ps1`. All 63
 scenes remain validated, all 126 high/low scene variants remain routed through
 the headless perf matrix, and all 126 timing-bearing rows now average
-`+0.4353%` public over target / `99.5831%` public target speed after the MARY3,
+`+0.4064%` public over target / `99.6077%` public target speed after the MARY3,
 BUILDING1, VISITOR5 high, BUILDING2 low, WALKSTUF3 high, BUILDING6 compact,
-ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, and ACTIVITY9
-low compact follow-ups. The raw signed optimization matrix is `-0.3331%` over
-target / `100.3669%` target speed.
+ACTIVITY9 high compact, WALKSTUF3 low compact, JOHNNY1 compact, ACTIVITY9 low
+compact, and VISITOR3 motion-copy follow-ups. The raw signed optimization
+matrix is `-0.3621%` over target / `100.3916%` target speed.
 
 ## Headline
 
@@ -27,8 +27,8 @@ target / `100.3669%` target speed.
   1427`, `197 -> 62`, `270 -> 86`, `132 -> 69`, and `604 -> 305`.
 - **Total methodology gain increased.** Since the compact full-matrix baseline
   was about `17.4%` over target / `87.1%` target speed, the headless
-  methodology has removed about `16.96` public over-target points and added
-  about `12.48` public target-speed points.
+  methodology has removed about `16.99` public over-target points and added
+  about `12.51` public target-speed points.
 - **MARY3 is now green.** The follow-up guarded prefetch-preserve pass moves
   MARY3 high/low to `2296/2294` and `2297/2295`, cuts blocking
   `690/693 -> 53/51`, and keeps `prefetch_overrun_vb=0`.
@@ -48,6 +48,13 @@ target / `100.3669%` target speed.
   `1745484` byte footprint and LBA fixed while moving low `2085/2058 ->
   2075/2061`, cutting blocking `29 -> 17`, loop reads `59 -> 47`, loop-read
   time `289 -> 232`, and due misses `3 -> 1`.
+- **VISITOR3 motion-copy payloads promoted.** The latest follow-up rewrites
+  VISITOR3 frames `119..123` in both tides as compact horizontal motion-copy
+  payloads with residual draw/cleanup data. Both packs remain `1555450` bytes
+  with fixed LBAs `22472/23232` and the `215040` byte PS-EXE bucket. High moves
+  `1118/1028 -> 1105/1031`, cuts blocking `150 -> 129`, loop reads `27 -> 23`,
+  and due misses `26 -> 22`; low moves `1126/1025 -> 1108/1028`, cuts blocking
+  `170 -> 143`, loop reads `31 -> 27`, and due misses `29 -> 25`.
 
 ## Follow-Up Closure
 
@@ -66,6 +73,15 @@ The runtime keeps the accepted `6` VBlank guard. Remaining VISITOR3 work stays
 in generated scheduler ownership, safe upload/precomposed payloads, or another
 pack/data-shape reduction.
 
+The follow-up `visitor3-motion-x-v181` did promote. It keeps the same VISITOR3
+CD footprint and executable sector bucket, but makes the late motion cluster
+intrinsically cheaper to stream and compose by moving already-composited
+background pixels in place before applying the small residual foreground
+payload. The focused promotion gate and broad no-regression gate keep
+non-VISITOR controls on their accepted profiles; an unrelated WALKSTUF1 high
+drift was reproduced on the pre-change HEAD control and is not attributed to
+this payload format.
+
 ## Verification
 
 - Focused WALKSTUF1 high gate:
@@ -76,6 +92,10 @@ pack/data-shape reduction.
   `scratch/ps1-perf-iterate/walkstuf1-compact-fgp3-v141-broad/20260508-063809-1612125/summary.json`.
 - VISITOR3 fallthrough non-promotion:
   `scratch/ps1-perf-iterate/visitor3-fallthrough5-v142-focused/20260508-074006-1958740/summary.json`.
+- VISITOR3 motion-copy promotion:
+  `scratch/ps1-perf-iterate/visitor3-motion-x-v181-focused/20260508-202531-2127593/summary.json`.
+- VISITOR3 motion-copy broad no-regression gate:
+  `scratch/ps1-perf-iterate/visitor3-motion-x-v181-broad-norequire/20260508-203050-2158325/summary.json`.
 - A visible DuckStation run was manually checked before the release merge-down
   and looked good.
 
