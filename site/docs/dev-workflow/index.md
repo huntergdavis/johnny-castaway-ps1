@@ -329,9 +329,26 @@ in the archaeology and research docs.
 - [`scripts/rebuild-and-let-run.sh`]({{ site.github_url }}/blob/main/scripts/rebuild-and-let-run.sh)
   — the inner-loop wrapper this page references throughout
   the per-scene runbook.
+- [`scripts/build-host.sh`]({{ site.github_url }}/blob/main/scripts/build-host.sh)
+  — host capture binary build (Prerequisites step).
 - [`scripts/export-scene-foreground-pilot.sh`]({{ site.github_url }}/blob/main/scripts/export-scene-foreground-pilot.sh)
   — host-side capture-and-pack script that produces per-scene
-  FG2 packs.
+  FG2 packs (Step 1).
+- [`scripts/make-cd-image.sh`]({{ site.github_url }}/blob/main/scripts/make-cd-image.sh)
+  — CD image regenerator (the "Shorter shortcuts" entry).
+- [`scripts/release.sh`]({{ site.github_url }}/blob/main/scripts/release.sh)
+  — full release wrapper (Step 6: build + bump + tag + push).
+- [`scripts/batch-capture-all-scenes.sh`]({{ site.github_url }}/blob/main/scripts/batch-capture-all-scenes.sh)
+  — generates the all-63-scenes pack corpus referenced in the
+  "Existing all-scene pack corpus" section.
+- [`src/foreground_pilot.c`]({{ site.github_url }}/blob/main/src/foreground_pilot.c)
+  — the routing function `fgCompactOverlayPackPathForScene` that Step 2
+  asks the contributor to extend.
+- [`src/jc_reborn.c`]({{ site.github_url }}/blob/main/src/jc_reborn.c)
+  — `kAllScenes[]` (the scene-picker pool Step 2 lands new slugs in,
+  post-`v0.7.0-ps1` retirement of the gated `kProvenScenes`).
+- [`src/ps1_debug.c`]({{ site.github_url }}/blob/main/src/ps1_debug.c)
+  — the 5-panel telemetry overlay the Diagnostics section names.
 - [`docs/ps1/development-workflow.md`]({{ site.github_url }}/blob/main/docs/ps1/development-workflow.md) — original.
 - [`docs/ps1/TESTING.md`]({{ site.github_url }}/blob/main/docs/ps1/TESTING.md) — the active strategy.
 - [`docs/ps1/scene-status.md`]({{ site.github_url }}/blob/main/docs/ps1/scene-status.md) — per-scene ledger.
