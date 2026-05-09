@@ -156,6 +156,13 @@ per-commit matrix never reached. **`v0.8.2-ps1`** and
 VISITOR3 and WALKSTUF1 outliers — the public-capped matrix mean
 now sits at `{{ site.release.perf_target_speed_pct }}%` target
 speed across the 120 timing-bearing rows.
+**`v0.8.4-ps1`** (**2026-05-08**) is the
+[chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }}):
+no perf code or pack content changed, but every one of the 63 packs
+got walked on hardware and the per-scene website metadata got
+reconciled against what the discs actually play. The loop also
+caught a manifest gap that had silently dropped 21 of the 63 chapter-
+select thumbnails from the CD.
 The lab essays on each arc are the deep dives; this entry is
 the chronological anchor.
 </section>
@@ -183,3 +190,6 @@ walkthrough is at [/archaeology/]({{ '/archaeology/' | relative_url }}).
 - [Lab: v0.8.1 MARY 4 freeze]({{ '/lab/v081-mary4-freeze/' | relative_url }})
   — stability follow-on; the soak loop catching what the
   per-commit matrix didn't.
+- [Lab: the chapter-select grind]({{ '/lab/chapter-select-grind/' | relative_url }})
+  — retrospective on the v0.8.4 metadata-reconciliation loop and the
+  manifest gap it surfaced.
