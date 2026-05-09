@@ -102,7 +102,7 @@
       <h1>Build & toolchain</h1>
       <p class="subtitle">PSn00bSDK 0.24 in Docker, cmake, mkpsxiso, and the wrapper script that ties it together.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1289 words
+          ~5 min read · 1408 words
         </p>
       
       <hr class="rule" />
@@ -223,27 +223,55 @@ tree mounts at <code class="language-plaintext highlighter-rouge">/project/</cod
 <h2 id="cmake-configuration">CMake configuration</h2>
 
 <p>The PS1 build is a separate CMake invocation from the host capture build.
-Configuration always points at the PSn00bSDK toolchain file:</p>
+<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> resolves the PSn00bSDK toolchain via the <code class="language-plaintext highlighter-rouge">PSN00BSDK</code>
+environment variable that the Dockerfile sets to
+<code class="language-plaintext highlighter-rouge">/opt/psn00bsdk/PSn00bSDK-0.24-Linux</code>, so the configure command does not
+need a <code class="language-plaintext highlighter-rouge">-DCMAKE_TOOLCHAIN_FILE</code> flag:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-B</span> build-ps1 <span class="nt">-S</span> <span class="nb">.</span> <span class="se">\</span>
-    <span class="nt">-DCMAKE_TOOLCHAIN_FILE</span><span class="o">=</span>/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-G</span> <span class="s2">"Unix Makefiles"</span> <span class="se">\</span>
+    <span class="nt">-DCMAKE_TRY_COMPILE_TARGET_TYPE</span><span class="o">=</span>STATIC_LIBRARY <span class="se">\</span>
+    <span class="nt">-S</span> /project <span class="nt">-B</span> /project/build-ps1
 </code></pre></div></div>
 
-<p>Sources split into two groups in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>. The core engine list
-is portable C — it compiles for both the host capture binary and the PS1.
-The PS1-specific list adds the PSn00bSDK adapter modules:</p>
+<p>Sources are a single <code class="language-plaintext highlighter-rouge">set(SOURCES ...)</code> list in <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> covering
+26 translation units — engine core, PS1 adapter modules, the pause-menu /
+captions / SPI / memcard / scene-picker / freeplay UI subsystems, the
+walk family, and the holiday code-generated tables:</p>
 
-<div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span><span class="p">(</span>CORE_SOURCES
-    jc_reborn.c resource.c uncompress.c ttm.c ads.c story.c
-    walk.c calcpath.c island.c utils.c config.c bench.c<span class="p">)</span>
+<div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set</span><span class="p">(</span>SOURCES
+    src/jc_reborn.c src/utils.c src/uncompress.c src/resource.c
+    src/foreground_pilot.c src/ps1_perf.c src/island.c
+    src/graphics_ps1.c src/sound_ps1.c src/events_ps1.c src/cdrom_ps1.c
+    src/ps1_pad_script.c
+    src/ps1_debug.c src/pause_menu.c src/ps1_captions.c
+    src/spi.c src/memcard.c
+    src/scene_picker.c src/scene_freeplay.c
+    src/walk.c src/walk_pilot.c src/walk_render.c src/calcpath.c
+    src/holidays.c src/holidays_table.c
+    src/ps1_stubs.c<span class="p">)</span>
 
-<span class="nb">set</span><span class="p">(</span>PS1_SOURCES
-    graphics_ps1.c sound_ps1.c events_ps1.c cdrom_ps1.c ps1_stubs.c<span class="p">)</span>
+<span class="nf">psn00bsdk_add_executable</span><span class="p">(</span>jcreborn GPREL <span class="si">${</span><span class="nv">SOURCES</span><span class="si">}</span><span class="p">)</span>
 
-<span class="nb">add_executable</span><span class="p">(</span>jcreborn <span class="si">${</span><span class="nv">CORE_SOURCES</span><span class="si">}</span> <span class="si">${</span><span class="nv">PS1_SOURCES</span><span class="si">}</span><span class="p">)</span>
+<span class="nb">target_compile_options</span><span class="p">(</span>jcreborn PRIVATE
+    -ffunction-sections -fdata-sections<span class="p">)</span>
+<span class="nb">target_link_options</span><span class="p">(</span>jcreborn PRIVATE -Wl,--gc-sections<span class="p">)</span>
+
+<span class="nb">target_link_libraries</span><span class="p">(</span>jcreborn PRIVATE
+    psxgpu psxgte psxspu psxcd c<span class="p">)</span>
 </code></pre></div></div>
 
-<p>Linked PSn00bSDK libraries:</p>
+<p>The legacy <code class="language-plaintext highlighter-rouge">src/ads.c</code>, <code class="language-plaintext highlighter-rouge">src/ttm.c</code>, <code class="language-plaintext highlighter-rouge">src/story.c</code>, <code class="language-plaintext highlighter-rouge">src/config.c</code>, and
+<code class="language-plaintext highlighter-rouge">src/bench.c</code> source files still exist on disk but are not in the
+SOURCES list. The host build references them; the PS1 build doesn’t.
+Section GC (<code class="language-plaintext highlighter-rouge">--gc-sections</code>) drops the dead code from cross-references
+the active modules still hold.</p>
+
+<p><code class="language-plaintext highlighter-rouge">GPREL</code> enables GP-relative addressing, which makes data access faster
+on the MIPS R3000A. <code class="language-plaintext highlighter-rouge">-ffunction-sections -fdata-sections</code> plus
+<code class="language-plaintext highlighter-rouge">--gc-sections</code> lets the linker drop unused engine paths.</p>
+
+<p>Linked PSn00bSDK libraries (link order is the order they appear in the
+<code class="language-plaintext highlighter-rouge">target_link_libraries</code> call above):</p>
 
 <table>
   <thead>
@@ -258,62 +286,52 @@ The PS1-specific list adds the PSn00bSDK adapter modules:</p>
       <td>GPU primitives, OT, VRAM upload</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">psxcd</code></td>
-      <td>CD-ROM access (<code class="language-plaintext highlighter-rouge">CdRead</code>, <code class="language-plaintext highlighter-rouge">CdSearchFile</code>)</td>
+      <td><code class="language-plaintext highlighter-rouge">psxgte</code></td>
+      <td>Geometry transformation engine</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">psxspu</code></td>
       <td>SPU init + voice keys for sound</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">psxapi</code></td>
-      <td>System / kernel calls</td>
+      <td><code class="language-plaintext highlighter-rouge">psxcd</code></td>
+      <td>CD-ROM access (<code class="language-plaintext highlighter-rouge">CdRead</code>, <code class="language-plaintext highlighter-rouge">CdSearchFile</code>)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">psxgte</code></td>
-      <td>Geometry transformation engine</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">psxsio</code></td>
-      <td>Serial I/O (TTY breadcrumbs)</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">psxpress</code></td>
-      <td>CD compression/decompression utilities</td>
+      <td><code class="language-plaintext highlighter-rouge">c</code></td>
+      <td>C runtime (libc + PSn00bSDK glue)</td>
     </tr>
   </tbody>
 </table>
 
-<p>Link order matters because they’re static archives. <code class="language-plaintext highlighter-rouge">psxgpu</code> first;
-<code class="language-plaintext highlighter-rouge">psxpress</code> last; everything else in the middle. See
-<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> for the canonical order.</p>
-
-<p>The compiler flags inherited from PSn00bSDK’s toolchain file are
-<code class="language-plaintext highlighter-rouge">-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding</code>. The project layers
-its own <code class="language-plaintext highlighter-rouge">-O2 -Wall -Wpedantic</code> on top.</p>
+<p>The compiler flags inherited from the PSn00bSDK <code class="language-plaintext highlighter-rouge">sdk</code> cmake module are
+<code class="language-plaintext highlighter-rouge">-msoft-float -G0 -march=mips1 -mabi=32 -ffreestanding</code>. The project
+layers <code class="language-plaintext highlighter-rouge">-Wall -Wpedantic -DPS1_BUILD -ffreestanding</code> on top via
+<code class="language-plaintext highlighter-rouge">CMAKE_C_FLAGS</code>.</p>
 
 <h2 id="the-end-to-end-build-by-hand">The end-to-end build, by hand</h2>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure (PSN00BSDK env var set in the Docker image; no -DCMAKE_TOOLCHAIN_FILE needed)</span>
 docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
     <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; </span><span class="se">\</span><span class="s2">
-             cmake -DCMAKE_TOOLCHAIN_FILE=/opt/psn00bsdk/lib/libpsn00b/cmake/toolchain.cmake .."</span>
+    bash <span class="nt">-c</span> <span class="s2">"cmake -G 'Unix Makefiles' </span><span class="se">\</span><span class="s2">
+                  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY </span><span class="se">\</span><span class="s2">
+                  -S /project -B /project/build-ps1"</span>
 
 <span class="c"># Compile (produces build-ps1/jcreborn.elf and jcreborn.exe)</span>
 docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
     <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    bash <span class="nt">-c</span> <span class="s2">"cd /project/build-ps1 &amp;&amp; make"</span>
+    bash <span class="nt">-c</span> <span class="s2">"cmake --build /project/build-ps1 --target jcreborn"</span>
 
 <span class="c"># Author the CD image</span>
 docker run <span class="nt">--rm</span> <span class="nt">--platform</span> linux/amd64 <span class="se">\</span>
     <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$PWD</span><span class="s2">"</span>:/project jc-reborn-ps1-dev:amd64 <span class="se">\</span>
-    bash <span class="nt">-c</span> <span class="s2">"cd /project &amp;&amp; mkpsxiso cd_layout.xml"</span>
+    bash <span class="nt">-c</span> <span class="s2">"mkpsxiso -y /project/config/ps1/cd_layout.xml"</span>
 </code></pre></div></div>
 
-<p>The post-build step inside CMake runs <code class="language-plaintext highlighter-rouge">elf2x -q jcreborn jcreborn.exe</code>,
-which is what <code class="language-plaintext highlighter-rouge">mkpsxiso</code> actually packages onto the disc. The <code class="language-plaintext highlighter-rouge">.elf</code> is
-useful for symbol lookups when debugging.</p>
+<p>The post-build step inside CMake runs <code class="language-plaintext highlighter-rouge">elf2x -q jcreborn.elf
+jcreborn.exe</code>, which is what <code class="language-plaintext highlighter-rouge">mkpsxiso</code> actually packages onto the disc.
+The <code class="language-plaintext highlighter-rouge">.elf</code> is useful for symbol lookups when debugging.</p>
 
 <h2 id="cd-layout">CD layout</h2>
 
