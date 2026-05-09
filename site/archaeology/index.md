@@ -286,7 +286,7 @@ honest about the wrong question.
 
 The disc plays. That's the headline.
 
-`{{ site.release.tag }}` boots on DuckStation, loads from a ~76 MB CD
+`{{ site.release.tag }}` boots on DuckStation, loads from a ~79 MB CD
 image, plays every scene the original game routed pixel-perfect with
 synced SFX, and idles cleanly through long randomized sessions. The
 PS1 executable is around 208 KiB after the legacy ADS/TTM/FG1 runtime

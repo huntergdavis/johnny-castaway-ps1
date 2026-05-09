@@ -20,7 +20,7 @@ the GitHub release pages are at
 [{{ site.github_url }}/releases/tag/{{ site.release.tag }}]({{ site.github_url }}/releases/tag/{{ site.release.tag }}).
 
 <p class="hero-cta" markdown="0">
-  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download <code>.bin</code> <small>(~72&nbsp;MiB)</small></a>
+  <a class="btn btn--primary" href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.bin">Download <code>.bin</code> <small>(~76&nbsp;MiB)</small></a>
   <a class="btn"              href="{{ site.github_url }}/releases/download/{{ site.release.tag }}/jcreborn.cue">Download <code>.cue</code> <small>(71&nbsp;B)</small></a>
   <a class="btn btn--small"   href="{{ '/releases/' | relative_url }}">Release notes</a>
 </p>
@@ -28,7 +28,7 @@ the GitHub release pages are at
 The CD image ships as a **.bin / .cue** pair. Both files belong in
 the same directory. Sizes shown are for the
 [`{{ site.release.tag }}`]({{ site.github_url }}/releases/tag/{{ site.release.tag }})
-upload — the `.bin` is ~76&nbsp;MB (~72&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
+upload — the `.bin` is ~79&nbsp;MB (~76&nbsp;MiB), mostly [FG2 pack]({{ '/docs/glossary/#fg2-pack' | relative_url }})
 payload routed onto the disc.
 
 ## Quickstart (DuckStation) {#emulator}
