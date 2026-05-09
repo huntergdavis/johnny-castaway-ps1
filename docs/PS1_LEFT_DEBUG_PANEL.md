@@ -5,8 +5,9 @@ When a new row is added, removed, or repurposed in code, update this file in the
 
 ## Toggle
 
-- Runtime toggle is controlled by `grSetPs1Telemetry(int enabled)` in `graphics_ps1.c`.
-- Current default is enabled (`grPs1TelemetryEnabled = 1`).
+- Runtime gate is the `grPs1TelemetryEnabled` global in `graphics_ps1.c` (declared `extern int` in `graphics_ps1.h`). Set the value directly; there is no setter function.
+- Current default is **disabled** (`grPs1TelemetryEnabled = 0`). Turn it on by editing the definition in `graphics_ps1.c`, or by writing the global from a debug callsite, before rebuilding.
+- Row writes are scattered through `src/ads.c` and helpers like `grPs1SetLastBmpTelemetry` in `src/graphics_ps1.c`; each callsite checks `if (grPs1TelemetryEnabled)` before drawing.
 
 ## Panel 1: Drop/Load Diagnostics (top-left, `y=2`)
 
