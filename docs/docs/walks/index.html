@@ -102,7 +102,7 @@
       <h1>Story-loop walks</h1>
       <p class="subtitle">How Johnny stops teleporting between scenes — the walk subsystem, the spot graph, and the runtime invariants the kernel has to preserve.</p>
         <p class="reading-time" aria-label="Estimated reading time">
-          ~5 min read · 1263 words
+          ~5 min read · 1299 words
         </p>
       
       <hr class="rule" />
@@ -352,6 +352,8 @@ fix.</li>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_render.c"><code class="language-plaintext highlighter-rouge">src/walk_render.c</code></a></li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.h"><code class="language-plaintext highlighter-rouge">src/walk.h</code></a>
 · <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk.c"><code class="language-plaintext highlighter-rouge">src/walk.c</code></a></li>
+  <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.h"><code class="language-plaintext highlighter-rouge">src/calcpath.h</code></a>
+· <a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/calcpath.c"><code class="language-plaintext highlighter-rouge">src/calcpath.c</code></a> — the <code class="language-plaintext highlighter-rouge">calcPath(fromNode, toNode)</code> path-finder the walking pilot calls when it needs to compose a multi-segment route between two scene endpoints (referenced in the body’s “(from, to) pair has a direct path” paragraph).</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/src/walk_data.h"><code class="language-plaintext highlighter-rouge">src/walk_data.h</code></a> — the upstream Sierra route table.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-implementation-plan.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-implementation-plan.md</code></a> — original walk port plan, with the Phase 4 footsteps record kept for historical accuracy.</li>
   <li><a href="https://github.com/huntergdavis/johnny-castaway-ps1/blob/main/docs/ps1/walk-spot-coordinates.md"><code class="language-plaintext highlighter-rouge">docs/ps1/walk-spot-coordinates.md</code></a> — pre-flight audit and per-spot coordinates.</li>
