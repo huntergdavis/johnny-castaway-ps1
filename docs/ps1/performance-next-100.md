@@ -66,6 +66,9 @@ improves `122 -> 118`. The later v204 pass owns the current low profile:
 split across `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-focused/20260509-075102-1822459/summary.json`,
 `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-broad-norequire/20260509-075210-1829320/`,
 and `scratch/ps1-perf-iterate/visitor3-high-reanchor-f125-v207-tail-rerun/20260509-075859-1871481/summary.json`.
+The follow-up v208 frame `116` copy-only hull probe is rejected: it saved
+`9102` high active bytes (`14226 -> 5124`) with fixed footprint/LBA, but
+regressed high to `1427`, `1114/1029`, overrun `85`, and blocking `114`.
 
 Latest rejected VISITOR3 v183-v192 probes: low-tide precursor motion-copy
 expansion, C-side fastspan row copies, terminal zero trimming, compact-origin
@@ -91,7 +94,10 @@ sparse-in-place still regressed low to `1119/1027` with hidden refill. The v190
 and v191 frame `117` sparse-hull variants saved bytes but regressed both/low
 timing; only the later high-only target-hull shape promoted. The v187/v192
 runtime narrow-upload paths crossed the PS-EXE bucket or failed before
-`JCPERF2`, even though the host-side x-band model remains useful. The next
+`JCPERF2`, even though the host-side x-band model remains useful. The v208
+frame `116` copy-only hull retry closes the largest remaining precursor hull
+byte signal for high tide too: removing cleanup rows still converted bytes into
+visible cadence debt. The next
 VISITOR3 swing must either change the data shape enough to reduce both CD and
 CPU, or add deadline-aware scheduling without growing the hot executable bucket.
 
@@ -1995,6 +2001,7 @@ pre-v0.8.0 row.
 | VISITOR3 setup-owned tail atlas | Do not retry manual zero-tail atlases through setup segments. The v178 25-sector atlas removed reads but regressed high and failed low full-scene/hidden-refill gates; the v179 7-sector terminal atlas still regressed both tides. Tail residency needs phase-transition preload, a real scheduler sidecar, or precomposed data, not another scene-start setup segment. |
 | VISITOR3 pack-only tail duplication | Do not retry as a layout-only tail move. The v180 no-source duplication of frames `139..144` kept pack sizes/LBAs fixed but regressed high/low to `1122/1027` and `1130/1024`, added `prefetch_overrun_vb=3` on both tides, and raised blocking by `+4` on both. The terminal payload phase is negative unless paired with scheduler ownership or precomposed data. |
 | VISITOR3 motion-copy frames `119..123` plus high frame `115` | Done; keep as part of the current VISITOR3 baseline, now superseded by later sparse/re-anchor/setup passes. The v181 scene-specific compact motion marker moves already-composited background rows, restores exposed clean spans, and draws only residual pixels; v182 applies the same family of state-hull motion-copy payload to high-tide frame `115`. Later v188/v189/v193/v202/v204/v205/v206/v207 passes move the accepted profile to high `1101/1030` and low `1102/1032` while preserving the `1555450` byte footprints, LBAs `22472/23232`, and the `215040` byte PS-EXE bucket. Next retries should expand motion-copy through generated eligibility, not hand-tail repoints. |
+| VISITOR3 frame `116` opcode-1 hull shapes | Do not promote or retry without a different format. The v195 target-hull shape saved `7800` active bytes but regressed high to `1109/1028` with hidden refill `2`; the v208 copy-only hull shape saved `9102` bytes and removed cleanup rows, but regressed high harder to `1114/1029`, overrun `85`, and blocking `114`. Frame `116` is a byte trap under the current motion opcode. |
 | VISITOR3 v184 terminal zero/origin/read probes | Do not promote or retry as scalar pack surgery or hand tables. Terminal zero-run trimming saved `0` bytes; compact-origin rebasing saved only `12` high-tide bytes at frame `113`, saved `0` low-tide bytes, and no terminal bytes; low hull-mode precursor retries still regressed frame `117` to `1110/1028`; and terminal `16`-sector read groups cut some reads but regressed high `1104 -> 1108` and low `1108 -> 1112`. Next VISITOR3 work needs a custom data format, precomposed ownership, or generated deadline scheduling. |
 | VISITOR3 v185 motion row-copy runtime path | Do not promote. The generic same-row pointer-copy variant crossed the PS-EXE bucket `215040 -> 217088` and shifted VISITOR3 pack LBAs by one sector. The narrowed left-tile-only variant stayed at `215040` with fixed LBAs, but was exact-flat on both tides: high stayed `1104/1030`, `blocking_vb=128`, `loop_reads=23`; low stayed `1108/1028`, `blocking_vb=143`, `loop_reads=27`. Motion-copy CPU is no longer the limiting VISITOR3 lever at this granularity. |
 | VISITOR3 v186 compact motion-copy metadata | Do not promote. Accepted motion-copy rows are all contiguous one-span rows, so opcode v2 can remove per-row `relY/spanCount` metadata and save `3906` high bytes plus `3485` low bytes. The compact repack kept LBAs and PS-EXE bucket fixed but regressed high `1104 -> 1113` with hidden refill `0 -> 3` and low `1108 -> 1112`; sparse-in-place kept high flat but regressed low to `1119/1027`, blocking `143 -> 152`, hidden refill `0 -> 2`. The byte saving shifts cadence/accounting in the wrong place. |
