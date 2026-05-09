@@ -50,13 +50,14 @@ and gained three runtime guards in subsequent releases (see
 
 ## Modules
 
-The walk subsystem lives in four files under `src/`:
+The walk subsystem lives in five modules under `src/`:
 
 | File | Lines | Owner | Notes |
 |---|---:|---|---|
 | `walk_data.h` | 533 | Sierra (via `jc_reborn`) | Pre-baked spot graph, shortest-path bookmarks, per-segment frame tables. Unchanged from the upstream engine decode. |
 | `walk.c` / `walk.h` | 195 / 25 | upstream | The original walk state machine. Consumes `walk_data.h`; produces a per-tick `(x, y, sprite_idx, heading)`. |
-| `walk_pilot.c` / `.h` | 354 / 84 | this port | Story-loop walk driver. Wraps `walk.c` for the screensaver loop, owns the persistent walk-area clean buffer, and feeds `walk_render` one frame at a time. |
+| `calcpath.c` / `.h` | 130 / 25 | upstream | The `calcPath(fromNode, toNode)` BFS-style path-finder over the spot graph. Walk_pilot calls it when no direct (from, to) edge exists in `walk_data.h`. |
+| `walk_pilot.c` / `.h` | 354 / 84 | this port | Story-loop walk driver. Wraps `walk.c` + `calcpath.c` for the screensaver loop, owns the persistent walk-area clean buffer, and feeds `walk_render` one frame at a time. |
 | `walk_render.c` / `.h` | 119 / 75 | this port | Per-frame draw kernel. Restores the island background, stamps the JOHNWALK sprite, and re-stamps the palm trunk + leaves on top when Johnny is between SPOT_3 and SPOT_4. Used by both walk_pilot and freeplay. |
 
 The split between `walk_pilot` (state) and `walk_render` (pixel push)
